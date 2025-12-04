@@ -5,14 +5,9 @@
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Traffic Torch – Instant SEO + UX Auditor</title>
-  
-  <!-- Tailwind & Flowbite -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
-  
-  <!-- Manifest for PWA -->
   <link rel="manifest" href="/manifest.json" />
-  
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     body { font-family: 'Inter', sans-serif; }
@@ -31,17 +26,10 @@
 
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-10">
       <form id="urlForm" class="flex flex-col md:flex-row gap-4">
-        <input 
-          type="url" 
-          id="urlInput" 
-          placeholder="https://example.com" 
-          required
-          class="flex-1 px-6 py-4 text-lg rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-orange-500"
-        />
-        <button 
-          type="submit"
-          class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-lg rounded-xl hover:from-orange-600 hover:to-pink-700 transition shadow-lg"
-        >
+        <input type="url" id="urlInput" placeholder="https://example.com" required
+               class="flex-1 px-6 py-4 text-lg rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-orange-500" />
+        <button type="submit"
+                class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-lg rounded-xl hover:from-orange-600 hover:to-pink-700 transition shadow-lg">
           Ignite Analysis 🚀
         </button>
       </form>
@@ -54,8 +42,7 @@
     </div>
   </div>
 
-  <!-- Flowbite + Alpine for dark mode toggle later -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-  <script type="module" src="/main.js"></script>
+  <!-- Load the JS directly from src (works perfectly on GitHub Pages) -->
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
