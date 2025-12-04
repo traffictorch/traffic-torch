@@ -25,7 +25,7 @@
     </header>
 
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-10">
-      <form id="urlForm" class="flex flex-col md:flex-row gap-4">
+      <form id="urlForm" onsubmit="event.preventDefault(); document.getElementById('loading').classList.remove('hidden'); fetchAndAnalyze()"> class="flex flex-col md:flex-row gap-4">
         <input type="url" id="urlInput" placeholder="https://example.com" required
                class="flex-1 px-6 py-4 text-lg rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-orange-500" />
         <button type="submit"
@@ -46,3 +46,8 @@
   <script type="module" ></script>
 </body>
 </html>
+<script>
+function fetchAndAnalyze() {
+  alert("JS IS WORKING! AI meter coming in the next deploy");
+}
+</script>
