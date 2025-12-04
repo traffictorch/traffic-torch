@@ -1,15 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=0.75, maximum-scale=1.0, user-scalable=yes" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Pastebin.com - Not Found (#404)</title>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traffic Torch – Instant SEO + UX Auditor</title>
+  
+  <!-- Tailwind & Flowbite -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+  
+  <!-- Manifest for PWA -->
+  <link rel="manifest" href="/manifest.json" />
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+  </style>
 </head>
-<body>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors">
+  <div class="container mx-auto px-4 py-12 max-w-5xl">
+    <header class="text-center mb-12">
+      <h1 class="text-5xl font-bold bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+        Traffic Torch 🔥
+      </h1>
+      <p class="mt-4 text-xl text-gray-600 dark:text-gray-300">
+        One URL → Instant 360° SEO + UX Health Score (2026-ready)
+      </p>
+    </header>
 
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-10">
+      <form id="urlForm" class="flex flex-col md:flex-row gap-4">
+        <input 
+          type="url" 
+          id="urlInput" 
+          placeholder="https://example.com" 
+          required
+          class="flex-1 px-6 py-4 text-lg rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-orange-500"
+        />
+        <button 
+          type="submit"
+          class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-lg rounded-xl hover:from-orange-600 hover:to-pink-700 transition shadow-lg"
+        >
+          Ignite Analysis 🚀
+        </button>
+      </form>
+    </div>
 
-<h1>Not Found (#404)</h1>
-<p>This page is no longer available. It has either expired, been removed by its creator, or removed by one of the Pastebin staff.</p>
+    <div id="report" class="hidden space-y-8"></div>
+    <div id="loading" class="hidden text-center py-20">
+      <div class="inline-block animate-spin rounded-full h-16 w-16 border-8 border-orange-500 border-t-transparent"></div>
+      <p class="mt-6 text-xl">Torch is analyzing… this takes 5–12 seconds</p>
+    </div>
+  </div>
 
+  <!-- Flowbite + Alpine for dark mode toggle later -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+  <script type="module" src="/main.js"></script>
 </body>
 </html>
