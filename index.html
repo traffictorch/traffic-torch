@@ -11,7 +11,7 @@
     body { font-family: 'Inter', sans-serif; }
   </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
+<body class="bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 min-h-screen">
   <div class="container mx-auto px-4 py-12 max-w-5xl">
     <header class="text-center mb-12">
       <h1 class="text-5xl font-bold bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
@@ -77,7 +77,7 @@
               <!-- AI Meter -->
               <section class="mb-10 p-8 rounded-2xl ${aiScore > 70 ? 'bg-red-50 dark:bg-red-900' : aiScore > 40 ? 'bg-yellow-50 dark:bg-yellow-900' : 'bg-green-50 dark:bg-green-900'}">
                 <h3 class="text-2xl font-bold mb-4">🤖 AI-Content Probability: <span class="text-4xl">${aiScore}%</span></h3>
-                <p class="text-lg">${aiScore > 70 ? 'High risk of AI slop' : aiScore > 40 ? 'Moderate AI patterns' : 'Looks human-written'}</p>
+                <p class="text-lg">${aiScore > 70 ? 'High risk of AI-generated "slop".' : aiScore > 40 ? 'Moderate AI patterns.' : aiScore === -1 ? 'Insufficient text – likely visual page.' : 'Looks human-written.'}</p>
               </section>
 
               <!-- Frustration Signals Auditor -->
@@ -86,10 +86,10 @@
                   😡 Rage-Quit Risk: <span class="text-4xl">${rageScore}%</span>
                 </h3>
                 <ul class="space-y-3 text-lg">
-                  ${rageIssues.map(issue => `<li class="flex items-start gap-3"><span class="text-2xl">${issue.icon}</span><div><strong>${issue.title}</strong><br><span class="text-gray-600 dark:text-gray-400">${issue.desc}</span></div></li>`).join('')}
+                  ${rageIssues.map(issue => `<li class="flex items-start gap-3"><span class="text-2xl">${issue.icon}</span><div><strong>${issue.title}</strong><br><span class="text-gray-600 dark:text-gray-400">${issue.desc}</span></div></li>`).join('') or '<li>🟢 No major UX pains detected – solid page!</li>'}
                 </ul>
                 <p class="mt-6 font-bold text-green-600 dark:text-green-400">
-                  ${rageScore > 60 ? 'Fix the top 3 issues → gain +30–50% dwell time' : 'UX looks clean – keep it up!'}
+                  ${rageScore > 60 ? 'Fix the top 3 issues → +30–50% dwell time' : 'UX looks clean – keep it up!'}
                 </p>
               </section>
 
@@ -104,21 +104,22 @@
           loading.classList.add('hidden');
           report.classList.remove('hidden');
         } catch (err) {
-          alert('Error: ' + err.message);
+          alert('Error: ' + err.message + '\nTry a simple URL like example.com');
           loading.classList.add('hidden');
         }
       });
 
       function calculateAIScore(text) {
         const words = text.toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/).filter(Boolean);
+        if (words.length < 50) return -1; // New: Insufficient text for accurate detection
         if (words.length < 100) return 15;
         const freq = {};
         words.forEach(w => freq[w] = (freq[w] || 0) + 1);
         const repeatScore = Object.values(freq).filter(c => c > 5).length * 3;
         const sentences = text.split(/[.!?]+/).filter(s => s.trim());
         const lengths = sentences.map(s => s.split(/\s+/).length);
-        const avg = lengths.reduce((a,b)=>a+b,0)/lengths.length;
-        const variance = lengths.reduce((a,b)=>a+Math.pow(b-avg,2),0)/lengths.length;
+        const avg = lengths.reduce((a, b) => a + b, 0) / lengths.length;
+        const variance = lengths.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / lengths.length;
         const uniformScore = variance < 25 ? 40 : 0;
         return Math.min(100, 15 + repeatScore + uniformScore);
       }
@@ -127,27 +128,31 @@
         let score = 0;
         const issues = [];
 
-        // 1. Ads above fold
-        const adsAboveFold = doc.querySelectorAll('ins, .ads, .ad, [class*="ad"], [id*="ad"]').length;
-        if (adsAboveFold > 2) { score += 35; issues.push({icon:'📢', title:`${adsAboveFold} ads above the fold`, desc:'Move ads below H1 → +28% dwell time'}); }
+        // Improved ad detection: Look for known ad classes/scripts
+        const adsAboveFold = doc.querySelectorAll('script[src*="googleads"], ins.adsbygoogle, .google-ad, [data-ad-slot]').length;
+        if (adsAboveFold > 2) { score += 35; issues.push({icon:'📢', title:`${adsAboveFold} ads above the fold`, desc:'Move below H1 → +28% dwell time'}); }
 
-        // 2. Tiny text
-        const bodyFont = getComputedStyle(doc.body).fontSize;
-        const fontPx = parseInt(bodyFont);
+        // Improved font: Check multiple elements
+        const fontElements = doc.querySelectorAll('body, p, div');
+        let fontPx = 16;
+        for (let el of fontElements) {
+          const size = parseInt(window.getComputedStyle(el).fontSize);
+          if (size < fontPx) fontPx = size;
+        }
         if (fontPx < 14) { score += 25; issues.push({icon:'🔍', title:`Body text ${fontPx}px`, desc:'Increase to ≥16px → +19% readability'}); }
 
-        // 3. Low contrast
-        const contrast = parseFloat(getComputedStyle(doc.body).colorContrast || '4.5');
-        if (contrast < 4.5) { score += 20; issues.push({icon:'⚪', title:`Contrast ${contrast}:1`, desc:'Improve to ≥4.5:1 for WCAG AA'}); }
+        // Dummy contrast (browser-only, skip advanced)
+        score += 0; // Place holder for future
 
-        // 4. Intrusive interstitial
-        if (doc.querySelector('div[id*="cookie"], div[class*="cookie"], .popup, .modal')) { score += 15; issues.push({icon:'🍪', title:'Intrusive popup/cookie banner', desc:'Delay or remove → lower bounce rate'}); }
+        // Popups
+        const popups = doc.querySelectorAll('div[id*="cookie"], div[class*="cookie"], .popup, .modal').length;
+        if (popups > 0) { score += 15; issues.push({icon:'🍪', title:'Intrusive popup/cookie banner', desc:'Delay or remove → lower bounce rate'}); }
 
-        // 5. No H1 or late H1
+        // H1
         const h1 = doc.querySelector('h1');
         if (!h1) { score += 20; issues.push({icon:'📌', title:'Missing H1', desc:'Add clear H1 for user & Google'}); }
 
-        return { rageScore: Math.min(100, score), rageIssues: issues.slice(0,5) };
+        return { rageScore: Math.min(100, score), rageIssues: issues };
       }
     });
   </script>
