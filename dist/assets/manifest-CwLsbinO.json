@@ -1,0 +1,13 @@
+{
+  "name": "Traffic Torch",
+  "short_name": "Torch",
+  "description": "Instant 360° SEO + UX Health Score",
+  "start_url": "/traffic-torch/",
+  "display": "standalone",
+  "background_color": "#0f0624",
+  "theme_color": "#f97316",
+  "icons": [
+    { "src": "/traffic-torch/logo-192.webp", "sizes": "192x192", "type": "image/webp" },
+    { "src": "/traffic-torch/logo-512.webp", "sizes": "512x512", "type": "image/webp" }
+  ]
+}
