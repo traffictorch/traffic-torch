@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traffic Torch – AI Content Audit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white min-h-screen">
+  <div class="container mx-auto px-6 py-12 max-w-5xl">
+    <header class="text-center mb-12">
+      <a href="/" class="inline-block mb-8">
+        <img src="/traffic-torch/logo.webp" alt="Traffic Torch" class="w-32 rounded-2xl shadow-2xl">
+      </a>
+      <h1 class="text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
+        AI Content Audit
+      </h1>
+      <p class="text-xl text-gray-400">One URL → Instant AI detection with charts & fixes</p>
+    </header>
+
+    <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-white/20">
+      <form id="urlForm" class="flex flex-col md:flex-row gap-6 max-w-3xl mx-auto">
+        <input type="url" id="urlInput" placeholder="https://example.com" required
+               class="flex-1 px-8 py-5 text-lg rounded-2xl bg-white/20 border border-white/40 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 text-white" />
+        <button type="submit"
+                class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
+          Analyze 🚀
+        </button>
+      </form>
+
+      <div id="loading" class="hidden text-center mt-12">
+        <div class="inline-block animate-spin rounded-full h-20 w-20 border-8 border-t-orange-500 border-r-pink-500 border-b-orange-500 border-l-pink-500"></div>
+        <p class="mt-8 text-2xl">Analyzing content…</p>
+      </div>
+    </div>
+
+    <div id="report" class="hidden mt-16"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('urlForm');
+    const input = document.getElementById('urlInput');
+    const report = document.getElementById('report');
+    const loading = document.getElementById('loading');
+    const PROXY = 'https://api.allorigins.win/raw?url=';
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const url = input.value.trim();
+      if (!url) return;
+
+      loading.classList.remove('hidden');
+      report.classList.add('hidden');
+      report.innerHTML = '';
+
+      try {
+        const res = await fetch(PROXY + encodeURIComponent(url));
+        if (!res.ok) throw new Error('Network error');
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const title = doc.querySelector('title')?.textContent || 'Untitled';
+        const text = doc.body?.textContent || '';
+
+        const ai = analyzeAIContent(text);
+
+        report.innerHTML = `
+          <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-orange-500/30">
+            <h2 class="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              AI Content Report: ${title.substring(0,60)}…
+            </h2>
+
+            <div class="text-center mb-16">
+              <div class="text-9xl font-black ${ai.score > 70 ? 'text-red-500' : ai.score > 40 ? 'text-yellow-500' : 'text-green-500'}">
+                ${ai.score}%
+              </div>
+              <p class="text-3xl mt-6">${ai.score > 70 ? 'Very Likely AI-Generated' : ai.score > 40 ? 'Moderate AI Patterns' : 'Likely Human-Written'}</p>
+            </div>
+
+            <canvas id="aiChart" class="mx-auto max-w-2xl mb-16"></canvas>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-16">
+              ${['Perplexity', 'Burstiness', 'Repetition'].map((label, i) => `
+                <div class="bg-black/40 rounded-2xl p-8 text-center border border-orange-500/30">
+                  <h3 class="text-2xl font-bold text-orange-400">${label}</h3>
+                  <p class="text-6xl font-black mt-4">${[ai.perplexity, ai.burstiness, ai.repetition][i]}</p>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="text-center">
+              <a href="/" class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
+                Back to Dashboard
+              </a>
+            </div>
+          </div>
+        `;
+
+        new Chart(document.getElementById('aiChart'), {
+          type: 'radar',
+          data: {
+            labels: ['Perplexity', 'Burstiness', 'Repetition', 'Sentence Length', 'Vocabulary'],
+            datasets: [{
+              label: 'Your Page',
+              data: [ai.perplexity, ai.burstiness, ai.repetition, ai.sentenceLength, ai.vocab],
+              backgroundColor: 'rgba(251, 191, 36, 0.2)',
+              borderColor: '#fbbf24',
+              borderWidth: 3
+            }]
+          },
+          options: { scales: { r: { min: 0, max: 10 } } }
+        });
+
+        loading.classList.add('hidden');
+        report.classList.remove('hidden');
+      } catch (err) {
+        alert('Error: ' + err.message);
+        loading.classList.add('hidden');
+      }
+    });
+
+    function analyzeAIContent(text) {
+      const words = text.toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/).filter(Boolean);
+      if (words.length < 50) return { score: 0, perplexity: 0, burstiness: 0, repetition: 0, sentenceLength: 0, vocab: 0 };
+      // (same accurate heuristic as before)
+      const freq = {};
+      words.forEach(w => freq[w] = (freq[w] || 0) + 1);
+      const repeatScore = Object.values(freq).filter(c => c > 5).length * 3;
+      const sentences = text.split(/[.!?]+/).filter(s => s.trim());
+      const lengths = sentences.map(s => s.split(/\s+/).length);
+      const avg = lengths.reduce((a,b)=>a+b,0)/lengths.length;
+      const variance = lengths.reduce((a,b)=>a+Math.pow(b-avg,2),0)/lengths.length;
+      const perplexity = variance < 20 ? 8.5 : variance < 40 ? 5.5 : 2.5;
+      const burstiness = 10 - variance/10;
+      const repetition = Object.values(freq).filter(c => c > 5).length / words.length * 100;
+      const score = Math.round((perplexity + burstiness + repetition/2) * 8);
+      return { score: Math.min(100, score), perplexity, burstiness, repetition, sentenceLength: avg.toFixed(1), vocab: (new Set(words).size / words.length * 100).toFixed(0) };
+    }
+  </script>
+</body>
+</html>
