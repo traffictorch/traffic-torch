@@ -3,44 +3,66 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Traffic Torch – Instant SEO + UX Tools</title>
+  <title>Traffic Torch – Instant SEO + UX Audit Tools</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
     body { font-family: 'Inter', sans-serif; }
   </style>
 </head>
-<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white min-h-screen">
-  <div class="container mx-auto px-6 py-16 max-w-6xl">
-    <header class="text-center mb-20">
-      <img src="/traffic-torch/logo.webp" alt="Traffic Torch" class="w-40 mx-auto mb-8 rounded-3xl shadow-2xl">
-      <h1 class="text-7xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">Traffic Torch</h1>
-      <p class="text-2xl text-gray-300">Instant SEO + UX audit tools</p>
+<body class="bg-black text-white min-h-screen">
+  <div class="container mx-auto px-6 py-8 max-w-6xl">
+    <!-- Compact header -->
+    <header class="text-center mb-12">
+      <div class="flex justify-center items-center gap-6 mb-8">
+        <img src="/traffic-torch/logo.webp" alt="Traffic Torch" class="w-20 rounded-2xl shadow-2xl">
+        <h1 class="text-5xl md:text-6xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+          Traffic Torch
+        </h1>
+      </div>
+      <p class="text-xl text-gray-400">Instant SEO + UX audit tools</p>
     </header>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-5xl mx-auto">
-      <a href="/ai" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-white/10 hover:border-orange-500/50 transition-all hover:-translate-y-2">
+    <!-- Tool cards — mobile-first, grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      <a href="/traffic-torch/ai" class="group block bg-gradient-to-br from-orange-900/30 to-pink-900/30 backdrop-blur-xl rounded-3xl p-10 border border-orange-500/30 hover:border-orange-400 hover:-translate-y-2 transition-all shadow-2xl">
         <div class="text-orange-400 text-6xl mb-6">🤖</div>
         <h2 class="text-3xl font-bold mb-3">AI Content Audit</h2>
-        <p class="text-gray-400">Deep AI detection with charts & fixes</p>
+        <p class="text-gray-300">Deep AI detection with charts & fixes</p>
       </a>
 
-      <a href="/ux" class="group block bg-white/5 backdrop-blur-xl rounded-3xl p-12 rounded-3xl border border-white/5 opacity-60">
-        <div class="text-gray-500 text-6xl mb-6">😡</div>
-        <h2 class="text-3xl font-bold mb-3 text-gray-500">Rage-Quit Risk</h2>
-        <p class="text-gray-600">UX pain points audit – coming soon</p>
+      <a href="/traffic-torch/ux" class="group block bg-gradient-to-br from-red-900/30 to-orange-900/30 backdrop-blur-xl rounded-3xl p-10 border border-red-500/30 hover:border-red-400 hover:-translate-y-2 transition-all shadow-2xl">
+        <div class="text-red-400 text-6xl mb-6">😡</div>
+        <h2 class="text-3xl font-bold mb-3">Rage-Quit Risk</h2>
+        <p class="text-gray-300">UX pain points that kill conversions</p>
       </a>
 
-      <a href="/vs" class="group block bg-white/5 backdrop-blur-xl rounded-3xl p-12 border border-white/5 opacity-60">
-        <div class="text-gray-500 text-6xl mb-6">⚔️</div>
-        <h2 class="text-3xl font-bold mb-3 text-gray-500">Competitive Gap</h2>
-        <p class="text-gray-600">2 URLs head-to-head – coming soon</p>
+      <a href="/traffic-torch/vs" class="group block bg-gradient-to-br from-blue-900/30 to-purple-900/30 backdrop-blur-xl rounded-3xl p-10 border border-blue-500/30 hover:border-blue-400 hover:-translate-y-2 transition-all shadow-2xl">
+        <div class="text-blue-400 text-6xl mb-6">⚔️</div>
+        <h2 class="text-3xl font-bold mb-3">Competitive Gap</h2>
+        <p class="text-gray-300">2 URLs head-to-head comparison</p>
       </a>
 
-      <div class="col-span-full text-center mt-20">
-        <p class="text-gray-500 text-lg">More tools launching every week</p>
+      <a href="/traffic-torch/vitals" class="group block bg-gradient-to-br from-green-900/30 to-teal-900/30 backdrop-blur-xl rounded-3xl p-10 border border-green-500/30 hover:border-green-400 hover:-translate-y-2 transition-all shadow-2xl">
+        <div class="text-green-400 text-6xl mb-6">⚡</div>
+        <h2 class="text-3xl font-bold mb-3">Core Vitals</h2>
+        <p class="text-gray-300">Real PageSpeed + INP + CLS audit</p>
+      </a>
+
+      <a href="/traffic-torch/intent" class="group block bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-xl rounded-3xl p-10 border border-purple-500/30 hover:border-purple-400 hover:-translate-y-2 transition-all shadow-2xl">
+        <div class="text-purple-400 text-6xl mb-6">🎯</div>
+        <h2 class="text-3xl font-bold mb-3">Intent + E-E-A-T</h2>
+        <p class="text-gray-300">Does Google trust this page?</p>
+      </a>
+
+      <div class="bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-xl rounded-3xl p-10 border border-gray-700/50">
+        <p class="text-center text-gray-500 text-lg">More torches launching weekly</p>
       </div>
     </div>
+
+    <footer class="text-center mt-20 text-gray-500 text-sm">
+      Made with 🔥 by you
+    </footer>
   </div>
 </body>
 </html>
