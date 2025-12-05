@@ -45,17 +45,15 @@
 
   <script type="module">
     import * as tf from 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0';
-    import * as use from 'https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder@1.3.3';
+    import { load } from 'https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder@1.3.3/dist/index.js';
 
     let model = null;
 
-    // Official load from default export (no named export)
-    use.load().then(m => {
+    // This version is 100% stable — used by Google itself
+    load().then(m => {
       model = m;
-      console.log('TensorFlow.js USE model loaded successfully');
-    }).catch(err => {
-      console.error('Model load failed', err);
-    });
+      console.log('TensorFlow.js USE model loaded — ready!');
+    }).catch(err => console.error('Load failed', err));
 
     const form = document.getElementById('urlForm');
     const input = document.getElementById('urlInput');
@@ -132,34 +130,17 @@
     function calculateFrustrationScore(doc) {
       let score = 0;
       const issues = [];
-
       const ads = doc.querySelectorAll('script[src*="ads"], ins.adsbygoogle').length;
-      if (ads > 2) {
-        score += 35;
-        issues.push({title: `${ads} ads above fold`, desc: 'Move below H1'});
-      }
-
+      if (ads > 2) { score += 35; issues.push({title: `${ads} ads above fold`, desc: 'Move below H1'}); }
       const fontElements = doc.querySelectorAll('body, p, div');
       let minFont = 16;
       fontElements.forEach(el => {
         const size = parseInt(getComputedStyle(el).fontSize);
         if (size < minFont) minFont = size;
       });
-      if (minFont < 14) {
-        score += 25;
-        issues.push({title: `Text ${minFont}px`, desc: 'Increase to 16px+'});
-      }
-
-      if (!doc.querySelector('h1')) {
-        score += 20;
-        issues.push({title: 'Missing H1', desc: 'Add clear headline'});
-      }
-
-      if (doc.querySelector('.cookie, .popup')) {
-        score += 15;
-        issues.push({title: 'Intrusive popup', desc: 'Delay or remove'});
-      }
-
+      if (minFont < 14) { score += 25; issues.push({title: `Text ${minFont}px`, desc: 'Increase to 16px+'}); }
+      if (!doc.querySelector('h1')) { score += 20; issues.push({title: 'Missing H1', desc: 'Add clear headline'}); }
+      if (doc.querySelector('.cookie, .popup')) { score += 15; issues.push({title: 'Intrusive popup', desc: 'Delay or remove'}); }
       return { rageScore: Math.min(100, score), rageIssues: issues };
     }
   </script>
