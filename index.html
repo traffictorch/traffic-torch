@@ -44,23 +44,30 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder@1.3.3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder@1.3.3/dist/universal-sentence-encoder.js"></script>
   <script>
-    // Official demo method: timeout + readyState check (web:0, web:1, web:3)
+    // Official demo method from tfjs-models GitHub (web:0, web:1, web:3)
     let model = null;
-    setTimeout(() => {
-      if (window.universalSentenceEncoder && window.universalSentenceEncoder.load) {
+    let retryCount = 0;
+    const maxRetries = 10;
+
+    function loadModel() {
+      if (window.universalSentenceEncoder && window.universalSentenceEncoder.load && retryCount < maxRetries) {
         window.universalSentenceEncoder.load().then(m => {
           model = m;
           console.log('TensorFlow.js USE model loaded successfully');
         }).catch(err => {
           console.error('Model load failed', err);
         });
+      } else if (retryCount < maxRetries) {
+        retryCount++;
+        setTimeout(loadModel, 500);
       } else {
-        console.warn('USE not ready – retrying in 500ms');
-        setTimeout(arguments.callee, 500);
+        console.warn('Model load timed out after 5s');
       }
-    }, 100);
+    }
+
+    loadModel();
 
     const form = document.getElementById('urlForm');
     const input = document.getElementById('urlInput');
