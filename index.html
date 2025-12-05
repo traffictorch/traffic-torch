@@ -68,7 +68,7 @@
       toggle.textContent = document.documentElement.classList.contains('light') ? '☀️ Light Mode' : '🌙 Dark Mode';
     });
 
-    // PWA Install
+    // PWA Install (iOS popup + Android button)
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
