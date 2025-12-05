@@ -1,3 +1,1 @@
-export default {
-  base: '/traffic-torch/'
-}
+module.exports = { root: '.' }
