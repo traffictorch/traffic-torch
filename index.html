@@ -49,7 +49,6 @@
     const report = document.getElementById('report');
     const loading = document.getElementById('loading');
     const PROXY = 'https://api.allorigins.win/raw?url=';
-    const FALLBACK = 'https://thingproxy.freeboard.io/fetch/';
 
     form.addEventListener('submit', async e => {
       e.preventDefault();
@@ -60,118 +59,111 @@
       report.classList.add('hidden');
       report.innerHTML = '';
 
-      let html = '';
       try {
-        let res = await fetch(PROXY + encodeURIComponent(url));
-        if (!res.ok) throw 1;
-        html = await res.text();
-      } catch {
-        let res = await fetch(FALLBACK + url);
-        html = await res.text();
-      }
+        const res = await fetch(PROXY + encodeURIComponent(url));
+        if (!res.ok) throw new Error('Network error');
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const title = doc.querySelector('title')?.textContent || 'Untitled';
+        const text = doc.body?.textContent || '';
 
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-      const title = doc.querySelector('title')?.textContent || 'Untitled';
-      const text = doc.body?.textContent || '';
+        const ai = analyzeAIContent(text);
 
-      const ai = analyzeAIContent(text);
+        report.innerHTML = `
+          <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-orange-500/30">
+            <h2 class="text-5xl font-bold text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              AI Content Report: ${title.substring(0,60)}…
+            </h2>
 
-      report.innerHTML = `
-        <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-orange-500/30">
-          <h2 class="text-5xl font-bold text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-            AI Content Report: ${title.substring(0,60)}…
-          </h2>
-
-          <div class="grid lg:grid-cols-2 gap-12">
-            <!-- Score Card -->
-            <div class="text-center">
-              <div class="text-9xl font-black ${ai.score > 70 ? 'text-red-500' : ai.score > 40 ? 'text-yellow-500' : 'text-green-500'}">
-                ${ai.score}%
-              </div>
-              <p class="text-3xl mt-4">${ai.score > 70 ? 'Very Likely AI-Generated' : ai.score > 40 ? 'Moderate AI Patterns' : 'Likely Human-Written'}</p>
-              ${ai.score === 0 ? '<p class="text-xl mt-4 text-blue-400">Visual / Image-Heavy Page – Not Enough Text</p>' : ''}
-            </div>
-
-            <!-- Radar Chart -->
-            <div>
-              <canvas id="aiRadar"></canvas>
-            </div>
-          </div>
-
-          <!-- Breakdown -->
-          <div class="grid md:grid-cols-3 gap-8 mt-12">
-            <div class="bg-black/40 rounded-2xl p-8 border border-orange-500/30">
-              <h3 class="text-2xl font-bold text-orange-400">Perplexity</h3>
-              <p class="text-5xl font-black mt-4">${ai.perplexity.toFixed(1)}</p>
-              <p class="mt-2">${ai.perplexity > 4 ? 'High — predictable patterns' : 'Low — natural variation'}</p>
-            </div>
-            <div class="bg-black/40 rounded-2xl p-8 border border-orange-500/30">
-              <h3 class="text-2xl font-bold text-orange-400">Burstiness</h3>
-              <p class="text-5xl font-black mt-4">${ai.burstiness.toFixed(1)}</p>
-              <p class="mt-2">${ai.burstiness > 8 ? 'High — robotic rhythm' : 'Natural flow'}</p>
-            </div>
-            <div class="bg-black/40 rounded-2xl p-8 border border-orange-500/30">
-              <h3 class="text-2xl font-bold text-orange-400">Repetition</h3>
-              <p class="text-5xl font-black mt-4">${ai.repetition}%</p>
-              <p class="mt-2">${ai.repetition > 20 ? 'Excessive keyword stuffing' : 'Healthy variation'}</p>
-            </div>
-          </div>
-
-          <!-- Flagged Sentences -->
-          ${ai.flagged.length > 0 && `
-            <div class="mt-12">
-              <h3 class="text-3xl font-bold mb-6 text-orange-400">Flagged AI-Like Sentences</h3>
-              <div class="space-y-4">
-                ${ai.flagged.slice(0,5).map(s => `<div class="bg-black/30 p-6 rounded-xl border border-orange-500/30"><p class="text-lg italic">"${s}"</p></div>`).join('')}
-              </div>
-            </div>
-          `
-
-          <!-- Pro Fixes -->
-          <div class="mt-16 bg-gradient-to-r from-orange-900/50 to-pink-900/50 rounded-3xl p-10 border border-orange-500">
-            <h3 class="text-4xl font-bold text-center mb-8">How to Fix & Improve E-E-A-T</h3>
-            <div class="grid md:grid-cols-2 gap-8">
-              ${ai.fixes.map(f => `
-                <div class="bg-black/50 rounded-2xl p-8 border border-orange-500/50">
-                  <h4 class="text-2xl font-bold text-orange-400">${f.title}</h4>
-                  <p class="mt-4 text-lg">${f.desc}</p>
-                  <p class="mt-4 text-2xl font-black text-green-400">+${f.impact} E-E-A-T Points</p>
+            <div class="grid lg:grid-cols-2 gap-12">
+              <div class="text-center">
+                <div class="text-9xl font-black ${ai.score > 70 ? 'text-red-500' : ai.score > 40 ? 'text-yellow-500' : 'text-green-500'}">
+                  ${ai.score}%
                 </div>
-              `).join('')}
+                <p class="text-3xl mt-4">${ai.score > 70 ? 'Very Likely AI-Generated' : ai.score > 40 ? 'Moderate AI Patterns' : 'Likely Human-Written'}</p>
+                ${ai.score === 0 ? '<p class="text-xl mt-4 text-blue-400">Visual / Image-Heavy Page – Not Enough Text</p>' : ''}
+              </div>
+
+              <div>
+                <canvas id="aiRadar"></canvas>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 mt-12">
+              <div class="bg-black/40 rounded-2xl p-8 border border-orange-500/30">
+                <h3 class="text-2xl font-bold text-orange-400">Perplexity</h3>
+                <p class="text-5xl font-black mt-4">${ai.perplexity.toFixed(1)}</p>
+                <p class="mt-2">${ai.perplexity > 4 ? 'High — predictable patterns' : 'Low — natural variation'}</p>
+              </div>
+              <div class="bg-black/40 rounded-2xl p-8 border border-orange-500/30">
+                <h3 class="text-2xl font-bold text-orange-400">Burstiness</h3>
+                <p class="text-5xl font-black mt-4">${ai.burstiness.toFixed(1)}</p>
+                <p class="mt-2">${ai.burstiness > 8 ? 'High — robotic rhythm' : 'Natural flow'}</p>
+              </div>
+              <div class="bg-black/40 rounded-2xl p-8 border border-orange-500/30">
+                <h3 class="text-2xl font-bold text-orange-400">Repetition</h3>
+                <p class="text-5xl font-black mt-4">${ai.repetition}%</p>
+                <p class="mt-2">${ai.repetition > 20 ? 'Excessive keyword stuffing' : 'Healthy variation'}</p>
+              </div>
+            </div>
+
+            ${ai.flagged.length > 0 ? `
+              <div class="mt-12">
+                <h3 class="text-3xl font-bold mb-6 text-orange-400">Flagged AI-Like Sentences</h3>
+                <div class="space-y-4">
+                  ${ai.flagged.slice(0,5).map(s => `<div class="bg-black/30 p-6 rounded-xl border border-orange-500/30"><p class="text-lg italic">"${s.substring(0,200)}..."</p></div>`).join('')}
+                </div>
+              </div>
+            ` : ''}
+
+            <div class="mt-16 bg-gradient-to-r from-orange-900/50 to-pink-900/50 rounded-3xl p-10 border border-orange-500">
+              <h3 class="text-4xl font-bold text-center mb-8">How to Fix & Improve E-E-A-T</h3>
+              <div class="grid md:grid-cols-2 gap-8">
+                ${ai.fixes.map(f => `
+                  <div class="bg-black/50 rounded-2xl p-8 border border-orange-500/50">
+                    <h4 class="text-2xl font-bold text-orange-400">${f.title}</h4>
+                    <p class="mt-4 text-lg">${f.desc}</p>
+                    <p class="mt-4 text-2xl font-black text-green-400">+${f.impact} E-E-A-T Points</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="text-center mt-16">
+              <button onclick="location.reload()" class="px-12 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-2xl rounded-3xl hover:shadow-2xl transition">
+                New Analysis 🚀
+              </button>
             </div>
           </div>
+        `;
 
-          <div class="text-center mt-16">
-            <button onclick="location.reload()" class="px-12 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-2xl rounded-3xl hover:shadow-2xl transition">
-              New Analysis 🚀
-            </button>
-          </div>
-        </div>
-      `;
+        // Radar Chart
+        const ctx = document.getElementById('aiRadar').getContext('2d');
+        new Chart(ctx, {
+          type: 'radar',
+          data: {
+            labels: ['Perplexity', 'Burstiness', 'Repetition', 'Sentence Length', 'Vocabulary', 'Structure'],
+            datasets: [{
+              label: 'Your Page',
+              data: [ai.perplexity, ai.burstiness, ai.repetition, ai.sentenceLength, ai.vocab, ai.structure],
+              backgroundColor: 'rgba(251, 191, 36, 0.2)',
+              borderColor: '#fbbf24',
+              borderWidth: 3,
+              pointBackgroundColor: '#fbbf24'
+            }]
+          },
+          options: {
+            scales: { r: { min: 0, max: 10, ticks: { color: '#fff' }, grid: { color: '#444' } } },
+            plugins: { legend: { labels: { color: '#fff' } } }
+          }
+        });
 
-      // Radar Chart
-      const ctx = document.getElementById('aiRadar').getContext('2d');
-      new Chart(ctx, {
-        type: 'radar',
-        data: {
-          labels: ['Perplexity', 'Burstiness', 'Repetition', 'Sentence Length', 'Vocabulary', 'Structure'],
-          datasets: [{
-            label: 'Your Page',
-            data: [ai.perplexity, ai.burstiness, ai.repetition, ai.sentenceLength, ai.vocab, ai.structure],
-            backgroundColor: 'rgba(251, 191, 36, 0.2)',
-            borderColor: '#fbbf24',
-            borderWidth: 3,
-            pointBackgroundColor: '#fbbf24'
-          }]
-        },
-        options: {
-          scales: { r: { min: 0, max: 10, ticks: { color: '#fff' }, grid: { color: '#444' } } },
-          plugins: { legend: { labels: { color: '#fff' } } }
-        }
-      });
-
-      loading.classList.add('hidden');
-      report.classList.remove('hidden');
+        loading.classList.add('hidden');
+        report.classList.remove('hidden');
+      } catch (err) {
+        alert('Error: ' + err.message + '\nTry https://example.com');
+        loading.classList.add('hidden');
+      }
     });
 
     function analyzeAIContent(text) {
