@@ -5,54 +5,81 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Traffic Torch – Instant SEO + UX Tools</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/favicon.ico" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .hero-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white min-h-screen">
-  <div id="app"></div>
+<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white min-h-screen hero-bg">
+  <div class="container mx-auto px-6 py-8 max-w-6xl">
+    <header class="text-center mb-12">
+      <img src="/logo.webp" alt="Traffic Torch" class="w-24 mx-auto mb-4 rounded-xl shadow-2xl">
+      <h1 class="text-5xl md:text-6xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Traffic Torch
+      </h1>
+      <p class="mt-4 text-lg md:text-xl text-gray-300">Instant SEO + UX audit tools</p>
+      <button id="themeToggle" class="mt-6 px-6 py-3 bg-white/20 rounded-full hover:bg-white/30 transition">
+        🌙 Dark Mode
+      </button>
+    </header>
 
-  <script type="module">
-    import layout from './shared/layout.html' assert { type: 'html' };
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      <a href="/ai" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-orange-500/30 hover:border-orange-400 hover:-translate-y-2 transition-all shadow-2xl">
+        <div class="text-orange-400 text-5xl mb-4">🤖</div>
+        <h2 class="text-2xl font-bold mb-2">AI Content Audit</h2>
+        <p class="text-gray-300">Deep AI detection with charts & fixes</p>
+      </a>
 
-    document.body.insertAdjacentHTML('afterbegin', layout);
-    document.getElementById('app').innerHTML = `
-      <div class="container mx-auto px-6 py-12 max-w-6xl text-center">
-        <h1 class="text-7xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-8">
-          Traffic Torch
-        </h1>
-        <p class="text-2xl text-gray-300 mb-16">Pick your torch</p>
+      <a href="/ux" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-red-500/30 hover:border-red-400 hover:-translate-y-2 transition-all shadow-2xl">
+        <div class="text-red-400 text-5xl mb-4">😡</div>
+        <h2 class="text-2xl font-bold mb-2">Rage-Quit Risk</h2>
+        <p class="text-gray-300">UX pain points that kill conversions</p>
+      </a>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-5xl mx-auto">
-          <a href="/ai" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-orange-500/30 hover:border-orange-400 hover:-translate-y-2 transition-all shadow-2xl">
-            <div class="text-orange-400 text-7xl mb-6">🤖</div>
-            <h2 class="text-4xl font-bold mb-4">AI Content Audit</h2>
-            <p class="text-gray-300">Deep AI detection with charts & fixes</p>
-          </a>
+      <a href="/vs" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-blue-500/30 hover:border-blue-400 hover:-translate-y-2 transition-all shadow-2xl">
+        <div class="text-blue-400 text-5xl mb-4">⚔️</div>
+        <h2 class="text-2xl font-bold mb-2">Competitive Gap</h2>
+        <p class="text-gray-300">2 URLs head-to-head comparison</p>
+      </a>
 
-          <a href="/ux" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-red-500/30 hover:border-red-400 hover:-translate-y-2 transition-all shadow-2xl">
-            <div class="text-red-400 text-7xl mb-6">😡</div>
-            <h2 class="text-4xl font-bold mb-4">Rage-Quit Risk</h2>
-            <p class="text-gray-300">UX pain points that kill conversions</p>
-          </a>
+      <a href="/vitals" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-green-500/30 hover:border-green-400 hover:-translate-y-2 transition-all shadow-2xl">
+        <div class="text-green-400 text-5xl mb-4">⚡</div>
+        <h2 class="text-2xl font-bold mb-2">Core Vitals</h2>
+        <p class="text-gray-300">Real PageSpeed data</p>
+      </a>
 
-          <a href="/vs" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-blue-500/30 hover:border-blue-400 hover:-translate-y-2 transition-all shadow-2xl">
-            <div class="text-blue-400 text-7xl mb-6">⚔️</div>
-            <h2 class="text-4xl font-bold mb-4">Competitive Gap</h2>
-            <p class="text-gray-300">2 URLs head-to-head</p>
-          </a>
+      <a href="/intent" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-purple-500/30 hover:border-purple-400 hover:-translate-y-2 transition-all shadow-2xl">
+        <div class="text-purple-400 text-5xl mb-4">🎯</div>
+        <h2 class="text-2xl font-bold mb-2">Intent + E-E-A-T</h2>
+        <p class="text-gray-300">Google trust & intent match</p>
+      </a>
+    </div>
+  </div>
 
-          <a href="/vitals" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-green-500/30 hover:border-green-400 hover:-translate-y-2 transition-all shadow-2xl">
-            <div class="text-green-400 text-7xl mb-6">⚡</div>
-            <h2 class="text-4xl font-bold mb-4">Core Vitals</h2>
-            <p class="text-gray-300">Real PageSpeed + INP</p>
-          </a>
+  <script>
+    // Day/Night Mode
+    const toggle = document.getElementById('themeToggle');
+    if (localStorage.theme === 'light') document.documentElement.classList.add('light');
+    toggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('light');
+      localStorage.theme = document.documentElement.classList.contains('light') ? 'light' : 'dark';
+      toggle.textContent = document.documentElement.classList.contains('light') ? '☀️ Light Mode' : '🌙 Dark Mode';
+    });
 
-          <a href="/intent" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-purple-500/30 hover:border-purple-400 hover:-translate-y-2 transition-all shadow-2xl">
-            <div class="text-purple-400 text-7xl mb-6">🎯</div>
-            <h2 class="text-4xl font-bold mb-4">Intent + E-E-A-T</h2>
-            <p class="text-gray-300">Does Google trust this?</p>
-          </a>
-        </div>
-      </div>
-    `;
+    // PWA Install Prompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.createElement('button');
+      btn.textContent = 'Install';
+      btn.className = 'fixed bottom-8 right-8 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl';
+      btn.onclick = () => deferredPrompt.prompt();
+      document.body.appendChild(btn);
+    });
   </script>
 </body>
 </html>
