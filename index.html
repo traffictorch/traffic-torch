@@ -45,15 +45,17 @@
 
   <script type="module">
     import * as tf from 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0';
-    import { load } from 'https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder@1.3.3/dist/index.js';
+    import * as use from 'https://tfhub.dev/tensorflow/tfjs-model/universal-sentence-encoder-lite/1/default/1';
 
     let model = null;
 
-    // This version is 100% stable — used by Google itself
-    load().then(m => {
+    // Official TensorFlow Hub load (stable, no named export issues)
+    tf.loadLayersModel(use).then(m => {
       model = m;
-      console.log('TensorFlow.js USE model loaded — ready!');
-    }).catch(err => console.error('Load failed', err));
+      console.log('TensorFlow.js USE model loaded successfully');
+    }).catch(err => {
+      console.error('Model load failed', err);
+    });
 
     const form = document.getElementById('urlForm');
     const input = document.getElementById('urlInput');
@@ -81,7 +83,7 @@
         let aiScore = -1;
         if (text.trim().length > 100 && model) {
           const sentences = text.match(/[^\.!?]+[\.!?]+/g) || [text];
-          const embeddings = await model.embed(sentences.slice(0, 30));
+          const embeddings = await model.predict(tf.tensor2d(sentences.map(s => [s])));
           const mean = tf.mean(embeddings, 0);
           const distances = embeddings.sub(mean).pow(2).sum(1).sqrt();
           const perplexity = tf.mean(distances).dataSync()[0];
