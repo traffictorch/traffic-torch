@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.ConcurrentHashMap1.0" />
   <title>Traffic Torch – Instant SEO + UX Auditor</title>
   <meta property="og:title" content="Traffic Torch – Free 360° SEO + UX Auditor" />
   <meta property="og:description" content="One URL → Instant AI-content & Rage-Quit detection" />
@@ -10,7 +10,6 @@
   <link rel="icon" href="/traffic-torch/favicon.ico" />
   <link rel="manifest" href="/traffic-torch/manifest.json" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
     body { font-family: 'Inter', sans-serif; }
@@ -27,10 +26,8 @@
 
     <div class="bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl p-12 border border-white/20">
       <form id="urlForm" class="flex flex-col md:flex-row gap-8 max-w-4xl mx-auto">
-        <input type="url" id="urlInput" placeholder="https://example.com" required
-               class="flex-1 px-10 py-6 text-xl rounded-3xl bg-white/20 border border-white/40 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500/70 text-white" />
-        <button type="submit"
-                class="px-16 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-2xl rounded-3xl hover:shadow-2xl hover:scale-105 transition shadow-xl">
+        <input type="url" id="urlInput" placeholder="https://example.com" required class="flex-1 px-10 py-6 text-xl rounded-3xl bg-white/20 border border-white/40 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500/70 text-white" />
+        <button type="submit" class="px-16 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-2xl rounded-3xl hover:shadow-2xl hover:scale-105 transition shadow-xl">
           Ignite Analysis 🚀
         </button>
       </form>
@@ -43,6 +40,7 @@
     </div>
   </div>
 
+  <!-- THIS IS THE ONLY SCRIPT THAT WORKS RIGHT NOW -->
   <script>
     const form = document.getElementById('urlForm');
     const input = document.getElementById('urlInput');
@@ -61,7 +59,7 @@
 
       try {
         const res = await fetch(PROXY + encodeURIComponent(url));
-        if (!res.ok) throw new Error('Network error – try a different URL');
+        if (!res.ok) throw new Error('Network error');
         const html = await res.text();
         const doc = new DOMParser().parseFromString(html, 'text/html');
         const title = doc.querySelector('title')?.textContent || 'Untitled';
@@ -75,13 +73,11 @@
             <h2 class="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
               Report for ${title.substring(0,60)}…
             </h2>
-
             <div class="grid lg:grid-cols-2 gap-10">
               <div class="p-8 rounded-3xl ${aiScore === -1 ? 'bg-blue-900/50' : aiScore > 70 ? 'bg-red-900/50' : aiScore > 40 ? 'bg-yellow-900/50' : 'bg-green-900/50'} border border-white/20">
                 <h3 class="text-3xl font-bold mb-4">🤖 AI-Content Probability <span class="text-5xl">${aiScore === -1 ? '—' : aiScore + '%'}</span></h3>
-                <p class="text-xl">${aiScore === -1 ? 'Insufficient text – visual page' : aiScore > 70 ? 'Very likely AI' : aiScore > 40 ? 'Moderate AI' : 'Looks human'}</p>
+                <p class="text-xl">${aiScore === -1 ? 'Visual page' : aiScore > 70 ? 'Very likely AI' : aiScore > 40 ? 'Moderate AI' : 'Looks human'}</p>
               </div>
-
               <div class="p-8 rounded-3xl ${rageScore > 70 ? 'bg-red-900/50' : rageScore > 40 ? 'bg-yellow-900/50' : 'bg-green-900/50'} border border-white/20">
                 <h3 class="text-3xl font-bold mb-4">😡 Rage-Quit Risk <span class="text-5xl">${rageScore}%</span></h3>
                 <ul class="space-y-4 text-lg">
@@ -89,7 +85,6 @@
                 </ul>
               </div>
             </div>
-
             <div class="text-center mt-12">
               <button onclick="location.reload()" class="px-10 py-5 bg-gradient-to-r from-orange-500 to-pink-600 font-bold text-xl rounded-2xl hover:shadow-2xl transition">
                 New Analysis 🚀
@@ -101,7 +96,7 @@
         loading.classList.add('hidden');
         report.classList.remove('hidden');
       } catch (err) {
-        alert('Error: ' + err.message);
+        alert('Error: ' + err.message + ' – try https://example.com');
         loading.classList.add('hidden');
       }
     });
