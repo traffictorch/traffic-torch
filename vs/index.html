@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traffic Torch – Competitive Gap</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white min-h-screen">
+  <div class="container mx-auto px-6 py-12 max-w-6xl">
+    <header class="text-center mb-12">
+      <a href="/traffic-torch/" class="inline-block mb-8">
+        <img src="/traffic-torch/logo.webp" alt="Traffic Torch" class="w-32 rounded-2xl shadow-2xl">
+      </a>
+      <h1 class="text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
+        Competitive Gap
+      </h1>
+      <p class="text-xl text-gray-400">Enter two URLs — see who wins and how to beat them</p>
+    </header>
+
+    <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-white/20">
+      <form id="gapForm" class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div>
+          <label class="block text-lg mb-3 text-orange-400">Your URL</label>
+          <input type="url" id="urlA" placeholder="https://yoursite.com" required
+                 class="w-full px-8 py-5 text-lg rounded-2xl bg-white/20 border border-white/40 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-green-500 text-white" />
+        </div>
+        <div>
+          <label class="block text-lg mb-3 text-pink-400">Competitor URL</label>
+          <input type="url" id="urlB" placeholder="https://competitor.com" required
+                 class="w-full px-8 py-5 text-lg rounded-2xl bg-white/20 border border-white/40 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-pink-500 text-white" />
+        </div>
+      </form>
+
+      <div class="text-center mt-10">
+        <button type="submit" form="gapForm"
+                class="px-16 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-2xl rounded-3xl hover:shadow-2xl hover:scale-105 transition shadow-xl">
+          Show Me The Gap 🚀
+        </button>
+      </div>
+
+      <div id="loading" class="hidden text-center mt-20">
+        <div class="inline-block animate-spin rounded-full h-20 w-20 border-8 border-t-orange-500 border-r-pink-500 border-b-orange-500 border-l-pink-500"></div>
+        <p class="mt-8 text-2xl">Comparing both pages…</p>
+      </div>
+    </div>
+
+    <div id="gapReport" class="hidden mt-16"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('gapForm');
+    const urlA = document.getElementById('urlA');
+    const urlB = document.getElementById('urlB');
+    const report = document.getElementById('gapReport');
+    const loading = document.getElementById('loading');
+    const PROXY = 'https://api.allorigins.win/raw?url=';
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      loading.classList.remove('hidden');
+      report.classList.add('hidden');
+      report.innerHTML = '';
+
+      try {
+        const [htmlA, htmlB] = await Promise.all([
+          fetch(PROXY + encodeURIComponent(urlA.value)).then(r => r.text()),
+          fetch(PROXY + encodeURIComponent(urlB.value)).then(r => r.text())
+        ]);
+
+        const docA = new DOMParser().parseFromString(htmlA, 'text/html');
+        const docB = new DOMParser().parseFromString(htmlB, 'text/html');
+
+        const scoreA = calculateScore(docA);
+        const scoreB = calculateScore(docB);
+
+        const winner = scoreA > scoreB ? 'A' : 'B';
+        const gap = Math.abs(scoreA - scoreB);
+
+        report.innerHTML = `
+          <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border ${winner === 'A' ? 'border-green-500/50' : 'border-pink-500/50'}">
+            <h2 class="text-5xl font-bold text-center mb-12">
+              ${winner === 'A' ? '🏆 YOU WIN' : 'Competitor wins'} by ${gap} points
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-12">
+              <div class="text-center p-10 rounded-3xl ${winner === 'A' ? 'bg-green-900/40' : 'bg-black/40'} border ${winner === 'A' ? 'border-green-500' : 'border-white/20'}">
+                <p class="text-xl mb-4">Your Site</p>
+                <div class="text-8xl font-black">${scoreA}</div>
+                <p class="text-2xl mt-4 text-green-400">/100</p>
+              </div>
+              <div class="text-center p-10 rounded-3xl ${winner === 'B' ? 'bg-pink-900/40' : 'bg-black/40'} border ${winner === 'B' ? 'border-pink-500' : 'border-white/20'}">
+                <p class="text-xl mb-4">Competitor</p>
+                <div class="text-8xl font-black">${scoreB}</div>
+                <p class="text-2xl mt-4 text-pink-400">/100</p>
+              </div>
+            </div>
+
+            <div class="mt-16 text-center">
+              <h3 class="text-3xl font-bold mb-8">Top 3 Gaps to Close</h3>
+              <div class="space-y-6 max-w-3xl mx-auto text-left">
+                ${getGapAdvice(scoreA, scoreB).slice(0,3).map(g => `
+                  <div class="bg-black/40 rounded-2xl p-8 border border-orange-500/30">
+                    <h4 class="text-2xl font-bold text-orange-400">${g.title}</h4>
+                    <p class="mt-4 text-lg">${g.desc}</p>
+                    <p class="mt-4 text-xl font-black text-green-400">+${g.impact} points if fixed</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="text-center mt-16">
+              <a href="/traffic-torch/" class="px-12 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
+                Back to Dashboard
+              </a>
+            </div>
+          </div>
+        `;
+
+        loading.classList.add('hidden');
+        report.classList.remove('hidden');
+      } catch (err) {
+        alert('Error: ' + err.message);
+        loading.classList.add('hidden');
+      }
+    });
+
+    function calculateScore(doc) {
+      let score = 50;
+      if (doc.querySelector('h1')) score += 15;
+      if (doc.body.textContent.length > 500) score += 20;
+      if (doc.querySelector('meta[name="description"]')) score += 10;
+      return Math.min(100, score);
+    }
+
+    function getGapAdvice(a, b) {
+      const gaps = [];
+      if (a < b + 10) gaps.push({title: "Add Missing H1", desc: "Competitor has clear headline — you don't", impact: 15});
+      if (a < b + 15) gaps.push({title: "Write More Content", desc: "Add 500+ words of unique value", impact: 20});
+      gaps.push({title: "Improve Meta Description", desc: "Make it compelling for click-through", impact: 10});
+      return gaps;
+    }
+  </script>
+</body>
+</html>
