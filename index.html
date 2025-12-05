@@ -36,16 +36,16 @@
       </form>
     </div>
 
-    <div id="report" class="hidden" class="hidden space-y-12 mt-16"></div>
+    <div id="report" class="hidden space-y-12 mt-16"></div>
     <div id="loading" class="hidden text-center py-40">
       <div class="inline-block animate-spin rounded-full h-24 w-24 border-12 border-orange-500 border-t-transparent"></div>
-      <p class="mt-12 text-3xl text-gray-300">Torch is analyzing… (first load takes 10–15s)</p>
+      <p class="mt-12 text-3xl text-gray-300">Torch is analyzing… (first load ~15s)</p>
     </div>
   </div>
 
   <script type="module">
-    import * as tf from 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0';
     import { load } from 'https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder';
+    import * as tf from 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0';
 
     let model = null;
     load().then(m => model = m).catch(() => {});
@@ -125,12 +125,34 @@
     function calculateFrustrationScore(doc) {
       let score = 0;
       const issues = [];
+
       const ads = doc.querySelectorAll('script[src*="ads"], ins.adsbygoogle').length;
-      if (ads > 2 && (score += 35, issues.push({title: `${ads} ads above fold`, desc: 'Move below H1'}));
-      const fontPx = Math.min(...Array.from(doc.querySelectorAll('body, p, div')).map(el => parseInt(getComputedStyle(el).fontSize || 16)));
-      fontPx < 14 && (score += 25, issues.push({title: `Text ${fontPx}px`, desc: 'Increase to 16px+'}));
-      !doc.querySelector('h1') && (score += 20, issues.push({title: 'Missing H1', desc: 'Add headline'}));
-      doc.querySelector('.cookie, .popup') && (score += 15, issues.push({title: 'Intrusive popup', desc: 'Delay/remove'}));
+      if (ads > 2) {
+        score += 35;
+        issues.push({title: `${ads} ads above fold`, desc: 'Move below H1'});
+      }
+
+      const fontElements = doc.querySelectorAll('body, p, div');
+      let minFont = 16;
+      fontElements.forEach(el => {
+        const size = parseInt(getComputedStyle(el).fontSize);
+        if (size < minFont) minFont = size;
+      });
+      if (minFont < 14) {
+        score += 25;
+        issues.push({title: `Text ${minFont}px`, desc: 'Increase to 16px+'});
+      }
+
+      if (!doc.querySelector('h1')) {
+        score += 20;
+        issues.push({title: 'Missing H1', desc: 'Add clear headline'});
+      }
+
+      if (doc.querySelector('.cookie, .popup')) {
+        score += 15;
+        issues.push({title: 'Intrusive popup', desc: 'Delay or remove'});
+      }
+
       return { rageScore: Math.min(100, score), rageIssues: issues };
     }
   </script>
