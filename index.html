@@ -4,9 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Traffic Torch – Instant SEO + UX Tools</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Traffic Torch">
+  <link rel="apple-touch-icon" href="/logo-192.webp">
+  <link rel="manifest" href="/manifest.json">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="manifest" href="/manifest.json" />
-  <link rel="icon" href="/favicon.ico" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
     body { font-family: 'Inter', sans-serif; }
@@ -69,14 +72,15 @@
       toggle.textContent = document.documentElement.classList.contains('light') ? '☀️ Light Mode' : '🌙 Dark Mode';
     });
 
-    // PWA Install Prompt
+    // PWA Install Prompt (no offline caching, iOS popup like your screenshot)
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
       deferredPrompt = e;
+      // On Android: Auto-install button
       const btn = document.createElement('button');
-      btn.textContent = 'Install';
-      btn.className = 'fixed bottom-8 right-8 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl';
+      btn.textContent = 'Install App';
+      btn.className = 'fixed bottom-8 right-8 z-50 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-sm';
       btn.onclick = () => deferredPrompt.prompt();
       document.body.appendChild(btn);
     });
