@@ -16,87 +16,134 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
     body { font-family: 'Inter', sans-serif; }
-    .hero-bg { background: linear-gradient(rgba(15,6,36,0.85), rgba(15,6,36,0.9)), url('/traffic-torch/hero-bg.webp') center/cover no-repeat fixed; }
+    .hero-bg { background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.85)), url('/traffic-torch/hero-bg.webp') center/cover no-repeat fixed; }
   </style>
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen hero-bg">
   <div class="container mx-auto px-6 py-16 max-w-6xl">
-    <header class="text-center mb-16">
-      <img src="/traffic-torch/logo.webp" alt="Traffic Torch" class="w-32 mx-auto mb-6 rounded-2xl shadow-2xl">
-      <h1 class="text-7xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</h1>
-      <p class="mt-6 text-2xl text-gray-300">One URL → Instant 360° SEO + UX Health Score (2026-ready)</p>
-      <button id="themeToggle" class="mt-8 px-6 py-3 bg-white/20 rounded-full backdrop-blur hover:bg-white/30 transition">🌙 Dark Mode</button>
-    </header>
+  <header class="text-center mb-16">
+    <img src="/traffic-torch/logo.webp" alt="Traffic Torch" class="w-40 mx-auto mb-8 rounded-3xl shadow-2xl">
+    <h1 class="text-7xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</h1>
+    <p class="mt-6 text-2xl text-gray-300">One URL → Instant 360° SEO + UX Health Score (2026-ready)</p>
+  </header>
 
-    <div class="bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl p-12 border border-white/20">
-      <form id="urlForm" class="flex flex-col md:flex-row gap-8 max-w-4xl mx-auto">
-        <input type="url" id="urlInput" placeholder="https://example.com" required
-               class="flex-1 px-10 py-6 text-xl rounded-3xl bg-white/20 border border-white/40 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500/70 text-white" />
-        <button type="submit"
-                class="px-16 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-2xl rounded-3xl hover:shadow-2xl hover:scale-105 transition shadow-xl">
-          Ignite Analysis 🚀
-        </button>
-      </form>
-    </div>
-
-    <div id="report" class="hidden space-y-12 mt-16"></div>
-    <div id="loading" class="hidden text-center py-40">
-      <div class="inline-block animate-spin rounded-full h-24 w-24 border-12 border-orange-500 border-t-transparent"></div>
-      <p class="mt-12 text-3xl text-gray-300">Torch is analyzing…</p>
-    </div>
+  <div class="bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl p-12 border border-white/20">
+    <form id="urlForm" class="flex flex-col md:flex-row gap-8 max-w-4xl mx-auto">
+      <input type="url" id="urlInput" placeholder="https://example.com" required
+             class="flex-1 px-10 py-6 text-xl rounded-3xl bg-white/20 border border-white/40 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500/70 text-white" />
+      <button type="submit"
+              class="px-16 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-2xl rounded-3xl hover:shadow-2xl hover:scale-105 transition shadow-xl">
+        Ignite Analysis 🚀
+      </button>
+    </form>
   </div>
 
-  <script type="module">
-    // Theme toggle
-    const toggle = document.getElementById('themeToggle');
-    if (localStorage.theme === 'light') document.documentElement.classList.add('light');
-    toggle.addEventListener('click', () => {
-      document.documentElement.classList.toggle('light');
-      localStorage.theme = document.documentElement.classList.contains('light') ? 'light' : 'dark';
-      toggle.textContent = document.documentElement.classList.contains('light') ? '☀️ Light Mode' : '🌙 Dark Mode';
-    });
+  <div id="report" class="hidden space-y-12 mt-16"></div>
+  <div id="loading" class="hidden text-center py-40">
+    <div class="inline-block animate-spin rounded-full h-24 w-24 border-12 border-orange-500 border-t-transparent"></div>
+    <p class="mt-12 text-3xl text-gray-300">Torch is analyzing…</p>
+  </div>
+</div>
 
-    // Rest of the working AI + Frustration code (same as last working version)
-    const form = document.getElementById('urlForm');
-    const input = document.getElementById('urlInput');
+<script type="module">
+  import * as tf from 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js';
+  import { UniversalSentenceEncoder } from 'https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder@1.3.3';
+
+  let useModel;
+
+  (async () => {
+    document.getElementById('loading').classList.remove('hidden');
+    useModel = await UniversalSentenceEncoder.load();
+    document.getElementById('loading').classList.add('hidden');
+  })();
+
+  document.getElementById('urlForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const url = document.getElementById('urlInput').value.trim();
+    if (!url) return;
+
     const report = document.getElementById('report');
     const loading = document.getElementById('loading');
-    const PROXY = 'https://api.allorigins.win/raw?url=';
+    loading.classList.remove('hidden');
+    report.classList.add('hidden');
+    report.innerHTML = '';
 
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-      const url = input.value.trim();
-      if (!url) return;
+    try {
+      const res = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url));
+      if (!res.ok) throw new Error('Network error');
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const title = doc.querySelector('title')?.textContent || 'Untitled';
+      const text = doc.body?.textContent || '';
 
-      loading.classList.remove('hidden');
-      report.classList.add('hidden');
-      report.innerHTML = '';
-
-      try {
-        const res = await fetch(PROXY + encodeURIComponent(url));
-        if (!res.ok) throw new Error('Network error');
-        const html = await res.text();
-        const doc = new DOMParser().parseFromString(html, 'text/html');
-        const title = doc.querySelector('title')?.textContent || 'Untitled';
-        const text = doc.body?.textContent || '';
-
-        const aiScore = calculateAIScore(text);
-        const { rageScore, rageIssues } = calculateFrustrationScore(doc);
-
-        report.innerHTML = `...`; // (same beautiful report as before – truncated for space)
-        // Full report code stays exactly the same – it works perfectly
-
-        loading.classList.add('hidden');
-        report.classList.remove('hidden');
-      } catch (err) {
-        alert('Error: ' + err.message);
-        loading.classList.add('hidden');
+      let aiScore = -1;
+      if (text.trim().length > 100 && useModel) {
+        const sentences = text.match(/[^\.!?]+[\.!?]+/g) || [text];
+        const embeddings = await useModel.embed(sentences.slice(0, 30));
+        const meanEmbedding = tf.mean(embeddings, 0);
+        const distances = embeddings.sub(meanEmbedding).pow(2).sum(1).sqrt();
+        const perplexityProxy = tf.mean(distances).dataSync()[0];
+        const burstiness = Math.max(...distances.dataSync()) - Math.min(...distances.dataSync());
+        aiScore = Math.round(Math.min(100, perplexityProxy * 15 + burstiness * 2));
       }
-    });
 
-    // calculateAIScore + calculateFrustrationScore functions stay exactly as last working version
-    // (I’ll include them fully when you say GO if you want)
+      const { rageScore, rageIssues } = calculateFrustrationScore(doc);
 
-  </script>
+      // (same beautiful report as before – AI score now TensorFlow.js powered)
+      report.innerHTML = `
+        <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-white/20">
+          <h2 class="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+            Report for ${title.substring(0,60)}…
+          </h2>
+
+          <div class="grid lg:grid-cols-2 gap-10">
+            <div class="p-8 rounded-3xl ${aiScore === -1 ? 'bg-blue-900/50' : aiScore > 70 ? 'bg-red-900/50' : aiScore > 40 ? 'bg-yellow-900/50' : 'bg-green-900/50'} border border-white/20">
+              <h3 class="text-3xl font-bold mb-4 flex items-center gap-4">
+                🤖 AI-Content Probability
+                <span class="text-5xl">${aiScore === -1 ? '—' : aiScore + '%'}</span>
+              </h3>
+              <p class="text-xl">${aiScore === -1 ? 'Insufficient text – likely visual page' : aiScore > 70 ? 'Very likely AI-generated' : aiScore > 40 ? 'Moderate AI patterns' : 'Looks human-written'}</p>
+            </div>
+
+            <div class="p-8 rounded-3xl ${rageScore > 70 ? 'bg-red-900/50' : rageScore > 40 ? 'bg-yellow-900/50' : 'bg-green-900/50'} border border-white/20">
+              <h3 class="text-3xl font-bold mb-4 flex items-center gap-4">
+                😡 Rage-Quit Risk
+                <span class="text-5xl">${rageScore}%</span>
+              </h3>
+              <ul class="space-y-4 text-lg">
+                ${rageIssues.length ? rageIssues.map(i => `<li>• ${i.title}</li>`).join('') : '<li>🟢 No major UX pains – clean page!</li>'}
+              </ul>
+            </div>
+          </div>
+
+          <div class="text-center mt-12">
+            <button onclick="location.reload()" class="px-10 py-5 bg-gradient-to-r from-orange-500 to-pink-600 font-bold text-xl rounded-2xl hover:shadow-2xl transition">
+              New Analysis 🚀
+            </button>
+          </div>
+        </div>
+      `;
+
+      loading.classList.add('hidden');
+      report.classList.remove('hidden');
+    } catch (err) {
+      alert('Error: ' + err.message);
+      loading.classList.add('hidden');
+    }
+  });
+
+  function calculateFrustrationScore(doc) {
+    // (same as last working version)
+    let score = 0;
+    const issues = [];
+    const ads = doc.querySelectorAll('script[src*="ads"], ins.adsbygoogle, [class*="ad-"], [id*="ad-"]').length;
+    if (ads > 2) { score += 35; issues.push({title: `${ads} ads above fold`, desc: 'Move below H1'}); }
+    const fontPx = Math.min(...Array.from(doc.querySelectorAll('body, p, div')).map(el => parseInt(getComputedStyle(el).fontSize || 16)));
+    if (fontPx < 14) { score += 25; issues.push({title: `Text ${fontPx}px`, desc: 'Increase to 16px+'}); }
+    if (!doc.querySelector('h1')) { score += 20; issues.push({title: 'Missing H1', desc: 'Add clear headline'}); }
+    if (doc.querySelector('.cookie, .popup, [id*="cookie"]')) { score += 15; issues.push({title: 'Intrusive popup', desc: 'Delay or remove'}); }
+    return { rageScore: Math.min(100, score), rageIssues: issues };
+  }
+</script>
 </body>
 </html>
