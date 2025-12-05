@@ -43,7 +43,7 @@
     </div>
   </div>
 
-  <script type="module">
+  <script>
     const form = document.getElementById('urlForm');
     const input = document.getElementById('urlInput');
     const report = document.getElementById('report');
@@ -61,7 +61,7 @@
 
       try {
         const res = await fetch(PROXY + encodeURIComponent(url));
-        if (!res.ok) throw new Error('Network error');
+        if (!res.ok) throw new Error('Network error – try a different URL');
         const html = await res.text();
         const doc = new DOMParser().parseFromString(html, 'text/html');
         const title = doc.querySelector('title')?.textContent || 'Untitled';
@@ -77,7 +77,7 @@
             </h2>
 
             <div class="grid lg:grid-cols-2 gap-10">
-              <div class="p-8 rounded-3xl ${aiScore > 70 ? 'bg-red-900/50' : aiScore > 40 ? 'bg-yellow-900/50' : aiScore === -1 ? 'bg-blue-900/50' : 'bg-green-900/50'} border border-white/20">
+              <div class="p-8 rounded-3xl ${aiScore === -1 ? 'bg-blue-900/50' : aiScore > 70 ? 'bg-red-900/50' : aiScore > 40 ? 'bg-yellow-900/50' : 'bg-green-900/50'} border border-white/20">
                 <h3 class="text-3xl font-bold mb-4">🤖 AI-Content Probability <span class="text-5xl">${aiScore === -1 ? '—' : aiScore + '%'}</span></h3>
                 <p class="text-xl">${aiScore === -1 ? 'Insufficient text – visual page' : aiScore > 70 ? 'Very likely AI' : aiScore > 40 ? 'Moderate AI' : 'Looks human'}</p>
               </div>
@@ -101,7 +101,7 @@
         loading.classList.add('hidden');
         report.classList.remove('hidden');
       } catch (err) {
-        alert('Error: ' + err.message + '\nTry a simple URL like example.com');
+        alert('Error: ' + err.message);
         loading.classList.add('hidden');
       }
     });
@@ -125,10 +125,8 @@
     function calculateFrustrationScore(doc) {
       let score = 0;
       const issues = [];
-
       const ads = doc.querySelectorAll('script[src*="ads"], ins.adsbygoogle').length;
       if (ads > 2) { score += 35; issues.push({title: `${ads} ads above fold`, desc: 'Move below H1'}); }
-
       const fontElements = doc.querySelectorAll('body, p, div');
       let minFont = 16;
       fontElements.forEach(el => {
@@ -136,11 +134,8 @@
         if (size < minFont) minFont = size;
       });
       if (minFont < 14) { score += 25; issues.push({title: `Text ${minFont}px`, desc: 'Increase to 16px+'}); }
-
       if (!doc.querySelector('h1')) { score += 20; issues.push({title: 'Missing H1', desc: 'Add clear headline'}); }
-
       if (doc.querySelector('.cookie, .popup')) { score += 15; issues.push({title: 'Intrusive popup', desc: 'Delay or remove'}); }
-
       return { rageScore: Math.min(100, score), rageIssues: issues };
     }
   </script>
