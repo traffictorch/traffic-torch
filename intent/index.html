@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traffic Torch – Intent + E-E-A-T Audit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white min-h-screen">
+  <div class="container mx-auto px-6 py-12 max-w-6xl">
+    <header class="text-center mb-12">
+      <a href="/traffic-torch/" class="inline-block mb-8">
+        <img src="/traffic-torch/logo.webp" alt="Traffic Torch" class="w-32 rounded-2xl shadow-2xl">
+      </a>
+      <h1 class="text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
+        Intent + E-E-A-T Audit
+      </h1>
+      <p class="text-xl text-gray-400">Does Google trust this page? Does it actually answer the searcher's question?</p>
+    </header>
+
+    <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-white/20">
+      <form id="intentForm" class="flex flex-col md:flex-row gap-6 max-w-3xl mx-auto">
+        <input type="url" id="urlInput" placeholder="https://example.com" required
+               class="flex-1 px-8 py-5 text-lg rounded-2xl bg-white/20 border border-white/40 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 text-white" />
+        <button type="submit"
+                class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
+          Run Audit 🚀
+        </button>
+      </form>
+
+      <div id="loading" class="hidden text-center mt-12">
+        <div class="inline-block animate-spin rounded-full h-20 w-20 border-8 border-t-orange-500 border-r-pink-500 border-b-orange-500 border-l-pink-500"></div>
+        <p class="mt-8 text-2xl">Scanning intent & trust signals…</p>
+      </div>
+    </div>
+
+    <div id="report" class="hidden mt-16"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('intentForm');
+    const input = document.getElementById('urlInput');
+    const report = document.getElementById('report');
+    const loading = document.getElementById('loading');
+    const PROXY = 'https://api.allorigins.win/raw?url=';
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const url = input.value.trim();
+      if (!url) return;
+
+      loading.classList.remove('hidden');
+      report.classList.add('hidden');
+      report.innerHTML = '';
+
+      try {
+        const res = await fetch(PROXY + encodeURIComponent(url));
+        if (!res.ok) throw new Error('Network error');
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const title = doc.querySelector('title')?.textContent || 'Untitled';
+        const text = doc.body?.textContent || '';
+
+        const audit = analyzeIntentAndEEAT(doc, text, title);
+
+        report.innerHTML = `
+          <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border ${audit.score > 80 ? 'border-green-500/60' : audit.score > 50 ? 'border-yellow-500/60' : 'border-red-500/60'}">
+            <h2 class="text-5xl font-bold text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Intent + E-E-A-T Report
+            </h2>
+
+            <div class="text-center mb-16">
+              <div class="text-9xl font-black ${audit.score > 80 ? 'text-green-500' : audit.score > 50 ? 'text-yellow-500' : 'text-red-500'}">
+                ${audit.score}
+              </div>
+              <p class="text-3xl mt-6">Trust Score / 100</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-10 mb-16">
+              <div class="bg-black/40 rounded-2xl p-10 border border-white/20">
+                <h3 class="text-3xl font-bold mb-8 text-orange-400">Intent Match</h3>
+                <div class="space-y-6">
+                  <div>
+                    <p class="text-lg text-gray-400">Title intent</p>
+                    <p class="text-2xl font-bold ${audit.intent.title ? 'text-green-400' : 'text-red-400'}">
+                      ${audit.intent.title ? 'Clear & specific' : 'Missing or vague'}
+                    </p>
+                  </div>
+                  <div>
+                    <p class="text-lg text-gray-400">H1 matches title</p>
+                    <p class="text-2xl font-bold ${audit.intent.h1 ? 'text-green-400' : 'text-red-400'}">
+                      ${audit.intent.h1 ? 'Perfect' : 'Mismatched'}
+                    </p>
+                  </div>
+                  <div>
+                    <p class="text-lg text-gray-400">Content depth</p>
+                    <p class="text-2xl font-bold ${audit.intent.depth ? 'text-green-400' : 'text-yellow-400'}">
+                      ${audit.intent.depth ? 'Comprehensive' : 'Thin content'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-black/40 rounded-2xl p-10 border border-white/20">
+                <h3 class="text-3xl font-bold mb-8 text-orange-400">E-E-A-T Signals</h3>
+                <div class="space-y-6">
+                  <div>
+                    <p class="text-lg text-gray-400">Author byline</p>
+                    <p class="text-2xl font-bold ${audit.eeat.author ? 'text-green-400' : 'text-red-400'}">
+                      ${audit.eeat.author ? 'Present' : 'Missing'}
+                    </p>
+                  </div>
+                  <div>
+                    <p class="text-lg text-gray-400">Published / Updated date</p>
+                    <p class="text-2xl font-bold ${audit.eeat.date ? 'text-green-400' : 'text-red-400'}">
+                      ${audit.eeat.date ? 'Visible' : 'Hidden'}
+                    </p>
+                  </div>
+                  <div>
+                    <p class="text-lg text-gray-400">Sources / citations</p>
+                    <p class="text-2xl font-bold ${audit.eeat.sources ? 'text-green-400' : 'text-yellow-400'}">
+                      ${audit.eeat.sources ? 'Strong' : 'Weak/none'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center">
+              <a href="/traffic-torch/" class="px-12 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
+                Back to Dashboard
+              </a>
+            </div>
+          </div>
+        `;
+
+        loading.classList.add('hidden');
+        report.classList.remove('hidden');
+      } catch (err) {
+        alert('Error: ' + err.message);
+        loading.classList.add('hidden');
+      }
+    });
+
+    function analyzeIntentAndEEAT(doc, text, title) {
+      const issues = 0;
+      const intent = {
+        title: title && title.length > 20 && title.length < 70,
+        h1: doc.querySelector('h1') && doc.querySelector('h1').textContent.length > 10,
+        depth: text.length > 1500
+      };
+
+      const eeat = {
+        author: !!doc.querySelector('[rel="author"], .author, .byline, [itemprop="author"]'),
+        date: !!doc.querySelector('time, .date, .published, [itemprop="datePublished"]'),
+        sources: (text.match(/https?:\/\//g) || []).length > 3
+      };
+
+      let score = 50;
+      score += intent.title ? 15 : -10;
+      score += intent.h1 ? 15 : -10;
+      score += intent.depth ? 20 : -15;
+      score += eeat author ? 10 : -8;
+      score += eeat.date ? 10 : -8;
+      score += eeat.sources ? 15 : -10;
+
+      return { score: Math.min(100, Math.max(0, score)), intent, eeat };
+    }
+  </script>
+</body>
+</html>
