@@ -11,32 +11,30 @@
     body { font-family: 'Inter', sans-serif; }
   </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 min-h-screen">
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
   <div class="container mx-auto px-4 py-12 max-w-5xl">
-    <header class="text-center mb-12">
-      <h1 class="text-5xl font-bold bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+    <header class="text-center mb-16">
+      <h1 class="text-6xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
         Traffic Torch 🔥
       </h1>
-      <p class="mt-4 text-xl text-gray-600 dark:text-gray-300">
-        One URL → Instant 360° SEO + UX Health Score (2026-ready)
-      </p>
+      <p class="mt-6 text-2xl text-gray-300">One URL → Instant 360° SEO + UX Health Score (2026-ready)</p>
     </header>
 
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-10">
-      <form id="urlForm" class="flex flex-col md:flex-row gap-4">
+    <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-10 mb-12 border border-white/20">
+      <form id="urlForm" class="flex flex-col md:flex-row gap-6 max-w-3xl mx-auto">
         <input type="url" id="urlInput" placeholder="https://example.com" required
-               class="flex-1 px-6 py-4 text-lg rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-orange-500" />
+               class="flex-1 px-8 py-5 text-xl rounded-2xl bg-white/20 border border-white/30 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500/50 text-white" />
         <button type="submit"
-                class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-lg rounded-xl hover:from-orange-600 hover:to-pink-700 transition shadow-lg">
+                class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 font-bold text-xl rounded-2xl hover:shadow-2xl hover:scale-105 transition">
           Ignite Analysis 🚀
         </button>
       </form>
     </div>
 
-    <div id="report" class="hidden space-y-8"></div>
-    <div id="loading" class="hidden text-center py-20">
-      <div class="inline-block animate-spin rounded-full h-16 w-16 border-8 border-orange-500 border-t-transparent"></div>
-      <p class="mt-6 text-xl">Torch is analyzing… 5–12 seconds</p>
+    <div id="report" class="hidden space-y-12"></div>
+    <div id="loading" class="hidden text-center py-32">
+      <div class="inline-block animate-spin rounded-full h-20 w-20 border-8 border-orange-500 border-t-transparent"></div>
+      <p class="mt-8 text-2xl text-gray-300">Torch is analyzing… 5–12 seconds</p>
     </div>
   </div>
 
@@ -69,32 +67,35 @@
           const { rageScore, rageIssues } = calculateFrustrationScore(doc);
 
           report.innerHTML = `
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-4xl mx-auto">
-              <h2 class="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+            <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-white/20">
+              <h2 class="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
                 Report for ${title.substring(0,60)}…
               </h2>
 
-              <!-- AI Meter -->
-              <section class="mb-10 p-8 rounded-2xl ${aiScore > 70 ? 'bg-red-50 dark:bg-red-900' : aiScore > 40 ? 'bg-yellow-50 dark:bg-yellow-900' : 'bg-green-50 dark:bg-green-900'}">
-                <h3 class="text-2xl font-bold mb-4">🤖 AI-Content Probability: <span class="text-4xl">${aiScore}%</span></h3>
-                <p class="text-lg">${aiScore > 70 ? 'High risk of AI-generated "slop".' : aiScore > 40 ? 'Moderate AI patterns.' : aiScore === -1 ? 'Insufficient text – likely visual page.' : 'Looks human-written.'}</p>
-              </section>
+              <div class="grid lg:grid-cols-2 gap-10">
+                <!-- AI Card -->
+                <div class="p-8 rounded-3xl ${aiScore > 70 ? 'bg-red-900/50' : aiScore > 40 ? 'bg-yellow-900/50' : aiScore === -1 ? 'bg-blue-900/50' : 'bg-green-900/50'} border border-white/20">
+                  <h3 class="text-3xl font-bold mb-4 flex items-center gap-4">
+                    🤖 AI-Content Probability
+                    <span class="text-5xl">${aiScore === -1 ? '—' : aiScore + '%'}</span>
+                  </h3>
+                  <p class="text-xl">${aiScore === -1 ? 'Insufficient text – likely visual page' : aiScore > 70 ? 'High risk of AI slop' : aiScore > 40 ? 'Moderate AI patterns' : 'Looks human-written'}</p>
+                </div>
 
-              <!-- Frustration Signals Auditor -->
-              <section class="mb-10 p-8 rounded-2xl ${rageScore > 70 ? 'bg-red-50 dark:bg-red-900' : rageScore > 40 ? 'bg-yellow-50 dark:bg-yellow-900' : 'bg-green-50 dark:bg-green-900'}">
-                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
-                  😡 Rage-Quit Risk: <span class="text-4xl">${rageScore}%</span>
-                </h3>
-                <ul class="space-y-3 text-lg">
-                  ${rageIssues.map(issue => `<li class="flex items-start gap-3"><span class="text-2xl">${issue.icon}</span><div><strong>${issue.title}</strong><br><span class="text-gray-600 dark:text-gray-400">${issue.desc}</span></div></li>`).join('') or '<li>🟢 No major UX pains detected – solid page!</li>'}
-                </ul>
-                <p class="mt-6 font-bold text-green-600 dark:text-green-400">
-                  ${rageScore > 60 ? 'Fix the top 3 issues → +30–50% dwell time' : 'UX looks clean – keep it up!'}
-                </p>
-              </section>
+                <!-- Rage Card -->
+                <div class="p-8 rounded-3xl ${rageScore > 70 ? 'bg-red-900/50' : rageScore > 40 ? 'bg-yellow-900/50' : 'bg-green-900/50'} border border-white/20">
+                  <h3 class="text-3xl font-bold mb-4 flex items-center gap-4">
+                    😡 Rage-Quit Risk
+                    <span class="text-5xl">${rageScore}%</span>
+                  </h3>
+                  <ul class="space-y-4 text-lg">
+                    ${rageIssues.length ? rageIssues.map(i => `<li>• ${i.title}</li>`).join('') : '<li>🟢 No major UX pains – clean page!</li>'}
+                  </ul>
+                </div>
+              </div>
 
-              <div class="text-center">
-                <button onclick="location.reload()" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-lg rounded-xl hover:shadow-2xl transition">
+              <div class="text-center mt-12">
+                <button onclick="location.reload()" class="px-10 py-5 bg-gradient-to-r from-orange-500 to-pink-600 font-bold text-xl rounded-2xl hover:shadow-2xl transition">
                   New Analysis 🚀
                 </button>
               </div>
@@ -104,22 +105,23 @@
           loading.classList.add('hidden');
           report.classList.remove('hidden');
         } catch (err) {
-          alert('Error: ' + err.message + '\nTry a simple URL like example.com');
+          alert('Error: ' + err.message);
           loading.classList.add('hidden');
         }
       });
 
       function calculateAIScore(text) {
         const words = text.toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/).filter(Boolean);
-        if (words.length < 50) return -1; // New: Insufficient text for accurate detection
+        if (words.length < 50) return -1;
         if (words.length < 100) return 15;
         const freq = {};
         words.forEach(w => freq[w] = (freq[w] || 0) + 1);
         const repeatScore = Object.values(freq).filter(c => c > 5).length * 3;
         const sentences = text.split(/[.!?]+/).filter(s => s.trim());
+        if (sentences.length < 5) return 20;
         const lengths = sentences.map(s => s.split(/\s+/).length);
-        const avg = lengths.reduce((a, b) => a + b, 0) / lengths.length;
-        const variance = lengths.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / lengths.length;
+        const avg = lengths.reduce((a,b)=>a+b,0)/lengths.length;
+        const variance = lengths.reduce((a,b)=>a+Math.pow(b-avg,2),0)/lengths.length;
         const uniformScore = variance < 25 ? 40 : 0;
         return Math.min(100, 15 + repeatScore + uniformScore);
       }
@@ -128,29 +130,15 @@
         let score = 0;
         const issues = [];
 
-        // Improved ad detection: Look for known ad classes/scripts
-        const adsAboveFold = doc.querySelectorAll('script[src*="googleads"], ins.adsbygoogle, .google-ad, [data-ad-slot]').length;
-        if (adsAboveFold > 2) { score += 35; issues.push({icon:'📢', title:`${adsAboveFold} ads above the fold`, desc:'Move below H1 → +28% dwell time'}); }
+        const ads = doc.querySelectorAll('script[src*="ads"], ins.adsbygoogle, [class*="ad-"], [id*="ad-"]').length;
+        if (ads > 2) { score += 35; issues.push({title: `${ads} ads above fold`, desc: 'Move below H1'}); }
 
-        // Improved font: Check multiple elements
-        const fontElements = doc.querySelectorAll('body, p, div');
-        let fontPx = 16;
-        for (let el of fontElements) {
-          const size = parseInt(window.getComputedStyle(el).fontSize);
-          if (size < fontPx) fontPx = size;
-        }
-        if (fontPx < 14) { score += 25; issues.push({icon:'🔍', title:`Body text ${fontPx}px`, desc:'Increase to ≥16px → +19% readability'}); }
+        const fontPx = Math.min(...Array.from(doc.querySelectorAll('body, p, div')).map(el => parseInt(getComputedStyle(el).fontSize || 16)));
+        if (fontPx < 14) { score += 25; issues.push({title: `Text ${fontPx}px`, desc: 'Increase to 16px+'}); }
 
-        // Dummy contrast (browser-only, skip advanced)
-        score += 0; // Place holder for future
+        if (!doc.querySelector('h1')) { score += 20; issues.push({title: 'Missing H1', desc: 'Add clear headline'}); }
 
-        // Popups
-        const popups = doc.querySelectorAll('div[id*="cookie"], div[class*="cookie"], .popup, .modal').length;
-        if (popups > 0) { score += 15; issues.push({icon:'🍪', title:'Intrusive popup/cookie banner', desc:'Delay or remove → lower bounce rate'}); }
-
-        // H1
-        const h1 = doc.querySelector('h1');
-        if (!h1) { score += 20; issues.push({icon:'📌', title:'Missing H1', desc:'Add clear H1 for user & Google'}); }
+        if (doc.querySelector('.cookie, .popup, [id*="cookie"]')) { score += 15; issues.push({title: 'Intrusive popup', desc: 'Delay or remove'}); }
 
         return { rageScore: Math.min(100, score), rageIssues: issues };
       }
