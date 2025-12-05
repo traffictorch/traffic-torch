@@ -36,24 +36,19 @@
       </form>
     </div>
 
-    <div id="report" class="hidden space-y-12 mt-16"></div>
+    <div id="report" class="hidden" class="hidden space-y-12 mt-16"></div>
     <div id="loading" class="hidden text-center py-40">
       <div class="inline-block animate-spin rounded-full h-24 w-24 border-12 border-orange-500 border-t-transparent"></div>
-      <p class="mt-12 text-3xl text-gray-300">Torch is analyzing…</p>
+      <p class="mt-12 text-3xl text-gray-300">Torch is analyzing… (first load takes 10–15s)</p>
     </div>
   </div>
 
   <script type="module">
     import * as tf from 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0';
-    import * as use from 'https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder';
+    import { load } from 'https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder';
 
     let model = null;
-
-    // Load model on page load
-    use.load().then(m => {
-      model = m;
-      console.log('TensorFlow.js USE model loaded');
-    }).catch(err => console.error('Model load failed', err));
+    load().then(m => model = m).catch(() => {});
 
     const form = document.getElementById('urlForm');
     const input = document.getElementById('urlInput');
@@ -82,8 +77,8 @@
         if (text.trim().length > 100 && model) {
           const sentences = text.match(/[^\.!?]+[\.!?]+/g) || [text];
           const embeddings = await model.embed(sentences.slice(0, 30));
-          const meanEmbedding = tf.mean(embeddings, 0);
-          const distances = embeddings.sub(meanEmbedding).pow(2).sum(1).sqrt();
+          const mean = tf.mean(embeddings, 0);
+          const distances = embeddings.sub(mean).pow(2).sum(1).sqrt();
           const perplexity = tf.mean(distances).dataSync()[0];
           const burstiness = Math.max(...distances.dataSync()) - Math.min(...distances.dataSync());
           aiScore = Math.round(Math.min(100, perplexity * 15 + burstiness * 2));
@@ -100,13 +95,13 @@
             <div class="grid lg:grid-cols-2 gap-10">
               <div class="p-8 rounded-3xl ${aiScore === -1 ? 'bg-blue-900/50' : aiScore > 70 ? 'bg-red-900/50' : aiScore > 40 ? 'bg-yellow-900/50' : 'bg-green-900/50'} border border-white/20">
                 <h3 class="text-3xl font-bold mb-4">🤖 AI-Content Probability <span class="text-5xl">${aiScore === -1 ? '—' : aiScore + '%'}</span></h3>
-                <p class="text-xl">${aiScore === -1 ? 'Insufficient text – likely visual page' : aiScore > 70 ? 'Very likely AI-generated' : aiScore > 40 ? 'Moderate AI patterns' : 'Looks human-written'}</p>
+                <p class="text-xl">${aiScore === -1 ? 'Insufficient text – visual page' : aiScore > 70 ? 'Very likely AI' : aiScore > 40 ? 'Moderate AI' : 'Looks human'}</p>
               </div>
 
               <div class="p-8 rounded-3xl ${rageScore > 70 ? 'bg-red-900/50' : rageScore > 40 ? 'bg-yellow-900/50' : 'bg-green-900/50'} border border-white/20">
                 <h3 class="text-3xl font-bold mb-4">😡 Rage-Quit Risk <span class="text-5xl">${rageScore}%</span></h3>
                 <ul class="space-y-4 text-lg">
-                  ${rageIssues.length ? rageIssues.map(i => `<li>• ${i.title}</li>`).join('') : '<li>🟢 No major UX pains</li>'}
+                  ${rageIssues.length ? rageIssues.map(i => `<li>• ${i.title}</li>`).join('') : '<li>🟢 Clean UX!</li>'}
                 </ul>
               </div>
             </div>
@@ -130,12 +125,12 @@
     function calculateFrustrationScore(doc) {
       let score = 0;
       const issues = [];
-      const ads = doc.querySelectorAll('script[src*="ads"], ins.adsbygoogle, [class*="ad-"], [id*="ad-"]').length;
-      if (ads > 2) { score += 35; issues.push({title: `${ads} ads above fold`, desc: 'Move below H1'}); }
+      const ads = doc.querySelectorAll('script[src*="ads"], ins.adsbygoogle').length;
+      if (ads > 2 && (score += 35, issues.push({title: `${ads} ads above fold`, desc: 'Move below H1'}));
       const fontPx = Math.min(...Array.from(doc.querySelectorAll('body, p, div')).map(el => parseInt(getComputedStyle(el).fontSize || 16)));
-      if (fontPx < 14) { score += 25; issues.push({title: `Text ${fontPx}px`, desc: 'Increase to 16px+'}); }
-      if (!doc.querySelector('h1')) { score += 20; issues.push({title: 'Missing H1', desc: 'Add clear headline'}); }
-      if (doc.querySelector('.cookie, .popup, [id*="cookie"]')) { score += 15; issues.push({title: 'Intrusive popup', desc: 'Delay or remove'}); }
+      fontPx < 14 && (score += 25, issues.push({title: `Text ${fontPx}px`, desc: 'Increase to 16px+'}));
+      !doc.querySelector('h1') && (score += 20, issues.push({title: 'Missing H1', desc: 'Add headline'}));
+      doc.querySelector('.cookie, .popup') && (score += 15, issues.push({title: 'Intrusive popup', desc: 'Delay/remove'}));
       return { rageScore: Math.min(100, score), rageIssues: issues };
     }
   </script>
