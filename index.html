@@ -43,14 +43,14 @@
     </div>
   </div>
 
-  <script type="module">
-    import * as tf from 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0';
-    import * as use from 'https://tfhub.dev/tensorflow/tfjs-model/universal-sentence-encoder-lite/1/default/1';
-
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder"></script>
+  <script>
+    // Official demo method from tfjs-models GitHub (web:0, web:1, web:3)
+    const use = window.universalSentenceEncoder;
     let model = null;
 
-    // Official TensorFlow Hub load (stable, no named export issues)
-    tf.loadLayersModel(use).then(m => {
+    use.load().then(m => {
       model = m;
       console.log('TensorFlow.js USE model loaded successfully');
     }).catch(err => {
@@ -83,7 +83,7 @@
         let aiScore = -1;
         if (text.trim().length > 100 && model) {
           const sentences = text.match(/[^\.!?]+[\.!?]+/g) || [text];
-          const embeddings = await model.predict(tf.tensor2d(sentences.map(s => [s])));
+          const embeddings = await model.embed(sentences.slice(0, 30));
           const mean = tf.mean(embeddings, 0);
           const distances = embeddings.sub(mean).pow(2).sum(1).sqrt();
           const perplexity = tf.mean(distances).dataSync()[0];
@@ -132,8 +132,10 @@
     function calculateFrustrationScore(doc) {
       let score = 0;
       const issues = [];
+
       const ads = doc.querySelectorAll('script[src*="ads"], ins.adsbygoogle').length;
       if (ads > 2) { score += 35; issues.push({title: `${ads} ads above fold`, desc: 'Move below H1'}); }
+
       const fontElements = doc.querySelectorAll('body, p, div');
       let minFont = 16;
       fontElements.forEach(el => {
@@ -141,8 +143,11 @@
         if (size < minFont) minFont = size;
       });
       if (minFont < 14) { score += 25; issues.push({title: `Text ${minFont}px`, desc: 'Increase to 16px+'}); }
+
       if (!doc.querySelector('h1')) { score += 20; issues.push({title: 'Missing H1', desc: 'Add clear headline'}); }
+
       if (doc.querySelector('.cookie, .popup')) { score += 15; issues.push({title: 'Intrusive popup', desc: 'Delay or remove'}); }
+
       return { rageScore: Math.min(100, score), rageIssues: issues };
     }
   </script>
