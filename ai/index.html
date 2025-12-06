@@ -134,9 +134,66 @@
     });
 
     function analyzeAIContent(text) {
-      // (same working function as before)
-      return { score: 35, perplexity: 8.5, burstiness: 3.2, repetition: 18, sentenceLength: 21, vocab: 68 };
-    }
+  if (!text || text.length < 200) {
+    return { score: 50, perplexity: 7, burstiness: 4, repetition: 15, sentenceLength: 18, vocab: 65 };
+  }
+
+  // Clean text
+  text = text.replace(/\s+/g, ' ').trim().toLowerCase();
+
+  // 1. Sentence stats
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
+  const words = text.split(/\s+/).filter(w => w.length > 0);
+  const wordCount = words.length;
+
+  const sentenceLengths = sentences.map(s => s.split(/\s+/).filter(w => w.length).length);
+  const avgSentenceLength = sentenceLengths.reduce((a, b) => a + b, 0) / sentenceLengths.length || 20;
+
+  // Burstiness = standard deviation of sentence length (higher = more human)
+  const variance = sentenceLengths.reduce((sum, len) => sum + Math.pow(len - avgSentenceLength, 2), 0) / sentenceLengths.length;
+  const burstiness = Math.sqrt(variance).toFixed(1);
+
+  // 2. Repetition – top repeating n-grams
+  const bigrams = {};
+  for (let i = 0; i < words.length - 1; i++) {
+    const gram = words[i] + ' ' + words[i + 1];
+    bigrams[gram] = (bigrams[gram] || 0) + 1;
+  }
+  const maxBigram = Math.max(...Object.values(bigrams), 1);
+  const repetition = Math.min(99, Math.round((maxBigram / (wordCount / 100)) * 10));
+
+  // 3. Vocabulary diversity
+  const uniqueWords = new Set(words).size;
+  const vocab = Math.round((uniqueWords / wordCount) * 100);
+
+  // 4. Perplexity proxy (simple n-gram entropy)
+  const trigramCount = {};
+  for (let i = 0; i < words.length - 2; i++) {
+    const tri = words.slice(i, i + 3).join(' ');
+    trigramCount[tri] = (trigramCount[tri] || 0) + 1;
+  }
+  const trigramEntropy = -Object.values(trigramCount)
+    .reduce((sum, count) => sum + (count / (wordCount - 2)) * Math.log2(count / (wordCount - 2)), 0);
+  const perplexity = Math.min(12, trigramEntropy.toFixed(1));
+
+  // 5. Final AI-likelihood score (0–100, higher = more AI-like)
+  let score = 0;
+  score += perplexity > 8 ? (perplexity - 8) * 15 : 0;
+  score += burstiness < 4.5 ? (4.5 - burstiness) * 12 : 0;
+  score += repetition > 15 ? (repetition - 15) * 2 : 0;
+  score += avgSentenceLength > 23 || avgSentenceLength < 15 ? 10 : 0;
+  score += vocab < 60 ? (60 - vocab) : 0;
+  score = Math.min(95, Math.max(5, Math.round(score)));
+
+  return {
+    score,                              // % AI likelihood
+    perplexity: parseFloat(perplexity),
+    burstiness: parseFloat(burstiness),
+    repetition,
+    sentenceLength: Math.round(avgSentenceLength),
+    vocab
+  };
+}
   </script>
 </body>
 </html>
