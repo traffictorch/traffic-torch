@@ -4,89 +4,120 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Traffic Torch – Instant SEO + UX Tools</title>
-  <meta property="og:title" content="Traffic Torch – Instant SEO + UX Tools" />
-  <meta property="og:description" content="Free, fast, no-BS SEO & UX audits" />
-  <meta property="og:image" content="https://traffictorch.net/banner.webp" />
   <link rel="icon" href="/favicon.ico" />
   <link rel="manifest" href="/manifest.json" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
     body { font-family: 'Inter', sans-serif; }
-    .hero-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
   </style>
 </head>
-<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white min-h-screen hero-bg">
-  <div class="container mx-auto px-6 py-12 max-w-6xl">
-    <header class="text-center mb-16">
-      <img src="/logo.webp" alt="Traffic Torch" class="w-32 mx-auto mb-6 rounded-2xl shadow-2xl">
-      <h1 class="text-6xl md:text-7xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-        Traffic Torch
-      </h1>
-      <p class="mt-6 text-xl text-gray-300">Instant SEO + UX audit tools</p>
-      <button id="themeToggle" class="mt-8 px-6 py-3 bg-white/20 backdrop-blur rounded-full hover:bg-white/30 transition">
-        🌙 Dark Mode
+<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white min-h-screen">
+  <!-- Header -->
+  <header class="border-b border-white/10">
+    <div class="container mx-auto px-6 py-6 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-4">
+        <img src="/logo.webp" alt="Traffic Torch" class="w-12 rounded-xl shadow-2xl">
+        <h1 class="text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+          Traffic Torch
+        </h1>
+      </a>
+      <!-- Hamburger Menu (mobile) -->
+      <button id="menuToggle" class="md:hidden text-3xl">☰</button>
+      <!-- Desktop Menu -->
+      <nav class="hidden md:flex gap-8 text-lg">
+        <a href="/ai/" class="hover:text-orange-400 transition">AI Content</a>
+        <a href="/ux/" class="hover:text-red-400 transition">Rage-Quit</a>
+        <a href="/vs/" class="hover:text-blue-400 transition">Competitive Gap</a>
+        <a href="/vitals/" class="hover:text-green-400 transition">Core Vitals</a>
+        <a href="/intent/" class="hover:text-purple-400 transition">Intent + E-E-A-T</a>
+      </nav>
+      <button id="themeToggle" class="px-4 py-2 bg-white/10 rounded-full hover:bg-white/20 transition">
+        🌙
       </button>
-    </header>
+    </div>
+    <!-- Mobile Menu Dropdown -->
+    <div id="mobileMenu" class="hidden md:hidden bg-black/90 backdrop-blur-xl border-t border-white/10">
+      <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+        <a href="/ai/" class="hover:text-orange-400 transition">AI Content Audit</a>
+        <a href="/ux/" class="hover:text-red-400 transition">Rage-Quit Risk</a>
+        <a href="/vs/" class="hover:text-blue-400 transition">Competitive Gap</a>
+        <a href="/vitals/" class="hover:text-green-400 transition">Core Vitals</a>
+        <a href="/intent/" class="hover:text-purple-400 transition">Intent + E-E-A-T</a>
+      </nav>
+    </div>
+  </header>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-      <a href="/ai" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-orange-500/30 hover:border-orange-400 hover:-translate-y-2 transition-all shadow-2xl">
+  <!-- Main Content -->
+  <div class="container mx-auto px-6 py-12 text-center">
+    <h2 class="text-5xl font-black mb-8">Instant SEO + UX audit tools</h2>
+    <p class="text-xl text-gray-400 mb-16">Choose a tool below</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-5xl mx-auto">
+      <a href="/ai/" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-orange-500/30 hover:border-orange-400 hover:-translate-y-2 transition-all shadow-2xl">
         <div class="text-orange-400 text-6xl mb-6">🤖</div>
-        <h2 class="text-3xl font-bold mb-3">AI Content Audit</h2>
+        <h3 class="text-3xl font-bold mb-3">AI Content Audit</h3>
         <p class="text-gray-300">Deep AI detection with charts & fixes</p>
       </a>
 
-      <a href="/ux" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-red-500/30 hover:border-red-400 hover:-translate-y-2 transition-all shadow-2xl">
+      <a href="/ux/" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-red-500/30 hover:border-red-400 hover:-translate-y-2 transition-all shadow-2xl">
         <div class="text-red-400 text-6xl mb-6">😡</div>
-        <h2 class="text-3xl font-bold mb-3">Rage-Quit Risk</h2>
+        <h3 class="text-3xl font-bold mb-3">Rage-Quit Risk</h3>
         <p class="text-gray-300">UX pain points that kill conversions</p>
       </a>
 
-      <a href="/vs" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-blue-500/30 hover:border-blue-400 hover:-translate-y-2 transition-all shadow-2xl">
+      <a href="/vs/" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-blue-500/30 hover:border-blue-400 hover:-translate-y-2 transition-all shadow-2xl">
         <div class="text-blue-400 text-6xl mb-6">⚔️</div>
-        <h2 class="text-3xl font-bold mb-3">Competitive Gap</h2>
+        <h3 class="text-3xl font-bold mb-3">Competitive Gap</h3>
         <p class="text-gray-300">2 URLs head-to-head comparison</p>
       </a>
 
-      <a href="/vitals" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-green-500/30 hover:border-green-400 hover:-translate-y-2 transition-all shadow-2xl">
+      <a href="/vitals/" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-green-500/30 hover:border-green-400 hover:-translate-y-2 transition-all shadow-2xl">
         <div class="text-green-400 text-6xl mb-6">⚡</div>
-        <h2 class="text-3xl font-bold mb-3">Core Vitals</h2>
-        <p class="text-gray-300">Real Google PageSpeed data</p>
+        <h3 class="text-3xl font-bold mb-3">Core Vitals</h3>
+        <p class="text-gray-300">Real PageSpeed data</p>
       </a>
 
-      <a href="/intent" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-purple-500/30 hover:border-purple-400 hover:-translate-y-2 transition-all shadow-2xl">
+      <a href="/intent/" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-purple-500/30 hover:border-purple-400 hover:-translate-y-2 transition-all shadow-2xl">
         <div class="text-purple-400 text-6xl mb-6">🎯</div>
-        <h2 class="text-3xl font-bold mb-3">Intent + E-E-A-T</h2>
-        <p class="text-gray-300">Does Google trust this page?</p>
+        <h3 class="text-3xl font-bold mb-3">Intent + E-E-A-T</h3>
+        <p class="text-gray-300">Google trust & intent match</p>
       </a>
     </div>
-
-    <footer class="text-center mt-20 text-gray-500">
-      © 2025 Traffic Torch · All tools free forever
-    </footer>
   </div>
 
-  <!-- Day/Night Toggle + PWA Install Prompt -->
+  <!-- Footer -->
+  <footer class="border-t border-white/10 mt-20 py-8 text-center text-gray-500">
+    © 2025 Traffic Torch · All tools free forever
+  </footer>
+
   <script>
-    // Day/Night
+    // Hamburger Menu
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Day/Night Toggle
     const toggle = document.getElementById('themeToggle');
     if (localStorage.theme === 'light') document.documentElement.classList.add('light');
     toggle.addEventListener('click', () => {
       document.documentElement.classList.toggle('light');
       localStorage.theme = document.documentElement.classList.contains('light') ? 'light' : 'dark';
-      toggle.innerHTML = document.documentElement.classList.contains('light') ? '☀️ Light Mode' : '🌙 Dark Mode';
+      toggle.textContent = document.documentElement.classList.contains('light') ? '☀️' : '🌙';
     });
 
-    // PWA Install Prompt
+    // PWA Install
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
       deferredPrompt = e;
-      const installBtn = document.createElement('button');
-      installBtn.textContent = 'Install App';
-      installBtn.className = 'fixed bottom-8 right-8 z-50 px-6 py-4 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl hover:scale-110 transition';
-      installBtn.onclick = () => deferredPrompt.prompt();
-      document.body.appendChild(installBtn);
+      const btn = document.createElement('button');
+      btn.textContent = 'Install';
+      btn.className = 'fixed bottom-6 right-6 z-50 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-sm';
+      btn.onclick = () => deferredPrompt.prompt();
+      document.body.appendChild(btn);
     });
   </script>
 </body>
