@@ -88,12 +88,12 @@
 
             <div class="space-y-12">
               ${[
-                { name: 'Perplexity', value: ai.perplexity, goodLow: true, what: 'How predictable your text is', why: 'AI writes in very predictable patterns', how: 'Add personal stories, humor, unexpected turns' },
-                { name: 'Burstiness', value: ai.burstiness, goodLow: false, what: 'Variation in sentence rhythm', why: 'Humans have natural ups and downs — AI is flat', how: 'Mix short punchy sentences with longer ones' },
-                { name: 'Repetition', value: ai.repetition, goodLow: true, what: 'How often words/phrases repeat', why: 'AI loves to repeat itself', how: 'Use synonyms, restructure sentences' },
-                { name: 'Sentence Length', value: ai.sentenceLength, goodLow: false, what: 'Average words per sentence', why: 'AI tends to make sentences too uniform', how: 'Vary from 5 to 35 words per sentence' },
-                { name: 'Vocabulary Diversity', value: ai.vocab, goodLow: false, what: '% of unique words', why: 'AI has limited word range', how: 'Use metaphors, idioms, niche terms' }
-              ].map(m => `
+                { name: 'Perplexity', value: ai.perplexity, goodLow: true, what: 'How predictable your text is', why: 'AI writes in very predictable patterns', how: 'Add personal stories, humor, unexpected turns', details: 'Perplexity measures how surprising your text is. Human writing has natural variation — AI is repetitive and formulaic. Google rewards originality.' },
+                { name: 'Burstiness', value: ai.burstiness, goodLow: false, what: 'Variation in sentence rhythm', why: 'Humans have natural ups and downs — AI is flat', how: 'Mix short punchy sentences with longer ones', details: 'Burstiness is the variation in sentence length. Real authors speed up and slow down naturally. AI tends to produce uniform sentences — a red flag for Google.' },
+                { name: 'Repetition', value: ai.repetition, goodLow: true, what: 'How often words/phrases repeat', why: 'AI loves to repeat itself', how: 'Use synonyms, restructure sentences', details: 'High repetition is a classic AI tell. Google penalizes keyword stuffing and low lexical diversity. Humans use rich, varied language.' },
+                { name: 'Sentence Length', value: ai.sentenceLength, goodLow: false, what: 'Average words per sentence', why: 'AI tends to make sentences too uniform', how: 'Vary from 5 to 35 words per sentence', details: 'Real writers mix short and long sentences for rhythm. AI often sticks to medium-length sentences — another detectable pattern.' },
+                { name: 'Vocabulary Diversity', value: ai.vocab, goodLow: false, what: '% of unique words', why: 'AI has limited word range', how: 'Use metaphors, idioms, niche terms', details: 'Humans draw from a huge vocabulary. AI repeats safe, common words. Google favours rich, authoritative language.' }
+              ].map((m, i) => `
                 <div class="bg-black/40 rounded-2xl p-8 border ${m.goodLow && m.value > 6 ? 'border-red-500/60' : !m.goodLow && m.value < 5 ? 'border-red-500/60' : 'border-orange-500/30'}">
                   <div class="flex items-center justify-between mb-6">
                     <h3 class="text-2xl font-bold text-orange-400">${m.name}</h3>
@@ -106,6 +106,12 @@
                     <p><strong>What it means:</strong> ${m.what}</p>
                     <p><strong>Why it matters:</strong> ${m.why}</p>
                     <p><strong>How to fix:</strong> ${m.how}</p>
+                  </div>
+                  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 text-orange-400 hover:text-orange-300 underline text-sm">
+                    More details ↓
+                  </button>
+                  <div class="hidden mt-4 p-6 bg-black/60 rounded-xl text-gray-300 text-sm leading-relaxed">
+                    ${m.details}
                   </div>
                 </div>
               `).join('')}
