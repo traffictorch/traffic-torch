@@ -59,15 +59,56 @@
       report.classList.add('hidden');
       report.innerHTML = '';
 
-      try {
+      
+
+            try {
         const res = await fetch(PROXY + encodeURIComponent(url));
         if (!res.ok) throw new Error('Network error');
         const html = await res.text();
         const doc = new DOMParser().parseFromString(html, 'text/html');
-        const title = doc.querySelector('title')?.textContent || 'Untitled';
-        const text = doc.body?.textContent || '';
+
+        // === SMART CONTENT EXTRACTOR (new code starts here) ===
+        function getMainContent(doc) {
+          const article = doc.querySelector('article');
+          if (article) return article;
+
+          const main = doc.querySelector('main') || doc.querySelector('[role="main"]');
+          if (main) return main;
+
+          const selectors = [
+            '.post-content', '.entry-content', '.blog-post',
+            '.content', '.post-body', '.article-body',
+            '#content', '.story-body', '.article__content',
+            '.hentry', '.single-post', '.page-content',
+            '[class*="content"]', '[class*="post"]', '[class*="article"]'
+          ];
+
+          for (const sel of selectors) {
+            const el = doc.querySelector(sel);
+            if (el && el.textContent.length > 300) return el;
+          }
+
+          const body = doc.body.cloneNode(true);
+          const junk = ['nav','header','footer','aside','.sidebar','.menu','.cookie','.popup','.advert','[class*="nav"]','[class*="footer"]','[class*="header"]','.breadcrumbs','.comments'];
+          junk.forEach(s => body.querySelectorAll(s).forEach(e => e.remove()));
+          return body;
+        }
+
+        const mainElement = getMainContent(doc);
+        const title = doc.querySelector('title')?.textContent?.trim() || 'Untitled';
+        let text = mainElement.textContent || '';
+
+        text = text
+          .replace(/\s+/g, ' ')
+          .replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu, ' ')
+          .trim();
+
+        const wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
+        // === SMART CONTENT EXTRACTOR ends here ===
 
         const ai = analyzeAIContent(text);
+
+              
 
         report.innerHTML = `
           <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-orange-500/30">
@@ -80,6 +121,7 @@
                 ${ai.score}%
               </div>
               <p class="text-3xl mt-6">${ai.score > 70 ? 'Very Likely AI-Generated' : ai.score > 40 ? 'Moderate AI Patterns' : 'Likely Human-Written'}</p>
+              <p class="text-gray-400 mt-4 text-lg">Scanned ${wordCount.toLocaleString()} words from main content (menus, footers, and navigation ignored)</p>
               <div class="mt-8 max-w-md mx-auto bg-gray-800 rounded-full h-8 relative overflow-hidden">
                 <div class="h-full bg-gradient-to-r from-green-500 via-yellow-500 to-red-500" style="width: ${ai.score}%"></div>
                 <p class="absolute inset-0 text-center leading-8 font-bold">${ai.score}% AI</p>
