@@ -7,8 +7,8 @@
   <link rel="icon" href="/favicon.ico" />
   <link rel="manifest" href="/manifest.json" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-gauge@0.3.0/dist/chartjs-gauge.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-gauge@0.1.2/dist/chartjs-gauge.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
     body { font-family: 'Inter', sans-serif; }
@@ -23,7 +23,7 @@
       <h1 class="text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
         AI Content Audit
       </h1>
-      <p class="text-xl text-gray-400">One URL → Instant AI detection with full explanations</p>
+      <p class="text-xl text-gray-400">One URL → Instant AI detection with charts & fixes</p>
     </header>
 
     <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-white/20">
@@ -79,7 +79,7 @@
 
             <!-- EPIC GAUGE CHART -->
             <div class="max-w-md mx-auto mb-16">
-              <canvas id="aiGauge"></canvas>
+              <canvas id="aiGauge" width="400" height="200"></canvas>
               <p class="text-center mt-6 text-2xl font-bold">${ai.score > 70 ? 'Very Likely AI' : ai.score > 40 ? 'Moderate Risk' : 'Likely Human'}</p>
             </div>
 
@@ -91,32 +91,48 @@
           </div>
         `;
 
-        // EPIC GAUGE CHART (fixed CDN)
+        // EPIC GAUGE CHART (fixed with v3 Chart.js + v0.1.2 gauge)
         const ctx = document.getElementById('aiGauge').getContext('2d');
         new Chart(ctx, {
-          type: 'gauge',
+          type: 'doughnut',
           data: {
             datasets: [{
-              value: ai.score,
-              data: [0, 33, 66, 100],
-              backgroundColor: ['#22c55e', '#eab308', '#ef4444'],
-              borderWidth: 2
+              data: [ai.score, 100 - ai.score],
+              backgroundColor: ['rgba(239, 68, 68, 0.8)', 'rgba(34, 197, 94, 0.8)'],
+              borderWidth: 0
             }]
           },
           options: {
-            needle: {
-              radiusPercentage: 2,
-              widthPercentage: 3.2,
-              lengthPercentage: 80,
-              color: '#fff'
-            },
-            valueLabel: {
-              formatter: (value) => value + '% AI',
-              fontSize: 32,
-              color: '#fff'
+            cutout: '80%',
+            rotation: -90,
+            circumference: 180,
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: { enabled: false }
             }
           }
         });
+
+        // Add needle
+        const needleValue = ai.score;
+        const data = [needleValue, 100 - needleValue];
+        const color = needleValue > 70 ? 'red' : needleValue > 40 ? 'yellow' : 'green';
+        const width = (needleValue / 100) * 2 * Math.PI - Math.PI / 2;
+        const needle = ctx.createLinearGradient(0, 0, 0, 200);
+        needle.addColorStop(0, color);
+        needle.addColorStop(1, color + '80');
+        ctx.save();
+        ctx.translate(200, 200);
+        ctx.rotate(width);
+        ctx.beginPath();
+        ctx.moveTo(0, -100);
+        ctx.lineTo(10, 0);
+        ctx.lineTo(0, 10);
+        ctx.fillStyle = needle;
+        ctx.fill();
+        ctx.restore();
 
         loading.classList.add('hidden');
         report.classList.remove('hidden');
