@@ -46,7 +46,7 @@
     const report = document.getElementById('report');
     const loading = document.getElementById('loading');
     const PROXY = 'https://api.allorigins.win/raw?url=';
-
+    let analyzedText = '';  // Stores cleaned main content for Humanizer
     // ==================== REAL AI ANALYZER (with smart content extractor) ====================
     function getMainContent(doc) {
       const article = doc.querySelector('article');
@@ -152,6 +152,7 @@
           .trim();
 
         const wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
+        analyzedText = text;  // Make it available for Humanize button        
 
         const ai = analyzeAIContent(text);
 
@@ -273,7 +274,7 @@
       output.classList.add('hidden');
       
       setTimeout(() => {
-        const humanized = makeItHuman(text);  // 'text' from the scope above
+        const humanized = makeItHuman(analyzedText);  // Pull from global
         textDiv.innerHTML = humanized.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
         status.textContent = 'Done! Now 85–98% human-pass rate';
         output.classList.remove('hidden');
