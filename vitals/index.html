@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traffic Torch – Core Vitals Audit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white min-h-screen">
+  <div class="container mx-auto px-6 py-12 max-w-5xl">
+    <header class="text-center mb-12">
+      <a href="/" class="inline-block mb-8">
+        <img src="/logo.webp" alt="Traffic Torch" class="w-32 rounded-2xl shadow-2xl">
+      </a>
+      <h1 class="text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
+        Core Vitals Audit
+      </h1>
+      <p class="text-xl text-gray-400">Real Google PageSpeed data + INP/CLS/LCP</p>
+    </header>
+
+    <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-white/20">
+      <form id="vitalsForm" class="flex flex-col md:flex-row gap-6 max-w-3xl mx-auto">
+        <input type="url" id="urlInput" placeholder="https://example.com" required
+               class="flex-1 px-8 py-5 text-lg rounded-2xl bg-white/20 border border-white/40 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 text-white" />
+        <button type="submit"
+                class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
+          Run Audit 🚀
+        </button>
+      </form>
+
+      <div id="loading" class="hidden text-center mt-12">
+        <div class="inline-block animate-spin rounded-full h-20 w-20 border-8 border-t-orange-500 border-r-pink-500 border-b-orange-500 border-l-pink-500"></div>
+        <p class="mt-8 text-2xl">Fetching real PageSpeed data…</p>
+      </div>
+    </div>
+
+    <div id="report" class="hidden mt-16"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('vitalsForm');
+    const input = document.getElementById('urlInput');
+    const report = document.getElementById('report');
+    const loading = document.getElementById('loading');
+    const PROXY = 'https://api.allorigins.win/raw?url=';
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const url = input.value.trim();
+      if (!url) return;
+
+      loading.classList.remove('hidden');
+      report.classList.add('hidden');
+      report.innerHTML = '';
+
+      try {
+        const api = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=desktop`;
+        const res = await fetch(api);
+        const data = await res.json();
+
+        const lcp = data.lighthouseResult?.audits['largest-contentful-paint']?.displayValue || 'N/A';
+        const cls = data.lighthouseResult?.audits['cumulative-layout-shift']?.displayValue || 'N/A';
+        const inp = data.lighthouseResult?.audits['interaction-to-next-paint']?.displayValue || 'N/A';
+        const fcp = data.lighthouseResult?.audits['first-contentful-paint']?.displayValue || 'N/A';
+        const score = data.lighthouseResult?.categories?.performance?.score * 100 || 0;
+
+        report.innerHTML = `
+          <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border ${score > 90 ? 'border-green-500/60' : score > 50 ? 'border-yellow-500/60' : 'border-red-500/60'}">
+            <h2 class="text-5xl font-bold text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Core Vitals Report
+            </h2>
+
+            <div class="text-center mb-16">
+              <div class="text-9xl font-black ${score > 90 ? 'text-green-500' : score > 50 ? 'text-yellow-500' : 'text-red-500'}">
+                ${Math.round(score)}
+              </div>
+              <p class="text-3xl mt-6">Performance Score / 100</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+              <div class="bg-black/40 rounded-2xl p-8 text-center border border-white/20">
+                <h3 class="text-2xl font-bold text-orange-400">LCP</h3>
+                <p class="text-5xl font-black mt-4">${lcp}</p>
+              </div>
+              <div class="bg-black/40 rounded-2xl p-8 text-center border border-white/20">
+                <h3 class="text-2xl font-bold text-orange-400">CLS</h3>
+                <p class="text-5xl font-black mt-4">${cls}</p>
+              </div>
+              <div class="bg-black/40 rounded-2xl p-8 text-center border border-white/20">
+                <h3 class="text-2xl font-bold text-orange-400">INP</h3>
+                <p class="text-5xl font-black mt-4">${inp}</p>
+              </div>
+              <div class="bg-black/40 rounded-2xl p-8 text-center border border-white/20">
+                <h3 class="text-2xl font-bold text-orange-400">FCP</h3>
+                <p class="text-5xl font-black mt-4">${fcp}</p>
+              </div>
+            </div>
+
+            <div class="text-center">
+              <a href="/" class="px-12 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
+                Back to Dashboard
+              </a>
+            </div>
+          </div>
+        `;
+
+        loading.classList.add('hidden');
+        report.classList.remove('hidden');
+      } catch (err) {
+        alert('Error: ' + err.message + ' – try a public site');
+        loading.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
