@@ -9,147 +9,83 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
-    body { font-family: 'Inter', sans-serif; }
+    body { font-family: 'Inter', sans-serif; transition: background 0.5s ease; }
+    .light { background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important; color: #111 !important; }
+    .light .bg-white\\/10 { background: rgba(255,255,255,0.1) !important; }
+    .light .text-white { color: #111 !important; }
+    .light .bg-gradient-to-br { background: #f9fafb !important; }
+    .light .border-white\\/10 { border-color: #d1d5db !important; }
+    .light .text-gray-300 { color: #4b5563 !important; }
+    .light .bg-black\\/80 { background: rgba(255,255,255,0.9) !important; }
+    .light .text-orange-400 { color: #f97316 !important; }
+    .light .hover\\:text-orange-400:hover { color: #ea580c !important; }
   </style>
 </head>
 <body class="bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white min-h-screen">
-  <!-- Header (same as before) -->
-  <header class="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/10">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-      <a href="/" class="flex items-center gap-4">
-        <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
-        <h1 class="text-2xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-          Traffic Torch
-        </h1>
-      </a>
-      <button id="menuToggle" class="md:hidden text-3xl">☰</button>
-      <nav class="hidden md:flex gap-8 text-lg">
-        <a href="/" class="hover:text-orange-400 transition">Home</a>
-        <a href="/ai/" class="hover:text-orange-400 transition">AI Audit</a>
-        <a href="/ux/" class="hover:text-orange-400 transition">Quit Risk</a>
-        <a href="/vs/" class="hover:text-orange-400 transition">Competition</a>
-        <a href="/vitals/" class="hover:text-orange-400 transition">Core Vitals</a>
-        <a href="/intent/" class="hover:text-orange-400 transition">Intent</a>
-        <a href="/about/" class="hover:text-orange-400 transition">About</a>
-      </nav>
-      <button id="themeToggle" class="px-4 py-2 bg-white/10 rounded-full hover:bg-white/20 transition">
-        🌙
+  <div class="container mx-auto px-6 py-12 max-w-6xl text-center">
+    <header class="mb-16">
+      <img src="/logo.webp" alt="Traffic Torch" class="w-32 mx-auto mb-8 rounded-3xl shadow-2xl">
+      <h1 class="text-7xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Traffic Torch
+      </h1>
+      <p class="mt-6 text-2xl text-gray-300">Instant SEO + UX audit tools</p>
+      <!-- EPIC TOGGLE -->
+      <button id="themeToggle" class="mt-8 px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl hover:shadow-orange-500/50 transition text-xl font-bold flex items-center gap-3 mx-auto">
+        <span id="toggleIcon">🌙</span> <span id="toggleText">Dark Mode</span>
       </button>
-    </div>
-    <div id="mobileMenu" class="hidden md:hidden bg-black/95 backdrop-blur-xl border-t border-white/10">
-      <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
-        <a href="/" class="hover:text-orange-400 transition">Home</a>
-        <a href="/ai/" class="hover:text-orange-400 transition">AI Audit</a>
-        <a href="/ux/" class="hover:text-orange-400 transition">Quit Risk</a>
-        <a href="/vs/" class="hover:text-orange-400 transition">Competition</a>
-        <a href="/vitals/" class="hover:text-orange-400 transition">Core Vitals</a>
-        <a href="/intent/" class="hover:text-orange-400 transition">Intent</a>
-        <a href="/about/" class="hover:text-orange-400 transition">About</a>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Main Content (same as before) -->
-  <div class="container mx-auto px-6 py-16 text-center">
-    <h2 class="text-5xl md:text-6xl font-black mb-8">Instant SEO + UX audit tools</h2>
-    <p class="text-xl text-gray-400 mb-16">Choose a tool from the menu</p>
+    </header>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-5xl mx-auto">
       <a href="/ai/" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-orange-500/30 hover:border-orange-400 hover:-translate-y-2 transition-all shadow-2xl">
         <div class="text-orange-400 text-6xl mb-6">🤖</div>
-        <h3 class="text-3xl font-bold mb-3">AI Content Audit</h3>
+        <h2 class="text-3xl font-bold mb-3">AI Content Audit</h2>
         <p class="text-gray-300">Deep AI detection with charts & fixes</p>
       </a>
 
       <a href="/ux/" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-red-500/30 hover:border-red-400 hover:-translate-y-2 transition-all shadow-2xl">
         <div class="text-red-400 text-6xl mb-6">😡</div>
-        <h3 class="text-3xl font-bold mb-3">Rage-Quit Risk</h3>
+        <h2 class="text-3xl font-bold mb-3">Rage-Quit Risk</h2>
         <p class="text-gray-300">UX pain points that kill conversions</p>
       </a>
 
       <a href="/vs/" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-blue-500/30 hover:border-blue-400 hover:-translate-y-2 transition-all shadow-2xl">
         <div class="text-blue-400 text-6xl mb-6">⚔️</div>
-        <h3 class="text-3xl font-bold mb-3">Competitive Gap</h3>
+        <h2 class="text-3xl font-bold mb-3">Competitive Gap</h2>
         <p class="text-gray-300">2 URLs head-to-head comparison</p>
       </a>
 
       <a href="/vitals/" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-green-500/30 hover:border-green-400 hover:-translate-y-2 transition-all shadow-2xl">
         <div class="text-green-400 text-6xl mb-6">⚡</div>
-        <h3 class="text-3xl font-bold mb-3">Core Vitals</h3>
+        <h2 class="text-3xl font-bold mb-3">Core Vitals</h2>
         <p class="text-gray-300">Real PageSpeed data</p>
       </a>
 
       <a href="/intent/" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-purple-500/30 hover:border-purple-400 hover:-translate-y-2 transition-all shadow-2xl">
         <div class="text-purple-400 text-6xl mb-6">🎯</div>
-        <h3 class="text-3xl font-bold mb-3">Intent + E-E-A-T</h3>
+        <h2 class="text-3xl font-bold mb-3">Intent + E-E-A-T</h2>
         <p class="text-gray-300">Google trust & intent match</p>
       </a>
     </div>
   </div>
 
-  <!-- EPIC FOOTER -->
-  <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">
-    <div class="container mx-auto px-6 max-w-6xl">
-      <div class="grid md:grid-cols-4 gap-12 text-center md:text-left">
-        <div>
-          <img src="/logo.webp" alt="Traffic Torch" class="w-20 mx-auto md:mx-0 rounded-2xl shadow-2xl mb-6">
-          <p class="text-gray-400 text-sm">Instant SEO + UX audit tools.<br>No login. No limits. No BS.</p>
-        </div>
-
-        <div>
-          <h3 class="text-xl font-bold mb-6 text-orange-400">Tools</h3>
-          <ul class="space-y-3 text-gray-400">
-            <li><a href="/ai/" class="hover:text-orange-400 transition">AI Content Audit</a></li>
-            <li><a href="/ux/" class="hover:text-orange-400 transition">Rage-Quit Risk</a></li>
-            <li><a href="/vs/" class="hover:text-orange-400 transition">Competitive Gap</a></li>
-            <li><a href="/vitals/" class="hover:text-orange-400 transition">Core Vitals</a></li>
-            <li><a href="/intent/" class="hover:text-orange-400 transition">Intent + E-E-A-T</a></li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 class="text-xl font-bold mb-6 text-orange-400">Company</h3>
-          <ul class="space-y-3 text-gray-400">
-            <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
-            <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
-            <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 class="text-xl font-bold mb-6 text-orange-400">Connect</h3>
-          <p class="text-gray-400 text-sm">Built with 🔥 in Australia</p>
-          <p class="text-gray-500 text-xs mt-4">© 2025 Traffic Torch</p>
-        </div>
-      </div>
-    </div>
-  </footer>
-
   <script>
-    // Hamburger Menu
-    const menuToggle = document.getElementById('menuToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    menuToggle.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-
-    // Day/Night Toggle
+    // EPIC DAY/NIGHT TOGGLE
     const toggle = document.getElementById('themeToggle');
-    if (localStorage.theme === 'light') document.documentElement.classList.add('light');
+    const icon = document.getElementById('toggleIcon');
+    const text = document.getElementById('toggleText');
+
+    if (localStorage.theme === 'light' || (!localStorage.theme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.add('light');
+      icon.textContent = '☀️';
+      text.textContent = 'Light Mode';
+    }
+
     toggle.addEventListener('click', () => {
       document.documentElement.classList.toggle('light');
-      localStorage.theme = document.documentElement.classList.contains('light') ? 'light' : 'dark';
-      toggle.textContent = document.documentElement.classList.contains('light') ? '☀️' : '🌙';
-    });
-
-    // PWA Install
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', e => {
-      e.preventDefault();
-      deferredPrompt = e;
-      const btn = document.createElement('button');
-      btn.textContent = 'Install';
-      btn.className = 'fixed bottom-6 right-6 z-50 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-sm';
-      btn.onclick = () => deferredPrompt.prompt();
-      document.body.appendChild(btn);
+      const isLight = document.documentElement.classList.contains('light');
+      localStorage.theme = isLight ? 'light' : 'dark';
+      icon.textContent = isLight ? '☀️' : '🌙';
+      text.textContent = isLight ? 'Light Mode' : 'Dark Mode';
     });
   </script>
 </body>
