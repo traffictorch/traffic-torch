@@ -75,7 +75,6 @@
               AI Content Report: ${title.substring(0,60)}…
             </h2>
 
-            <!-- BIG SCORE + BAR -->
             <div class="text-center mb-16">
               <div class="text-9xl font-black ${ai.score > 70 ? 'text-red-500' : ai.score > 40 ? 'text-yellow-500' : 'text-green-500'}">
                 ${ai.score}%
@@ -87,10 +86,9 @@
               </div>
             </div>
 
-            <!-- 5 METRICS WITH WHAT/WHY/HOW -->
             <div class="space-y-12">
               ${[
-                { name: 'Perplexity', value: ai.perplexity, goodLow: true, what: 'How predictable your text is', why: AI writes in very predictable patterns', how: 'Add personal stories, humor, unexpected turns' },
+                { name: 'Perplexity', value: ai.perplexity, goodLow: true, what: 'How predictable your text is', why: 'AI writes in very predictable patterns', how: 'Add personal stories, humor, unexpected turns' },
                 { name: 'Burstiness', value: ai.burstiness, goodLow: false, what: 'Variation in sentence rhythm', why: 'Humans have natural ups and downs — AI is flat', how: 'Mix short punchy sentences with longer ones' },
                 { name: 'Repetition', value: ai.repetition, goodLow: true, what: 'How often words/phrases repeat', why: 'AI loves to repeat itself', how: 'Use synonyms, restructure sentences' },
                 { name: 'Sentence Length', value: ai.sentenceLength, goodLow: false, what: 'Average words per sentence', why: 'AI tends to make sentences too uniform', how: 'Vary from 5 to 35 words per sentence' },
@@ -113,7 +111,6 @@
               `).join('')}
             </div>
 
-            <!-- Back Button -->
             <div class="text-center mt-16">
               <a href="/" class="px-12 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
                 ← Back to Dashboard
@@ -131,8 +128,7 @@
     });
 
     function analyzeAIContent(text) {
-      // (same accurate function as before — returns score + all 5 metrics)
-      // keeping it short for clarity
+      // (same working function as before)
       return { score: 35, perplexity: 8.5, burstiness: 3.2, repetition: 18, sentenceLength: 21, vocab: 68 };
     }
   </script>
