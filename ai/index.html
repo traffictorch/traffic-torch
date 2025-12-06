@@ -7,8 +7,7 @@
   <link rel="icon" href="/favicon.ico" />
   <link rel="manifest" href="/manifest.json" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-gauge@0.1.2/dist/chartjs-gauge.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
     body { font-family: 'Inter', sans-serif; }
@@ -79,7 +78,7 @@
 
             <!-- EPIC GAUGE CHART -->
             <div class="max-w-md mx-auto mb-16">
-              <canvas id="aiGauge" width="400" height="200"></canvas>
+              <canvas id="aiGauge"></canvas>
               <p class="text-center mt-6 text-2xl font-bold">${ai.score > 70 ? 'Very Likely AI' : ai.score > 40 ? 'Moderate Risk' : 'Likely Human'}</p>
             </div>
 
@@ -91,48 +90,54 @@
           </div>
         `;
 
-        // EPIC GAUGE CHART (fixed with v3 Chart.js + v0.1.2 gauge)
+        // EPIC GAUGE CHART (custom doughnut + needle, no external gauge lib)
         const ctx = document.getElementById('aiGauge').getContext('2d');
-        new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-            datasets: [{
-              data: [ai.score, 100 - ai.score],
-              backgroundColor: ['rgba(239, 68, 68, 0.8)', 'rgba(34, 197, 94, 0.8)'],
-              borderWidth: 0
-            }]
-          },
-          options: {
-            cutout: '80%',
-            rotation: -90,
-            circumference: 180,
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: false },
-              tooltip: { enabled: false }
-            }
-          }
-        });
+        const width = ctx.canvas.width;
+        const height = ctx.canvas.height;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const radius = Math.min(width, height) / 2 - 20;
 
-        // Add needle
-        const needleValue = ai.score;
-        const data = [needleValue, 100 - needleValue];
-        const color = needleValue > 70 ? 'red' : needleValue > 40 ? 'yellow' : 'green';
-        const width = (needleValue / 100) * 2 * Math.PI - Math.PI / 2;
-        const needle = ctx.createLinearGradient(0, 0, 0, 200);
-        needle.addColorStop(0, color);
-        needle.addColorStop(1, color + '80');
-        ctx.save();
-        ctx.translate(200, 200);
-        ctx.rotate(width);
+        // Gauge background
+        const startAngle = Math.PI;
+        const endAngle = Math.PI;
+        const arc = Math.PI;
+        const gaugeData = [
+          { value: 0, color: '#10b981' },
+          { value: 33, color: '#f59e0b' },
+          { value: 66, color: '#ef4444' },
+          { value: 100, color: '#dc2626' }
+        ];
+
         ctx.beginPath();
-        ctx.moveTo(0, -100);
-        ctx.lineTo(10, 0);
+        for (let i = 0; i < gaugeData.length; i++) {
+          const angle = arc * (gaugeData[i].value / 100);
+          ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+          ctx.strokeStyle = gaugeData[i].color;
+          ctx.lineWidth = 20;
+          ctx.stroke();
+          startAngle = endAngle;
+          endAngle += angle;
+        }
+
+        // Needle
+        const needleAngle = startAngle + (arc * ai.score / 100);
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(needleAngle - Math.PI / 2);
+        ctx.beginPath();
+        ctx.moveTo(0, -radius + 20);
+        ctx.lineTo(5, 0);
         ctx.lineTo(0, 10);
-        ctx.fillStyle = needle;
+        ctx.fillStyle = '#fbbf24';
         ctx.fill();
         ctx.restore();
+
+        // Center text
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 24px Inter';
+        ctx.textAlign = 'center';
+        ctx.fillText(ai.score + '% AI', centerX, centerY + 8);
 
         loading.classList.add('hidden');
         report.classList.remove('hidden');
