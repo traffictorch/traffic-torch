@@ -71,14 +71,14 @@
 
         report.innerHTML = `
           <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-orange-500/30">
-            <h2 class="text-5xl font-bold text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+            <h2 class="text-5xl font-bold text-center mb-16 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
               AI Content Report: ${title.substring(0,60)}…
             </h2>
 
-            <!-- EPIC GAUGE — centered, big gold needle, score below -->
+            <!-- EPIC GAUGE — centered, BIG GOLD NEEDLE, score below -->
             <div class="flex flex-col items-center mb-20">
-              <div class="relative w-96 h-52">
-                <canvas id="aiGauge" width="384" height="208"></canvas>
+              <div class="relative w-96 h-56">
+                <canvas id="aiGauge" width="384" height="224"></canvas>
               </div>
               <p class="text-4xl font-black mt-8">${ai.score}% AI</p>
               <p class="text-2xl mt-4">${ai.score > 70 ? 'Very Likely AI' : ai.score > 40 ? 'Moderate Risk' : 'Likely Human'}</p>
@@ -92,7 +92,7 @@
           </div>
         `;
 
-        // EPIC GAUGE — perfect, centered, BIG GOLD NEEDLE
+        // EPIC GAUGE — BIG GOLD NEEDLE, perfect
         const ctx = document.getElementById('aiGauge').getContext('2d');
         const width = ctx.canvas.width;
         const height = ctx.canvas.height;
@@ -120,16 +120,16 @@
           currentAngle = angle;
         });
 
-        // BIG GOLD NEEDLE
+        // BIG GOLD NEEDLE — fixed and visible
         const needleAngle = Math.PI + (ai.score / 100) * Math.PI;
         ctx.save();
         ctx.translate(centerX, centerY);
         ctx.rotate(needleAngle);
         ctx.beginPath();
         ctx.moveTo(0, -radius + 50);
-        ctx.lineTo(25, 0);
+        ctx.lineTo(30, 0);
         ctx.lineTo(0, 40);
-        ctx.lineTo(-25, 0);
+        ctx.lineTo(-30, 0);
         ctx.closePath();
         ctx.fillStyle = '#fbbf24';
         ctx.fill();
