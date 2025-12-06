@@ -76,8 +76,8 @@
             </h2>
 
             <!-- EPIC GAUGE CHART -->
-            <div class="max-w-md mx-auto mb-16">
-              <canvas id="aiGauge" height="220"></canvas>
+            <div class="max-w-lg mx-auto mb-16">
+              <canvas id="aiGauge" height="240"></canvas>
               <p class="text-center mt-6 text-2xl font-bold">${ai.score > 70 ? 'Very Likely AI' : ai.score > 40 ? 'Moderate Risk' : 'Likely Human'}</p>
             </div>
 
@@ -89,13 +89,13 @@
           </div>
         `;
 
-        // EPIC GAUGE CHART — perfect needle, full colors
+        // EPIC GAUGE — perfect needle, full arc, no bugs
         const ctx = document.getElementById('aiGauge').getContext('2d');
         const width = ctx.canvas.width;
         const height = ctx.canvas.height;
         const centerX = width / 2;
-        const centerY = height - 40;
-        const radius = Math.min(width, height) / 2 - 20;
+        const centerY = height - 30;
+        const radius = Math.min(width, height) / 2 - 30;
 
         // Background arc
         ctx.beginPath();
@@ -105,8 +105,8 @@
         ctx.stroke();
 
         // Color arcs
-        const colors = ['#22c55e', '#eab308', '#ef4444'];
         let currentAngle = Math.PI;
+        const colors = ['#22c55e', '#eab308', '#ef4444'];
         [33, 33, 34].forEach((percent, i) => {
           const angle = currentAngle + (percent / 100) * Math.PI;
           ctx.beginPath();
