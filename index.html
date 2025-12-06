@@ -9,29 +9,20 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
-    body { font-family: 'Inter', sans-serif; transition: background 0.5s ease; }
-    .light { background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important; color: #111 !important; }
-    .light .bg-white\\/10 { background: rgba(255,255,255,0.1) !important; }
-    .light .text-white { color: #111 !important; }
-    .light .bg-gradient-to-br { background: #f9fafb !important; }
-    .light .border-white\\/10 { border-color: #d1d5db !important; }
-    .light .text-gray-300 { color: #4b5563 !important; }
-    .light .bg-black\\/80 { background: rgba(255,255,255,0.9) !important; }
-    .light .text-orange-400 { color: #f97316 !important; }
-    .light .hover\\:text-orange-400:hover { color: #ea580c !important; }
+    body { font-family: 'Inter', sans-serif; }
   </style>
 </head>
 <body class="bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white min-h-screen">
   <div class="container mx-auto px-6 py-12 max-w-6xl text-center">
     <header class="mb-16">
       <img src="/logo.webp" alt="Traffic Torch" class="w-32 mx-auto mb-8 rounded-3xl shadow-2xl">
-      <h1 class="text-7xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+      <!-- Title half size, no line break on mobile -->
+      <h1 class="text-5xl md:text-6xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight">
         Traffic Torch
       </h1>
-      <p class="mt-6 text-2xl text-gray-300">Instant SEO + UX audit tools</p>
-      <!-- EPIC TOGGLE -->
-      <button id="themeToggle" class="mt-8 px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl hover:shadow-orange-500/50 transition text-xl font-bold flex items-center gap-3 mx-auto">
-        <span id="toggleIcon">🌙</span> <span id="toggleText">Dark Mode</span>
+      <p class="mt-6 text-xl text-gray-300">Instant SEO + UX audit tools</p>
+      <button id="themeToggle" class="mt-8 px-6 py-3 bg-white/20 rounded-full hover:bg-white/30 transition">
+        🌙 Dark Mode
       </button>
     </header>
 
@@ -69,23 +60,25 @@
   </div>
 
   <script>
-    // EPIC DAY/NIGHT TOGGLE
+    // Day/Night Toggle
     const toggle = document.getElementById('themeToggle');
-    const icon = document.getElementById('toggleIcon');
-    const text = document.getElementById('toggleText');
-
-    if (localStorage.theme === 'light' || (!localStorage.theme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
-      document.documentElement.classList.add('light');
-      icon.textContent = '☀️';
-      text.textContent = 'Light Mode';
-    }
-
+    if (localStorage.theme === 'light') document.documentElement.classList.add('light');
     toggle.addEventListener('click', () => {
       document.documentElement.classList.toggle('light');
-      const isLight = document.documentElement.classList.contains('light');
-      localStorage.theme = isLight ? 'light' : 'dark';
-      icon.textContent = isLight ? '☀️' : '🌙';
-      text.textContent = isLight ? 'Light Mode' : 'Dark Mode';
+      localStorage.theme = document.documentElement.classList.contains('light') ? 'light' : 'dark';
+      toggle.textContent = document.documentElement.classList.contains('light') ? '☀️ Light Mode' : '🌙 Dark Mode';
+    });
+
+    // PWA Install
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.createElement('button');
+      btn.textContent = 'Install';
+      btn.className = 'fixed bottom-6 right-6 z-50 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-sm';
+      btn.onclick = () => deferredPrompt.prompt();
+      document.body.appendChild(btn);
     });
   </script>
 </body>
