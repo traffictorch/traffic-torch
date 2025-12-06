@@ -144,7 +144,12 @@
 
         const mainElement = getMainContent(doc);
         const title = doc.querySelector('title')?.textContent?.trim() || 'Untitled';
-        let text = mainElement.textContent || '';
+
+        // Clone the main element so we can safely remove scripts/styles
+        const cleanElement = mainElement.cloneNode(true);
+        cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
+
+        let text = cleanElement.textContent || '';
 
         text = text
           .replace(/\s+/g, ' ')
