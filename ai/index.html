@@ -7,8 +7,8 @@
   <link rel="icon" href="/favicon.ico" />
   <link rel="manifest" href="/manifest.json" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-gauge"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-gauge@0.3.0/dist/chartjs-gauge.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
     body { font-family: 'Inter', sans-serif; }
@@ -83,7 +83,6 @@
               <p class="text-center mt-6 text-2xl font-bold">${ai.score > 70 ? 'Very Likely AI' : ai.score > 40 ? 'Moderate Risk' : 'Likely Human'}</p>
             </div>
 
-            <!-- Rest of the report (metrics, flagged sentences, fixes) -->
             <div class="text-center mt-16">
               <a href="/" class="px-12 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
                 ← Back to Dashboard
@@ -92,7 +91,7 @@
           </div>
         `;
 
-        // EPIC GAUGE CHART
+        // EPIC GAUGE CHART (fixed CDN)
         const ctx = document.getElementById('aiGauge').getContext('2d');
         new Chart(ctx, {
           type: 'gauge',
