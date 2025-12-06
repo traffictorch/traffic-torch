@@ -22,7 +22,7 @@
       <h1 class="text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
         AI Content Audit
       </h1>
-      <p class="text-xl text-gray-400">One URL → Instant AI detection with charts & fixes</p>
+      <p class="text-xl text-gray-400">One URL → Instant AI detection with epic gauge</p>
     </header>
 
     <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-white/20">
@@ -76,9 +76,9 @@
               AI Content Report: ${title.substring(0,60)}…
             </h2>
 
-            <!-- EPIC GAUGE CHART -->
-            <div class="max-w-md mx-auto mb-16">
-              <canvas id="aiGauge"></canvas>
+            <!-- EPIC GAUGE -->
+            <div class="max-w-lg mx-auto mb-16">
+              <canvas id="aiGauge" height="200"></canvas>
               <p class="text-center mt-6 text-2xl font-bold">${ai.score > 70 ? 'Very Likely AI' : ai.score > 40 ? 'Moderate Risk' : 'Likely Human'}</p>
             </div>
 
@@ -90,54 +90,63 @@
           </div>
         `;
 
-        // EPIC GAUGE CHART (custom doughnut + needle, no external gauge lib)
+        // EPIC GAUGE CHART (custom, no external lib)
         const ctx = document.getElementById('aiGauge').getContext('2d');
         const width = ctx.canvas.width;
         const height = ctx.canvas.height;
         const centerX = width / 2;
-        const centerY = height / 2;
-        const radius = Math.min(width, height) / 2 - 20;
+        const centerY = height;
+        const radius = width / 2 - 30;
 
-        // Gauge background
-        const startAngle = Math.PI;
-        const endAngle = Math.PI;
-        const arc = Math.PI;
-        const gaugeData = [
-          { value: 0, color: '#10b981' },
-          { value: 33, color: '#f59e0b' },
-          { value: 66, color: '#ef4444' },
-          { value: 100, color: '#dc2626' }
+        // Background arc
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, Math.PI, 0);
+        ctx.lineWidth = 30;
+        ctx.strokeStyle = '#1e293b';
+        ctx.stroke();
+
+        // Color segments
+        const segments = [
+          { value: 33, color: '#22c55e' }, // green
+          { value: 66, color: '#eab308' }, // yellow
+          { value: 100, color: '#ef4444' }  // red
         ];
 
-        ctx.beginPath();
-        for (let i = 0; i < gaugeData.length; i++) {
-          const angle = arc * (gaugeData[i].value / 100);
-          ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-          ctx.strokeStyle = gaugeData[i].color;
-          ctx.lineWidth = 20;
+        let currentAngle = Math.PI;
+        segments.forEach(seg => {
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + (seg.value / 100) * Math.PI);
+          ctx.lineWidth = 30;
+          ctx.strokeStyle = seg.color;
           ctx.stroke();
-          startAngle = endAngle;
-          endAngle += angle;
-        }
+          currentAngle += (seg.value / 100) * Math.PI;
+        });
 
         // Needle
-        const needleAngle = startAngle + (arc * ai.score / 100);
+        const needleAngle = Math.PI + (ai.score / 100) * Math.PI;
         ctx.save();
         ctx.translate(centerX, centerY);
-        ctx.rotate(needleAngle - Math.PI / 2);
+        ctx.rotate(needleAngle);
         ctx.beginPath();
-        ctx.moveTo(0, -radius + 20);
-        ctx.lineTo(5, 0);
+        ctx.moveTo(0, -radius + 40);
+        ctx.lineTo(8, 0);
         ctx.lineTo(0, 10);
+        ctx.lineTo(-8, 0);
         ctx.fillStyle = '#fbbf24';
         ctx.fill();
         ctx.restore();
 
-        // Center text
+        // Center circle
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 30, 0, 2 * Math.PI);
+        ctx.fillStyle = '#1e293b';
+        ctx.fill();
+
+        // Score text
         ctx.fillStyle = '#fff';
-        ctx.font = 'bold 24px Inter';
+        ctx.font = 'bold 36px Inter';
         ctx.textAlign = 'center';
-        ctx.fillText(ai.score + '% AI', centerX, centerY + 8);
+        ctx.fillText(ai.score + '% AI', centerX, centerY + 12);
 
         loading.classList.add('hidden');
         report.classList.remove('hidden');
