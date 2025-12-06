@@ -76,60 +76,14 @@
               AI Content Report: ${title.substring(0,60)}…
             </h2>
 
-            <!-- Big Score -->
             <div class="text-center mb-16">
               <div class="text-9xl font-black ${ai.score > 70 ? 'text-red-500' : ai.score > 40 ? 'text-yellow-500' : 'text-green-500'}">
                 ${ai.score}%
               </div>
               <p class="text-3xl mt-6">${ai.score > 70 ? 'Very Likely AI-Generated' : ai.score > 40 ? 'Moderate AI Patterns' : 'Likely Human-Written'}</p>
-              ${ai.score === 0 ? '<p class="text-xl mt-4 text-blue-400">Visual page – not enough text for scoring</p>' : ''}
             </div>
 
-            <!-- Radar Chart -->
             <canvas id="aiRadar" class="mx-auto max-w-md mb-16"></canvas>
-
-            <!-- Metrics Cards -->
-            <div class="grid md:grid-cols-3 gap-8 mb-16">
-              <div class="bg-black/40 rounded-2xl p-8 border border-orange-500/30">
-                <h3 class="text-2xl font-bold text-orange-400">Perplexity</h3>
-                <p class="text-5xl font-black mt-4">${ai.perplexity.toFixed(1)}</p>
-                <p class="mt-2">${ai.perplexity > 6 ? 'High — robotic predictability' : 'Natural variation'}</p>
-              </div>
-              <div class="bg-black/40 rounded-2xl p-8 border border-orange-500/30">
-                <h3 class="text-2xl font-bold text-orange-400">Burstiness</h3>
-                <p class="text-5xl font-black mt-4">${ai.burstiness.toFixed(1)}</p>
-                <p class="mt-2">${ai.burstiness > 8 ? 'High — unnatural rhythm' : 'Human-like flow'}</p>
-              </div>
-              <div class="bg-black/40 rounded-2xl p-8 border border-orange-500/30">
-                <h3 class="text-2xl font-bold text-orange-400">Repetition</h3>
-                <p class="text-5xl font-black mt-4">${ai.repetition}%</p>
-                <p class="mt-2">${ai.repetition > 20 ? 'Excessive keyword stuffing' : 'Healthy variation'}</p>
-              </div>
-            </div>
-
-            <!-- Flagged Sentences -->
-            ${ai.flagged.length > 0 ? `
-              <div class="mb-16">
-                <h3 class="text-3xl font-bold mb-6 text-orange-400">Flagged AI-Like Sentences</h3>
-                <div class="space-y-4">
-                  ${ai.flagged.slice(0,5).map(s => `<div class="bg-black/30 p-6 rounded-xl border border-orange-500/30"><p class="text-lg italic">"${s.substring(0,200)}..."</p></div>`).join('')}
-                </div>
-              </div>
-            ` : ''}
-
-            <!-- Pro Fixes -->
-            <div class="bg-gradient-to-r from-orange-900/50 to-pink-900/50 rounded-3xl p-10 border border-orange-500">
-              <h3 class="text-4xl font-bold text-center mb-8">How to Fix & Boost E-E-A-T</h3>
-              <div class="grid md:grid-cols-2 gap-8">
-                ${ai.fixes.map(f => `
-                  <div class="bg-black/50 rounded-2xl p-8 border border-orange-500/50">
-                    <h4 class="text-2xl font-bold text-orange-400">${f.title}</h4>
-                    <p class="mt-4 text-lg">${f.desc}</p>
-                    <p class="mt-4 text-2xl font-black text-green-400">+${f.impact} E-E-A-T Points</p>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
 
             <div class="text-center mt-16">
               <a href="/" class="px-12 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
@@ -139,23 +93,36 @@
           </div>
         `;
 
-        // Radar Chart
+        // Radar Chart with Human Benchmark Line
         const ctx = document.getElementById('aiRadar').getContext('2d');
         new Chart(ctx, {
           type: 'radar',
           data: {
             labels: ['Perplexity', 'Burstiness', 'Repetition', 'Sentence Length', 'Vocabulary'],
-            datasets: [{
-              label: 'Your Page',
-              data: [ai.perplexity, ai.burstiness, ai.repetition, ai.sentenceLength, ai.vocab],
-              backgroundColor: 'rgba(251, 191, 36, 0.2)',
-              borderColor: '#fbbf24',
-              borderWidth: 3
-            }]
+            datasets: [
+              {
+                label: 'Your Page',
+                data: [ai.perplexity, ai.burstiness, ai.repetition, ai.sentenceLength, ai.vocab],
+                backgroundColor: 'rgba(251, 191, 36, 0.2)',
+                borderColor: '#fbbf24',
+                borderWidth: 3,
+                pointBackgroundColor: '#fbbf24'
+              },
+              {
+                label: 'Average Human Content',
+                data: [3.2, 7.8, 8, 18, 65],
+                backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                borderColor: '#22c55e',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                pointBackgroundColor: 'transparent',
+                pointBorderColor: 'transparent'
+              }
+            ]
           },
           options: {
             scales: { r: { min: 0, max: 10, ticks: { color: '#fff' }, grid: { color: '#444' } } },
-            plugins: { legend: { display: false } }
+            plugins: { legend: { labels: { color: '#fff' } } }
           }
         });
 
@@ -170,46 +137,19 @@
     function analyzeAIContent(text) {
       const clean = text.toLowerCase().replace(/[^a-z\s]/g, ' ').replace(/\s+/g, ' ').trim();
       const words = clean.split(' ').filter(w => w.length > 2);
-      if (words.length < 50) return { score: 0, perplexity: 0, burstiness: 0, repetition: 0, sentenceLength: 0, vocab: 0, flagged: [], fixes: [
-        {title: "Add More Text", desc: "AI detection needs 100+ words", impact: 40},
-        {title: "Personal Voice", desc: "Use I/me/my to beat AI", impact: 35}
-      ]};
-
-      const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
-      const lengths = sentences.map(s => s.split(' ').length);
-      const avgLength = lengths.reduce((a,b)=>a+b,0)/lengths.length;
-      const variance = lengths.reduce((a,b)=>a+Math.pow(b-avgLength,2),0)/lengths.length;
-      const perplexity = variance < 20 ? 8.5 : variance < 40 ? 5.5 : 2.5;
-
+      if (words.length < 50) return { score: 0, perplexity: 0, burstiness: 0, repetition: 0, sentenceLength: 0, vocab: 0 };
       const freq = {};
       words.forEach(w => freq[w] = (freq[w] || 0) + 1);
-      const repetition = Object.values(freq).filter(c => c > 4).length / words.length * 100;
-
-      const uniqueWords = new Set(words).size / words.length * 100;
-      const vocabScore = uniqueWords < 30 ? 8 : uniqueWords < 50 ? 5 : 2;
-
-      const flagged = sentences.filter(s => s.split(' ').length > 25 || /very important|it is crucial|in conclusion/i.test(s));
-
-      const score = Math.round((perplexity + (10 - variance/10) + repetition/2 + vocabScore) * 8);
-
-      return {
-        score: Math.min(100, score),
-        perplexity,
-        burstiness: (10 - variance/10),
-        repetition: repetition.toFixed(0),
-        sentenceLength: avgLength.toFixed(1),
-        vocab: uniqueWords.toFixed(0),
-        flagged,
-        fixes: score > 60 ? [
-          {title: "Add Personal Stories", desc: "First-person experience beats AI", impact: 40},
-          {title: "Vary Sentence Length", desc: "Mix short & long sentences", impact: 30},
-          {title: "Use Active Voice", desc: "Avoid passive constructions", impact: 25},
-          {title: "Include Original Data", desc: "Stats, quotes, screenshots", impact: 35},
-          {title: "Add Author Bio", desc: "Name + photo + credentials", impact: 30}
-        ] : [
-          {title: "Keep Doing This", desc: "Your content already reads human", impact: 0}
-        ]
-      };
+      const repeatScore = Object.values(freq).filter(c => c > 5).length * 3;
+      const sentences = text.split(/[.!?]+/).filter(s => s.trim());
+      const lengths = sentences.map(s => s.split(/\s+/).length);
+      const avg = lengths.reduce((a,b)=>a+b,0)/lengths.length;
+      const variance = lengths.reduce((a,b)=>a+Math.pow(b-avg,2),0)/lengths.length;
+      const perplexity = variance < 20 ? 8.5 : variance < 40 ? 5.5 : 2.5;
+      const burstiness = 10 - variance/10;
+      const repetition = Object.values(freq).filter(c => c > 5).length / words.length * 100;
+      const score = Math.round((perplexity + burstiness + repetition/2) * 8);
+      return { score: Math.min(100, score), perplexity, burstiness, repetition, sentenceLength: avg.toFixed(1), vocab: (new Set(words).size / words.length * 100).toFixed(0) };
     }
   </script>
 </body>
