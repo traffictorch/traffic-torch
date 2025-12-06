@@ -6,11 +6,32 @@
   <title>Traffic Torch – Instant SEO + UX Tools</title>
   <link rel="icon" href="/favicon.ico" />
   <link rel="manifest" href="/manifest.json" />
+
+  <!-- Preload critical CSS -->
+  <link rel="preload" href="/style.css" as="style" />
+  <link rel="stylesheet" href="/style.css" />
+
+  <!-- Tailwind via CDN (still fast for small sites + instant purge) -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
-    body { font-family: 'Inter', sans-serif; }
-  </style>
+
+  <!-- Optional: Add your brand colors to Tailwind so you can use text-orange-400 etc without CDN bloat -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            orange: {
+              400: '#fb923c',
+              500: '#f97316'
+            },
+            pink: {
+              600: '#ec4899'
+            }
+          }
+        }
+      }
+    }
+  </script>
 </head>
 <body class="bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white min-h-screen">
   <!-- Header with Hamburger -->
