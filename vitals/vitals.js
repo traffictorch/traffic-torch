@@ -89,4 +89,27 @@ document.addEventListener('DOMContentLoaded', () => {
       loading.classList.add('hidden');
     }
   });
+  
+  
+  
+const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ['Now', '+30 days', '+60 days'],
+    datasets: [{
+      label: 'Projected Vitality Index',
+      data: [vitality, Math.min(100, vitality + 12), Math.min(100, vitality + 25)],
+      borderColor: accentColor,
+      backgroundColor: accentColor + '33',
+      tension: 0.4,
+      fill: true
+    }]
+  },
+  options: { responsive: true, maintainAspectRatio: false }
+});  
+  
+  
+  
 });
