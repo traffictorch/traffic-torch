@@ -3,25 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Core Web Vitals Checker – 360° Audit + AI Fixes 2025 | TrafficTorch</title>
-  <meta name="description" content="Instant LCP/INP/CLS analysis + competitive gaps, AI fixes & rank forecast. Educational What/Why/How + 2025 benchmarks.">
+  <title>Core Web Vitals Checker – Instant 360° Audit + AI Fixes | TrafficTorch</title>
+  <meta name="description" content="One URL → Real LCP, INP, CLS + Vitality Index, AI fixes, rank forecast. No bloat. 2025-ready.">
   <link rel="stylesheet" href="/style.css">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="/favicon.ico">
-  <script src="https://unpkg.com/web-vitals@4/dist/web-vitals.umd.min.js"></script>
 </head>
 <body>
   <main class="audit-container">
     <section class="hero-section">
-      <h1>Core Web Vitals Audit 🚀</h1>
-      <p>Enter URL for instant 360° score, gaps vs. competitors, AI fixes & 2025 rank forecast. Educational breakdowns included.</p>
+      <h1>Core Web Vitals Audit</h1>
+      <p>Enter URL → Instant 360° Vitality Score, AI fixes & Google rank forecast. Real PageSpeed + CrUX data.</p>
       <form id="audit-form" class="input-group">
-        <input type="url" id="url-input" placeholder="https://example.com" required aria-label="Main URL">
-        <input type="url" id="comp1" placeholder="Optional: Competitor 1">
-        <input type="url" id="comp2" placeholder="Optional: Competitor 2">
+        <input type="url" id="url-input" placeholder="https://example.com" required>
         <button type="submit" id="audit-btn">Run Audit</button>
       </form>
-      <small>Powered by PageSpeed API (Lighthouse 13.0) – Free unlimited with key.</small>
+      <small>Powered by PageSpeed Insights API (Lighthouse 13.0) – Unlimited with key</small>
     </section>
 
     <section id="loading" class="loading hidden">
@@ -30,64 +27,52 @@
     </section>
 
     <section id="results" class="results hidden">
-      <button id="export-pdf" class="export-btn">Export Report PDF 📄</button>
-      <h2 id="page-title"></h2>
+      <button id="export-pdf">Export Report PDF</button>
+      <h2 id="page-title">Core Vitals Report</h2>
 
       <div class="score-card">
         <h3>Vitality Index (360° Score)</h3>
         <div id="overall-score" class="score">—</div>
         <p id="score-description"></p>
-        <canvas id="radar-chart" width="300" height="300"></canvas> <!-- New: Radar for balance -->
       </div>
 
       <div class="metrics-grid">
-        <div class="metric-card" data-metric="LCP" title="Hover for glossary">
-          <h3>Largest Contentful Paint <span class="tooltip">What: Largest element load time. Why: Core SEO signal; >2.5s = 24% bounce hike (2025 CrUX). How: Prioritize hero assets.</span></h3>
+        <div class="metric-card">
+          <h3>Largest Contentful Paint (LCP)</h3>
           <div class="value" id="lcp-value">—</div>
           <div class="status good" id="lcp-status">Good</div>
+          <p class="edu">What: Largest element load time<br>Why: Core ranking factor (2025)<br>How: Optimize hero image, critical CSS</p>
         </div>
-        <!-- Similar for INP & CLS with updated 2025 tooltips -->
-        <div class="metric-card" data-metric="INP" title="...">
-          <h3>Interaction to Next Paint <span class="tooltip">What: Click-to-response. Why: Replaces FID; <200ms mobile benchmark 2025. How: Break long tasks.</span></h3>
+        <div class="metric-card">
+          <h3>Interaction to Next Paint (INP)</h3>
           <div class="value" id="inp-value">—</div>
           <div class="status" id="inp-status">Good</div>
+          <p class="edu">What: Responsiveness to clicks<br>Why: <200ms = good mobile UX<br>How: Reduce JS, defer scripts</p>
         </div>
-        <div class="metric-card" data-metric="CLS">
-          <h3>Cumulative Layout Shift <span class="tooltip">What: Page shifts. Why: Misclicks cost 9% conversions. How: Reserve space for dynamic content.</span></h3>
+        <div class="metric-card">
+          <h3>Cumulative Layout Shift (CLS)</h3>
           <div class="value" id="cls-value">—</div>
           <div class="status" id="cls-status">Good</div>
+          <p class="edu">What: Unexpected movement<br>Why: Causes mis-clicks & rage<br>How: Set width/height on images/ads</p>
         </div>
       </div>
 
-      <section class="deep-dive">
-        <h3>Competitive Gaps (vs. 2025 Benchmarks)</h3>
-        <table id="opportunities" class="opportunities-table">
-          <thead><tr><th>Metric</th><th>Your Score</th><th>Competitor Avg</th><th>Industry Avg</th><th>Gap %</th><th>Quick Win</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </section>
-
       <section class="fixes">
-        <h3>AI-Generated Fixes (Personalized for 2025)</h3>
+        <h3>AI-Generated Fixes (2025 Optimized)</h3>
         <ul id="fix-list"></ul>
       </section>
 
       <section class="forecast">
-        <h3>Predictive Rank Forecast (CrUX Trends)</h3>
+        <h3>Predictive Rank Forecast</h3>
         <canvas id="forecast-chart"></canvas>
         <p id="forecast-text"></p>
-      </section>
-
-      <section class="glossary">
-        <h3>Learn More: 2025 CWV Glossary</h3>
-        <details><summary>LCP Details</summary><p>2025 Tip: Use fetchpriority="high" for above-fold images.</p></details>
-        <!-- More for INP/CLS -->
       </section>
     </section>
   </main>
 
-  <script type="module" src="/vitals.js"></script>
+  <!-- Correct path: vitals.js is in /vitals/ folder -->
+  <script type="module" src="/vitals/vitals.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script> <!-- For PDF export -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </body>
 </html>
