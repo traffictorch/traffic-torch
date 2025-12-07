@@ -3,21 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Core Web Vitals Checker – Free Real-Time Audit Tool | TrafficTorch</title>
+  <title>Core Web Vitals Checker – Fix Quota Errors | Free Tool | TrafficTorch</title>
   <meta name="description" content="Instant Core Web Vitals audit with LCP, INP, CLS scores. 360° health score, competitive gap analysis, AI fixes & Google rank forecast.">
   <link rel="stylesheet" href="https://traffictorch.net/vitals/style.css">
   <link rel="icon" href="https://traffictorch.net/favicon.ico">
+  <script src="https://unpkg.com/web-vitals@4/dist/web-vitals.umd.min.js"></script>
 </head>
 <body>
   <main class="audit-container">
-    <section class="hero-section">
-      <h1>Core Web Vitals Audit</h1>
-      <p>Get real Google PageSpeed data + LCP • INP • CLS analysis. Instant 360° health score, AI fixes & rank forecast.</p>
-      <form id="audit-form" class="input-group">
-        <input type="url" id="url-input" placeholder="https://example.com" required aria-label="Website URL">
-        <button type="submit" id="audit-btn">Run Audit 🚀</button>
-      </form>
-    </section>
+<section class="hero-section">
+  <h1>Core Web Vitals Audit</h1>
+  <p>Get real Google PageSpeed data + LCP • INP • CLS analysis. Instant 360° health score, AI fixes & rank forecast. (Free quota? Add your API key below.)</p>
+  <form id="audit-form" class="input-group">
+    <input type="url" id="url-input" placeholder="https://example.com" required aria-label="Website URL">
+    <button type="submit" id="audit-btn">Run Audit 🚀</button>
+  </form>
+  <small id="api-note" style="display:none; color: #666;">Paste API key here for unlimited audits: <input type="text" id="api-key" placeholder="AIza..."></small>
+</section>
 
     <section id="loading" class="loading hidden">
       <div class="spinner"></div>
