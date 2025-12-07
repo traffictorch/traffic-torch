@@ -5,118 +5,88 @@ document.addEventListener('DOMContentLoaded', () => {
   const loading = document.getElementById('loading');
   const results = document.getElementById('results');
   const fixList = document.getElementById('fix-list');
+  const toggle = document.getElementById('theme-toggle');
 
-  // Export PDF
+  toggle.addEventListener('click', () => {
+    document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  });
+
+  // Export
   document.getElementById('export-pdf').addEventListener('click', () => {
-    html2canvas(document.querySelector('#results')).then(canvas => {
-      const link = document.createElement('a');
-      link.download = 'vitals-report.png';
-      link.href = canvas.toDataURL();
-      link.click();
+    html2canvas(results).then(canvas => {
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL();
+      a.download = 'vitals-report.png';
+      a.click();
     });
   });
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const url = document.getElementById('url-input').value.trim();
-    if (!url.startsWith('http')) return alert('Please enter a valid URL');
+    if (!url) return;
 
     loading.classList.remove('hidden');
-    results.classList.add('hidden');
+    results.style.display = 'none';
 
     try {
-      // Clean timeout without AbortController
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      const fetchPromise = fetch(`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=mobile&key=${API_KEY}`);
+      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 15000));
+      const res = await Promise.race([fetchPromise, timeoutPromise]);
 
-      const res = await fetch(
-        `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=mobile&key=${API_KEY}`,
-        { signal: controller.signal }
-      );
-
-      clearTimeout(timeoutId);
-
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) throw new Error('API Error');
 
       const data = await res.json();
-      if (data.error) throw new Error(data.error.message || 'API Error');
+      if (data.error) throw new Error(data.error.message);
 
       const lhr = data.lighthouseResult;
       const crux = data.loadingExperience?.metrics || {};
-      const perfScore = Math.round(lhr.categories.performance.score * 100);
+      const score = Math.round(lhr.categories.performance.score * 100);
 
-      const lcp = crux.LARGEST_CONTENTFUL_PAINT_MS?.percentile || lhr.audits['largest-contentful-paint'].numericValue || 3500;
-      const inp = crux.INTERACTION_TO_NEXT_PAINT_MS?.percentile || 250;
-      const cls = (crux.CUMULATIVE_LAYOUT_SHIFT_SCORE?.percentile || lhr.audits['cumulative-layout-shift'].numericValue || 0.2) / 100;
+      const lcp = crux.LARGEST_CONTENTFUL_PAINT_MS?.percentile || lhr.audits['largest-contentful-paint'].numericValue || 3000;
+      const inp = crux.INTERACTION_TO_NEXT_PAINT_MS?.percentile || lhr.audits['interaction-to-next-paint']?.numericValue || 200;
+      const cls = crux.CUMULATIVE_LAYOUT_SHIFT_SCORE?.percentile / 100 || lhr.audits['cumulative-layout-shift'].numericValue || 0.1;
 
-      const vitality = Math.min(99, Math.round(
-        perfScore * 0.6 +
-        (lcp <= 2500 ? 20 : 8) +
-        (inp <= 200 ? 15 : 6) +
-        (cls <= 0.1 ? 15 : 6)
-      ));
+      const vitality = Math.round(score * 0.6 + (2500 / lcp * 20) + (200 / inp * 10) + (0.1 / cls * 10));
 
-      // Update UI
-      document.getElementById('page-title').textContent = new URL(url).hostname;
+      document.getElementById('page-title').textContent = `Report for ${url}`;
       document.getElementById('overall-score').textContent = vitality;
-      document.getElementById('score-label').textContent = vitality >= 90 ? 'Elite' : vitality >= 75 ? 'Strong' : 'Needs Work';
+      document.getElementById('score-description').textContent = vitality > 90 ? 'Excellent' : 'Needs Improvement';
 
-      document.getElementById('lcp-value').textContent = (lcp/1000).toFixed(2) + 's';
-      document.getElementById('inp-value').textContent = Math.round(inp) + 'ms';
+      document.getElementById('lcp-value').textContent = (lcp / 1000).toFixed(2) + 's';
+      document.getElementById('lcp-status').textContent = lcp <= 2500 ? 'Good' : 'Poor';
+      document.getElementById('lcp-status').className = lcp <= 2500 ? 'status good' : 'status bad';
+
+      document.getElementById('inp-value').textContent = inp + 'ms';
+      document.getElementById('inp-status').textContent = inp <= 200 ? 'Good' : 'Poor';
+      document.getElementById('inp-status').className = inp <= 200 ? 'status good' : 'status bad';
+
       document.getElementById('cls-value').textContent = cls.toFixed(3);
+      document.getElementById('cls-status').textContent = cls <= 0.1 ? 'Good' : 'Poor';
+      document.getElementById('cls-status').className = cls <= 0.1 ? 'status good' : 'status bad';
 
-      // Status
-      ['lcp', 'inp', 'cls'].forEach(m => {
-        const val = m === 'lcp' ? lcp : m === 'inp' ? inp : cls * 100;
-        const good = (m === 'lcp' && val <= 2500) || (m === 'inp' && val <= 200) || (m === 'cls' && val <= 10);
-        const el = document.getElementById(m + '-status');
-        el.textContent = good ? 'Good' : 'Poor';
-        el.className = 'status ' + (good ? 'good' : 'bad');
-      });
-
-      // AI Fixes
       fixList.innerHTML = '';
-      const add = (text) => {
-        const li = document.createElement('li');
-        li.innerHTML = text;
-        fixList.appendChild(li);
-      };
+      if (lcp > 2500) fixList.innerHTML += '<li>Optimize LCP: Use WebP images, preload critical resources.</li>';
+      if (inp > 200) fixList.innerHTML += '<li>Improve INP: Break long tasks, use web workers.</li>';
+      if (cls > 0.1) fixList.innerHTML += '<li>Fix CLS: Set explicit sizes for images and ads.</li>';
 
-      if (lcp > 2500) add('Optimize hero image → Use WebP + <code>fetchpriority="high"</code>');
-      if (inp > 200) add('Reduce JavaScript → Defer non-critical scripts');
-      if (cls > 0.1) add('Prevent layout shift → Set width/height on images & ads');
-      if (perfScore < 80) add('Enable compression → Brotli + caching headers');
-
-      // Forecast Chart
-      new Chart(document.getElementById('forecast-chart'), {
+      const ctx = document.getElementById('forecast-chart').getContext('2d');
+      new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ['Now', '+30d', '+60d', '+90d'],
-          datasets: [{
-            label: 'With Fixes',
-            data: [vitality, vitality + 8, vitality + 15, Math.min(99, vitality + 22)],
-            borderColor: '#00ff88',
-            backgroundColor: 'rgba(0,255,136,0.1)',
-            tension: 0.4,
-            fill: true
-          }]
+          labels: ['Now', '30 days', '60 days'],
+          datasets: [{ label: 'Score Projection', data: [vitality, vitality + 10, vitality + 20], borderColor: var(--accent) }]
         },
-        options: {
-          responsive: true,
-          plugins: { legend: { display: false } }
-        }
+        options: { responsive: true }
       });
 
-      document.getElementById('forecast-text').textContent = 
-        `Implement fixes → Expect +${Math.round((99 - vitality) * 0.9)}% performance & ranking boost in 90 days`;
+      document.getElementById('forecast-text').textContent = 'With fixes, expect rank boost in 60 days.';
 
       loading.classList.add('hidden');
-      results.classList.remove('hidden');
-
+      results.style.display = 'block';
     } catch (err) {
+      alert('Error: ' + err.message);
       loading.classList.add('hidden');
-      const msg = err.name === 'AbortError' ? 'Request timed out – try again' : err.message;
-      alert('Error: ' + msg);
     }
   });
 });

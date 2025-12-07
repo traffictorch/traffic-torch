@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Core Web Vitals Audit – Instant 360° Score + AI Fixes | TrafficTorch</title>
-  <meta name="description" content="One URL → Real LCP, INP, CLS + Vitality Score, AI fixes & rank forecast. 2025-ready.">
+  <title>Core Web Vitals Audit Tool - TrafficTorch</title>
+  <meta name="description" content="Instant Core Web Vitals audit: LCP, INP, CLS with 360° score, AI fixes, rank forecast. Mobile PWA ready.">
+  <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/vitals/style.css">
   <link rel="manifest" href="/manifest.json">
 </head>
@@ -12,66 +13,64 @@
   <main class="audit-container">
     <section class="hero">
       <h1>Core Web Vitals Audit</h1>
-      <p class="tagline">Enter URL → Instant 360° Vitality Score, AI fixes & Google rank forecast</p>
-      <form id="audit-form" class="input-group">
-        <input type="url" id="url-input" placeholder="https://yoursite.com" required>
+      <p>One URL → 360° Score + Fixes + Forecast</p>
+      <form id="audit-form">
+        <input type="url" id="url-input" placeholder="https://example.com" required>
         <button type="submit">Run Audit</button>
       </form>
-      <small>Real PageSpeed + CrUX data • Lighthouse 13.0 • Unlimited</small>
+      <button id="theme-toggle">Toggle Theme</button>
     </section>
 
     <section id="loading" class="loading hidden">
       <div class="spinner"></div>
-      <p>Analyzing performance...</p>
+      <p>Analyzing...</p>
     </section>
 
-    <section id="results" class="results hidden">
-      <div class="header">
-        <h2 id="page-title"></h2>
-        <button id="export-pdf" class="export-btn">Export PDF</button>
-      </div>
+    <section id="results" class="results" style="display:none;">
+      <h2 id="page-title"></h2>
+      <button id="export-pdf">Export PDF</button>
 
       <div class="score-card">
-        <div class="vitality">Vitality Index</div>
-        <div id="overall-score" class="score">—</div>
-        <div id="score-label">Loading...</div>
+        <h3>Vitality Index</h3>
+        <div id="overall-score" class="score"></div>
+        <p id="score-description"></p>
       </div>
 
       <div class="metrics-grid">
         <div class="metric-card">
-          <h3>Largest Contentful Paint</h3>
-          <div class="value" id="lcp-value">—</div>
-          <div class="status" id="lcp-status">—</div>
-          <p class="info">What: Largest visible content<br>Why: Core ranking factor<br>How: Optimize hero image + critical CSS</p>
+          <h3>Largest Contentful Paint (LCP)</h3>
+          <div id="lcp-value"></div>
+          <div id="lcp-status" class="status"></div>
+          <p>What: Time to load main content.<br>Why: Affects perceived speed.<br>How: Optimize images, CSS.</p>
         </div>
         <div class="metric-card">
-          <h3>Interaction to Next Paint</h3>
-          <div class="value" id="inp-value">—</div>
-          <div class="status" id="inp-status">—</div>
-          <p class="info">What: Click responsiveness<br>Why: <200ms = good UX<br>How: Reduce main thread work</p>
+          <h3>Interaction to Next Paint (INP)</h3>
+          <div id="inp-value"></div>
+          <div id="inp-status" class="status"></div>
+          <p>What: Responsiveness to input.<br>Why: Poor INP frustrates users.<br>How: Reduce JS execution.</p>
         </div>
         <div class="metric-card">
-          <h3>Cumulative Layout Shift</h3>
-          <div class="value" id="cls-value">—</div>
-          <div class="status" id="cls-status">—</div>
-          <p class="info">What: Unexpected movement<br>Why: Causes mis-clicks<br>How: Set dimensions on media</p>
+          <h3>Cumulative Layout Shift (CLS)</h3>
+          <div id="cls-value"></div>
+          <div id="cls-status" class="status"></div>
+          <p>What: Unexpected layout shifts.<br>Why: Causes misclicks.<br>How: Reserve space for elements.</p>
         </div>
       </div>
 
       <section class="fixes">
-        <h3>AI-Powered Fixes</h3>
+        <h3>AI Fixes</h3>
         <ul id="fix-list"></ul>
       </section>
 
       <section class="forecast">
-        <h3>90-Day Rank Forecast</h3>
+        <h3>Rank Forecast</h3>
         <canvas id="forecast-chart"></canvas>
-        <p id="forecast-text" class="forecast-text"></p>
+        <p id="forecast-text"></p>
       </section>
     </section>
   </main>
 
-  <script type="module" src="/vitals/vitals.js"></script>
+  <script src="/vitals/vitals.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </body>
