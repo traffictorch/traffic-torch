@@ -1,3 +1,4 @@
+// script.js – Epic Intent Tool v2 – REAL functionality 2025
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('audit-form');
     const loading = document.getElementById('loading');
@@ -5,60 +6,102 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
 
-    // Theme Toggle
+    // Day/Night Toggle
     themeToggle.addEventListener('click', () => {
         body.classList.toggle('day-mode');
         body.classList.toggle('night-mode');
         themeToggle.textContent = body.classList.contains('night-mode') ? '☀️' : '🌙';
+        localStorage.setItem('theme', body.classList.contains('night-mode') ? 'night' : 'day');
     });
+    // Load saved theme
+    if (localStorage.getItem('theme') === 'night') {
+        body.classList.add('night-mode');
+        themeToggle.textContent = '☀️';
+    }
 
-    // Form Submit
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const url = document.getElementById('url-input').value;
+        const url = document.getElementById('url-input').value.trim();
         if (!url) return;
 
         form.classList.add('hidden');
         loading.classList.remove('hidden');
+        results.classList.add('hidden');
 
-        // Simulate API call (replace with fetch to your backend/AI endpoint)
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Mock delay
+        try {
+            const response = await fetch('api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url })
+            });
 
-        // Mock Audit Data (In production: Parse real content via API)
-        const mockData = {
-            score: 85,
-            modules: [
-                { name: 'Intent Alignment', score: 90, desc: 'Strong informational match (92% query coverage).' },
-                { name: 'E-E-A-T', score: 80, desc: 'High expertise; add author bios for trust boost.' }
-            ],
-            gaps: [
-                { metric: 'Intent Depth', yours: 75, competitor: 95, gap: '-20' },
-                { metric: 'Backlinks', yours: 50, competitor: 80, gap: '-30' }
-            ],
-            fixes: [
-                'High: Add FAQ section matching top queries.',
-                'Med: Include expert quotes with links.',
-                'Low: Optimize H2 tags for transactional signals.'
-            ],
-            forecast: '+15 positions in 30 days with 80% fix implementation.'
-        };
+            const data = await response.json();
 
-        renderResults(mockData);
-        loading.classList.add('hidden');
-        results.classList.remove('hidden');
+            if (data.error) throw new Error(data.error);
+
+            renderRealResults(data);
+        } catch (err) {
+            alert('Error: ' + err.message);
+            console.error(err);
+        } finally {
+            loading.classList.add('hidden');
+            results.classList.remove('hidden');
+        }
     });
 
-    function renderResults(data) {
-        document.getElementById('score').textContent = data.score;
-        const modulesList = document.getElementById('modules-list');
-        modulesList.innerHTML = data.modules.map(m => `<li><strong>${m.name}:</strong> ${m.score}/100 - ${m.desc}</li>`).join('');
+    function renderRealResults(d) {
+        // 360° Score
+        document.getElementById('score').textContent = d.overall;
 
-        const tbody = document.querySelector('#gaps-table tbody');
-        tbody.innerHTML = data.gaps.map(g => `<tr><td>${g.metric}</td><td>${g.yours}</td><td>${g.competitor}</td><td>${g.gap}</td></tr>`).join('');
+        // Intent Radar Chart (simple SVG)
+        document.querySelector('.health-score').insertAdjacentHTML('beforeend', 
+            `<svg viewBox="0 0 200 200" class="radar"><polygon points="${getRadarPoints(d.intent)}" fill="rgba(0,124,186,0.3)" stroke="#007cba" stroke-width="3"/></svg>`);
 
-        const fixesList = document.getElementById('fixes-list');
-        fixesList.innerHTML = data.fixes.map(f => `<li>${f}</li>`).join('');
+        // Modules
+        const modulesHTML = `
+            <li><strong>Primary Intent:</strong> ${d.intent.type} (${d.intent.confidence}% match)</li>
+            <li><strong>Top Query Cluster:</strong> "${d.intent.topQuery}"</li>
+            <li><strong>E-E-A-T Score:</strong> ${d.eeat.overall}/100 
+                (E:${d.eeat.e} X:${d.eeat.x} A:${d.eeat.a} T:${d.eeat.t})</li>
+            <li><strong>Content Depth:</strong> ${d.content.words} words | Readability ${d.content.flesch}/100</li>
+            <li><strong>Schema Detected:</strong> ${d.schema.join(', ') || 'None 😱'}</li>
+        `;
+        document.getElementById('modules-list').innerHTML = modulesHTML;
 
-        document.getElementById('forecast-text').textContent = data.forecast;
+        // Competitive Gaps
+        let gapsHTML = '';
+        d.competitors.forEach(c => {
+            gapsHTML += `<tr>
+                <td>${c.rank}. ${c.title.slice(0,40)}...</td>
+                <td>${c.intentScore}</td>
+                <td>${c.eeatScore}</td>
+                <td style="color:${c.gap>0?'red':'green'}">${c.gap > 0 ? '+' : ''}${c.gap}</td>
+            </tr>`;
+        });
+        document.querySelector('#gaps-table tbody').innerHTML = gapsHTML;
+
+        // AI Fixes (real OpenAI suggestions)
+        const fixesHTML = d.fixes.map((f, i) => 
+            `<li><strong>${f.priority} Priority:</strong> ${f.fix} 
+             <br><small>Impact: ${f.impact} | Effort: ${f.effort}</small></li>`
+        ).join('');
+        document.getElementById('fixes-list').innerHTML = fixesHTML;
+
+        // Forecast
+        document.getElementById('forecast-text').innerHTML = 
+            `🎯 <strong>${d.forecast.rankGain} position gain</strong> expected in ${d.forecast.days} days 
+             if you implement <strong>${d.forecast.fixRate}%</strong> of fixes.`;
+    }
+
+    function getRadarPoints(intent) {
+        const angles = [0, 90, 180, 270];
+        const values = [intent.informational, intent.commercial, intent.transactional, intent.navigational];
+        return values.map((v, i) => {
+            const angle = angles[i] * Math.PI / 180;
+            const radius = (v / 100) * 80;
+            const x = 100 + radius * Math.cos(angle);
+            const y = 100 + radius * Math.sin(angle);
+            return `${x},${y}`;
+        }).join(' ');
     }
 });
