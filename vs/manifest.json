@@ -4,12 +4,12 @@
     "name": "Traffic Torch Competition Tool",
     "icons": [
         {
-            "src": "icon-192.webp",
+            "src": "logo-192.webp",
             "type": "image/webp",
             "sizes": "192x192"
         },
         {
-            "src": "icon-512.webp",
+            "src": "logo-192.webp",
             "type": "image/webp",
             "sizes": "512x512"
         }
