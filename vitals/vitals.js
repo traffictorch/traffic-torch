@@ -45,13 +45,12 @@ document.addEventListener('DOMContentLoaded', () => {
         `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=mobile&key=${API_KEY}`
       );
 
+      // ←←← FIXED TIMEOUT HERE (60 seconds instead of 15)
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Request timed out')), 15000)
+        setTimeout(() => reject(new Error('Google API is slow today – try again in a few seconds')), 60000)
       );
 
       const res = await Promise.race([fetchPromise, timeoutPromise]);
-      if (!res.ok) throw new Error('PageSpeed API error');
-
       const data = await res.json();
       if (data.error) throw new Error(data.error.message);
 
