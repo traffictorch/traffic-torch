@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traffic Torch – AI Content Audit</title>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="manifest" href="/manifest.json" />
+  
+  <!-- Preload + load custom CSS -->
+  <link rel="preload" href="style.css" as="style" />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            orange: { 400: '#fb923c', 500: '#f97316' },
+            pink: { 600: '#ec4899' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="text-white min-h-screen">
+  <div class="container mx-auto px-6 py-12 max-w-5xl">
+    <header class="text-center mb-12">
+      <a href="/" class="inline-block mb-8">
+        <img src="/logo.webp" alt="Traffic Torch" class="w-32 rounded-2xl shadow-2xl">
+      </a>
+      <h1 class="text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
+        AI Content Audit
+      </h1>
+      <p class="text-xl text-gray-400">One URL → Instant AI detection with full explanations</p>
+    </header>
+
+    <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-white/20">
+      <form id="urlForm" class="flex flex-col md:flex-row gap-6 max-w-3xl mx-auto">
+        <input type="url" id="urlInput" placeholder="https://example.com" required
+               class="flex-1 px-8 py-5 text-lg rounded-2xl bg-white/20 border border-white/40 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 text-white" />
+        <button type="submit"
+                class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
+          Analyze 🚀
+        </button>
+      </form>
+
+      <div id="loading" class="hidden text-center mt-12">
+        <div class="inline-block animate-spin rounded-full h-20 w-20 border-8 border-t-orange-500 border-r-pink-500 border-b-orange-500 border-l-pink-500"></div>
+        <p class="mt-8 text-2xl">Scanning for AI patterns...</p>
+      </div>
+    </div>
+
+    <div id="report" class="hidden mt-16"></div>
+  </div>
+
+  <!-- Load JS last for speed -->
+  <script src="script.js" type="module"></script>
+</body>
+</html>

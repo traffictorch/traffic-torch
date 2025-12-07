@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to bottom right, #0f172a, #1e1b4b, #000000);
+  min-height: 100vh;
+}
+
+.prose p {
+  margin-bottom: 1rem;
+}
+
+.prose strong {
+  color: #f97316;
+  font-weight: 800;
+}
