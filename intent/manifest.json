@@ -1,0 +1,13 @@
+{
+    "name": "Traffic Torch Intent Auditor",
+    "short_name": "IntentTorch",
+    "description": "Epic SEO intent tool",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#fff",
+    "theme_color": "#007cba",
+    "icons": [
+        { "src": "logo-192.webp", "sizes": "192x192", "type": "image/webp" },
+        { "src": "logo-512.webp", "sizes": "512x512", "type": "image/webp" }
+    ]
+}
