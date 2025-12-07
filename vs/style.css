@@ -1,187 +1,54 @@
-/* styles.css – Traffic Torch VS Tool – Exact match with other tools (Dec 2025) */
+/* style.css – Traffic Torch VS Tool – EXACT same as all other tools */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
+* { margin:0; padding:0; box-sizing:border-box; }
 body {
   font-family: 'Inter', sans-serif;
   background: linear-gradient(to bottom right, #0f172a, #1e1b4b, #000000);
   color: #e2e8f0;
   min-height: 100vh;
-  line-height: 1.6;
 }
 
 header {
-  background: rgba(255, 102, 0, 0.15);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 102, 0, 0.3);
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  background: rgba(255,102,0,0.15);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,102,0,0.3);
+  position: sticky; top: 0; z-index: 100;
 }
-
-.container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo {
-  font-size: 1.8rem;
-  font-weight: 900;
-  color: #ff6600;
-}
-
-nav ul {
-  display: flex;
-  gap: 2rem;
-  list-style: none;
-}
-
-nav a {
-  color: #cbd5e1;
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.2s;
-}
-
+.container { max-width: 1280px; margin: 0 auto; padding: 1rem; }
+.header-inner { display: flex; justify-content: space-between; align-items: center; }
+.logo { font-size: 2rem; font-weight: 900; color: #ff6600; }
+nav { display: flex; gap: 2rem; align-items: center; }
+nav a { color: #cbd5e1; text-decoration: none; font-weight: 600; }
 nav a:hover { color: #ff6600; }
+#mode-toggle { background:#ff6600; color:white; border:none; padding:0.6rem 1.2rem; border-radius:8px; font-weight:600; cursor:pointer; }
 
-#mode-toggle {
-  background: #ff6600;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-}
+.hero { text-align:center; padding:5rem 1rem; }
+.hero h2 { font-size:3.5rem; font-weight:900; background:linear-gradient(to right,#ff8a00,#f97316); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:1rem; }
+.hero p { font-size:1.3rem; color:#94a3b8; max-width:800px; margin:0 auto 2.5rem; }
 
-.hero {
-  text-align: center;
-  padding: 4rem 1rem;
-}
+form { display:flex; flex-direction:column; gap:1rem; max-width:640px; margin:0 auto; }
+input[type="url"] { padding:1rem; background:rgba(255,255,255,0.05); border:1px solid #334155; border-radius:8px; color:white; font-size:1.1rem; }
+input::placeholder { color:#64748b; }
+.button { background:#ff6600; color:white; border:none; padding:1rem; font-size:1.2rem; font-weight:600; border-radius:8px; cursor:pointer; }
+.button:hover { background:#e65c00; }
 
-.hero h2 {
-  font-size: 3rem;
-  font-weight: 900;
-  background: linear-gradient(to right, #ff8a00, #f97316);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 1rem;
-}
+#loading { margin:3rem 0; font-size:1.3rem; color:#ff6600; }
 
-.hero p {
-  font-size: 1.25rem;
-  color: #94a3b8;
-  max-width: 700px;
-  margin: 0 auto 2rem;
-}
+.score-comparison { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:2rem; margin:4rem 0; }
+.score-card { background:rgba(255,255,255,0.05); border:1px solid rgba(255,102,0,0.3); border-radius:12px; padding:2rem; text-align:center; }
+.health-score { font-size:5.5rem; font-weight:900; color:#ff6600; }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  max-width: 600px;
-  margin: 0 auto;
-}
+.gap-analysis,.fixes,.forecast { margin-top:4rem; }
+.gap-analysis h3,.fixes h3,.forecast h3 { font-size:2rem; color:#ff6600; margin-bottom:1.5rem; }
+.result-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,102,0,0.2); border-radius:10px; padding:1.5rem; margin-bottom:1.5rem; }
+.result-card strong { color:#f97316; font-weight:800; }
 
-input[type="url"] {
-  padding: 1rem;
-  border: 1px solid #334155;
-  background: rgba(255,255,255,0.05);
-  border-radius: 8px;
-  color: white;
-  font-size: 1rem;
-}
+.hidden { display:none; }
 
-input[type="url"]::placeholder { color: #64748b; }
-
-.button {
-  background: #ff6600;
-  color: white;
-  border: none;
-  padding: 1rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.button:hover { background: #e65c00; }
-
-#loading { margin: 2rem 0; font-size: 1.2rem; }
-
-#results {
-  padding: 4rem 1rem;
-}
-
-.score-comparison {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  margin: 3rem 0;
-}
-
-.score-card {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,102,0,0.3);
-  border-radius: 12px;
-  padding: 2rem;
-  text-align: center;
-}
-
-.health-score {
-  font-size: 4.5rem;
-  font-weight: 900;
-  color: #ff6600;
-  margin: 1rem 0;
-}
-
-.gap-analysis, .fixes, .forecast {
-  margin-top: 4rem;
-}
-
-.gap-analysis h4,
-.fixes h4,
-.forecast h4 {
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  color: #ff6600;
-}
-
-.result-card {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,102,0,0.2);
-  border-radius: 10px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.result-card strong {
-  color: #f97316;
-  font-weight: 800;
-}
-
-.hidden { display: none; }
-
-/* MOBILE-FRIENDLY OVERRIDES – Exact match with other tools */
-@media (max-width: 1024px) {
-  .container, .hero, #results { padding-left: 1rem; padding-right: 1rem; }
-  .hero h2 { font-size: 2.5rem; }
-  .health-score { font-size: 6rem !important; }
-}
-
-@media (max-width: 480px) {
-  .hero h2 { font-size: 2rem; }
-  .health-score { font-size: 5rem !important; }
-  form { padding: 0 0.5rem; }
+/* Mobile perfection */
+@media (max-width:768px) {
+  .hero h2 { font-size:2.5rem; }
+  .health-score { font-size:4.5rem; }
+  form { padding:0 1rem; }
 }
