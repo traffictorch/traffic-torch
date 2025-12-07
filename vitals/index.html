@@ -1,76 +1,76 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Core Web Vitals Checker – Instant 360° Audit + AI Fixes | TrafficTorch</title>
-  <meta name="description" content="One URL → Real LCP, INP, CLS + Vitality Index, AI fixes, rank forecast. No bloat. 2025-ready.">
+  <title>Core Web Vitals Audit – Instant 360° Score + AI Fixes | TrafficTorch</title>
+  <meta name="description" content="One URL → Real LCP, INP, CLS + Vitality Score, AI fixes & rank forecast. 2025-ready.">
   <link rel="stylesheet" href="/style.css">
   <link rel="manifest" href="/manifest.json">
-  <link rel="icon" href="/favicon.ico">
 </head>
 <body>
   <main class="audit-container">
-    <section class="hero-section">
+    <section class="hero">
       <h1>Core Web Vitals Audit</h1>
-      <p>Enter URL → Instant 360° Vitality Score, AI fixes & Google rank forecast. Real PageSpeed + CrUX data.</p>
+      <p class="tagline">Enter URL → Instant 360° Vitality Score, AI fixes & Google rank forecast</p>
       <form id="audit-form" class="input-group">
-        <input type="url" id="url-input" placeholder="https://example.com" required>
-        <button type="submit" id="audit-btn">Run Audit</button>
+        <input type="url" id="url-input" placeholder="https://yoursite.com" required>
+        <button type="submit">Run Audit</button>
       </form>
-      <small>Powered by PageSpeed Insights API (Lighthouse 13.0) – Unlimited with key</small>
+      <small>Real PageSpeed + CrUX data • Lighthouse 13.0 • Unlimited</small>
     </section>
 
     <section id="loading" class="loading hidden">
       <div class="spinner"></div>
-      <p>Fetching real PageSpeed data...</p>
+      <p>Analyzing performance...</p>
     </section>
 
     <section id="results" class="results hidden">
-      <button id="export-pdf">Export Report PDF</button>
-      <h2 id="page-title">Core Vitals Report</h2>
+      <div class="header">
+        <h2 id="page-title"></h2>
+        <button id="export-pdf" class="export-btn">Export PDF</button>
+      </div>
 
       <div class="score-card">
-        <h3>Vitality Index (360° Score)</h3>
+        <div class="vitality">Vitality Index</div>
         <div id="overall-score" class="score">—</div>
-        <p id="score-description"></p>
+        <div id="score-label">Loading...</div>
       </div>
 
       <div class="metrics-grid">
         <div class="metric-card">
-          <h3>Largest Contentful Paint (LCP)</h3>
+          <h3>Largest Contentful Paint</h3>
           <div class="value" id="lcp-value">—</div>
-          <div class="status good" id="lcp-status">Good</div>
-          <p class="edu">What: Largest element load time<br>Why: Core ranking factor (2025)<br>How: Optimize hero image, critical CSS</p>
+          <div class="status" id="lcp-status">—</div>
+          <p class="info">What: Largest visible content<br>Why: Core ranking factor<br>How: Optimize hero image + critical CSS</p>
         </div>
         <div class="metric-card">
-          <h3>Interaction to Next Paint (INP)</h3>
+          <h3>Interaction to Next Paint</h3>
           <div class="value" id="inp-value">—</div>
-          <div class="status" id="inp-status">Good</div>
-          <p class="edu">What: Responsiveness to clicks<br>Why: <200ms = good mobile UX<br>How: Reduce JS, defer scripts</p>
+          <div class="status" id="inp-status">—</div>
+          <p class="info">What: Click responsiveness<br>Why: <200ms = good UX<br>How: Reduce main thread work</p>
         </div>
         <div class="metric-card">
-          <h3>Cumulative Layout Shift (CLS)</h3>
+          <h3>Cumulative Layout Shift</h3>
           <div class="value" id="cls-value">—</div>
-          <div class="status" id="cls-status">Good</div>
-          <p class="edu">What: Unexpected movement<br>Why: Causes mis-clicks & rage<br>How: Set width/height on images/ads</p>
+          <div class="status" id="cls-status">—</div>
+          <p class="info">What: Unexpected movement<br>Why: Causes mis-clicks<br>How: Set dimensions on media</p>
         </div>
       </div>
 
       <section class="fixes">
-        <h3>AI-Generated Fixes (2025 Optimized)</h3>
+        <h3>AI-Powered Fixes</h3>
         <ul id="fix-list"></ul>
       </section>
 
       <section class="forecast">
-        <h3>Predictive Rank Forecast</h3>
+        <h3>90-Day Rank Forecast</h3>
         <canvas id="forecast-chart"></canvas>
-        <p id="forecast-text"></p>
+        <p id="forecast-text" class="forecast-text"></p>
       </section>
     </section>
   </main>
 
-  <!-- Correct path: vitals.js is in /vitals/ folder -->
   <script type="module" src="/vitals/vitals.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
