@@ -1,0 +1,30 @@
+:root{--bg:#fff;--text:#222;--card:#f8f9fa;--accent:#0066ff;--good:#0cce6b;--warn:#ffa400;--bad:#ff4e42;--radius:12px;--shadow:0 4px 20px rgba(0,0,0,.08)}
+[data-theme=dark]{--bg:#0d1117;--text:#c9d1d9;--card:#161b22;--accent:#58a6ff;--good:#0cce6b;--warn:#ffa400;--bad:#f85149}
+body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.audit-container{max-width:1200px;margin:0 auto;padding:1rem}
+h1,h2,h3{margin:0 0 .5rem;font-weight:700}
+.hero-section{text-align:center;padding:3rem 1rem}
+.input-group{display:flex;gap:1rem;max-width:600px;margin:2rem auto}
+input[type=url]{flex:1;padding:.9rem;border:2px solid #ddd;border-radius:var(--radius);font-size:1rem}
+button{padding:.9rem 2rem;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-weight:bold;cursor:pointer;font-size:1rem}
+.loading,.hidden{display:none}
+.loading{display:block;text-align:center;padding:4rem}
+.spinner{border:5px solid #f3f3f3;border-top:5px solid var(--accent);border-radius:50%;width:50px;height:50px;animation:s 1s linear infinite;margin:0 auto 1rem}
+@keyframes s{to{transform:rotate(360deg)}}
+.results{animation:f 0.6s}
+@keyframes f{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.score-card{background:var(--card);padding:2rem;border-radius:var(--radius);box-shadow:var(--shadow);text-align:center;margin:2rem 0}
+.score{font-size:4.5rem;font-weight:900;color:var(--accent)}
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin:3rem 0}
+.metric-card{background:var(--card);padding:1.8rem;border-radius:var(--radius);box-shadow:var(--shadow)}
+.status{padding:.4rem .8rem;border-radius:6px;font-weight:bold;color:#fff;margin:1rem 0;display:inline-block}
+.status.good{background:var(--good)}
+.status.warning{background:var(--warn);color:#000}
+.status.bad{background:var(--bad)}
+.opportunities-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin:2rem 0}
+th{background:var(--accent);color:#fff;padding:1rem;text-align:left}
+td{padding:1rem;border-bottom:1px solid #3333}
+#fix-list{list-style:none;padding:0}
+#fix-list li{background:var(--card);padding:1.5rem;margin:1rem 0;border-radius:var(--radius);box-shadow:var(--shadow)}
+#forecast-chart{height:300px !important}
+@media(max-width:768px){.input-group{flex-direction:column}.metrics-grid{grid-template-columns:1fr}}

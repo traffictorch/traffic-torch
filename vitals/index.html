@@ -1,116 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Traffic Torch – Core Vitals Audit</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Core Web Vitals Checker – Free Real-Time Audit Tool | TrafficTorch</title>
+  <meta name="description" content="Instant Core Web Vitals audit with LCP, INP, CLS scores. 360° health score, competitive gap analysis, AI fixes & Google rank forecast.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="/favicon.ico">
 </head>
-<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white min-h-screen">
-  <div class="container mx-auto px-6 py-12 max-w-5xl">
-    <header class="text-center mb-12">
-      <a href="/" class="inline-block mb-8">
-        <img src="/logo.webp" alt="Traffic Torch" class="w-32 rounded-2xl shadow-2xl">
-      </a>
-      <h1 class="text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
-        Core Vitals Audit
-      </h1>
-      <p class="text-xl text-gray-400">Real Google PageSpeed data + INP/CLS/LCP</p>
-    </header>
-
-    <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-white/20">
-      <form id="vitalsForm" class="flex flex-col md:flex-row gap-6 max-w-3xl mx-auto">
-        <input type="url" id="urlInput" placeholder="https://example.com" required
-               class="flex-1 px-8 py-5 text-lg rounded-2xl bg-white/20 border border-white/40 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 text-white" />
-        <button type="submit"
-                class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
-          Run Audit 🚀
-        </button>
+<body>
+  <main class="audit-container">
+    <section class="hero-section">
+      <h1>Core Web Vitals Audit</h1>
+      <p>Get real Google PageSpeed data + LCP • INP • CLS analysis. Instant 360° health score, AI fixes & rank forecast.</p>
+      <form id="audit-form" class="input-group">
+        <input type="url" id="url-input" placeholder="https://example.com" required aria-label="Website URL">
+        <button type="submit" id="audit-btn">Run Audit 🚀</button>
       </form>
+    </section>
 
-      <div id="loading" class="hidden text-center mt-12">
-        <div class="inline-block animate-spin rounded-full h-20 w-20 border-8 border-t-orange-500 border-r-pink-500 border-b-orange-500 border-l-pink-500"></div>
-        <p class="mt-8 text-2xl">Fetching real PageSpeed data…</p>
+    <section id="loading" class="loading hidden">
+      <div class="spinner"></div>
+      <p>Fetching real PageSpeed data…</p>
+    </section>
+
+    <section id="results" class="results hidden">
+      <h2 id="page-title"></h2>
+
+      <div class="score-card">
+        <h3>Overall Performance Score</h3>
+        <div id="overall-score" class="score">—</div>
+        <p id="score-description"></p>
       </div>
-    </div>
 
-    <div id="report" class="hidden mt-16"></div>
-  </div>
+      <div class="metrics-grid">
+        <div class="metric-card" data-metric="LCP">
+          <h3>Largest Contentful Paint (LCP)</h3>
+          <div class="value" id="lcp-value">—</div>
+          <div class="status good" id="lcp-status">Good</div>
+          <p class="what">What: Time to render the largest content element.</p>
+          <p class="why">Why: Core ranking factor; >2.5s hurts UX & SEO.</p>
+          <p class="how">How: Optimize images, critical CSS, CDN, font-display: swap.</p>
+        </div>
 
-  <script>
-    const form = document.getElementById('vitalsForm');
-    const input = document.getElementById('urlInput');
-    const report = document.getElementById('report');
-    const loading = document.getElementById('loading');
-    const PROXY = 'https://api.allorigins.win/raw?url=';
+        <div class="metric-card" data-metric="INP">
+          <h3>Interaction to Next Paint (INP)</h3>
+          <div class="value" id="inp-value">—</div>
+          <div class="status" id="inp-status">Good</div>
+          <p class="what">What: Responsiveness to user interactions.</p>
+          <p class="why">Why: Replaces FID; poor INP = frustrating experience.</p>
+          <p class="how">How: Reduce JS execution, defer non-critical scripts.</p>
+        </div>
 
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-      const url = input.value.trim();
-      if (!url) return;
+        <div class="metric-card" data-metric="CLS">
+          <h3>Cumulative Layout Shift (CLS)</h3>
+          <div class="value" id="cls-value">—</div>
+          <div class="status" id="cls-status">Good</div>
+          <p class="what">What: Unexpected movement of page content.</p>
+          <p class="why">Why: Causes mis-clicks & rage clicks.</p>
+          <p class="how">How: Set width/height on images, reserve ad space.</p>
+        </div>
+      </div>
 
-      loading.classList.remove('hidden');
-      report.classList.add('hidden');
-      report.innerHTML = '';
+      <section class="deep-dive">
+        <h3>Competitive Gap Analysis</h3>
+        <table id="opportunities" class="opportunities-table">
+          <thead><tr><th>Opportunity</th><th>Your Score</th><th>Top 10 Avg</th><th>Gap</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
 
-      try {
-        const api = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=desktop`;
-        const res = await fetch(api);
-        const data = await res.json();
+      <section class="fixes">
+        <h3>AI-Generated Fixes</h3>
+        <ul id="fix-list"></ul>
+      </section>
 
-        const lcp = data.lighthouseResult?.audits['largest-contentful-paint']?.displayValue || 'N/A';
-        const cls = data.lighthouseResult?.audits['cumulative-layout-shift']?.displayValue || 'N/A';
-        const inp = data.lighthouseResult?.audits['interaction-to-next-paint']?.displayValue || 'N/A';
-        const fcp = data.lighthouseResult?.audits['first-contentful-paint']?.displayValue || 'N/A';
-        const score = data.lighthouseResult?.categories?.performance?.score * 100 || 0;
+      <section class="forecast">
+        <h3>Predictive Rank Forecast</h3>
+        <canvas id="forecast-chart"></canvas>
+        <p id="forecast-text"></p>
+      </section>
+    </section>
+  </main>
 
-        report.innerHTML = `
-          <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border ${score > 90 ? 'border-green-500/60' : score > 50 ? 'border-yellow-500/60' : 'border-red-500/60'}">
-            <h2 class="text-5xl font-bold text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-              Core Vitals Report
-            </h2>
-
-            <div class="text-center mb-16">
-              <div class="text-9xl font-black ${score > 90 ? 'text-green-500' : score > 50 ? 'text-yellow-500' : 'text-red-500'}">
-                ${Math.round(score)}
-              </div>
-              <p class="text-3xl mt-6">Performance Score / 100</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-              <div class="bg-black/40 rounded-2xl p-8 text-center border border-white/20">
-                <h3 class="text-2xl font-bold text-orange-400">LCP</h3>
-                <p class="text-5xl font-black mt-4">${lcp}</p>
-              </div>
-              <div class="bg-black/40 rounded-2xl p-8 text-center border border-white/20">
-                <h3 class="text-2xl font-bold text-orange-400">CLS</h3>
-                <p class="text-5xl font-black mt-4">${cls}</p>
-              </div>
-              <div class="bg-black/40 rounded-2xl p-8 text-center border border-white/20">
-                <h3 class="text-2xl font-bold text-orange-400">INP</h3>
-                <p class="text-5xl font-black mt-4">${inp}</p>
-              </div>
-              <div class="bg-black/40 rounded-2xl p-8 text-center border border-white/20">
-                <h3 class="text-2xl font-bold text-orange-400">FCP</h3>
-                <p class="text-5xl font-black mt-4">${fcp}</p>
-              </div>
-            </div>
-
-            <div class="text-center">
-              <a href="/" class="px-12 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
-                Back to Dashboard
-              </a>
-            </div>
-          </div>
-        `;
-
-        loading.classList.add('hidden');
-        report.classList.remove('hidden');
-      } catch (err) {
-        alert('Error: ' + err.message + ' – try a public site');
-        loading.classList.add('hidden');
-      }
-    });
-  </script>
+  <script type="module" src="/vitals.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
