@@ -1,0 +1,163 @@
+/* styles.css */
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    line-height: 1.6;
+    color: #333;
+    background-color: #fff;
+}
+
+body.dark-mode {
+    color: #ddd;
+    background-color: #1a1a1a;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background-color: #ff6600; /* Orange torch theme */
+    color: #fff;
+    padding: 10px 0;
+}
+
+.logo {
+    font-size: 24px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+}
+
+#mode-toggle {
+    background: #fff;
+    color: #ff6600;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.hero {
+    text-align: center;
+    padding: 50px 0;
+    background-color: #f9f9f9;
+}
+
+body.dark-mode .hero {
+    background-color: #222;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+input[type="url"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+body.dark-mode input[type="url"] {
+    background: #333;
+    color: #ddd;
+    border-color: #555;
+}
+
+.button {
+    background-color: #ff6600;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.button:hover {
+    background-color: #e65c00;
+}
+
+.hidden {
+    display: none;
+}
+
+#results {
+    padding: 20px 0;
+}
+
+.score-comparison {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+}
+
+.score-card {
+    flex: 1;
+    padding: 20px;
+    background: #f0f0f0;
+    border-radius: 8px;
+    text-align: center;
+}
+
+body.dark-mode .score-card {
+    background: #333;
+}
+
+.health-score {
+    font-size: 48px;
+    color: #ff6600;
+}
+
+.gap-analysis, .fixes, .forecast {
+    margin-top: 30px;
+}
+
+ul {
+    list-style: disc;
+    padding-left: 20px;
+}
+
+.result-card {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+body.dark-mode .result-card {
+    background: #2a2a2a;
+    border-color: #444;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .score-comparison {
+        flex-direction: column;
+    }
+    
+    form {
+        padding: 0 20px;
+    }
+}
+
+/* PWA install prompt styles (if needed) */
