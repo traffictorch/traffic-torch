@@ -3,26 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Traffic Torch – Rage-Quit Risk</title>
+  <title>Usability Audit – Traffic Torch</title>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="manifest" href="/manifest.json" />
+  <!-- Preload + load custom CSS -->
+  <link rel="preload" href="style.css" as="style" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            orange: { 400: '#fb923c', 500: '#f97316' },
+            pink: { 600: '#ec4899' }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- LOCAL MOBILE FIX (Padding/Fonts – From Our Chat) -->
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-    body { font-family: 'Inter', sans-serif; }
+    @media (max-width: 1024px) {
+      .container, .max-w-5xl, .max-w-3xl, .max-w-4xl { max-width: 100% !important; padding-left: 1rem !important; padding-right: 1rem !important; }
+      .p-12, .p-10, .p-8 { padding: 1.5rem !important; }
+      .text-5xl { font-size: 2rem !important; line-height: 1.1 !important; }
+      .text-9xl { font-size: 6rem !important; line-height: 1 !important; }
+    }
+    @media (max-width: 480px) { .p-12, .p-10 { padding: 1.25rem !important; } .text-5xl { font-size: 1.875rem !important; } .text-9xl { font-size: 5.5rem !important; } }
   </style>
 </head>
-<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white min-h-screen">
-  <div class="container mx-auto px-6 py-12 max-w-6xl">
+<body class="text-white min-h-screen">
+  <div class="container mx-auto px-6 py-12 max-w-5xl">
     <header class="text-center mb-12">
-      <a href="/traffic-torch/" class="inline-block mb-8">
-        <img src="/traffic-torch/logo.webp" alt="Traffic Torch" class="w-32 rounded-2xl shadow-2xl">
+      <a href="/" class="inline-block mb-8">
+        <img src="/logo.webp" alt="Traffic Torch" class="w-32 rounded-2xl shadow-2xl">
       </a>
       <h1 class="text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
-        Rage-Quit Risk
+        Usability Audit
       </h1>
-      <p class="text-xl text-gray-400">How fast will users leave your page?</p>
+      <p class="text-xl text-gray-400">One URL → Instant UX score + deep-dive fixes</p>
     </header>
-
     <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-white/20">
       <form id="urlForm" class="flex flex-col md:flex-row gap-6 max-w-3xl mx-auto">
         <input type="url" id="urlInput" placeholder="https://example.com" required
@@ -32,116 +54,14 @@
           Analyze 🚀
         </button>
       </form>
-
       <div id="loading" class="hidden text-center mt-12">
         <div class="inline-block animate-spin rounded-full h-20 w-20 border-8 border-t-orange-500 border-r-pink-500 border-b-orange-500 border-l-pink-500"></div>
-        <p class="mt-8 text-2xl">Scanning for rage triggers…</p>
+        <p class="mt-8 text-2xl">Scanning UX patterns...</p>
       </div>
     </div>
-
     <div id="report" class="hidden mt-16"></div>
   </div>
-
-  <script>
-    const form = document.getElementById('urlForm');
-    const input = document.getElementById('urlInput');
-    const report = document.getElementById('report');
-    const loading = document.getElementById('loading');
-    const PROXY = 'https://api.allorigins.win/raw?url=';
-
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-      const url = input.value.trim();
-      if (!url) return;
-
-      loading.classList.remove('hidden');
-      report.classList.add('hidden');
-      report.innerHTML = '';
-
-      try {
-        const res = await fetch(PROXY + encodeURIComponent(url));
-        if (!res.ok) throw new Error('Network error');
-        const html = await res.text();
-        const doc = new DOMParser().parseFromString(html, 'text/html');
-        const title = doc.querySelector('title')?.textContent || 'Untitled';
-
-        const rage = calculateRageQuitRisk(doc);
-
-        report.innerHTML = `
-          <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border ${rage.score > 70 ? 'border-red-500/60' : rage.score > 40 ? 'border-yellow-500/60' : 'border-green-500/60'}">
-            <h2 class="text-5xl font-bold text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-              Rage-Quit Report: ${title.substring(0,60)}…
-            </h2>
-
-            <div class="text-center mb-16">
-              <div class="text-9xl font-black ${rage.score > 70 ? 'text-red-500' : rage.score > 40 ? 'text-yellow-500' : 'text-green-500'}">
-                ${rage.score}%
-              </div>
-              <p class="text-3xl mt-6">${rage.score > 70 ? 'Users will rage-quit in seconds' : rage.score > 40 ? 'High bounce risk' : 'Clean, user-friendly'}</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              ${rage.issues.map(i => `
-                <div class="bg-black/40 rounded-2xl p-8 border ${i.severity === 'critical' ? 'border-red-500/80' : 'border-orange-500/50'}">
-                  <div class="text-4xl mb-4">${i.icon}</div>
-                  <h3 class="text-2xl font-bold mb-3">${i.title}</h3>
-                  <p class="text-lg text-gray-300">${i.desc}</p>
-                  <p class="mt-4 text-xl font-black ${i.severity === 'critical' ? 'text-red-400' : 'text-orange-400'}">
-                    ${i.impact} bounce risk
-                  </p>
-                </div>
-              `).join('')}
-            </div>
-
-            <div class="text-center mt-16">
-              <a href="/traffic-torch/" class="px-12 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
-                Back to Dashboard
-              </a>
-            </div>
-          </div>
-        `;
-
-        loading.classList.add('hidden');
-        report.classList.remove('hidden');
-      } catch (err) {
-        alert('Error: ' + err.message);
-        loading.classList.add('hidden');
-      }
-    });
-
-    function calculateRageQuitRisk(doc) {
-      const issues = [];
-      let score = 0;
-
-      // Ads above fold
-      const ads = doc.querySelectorAll('script[src*="ads"], ins.adsbygoogle, [class*="ad-"], [id*="ad-"]').length;
-      if (ads > 2) { score += 35; issues.push({icon:'📢', title:`${ads} ads above H1`, desc:'Users hate ads before content', impact:'+35%', severity:'critical'}); }
-
-      // Tiny text
-      let minFont = 16;
-      const fontElements = doc.querySelectorAll('body, p, div');
-      fontElements.forEach(el => {
-        const size = parseInt(getComputedStyle(el).fontSize);
-        if (size < minFont) minFont = size;
-      });
-      if (minFont < 14) { score += 25; issues.push({icon:'🔍', title:`Text ${minFont}px`, desc:'61% of users leave if text too small', impact:'+25%', severity:'critical'}); }
-
-      // No H1 missing
-      if (!doc.querySelector('h1')) { score += 20; issues.push({icon:'📌', title:'Missing H1', desc:'Users need clear focus', impact:'+20%', severity:'high'}); }
-
-      // Cookie banner / popup
-      if (doc.querySelector('.cookie, .popup, [id*="cookie"]')) { score += 15; issues.push({icon:'🍪', title:'Intrusive popup', desc:'Delays content, increases bounce', impact:'+15%', severity:'high'}); }
-
-      // Too many fonts
-      const fonts = new Set();
-      doc.querySelectorAll('*').forEach(el => {
-        const f = getComputedStyle(el).fontFamily;
-        if (f) fonts.add(f.split(',')[0].trim());
-      });
-      if (fonts.size > 4) { score += 10; issues.push({icon:'🎨', title:`${fonts.size} different fonts`, desc:'Too many fonts = slow & confusing', impact:'+10%', severity:'medium'}); }
-
-      return { score: Math.min(100, score), issues };
-    }
-  </script>
+  <!-- Load JS last -->
+  <script src="script.js" type="module"></script>
 </body>
 </html>
