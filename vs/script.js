@@ -57,5 +57,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
             forecastText.textContent = 'With fixes applied, your rank could improve by 15 positions in 3 months.';
         }, 2000);
-    });
-
+});
