@@ -1,85 +1,85 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Traffic Torch Competition Tool: Compare your site's SEO health with competitors, get gap analysis, AI fixes, and rank forecasts.">
-    <title>Traffic Torch - Competition Analysis</title>
-    <link rel="stylesheet" href="/vs/style.css">
-
-    <link rel="icon" href="favicon.ico">
-    <!-- PWA theme color -->
-    <meta name="theme-color" content="#ff6600">
+    <meta name="description" content="Free Competition Analysis Tool – Instant 360° SEO health score vs any competitor + AI fixes + rank forecast">
+    <title>Traffic Torch – Competition Analysis Tool</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
 </head>
-<body class="light-mode">
-    <header>
+<body>
+
+<header>
+    <div class="container header-inner">
+        <h1 class="logo">Traffic Torch</h1>
+        <nav>
+            <a href="https://traffictorch.net/">Home</a>
+            <a href="https://traffictorch.net/content-audit/">AI Content Audit</a>
+            <a href="https://traffictorch.net/vs/">Competition</a>
+            <button id="mode-toggle" class="button">Toggle Dark Mode</button>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="hero">
         <div class="container">
-            <h1 class="logo">Traffic Torch</h1>
-            <nav>
-                <ul>
-                    <li><a href="https://traffictorch.net/">Home</a></li>
-                    <li><a href="https://traffictorch.net/content-audit/">AI Content Audit</a></li>
-                    <!-- Add links to other tools as needed -->
-                    <li><a href="#">Competition</a></li>
-                </ul>
-                <button id="mode-toggle">Toggle Dark Mode</button>
-            </nav>
-        </div>
-    </header>
-    
-    <main>
-        <section class="hero">
-            <div class="container">
-                <h2>Competition Analysis Tool</h2>
-                <p>Enter your URL and a competitor's to get instant gap analysis, AI-generated fixes, and predictive rank forecasting.</p>
-                <form id="analysis-form">
-                    <input type="url" id="your-url" placeholder="Your URL (e.g., https://yoursite.com)" required>
-                    <input type="url" id="competitor-url" placeholder="Competitor URL (e.g., https://competitor.com)" required>
-                    <button type="submit" class="button">Analyze Now</button>
-                </form>
-                <div id="loading" class="hidden">Analyzing... Please wait.</div>
+            <h2>Competition Analysis Tool</h2>
+            <p>Enter your URL and a competitor's to get instant gap analysis, AI-generated fixes, and predictive rank forecasting.</p>
+            
+            <form id="analysis-form">
+                <input type="url" id="your-url" placeholder="Your URL (e.g. https://yoursite.com)" required>
+                <input type="url" id="competitor-url" placeholder="Competitor URL (e.g. https://competitor.com)" required>
+                <button type="submit" class="button">Analyze Now</button>
+            </form>
+
+            <div id="loading" class="hidden">
+                <p>Analyzing both sites… (PageSpeed, structure, content depth)</p>
             </div>
-        </section>
-        
-        <section id="results" class="hidden">
-            <div class="container">
-                <h3>Analysis Results</h3>
-                <div class="score-comparison">
-                    <div class="score-card">
-                        <h4>Your Site Score</h4>
-                        <div class="health-score" id="your-score"></div>
-                    </div>
-                    <div class="score-card">
-                        <h4>Competitor Score</h4>
-                        <div class="health-score" id="competitor-score"></div>
-                    </div>
+        </div>
+    </section>
+
+    <section id="results" class="hidden">
+        <div class="container">
+
+            <div class="score-comparison">
+                <div class="score-card">
+                    <h3>Your Site</h3>
+                    <div class="health-score" id="your-score">—/100</div>
                 </div>
-                
-                <div class="gap-analysis">
-                    <h4>Competitive Gap Analysis</h4>
-                    <ul id="gaps"></ul>
-                </div>
-                
-                <div class="fixes">
-                    <h4>AI-Generated Fixes</h4>
-                    <ul id="fixes-list"></ul>
-                </div>
-                
-                <div class="forecast">
-                    <h4>Predictive Rank Forecasting</h4>
-                    <p id="forecast-text"></p>
+                <div class="score-card">
+                    <h3>Competitor</h3>
+                    <div class="health-score" id="competitor-score">—/100</div>
                 </div>
             </div>
-        </section>
-    </main>
-    
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Traffic Torch. All rights reserved.</p>
+
+            <div class="gap-analysis">
+                <h3>Competitive Gap Analysis</h3>
+                <ul id="gaps"></ul>
+            </div>
+
+            <div class="fixes">
+                <h3>AI-Generated Fixes</h3>
+                <ul id="fixes-list"></ul>
+            </div>
+
+            <div class="forecast">
+                <h3>Predictive Rank Forecasting</h3>
+                <p id="forecast-text"></p>
+            </div>
+
         </div>
-    </footer>
-    
-    <script src="script.js"></script>
+    </section>
+</main>
+
+<footer>
+    <div class="container">
+        <p>© 2025 Traffic Torch. All rights reserved.</p>
+    </div>
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
