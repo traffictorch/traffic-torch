@@ -1,19 +1,5 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Traffic Torch – Instant SEO + UX Tools</title>
-  <link rel="icon" href="/favicon.ico" />
-  <link rel="manifest" href="/manifest.json" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
-    body { font-family: 'Inter', sans-serif; }
-  </style>
-</head>
 <body class="bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white min-h-screen">
-  <!-- Header with Hamburger -->
+  <!-- Header with Hamburger (unchanged – perfect as-is) -->
   <header class="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/10">
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
       <a href="/" class="flex items-center gap-4">
@@ -49,22 +35,80 @@
     </div>
   </header>
 
-  <!-- Main Content -->
-  <div class="container mx-auto px-6 py-16 text-center">
-    <h2 class="text-5xl font-black mb-8">Instant SEO + UX audit tools</h2>
-    <p class="text-xl text-gray-400 mb-16">Choose a tool from the menu</p>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-5xl mx-auto">
-      <a href="/ai/" class="group block bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-orange-500/30 hover:border-orange-400 hover:-translate-y-2 transition-all shadow-2xl">
-        <div class="text-orange-400 text-6xl mb-6">🤖</div>
-        <h3 class="text-3xl font-bold mb-3">AI Content Audit</h3>
-        <p class="text-gray-300">Deep AI detection with charts & fixes</p>
-      </a>
-      <!-- ... (rest of the cards same as before) ... -->
+  <!-- NEW: All Tools Dashboard (replaces old hero + small grid) -->
+  <main class="container mx-auto px-6 py-16">
+    <div class="text-center mb-16">
+      <h2 class="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        All Tools in One Place
+      </h2>
+      <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+        Instant SEO + UX audits • No login • No limits • Mobile-first • PWA ready
+      </p>
     </div>
-  </div>
 
-  <!-- Epic Footer -->
+    <!-- Tools Grid – Fully responsive 1→2→3→4 columns -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto">
+      
+      <!-- AI Content Audit -->
+      <a href="/ai/" class="group block transform hover:-translate-y-3 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-orange-500/30 hover:border-orange-400 shadow-2xl">
+          <div class="text-orange-400 text-7xl mb-6">🤖</div>
+          <h3 class="text-2xl font-bold mb-3">AI Content Audit</h3>
+          <p class="text-gray-300">Deep AI detection + charts + instant fixes</p>
+        </div>
+      </a>
+
+      <!-- Quit / Rage-Quit Risk -->
+      <a href="/ux/" class="group block transform hover:-translate-y-3 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-pink-500/30 hover:border-pink-400 shadow-2xl">
+          <div class="text-pink-400 text-7xl mb-6">⚡</div>
+          <h3 class="text-2xl font-bold mb-3">Rage-Quit Risk</h3>
+          <p class="text-gray-300">UX friction & bounce prediction</p>
+        </div>
+      </a>
+
+      <!-- Competitive Gap Analysis -->
+      <a href="/vs/" class="group block transform hover:-translate-y-3 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-purple-500/30 hover:border-purple-400 shadow-2xl">
+          <div class="text-purple-400 text-7xl mb-6">🆚</div>
+          <h3 class="text-2xl font-bold mb-3">Competitive Gap</h3>
+          <p class="text-gray-300">Side-by-side SERP & content comparison</p>
+        </div>
+      </a>
+
+      <!-- Core Web Vitals Checker -->
+      <a href="/vitals/" class="group block transform hover:-translate-y-3 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-emerald-500/30 hover:border-emerald-400 shadow-2xl">
+          <div class="text-emerald-400 text-7xl mb-6">📊</div>
+          <h3 class="text-2xl font-bold mb-3">Core Web Vitals</h3>
+          <p class="text-gray-300">Live LCP • CLS • INP • TTFB real data</p>
+        </div>
+      </a>
+
+      <!-- Search Intent + E-E-A-T -->
+      <a href="/intent/" class="group block transform hover:-translate-y-3 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-cyan-500/30 hover:border-cyan-400 shadow-2xl">
+          <div class="text-cyan-400 text-7xl mb-6">🎯</div>
+          <h3 class="text-2xl font-bold mb-3">Intent + E-E-A-T</h3>
+          <p class="text-gray-300">Topic clusters & authority scoring</p>
+        </div>
+      </a>
+
+      <!-- About Card – Always visible on dashboard -->
+      <a href="/about/" class="group block transform hover:-translate-y-3 transition-all duration-300">
+        <div class="h-full bg-gradient-to-br from-orange-600 to-pink-700 rounded-3xl p-12 shadow-2xl border border-orange-400/50">
+          <div class="text-white text-8xl mb-8">ℹ️</div>
+          <h3 class="text-3xl font-black mb-4">About Traffic Torch</h3>
+          <p class="text-orange-100 text-lg">Our mission, story, and why we built this</p>
+        </div>
+      </a>
+
+      <!-- Add more tools here in the future using the same card pattern -->
+      
+    </div>
+  </main>
+
+  <!-- Footer (unchanged – already perfect) -->
   <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">
     <div class="container mx-auto px-6 max-w-6xl">
       <div class="grid md:grid-cols-4 gap-12 text-center md:text-left">
@@ -75,7 +119,7 @@
         <div>
           <h3 class="text-xl font-bold mb-6 text-orange-400">Tools</h3>
           <ul class="space-y-3 text-gray-400">
-            <li><a href="/ai/" class="hover:text-orange-400 transition">Home</a></li>
+            <li><a href="/" class="hover:text-orange-400 transition">Home</a></li>
             <li><a href="/ai/" class="hover:text-orange-400 transition">AI Content Audit</a></li>
             <li><a href="/ux/" class="hover:text-orange-400 transition">Rage-Quit Risk</a></li>
             <li><a href="/vs/" class="hover:text-orange-400 transition">Competitive Gap</a></li>
@@ -100,13 +144,12 @@
     </div>
   </footer>
 
+  <!-- Scripts (unchanged) -->
   <script>
-    // Hamburger Menu
     const menuToggle = document.getElementById('menuToggle');
     const mobileMenu = document.getElementById('mobileMenu');
     menuToggle.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
 
-    // Day/Night Toggle
     const toggle = document.getElementById('themeToggle');
     if (localStorage.theme === 'light') document.documentElement.classList.add('light');
     toggle.addEventListener('click', () => {
@@ -115,17 +158,15 @@
       toggle.textContent = document.documentElement.classList.contains('light') ? '☀️' : '🌙';
     });
 
-    // PWA Install
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
       deferredPrompt = e;
       const btn = document.createElement('button');
-      btn.textContent = 'Install';
-      btn.className = 'fixed bottom-6 right-6 z-50 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-sm';
+      btn.textContent = 'Install App';
+      btn.className = 'fixed bottom-6 right-6 z-50 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-white font-bold';
       btn.onclick = () => deferredPrompt.prompt();
       document.body.appendChild(btn);
     });
   </script>
 </body>
-</html>
