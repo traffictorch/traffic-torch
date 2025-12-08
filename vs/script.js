@@ -287,8 +287,8 @@ const moduleUrlSchema = (yourUrl, compUrl, phrase, yourDoc, compDoc) => {
 // FINAL CORRECT SCORING – max 100/100
 const finalScore = (score) => Math.min(Math.round(score), 100);
 
-yourTotalEl.textContent = finalScore(yourScore) + '/100';
-compTotalEl.textContent = finalScore(compScore) + '/100';
+yourTotalEl.textContent = Math.min(Math.round(yourScore), 100) + '/100';
+compTotalEl.textContent = Math.min(Math.round(compScore), 100) + '/100';
 
 // Optional fire if they hit 100
 if (yourScore >= 100) yourTotalEl.parentElement.innerHTML += ' 🔥';
