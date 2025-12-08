@@ -108,8 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         const you = get(yourDoc);
         const comp = get(compDoc);
-        yourScore += Math.min(you.total, 15) + (you.h1Match > 0 ? 5 : 0);
-        compScore += Math.min(comp.total, 15) + (comp.h1Match > 0 ? 5 : 0);
+        yourScore += Math.min(you.total, 10) + (you.h1Match > 0 ? 10 : 0);
+        compScore += Math.min(comp.total, 10) + (comp.h1Match > 0 ? 10 : 0);
         modulesContainer.insertAdjacentHTML('beforeend', `
         <div class="module-card"><h3>H1 & Heading Structure</h3><div class="grid">
             <div class="side you"><strong>You</strong><br>H1: "${you.h1.substring(0,80)}…"<br><span class="highlight">${you.h1Match} match(es) in H1</span><br>Total headings: ${you.total}<br>With phrase: ${you.withPhrase}</div>
@@ -130,8 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const compMatches = countPhrase(compText, phrase);
         const youDensity = youWords > 0 ? (youMatches / youWords * 100).toFixed(2) : 0;
         const compDensity = compWords > 0 ? (compMatches / compWords * 100).toFixed(2) : 0;
-        yourScore += Math.min(youWords / 100, 15) + (youDensity >= 1 ? 15 : youDensity * 15);
-        compScore += Math.min(compWords / 100, 15) + (compDensity >= 1 ? 15 : compDensity * 15);
+        yourScore += Math.min(youWords / 100, 10) + (youDensity >= 1 ? 20 : youDensity * 20);
+        compScore += Math.min(compWords / 100, 10) + (compDensity >= 1 ? 20 : compDensity * 20);
         modulesContainer.insertAdjacentHTML('beforeend', `
         <div class="module-card"><h3>Content Density & Word Count</h3><div class="grid">
             <div class="side you"><strong>You</strong><br>Word count: <strong>${youWords.toLocaleString()}</strong><br>Phrase appears: <strong>${youMatches}x</strong><br>Density: <strong>${youDensity}%</strong></div>
@@ -153,8 +153,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         const you = get(yourDoc);
         const comp = get(compDoc);
-        const coverageYou = you.total > 0 ? (you.withAlt / you.total * 10) : 0;
-        const coverageComp = comp.total > 0 ? (comp.withAlt / comp.total * 10) : 0;
+        const coverageYou = you.total > 0 ? (you.withAlt / you.total * 15) : 0;
+        const coverageComp = comp.total > 0 ? (comp.withAlt / comp.total * 15) : 0;
         yourScore += coverageYou + (you.withPhrase * 2.5);
         compScore += coverageComp + (comp.withPhrase * 2.5);
         modulesContainer.insertAdjacentHTML('beforeend', `
@@ -186,8 +186,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         const you = get(yourDoc, new URL(yourUrl).hostname);
         const comp = get(compDoc, new URL(compUrl).hostname);
-        yourScore += Math.min(you.internal / 5, 10) + (you.withPhrase * 3);
-        compScore += Math.min(comp.internal / 5, 10) + (comp.withPhrase * 3);
+        yourScore += Math.min(you.internal / 10, 5) + (you.withPhrase * 1);
+        compScore += Math.min(comp.internal / 10, 5) + (comp.withPhrase * 1);
         modulesContainer.insertAdjacentHTML('beforeend', `
         <div class="module-card"><h3>Anchor Text Links</h3><div class="grid">
             <div class="side you"><strong>You</strong><br>Total links: ${you.total}<br>Internal: ${you.internal} · External: ${you.external}<br><span class="highlight">Phrase in anchor: ${you.withPhrase}x</span></div>
@@ -212,8 +212,8 @@ const moduleUrlSchema = (yourUrl, compUrl, phrase, yourDoc, compDoc) => {
     const youSchema = schema(yourDoc);
     const compSchema = schema(compDoc);
 
-    yourScore += (youUrlMatch > 0 ? 10 : 0) + (youSchema ? 10 : 0);
-    compScore += (compUrlMatch > 0 ? 10 : 0) + (compSchema ? 10 : 0);
+    yourScore += (youUrlMatch > 0 ? 5 : 0) + (youSchema ? 5 : 0);
+    compScore += (compUrlMatch > 0 ? 5 : 0) + (compSchema ? 5 : 0);
 
     modulesContainer.insertAdjacentHTML('beforeend', `
     <div class="module-card">
@@ -284,8 +284,15 @@ const moduleUrlSchema = (yourUrl, compUrl, phrase, yourDoc, compDoc) => {
 
         results.classList.remove('hidden');
         document.getElementById('overall-score').classList.remove('hidden');
-        yourTotalEl.textContent = Math.round(yourScore);
-        compTotalEl.textContent = Math.round(compScore);
+// FINAL CORRECT SCORING – max 100/100
+const finalScore = (score) => Math.min(Math.round(score), 100);
+
+yourTotalEl.textContent = finalScore(yourScore) + '/100';
+compTotalEl.textContent = finalScore(compScore) + '/100';
+
+// Optional fire if they hit 100
+if (yourScore >= 100) yourTotalEl.parentElement.innerHTML += ' 🔥';
+if (compScore >= 100) compTotalEl.parentElement.innerHTML += ' 🔥';
     });
 
     document.addEventListener('click', (e) => {
