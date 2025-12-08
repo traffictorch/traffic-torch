@@ -1,76 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Free SEO Competition Tool – Enter your URL, a competitor, and a target phrase to see instant gap analysis">
-    <title>Traffic Torch – Competition Phrase Battle</title>
-    <link rel="stylesheet" href="/keywords/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ff9500">
+  <title>Keyword Torch – Instant SEO Score</title>
+  <link rel="stylesheet" href="/keywords/style.css">
+  <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <div class="container">
+    <h1>Keyword Torch</h1>
+    <p class="subtitle">Score any page against perfect on-page SEO for one keyword phrase</p>
 
-<header>
-    <div class="container header-inner">
-        <h1 class="logo">Keyword Traffic Torch</h1>
-        <nav>
-            <a href="https://traffictorch.net/">Home</a>
-            <a href="https://traffictorch.net/content-audit/">AI Content Audit</a>
-            <a href="https://traffictorch.net/vs/">Competition</a>
-            <button id="mode-toggle" class="button">Toggle Dark Mode</button>
-        </nav>
+    <form id="torchForm">
+      <input type="url" id="pageUrl" placeholder="https://yourpage.com/blog-post" required>
+      <input type="text" id="targetPhrase" placeholder="best wireless earbuds 2025" required>
+      <button type="submit">Ignite Analysis</button>
+    </form>
+
+    <div id="results" class="hidden">
+      <div class="score-card glass-card">
+        <h2>Final Score</h2>
+        <div id="finalScore">--</div>
+        <span id="fireEmoji">Fire</span>
+      </div>
+
+      <div class="glass-card"><h2>Meta Title</h2><p id="titleInfo">…</p></div>
+      <div class="glass-card"><h2>Meta Description</h2><p id="descInfo">…</p></div>
+      <div class="glass-card"><h2>H1</h2><p id="h1Info">…</p></div>
+      <div class="glass-card"><h2>Content Density</h2><p id="contentInfo">…</p></div>
+      <div class="glass-card"><h2>Image Alts</h2><p id="altInfo">…</p></div>
+      <div class="glass-card"><h2>Internal Anchors</h2><p id="anchorInfo">…</p></div>
+      <div class="glass-card"><h2>URL & Schema</h2><p id="urlSchemaInfo">…</p></div>
     </div>
-</header>
+  </div>
 
-<main>
-    <section class="hero">
-        <div class="container">
-            <h2>Keyword Torch – SEO Audit Tool</h2>
-            <p>Enter your URL, a competitor, and a target phrase to see exactly where you win — and where you’re losing.</p>
-
-            <form id="analysis-form">
-                <input type="url" id="your-url" placeholder="Your URL – https://yoursite.com" required>
-                <input type="text" id="phrase" placeholder="Target phrase – e.g. best coffee new york" required>
-                <button type="submit" class="button">Analyze Now</button>
-            </form>
-
-            <div id="loading" class="hidden">
-                <p>Fetching both pages…</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="results" class="hidden">
-        <div class="container">
-<div id="overall-score" class="overall-score hidden">
-    <h2>Phrase Power Score</h2>
-    <div class="score-grid">
-        <div><strong>You</strong> <span id="your-total">–</span></div>
-        <div><strong>Competitor</strong> <span id="comp-total">–</span></div>
-    </div>
-</div>
-
-            <div id="modules"></div>
-        </div>
-    </section>
-</main>
-
-<!-- Fixed bottom loader -->
-<div id="overall-score" class="overall-score hidden">
-    <h2>Phrase Power Score</h2>
-    <div class="score-grid">
-        <div><strong>You</strong> <span id="your-total">–</span></div>
-        <div><strong>Competitor</strong> <span id="comp-total">–</span></div>
-    </div>
-</div>
-
-<footer>
-    <div class="container">
-        <p>© 2025 Traffic Torch. All rights reserved.</p>
-    </div>
-</footer>
-
-<script src="/keywords/script.js"></script>
+  <script src="/keywords/script.js"></script>
 </body>
 </html>
