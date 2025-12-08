@@ -1,51 +1,84 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Core Web Vitals Audit – Vitality Index</title>
-  <meta name="description" content="Instant mobile & desktop Vitality Index + 10 key metrics">
-  <link rel="stylesheet" href="/vitals/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vitals + Vitality Index – TrafficTorch</title>
+  <meta name="description" content="Official Google report + your custom Vitality Index">
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#000">
+  <style>
+    body{margin:0;background:#000;color:#fff;font-family:system-ui,sans-serif;display:grid;place-items:center;min-height:100vh}
+    .card{background:#111;padding:2rem;border-radius:16px;max-width:480px;width:90%;text-align:center;box-shadow:0 10px 40px rgba(0,255,157,.2)}
+    h1{color:#00ff9d;margin:0 0 .5rem;font-size:2.2rem}
+    input,button{padding:1rem;margin:0.5rem 0;width:100%;font-size:1.1rem;border:none;border-radius:12px}
+    input{background:#222;color:#fff}
+    button{background:#00ff9d;color:#000;font-weight:700;cursor:pointer}
+    button:active{transform:scale(0.98)}
+    .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);display:none;z-index:9999;justify-content:center;align-items:center;padding:1rem}
+    .vitality{font-size:5rem;margin:0;color:#00ff9d;font-weight:900}
+    .desc{font-size:1.3rem;margin:1rem 0}
+  </style>
 </head>
 <body>
-  <main class="container">
-    <section class="hero">
-      <h1>Core Web Vitals Audit</h1>
-      <p>One URL → Instant Mobile & Desktop Vitality Index</p>
-      <form id="audit-form">
-        <div class="input-group">
-          <button type="button" id="device-toggle">Desktop</button>
-          <input type="url" id="url-input" placeholder="https://example.com" required>
-          <button type="submit" id="run-btn">Run Audit</button>
-        </div>
-      </form>
-    </section>
 
-    <section id="loading" class="loading hidden">
-      <div class="spinner"></div>
-      <p>Analyzing <span id="current-device">Mobile</span>...</p>
-    </section>
+<div class="card">
+  <h1>Core Web Vitals + Vitality Index</h1>
+  <p>Official Google report + your custom score</p>
+  <input id="url" placeholder="https://example.com" required>
+  <button onclick="run()">Run Audit →</button>
+</div>
 
-    <section id="results" class="results hidden">
-      <div class="tabs">
-        <button class="tab active" data-device="mobile">Mobile</button>
-        <button class="tab" data-device="desktop">Desktop</button>
-      </div>
+<!-- Vitality Overlay -->
+<div id="overlay" class="overlay">
+  <div style="text-align:center">
+    <h2 style="color:#00ff9d;margin:0">Vitality Index</h2>
+    <div class="vitality" id="score">–</div>
+    <p class="desc" id="desc">Calculating…</p>
+    <button onclick="document.getElementById('overlay').style.display='none'" style="margin-top:2rem">Close</button>
+  </div>
+</div>
 
-      <h2 id="page-title"></h2>
+<script>
+async function run() {
+  let url = document.getElementById('url').value.trim();
+  if (!url) return alert('Enter a URL');
+  if (!url.startsWith('http')) url = 'https://' + url;
 
-      <div class="vitality-card">
-        <h3>Vitality Index (<span id="active-device">Mobile</span>)</h3>
-        <div id="overall-score" class="score">–</div>
-        <p id="score-desc"></p>
-      </div>
+  // 1. Open official Google report (new tab)
+  window.open(`https://pagespeed.web.dev/analysis?url=${encodeURIComponent(url)}`, '_blank');
 
-      <div class="metrics-grid" id="metrics-grid"></div>
-    </section>
-  </main>
+  // 2. Show overlay + fetch data via public JSON endpoint (CORS-enabled!)
+  document.getElementById('overlay').style.display = 'flex';
 
-  <script src="/vitals/script.js"></script>
+  try {
+    const res = await fetch(`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=mobile&key=AIzaSyB1qaV1POBJnvFlekjZ0hMNbncW9EZVyPs`);
+    const data = await res.json();
+    const lhr = data.lighthouseResult;
+    const a = lhr.audits;
+
+    const lcp = a['largest-contentful-paint'].numericValue;
+    const inp = a['interaction-to-next-paint']?.numericValue || 200;
+    const cls = a['cumulative-layout-shift'].numericValue;
+    const perf = Math.round(lhr.categories.performance.score * 100);
+
+    const vitality = Math.min(100, Math.round(
+      perf * 0.7 +
+      (2500 / lcp * 15) +
+      (200 / inp * 10) +
+      (0.1 / cls * 5)
+    ));
+
+    document.getElementById('score').textContent = vitality;
+    document.getElementById('desc').textContent = 
+      vitality >= 90 ? 'Excellent 🔥' :
+      vitality >= 70 ? 'Good – keep improving' : 'Needs work – fix LCP/INP';
+  } catch (e) {
+    document.getElementById('score').textContent = 'N/A';
+    document.getElementById('desc').textContent = 'Could not calculate (try again)';
+  }
+}
+</script>
+
 </body>
 </html>
