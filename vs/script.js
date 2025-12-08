@@ -163,6 +163,61 @@ const countPhrase = (text = '', originalPhrase = '') => {
         const html = `<div class="module-card"><h3>Anchor Text Links</h3><div class="grid"><div class="side you"><strong>You</strong><br>Total links: ${you.total}<br>Internal: ${you.internal} · External: ${you.external}<br><span class="highlight">Phrase in anchor: ${you.withPhrase}x</span></div><div class="side competitor"><strong>Competitor</strong><br>Total links: ${comp.total}<br>Internal: ${comp.internal} · External: ${comp.external}<br><span class="highlight">Phrase in anchor: ${comp.withPhrase}x</span></div></div><button class="expand-btn">What / Why / How to Fix</button><div class="details hidden"><strong>What:</strong> Anchor text tells Google what the linked page is about.<br><strong>Why:</strong> Phrase-rich anchors = stronger relevance.<br><strong>AI Fix:</strong><br><code>&lt;a href="/best-coffee"&gt;${phrase}&lt;/a&gt;</code></div></div>`;
         modulesContainer.insertAdjacentHTML('beforeend', html);
     };
+    
+    // MODULE 5 – Anchor Text Links (now 100% safe)
+const moduleAnchors = (yourDoc, compDoc, phrase) => {
+    const get = (doc, baseUrl) => {
+        const links = doc?.querySelectorAll('a') || [];
+        const total = links.length;
+        let internal = 0;
+        let withPhrase = 0;
+
+        links.forEach(a => {
+            const text = a.textContent || '';
+            if (countPhrase(text, phrase) > 0) withPhrase++;
+
+            const href = a.getAttribute('href') || '';
+            if (!href) return;
+            if (href.startsWith('/') || href.startsWith('#') || href.includes(baseUrl)) {
+                internal++;
+            }
+        });
+
+        const external = total - internal;
+        return { total, internal, external, withPhrase };
+    };
+
+    const you = get(yourDoc, new URL(document.getElementById('your-url').value).hostname);
+    const comp = get(compDoc, new URL(document.getElementById('competitor-url').value).hostname);
+
+    yourScore += Math.min(you.internal / 5, 10) + (you.withPhrase * 3);
+    compScore += Math.min(comp.internal / 5, 10) + (comp.withPhrase * 3);
+
+    const html = `
+    <div class="module-card">
+        <h3>Anchor Text Links</h3>
+        <div class="grid">
+            <div class="side you">
+                <strong>You</strong><br>
+                Total links: ${you.total}<br>
+                Internal: ${you.internal} · External: ${you.external}<br>
+                <span class="highlight">Phrase in anchor: ${you.withPhrase}x</span>
+            </div>
+            <div class="side competitor">
+                <strong>Competitor</strong><br>
+                Total links: ${comp.total}<br>
+                Internal: ${comp.internal} · External: ${comp.external}<br>
+                <span class="highlight">Phrase in anchor: ${comp.withPhrase}x</span>
+            </div>
+        </div>
+        <button class="expand-btn">What / Why / How to Fix</button>
+        <div class="details hidden">
+            <strong>Why:</strong> Phrase-rich internal anchors = stronger relevance signals.<br>
+            <strong>AI Fix:</strong><br><code>&lt;a href="/best-coffee"&gt;${phrase}&lt;/a&gt;</code>
+        </div>
+    </div>`;
+    modulesContainer.insertAdjacentHTML('beforeend', html);
+};
 
     // NEW → MODULE 6 – URL & Schema Check
     const moduleUrlSchema = (yourUrl, compUrl, phrase, yourDoc, compDoc) => {
@@ -217,6 +272,7 @@ const countPhrase = (text = '', originalPhrase = '') => {
         const yourUrl = document.getElementById('your-url').value.trim();
         const compUrl = document.getElementById('competitor-url').value.trim();
         const phrase = document.getElementById('phrase').value.trim();
+        const comp = get(compDoc, new URL(document.getElementById('competitor-url').value).hostname);
 
         if (!yourUrl.startsWith('http') || !compUrl.startsWith('http') || phrase.length < 2) {
             alert('Fill all fields');
