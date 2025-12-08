@@ -1,41 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#ff9500">
-  <title>Keyword Torch – Instant SEO Score</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keyword Tool – Traffic Torch</title>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="manifest" href="/manifest.json" />
+  <!-- Global styles (background + day/night mode) -->
+  <link rel="stylesheet" href="/style.css">
+  <!-- Tool-specific customizations (cards, form, etc.) -->
   <link rel="stylesheet" href="/keyword-tool/style.css">
-  <link rel="manifest" href="manifest.json">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="container">
-    <h1>Keyword Torch</h1>
-    <p class="subtitle">Score any page against perfect on-page SEO for one keyword phrase</p>
+<body class="min-h-screen">
 
-    <form id="torchForm">
+  <!-- EXACT SAME HEADER AS HOME PAGE -->
+  <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-4">
+        <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
+        <h1 class="text-2xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+          Traffic Torch
+        </h1>
+      </a>
+      <button id="menuToggle" class="md:hidden text-3xl">☰</button>
+      <nav class="hidden md:flex gap-8 text-lg">
+        <a href="/" class="hover:text-orange-400 transition">Home</a>
+        <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">AI Audit</a>
+        <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a>
+        <a href="/keyword-tool/" class="text-orange-400 font-bold">Keywords ←</a>
+        <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a>
+        <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a>
+        <a href="/about/" class="hover:text-orange-400 transition">About</a>
+      </nav>
+      <button id="themeToggle" class="px-4 py-2 bg-white/10 rounded-full hover:bg-white/20 transition">
+        🌙
+      </button>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden bg-black/95 backdrop-blur-xl border-t border-white/10">
+      <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+        <a href="/" class="hover:text-orange-400 transition">Home</a>
+        <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">AI Audit</a>
+        <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a>
+        <a href="/keyword-tool/" class="text-orange-400 font-bold">Keywords ←</a>
+        <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a>
+        <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a>
+        <a href="/about/" class="hover:text-orange-400 transition">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- TOOL CONTENT – styled by your own /keyword-tool/style.css -->
+  <main class="container mx-auto px-6 py-16">
+    <div class="text-center mb-16">
+      <h1 class="title">Keyword Torch</h1>
+      <p class="subtitle">Score any page against perfect on-page SEO for one keyword phrase</p>
+    </div>
+
+    <form id="torchForm" class="tool-form">
       <input type="url" id="pageUrl" placeholder="https://yourpage.com/blog-post" required>
       <input type="text" id="targetPhrase" placeholder="best wireless earbuds 2025" required>
       <button type="submit">Ignite Analysis</button>
     </form>
 
-    <div id="results" class="hidden">
-      <div class="score-card glass-card">
+    <div id="results" class="hidden results-grid">
+      <div class="score-card">
         <h2>Final Score</h2>
         <div id="finalScore">--</div>
-        <span id="fireEmoji">Fire</span>
+        <span id="fireEmoji">🔥</span>
       </div>
-
       <div class="glass-card"><h2>Meta Title</h2><p id="titleInfo">…</p></div>
       <div class="glass-card"><h2>Meta Description</h2><p id="descInfo">…</p></div>
       <div class="glass-card"><h2>H1</h2><p id="h1Info">…</p></div>
       <div class="glass-card"><h2>Content Density</h2><p id="contentInfo">…</p></div>
       <div class="glass-card"><h2>Image Alts</h2><p id="altInfo">…</p></div>
       <div class="glass-card"><h2>Internal Anchors</h2><p id="anchorInfo">…</p></div>
-      <div class="glass-card"><h2>URL & Schema</h2><p id="urlSchemaInfo">…</p></div>
+      <div class="glass-card full-width"><h2>URL & Schema</h2><p id="urlSchemaInfo">…</p></div>
     </div>
-  </div>
+  </main>
 
+  <!-- SAME FOOTER AS HOME PAGE -->
+  <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">
+    <div class="container mx-auto px-6 max-w-6xl">
+      <div class="grid md:grid-cols-4 gap-12 text-center md:text-left">
+        <div>
+          <img src="/logo.webp" alt="Traffic Torch" class="w-20 mx-auto md:mx-0 rounded-2xl shadow-2xl mb-6">
+          <p class="text-gray-400 text-sm">Instant SEO + UX audit tools.<br>No login. No limits. No BS.</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-6 text-orange-400">Tools</h3>
+          <ul class="space-y-3 text-gray-400">
+            <li><a href="/" class="hover:text-orange-400 transition">Home</a></li>
+            <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">AI Audit</a></li>
+            <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
+            <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keyword</a></li>
+            <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a></li>
+            <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-6 text-orange-400">Company</h3>
+          <ul class="space-y-3 text-gray-400">
+            <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
+            <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
+            <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-6 text-orange-400">Traffic Torch</h3>
+          <p class="text-gray-400 text-sm">Built with 🔥</p>
+          <p class="text-gray-500 text-xs mt-4">© 2025 Traffic Torch</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/main.js" type="module"></script>
   <script src="/keyword-tool/script.js"></script>
 </body>
 </html>
