@@ -69,6 +69,24 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const getBodyText = (doc) => doc?.body?.textContent || '';
+    
+    // ACCURATE word count – ignores nav, footer, menus, scripts etc.
+const getCleanContent = (doc) => {
+    if (!doc || !doc.body) return '';
+    const clone = doc.body.cloneNode(true);
+
+    // Remove all the junk that inflates word count
+    const junk = clone.querySelectorAll('nav, header, footer, aside, script, style, noscript, .menu, .nav, .navbar, .footer, .cookie, .popup, [role="navigation"]');
+    junk.forEach(el => el.remove());
+
+    let text = clone.textContent || '';
+    return text.replace(/\s+/g, ' ').trim();
+};
+
+const getWordCount = (doc) => {
+    const text = getCleanContent(doc);
+    return text.split(/\s+/).filter(word => word.length > 0).length;
+};
 
     // MODULE 1 – Meta Title & Description
     const moduleMeta = (yourDoc, compDoc, phrase) => {
@@ -150,55 +168,55 @@ document.addEventListener('DOMContentLoaded', () => {
         modulesContainer.insertAdjacentHTML('beforeend', html);
     };
 
-    // MODULE 3 – Content Density & Word Count
-    const moduleContent = (yourDoc, compDoc, phrase) => {
-        const youText = getBodyText(yourDoc);
-        const compText = getBodyText(compDoc);
+// MODULE 3 – Content Density & Word Count (NOW 100% ACCURATE)
+const moduleContent = (yourDoc, compDoc, phrase) => {
+    const youText = getCleanContent(yourDoc);     // ← cleaned text
+    const compText = getCleanContent(compDoc);    // ← cleaned text
 
-        const youWords = youText.split(/\s+/).filter(w => w.length > 0).length || 0;
-        const compWords = compText.split(/\s+/).filter(w => w.length > 0).length || 0;
+    const youWords = getWordCount(yourDoc);
+    const compWords = getWordCount(compDoc);
 
-        const youMatches = countPhrase(youText, phrase);
-        const compMatches = countPhrase(compText, phrase);
+    const youMatches = countPhrase(youText, phrase);
+    const compMatches = countPhrase(compText, phrase);
 
-        const youDensity = youWords > 0 ? (youMatches / youWords * 100).toFixed(2) : 0;
-        const compDensity = compWords > 0 ? (compMatches / compWords * 100).toFixed(2) : 0;
+    const youDensity = youWords > 0 ? (youMatches / youWords * 100).toFixed(2) : 0;
+    const compDensity = compWords > 0 ? (compMatches / compWords * 100).toFixed(2) : 0;
 
-        const wordScoreYou = Math.min(youWords / 100, 15);
-        const wordScoreComp = Math.min(compWords / 100, 15);
-        const densityScoreYou = youDensity >= 1 ? 15 : (youDensity * 15);
-        const densityScoreComp = compDensity >= 1 ? 15 : (compDensity * 15);
+    const wordScoreYou = Math.min(youWords / 100, 15);
+    const wordScoreComp = Math.min(compWords / 100, 15);
+    const densityScoreYou = youDensity >= 1 ? 15 : (youDensity * 15);
+    const densityScoreComp = compDensity >= 1 ? 15 : (compDensity * 15);
 
-        yourScore += wordScoreYou + densityScoreYou;
-        compScore += wordScoreComp + densityScoreComp;
+    yourScore += wordScoreYou + densityScoreYou;
+    compScore += wordScoreComp + densityScoreComp;
 
-        const html = `
-        <div class="module-card">
-            <h3>Content Density & Word Count</h3>
-            <div class="grid">
-                <div class="side you">
-                    <strong>You</strong><br>
-                    Word count: <strong>${youWords.toLocaleString()}</strong><br>
-                    Phrase appears: <strong>${youMatches}x</strong><br>
-                    Density: <strong>${youDensity}%</strong>
-                </div>
-                <div class="side competitor">
-                    <strong>Competitor</strong><br>
-                    Word count: <strong>${compWords.toLocaleString()}</strong><br>
-                    Phrase appears: <strong>${compMatches}x</strong><br>
-                    Density: <strong>${compDensity}%</strong>
-                </div>
+    const html = `
+    <div class="module-card">
+        <h3>Content Density & Word Count</h3>
+        <div class="grid">
+            <div class="side you">
+                <strong>You</strong><br>
+                Word count: <strong>${youWords.toLocaleString()}</strong><br>
+                Phrase appears: <strong>${youMatches}x</strong><br>
+                Density: <strong>${youDensity}%</strong>
             </div>
-            <button class="expand-btn">What / Why / How to Fix</button>
-            <div class="details hidden">
-                <strong>What:</strong> How often your target phrase appears naturally in the main content.<br><br>
-                <strong>Why it matters:</strong> Google rewards 1–2.5% density for relevance.<br><br>
-                <strong>Ideal:</strong> 800–2500 words + 1.0–2.5% density.<br><br>
-                <strong>AI Fix Example:</strong><br><code>Add a 300-word section titled “Why ${phrase} is special”</code>
+            <div class="side competitor">
+                <strong>Competitor</strong><br>
+                Word count: <strong>${compWords.toLocaleString()}</strong><br>
+                Phrase appears: <strong>${compMatches}x</strong><br>
+                Density: <strong>${compDensity}%</strong>
             </div>
-        </div>`;
-        modulesContainer.insertAdjacentHTML('beforeend', html);
-    };
+        </div>
+        <button class="expand-btn">What / Why / How to Fix</button>
+        <div class="details hidden">
+            <strong>What:</strong> How often your target phrase appears in real, visible content.<br><br>
+            <strong>Why it matters:</strong> Google rewards 1–2.5% density for relevance.<br><br>
+            <strong>Ideal:</strong> 800–2500 words + 1.0–2.5% density.<br><br>
+            <strong>AI Fix Example:</strong><br><code>Add a 300-word section titled “Why ${phrase} is special”</code>
+        </div>
+    </div>`;
+    modulesContainer.insertAdjacentHTML('beforeend', html);
+};
 
     // MAIN FLOW
     form.addEventListener('submit', async (e) => {
