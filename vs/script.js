@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const links = doc?.querySelectorAll('a') || [];
             const total = links.length;
             let internal = 0;
-            let withPhrase =  = 0;
+            let withPhrase = 0;
             links.forEach(a => {
                 const text = a.textContent || '';
                 if (countPhrase(text, phrase) > 0) withPhrase++;
