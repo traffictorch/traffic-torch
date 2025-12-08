@@ -24,16 +24,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const hideLoader = () => bottomLoader.classList.add('hidden');
 
-    // Reusable fetch + parse function (100% reliable on GitHub Pages)
-    const fetchPage = async (url) => {
+// Ultra-reliable fetch with multiple free proxies + instant fallback
+const fetchPage = async (url) => {
+    const proxies = [
+        `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+        `https://corsproxy.io/?${encodeURIComponent(url)}`,
+        `https://cors-anywhere.herokuapp.com/${url}`, // works most of the time
+        `https://thingproxy.freeboard.io/fetch/${url}`
+    ];
+
+    for (const proxyUrl of proxies) {
         try {
-            const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
-            const data = await response.json();
-            return new DOMParser().parseFromString(data.contents, 'text/html');
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 8000); // 8s timeout
+
+            const res = await fetch(proxyUrl, { signal: controller.signal });
+            clearTimeout(timeout);
+
+            if (res.ok) {
+                const data = await res.json();
+                // allorigins returns { contents: "..." }, others return HTML directly
+                const html = data.contents || await res.text();
+                return new DOMParser().parseFromString(html, 'text/html');
+            }
         } catch (e) {
-            return null; // will trigger fallback message
+            continue; // try next proxy
         }
-    };
+    }
+    return null; // all proxies failed
+};
 
     // Helper: count phrase occurrences (case-insensitive)
     const countPhrase = (text = '', phrase = '') => {
