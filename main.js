@@ -1,8 +1,7 @@
 const toggle = document.getElementById('themeToggle');
 
-// Apply saved theme or system preference on load
-if (localStorage.theme === 'light' || 
-   (!localStorage.theme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+// Load saved theme or respect OS preference
+if (localStorage.theme === 'light' || (!localStorage.theme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
   document.documentElement.classList.add('light');
   toggle.textContent = '☀️';
 } else {
@@ -10,15 +9,12 @@ if (localStorage.theme === 'light' ||
   toggle.textContent = '🌙';
 }
 
-// Click to toggle
+// Toggle on click
 toggle.addEventListener('click', () => {
-  if (document.documentElement.classList.toggle('light')) {
-    localStorage.theme = 'light';
-    toggle.textContent = '☀️';
-  } else {
-    localStorage.theme = 'dark';
-    toggle.textContent = '🌙';
-  }
+  document.documentElement.classList.toggle('light');
+  const isLight = document.documentElement.classList.contains('light');
+  localStorage.theme = isLight ? 'light' : 'dark';
+  toggle.textContent = isLight ? '☀️' : '🌙';
 });
 
 
