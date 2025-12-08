@@ -155,8 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const comp = get(compDoc);
         const coverageYou = you.total > 0 ? (you.withAlt / you.total * 15) : 0;
         const coverageComp = comp.total > 0 ? (comp.withAlt / comp.total * 15) : 0;
-        yourScore += coverageYou + (you.withPhrase * 2.5);
-        compScore += coverageComp + (comp.withPhrase * 2.5);
+        yourScore += coverageYou + (you.withPhrase * 1.5);
+        compScore += coverageComp + (comp.withPhrase * 1.5);
         modulesContainer.insertAdjacentHTML('beforeend', `
         <div class="module-card"><h3>Image Alt Tags</h3><div class="grid">
             <div class="side you"><strong>You</strong><br>Images: ${you.total}<br>With alt: ${you.withAlt} (${Math.round(coverageYou*10)}%)<br><span class="highlight">Phrase in alt: ${you.withPhrase}x</span></div>
@@ -186,8 +186,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         const you = get(yourDoc, new URL(yourUrl).hostname);
         const comp = get(compDoc, new URL(compUrl).hostname);
-        yourScore += Math.min(you.internal / 10, 5) + (you.withPhrase * 1);
-        compScore += Math.min(comp.internal / 10, 5) + (comp.withPhrase * 1);
+        yourScore += Math.min(you.internal / 10, 5) + Math.min(you.withPhrase, 5);
+        compScore += Math.min(comp.internal / 10, 5) + (comp.withPhrase * 5);
         modulesContainer.insertAdjacentHTML('beforeend', `
         <div class="module-card"><h3>Anchor Text Links</h3><div class="grid">
             <div class="side you"><strong>You</strong><br>Total links: ${you.total}<br>Internal: ${you.internal} · External: ${you.external}<br><span class="highlight">Phrase in anchor: ${you.withPhrase}x</span></div>
