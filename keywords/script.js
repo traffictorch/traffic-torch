@@ -13,23 +13,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = document.getElementById('pageUrl').value.trim();
     const phrase = document.getElementById('targetPhrase').value.trim().toLowerCase();
 
-    if (!url || !phrase) return alert('Enter URL and keyword');
+    if (!url || !phrase) return alert('Enter both fields');
 
     try {
       const res = await fetch(`/api.php?url=${encodeURIComponent(url)}`);
-      if (!res.ok) throw new Error('Server error');
+      let text = await res.text();
 
-      const text = await res.text();
-      if (!text.trim()) throw new Error('Empty response from api.php');
+      // CRITICAL FIX: Your api.php returns <?php ... ?> + JSON → strip it
+      text = text.replace(/^<\?php[\s\S]*?\?>\s*/i, '').trim();
+      if (!text) throw new Error('Empty response after cleaning');
 
-      const page = JSON.parse(text.trim());
+      const page = JSON.parse(text);
       if (page.error) throw new Error(page.error);
 
       const analysis = analyze(page, phrase);
       render(analysis);
       results.classList.remove('hidden');
     } catch (err) {
-      alert('API Error: ' + err.message);
+      alert('Error: ' + err.message);
+      console.log('Raw API output →', text);
     }
   });
 
@@ -50,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     add(10, wordCount >= 800);
     add(10, density >= 1 && density <= 2.5);
-    add(8, words.slice(0,100).join(' ').includes(phrase));
+    add(8,  words.slice(0,100).join(' ').includes(phrase));
 
     const images = p.images || [];
     const goodAlts = images.filter(i => i.alt?.toLowerCase().includes(phrase)).length;
@@ -65,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     add(10, p.url?.toLowerCase().includes(phrase.replace(/ /g,'-')));
     add(10, !!p.schema);
 
-    // 2025 Bonus Modules
+    // Bonus modules
     const lazy = images.filter(i => i.lazy).length;
     const lazyPercent = images.length ? Math.round(lazy / images.length * 100) : 0;
     const missingAlts = images.filter(i => !i.alt?.trim()).length;
@@ -75,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (missingAlts === 0) score += 8;
     if (lazyPercent >= 90) score += 7;
     if (wordCount >= 1200) score += 10;
-    if (paragraphs >= 15) score += 5;
+    if (paragraphs >= 15) score +=  score += 5;
 
     score = Math.min(100, Math.round(score));
 
@@ -84,21 +86,10 @@ document.addEventListener('DOMContentLoaded', () => {
                      score >= 70 ? 'Page 1 possible' : 'Needs work';
 
     return {
-      score,
-      title: p.title || '(no title)',
-      desc: p.description || '(no description)',
-      h1: p.h1 || '(no h1)',
-      wordCount,
-      density,
-      altPercent,
-      anchorPercent,
-      totalImages: images.length,
-      missingAlts,
-      lazyPercent,
-      readingTime,
-      paragraphs,
-      forecast,
-      missingTo100: 100 - score
+      score, title: p.title || '(no title)', desc: p.description || '(no desc)', h1: p.h1 || '(no h1)',
+      wordCount, density, altPercent, anchorPercent,
+      totalImages: images.length, missingAlts, lazyPercent, readingTime, paragraphs,
+      forecast, missingTo100: 100 - score
     };
   }
 
@@ -117,31 +108,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('altInfo').innerHTML = `${a.altPercent}% alt optimized`;
     document.getElementById('anchorInfo').innerHTML = `${a.anchorPercent}% phrase anchors`;
 
-    document.getElementById('imagePro').innerHTML = `
-      <h2>Image Optimization Pro</h2>
-      <p>${a.totalImages} images • ${a.missingAlts} missing alts • ${a.lazyPercent}% lazy</p>`;
-
-    document.getElementById('depthRadar').innerHTML = `
-      <h2>Content Depth Radar</h2>
-      <p>${a.wordCount} words • ${a.readingTime} min • ${a.paragraphs} paragraphs</p>`;
-
-    document.getElementById('linkFlow').innerHTML = `
-      <h2>Internal Link Flow</h2>
-      <p>${a.anchorPercent}% use exact phrase</p>`;
-
-    document.getElementById('forecastCard').innerHTML = `
-      <h2>Predictive Rank Forecast</h2>
-      <p><strong>${a.forecast}</strong></p>
-      ${a.score < 100 ? `<p>Missing ${a.missingTo100} points to perfection</p>` : '<p>PERFECTION</p>'}`;
-
-    document.getElementById('aiFixes').innerHTML = `
-      <h2>AI Fix Prescription</h2>
-      <ul style="text-align:left">
-        ${a.missingAlts > 0 ? `<li>Fix ${a.missingAlts} missing alts</li>` : ''}
-        ${a.lazyPercent < 90 ? '<li>Add loading="lazy"</li>' : ''}
-        ${a.wordCount < 1200 ? `<li>Add ${1200 - a.wordCount} words</li>` : ''}
-        ${a.anchorPercent < 30 ? '<li>Upgrade anchor text</li>' : ''}
-        ${a.missingAlts === 0 && a.lazyPercent >= 90 && a.wordCount >= 1200 && a.anchorPercent >= 30 ? '<li>Perfect!</li>' : ''}
-      </ul>`;
+    document.getElementById('imagePro').innerHTML = `<h2>Image Optimization Pro</h2><p>${a.totalImages} images • ${a.missingAlts} missing alts • ${a.lazyPercent}% lazy</p>`;
+    document.getElementById('depthRadar').innerHTML = `<h2>Content Depth Radar</h2><p>${a.wordCount} words • ${a.readingTime} min • ${a.paragraphs} paragraphs</p>`;
+    document.getElementById('linkFlow').innerHTML = `<h2>Internal Link Flow</h2><p>${a.anchorPercent}% use exact phrase</p>`;
+    document.getElementById('forecastCard').innerHTML = `<h2>Predictive Rank Forecast</h2><p><strong>${a.forecast}</strong></p>${a.score<100?`<p>Missing ${a.missingTo100} points</p>`:'<p>PERFECTION</p>'}`;
+    document.getElementById('aiFixes').innerHTML = `<h2>AI Fix Prescription</h2><ul style="text-align:left">${a.missingAlts>0?'<li>Fix '+a.missingAlts+' alts</li>':''}${a.lazyPercent<90?'<li>Add loading="lazy"</li>':''}${a.wordCount<1200?'<li>Add '+(1200-a.wordCount)+' words</li>':'' || '<li>Perfect!</li>'}</ul>`;
   }
 });
