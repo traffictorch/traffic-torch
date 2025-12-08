@@ -3,118 +3,120 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Live Vitals – Real Browser Audit</title>
-  <meta name="description" content="Real Core Web Vitals from your device – no proxy">
+  <title>Iframe Vitals Estimator – Real Metrics</title>
+  <meta name="description" content="Live partial Core Web Vitals via iframe – works on GH Pages">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#000">
   <style>
     :root{--bg:#000;--text:#fff;--accent:#00ff9d;--card:#111;--good:#00ff9d;--bad:#ff3b30;--radius:16px}
     @media (prefers-color-scheme:light){:root{--bg:#fff;--text:#000;--card:#f5f5f5;--accent:#0d9488;--good:#0d9488;--bad:#ef4444}}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:1rem}
-    .card{background:var(--card);padding:2rem;border-radius:var(--radius);max-width:500px;width:100%;text-align:center;box-shadow:0 10px 40px rgba(0,255,157,.2)}
-    h1{color:var(--accent);margin:0 0 .5rem;font-size:2.4rem}
-    .score{font-size:5.5rem;margin:1rem 0;font-weight:900;color:var(--good)}
-    button{background:var(--accent);color:#000;padding:1rem 2rem;border:none;border-radius:50px;font-weight:700;cursor:pointer;margin-top:1rem}
-    .metrics{display:grid;gap:1rem;margin-top:2rem}
-    .metric{background:var(--card);padding:1.2rem;border-radius:var(--radius)}
-    .value{font-size:2rem;font-weight:700;color:var(--accent)}
-    .status{display:inline-block;padding:0.4rem 1rem;border-radius:50px;font-weight:bold;margin:0.5rem 0}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;min-height:100vh;padding:1rem}
+    .container{max-width:800px;margin:auto}
+    h1{color:var(--accent);text-align:center}
+    .input-group{display:flex;margin:1rem 0}
+    input{flex:1;padding:1rem;background:var(--card);color:var(--text);border:none;border-radius:var(--radius) 0 0 var(--radius)}
+    button{padding:1rem 2rem;background:var(--accent);color:#000;border:none;border-radius:0 var(--radius) var(--radius) 0;cursor:pointer;font-weight:700}
+    iframe{width:100%;height:80vh;border:none;border-radius:var(--radius);margin-top:1rem;display:none}
+    .results{background:var(--card);padding:2rem;border-radius:var(--radius);margin-top:1rem}
+    .score{font-size:5rem;text-align:center;margin:0;color:var(--good);font-weight:900}
+    .metrics{display:grid;gap:1rem;margin-top:2rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+    .metric{background:var(--card);padding:1.5rem;border-radius:var(--radius)}
+    .value{font-size:2rem;color:var(--accent);font-weight:700}
+    .status{display:inline-block;padding:0.4rem 1rem;border-radius:50px;font-weight:bold}
     .good{background:var(--good);color:#000}.bad{background:var(--bad);color:#fff}
     details{cursor:pointer;margin-top:1rem}
     summary{font-weight:600}
-    .spinner{width:50px;height:50px;border:6px solid var(--card);border-top-color:var(--accent);border-radius:50%;animation:s 1s linear infinite;margin:2rem auto}
-    @keyframes s{to{transform:rotate(360deg)}}
+    .note{font-size:0.9rem;opacity:0.8;margin-top:2rem;text-align:center}
   </style>
 </head>
 <body>
 
-<div class="card">
-  <h1>Live Vitals</h1>
-  <p>Real Core Web Vitals from <strong>your device</strong></p>
-  <div id="status">Click below to measure</div>
-  <button onclick="runAudit()">Run Live Audit</button>
+<div class="container">
+  <h1>Iframe Vitals Estimator</h1>
+  <p style="text-align:center">Real partial Core Web Vitals from the actual site</p>
 
-  <div id="results" style="display:none">
+  <div class="input-group">
+    <input type="url" id="url" placeholder="https://example.com" required>
+    <button onclick="loadSite()">Load & Measure</button>
+  </div>
+
+  <iframe id="target" sandbox="allow-scripts allow-same-origin"></iframe>
+
+  <div id="results" class="results" style="display:none">
     <div class="score" id="vitality">–</div>
-    <p id="desc"></p>
-
+    <p style="text-align:center" id="desc"></p>
     <div class="metrics" id="metrics"></div>
-    <button onclick="runAudit()">Run Again</button>
+    <p class="note">Note: Only works on sites that allow iframe embedding. INP/TBT not available via iframe.</p>
   </div>
 </div>
 
 <script>
-// Live metrics storage
-let lcp, inp, cls, fcp, ttfb, tbt = 0;
+// Inject this script into the iframe to measure vitals
+const measurer = `
+  <script>
+    let lcp = 0, fcp = 0, cls = 0;
+    new PerformanceObserver((list) => {
+      for (const e of list.getEntries()) {
+        if (e.entryType === 'largest-contentful-paint') lcp = e.renderTime || e.loadTime;
+        if (e.name === 'first-contentful-paint') fcp = e.startTime;
+      }
+    }).observe({type: 'paint', buffered: true});
+    new PerformanceObserver((list) => {
+      for (const e of list.getEntries()) {
+        if (e.entryType === 'largest-contentful-paint') lcp = e.renderTime || e.loadTime;
+      }
+    }).observe({type: 'largest-contentful-paint', buffered: true});
+    new PerformanceObserver((list) => {
+      for (const e of list.getEntries()) {
+        if (!e.hadRecentInput) cls += e.value;
+      }
+    }).observe({type: 'layout-shift', buffered: true});
 
-new PerformanceObserver((list) => {
-  for (const entry of list.getEntries()) {
-    if (entry.name === 'first-contentful-paint') fcp = entry.startTime;
-    if (entry.entryType === 'largest-contentful-paint') lcp = entry.renderTime || entry.loadTime;
-    if (entry.entryType === 'layout-shift' && !entry.hadRecentInput) cls += entry.value;
-  }
-}).observe({type: 'paint', buffered: true});
-new PerformanceObserver((list) => {
-  for (const entry of list.getEntries()) {
-    if (entry.entryType === 'largest-contentful-paint') lcp = entry.renderTime || entry.loadTime;
-  }
-}).observe({type: 'largest-contentful-paint', buffered: true});
-new PerformanceObserver((list) => {
-  for (const entry of list.getEntries()) {
-    if (entry.entryType === 'layout-shift' && !entry.hadRecentInput) cls += entry.value;
-  }
-}).observe({type: 'layout-shift', buffered: true});
+    setTimeout(() => {
+      parent.postMessage({
+        type: 'vitals',
+        lcp: lcp || 0,
+        fcp: fcp || 0,
+        cls: cls || 0
+      }, '*');
+    }, 8000);
+  </script>
+`;
 
-// INP approximation via long tasks + event timings
-let worstINP = 0;
-new PerformanceObserver((list) => {
-  for (const entry of list.getEntries()) {
-    if (entry.duration > worstINP) worstINP = entry.duration;
-    tbt += entry.duration;
-  }
-}).observe({type: 'longtask', buffered: true});
+function loadSite() {
+  let url = document.getElementById('url').value.trim();
+  if (!url) return alert('Enter a URL');
+  if (!url.startsWith('http')) url = 'https://' + url;
 
-function runAudit() {
-  // Reset
-  lcp = fcp = ttfb = 0; cls = 0; worstINP = 0; tbt = 0;
+  const iframe = document.getElementById('target');
+  iframe.srcdoc = `<script>window.location = "${url}"</script>${measurer}`;
+  iframe.style.display = 'block';
   document.getElementById('results').style.display = 'none';
-  document.getElementById('status').innerHTML = '<div class="spinner"></div>Measuring your device…';
-
-  // Measure TTFB from navigation
-  const nav = performance.getEntriesByType('navigation')[0];
-  ttfb = nav ? nav.responseStart - nav.requestStart : 0;
-
-  setTimeout(() => {
-    if (!lcp) lcp = 3000;
-    if (!worstINP) worstINP = 100;
-
-    const lcpScore = Math.min(30, (2500 / lcp) * 30);
-    const inpScore = Math.min(25, (200 / worstINP) * 25);
-    const clsScore = Math.min(20, (0.1 / (cls || 0.01)) * 20);
-    const fcpScore = fcp ? Math.min(15, (1800 / fcp) * 15) : 8;
-    const ttfbScore = Math.min(10, (600 / (ttfb || 100)) * 10);
-
-    const vitality = Math.round(lcpScore + inpScore + clsScore + fcpScore + ttfbScore);
-    const capped = Math.min(100, vitality);
-
-    document.getElementById('vitality').textContent = capped;
-    document.getElementById('desc').textContent = capped >= 90 ? 'Excellent 🔥' : capped >= 70 ? 'Good' : 'Needs Work';
-    
-    document.getElementById('metrics').innerHTML = `
-      <div class="metric"><div class="value">${(lcp/1000).toFixed(2)}s</div>LCP <span class="status ${lcp<=2500?'good':'bad'}">${lcp<=2500?'Good':'Poor'}</span>
-        <details><summary>What / Why / How?</summary>Largest content load time. Slow LCP feels laggy. Optimize hero images, preload critical CSS/JS.</details></div>
-      <div class="metric"><div class="value">${Math.round(worstINP)}ms</div>INP <span class="status ${worstINP<=200?'good':'bad'}">${worstINP<=200?'Good':'Poor'}</span>
-        <details><summary>What / Why / How?</summary>Responsiveness to taps. High INP = frustration. Break up JS, use web workers.</details></div>
-      <div class="metric"><div class="value">${cls.toFixed(3)}</div>CLS <span class="status ${cls<=0.1?'good':'bad'}">${cls<=0.1?'Good':'Poor'}</span>
-        <details><summary>What / Why / How?</summary>Layout jumps. Set width/height on images, reserve ad space.</details></div>
-      <div class="metric"><div class="value">${fcp?(fcp/1000).toFixed(2)+'s':'N/A'}</div>FCP <span class="status ${fcp<=1800?'good':'bad'}">${fcp<=1800?'Good':'Poor'}</span></div>
-      <div class="metric"><div class="value">${Math.round(ttfb)}ms</div>TTFB <span class="status ${ttfb<=600?'good':'bad'}">${ttfb<=600?'Good':'Poor'}</span></div>
-    `;
-
-    document.getElementById('results').style.display = 'block';
-    document.getElementById('status').innerHTML = 'Live audit complete!';
-  }, 4000);
 }
+
+window.addEventListener('message', (e) => {
+  if (e.data.type !== 'vitals') return;
+  const {lcp, fcp, cls} = e.data;
+
+  const lcpScore = Math.min(40, (2500 / (lcp || 3000)) * 40);
+  const fcpScore = Math.min(30, (1800 / (fcp || 2000)) * 30);
+  const clsScore = Math.min(30, (0.1 / (cls || 0.01)) * 30);
+  const vitality = Math.round(lcpScore + fcpScore + clsScore);
+
+  document.getElementById('vitality').textContent = vitality;
+  document.getElementById('desc').textContent = vitality >= 85 ? 'Excellent' : vitality >= 60 ? 'Good' : 'Needs Work';
+
+  document.getElementById('metrics').innerHTML = `
+    <div class="metric"><div class="value">${lcp?(lcp/1000).toFixed(2)+'s':'N/A'}</div>LCP <span class="status ${lcp<=2500?'good':'bad'}">${lcp<=2500?'Good':'Poor'}</span>
+      <details><summary>What/Why/How?</summary>Time to main content. Slow LCP hurts perceived speed. Preload hero image, optimize server.</details></div>
+    <div class="metric"><div class="value">${fcp?(fcp/1000).toFixed(2)+'s':'N/A'}</div>FCP <span class="status ${fcp<=1800?'good':'bad'}">${fcp<=1800?'Good':'Poor'}</span>
+      <details><summary>What/Why/How?</summary>First paint time. Reduce render-blocking CSS/JS.</details></div>
+    <div class="metric"><div class="value">${cls.toFixed(3)}</div>CLS <span class="status ${cls<=0.1?'good':'bad'}">${cls<=0.1?'Good':'Poor'}</span>
+      <details><summary>What/Why/How?</summary>Layout shifts. Set width/height on images and ads.</details></div>
+  `;
+
+  document.getElementById('results').style.display = 'block';
+});
 </script>
 
 </body>
