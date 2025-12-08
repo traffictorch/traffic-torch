@@ -1,76 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Free SEO Competition Tool – Enter your URL, a competitor, and a target phrase to see instant gap analysis">
-    <title>Traffic Torch – Competition Phrase Battle</title>
-    <link rel="stylesheet" href="/vs/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyword Torch – Instant 360° SEO Health Score</title>
+  <link rel="stylesheet" href="/keywords/style.css"> <!-- Consistent naming -->
+  <link rel="manifest" href="/manifest.json"> <!-- PWA-ready -->
 </head>
 <body>
-
-<header>
-    <div class="container header-inner">
-        <h1 class="logo">Keyword Traffic Torch</h1>
-        <nav>
-            <a href="https://traffictorch.net/">Home</a>
-            <a href="https://traffictorch.net/content-audit/">AI Content Audit</a>
-            <a href="https://traffictorch.net/vs/">Competition</a>
-            <button id="mode-toggle" class="button">Toggle Dark Mode</button>
-        </nav>
+  <div class="container">
+    <h1>🔥 Keyword Torch – Single-URL Keyword Audit</h1>
+    <p>Score your page against perfect on-page SEO benchmarks for one target phrase.</p>
+    
+    <form id="torchForm">
+      <input type="url" id="pageUrl" placeholder="Your Page URL (e.g., https://example.com/post)" required>
+      <input type="text" id="targetPhrase" placeholder="Target Keyword Phrase" required>
+      <button type="submit">Ignite Analysis 🔥</button>
+      
+      <!-- New toggles for extended features -->
+      <div class="extras">
+        <label><input type="checkbox" id="uxMode" checked> Deep UX Audit</label>
+        <label><input type="checkbox" id="aiFixMode" checked> AI Fixes</label>
+        <label><input type="checkbox" id="forecastMode" checked> Rank Forecast</label>
+        <label><input type="checkbox" id="nightMode"> Night Mode</label>
+      </div>
+    </form>
+    
+    <div id="results" class="results hidden">
+      <!-- Final Score -->
+      <div class="score-card glass-card">
+        <h2>🔥 Final Optimization Score</h2>
+        <div id="finalScore">-- / 100</div>
+        <span id="fireEmoji" style="display: none;">🔥</span>
+        <div id="forecast" class="forecast"></div>
+      </div>
+      
+      <!-- Module 1: Meta Tags -->
+      <div id="metaModule" class="glass-card">
+        <h2>Meta Tags</h2>
+        <p><strong>Your Title:</strong> <span id="yourTitle">(analyzing...)</span> (<span id="yourTitleLen"></span>)</p>
+        <p><strong>Your Description:</strong> <span id="yourDesc">(analyzing...)</span> (<span id="yourDescLen"></span>)</p>
+      </div>
+      
+      <!-- Module 2: H1 -->
+      <div id="h1Module" class="glass-card">
+        <h2>H1 Tag</h2>
+        <p><strong>Your H1:</strong> <span id="yourH1">(analyzing...)</span></p>
+      </div>
+      
+      <!-- Module 3: Content Density -->
+      <div id="contentModule" class="glass-card">
+        <h2>Content Density</h2>
+        <p><strong>Word Count:</strong> <span id="yourWordCount">0</span> | <strong>Density:</strong> <span id="yourDensity">0%</span></p>
+        <p><strong>Phrase in First 100 Words:</strong> <span id="yourFirst100">No</span></p>
+        <p class="fix-info"><strong>What:</strong> Low density means weak topical relevance. <strong>Why:</strong> Google favors 1-2.5% for authority in 2025. <strong>How:</strong> Add 2-3 natural phrase mentions in intro.</p>
+      </div>
+      
+      <!-- Module 4: Image Alts -->
+      <div id="altModule" class="glass-card">
+        <h2>Image Alts</h2>
+        <p><strong>Alt Optimization:</strong> <span id="yourAltRatio">0%</span></p>
+        <p class="fix-info"><strong>What:</strong> % of images with phrase in alt. <strong>Why:</strong> Image search traffic boosts rankings. <strong>How:</strong> Edit alt="Your phrase description" for 50%+ images.</p>
+      </div>
+      
+      <!-- Module 5: Anchors -->
+      <div id="anchorModule" class="glass-card">
+        <h2>Internal Anchors</h2>
+        <p><strong>Anchor Optimization:</strong> <span id="yourAnchorRatio">0%</span> of <span id="yourInternalAnchors">0</span> links</p>
+        <p class="fix-info"><strong>What:</strong> % using target phrase. <strong>Why:</strong> Reinforces internal PageRank flow. <strong>How:</strong> Update 30% of links to include phrase naturally.</p>
+      </div>
+      
+      <!-- Module 6: URL & Schema -->
+      <div id="urlModule" class="glass-card">
+        <h2>URL & Schema</h2>
+        <p><strong>URL Contains Phrase:</strong> <span id="yourUrl">No</span></p>
+        <p><strong>Schema Detected:</strong> <span id="yourSchema">No</span></p>
+        <p class="fix-info"><strong>What:</strong> Structured data presence. <strong>Why:</strong> Rich snippets = 20%+ CTR lift. <strong>How:</strong> Add JSON-LD schema for your niche via Google's tool.</p>
+      </div>
+      
+      <!-- New Module 7: UX & Performance (Client-Side) -->
+      <div id="uxModule" class="glass-card hidden">
+        <h2>UX & Performance 🔥</h2>
+        <p><strong>Total Images:</strong> <span id="totalImages">0</span> | <strong>Missing Alts:</strong> <span id="imagesNoAlt">0</span></p>
+        <p><strong>Lazy-Load %:</strong> <span id="lazyRatio">0%</span> | <strong>External Scripts:</strong> <span id="externalScripts">0</strong></p>
+        <p class="fix-info"><strong>What:</strong> Client-side load signals. <strong>Why:</strong> Core Web Vitals impact rankings (no API needed). <strong>How:</strong> Add loading="lazy" to images; defer non-essential JS.</p>
+      </div>
+      
+      <!-- AI Fixes Card -->
+      <div id="aiFixes" class="glass-card hidden"></div>
+      
+      <button id="generateFixes" class="hidden">Generate AI Fixes</button>
     </div>
-</header>
-
-<main>
-    <section class="hero">
-        <div class="container">
-            <h2>Keyword Torch – SEO Audit Tool</h2>
-            <p>Enter your URL, a competitor, and a target phrase to see exactly where you win — and where you’re losing.</p>
-
-            <form id="analysis-form">
-                <input type="url" id="your-url" placeholder="Your URL – https://yoursite.com" required>
-                <input type="text" id="phrase" placeholder="Target phrase – e.g. best coffee new york" required>
-                <button type="submit" class="button">Analyze Now</button>
-            </form>
-
-            <div id="loading" class="hidden">
-                <p>Fetching both pages…</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="results" class="hidden">
-        <div class="container">
-<div id="overall-score" class="overall-score hidden">
-    <h2>Phrase Power Score</h2>
-    <div class="score-grid">
-        <div><strong>You</strong> <span id="your-total">–</span></div>
-        <div><strong>Competitor</strong> <span id="comp-total">–</span></div>
-    </div>
-</div>
-
-            <div id="modules"></div>
-        </div>
-    </section>
-</main>
-
-<!-- Fixed bottom loader -->
-<div id="overall-score" class="overall-score hidden">
-    <h2>Phrase Power Score</h2>
-    <div class="score-grid">
-        <div><strong>You</strong> <span id="your-total">–</span></div>
-        <div><strong>Competitor</strong> <span id="comp-total">–</span></div>
-    </div>
-</div>
-
-<footer>
-    <div class="container">
-        <p>© 2025 Traffic Torch. All rights reserved.</p>
-    </div>
-</footer>
-
-<script src="/vs/script.js"></script>
+  </div>
+  
+  <script src="/keywords/script.js"></script>
 </body>
 </html>
