@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const phrase = document.getElementById('targetPhrase').value.trim().toLowerCase();
 
     try {
-      const res = await fetch('/api/scrape', {
+      const res = await fetch('/api.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url })
