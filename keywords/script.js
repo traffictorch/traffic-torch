@@ -4,14 +4,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const scoreEl = document.getElementById('finalScore');
   const fire = document.getElementById('fireEmoji');
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    results.classList.add('hidden');
-    scoreEl.textContent = '--';
-    fire.style.display = 'none';
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  results.classList.add('hidden');
+  scoreEl.textContent = '--';
+  fire.style.display = 'none';
 
-    const url = document.getElementById('pageUrl').value.trim();
-    const phrase = document.getElementById('targetPhrase').value.trim().toLowerCase();
+  const url = document.getElementById('pageUrl').value.trim();
+  const phrase = document.getElementById('targetPhrase').value.trim().toLowerCase();
+
+  if (!url || !phrase) {
+    alert('Enter URL and phrase');
+    return;
+  }
 
 try {
   const res = await fetch(`/api.php?url=${encodeURIComponent(url)}`);
