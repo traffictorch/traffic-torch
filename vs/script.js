@@ -1,4 +1,4 @@
-// script.js – FINAL & PERFECT – All 6 modules (Dec 2025)
+// script.js – FINAL & BULLETPROOF – All 6 modules (Dec 2025)
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('analysis-form');
     const loading = document.getElementById('loading');
@@ -24,17 +24,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // BULLETPROOF FETCH
     const fetchPage = async (url) => {
-        const encoders = [
-            (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-            (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-            (u) => `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(u)}`,
-            (u) => `https://cf-cors.s3.us-west-1.amazonaws.com/cors-proxy.php?url=${encodeURIComponent(u)}`
+        const proxies = [
+            `https://corsproxy.io/?${encodeURIComponent(url)}`,
+            `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+            `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(url)}`,
+            `https://cf-cors.s3.us-west-1.amazonaws.com/cors-proxy.php?url=${encodeURIComponent(url)}`
         ];
-        for (const makeUrl of encoders) {
+        for (const proxy of proxies) {
             try {
                 const controller = new AbortController();
                 const timeout = setTimeout(() => controller.abort(), 9000);
-                const res = await fetch(makeUrl(url), { signal: controller.signal });
+                const res = await fetch(proxy, { signal: controller.signal });
                 clearTimeout(timeout);
                 if (res.ok) {
                     const text = await res.text();
@@ -45,15 +45,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return null;
     };
 
-    // SMART PHRASE MATCHER – fixed
+    // SMART PHRASE MATCHER
     const countPhrase = (text = '', originalPhrase = '') => {
         if (!text || !originalPhrase) return 0;
         const phrase = originalPhrase.toLowerCase().trim();
         let matches = (text.toLowerCase().match(new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
         const fillers = ['in','the','a','an','of','at','on','for','and','&','near','best','top','great'];
         let cleanPhrase = phrase;
-        fillers.forEach(w => cleanPhrase = cleanPhrase.replace(new RegExp('\\b'+w+'\\b','gi'), ''));
-        cleanPhrase = cleanPhrase.replace(/\s+/g,' ').trim();
+        fillers.forEach(w => cleanPhrase = cleanPhrase.replace(new RegExp('\\b' + w + '\\b', 'gi'), ''));
+        cleanPhrase = cleanPhrase.replace(/\s+/g, ' ').trim();
         if (cleanPhrase.length > 4) {
             matches += (text.toLowerCase().match(new RegExp(cleanPhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')) || []).length;
         }
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div></div>`);
     };
 
-    // MAIN FLOW
+    // MAIN FLOW – unchanged from last working version
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         modulesContainer.innerHTML = '';
@@ -271,7 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
         compTotalEl.textContent = Math.round(compScore);
     });
 
-    // Expand buttons
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('expand-btn')) {
             const details = e.target.nextElementSibling;
