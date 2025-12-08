@@ -4,37 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Free SEO Competition Tool – Enter your URL, a competitor, and a target phrase to see instant gap analysis">
-    <title>Traffic Torch – Competition Phrase Battle</title>
-    <link rel="stylesheet" href="/keyword-vs-tool/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
-</head>
-<body>
+    <title>Keyword Competition Tool - Traffic Torch</title>
+    
+    <!-- GLOBAL STYLES -->
+  <link rel="stylesheet" href="/style.css">
 
-<header>
-    <div class="container header-inner">
-        <h1 class="logo">Traffic Torch</h1>
-        <nav>
-            <a href="https://traffictorch.net/">Home</a>
-            <a href="https://traffictorch.net/content-audit/">AI Content Audit</a>
-            <a href="https://traffictorch.net/vs/">Competition</a>
-            <button id="mode-toggle" class="button">Toggle Dark Mode</button>
-        </nav>
+  <!-- Tool-specific styles -->
+    <link rel="stylesheet" href="/keyword-vs-tool/style.css">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+    
+<body class="text-white min-h-screen">
+
+      <!-- EXACT SAME HEADER AS HOME PAGE -->
+  <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-4">
+        <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
+        <h1 class="text-2xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+          Traffic Torch
+        </h1>
+      </a>
+      <button id="menuToggle" class="md:hidden text-3xl">☰</button>
+      <nav class="hidden md:flex gap-8 text-lg">
+        <a href="/" class="hover:text-orange-400 transition">Home</a>
+        <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">AI Audit</a>
+        <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a>
+        <a href="/keyword-tool/" class="text-orange-400 font-bold">Keywords ←</a>
+        <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a>
+        <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a>
+        <a href="/about/" class="hover:text-orange-400 transition">About</a>
+      </nav>
+      <button id="themeToggle" class="px-4 py-2 bg-white/10 rounded-full hover:bg-white/20 transition">
+        🌙
+      </button>
     </div>
-</header>
+    <div id="mobileMenu" class="hidden md:hidden bg-black/95 backdrop-blur-xl border-t border-white/10">
+      <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+        <a href="/" class="hover:text-orange-400 transition">Home</a>
+        <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">AI Audit</a>
+        <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a>
+        <a href="/keyword-tool/" class="text-orange-400 font-bold">Keywords ←</a>
+        <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a>
+        <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a>
+        <a href="/about/" class="hover:text-orange-400 transition">About</a>
+      </nav>
+    </div>
+  </header> 
 
 <main>
-    <section class="hero">
-        <div class="container">
-            <h2>Competition Phrase Battle</h2>
-            <p>Enter your URL, a competitor, and a target phrase to see exactly where you win — and where you’re losing.</p>
 
-            <form id="analysis-form">
+  <div class="container mx-auto px-6 py-12 max-w-5xl">
+    <header class="text-center mb-12">
+      <h1 class="text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
+        Keyword Competition Tool 
+      </h1>
+      <p class="text-xl text-gray-400">Enter your URL, a competitor URL, and a target search phrase to compare where keywords are located.</p>
+    </header>
+    <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-white/20">
+      <form id="urlForm" class="flex flex-col md:flex-row gap-6 max-w-3xl mx-auto">
                 <input type="url" id="your-url" placeholder="Your URL – https://yoursite.com" required>
                 <input type="url" id="competitor-url" placeholder="Competitor URL – https://competitor.com" required>
-                <input type="text" id="phrase" placeholder="Target phrase – e.g. best coffee makers" required>
-                <button type="submit" class="button">Analyze Now</button>
-            </form>
+                <input type="text" id="phrase" placeholder="Target phrase – e.g. best coffee new york" required>
+        <button type="submit"
+                class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
+          Torch it 🆚
+        </button>
+      </form>
 
             <div id="loading" class="hidden">
                 <p>Fetching both pages…</p>
@@ -66,12 +103,46 @@
     </div>
 </div>
 
-<footer>
-    <div class="container">
-        <p>© 2025 Traffic Torch. All rights reserved.</p>
+      <!-- SAME FOOTER AS HOME PAGE -->
+  <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">
+    <div class="container mx-auto px-6 max-w-6xl">
+      <div class="grid md:grid-cols-4 gap-12 text-center md:text-left">
+        <div>
+          <img src="/logo.webp" alt="Traffic Torch" class="w-20 mx-auto md:mx-0 rounded-2xl shadow-2xl mb-6">
+          <p class="text-gray-400 text-sm">Instant SEO + UX audit tools.<br>No login. No limits. No BS.</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-6 text-orange-400">Tools</h3>
+          <ul class="space-y-3 text-gray-400">
+            <li><a href="/" class="hover:text-orange-400 transition">Home</a></li>
+            <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">AI Audit</a></li>
+            <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
+            <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keyword</a></li>
+            <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a></li>
+            <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-6 text-orange-400">Company</h3>
+          <ul class="space-y-3 text-gray-400">
+            <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
+            <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
+            <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-6 text-orange-400">Traffic Torch</h3>
+          <p class="text-gray-400 text-sm">🚦🔦</p>
+          <p class="text-gray-400 text-sm">Built with 🔥</p>
+          <p class="text-gray-500 text-xs mt-4">© 2025 Traffic Torch</p>
+        </div>
+      </div>
     </div>
-</footer>
+  </footer>
+  
+    <!-- Load JS last for speed -->
+  <script src="/main.js" type="module"></script>
+  <script src="/keyword-vs-tool/script.js" type="module"></script> 
 
-<script src="/keyword-vs-tool/script.js"></script>
 </body>
 </html>

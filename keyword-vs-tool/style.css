@@ -1,170 +1,52 @@
-/* style.css – EPIC FINAL LOOK – matches ALL Traffic Torch tools (Dec 2025) */
+/* style.css – UX Tool Only (Dec 2025) */
+/* Mobile-first, PWA-ready, matches Quit Risk v3.0 exactly */
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
 
-* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg-gradient: linear-gradient(to bottom right, #0f172a, #1e1b4b, #000000);
+}
+
 body {
-    font-family: 'Inter', sans-serif';
-    background: linear-gradient(to bottom right, #0f172a, #1e1b4b, #000000);
-    color: #e2e8f0;
-    min-height: 100vh;
-    line-height: 1.6;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
 }
 
-header {
-    background: rgba(255,102,0,0.15);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255,102,0,0.3);
-    position: sticky; top: 0; z-index: 100;
+
+/* Prose tweaks for humanized output */
+.prose p { margin-bottom: 1rem; }
+.prose strong { color: #f97316; font-weight: 800; }
+
+/* LOCAL TOOL FIX – MOBILE-FRIENDLY REPORT (WORKS 100% – Dec 2025) */
+@media (max-width: 1024px) {
+  /* Kill narrow containers */
+  .container, .max-w-5xl, .max-w-4xl, .max-w-3xl {
+    max-width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Reduce huge padding on cards */
+  .p-12, .p-10, .p-8 {
+    padding: 1.5rem !important;
+  }
+
+  /* Smaller, readable title */
+  .text-5xl {
+    font-size: 2rem !important;
+    line-height: 1.1 !important;
+  }
+
+  /* Big score but not comically huge */
+  .text-9xl {
+    font-size: 6rem !important;
+    line-height: 1 !important;
+  }
 }
 
-.container { max-width: 1280px; margin: 0 auto; padding: 1rem; }
-.header-inner { display: flex; justify-content: space-between; align-items: center; }
-.logo { font-size: 2.2rem; font-weight: 900; color: #ff6600; text-shadow: 0 0 20px rgba(255,102,0,0.5); }
-nav a { color: #cbd5e1; text-decoration: none; font-weight: 600; margin: 0 1rem; }
-nav a:hover { color: #ff6600; }
-#mode-toggle { background:#ff6600; color:white; border:none; padding:0.7rem 1.4rem; border-radius:10px; font-weight:700; cursor:pointer; box-shadow: 0 4px 15px rgba(255,102,0,0.4); }
-
-.hero { text-align:center; padding:6rem 1rem 4rem; }
-.hero h2 {
-    font-size: 4.5rem;
-    font-weight: 900;
-    background: linear-gradient(90deg, #ff8a00, #f97316, #ff6600);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 0 40px rgba(255,102,0,0.5);
-    margin-bottom: 1.5rem;
-}
-.hero p { font-size: 1.4rem; color: #94a3b8; max-width: 800px; margin: 0 auto 3rem; }
-
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-    max-width: 700px;
-    margin: 0 auto;
-}
-input, .button {
-    padding: 1.2rem;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    border: 1px solid #334155;
-    background: rgba(255,255,255,0.05);
-    color: white;
-}
-input::placeholder { color: #64748b; }
-.button {
-    background: linear-gradient(45deg, #ff6600, #e65c00);
-    border: none;
-    font-weight: 700;
-    font-size: 1.3rem;
-    cursor: pointer;
-    box-shadow: 0 8px 25px rgba(255,102,0,0.4);
-    transition: all 0.3s;
-}
-.button:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(255,102,0,0.6); }
-
-#overall-score {
-    text-align: center;
-    padding: 4rem 1rem 3rem;
-}
-#overall-score h2 {
-    font-size: 3.5rem;
-    background: linear-gradient(90deg, #ff8a00, #f97316);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 2rem;
-}
-.score-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 3rem;
-    font-size: 3.5rem;
-    font-weight: 900;
-    color: #ff6600;
-}
-
-.module-card {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,102,0,0.3);
-    border-radius: 16px;
-    margin-bottom: 2rem;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-.module-card h3 {
-    background: linear-gradient(90deg, #ff6600, #000);
-    padding: 1.5rem;
-    font-size: 1.8rem;
-    text-align: center;
-    color: white;
-}
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    padding: 2rem;
-}
-.side {
-    background: rgba(255,255,255,0.05);
-    padding: 1.5rem;
-    border-radius: 12px;
-    border: 1px solid rgba(255,102,0,0.2);
-}
-.highlight { color: #ff6600; font-weight: 900; }
-
-.expand-btn {
-    width: 100%;
-    padding: 1rem;
-    background: rgba(255,102,0,0.2);
-    border: none;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 0 0 16px 16px;
-}
-.details {
-    padding: 2rem;
-    background: rgba(0,0,0,0.3);
-    border-top: 1px solid rgba(255,102,0,0.3);
-}
-code {
-    background: #000;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    display: block;
-    margin: 1rem 0;
-    font-family: 'Courier New', monospace;
-}
-
-.bottom-loader {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(to top, #ff6600, #e65c00);
-    color: white;
-    padding: 1.2rem;
-    text-align: center;
-    font-weight: 700;
-    font-size: 1.1rem;
-    z-index: 1000;
-    box-shadow: 0 -10px 30px rgba(255,102,0,0.5);
-}
-.spinner { 
-    display: inline-block; 
-    width: 24px; height: 24px; 
-    border: 3px solid white; 
-    border-top-color: transparent;
-    border-radius: 50%; 
-    animation: spin 1s linear infinite;
-    margin-right: 12px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-@media (max-width: 768px) {
-    .hero h2 { font-size: 3rem; }
-    .score-grid { font-size: 2.5rem; gap: 2rem; }
-    .grid { grid-template-columns: 1fr; }
+/* Tiny phones – even tighter */
+@media (max-width: 480px) {
+  .p-12, .p-10, .p-8 { padding: 1.25rem !important; }
+  .text-5xl { font-size: 1.875rem !important; }
+  .text-9xl { font-size: 5.5rem !important; }
 }
