@@ -55,23 +55,21 @@
 
 <main>
 
-  <div class="container mx-auto px-6 py-12 max-w-5xl">
-    <header class="text-center mb-12">
-      <h1 class="text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
-        Keyword Competition Tool 
-      </h1>
-      <p class="text-xl text-gray-400">Enter your URL, a competitor URL, and a target search phrase to compare where keywords are located.</p>
-    </header>
-    <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-white/20">
-      <form id="urlForm" class="flex flex-col md:flex-row gap-6 max-w-3xl mx-auto">
+
+
+
+
+    <section class="hero">
+        <div class="container">
+            <h2>Keyword Competition Tool</h2>
+            <p>Enter your URL, a competitor URL, and a target search phrase to compare where keywords are located.</p>
+
+            <form id="analysis-form">
                 <input type="url" id="your-url" placeholder="Your URL – https://yoursite.com" required>
                 <input type="url" id="competitor-url" placeholder="Competitor URL – https://competitor.com" required>
-                <input type="text" id="phrase" placeholder="Target phrase – e.g. best coffee new york" required>
-        <button type="submit"
-                class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
-          Torch it 🆚
-        </button>
-      </form>
+                <input type="text" id="phrase" placeholder="Target phrase – e.g. best coffee makers" required>
+                <button type="submit" class="button">Analyze Now</button>
+            </form>
 
             <div id="loading" class="hidden">
                 <p>Fetching both pages…</p>
@@ -143,6 +141,6 @@
     <!-- Load JS last for speed -->
   <script src="/main.js" type="module"></script>
   <script src="/keyword-vs-tool/script.js" type="module"></script> 
-
+  
 </body>
 </html>
