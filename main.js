@@ -20,4 +20,3 @@
       btn.onclick = () => deferredPrompt.prompt();
       document.body.appendChild(btn);
     });
-});
