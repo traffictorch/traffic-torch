@@ -198,12 +198,13 @@ document.addEventListener('DOMContentLoaded', () => {
         </div></div>`);
     };
 
-// MODULE 6 – URL & Schema Check – FINAL FIXED VERSION
+// MODULE 6 – URL & Schema Check – 100% BULLETPROOF FINAL VERSION
 const moduleUrlSchema = (yourUrl, compUrl, phrase, yourDoc, compDoc) => {
     const urlMatch = (url) => countPhrase(url.toLowerCase(), phrase);
+
     const schema = (doc) => {
         const scripts = doc?.querySelectorAll('script[type="application/ld+json"]') || [];
-        return scripts.length > 0 && scripts.some(s => countPhrase(s.textContent || '', phrase) > 0);
+        return scripts.length > 0 && Array.from(scripts).some(s => countPhrase(s.textContent || '', phrase) > 0);
     };
 
     const youUrlMatch = urlMatch(yourUrl);
