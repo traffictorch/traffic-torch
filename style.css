@@ -71,10 +71,18 @@ html.light .text-white {
 /* Apply the light gradient you already defined */
 html.light body {
   background: var(--bg-gradient) !important;
+} 
+  
+ /* Perfect glass header in both themes */
+header {
+  transition: all 0.3s ease;
 }
-  
-  
-  
+
+/* Light mode glass tweak (optional but looks cleaner) */
+html.light header {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.1) !important;
+} 
   
   
   
