@@ -1,15 +1,29 @@
-    const menuToggle = document.getElementById('menuToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    menuToggle.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+const toggle = document.getElementById('themeToggle');
 
-    const toggle = document.getElementById('themeToggle');
-    if (localStorage.theme === 'light') document.documentElement.classList.add('light');
-    toggle.addEventListener('click', () => {
-      document.documentElement.classList.toggle('light');
-      localStorage.theme = document.documentElement.classList.contains('light') ? 'light' : 'dark';
-      toggle.textContent = document.documentElement.classList.contains('light') ? '☀️' : '🌙';
-    });
+// 1. Load saved theme (or default to dark)
+if (localStorage.theme === 'light' || 
+   (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+  document.documentElement.classList.add('light');
+  toggle.textContent = '☀️';
+} else {
+  toggle.textContent = '🌙';
+}
 
+// 2. Toggle on click
+toggle.addEventListener('click', () => {
+  document.documentElement.classList.toggle('light');
+  
+  if (document.documentElement.classList.contains('light')) {
+    localStorage.theme = 'light';
+    toggle.textContent = '☀️';
+  } else {
+    localStorage.theme = 'dark';
+    toggle.textContent = '🌙';
+  }
+});
+
+
+// 2. PWA Install
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
