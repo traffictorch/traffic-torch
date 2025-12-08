@@ -287,12 +287,12 @@ const moduleUrlSchema = (yourUrl, compUrl, phrase, yourDoc, compDoc) => {
 // FINAL CORRECT SCORING – max 100/100
 const finalScore = (score) => Math.min(Math.round(score), 100);
 
-yourTotalEl.textContent = finalScore(yourScore) + '/100';
-compTotalEl.textContent = finalScore(compScore) + '/100';
+// FINAL CORRECT SCORING – max 100/100
+const yourFinal = Math.min(Math.round(yourScore), 100);
+const compFinal = Math.min(Math.round(compScore), 100);
 
-// Optional fire if they hit 100
-if (yourScore >= 100) yourTotalEl.textContent += ' 🔥';
-if (compScore >= 100) compTotalEl.textContent += ' 🔥';
+yourTotalEl.textContent = yourFinal + '/100' + (yourFinal >= 100 ? ' 🔥' : '');
+compTotalEl.textContent = compFinal + '/100' + (compFinal >= 100 ? ' 🔥' : '');
     });
 
     document.addEventListener('click', (e) => {
