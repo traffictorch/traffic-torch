@@ -169,7 +169,7 @@ const countPhrase = (text = '', originalPhrase = '') => {
         const urlMatch = (url) => countPhrase(url.toLowerCase(), phrase);
         const schema = (doc) => {
             const scripts = doc?.querySelectorAll('script[type="application/ld+json"]') || [];
-            return scripts.length > 0 ? scripts.some(s => countPhrase(s.textContent, phrase) > 0);
+            return scripts.length > 0 ? scripts.some(s => countPhrase(s.textContent, phrase) > 0) : false;
         };
 
         const youUrlMatch = urlMatch(yourUrl);
