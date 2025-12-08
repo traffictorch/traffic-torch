@@ -9,19 +9,9 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background: var(--bg-gradient);
-  color: white;
   min-height: 100vh;
 }
 
-/* Light mode (optional – add .light to <html> later) */
-html.light body {
-  background: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1);
-  color: #0f172a;
-}
-html.light .bg-white\/10 {
-  background-color: rgba(0,0,0,0.05) !important;
-}
 
 /* Prose tweaks for humanized output */
 .prose p { margin-bottom: 1rem; }
