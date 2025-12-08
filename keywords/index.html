@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free SEO Competition Tool – Enter your URL, a competitor, and a target phrase to see instant gap analysis">
+    <title>Traffic Torch – Competition Phrase Battle</title>
+    <link rel="stylesheet" href="/vs/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <div class="container header-inner">
+        <h1 class="logo">Keyword Traffic Torch</h1>
+        <nav>
+            <a href="https://traffictorch.net/">Home</a>
+            <a href="https://traffictorch.net/content-audit/">AI Content Audit</a>
+            <a href="https://traffictorch.net/vs/">Competition</a>
+            <button id="mode-toggle" class="button">Toggle Dark Mode</button>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="container">
+            <h2>Keyword Torch – SEO Audit Tool</h2>
+            <p>Enter your URL, a competitor, and a target phrase to see exactly where you win — and where you’re losing.</p>
+
+            <form id="analysis-form">
+                <input type="url" id="your-url" placeholder="Your URL – https://yoursite.com" required>
+                <input type="text" id="phrase" placeholder="Target phrase – e.g. best coffee new york" required>
+                <button type="submit" class="button">Analyze Now</button>
+            </form>
+
+            <div id="loading" class="hidden">
+                <p>Fetching both pages…</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="results" class="hidden">
+        <div class="container">
+<div id="overall-score" class="overall-score hidden">
+    <h2>Phrase Power Score</h2>
+    <div class="score-grid">
+        <div><strong>You</strong> <span id="your-total">–</span></div>
+        <div><strong>Competitor</strong> <span id="comp-total">–</span></div>
+    </div>
+</div>
+
+            <div id="modules"></div>
+        </div>
+    </section>
+</main>
+
+<!-- Fixed bottom loader -->
+<div id="overall-score" class="overall-score hidden">
+    <h2>Phrase Power Score</h2>
+    <div class="score-grid">
+        <div><strong>You</strong> <span id="your-total">–</span></div>
+        <div><strong>Competitor</strong> <span id="comp-total">–</span></div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <p>© 2025 Traffic Torch. All rights reserved.</p>
+    </div>
+</footer>
+
+<script src="/vs/script.js"></script>
+</body>
+</html>
