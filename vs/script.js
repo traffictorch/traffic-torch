@@ -45,23 +45,28 @@ document.addEventListener('DOMContentLoaded', () => {
         return null;
     };
 
-    // SMART PHRASE MATCHER
-    const countPhrase = (text = '', originalPhrase = '') => {
-        if (!text || !originalPhrase) return 0;
-        const phrase = originalPhrase.toLowerCase().trim();
-        let matches = (text.toLowerCase().match(new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
-        const fillers = ['in','the','a','an','of','at','on','for','and','&','near','best','top','great'];
-        let cleanPhrase = phrase;
-        fillers.forEach(w => cleanPhrase = cleanPhrase.replace(new RegExp('\\b'+w+'\\b','gi'), ''));
-        cleanPhrase = cleanPhrase.replace(/\s+/g,' ').trim();
-        if (cleanPhrase.length > 4) matches += (text.toLowerCase().match(new RegExp(cleanPhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')) || []).length;
-        const words = phrase.split(/\s+/).filter(w => w.length > 2 && !fillers.includes(w));
-        if (words.length >= 2) {
-            const pattern = words.map(w => `(?=.*\\b${w}\\b)`).join('');
-            matches += (text.toLowerCase().match(new RegExp(pattern, 'gi')) || []).length;
-        }
-        return matches;
-    };
+// FIXED SMART PHRASE MATCHER – zero syntax errors
+const countPhrase = (text = '', originalPhrase = '') => {
+    if (!text || !originalPhrase) return 0;
+    const phrase = originalPhrase.toLowerCase().trim();
+    let matches = (text.toLowerCase().match(new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
+
+    const fillers = ['in','the','a','an','of','at','on','for','and','&','near','best','top','great'];
+    let cleanPhrase = phrase;
+    fillers.forEach(w => cleanPhrase = cleanPhrase.replace(new RegExp('\\b'+w+'\\b','gi'), ''));
+    cleanPhrase = cleanPhrase.replace(/\s+/g,' ').trim();
+
+    if (cleanPhrase.length > 4) {
+        matches += (text.toLowerCase().match(new RegExp(cleanPhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')) || []).length;
+    }
+
+    const words = phrase.split(/\s+/).filter(w => w.length > 2 && !fillers.includes(w));
+    if (words.length >= 2) {
+        const pattern = words.map(w => `(?=.*\\b${w}\\b)`).join('');
+        matches += (text.toLowerCase().match(new RegExp(pattern, 'gi')) || []).length;
+    }
+    return matches;
+};
 
     // CLEAN CONTENT FOR WORD COUNT
     const getCleanContent = (doc) => {
