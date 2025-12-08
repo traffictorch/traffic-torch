@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!url || !phrase) return alert('Enter both fields');
 
     try {
-      const res = await fetch(`/keywords/api.php?url=${encodeURIComponent(url)}`);
+	  const res = await fetch(`api.php?url=${encodeURIComponent(url)}`); // no /keywords/ prefix
       let text = await res.text();
 
       // CRITICAL FIX: Your api.php returns <?php ... ?> + JSON → strip it
