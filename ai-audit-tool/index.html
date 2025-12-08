@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Usability Audit – Traffic Torch</title>
+  <title>Traffic Torch – AI Content Audit</title>
   <link rel="icon" href="/favicon.ico" />
   <link rel="manifest" href="/manifest.json" />
+  
   <!-- Preload + load custom CSS -->
-  <link rel="preload" href="style.css" as="style" />
+  <link rel="preload" href="/ai-audit-tool/style.css" as="style" />
   <link rel="stylesheet" href="style.css" />
+
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -23,16 +25,6 @@
       }
     }
   </script>
-  <!-- LOCAL MOBILE FIX (Padding/Fonts – From Our Chat) -->
-  <style>
-    @media (max-width: 1024px) {
-      .container, .max-w-5xl, .max-w-3xl, .max-w-4xl { max-width: 100% !important; padding-left: 1rem !important; padding-right: 1rem !important; }
-      .p-12, .p-10, .p-8 { padding: 1.5rem !important; }
-      .text-5xl { font-size: 2rem !important; line-height: 1.1 !important; }
-      .text-9xl { font-size: 6rem !important; line-height: 1 !important; }
-    }
-    @media (max-width: 480px) { .p-12, .p-10 { padding: 1.25rem !important; } .text-5xl { font-size: 1.875rem !important; } .text-9xl { font-size: 5.5rem !important; } }
-  </style>
 </head>
 <body class="text-white min-h-screen">
   <div class="container mx-auto px-6 py-12 max-w-5xl">
@@ -41,10 +33,11 @@
         <img src="/logo.webp" alt="Traffic Torch" class="w-32 rounded-2xl shadow-2xl">
       </a>
       <h1 class="text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
-        Usability Audit
+        AI Content Audit
       </h1>
-      <p class="text-xl text-gray-400">One URL → Instant UX score + deep-dive fixes</p>
+      <p class="text-xl text-gray-400">One URL → Instant AI detection with full explanations</p>
     </header>
+
     <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-white/20">
       <form id="urlForm" class="flex flex-col md:flex-row gap-6 max-w-3xl mx-auto">
         <input type="url" id="urlInput" placeholder="https://example.com" required
@@ -54,14 +47,17 @@
           Analyze 🚀
         </button>
       </form>
+
       <div id="loading" class="hidden text-center mt-12">
         <div class="inline-block animate-spin rounded-full h-20 w-20 border-8 border-t-orange-500 border-r-pink-500 border-b-orange-500 border-l-pink-500"></div>
-        <p class="mt-8 text-2xl">Scanning UX patterns...</p>
+        <p class="mt-8 text-2xl">Scanning for AI patterns...</p>
       </div>
     </div>
+
     <div id="report" class="hidden mt-16"></div>
   </div>
-  <!-- Load JS last -->
-  <script src="script.js" type="module"></script>
+
+  <!-- Load JS last for speed -->
+  <script src="/ai-audit-tool/script.js" type="module"></script>
 </body>
 </html>
