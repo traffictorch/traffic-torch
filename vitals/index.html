@@ -2,75 +2,67 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Core Web Vitals Audit Tool - TrafficTorch</title>
-  <meta name="description" content="Instant Core Web Vitals audit: LCP, INP, CLS with 360° score, AI fixes, rank forecast. Mobile PWA ready.">
-  <link rel="stylesheet" href="/vitals/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Core Web Vitals Audit – Instant 360° Health Score</title>
+  <meta name="description" content="Mobile-first Core Web Vitals: Vitality Index + What/Why/How details. PWA ready.">
   <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/style.css">
+  <meta name="theme-color" content="#000">
 </head>
 <body>
   <main class="audit-container">
     <section class="hero">
       <h1>Core Web Vitals Audit</h1>
-      <p>One URL → 360° Score + Fixes + Forecast</p>
+      <p>One URL → Instant Mobile Vitality Index</p>
       <form id="audit-form">
         <input type="url" id="url-input" placeholder="https://example.com" required>
         <button type="submit">Run Audit</button>
       </form>
+      <!-- Theme toggle – wire later for day/night merge -->
       <button id="theme-toggle">Toggle Theme</button>
     </section>
-
     <section id="loading" class="loading hidden">
       <div class="spinner"></div>
-      <p>Analyzing...</p>
+      <p>Analyzing Mobile Performance...</p>
     </section>
-
-    <section id="results" class="results" style="display:none;">
+    <section id="results" class="results hidden">
       <h2 id="page-title"></h2>
-      <button id="export-pdf">Export PDF</button>
-
       <div class="score-card">
-        <h3>Vitality Index</h3>
+        <h3>Vitality Index (Mobile)</h3>
         <div id="overall-score" class="score"></div>
         <p id="score-description"></p>
       </div>
-
       <div class="metrics-grid">
         <div class="metric-card">
           <h3>Largest Contentful Paint (LCP)</h3>
           <div id="lcp-value"></div>
           <div id="lcp-status" class="status"></div>
-          <p>What: Time to load main content.<br>Why: Affects perceived speed.<br>How: Optimize images, CSS.</p>
+          <details>
+            <summary>What, Why, How?</summary>
+            <p>What: Time for largest content to load. Why: Slow LCP feels laggy. How: Optimize images/JS. More: Preload heroes, use CDN for 20-50% gains.</p>
+          </details>
         </div>
         <div class="metric-card">
           <h3>Interaction to Next Paint (INP)</h3>
           <div id="inp-value"></div>
           <div id="inp-status" class="status"></div>
-          <p>What: Responsiveness to input.<br>Why: Poor INP frustrates users.<br>How: Reduce JS execution.</p>
+          <details>
+            <summary>What, Why, How?</summary>
+            <p>What: Input responsiveness. Why: High INP frustrates users. How: Reduce JS tasks. More: Break tasks <50ms, web workers for +30% speed.</p>
+          </details>
         </div>
         <div class="metric-card">
           <h3>Cumulative Layout Shift (CLS)</h3>
           <div id="cls-value"></div>
           <div id="cls-status" class="status"></div>
-          <p>What: Unexpected layout shifts.<br>Why: Causes misclicks.<br>How: Reserve space for elements.</p>
+          <details>
+            <summary>What, Why, How?</summary>
+            <p>What: Unexpected shifts. Why: Causes misclicks. How: Set sizes. More: Aspect ratios on media prevent 80% shifts.</p>
+          </details>
         </div>
       </div>
-
-      <section class="fixes">
-        <h3>AI Fixes</h3>
-        <ul id="fix-list"></ul>
-      </section>
-
-      <section class="forecast">
-        <h3>Rank Forecast</h3>
-        <canvas id="forecast-chart"></canvas>
-        <p id="forecast-text"></p>
-      </section>
     </section>
   </main>
-
-  <script src="/vitals/vitals.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="/vitals.js"></script>
 </body>
 </html>
