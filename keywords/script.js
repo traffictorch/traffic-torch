@@ -13,12 +13,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = document.getElementById('pageUrl').value.trim();
     const phrase = document.getElementById('targetPhrase').value.trim().toLowerCase();
 
-    try {
-      const res = await fetch('/api.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url })
-      });
+try {
+  const res = await fetch(`/api.php?url=${encodeURIComponent(url)}`);
+  const page = await res.json();
+  if (page.error) throw new Error(page.error);
+
+  const analysis = analyze(page, phrase);
+  render(analysis);
+  results.classList.remove('hidden');
+} catch (err) {
+  alert('Error: ' + err.message);
+}
 
       const page = await res.json();
       if (page.error) throw new Error(page.error);
