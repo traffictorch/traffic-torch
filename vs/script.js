@@ -291,8 +291,8 @@ yourTotalEl.textContent = finalScore(yourScore) + '/100';
 compTotalEl.textContent = finalScore(compScore) + '/100';
 
 // Optional fire if they hit 100
-if (yourScore >= 100) yourTotalEl.parentElement.innerHTML += ' 🔥';
-if (compScore >= 100) compTotalEl.parentElement.innerHTML += ' 🔥';
+if (yourScore >= 100) yourTotalEl.textContent += ' 🔥';
+if (compScore >= 100) compTotalEl.textContent += ' 🔥';
     });
 
     document.addEventListener('click', (e) => {
