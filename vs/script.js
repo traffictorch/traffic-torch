@@ -198,28 +198,44 @@ document.addEventListener('DOMContentLoaded', () => {
         </div></div>`);
     };
 
-    // MODULE 6 – URL & Schema Check – FIXED
-    const moduleUrlSchema = (yourUrl, compUrl, phrase, yourDoc, compDoc) => {
-        const urlMatch = (url) => countPhrase(url.toLowerCase(), phrase);
-        const schema = (doc) => {
-            const scripts = doc?.querySelectorAll('script[type="application/ld+json"]') || [];
-            return scripts.length > 0 ? scripts.some(s => countPhrase(s.textContent, phrase) > 0) : false;
-        };
-        const youUrlMatch = urlMatch(yourUrl);
-        const compUrlMatch = urlMatch(compUrl);
-        const youSchema = schema(yourDoc);
-        const compSchema = schema(compDoc);
-        yourScore += (youUrlMatch > 0 ? 10 : 0) + (youSchema ? 10 : 0);
-        compScore += (compUrlMatch > 0 ? 10 : 0) + (compSchema ? 10 : 0);
-        modulesContainer.insertAdjacentHTML('beforeend', `
-        <div class="module-card"><h3>URL & Schema Markup</h3><div class="grid">
-            <div class="side you"><strong>You</strong><br>Phrase in URL: ${youUrlMatch > 0 ? 'Yes' : 'No'}<br>Schema: ${youSchema ? 'Yes' : 'No'}</div>
-            <div class="side competitor"><strong>Competitor</strong><br>Phrase in URL: ${compUrlMatch > 0 ? 'Yes' : 'No'}<br>Schema: ${compSchema ? 'Yes' : 'No'}</div>
-        </div><button class="expand-btn">What / Why / How to Fix</button><div class="details hidden">
-            <strong>Why:</strong> Phrase in URL + schema = rich results & CTR boost.<br>
-            <strong>AI Fix:</strong><br><code>https://yoursite.com/${phrase.replace(/\s+/g,'-')}</code>
-        </div></div>`);
+// MODULE 6 – URL & Schema Check – FINAL FIXED VERSION
+const moduleUrlSchema = (yourUrl, compUrl, phrase, yourDoc, compDoc) => {
+    const urlMatch = (url) => countPhrase(url.toLowerCase(), phrase);
+    const schema = (doc) => {
+        const scripts = doc?.querySelectorAll('script[type="application/ld+json"]') || [];
+        return scripts.length > 0 && scripts.some(s => countPhrase(s.textContent || '', phrase) > 0);
     };
+
+    const youUrlMatch = urlMatch(yourUrl);
+    const compUrlMatch = urlMatch(compUrl);
+    const youSchema = schema(yourDoc);
+    const compSchema = schema(compDoc);
+
+    yourScore += (youUrlMatch > 0 ? 10 : 0) + (youSchema ? 10 : 0);
+    compScore += (compUrlMatch > 0 ? 10 : 0) + (compSchema ? 10 : 0);
+
+    modulesContainer.insertAdjacentHTML('beforeend', `
+    <div class="module-card">
+        <h3>URL & Schema Markup</h3>
+        <div class="grid">
+            <div class="side you">
+                <strong>You</strong><br>
+                Phrase in URL: ${youUrlMatch > 0 ? 'Yes' : 'No'}<br>
+                Schema with phrase: ${youSchema ? 'Yes' : 'No'}
+            </div>
+            <div class="side competitor">
+                <strong>Competitor</strong><br>
+                Phrase in URL: ${compUrlMatch > 0 ? 'Yes' : 'No'}<br>
+                Schema with phrase: ${compSchema ? 'Yes' : 'No'}
+            </div>
+        </div>
+        <button class="expand-btn">What / Why / How to Fix</button>
+        <div class="details hidden">
+            <strong>Why:</strong> Phrase in URL + schema = rich results & stronger relevance.<br>
+            <strong>AI Fix:</strong> Use hyphens: <code>${phrase.replace(/\s+/g,'-')}</code>
+        </div>
+    </div>`);
+};
 
     // MAIN FLOW – unchanged from last working version
     form.addEventListener('submit', async (e) => {
