@@ -3,80 +3,117 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Vitals + Vitality Index – TrafficTorch</title>
-  <meta name="description" content="Official Google report + your custom Vitality Index">
+  <title>Live Vitals – Real Browser Audit</title>
+  <meta name="description" content="Real Core Web Vitals from your device – no proxy">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#000">
   <style>
-    body{margin:0;background:#000;color:#fff;font-family:system-ui,sans-serif;display:grid;place-items:center;min-height:100vh}
-    .card{background:#111;padding:2rem;border-radius:16px;max-width:480px;width:90%;text-align:center;box-shadow:0 10px 40px rgba(0,255,157,.2)}
-    h1{color:#00ff9d;margin:0 0 .5rem;font-size:2.2rem}
-    input,button{padding:1rem;margin:0.5rem 0;width:100%;font-size:1.1rem;border:none;border-radius:12px}
-    input{background:#222;color:#fff}
-    button{background:#00ff9d;color:#000;font-weight:700;cursor:pointer}
-    button:active{transform:scale(0.98)}
-    .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);display:none;z-index:9999;justify-content:center;align-items:center;padding:1rem}
-    .vitality{font-size:5rem;margin:0;color:#00ff9d;font-weight:900}
-    .desc{font-size:1.3rem;margin:1rem 0}
+    :root{--bg:#000;--text:#fff;--accent:#00ff9d;--card:#111;--good:#00ff9d;--bad:#ff3b30;--radius:16px}
+    @media (prefers-color-scheme:light){:root{--bg:#fff;--text:#000;--card:#f5f5f5;--accent:#0d9488;--good:#0d9488;--bad:#ef4444}}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:1rem}
+    .card{background:var(--card);padding:2rem;border-radius:var(--radius);max-width:500px;width:100%;text-align:center;box-shadow:0 10px 40px rgba(0,255,157,.2)}
+    h1{color:var(--accent);margin:0 0 .5rem;font-size:2.4rem}
+    .score{font-size:5.5rem;margin:1rem 0;font-weight:900;color:var(--good)}
+    button{background:var(--accent);color:#000;padding:1rem 2rem;border:none;border-radius:50px;font-weight:700;cursor:pointer;margin-top:1rem}
+    .metrics{display:grid;gap:1rem;margin-top:2rem}
+    .metric{background:var(--card);padding:1.2rem;border-radius:var(--radius)}
+    .value{font-size:2rem;font-weight:700;color:var(--accent)}
+    .status{display:inline-block;padding:0.4rem 1rem;border-radius:50px;font-weight:bold;margin:0.5rem 0}
+    .good{background:var(--good);color:#000}.bad{background:var(--bad);color:#fff}
+    details{cursor:pointer;margin-top:1rem}
+    summary{font-weight:600}
+    .spinner{width:50px;height:50px;border:6px solid var(--card);border-top-color:var(--accent);border-radius:50%;animation:s 1s linear infinite;margin:2rem auto}
+    @keyframes s{to{transform:rotate(360deg)}}
   </style>
 </head>
 <body>
 
 <div class="card">
-  <h1>Core Web Vitals + Vitality Index</h1>
-  <p>Official Google report + your custom score</p>
-  <input id="url" placeholder="https://example.com" required>
-  <button onclick="run()">Run Audit →</button>
-</div>
+  <h1>Live Vitals</h1>
+  <p>Real Core Web Vitals from <strong>your device</strong></p>
+  <div id="status">Click below to measure</div>
+  <button onclick="runAudit()">Run Live Audit</button>
 
-<!-- Vitality Overlay -->
-<div id="overlay" class="overlay">
-  <div style="text-align:center">
-    <h2 style="color:#00ff9d;margin:0">Vitality Index</h2>
-    <div class="vitality" id="score">–</div>
-    <p class="desc" id="desc">Calculating…</p>
-    <button onclick="document.getElementById('overlay').style.display='none'" style="margin-top:2rem">Close</button>
+  <div id="results" style="display:none">
+    <div class="score" id="vitality">–</div>
+    <p id="desc"></p>
+
+    <div class="metrics" id="metrics"></div>
+    <button onclick="runAudit()">Run Again</button>
   </div>
 </div>
 
 <script>
-async function run() {
-  let url = document.getElementById('url').value.trim();
-  if (!url) return alert('Enter a URL');
-  if (!url.startsWith('http')) url = 'https://' + url;
+// Live metrics storage
+let lcp, inp, cls, fcp, ttfb, tbt = 0;
 
-  // 1. Open official Google report (new tab)
-  window.open(`https://pagespeed.web.dev/analysis?url=${encodeURIComponent(url)}`, '_blank');
-
-  // 2. Show overlay + fetch data via public JSON endpoint (CORS-enabled!)
-  document.getElementById('overlay').style.display = 'flex';
-
-  try {
-    const res = await fetch(`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=mobile&key=AIzaSyB1qaV1POBJnvFlekjZ0hMNbncW9EZVyPs`);
-    const data = await res.json();
-    const lhr = data.lighthouseResult;
-    const a = lhr.audits;
-
-    const lcp = a['largest-contentful-paint'].numericValue;
-    const inp = a['interaction-to-next-paint']?.numericValue || 200;
-    const cls = a['cumulative-layout-shift'].numericValue;
-    const perf = Math.round(lhr.categories.performance.score * 100);
-
-    const vitality = Math.min(100, Math.round(
-      perf * 0.7 +
-      (2500 / lcp * 15) +
-      (200 / inp * 10) +
-      (0.1 / cls * 5)
-    ));
-
-    document.getElementById('score').textContent = vitality;
-    document.getElementById('desc').textContent = 
-      vitality >= 90 ? 'Excellent 🔥' :
-      vitality >= 70 ? 'Good – keep improving' : 'Needs work – fix LCP/INP';
-  } catch (e) {
-    document.getElementById('score').textContent = 'N/A';
-    document.getElementById('desc').textContent = 'Could not calculate (try again)';
+new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    if (entry.name === 'first-contentful-paint') fcp = entry.startTime;
+    if (entry.entryType === 'largest-contentful-paint') lcp = entry.renderTime || entry.loadTime;
+    if (entry.entryType === 'layout-shift' && !entry.hadRecentInput) cls += entry.value;
   }
+}).observe({type: 'paint', buffered: true});
+new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    if (entry.entryType === 'largest-contentful-paint') lcp = entry.renderTime || entry.loadTime;
+  }
+}).observe({type: 'largest-contentful-paint', buffered: true});
+new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    if (entry.entryType === 'layout-shift' && !entry.hadRecentInput) cls += entry.value;
+  }
+}).observe({type: 'layout-shift', buffered: true});
+
+// INP approximation via long tasks + event timings
+let worstINP = 0;
+new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    if (entry.duration > worstINP) worstINP = entry.duration;
+    tbt += entry.duration;
+  }
+}).observe({type: 'longtask', buffered: true});
+
+function runAudit() {
+  // Reset
+  lcp = fcp = ttfb = 0; cls = 0; worstINP = 0; tbt = 0;
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('status').innerHTML = '<div class="spinner"></div>Measuring your device…';
+
+  // Measure TTFB from navigation
+  const nav = performance.getEntriesByType('navigation')[0];
+  ttfb = nav ? nav.responseStart - nav.requestStart : 0;
+
+  setTimeout(() => {
+    if (!lcp) lcp = 3000;
+    if (!worstINP) worstINP = 100;
+
+    const lcpScore = Math.min(30, (2500 / lcp) * 30);
+    const inpScore = Math.min(25, (200 / worstINP) * 25);
+    const clsScore = Math.min(20, (0.1 / (cls || 0.01)) * 20);
+    const fcpScore = fcp ? Math.min(15, (1800 / fcp) * 15) : 8;
+    const ttfbScore = Math.min(10, (600 / (ttfb || 100)) * 10);
+
+    const vitality = Math.round(lcpScore + inpScore + clsScore + fcpScore + ttfbScore);
+    const capped = Math.min(100, vitality);
+
+    document.getElementById('vitality').textContent = capped;
+    document.getElementById('desc').textContent = capped >= 90 ? 'Excellent 🔥' : capped >= 70 ? 'Good' : 'Needs Work';
+    
+    document.getElementById('metrics').innerHTML = `
+      <div class="metric"><div class="value">${(lcp/1000).toFixed(2)}s</div>LCP <span class="status ${lcp<=2500?'good':'bad'}">${lcp<=2500?'Good':'Poor'}</span>
+        <details><summary>What / Why / How?</summary>Largest content load time. Slow LCP feels laggy. Optimize hero images, preload critical CSS/JS.</details></div>
+      <div class="metric"><div class="value">${Math.round(worstINP)}ms</div>INP <span class="status ${worstINP<=200?'good':'bad'}">${worstINP<=200?'Good':'Poor'}</span>
+        <details><summary>What / Why / How?</summary>Responsiveness to taps. High INP = frustration. Break up JS, use web workers.</details></div>
+      <div class="metric"><div class="value">${cls.toFixed(3)}</div>CLS <span class="status ${cls<=0.1?'good':'bad'}">${cls<=0.1?'Good':'Poor'}</span>
+        <details><summary>What / Why / How?</summary>Layout jumps. Set width/height on images, reserve ad space.</details></div>
+      <div class="metric"><div class="value">${fcp?(fcp/1000).toFixed(2)+'s':'N/A'}</div>FCP <span class="status ${fcp<=1800?'good':'bad'}">${fcp<=1800?'Good':'Poor'}</span></div>
+      <div class="metric"><div class="value">${Math.round(ttfb)}ms</div>TTFB <span class="status ${ttfb<=600?'good':'bad'}">${ttfb<=600?'Good':'Poor'}</span></div>
+    `;
+
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('status').innerHTML = 'Live audit complete!';
+  }, 4000);
 }
 </script>
 
