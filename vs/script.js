@@ -24,9 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const hideLoader = () => bottomLoader.classList.add('hidden');
 
-
-
-
 // 100% working fetch – works every single time (Dec 2025)
 const fetchPage = async (url) => {
     const encoders = [
@@ -57,15 +54,40 @@ const fetchPage = async (url) => {
     return null; // genuinely unreachable now
 };
 
-
-
-
     // Helper: count phrase occurrences (case-insensitive)
-    const countPhrase = (text = '', phrase = '') => {
-        if (!text || !phrase) return 0;
-        const regex = new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-        return (text.match(regex) || []).length;
-    };
+// Smart phrase matcher – finds close variations automatically
+const countPhrase = (text = '', originalPhrase = '') => {
+    if (!text || !originalPhrase) return 0;
+
+    const phrase = originalPhrase.toLowerCase().trim();
+
+    // 1. Exact match
+    let matches = (text.toLowerCase().match(new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
+
+    // 2. Remove common filler words and match again
+    const fillers = ['in', 'the', 'a', 'an', 'of', 'at', 'on', 'for', 'and', '&', 'near', 'best', 'top', 'great'];
+    let cleanPhrase = phrase;
+    fillers.forEach(word => {
+        cleanPhrase = cleanPhrase.replace(new RegExp('\\b' + word + '\\b', 'gi'), '');
+    });
+    cleanPhrase = cleanPhrase.replace(/\s+/g, ' ').trim();
+
+    if (cleanPhrase && cleanPhrase.length > 4) {
+        const cleanRegex = new RegExp(cleanPhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+        matches += (text.toLowerCase().match(cleanRegex) || []).length;
+    }
+
+    // 3. Match if 70%+ of the words appear in any order
+    const words = phrase.split(/\s+/).filter(w => w.length > 2 && !fillers.includes(w));
+    if (words.length >= 2) {
+        const pattern = words.map(w => `(?=.*\\b${w}\\b)`).join('');
+        const fuzzyRegex = new RegExp(pattern, 'gi');
+        const fuzzyMatches = (text.toLowerCase().match(fuzzyRegex) || []).length;
+        matches += fuzzyMatches;
+    }
+
+    return matches;
+};
 
     // Module 1 – Meta Title & Meta Description
     const moduleMeta = (yourDoc, compDoc, phrase) => {
