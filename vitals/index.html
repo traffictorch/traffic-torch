@@ -2,67 +2,50 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Core Web Vitals Audit – Instant 360° Health Score</title>
-  <meta name="description" content="Mobile-first Core Web Vitals: Vitality Index + What/Why/How details. PWA ready.">
-  <link rel="manifest" href="/manifest.json">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Core Web Vitals Audit – Vitality Index</title>
+  <meta name="description" content="Instant mobile & desktop Vitality Index + 10 key metrics">
   <link rel="stylesheet" href="/vitals/style.css">
-  <meta name="theme-color" content="#000">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#000000">
 </head>
 <body>
-  <main class="audit-container">
+  <main class="container">
     <section class="hero">
       <h1>Core Web Vitals Audit</h1>
-      <p>One URL → Instant Mobile Vitality Index</p>
+      <p>One URL → Instant Mobile & Desktop Vitality Index</p>
       <form id="audit-form">
-        <input type="url" id="url-input" placeholder="https://example.com" required>
-        <button type="submit">Run Audit</button>
+        <div class="input-group">
+          <button type="button" id="device-toggle">Desktop</button>
+          <input type="url" id="url-input" placeholder="https://example.com" required>
+          <button type="submit" id="run-btn">Run Audit</button>
+        </div>
       </form>
-      <!-- Theme toggle – wire later for day/night merge -->
-      <button id="theme-toggle">Toggle Theme</button>
     </section>
+
     <section id="loading" class="loading hidden">
       <div class="spinner"></div>
-      <p>Analyzing Mobile Performance...</p>
+      <p>Analyzing <span id="current-device">Mobile</span>...</p>
     </section>
+
     <section id="results" class="results hidden">
+      <div class="tabs">
+        <button class="tab active" data-device="mobile">Mobile</button>
+        <button class="tab" data-device="desktop">Desktop</button>
+      </div>
+
       <h2 id="page-title"></h2>
-      <div class="score-card">
-        <h3>Vitality Index (Mobile)</h3>
-        <div id="overall-score" class="score"></div>
-        <p id="score-description"></p>
+
+      <div class="vitality-card">
+        <h3>Vitality Index (<span id="active-device">Mobile</span>)</h3>
+        <div id="overall-score" class="score">–</div>
+        <p id="score-desc"></p>
       </div>
-      <div class="metrics-grid">
-        <div class="metric-card">
-          <h3>Largest Contentful Paint (LCP)</h3>
-          <div id="lcp-value"></div>
-          <div id="lcp-status" class="status"></div>
-          <details>
-            <summary>What, Why, How?</summary>
-            <p>What: Time for largest content to load. Why: Slow LCP feels laggy. How: Optimize images/JS. More: Preload heroes, use CDN for 20-50% gains.</p>
-          </details>
-        </div>
-        <div class="metric-card">
-          <h3>Interaction to Next Paint (INP)</h3>
-          <div id="inp-value"></div>
-          <div id="inp-status" class="status"></div>
-          <details>
-            <summary>What, Why, How?</summary>
-            <p>What: Input responsiveness. Why: High INP frustrates users. How: Reduce JS tasks. More: Break tasks <50ms, web workers for +30% speed.</p>
-          </details>
-        </div>
-        <div class="metric-card">
-          <h3>Cumulative Layout Shift (CLS)</h3>
-          <div id="cls-value"></div>
-          <div id="cls-status" class="status"></div>
-          <details>
-            <summary>What, Why, How?</summary>
-            <p>What: Unexpected shifts. Why: Causes misclicks. How: Set sizes. More: Aspect ratios on media prevent 80% shifts.</p>
-          </details>
-        </div>
-      </div>
+
+      <div class="metrics-grid" id="metrics-grid"></div>
     </section>
   </main>
-  <script src="/vitals/vitals.js"></script>
+
+  <script src="/vitals/script.js"></script>
 </body>
 </html>
