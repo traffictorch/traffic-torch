@@ -13,19 +13,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = document.getElementById('pageUrl').value.trim();
     const phrase = document.getElementById('targetPhrase').value.trim().toLowerCase();
 
-    if (!url || !phrase) return alert('Fill both fields');
+    if (!url || !phrase) return alert('Enter URL and keyword');
 
     try {
       const res = await fetch(`/api.php?url=${encodeURIComponent(url)}`);
-
-      if (!res.ok) throw new Error('Server error ' + res.status);
+      if (!res.ok) throw new Error('Server error');
 
       const text = await res.text();
-
-      // Your api.php often returns empty or broken JSON → fix it
-      if (!text || text.trim() === '' || text.trim().startsWith('<')) {
-        throw new Error('API returned nothing or HTML. Your api.php is broken.');
-      }
+      if (!text.trim()) throw new Error('Empty response from api.php');
 
       const page = JSON.parse(text.trim());
       if (page.error) throw new Error(page.error);
@@ -34,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
       render(analysis);
       results.classList.remove('hidden');
     } catch (err) {
-      alert('API failed: ' + err.message + '\n\nYour api.php must return valid JSON.');
+      alert('API Error: ' + err.message);
     }
   });
 
@@ -52,9 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const wordCount = words.length;
     const matches = (p.content?.toLowerCase().match(new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
     const density = wordCount ? (matches / wordCount * 100).toFixed(1) : 0;
+
     add(10, wordCount >= 800);
     add(10, density >= 1 && density <= 2.5);
-    add(8,  words.slice(0,100).join(' ').includes(phrase));
+    add(8, words.slice(0,100).join(' ').includes(phrase));
 
     const images = p.images || [];
     const goodAlts = images.filter(i => i.alt?.toLowerCase().includes(phrase)).length;
@@ -69,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     add(10, p.url?.toLowerCase().includes(phrase.replace(/ /g,'-')));
     add(10, !!p.schema);
 
-    // Bonus 2025 modules
+    // 2025 Bonus Modules
     const lazy = images.filter(i => i.lazy).length;
     const lazyPercent = images.length ? Math.round(lazy / images.length * 100) : 0;
     const missingAlts = images.filter(i => !i.alt?.trim()).length;
@@ -92,10 +88,17 @@ document.addEventListener('DOMContentLoaded', () => {
       title: p.title || '(no title)',
       desc: p.description || '(no description)',
       h1: p.h1 || '(no h1)',
-      wordCount, density, altPercent, anchorPercent,
+      wordCount,
+      density,
+      altPercent,
+      anchorPercent,
       totalImages: images.length,
-      missingAlts, lazyPercent, readingTime, paragraphs,
-      forecast, missingTo100: 100 - score
+      missingAlts,
+      lazyPercent,
+      readingTime,
+      paragraphs,
+      forecast,
+      missingTo100: 100 - score
     };
   }
 
@@ -107,17 +110,38 @@ document.addEventListener('DOMContentLoaded', () => {
       scoreEl.style.textShadow = '0 0 30px #ff9500';
     }
 
-    document.getElementById('titleInfo').innerHTML = a.title;
-    document.getElementById('descInfo').innerHTML = a.desc.substring(0,120) + '…');
+    document.getElementById('titleInfo').innerHTML = `<strong>${a.title}</strong>`;
+    document.getElementById('descInfo').innerHTML = a.desc.substring(0,120) + '...';
     document.getElementById('h1Info').innerHTML = a.h1;
-    document.getElementById('contentInfo').innerHTML = `${a.wordCount} words • ${a.density}% density`;
-    document.getElementById('altInfo').innerHTML = `${a.altPercent}% images optimized`;
-    document.getElementById('anchorInfo').innerHTML = `${a.anchorPercent}% phrase-rich anchors`;
+    document.getElementById('contentInfo').innerHTML = `${a.wordCount} words • ${a.density}%`;
+    document.getElementById('altInfo').innerHTML = `${a.altPercent}% alt optimized`;
+    document.getElementById('anchorInfo').innerHTML = `${a.anchorPercent}% phrase anchors`;
 
-    document.getElementById('imagePro').innerHTML = `<h2>Image Optimization Pro</h2><p>${a.totalImages} images • ${a.missingAlts} missing alts • ${a.lazyPercent}% lazy</p>`;
-    document.getElementById('depthRadar').innerHTML = `<h2>Content Depth Radar</h2><p>${a.wordCount} words • ${a.readingTime} min • ${a.paragraphs} paragraphs</p>`;
-    document.getElementById('linkFlow').innerHTML = `<h2>Internal Link Flow</h2><p>${a.anchorPercent}% use exact phrase</p>`;
-    document.getElementById('forecastCard').innerHTML = `<h2>Predictive Rank Forecast</h2><p><strong>${a.forecast}</strong></p>${a.score<100?`<p>Missing ${a.missingTo100} points to 100/100</p>`:'<p>PERFECTION</p>'}`;
-    document.getElementById('aiFixes').innerHTML = `<h2>AI Fix Prescription</h2><ul style="text-align:left">${a.missingAlts>0?'<li>Fix '+a.missingAlts+' missing alts</li>':''}${a.lazyPercent<90?'<li>Add loading="lazy"</li>':''}${a.wordCount<1200?'<li>Add '+(1200-a.wordCount)+' words</li>':'' || '<li>Perfect!</li>'}</ul>`;
+    document.getElementById('imagePro').innerHTML = `
+      <h2>Image Optimization Pro</h2>
+      <p>${a.totalImages} images • ${a.missingAlts} missing alts • ${a.lazyPercent}% lazy</p>`;
+
+    document.getElementById('depthRadar').innerHTML = `
+      <h2>Content Depth Radar</h2>
+      <p>${a.wordCount} words • ${a.readingTime} min • ${a.paragraphs} paragraphs</p>`;
+
+    document.getElementById('linkFlow').innerHTML = `
+      <h2>Internal Link Flow</h2>
+      <p>${a.anchorPercent}% use exact phrase</p>`;
+
+    document.getElementById('forecastCard').innerHTML = `
+      <h2>Predictive Rank Forecast</h2>
+      <p><strong>${a.forecast}</strong></p>
+      ${a.score < 100 ? `<p>Missing ${a.missingTo100} points to perfection</p>` : '<p>PERFECTION</p>'}`;
+
+    document.getElementById('aiFixes').innerHTML = `
+      <h2>AI Fix Prescription</h2>
+      <ul style="text-align:left">
+        ${a.missingAlts > 0 ? `<li>Fix ${a.missingAlts} missing alts</li>` : ''}
+        ${a.lazyPercent < 90 ? '<li>Add loading="lazy"</li>' : ''}
+        ${a.wordCount < 1200 ? `<li>Add ${1200 - a.wordCount} words</li>` : ''}
+        ${a.anchorPercent < 30 ? '<li>Upgrade anchor text</li>' : ''}
+        ${a.missingAlts === 0 && a.lazyPercent >= 90 && a.wordCount >= 1200 && a.anchorPercent >= 30 ? '<li>Perfect!</li>' : ''}
+      </ul>`;
   }
 });
