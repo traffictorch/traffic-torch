@@ -14,13 +14,13 @@ body {
   min-height: 100vh;
 }
 
-/* Light mode – activated by adding .light class on <html> */
+/* FIX: Move light variables to :root when .light class is present – higher specificity */
 html.light {
-  --bg-gradient: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1);
+  --bg-gradient: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1) !important;
 }
 
 html.light body {
-  background: var(--bg-gradient);
+  background: var(--bg-gradient) !important;
   color: #0f172a;
 }
 

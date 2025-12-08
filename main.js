@@ -1,19 +1,18 @@
 const toggle = document.getElementById('themeToggle');
 
-// 1. Load saved theme (or default to dark)
+// Apply saved theme or system preference on load
 if (localStorage.theme === 'light' || 
-   (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+   (!localStorage.theme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
   document.documentElement.classList.add('light');
   toggle.textContent = '☀️';
 } else {
+  document.documentElement.classList.remove('light');
   toggle.textContent = '🌙';
 }
 
-// 2. Toggle on click
+// Click to toggle
 toggle.addEventListener('click', () => {
-  document.documentElement.classList.toggle('light');
-  
-  if (document.documentElement.classList.contains('light')) {
+  if (document.documentElement.classList.toggle('light')) {
     localStorage.theme = 'light';
     toggle.textContent = '☀️';
   } else {
