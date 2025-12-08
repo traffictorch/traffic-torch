@@ -38,6 +38,10 @@ html.light .text-gray-400 {
   color: #64748b !important;
 }
 
+html.light .text-gray-300 {
+  color: #64748b !important;
+}
+
 html.light .bg-white\/10 {
   background-color: rgba(0, 0, 0, 0.05) !important;
 }
