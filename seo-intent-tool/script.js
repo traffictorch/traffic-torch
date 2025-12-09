@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Real fetch via YOUR CORS proxy (What: Bypasses CORS; Why: Allows client-side scraping; How: Append URL to proxy endpoint)
-            const proxy = 'https://cors-proxy.traffictorch.workers.dev/?';
+            const proxy = 'https://cors-proxy.traffictorch.workers.dev/?url=';
             const htmlResponse = await fetch(proxy + url);
             const html = await htmlResponse.text();
             const parser = new DOMParser();
