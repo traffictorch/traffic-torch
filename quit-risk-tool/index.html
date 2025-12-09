@@ -15,7 +15,7 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="text-white min-h-screen">
+<body class="min-h-screen transition-colors duration-300">
 
       <!-- EXACT SAME HEADER AS HOME PAGE -->
   <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
@@ -77,6 +77,21 @@
     </div>
     <div id="report" class="hidden mt-16"></div>
   </div>
+  
+  
+  <!-- Traffic Torch Expanding "Coming Soon" Box -->
+<div class="expand-box" onclick="this.classList.toggle('expanded')">
+  <div class="expand-box-header">
+    <span class="emoji">🚧</span>
+    Web page under construction 🔥 Coming soon!
+  </div>
+  <div class="expand-box-content">
+    <p><strong>This section is being built with love & AI power.</strong></p>
+    <p>Epic features and deep-dive tools are dropping very soon — stay tuned!</p>
+    <small style="color:#666;">(Tap again to collapse)</small>
+  </div>
+</div>
+
   
   <!-- Footer (unchanged – already perfect) -->
     <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">

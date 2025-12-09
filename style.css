@@ -84,8 +84,53 @@ html.light header {
   border-bottom-color: rgba(0, 0, 0, 0.1) !important;
 } 
   
-  
-  
+
+
+/* Traffic Torch – Clean Expanding Text Box (mobile-first & epic) */
+.expand-box {
+  max-width: 100%;
+  margin: 2rem auto;
+  padding: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
+
+.expand-box-header {
+  padding: 20px 24px;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.expand-box-header .emoji {
+  font-size: 1.8rem;
+}
+
+.expand-box-content {
+  max-height: 0;
+  overflow: hidden;
+  background: white;
+  color: #333;
+  padding: 0 24px;
+  transition: all 0.5s ease;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.expand-box.expanded .expand-box-content {
+  max-height: 500px;        /* big enough for future content */
+  padding: 24px 24px 32px;
+}
+
+/* Dark mode ready */
+html.dark .expand-box-content { background: #1a1a2e; color: #e0e0ff; }
 
 
