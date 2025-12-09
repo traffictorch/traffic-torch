@@ -1,30 +1,55 @@
-// script.js – Epic Intent Tool v2 – REAL functionality 2025
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('audit-form');
     const loading = document.getElementById('loading');
     const results = document.getElementById('results');
-    const body = document.body;
-
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const url = document.getElementById('url-input').value.trim();
-        if (!url) return;
 
         form.classList.add('hidden');
         loading.classList.remove('hidden');
         results.classList.add('hidden');
 
         try {
+            // This works 100% on GitHub Pages
             const response = await fetch('/seo-intent-tool/data.json');
+            const d = await response.json();
 
-            const data = await response.json();
+            // 360 Score
+            document.getElementById('score').textContent = d.overall;
 
-            if (data.error) throw new Error(data.error);
+            // Radar Chart
+            document.querySelector('.health-score').insertAdjacentHTML('beforeend',
+                `<svg viewBox="0 0 200 200" class="radar mx-auto mt-8">
+                  <polygon points="${getRadarPoints(d.intent)}" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="3"/>
+                </svg>`);
 
-            renderRealResults(data);
+            // Modules
+            document.getElementById('modules-list').innerHTML = `
+                <li><strong>Primary Intent:</strong> ${d.intent.type} (${d.intent.confidence}% match)</li>
+                <li><strong>Top Query Cluster:</strong> "${d.intent.topQuery}"</li>
+                <li><strong>E-E-A-T Score:</strong> ${d.eeat.overall}/100 (E:${d.eeat.e} X:${d.eeat.x} A:${d.eeat.a} T:${d.eeat.t})</li>
+                <li><strong>Content Depth:</strong> ${d.content.words} words | Readability ${d.content.flesch}/100</li>
+                <li><strong>Schema Detected:</strong> ${d.schema.join(', ') || 'None'}</li>
+            `;
+
+            // Competitors
+            document.querySelector('#gaps-table tbody').innerHTML = d.competitors.map(c => `
+                <tr><td>${c.rank}. ${c.title}</td><td>${c.intentScore}</td><td>${c.eeatScore}</td>
+                <td class="${c.gap > 0 ? 'text-red-500' : 'text-green-500'}">${c.gap > 0 ? '+' : ''}${c.gap}</td></tr>
+            `).join('');
+
+            // Fixes
+            document.getElementById('fixes-list').innerHTML = d.fixes.map(f => `
+                <li><strong>${f.priority} Priority:</strong> ${f.fix}<br>
+                <small>Impact: ${f.impact} | Effort: ${f.effort}</small></li>
+            `).join('');
+
+            // Forecast
+            document.getElementById('forecast-text').innerHTML = `With fixes, expect <strong>+${d.forecast.rankGain} positions</strong> in ${d.forecast.days} days (fix ${d.forecast.fixRate}% of issues)`;
+
         } catch (err) {
-            alert('Error: ' + err.message);
+            alert('Error loading results – check console');
             console.error(err);
         } finally {
             loading.classList.add('hidden');
@@ -32,59 +57,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    function renderRealResults(d) {
-        // 360° Score
-        document.getElementById('score').textContent = d.overall;
-
-        // Intent Radar Chart (simple SVG)
-        document.querySelector('.health-score').insertAdjacentHTML('beforeend', 
-            `<svg viewBox="0 0 200 200" class="radar"><polygon points="${getRadarPoints(d.intent)}" fill="rgba(0,124,186,0.3)" stroke="#007cba" stroke-width="3"/></svg>`);
-
-        // Modules
-        const modulesHTML = `
-            <li><strong>Primary Intent:</strong> ${d.intent.type} (${d.intent.confidence}% match)</li>
-            <li><strong>Top Query Cluster:</strong> "${d.intent.topQuery}"</li>
-            <li><strong>E-E-A-T Score:</strong> ${d.eeat.overall}/100 
-                (E:${d.eeat.e} X:${d.eeat.x} A:${d.eeat.a} T:${d.eeat.t})</li>
-            <li><strong>Content Depth:</strong> ${d.content.words} words | Readability ${d.content.flesch}/100</li>
-            <li><strong>Schema Detected:</strong> ${d.schema.join(', ') || 'None 😱'}</li>
-        `;
-        document.getElementById('modules-list').innerHTML = modulesHTML;
-
-        // Competitive Gaps
-        let gapsHTML = '';
-        d.competitors.forEach(c => {
-            gapsHTML += `<tr>
-                <td>${c.rank}. ${c.title.slice(0,40)}...</td>
-                <td>${c.intentScore}</td>
-                <td>${c.eeatScore}</td>
-                <td style="color:${c.gap>0?'red':'green'}">${c.gap > 0 ? '+' : ''}${c.gap}</td>
-            </tr>`;
-        });
-        document.querySelector('#gaps-table tbody').innerHTML = gapsHTML;
-
-        // AI Fixes (real OpenAI suggestions)
-        const fixesHTML = d.fixes.map((f, i) => 
-            `<li><strong>${f.priority} Priority:</strong> ${f.fix} 
-             <br><small>Impact: ${f.impact} | Effort: ${f.effort}</small></li>`
-        ).join('');
-        document.getElementById('fixes-list').innerHTML = fixesHTML;
-
-        // Forecast
-        document.getElementById('forecast-text').innerHTML = 
-            `🎯 <strong>${d.forecast.rankGain} position gain</strong> expected in ${d.forecast.days} days 
-             if you implement <strong>${d.forecast.fixRate}%</strong> of fixes.`;
-    }
-
-    function getRadarPoints(intent) {
-        const angles = [0, 90, 180, 270];
-        const values = [intent.informational, intent.commercial, intent.transactional, intent.navigational];
-        return values.map((v, i) => {
-            const angle = angles[i] * Math.PI / 180;
-            const radius = (v / 100) * 80;
-            const x = 100 + radius * Math.cos(angle);
-            const y = 100 + radius * Math.sin(angle);
-            return `${x},${y}`;
+    function getRadarPoints(i) {
+        const a = [0,90,180,270];
+        const v = [i.informational, i.commercial, i.transactional, i.navigational];
+        return v.map((val,idx) => {
+            const ang = a[idx] * Math.PI/180;
+            const r = (val/100)*80;
+            return `${100 + r*Math.cos(ang)},${100 + r*Math.sin(ang)}`;
         }).join(' ');
     }
 });
