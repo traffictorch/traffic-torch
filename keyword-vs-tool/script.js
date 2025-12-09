@@ -12,9 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let yourScore = 0;
     let compScore = 0;
 
-    document.getElementById('mode-toggle').addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-    });
 
     const showLoader = (text) => {
         loaderText.textContent = text;
