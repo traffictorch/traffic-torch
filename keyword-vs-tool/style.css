@@ -1,6 +1,11 @@
 /* style.css – PERFECTLY MATCHES all other Traffic Torch tools (Quit Risk, AI Audit, etc.) */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
 
+/* Root variables for easy theming */
+:root {
+  --bg-gradient: linear-gradient(to bottom right, #0f172a, #020617, #000000);
+}
+
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
     font-family: 'Inter', sans-serif;
