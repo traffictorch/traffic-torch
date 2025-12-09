@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const html = await htmlResp.text();
             const doc = new DOMParser().parseFromString(html, 'text/html');
 
-            const wordCount = doc.body.innerText.split(/\s+/).filter(w => w.length).length;
+            const wordCount = doc.body.innerText.split(/\s+/).filter(w => w.length > 0).length;
             const h1 = doc.querySelector('h1')?.innerText || url;
             const schema = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))
                 .map(s => { try { return JSON.parse(s.textContent)['@type']; } catch { return null; } })
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     type: wordCount > 1500 ? "Informational" : "Commercial Investigation",
                     confidence: Math.min(99, 60 + Math.round(wordCount / 50)),
                     topQuery: h1.substring(0, 60),
-                    informational: wordCount > 1000 ? 88 :  : 35,
+                    informational: wordCount > 1000 ? 88 : 35,
                     commercial: schema.includes('Product') ? 92 : 45,
                     transactional: url.includes('buy') || url.includes('shop') ? 85 : 15,
                     navigational: 20
@@ -65,7 +65,21 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) {
             console.error(err);
             alert('Live scan failed — showing demo results');
-            d = { overall: 85, intent: { type:"Commercial Investigation", confidence:88, topQuery:"example query", informational:78, commercial:92, transactional:48, navigational:15 }, eeat: { overall:87, e:85, x:92, a:80, t:90 }, content: { words:2100, flesch:68 }, schema: ["Article","FAQPage"] };
+            d = { 
+                overall: 85, 
+                intent: { 
+                    type: "Commercial Investigation", 
+                    confidence: 88, 
+                    topQuery: "example query", 
+                    informational: 78, 
+                    commercial: 92, 
+                    transactional: 48, 
+                    navigational: 15 
+                }, 
+                eeat: { overall: 87, e: 85, x: 92, a: 80, t: 90 }, 
+                content: { words: 2100, flesch: 68 }, 
+                schema: ["Article", "FAQPage"] 
+            };
         }
 
         // ==== RENDER EVERYTHING ====
@@ -88,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#gaps-table tbody').innerHTML = `
             <tr><td>1. Top Rival Site</td><td>96</td><td>94</td><td class="text-red-500">+${96 - d.overall}</td></tr>
             <tr><td>2. Strong Competitor</td><td>93</td><td>91</td><td class="text-red-500">+${93 - d.overall}</td></tr>
-            <tr><td>3. Close Competitor</td><td><td>89</td><td>87</td><td class="text-red-500">+${89 - d.overall}</td></tr>
+            <tr><td>3. Close Competitor</td><td>89</td><td>87</td><td class="text-red-500">+${89 - d.overall}</td></tr>
         `;
 
         // Fixes
@@ -113,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const v = [i.informational, i.commercial, i.transactional, i.navigational];
         return v.map((val,idx) => {
             const ang = a[idx] * Math.PI/180;
-            r = (val/100)*80;
+            const r = (val/100)*80;
             return `${100 + r*Math.cos(ang)},${100 + r*Math.sin(ang)}`;
         }).join(' ');
     }
