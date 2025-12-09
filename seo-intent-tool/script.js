@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('audit-form');
     const loading = document.getElementById('loading');
     const results = document.getElementById('results');
-    const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
 
 
