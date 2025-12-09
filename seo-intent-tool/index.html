@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Traffic Torch – Epic Intent + E-E-A-T Auditor | Boost SEO Rankings</title>
+    <title>Intent + E-E-A-T Auditor | Boost SEO Rankings | Traffic Torch</title>
     <meta name="description" content="Instant 360° intent audit with fixes and forecasts. Mobile PWA for SEO pros.">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="/seo-intent-tool/style.css">
-    <script src="/seo-intent-tool/script.js" defer></script>
+
     <!-- Schema for SEO -->
     <script type="application/ld+json">
     {
@@ -20,16 +20,44 @@
 </head>
 <body class="day-mode">
     <header>
-        <h1>Traffic Torch – Epic Intent + E-E-A-T Auditor 🚀</h1>
+    
+      <!-- HEADER (unchanged) -->
+  <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-4">
+        <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
+        <h1 class="text-2xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+          Traffic Torch
+        </h1>
+      </a>
+      <button id="menuToggle" class="md:hidden text-3xl">Menu</button>
+      <nav class="hidden md:flex gap-8 text-lg">
+        <a href="/" class="hover:text-orange-400 transition">Home</a>
+        <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">AI Audit</a>
+        <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a>
+        <a href="/keyword-tool/" class="text-orange-400 font-bold">Keywords</a>
+        <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a>
+        <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a>
+        <a href="/about/" class="hover:text-orange-400 transition">About</a>
+      </nav>
+      <button id="themeToggle" class="px-4 py-2 bg-white/10 rounded-full hover:bg-white/20 transition">Moon</button>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden bg-black/95 backdrop-blur-xl border-t border-white/10">
+      <!-- mobile menu links same as above -->
+    </div>
+  </header>
+    
+    
+        <h1>Intent + E-E-A-T SEO Auditor 🚀</h1>
         <p>Does Google trust this page? Does it answer the searcher's question? Get your 360° score now.</p>
-        <button id="theme-toggle" aria-label="Toggle Day/Night Mode">🌙</button>
+
     </header>
 
     <main>
         <form id="audit-form">
             <label for="url-input">Enter URL to Audit:</label>
             <input type="url" id="url-input" placeholder="https://example.com" required>
-            <button type="submit">Run Epic Audit 🚀</button>
+            <button type="submit">Run Audit 🎯</button>
         </form>
 
         <section id="loading" class="hidden">
@@ -63,8 +91,45 @@
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2025 Traffic Torch. Built with SEO best practices.</p>
-    </footer>
+      <!-- SAME FOOTER AS HOME PAGE -->
+  <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">
+    <div class="container mx-auto px-6 max-w-6xl">
+      <div class="grid md:grid-cols-4 gap-12 text-center md:text-left">
+        <div>
+          <img src="/logo.webp" alt="Traffic Torch" class="w-20 mx-auto md:mx-0 rounded-2xl shadow-2xl mb-6">
+          <p class="text-gray-400 text-sm">Instant SEO + UX audit tools.<br>No login. No limits. No BS.</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-6 text-orange-400">Tools</h3>
+          <ul class="space-y-3 text-gray-400">
+            <li><a href="/" class="hover:text-orange-400 transition">Home</a></li>
+            <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">AI Audit</a></li>
+            <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
+            <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keyword</a></li>
+            <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a></li>
+            <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-6 text-orange-400">Company</h3>
+          <ul class="space-y-3 text-gray-400">
+            <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
+            <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
+            <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-6 text-orange-400">Traffic Torch</h3>
+          <p class="text-gray-400 text-sm">SEO Tools🚦🔦</p>
+          <p class="text-gray-400 text-sm">Built with 🔥</p>
+          <p class="text-gray-500 text-xs mt-4">© 2025 Traffic Torch</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+    
+    <script src="/main.js" type="module" defer></script>
+    <script src="/seo-intent-tool/script.js" defer></script>
+    <script src="https://cdn.tailwindcss.com" defer></script>
 </body>
 </html>
