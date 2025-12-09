@@ -6,18 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
 
-    // Day/Night Toggle
-    themeToggle.addEventListener('click', () => {
-        body.classList.toggle('day-mode');
-        body.classList.toggle('night-mode');
-        themeToggle.textContent = body.classList.contains('night-mode') ? '☀️' : '🌙';
-        localStorage.setItem('theme', body.classList.contains('night-mode') ? 'night' : 'day');
-    });
-    // Load saved theme
-    if (localStorage.getItem('theme') === 'night') {
-        body.classList.add('night-mode');
-        themeToggle.textContent = '☀️';
-    }
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
