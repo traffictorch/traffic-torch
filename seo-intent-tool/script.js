@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         results.classList.add('hidden');
 
         try {
-            const response = await fetch('api.php', {
+            const response = await fetch('/seo-intent-tool/api.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ url })

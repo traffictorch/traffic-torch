@@ -1,0 +1,18 @@
+{
+  "overall": 87,
+  "intent": { "type": "Commercial Investigation", "confidence": 92, "topQuery": "best seo tools 2025", "informational": 78, "commercial": 94, "transactional": 45, "navigational": 12 },
+  "eeat": { "overall": 89, "e": 88, "x": 94, "a": 82, "t": 92 },
+  "content": { "words": 2450, "flesch": 68 },
+  "schema": ["Article", "FAQPage"],
+  "competitors": [
+    {"rank":1,"title":"Ahrefs Blog","intentScore":96,"eeatScore":94,"gap":14},
+    {"rank":2,"title":"SEMrush","intentScore":93,"eeatScore":91,"gap":9},
+    {"rank":3,"title":"Moz","intentScore":90,"eeatScore":88,"gap":6}
+  ],
+  "fixes": [
+    {"priority":"High","fix":"Add author E-E-A-T bio with photo & credentials","impact":"+18 ranks","effort":"Low"},
+    {"priority":"High","fix":"Create FAQ schema matching top 10 PAA questions","impact":"+22 ranks","effort":"Medium"},
+    {"priority":"Med","fix":"Upgrade all H2s with primary + secondary keywords","impact":"+9 ranks","effort":"Low"}
+  ],
+  "forecast": { "rankGain": 19, "days": 28, "fixRate": 86 }
+}
