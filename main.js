@@ -32,27 +32,23 @@ toggle.addEventListener('click', () => {
     
     
     
-    // Mobile menu toggle 
-document.addEventListener("DOMContentLoaded", () => {
-  const menuButton = document.getElementById("mobile-menu-button");
-  const mobileMenu = document.getElementById("mobile-menu");
+// Mobile Menu Toggle – Traffic Torch Fix (Works on All Pages)
+document.addEventListener('DOMContentLoaded', () => {
+  const button = document.getElementById('mobile-menu-button');
+  const menu = document.getElementById('mobile-menu');
+  if (!button || !menu) return; // Skip if elements missing (e.g., desktop view)
 
-  // Safety check – if we're on a page without these elements (rare), just exit
-  if (!menuButton || !mobileMenu) return;
-
-  menuButton.addEventListener("click", () => {
-    mobileMenu.classList.toggle("hidden");
-    
-    // Accessibility improvement
-    const expanded = menuButton.getAttribute("aria-expanded") === "true";
-    menuButton.setAttribute("aria-expanded", !expanded);
+  button.addEventListener('click', () => {
+    menu.classList.toggle('hidden');
+    const isExpanded = button.getAttribute('aria-expanded') === 'true';
+    button.setAttribute('aria-expanded', !isExpanded);
   });
 
-  // Optional: close menu when clicking a link (better UX)
-  document.querySelectorAll("#mobile-menu a").forEach(link => {
-    link.addEventListener("click", () => {
-      mobileMenu.classList.add("hidden");
-      menuButton.setAttribute("aria-expanded", "false");
+  // Auto-close on link click for better UX
+  document.querySelectorAll('#mobile-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+      menu.classList.add('hidden');
+      button.setAttribute('aria-expanded', 'false');
     });
   });
 });
