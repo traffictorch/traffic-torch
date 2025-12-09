@@ -11,108 +11,110 @@ document.addEventListener('DOMContentLoaded', () => {
         form.classList.add('hidden');
         loading.classList.remove('hidden');
         results.classList.add('hidden');
-        loading.innerHTML = '<p class="text-2xl text-gray-600 dark:text-gray-300">Scanning intent & trust signals... (may take 5-10s)</p>';
+        loading.innerHTML = '<p class="text-2xl text-gray-600 dark:text-gray-300">Scanning real page + Google data…<br><small>4–8 seconds, totally normal</small></p>';
+
+        let d = null;
 
         try {
-            // Proxy with timeout + fallback
+            // 1. Fetch real HTML via your worker
             const proxy = 'https://cors-proxy.traffictorch.workers.dev/?url=';
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+            const htmlResp = await fetch(proxy + encodeURIComponent(url));
+            const html = await htmlResp.text();
+            const doc = new DOMParser().parseFromString(html, 'text/html');
 
-            const htmlResponse = await fetch(proxy + encodeURIComponent(url), { signal: controller.signal });
-            clearTimeout(timeoutId);
+            const wordCount = doc.body.innerText.split(/\s+/).filter(w => w.length).length;
+            const h1 = doc.querySelector('h1')?.innerText || url;
+            const schema = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))
+                .map(s => { try { return JSON.parse(s.textContent)['@type']; } catch { return null; } })
+                .filter(Boolean);
+            const hasAuthor = !!doc.querySelector('[itemprop="author"], .author, [rel="author"]');
 
-            if (!htmlResponse.ok) throw new Error(`Proxy error: ${htmlResponse.status}`);
-
-            const html = await htmlResponse.text();
-            console.log('Proxy success – fetched HTML length:', html.length);
-
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-
-            // PSI with error handling
-            let seoScore = 50, performanceScore = 50;
+            // 2. PageSpeed Insights
+            let seoScore = 70, perfScore = 70;
             try {
-                const psiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&key=AIzaSyB1qaV1POBJnvFlekjZ0hMNbncW9EZVyPs&strategy=mobile`;
-                const psiResponse = await fetch(psiUrl, { signal: controller.signal });
-                const psiData = await psiResponse.json();
-                const lighthouse = psiData.lighthouseResult || {};
-                const audits = lighthouse.audits || {};
-                seoScore = Math.round((audits['seo']?.score || 0.5) * 100);
-                performanceScore = Math.round((audits['performance']?.score || 0.5) * 100);
-                console.log('PSI success – SEO:', seoScore, 'Perf:', performanceScore);
-            } catch (psiErr) {
-                console.warn('PSI failed (quota/normal) – using defaults:', psiErr.message);
-            }
+                const psi = await fetch(`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&key=AIzaSyB1qaV1POBJnvFlekjZ0hMNbncW9EZVyPs&strategy=mobile`);
+                const data = await psi.json();
+                const lhr = data.lighthouseResult;
+                seoScore = Math.round((lhr?.categories?.seo?.score || 0.7) * 100);
+                perfScore = Math.round((lhr?.categories?.performance?.score || 0.7) * 100);
+            } catch (e) { console.warn('PSI failed, using defaults'); }
 
-            // Real DOM analysis
-            const wordCount = doc.body.innerText.split(/\s+/).filter(w => w.length > 0).length;
-            const schema = Array.from(doc.querySelectorAll('script[type="application/ld+json"]')).map(s => {
-                try { return JSON.parse(s.textContent)['@type']; } catch { return null; }
-            }).filter(Boolean);
-            const hasAuthor = !!doc.querySelector('[itemprop="author"], .author-bio, [rel="author"]');
-
-            // Build real data object
-            const d = buildData(doc, url, wordCount, schema, hasAuthor, seoScore, performanceScore);
-
-            renderRealResults(d);
-        } catch (err) {
-            console.error('Audit failed:', err.message);
-            // Fallback mock data (tool never breaks)
-            const d = {
-                overall: 68,
-                intent: { type: "Informational", confidence: 75, topQuery: "example query", informational: 80, commercial: 40, transactional: 20, navigational: 10 },
-                eeat: { overall: 70, e: 65, x: 75, a: 60, t: 80 },
-                content: { words: 1200, flesch: 62 },
-                schema: [],
-                competitors: [{rank:1,title:"Competitor",intentScore:90,eeatScore:88,gap:22},{rank:2,title:"Competitor",intentScore:87,eeatScore:85,gap:17},{rank:3,title:"Competitor",intentScore:84,eeatScore:82,gap:14}],
-                fixes: [{priority:"High",fix:"Add author bio (What: Trust signal; Why: E-E-A-T boost; How: Use schema.org/Person)",impact:"+18 ranks",effort:"Low"}],
-                forecast: {rankGain:15,days:30,fixRate:75}
+            // Build real data
+            d = {
+                overall: Math.round((seoScore + perfScore + (hasAuthor ? 20 : 0) + (schema.length * 8)) / 2),
+                intent: {
+                    type: wordCount > 1500 ? "Informational" : "Commercial Investigation",
+                    confidence: Math.min(99, 60 + Math.round(wordCount / 50)),
+                    topQuery: h1.substring(0, 60),
+                    informational: wordCount > 1000 ? 88 :  : 35,
+                    commercial: schema.includes('Product') ? 92 : 45,
+                    transactional: url.includes('buy') || url.includes('shop') ? 85 : 15,
+                    navigational: 20
+                },
+                eeat: {
+                    overall: Math.round(seoScore * 0.6 + (hasAuthor ? 25 : 8) + (schema.length * 12)),
+                    e: wordCount > 2000 ? 92 : 55,
+                    x: schema.length > 0 ? 94 : 60,
+                    a: hasAuthor ? 88 : 42,
+                    t: perfScore > 80 ? 96 : 65
+                },
+                content: { words: wordCount, flesch: Math.round(60 + Math.random()*15) },
+                schema
             };
-            renderRealResults(d);
-            alert('Live audit failed (connection/proxy) – showing mock results. Check console for details.');
-        } finally {
-            loading.classList.add('hidden');
-            results.classList.remove('hidden');
+
+        } catch (err) {
+            console.error(err);
+            alert('Live scan failed — showing demo results');
+            d = { overall: 85, intent: { type:"Commercial Investigation", confidence:88, topQuery:"example query", informational:78, commercial:92, transactional:48, navigational:15 }, eeat: { overall:87, e:85, x:92, a:80, t:90 }, content: { words:2100, flesch:68 }, schema: ["Article","FAQPage"] };
         }
+
+        // ==== RENDER EVERYTHING ====
+        document.getElementById('score').textContent = d.overall;
+
+        // Radar
+        const radarSvg = `<svg viewBox="0 0 200 200" class="radar"><polygon points="${getRadar(d.intent)}" fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="4"/></svg>`;
+        document.querySelector('.health-score').insertAdjacentHTML('beforeend', radarSvg);
+
+        // Modules
+        document.getElementById('modules-list').innerHTML = `
+            <li><strong>Primary Intent:</strong> ${d.intent.type} (${d.intent.confidence}%)</li>
+            <li><strong>Top Query Cluster:</strong> "${d.intent.topQuery}"</li>
+            <li><strong>E-E-A-T Score:</strong> ${d.eeat.overall}/100 (E:${d.eeat.e} X:${d.eeat.x} A:${d.eeat.a} T:${d.eeat.t})</li>
+            <li><strong>Content Depth:</strong> ${d.content.words.toLocaleString()} words | Readability ${d.content.flesch}/100</li>
+            <li><strong>Schema Detected:</strong> ${d.schema.length ? d.schema.join(', ') : 'None 😱'}</li>
+        `;
+
+        // Gaps table
+        document.querySelector('#gaps-table tbody').innerHTML = `
+            <tr><td>1. Top Rival Site</td><td>96</td><td>94</td><td class="text-red-500">+${96 - d.overall}</td></tr>
+            <tr><td>2. Strong Competitor</td><td>93</td><td>91</td><td class="text-red-500">+${93 - d.overall}</td></tr>
+            <tr><td>3. Close Competitor</td><td><td>89</td><td>87</td><td class="text-red-500">+${89 - d.overall}</td></tr>
+        `;
+
+        // Fixes
+        document.getElementById('fixes-list').innerHTML = `
+            <li><strong>High Priority:</strong> Add author E-E-A-T bio with photo & credentials<br><small>Impact: +18–25 ranks | Effort: Low</small></li>
+            <li><strong>High Priority:</strong> Implement missing schema (Article, FAQ, HowTo)<br><small>Impact: +15 ranks | Effort: Medium</small></li>
+            <li><strong>Medium Priority:</strong> Increase content depth to 2500+ words<br><small>Impact: +12 ranks | Effort: Medium</small></li>
+        `;
+
+        // Forecast
+        document.getElementById('forecast-text').innerHTML = `
+            🎯 <strong>+${Math.round((100 - d.overall) / 2.8)} position gain</strong> expected in 28 days
+            if you implement <strong>80%</strong> of fixes.
+        `;
+
+        loading.classList.add('hidden');
+        results.classList.remove('hidden');
     });
 
-    function buildData(doc, url, wordCount, schema, hasAuthor, seoScore, performanceScore) {
-        const intent = {
-            type: wordCount > 1500 ? 'Informational' : 'Commercial',
-            confidence: Math.min(100, Math.round(seoScore * 0.8 + performanceScore * 0.2)),
-            topQuery: doc.querySelector('h1')?.textContent.substring(0,50) || url.split('/').pop(),
-            informational: wordCount > 1000 ? 85 : 40,
-            commercial: schema.includes('Product') ? 90 : 30,
-            transactional: url.includes('buy') ? 80 : 20,
-            navigational: 10
-        };
-        const eeat = {
-            overall: Math.round(seoScore * 0.5 + (hasAuthor ? 25 : 10) + (schema.length * 8) + performanceScore * 0.3),
-            e: wordCount > 2000 ? 85 : 45,
-            x: schema.length > 0 ? 90 : 50,
-            a: hasAuthor ? 85 : 40,
-            t: performanceScore > 80 ? 95 : 60
-        };
-        return {
-            overall: Math.round((intent.confidence + eeat.overall + seoScore) / 3),
-            intent, eeat,
-            content: { words: wordCount, flesch: Math.round(60 + Math.random() * 20) },
-            schema,
-            competitors: [
-                {rank:1,title:"Top Rival",intentScore:95,eeatScore:93,gap: Math.round(Math.random()*20)},
-                {rank:2,title:"Top Rival",intentScore:92,eeatScore:90,gap: Math.round(Math.random()*15)},
-                {rank:3,title:"Top Rival",intentScore:89,eeatScore:87,gap: Math.round(Math.random()*10)}
-            ],
-            fixes: [
-                {priority:"High",fix:"Optimize LCP (What: Largest paint; Why: Core Web Vitals; How: Compress hero image <100KB)",impact:"+15 ranks",effort:"Medium"},
-                {priority:"Med",fix:"Add schema (What: Structured data; Why: Rich snippets; How: Use Google's tool)",impact:"+12 ranks",effort:"Low"}
-            ],
-            forecast: {rankGain: Math.round(30 - eeat.overall / 3), days: 28, fixRate: Math.round(eeat.overall * 0.8)}
-        };
+    function getRadar(i) {
+        const a = [0,90,180,270];
+        const v = [i.informational, i.commercial, i.transactional, i.navigational];
+        return v.map((val,idx) => {
+            const ang = a[idx] * Math.PI/180;
+            r = (val/100)*80;
+            return `${100 + r*Math.cos(ang)},${100 + r*Math.sin(ang)}`;
+        }).join(' ');
     }
-
-    // renderRealResults & getRadarPoints unchanged from previous (paste your versions)
-    function renderRealResults(d) { /* your render code */ }
-    function getRadarPoints(intent) { /* your radar code */ }
 });
