@@ -32,30 +32,24 @@ toggle.addEventListener('click', () => {
     
     
     
-// Mobile Menu Toggle 
+// Mobile menu
 document.addEventListener('DOMContentLoaded', () => {
-  const button = document.getElementById('menuToggle'); // Your actual button ID
-  const menu = document.getElementById('hiddenToggle'); // Your actual menu ID (from screenshot)
+  const button = document.getElementById('menuToggle');
+  const menu   = document.getElementById('mobileMenu');
 
-  if (!button || !menu) {
-    console.log('Menu elements missing!'); // Temp debug log
-    return;
-  }
+  // If missing on a page, just exit (404 page etc)
+  if (!button || !menu) return;
 
   button.addEventListener('click', () => {
     menu.classList.toggle('hidden');
-    const isExpanded = button.getAttribute('aria-expanded') === 'true';
-    button.setAttribute('aria-expanded', !isExpanded);
-    // Optional: Toggle icon if you have close/open SVGs
-    button.querySelectorAll('svg').forEach(svg => svg.classList.toggle('hidden'));
+    
+    // Optional: change aria for screen readers
+    const expanded = button.getAttribute('aria-expanded') === 'true';
+    button.setAttribute('aria-expanded', !expanded);
   });
 
-  // Auto-close on link click
-  document.querySelectorAll('#hiddenToggle a').forEach(link => { // Match menu ID
-    link.addEventListener('click', () => {
-      menu.classList.add('hidden');
-      button.setAttribute('aria-expanded', 'false');
-      button.querySelectorAll('svg').forEach(svg => svg.classList.toggle('hidden'));
-    });
+  // Close when clicking a link (nice UX)
+  menu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => menu.classList.add('hidden'));
   });
 });
