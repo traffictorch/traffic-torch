@@ -29,3 +29,30 @@ toggle.addEventListener('click', () => {
       btn.onclick = () => deferredPrompt.prompt();
       document.body.appendChild(btn);
     });
+    
+    
+    
+    // Mobile menu toggle 
+document.addEventListener("DOMContentLoaded", () => {
+  const menuButton = document.getElementById("mobile-menu-button");
+  const mobileMenu = document.getElementById("mobile-menu");
+
+  // Safety check – if we're on a page without these elements (rare), just exit
+  if (!menuButton || !mobileMenu) return;
+
+  menuButton.addEventListener("click", () => {
+    mobileMenu.classList.toggle("hidden");
+    
+    // Accessibility improvement
+    const expanded = menuButton.getAttribute("aria-expanded") === "true";
+    menuButton.setAttribute("aria-expanded", !expanded);
+  });
+
+  // Optional: close menu when clicking a link (better UX)
+  document.querySelectorAll("#mobile-menu a").forEach(link => {
+    link.addEventListener("click", () => {
+      mobileMenu.classList.add("hidden");
+      menuButton.setAttribute("aria-expanded", "false");
+    });
+  });
+});
