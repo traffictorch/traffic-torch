@@ -1,13 +1,11 @@
 // js/apis/crux-parser.js
 export function parseCrUXFromPSI(psiData) {
-  const crux = psiData?.loadingExperience || psiData?.originLoadingExperience;
+  if (!psiData || !psiData.lighthouseResult?.audits?.['chrome-user-experience-report-v2']) return null;
+  const crux = psiData.lighthouseResult.audits['chrome-user-experience-report-v2'].details?.items[0];
   if (!crux) return null;
-
-  const metrics = crux.metrics || {};
   return {
-    lcp: metrics.LARGEST_CONTENTFUL_PAINT_MS?.percentiles?.p75 || "N/A",
-    inp: metrics.INTERACTION_TO_NEXT_PAINT_MS?.percentiles?.p75 || "N/A",
-    cls: metrics.CUMULATIVE_LAYOUT_SHIFT_SCORE?.percentiles?.p75 || "N/A",
-    overall: crux.overall_category || "No data"
+    lcp: crux.largest_contentful_paint_display || 0,
+    inp: crux.interaction_to_next_paint || 0,
+    cls: crux.cumulative_layout_shift || 0
   };
 }

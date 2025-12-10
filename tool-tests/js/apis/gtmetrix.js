@@ -1,39 +1,33 @@
 // js/apis/gtmetrix.js
-const GT_KEY = "2cd8581f09cf3ed0ce2ffffca0b09c21";
-const GT_BASE = "https://gtmetrix.com/api/0.1";
+const GTMETRIX_API = 'https://gtmetrix.com/api/v4';
 
-export async function runGTmetrixTest(url) {
-  const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(
-    `${GT_BASE}/test`
-  )}`;
-  
-  const response = await fetch(proxyUrl, {
-    method: "POST",
-    headers: {
-      "Authorization": `Basic ${btoa(GT_KEY + ":")}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ url })
+export async function runGTmetrixTest(url, strategy = 'desktop') {
+  const body = JSON.stringify({
+    url: url,
+    test_settings: { device: strategy === 'mobile' ? 'mobile' : 'desktop' }
   });
-
+  const response = await fetch(`${GTMETRIX_API}/tests`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: body
+  });
+  if (!response.ok) throw new Error(`GTmetrix failed: ${response.status}`);
   const data = await response.json();
-  if (data.error) throw new Error(data.error);
-
-  // Poll for results (quick test finishes in ~10s)
-  return await pollGTmetrix(data.test_id);
+  // Simple poll for result (cap at 10s for quick UX)
+  return await pollForResult(data.data.id);
 }
 
-async function pollGTmetrix(testId, attempts = 15) {
-  for (let i = 0; i < attempts; i++) {
-    await new Promise(r => setTimeout(r, 4000));
-    const res = await fetch(`https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(
-      `${GT_BASE}/test/${testId}`
-    )}`, {
-      headers: { "Authorization": `Basic ${btoa(GT_KEY + ":")}` }
-    });
-    const json = await res.json();
-    if (json.state === "completed") return json.results;
-    if (json.state === "error") throw new Error("GTmetrix failed");
+async function pollForResult(testId, maxAttempts = 2) {
+  for (let i = 0; i < maxAttempts; i++) {
+    await new Promise(r => setTimeout(r, 3000));
+    const res = await fetch(`https://gtmetrix.com/api/v4/tests/${testId}?full=1`);
+    const data = await res.json();
+    if (data.data.state === 'completed') {
+      return {
+        fully_loaded_time: data.data.full_load_time,
+        report_url: `https://gtmetrix.com/report/${testId}`
+      };
+    }
   }
-  throw new Error("GTmetrix timeout – using PageSpeed only");
+  throw new Error('GTmetrix timeout - site too slow?');
 }
