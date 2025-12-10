@@ -26,3 +26,14 @@ if (new URLSearchParams(window.location.search).get('module') === 'google-trends
   showModule('google-trends');
   import('./modules/google-trends.js').then(m => m.initGoogleTrends());
 }
+
+// Force preventDefault on all forms (debug for reload bug)
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      e.stopImmediatePropagation(); // Stops other listeners
+      console.log('Form submit blocked – no reload'); // Check F12 console
+    });
+  });
+});
