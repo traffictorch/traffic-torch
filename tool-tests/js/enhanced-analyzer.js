@@ -29,7 +29,8 @@ export async function runFullAnalysis(url, keyword = "") {
   // 3. GTmetrix – only if PSI mobile < 85
   if (mobile?.lighthouseResult?.categories?.performance?.score < 0.85) {
     try {
-      document.getElementById("status")?. = "Running visual test…";
+      const statusEl = document.getElementById("status");
+		if (statusEl) statusEl.textContent = "";  // Clear status when done
       results.gtmetrix = await runGTmetrixTest(url);
     } catch (e) {
       console.log("GTmetrix skipped:", e.message);
