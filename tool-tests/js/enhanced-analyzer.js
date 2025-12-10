@@ -1,7 +1,6 @@
 // js/enhanced-analyzer.js
 import { runGTmetrixTest } from './apis/gtmetrix.js';
 import { parseCrUXFromPSI } from './apis/crux-parser.js';
-import { getGoogleTrendsInterest } from './apis/trends.js';
 
 const PSI_KEY = "AIzaSyB1qaV1POBJnvFlekjZ0hMNbncW9EZVyPs";
 
@@ -11,7 +10,6 @@ export async function runFullAnalysis(url, keyword = "") {
     psi: null,
     crux: null,
     gtmetrix: null,
-    trends: null,
     finalScore: 0,
     insights: []
   };
@@ -56,8 +54,6 @@ function generateInsights(data) {
   if (perf < 0.5) list.push("Urgent: Very slow – high bounce risk");
   if (data.crux?.lcp > 4000) list.push("Real users see slow load (LCP >4s)");
   if (data.gtmetrix?.fullyLoadedTime > 8000) list.push("Waterfall shows long tail – optimize images/JS");
-  if (data.trends?.trend === "rising") list.push(`Keyword rising fast – great timing!`);
-  if (data.trends?.trend === "falling") list.push(`Keyword losing interest – consider new terms`);
 
   return list.length ? list : ["Looking good overall!"];
 }
