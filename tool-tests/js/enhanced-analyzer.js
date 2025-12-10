@@ -1,5 +1,4 @@
-// js/enhanced-analyzer.js – FINAL CLEAN VERSION (Dec 2025)
-// Works perfectly with the new CORS proxy + GTmetrix + CrUX
+// js/enhanced-analyzer.js – FINAL VERSION THAT NEVER BREAKS (Dec 2025)
 
 import { runGTmetrixTest } from './apis/gtmetrix.js';
 import { parseCrUXFromPSI } from './apis/crux-parser.js';
@@ -9,118 +8,126 @@ const PSI_KEY = "AIzaSyB1qaV1POBJnvFlekjZ0hMNbncW9EZVyPs";
 export async function runFullAnalysis(url) {
   const results = {
     url,
-    psi: null,
+    psi: { desktop: null, mobile: null },
     crux: null,
     gtmetrix: null,
     finalScore: 0,
-    insights: []
+    insights: ["Analyzing…"]
   };
 
   const statusEl = document.getElementById("status");
+  if (statusEl) statusEl.textContent = "Fetching Google PageSpeed data…";
 
-  // 1. PageSpeed Insights – desktop + mobile (safe with fallback)
-  let desktop = null;
-  let mobile = null;
-
+  // ——————————————————— 1. PageSpeed (safe fallback) ———————————————————
   try {
-    if (statusEl) statusEl.textContent = "Fetching Google PageSpeed data…";
-
-    [desktop, mobile] = await Promise.all([
+    const [desktopData, mobileData] = await Promise.allSettled([
       fetchPSI(url, "desktop"),
       fetchPSI(url, "mobile")
     ]);
 
-    results.psi = { desktop, mobile };
+    // Only use data if it actually succeeded and has lighthouseResult
+    if (desktopData.status === "fulfilled" && desktopData.value?.lighthouseResult) {
+      results.psi.desktop = desktopData.value;
+    }
+    if (mobileData.status === "fulfilled" && mobileData.value?.lighthouseResult) {
+      results.psi.mobile = mobileData.value;
+    }
 
-    // 2. Real-user CrUX data (from mobile first, then desktop)
-    results.crux = parseCrUXFromPSI(mobile) || parseCrUXFromPSI(desktop);
+    // Extract CrUX from whichever has data
+    results.crux = parseCrUXFromPSI(results.psi.mobile) || parseCrUXFromPSI(results.psi.desktop);
 
   } catch (e) {
-    console.warn("PageSpeed temporarily unavailable:", e.message);
-    results.insights.push("Google PageSpeed is taking a break — scores will appear if you retry in a few seconds");
+    console.warn("PageSpeed failed completely:", e);
   }
 
-  // 3. GTmetrix visual waterfall – only if mobile performance is poor
-  if (mobile?.lighthouseResult?.categories?.performance?.score * 100 < 85) {
+  // ——————————————————— 2. GTmetrix only if mobile score is poor ———————————————————
+  const mobilePerfScore = results.psi.mobile?.lighthouseResult?.categories?.performance?.score || 0;
+
+  if (mobilePerfScore > 0 && mobilePerfScore < 0.85) {
     try {
-      if (statusEl) statusEl.textContent = "Running visual waterfall test (GTmetrix)…";
-
+      if (statusEl) statusEl.textContent = "Running visual waterfall (GTmetrix)…";
       results.gtmetrix = await runGTmetrixTest(url);
-
-      if (statusEl) statusEl.textContent = "Visual test complete!";
     } catch (e) {
-      console.log("GTmetrix skipped or failed:", e.message);
-      results.insights.push("Deep visual test skipped (site may be too slow or rate-limited)");
+      console.log("GTmetrix failed (normal for busy sites):", e.message);
     }
   }
 
-  // 4. Generate educational insights
-  results.insights.push(...generateInsights(results));
+  // ——————————————————— 3. Generate insights (100% safe) ———————————————————
+  results.insights = generateSafeInsights(results);
 
-  // Optional: calculate a simple final score
-  const perfScore = mobile?.lighthouseResult?.categories?.performance?.score || desktop?.lighthouseResult?.categories?.performance?.score || 0;
-  results.finalScore = Math.round(perfScore * 100);
+  // Final score – always show something
+  const bestScore = Math.max(
+    results.psi.mobile?.lighthouseResult?.categories?.performance?.score || 0,
+    results.psi.desktop?.lighthouseResult?.categories?.performance?.score || 0
+  );
+  results.finalScore = bestScore ? Math.round(bestScore * 100) : 0;
 
-  if (statusEl) statusEl.textContent = "Analysis complete!";
+  if (statusEl) statusEl.textContent = "Complete!";
 
   return results;
 }
 
-// ——————————————————————————————————————————————————
-// Safe PageSpeed fetch using the clean CORS proxy
+// ——————————————————— Safe PageSpeed fetch ———————————————————
 async function fetchPSI(url, strategy) {
   const params = new URLSearchParams({
-    url: url,
-    strategy: strategy,
+    url,
+    strategy,
     key: PSI_KEY,
     category: "performance",
     category: "seo",
     category: "accessibility"
   });
 
-  const psiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?${params.toString()}`;
-
-  // Use the safe __url parameter so the proxy never breaks on long URLs
+  const psiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?${params}`;
   const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?__url=${encodeURIComponent(psiUrl)}`;
 
-  const response = await fetch(proxyUrl);
+  const res = await fetch(proxyUrl);
 
-  if (!response.ok) {
-    throw new Error(`PageSpeed request failed: ${response.status} ${response.statusText}`);
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status}`);
   }
 
-  return response.json();
+  const data = await res.json();
+
+  // Google sometimes returns { error: { code: 400, ... } }
+  if (data.error) {
+    throw new Error(data.error.message || "Unknown PSI error");
+  }
+
+  return data;
 }
 
-// ——————————————————————————————————————————————————
-// Generate helpful, educational insights
-function generateInsights(data) {
+// ——————————————————— Super-safe insights (no crashes ever) ———————————————————
+function generateSafeInsights(data) {
   const insights = [];
 
-  const mobilePerf = data.psi?.mobile?.lighthouseResult?.categories?.performance?.score || 0;
-  const desktopPerf = data.psi?.desktop?.lighthouseResult?.categories?.performance?.score || 0;
-  const perf = mobilePerf || desktopPerf;
+  const mobileScore = data.psi.mobile?.lighthouseResult?.categories?.performance?.score || 0;
+  const desktopScore = data.psi.desktop?.lighthouseResult?.categories?.performance?.score || 0;
+  const score = Math.max(mobileScore, desktopScore);
 
-  if (perf < 0.5) {
-    insights.push("Urgent: Very slow site — high bounce risk. Compress images & minify JS/CSS.");
-  } else if (perf < 0.5 && perf < 0.9) {
-    insights.push("Average speed — room to improve. Focus on Largest Contentful Paint (LCP).");
+  if (score === 0) {
+    insights.push("Google PageSpeed data unavailable right now — please try again in 10 seconds");
+  } else if (score < 0.5) {
+    insights.push("Urgent: Site is very slow — high bounce risk. Compress images, minify JS/CSS");
+  } else if (score < 0.9) {
+    insights.push("Room to improve — focus on Largest Contentful Paint (LCP)");
+  } else {
+    insights.push("Great performance! Keep it up");
   }
 
   if (data.crux?.lcp > 4000) {
-    insights.push("Real users experience slow load (LCP > 4s) — optimize hero images & fonts");
-  }
-  if (data.crux?.lcp > 2500 && data.crux?.lcp <= 4000) {
-    insights.push("Real-user LCP is okay but can be faster — aim for under 2.5s");
+    insights.push("Real users wait over 4s for content — optimize hero image & fonts");
+  } else if (data.crux?.lcp > 2500) {
+    insights.push("Real-user load is okay — aim for under 2.5s");
   }
 
   if (data.gtmetrix?.fullyLoadedTime > 8000) {
-    insights.push("Waterfall shows long tail — too many third-party scripts or large assets");
+    insights.push("Too many third-party scripts — consider deferring or removing");
   }
 
-  if (insights.length === 0) {
-    insights.push("Looking excellent! Keep up the great work");
+  if (insights.length === 1 && score > 0.9) {
+    insights[0] = "Excellent speed & real-user experience!";
   }
 
-  return insights;
+  return insights.length ? insights : ["Analysis complete — no major issues found"];
 }
