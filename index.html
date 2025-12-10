@@ -134,24 +134,15 @@
     </div>
     
     
-<section id="google-trends" class="module">
-  <h2>Google Trends Analysis</h2>
+<section id="google-trends" class="module" style="margin:4rem auto;max-width:900px;padding:2rem;background:var(--card-bg);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,0.1)">
+  <h2 style="text-align:center;margin-bottom:2rem;font-size:2rem;color:var(--heading)">Google Trends Analysis</h2>
   <form id="trends-form">
-    <input type="text" id="keywords-input" placeholder="e.g. seo, user experience, white hat" required>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0">
-      <select id="timeframe">
-        <option value="today 5-y">Past 5 years</option>
-        <option value="today 12-m">Past 12 months</option>
-        <option value="now 7-d">Past 7 days</option>
-      </select>
-      <select id="geo">
-        <option value="">Worldwide</option>
-        <option value="US">United States</option>
-        <option value="GB">United Kingdom</option>
-        <option value="DE">Germany</option>
-      </select>
+    <input type="text" id="keywords-input" placeholder="e.g. seo, user experience, white hat" required style="width:100%;padding:1.2rem;font-size:1.1rem;border-radius:12px;border:2px solid #3b82f6;margin-bottom:1rem">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
+      <select id="timeframe" style="padding:1rem;border-radius:12px;border:2px solid #e2e8f0"><option value="today 5-y">Past 5 years</option><option value="today 12-m">Past 12 months</option><option value="now 7-d">Past 7 days</option></select>
+      <select id="geo" style="padding:1rem;border-radius:12px;border:2px solid #e2e8f0"><option value="">Worldwide</option><option value="US">United States</option><option value="GB">United Kingdom</option><option value="DE">Germany</option></select>
     </div>
-    <button type="submit" class="btn-primary">Analyze Trends</button>
+    <button type="submit" style="width:100%;padding:1.2rem;background:#3b82f6;color:white;border:none;border-radius:12px;font-size:1.1rem;font-weight:600;cursor:pointer">Analyze Trends</button>
   </form>
   <div id="trends-output"></div>
 </section>
