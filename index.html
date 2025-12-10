@@ -133,11 +133,12 @@
       
     </div>
     
-    <section id="google-trends" class="module">
+    
+<section id="google-trends" class="module">
   <h2>Google Trends Analysis</h2>
   <form id="trends-form">
-    <input type="text" id="keywords-input" placeholder="e.g. seo, ai content, black hat" required style="width:100%;padding:1rem;margin-bottom:1rem;border-radius:8px;border:1px solid var(--border)">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+    <input type="text" id="keywords-input" placeholder="e.g. seo, user experience, white hat" required>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0">
       <select id="timeframe">
         <option value="today 5-y">Past 5 years</option>
         <option value="today 12-m">Past 12 months</option>
@@ -150,7 +151,7 @@
         <option value="DE">Germany</option>
       </select>
     </div>
-    <button type="submit" class="btn-primary" style="width:100%">Analyze Trends</button>
+    <button type="submit" class="btn-primary">Analyze Trends</button>
   </form>
   <div id="trends-output"></div>
 </section>
