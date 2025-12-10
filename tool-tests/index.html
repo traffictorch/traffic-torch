@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Traffic Torch: Instant 360° SEO and UX health score analysis with real-user data, waterfalls, filmstrips, and educational insights. Free, unlimited, mobile-first.">
+    <title>Traffic Torch — Free Pro-Level SEO & UX Audit (2025)</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/tool-tests/sw.js');
+            });
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Traffic Torch Test Tool</h1>
+        <p>Enter a URL for instant SEO/UX analysis with real scores, visuals, and fixes. Mobile-first, educational reports.</p>
+        <button id="toggle-mode">Toggle Day/Night Mode</button>
+    </header>
+    <main>
+        <form id="analysis-form">
+            <input type="url" id="url-input" placeholder="https://example.com" required>
+            <button type="submit">Run Full Analysis</button>
+        </form>
+        <section id="gtmetrix-section">
+            <h2>GTmetrix Analysis (Primary Score + Waterfall)</h2>
+            <div id="gtmetrix-result" class="loading">Loading...</div>
+        </section>
+        <section id="webpagetest-section">
+            <h2>WebPageTest Analysis (Backup Score + Filmstrip)</h2>
+            <div id="webpagetest-result" class="loading">Loading...</div>
+        </section>
+        <section id="crux-section">
+            <h2>CrUX Real-User Metrics (LCP/INP/CLS)</h2>
+            <div id="crux-result" class="loading">Loading...</div>
+        </section>
+    </main>
+    <footer>
+        <p>Powered by xAI Grok 4. Free for all. Built with latest 2025 web standards.</p>
+    </footer>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
