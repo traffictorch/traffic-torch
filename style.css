@@ -86,17 +86,14 @@ html.light header {
   
 
 
-/* Traffic Torch – Clean Expanding Text Box (mobile-first & epic) */
+/* Traffic Torch – Native <details> Expanding Box (iOS + Android + Desktop Perfect) */
 .expand-box {
   max-width: 100%;
   margin: 2rem auto;
-  padding: 0;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -108,29 +105,47 @@ html.light header {
   display: flex;
   align-items: center;
   gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent; /* Clean tap on mobile */
 }
 
 .expand-box-header .emoji {
   font-size: 1.8rem;
 }
 
+/* Hide default triangle on iOS/Android */
+.expand-box summary::-webkit-details-marker {
+  display: none;
+}
+.expand-box summary {
+  list-style: none;
+}
+
 .expand-box-content {
-  max-height: 0;
-  overflow: hidden;
   background: white;
   color: #333;
-  padding: 0 24px;
-  transition: all 0.5s ease;
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
-.expand-box.expanded .expand-box-content {
-  max-height: 500px;        /* big enough for future content */
   padding: 24px 24px 32px;
+ 24px;
+  font-size: 1rem;
+  line-height: 1.7;
+  animation: fadeSlide 0.5s ease-out;
 }
 
-/* Dark mode ready */
-html.dark .expand-box-content { background: #1a1a2e; color: #e0e0ff; }
+/* Dark mode */
+html.dark .expand-box-content {
+  background: #1a1a2e;
+  color: #e0e0ff;
+}
 
-
+/* Smooth fade + slide animation (works perfectly on iOS) */
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
