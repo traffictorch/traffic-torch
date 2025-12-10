@@ -1,3 +1,11 @@
+window.fetchAndRenderTrends = async function(kw) {
+  const tf = document.getElementById('timeframe')?.value || 'today 5-y';
+  const geo = document.getElementById('geo')?.value || '';
+  const data = await fetchGoogleTrends(kw, tf, geo);
+  renderTrends(data, kw);
+};
+
+
 window.fetchAndRenderTrends = async function(keywordsCSV) {
   const kw = keywordsCSV.split(',').map(k=>k.trim());
   const tf = document.getElementById('timeframe')?.value || 'today 5-y';

@@ -193,6 +193,8 @@
   <!-- Load JS last for speed -->
   <script src="/main.js" type="module"></script>
   
+  
+    <!-- Google Trends JS -->
   <script>
 function initGoogleTrendsSubmit() {
   const output = document.getElementById('trends-output');
@@ -204,6 +206,24 @@ function initGoogleTrendsSubmit() {
   // Call the real function from google-trends.js
   window.fetchAndRenderTrends(kw.join(','));
 }
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="./js/modules/google-trends.js"></script>   <!-- ADD THIS LINE -->
+<script>
+function initGoogleTrendsSubmit() {
+  const output = document.getElementById('trends-output');
+  output.innerHTML = '<p style="text-align:center;padding:3rem;color:#3b82f6;font-size:1.3rem">Loading trends…</p>';
+
+  const kw = document.getElementById('keywords-input').value.split(',').map(k=>k.trim()).filter(Boolean).slice(0,5);
+  if (kw.length===0) return output.innerHTML = '<p>Please type something</p>';
+
+  // This will now exist because the file is loaded above
+  window.fetchAndRenderTrends(kw);
+}
+</script>
+
+
 </script>
 </body>
 </html>
