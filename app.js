@@ -1,26 +1,28 @@
-import { initGoogleTrends } from './modules/google-trends.js';
+// app.js – Final clean version for Google Trends module (Dec 2025)
 
-// Inside your existing navigation click handler or init function:
-document.querySelectorAll('[data-module="google-trends"]').forEach(link => {
-  link.addEventListener('click', () => {
-    showModule('google-trends');
-    initGoogleTrends();
-  });
-});
-
-// If user lands with ?module=google-trends
-if (window.location.search.includes('google-trends')) {
-  showModule('google-trends');
-  initGoogleTrends();
-}
-
-document.getElementById('modules-nav').addEventListener('click', (e) => {
-  if (e.target.dataset.module === 'google-trends') {
-    showModule('google-trends'); // Hides others, shows #google-trends
-    import('./modules/google-trends.js').then(m => m.initGoogleTrends());
-  }
-});
+// Show/hide modules – keep this function
 function showModule(id) {
   document.querySelectorAll('.module').forEach(el => el.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
+  const module = document.getElementById(id);
+  if (module) module.classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' }); // nice UX
+}
+
+// Single unified click handler – no duplicates
+document.addEventListener('click', async (e) => {
+  const link = e.target.closest('[data-module="google-trends"]');
+  if (link) {
+    e.preventDefault();
+    showModule('google-trends');
+
+    // Load module only once, dynamically (best practice for GitHub Pages)
+    const module = await import('./modules/google-trends.js');
+    module.initGoogleTrends();
+  }
+});
+
+// Support direct URL like ?module=google-trends
+if (new URLSearchParams(window.location.search).get('module') === 'google-trends') {
+  showModule('google-trends');
+  import('./modules/google-trends.js').then(m => m.initGoogleTrends());
 }
