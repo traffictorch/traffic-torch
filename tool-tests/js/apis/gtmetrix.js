@@ -1,8 +1,16 @@
-const GT_API_KEY = '2cd8581f09cf3ed0ce2ffffca0b09c21'; // Your working key
+// Inside gtmetrix.js — smart bypass only when needed
+const GT_API_KEY = '2cd8581f09cf3ed0ce2ffffca0b09c21';
 
 export async function getData(url, proxy) {
-    // Start test
-    const startRes = await fetch(proxy + encodeURIComponent('https://gtmetrix.com/api/2.0/tests'), {
+    const isGTmetrix = true; // we know this is GTmetrix
+
+    const fetcher = (apiUrl, options = {}) => {
+        const finalUrl = isGTmetrix ? apiUrl : proxy + encodeURIComponent(apiUrl);
+        return fetch(finalUrl, options);
+    };
+
+    // Now use fetcher() everywhere — GTmetrix goes direct, everything else via proxy
+    const startRes = await fetcher('https://gtmetrix.com/api/2.0/tests', {
         method: 'POST',
         headers: {
             'Authorization': 'Basic ' + btoa(GT_API_KEY + ':'),
@@ -12,6 +20,7 @@ export async function getData(url, proxy) {
             data: { type: 'test', attributes: { url } }
         })
     });
+    
 
     if (!startRes.ok) throw new Error('GTmetrix failed to start test');
     const { data } = await startRes.json();
