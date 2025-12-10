@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="/keyword-tool/style.css">
   
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
 </head>
 
@@ -85,18 +86,43 @@
     </div>
     
     
-    <!-- Traffic Torch Expanding "Coming Soon" Box -->
-<div class="expand-box" onclick="this.classList.toggle('expanded')">
-  <div class="expand-box-header">
+<!-- Traffic Torch – Coming Soon Box (iOS-proof, zero JS, Dec 2025) -->
+<details class="tt-coming-soon" open> <!-- remove "open" later if you want it closed by default -->
+  <summary class="tt-header">
     <span class="emoji">🚧</span>
     Web page under construction 🔥 Coming soon!
-  </div>
-  <div class="expand-box-content">
+    <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 9l6 6 6-6"/>
+    </svg>
+  </summary>
+
+  <div class="tt-content">
     <p><strong>This webpage is being built with fire, love & AI power.</strong></p>
     <p>Epic features and deep-dive tools are dropping very soon — stay tuned!</p>
-    <small style="color:#666;">(Tap again to collapse)</small>
+    <small>(Tap the header again to collapse)</small>
   </div>
-</div>
+</details>
+
+
+<section id="google-trends" class="module" style="margin:4rem auto;max-width:1000px;padding:2rem;background:var(--card-bg);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,0.1)">
+  <h2 style="text-align:center;margin-bottom:2rem;font-size:2rem;color:var(--heading)">Google Trends Analysis</h2>
+  <input type="text" id="gt-keywords" placeholder="e.g. seo, ux design, black hat" style="width:100%;padding:1.2rem;font-size:1.1rem;border-radius:12px;border:2px solid #3b82f6;margin-bottom:1rem">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
+    <select id="gt-timeframe" style="padding:1.2rem;border-radius:12px;border:2px solid #e2e8f0">
+      <option value="today 5-y">Past 5 years</option>
+      <option value="today 12-m">Past 12 months</option>
+      <option value="now 7-d">Past 7 days</option>
+    </select>
+    <select id="gt-geo" style="padding:1.2rem;border-radius:12px;border:2px solid #e2e8f0">
+      <option value="">Worldwide</option>
+      <option value="US">United States</option>
+      <option value="GB">United Kingdom</option>
+      <option value="DE">Germany</option>
+    </select>
+  </div>
+  <button onclick="loadTrendsEmbed()" style="width:100%;padding:1.2rem;background:#3b82f6;color:white;border:none;border-radius:12px;font-size:1.1rem;font-weight:600;cursor:pointer">Analyze Trends</button>
+  <iframe id="gt-iframe" style="width:100%;height:600px;border:none;margin-top:2rem;border-radius:12px;display:none;box-sizing:border-box" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox" loading="lazy"></iframe>
+</section>
 
     
   </main>
@@ -143,6 +169,23 @@
   
     <script src="/main.js" type="module"></script>
   <script src="/keyword-tool/script.js"></script> 
+  
+      <!-- Google Trends -->
+<script>
+function loadTrendsEmbed() {
+  const kw = document.getElementById('gt-keywords').value.trim() || 'seo';
+  const tf = document.getElementById('gt-timeframe').value;
+  const geo = document.getElementById('gt-geo').value;
+  const req = {comparisonItem:[{keyword:kw,geo,time:tf}],category:0};
+  const url = `https://trends.google.com/trends/embed/explore/TIMESERIES?req=${encodeURIComponent(JSON.stringify(req))}&tz=-480&hl=en`;
+  const iframe = document.getElementById('gt-iframe');
+  iframe.src = url;
+  iframe.style.display = 'block';
+  iframe.scrollIntoView({behavior:'smooth'});
+}
+// Auto-load default
+loadTrendsEmbed();
+</script>
 
 </body>
 </html>

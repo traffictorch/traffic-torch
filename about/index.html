@@ -67,18 +67,22 @@
     <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-white/10">
       
       
-      <!-- Traffic Torch Expanding "Coming Soon" Box -->
-<div class="expand-box" onclick="this.classList.toggle('expanded')">
-  <div class="expand-box-header">
+<!-- Traffic Torch – Coming Soon Box (iOS-proof, zero JS, Dec 2025) -->
+<details class="tt-coming-soon" open> <!-- remove "open" later if you want it closed by default -->
+  <summary class="tt-header">
     <span class="emoji">🚧</span>
     Web page under construction 🔥 Coming soon!
-  </div>
-  <div class="expand-box-content">
+    <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 9l6 6 6-6"/>
+    </svg>
+  </summary>
+
+  <div class="tt-content">
     <p><strong>This webpage is being built with fire, love & AI power.</strong></p>
     <p>Epic features and deep-dive tools are dropping very soon — stay tuned!</p>
-    <small style="color:#666;">(Tap again to collapse)</small>
+    <small>(Tap the header again to collapse)</small>
   </div>
-</div>
+</details>
       
       
       <h2 class="text-3xl font-bold mb-6">What we do</h2>
