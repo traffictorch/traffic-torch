@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traffic Torch — Free Pro-Level SEO & UX Audit</title>
+  <meta name="description" content="Instant 360° SEO + UX health score using only free unlimited APIs. Real-user data, waterfalls, trends — no limits." />
+
+  <!-- PWA basics -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a1a1a" />
+
+  <style>
+    :root { --bg: #f8f9fa; --text: #1a1a1a; --card: white; --accent: #0066ff; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #0d1117; --text: #f0f6fc; --card: #161b22; --accent: #58a6ff; }
+    }
+    body {
+      margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+    header, footer { background: rgba(0,0,0,0.05); padding: 1rem; text-align: center; }
+    main { flex: 1; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+    .input-group { display: grid; gap: 1rem; margin-bottom: 2rem; }
+    input, button {
+      padding: 0.9rem; font-size: 1rem; border-radius: 8px; border: 1px solid #444;
+      background: var(--card); color: var(--text);
+    }
+    button { background: var(--accent); color: white; border: none; cursor: pointer; font-weight: bold; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .report { display: grid; gap: 1.5rem; margin-top: 2rem; }
+    .card {
+      background: var(--card); border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border: 1px solid #3333;
+    }
+    .score-big { font-size: 4rem; font-weight: 900; margin: 0; }
+    .good { color: #28a745; }
+    .avg { color: #ffc107; }
+    .poor { color: #dc3545; }
+    .filmstrip img { max-width: 100%; border-radius: 8px; margin-top: 1rem; }
+    .insights { background: #fff3cd; color: #856404; padding: 1rem; border-radius: 8px; }
+    .dark-mode .insights { background: #402c04; color: #ffea9f; }
+    .trend-up { color: #28a745; } .trend-down { color: #dc3545; }
+    #status { text-align: center; font-style: italic; margin: 1rem 0; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Traffic Torch — Free Pro Audit (2025)</h1>
+    <p>Real-user data • Waterfalls • Trends • Zero paid APIs</p>
+  </header>
+
+  <main>
+    <div class="input-group">
+      <input type="url" id="url" placeholder="https://example.com" required />
+      <input type="text" id="keyword" placeholder="Optional main keyword (e.g. seo tools)" />
+      <button id="run">Run Full Analysis</button>
+    </div>
+
+    <div id="status"></div>
+    <div id="report" class="report"></div>
+  </main>
+
+  <footer>
+    <small>Built with free unlimited APIs • GTmetrix • PageSpeed • CrUX • Google Trends</small>
+  </footer>
+
+  <!-- Your 4 new JS files -->
+  <script type="module">
+    import { runFullAnalysis } from './js/enhanced-analyzer.js';
+
+    const statusEl = document.getElementById('status');
+    const reportEl = document.getElementById('report');
+    const runBtn = document.getElementById('run');
+
+    runBtn.addEventListener('click', async () => {
+      const url = document.getElementById('url').value.trim();
+      const kw = document.getElementById('keyword').value.trim();
+
+      if (!url) return alert("Please enter a URL");
+
+      runBtn.disabled = true;
+      statusEl.textContent = "Running PageSpeed + Real-user data...";
+      reportEl.innerHTML = "";
+
+      try {
+        const result = await runFullAnalysis(url, kw);
+
+        renderReport(result);
+        statusEl.textContent = "Done! Scroll down for full report";
+      } catch (err) {
+        statusEl.textContent = "Error: " + err.message;
+        console.error(err);
+      } finally {
+        runBtn.disabled = false;
+      }
+    });
+
+    function renderReport(data) {
+      const psi = data.psi.mobile || data.psi.desktop;
+      const perf = psi.lighthouseResult.categories.performance.score * 100;
+      const scoreClass = perf >= 90 ? 'good' : perf >= 50 ? 'avg' : 'poor';
+
+      let html = `
+        <div class="card">
+          <h2>Overall Score: <span class="score-big ${scoreClass}">${Math.round(perf)}</span></h2>
+          <p>Mobile • Powered by Google PageSpeed + Real-user CrUX data</p>
+        </div>
+
+        ${data.crux ? `
+        <div class="card">
+          <h3>Real-User Experience (CrUX)</h3>
+          <p>LCP: <strong>${data.crux.lcp} ms</strong> • INP: <strong>${data.crux.inp} ms</strong> • CLS: <strong>${data.crux.cls}</strong></p>
+          <p>This is what actual visitors experience — not lab simulation.</p>
+        </div>` : ''}
+
+        ${data.gtmetrix ? `
+        <div class="card">
+          <h3>Visual Load Timeline (GTmetrix)</h3>
+          <p>Fully loaded in <strong>${(data.gtmetrix.fully_loaded_time / 1000).toFixed(1)}s</strong></p>
+          <div class="filmstrip">
+            <img src="${data.gtmetrix.report_url}/screenshot" alt="Load filmstrip" loading="lazy" />
+          </div>
+          <p><small>Filmstrip shows exact render blocking — fix images/JS here</small></p>
+        </div>` : ''}
+
+        ${data.trends ? `
+        <div class="card">
+          <h3>Keyword Trend: "${data.trends.keyword || 'your term'}"</h3>
+          <p class="${data.trends.trend === 'rising' ? 'trend-up' : data.trends.trend === 'falling' ? 'trend-down' : ''}">
+            <strong>${data.trends.trend.toUpperCase()}</strong> • Recent interest: ${data.trends.recent}/100
+          </p>
+          <p>Perfect timing to rank — or pivot before it dies.</p>
+        </div>` : ''}
+
+        <div class="card insights">
+          <h3>AI Quick Wins</h3>
+          <ul>
+            ${data.insights.map(i => `<li>${i}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+
+      reportEl.innerHTML = html;
+    }
+  </script>
+</body>
+</html>
