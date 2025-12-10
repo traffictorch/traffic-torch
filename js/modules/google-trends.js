@@ -13,12 +13,11 @@ async function fetchGoogleTrends(keywords, timeframe, geo, retries = 3) {
           await new Promise(r => setTimeout(r, 30000 * Math.pow(1.5, i))); // Exponential: 30s, 45s, 67s
           continue;
         }
-        const tokenText = await tokenPage.text();
-        const tokenMatch = tokenText.match(/"TOKEN":"([^"]+)"/);
-        if (tokenMatch) { token = tokenMatch[1]; break; }
-      } catch (e) { console.error('Token fetch error:', e); }
-    }
-    if (!token) throw new Error('Token fetch failed after retries – wait 1hr');
+    const tokenText = await tokenPage.text();
+	// Grab last TOKEN (ignores any warning scripts)
+	const tokenMatches = [...tokenText.matchAll(/"TOKEN":"([^"]+)"/g)];
+	const token = tokenMatches[tokenMatches.length - 1]?.[1] || '';
+	if (!token) throw new Error('TOKEN missing – retry in incognito (unsupported browser fix applied)');
 
     // Step 2: Build & fetch widgets
     const req = { comparisonItem: keywords.map(k => ({ keyword: k, time: timeframe, geo: geo || '' })), category: 0, property: '' };
