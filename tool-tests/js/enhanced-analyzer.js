@@ -1,4 +1,4 @@
-// js/enhanced-analyzer.js – FINAL VERSION THAT WILL NEVER CRASH AGAIN (Dec 2025)
+// js/enhanced-analyzer.js – BULLETPROOF VERSION WITH DEBUG & RATE LIMIT FIX (Dec 2025)
 
 import { runGTmetrixTest } from './apis/gtmetrix.js';
 import { parseCrUXFromPSI } from './apis/crux-parser.js';
@@ -18,39 +18,44 @@ export async function runFullAnalysis(url) {
   const statusEl = document.getElementById("status");
   if (statusEl) statusEl.textContent = "Fetching Google PageSpeed data…";
 
-  // ─────── 1. PageSpeed – bullet-proof with Promise.allSettled ───────
-  const [desktopRes, mobileRes] = await Promise.allSettled([
-    fetchPSI(url, "desktop"),
-    fetchPSI(url, "mobile")
-  ]);
+  // ─────── 1. PageSpeed – sequential calls to avoid rate limits + debug ───────
+  try {
+    // First desktop (usually faster, less rate-limited)
+    results.psi.desktop = await fetchPSI(url, "desktop");
+    await new Promise(resolve => setTimeout(resolve, 2000)); // 2s delay to avoid rate limit
 
-  if (desktopRes.status === "fulfilled" && desktopRes.value?.lighthouseResult) {
-    results.psi.desktop = desktopRes.value;
-  }
-  if (mobileRes.status === "fulfilled" && mobileRes.value?.lighthouseResult) {
-    results.psi.mobile = mobileRes.value;
+    // Then mobile
+    results.psi.mobile = await fetchPSI(url, "mobile");
+  } catch (e) {
+    console.error("PSI full error:", e); // Debug: Check console for exact issue
+    results.insights.push(`API Error: ${e.message} – Try a different URL or wait 1 min`);
   }
 
-  // CrUX real-user data
+  // Fallback: If mobile failed, use desktop for everything
+  if (!results.psi.mobile && results.psi.desktop) {
+    results.psi.mobile = results.psi.desktop;
+    results.insights.push("Mobile test failed – using desktop data as fallback");
+  }
+
+  // CrUX from available data
   results.crux = parseCrUXFromPSI(results.psi.mobile) || parseCrUXFromPSI(results.psi.desktop);
 
-  // ─────── 2. GTmetrix only when mobile score is bad ───────
+  // ─────── 2. GTmetrix if score <85 ───────
   const mobileScore = results.psi.mobile?.lighthouseResult?.categories?.performance?.score ?? 1;
   if (mobileScore < 0.85) {
     try {
       if (statusEl) statusEl.textContent = "Running visual waterfall (GTmetrix)…";
       results.gtmetrix = await runGTmetrixTest(url);
     } catch (e) {
-      console.log("GTmetrix failed (this is normal on busy sites):", e.message);
+      console.log("GTmetrix failed:", e.message);
     }
   }
 
-  // ─────── 3. Safe insights + final score ───────
+  // ─────── 3. Safe score & insights ───────
   const bestScore = Math.max(
     results.psi.mobile?.lighthouseResult?.categories?.performance?.score ?? 0,
     results.psi.desktop?.lighthouseResult?.categories?.performance?.score ?? 0
   );
-
   results.finalScore = bestScore ? Math.round(bestScore * 100) : 0;
   results.insights = generateInsights(results, bestScore);
 
@@ -59,7 +64,7 @@ export async function runFullAnalysis(url) {
   return results;
 }
 
-// ─────── Safe PageSpeed fetch (uses the clean proxy) ───────
+// ─────── FIXED PageSpeed fetch (no captcha_token, added debug headers) ───────
 async function fetchPSI(url, strategy) {
   const params = new URLSearchParams({
     url,
@@ -68,8 +73,7 @@ async function fetchPSI(url, strategy) {
     category: "performance",
     category: "seo",
     category: "accessibility",
-    locale: "en",                    // ← fixes most rate-limits
-    captcha_token: "skip"            // ← tells Google we're a trusted tool
+    locale: "en"  // Helps with regional rate limits
   });
 
   const psiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?${params}`;
@@ -77,37 +81,50 @@ async function fetchPSI(url, strategy) {
 
   const res = await fetch(proxyUrl, {
     headers: {
-      // Fake a real browser — Google loves this
       "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0 Safari/537.36"
     }
   });
 
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  console.log(`PSI ${strategy} status:`, res.status); // Debug: Check Network tab
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error(`PSI ${strategy} error body:`, errorText); // Debug: See exact Google error
+    throw new Error(`HTTP ${res.status}: ${errorText.slice(0, 200)}`);
+  }
 
   const data = await res.json();
-  if (data.error) throw new Error(data.error.message || "PSI blocked");
+  console.log(`PSI ${strategy} data keys:`, Object.keys(data)); // Debug: Confirm structure
+
+  if (data.error) {
+    console.error("PSI error object:", data.error); // Debug: Rate limit or key issue?
+    throw new Error(`Google Error: ${data.error.message || 'Unknown'}`);
+  }
+
+  if (!data.lighthouseResult) {
+    console.error("No lighthouseResult in PSI data"); // Debug: Incomplete response
+    throw new Error("Incomplete PSI response – no Lighthouse data");
+  }
 
   return data;
 }
 
-// ─────── 100% safe insights – no more “undefined” crashes ───────
+// ─────── Safe insights ───────
 function generateInsights(data, score) {
   const list = [];
 
   if (score === 0) {
-    list.push("Google PageSpeed data temporarily unavailable – please try again in 10 seconds");
+    list.push("No score data – check console for API error (likely rate limit). Wait 1 min and retry.");
   } else if (score < 0.5) {
-    list.push("Urgent: Very slow site – high bounce risk. Compress images + minify JS/CSS");
+    list.push("Urgent: Very slow – high bounce risk. Compress images + minify JS/CSS.");
   } else if (score < 0.9) {
-    list.push("Good but can be faster – focus on Largest Contentful Paint (LCP)");
+    list.push("Good but faster is better – focus on LCP.");
   } else {
     list.push("Excellent performance!");
   }
 
-  if (data.crux?.lcp > 4000) list.push("Real users wait over 4s for content – optimise hero images & fonts");
-  if (data.crux?.lcp > 2500 && data.crux?.lcp <= 4000) list.push("Real-user LCP is acceptable – aim for <2.5s");
+  if (data.crux?.lcp > 4000) list.push("Real users wait >4s – optimize hero images.");
+  if (data.gtmetrix?.fullyLoadedTime > 8000) list.push("Long load tail – defer third-party scripts.");
 
-  if (data.gtmetrix?.fullyLoadedTime > 8000) list.push("Too many third-party scripts – consider deferring");
-
-  return list.length ? list : ["No major issues found – great job!"];
+  return list.length ? list : ["Analysis complete – solid site!"];
 }
