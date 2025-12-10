@@ -1,3 +1,17 @@
+window.fetchAndRenderTrends = async function(keywordsCSV) {
+  const kw = keywordsCSV.split(',').map(k=>k.trim());
+  const tf = document.getElementById('timeframe')?.value || 'today 5-y';
+  const geo = document.getElementById('geo')?.value || '';
+
+  try {
+    const data = await fetchGoogleTrends(kw, tf, geo);
+    renderTrends(data, kw);
+  } catch (e) {
+    document.getElementById('trends-output').innerHTML = `<p style="color:red">Error: ${e.message}</p>`;
+  }
+};
+
+
 const PROXY = 'https://cors-proxy.traffictorch.workers.dev/';
 
 function initGoogleTrends() {
