@@ -1,58 +1,67 @@
-// Inside gtmetrix.js — smart bypass only when needed
+// tool-tests/js/apis/gtmetrix.js
 const GT_API_KEY = '2cd8581f09cf3ed0ce2ffffca0b09c21';
 
-export async function getData(url, proxy) {
-    const isGTmetrix = true; // we know this is GTmetrix
+export async function getData(url) {
+    // No proxy at all for GTmetrix — ever
+    const auth = 'Basic ' + btoa(GT_API_KEY + ':');
 
-    const fetcher = (apiUrl, options = {}) => {
-        const finalUrl = isGTmetrix ? apiUrl : proxy + encodeURIComponent(apiUrl);
-        return fetch(finalUrl, options);
-    };
-
-    // Now use fetcher() everywhere — GTmetrix goes direct, everything else via proxy
-    const startRes = await fetcher('https://gtmetrix.com/api/2.0/tests', {
+    // 1. Start test
+    const startRes = await fetch('https://gtmetrix.com/api/2.0/tests', {
         method: 'POST',
         headers: {
-            'Authorization': 'Basic ' + btoa(GT_API_KEY + ':'),
+            'Authorization': auth,
             'Content-Type': 'application/vnd.api+json'
         },
         body: JSON.stringify({
             data: { type: 'test', attributes: { url } }
         })
     });
-    
 
-    if (!startRes.ok) throw new Error('GTmetrix failed to start test');
+    if (!startRes.ok) {
+        const err = await startRes.text();
+        throw new Error(`GTmetrix start failed: ${startRes.status} ${err}`);
+    }
+
     const { data } = await startRes.json();
     const testId = data.id;
 
-    // Poll until completed
-    let result;
+    // 2. Poll until report ready
+    let reportUrl;
     do {
-        await new Promise(r => setTimeout(r, 4000));
-        const poll = await fetch(proxy + encodeURIComponent(`https://gtmetrix.com/api/2.0/tests/${testId}`), {
-            headers: { 'Authorization': 'Basic ' + btoa(GT_API_KEY + ':') }
+        await new Promise(r => setTimeout(r, 5000));
+
+        const pollRes = await fetch(`https://gtmetrix.com/api/2.0/tests/${testId}`, {
+            headers: { 'Authorization': auth }
         });
-        result = await poll.json();
-    } while (!result.data.attributes.report_url);
 
-    const reportUrl = result.data.attributes.report_url;
+        if (!pollRes.ok) throw new Error('Polling failed');
 
-    // Fetch report
-    const reportRes = await fetch(proxy + encodeURIComponent(reportUrl), {
-        headers: { 'Authorization': 'Basic ' + btoa(GT_API_KEY + ':') }
+        const pollJson = await pollRes.json();
+        reportUrl = pollJson.data?.attributes?.report_url;
+
+    } while (!reportUrl);
+
+    // 3. Get final report
+    const reportRes = await fetch(reportUrl, {
+        headers: { 'Authorization': auth }
     });
-    const report = await reportRes.json();
 
+    const report = await reportRes.json();
     const score = Math.round(report.data.attributes.lighthouse_performance_score * 100);
 
-    // Waterfall (HAR)
-    const harRes = await fetch(proxy + encodeURIComponent(reportUrl + '/resources/har'));
+    // 4. Get HAR waterfall
+    const harRes = await fetch(reportUrl + '/resources/har', {
+        headers: { 'Authorization': auth }
+    });
     const har = await harRes.json();
-    const waterfall = har.log.entries.map(e => ({
-        name: e.request.url,
-        duration: e.time
-    }));
+
+    const waterfall = har.log.entries
+        .filter(e => e.request.url.includes(new URL(url).hostname)) // only your domain
+        .slice(0, 20)
+        .map(e => ({
+            name: e.request.url.split('/').pop().slice(0, 40),
+            duration: Math.round(e.time)
+        }));
 
     return { score, waterfall };
 }

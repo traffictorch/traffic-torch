@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             // 1. GTmetrix (primary reliable score + waterfall)
             const gtmetrix = await import('./apis/gtmetrix.js');
-            const gtData = await gtmetrix.getData(url, proxy);
+            const gtData = await gtmetrix.getData(url);
             displayGTmetrix(gtData);
 
             // 2. CrUX real-user metrics (unlimited, no key limits)
