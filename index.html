@@ -8,6 +8,7 @@
   <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="min-h-screen">
   <!-- Header with Hamburger (unchanged – perfect as-is) -->
@@ -124,13 +125,37 @@
     Web page under construction 🔥 Coming soon!
   </div>
   <div class="expand-box-content">
-    <p><strong>This section is being built with love & AI power.</strong></p>
+    <p><strong>This webpage is being built with fire, love & AI power.</strong></p>
     <p>Epic features and deep-dive tools are dropping very soon — stay tuned!</p>
     <small style="color:#666;">(Tap again to collapse)</small>
   </div>
 </div>
       
     </div>
+    
+    <section id="google-trends" class="module hidden">
+  <h2>4. Google Trends Analysis</h2>
+  <form id="trends-form">
+    <input type="text" id="keywords-input" placeholder="e.g. seo, ai content, black hat" required style="width:100%;padding:1rem;margin-bottom:1rem;border-radius:8px;border:1px solid var(--border)">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+      <select id="timeframe">
+        <option value="today 5-y">Past 5 years</option>
+        <option value="today 12-m">Past 12 months</option>
+        <option value="now 7-d">Past 7 days</option>
+      </select>
+      <select id="geo">
+        <option value="">Worldwide</option>
+        <option value="US">United States</option>
+        <option value="GB">United Kingdom</option>
+        <option value="DE">Germany</option>
+      </select>
+    </div>
+    <button type="submit" class="btn-primary" style="width:100%">Analyze Trends</button>
+  </form>
+  <div id="trends-output"></div>
+</section>
+    
+    
   </main>
 
   <!-- Footer (unchanged – already perfect) -->
