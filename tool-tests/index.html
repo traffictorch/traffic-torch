@@ -4,12 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Traffic Torch — Free Pro-Level SEO & UX Audit</title>
-  <meta name="description" content="Instant 360° SEO + UX health score using only free unlimited APIs. Real-user data, waterfalls, trends — no limits." />
-
+  <meta name="description" content="Instant 360° SEO + UX health score using only free unlimited APIs. Real-user data, waterfalls — no limits, no signups." />
   <!-- PWA basics -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#1a1a1a" />
-
   <style>
     :root { --bg: #f8f9fa; --text: #1a1a1a; --card: white; --accent: #0066ff; }
     @media (prefers-color-scheme: dark) {
@@ -41,33 +39,28 @@
     .filmstrip img { max-width: 100%; border-radius: 8px; margin-top: 1rem; }
     .insights { background: #fff3cd; color: #856404; padding: 1rem; border-radius: 8px; }
     .dark-mode .insights { background: #402c04; color: #ffea9f; }
-    .trend-up { color: #28a745; } .trend-down { color: #dc3545; }
     #status { text-align: center; font-style: italic; margin: 1rem 0; }
   </style>
 </head>
 <body>
-
   <header>
     <h1>Traffic Torch — Free Pro Audit (2025)</h1>
-    <p>Real-user data • Waterfalls • Trends • Zero paid APIs</p>
+    <p>Real-user data • Visual waterfalls • 100% free & unlimited</p>
   </header>
-
   <main>
+    <!-- REMOVED: Keyword input — no API uses it anymore -->
     <div class="input-group">
       <input type="url" id="url" placeholder="https://example.com" required />
-      <input type="text" id="keyword" placeholder="Optional main keyword (e.g. seo tools)" />
       <button id="run">Run Full Analysis</button>
     </div>
 
     <div id="status"></div>
     <div id="report" class="report"></div>
   </main>
-
   <footer>
-    <small>Built with free unlimited APIs • GTmetrix • PageSpeed • CrUX • Google Trends</small>
+    <small>Built with free unlimited APIs • Google PageSpeed • CrUX • GTmetrix • No signups, no limits</small>
   </footer>
 
-  <!-- Your 4 new JS files -->
   <script type="module">
     import { runFullAnalysis } from './js/enhanced-analyzer.js';
 
@@ -77,8 +70,6 @@
 
     runBtn.addEventListener('click', async () => {
       const url = document.getElementById('url').value.trim();
-      const kw = document.getElementById('keyword').value.trim();
-
       if (!url) return alert("Please enter a URL");
 
       runBtn.disabled = true;
@@ -86,8 +77,7 @@
       reportEl.innerHTML = "";
 
       try {
-        const result = await runFullAnalysis(url, kw);
-
+        const result = await runFullAnalysis(url);  // keyword removed
         renderReport(result);
         statusEl.textContent = "Done! Scroll down for full report";
       } catch (err) {
@@ -126,19 +116,10 @@
           <p><small>Filmstrip shows exact render blocking — fix images/JS here</small></p>
         </div>` : ''}
 
-        ${data.trends ? `
-        <div class="card">
-          <h3>Keyword Trend: "${data.trends.keyword || 'your term'}"</h3>
-          <p class="${data.trends.trend === 'rising' ? 'trend-up' : data.trends.trend === 'falling' ? 'trend-down' : ''}">
-            <strong>${data.trends.trend.toUpperCase()}</strong> • Recent interest: ${data.trends.recent}/100
-          </p>
-          <p>Perfect timing to rank — or pivot before it dies.</p>
-        </div>` : ''}
-
         <div class="card insights">
-          <h3>AI Quick Wins</h3>
+          <h3>Quick Wins & Fixes</h3>
           <ul>
-            ${data.insights.map(i => `<li>${i}</li>`).join('')}
+            ${data.insights.length ? data.insights.map(i => `<li>${i}</li>`).join('') : '<li>Looking solid! Keep optimizing.</li>'}
           </ul>
         </div>
       `;

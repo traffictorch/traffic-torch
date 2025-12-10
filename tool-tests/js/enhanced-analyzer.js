@@ -37,14 +37,6 @@ export async function runFullAnalysis(url, keyword = "") {
     }
   }
 
-  // 4. Trends – if keyword given
-  if (keyword.trim()) {
-    try {
-      results.trends = await getGoogleTrendsInterest(keyword.trim());
-    } catch (e) {
-      console.log("Trends failed:", e);
-    }
-  }
 
   // Final insights
   results.insights = generateInsights(results);
