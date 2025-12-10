@@ -1,4 +1,3 @@
-// Main script: Handles form, lazy loads modules sequentially, day/night toggle
 const proxy = 'https://cors-proxy.traffictorch.workers.dev/?__url=';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -6,69 +5,69 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleBtn = document.getElementById('toggle-mode');
     const body = document.body;
 
-    // Day/Night toggle with localStorage
-    if (localStorage.getItem('darkMode') === 'true') {
-        body.classList.add('dark');
-    }
+    // Day/Night mode
+    if (localStorage.getItem('darkMode') === 'true') body.classList.add('dark');
     toggleBtn.addEventListener('click', () => {
         body.classList.toggle('dark');
         localStorage.setItem('darkMode', body.classList.contains('dark'));
+        toggleBtn.textContent = body.classList.contains('dark') ? 'Day Mode' : 'Night Mode';
     });
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const url = document.getElementById('url-input').value;
+        const url = document.getElementById('url-input').value.trim();
         if (!url) return;
 
-        // Reset results
-        document.getElementById('gtmetrix-result').innerHTML = 'Loading...';
-        document.getElementById('webpagetest-result').innerHTML = 'Loading...';
-        document.getElementById('crux-result').innerHTML = 'Loading...';
+        // Reset
+        document.getElementById('gtmetrix-result').innerHTML = '<p class="loading">Running GTmetrix test...</p>';
+        document.getElementById('crux-result').innerHTML = '<p class="loading">Fetching real-user CrUX data...</p>';
 
-        // Lazy load and run sequentially
         try {
+            // 1. GTmetrix (primary reliable score + waterfall)
             const gtmetrix = await import('./apis/gtmetrix.js');
             const gtData = await gtmetrix.getData(url, proxy);
-            displayResult('gtmetrix-result', gtData, 'GTmetrix provides a comprehensive performance score (0-100). Higher scores indicate better optimization. Waterfall shows resource loading timeline. Improve by optimizing images, minifying code, etc.');
+            displayGTmetrix(gtData);
 
-            const webpagetest = await import('./apis/webpagetest.js');
-            const wptData = await webpagetest.getData(url, proxy);
-            displayResult('webpagetest-result', wptData, 'WebPageTest runs browser tests for score (0-100 via Lighthouse). Filmstrip visualizes page load over time. Use this as backup; focus on reducing load times for better UX.');
-
+            // 2. CrUX real-user metrics (unlimited, no key limits)
             const crux = await import('./apis/crux.js');
             const cruxData = await crux.getData(url, proxy);
-            displayResult('crux-result', cruxData, 'CrUX uses real-user data for Core Web Vitals. Scores derived from p75 metrics: Good (100), Needs Improvement (50), Poor (0). Average for overall. Educate: LCP measures loading, INP interactivity, CLS stability.');
-        } catch (error) {
-            console.error(error);
-            document.querySelectorAll('.loading').forEach(el => el.innerHTML = 'Error: ' + error.message);
+            displayCrUX(cruxData);
+
+        } catch (err) {
+            console.error(err);
+            document.querySelectorAll('.result-box').forEach(box => {
+                box.innerHTML = `<p class="error">Error: ${err.message}</p>`;
+            });
         }
     });
 });
 
-function displayResult(id, data, education) {
-    const el = document.getElementById(id);
-    let html = `<p><strong>Score:</strong> ${data.score} / 100</p><p>${education}</p>`;
-    if (data.waterfall) {
-        html += '<h3>Waterfall</h3><table><thead><tr><th>Resource</th><th>Time (ms)</th></tr></thead><tbody>';
-        data.waterfall.forEach(item => {
-            html += `<tr><td>${item.name}</td><td>${item.duration}</td></tr>`;
-        });
-        html += '</tbody></table>';
-    }
-    if (data.filmstrip) {
-        html += '<h3>Filmstrip</h3><div style="display: flex; overflow-x: auto;">';
-        data.filmstrip.forEach(src => {
-            html += `<img src="${src}" alt="Filmstrip frame" style="width: 100px; margin-right: 5px;">`;
-        });
-        html += '</div>';
-    }
-    if (data.metrics) {
-        html += '<h3>Metrics</h3><ul>';
-        for (const [key, value] of Object.entries(data.metrics)) {
-            html += `<li>${key}: ${value}</li>`;
-        }
-        html += '</ul>';
-    }
+function displayGTmetrix(data) {
+    const el = document.getElementById('gtmetrix-result');
+    let html = `
+        <p><strong>GTmetrix Performance Score:</strong> <big>${data.score}/100</big></p>
+        <p>GTmetrix is the most reliable free lab test in 2025 — fully unlimited with your key.</p>
+        <h3>Waterfall Timeline (top resources)</h3>
+        <table>
+            <thead><tr><th>Resource</th><th>Load Time</th></tr></thead>
+            <tbody>`;
+    data.waterfall.slice(0, 15).forEach(item => {
+        html += `<tr><td>${item.name.split('/').pop()}</td><td>${Math.round(item.duration)}ms</td></tr>`;
+    });
+    html += `</tbody></table>`;
     el.innerHTML = html;
-    el.classList.remove('loading');
+}
+
+function displayCrUX(data) {
+    const el = document.getElementById('crux-result');
+    const metrics = data.metrics;
+    let html = `
+        <p><strong>Real-User Core Web Vitals Score:</strong> <big>${data.score}/100</big></p>
+        <ul>
+            <li>LCP: ${metrics.LCP} → ${data.scoreLCP !== undefined ? (data.scoreLCP === 100 ? 'Good' : data.scoreLCP === 50 ? 'Needs Improvement' : 'Poor') : 'N/A'}</li>
+            <li>INP: ${metrics.INP} → ${data.scoreINP !== undefined ? (data.scoreINP === 100 ? 'Good' : data.scoreINP === 50 ? 'Needs Improvement' : 'Poor') : 'N/A'}</li>
+            <li>CLS: ${metrics.CLS} → ${data.scoreCLS !== undefined ? (data.scoreCLS === 100 ? 'Good' : 'Poor') : 'N/A'}</li>
+        </ul>
+        <p>CrUX data comes from real Chrome users — unlimited & no rate limits.</p>`;
+    el.innerHTML = html;
 }

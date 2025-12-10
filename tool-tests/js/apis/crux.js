@@ -1,38 +1,29 @@
-// Direct CrUX API module (uses provided Google key)
 const GOOGLE_KEY = 'AIzaSyB1qaV1POBJnvFlekjZ0hMNbncW9EZVyPs';
 
 export async function getData(url, proxy) {
-    const apiUrl = `https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=${GOOGLE_KEY}`;
-    const response = await fetch(proxy + encodeURIComponent(apiUrl), {
+    const res = await fetch(proxy + encodeURIComponent(`https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=${GOOGLE_KEY}`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            url,
-            metrics: ['largest_contentful_paint', 'interaction_to_next_paint', 'cumulative_layout_shift']
-        })
+        body: JSON.stringify({ url, formFactor: 'PHONE' })
     });
-    if (!response.ok) throw new Error('CrUX API failed');
-    const data = await response.json();
 
-    const metrics = data.record.metrics;
-    const lcp_p75 = metrics.largest_contentful_paint.percentiles.p75;
-    const inp_p75 = metrics.interaction_to_next_paint.percentiles.p75;
-    const cls_p75 = parseFloat(metrics.cumulative_layout_shift.percentiles.p75);
+    if (!res.ok) throw new Error('CrUX API error');
+    const json = await res.json();
 
-    function getMetricScore(p75, good, needs) {
-        if (p75 <= good) return 100;
-        if (p75 <= needs) return 50;
-        return 0;
-    }
+    const m = json.record?.metrics || {};
+    const lcp = m.largest_contentful_paint?.percentiles?.p75 ?? 'N/A';
+    const inp = m.interaction_to_next_paint?.percentiles?.p75 ?? 'N/A';
+    const cls = m.cumulative_layout_shift?.percentiles?.p75 ?? 'N/A';
 
-    const lcp_score = getMetricScore(lcp_p75, 2500, 4000);
-    const inp_score = getMetricScore(inp_p75, 200, 500);
-    const cls_score = getMetricScore(cls_p75, 0.1, 0.25);
+    const scoreLCP = lcp === 'N/A' ? 0 : (lcp <= 2500 ? 100 : lcp <= 4000 ? 50 : 0);
+    const scoreINP = inp === 'N/A' ? 0 : (inp <= 200 ? 100 : inp <= 500 ? 50 : 0);
+    const scoreCLS = cls === 'N/A' ? 0 : (cls <= 0.1 ? 100 : 0);
 
-    const score = Math.round((lcp_score + inp_score + cls_score) / 3);
+    const overall = Math.round((scoreLCP + scoreINP + scoreCLS) / 3);
 
     return {
-        score,
-        metrics: { LCP: lcp_p75 + 'ms', INP: inp_p75 + 'ms', CLS: cls_p75 }
+        score: overall,
+        scoreLCP, scoreINP, scoreCLS,
+        metrics: { LCP: lcp === 'N/A' ? 'No data' : lcp + 'ms', INP: inp === 'N/A' ? 'No data' : inp + 'ms', CLS }
     };
 }
