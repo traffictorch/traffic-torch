@@ -61,71 +61,85 @@
     <small>Built with free unlimited APIs • Google PageSpeed • CrUX • GTmetrix • No signups, no limits</small>
   </footer>
 
-  <script type="module">
-    import { runFullAnalysis } from './js/enhanced-analyzer.js';
+<script type="module">
+  import { runFullAnalysis } from './js/enhanced-analyzer.js';
 
-    const statusEl = document.getElementById('status');
-    const reportEl = document.getElementById('report');
-    const runBtn = document.getElementById('run');
+  const statusEl = document.getElementById('status');
+  const reportEl = document.getElementById('report');
+  const runBtn = document.getElementById('run');
 
-    runBtn.addEventListener('click', async () => {
-      const url = document.getElementById('url').value.trim();
-      if (!url) return alert("Please enter a URL");
+  runBtn.addEventListener('click', async () => {
+    const url = document.getElementById('url').value.trim();
+    if (!url) return alert("Please enter a URL");
 
-      runBtn.disabled = true;
-      statusEl.textContent = "Running PageSpeed + Real-user data...";
-      reportEl.innerHTML = "";
+    runBtn.disabled = true;
+    statusEl.textContent = "Starting analysis…";
+    reportEl.innerHTML = "";
 
-      try {
-        const result = await runFullAnalysis(url);  // keyword removed
-        renderReport(result);
-        statusEl.textContent = "Done! Scroll down for full report";
-      } catch (err) {
-        statusEl.textContent = "Error: " + err.message;
-        console.error(err);
-      } finally {
-        runBtn.disabled = false;
-      }
-    });
+    try {
+      const result = await runFullAnalysis(url);
+      renderReport(result);
+      statusEl.textContent = "Done! Scroll down for your report";
+    } catch (err) {
+      statusEl.textContent = "Something went wrong – try again";
+      console.error(err);
+    } finally {
+      runBtn.disabled = false;
+    }
+  });
 
-    function renderReport(data) {
-      const psi = data.psi.mobile || data.psi.desktop;
-      const perf = psi.lighthouseResult.categories.performance.score * 100;
-      const scoreClass = perf >= 90 ? 'good' : perf >= 50 ? 'avg' : 'poor';
+  // ─────────────────────── SAFE RENDER FUNCTION (no more crashes) ───────────────────────
+  function renderReport(data) {
+    // Safely get the best available score
+    const mobileScore = data.psi.mobile?.lighthouseResult?.categories?.performance?.score ?? 0;
+    const desktopScore = data.psi.desktop?.lighthouseResult?.categories?.performance?.score ?? 0;
+    const bestScore = Math.max(mobileScore, desktopScore);
+    const scoreNum = bestScore ? Math.round(bestScore * 100) : 0;
+    const scoreClass = scoreNum >= 90 ? 'good' : scoreNum >= 50 ? 'avg' : 'poor';
 
-      let html = `
-        <div class="card">
-          <h2>Overall Score: <span class="score-big ${scoreClass}">${Math.round(perf)}</span></h2>
-          <p>Mobile • Powered by Google PageSpeed + Real-user CrUX data</p>
-        </div>
+    let html = `
+      <div class="card">
+        <h2>Overall Score: <span class="score-big ${scoreClass}">${scoreNum || '—'}</span></h2>
+        <p>Mobile • Powered by Google PageSpeed + Real-user CrUX data</p>
+      </div>
+    `;
 
-        ${data.crux ? `
+    // CrUX real-user metrics
+    if (data.crux) {
+      html += `
         <div class="card">
           <h3>Real-User Experience (CrUX)</h3>
-          <p>LCP: <strong>${data.crux.lcp} ms</strong> • INP: <strong>${data.crux.inp} ms</strong> • CLS: <strong>${data.crux.cls}</strong></p>
-          <p>This is what actual visitors experience — not lab simulation.</p>
-        </div>` : ''}
+          <p>LCP: <strong>${data.crux.lcp || '—'} ms</strong> • 
+             INP: <strong>${data.crux.inp || '—'} ms</strong> • 
+             CLS: <strong>${data.crux.cls || '—'}</strong></p>
+          <p>Actual visitor data from Chrome users</p>
+        </div>`;
+    }
 
-        ${data.gtmetrix ? `
+    // GTmetrix waterfall
+    if (data.gtmetrix) {
+      html += `
         <div class="card">
           <h3>Visual Load Timeline (GTmetrix)</h3>
-          <p>Fully loaded in <strong>${(data.gtmetrix.fully_loaded_time / 1000).toFixed(1)}s</strong></p>
+          <p>Fully loaded in <strong>${(data.gtmetrix.fullyLoadedTime / 1000).toFixed(1)}s</strong></p>
           <div class="filmstrip">
-            <img src="${data.gtmetrix.report_url}/screenshot" alt="Load filmstrip" loading="lazy" />
+            <img src="${data.gtmetrix.report_url}/screenshot.jpg" alt="Load filmstrip" loading="lazy" />
           </div>
-          <p><small>Filmstrip shows exact render blocking — fix images/JS here</small></p>
-        </div>` : ''}
-
-        <div class="card insights">
-          <h3>Quick Wins & Fixes</h3>
-          <ul>
-            ${data.insights.length ? data.insights.map(i => `<li>${i}</li>`).join('') : '<li>Looking solid! Keep optimizing.</li>'}
-          </ul>
-        </div>
-      `;
-
-      reportEl.innerHTML = html;
+        </div>`;
     }
-  </script>
+
+    // Insights
+    html += `
+      <div class="card insights">
+        <h3>Quick Wins & Fixes</h3>
+        <ul>
+          ${data.insights.map(i => `<li>${i}</li>`).join('') || '<li>Analysis complete – no data yet</li>'}
+        </ul>
+      </div>
+    `;
+
+    reportEl.innerHTML = html;
+  }
+</script>
 </body>
 </html>
