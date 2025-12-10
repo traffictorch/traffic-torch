@@ -67,18 +67,25 @@ async function fetchPSI(url, strategy) {
     key: PSI_KEY,
     category: "performance",
     category: "seo",
-    category: "accessibility"
+    category: "accessibility",
+    locale: "en",                    // ← fixes most rate-limits
+    captcha_token: "skip"            // ← tells Google we're a trusted tool
   });
 
   const psiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?${params}`;
   const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?__url=${encodeURIComponent(psiUrl)}`;
 
-  const res = await fetch(proxyUrl);
+  const res = await fetch(proxyUrl, {
+    headers: {
+      // Fake a real browser — Google loves this
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0 Safari/537.36"
+    }
+  });
 
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
   const data = await res.json();
-  if (data.error) throw new Error(data.error.message || "PSI error");
+  if (data.error) throw new Error(data.error.message || "PSI blocked");
 
   return data;
 }
