@@ -1,192 +1,115 @@
-// Consolidated DOMContentLoaded for robust loading (fixes null element access)
-// All event listeners and analysis now inside to ensure elements exist
 document.addEventListener('DOMContentLoaded', () => {
-    const html = document.documentElement;
-    const toggleBtn = document.getElementById('mode-toggle');
-    const form = document.getElementById('audit-form');
-    const results = document.getElementById('results');
+  const form = document.getElementById('audit-form');
+  const results = document.getElementById('results');
 
-    // Null checks for debugging (remove in prod if desired)
-    if (!toggleBtn) {
-        console.warn('Mode toggle button (#mode-toggle) not found. Check HTML structure.');
-        return;
-    }
-    if (!form) {
-        console.warn('Audit form (#audit-form) not found. Check HTML structure.');
-        return;
-    }
-
-    // Theme persistence with localStorage (light/dark mode)
-    const storedTheme = localStorage.getItem('theme') || 'light';
-    html.classList.remove('light', 'dark');
-    html.classList.add(storedTheme);
-
-    // Toggle event listener
-    toggleBtn.addEventListener('click', () => {
-        const newTheme = html.classList.contains('dark') ? 'light' : 'dark';
-        html.classList.remove('light', 'dark');
-        html.classList.add(newTheme);
-        localStorage.setItem('theme', newTheme);
+  // Works with your existing #themeToggle
+  const themeBtn = document.getElementById('themeToggle');
+  if (themeBtn) {
+    const isDark = localStorage.getItem('theme') === 'dark';
+    if (isDark) document.documentElement.classList.add('dark');
+    themeBtn.textContent = isDark ? 'Sun' : 'Moon';
+    themeBtn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      const dark = document.documentElement.classList.contains('dark');
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+      themeBtn.textContent = dark ? 'Sun' : 'Moon';
     });
+  }
 
-    // Form submission for URL audit
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const urlInput = document.getElementById('url-input');
-        if (!urlInput) {
-            console.warn('URL input (#url-input) not found.');
-            return;
-        }
-        const url = urlInput.value;
-        if (!url) return;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const url = document.getElementById('url-input').value.trim();
+    results.innerHTML = '<p class="text-center text-2xl py-20">Analyzing page…</p>';
+    results.classList.remove('hidden');
 
+    try {
+      const res = await fetch(`https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`);
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+
+      const text = doc.body.textContent || '';
+      const words = text.split(/\s+/).filter(Boolean).length;
+      const sentences = (text.match(/[.!?]+/g) || []).length || 1;
+      const syllables = text.split(/\s+/).reduce((a,w) => a + (w.match(/[aeiouy]+/gi) || []).length, 0);
+      const readability = Math.round(206.835 - 1.015*(words/sentences) - 84.6*(syllables/words));
+
+      const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
+      const schemaTypes = [];
+      doc.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
         try {
-            const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`;
-            const response = await fetch(proxyUrl);
-            if (!response.ok) throw new Error('Fetch failed – check URL or CORS worker');
-            const htmlText = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlText, 'text/html');
+          const json = JSON.parse(s.textContent);
+          const types = Array.isArray(json) ? json.map(i => i['@type']) : [json['@type']];
+          schemaTypes.push(...types.filter(Boolean));
+        } catch {}
+      });
 
-            // Heuristic analysis (2025 best practices: E-E-A-T, intent, depth)
-            const text = doc.body.textContent.trim();
-            const words = text.split(/\s+/).filter(w => w).length;
-            const sentences = (text.match(/[\w|\)][.?!](\s|$)/g) || []).length || 1;
-            const syllables = text.split(/\s+/).reduce((acc, word) => acc + countSyllables(word), 0);
-            const readability = 206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words);
+      const title = doc.title.toLowerCase();
+      let intent = 'Informational', confidence = 60;
+      if (/buy|best|review|price/.test(title)) { intent = 'Commercial'; confidence = 88; }
+      else if (/how|what|guide|tutorial/.test(title)) { intent = 'Informational'; confidence = 92; }
+      else if (/near me|location/.test(title)) { intent = 'Local'; confidence = 82; }
 
-            function countSyllables(word) {
-                word = word.toLowerCase().replace(/[^a-z]/g, '');
-                if (word.length <= 3) return 1;
-                word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '').replace(/^y/, '');
-                return (word.match(/[aeiouy]{1,2}/g) || []).length || 1;
-            }
+      const eeat = {
+        Experience: (text.match(/\b(I|we|my|our|I've|we've)\b/gi) || []).length > 12 ? 92 : 45,
+        Expertise: hasAuthor ? 90 : 32,
+        Authoritativeness: schemaTypes.length > 0 ? 94 : 40,
+        Trustworthiness: url.startsWith('https') ? 96 : 60
+      };
+      const eeatAvg = Math.round(Object.values(eeat).reduce((a,b)=>a+b)/4);
+      const depthScore = words > 2000 ? 95 : words > 1200 ? 82 : words > 700 ? 65 : 35;
+      const readScore = readability > 70 ? 90 : readability > 50 ? 75 : 45;
+      const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length*8)/5);
 
-            const hasAuthor = !!doc.querySelector('[class*="author"], [id*="author"], meta[name="author"]');
-            const schemaTypes = [];
-            doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
-                try {
-                    const json = JSON.parse(script.textContent);
-                    if (json['@type']) schemaTypes.push(json['@type']);
-                    if (Array.isArray(json)) json.forEach(item => item['@type'] && schemaTypes.push(item['@type']));
-                } catch {}
-            });
+      // Render everything into your original sections
+      document.getElementById('overall-score').textContent = `${overall}/100`;
+      document.getElementById('radar-chart').innerHTML = generateRadar(eeat);
+      document.getElementById('intent-type').innerHTML = `<strong>${intent}</strong> (${confidence}% confidence)`;
+      document.getElementById('content-depth').innerHTML = `
+        <p><strong>Word Count:</strong> ${words.toLocaleString()}</p>
+        <p><strong>Readability (Flesch):</strong> ${readability} ${readability<60?'→ too complex':''}</p>`;
 
-            const titleLower = doc.title.toLowerCase();
-            let intent = 'Informational';
-            let confidence = 50;
-            if (titleLower.includes('buy') || titleLower.includes('best') || titleLower.includes('review')) {
-                intent = 'Commercial'; confidence = 80;
-            } else if (titleLower.includes('how to') || titleLower.includes('what is') || titleLower.includes('guide')) {
-                intent = 'Informational'; confidence = 85;
-            } else if (titleLower.includes('near me') || titleLower.includes('location')) {
-                intent = 'Local'; confidence = 70;
-            } else if (titleLower.includes('download') || titleLower.includes('sign up')) {
-                intent = 'Transactional'; confidence = 75;
-            }
+      const eeatDiv = document.getElementById('eeat-breakdown');
+      eeatDiv.innerHTML = Object.entries(eeat).map(([k,v]) => `
+        <div class="text-center p-6 bg-white/10 dark:bg-white/5 rounded-2xl">
+          <div class="text-4xl font-bold bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${v}</div>
+          <div class="mt-2 opacity-80">${k}</div>
+        </div>`).join('');
 
-            const firstPersonCount = (text.match(/\b(I|we|my|our)\b/gi) || []).length;
-            const eeat = {
-                experience: firstPersonCount > 10 ? 80 : 40,
-                expertise: hasAuthor ? 85 : 35,
-                authoritativeness: schemaTypes.length > 0 ? 90 : 50,
-                trustworthiness: url.startsWith('https://') ? 95 : 55
-            };
-            const eeatAvg = (eeat.experience + eeat.expertise + eeat.authoritativeness + eeat.trustworthiness) / 4;
+      document.getElementById('schema-types').innerHTML = schemaTypes.length
+        ? `<select class="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-800">${schemaTypes.map(t=>`<option>${t}</option>`).join('')}</select>`
+        : '<p>No schema detected</p>';
 
-            const depthScore = words > 1500 ? 90 : words > 800 ? 70 : 40;
-            const readabilityScore = readability > 60 ? 90 : readability > 40 ? 70 : 40;
+      const tbody = document.querySelector('#gap-table tbody');
+      tbody.innerHTML = `
+        <tr><td class="p-4">Word Count</td><td class="p-4">${words}</td><td class="p-4">>1500</td><td class="p-4">${words<1500?'Add depth':''}</td></tr>
+        <tr><td class="p-4">Readability</td><td class="p-4">${readability}</td><td class="p-4">60–70</td><td class="p-4">${readability<60?'Simplify':''}</td></tr>
+        <tr><td class="p-4">Schema</td><td class="p-4">${schemaTypes.length}</td><td class="p-4">≥2</td><td class="p-4">${schemaTypes.length<2?'Add':''}</td></tr>
+        <tr><td class="p-4">Author</td><td class="p-4">${hasAuthor?'Yes':'No'}</td><td class="p-4">Yes</td><td class="p-4">${!hasAuthor?'Add bio':''}</td></tr>`;
 
-            const overallScore = Math.round((depthScore + readabilityScore + eeatAvg + (schemaTypes.length * 20) + confidence) / 5);
+      const fixesList = document.getElementById('fixes-list');
+      fixesList.innerHTML = '';
+      if (overall < 90) fixesList.innerHTML += `<li class="p-6 bg-red-500/20 rounded-xl"><strong>Add Author Bio + Credentials</strong><br>→ +30–40 E-E-A-T points</li>`;
+      if (words < 1200) fixesList.innerHTML += `<li class="p-6 bg-orange-500/20 rounded-xl"><strong>Add 800+ words with examples</strong><br>→ Biggest ranking lever 2025</li>`;
+      if (schemaTypes.length < 2) fixesList.innerHTML += `<li class="p-6 bg-yellow-500/20 rounded-xl"><strong>Add Article + Person schema</strong><br>→ Rich results boost</li>`;
 
-            // SVG Radar Chart (client-side, no libs)
-            const radarSvg = generateRadarChart({
-                ContentDepth: depthScore,
-                Readability: readabilityScore,
-                Experience: eeat.experience,
-                Expertise: eeat.expertise,
-                Authoritativeness: eeat.authoritativeness,
-                Trustworthiness: eeat.trustworthiness
-            });
+      document.getElementById('rank-forecast').textContent = `${overall > 88 ? 'Top 3' : overall > 70 ? 'Top 10' : 'Page 2+'} – Apply fixes → +${Math.round((100-overall)*1.3)}% traffic`;
 
-            // Competitive Gap Table Data
-            const gaps = [
-                { metric: 'Word Count', current: words, ideal: 1500, gap: words < 1500 ? 'Low' : 'Good' },
-                { metric: 'Readability', current: Math.round(readability), ideal: '60-70', gap: readability < 60 ? 'Hard' : 'Good' },
-                { metric: 'Schema Types', current: schemaTypes.length, ideal: '>=2', gap: schemaTypes.length < 2 ? 'Missing' : 'Good' },
-                { metric: 'Author Bio', current: hasAuthor ? 'Yes' : 'No', ideal: 'Yes', gap: hasAuthor ? 'Good' : 'Add' }
-            ];
+    } catch (err) {
+      results.innerHTML = `<p class="text-red-500 text-center">Error: ${err.message}</p>`;
+    }
+  });
 
-            // Prioritised Fixes (AI-style: What/How/Why, sorted by impact)
-            const fixes = [];
-            if (words < 1500) fixes.push({ what: 'Increase content length', how: 'Add more sections with valuable info', why: 'Deeper content ranks better for intent' });
-            if (readability < 60) fixes.push({ what: 'Improve readability', how: 'Use shorter sentences, simpler words', why: 'Better UX leads to lower bounce rates' });
-            if (!hasAuthor) fixes.push({ what: 'Add author bio', how: 'Include a section with author credentials', why: 'Boosts E-E-A-T for trust' });
-            if (schemaTypes.length < 2) fixes.push({ what: 'Add schema markup', how: 'Implement JSON-LD for Article/Person', why: 'Helps search engines understand content' });
-            fixes.sort((a, b) => (a.what.includes('content') ? -1 : 1)); // Content-first priority
-
-            const forecast = `Current potential rank: Mid-page. If fixed, could reach Top 3 (estimated +${Math.round((100 - overallScore) * 0.8)}% improvement).`;
-
-            // Render Results (educational, mobile-optimized)
-            if (!results) {
-                console.warn('Results container (#results) not found.');
-                return;
-            }
-            document.getElementById('overall-score').textContent = overallScore + '/100';
-            document.getElementById('radar-chart').innerHTML = radarSvg;
-            document.getElementById('intent-type').innerHTML = `<p><strong>Type:</strong> ${intent} <span class="text-sm">(Confidence: ${confidence}%)</span></p><p class="text-xs mt-1">Tip: Match content to intent for 20-30% traffic boost.</p>`;
-            const eeatDiv = document.getElementById('eeat-breakdown');
-            eeatDiv.innerHTML = Object.entries(eeat).map(([key, val]) => `<p><strong>${key}:</strong> ${val}/100 <span class="text-xs">(e.g., add first-person stories for Experience)</span></p>`).join('');
-            document.getElementById('content-depth').innerHTML = `<p><strong>Word Count:</strong> ${words} <span class="text-xs">(Ideal: 1500+ for depth)</span></p><p><strong>Depth Score:</strong> ${depthScore}/100</p><p><strong>Readability (Flesch):</strong> ${Math.round(readability)} <span class="text-xs">(Aim 60-70 for accessibility)</span></p>`;
-            const schemaDiv = document.getElementById('schema-types');
-            schemaDiv.innerHTML = schemaTypes.length ? `<select class="w-full p-2 border dark:border-gray-600 dark:bg-gray-800 text-sm"><option>Detected Types:</option>${schemaTypes.map(type => `<option>${type}</option>`).join('')}</select><p class="text-xs mt-1">Tip: Use Google's Structured Data Testing Tool for validation.</p>` : '<p class="text-sm">No schema detected. <span class="text-xs">Add JSON-LD for rich snippets.</span></p>';
-
-            const gapBody = document.querySelector('#gap-table tbody');
-            if (gapBody) {
-                gapBody.innerHTML = gaps.map(g => `<tr><td class="p-2 border">${g.metric}</td><td class="p-2 border">${g.current}</td><td class="p-2 border">${g.ideal}</td><td class="p-2 border">${g.gap} <span class="text-xs block">(Fix for +15% score)</span></td></tr>`).join('');
-            }
-
-            const fixesList = document.getElementById('fixes-list');
-            if (fixesList) {
-                fixesList.innerHTML = fixes.map(f => `<li class="p-3 bg-gray-100 dark:bg-gray-800 rounded-md"><strong>What:</strong> ${f.what}<br><strong>How:</strong> ${f.how}<br><strong>Why:</strong> ${f.why} <span class="text-xs block italic">(Impact: High – apply first)</span></li>`).join('');
-            }
-
-            document.getElementById('rank-forecast').innerHTML = `<p>${forecast}</p><p class="text-xs mt-1">Forecast based on heuristics; real results vary by competition.</p>`;
-
-            results.classList.remove('hidden');
-            results.scrollIntoView({ behavior: 'smooth' });
-        } catch (error) {
-            console.error('Audit error:', error);
-            alert(`Error analyzing ${url}: ${error.message}. Try a different URL or check console.`);
-        }
-    });
-});
-
-// SVG Radar Chart Generator (pure JS, 2025-optimized for accessibility)
-function generateRadarChart(data) {
-    const size = 300; // Larger for mobile readability
-    const center = size / 2;
-    const numAxes = Object.keys(data).length;
-    const angleSlice = (Math.PI * 2) / numAxes;
+  function generateRadar(data) {
+    const size = 380, c = size/2, n = 4;
     let points = '';
-    let axes = '';
-    let labels = '';
-    Object.entries(data).forEach(([key, value], i) => {
-        const radius = (value / 100) * (center - 30);
-        const x = center + radius * Math.cos(i * angleSlice - Math.PI / 2);
-        const y = center + radius * Math.sin(i * angleSlice - Math.PI / 2);
-        points += `${x},${y} `;
-        const axX = center + (center - 10) * Math.cos(i * angleSlice - Math.PI / 2);
-        const axY = center + (center - 10) * Math.sin(i * angleSlice - Math.PI / 2);
-        axes += `<line x1="${center}" y1="${center}" x2="${axX}" y2="${axY}" stroke="currentColor" stroke-width="1" stroke-opacity="0.5"/>`;
-        const labX = center + (center + 20) * Math.cos(i * angleSlice - Math.PI / 2);
-        const labY = center + (center + 20) * Math.sin(i * angleSlice - Math.PI / 2);
-        labels += `<text x="${labX}" y="${labY}" font-size="12" text-anchor="middle" dy=".3em" fill="currentColor">${key}</text>`;
+    const labels = ['Experience','Expertise','Authoritativeness','Trustworthiness'];
+    labels.forEach((label,i) => {
+      const val = data[label] / 100;
+      const angle = (i / n) * Math.PI * 2 - Math.PI/2;
+      const x = c + val * (c-60) * Math.cos(angle);
+      const y = c + val * (c-60) * Math.sin(angle);
+      points += `${x},${y} `;
     });
-    return `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="E-E-A-T Radar Chart">
-        <polygon points="${points.trim()}" fill="rgba(59, 130, 246, 0.2)" stroke="rgb(59, 130, 246)" stroke-width="2"/>
-        <circle cx="${center}" cy="${center}" r="${center - 30}" fill="none" stroke="currentColor" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="2"/>
-        ${axes}
-        ${labels}
-    </svg>`;
-}
+    return `<svg viewBox="0 0 ${size} ${size}" class="drop-shadow-2xl"><polygon points="${points}" fill="#f9731660" stroke="#f97316" stroke-width="4"/><circle cx="${c}" cy="${c}" r="${c-60}" fill="none" stroke="#fff3" stroke-dasharray="8"/></svg>`;
+  }
+});
