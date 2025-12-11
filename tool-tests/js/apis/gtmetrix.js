@@ -1,11 +1,11 @@
-// tool-tests/js/apis/gtmetrix.js  ← FINAL WORKING VERSION (Dec 2025)
 const GT_API_KEY = '2cd8581f09cf3ed0ce2ffffca0b09c21';
 
-export async function getData(url) {
+export async function getData(url, proxy) {
     const auth = 'Basic ' + btoa(GT_API_KEY + ':');
 
-    // 1. Start test – direct
-    const start = await fetch('https://gtmetrix.com/api/2.0/tests', {
+    // 1. Start test via proxy
+    const startUrl = proxy + encodeURIComponent('https://gtmetrix.com/api/2.0/tests');
+    const start = await fetch(startUrl, {
         method: 'POST',
         headers: {
             'Authorization': auth,
@@ -14,25 +14,29 @@ export async function getData(url) {
         body: JSON.stringify({ data: { type: 'test', attributes: { url } } })
     });
 
-    if (!start.ok) throw new Error('GTmetrix failed to start');
+    if (!start.ok) throw new Error(`GTmetrix start failed: ${await start.text()}`);
 
     const { data } = await start.json();
     const testId = data.id;
 
-    // 2. Poll until ready – direct
+    // 2. Poll via proxy
     let reportUrl;
     do {
         await new Promise(r => setTimeout(r, 5000));
-        const poll = await fetch(`https://gtmetrix.com/api/2.0/tests/${testId}`, {
+        const pollUrl = proxy + encodeURIComponent(`https://gtmetrix.com/api/2.0/tests/${testId}`);
+        const poll = await fetch(pollUrl, {
             headers: { 'Authorization': auth }
         });
         const json = await poll.json();
         reportUrl = json.data?.attributes?.report_url;
     } while (!reportUrl);
 
-    // 3. Get report + HAR – direct
-    const report = await (await fetch(reportUrl, { headers: { 'Authorization': auth } })).json();
-    const har = await (await fetch(reportUrl + '/resources/har', { headers: { 'Authorization': auth } })).json();
+    // 3. Get report + HAR via proxy
+    const reportUrlProxy = proxy + encodeURIComponent(reportUrl);
+    const report = await (await fetch(reportUrlProxy, { headers: { 'Authorization': auth } })).json();
+
+    const harUrlProxy = proxy + encodeURIComponent(reportUrl + '/resources/har');
+    const har = await (await fetch(harUrlProxy, { headers: { 'Authorization': auth } })).json();
 
     const score = Math.round(report.data.attributes.lighthouse_performance_score * 100);
     const waterfall = har.log.entries
