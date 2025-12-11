@@ -53,60 +53,96 @@ document.addEventListener('DOMContentLoaded', () => {
       const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length * 8) / 5);
 
       // ONE SINGLE SAFE RENDER — no more null errors ever
-	  results.innerHTML = `
-  <div class="max-w-5xl mx-auto">
+	results.innerHTML = `
+  <div class="max-w-4xl mx-auto">
 
-    <!-- Hero Score -->
-    <div class="text-center py-12 animate-in">
-      <div class="text-9xl font-black bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent glow">
-        ${overall}<span class="text-6xl">/100</span>
+    <!-- Big Score Circle – exactly like your other tools -->
+    <div class="flex justify-center my-12">
+      <div class="relative">
+        <svg width="240" height="240" viewBox="0 0 240 240" class="transform -rotate-90">
+          <circle cx="120" cy="120" r="110" stroke="#e5e7eb" stroke-width="16" fill="none"/>
+          <circle cx="120" cy="120" r="110" stroke="url(#gradient)" stroke-width="16" fill="none"
+                  stroke-dasharray="${(overall / 100) * 691} 691"
+                  stroke-linecap="round" class="transition-all duration-1000"/>
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fb923c"/>
+              <stop offset="100%" stop-color="#ec4899"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="text-center">
+            <div class="text-6xl font-black text-white drop-shadow-2xl">${overall}</div>
+            <div class="text-xl text-white/80 -mt-2">/100</div>
+          </div>
+        </div>
       </div>
-      <p class="text-3xl mt-6 font-bold bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-        ${overall >= 90 ? 'Elite Tier' : overall >= 75 ? 'Strong Contender' : overall >= 60 ? 'Needs Work' : 'Major Overhaul Needed'}
-      </p>
     </div>
 
-    <!-- Radar + Intent -->
-    <div class="grid md:grid-cols-2 gap-12 my-16 items-center">
-      <div class="flex justify-center">${generateRadar(eeat)}</div>
-      <div class="space-y-6 text-xl">
-        <div class="p-6 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-2xl border border-purple-500/30">
-          <strong>Search Intent:</strong> <span class="font-bold text-purple-300">${intent}</span> (${confidence}% confidence)
-        </div>
-        <div class="p-6 bg-gradient-to-r from-orange-600/20 to-pink-600/20 rounded-2xl border border-orange-500/30">
-          <strong>Content Depth:</strong> ${words.toLocaleString()} words → ${depthScore >= 80 ? 'Excellent' : 'Needs more depth'}
-        </div>
-      </div>
+    <!-- Title + Intent -->
+    <div class="text-center mb-12">
+      <h3 class="text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
+        SEO Intent + E-E-A-T Audit
+      </h3>
+      <p class="text-2xl"><strong>Intent:</strong> ${intent} <span class="text-gray-500">(${confidence}% match)</span></p>
     </div>
 
-    <!-- E-E-A-T Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 my-16">
-      ${Object.entries(eeat).map(([k, v]) => `
-        <div class="text-center p-8 rounded-3xl bg-white/10 dark:bg-white/5 backdrop-blur border ${v >= 80 ? 'border-green-500/50' : v >= 60 ? 'border-yellow-500/50' : 'border-red-500/50'}">
-          <div class="text-6xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${v}</div>
-          <div class="mt-4 text-lg font-medium">${k}</div>
+    <!-- E-E-A-T Grid – same style as your other tools -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+      ${Object.entries(eeat).map(([key, val]) => `
+        <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+          <div class="text-4xl font-black mb-2">${val}</div>
+          <div class="text-sm uppercase tracking-wider text-gray-500">${key}</div>
         </div>
       `).join('')}
     </div>
 
-    <!-- Action Plan -->
-    <div class="my-16 p-10 bg-gradient-to-r from-orange-600 to-pink-700 rounded-3xl text-white text-center shadow-2xl">
-      <p class="text-4xl font-black mb-4">Rank Forecast</p>
-      <p class="text-7xl font-black">${overall > 88 ? 'Top 3' : overall > 75 ? 'Top 5–10' : overall > 60 ? 'Page 1 Possible' : 'Page 2+'}</p>
-      <p class="text-3xl mt-6 opacity-90">Apply fixes → <strong>+${Math.round((100 - overall) * 1.5)}% traffic</strong></p>
+    <!-- What / How / Why Fixes – exactly like your other tools -->
+    <div class="space-y-6">
+      ${!hasAuthor ? `
+        <div class="p-8 bg-gradient-to-r from-red-500/10 border-l-8 border-red-500 rounded-r-2xl">
+          <div class="flex gap-4">
+            <div class="text-4xl">🎯</div>
+            <div>
+              <h4 class="text-xl font-bold text-red-600">Add Author Bio & Photo</h4>
+              <p class="mt-2"><strong>How:</strong> Add visible byline + headshot + credentials</p>
+              <p class="text-sm text-gray-600 mt-1"><strong>Why:</strong> Boosts Expertise & Trust by 30–40 points</p>
+            </div>
+          </div>
+        </div>` : ''}
+
+      ${words < 1500 ? `
+        <div class="p-8 bg-gradient-to-r from-orange-500/10 border-l-8 border-orange-500 rounded-r-2xl">
+          <div class="flex gap-4">
+            <div class="text-4xl">📈</div>
+            <div>
+              <h4 class="text-xl font-bold text-orange-600">Add 1000+ Words of Depth</h4>
+              <p class="mt-2"><strong>How:</strong> Include examples, FAQs, data, images with alt text</p>
+              <p class="text-sm text-gray-600 mt-1"><strong>Why:</strong> #1 ranking factor in 2025</p>
+            </div>
+          </div>
+        </div>` : ''}
+
+      ${schemaTypes.length < 2 ? `
+        <div class="p-8 bg-gradient-to-r from-purple-500/10 border-l-8 border-purple-500 rounded-r-2xl">
+          <div class="flex gap-4">
+            <div class="text-4xl">✨</div>
+            <div>
+              <h4 class="text-xl font-bold text-purple-600">Add Article + Person Schema</h4>
+              <p class="mt-2"><strong>How:</strong> Use JSON-LD with @type Article + Person</p>
+              <p class="text-sm text-gray-600 mt-1"><strong>Why:</strong> Rich results + authority boost</p>
+            </div>
+          </div>
+        </div>` : ''}
     </div>
 
-    <!-- Quick Wins -->
-    ${overall < 95 ? `
-      <div class="text-center">
-        <h3 class="text-3xl font-bold mb-8">Top 3 Fixes to Apply Now</h3>
-        <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          ${!hasAuthor ? `<div class="p-8 bg-red-500/20 border-2 border-red-500/50 rounded-2xl"><strong>Add Author Bio + Photo</strong><br>+30–40 E-E-A-T points</div>` : ''}
-          ${words < 1500 ? `<div class="p-8 bg-orange-500/20 border-2 border-orange-500/50 rounded-2xl"><strong>Add 1000+ words with examples</strong><br>Biggest ranking factor</div>` : ''}
-          ${schemaTypes.length < 2 ? `<div class="p-8 bg-purple-500/20 border-2 border-purple-500/50 rounded-2xl"><strong>Add Article + Person schema</strong><br>Rich results + trust boost</div>` : ''}
-        </div>
-      </div>
-    ` : '<p class="text-center text-4xl font-bold text-green-400 my-16">This page is already elite-tier! 🎯</p>'}
+    <!-- Rank Forecast – same style -->
+    <div class="text-center mt-16 p-10 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
+      <p class="text-3xl font-black">Current Potential</p>
+      <p class="text-6xl font-black mt-4">${overall > 88 ? 'Top 3' : overall > 75 ? 'Top 10' : 'Page 1 Possible'}</p>
+      <p class="text-2xl mt-6">Fix the above → <strong>+${Math.round((100-overall)*1.4)}% traffic</strong></p>
+    </div>
 
   </div>
 `;
