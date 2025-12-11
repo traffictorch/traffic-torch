@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     results.classList.remove('hidden');
 
     try {
-      const res = await fetch(`https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`, {
+	const proxyUrl = "https://cors-proxy.traffictorch.workers.dev/?" + encodeURIComponent(url);
+	const res = await fetch(proxyUrl, { headers: { Origin: "https://traffictorch.net" } });
   headers: { Origin: 'https://traffictorch.net' }
 });
       const html = await res.text();
