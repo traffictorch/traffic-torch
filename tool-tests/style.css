@@ -82,6 +82,7 @@ html.light .details li { background: rgba(0,0,0,0.05); }
 #loader { text-align:center; padding:4rem; font-size:1.5rem; opacity:0.8; }
 .hidden { display:none; }
 
+/* Force gradient button in light mode — overrides Tailwind */
 html.light #url-form button[type="submit"] {
-  background: linear-gradient(to right, #fb923c, #f43f5e) !important;
+  background-image: linear-gradient(to right, #fb923c, #ec4899) !important;
 }
