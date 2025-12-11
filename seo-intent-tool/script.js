@@ -53,33 +53,63 @@ document.addEventListener('DOMContentLoaded', () => {
       const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length * 8) / 5);
 
       // ONE SINGLE SAFE RENDER — no more null errors ever
-      results.innerHTML = `
-        <div class="text-center mb-12">
-          <div class="text-8xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${overall}<span class="text-5xl">/100</span></div>
-          <p class="text-2xl mt-4 opacity-80">360° SEO Intent + E-E-A-T Score</p>
-        </div>
+	  results.innerHTML = `
+  <div class="max-w-5xl mx-auto">
 
-        <div class="flex justify-center my-12">${generateRadar(eeat)}</div>
+    <!-- Hero Score -->
+    <div class="text-center py-12 animate-in">
+      <div class="text-9xl font-black bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent glow">
+        ${overall}<span class="text-6xl">/100</span>
+      </div>
+      <p class="text-3xl mt-6 font-bold bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        ${overall >= 90 ? 'Elite Tier' : overall >= 75 ? 'Strong Contender' : overall >= 60 ? 'Needs Work' : 'Major Overhaul Needed'}
+      </p>
+    </div>
 
-        <div class="text-center space-y-6 text-xl">
-          <p><strong>Intent:</strong> ${intent} <span class="opacity-70">(${confidence}% confidence)</span></p>
-          <p><strong>Words:</strong> ${words.toLocaleString()} • <strong>Readability:</strong> ${readability} ${readability < 60 ? '(too complex)' : ''}</p>
+    <!-- Radar + Intent -->
+    <div class="grid md:grid-cols-2 gap-12 my-16 items-center">
+      <div class="flex justify-center">${generateRadar(eeat)}</div>
+      <div class="space-y-6 text-xl">
+        <div class="p-6 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-2xl border border-purple-500/30">
+          <strong>Search Intent:</strong> <span class="font-bold text-purple-300">${intent}</span> (${confidence}% confidence)
         </div>
+        <div class="p-6 bg-gradient-to-r from-orange-600/20 to-pink-600/20 rounded-2xl border border-orange-500/30">
+          <strong>Content Depth:</strong> ${words.toLocaleString()} words → ${depthScore >= 80 ? 'Excellent' : 'Needs more depth'}
+        </div>
+      </div>
+    </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 my-16">
-          ${Object.entries(eeat).map(([k, v]) => `
-            <div class="text-center p-6 bg-white/10 dark:bg-white/5 rounded-2xl backdrop-blur">
-              <div class="text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${v}</div>
-              <div class="mt-3 text-lg opacity-80">${k}</div>
-            </div>
-          `).join('')}
+    <!-- E-E-A-T Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 my-16">
+      ${Object.entries(eeat).map(([k, v]) => `
+        <div class="text-center p-8 rounded-3xl bg-white/10 dark:bg-white/5 backdrop-blur border ${v >= 80 ? 'border-green-500/50' : v >= 60 ? 'border-yellow-500/50' : 'border-red-500/50'}">
+          <div class="text-6xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${v}</div>
+          <div class="mt-4 text-lg font-medium">${k}</div>
         </div>
+      `).join('')}
+    </div>
 
-        <div class="text-center p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl text-3xl font-bold shadow-2xl">
-          ${overall > 88 ? 'Top 3' : overall > 70 ? 'Top 10' : 'Page 2+'} Potential<br>
-          <span class="text-5xl">+${Math.round((100 - overall) * 1.3)}% traffic</span> if you apply fixes
+    <!-- Action Plan -->
+    <div class="my-16 p-10 bg-gradient-to-r from-orange-600 to-pink-700 rounded-3xl text-white text-center shadow-2xl">
+      <p class="text-4xl font-black mb-4">Rank Forecast</p>
+      <p class="text-7xl font-black">${overall > 88 ? 'Top 3' : overall > 75 ? 'Top 5–10' : overall > 60 ? 'Page 1 Possible' : 'Page 2+'}</p>
+      <p class="text-3xl mt-6 opacity-90">Apply fixes → <strong>+${Math.round((100 - overall) * 1.5)}% traffic</strong></p>
+    </div>
+
+    <!-- Quick Wins -->
+    ${overall < 95 ? `
+      <div class="text-center">
+        <h3 class="text-3xl font-bold mb-8">Top 3 Fixes to Apply Now</h3>
+        <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          ${!hasAuthor ? `<div class="p-8 bg-red-500/20 border-2 border-red-500/50 rounded-2xl"><strong>Add Author Bio + Photo</strong><br>+30–40 E-E-A-T points</div>` : ''}
+          ${words < 1500 ? `<div class="p-8 bg-orange-500/20 border-2 border-orange-500/50 rounded-2xl"><strong>Add 1000+ words with examples</strong><br>Biggest ranking factor</div>` : ''}
+          ${schemaTypes.length < 2 ? `<div class="p-8 bg-purple-500/20 border-2 border-purple-500/50 rounded-2xl"><strong>Add Article + Person schema</strong><br>Rich results + trust boost</div>` : ''}
         </div>
-      `;
+      </div>
+    ` : '<p class="text-center text-4xl font-bold text-green-400 my-16">This page is already elite-tier! 🎯</p>'}
+
+  </div>
+`;
 
     } catch (err) {
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
