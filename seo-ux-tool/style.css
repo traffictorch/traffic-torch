@@ -42,7 +42,8 @@ html.light .score-card {
 
 .score-circle { width:150px; height:150px; margin:0 auto 1rem; }
 .score-circle svg { width:100%; height:100%; }
-.bg { fill:none; stroke:var(--track); stroke-width:14; }
+.bg { fill:none !important; stroke:var(--track); stroke-width:14; }
+html.light .bg { fill:none !important; }
 .progress { fill:none; stroke:#f97316; stroke-width:14; stroke-linecap:round; stroke-dasharray:0 339; transition:all .8s ease; }
 .number { font:bold 44px system-ui; fill:white; text-anchor:middle; dominant-baseline:middle; opacity:0; transition:opacity .5s; }
 html.light .number { fill:#0f172a; }
