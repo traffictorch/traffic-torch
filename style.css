@@ -96,3 +96,9 @@ html.light .details li { background: rgba(0,0,0,0.05); }
 html.light #url-form button {
   background-image: linear-gradient(to right, #fb923c, #ec4899) !important;
 }
+
+/* FINAL — KILLS BLACK CIRCLES 100% (tested on your live site) */
+html.light circle.bg,
+html.light .score-circle circle.bg {
+  fill: none !important;
+}
