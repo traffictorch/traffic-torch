@@ -1,20 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
-
-  // Works with your existing #themeToggle
-  const themeBtn = document.getElementById('themeToggle');
-  if (themeBtn) {
-    const isDark = localStorage.getItem('theme') === 'dark';
-    if (isDark) document.documentElement.classList.add('dark');
-    themeBtn.textContent = isDark ? 'Sun' : 'Moon';
-    themeBtn.addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
-      const dark = document.documentElement.classList.contains('dark');
-      localStorage.setItem('theme', dark ? 'dark' : 'light');
-      themeBtn.textContent = dark ? 'Sun' : 'Moon';
-    });
-  }
+  
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -23,7 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
     results.classList.remove('hidden');
 
     try {
-      const res = await fetch(`https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`);
+      const res = await fetch(`https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`, {
+  headers: { Origin: 'https://traffictorch.net' }
+});
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
