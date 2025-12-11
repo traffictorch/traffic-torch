@@ -60,3 +60,5 @@ html.light .number { fill:#0f172a; }
 html.light .details li { background:rgba(0,0,0,0.05); }
 #loader { text-align:center; padding:4rem; font-size:1.5rem; opacity:0.8; }
 .hidden { display:none; }
+
+html.light button { background:#ea580c !important; color:white !important; }

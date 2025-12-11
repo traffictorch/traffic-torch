@@ -4,13 +4,6 @@ document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');  // Hi
     const input = document.getElementById('url-input');
     const results = document.getElementById('results');
     const loader = document.getElementById('loader');
-    const toggleBtn = document.getElementById('toggle-mode');
-
-    toggleBtn.addEventListener('click', () => {
-        document.body.classList.toggle('dark');
-        localStorage.setItem('darkMode', document.body.classList.contains('dark'));
-    });
-    if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark');
 
     function cleanUrl(u) { return u.trim() && !/^https?:\/\//i.test(u) ? 'https://' + u.trim() : u.trim(); }
 
