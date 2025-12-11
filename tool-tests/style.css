@@ -100,4 +100,45 @@ li {
     input {
         flex: 1;
     }
+    
+    
+    
+    .score-circle {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin: 1rem auto;
 }
+.score-circle svg {
+    width: 140px;
+    height: 140px;
+    transform: rotate(-90deg);
+}
+.circle-progress {
+    transition: stroke-dasharray 1.5s ease;
+}
+.percentage {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-anchor: middle;
+    fill: var(--text-color);
+}
+.score-label {
+    text-align: center;
+    margin-top: 0.5rem;
+    font-weight: 600;
+}
+
+/* Color thresholds */
+.score-circle[data-score="0"] .circle-progress { stroke: #e0e0e0; }
+.score-circle[data-score*="10"] .circle-progress { stroke: #00c853; } /* green */
+.score-circle[data-score*="7"] .circle-progress { stroke: #ffab00; } /* amber */
+.score-circle[data-score*="5"] .circle-progress { stroke: #ff3d00; } /* red */
+    
+    
+    
+    
+    
+    
+}
+

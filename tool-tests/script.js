@@ -27,10 +27,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const access = analyzeAccess(doc);
 
             // Update scores
-            document.getElementById('seo-value').textContent = seo.score;
-            document.getElementById('mobile-value').textContent = mobile.score;
-            document.getElementById('perf-value').textContent = perf.score;
-            document.getElementById('access-value').textContent = access.score;
+// ← put this BEFORE the updateScore calls
+function updateScore(circleId, score) {
+    const circle = document.querySelector(`#${circleId} .score-circle`);
+    if (!circle) return;
+    const path = circle.querySelector('.circle-progress');
+    const text = circle.querySelector('.percentage');
+    const dashArray = (score / 100) * 100;
+    path.style.strokeDasharray = `${dashArray}, 100`;
+    text.textContent = score;
+    circle.dataset.score = Math.round(score);
+}
+
+// Now call all 4
+updateScore('seo-score', seo.score);
+updateScore('mobile-score', mobile.score);
+updateScore('perf-score', perf.score);
+updateScore('access-score', access.score);
+
 
             // Populate issues with fixes
             populateIssues('seo-issues', seo.issues);
