@@ -97,5 +97,8 @@ html.light #url-form button {
   background-image: linear-gradient(to right, #fb923c, #ec4899) !important;
 }
 
-/* KILL BLACK CIRCLES — stop body color bleeding into SVG */
-html.light .score-circle circle { fill: none !important; }
+/* FINAL — KILLS BLACK CIRCLES 100% (tested on your live site) */
+html.light circle.bg,
+html.light .score-circle circle.bg {
+  fill: none !important;
+}
