@@ -1,0 +1,109 @@
+/* css/modules/google-trends.css – matches your current design perfectly */
+#google-trends {
+  background: var(--card-bg, #ffffff);
+  border-radius: 16px;
+  padding: 2rem;
+  margin: 3rem auto;
+  max-width: 900px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  border: 1px solid var(--border, #e2e8f0);
+}
+
+#google-trends h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--heading, #1e293b);
+  text-align: center;
+}
+
+#keywords-input {
+  border-radius: 12px !important;
+  border: 2px solid #3b82f6 !important;
+  font-size: 1.1rem;
+}
+
+#keywords-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.2);
+}
+
+#trends-form select {
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  height: 54px;
+  font-size: 1rem;
+}
+
+#trends-form button {
+  border-radius: 12px;
+  height: 54px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+  background: #3b82f6;
+  transition: all 0.2s;
+}
+
+#trends-form button:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.trends-chart {
+  height: 420px !important;
+  margin: 2rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--card-bg);
+  );
+}
+
+.trends-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.trends-table th {
+  background: #3b82f6;
+  color: white;
+  padding: 1rem;
+  text-align: left;
+}
+
+.trends-table td {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.trends-table tr:last-child td { border-bottom: none; }
+
+.rising-badge {
+  background: #10b981;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #3b82f6;
+  padding: 3rem;
+}
+
+/* Dark mode */
+[data-theme="dark"] #google-trends {
+  background: #1e293b;
+  border-color: #334155;
+}
+[data-theme="dark"] .trends-table th { background: #2563eb; }
+[data-theme="dark"] .rising-badge { background: #34d399; }

@@ -1,0 +1,22 @@
+{
+    "name": "Traffic Torch Test Tool",
+    "short_name": "TrafficTorch",
+    "description": "Instant SEO/UX analysis with scores, visuals, and education.",
+    "start_url": "/tool-tests/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#007bff",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "/tool-tests/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/tool-tests/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

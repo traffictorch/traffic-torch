@@ -1,0 +1,53 @@
+/* style.css – UX Tool Only (Dec 2025) */
+/* Mobile-first, PWA-ready, matches Quit Risk v3.0 exactly */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
+
+:root {
+  --bg-gradient: linear-gradient(to bottom right, #0f172a, #1e1b4b, #000000);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to bottom right, #0f172a, #1e1b4b, #000000);
+  min-height: 100vh;
+}
+
+
+/* Prose tweaks for humanized output */
+.prose p { margin-bottom: 1rem; }
+.prose strong { color: #f97316; font-weight: 800; }
+
+/* LOCAL TOOL FIX – MOBILE-FRIENDLY REPORT (WORKS 100% – Dec 2025) */
+@media (max-width: 1024px) {
+  /* Kill narrow containers */
+  .container, .max-w-5xl, .max-w-4xl, .max-w-3xl {
+    max-width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Reduce huge padding on cards */
+  .p-12, .p-10, .p-8 {
+    padding: 1.5rem !important;
+  }
+
+  /* Smaller, readable title */
+  .text-5xl {
+    font-size: 2rem !important;
+    line-height: 1.1 !important;
+  }
+
+  /* Big score but not comically huge */
+  .text-9xl {
+    font-size: 6rem !important;
+    line-height: 1 !important;
+  }
+}
+
+/* Tiny phones – even tighter */
+@media (max-width: 480px) {
+  .p-12, .p-10, .p-8 { padding: 1.25rem !important; }
+  .text-5xl { font-size: 1.875rem !important; }
+  .text-9xl { font-size: 5.5rem !important; }
+}
