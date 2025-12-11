@@ -82,3 +82,7 @@ html.light .details li { background: rgba(0,0,0,0.05); }
 #loader { text-align:center; padding:4rem; font-size:1.5rem; opacity:0.8; }
 .hidden { display:none; }
 
+/* FINAL — KILLS GREY BUTTON FOREVER */
+html.light button.bg-gradient-to-r {
+  background-image: linear-gradient(to right, #fb923c, #ec4899) !important;
+}
