@@ -56,16 +56,16 @@ document.addEventListener('DOMContentLoaded', () => {
 	results.innerHTML = `
   <div class="max-w-4xl mx-auto">
 
-    <!-- Big Score Circle – exactly like your other tools -->
+    <!-- Big Main Score Circle -->
     <div class="flex justify-center my-12">
       <div class="relative">
-        <svg width="240" height="240" viewBox="0 0 240 240" class="transform -rotate-90">
-          <circle cx="120" cy="120" r="110" stroke="#e5e7eb" stroke-width="16" fill="none"/>
-          <circle cx="120" cy="120" r="110" stroke="url(#gradient)" stroke-width="16" fill="none"
-                  stroke-dasharray="${(overall / 100) * 691} 691"
-                  stroke-linecap="round" class="transition-all duration-1000"/>
+        <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
+          <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
+          <circle cx="130" cy="130" r="120" stroke="url(#mainGradient)" stroke-width="18" fill="none"
+                  stroke-dasharray="${(overall / 100) * 754} 754"
+                  stroke-linecap="round"/>
           <defs>
-            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="mainGradient">
               <stop offset="0%" stop-color="#fb923c"/>
               <stop offset="100%" stop-color="#ec4899"/>
             </linearGradient>
@@ -73,75 +73,99 @@ document.addEventListener('DOMContentLoaded', () => {
         </svg>
         <div class="absolute inset-0 flex items-center justify-center">
           <div class="text-center">
-            <div class="text-6xl font-black text-white drop-shadow-2xl">${overall}</div>
-            <div class="text-xl text-white/80 -mt-2">/100</div>
+            <div class="text-7xl font-black text-white drop-shadow-2xl">${overall}</div>
+            <div class="text-2xl text-white/90 -mt-2">/100</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Title + Intent -->
+    <!-- Intent + Explanation -->
     <div class="text-center mb-12">
-      <h3 class="text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
-        SEO Intent + E-E-A-T Audit
-      </h3>
-      <p class="text-2xl"><strong>Intent:</strong> ${intent} <span class="text-gray-500">(${confidence}% match)</span></p>
+      <p class="text-3xl font-bold mb-4">
+        Intent: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${intent}</span>
+        <span class="text-gray-500">(${confidence}% match)</span>
+      </p>
+      <div class="max-w-2xl mx-auto p-6 bg-gradient-to-r from-blue-500/10 rounded-2xl border border-blue-400/30">
+        ${intent === 'Informational' ? 'User wants to learn or understand something. Answer questions clearly with headings, lists, and examples.' :
+          intent === 'Commercial' ? 'User is researching before buying. Compare options, show pros/cons, include reviews and pricing.' :
+          intent === 'Transactional' ? 'User ready to buy or convert. Make CTAs obvious, show trust signals, simplify checkout.' :
+          'User looking for a local business. Show address, phone, map, hours, and Google reviews.'}
+      </div>
     </div>
 
-    <!-- E-E-A-T Grid – same style as your other tools -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-      ${Object.entries(eeat).map(([key, val]) => `
-        <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
-          <div class="text-4xl font-black mb-2">${val}</div>
-          <div class="text-sm uppercase tracking-wider text-gray-500">${key}</div>
-        </div>
-      `).join('')}
+    <!-- E-E-A-T with Individual Score Circles -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 my-16">
+      ${Object.entries(eeat).map(([key, val]) => {
+        const colors = {
+          Experience: ['#10b981', '#059669'],
+          Expertise: ['#3b82f6', '#2563eb'],
+          Authoritativeness: ['#8b5cf6', '#7c3aed'],
+          Trustworthiness: ['#f59e0b', '#d97706']
+        };
+        const [light, dark] = colors[key] || ['#6b7280', '#4b5563'];
+        const dash = (val / 100) * 314;
+        return `
+          <div class="text-center">
+            <div class="relative inline-block">
+              <svg width="140" height="140" viewBox="0 0 140 140" class="transform -rotate-90">
+                <circle cx="70" cy="70" r="60" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+                <circle cx="70" cy="70" r="60" stroke="${val >= 80 ? light : val >= 60 ? '#f59e0b' : '#ef4444'}"
+                        stroke-width="12" fill="none" stroke-dasharray="${dash} 314" stroke-linecap="round"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-3xl font-black">${val}</span>
+              </div>
+            </div>
+            <p class="mt-4 text-sm uppercase tracking-wider text-gray-600 dark:text-gray-400">${key}</p>
+          </div>`;
+      }).join('')}
     </div>
 
-    <!-- What / How / Why Fixes – exactly like your other tools -->
-    <div class="space-y-6">
+    <!-- What / How / Why Fixes -->
+    <div class="space-y-6 max-w-3xl mx-auto">
       ${!hasAuthor ? `
         <div class="p-8 bg-gradient-to-r from-red-500/10 border-l-8 border-red-500 rounded-r-2xl">
-          <div class="flex gap-4">
-            <div class="text-4xl">🎯</div>
+          <div class="flex gap-5">
+            <div class="text-5xl">👤</div>
             <div>
-              <h4 class="text-xl font-bold text-red-600">Add Author Bio & Photo</h4>
-              <p class="mt-2"><strong>How:</strong> Add visible byline + headshot + credentials</p>
-              <p class="text-sm text-gray-600 mt-1"><strong>Why:</strong> Boosts Expertise & Trust by 30–40 points</p>
+              <h4 class="text-2xl font-bold text-red-600">Add Author Bio & Photo</h4>
+              <p class="mt-3"><strong>How:</strong> Visible byline + headshot + credentials + link to author page</p>
+              <p class="text-gray-600 mt-2"><strong>Why:</strong> Directly increases Expertise & Trust — Google loves it</p>
             </div>
           </div>
         </div>` : ''}
 
       ${words < 1500 ? `
         <div class="p-8 bg-gradient-to-r from-orange-500/10 border-l-8 border-orange-500 rounded-r-2xl">
-          <div class="flex gap-4">
-            <div class="text-4xl">📈</div>
+          <div class="flex gap-5">
+            <div class="text-5xl">✍️</div>
             <div>
-              <h4 class="text-xl font-bold text-orange-600">Add 1000+ Words of Depth</h4>
-              <p class="mt-2"><strong>How:</strong> Include examples, FAQs, data, images with alt text</p>
-              <p class="text-sm text-gray-600 mt-1"><strong>Why:</strong> #1 ranking factor in 2025</p>
+              <h4 class="text-2xl font-bold text-orange-600">Add 1000+ Words of Depth</h4>
+              <p class="mt-3"><strong>How:</strong> Add FAQs, examples, stats, images with alt text, comparisons</p>
+              <p class="text-gray-600 mt-2"><strong>Why:</strong> #1 ranking factor in 2025 — depth wins</p>
             </div>
           </div>
         </div>` : ''}
 
       ${schemaTypes.length < 2 ? `
         <div class="p-8 bg-gradient-to-r from-purple-500/10 border-l-8 border-purple-500 rounded-r-2xl">
-          <div class="flex gap-4">
-            <div class="text-4xl">✨</div>
+          <div class="flex gap-5">
+            <div class="text-5xl">✨</div>
             <div>
-              <h4 class="text-xl font-bold text-purple-600">Add Article + Person Schema</h4>
-              <p class="mt-2"><strong>How:</strong> Use JSON-LD with @type Article + Person</p>
-              <p class="text-sm text-gray-600 mt-1"><strong>Why:</strong> Rich results + authority boost</p>
+              <h4 class="text-2xl font-bold text-purple-600">Add Article + Person Schema</h4>
+              <p class="mt-3"><strong>How:</strong> JSON-LD with @type: Article + Person + author link</p>
+              <p class="text-gray-600 mt-2"><strong>Why:</strong> Rich results + huge E-E-A-T boost</p>
             </div>
           </div>
         </div>` : ''}
     </div>
 
-    <!-- Rank Forecast – same style -->
-    <div class="text-center mt-16 p-10 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
-      <p class="text-3xl font-black">Current Potential</p>
-      <p class="text-6xl font-black mt-4">${overall > 88 ? 'Top 3' : overall > 75 ? 'Top 10' : 'Page 1 Possible'}</p>
-      <p class="text-2xl mt-6">Fix the above → <strong>+${Math.round((100-overall)*1.4)}% traffic</strong></p>
+    <!-- Rank Forecast -->
+    <div class="text-center mt-16 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
+      <p class="text-4xl font-black">Current Ranking Potential</p>
+      <p class="text-7xl font-black mt-6">${overall > 88 ? 'Top 3' : overall > 75 ? 'Top 10' : overall > 60 ? 'Page 1 Possible' : 'Page 2+'}</p>
+      <p class="text-3xl mt-8">Fix the above → <strong>+${Math.round((100-overall)*1.5)}% traffic gain</strong></p>
     </div>
 
   </div>
