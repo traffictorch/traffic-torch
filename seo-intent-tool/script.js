@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	try {
 	  const proxyUrl = "https://cors-proxy.traffictorch.workers.dev/?" + encodeURIComponent(url);
-	  const res = await fetch(proxyUrl, { headers: { Origin: "https://traffictorch.net" } });
-  
+	  const res = await fetch("https://cors.bridged.cc/" + url);
+	    
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
