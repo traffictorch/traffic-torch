@@ -27,9 +27,11 @@ document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');  // Hi
         const li = document.createElement('li');
         li.innerHTML = `
             <strong>${i.issue}</strong>
-            <p><span style="color:#00c853;font-weight:600">Educational Fix:</span> ${i.fix} <em>(This boosts SEO/UX by [brief reason, e.g., helping Google understand content].)</em></p>
-            <button style="margin-left:10px;padding:6px 12px;background:#007bff;color:white;border:none;border-radius:4px;cursor:pointer;" 
-                    onclick="navigator.clipboard.writeText('${i.fix.replace(/'/g, "\\'")}')">Copy Full Fix Code</button>
+            <p><span style="color:#3b82f6;font-weight:600">What it is?</span> ${i.what || 'A common issue affecting SEO/UX.'}</p>
+            <p><span style="color:#10b981;font-weight:600">How to Fix:</span> ${i.fix}</p>
+            <p><span style="color:#ef4444;font-weight:600">Why it Matters?</span> From UX: ${i.uxWhy || 'Improves user navigation/experience'}. From SEO: ${i.seoWhy || 'Boosts search rankings/visibility'}.</p>
+            <button style="margin-left:10px;padding:6px 12px;background:#007bff;color:white;border:none;border-radius:4px;cursor:pointer;"
+                    onclick="navigator.clipboard.writeText('${i.fix.replace(/'/g, "\\'")}')">Copy Fix Code</button>
         `;
         ul.appendChild(li);
     });
