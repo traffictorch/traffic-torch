@@ -109,4 +109,19 @@ img {
     button {
         width: auto;
     }
+    
+    
+
+.loading, .error, .education {
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+}
+.loading { background: var(--loading-bg); color: var(--accent-color); }
+.error { background: #ffdddd; color: #cc0000; }
+.education { background: #e8f4fd; color: #0066cc; font-size: 0.9rem; }
+big { font-size: 2rem; font-weight: bold; color: var(--accent-color); }
+ul { padding-left: 1rem; }
+
+
 }
