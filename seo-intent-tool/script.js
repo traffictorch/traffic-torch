@@ -1,26 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
-  
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const url = document.getElementById('url-input').value.trim();
+
     results.innerHTML = '<p class="text-center text-2xl py-20">Analyzing page…</p>';
     results.classList.remove('hidden');
 
-	try {
-	  const proxyUrl = "https://cors-proxy.traffictorch.workers.dev/?" + encodeURIComponent(url);
-	  const res = await fetch("https://cors.bridged.cc/" + url);
-	    
+    try {
+      // THIS IS THE ONLY LINE THAT MATTERS FOR CORS
+      const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?" + encodeURIComponent(url));
+
+      if (!res.ok) throw new Error('Fetch failed – check URL or try again');
+
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
       const text = doc.body.textContent || '';
       const words = text.split(/\s+/).filter(Boolean).length;
       const sentences = (text.match(/[.!?]+/g) || []).length || 1;
-      const syllables = text.split(/\s+/).reduce((a,w) => a + (w.match(/[aeiouy]+/gi) || []).length, 0);
-      const readability = Math.round(206.835 - 1.015*(words/sentences) - 84.6*(syllables/words));
+      const syllables = text.split(/\s+/).reduce((a, w) => a + (w.match(/[aeiouy]+/gi) || []).length, 0);
+      const readability = Math.round(206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words));
 
       const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
       const schemaTypes = [];
@@ -33,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       const title = doc.title.toLowerCase();
-      let intent = 'Informational', confidence = 60;
+      let intent = 'Informational', confidence =  = 60;
       if (/buy|best|review|price/.test(title)) { intent = 'Commercial'; confidence = 88; }
       else if (/how|what|guide|tutorial/.test(title)) { intent = 'Informational'; confidence = 92; }
       else if (/near me|location/.test(title)) { intent = 'Local'; confidence = 82; }
@@ -44,15 +46,17 @@ document.addEventListener('DOMContentLoaded', () => {
         Authoritativeness: schemaTypes.length > 0 ? 94 : 40,
         Trustworthiness: url.startsWith('https') ? 96 : 60
       };
-      const eeatAvg = Math.round(Object.values(eeat).reduce((a,b)=>a+b)/4);
+
+      const eeatAvg = Math.round(Object.values(eeat).reduce((a,b) => a+b)/4);
       const depthScore = words > 2000 ? 95 : words > 1200 ? 82 : words > 700 ? 65 : 35;
       const readScore = readability > 70 ? 90 : readability > 50 ? 75 : 45;
       const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length*8)/5);
 
-      // Render everything into your original sections
+      // Render results
       document.getElementById('overall-score').textContent = `${overall}/100`;
       document.getElementById('radar-chart').innerHTML = generateRadar(eeat);
       document.getElementById('intent-type').innerHTML = `<strong>${intent}</strong> (${confidence}% confidence)`;
+
       document.getElementById('content-depth').innerHTML = `
         <p><strong>Word Count:</strong> ${words.toLocaleString()}</p>
         <p><strong>Readability (Flesch):</strong> ${readability} ${readability<60?'→ too complex':''}</p>`;
@@ -84,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('rank-forecast').textContent = `${overall > 88 ? 'Top 3' : overall > 70 ? 'Top 10' : 'Page 2+'} – Apply fixes → +${Math.round((100-overall)*1.3)}% traffic`;
 
     } catch (err) {
-      results.innerHTML = `<p class="text-red-500 text-center">Error: ${err.message}</p>`;
+      results.innerHTML = `<p class="text-red-500 text-center text-xl">Error: ${err.message}</p>`;
     }
   });
 
