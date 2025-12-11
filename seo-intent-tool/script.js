@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       const title = doc.title.toLowerCase();
-      let intent = 'Informational', confidence =  = 60;
+      let intent = 'Informational', confidence = 60;
       if (/buy|best|review|price/.test(title)) { intent = 'Commercial'; confidence = 88; }
       else if (/how|what|guide|tutorial/.test(title)) { intent = 'Informational'; confidence = 92; }
       else if (/near me|location/.test(title)) { intent = 'Local'; confidence = 82; }
