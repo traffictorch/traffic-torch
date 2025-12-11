@@ -52,11 +52,37 @@ document.addEventListener('DOMContentLoaded', () => {
       const readScore = readability > 70 ? 90 : readability > 50 ? 75 : 45;
       const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length * 8) / 5);
 
+
+
+
       // ONE SINGLE SAFE RENDER — no more null errors ever
 	results.innerHTML = `
   <div class="max-w-5xl mx-auto space-y-12">
 
-    <!-- Intent Section -->
+    <!-- BIG MAIN SCORE CIRCLE – now back & gorgeous -->
+    <div class="flex justify-center my-12">
+      <div class="relative">
+        <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
+          <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
+          <circle cx="130" cy="130" r="120" stroke="url(#bigGradient)" stroke-width="18" fill="none"
+                  stroke-dasharray="${(overall / 100) * 754} 754" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="bigGradient">
+              <stop offset="0%" stop-color="#ef4444"/>
+              <stop offset="100%" stop-color="#22c55e"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="text-center">
+            <div class="text-7xl font-black text-white drop-shadow-2xl">${overall}</div>
+            <div class="text-2xl text-white/90 -mt-2">/100</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTENT – now correct confidence (60% bug fixed) -->
     <div class="text-center mb-12">
       <p class="text-3xl font-bold mb-6">
         Intent: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${intent}</span>
@@ -64,12 +90,12 @@ document.addEventListener('DOMContentLoaded', () => {
       </p>
       <div class="max-w-2xl mx-auto space-y-4 p-6 bg-white/10 dark:bg-gray-900/50 rounded-2xl border border-gray-200/20">
         <p><strong>What:</strong> ${intent === 'Informational' ? 'Content that educates or answers questions.' : intent === 'Commercial' ? 'Research-focused content for buyers.' : intent === 'Local' ? 'Location-specific content.' : 'Conversion-focused content.'}</p>
-        <p><strong>How:</strong> ${intent === 'Informational' ? 'Use headings, lists, images, and FAQs for clarity.' : intent === 'Commercial' ? 'Include comparisons, reviews, reviews, pros/cons, pricing.' : intent === 'Local' ? 'Add maps, hours, reviews, contact info.' : 'Clear CTAs, trust seals, easy navigation.'}</p>
-        <p><strong>Why:</strong> ${intent === 'Informational' ? 'Matches user learning needs, reduces bounce rates.' : intent === 'Commercial' ? 'Builds trust during research, boosts conversions.' : intent === 'Local' ? 'Improves local SEO and Maps visibility.' : 'Drives direct purchases and revenue.'}</p>
+        <p><strong>How:</strong> ${intent === 'Informational' ? 'Use headings, lists, images, FAQs.' : intent === 'Commercial' ? 'Comparisons, reviews, pricing.' : intent === 'Local' ? 'Maps, hours, reviews.' : 'Clear CTAs, trust seals.'}</p>
+        <p><strong>Why:</strong> ${intent === 'Informational' ? 'Matches user learning needs.' : intent === 'Commercial' ? 'Builds trust before purchase.' : intent === 'Local' ? 'Improves local visibility.' : 'Drives sales.'}</p>
       </div>
     </div>
 
-    <!-- E-E-A-T 4 Cards Side by Side -->
+    <!-- 4 E-E-A-T cards – unchanged & working -->
     <div class="grid md:grid-cols-4 gap-6 my-16">
       ${Object.entries(eeat).map(([key, val], i) => `
         <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border ${val >= 80 ? 'border-green-500' : val >= 60 ? 'border-yellow-500' : 'border-red-500'}">
@@ -86,15 +112,15 @@ document.addEventListener('DOMContentLoaded', () => {
             Show Fixes
           </button>
           <div class="hidden mt-6 space-y-3 text-left text-sm">
-            <p><strong>What:</strong> ${key === 'Experience' ? 'First-hand knowledge shown in content.' : key === 'Expertise' ? 'Demonstrated skill or knowledge.' : key === 'Authoritativeness' ? 'Recognized as a go-to source.' : 'Reliability and honesty of the site.'}</p>
-            <p><strong>How:</strong> ${key === 'Experience' ? 'Use "I/we" stories, photos, case studies.' : key === 'Expertise' ? 'Add author bio, credentials, citations.' : key === 'Authoritativeness' ? 'Backlinks, schema, awards.' : 'HTTPS, privacy policy, contact page.'}</p>
-            <p><strong>Why:</strong> ${key === 'Experience' ? 'Builds connection, ranks higher in YMYL.' : key === 'Expertise' ? 'Google favors experts.' : key === 'Authoritativeness' ? 'Boosts domain authority.' : 'Increases trust, lowers bounce.'}</p>
+            <p><strong>What:</strong> ${key === 'Experience' ? 'First-hand knowledge shown.' : key === 'Expertise' ? 'Proven skill/knowledge.' : key === 'Authoritativeness' ? 'Recognized authority.' : 'Site reliability.'}</p>
+            <p><strong>How:</strong> ${key === 'Experience' ? '"I/we" stories, photos.' : key === 'Expertise' ? 'Author bio + credentials.' : key === 'Authoritativeness' ? 'Backlinks, schema.' : 'HTTPS, contact page.'}</p>
+            <p><strong>Why:</strong> ${key === 'Experience' ? 'Builds connection.' : key === 'Expertise' ? 'Google favors experts.' : key === 'Authoritativeness' ? 'Higher rankings.' : 'Increases trust.'}</p>
           </div>
         </div>
       `).join('')}
     </div>
 
-    <!-- Rank Forecast – exact match to your screenshot -->
+    <!-- Rank Forecast – unchanged -->
     <div class="text-center mt-16 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
       <p class="text-3xl font-medium opacity-80">Current Ranking Potential</p>
       <p class="text-7xl font-black mt-4">${overall > 88 ? 'Top 3' : overall > 75 ? 'Top 10' : overall > 60 ? 'Page 1 Possible' : 'Page 2+'}</p>
@@ -103,9 +129,9 @@ document.addEventListener('DOMContentLoaded', () => {
         Show Details
       </button>
       <div class="hidden mt-8 space-y-4 text-left max-w-xl mx-auto text-lg">
-        <p><strong>What:</strong> Estimated SERP position based on E-E-A-T + content depth</p>
-        <p><strong>How:</strong> Apply all fixes above → monitor in GSC → resubmit URL</p>
-        <p><strong>Why:</strong> Strong E-E-A-T = higher rankings = more clicks = more traffic</p>
+        <p><strong>What:</strong> Estimated SERP position</p>
+        <p><strong>How:</strong> Apply fixes → monitor GSC</p>
+        <p><strong>Why:</strong> Strong E-E-A-T = higher rankings</p>
       </div>
     </div>
 
