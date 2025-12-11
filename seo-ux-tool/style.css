@@ -96,3 +96,8 @@ html.light .details li { background: rgba(0,0,0,0.05); }
 html.light #url-form button {
   background-image: linear-gradient(to right, #fb923c, #ec4899) !important;
 }
+
+/* KILL BLACK CIRCLES — override Tailwind's fill: currentColor */
+circle.bg {
+  fill: none !important;
+}
