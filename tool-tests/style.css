@@ -20,7 +20,7 @@ button { background:var(--accent); color:white; cursor:pointer; font-weight:600;
 
 .score-card { background:var(--card); border-radius:16px; padding:2rem; margin:1.5rem 0; text-align:center; box-shadow:0 8px 25px rgba(0,0,0,0.08); }
 .score-circle { width:180px; height:180px; margin:0 auto 1rem; }
-.score-circle svg { width:100%; height:100%; transform:rotate(-90deg); }
+.score-circle svg { width:100%; height:100%; }
 .bg { fill:none; stroke:var(--track); stroke-width:14; }
 .progress { fill:none; stroke:#f44336; stroke-width:14; stroke-linecap:round; stroke-dasharray:0 339; transition:stroke-dasharray 1s ease, stroke .3s; }
 .number { font: bold 52px system-ui; fill: var(--text); text-anchor: middle; dominant-baseline: middle; opacity: 0; transition: opacity 0.5s ease; }
