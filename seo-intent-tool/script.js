@@ -9,11 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
     results.innerHTML = '<p class="text-center text-2xl py-20">Analyzing page…</p>';
     results.classList.remove('hidden');
 
-    try {
-	const proxyUrl = "https://cors-proxy.traffictorch.workers.dev/?" + encodeURIComponent(url);
-	const res = await fetch(proxyUrl, { headers: { Origin: "https://traffictorch.net" } });
-  headers: { Origin: 'https://traffictorch.net' }
-});
+	try {
+	  const proxyUrl = "https://cors-proxy.traffictorch.workers.dev/?" + encodeURIComponent(url);
+	  const res = await fetch(proxyUrl, { headers: { Origin: "https://traffictorch.net" } });
+  
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
