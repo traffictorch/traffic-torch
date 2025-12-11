@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       // THIS IS THE ONLY LINE THAT MATTERS FOR CORS
-      const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?" + encodeURIComponent(url));
-
+	  const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
+	  
       if (!res.ok) throw new Error('Fetch failed – check URL or try again');
 
       const html = await res.text();
