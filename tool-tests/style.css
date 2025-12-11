@@ -56,8 +56,22 @@ html.light .number { fill:#0f172a; }
 
 .label { font-size:1.3rem; font-weight:700; margin-top:12px; }
 .expand { margin-top:1rem; padding:1rem 2rem; background:var(--accent); color:white; border:none; border-radius:50px; font-weight:600; cursor:pointer; }
-.details { width: 100%; max-width: 100%; margin-top: 1.5rem; text-align: left; }
-.details li { width: 100%; padding: 1.5rem; background: rgba(255,255,255,0.1); border-radius: 12px; word-break: break-word; }
+.details {
+  width: 100%;
+  max-width: none;
+  margin-top: 1.5rem;
+  padding: 0 1rem;
+}
+.details li {
+  width: 100%;
+  max-width: 100%;
+  padding: 1.8rem;
+  background: rgba(255,255,255,0.1);
+  border-radius: 16px;
+  margin-bottom: 1rem;
+  word-wrap: break-word;
+}
+html.light .details li { background: rgba(0,0,0,0.07); }
 html.light .details li { background: rgba(0,0,0,0.05); }
 #loader { text-align:center; padding:4rem; font-size:1.5rem; opacity:0.8; }
 .hidden { display:none; }
