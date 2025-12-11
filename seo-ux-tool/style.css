@@ -97,7 +97,5 @@ html.light #url-form button {
   background-image: linear-gradient(to right, #fb923c, #ec4899) !important;
 }
 
-/* KILL BLACK CIRCLES — override Tailwind's fill: currentColor */
-circle.bg {
-  fill: none !important;
-}
+/* KILL BLACK CIRCLES — stop body color bleeding into SVG */
+html.light .score-circle circle { fill: none !important; }
