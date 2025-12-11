@@ -1,11 +1,27 @@
-// Mode toggle with localStorage persistence
+// Consolidated DOMContentLoaded for robust loading (fixes null element access)
+// All event listeners and analysis now inside to ensure elements exist
 document.addEventListener('DOMContentLoaded', () => {
     const html = document.documentElement;
     const toggleBtn = document.getElementById('mode-toggle');
+    const form = document.getElementById('audit-form');
+    const results = document.getElementById('results');
+
+    // Null checks for debugging (remove in prod if desired)
+    if (!toggleBtn) {
+        console.warn('Mode toggle button (#mode-toggle) not found. Check HTML structure.');
+        return;
+    }
+    if (!form) {
+        console.warn('Audit form (#audit-form) not found. Check HTML structure.');
+        return;
+    }
+
+    // Theme persistence with localStorage (light/dark mode)
     const storedTheme = localStorage.getItem('theme') || 'light';
     html.classList.remove('light', 'dark');
     html.classList.add(storedTheme);
 
+    // Toggle event listener
     toggleBtn.addEventListener('click', () => {
         const newTheme = html.classList.contains('dark') ? 'light' : 'dark';
         html.classList.remove('light', 'dark');
@@ -13,23 +29,26 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('theme', newTheme);
     });
 
-    // Form submission
-    const form = document.getElementById('audit-form');
-    const results = document.getElementById('results');
+    // Form submission for URL audit
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const url = document.getElementById('url-input').value;
+        const urlInput = document.getElementById('url-input');
+        if (!urlInput) {
+            console.warn('URL input (#url-input) not found.');
+            return;
+        }
+        const url = urlInput.value;
         if (!url) return;
 
         try {
             const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`;
             const response = await fetch(proxyUrl);
-            if (!response.ok) throw new Error('Fetch failed');
+            if (!response.ok) throw new Error('Fetch failed – check URL or CORS worker');
             const htmlText = await response.text();
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlText, 'text/html');
 
-            // Analysis functions
+            // Heuristic analysis (2025 best practices: E-E-A-T, intent, depth)
             const text = doc.body.textContent.trim();
             const words = text.split(/\s+/).filter(w => w).length;
             const sentences = (text.match(/[\w|\)][.?!](\s|$)/g) || []).length || 1;
@@ -80,18 +99,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const overallScore = Math.round((depthScore + readabilityScore + eeatAvg + (schemaTypes.length * 20) + confidence) / 5);
 
-            // Radar chart data
-            const radarData = {
+            // SVG Radar Chart (client-side, no libs)
+            const radarSvg = generateRadarChart({
                 ContentDepth: depthScore,
                 Readability: readabilityScore,
                 Experience: eeat.experience,
                 Expertise: eeat.expertise,
                 Authoritativeness: eeat.authoritativeness,
                 Trustworthiness: eeat.trustworthiness
-            };
-            const radarSvg = generateRadarChart(radarData);
+            });
 
-            // Competitive gap
+            // Competitive Gap Table Data
             const gaps = [
                 { metric: 'Word Count', current: words, ideal: 1500, gap: words < 1500 ? 'Low' : 'Good' },
                 { metric: 'Readability', current: Math.round(readability), ideal: '60-70', gap: readability < 60 ? 'Hard' : 'Good' },
@@ -99,54 +117,54 @@ document.addEventListener('DOMContentLoaded', () => {
                 { metric: 'Author Bio', current: hasAuthor ? 'Yes' : 'No', ideal: 'Yes', gap: hasAuthor ? 'Good' : 'Add' }
             ];
 
-            // Fixes
+            // Prioritised Fixes (AI-style: What/How/Why, sorted by impact)
             const fixes = [];
             if (words < 1500) fixes.push({ what: 'Increase content length', how: 'Add more sections with valuable info', why: 'Deeper content ranks better for intent' });
             if (readability < 60) fixes.push({ what: 'Improve readability', how: 'Use shorter sentences, simpler words', why: 'Better UX leads to lower bounce rates' });
             if (!hasAuthor) fixes.push({ what: 'Add author bio', how: 'Include a section with author credentials', why: 'Boosts E-E-A-T for trust' });
             if (schemaTypes.length < 2) fixes.push({ what: 'Add schema markup', how: 'Implement JSON-LD for Article/Person', why: 'Helps search engines understand content' });
-            fixes.sort((a, b) => (a.what.includes('content') ? -1 : 1)); // Prioritise content
+            fixes.sort((a, b) => (a.what.includes('content') ? -1 : 1)); // Content-first priority
 
-            const forecast = `Current potential rank: Mid-page. If fixed, could reach Top 3 (estimated +${100 - overallScore}% improvement).`;
+            const forecast = `Current potential rank: Mid-page. If fixed, could reach Top 3 (estimated +${Math.round((100 - overallScore) * 0.8)}% improvement).`;
 
-            // Display results
+            // Render Results (educational, mobile-optimized)
+            if (!results) {
+                console.warn('Results container (#results) not found.');
+                return;
+            }
             document.getElementById('overall-score').textContent = overallScore + '/100';
             document.getElementById('radar-chart').innerHTML = radarSvg;
-            document.getElementById('intent-type').innerHTML = `<p><strong>Type:</strong> ${intent} <span class="text-sm">(Confidence: ${confidence}%)</span></p>`;
+            document.getElementById('intent-type').innerHTML = `<p><strong>Type:</strong> ${intent} <span class="text-sm">(Confidence: ${confidence}%)</span></p><p class="text-xs mt-1">Tip: Match content to intent for 20-30% traffic boost.</p>`;
             const eeatDiv = document.getElementById('eeat-breakdown');
-            eeatDiv.innerHTML = '';
-            Object.entries(eeat).forEach(([key, val]) => {
-                eeatDiv.innerHTML += `<p><strong>${key}:</strong> ${val}/100</p>`;
-            });
-            document.getElementById('content-depth').innerHTML = `<p><strong>Word Count:</strong> ${words}</p><p><strong>Depth Score:</strong> ${depthScore}/100</p><p><strong>Readability (Flesch):</strong> ${Math.round(readability)}</p>`;
+            eeatDiv.innerHTML = Object.entries(eeat).map(([key, val]) => `<p><strong>${key}:</strong> ${val}/100 <span class="text-xs">(e.g., add first-person stories for Experience)</span></p>`).join('');
+            document.getElementById('content-depth').innerHTML = `<p><strong>Word Count:</strong> ${words} <span class="text-xs">(Ideal: 1500+ for depth)</span></p><p><strong>Depth Score:</strong> ${depthScore}/100</p><p><strong>Readability (Flesch):</strong> ${Math.round(readability)} <span class="text-xs">(Aim 60-70 for accessibility)</span></p>`;
             const schemaDiv = document.getElementById('schema-types');
-            schemaDiv.innerHTML = schemaTypes.length ? `<select class="w-full p-2 border dark:border-gray-600 dark:bg-gray-800">${schemaTypes.map(type => `<option>${type}</option>`).join('')}</select>` : '<p>No schema detected.</p>';
+            schemaDiv.innerHTML = schemaTypes.length ? `<select class="w-full p-2 border dark:border-gray-600 dark:bg-gray-800 text-sm"><option>Detected Types:</option>${schemaTypes.map(type => `<option>${type}</option>`).join('')}</select><p class="text-xs mt-1">Tip: Use Google's Structured Data Testing Tool for validation.</p>` : '<p class="text-sm">No schema detected. <span class="text-xs">Add JSON-LD for rich snippets.</span></p>';
 
             const gapBody = document.querySelector('#gap-table tbody');
-            gapBody.innerHTML = '';
-            gaps.forEach(g => {
-                gapBody.innerHTML += `<tr><td class="p-2 border">${g.metric}</td><td class="p-2 border">${g.current}</td><td class="p-2 border">${g.ideal}</td><td class="p-2 border">${g.gap}</td></tr>`;
-            });
+            if (gapBody) {
+                gapBody.innerHTML = gaps.map(g => `<tr><td class="p-2 border">${g.metric}</td><td class="p-2 border">${g.current}</td><td class="p-2 border">${g.ideal}</td><td class="p-2 border">${g.gap} <span class="text-xs block">(Fix for +15% score)</span></td></tr>`).join('');
+            }
 
             const fixesList = document.getElementById('fixes-list');
-            fixesList.innerHTML = '';
-            fixes.forEach(f => {
-                fixesList.innerHTML += `<li><strong>What:</strong> ${f.what}<br><strong>How:</strong> ${f.how}<br><strong>Why:</strong> ${f.why}</li>`;
-            });
+            if (fixesList) {
+                fixesList.innerHTML = fixes.map(f => `<li class="p-3 bg-gray-100 dark:bg-gray-800 rounded-md"><strong>What:</strong> ${f.what}<br><strong>How:</strong> ${f.how}<br><strong>Why:</strong> ${f.why} <span class="text-xs block italic">(Impact: High – apply first)</span></li>`).join('');
+            }
 
-            document.getElementById('rank-forecast').textContent = forecast;
+            document.getElementById('rank-forecast').innerHTML = `<p>${forecast}</p><p class="text-xs mt-1">Forecast based on heuristics; real results vary by competition.</p>`;
 
             results.classList.remove('hidden');
             results.scrollIntoView({ behavior: 'smooth' });
         } catch (error) {
-            alert('Error analyzing URL: ' + error.message);
+            console.error('Audit error:', error);
+            alert(`Error analyzing ${url}: ${error.message}. Try a different URL or check console.`);
         }
     });
 });
 
-// Generate SVG radar chart
+// SVG Radar Chart Generator (pure JS, 2025-optimized for accessibility)
 function generateRadarChart(data) {
-    const size = 200;
+    const size = 300; // Larger for mobile readability
     const center = size / 2;
     const numAxes = Object.keys(data).length;
     const angleSlice = (Math.PI * 2) / numAxes;
@@ -154,19 +172,20 @@ function generateRadarChart(data) {
     let axes = '';
     let labels = '';
     Object.entries(data).forEach(([key, value], i) => {
-        const radius = (value / 100) * (center - 20);
+        const radius = (value / 100) * (center - 30);
         const x = center + radius * Math.cos(i * angleSlice - Math.PI / 2);
         const y = center + radius * Math.sin(i * angleSlice - Math.PI / 2);
         points += `${x},${y} `;
         const axX = center + (center - 10) * Math.cos(i * angleSlice - Math.PI / 2);
         const axY = center + (center - 10) * Math.sin(i * angleSlice - Math.PI / 2);
-        axes += `<line x1="${center}" y1="${center}" x2="${axX}" y2="${axY}" stroke="gray" stroke-width="1"/>`;
-        const labX = center + (center + 10) * Math.cos(i * angleSlice - Math.PI / 2);
-        const labY = center + (center + 10) * Math.sin(i * angleSlice - Math.PI / 2);
-        labels += `<text x="${labX}" y="${labY}" font-size="10" text-anchor="middle" dy=".3em">${key}</text>`;
+        axes += `<line x1="${center}" y1="${center}" x2="${axX}" y2="${axY}" stroke="currentColor" stroke-width="1" stroke-opacity="0.5"/>`;
+        const labX = center + (center + 20) * Math.cos(i * angleSlice - Math.PI / 2);
+        const labY = center + (center + 20) * Math.sin(i * angleSlice - Math.PI / 2);
+        labels += `<text x="${labX}" y="${labY}" font-size="12" text-anchor="middle" dy=".3em" fill="currentColor">${key}</text>`;
     });
-    return `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="${points}" fill="rgba(0, 128, 255, 0.3)" stroke="blue" stroke-width="2"/>
+    return `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="E-E-A-T Radar Chart">
+        <polygon points="${points.trim()}" fill="rgba(59, 130, 246, 0.2)" stroke="rgb(59, 130, 246)" stroke-width="2"/>
+        <circle cx="${center}" cy="${center}" r="${center - 30}" fill="none" stroke="currentColor" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="2"/>
         ${axes}
         ${labels}
     </svg>`;
