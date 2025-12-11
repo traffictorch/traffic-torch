@@ -1,16 +1,12 @@
-/* Only needed for the radar chart – everything else is Tailwind */
-.radar {
-  width: 200px;
-  height: 200px;
-  margin: 2rem auto;
-  display: block;
+/* Custom styles beyond Tailwind, if needed (e.g., SVG tweaks) */
+#radar-chart svg {
+    width: 100%;
+    height: auto;
 }
 
-/* Remove any old body background rules – we use the wrapper div now */
-body { transition: background-color 0.3s ease; }
-
-/* Fix green card once and for all */
-.health-score polygon { fill: rgba(16, 185, 129, 0.3); }
-
-.radar { width: 180px; height: 180px; margin: 1.5rem auto; display: block; }
-.health-score h2 { margin-bottom: 0.5rem; }
+/* Ensure mobile-friendliness overrides */
+@media (max-width: 640px) {
+    table {
+        font-size: 0.875rem;
+    }
+}

@@ -1,20 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light-scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About – Traffic Torch</title>
-  <link rel="icon" href="/favicon.ico" />
-  
-  <!-- GLOBAL STYLES -->
-  <link rel="stylesheet" href="/style.css">
-
-  <!-- Tool-specific styles -->
-  <link rel="stylesheet" href="/about/style.css" />
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intent + E-E-A-T Auditor | Traffic Torch</title>
+    <meta name="description" content="Instant 360° intent & E-E-A-T audit with AI fixes and rank forecast.">
+    <link rel="manifest" href="/manifest.json">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/seo-intent-tool/style.css">
 </head>
+
 <body class="min-h-screen transition-colors duration-300">
 
       <!-- EXACT SAME HEADER AS HOME PAGE -->
@@ -53,18 +49,72 @@
     </div>
   </header>
   
-  <div class="container mx-auto px-6 py-16 max-w-4xl">
-    <header class="text-center mb-16">
+  <!-- MAGIC WRAPPER THAT MAKES DARK MODE WORK (same as every other tool) -->
+  
+  <div class="bg-white dark:bg-black/90 min-h-screen">
 
-      <h1 class="text-6xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-6">
-        About Traffic Torch 
-      </h1>
-      <p class="text-xl text-gray-300 max-w-2xl mx-auto">
-        Instant SEO + UX audit tools 🚦🔦.
-      </p>
-    </header>
+    <main class="container mx-auto px-6 py-12 max-w-5xl">
 
-    <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-white/10">
+      <header class="text-center mb-16">
+        <h1 class="text-5xl md:text-7xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight">
+          Intent + E-E-A-T<br>SEO Auditor 🚀
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300 mt-6">
+          Does Google trust this page? Does it answer the searcher’s question?<br class="hidden md:block"> Get your 360° score now.
+        </p>
+      </header>
+
+      <form id="audit-form" class="max-w-2xl mx-auto mb-20">
+        <div class="flex flex-col md:flex-row gap-4">
+          <input type="url" id="url-input" placeholder="https://example.com" required
+                 class="flex-1 px-6 py-4 rounded-xl bg-gray-100 dark:bg-white/10 border border-gray-300 dark:border-white/20 focus:outline-none focus:ring-4 focus:ring-orange-500/30 text-gray-900 dark:text-white text-lg">
+          <button type="submit" class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 rounded-xl font-bold text-white hover:from-orange-600 hover:to-pink-700 transition shadow-lg">
+            Analyse 🎯
+          </button>
+        </div>
+      </form>
+
+      <section id="loading" class="hidden text-center py-20">
+        <p class="text-2xl text-gray-600 dark:text-gray-300">Scanning intent & trust signals…</p>
+      </section>
+
+      <section id="results" class="hidden space-y-16">
+
+        <div class="health-score text-center py-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl shadow-2xl">
+          <h2 class="text-4xl md:text-6xl font-black text-white">
+            360° Health Score: <span id="score" class="text-7xl md:text-9xl">85</span>/100
+          </h2>
+          <svg viewBox="0 0 200 200" class="radar mx-auto mt-8"></svg>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-12">
+          <div class="modules bg-gray-100 dark:bg-white/5 rounded-2xl p-8 backdrop-blur">
+            <h3 class="text-2xl font-bold mb-6 text-orange-500">Deep-Dive Modules</h3>
+            <ul id="modules-list" class="space-y-4 text-lg"></ul>
+          </div>
+
+          <div class="space-y-8">
+            <div class="bg-gray-100 dark:bg-white/5 rounded-2xl p-8 backdrop-blur">
+              <h3 class="text-2xl font-bold mb-6 text-orange-500">Competitive Gap Analysis</h3>
+              <table id="gaps-table" class="w-full">
+                <thead class="text-left"><tr class="border-b dark:border-white/10"><th>Metric</th><th>Your Score</th><th>Top Competitor</th><th>Gap</th></tr></thead>
+                <tbody class="text-lg"></tbody>
+              </table>
+            </div>
+
+            <div class="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 text-white">
+              <h3 class="text-2xl font-bold mb-4">Predictive Rank Forecasting</h3>
+              <p id="forecast-text" class="text-2xl font-bold">With fixes, expect +12 positions in 28 days.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fixes bg-gray-100 dark:bg-white/5 rounded-2xl p-8 backdrop-blur">
+          <h3 class="text-2xl font-bold mb-8 text-orange-500">AI-Generated Fixes (Prioritised)</h3>
+          <ol id="fixes-list" class="space-y-6 text-lg"></ol>
+        </div>
+
+      </section>
       
       
 <!-- Traffic Torch – Coming Soon Box (iOS-proof, zero JS, Dec 2025) -->
@@ -83,32 +133,8 @@
     <small>(Tap the header again to collapse)</small>
   </div>
 </details>
-      
-      
-      <h2 class="text-3xl font-bold mb-6">What we do</h2>
-      <p class="text-lg text-gray-300 leading-relaxed mb-8">
-        Honest feedback on AI content, rage-quit risk, core vitals, intent match, and competitive gaps.
-        Built for creators, agencies, and anyone who wants to rank higher and lose fewer visitors.
-      </p>
 
-      <h2 class="text-3xl font-bold mb-6 mt-12">Why we built it</h2>
-      <p class="text-lg text-gray-300 leading-relaxed mb-8">
-        Most SEO tools are bloated, slow, or behind paywalls. We wanted the opposite: fast, free, and brutally accurate.
-        No upsells. No “pro” lockouts. Just tools that work.
-      </p>
-
-      <h2 class="text-3xl font-bold mb-6 mt-12">Roadmap</h2>
-      <ul class="text-lg text-gray-300 space-y-4 mb-12">
-        <li>✓ AI Content Audit</li>
-        <li>✓ Quit Risk</li>
-        <li>✓ Keyword Analysis</li>
-        <li>✓ Competitive Gap</li>
-        <li>✓ Core Vitals</li>
-        <li>✓ Intent + E-E-A-T</li>
-        <li>→ More tools every week</li>
-      </ul>
-      
-      <!-- AddToAny BEGIN -->
+<!-- AddToAny BEGIN -->
 <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
 <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
 <a class="a2a_button_facebook"></a>
@@ -119,18 +145,13 @@
 </div>
 <script defer src="https://static.addtoany.com/menu/page.js"></script>
 <!-- AddToAny END -->
+      
+      
+    </main>
+  </div>
 
-      <div class="text-center">
-        <a href="/" class="inline-block px-12 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
-          ← Back to Dashboard
-        </a>
-      </div>
-    </div>
-    
-    
-
-      <!-- SAME FOOTER AS HOME PAGE -->
-  <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">
+  <!-- Footer (unchanged – already perfect) -->
+   <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">
     <div class="container mx-auto px-6 max-w-6xl">
       <div class="grid md:grid-cols-4 gap-12 text-center md:text-left">
         <div>
@@ -169,7 +190,7 @@
     </div>
   </footer>
 
-  <!-- Load JS last for speed -->
   <script src="/main.js" type="module"></script>
+  <script src="/seo-intent-tool/script.js" defer></script>
 </body>
 </html>
