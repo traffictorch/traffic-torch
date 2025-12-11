@@ -27,16 +27,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const access = analyzeAccess(doc);
 
             // Update scores
-// ← put this BEFORE the updateScore calls
-function updateScore(circleId, score) {
-    const circle = document.querySelector(`#${circleId} .score-circle`);
+function updateScore(cardId, rawScore) {
+    const circle = document.querySelector(`#${cardId} .score-circle`);
     if (!circle) return;
-    const path = circle.querySelector('.circle-progress');
-    const text = circle.querySelector('.percentage');
-    const dashArray = (score / 100) * 100;
-    path.style.strokeDasharray = `${dashArray}, 100`;
+    const score = Math.round(rawScore);
+    const path = circle.querySelector('.progress');
+    const text = circle.querySelector('.number');
+    const circumference = 339;
+    const dash = (score / 100) * circumference;
+
+    path.style.strokeDasharray = `${dash} ${circumference}`;
     text.textContent = score;
-    circle.dataset.score = Math.round(score);
+    circle.dataset.score = score;
 }
 
 // Now call all 4
