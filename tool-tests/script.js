@@ -76,162 +76,161 @@ document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');  // Hi
         }
     });
 
-    // ——————————————————— UPDATED 2025 EDUCATIONAL ANALYSIS ———————————————————
+
+
+
+    // ——————————————————— FINAL 2025 FULL ANALYSIS — ALL CHECKS + 100 POINTS TOTAL ———————————————————
 
     function analyzeSEO(doc) {
         let score = 100;
         const issues = [];
 
-        const title = doc.querySelector('title');
+        const title = doc.querySelector('title')?.textContent.trim();
         if (!title) {
             score -= 25;
-            issues.push({
-                issue: 'Missing <title> tag',
-                fix: '<title>Your Main Keyword – Brand Name (50–60 characters)</title>',
-                why: 'Google uses the title as the blue link in search results. Missing = lost clicks.'
-            });
-        } else if (title.textContent.trim().length < 30 || title.textContent.trim().length > 65) {
+            issues.push({issue: 'Missing <title> tag', fix: '<title>Your Main Keyword – Brand (50–60 chars)</title>', why: 'Google shows this as the blue link — missing = zero clicks'});
+        } else if (title.length < 30 || title.length > 65) {
+            score -= 18;
+            issues.push({issue: `Title length ${title.length} chars`, fix: 'Keep 50–60 characters with main keyword first', why: 'Wrong length = cut off in Google results'});
+        }
+
+        const desc = doc.querySelector('meta[name="description"]')?.content?.trim();
+        if (!desc) {
             score -= 20;
-            issues.push({
-                issue: `Title length bad: ${title.textContent.trim().length} chars`,
-                fix: `<title>${title.textContent.trim().slice(0, 50)}… (keep 50–60 chars)</title>`,
-                why: 'Too short = weak relevance. Too long = cut off in Google results.'
-            });
+            issues.push({issue: 'Missing meta description', fix: '<meta name="description" content="Compelling 150-char summary">', why: 'This is the snippet under your link — huge CTR impact'});
+        } else if (desc.length < 100 || desc.length > 160) {
+            score -= 12;
+            issues.push({issue: `Meta description ${desc.length} chars`, fix: 'Ideal: 120–158 characters', why: 'Perfect length = full snippet shown'});
         }
 
-        const metaDesc = doc.querySelector('meta[name="description"]');
-        if (!metaDesc) {
-            score -= 20;
-            issues.push({
-                issue: 'Missing meta description',
-                fix: '<meta name="description" content="Compelling 150–160 char summary with keywords">',
-                why: 'This text appears under your link in Google. Huge CTR impact.'
-            });
-        } else if (metaDesc.content.length < 100 || metaDesc.content.length > 160) {
+        if (!doc.querySelector('h1')) {
+            score -= 12;
+            issues.push({issue: 'No <h1> heading', fix: '<h1>Main Keyword – Page Topic</h1>', why: 'Most important on-page ranking signal'});
+        }
+
+        const mainKeyword = title?.split(' ')[0]?.toLowerCase() || '';
+        if (mainKeyword && doc.body && !doc.body.textContent.toLowerCase().slice(0, 500).includes(mainKeyword)) {
+            score -= 10;
+            issues.push({issue: 'Main keyword not in first 100 words', fix: 'Include it early in content', why: 'Google expects topic relevance from the start'});
+        }
+        if (mainKeyword && !doc.querySelector('h1')?.textContent.toLowerCase().includes(mainKeyword)) {
+            score -= 10;
+            issues.push({issue: 'Main keyword missing from H1', fix: 'Add keyword to H1', why: 'Strongest relevance signal'});
+        }
+
+        if (doc.querySelector('meta[name="keywords"]')) {
+            score -= 8;
+            issues.push({issue: 'Meta keywords tag found', fix: 'Remove it completely', why: 'Ignored by Google since 2009 — can hurt trust'});
+        }
+
+        if (!doc.querySelector('meta[property="og:title"], meta[name="twitter:card"]')) {
             score -= 15;
-            issues.push({
-                issue: `Meta description length: ${metaDesc.content.length} chars`,
-                fix: 'Keep 120–160 characters for best display in search results',
-                why: 'Perfect length = full snippet shown = higher click-through rate.'
-            });
+            issues.push({issue: 'Missing Open Graph / Twitter cards', fix: 'Add og:title, og:image, twitter:card', why: 'Controls how your link looks when shared'});
         }
 
-        if (doc.querySelectorAll('h1').length === 0) {
-            score -= 15;
-            issues.push({
-                issue: 'No <h1> heading',
-                fix: '<h1>Primary Keyword – Page Topic</h1>',
-                why: 'H1 is the most important on-page signal for topic relevance.'
-            });
-        }
-
-        const imgs = doc.querySelectorAll('img');
-        const noAlt = Array.from(imgs).filter(i => !i.alt || i.alt.trim() === '');
-        if (noAlt.length > 0) {
-            score -= Math.min(20, noAlt.length * 4);
-            issues.push({
-                issue: `${noAlt.length} image(s) missing alt text`,
-                fix: 'Add descriptive alt="…" to every <img> (or alt="" if decorative)',
-                why: 'Critical for accessibility + Google Images ranking.'
-            });
+        const robots = doc.querySelector('meta[name="robots"]');
+        if (robots && /noindex/i.test(robots.content)) {
+            score -= 30;
+            issues.push({issue: 'Page blocked from Google (noindex)', fix: 'Remove noindex', why: 'You are invisible in search results'});
         }
 
         if (!doc.querySelector('link[rel="canonical"]')) {
             score -= 8;
-            issues.push({
-                issue: 'Missing canonical tag',
-                fix: '<link rel="canonical" href="https://yoursite.com/current-page/">',
-                why: 'Prevents duplicate content penalties.'
-            });
+            issues.push({issue: 'Missing canonical tag', fix: '<link rel="canonical" href="https://yoursite.com/page">', why: 'Prevents duplicate content penalties'});
         }
 
-        if (!doc.querySelector('script[type="application/ld+json"]') && !doc.querySelector('[itemscope]')) {
+        if (!doc.querySelector('script[type="application/ld+json"], [itemscope]')) {
             score -= 10;
-            issues.push({
-                issue: 'No structured data (schema.org)',
-                fix: 'Add JSON-LD schema (e.g. Article, FAQ, Organization)',
-                why: 'Enables rich snippets, featured cards, and better visibility.'
-            });
+            issues.push({issue: 'No structured data', fix: 'Add JSON-LD schema', why: 'Enables rich results and featured snippets'});
         }
 
-        return { score: Math.max(0, score), issues };
+        const imgs = doc.querySelectorAll('img');
+        const noAlt = Array.from(imgs).filter(i => !i.alt || i.alt.trim() === '');
+        if (noAlt.length) {
+            score -= Math.min(20, noAlt.length * 5);
+            issues.push({issue: `${noAlt.length} images missing alt text`, fix: 'Add descriptive alt (or alt="" if decorative)', why: 'Critical for Google Images + accessibility'});
+        }
+
+        return { score: Math.max(0, Math.round(score)), issues };
     }
 
     function analyzeMobile(doc) {
         let score = 100;
         const issues = [];
 
-        const viewport = doc.querySelector('meta[name="viewport"]');
-        if (!viewport || !viewport.content.includes('width=device-width')) {
+        const viewport = doc.querySelector('meta[name="viewport"]')?.content || '';
+        if (!viewport.includes('width=device-width')) {
             score -= 35;
-            issues.push({
-                issue: 'Viewport meta missing or wrong',
-                fix: '<meta name="viewport" content="width=device-width, initial-scale=1">',
-                why: 'Without this, mobile users pinch-zoom and Google marks site as not mobile-friendly.'
-            });
+            issues.push({issue: 'Viewport missing or wrong', fix: '<meta name="viewport" content="width=device-width, initial-scale=1">', why: 'Google will mark site as not mobile-friendly'});
         }
 
         if (!doc.querySelector('link[rel="manifest"]')) {
-            score -= 20;
-            issues.push({
-                issue: 'No web app manifest',
-                fix: 'Create manifest.json and link it',
-                why: 'Required for "Add to Home Screen" and full PWA status.'
-            });
+            score -= 25;
+            issues.push({issue: 'Missing web manifest', fix: 'Add manifest.json + link', why: 'Required for Add to Home Screen'});
         }
 
-        if (!doc.querySelector('link[rel="apple-touch-icon"]') && !doc.querySelector('link[rel="icon"][sizes="192x192"]')) {
+        const has192 = doc.querySelector('link[sizes*="192"], link[rel="apple-touch-icon"]');
+        if (!has192) {
             score -= 15;
-            issues.push({
-                issue: 'Missing homescreen icons',
-                fix: 'Add 192×192 PNG + Apple touch icons',
-                why: 'Professional look when saved to phone home screen.'
-            });
+            issues.push({issue: 'Missing 192×192 icon', fix: 'Add large icon for homescreen', why: 'Looks professional when saved to phone'});
         }
 
-        return { score: Math.max(0, score), issues };
+        const hasSW = Array.from(doc.querySelectorAll('script')).some(s => s.textContent.includes('serviceWorker'));
+        if (!hasSW) {
+            score -= 10;
+            issues.push({issue: 'No service worker detected', fix: 'Add sw.js registration', why: 'Needed for full PWA status'});
+        }
+
+        return { score: Math.max(0, Math.round(score)), issues };
     }
 
     function analyzePerf(html, doc) {
         let score = 100;
         const issues = [];
 
-        const htmlKB = (html.length / 1024).toFixed(0);
-        if (htmlKB > 120) {
-            score -= 25;
-            issues.push({
-                issue: `HTML size ${htmlKB} KB (very heavy)`,
-                fix: 'Minify HTML, remove comments and whitespace',
-                why: 'Large HTML = slower First Contentful Paint and worse Core Web Vitals.'
-            });
+        const sizeKB = Math.round(html.length / 1024);
+        if (sizeKB > 300) score -= 30;
+        else if (sizeKB > 150) score -= 15;
+        issues.push({issue: `Page weight: ${sizeKB} KB`, fix: sizeKB > 200 ? 'Minify + compress images' : 'Good size', why: 'Directly affects load time and Core Web Vitals'});
+
+        const requests = doc.querySelectorAll('link[rel="stylesheet"], script[src], img[src], iframe[src]').length + 1;
+        if (requests > 50) score -= 25;
+        else if (requests > 30) score -= 15;
+        issues.push({issue: `${requests} requests`, fix: requests > 40 ? 'Too many — bundle + lazy-load' : 'Acceptable', why: 'Each request adds mobile latency'});
+
+        const fonts = doc.querySelectorAll('link[href*="font"], link[href*="googleapis"]').length;
+        if (fonts > 4) {
+            score -= 12;
+            issues.push({issue: `${fonts} font requests`, fix: 'Limit to 2–3 fonts', why: 'Fonts are render-blocking'});
         }
 
-        const requests = doc.querySelectorAll('link[rel="stylesheet"], script[src], img[src]').length + 1;
-        if (requests > 30) {
-            score -= 20;
-            issues.push({
-                issue: `${requests} HTTP requests (too many)`,
-                fix: 'Combine CSS/JS, use lazy-loading, image sprites or WebP',
-                why: 'Each request adds latency, especially on mobile 4G.'
-            });
+        const blocking = doc.querySelectorAll('link[rel="stylesheet"]:not([media]), script:not([async]):not([defer])').length;
+        if (blocking > 4) {
+            score -= 15;
+            issues.push({issue: `${blocking} render-blocking resources`, fix: 'Add async/defer or inline critical CSS', why: 'Delays First Contentful Paint'});
         }
 
-        return { score: Math.max(0, score), issues };
+        return { score: Math.max(0, Math.round(score)), issues };
     }
 
     function analyzeAccess(doc) {
         let score = 100;
         const issues = [];
 
-        const imgs = doc.querySelectorAll('img');
-        const noAlt = Array.from(imgs).filter(i => !i.alt || i.alt.trim() === '');
-        if (noAlt.length > 0) {
-            score -= Math.min(35, noAlt.length * 7);
-            issues.push({
-                issue: `${noAlt.length} image(s) missing alt text`,
-                fix: 'Every image needs alt="description" (or alt="" if decorative)',
-                why: 'Legal requirement (WCAG) + huge accessibility win.'
-            });
+        const missingAlts = Array.from(doc.querySelectorAll('img')).filter(i => !i.alt || i.alt.trim() === '').length;
+        if (missingAlts) {
+            score -= Math.min(35, missingAlts * 8);
+            issues.push({issue: `${missingAlts} images missing alt text`, fix: 'Add descriptive alt (or alt="" if decorative)', why: 'Legal WCAG requirement + Google Images'});
+        }
+
+        if (!doc.documentElement.lang) {
+            score -= 12;
+            issues.push({issue: 'Missing lang attribute', fix: 'Add lang="en" to <html>', why: 'Required for screen readers and SEO'});
+        }
+
+        if (!doc.querySelector('main, [role="main"]')) {
+            score -= 15;
+            issues.push({issue: 'Missing main landmark', fix: 'Add <main> or role="main"', why: 'Screen readers jump to main content'});
         }
 
         const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
@@ -241,15 +240,18 @@ document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');  // Hi
             if (lvl > prev + 1) skipped = true;
             prev = lvl;
         });
-        if (skipped && headings.length > 3) {
-            score -= 15;
-            issues.push({
-                issue: 'Heading hierarchy skipped (e.g. H1 → H3)',
-                fix: 'Use proper order: H1 → H2 → H3 → H4',
-                why: 'Screen readers rely on logical heading structure.'
-            });
+        if (skipped && headings.length > 2) {
+            score -= 12;
+            issues.push({issue: 'Heading order skipped', fix: 'Don’t jump from H1 → H3', why: 'Breaks screen reader navigation'});
         }
 
-        return { score: Math.max(0, score), issues };
+        const unlabeled = Array.from(doc.querySelectorAll('input, textarea, select'))
+            .filter(el => el.id && !doc.querySelector(`label[for="${el.id}"]`));
+        if (unlabeled.length) {
+            score -= 15;
+            issues.push({issue: `${unlabeled.length} form fields without labels`, fix: 'Connect labels with for/id', why: 'Required for accessibility'});
+        }
+
+        return { score: Math.max(0, Math.round(score)), issues };
     }
 });
