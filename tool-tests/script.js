@@ -31,16 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
         issues.forEach(i => {
             const li = document.createElement('li');
             li.innerHTML = `<strong>${i.issue}</strong><br><span style="color:#00c853">Fix →</span> ${i.fix}
-                <button style="margin-left:10px;padding:5px 10px;background:#007bff;color:white;border:none;border-radius:4px;cursor:pointer;font-size:0.8rem"
+                <button style="margin-left:10px;padding:6px 12px;background:#007bff;color:white;border:none;border-radius:4px;cursor:pointer;" 
                         onclick="navigator.clipboard.writeText('${i.fix.replace(/'/g, "\\'")}')">Copy</button>`;
             ul.appendChild(li);
         });
     }
 
     document.querySelectorAll('.expand').forEach(b => b.onclick = () => {
-        const d = b.nextElementSibling;
-        d.classList.toggle('hidden');
-        b.textContent = d.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
+        b.nextElementSibling.classList.toggle('hidden');
+        b.textContent = b.nextElementSibling.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
     });
 
     form.addEventListener('submit', async e => {
@@ -73,11 +72,93 @@ document.addEventListener('DOMContentLoaded', () => {
 
             loader.classList.add('hidden');
             results.classList.remove('hidden');
-        } catch { loader.classList.add('hidden'); alert('Failed – try another URL'); }
+        } catch {
+            loader.classList.add('hidden');
+            alert('Failed to analyze — try another site');
+        }
     });
 
-    function analyzeSEO(d) { let s=100,i=[]; const t=d.querySelector('title'); if(!t||t.textContent.length<10||t.textContent.length>60){s-=20;i.push({issue:'Bad title',fix:'50–60 char keyword-rich title'});} if(!d.querySelector('meta[name="description"]')){s-=15;i.push({issue:'Missing meta description',fix:'Add 150–160 char description'});} return {score:s,issues:i}; }
-    function analyzeMobile(d) { let s=100,i=[]; if(!d.querySelector('meta[name="viewport"]')?.content.includes('width=device-width')){s-=30;i.push({issue:'Bad viewport',fix:'Add proper viewport meta'});} if(!d.querySelector('link[rel="manifest"]')){s-=20;i.push({issue:'No manifest',fix:'Add manifest.json'});} return {score:s,issues:i}; }
-    function analyzePerf(h,d) { let s=100,i=[]; if(h.length/1024>120){s-=25;i.push({issue:'HTML too big',fix:'Minify HTML'});} return {score:s,issues:i}; }
-    function analyzeAccess(d) { let s=100,i=[]; const a=Array.from(d.querySelectorAll('img')).filter(x=>!x.alt).length; if(a>0){s-=Math.min(30,a*6);i.push({issue:`${a} missing alts`,fix:'Add alt to every image'});} return {score:s,issues:i}; }
+    // ← YOUR FULL ORIGINAL ANALYSIS FUNCTIONS BELOW (unchanged) ↓
+
+    function analyzeSEO(doc) {
+        let score = 100;
+        const issues = [];
+        const title = doc.querySelector('title');
+        if (!title || title.textContent.length < 10 || title.textContent.length > 60) {
+            score -= 20;
+            issues.push({issue: 'Title tag missing or suboptimal length.', fix: 'Add <title>Your Page Title (50-60 chars)</title> with keywords.'});
+        }
+        const metaDesc = doc.querySelector('meta[name="description"]');
+        if (!metaDesc || metaDesc.content.length < 50 || metaDesc.content.length > 160) {
+            score -= 15;
+            issues.push({issue: 'Meta description missing or wrong length.', fix: 'Add <meta name="description" content="Your 150-char summary with keywords.">'});
+        }
+        const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
+        if (headings.length === 0) {
+            score -= 10;
+            issues.push({issue: 'No headings found.', fix: 'Use <h1>Main Keyword</h1> and subheadings for structure.'});
+        }
+        const imgs = doc.querySelectorAll('img');
+        const missingAlts = Array.from(imgs).filter(img => !img.alt);
+        if (missingAlts.length > 0) {
+            score -= 10 * Math.min(missingAlts.length / imgs.length, 1);
+            issues.push({issue: `${missingAlts.length} images missing alt text.`, fix: 'Add alt="Descriptive text" to each <img> for SEO and accessibility.'});
+        }
+        if (!doc.querySelector('link[rel="canonical"]')) {
+            score -= 5;
+            issues.push({issue: 'No canonical tag.', fix: 'Add <link rel="canonical" href="https://yoururl.com"> to avoid duplicate content issues.'});
+        }
+        if (!doc.querySelector('[itemscope]')) {
+            score -= 10;
+            issues.push({issue: 'No schema.org markup.', fix: 'Add structured data like <script type="application/ld+json">{JSON schema}</script> for rich snippets.'});
+        }
+        return {score: Math.max(0, score), issues};
+    }
+
+    function analyzeMobile(doc) {
+        let score = 100;
+        const issues = [];
+        const viewport = doc.querySelector('meta[name="viewport"]');
+        if (!viewport || !viewport.content.includes('width=device-width')) {
+            score -= 30;
+            issues.push({issue: 'Missing or incorrect viewport meta.', fix: 'Add <meta name="viewport" content="width=device-width, initial-scale=1.0">.'});
+        }
+        if (!doc.querySelector('link[rel="apple-touch-icon"]')) {
+            score -= 15;
+            issues.push({issue: 'No Apple touch icon.', fix: 'Add <link rel="apple-touch-icon" href="/icon.png">.'});
+        }
+        if (!doc.querySelector('link[rel="manifest"]')) {
+            score -= 20;
+            issues.push({issue: 'No web manifest.', fix: 'Create manifest.json and add <link rel="manifest" href="/manifest.json">.'});
+        }
+        return {score: Math.max(0, score), issues};
+    }
+
+    function analyzePerf(html, doc) {
+        let score = 100;
+        const issues = [];
+        const htmlSize = html.length / 1024;
+        if (htmlSize > 100) {
+            score -= 20;
+            issues.push({issue: `HTML size too large (${htmlSize.toFixed(1)} KB).`, fix: 'Minify HTML, remove unnecessary whitespace/code.'});
+        }
+        const totalRequests = doc.querySelectorAll('link[rel="stylesheet"], script[src], img[src]').length + 1;
+        if (totalRequests > 20) {
+            score -= 15;
+            issues.push({issue: `High number of requests (${totalRequests}).`, fix: 'Bundle CSS/JS, lazy-load images with loading="lazy".'});
+        }
+        return {score: Math.max(0, score), issues};
+    }
+
+    function analyzeAccess(doc) {
+        let score = 100;
+        const issues = [];
+        const imgs = doc.querySelectorAll('img');
+        const missingAlts = Array.from(imgs).filter(img => !img.alt);
+        if (missingAlts.length > 0) {
+            score -= 20;
+            issues.push({issue: `${missingAlts.length} images missing alt text.`, fix: 'Add descriptive alt="" to all <img>.'});
+        }
+        return {score: Math.max(0, score), issues};
+    }
 });
