@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');  // Hide on load
     const form = document.getElementById('url-form');
     const input = document.getElementById('url-input');
     const results = document.getElementById('results');
@@ -14,16 +15,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function cleanUrl(u) { return u.trim() && !/^https?:\/\//i.test(u) ? 'https://' + u.trim() : u.trim(); }
 
     function updateScore(id, score) {
-        const circle = document.querySelector('#' + id + ' .score-circle');
-        if (!circle) return;
-        score = Math.round(score);
-        const dash = (score / 100) * 339;
-        circle.querySelector('.progress').style.strokeDasharray = `${dash} 339`;
-        const num = circle.querySelector('.number');
-        num.textContent = score;
-        num.style.opacity = '1';
-        circle.dataset.score = score;
-    }
+    const circle = document.querySelector('#' + id + ' .score-circle');
+    if (!circle) return;
+    score = Math.round(score);
+    const dash = (score / 100) * 339;
+    circle.querySelector('.progress').style.strokeDasharray = `${dash} 339`;
+    const num = circle.querySelector('.number');
+    num.textContent = score;
+    num.setAttribute('dominant-baseline', 'middle');  // Force horizontal center
+    num.style.opacity = '1';
+    circle.dataset.score = score;
+}
 
 	function populateIssues(id, issues) {
     const ul = document.getElementById(id);
