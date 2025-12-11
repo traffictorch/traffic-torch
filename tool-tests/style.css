@@ -82,7 +82,13 @@ html.light .details li { background: rgba(0,0,0,0.05); }
 #loader { text-align:center; padding:4rem; font-size:1.5rem; opacity:0.8; }
 .hidden { display:none; }
 
-/* Force gradient button in light mode — overrides Tailwind */
-html.light #url-form button[type="submit"] {
-  background-image: linear-gradient(to right, #fb923c, #ec4899) !important;
+/* Force Tailwind dark classes off in light mode */
+html.light .bg-gradient-to-br,
+html.light .from-slate-950,
+html.light .via-slate-900,
+html.light .to-black,
+html.light .text-white {
+  background-image: none !important;
+  background-color: transparent !important;
+  color: #0f172a !important;
 }
