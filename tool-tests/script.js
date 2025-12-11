@@ -20,18 +20,19 @@ document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');  // Hi
     circle.dataset.score = score;
 }
 
-	function populateIssues(id, issues) {
+function populateIssues(id, issues) {
     const ul = document.getElementById(id);
     ul.innerHTML = '';
     issues.forEach(i => {
         const li = document.createElement('li');
         li.innerHTML = `
             <strong>${i.issue}</strong>
-            <p><span style="color:#3b82f6;font-weight:600">What it is?</span> ${i.what || 'A common issue affecting SEO/UX.'}</p>
-            <p><span style="color:#10b981;font-weight:600">How to Fix:</span> ${i.fix}</p>
-            <p><span style="color:#ef4444;font-weight:600">Why it Matters?</span> From UX: ${i.uxWhy || 'Improves user navigation/experience'}. From SEO: ${i.seoWhy || 'Boosts search rankings/visibility'}.</p>
-            <button style="margin-left:10px;padding:6px 12px;background:#007bff;color:white;border:none;border-radius:4px;cursor:pointer;"
-                    onclick="navigator.clipboard.writeText('${i.fix.replace(/'/g, "\\'")}')">Copy Fix Code</button>
+            <p class="mt-3"><span style="color:#3b82f6;font-weight:600">What it is?</span><br>${i.what || 'A technical issue affecting performance or accessibility.'}</p>
+            <p class="mt-3"><span style="color:#10b981;font-weight:600">How to Fix:</span><br>${i.fix}</p>
+            <p class="mt-3"><span style="color:#ef4444;font-weight:600">Why it Matters?</span><br>
+               <strong>UX:</strong> ${i.uxWhy || 'Improves user experience and navigation'}<br>
+               <strong>SEO:</strong> ${i.seoWhy || 'Helps search engines understand and rank your page'}
+            </p>
         `;
         ul.appendChild(li);
     });
