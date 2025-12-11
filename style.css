@@ -57,7 +57,7 @@ html.scroll-smooth {
     transform: translateY(-8px);
   }
   
-/* Force Tailwind dark classes off in light mode */
+/* Force Tailwind dark classes off in light mode 
 html.light .bg-gradient-to-br,
 html.light .from-slate-950,
 html.light .via-slate-900,
@@ -66,7 +66,7 @@ html.light .text-white {
   background-image: none !important;
   background-color: transparent !important;
   color: #0f172a !important;
-}
+}*/
 
 /* Apply the light gradient you already defined */
 html.light body {
