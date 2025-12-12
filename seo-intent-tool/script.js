@@ -138,7 +138,7 @@ else confidence = 65; // neutral title
           <div class="hidden mt-6 space-y-3 text-left text-sm">
             <p class="text-blue-500 font-bold">What:</p><p>${key === 'Experience' ? 'Proof you’ve personally done what you’re teaching.' : key === 'Expertise' ? 'Demonstrated subject-matter mastery.' : key === 'Authoritativeness' ? 'Recognition as the go-to source in your niche.' : 'Signals your site is safe and honest.'}</p>
             <p class="text-green-500 font-bold">How:</p><p>${key === 'Experience' ? 'Use “I” statements, photos, case studies, dates.' : key === 'Expertise' ? 'Author box with photo, bio, credentials, certifications.' : key === 'Authoritativeness' ? 'High-quality backlinks, press mentions, schema, awards.' : 'HTTPS, contact page, privacy policy, updated dates.'}</p>
-            <p class="text-orange-500 font-bold">Why:</p><p>${key === 'Experience' ? 'Google’s #1 E-E-A-T signal in 2025.' : key === 'Expertise' ? 'Experts rank higher — full stop.' : key === 'Authoritativeness' ? 'Strongest long-term ranking factor.' : 'No trust = no traffic from Google.'}</p>
+            <p class="text-orange-500 font-bold">Why:</p><p>${key === 'Experience' ? 'Google’s #1 E-E-A-T signal.' : key === 'Expertise' ? 'Experts rank higher — full stop.' : key === 'Authoritativeness' ? 'Strongest long-term ranking factor.' : 'No trust = no traffic from Google.'}</p>
           </div>
         </div>
       `).join('')}
@@ -155,7 +155,7 @@ else confidence = 65; // neutral title
         <div class="hidden mt-6 space-y-3 text-left text-sm">
           <p class="text-blue-500 font-bold">What:</p><p>Comprehensive coverage that fully answers the query and beyond.</p>
           <p class="text-green-500 font-bold">How:</p><p>Add examples, data, screenshots, FAQs, tools, templates, comparisons.</p>
-          <p class="text-orange-500 font-bold">Why:</p><p>Depth is the #1 ranking factor in 2025 — Google rewards “best answer” pages.</p>
+          <p class="text-orange-500 font-bold">Why:</p><p>Depth is a top ranking factor — Google rewards “best answer” pages.</p>
         </div>
       </div>
 
@@ -197,7 +197,7 @@ else confidence = 65; // neutral title
           <tr class="bg-gray-200 dark:bg-gray-700">
             <th class="p-4 font-bold">Metric</th>
             <th class="p-4 font-bold">Current</th>
-            <th class="p-4 font-bold">Ideal (2025)</th>
+            <th class="p-4 font-bold">Ideal</th>
             <th class="p-4 font-bold">Gap</th>
           </tr>
         </thead>
@@ -233,7 +233,7 @@ else confidence = 65; // neutral title
               <h4 class="text-2xl font-bold text-orange-600">Add 1000+ Words of Depth</h4>
               <p class="mt-4 text-blue-500 font-bold">What:</p><p>Comprehensive coverage that answers every related question</p>
               <p class="mt-2 text-green-500 font-bold">How:</p><p>Examples, data, screenshots, FAQs, tools, comparisons</p>
-              <p class="mt-2 text-orange-500 font-bold">Why:</p><p>Depth is the #1 ranking factor in 2025 — Google rewards the best answer</p>
+              <p class="mt-2 text-orange-500 font-bold">Why:</p><p>Depth is the top ranking factor — Google rewards the best answer</p>
             </div>
           </div>
         </div>` : ''}
@@ -251,20 +251,28 @@ else confidence = 65; // neutral title
         </div>` : ''}
     </div>
 
-    <!-- Predictive Rank Forecast – Expert Copy -->
-    <div class="text-center mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
-      <p class="text-3xl font-medium opacity-80">Predictive Rank Forecast</p>
-      <p class="text-8xl font-black mt-6">${overall > 88 ? 'Top 3' : overall > 75 ? 'Top 10' : overall > 60 ? 'Page 1 Possible' : 'Page 2+'}</p>
-      <p class="text-4xl mt-8 font-bold">+${Math.round((100-overall)*1.5)}% traffic potential</p>
-      <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-10 px-10 py-4 bg-white text-gray-900 rounded-full hover:bg-gray-100 text-xl font-bold">
-        Show Expert Analysis
-      </button>
-      <div class="hidden mt-10 space-y-6 text-left max-w-3xl mx-auto text-lg">
-        <p class="font-bold text-blue-300">What:</p><p>Estimated SERP position based on current E-E-A-T, depth, and intent match vs top 10 competitors.</p>
-        <p class="font-bold text-green-300">How:</p><p>Fix every red/orange gap → monitor GSC → resubmit URL → expect movement in 7–21 days.</p>
-        <p class="font-bold text-orange-300">Why:</p><p>Pages scoring 85+ consistently hit Top 10. 90+ = Top 3 lock. Your gap = ${100-overall} points of untapped traffic.</p>
-      </div>
+	// Predictive Rank Forecast – educational report
+<div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
+  <h3 class="text-4xl font-black text-center">Predictive Rank Forecast</h3>
+  <p class="text-center text-7xl font-black">${overall > 88 ? 'Top 3' : overall > 75 ? 'Top 10' : overall > 60 ? 'Page 1 Possible' : 'Page 2+'}</p>
+  <p class="text-center text-4xl font-bold">+${Math.round((100 - overall) * 1.5)}% potential traffic gain if fixed</p>
+  <p class="text-center text-lg italic opacity-80">Based on Google's latest E-E-A-T and helpful content algorithms — here's the breakdown:</p>
+  <div class="grid md:grid-cols-3 gap-6 text-left">
+    <div class="p-6 bg-white/10 rounded-2xl">
+      <p class="font-bold text-blue-300 text-xl mb-2">What it is</p>
+      <p class="text-sm leading-relaxed">A data-driven estimate of your page's SERP position potential, factoring E-E-A-T, depth, readability, schema, and intent match vs top competitors.</p>
     </div>
+    <div class="p-6 bg-white/10 rounded-2xl">
+      <p class="font-bold text-green-300 text-xl mb-2">How it's calculated</p>
+      <p class="text-sm leading-relaxed">We use heuristics from 2025 Google updates: 40% E-E-A-T, 30% content depth, 20% intent, 10% tech factors. Scores >85% = Top 10; >90% = Top 3 in most niches.</p>
+    </div>
+    <div class="p-6 bg-white/10 rounded-2xl">
+      <p class="font-bold text-orange-300 text-xl mb-2">Why it matters</p>
+      <p class="text-sm leading-relaxed">Higher forecast means more visibility, clicks, and revenue. Fixing gaps could add +${Math.round((100 - overall) * 1.5)}% traffic — real results seen in 7-21 days after resubmitting to GSC.</p>
+    </div>
+  </div>
+  <p class="text-center text-sm italic mt-6">Forecast is heuristic; actual ranks vary by competition, backlinks, and algorithm changes. Always test with GSC.</p>
+</div>
 
     <!-- PDF Button (auto-opens all hidden content) -->
     <div class="text-center my-16">
