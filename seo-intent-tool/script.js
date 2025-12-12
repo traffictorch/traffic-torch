@@ -59,6 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // Remove loading bar
       document.getElementById('loading-bar')?.remove();
 
+
+
+
       // FINAL RESULTS — beautiful, working, no errors
 	results.innerHTML = `
   <div class="max-w-5xl mx-auto space-y-16">
@@ -228,6 +231,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   </div>
 `;
+
+
+
 
     } catch (err) {
       document.getElementById('loading-bar')?.remove();
