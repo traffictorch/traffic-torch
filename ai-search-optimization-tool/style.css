@@ -1,12 +1,4 @@
-/* Minimal – same as other tools */
-body { font-family: 'Inter', sans-serif; }
-.glow { text-shadow: 0 0 40px rgba(251, 146, 60, 0.6); }
-@keyframes animate-in {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.animate-in { animation: animate-in 0.8s ease-out; }
-
+/* Exact same as your other tools – only what’s needed */
 #loading {
   @apply fixed bottom-0 left-0 right-0 h-6 bg-gradient-to-r from-orange-500 to-pink-600 z-50;
 }
@@ -17,9 +9,20 @@ body { font-family: 'Inter', sans-serif; }
   @apply h-full bg-white/40 transition-all duration-500;
 }
 
-.metric-card {
-  @apply bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-orange-500/50 hover:shadow-2xl transition-all;
+/* AI Fixes & Forecast – exact colours from your screenshots */
+.ai-fixes-card, .forecast-card {
+  @apply rounded-3xl p-10 mt-12 shadow-2xl;
 }
-.forecast-card, .ai-fixes-card {
-  @apply bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-3xl p-10 border border-purple-500/30 mt-12;
+.ai-fixes-card {
+  background: linear-gradient(to right, #ff6b35, #ff00aa);
+  color: white;
 }
+.forecast-card {
+  background: linear-gradient(to right, #8b5cf6, #ec4899);
+  color: white;
+}
+
+/* What / How / Why colours – blue, green, orange */
+.what { @apply text-blue-400 font-bold; }
+.how { @apply text-green-400 font-bold; }
+.why { @apply text-orange-400 font-bold; }
