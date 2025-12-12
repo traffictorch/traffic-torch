@@ -77,16 +77,16 @@ document.addEventListener('DOMContentLoaded', () => {
       {title:"Link credible sources", what:"External citations from trusted sites", how:"10+ high-authority outbound links", why:"Increases Authoritativeness and Trust"}
     ];
 
-    return { score, forecast, aiFixes, modules };
-      {name:"Answerability",score:answerability},
-      {name:"Structured Data",score:hasSchema?96:32},
-      {name:"EEAT Signals",score:eeat},
-      {name:"Scannability",score:scannable},
-      {name:"Conversational Tone",score:conversational},
-      {name:"Readability",score:readability},
-      {name:"Human Insights",score:humanInsight},
-      {name:"Anti-AI Detection",score:antiAI}
-    ]};
+    return { score, forecast, aiFixes, modules: [
+  {name:"Answerability",score:answerability},
+  {name:"Structured Data",score:hasSchema?96:32},
+  {name:"EEAT Signals",score:eeat},
+  {name:"Scannability",score:scannable},
+  {name:"Conversational Tone",score:conversational},
+  {name:"Readability",score:readability},
+  {name:"Human Insights",score:humanInsight},
+  {name:"Anti-AI Detection",score:antiAI}
+]};
   };
 
   form.addEventListener('submit', async e => {
