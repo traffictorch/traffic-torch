@@ -5,29 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Search Optimization Checker • Traffic Torch</title>
   <meta name="description" content="Instant client-side AI SERP (AIO) score. See how well your page ranks in Perplexity, Grok, ChatGPT Search & Gemini." />
-
-  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            torch: { orange: '#ff6b35', pink: '#ff00aa' }
-          }
-        }
-      }
-    }
+    tailwind.config = { darkMode: 'class' }
   </script>
-
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="style.css" />
-
   <link rel="manifest" href="/manifest.json" />
   <link rel="icon" href="/favicon.ico" />
 </head>
-<body class="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 transition-colors duration-500">
+<body class="min-h-screen">
 
   <!-- EXACT SAME HEADER AS HOME PAGE -->
   <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
@@ -67,7 +54,7 @@
 
 <!-- Hero -->
   <main class="max-w-5xl mx-auto px-6 py-20 text-center">
-    <h1    <h1 class="text-6xl md:text-7xl font-black bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent leading-tight">
+    <h1 class="text-6xl md:text-7xl font-black bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent leading-tight">
       AI Search Optimization Checker
     </h1>
     <p class="mt-6 text-2xl text-gray-600 dark:text-gray-300 font-light">
@@ -76,17 +63,10 @@
 
     <form id="urlForm" class="mt-12 max-w-2xl mx-auto">
       <div class="flex flex-col md:flex-row gap-4">
-        <input
-          type="url"
-          id="urlInput"
-          placeholder="https://example.com/blog-post"
-          required
-          class="flex-1 px-8 py-5 rounded-2xl bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-orange-500 text-lg"
-        />
-        <button
-          type="submit"
-          class="px-12 py-5 rounded-2xl bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-xl hover:from-orange-600 hover:to-pink-700 transform hover:scale-105 transition shadow-xl"
-        >
+        <input type="url" id="urlInput" placeholder="https://example.com/blog-post" required
+          class="flex-1 px-8 py-5 rounded-2xl bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-orange-500 text-lg" />
+        <button type="submit"
+          class="px-12 py-5 rounded-2xl bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-xl hover:from-orange-600 hover:to-pink-700 transform hover:scale-105 transition shadow-xl">
           Analyze Now
         </button>
       </div>
@@ -94,14 +74,14 @@
   </main>
 
   <!-- Fixed Analyzing Bar -->
-  <div id="loading" class="hidden fixed bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-orange-500 to-pink-600 z-50">
-    <div id="progressText" class="absolute inset-0 flex items-center justify-center text-white font-bold text-shadow-lg">
-      Analyzing page — please wait...
+  <div id="loading" class="hidden fixed bottom-0 left-0 right-0 h-3 bg-gradient-to-r from-orange-500 to-pink-600 z-50 overflow-hidden">
+    <div id="progressText" class="absolute inset-0 flex items-center justify-center text-white font-bold text-shadow-lg text-sm">
+      Analyzing page...
     </div>
-    <div id="progressBar" class="h-full bg-white/30" style="width: 0%; transition: width 0.4s ease"></div>
+    <div id="progressBar" class="h-full bg-white/40 transition-all duration-500" style="width:0%"></div>
   </div>
 
-  <!-- Report Area -->
+  <!-- Report -->
   <section id="report" class="hidden max-w-7xl mx-auto px-6 py-20"></section>
 
 	<!-- AddToAny BEGIN -->
@@ -155,6 +135,8 @@
       </div>
     </div>
   </footer>
+  
+  <script src="script.js"></script>
 
 </body>
 </html>
