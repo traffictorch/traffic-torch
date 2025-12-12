@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const date = !!doc.querySelector('time,[pubdate]');
     const links = doc.querySelectorAll('a[href]').length;
     const eeatScore = (author?30:0) + (date?25:0) + (links>15?30:links>5?15:0);
-    const total = hasSchema*25 + readabilityScore*0.2 + conversationalScore*0.2 + scannableScore*0.2 + eeatScore*0.4;
+    const total = hasSchema*25 + readabilityScore*0.2 + conversationalScore*0.2 + scannableScore*0.2 + eeatScore;
     const score = Math.min(100, Math.round(total));
 
     let forecast = "Needs major fixes";
@@ -83,50 +83,93 @@ document.addEventListener('DOMContentLoaded', () => {
       const r = analyze(text, doc);
 
       report.innerHTML = `
-        <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-orange-500/30">
-          <div class="score-ring-big mx-auto mb-12" style="--score:${r.score}%">
+        <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-orange-500/30 text-center">
+          <div class="score-ring-big mb-12" style="--score:${r.score}%">
             <div class="absolute inset-0 flex items-center justify-center">
-              <div class="text-8xl font-black text-white drop-shadow-2xl">${r.score}<span class="text-5xl">%</span></div>
+              <div class="text-8xl font-black bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent drop-shadow-2xl">${r.score}<span class="text-5xl">%</span></div>
             </div>
           </div>
-          <h2 class="text-5xl font-black text-center mb-16">AI Search Optimization Score</h2>
+          <h2 class="text-5xl font-black mb-16">AI Search Optimization Score</h2>
 
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto mb-16">
-            <div class="metric-card text-center">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 max-w-6xl mx-auto mb-16">
+            <div class="metric-card">
               <div class="module-circle mb-4" style="--score:${r.structured}%">
                 <div class="module-score-text">${r.structured}</div>
               </div>
-              <h3 class="text-xl font-bold">Structured Data</h3>
-              <p class="text-sm mt-2 opacity-80">Schema.org JSON-LD detected</p>
-              <button class="text-orange-400 font-bold mt-4">Show Fixes →</button>
+              <h3 class="text-xl font-bold mb-2">Structured Data</h3>
+              <p class="text-sm opacity-80 mb-4">Schema.org JSON-LD detected</p>
+              <details>
+                <summary class="text-orange-400 font-bold cursor-pointer hover:text-pink-400">Show Fixes →</summary>
+                <ul class="mt-3 space-y-2 text-sm pl-4 list-disc">
+                  <li>Add FAQ Schema</li>
+                  <li>Add HowTo Schema</li>
+                  <li>Add Article Schema</li>
+                </ul>
+              </details>
             </div>
-            <div class="metric-card text-center">
+            <div class="metric-card">
               <div class="module-circle mb-4" style="--score:${r.readability}%">
                 <div class="module-score-text">${r.readability}</div>
               </div>
-              <h3 class="text-xl font-bold">Readability</h3>
-              <p class="text-sm mt-2 opacity-80">Flesch-Kincaid ease</p>
-              <button class="text-orange-400 font-bold mt-4">Show Fixes →</button>
+              <h3 class="text-xl font-bold mb-2">Readability</h3>
+              <p class="text-sm opacity-80 mb-4">Flesch-Kincaid ease</p>
+              <details>
+                <summary class="text-orange-400 font-bold cursor-pointer hover:text-pink-400">Show Fixes →</summary>
+                <ul class="mt-3 space-y-2 text-sm pl-4 list-disc">
+                  <li>Short sentences (15-20 words)</li>
+                  <li>Active voice</li>
+                  <li>Common words</li>
+                </ul>
+              </details>
             </div>
-            <div class="metric-card text-center">
+            <div class="metric-card">
               <div class="module-circle mb-4" style="--score:${r.conversational}%">
                 <div class="module-score-text">${r.conversational}</div>
               </div>
-              <h3 class="text-xl font-bold">Conversational Tone</h3>
-              <p class="text-sm mt-2 opacity-80">Personal & engaging language</p>
-              <button class="text-orange-400 font-bold mt-4">Show Fixes →</button>
+              <h3 class="text-xl font-bold mb-2">Conversational Tone</h3>
+              <p class="text-sm opacity-80 mb-4">Personal & engaging language</p>
+              <details>
+                <summary class="text-orange-400 font-bold cursor-pointer hover:text-pink-400">Show Fixes →</summary>
+                <ul class="mt-3 space-y-2 text-sm pl-4 list-disc">
+                  <li>Use "you", "I", "we"</li>
+                  <li>Ask rhetorical questions</li>
+                  <li>Add personal pronouns</li>
+                </ul>
+              </details>
             </div>
-            <div class="metric-card text-center">
+            <div class="metric-card">
               <div class="module-circle mb-4" style="--score:${r.scannable}%">
                 <div class="module-score-text">${r.scannable}</div>
               </div>
-              <h3 class="text-xl font-bold">Scannable Format</h3>
-              <p class="text-sm mt-2 opacity-80">Lists, tables, headings</p>
-              <button class="text-orange-400 font-bold mt-4">Show Fixes →</button>
+              <h3 class="text-xl font-bold mb-2">Scannable Format</h3>
+              <p class="text-sm opacity-80 mb-4">Lists, tables, headings</p>
+              <details>
+                <summary class="text-orange-400 font-bold cursor-pointer hover:text-pink-400">Show Fixes →</summary>
+                <ul class="mt-3 space-y-2 text-sm pl-4 list-disc">
+                  <li>Use bullet points</li>
+                  <li>Add tables</li>
+                  <li>Number steps</li>
+                </ul>
+              </details>
+            </div>
+            <div class="metric-card">
+              <div class="module-circle mb-4" style="--score:${r.eeat}%">
+                <div class="module-score-text">${r.eeat}</div>
+              </div>
+              <h3 class="text-xl font-bold mb-2">EEAT Signals</h3>
+              <p class="text-sm opacity-80 mb-4">Author, date, links</p>
+              <details>
+                <summary class="text-orange-400 font-bold cursor-pointer hover:text-pink-400">Show Fixes →</summary>
+                <ul class="mt-3 space-y-2 text-sm pl-4 list-disc">
+                  <li>Add author byline</li>
+                  <li>Show publish date</li>
+                  <li>Link credible sources</li>
+                </ul>
+              </details>
             </div>
           </div>
 
-          <div class="forecast-card text-center">
+          <div class="forecast-card text-center mb-16">
             <h3 class="text-3xl font-bold mb-4">Predictive Rank Forecast</h3>
             <p class="text-2xl text-orange-300">${r.forecast}</p>
           </div>

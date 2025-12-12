@@ -1,59 +1,74 @@
-/* Exact styles from seo-intent-tool – perfect match */
+/* Exact copy from SEO Intent tool – big ring centered, small rings with numbers, red-green gradients */
 .metric-card {
   @apply bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-orange-500/50 hover:shadow-2xl transition-all;
 }
+
+/* Big Main Score Ring – centered number, red to green accurate */
 .score-ring-big {
   width: 280px; height: 280px;
-  background: conic-gradient(from 0deg, #ef4444 0%, #f97316 40%, #22c55e var(--score), transparent var(--score));
+  background: conic-gradient(from 0deg, #ef4444 0%, #f97316 50%, #22c55e var(--score), #22c55e 100%);
   border-radius: 50%;
   position: relative;
   margin: 0 auto 2rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
-.score-ring-big::after {
+.score-ring-big::before {
   content: '';
   position: absolute;
-  inset: 40px;
-  background: #f3f4f6;
+  inset: 0;
   border-radius: 50%;
+  background: radial-gradient(circle, transparent 30%, #f3f4f6 32%);
 }
-.dark .score-ring-big::after { background: #000; }
+.dark .score-ring-big::before { background: radial-gradient(circle, transparent 30%, #000 32%); }
 
+/* Small Module Rings – centered numbers, accurate gradients */
 .module-circle {
   width: 120px; height: 120px;
-  background: conic-gradient(from 0deg, #ef4444 0%, #f97316 40%, #22c55e var(--score), transparent var(--score));
+  background: conic-gradient(from 0deg, #ef4444 0%, #f97316 50%, #22c55e var(--score), #22c55e 100%);
   border-radius: 50%;
   position: relative;
-  margin: 0 auto 1.5rem;
+  margin: 0 auto 1rem;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
-.module-circle::after {
+.module-circle::before {
   content: '';
   position: absolute;
-  inset: 20px;
-  background: #f3f4f6;
+  inset: 0;
   border-radius: 50%;
+  background: radial-gradient(circle, transparent 25%, #f3f4f6 27%);
 }
-.dark .module-circle::after { background: #000; }
+.dark .module-circle::before { background: radial-gradient(circle, transparent 25%, #000 27%); }
 
 .module-score-text {
-  @apply absolute inset-0 flex items-center justify-center text-5xl font-black;
+  @apply absolute inset-0 flex items-center justify-center text-4xl font-black;
   background: linear-gradient(to right, #f97316, #ec4899);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  z-index: 10;
 }
 
 #loading {
   @apply fixed bottom-0 left-0 right-0 h-4 bg-gradient-to-r from-orange-500 to-pink-600 z-50;
 }
 #progressText {
-  @apply absolute inset-0 flex items-center justify-center text-white font-bold text-sm;
+  @apply absolute inset-0 flex items-center justify-center text-white font-bold text-sm drop-shadow-lg;
 }
 #progressBar {
   @apply h-full bg-white/30 transition-all duration-500;
 }
 
-.forecast-card {
-  @apply bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-3xl p-10 border border-purple-500/30 mt-12;
+.forecast-card, .ai-fixes-card {
+  @apply bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-3xl p-8 border border-purple-500/30 mt-8;
 }
-.ai-fixes-card {
-  @apply bg-gradient-to-r from-orange-500/20 to-pink-600/20 rounded-3xl p-10 border border-orange-500/30 mt-12;
+.show-fixes {
+  @apply cursor-pointer text-orange-400 font-bold hover:text-pink-400;
+}
+.fixes-list {
+  @apply mt-4 space-y-2 text-sm list-disc pl-6;
+}
+
+/* Print */
+@media print {
+  body { background: white !important; color: black !important; }
+  details { open: true; }
 }
