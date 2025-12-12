@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-orange-500/30">
           <div class="score-ring-big mb-12" style="--score:${r.score}%">
             <div class="absolute inset-0 flex items-center justify-center">
-              <div class="text-8xl font-black text-white drop-shadow-2xl">${r.score}<span class="text-5xl">%</span></div>
+              <div class="text-8xl font-black bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent drop-shadow-2xl">${r.score}<span class="text-5xl">%</span></div>
             </div>
           </div>
           <h2 class="text-5xl font-black text-center mb-16">AI Search Optimization Score</h2>
@@ -105,7 +105,14 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <h3 class="text-xl font-bold">Structured Data</h3>
               <p class="text-sm opacity-80 mt-2">Schema.org JSON-LD detected</p>
-              <button class="text-orange-400 font-bold mt-4">Show Fixes →</button>
+              <details>
+                <summary class="text-orange-400 font-bold cursor-pointer hover:text-pink-400">Show Fixes →</summary>
+                <ul class="mt-3 space-y-2 text-sm pl-4 list-disc">
+                  <li>Add FAQ Schema</li>
+                  <li>Add HowTo Schema</li>
+                  <li>Add Article Schema</li>
+                </ul>
+              </details>
             </div>
             <div class="metric-card text-center">
               <div class="module-circle mb-4" style="--score:${r.readability}%">
@@ -113,7 +120,14 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <h3 class="text-xl font-bold">Readability</h3>
               <p class="text-sm opacity-80 mt-2">Flesch-Kincaid ease</p>
-              <button class="text-orange-400 font-bold mt-4">Show Fixes →</button>
+              <details>
+                <summary class="text-orange-400 font-bold cursor-pointer hover:text-pink-400">Show Fixes →</summary>
+                <ul class="mt-3 space-y-2 text-sm pl-4 list-disc">
+                  <li>Short sentences</li>
+                  <li>Active voice</li>
+                  <li>Common words</li>
+                </ul>
+              </details>
             </div>
             <div class="metric-card text-center">
               <div class="module-circle mb-4" style="--score:${r.conversational}%">
@@ -121,7 +135,14 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <h3 class="text-xl font-bold">Conversational Tone</h3>
               <p class="text-sm opacity-80 mt-2">Personal & engaging language</p>
-              <button class="text-orange-400 font-bold mt-4">Show Fixes →</button>
+              <details>
+                <summary class="text-orange-400 font-bold cursor-pointer hover:text-pink-400">Show Fixes →</summary>
+                <ul class="mt-3 space-y-2 text-sm pl-4 list-disc">
+                  <li>Use "you", "I"</li>
+                  <li>Ask questions</li>
+                  <li>Add pronouns</li>
+                </ul>
+              </details>
             </div>
             <div class="metric-card text-center">
               <div class="module-circle mb-4" style="--score:${r.scannable}%">
@@ -129,7 +150,14 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <h3 class="text-xl font-bold">Scannable Format</h3>
               <p class="text-sm opacity-80 mt-2">Lists, tables, headings</p>
-              <button class="text-orange-400 font-bold mt-4">Show Fixes →</button>
+              <details>
+                <summary class="text-orange-400 font-bold cursor-pointer hover:text-pink-400">Show Fixes →</summary>
+                <ul class="mt-3 space-y-2 text-sm pl-4 list-disc">
+                  <li>Use bullets</li>
+                  <li>Add tables</li>
+                  <li>Number steps</li>
+                </ul>
+              </details>
             </div>
             <div class="metric-card text-center">
               <div class="module-circle mb-4" style="--score:${r.eeat}%">
@@ -137,7 +165,14 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <h3 class="text-xl font-bold">EEAT Signals</h3>
               <p class="text-sm opacity-80 mt-2">Author, date, links</p>
-              <button class="text-orange-400 font-bold mt-4">Show Fixes →</button>
+              <details>
+                <summary class="text-orange-400 font-bold cursor-pointer hover:text-pink-400">Show Fixes →</summary>
+                <ul class="mt-3 space-y-2 text-sm pl-4 list-disc">
+                  <li>Add author</li>
+                  <li>Show date</li>
+                  <li>Link sources</li>
+                </ul>
+              </details>
             </div>
           </div>
 
@@ -149,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="ai-fixes-card text-center">
             <h3 class="text-3xl font-bold mb-6">AI-Generated Fixes</h3>
             <ul class="space-y-4 text-left max-w-3xl mx-auto">
-              ${r.aiFixes.map(f=>`<li class="flex items-start"><span class="text-orange-400 mr-3">→</span><span class="text-lg">${f}</span></li>`).join('')}
+              ${r.aiFixes.map(f=>`<li class="flex items-start"><span class="text-orange-400 mr-3">→</span>${f}</li>`).join('')}
             </ul>
           </div>
 
