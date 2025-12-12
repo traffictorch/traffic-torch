@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fakeProgress();
 
     try {
-      const res = await fetch(PROXY + url);
+      const res = await fetch(PROXY + encodeURIComponent(url));
       if (!res.ok) throw new Error('Failed');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html,'text/html');
