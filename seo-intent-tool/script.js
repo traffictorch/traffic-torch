@@ -61,21 +61,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // FINAL RESULTS — beautiful, working, no errors
 	results.innerHTML = `
-  <div class="max-w-5xl mx-auto space-y-12">
+  <div class="max-w-5xl mx-auto space-y-16">
 
-    <!-- Big Main Score Circle -->
+    <!-- Big Score Circle -->
     <div class="flex justify-center my-12">
       <div class="relative">
         <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
           <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
-          <circle cx="130" cy="130" r="120" stroke="url(#bigGradient)" stroke-width="18" fill="none"
-                  stroke-dasharray="${(overall / 100) * 754} 754" stroke-linecap="round"/>
-          <defs>
-            <linearGradient id="bigGradient">
-              <stop offset="0%" stop-color="#ef4444"/>
-              <stop offset="100%" stop-color="#22c55e"/>
-            </linearGradient>
-          </defs>
+          <circle cx="130" cy="130" r="120" stroke="url(#big)" stroke-width="18" fill="none"
+                  stroke-dasharray="${(overall/100)*754} 754" stroke-linecap="round"/>
+          <defs><linearGradient id="big"><stop offset="0%" stop-color="#ef4444"/><stop offset="100%" stop-color="#22c55e"/></linearGradient></defs>
         </svg>
         <div class="absolute inset-0 flex items-center justify-center">
           <div class="text-center">
@@ -86,49 +81,22 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>
 
-    <!-- Intent + What/How/Why -->
+    <!-- Intent with correct confidence -->
     <div class="text-center mb-12">
       <p class="text-3xl font-bold mb-6">
         Intent: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${intent}</span>
         <span class="text-gray-500">(${confidence}% match)</span>
       </p>
-      <div class="max-w-2xl mx-auto p-6 bg-white/10 dark:bg-gray-900/60 rounded-2xl border border-gray-200/20 space-y-4">
-        <div><span class="text-blue-500 font-bold">What it is?</span><p class="mt-2">${intent === 'Informational' ? 'User wants to learn or understand something.' : intent === 'Commercial' ? 'User is researching before buying.' : intent === 'Local' ? 'User is looking for a local business.' : 'User is ready to buy or convert.'}</p></div>
-        <div><span class="text-green-500 font-bold">How to Fix:</span><p class="mt-2">${intent === 'Informational' ? 'Use headings, lists, images, FAQs for clarity.' : intent === 'Commercial' ? 'Include comparisons, reviews, pros/cons, pricing.' : intent === 'Local' ? 'Add maps, hours, reviews, contact info.' : 'Clear CTAs, trust seals, easy navigation.'}</p></div>
-        <div><span class="text-orange-500 font-bold">Why it Matters?</span><p class="mt-2">${intent === 'Informational' ? 'Matches user needs, reduces bounce rates.' : intent === 'Commercial' ? 'Builds trust, boosts conversions.' : intent === 'Local' ? 'Improves local SEO visibility.' : 'Drives direct actions like purchases.'}</p></div>
+      <div class="max-w-2xl mx-auto p-6 bg-white/10 dark:bg-gray-900/60 rounded-2xl border border-gray-200/20 space-y-6">
+        <div><span class="text-blue-500 font-bold text-xl">What it is?</span><p class="mt-2">${intent === 'Informational' ? 'User wants to learn or understand something.' : intent === 'Commercial' ? 'User is researching before buying.' : intent === 'Local' ? 'User looking for a local business.' : 'User ready to convert.'}</p></div>
+        <div><span class="text-green-500 font-bold text-xl">How to Fix:</span><p class="mt-2">${intent === 'Informational' ? 'Use headings, lists, images, FAQs.' : intent === 'Commercial' ? 'Add comparisons, reviews, pricing.' : intent === 'Local' ? 'Show map, hours, reviews.' : 'Strong CTAs, trust badges.'}</p></div>
+        <div><span class="text-orange-500 font-bold text-xl">Why it Matters?</span><p class="mt-2">${intent === 'Informational' ? 'Lower bounce, longer time-on-page.' : intent === 'Commercial' ? 'Higher conversion rate.' : intent === 'Local' ? 'Better local pack ranking.' : 'Direct revenue increase.'}</p></div>
       </div>
     </div>
 
-    <!-- Content Depth + Readability -->
-    <div class="grid md:grid-cols-2 gap-6 my-12">
-      <div class="p-6 bg-white/10 dark:bg-gray-900/60 rounded-2xl border border-gray-200/20 text-center">
-        <p class="text-3xl font-bold mb-4">Content Depth</p>
-        <p class="text-xl">${words.toLocaleString()} words</p>
-        <p class="text-gray-500 mt-2">(${depthScore >= 80 ? 'Excellent' : depthScore >= 60 ? 'Good' : 'Needs improvement'})</p>
-        <p class="mt-4 text-sm">What: Content length and detail. How: Add examples, sections, data. Why: Deeper content ranks higher in 2025.</p>
-      </div>
-      <div class="p-6 bg-white/10 dark:bg-gray-900/60 rounded-2xl border border-gray-200/20 text-center">
-        <p class="text-3xl font-bold mb-4">Readability</p>
-        <p class="text-xl">${readability}</p>
-        <p class="text-gray-500 mt-2">(Aim 60-70 for easy reading)</p>
-        <p class="mt-4 text-sm">What: Flesch score for clarity. How: Shorter sentences, simple words. Why: Better UX, lower bounce.</p>
-      </div>
-    </div>
-
-    <!-- Schema Detected -->
-    <div class="p-6 bg-white/10 dark:bg-gray-900/60 rounded-2xl border border-gray-200/20 text-center">
-      <p class="text-3xl font-bold mb-4">Schema Detected</p>
-      ${schemaTypes.length ? `
-        <select class="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-800 text-black dark:text-white">
-          ${schemaTypes.map(t => `<option>${t}</option>`).join('')}
-        </select>
-        <p class="mt-4 text-sm">What: Structured data for search engines. How: Add JSON-LD for Article/Person. Why: Rich snippets, better visibility.</p>
-      ` : '<p class="text-xl text-red-500">None detected</p><p class="mt-4 text-sm">Add schema to boost E-E-A-T and rich results.</p>'}
-    </div>
-
-    <!-- E-E-A-T Cards -->
+    <!-- 4 E-E-A-T Cards -->
     <div class="grid md:grid-cols-4 gap-6 my-16">
-      ${Object.entries(eeat).map(([key, val], i) => `
+      ${Object.entries(eeat).map(([key, val]) => `
         <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border ${val >= 80 ? 'border-green-500' : val >= 60 ? 'border-yellow-500' : 'border-red-500'}">
           <div class="relative mx-auto w-32 h-32">
             <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
@@ -143,82 +111,119 @@ document.addEventListener('DOMContentLoaded', () => {
             Show Fixes
           </button>
           <div class="hidden mt-6 space-y-3 text-left text-sm">
-            <p class="text-blue-500 font-bold">What it is?</p><p>${key === 'Experience' ? 'First-hand knowledge.' : key === 'Expertise' ? 'Proven skill.' : key === 'Authoritativeness' ? 'Recognized authority.' : 'Site reliability.'}</p>
-            <p class="text-green-500 font-bold">How to Fix:</p><p>${key === 'Experience' ? '"I/we" stories, photos.' : key === 'Expertise' ? 'Author bio + credentials.' : key === 'Authoritativeness' ? 'Backlinks, schema.' : 'HTTPS, contact page.'}</p>
-            <p class="text-orange-500 font-bold">Why it Matters?</p><p>${key === 'Experience' ? 'Builds connection.' : key === 'Expertise' ? 'Google favors experts.' : key === 'Authoritativeness' ? 'Higher rankings.' : 'Increases trust.'}</p>
+            <p class="text-blue-500 font-bold">What:</p><p>${key === 'Experience' ? 'First-hand knowledge.' : key === 'Expertise' ? 'Proven skill.' : key === 'Authoritativeness' ? 'Recognized authority.' : 'Site reliability.'}</p>
+            <p class="text-green-500 font-bold">How:</p><p>${key === 'Experience' ? '"I/we" stories, photos.' : key === 'Expertise' ? 'Author bio + credentials.' : key === 'Authoritativeness' ? 'Backlinks, schema.' : 'HTTPS, contact page.'}</p>
+            <p class="text-orange-500 font-bold">Why:</p><p>${key === 'Experience' ? 'Builds connection.' : key === 'Expertise' ? 'Google favors experts.' : key === 'Authoritativeness' ? 'Higher rankings.' : 'Increases trust.'}</p>
           </div>
         </div>
       `).join('')}
     </div>
 
-    <!-- Competitive Gap Table -->
-    <div class="overflow-x-auto my-12">
-      <table class="w-full border-collapse border border-gray-300 dark:border-gray-600 text-left text-sm">
-        <thead>
-          <tr class="bg-gray-200 dark:bg-gray-700">
-            <th class="p-4">Metric</th>
-            <th class="p-4">Current</th>
-            <th class="p-4">Ideal (2025)</th>
-            <th class="p-4">Gap</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td class="p-4">Word Count</td><td class="p-4">${words}</td><td class="p-4">>1500</td><td class="p-4">${words < 1500 ? 'Add ' + (1500 - words) + ' words' : 'Good'}</td></tr>
-          <tr><td class="p-4">Readability</td><td class="p-4">${readability}</td><td class="p-4">60-70</td><td class="p-4">${readability < 60 ? 'Simplify sentences' : 'Good'}</td></tr>
-          <tr><td class="p-4">Schema Types</td><td class="p-4">${schemaTypes.length}</td><td class="p-4">≥2</td><td class="p-4">${schemaTypes.length < 2 ? 'Add schema' : 'Good'}</td></tr>
-          <tr><td class="p-4">Author Bio</td><td class="p-4">${hasAuthor ? 'Yes' : 'No'}</td><td class="p-4">Yes</td><td class="p-4">${!hasAuthor ? 'Add bio' : 'Good'}</td></tr>
-        </tbody>
-      </table>
-      <p class="text-center italic text-gray-500 mt-4">Compare to 2025 best practices – fix gaps for +20% score.</p>
+    <!-- NEW SECTIONS BELOW E-E-A-T (exact style match) -->
+
+    <!-- Content Depth + Readability -->
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700">
+        <h3 class="text-2xl font-bold mb-4 text-center">Content Depth</h3>
+        <p class="text-5xl font-black text-center mb-2">${words.toLocaleString()}</p>
+        <p class="text-center text-gray-500">words</p>
+        <p class="text-center mt-4 text-sm italic">Ideal: >1,500 words for competitive topics</p>
+      </div>
+      <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700">
+        <h3 class="text-2xl font-bold mb-4 text-center">Readability</h3>
+        <p class="text-5xl font-black text-center mb-2">${readability}</p>
+        <p class="text-center text-gray-500">Flesch score</p>
+        <p class="text-center mt-4 text-sm italic">Ideal: 60–70 (easy to read)</p>
+      </div>
     </div>
 
-    <!-- Prioritised Fixes -->
-    <div class="space-y-6 max-w-3xl mx-auto">
-      <h3 class="text-3xl font-bold text-center mb-8">Prioritised AI-Style Fixes</h3>
+    <!-- Schema Detected -->
+    <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
+      <h3 class="text-2xl font-bold mb-6">Schema Detected</h3>
+      ${schemaTypes.length ? `
+        <div class="inline-block">
+          <select class="px-6 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-black dark:text-white text-lg">
+            ${schemaTypes.map(t => `<option>${t}</option>`).join('')}
+          </select>
+          <p class="mt-4 text-green-500 font-bold">Great! Schema found</p>
+        </div>
+      ` : '<p class="text-2xl text-red-500">No schema detected</p><p class="mt-4 text-sm italic">Add Article + Person JSON-LD for rich results</p>'}
+    </div>
+
+    <!-- Competitive Gap Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse text-left">
+        <thead class="bg-gray-100 dark:bg-gray-800">
+          <tr>
+            <th class="p-4 font-bold">Metric</th>
+            <th class="p-4 font-bold">Current</th>
+            <th class="p-4 font-bold">Ideal (2025)</th>
+            <th class="p-4 font-bold text-right">Gap</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-900">
+          <tr class="border-b dark:border-gray-700"><td class="p-4">Word Count</td><td class="p-4">${words}</td><td class="p-4">>1,500</td><td class="p-4 text-right ${words < 1500 ? 'text-red-500' : 'text-green-500'}">${words < 1500 ? '−' + (1500-words) : '✓'}</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-4">Readability</td><td class="p-4">${readability}</td><td class="p-4">60–70</td><td class="p-4 text-right ${readability < 60 || readability > 70 ? 'text-orange-500' : 'text-green-500'}">${readability < 60 || readability > 70 ? 'Adjust' : '✓'}</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-4">Schema Types</td><td class="p-4">${schemaTypes.length}</td><td class="p-4">≥2</td><td class="p-4 text-right ${schemaTypes.length < 2 ? 'text-red-500' : 'text-green-500'}">${schemaTypes.length < 2 ? 'Add' : '✓'}</td></tr>
+          <tr><td class="p-4">Author Bio</td><td class="p-4">${hasAuthor ? 'Yes' : 'No'}</td><td class="p-4">Yes</td><td class="p-4 text-right ${!hasAuthor ? 'text-red-500' : 'text-green-500'}">${!hasAuthor ? 'Add' : '✓'}</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Prioritised AI-Style Fixes -->
+    <div class="space-y-8">
+      <h3 class="text-4xl font-black text-center mb-8">Prioritised AI-Style Fixes</h3>
       ${!hasAuthor ? `
         <div class="p-8 bg-gradient-to-r from-red-500/10 border-l-8 border-red-500 rounded-r-2xl">
-          <div class="flex gap-5">
+          <div class="flex gap-6">
             <div class="text-5xl">👤</div>
             <div>
               <h4 class="text-2xl font-bold text-red-600">Add Author Bio & Photo</h4>
-              <p class="mt-3 text-blue-500 font-bold">What:</p><p>Visible byline with credentials</p>
-              <p class="mt-2 text-green-500 font-bold">How:</p><p>Add section with headshot, bio, links</p>
-              <p class="mt-2 text-orange-500 font-bold">Why:</p><p>Boosts E-E-A-T by 30-40 points</p>
+              <p class="mt-4 text-blue-500 font-bold">What:</p><p>Visible byline with credentials and photo</p>
+              <p class="mt-3 text-green-500 font-bold">How:</p><p>Add author box with headshot, bio, social links</p>
+              <p class="mt-3 text-orange-500 font-bold">Why:</p><p>Boosts Expertise & Trust by 30–40 points — Google loves it</p>
             </div>
           </div>
         </div>` : ''}
       ${words < 1500 ? `
         <div class="p-8 bg-gradient-to-r from-orange-500/10 border-l-8 border-orange-500 rounded-r-2xl">
-          <div class="flex gap-5">
+          <div class="flex gap-6">
             <div class="text-5xl">✍️</div>
             <div>
               <h4 class="text-2xl font-bold text-orange-600">Add 1000+ Words of Depth</h4>
-              <p class="mt-3 text-blue-500 font-bold">What:</p><p>Expand content length and detail</p>
-              <p class="mt-2 text-green-500 font-bold">How:</p><p>Include examples, FAQs, data, images</p>
-              <p class="mt-2 text-orange-500 font-bold">Why:</p><p>#1 ranking factor in 2025</p>
+              <p class="mt-4 text-blue-500 font-bold">What:</p><p>Expand content with detail and value</p>
+              <p class="mt-3 text-green-500 font-bold">How:</p><p>Add examples, FAQs, data, images, comparisons</p>
+              <p class="mt-3 text-orange-500 font-bold">Why:</p><p>#1 ranking factor in 2025 — depth wins</p>
             </div>
           </div>
         </div>` : ''}
       ${schemaTypes.length < 2 ? `
         <div class="p-8 bg-gradient-to-r from-purple-500/10 border-l-8 border-purple-500 rounded-r-2xl">
-          <div class="flex gap-5">
+          <div class="flex gap-6">
             <div class="text-5xl">✨</div>
             <div>
               <h4 class="text-2xl font-bold text-purple-600">Add Article + Person Schema</h4>
-              <p class="mt-3 text-blue-500 font-bold">What:</p><p>Structured data for search engines</p>
-              <p class="mt-2 text-green-500 font-bold">How:</p><p>Use JSON-LD with @type Article/Person</p>
-              <p class="mt-2 text-orange-500 font-bold">Why:</p><p>Rich results + authority boost</p>
+              <p class="mt-4 text-blue-500 font-bold">What:</p><p>Structured data for Google</p>
+              <p class="mt-3 text-green-500 font-bold">How:</p><p>JSON-LD with @type: Article + Person</p>
+              <p class="mt-3 text-orange-500 font-bold">Why:</p><p>Rich results + major E-E-A-T boost</p>
             </div>
           </div>
         </div>` : ''}
     </div>
 
-    <!-- Predictive Rank Forecast -->
+    <!-- Predictive Rank Forecast with Expand -->
     <div class="text-center mt-16 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
       <p class="text-3xl font-medium opacity-80">Predictive Rank Forecast</p>
       <p class="text-7xl font-black mt-4">${overall > 88 ? 'Top 3' : overall > 75 ? 'Top 10' : overall > 60 ? 'Page 1 Possible' : 'Page 2+'}</p>
       <p class="text-3xl mt-6">Implement fixes → <strong>+${Math.round((100-overall)*1.5)}% traffic</strong></p>
-      <p class="mt-4 text-sm italic">Heuristic-based forecast; real results vary by competition and algorithm updates.</p>
+      <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-8 px-10 py-4 bg-white/20 rounded-full hover:bg-white/30 text-xl font-medium">
+        Show Details
+      </button>
+      <div class="hidden mt-8 space-y-6 text-left max-w-2xl mx-auto text-lg">
+        <div><span class="text-blue-300 font-bold">What:</span> Estimated SERP position based on E-E-A-T, depth, and intent match</div>
+        <div><span class="text-green-300 font-bold">How:</span> Apply all fixes above → monitor GSC → resubmit URL for re-crawl</div>
+        <div><span class="text-orange-300 font-bold">Why:</span> Strong E-E-A-T + depth = higher rankings = more traffic</div>
+      </div>
     </div>
 
   </div>
