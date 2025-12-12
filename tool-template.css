@@ -1,0 +1,68 @@
+/* /tool-template.css – GLOBAL STYLES FOR ALL TRAFFIC TORCH TOOLS */
+/* Include this in every tool's <head> with: <link rel="stylesheet" href="/tool-template.css" /> */
+
+/* Analyzing Bar – Full width, taller, sexy */
+#loading {
+  @apply fixed bottom-0 left-0 right-0 h-4 bg-gradient-to-r from-orange-500 to-pink-600 z-50 overflow-hidden;
+}
+#progressText {
+  @apply absolute inset-0 flex items-center justify-center text-white font-bold text-sm drop-shadow-lg;
+}
+#progressBar {
+  @apply h-full bg-white/30 transition-all duration-500 ease-out;
+}
+
+/* Big Main Score Ring */
+.score-ring-big {
+  width: 260px; height: 260px;
+  background: conic-gradient(from 0deg, #ef4444 0%, #f97316 40%, #22c55e var(--score,0%), transparent var(--score,0%));
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+}
+.score-ring-big::before {
+  content: ''; position: absolute; inset: 20px;
+  background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%);
+  border-radius: 50%;
+}
+.score-ring-big::after {
+  content: ''; position: absolute; inset: 40px;
+  background: #111827; /* dark:bg-black */
+  border-radius: 50%;
+}
+.dark .score-ring-big::after { background: #000; }
+
+/* Small Module Circles */
+.module-circle {
+  width: 100px; height: 100px;
+  background: conic-gradient(from 0deg, #ef4444 0%, #f97316 40%, #22c55e var(--score,0%), transparent var(--score,0%));
+  border-radius: 50%;
+  position: relative;
+  margin: 0 auto 1rem;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+.module-circle::after {
+  content: ''; position: absolute; inset: 15px;
+  background: #111827;
+  border-radius: 50%;
+}
+.dark .module-circle::after { background: #000; }
+
+/* Cards & Fixes */
+.metric-card {
+  @apply bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-orange-500/50 hover:shadow-2xl transition-all duration-300;
+}
+.show-fixes summary {
+  @apply cursor-pointer text-orange-400 font-bold hover:text-pink-400 mt-4;
+}
+.forecast-card {
+  @apply bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-3xl p-10 border border-purple-500/30;
+}
+
+/* Print PDF */
+@media print {
+  body { background: white !important; color: black !important; }
+  .metric-card { border: 1px solid #ccc; }
+  details { open: true; }
+  #loading, header, footer { display: none !important; }
+}

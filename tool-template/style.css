@@ -1,0 +1,66 @@
+/* Traffic Torch AIO Tool Styles – matches all other tools 100% */
+.analyzing-bar {
+  @apply fixed bottom-0 left-0 right-0 h-4 bg-gradient-to-r from-orange-500 to-pink-600 z-50;
+}
+.progress-text {
+  @apply absolute inset-0 flex items-center justify-center text-white font-bold text-sm;
+}
+.progress-bar-fill {
+  @apply h-full bg-white/30 transition-width duration-500;
+}
+
+/* Big Score Ring at Top */
+.score-ring-big {
+  @apply w-64 h-64 mx-auto mb-12 relative rounded-full shadow-2xl;
+  background: conic-gradient(#ef4444 0%, #f97316 35%, #22c55e var(--score), #22c55e var(--score));
+  mask: radial-gradient(transparent 0 40%, #000 42%);
+}
+
+/* Small Module Circles */
+.module-circle {
+  @apply w-24 h-24 mx-auto mb-4 relative rounded-full shadow-lg;
+  background: conic-gradient(#ef4444 0%, #f97316 35%, #22c55e var(--module-score), #22c55e var(--module-score));
+  mask: radial-gradient(transparent 0 30%, #000 32%);
+}
+.module-score-text {
+  @apply absolute inset-0 flex items-center justify-center text-4xl font-900;
+  background: linear-gradient(to right, #f97316, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Metric Cards */
+.metric-card {
+  @apply bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/10 transition-all hover:border-orange-500/50 hover:shadow-2xl hover:-translate-y-1;
+}
+.show-fixes {
+  @apply cursor-pointer text-orange-400 font-bold hover:text-pink-600 mt-4 block;
+}
+.fixes-list {
+  @apply mt-4 space-y-3 text-sm list-inside list-disc pl-4;
+}
+
+/* Predictive Forecast Card */
+.forecast-card {
+  @apply bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-3xl p-10 border border-purple-500/30 mt-12 shadow-xl;
+  animation: fadeIn 0.5s ease-in;
+}
+
+/* Print Styles for PDF */
+@media print {
+  body { @apply bg-white text-black; }
+  .metric-card { @apply border-gray-200; }
+  details { open: true; } /* Auto-open fixes */
+  .score-ring-big, .module-circle { box-shadow: none; }
+  .hidden { display: none; }
+  .analyzing-bar { display: none; }
+}
+
+/* Mobile Stacking */
+@media (max-width: 768px) {
+  .grid { @apply grid-cols-1; }
+  .score-ring-big { @apply w-48 h-48; }
+}
+
+/* Animation */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
