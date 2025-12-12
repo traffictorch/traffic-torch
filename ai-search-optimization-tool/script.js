@@ -30,53 +30,39 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const analyze = (text, doc) => {
-    // 1. Answerability
-    const first300 = text.slice(0,300);
-    const hasDirectAnswer = /bold|strong|faq|definition|summary|^.{0,100}[?:]/i.test(first300) || !!doc.querySelector('faq, .faq, [role="faq"]');
-    const answerability = hasDirectAnswer ? 96 : 40;
-
-    // 2. Structured Data
     const hasSchema = doc.querySelectorAll('script[type="application/ld+json"]').length > 0;
-    const structured = hasSchema ? 96 : 32;
-
-    // 3. EEAT Signals
-    const author = !!doc.querySelector('[rel="author"],.author,.byline');
-    const date = !!doc.querySelector('time,[pubdate]');
-    const links = doc.querySelectorAll('a[href]').length;
-    const eeat = (author?30:0) + (date?25:0) + (links>15?30:links>5?15:0);
-
-    // 4. Scannability
-    const lists = doc.querySelectorAll('ul,ol').length;
-    const tables = doc.querySelectorAll('table').length;
-    const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6').length;
-    const scannable = (lists+tables+headings > 12) ? 96 : (lists+tables+headings > 6) ? 70 : 40;
-
-    // 5. Conversational Tone
-    const pronouns = (text.match(/\b(I|you|we|us|my|your|our|me)\b/gi)||[]).length;
-    const questions = (text.match(/\?/g)||[]).length;
-    const conversational = (pronouns > 10 || questions > 2) ? 96 : (pronouns > 3 || questions > 0) ? 70 : 45;
-
-    // 6. Readability
     const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
     const words = text.split(/\s+/).filter(w=>w.length>0);
     const syllables = words.reduce((a,w)=>a+(w.toLowerCase().match(/[aeiouy]+/g)||[]).length,0);
     const fk = words.length === 0 ? 0 : 206.835 - 1.015*(words.length/(sentences.length||1)) - 84.6*(syllables/(words.length||1));
     const readability = fk > 70 ? 96 : fk > 60 ? 85 : fk > 50 ? 70 : fk > 40 ? 50 : 32;
 
-    // 7. Human Insights
-    const humanPhrases = text.match(/\b(I|we|my|our|in my experience|I tested|I found|case study|real.?world)\b/gi)?.length || 0;
-    const humanInsight = humanPhrases > 5 ? 96 : humanPhrases > 2 ? 70 : 40;
+    const pronouns = (text.match(/\b(I|you|we|us|my|your|our|me)\b/gi)||[]).length;
+    const questions = (text.match(/\?/g)||[]).length;
+    const conversational = (pronouns > 10 || questions > 2) ? 96 : (pronouns > 3 || questions > 0) ? 70 : 45;
 
-    // 8. Anti-AI Detection (reuse AI Content Audit logic)
-    const sentencesArray = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-    const sentenceLengths = sentencesArray.map(s => s.trim().split(/\s+/).length);
+    const lists = doc.querySelectorAll('ul,ol').length;
+    const tables = doc.querySelectorAll('table').length;
+    const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6').length;
+    const scannable = (lists+tables+headings > 12) ? 96 : (lists+tables+headings > 6) ? 70 : 45;
+
+    const author = !!doc.querySelector('[rel="author"],.author,.byline');
+    const date = !!doc.querySelector('time,[pubdate]');
+    const links = doc.querySelectorAll('a[href]').length;
+    const eeat = (author?30:0) + (date?25:0) + (links>15?30:links>5?15:0);
+
+    const humanPhrases = text.match(/\b(I|we|my|our|in my experience|I tested|I found|case study)\b/gi)?.length || 0;
+    const humanInsight = humanPhrases > 5 ? 96 : humanPhrases > 2 ? 70 : 45;
+
+    const sentenceLengths = sentences.map(s => s.trim().split(/\s+/).length);
     const avgLength = sentenceLengths.reduce((a,b)=>a+b,0)/sentenceLengths.length || 1;
     const variance = sentenceLengths.reduce((a,b)=>a + Math.pow(b - avgLength,2),0)/sentenceLengths.length;
     const burstiness = Math.sqrt(variance);
-    const perplexityProxy = text.length > 100 ? (text.match(/[,;:!?]/g)||[]).length / text.length * 100 : 0;
-    const antiAI = burstiness > 5 && perplexityProxy > 2 ? 96 : burstiness > 3 ? 70 : 32;
+    const antiAI = burstiness > 5 ? 96 : burstiness > 3 ? 70 : 45;
 
-    const total = answerability*0.25 + structured*0.2 + eeat*0.2 + scannable*0.15 + conversational*0.1 + readability*0.05 + humanInsight*0.05 + antiAI*0.05;
+    const answerability = /bold|strong|faq|summary/i.test(text.slice(0,300)) ? 96 : 70;
+
+    const total = answerability*0.25 + (hasSchema?96:32)*0.2 + eeat*0.2 + scannable*0.15 + conversational*0.1 + readability*0.05 + humanInsight*0.05 + antiAI*0.05;
     const score = Math.min(100, Math.round(total));
 
     let forecast = "Low visibility";
@@ -95,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     return { score, forecast, aiFixes, modules: [
       {name:"Answerability",score:answerability,desc:"Direct answer early on"},
-      {name:"Structured Data",score:structured,desc:"Schema.org JSON-LD"},
+      {name:"Structured Data",score:hasSchema?96:32,desc:"Schema.org JSON-LD"},
       {name:"EEAT Signals",score:eeat,desc:"Author, date, links"},
       {name:"Scannability",score:scannable,desc:"Lists, tables, headings"},
       {name:"Conversational Tone",score:conversational,desc:"Personal language"},
@@ -128,29 +114,48 @@ document.addEventListener('DOMContentLoaded', () => {
       const text = clean.textContent.replace(/\s+/g,' ').trim();
       const r = analyze(text, doc);
 
+      // Big SVG ring at top – exact SEO Intent style
+      const bigDash = (r.score / 100) * 754;
+
       report.innerHTML = `
         <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-orange-500/30">
-          <div class="score-ring-big mb-12" style="--score:${r.score}%">
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="text-8xl font-black bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent drop-shadow-2xl">${r.score}<span class="text-5xl">%</span></div>
+          <div class="flex justify-center mb-12">
+            <div class="relative">
+              <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
+                <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
+                <circle cx="130" cy="130" r="120" stroke="url(#bigGradient)" stroke-width="18" fill="none"
+                        stroke-dasharray="${bigDash} 754" stroke-linecap="round"/>
+                <defs>
+                  <linearGradient id="bigGradient">
+                    <stop offset="0%" stop-color="#ef4444"/>
+                    <stop offset="100%" stop-color="#22c55e"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-7xl font-black text-white drop-shadow-2xl">${r.score}</div>
+                <div class="text-2xl text-white/90">/100</div>
+              </div>
             </div>
           </div>
           <h2 class="text-5xl font-black text-center mb-16">AI Search Optimization Score</h2>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 max-w-6xl mx-auto mb-16">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto mb-16">
             ${r.modules.map(m=>`
               <div class="metric-card text-center">
-                <div class="module-circle mb-6" style="--score:${m.score}%">
-                  <div class="module-score-text">${m.score}</div>
+                <div class="relative mx-auto w-32 h-32 mb-4">
+                  <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+                    <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+                    <circle cx="64" cy="64" r="56" stroke="${m.score >= 80 ? '#22c55e' : m.score >= 60 ? '#f59e0b' : '#ef4444'}"
+                            stroke-width="12" fill="none" stroke-dasharray="${(m.score/100)*352} 352" stroke-linecap="round"/>
+                  </svg>
+                  <div class="absolute inset-0 flex items-center justify-center text-4xl font-black">${m.score}</div>
                 </div>
-                <h3 class="text-2xl font-bold mb-4">${m.name}</h3>
+                <h3 class="text-xl font-bold mb-2">${m.name}</h3>
                 <p class="text-sm opacity-80 mb-4">${m.desc}</p>
-                <details>
-                  <summary class="text-orange-400 font-bold cursor-pointer hover:text-pink-400">Show Fixes →</summary>
-                  <ul class="mt-4 space-y-2 text-sm list-disc pl-6 text-left">
-                    <li>Custom fixes coming soon</li>
-                  </ul>
-                </details>
+                <button class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+                  Show Fixes
+                </button>
               </div>
             `).join('')}
           </div>
