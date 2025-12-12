@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       // THIS LINE IS WHAT WAS MISSING — EXACTLY AS IN EVERY WORKING TOOL
-      const res = await fetch(PROXY + encodeURIComponent(url));
+      const res = await fetch(PROXY + url);
       if (!res.ok) throw new Error('Page not reachable');
 
       const html = await res.text();
