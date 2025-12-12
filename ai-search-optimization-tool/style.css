@@ -1,49 +1,22 @@
-/* Exact match to SEO Intent tool – white inner circles, full green high scores, thick bar */
-#loading {
-  @apply fixed bottom-0 left-0 right-0 h-6 bg-gradient-to-r from-orange-500 to-pink-600 z-50;
-}
-#progressText {
-  @apply absolute inset-0 flex items-center justify-center text-white font-bold text-base drop-shadow-lg;
-}
-#progressBar {
-  @apply h-full bg-white/40 transition-all duration-500;
-}
+/* Perfect match to SEO Intent tool – white inner circles, thick bar, clean layout */
+#loading { @apply fixed bottom-0 left-0 right-0 h-6 bg-gradient-to-r from-orange-500 to-pink-600 z-50; }
+#progressText { @apply absolute inset-0 flex items-center justify-center text-white font-bold text-base drop-shadow-lg; }
+#progressBar { @apply h-full bg-white/40 transition-all duration-500; }
 
-/* Big Main Score Ring – white inner, full green on high scores */
-.score-ring-big {
-  width: 280px; height: 280px;
+.score-ring-big, .module-circle {
   background: conic-gradient(from 0deg, #ef4444 0%, #f97316 35%, #22c55e var(--score), #22c55e var(--score));
   border-radius: 50%;
   position: relative;
-  margin: 0 auto 2rem;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
-.score-ring-big::after {
-  content: '';
-  position: absolute;
-  inset: 40px;
-  background: white;
-  border-radius: 50%;
-}
-.dark .score-ring-big::after { background: #000; }
+.score-ring-big { width: 280px; height: 280px; margin: 0 auto 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+.module-circle { width: 120px; height: 120px; margin: 0 auto 1rem; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
 
-/* Small Module Rings – white inner, centered numbers */
-.module-circle {
-  width: 120px; height: 120px;
-  background: conic-gradient(from 0deg, #ef4444 0%, #f97316 35%, #22c55e var(--score), #22c55e var(--score));
-  border-radius: 50%;
-  position: relative;
-  margin: 0 auto 1rem;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+.score-ring-big::after, .module-circle::after {
+  content: ''; position: absolute; background: white; border-radius: 50%;
 }
-.module-circle::after {
-  content: '';
-  position: absolute;
-  inset: 20px;
-  background: white;
-  border-radius: 50%;
-}
-.dark .module-circle::after { background: #000; }
+.score-ring-big::after { inset: 40px; }
+.module-circle::after { inset: 20px; }
+.dark .score-ring-big::after, .dark .module-circle::after { background: #000; }
 
 .module-score-text {
   @apply absolute inset-0 flex items-center justify-center text-5xl font-black;
@@ -52,16 +25,9 @@
   -webkit-text-fill-color: transparent;
 }
 
-/* Cards */
 .metric-card {
   @apply bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-orange-500/50 hover:shadow-2xl transition-all;
 }
 .forecast-card, .ai-fixes-card {
   @apply bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-3xl p-10 border border-purple-500/30 mt-12;
-}
-.show-fixes {
-  @apply cursor-pointer text-orange-400 font-bold hover:text-pink-400;
-}
-.fixes-list {
-  @apply mt-4 space-y-2 text-sm list-disc pl-6;
 }
