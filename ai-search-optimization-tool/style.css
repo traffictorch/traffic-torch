@@ -1,82 +1,73 @@
-/* Traffic Torch AIO Tool Styles – matches all other tools 100% */
-.analyzing-bar {
+/* FINAL – 100% Traffic Torch look */
+#loading {
   @apply fixed bottom-0 left-0 right-0 h-4 bg-gradient-to-r from-orange-500 to-pink-600 z-50;
 }
-.progress-text {
-  @apply absolute inset-0 flex items-center justify-center text-white font-bold text-sm shadow-lg;
+#progressText {
+  @apply absolute inset-0 flex items-center justify-center text-white font-bold text-sm drop-shadow-lg;
 }
-.progress-bar-fill {
-  @apply h-full bg-white/30 transition-width duration-500;
+#progressBar {
+  @apply h-full bg-white/30 transition-all duration-500;
 }
 
-/* Big Score Ring at Top */
+/* Big main score ring */
 .score-ring-big {
   width: 260px; height: 260px;
   background: conic-gradient(from 0deg, #ef4444 0%, #f97316 35%, #22c55e var(--score), #22c55e var(--score));
   border-radius: 50%;
   position: relative;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.4);
 }
 .score-ring-big::before {
   content: ''; position: absolute; inset: 20px;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%);
   border-radius: 50%;
 }
 .score-ring-big::after {
-  content: ''; position: absolute; inset: 35px;
-  background: rgba(243,244,246,0.8); /* bg-gray-50/80 */
+  content: ''; position: absolute; inset: 40px;
+  background: #f3f4f6; /* light mode */
   border-radius: 50%;
-  dark: background: rgba(0,0,0,0.8); /* bg-black/80 */
 }
+.dark .score-ring-big::after { background: #000; }
 
-/* Small Module Circles */
+/* Small module circles */
 .module-circle {
-  width: 80px; height: 80px;
+  width: 100px; height: 100px;
   background: conic-gradient(from 0deg, #ef4444 0%, #f97316 35%, #22c55e var(--score), #22c55e var(--score));
   border-radius: 50%;
   position: relative;
   margin: 0 auto 1rem;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
 }
 .module-circle::after {
   content: ''; position: absolute; inset: 15px;
-  background: rgba(243,244,246,0.8);
+  background: #f3f4f6;
   border-radius: 50%;
-  dark: background: rgba(0,0,0,0.8);
 }
+.dark .module-circle::after { background: #000; }
 
-/* Cards & Fixes */
+/* Cards */
 .metric-card {
-  @apply bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/10 transition-all hover:border-orange-500/50 hover:shadow-2xl hover:-translate-y-1;
+  @apply bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-orange-500/50 hover:shadow-2xl transition-all duration-300;
 }
-.show-fixes {
-  @apply cursor-pointer text-orange-400 font-bold hover:text-pink-600 mt-4;
-}
-.fixes-list {
-  @apply mt-4 space-y-3 text-sm list-inside list-disc pl-4;
+.module-score-text {
+  @apply absolute inset-0 flex items-center justify-center text-4xl font-black;
+  background: linear-gradient(to right, #f97316, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* Predictive Forecast Card */
+/* Forecast & AI Fixes */
 .forecast-card {
-  @apply bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-3xl p-10 border border-purple-500/30 mt-12 shadow-xl;
-  animation: fadeIn 0.5s ease-in;
+  @apply bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-3xl p-10 border border-purple-500/30 shadow-xl;
+}
+.ai-fixes-card {
+  @apply bg-gradient-to-r from-orange-500/20 to-pink-600/20 rounded-3xl p-10 border border-orange-500/30 shadow-xl;
 }
 
-/* Print PDF */
+/* Print */
 @media print {
-  body { @apply bg-white text-black; }
-  .metric-card { @apply border-gray-200; }
-  details { open: true; } /* Auto-open fixes */
-  .score-ring-big, .module-circle { box-shadow: none; }
-  .hidden { display: none; }
-  .analyzing-bar { display: none; }
+  body { background: white !important; color: black !important; }
+  .metric-card { border: 1px solid #ccc; }
+  details { open: true; }
+  #loading, header, footer { display: none !important; }
 }
-
-/* Mobile Stacking */
-@media (max-width: 768px) {
-  .grid { @apply grid-cols-1; }
-  .score-ring-big { @apply w-48 h-48; }
-}
-
-/* Animation */
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
