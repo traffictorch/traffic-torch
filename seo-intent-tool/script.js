@@ -144,31 +144,56 @@ else confidence = 65; // neutral title
       `).join('')}
     </div>
 
-    <!-- Content Depth + Readability -->
-    <div class="grid md:grid-cols-2 gap-6 my-12">
+    <!-- Content Depth + Readability + Schema Detected – now with "Show Info" toggle -->
+    <div class="grid md:grid-cols-3 gap-8 my-16">
+      <!-- Content Depth -->
       <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
         <h3 class="text-2xl font-bold mb-4">Content Depth</h3>
         <p class="text-5xl font-black mb-2">${words.toLocaleString()}</p>
-        <p class="text-gray-500">words</p>
-        <p class="mt-4 text-sm italic">Ideal: >1,500 words</p>
+        <p class="text-gray-500 mb-4">words</p>
+        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+          Show Info
+        </button>
+        <div class="hidden mt-6 space-y-3 text-left text-sm">
+          <p class="text-blue-500 font-bold">What:</p><p>Length and detail of your content</p>
+          <p class="text-green-500 font-bold">How:</p><p>Add examples, FAQs, data, images, comparisons, case studies</p>
+          <p class="text-orange-500 font-bold">Why:</p><p>Depth is the #1 ranking factor in 2025 — more words = more topical authority</p>
+        </div>
       </div>
+
+      <!-- Readability -->
       <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
         <h3 class="text-2xl font-bold mb-4">Readability</h3>
         <p class="text-5xl font-black mb-2">${readability}</p>
-        <p class="text-gray-500">Flesch score</p>
-        <p class="mt-4 text-sm italic">Ideal: 60–70</p>
+        <p class="text-gray-500 mb-4">Flesch score</p>
+        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+          Show Info
+        </button>
+        <div class="hidden mt-6 space-y-3 text-left text-sm">
+          <p class="text-blue-500 font-bold">What:</p><p>How easy your text is to read</p>
+          <p class="text-green-500 font-bold">How:</p><p>Short sentences (under 20 words), simple words, active voice, subheadings</p>
+          <p class="text-orange-500 font-bold">Why:</p><p>Google rewards readable content — lower bounce, longer time-on-page</p>
+        </div>
       </div>
-    </div>
 
-    <!-- Schema Detected -->
-    <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
-      <h3 class="text-2xl font-bold mb-6">Schema Detected</h3>
-      ${schemaTypes.length ? `
-        <select class="px-6 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-lg">
-          ${schemaTypes.map(t => `<option>${t}</option>`).join('')}
-        </select>
-        <p class="mt-4 text-green-500 font-bold">Schema found</p>
-      ` : '<p class="text-2xl text-red-500">No schema detected</p>'}
+      <!-- Schema Detected -->
+      <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
+        <h3 class="text-2xl font-bold mb-4">Schema Detected</h3>
+        ${schemaTypes.length ? `
+          <select class="px-6 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-black dark:text-white">
+            ${schemaTypes.map(t => `<option>${t}</option>`).join('')}
+          </select>
+          <p class="mt-4 text-green-500 font-bold">${schemaTypes.length} type${schemaTypes.length > 1 ? 's' : ''} found</p>
+        ` : '<p class="text-2xl text-red-500 mt-4">No schema detected</p>'}
+        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+          Show Info
+        </button>
+        <div class="hidden mt-6 space-y-3 text-left text-sm">
+          <p class="text-blue-500 font-bold">What:</p><p>Structured data that helps Google understand your page</p>
+          <p class="text-green-500 font-bold">How:</p><p>Add JSON-LD for Article, Person, FAQPage, HowTo, etc.</p>
+          <p class="text-orange-500 font-bold">Why:</p><p>Rich results, better E-E-A-T signals, higher CTR in SERPs</p>
+        </div>
+      </div>
     </div>
 
     <!-- Competitive Gap Table -->
