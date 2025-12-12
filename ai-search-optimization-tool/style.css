@@ -1,4 +1,4 @@
-/* Exact match to all other tools – minimal + perfect */
+/* Minimal – same as other tools + SVG circle support */
 #loading {
   @apply fixed bottom-0 left-0 right-0 h-6 bg-gradient-to-r from-orange-500 to-pink-600 z-50;
 }
@@ -9,21 +9,10 @@
   @apply h-full bg-white/40 transition-all duration-500;
 }
 
-/* Big & small SVG circles – white inner */
-.score-ring-big, .module-circle {
-  position: relative;
+.metric-card {
+  @apply bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-orange-500/50 hover:shadow-2xl transition-all text-center;
 }
-.score-ring-big::after, .module-circle::after {
-  content: '';
-  position: absolute;
-  inset: 40px;
-  background: white;
-  border-radius: 50%;
-}
-.dark .score-ring-big::after, .dark .module-circle::after { background: #000; }
-.module-circle::after { inset: 20px; }
 
-/* AI Fixes & Forecast cards – exact gradients + colours */
 .ai-fixes-card {
   background: linear-gradient(to right, #ff6b35, #ff00aa);
   color: white;
@@ -33,11 +22,6 @@
   color: white;
 }
 
-/* What / How / Why colours */
 .what { @apply text-blue-400 font-bold; }
-.how  { @apply text-green-400 font-bold; }
-.why  { @apply text-orange-400 font-bold; }
-
-.metric-card {
-  @apply bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-orange-500/50 hover:shadow-2xl transition-all;
-}
+.how { @apply text-green-400 font-bold; }
+.why { @apply text-orange-400 font-bold; }
