@@ -1,4 +1,4 @@
-/* Minimal – same as other tools + SVG circle support */
+/* Exact match to other tools – orange Show Fixes button, coloured What/How/Why */
 #loading {
   @apply fixed bottom-0 left-0 right-0 h-6 bg-gradient-to-r from-orange-500 to-pink-600 z-50;
 }
@@ -9,19 +9,40 @@
   @apply h-full bg-white/40 transition-all duration-500;
 }
 
+/* SVG circles – white inner */
+.score-ring-big, .module-circle {
+  position: relative;
+}
+.score-ring-big::after, .module-circle::after {
+  content: '';
+  position: absolute;
+  inset: 40px;
+  background: white;
+  border-radius: 50%;
+}
+.module-circle::after { inset: 20px; }
+.dark .score-ring-big::after, .dark .module-circle::after { background: #000; }
+
+/* Cards */
 .metric-card {
-  @apply bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-orange-500/50 hover:shadow-2xl transition-all text-center;
+  @apply bg-white dark:bg-gray-900 rounded-3xl p-8 shadow-lg border;
+  border-color: #e5e7eb;
+}
+.metric-card.high { border-color: #22c55e; }
+.metric-card.medium { border-color: #f59e0b; }
+.metric-card.low { border-color: #ef4444; }
+
+/* Orange Show Fixes button */
+.show-fixes-btn {
+  @apply mt-6 px-8 py-3 bg-orange-500 text-white font-bold rounded-full hover:bg-orange-600 transition;
 }
 
-.ai-fixes-card {
-  background: linear-gradient(to right, #ff6b35, #ff00aa);
-  color: white;
-}
-.forecast-card {
-  background: linear-gradient(to right, #8b5cf6, #ec4899);
-  color: white;
-}
+/* Coloured What/How/Why */
+.what { @apply text-blue-500 font-bold; }
+.how { @apply text-green-500 font-bold; }
+.why { @apply text-orange-500 font-bold; }
 
-.what { @apply text-blue-400 font-bold; }
-.how { @apply text-green-400 font-bold; }
-.why { @apply text-orange-400 font-bold; }
+/* Forecast & AI Fixes */
+.forecast-card, .ai-fixes-card {
+  @apply bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-3xl p-10 border border-purple-500/30 mt-12;
+}
