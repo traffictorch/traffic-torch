@@ -78,14 +78,14 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     return { score, forecast, aiFixes, modules: [
-      {name:"Answerability",score:answerability},
-      {name:"Structured Data",score:hasSchema?96:32},
-      {name:"EEAT Signals",score:eeat},
-      {name:"Scannability",score:scannable},
-      {name:"Conversational Tone",score:conversational},
-      {name:"Readability",score:readability},
-      {name:"Human Insights",score:humanInsight},
-      {name:"Anti-AI Detection",score:antiAI}
+      {name:"Answerability",score:answerability,border:"medium"},
+      {name:"Structured Data",score:hasSchema?96:32,border:hasSchema?"high":"low"},
+      {name:"EEAT Signals",score:eeat,border:eeat>60?"high":eeat>40?"medium":"low"},
+      {name:"Scannability",score:scannable,border:scannable>80?"high":scannable>60?"medium":"low"},
+      {name:"Conversational Tone",score:conversational,border:conversational>80?"high":conversational>60?"medium":"low"},
+      {name:"Readability",score:readability,border:readability>80?"high":readability>60?"medium":"low"},
+      {name:"Human Insights",score:humanInsight,border:humanInsight>80?"high":humanInsight>60?"medium":"low"},
+      {name:"Anti-AI Detection",score:antiAI,border:antiAI>80?"high":antiAI>60?"medium":"low"}
     ]};
   };
 
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const r = analyze(text, doc);
 
       report.innerHTML = `
-        <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-orange-500/30">
+        <div class="max-w-6xl mx-auto">
           <div class="flex justify-center mb-12">
             <div class="relative">
               <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
@@ -134,9 +134,9 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <h2 class="text-5xl font-black text-center mb-16">AI Search Optimization Score</h2>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto mb-16">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             ${r.modules.map(m=>`
-              <div class="metric-card text-center">
+              <div class="metric-card ${m.border}">
                 <div class="relative mx-auto w-32 h-32 mb-6">
                   <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
                     <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <h3 class="text-xl font-bold mb-4">${m.name}</h3>
                 <button class="show-fixes-btn">Show Fixes</button>
-                <div class="hidden mt-6 space-y-4 text-left">
+                <div class="hidden mt-6 space-y-4">
                   <p class="what">What: [definition]</p>
                   <p class="how">How: [how to fix]</p>
                   <p class="why">Why: [why it matters]</p>
