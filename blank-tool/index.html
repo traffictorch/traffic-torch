@@ -3,18 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SEO & UX analyzer - Traffic Torch</title>
+  <title>TOOL NAME | Traffic Torch</title>
+  <meta name="description" content="Free instant TOOL DESCRIPTION. No APIs, works on GitHub Pages.">
   <link rel="icon" href="/favicon.ico" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/tool-tests/style.css">
+  <link rel="stylesheet" href="/TOOL-FOLDER/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/main.js" type="module"></script>
-  <script src="/tool-tests/script.js" defer></script>
+  <script src="/TOOL-FOLDER/script.js" defer></script>
 </head>
-<body class="min-h-screen">
-  <!-- Header with Hamburger (unchanged – perfect as-is) -->
-   <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+<body class="min-h-screen transition-colors duration-300">
+
+  <!-- EXACT SAME HEADER AS HOME PAGE -->
+  <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
       <a href="/" class="flex items-center gap-4">
         <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
@@ -42,36 +44,54 @@
         <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">AI Audit</a>
         <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a>
         <a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a>
-        <a href="keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a>
+        <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a>
         <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a>
         <a href="/about/" class="hover:text-orange-400 transition">About</a>
       </nav>
     </div>
   </header>
 
-    <main class="container mx-auto px-6 py-12 max-w-5xl">
-    <div class="text-center mb-12">
-        <h2 class="text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
-            Instant SEO & UX Analyzer
-        </h2>
-        <p class="text-xl text-gray-400">No APIs • Unlimited • Educational fixes</p>
-    </div>
+  <main class="container mx-auto px-6 py-12 max-w-5xl">
+    <div class="text-center mb-16">
+      <h1 class="text-5xl md:text-7xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-6">
+        TOOL NAME
+      </h1>
+      <p class="text-xl text-gray-600 dark:text-gray-300">Instant 360° analysis • 100% client-side • No APIs • Educational fixes</p>
 
-    <form id="url-form" class="flex flex-col md:flex-row gap-4 max-w-3xl mx-auto mb-12">
-        <input type="url" id="url-input" placeholder="https://example.com" required 
-               class="flex-1 px-6 py-4 text-lg rounded-xl border border-white/20 bg-white/10 backdrop-blur focus:outline-none focus:border-orange-400">
-        <button type="submit" class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 rounded-xl font-bold text-white hover:scale-105 transition">
+      <form id="audit-form" class="max-w-2xl mx-auto mt-12">
+        <div class="flex flex-col sm:flex-row gap-4">
+          <input type="url" id="url-input" placeholder="https://example.com/your-page" required
+            class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-4 focus:ring-orange-500 focus:outline-none text-lg">
+          <button type="submit" class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition text-lg">
             Analyze Now
-        </button>
-    </form>
-
-    <div id="loader" class="hidden text-center py-20 text-2xl">Analyzing…</div>
-
-    
+          </button>
+        </div>
+      </form>
     </div>
-</main>
+
+    <div id="results" class="hidden space-y-16"></div>
     
-      <!-- Footer (unchanged – already perfect) -->
+      <div class="tt-content">
+    <p><strong>This webpage is being built with fire, love & AI power.</strong></p>
+    <p>Epic features and deep-dive tools are dropping very soon — stay tuned!</p>
+    <small>(Tap the header again to collapse)</small>
+  </div>
+</details>
+  </main>
+
+	<!-- AddToAny BEGIN -->
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style" data-a2a-url="https://traffictorch.net/" data-a2a-title="Traffic Torch">
+<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_pinterest"></a>
+<a class="a2a_button_x"></a>
+<a class="a2a_button_reddit"></a>
+<a class="a2a_button_copy_link"></a>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+<!-- AddToAny END -->
+
+  <!-- Footer (unchanged – already perfect) -->
   <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">
     <div class="container mx-auto px-6 max-w-6xl">
       <div class="grid md:grid-cols-4 gap-12 text-center md:text-left">
@@ -110,6 +130,6 @@
       </div>
     </div>
   </footer>
-  
+
 </body>
 </html>

@@ -264,7 +264,7 @@ else confidence = 65; // neutral title
     </div>
     <div class="p-6 bg-white/10 rounded-2xl">
       <p class="font-bold text-green-300 text-xl mb-2">How it's calculated</p>
-      <p class="text-sm leading-relaxed">We use heuristics from 2025 Google updates: 40% E-E-A-T, 30% content depth, 20% intent, 10% tech factors. Scores >85% = Top 10; >90% = Top 3 in most niches.</p>
+      <p class="text-sm leading-relaxed">We use heuristics from Google updates: 40% E-E-A-T, 30% content depth, 20% intent, 10% tech factors. Scores >85% = Top 10; >90% = Top 3 in most niches.</p>
     </div>
     <div class="p-6 bg-white/10 rounded-2xl">
       <p class="font-bold text-orange-300 text-xl mb-2">Why it matters</p>
