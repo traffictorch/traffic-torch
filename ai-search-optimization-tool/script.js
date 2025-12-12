@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
       {title:"Link credible sources", what:"External citations from trusted sites", how:"10+ high-authority outbound links", why:"Increases Authoritativeness and Trust"}
     ];
 
-    return { score, forecast, aiFixes, modules: [
+    return { score, forecast, aiFixes, modules };
       {name:"Answerability",score:answerability},
       {name:"Structured Data",score:hasSchema?96:32},
       {name:"EEAT Signals",score:eeat},
