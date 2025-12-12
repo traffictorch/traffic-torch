@@ -91,35 +91,35 @@ else confidence = 65; // neutral title
         <div class="absolute inset-0 flex items-center justify-center">
           <div class="text-center">
             <div class="text-7xl font-black text-white drop-shadow-2xl">${overall}</div>
-            <div class="text-2xl text-white/90 -mt-2">/100</div>
+            <div class="text-mt-2 text-2xl text-white/90">/100</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Intent Type + Confidence -->
+    <!-- Intent – Expert Copy -->
     <div class="text-center mb-12">
       <p class="text-4xl font-black mb-8">
         Intent: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${intent}</span>
-        <span class="text-2xl text-gray-400">— ${confidence}% confidence</span>
+        <span class="text-2xl text-gray-400">— ${confidence}% match</span>
       </p>
       <div class="max-w-3xl mx-auto grid md:grid-cols-3 gap-6 text-left">
         <div class="p-6 bg-blue-500/10 border-l-4 border-blue-500 rounded-r-xl">
           <p class="font-bold text-blue-500">What it is</p>
-          <p class="mt-2 text-sm leading-relaxed">${intent === 'Informational' ? 'User wants to learn or understand something.' : intent === 'Commercial' ? 'User is researching before buying.' : intent === 'Local' ? 'User wants a nearby business.' : 'User is ready to convert now.'}</p>
+          <p class="mt-2 text-sm leading-relaxed">The exact reason the user typed their query into Google.</p>
         </div>
         <div class="p-6 bg-green-500/10 border-l-4 border-green-500 rounded-r-xl">
           <p class="font-bold text-green-500">How to satisfy it</p>
-          <p class="mt-2 text-sm leading-relaxed">${intent === 'Informational' ? 'Use clear headings, bullet lists, visuals, FAQs.' : intent === 'Commercial' ? 'Add comparison tables, reviews, pricing, pros/cons.' : intent === 'Local' ? 'Show map, hours, phone, Google reviews.' : 'Strong CTAs, trust signals, fast checkout.'}</p>
+          <p class="mt-2 text-sm leading-relaxed">Title, H1, and content must mirror the user’s exact need — no fluff, no guessing.</p>
         </div>
         <div class="p-6 bg-orange-500/10 border-l-4 border-orange-500 rounded-r-xl">
           <p class="font-bold text-orange-500">Why it matters</p>
-          <p class="mt-2 text-sm leading-relaxed">${intent === 'Informational' ? 'Lower bounce, longer sessions, higher rankings.' : intent === 'Commercial' ? 'Higher conversion rate from research phase.' : intent === 'Local' ? 'Dominates local pack & map results.' : 'Directly drives revenue.'}</p>
+          <p class="mt-2 text-sm leading-relaxed">Google ranks intent-matching pages first. Wrong intent = instant bounce and zero rankings.</p>
         </div>
       </div>
     </div>
 
-    <!-- E-E-A-T Breakdown -->
+    <!-- E-E-A-T – Expert Copy -->
     <div class="grid md:grid-cols-4 gap-6 my-16">
       ${Object.entries(eeat).map(([key, val]) => `
         <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border ${val >= 80 ? 'border-green-500' : val >= 60 ? 'border-yellow-500' : 'border-red-500'}">
@@ -136,28 +136,26 @@ else confidence = 65; // neutral title
             Show Fixes
           </button>
           <div class="hidden mt-6 space-y-3 text-left text-sm">
-            <p class="text-blue-500 font-bold">What:</p><p>${key === 'Experience' ? 'First-hand knowledge shown.' : key === 'Expertise' ? 'Proven skill.' : key === 'Authoritativeness' ? 'Recognized authority.' : 'Site reliability.'}</p>
-            <p class="text-green-500 font-bold">How:</p><p>${key === 'Experience' ? '"I/we" stories, photos.' : key === 'Expertise' ? 'Author bio + credentials.' : key === 'Authoritativeness' ? 'Backlinks, schema.' : 'HTTPS, contact page.'}</p>
-            <p class="text-orange-500 font-bold">Why:</p><p>${key === 'Experience' ? 'Builds connection.' : key === 'Expertise' ? 'Google favors experts.' : key === 'Authoritativeness' ? 'Higher rankings.' : 'Increases trust.'}</p>
+            <p class="text-blue-500 font-bold">What:</p><p>${key === 'Experience' ? 'Proof you’ve personally done what you’re teaching.' : key === 'Expertise' ? 'Demonstrated subject-matter mastery.' : key === 'Authoritativeness' ? 'Recognition as the go-to source in your niche.' : 'Signals your site is safe and honest.'}</p>
+            <p class="text-green-500 font-bold">How:</p><p>${key === 'Experience' ? 'Use “I” statements, photos, case studies, dates.' : key === 'Expertise' ? 'Author box with photo, bio, credentials, certifications.' : key === 'Authoritativeness' ? 'High-quality backlinks, press mentions, schema, awards.' : 'HTTPS, contact page, privacy policy, updated dates.'}</p>
+            <p class="text-orange-500 font-bold">Why:</p><p>${key === 'Experience' ? 'Google’s #1 E-E-A-T signal in 2025.' : key === 'Expertise' ? 'Experts rank higher — full stop.' : key === 'Authoritativeness' ? 'Strongest long-term ranking factor.' : 'No trust = no traffic from Google.'}</p>
           </div>
         </div>
       `).join('')}
     </div>
 
-    <!-- Content Depth + Readability + Schema Detected – now with "Show Info" toggle -->
+    <!-- Content Depth + Readability + Schema – Expert Copy -->
     <div class="grid md:grid-cols-3 gap-8 my-16">
       <!-- Content Depth -->
       <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
         <h3 class="text-2xl font-bold mb-4">Content Depth</h3>
         <p class="text-5xl font-black mb-2">${words.toLocaleString()}</p>
         <p class="text-gray-500 mb-4">words</p>
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-          Show Info
-        </button>
+        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Info</button>
         <div class="hidden mt-6 space-y-3 text-left text-sm">
-          <p class="text-blue-500 font-bold">What:</p><p>Length and detail of your content</p>
-          <p class="text-green-500 font-bold">How:</p><p>Add examples, FAQs, data, images, comparisons, case studies</p>
-          <p class="text-orange-500 font-bold">Why:</p><p>Depth is the #1 ranking factor in 2025 — more words = more topical authority</p>
+          <p class="text-blue-500 font-bold">What:</p><p>Comprehensive coverage that fully answers the query and beyond.</p>
+          <p class="text-green-500 font-bold">How:</p><p>Add examples, data, screenshots, FAQs, tools, templates, comparisons.</p>
+          <p class="text-orange-500 font-bold">Why:</p><p>Depth is the #1 ranking factor in 2025 — Google rewards “best answer” pages.</p>
         </div>
       </div>
 
@@ -166,13 +164,11 @@ else confidence = 65; // neutral title
         <h3 class="text-2xl font-bold mb-4">Readability</h3>
         <p class="text-5xl font-black mb-2">${readability}</p>
         <p class="text-gray-500 mb-4">Flesch score</p>
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-          Show Info
-        </button>
+        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Info</button>
         <div class="hidden mt-6 space-y-3 text-left text-sm">
-          <p class="text-blue-500 font-bold">What:</p><p>How easy your text is to read</p>
-          <p class="text-green-500 font-bold">How:</p><p>Short sentences (under 20 words), simple words, active voice, subheadings</p>
-          <p class="text-orange-500 font-bold">Why:</p><p>Google rewards readable content — lower bounce, longer time-on-page</p>
+          <p class="text-blue-500 font-bold">What:</p><p>How easy your content is to consume.</p>
+          <p class="text-green-500 font-bold">How:</p><p>Short sentences, simple words, active voice, subheadings, bullets.</p>
+          <p class="text-orange-500 font-bold">Why:</p><p>Google tracks bounce & dwell time — readable = longer sessions = higher rankings.</p>
         </div>
       </div>
 
@@ -185,18 +181,16 @@ else confidence = 65; // neutral title
           </select>
           <p class="mt-4 text-green-500 font-bold">${schemaTypes.length} type${schemaTypes.length > 1 ? 's' : ''} found</p>
         ` : '<p class="text-2xl text-red-500 mt-4">No schema detected</p>'}
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-          Show Info
-        </button>
+        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Info</button>
         <div class="hidden mt-6 space-y-3 text-left text-sm">
-          <p class="text-blue-500 font-bold">What:</p><p>Structured data that helps Google understand your page</p>
-          <p class="text-green-500 font-bold">How:</p><p>Add JSON-LD for Article, Person, FAQPage, HowTo, etc.</p>
-          <p class="text-orange-500 font-bold">Why:</p><p>Rich results, better E-E-A-T signals, higher CTR in SERPs</p>
+          <p class="text-blue-500 font-bold">What:</p><p>Structured data that tells Google exactly what your page is about.</p>
+          <p class="text-green-500 font-bold">How:</p><p>Add JSON-LD for Article, Person, FAQPage, HowTo, Product, etc.</p>
+          <p class="text-orange-500 font-bold">Why:</p><p>Triggers rich results, improves CTR, strengthens E-E-A-T signals.</p>
         </div>
       </div>
     </div>
 
-    <!-- Competitive Gap Table -->
+    <!-- Competitive Gap Table (unchanged) -->
     <div class="overflow-x-auto my-12">
       <table class="w-full border-collapse border border-gray-300 dark:border-gray-600 text-left">
         <thead>
@@ -208,15 +202,15 @@ else confidence = 65; // neutral title
           </tr>
         </thead>
         <tbody>
-          <tr class="border-b"><td class="p-4">Word Count</td><td class="p-4">${words}</td><td class="p-4">>1500</td><td class="p-4 ${words<1500?'text-red-500':'text-green-500'}">${words<1500?'Add '+(1500-words)+' words':'Good'}</td></tr>
-          <tr class="border-b"><td class="p-4">Readability</td><td class="p-4">${readability}</td><td class="p-4">60-70</td><td class="p-4 ${readability<60||readability>70?'text-orange-500':'text-green-500'}">${readability<60||readability>70?'Simplify/Shorten':'Good'}</td></tr>
-          <tr class="border-b"><td class="p-4">Schema Types</td><td class="p-4">${schemaTypes.length}</td><td class="p-4">≥2</td><td class="p-4 ${schemaTypes.length<2?'text-red-500':'text-green-500'}">${schemaTypes.length<2?'Add JSON-LD':'Good'}</td></tr>
-          <tr><td class="p-4">Author Bio</td><td class="p-4">${hasAuthor?'Yes':'No'}</td><td class="p-4">Yes</td><td class="p-4 ${!hasAuthor?'text-red-500':'text-green-500'}">${!hasAuthor?'Add bio':'Good'}</td></tr>
+          <tr class="border-b"><td class="p-4">Word Count</td><td class="p-4">${words}</td><td class="p-4">>1,500</td><td class="p-4 ${words<1500?'text-red-500':'text-green-500'}">${words<1500?'Add '+(1500-words)+' words':'Good'}</td></tr>
+          <tr class="border-b"><td class="p-4">Readability</td><td class="p-4">${readability}</td><td class="p-4">60-70</td><td class="p-4 ${readability<60||readability>70?'text-orange-500':'text-green-500'}">${readability<60||readability>70?'Adjust':'Good'}</td></tr>
+          <tr class="border-b"><td class="p-4">Schema Types</td><td class="p-4">${schemaTypes.length}</td><td class="p-4">≥2</td><td class="p-4 ${schemaTypes.length<2?'text-red-500':'text-green-500'}">${schemaTypes.length<2?'Add':'Good'}</td></tr>
+          <tr><td class="p-4">Author Bio</td><td class="p-4">${hasAuthor?'Yes':'No'}</td><td class="p-4">Yes</td><td class="p-4 ${!hasAuthor?'text-red-500':'text-green-500'}">${!hasAuthor?'Add':'Good'}</td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Prioritised AI-Style Fixes -->
+    <!-- Prioritised AI-Style Fixes – Expert Copy -->
     <div class="space-y-8">
       <h3 class="text-4xl font-black text-center mb-8">Prioritised AI-Style Fixes</h3>
       ${!hasAuthor ? `
@@ -225,9 +219,9 @@ else confidence = 65; // neutral title
             <div class="text-5xl">👤</div>
             <div>
               <h4 class="text-2xl font-bold text-red-600">Add Author Bio & Photo</h4>
-              <p class="mt-4 text-blue-500 font-bold">What:</p><p>Visible byline with credentials and photo</p>
-              <p class="mt-2 text-green-500 font-bold">How:</p><p>Add author box with headshot + bio + links</p>
-              <p class="mt-2 text-orange-500 font-bold">Why:</p><p>Boosts Expertise & Trust by 30–40 points</p>
+              <p class="mt-4 text-blue-500 font-bold">What:</p><p>Visible byline proving who wrote this</p>
+              <p class="mt-2 text-green-500 font-bold">How:</p><p>Headshot + name + bio + credentials + social links</p>
+              <p class="mt-2 text-orange-500 font-bold">Why:</p><p>Boosts Expertise & Trust by 30–40 points — Google’s #1 E-E-A-T signal</p>
             </div>
           </div>
         </div>` : ''}
@@ -237,9 +231,9 @@ else confidence = 65; // neutral title
             <div class="text-5xl">✍️</div>
             <div>
               <h4 class="text-2xl font-bold text-orange-600">Add 1000+ Words of Depth</h4>
-              <p class="mt-4 text-blue-500 font-bold">What:</p><p>Expand content with value and detail</p>
-              <p class="mt-2 text-green-500 font-bold">How:</p><p>Add examples, FAQs, data, images, comparisons</p>
-              <p class="mt-2 text-orange-500 font-bold">Why:</p><p>#1 ranking factor in 2025 — depth wins</p>
+              <p class="mt-4 text-blue-500 font-bold">What:</p><p>Comprehensive coverage that answers every related question</p>
+              <p class="mt-2 text-green-500 font-bold">How:</p><p>Examples, data, screenshots, FAQs, tools, comparisons</p>
+              <p class="mt-2 text-orange-500 font-bold">Why:</p><p>Depth is the #1 ranking factor in 2025 — Google rewards the best answer</p>
             </div>
           </div>
         </div>` : ''}
@@ -249,15 +243,15 @@ else confidence = 65; // neutral title
             <div class="text-5xl">✨</div>
             <div>
               <h4 class="text-2xl font-bold text-purple-600">Add Article + Person Schema</h4>
-              <p class="mt-4 text-blue-500 font-bold">What:</p><p>Structured data for search engines</p>
-              <p class="mt-2 text-green-500 font-bold">How:</p><p>JSON-LD with @type: Article + Person</p>
-              <p class="mt-2 text-orange-500 font-bold">Why:</p><p>Rich results + major E-E-A-T boost</p>
+              <p class="mt-4 text-blue-500 font-bold">What:</p><p>Structured data Google reads</p>
+              <p class="mt-2 text-green-500 font-bold">How:</p><p>JSON-LD with @type Article + Person + author link</p>
+              <p class="mt-2 text-orange-500 font-bold">Why:</p><p>Rich results + massive E-E-A-T boost</p>
             </div>
           </div>
         </div>` : ''}
     </div>
 
-    <!-- Predictive Rank Forecast -->
+    <!-- Predictive Rank Forecast – Expert Copy -->
     <div class="text-center mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
       <p class="text-3xl font-medium opacity-80">Predictive Rank Forecast</p>
       <p class="text-8xl font-black mt-6">${overall > 88 ? 'Top 3' : overall > 75 ? 'Top 10' : overall > 60 ? 'Page 1 Possible' : 'Page 2+'}</p>
@@ -266,16 +260,17 @@ else confidence = 65; // neutral title
         Show Expert Analysis
       </button>
       <div class="hidden mt-10 space-y-6 text-left max-w-3xl mx-auto text-lg">
-        <p class="font-bold text-blue-300">What:</p><p>SERP position estimate based on E-E-A-T + depth vs competitors</p>
-        <p class="font-bold text-green-300">How:</p><p>Fix all gaps → monitor GSC → resubmit URL</p>
-        <p class="font-bold text-orange-300">Why:</p><p>Strong E-E-A-T = higher rankings = massive traffic</p>
+        <p class="font-bold text-blue-300">What:</p><p>Estimated SERP position based on current E-E-A-T, depth, and intent match vs top 10 competitors.</p>
+        <p class="font-bold text-green-300">How:</p><p>Fix every red/orange gap → monitor GSC → resubmit URL → expect movement in 7–21 days.</p>
+        <p class="font-bold text-orange-300">Why:</p><p>Pages scoring 85+ consistently hit Top 10. 90+ = Top 3 lock. Your gap = ${100-overall} points of untapped traffic.</p>
       </div>
     </div>
 
-    <!-- PDF Button -->
+    <!-- PDF Button (auto-opens all hidden content) -->
     <div class="text-center my-16">
-      <button onclick="window.print()" class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
-        📄 Save as PDF
+      <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();" 
+           class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
+        📄 Save as PDF (with all details)
       </button>
     </div>
 
