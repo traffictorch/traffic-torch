@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return c;
   };
 
-	  const analyze = (text, doc) => {
+  const analyze = (text, doc) => {
     const hasSchema = doc.querySelectorAll('script[type="application/ld+json"]').length > 0;
     const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
     const words = text.split(/\s+/).filter(w=>w.length>0);
@@ -78,15 +78,15 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     return { score, forecast, aiFixes, modules: [
-  {name:"Answerability",score:answerability},
-  {name:"Structured Data",score:hasSchema?96:32},
-  {name:"EEAT Signals",score:eeat},
-  {name:"Scannability",score:scannable},
-  {name:"Conversational Tone",score:conversational},
-  {name:"Readability",score:readability},
-  {name:"Human Insights",score:humanInsight},
-  {name:"Anti-AI Detection",score:antiAI}
-]};
+      {name:"Answerability",score:answerability},
+      {name:"Structured Data",score:hasSchema?96:32},
+      {name:"EEAT Signals",score:eeat},
+      {name:"Scannability",score:scannable},
+      {name:"Conversational Tone",score:conversational},
+      {name:"Readability",score:readability},
+      {name:"Human Insights",score:humanInsight},
+      {name:"Anti-AI Detection",score:antiAI}
+    ]};
   };
 
   form.addEventListener('submit', async e => {
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </defs>
               </svg>
               <div class="absolute inset-0 flex items-center justify-center">
-                <div class="text-7xl font-black text-white drop-shadow-2xl">${r.score}</div>
+                <div class="text-7xl font-black text-white drop-shadow-2xl">${r.score}<span class="text-4xl">%</span></div>
               </div>
             </div>
           </div>
@@ -156,8 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `).join('')}
           </div>
 
-          <!-- AI Fixes & Forecast – exact design -->
-          <div class="ai-fixes-card">
+          <div class="ai-fixes-card rounded-3xl p-12">
             <h3 class="text-4xl font-black text-center mb-10">Prioritised AI-Style Fixes</h3>
             ${r.aiFixes.map(f=>`
               <div class="bg-white/10 rounded-2xl p-8 mb-8">
@@ -169,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `).join('')}
           </div>
 
-          <div class="forecast-card text-center">
+          <div class="forecast-card rounded-3xl p-12 text-center">
             <h3 class="text-4xl font-black mb-6">Predictive Rank Forecast</h3>
             <p class="text-7xl font-black mb-4">${r.forecast}</p>
             <p class="text-4xl font-bold mb-6">+${Math.round((100 - r.score) * 1.5)}% potential traffic gain if fixed</p>
