@@ -61,7 +61,7 @@
 
     <form id="urlForm" class="mt-12 max-w-2xl mx-auto">
       <div class="flex flex-col md:flex-row gap-4">
-        <input type="url" id="urlInput" placeholder="https://example.com/blog-post" required
+        <input type="url" id="urlInput" placeholder="https://example.com/your-page" required
           class="flex-1 px-8 py-5 rounded-2xl bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-orange-500 text-lg" />
         <button type="submit"
           class="px-12 py-5 rounded-2xl bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-xl hover:from-orange-600 hover:to-pink-700 transform hover:scale-105 transition shadow-xl">
@@ -71,16 +71,14 @@
     </form>
   </main>
 
-  <!-- Fixed Analyzing Bar -->
+  <!-- Loading Bar -->
   <div id="loading" class="hidden fixed bottom-0 left-0 right-0 h-3 bg-gradient-to-r from-orange-500 to-pink-600 z-50 overflow-hidden">
-    <div id="progressText" class="absolute inset-0 flex items-center justify-center text-white font-bold text-shadow-lg text-sm">
-      Analyzing page...
-    </div>
+    <div id="progressText" class="absolute inset-0 flex items-center justify-center text-white font-bold text-sm">Analyzing...</div>
     <div id="progressBar" class="h-full bg-white/40 transition-all duration-500" style="width:0%"></div>
   </div>
 
-  <!-- Report -->
-  <section id="report" class="hidden max-w-7xl mx-auto px-6 py-20"></section>
+  <!-- Results -->
+  <section id="report" class="hidden max-w-7xl mx-auto px-6 py-20 print:bg-white print:text-black"></section>
 
 	<!-- AddToAny BEGIN -->
 <div class="a2a_kit a2a_kit_size_32 a2a_default_style" data-a2a-url="https://traffictorch.net/" data-a2a-title="Traffic Torch">
