@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const loading = document.getElementById('loading');
   const progressBar = document.getElementById('progressBar');
   const progressText = document.getElementById('progressText');
-  const PROXY = 'https://cors-proxy.traffictorch.workers.dev/';
+  const PROXY = 'https://cors-proxy.traffictorch.workers.dev/?url=';
 
   const modules = ["Fetching page","Extracting content","Detecting Schema","Readability","Conversational tone","Scannability","EEAT signals","Final score"];
 
