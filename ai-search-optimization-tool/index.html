@@ -9,32 +9,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
-    .score-ring-big svg { width: 260px; height: 260px; }
-    .score-ring-small svg { width: 140px; height: 140px; }
-    @keyframes gradient-shift {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 100% 50%; }
+    .animate-in { animation: animate-in 0.8s ease-out; }
+    @keyframes animate-in {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     #progress-bar {
       background: linear-gradient(90deg, #f97316, #ec4899, #a855f7, #3b82f6);
       background-size: 400% 400%;
       animation: gradient-shift 8s linear infinite;
     }
-    .module-steps { counter-reset: step; }
-    .module-steps li:before {
-      content: counter(step) ". ";
-      counter-increment: step;
-      font-weight: bold;
-      color: #f97316;
+    @keyframes gradient-shift {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
     }
   </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">
   <div class="max-w-5xl mx-auto px-6 py-12">
-    <h1 class="text-4xl md:text-5xl font-black text-center mb-6">
+    <h1 class="text-4xl md:text-5xl font-black text-center mb-6 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
       AI Search Optimization Checker
     </h1>
-    <p class="text-center text-lg mb-12 max-w-3xl mx-auto">
+    <p class="text-center text-lg mb-12 max-w-3xl mx-auto opacity-80">
       Instantly analyze any URL for optimization in AI-powered search engines (Perplexity, Grok, Gemini, ChatGPT Search, etc.).
     </p>
 
