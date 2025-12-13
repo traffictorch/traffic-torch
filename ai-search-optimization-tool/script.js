@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     results.classList.remove('hidden');
 
     const progressTexts = [
-      "Fetching page...", "Extracting content...", "Checking direct answers...", 
+      "Fetching page...", "Extracting content...", "Checking direct answers...",
       "Scanning structured data...", "Evaluating trust signals...", "Measuring scannability...",
       "Analyzing tone & readability...", "Detecting uniqueness & burstiness..."
     ];
@@ -29,30 +29,117 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
-      if (!res.ok) throw new Error('Page not reachable');
+      if (!res.ok) throw new Error('Page not reachable – check URL or try HTTPS');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
-      // Main content extraction (same as before)
+      // Intelligent main content extraction
       let mainText = '';
       const candidates = [doc.querySelector('article'), doc.querySelector('main'), doc.querySelector('[role="main"]'), doc.body];
-      const mainEl = candidates.find(el => el && el.textContent.length > 1000) || doc.body;
-      mainEl.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie').forEach(el => el.remove());
+      const mainEl = candidates.find(el => el && el.textContent.trim().length > 1000) || doc.body;
+      mainEl.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie, .sidebar').forEach(el => el.remove());
       mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
-      const first300 = mainText.slice(0, 1000);
+      const first300 = mainText.slice(0, 1200); // buffer for ~300 words
 
-      // === Module calculations (same logic as previous version) ===
-      // ... [keep all the scoring logic exactly as in previous script.js] ...
+      // 1. Answerability / Direct Answer
+      const hasBoldInFirst = /<strong>|<b>|<em>/i.test(first300);
+      const hasDefinition = /\b(is|means|refers to|defined as)\b/i.test(first300.toLowerCase());
+      const hasFAQSchema = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))
+        .some(s => s.textContent.includes('"FAQPage"'));
+      const hasQuestionH2 = Array.from(doc.querySelectorAll('h2')).some(h => /[?!]/.test(h.textContent));
+      const hasSteps = /\b(step|guide|how to|instructions|follow these)\b/i.test(first300.toLowerCase());
+      const answerability = Math.min(100,
+        (hasBoldInFirst || hasDefinition ? 30 : 0) +
+        (hasFAQSchema ? 25 : 0) +
+        (hasQuestionH2 ? 15 : 0) +
+        (hasSteps ? 20 : 0) +
+        (first300.length > 600 ? 10 : 0)
+      );
 
-      // (For brevity, assuming you copy the scoring section from previous response)
-      // It produces: overall, modules array with name, score, desc
+      // 2. Structured Data
+      let schemaScore = 0;
+      const jsonLdScripts = doc.querySelectorAll('script[type="application/ld+json"]');
+      if (jsonLdScripts.length > 0) schemaScore += 30;
+      jsonLdScripts.forEach(s => {
+        try {
+          const data = JSON.parse(s.textContent);
+          const types = Array.isArray(data) ? data.map(i => i['@type']) : [data['@type']];
+          if (types.some(t => ['Article', 'BlogPosting'].includes(t))) schemaScore += 30;
+          if (types.some(t => ['FAQPage', 'HowTo'].includes(t))) schemaScore += 25;
+          if (types.includes('Person')) schemaScore += 15;
+        } catch {}
+      });
+      const structuredData = Math.min(100, schemaScore);
 
-      // Example placeholder modules if not copying full logic yet
-      const modules = [ /* your 8 modules with .name, .score */ ];
+      // 3. EEAT Signals
+      const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
+      const hasDate = !!doc.querySelector('time[datetime], meta[name="date"], .published, .updated, .date');
+      const hasTrustedLinks = Array.from(doc.querySelectorAll('a[href^="https"]'))
+        .some(a => !a.href.includes(new URL(url).hostname) && !a.href.includes('facebook.com') && !a.href.includes('twitter.com'));
+      const eeat = (hasAuthor ? 40 : 0) + (hasDate ? 25 : 0) + (hasTrustedLinks ? 20 : 0) + (url.startsWith('https:') ? 15 : 0);
+
+      // 4. Scannability & Extraction Friendliness
+      const headings = doc.querySelectorAll('h1,h2,h3,h4').length;
+      const lists = doc.querySelectorAll('ul,ol').length;
+      const tables = doc.querySelectorAll('table').length;
+      const shortParas = Array.from(mainEl.querySelectorAll('p'))
+        .filter(p => p.textContent.trim().split(/\s+/).length < 35).length;
+      const scannability = Math.min(100, headings * 6 + lists * 8 + tables * 15 + shortParas * 0.4);
+
+      // 5. Conversational / Human Tone
+      const youCount = (mainText.match(/\byou\b|\byour\b|\byours\b/gi) || []).length;
+      const iWeCount = (mainText.match(/\bI\b|\bwe\b|\bmy\b|\bour\b|\bme\b|\bus\b/gi) || []).length;
+      const questions = (mainText.match(/\?/g) || []).length;
+      const conversational = Math.min(100, (youCount * 4) + (iWeCount * 3) + (questions * 6));
+
+      // 6. Readability
+      const words = mainText.split(/\s+/).filter(Boolean).length || 1;
+      const sentences = (mainText.match(/[.!?]+/g) || []).length || 1;
+      const syllables = mainText.split(/\s+/).reduce((a, w) => a + (w.match(/[aeiouy]+/gi) || []).length, 0);
+      const flesch = 206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words);
+      const readability = flesch > 80 ? 95 : flesch > 60 ? 90 : flesch > 40 ? 70 : 40;
+
+      // 7. Unique Human Insights
+      const hasInsights = /\b(I tested|in my experience|we found|case study|based on my|hands-on|personally observed)\b/i.test(mainText);
+      const uniqueInsights = hasInsights ? 95 : words > 2000 ? 70 : words > 1000 ? 50 : 30;
+
+      // 8. Anti-AI Detection Safety (burstiness)
+      const sentencesArr = mainText.split(/[.!?]+/).filter(Boolean);
+      const lengths = sentencesArr.map(s => s.split(/\s+/).length);
+      if (lengths.length < 5) {
+        var burstiness = 50;
+      } else {
+        const avg = lengths.reduce((a,b) => a+b, 0) / lengths.length;
+        const variance = lengths.reduce((a,b) => a + Math.pow(b - avg, 2), 0) / lengths.length;
+        burstiness = variance > 40 ? 95 : variance > 20 ? 80 : variance > 10 ? 60 : 40;
+      }
+
+      // Overall Score – weighted
+      const overall = Math.round(
+        answerability * 0.25 +
+        structuredData * 0.15 +
+        eeat * 0.15 +
+        scannability * 0.10 +
+        conversational * 0.10 +
+        readability * 0.10 +
+        uniqueInsights * 0.08 +
+        burstiness * 0.07
+      );
+
+      const modules = [
+        { name: "Answerability", score: answerability, desc: "Direct answers in first 300 words, FAQ schema, step-by-step structure" },
+        { name: "Structured Data", score: structuredData, desc: "JSON-LD presence and relevant types" },
+        { name: "EEAT Signals", score: eeat, desc: "Author, dates, trusted links, HTTPS" },
+        { name: "Scannability", score: scannability, desc: "Headings, lists, tables, short paragraphs" },
+        { name: "Conversational Tone", score: conversational, desc: "Use of you/I/we, questions" },
+        { name: "Readability", score: readability, desc: "Flesch score in ideal range" },
+        { name: "Unique Insights", score: uniqueInsights, desc: "First-hand experience markers" },
+        { name: "Anti-AI Safety", score: burstiness, desc: "Sentence length variation (burstiness)" }
+      ];
 
       clearInterval(interval);
-      document.querySelector('#progress-bar').remove();
-      document.querySelector('.fixed.bottom-6').remove();
+      document.querySelector('#progress-bar')?.remove();
+      document.querySelector('.fixed.bottom-6')?.remove();
 
       results.innerHTML = `
         <div class="max-w-5xl mx-auto space-y-16 animate-in">
@@ -85,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="text-7xl font-black">${overall >= 90 ? 'Top 3' : overall >= 80 ? 'Top 5' : overall >= 70 ? 'Top 10' : overall >= 50 ? 'Page 1 Possible' : 'Page 2+'}</p>
           </div>
 
-          <!-- 8 Modules - Exact style match -->
+          <!-- 8 Modules -->
           <div class="grid md:grid-cols-4 gap-6 my-16">
             ${modules.map(m => {
               const borderColor = m.score >= 80 ? 'border-green-500' : m.score >= 60 ? 'border-yellow-500' : 'border-red-500';
@@ -125,7 +212,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
 
-      // Educational What/How/Why content
       function getWhat(name) {
         const map = {
           "Answerability": "Direct, quotable answers AI engines can cite verbatim.",
@@ -137,21 +223,23 @@ document.addEventListener('DOMContentLoaded', () => {
           "Unique Insights": "Original first-hand experience that prevents de-duplication.",
           "Anti-AI Safety": "Human-like writing patterns that avoid AI-content filters."
         };
-        return map[name] || "";
+        return map[name] || "Optimization factor for AI search visibility.";
       }
+
       function getHow(name) {
         const map = {
           "Answerability": "Bold definitions in first 300 words, FAQ schema, step-by-step lists.",
           "Structured Data": "Add JSON-LD Article, FAQPage, HowTo, Person schema.",
-          "EEAT Signals": "Author byline, dates, credentials, trusted outbound links.",
-          "Scannability": "H2/H3 headings, bullets, tables, short paragraphs.",
-          "Conversational Tone": "Use “you”, “I”, questions, personal anecdotes.",
-          "Readability": "Short sentences, active voice, common words.",
-          "Unique Insights": "Add “I tested”, case studies, personal results.",
-          "Anti-AI Safety": "Vary sentence length, avoid repetitive patterns."
+          "EEAT Signals": "Author byline with photo, publish/update dates, trusted outbound links.",
+          "Scannability": "Use H2/H3 headings, bullets, tables, short paragraphs.",
+          "Conversational Tone": "Address reader with “you”, share “I/we” experiences, ask questions.",
+          "Readability": "Short sentences, active voice, common words (Flesch 60–70).",
+          "Unique Insights": "Add personal testing, case studies, “In my experience…” statements.",
+          "Anti-AI Safety": "Vary sentence length dramatically, avoid repetitive patterns."
         };
-        return map[name] || "";
+        return map[name] || "Implement best practices for this factor.";
       }
+
       function getWhy(name) {
         const map = {
           "Answerability": "AI engines quote direct answers — highest citation factor.",
@@ -160,10 +248,10 @@ document.addEventListener('DOMContentLoaded', () => {
           "Scannability": "AI loves instant extraction from structured elements.",
           "Conversational Tone": "Matches natural language queries.",
           "Readability": "Easier to summarize = higher ranking in AI results.",
-          "Unique Insights": "Prevents de-duplication against generic AI content.",
-          "Anti-AI Safety": "Avoids being filtered as low-quality AI slop."
+          "Unique Insights": "Prevents de-duplication against generic content.",
+          "Anti-AI Safety": "Avoids being filtered as low-quality AI-generated text."
         };
-        return map[name] || "";
+        return map[name] || "Improves visibility and citation in AI-powered search.";
       }
 
     } catch (err) {
