@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Content Audit | Traffic Torch</title>
-  <meta name="description" content="Instantly detect AI-generated content on any URL with probability score, detailed breakdown, and tips to make it more human." />
+  <title>Keyword Torch | Traffic Torch</title>
+  <meta name="description" content="Score any page against perfect on-page SEO for your target keyword phrase. Instant analysis with educational fixes." />
   <link rel="icon" href="/favicon.ico" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/beta-ai-audit-tool/style.css">
+  <link rel="stylesheet" href="/beta-keyword-tool/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="/main.js" type="module"></script>
-  <script src="/beta-ai-audit-tool/script.js" defer></script>
+  <script src="/beta-keyword-tool/script.js" defer></script>
 </head>
 <body class="min-h-screen">
   <!-- Header (exact match to gold standard) -->
@@ -53,15 +54,19 @@
   <main class="container mx-auto px-6 py-12 max-w-5xl">
     <div class="text-center mb-16">
       <h2 class="text-4xl md:text-6xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-6">
-        AI Content Audit
+        Keyword Torch
       </h2>
       <p class="text-xl text-gray-600 dark:text-gray-300 mb-10">
-        Instant AI detection • Full explanations • Educational humanizing tips
+        Score any page against perfect on-page SEO for your target keyword • Instant educational report
       </p>
-      <form id="audit-form" class="max-w-2xl mx-auto">
-        <div class="flex flex-col sm:flex-row gap-4">
-          <input type="url" id="url-input" placeholder="https://example.com/your-page" required
+      <form id="audit-form" class="max-w-4xl mx-auto space-y-4">
+        <div class="flex flex-col md:flex-row gap-4">
+          <input type="url" id="page-url" placeholder="https://yourpage.com/blog-post" required
             class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-4 focus:ring-orange-500 focus:outline-none text-lg">
+          <input type="text" id="target-keyword" placeholder="best wireless earbuds 2025" required
+            class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-4 focus:ring-orange-500 focus:outline-none text-lg">
+        </div>
+        <div class="flex justify-center">
           <button type="submit"
             class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition text-lg">
             Analyze Now
@@ -72,7 +77,7 @@
 
     <!-- Results container (JS will populate this) -->
     <div id="results" class="hidden space-y-16 mt-16">
-      <!-- Your existing report sections go here – keep them exactly as in your script.js output -->
+      <!-- Your existing cards/Chart.js output goes here -->
     </div>
   </main>
 
