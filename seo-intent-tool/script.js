@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const url = document.getElementById('url-input').value.trim();
 
-    // Loading bar
     results.innerHTML = `
       <div id="loading-bar" class="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-center py-4 font-bold text-lg shadow-2xl z-50">
         Analyzing page — please wait...
@@ -38,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const titleLower = (doc.title || '').toLowerCase();
       let intent = 'Informational';
-      let confidence = 50;
+      let confidence = 60;
       if (/buy|best|review|price|deal|shop|discount|vs|comparison/i.test(titleLower)) { intent = 'Commercial'; confidence = 90; }
       else if (/how|what|why|guide|tutorial|step|learn|explain|best way/i.test(titleLower)) { intent = 'Informational'; confidence = 94; }
       else if (/near me|location|store|city|local|hours|map|address/i.test(titleLower)) { intent = 'Local'; confidence = 87; }
@@ -56,10 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const readScore = readability > 70 ? 90 : readability > 50 ? 75 : 45;
       const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length * 8) / 5);
 
-      // Remove loading bar
       document.getElementById('loading-bar')?.remove();
 
-      // FULL REPORT – all sections, expert copy, perfect layout
       results.innerHTML = `
         <div class="max-w-5xl mx-auto space-y-16">
 
@@ -86,11 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
 
-          <!-- Intent Type + Confidence -->
+          <!-- Intent -->
           <div class="text-center mb-12">
             <p class="text-4xl font-black mb-8">
               Intent: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${intent}</span>
-              <span class="text-2xl text-gray-400">— ${confidence}% confidence</span>
+              <span class="text-2xl text-gray-400">— ${confidence}% match</span>
             </p>
             <div class="max-w-3xl mx-auto grid md:grid-cols-3 gap-6 text-left">
               <div class="p-6 bg-blue-500/10 border-l-4 border-blue-500 rounded-r-xl">
@@ -125,9 +122,12 @@ document.addEventListener('DOMContentLoaded', () => {
                   Show Fixes
                 </button>
                 <div class="hidden mt-6 space-y-3 text-left text-sm">
-                  <p class="text-blue-500 font-bold">What:</p><p>${key === 'Experience' ? 'Proof you've personally done what you're teaching.' : key === 'Expertise' ? 'Demonstrated subject-matter mastery.' : key === 'Authoritativeness' ? 'Recognition as the go-to source in your niche.' : 'Signals your site is safe and honest.'}</p>
-                  <p class="text-green-500 font-bold">How:</p><p>${key === 'Experience' ? 'Use "I" statements, photos, case studies, dates.' : key === 'Expertise' ? 'Author box with photo, bio, credentials, certifications.' : key === 'Authoritativeness' ? 'High-quality backlinks, press mentions, schema, awards.' : 'HTTPS, contact page, privacy policy, updated dates.'}</p>
-                  <p class="text-orange-500 font-bold">Why:</p><p>${key === 'Experience' ? 'Google’s #1 E-E-A-T signal in 2025.' : key === 'Expertise' ? 'Experts rank higher — full stop.' : key === 'Authoritativeness' ? 'Strongest long-term ranking factor.' : 'No trust = no traffic from Google.'}</p>
+                  <p class="text-blue-500 font-bold">What:</p>
+                  <p>${key === 'Experience' ? 'Proof you’ve personally done what you’re teaching.' : key === 'Expertise' ? 'Demonstrated subject-matter mastery.' : key === 'Authoritativeness' ? 'Recognition as the go-to source in your niche.' : 'Signals your site is safe and honest.'}</p>
+                  <p class="text-green-500 font-bold">How:</p>
+                  <p>${key === 'Experience' ? 'Use “I” statements, photos, case studies, dates.' : key === 'Expertise' ? 'Author box with photo, bio, credentials, certifications.' : key === 'Authoritativeness' ? 'High-quality backlinks, press mentions, schema, awards.' : 'HTTPS, contact page, privacy policy, updated dates.'}</p>
+                  <p class="text-orange-500 font-bold">Why:</p>
+                  <p>${key === 'Experience' ? 'Google’s #1 E-E-A-T signal in 2025.' : key === 'Expertise' ? 'Experts rank higher — full stop.' : key === 'Authoritativeness' ? 'Strongest long-term ranking factor.' : 'No trust = no traffic from Google.'}</p>
                 </div>
               </div>
             `).join('')}
@@ -135,27 +135,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <!-- Content Depth + Readability + Schema Detected -->
           <div class="grid md:grid-cols-3 gap-8 my-16">
+            <!-- Content Depth -->
             <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
               <h3 class="text-2xl font-bold mb-4">Content Depth</h3>
               <p class="text-5xl font-black mb-2">${words.toLocaleString()}</p>
               <p class="text-gray-500 mb-4">words</p>
-              <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-                Show Info
-              </button>
+              <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Info</button>
               <div class="hidden mt-6 space-y-3 text-left text-sm">
                 <p class="text-blue-500 font-bold">What:</p><p>Comprehensive coverage that fully answers the query and beyond.</p>
                 <p class="text-green-500 font-bold">How:</p><p>Add examples, data, screenshots, FAQs, tools, templates, comparisons.</p>
-                <p class="text-orange-500 font-bold">Why:</p><p>Depth is the #1 ranking factor in 2025 — Google rewards "best answer" pages.</p>
+                <p class="text-orange-500 font-bold">Why:</p><p>Depth is the #1 ranking factor in 2025 — Google rewards “best answer” pages.</p>
               </div>
             </div>
 
+            <!-- Readability -->
             <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
               <h3 class="text-2xl font-bold mb-4">Readability</h3>
               <p class="text-5xl font-black mb-2">${readability}</p>
               <p class="text-gray-500 mb-4">Flesch score</p>
-              <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-                Show Info
-              </button>
+              <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Info</button>
               <div class="hidden mt-6 space-y-3 text-left text-sm">
                 <p class="text-blue-500 font-bold">What:</p><p>How easy your content is to consume.</p>
                 <p class="text-green-500 font-bold">How:</p><p>Short sentences, simple words, active voice, subheadings, bullets.</p>
@@ -163,6 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
 
+            <!-- Schema Detected -->
             <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
               <h3 class="text-2xl font-bold mb-4">Schema Detected</h3>
               ${schemaTypes.length ? `
@@ -171,9 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </select>
                 <p class="mt-4 text-green-500 font-bold">${schemaTypes.length} type${schemaTypes.length > 1 ? 's' : ''} found</p>
               ` : '<p class="text-2xl text-red-500 mt-4">No schema detected</p>'}
-              <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-                Show Info
-              </button>
+              <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Info</button>
               <div class="hidden mt-6 space-y-3 text-left text-sm">
                 <p class="text-blue-500 font-bold">What:</p><p>Structured data that tells Google exactly what your page is about.</p>
                 <p class="text-green-500 font-bold">How:</p><p>Add JSON-LD for Article, Person, FAQPage, HowTo, Product, etc.</p>
@@ -268,6 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         </div>
       `;
+
     } catch (err) {
       document.getElementById('loading-bar')?.remove();
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
