@@ -1,22 +1,20 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="light-scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SEO Intent + E-E-A-T Auditor | Traffic Torch</title>
-  <meta name="description" content="Instant SEO Intent and E-E-A-T audit tool.">
-  <link rel="icon" href="/favicon.ico" />
-  <link rel="manifest" href="/manifest.json" />
-  <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/seo-intent-tool/style.css">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="/main.js" type="module"></script>
-  <script src="/seo-intent-tool/script.js" defer></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intent + E-E-A-T Auditor | Traffic Torch</title>
+    <meta name="description" content="Instant 360° intent & E-E-A-T audit with AI fixes and rank forecast.">
+    <link rel="manifest" href="/manifest.json">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/seo-intent-tool/style.css">
 </head>
-<body class="min-h-screen">
-  <!-- Header with Hamburger (unchanged – perfect as-is) -->
-   <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+
+<body class="min-h-screen transition-colors duration-300">
+
+      <!-- EXACT SAME HEADER AS HOME PAGE -->
+  <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
       <a href="/" class="flex items-center gap-4">
         <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
@@ -27,12 +25,12 @@
       <button id="menuToggle" class="md:hidden text-3xl">☰</button>
       <nav class="hidden md:flex gap-8 text-lg">
         <a href="/" class="hover:text-orange-400 transition">Home</a>
-        <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a>
-        <a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a>
-        <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">AI Content</a>
+        <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">AI Audit</a>
         <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a>
         <a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a>
         <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a>
+        <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a>
+        <a href="/about/" class="hover:text-orange-400 transition">About</a>
       </nav>
       <button id="themeToggle" class="px-4 py-2 bg-white/10 rounded-full hover:bg-white/20 transition">
         🌙
@@ -41,101 +39,102 @@
     <div id="mobileMenu" class="hidden md:hidden bg-black/95 backdrop-blur-xl border-t border-white/10">
       <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
         <a href="/" class="hover:text-orange-400 transition">Home</a>
-        <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a>
-        <a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a>
         <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">AI Audit</a>
         <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a>
-        <a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a>
-        <a href="keyword-vs-tool/" class="hover:text-orange-400 transition">Competition</a>
+        <a href="/keyword-tool/" class="">Keywords</a>
+        <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a>
+        <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a>
+        <a href="/about/" class="hover:text-orange-400 transition">About</a>
       </nav>
     </div>
   </header>
+  
+  <!-- MAGIC WRAPPER THAT MAKES DARK MODE WORK (same as every other tool) -->
+  
+  <div class="bg-white dark:bg-black/90 min-h-screen">
 
-<main class="container mx-auto px-6 py-12 max-w-5xl">
-  <div class="text-center mb-16">
-    <h2 class="text-4xl md:text-6xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-6">
-      SEO Intent + E-E-A-T Auditor
-    </h2>
-    <p class="text-xl text-gray-600 dark:text-gray-300 mb-10">
-      Instant 360° analysis • 100% client-side • No APIs • Educational fixes
-    </p>
+    <main class="container mx-auto px-6 py-12 max-w-5xl">
 
-    <form id="audit-form" class="max-w-2xl mx-auto">
-      <div class="flex flex-col sm:flex-row gap-4">
-        <input type="url" id="url-input" placeholder="https://example.com/your-page" required
-          class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-4 focus:ring-orange-500 focus:outline-none text-lg">
-        <button type="submit"
-          class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition text-lg">
-          Analyze Now
-        </button>
-      </div>
-    </form>
+      <header class="text-center mb-16">
+        <h1 class="text-5xl md:text-7xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight">
+          Intent + E-E-A-T<br>SEO Auditor 🚀
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300 mt-6">
+          Does Google trust this page? Does it answer the searcher’s question?<br class="hidden md:block"> Get your 360° score now.
+        </p>
+      </header>
+
+      <form id="audit-form" class="max-w-2xl mx-auto mb-20">
+        <div class="flex flex-col md:flex-row gap-4">
+          <input type="url" id="url-input" placeholder="https://example.com" required
+                 class="flex-1 px-6 py-4 rounded-xl bg-gray-100 dark:bg-white/10 border border-gray-300 dark:border-white/20 focus:outline-none focus:ring-4 focus:ring-orange-500/30 text-gray-900 dark:text-white text-lg">
+          <button type="submit" class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 rounded-xl font-bold text-white hover:from-orange-600 hover:to-pink-700 transition shadow-lg">
+            Analyse 🎯
+          </button>
+        </div>
+      </form>
+
+      <section id="loading" class="hidden text-center py-20">
+        <p class="text-2xl text-gray-600 dark:text-gray-300">Scanning intent & trust signals…</p>
+      </section>
+
+      <section id="results" class="hidden space-y-16">
+
+        <div class="health-score text-center py-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl shadow-2xl">
+          <h2 class="text-4xl md:text-6xl font-black text-white">
+            360° Health Score: <span id="score" class="text-7xl md:text-9xl">85</span>/100
+          </h2>
+          <svg viewBox="0 0 200 200" class="radar mx-auto mt-8"></svg>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-12">
+          <div class="modules bg-gray-100 dark:bg-white/5 rounded-2xl p-8 backdrop-blur">
+            <h3 class="text-2xl font-bold mb-6 text-orange-500">Deep-Dive Modules</h3>
+            <ul id="modules-list" class="space-y-4 text-lg"></ul>
+          </div>
+
+          <div class="space-y-8">
+            <div class="bg-gray-100 dark:bg-white/5 rounded-2xl p-8 backdrop-blur">
+              <h3 class="text-2xl font-bold mb-6 text-orange-500">Competitive Gap Analysis</h3>
+              <table id="gaps-table" class="w-full">
+                <thead class="text-left"><tr class="border-b dark:border-white/10"><th>Metric</th><th>Your Score</th><th>Top Competitor</th><th>Gap</th></tr></thead>
+                <tbody class="text-lg"></tbody>
+              </table>
+            </div>
+
+            <div class="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 text-white">
+              <h3 class="text-2xl font-bold mb-4">Predictive Rank Forecasting</h3>
+              <p id="forecast-text" class="text-2xl font-bold">With fixes, expect +12 positions in 28 days.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fixes bg-gray-100 dark:bg-white/5 rounded-2xl p-8 backdrop-blur">
+          <h3 class="text-2xl font-bold mb-8 text-orange-500">AI-Generated Fixes (Prioritised)</h3>
+          <ol id="fixes-list" class="space-y-6 text-lg"></ol>
+        </div>
+
+      </section>
+      
+      
+<!-- Traffic Torch – Coming Soon Box (iOS-proof, zero JS, Dec 2025) -->
+<details class="tt-coming-soon" open> <!-- remove "open" later if you want it closed by default -->
+  <summary class="tt-header">
+    <span class="emoji">🚧</span>
+    Web page under construction 🔥 Coming soon!
+    <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 9l6 6 6-6"/>
+    </svg>
+  </summary>
+
+  <div class="tt-content">
+    <p><strong>This webpage is being built with fire, love & AI power.</strong></p>
+    <p>Epic features and deep-dive tools are dropping very soon — stay tuned!</p>
+    <small>(Tap the header again to collapse)</small>
   </div>
+</details>
 
-  <!-- All your original result sections kept 100% intact -->
-  <div id="results" class="hidden space-y-16 mt-16">
-    <section>
-      <h3 class="text-2xl font-semibold mb-4">Overall 360° Score</h3>
-      <div id="overall-score" class="text-6xl font-black text-center bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent"></div>
-      <p class="text-center italic mt-4">A holistic score out of 100. Higher = better SEO readiness.</p>
-    </section>
-
-    <section>
-      <h3 class="text-2xl font-semibold mb-4">Radar Chart</h3>
-      <div id="radar-chart" class="mx-auto w-full max-w-lg"></div>
-    </section>
-
-    <section>
-      <h3 class="text-2xl font-semibold mb-4">Intent Type + Confidence</h3>
-      <div id="intent-type" class="text-lg"></div>
-    </section>
-
-    <section>
-      <h3 class="text-2xl font-semibold mb-4">E-E-A-T Breakdown</h3>
-      <div id="eeat-breakdown" class="grid grid-cols-2 md:grid-cols-4 gap-6"></div>
-    </section>
-
-    <section>
-      <h3 class="text-2xl font-semibold mb-4">Content Depth + Readability</h3>
-      <div id="content-depth" class="text-lg"></div>
-    </section>
-
-    <section>
-      <h3 class="text-2xl font-semibold mb-4">Schema Detected</h3>
-      <div id="schema-types"></div>
-    </section>
-
-    <section>
-      <h3 class="text-2xl font-semibold mb-4">Competitive Gap Table</h3>
-      <table id="gap-table" class="w-full border-collapse border border-gray-300 dark:border-gray-600 text-left">
-        <thead class="bg-gray-200 dark:bg-gray-700">
-          <tr>
-            <th class="p-4">Metric</th>
-            <th class="p-4">Current</th>
-            <th class="p-4">Ideal (2025)</th>
-            <th class="p-4">Gap</th>
-          </tr>
-        </thead>
-        <tbody class="text-lg"></tbody>
-      </table>
-    </section>
-
-    <section>
-      <h3 class="text-2xl font-semibold mb-4">Prioritised AI-Style Fixes</h3>
-      <ul id="fixes-list" class="space-y-6"></ul>
-    </section>
-
-    <section>
-      <h3 class="text-2xl font-semibold mb-4">Predictive Rank Forecast</h3>
-      <div id="rank-forecast" class="text-2xl font-bold text-center p-10 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl"></div>
-    </section>
-  </div>
-</main>
-
-
-		<!-- AddToAny BEGIN -->
-  <div style="display: flex; justify-content: center; margin: 30px 0;">
-  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+<!-- AddToAny BEGIN -->
 <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
 <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
 <a class="a2a_button_facebook"></a>
@@ -145,12 +144,14 @@
 <a class="a2a_button_copy_link"></a>
 </div>
 <script defer src="https://static.addtoany.com/menu/page.js"></script>
+<!-- AddToAny END -->
+      
+      
+    </main>
   </div>
-</div>
-	<!-- AddToAny END --> 
-    
-      <!-- Footer (unchanged – already perfect) -->
-  <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">
+
+  <!-- Footer (unchanged – already perfect) -->
+   <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">
     <div class="container mx-auto px-6 max-w-6xl">
       <div class="grid md:grid-cols-4 gap-12 text-center md:text-left">
         <div>
@@ -163,20 +164,17 @@
         <div>
           <h3 class="text-xl font-bold mb-6 text-orange-400">Tools</h3>
           <ul class="space-y-3 text-gray-400">
-            <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
-            <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
-            <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a></li>
+            <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">AI Audit</a></li>
             <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
             <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a></li>
             <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">Competition</a></li>
+            <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
           </ul>
         </div>
         <div>
           <h3 class="text-xl font-bold mb-6 text-orange-400">Company</h3>
           <ul class="space-y-3 text-gray-400">
             <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
-    		<li><a href="https://x.com/guitaralize" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">Ylia@X</a></li>
-    		<li><a href="https://grok.com/" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">Grok</a></li></ul>
             <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
             <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
           </ul>
@@ -191,6 +189,8 @@
       </div>
     </div>
   </footer>
-  
+
+  <script src="/main.js" type="module"></script>
+  <script src="/seo-intent-tool/script.js" defer></script>
 </body>
 </html>

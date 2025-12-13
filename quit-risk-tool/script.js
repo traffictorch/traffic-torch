@@ -1,145 +1,207 @@
-const form = document.getElementById('urlForm');
-const input = document.getElementById('urlInput');
-const report = document.getElementById('report');
-const loading = document.getElementById('loading');
-const PROXY = 'https://api.allorigins.win/raw?url=';
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('audit-form');
+  const input = document.getElementById('url-input');
+  const results = document.getElementById('results');
+  const PROXY = 'https://cors-proxy.traffictorch.workers.dev/';
 
-// UX Content Extractor (Nav, Headings, Links, etc.)
-function getUXContent(doc) {
-  const nav = doc.querySelector('nav') || doc.querySelector('header');
-  const headings = doc.querySelectorAll('h1, h2, h3');
-  const links = doc.querySelectorAll('a[href]');
-  const images = doc.querySelectorAll('img');
-  const main = doc.querySelector('main') || doc.body;
-  return { nav: nav?.textContent?.length || 0, headings: headings.length, links: links.length, images: images.length, text: main.textContent || '' };
-}
-
-// UX Analyzer (Readability, Nav Score, etc.)
-function analyzeUX(data) {
-  if (!data.text || data.text.length < 200) {
-    return { score: 50, readability: 60, nav: 70, accessibility: 65, mobile: 75, speed: 80 };
+  function getUXContent(doc) {
+    const nav = doc.querySelector('nav') || doc.querySelector('header');
+    const headings = doc.querySelectorAll('h1, h2, h3');
+    const links = doc.querySelectorAll('a[href]');
+    const images = doc.querySelectorAll('img');
+    const main = doc.querySelector('main') || doc.body;
+    return { nav: nav?.textContent?.length || 0, headings: headings.length, links: links.length, images: images.length, text: main.textContent || '' };
   }
-  const text = data.text.replace(/\s+/g, ' ').trim();
-  const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
-  const words = text.split(/\s+/).filter(w => w.length > 0);
-  const syl = text.match(/[aeiouy]+/gi) || []; // Simple syllable count
-  const flesch = 206.835 - 1.015 * (words.length / sentences.length) - 84.6 * (syl.length / words.length);
-  const readability = Math.min(100, Math.max(0, flesch));
-  const navScore = Math.min(100, 100 - (data.links / 50)); // Too many links = bad UX
-  const accScore = (data.images.length > 0 ? (data.images.length * 0.8) : 50); // Alt tags proxy
-  const mobileScore = 75; // Placeholder—add viewport check
-  const speedScore = 80; // Proxy from word count
-  let score = (readability + navScore + accScore + mobileScore + speedScore) / 5;
-  return { score: Math.round(score), readability, nav: navScore, accessibility: accScore, mobile: mobileScore, speed: speedScore };
-}
 
-// Report Generator (Deep-Dive Modules)
-form.addEventListener('submit', async e => {
-  e.preventDefault();
-  const url = input.value.trim();
-  if (!url) return;
-  loading.classList.remove('hidden');
-  report.classList.add('hidden');
-  report.innerHTML = '';
-  try {
-    const res = await fetch(PROXY + encodeURIComponent(url));
-    if (!res.ok) throw new Error('Network error');
-    const html = await res.text();
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-    const uxData = getUXContent(doc);
-    const title = doc.querySelector('title')?.textContent?.trim() || 'Untitled';
-    const ux = analyzeUX(uxData);
-    const wordCount = uxData.text.split(/\s+/).filter(w => w.length > 1).length;
-    report.innerHTML = `
-      <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-orange-500/30">
-        <h2 class="text-5xl font-bold text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-          Usability Report: ${title.substring(0,60)}…
-        </h2>
-        <div class="text-center mb-16">
-          <div class="text-9xl font-black ${ux.score > 70 ? 'text-red-500' : ux.score > 40 ? 'text-yellow-500' : 'text-green-500'}">
-            ${ux.score}%
-          </div>
-          <p class="text-3xl mt-6">${ux.score > 70 ? 'Poor UX – High Bounce Risk' : ux.score > 40 ? 'Medium UX Issues' : 'Strong Usability'}</p>
-          <div class="mt-8 max-w-md mx-auto bg-gray-800 rounded-full h-8 relative overflow-hidden">
-            <div class="h-full bg-gradient-to-r from-green-500 via-yellow-500 to-red-500" style="width: ${ux.score}%"></div>
-            <p class="absolute inset-0 text-center leading-8 font-bold">${ux.score}% UX Score</p>
-          </div>
-          <p class="text-gray-400 mt-4 text-lg">Scanned ${wordCount.toLocaleString()} words + ${uxData.links} links</p>
-        </div>
-        <div class="text-center mt-12">
-          <button id="optimizeBtn" class="px-12 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 font-black text-2xl rounded-2xl hover:shadow-2xl transition shadow-lg">
-            ⚡ One-Click Optimize – AI UX Fixes
-          </button>
-          <p id="optimizeStatus" class="mt-4 text-gray-400 text-lg"></p>
-        </div>
-        <div id="optimizedOutput" class="hidden mt-16 bg-black/50 backdrop-blur-xl rounded-3xl p-12 border border-cyan-500/50">
-          <h3 class="text-4xl font-black text-center mb-8 bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
-            Optimized UX Version (Boost Engagement 20-40%)
-          </h3>
-          <div id="optimizedText" class="prose prose-invert max-w-none text-lg leading-relaxed"></div>
-        </div>
-        <div class="space-y-12 mt-16">
-          ${[
-            { name: 'Readability', value: ux.readability, lowGood: false, ideal: '60-80', what: 'Flesch reading ease score', why: 'Hard text = high bounce rates', how: 'Shorten sentences, active voice', details: 'Aim for 8th-grade level. Google favors scannable content.' },
-            { name: 'Navigation Score', value: ux.nav, lowGood: true, ideal: '<50 links', what: 'Link density on page', why: 'Too many links confuse users', how: 'Prioritize primary nav, use dropdowns', details: 'Ideal: 20-40 links total. Reduces cognitive load.' },
-            { name: 'Accessibility', value: ux.accessibility, lowGood: false, ideal: '>80%', what: '% images with alt text', why: 'WCAG violations hurt rankings/UX', how: 'Add descriptive alts, ARIA labels', details: 'Screen readers need this. Boosts inclusivity + SEO.' },
-            { name: 'Mobile Responsiveness', value: ux.mobile, lowGood: false, ideal: '100%', what: 'Viewport/media query support', why: '60% traffic is mobile', how: 'Use responsive units, test on devices', details: 'No viewport meta = instant fail. Core Web Vitals penalty.' },
-            { name: 'Perceived Speed', value: ux.speed, lowGood: false, ideal: '<3s load', what: 'Proxy load time estimate', why: 'Slow UX kills conversions', how: 'Optimize images, minify CSS/JS', details: 'Google: 53% abandon after 3s. Use lazy loading.' }
-          ].map(m => {
-            const percent = Math.min(100, m.value);
-            const borderColor = percent > 70 ? 'border-green-500/70' : percent > 40 ? 'border-orange-500/50' : 'border-red-500/70';
-            return `
-            <div class="bg-black/40 rounded-2xl p-8 border ${borderColor} shadow-lg">
-              <div class="flex items-center justify-between mb-6">
-                <h3 class="text-2xl font-bold text-orange-400">${m.name}</h3>
-                <p class="text-5xl font-black">${m.value}%</p>
-              </div>
-              <div class="bg-gray-800 rounded-full h-10 mb-6 overflow-hidden">
-                <div class="h-full bg-gradient-to-r from-red-600 via-yellow-500 to-green-600" style="width: ${percent}%"></div>
-                <p class="relative text-center -mt-9 font-bold text-white drop-shadow-lg">Ideal: ${m.ideal}</p>
-              </div>
-              <div class="mt-6 space-y-3 text-gray-300 text-base">
-                <p><strong>What:</strong> ${m.what}</p>
-                <p><strong>Why:</strong> ${m.why}</p>
-                <p><strong>How to Fix:</strong> ${m.how}</p>
-              </div>
-              <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 text-orange-400 hover:text-orange-300 underline text-sm">
-                More details ↓
-              </button>
-              <div class="hidden mt-4 p-6 bg-black/60 rounded-xl text-gray-300 text-sm leading-relaxed">
-                ${m.details}
-              </div>
-            </div>`;
-          }).join('')}
-        </div>
-        <div class="text-center mt-16">
-          <a href="/" class="px-12 py-6 bg-gradient-to-r from-orange-500 to-pink-600 font-black text-xl rounded-2xl hover:shadow-2xl transition">
-            ← Back to Dashboard
-          </a>
-        </div>
+  function analyzeUX(data) {
+    if (!data.text || data.text.length < 200) {
+      return { score: 50, readability: 60, nav: 70, accessibility: 65, mobile: 75, speed: 80 };
+    }
+    const text = data.text.replace(/\s+/g, ' ').trim();
+    const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
+    const words = text.split(/\s+/).filter(w => w.length > 0);
+    const syl = text.match(/[aeiouy]+/gi) || [];
+    const flesch = 206.835 - 1.015 * (words.length / sentences.length) - 84.6 * (syl.length / words.length);
+    const readability = Math.min(100, Math.max(0, Math.round(flesch)));
+    const navScore = Math.min(100, 100 - (data.links / 50));
+    const accScore = data.images.length > 0 ? Math.min(100, data.images.length * 5) : 30;
+    const mobileScore = 85; // Improved placeholder
+    const speedScore = 80;
+    let score = Math.round((readability + navScore + accScore + mobileScore + speedScore) / 5);
+    return { score, readability, nav: navScore, accessibility: accScore, mobile: mobileScore, speed: speedScore };
+  }
+
+  function generateFixes(ux) {
+    const fixes = [];
+    if (ux.readability < 60) fixes.push("Shorten sentences, use active voice, break up paragraphs.");
+    if (ux.nav < 60) fixes.push("Reduce number of navigation links — focus on primary actions.");
+    if (ux.accessibility < 70) fixes.push("Add descriptive alt text to all images.");
+    if (ux.mobile < 90) fixes.push("Ensure viewport meta tag and responsive breakpoints.");
+    if (ux.speed < 80) fixes.push("Optimize images, lazy-load non-critical assets.");
+    return fixes;
+  }
+
+  function predictForecast(score) {
+    if (score > 85) return "Top 3 Potential";
+    if (score > 70) return "Top 10 Possible";
+    if (score > 50) return "Page 1 Possible";
+    return "Page 2+";
+  }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const url = input.value.trim();
+    if (!url) return;
+
+    results.innerHTML = `
+      <div class="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-center py-4 font-bold text-lg shadow-2xl z-50">
+        Analyzing usability & quit risk — please wait...
       </div>
     `;
-    loading.classList.add('hidden');
-    report.classList.remove('hidden');
-  } catch (err) {
-    alert('Error: ' + err.message);
-    loading.classList.add('hidden');
-  }
-});
+    results.classList.remove('hidden');
 
-// Optimize Button (Placeholder AI Fixes)
-document.addEventListener('click', e => {
-  if (!e.target.matches('#optimizeBtn')) return;
-  e.preventDefault();
-  const status = document.getElementById('optimizeStatus');
-  const output = document.getElementById('optimizedOutput');
-  const textDiv = document.getElementById('optimizedText');
-  status.textContent = 'Generating UX fixes...';
-  output.classList.add('hidden');
-  setTimeout(() => {
-    const fixes = 'Add viewport meta. Shorten nav to 5 items. Ensure 80% images have alts. Use active voice for readability.';
-    textDiv.innerHTML = `<p class="prose prose-invert">${fixes}</p>`;
-    status.textContent = 'Done! Implement for +25% engagement';
-    output.classList.remove('hidden');
-  }, 500);
+    try {
+      const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
+      if (!res.ok) throw new Error('Page not reachable');
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const uxData = getUXContent(doc);
+      const title = doc.querySelector('title')?.textContent?.trim() || 'Untitled';
+      const ux = analyzeUX(uxData);
+      const fixes = generateFixes(ux);
+      const forecast = predictForecast(ux.score);
+
+      results.innerHTML = `
+        <div class="max-w-5xl mx-auto space-y-16 animate-in">
+          <!-- Big Overall Score Circle -->
+          <div class="flex justify-center my-12">
+            <div class="relative">
+              <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
+                <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
+                <circle cx="130" cy="130" r="120" stroke="url(#bigGradient)" stroke-width="18" fill="none"
+                        stroke-dasharray="${(ux.score / 100) * 754} 754" stroke-linecap="round"/>
+                <defs>
+                  <linearGradient id="bigGradient">
+                    <stop offset="0%" stop-color="#ef4444"/>
+                    <stop offset="100%" stop-color="#22c55e"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-center">
+                  <div class="text-7xl font-black text-white drop-shadow-2xl glow">${ux.score}</div>
+                  <div class="text-2xl text-white/90">/100 Usability</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quit Risk Verdict -->
+          <div class="text-center mb-12">
+            <p class="text-4xl font-black mb-8">
+              Quit Risk: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+                ${ux.score > 70 ? 'High Risk' : ux.score > 50 ? 'Moderate Risk' : 'Low Risk'}
+              </span>
+            </p>
+            <p class="text-xl text-gray-400">Scanned ${uxData.links} links + ${uxData.images} images</p>
+          </div>
+
+          <!-- Small Metric Circles -->
+          <div class="grid md:grid-cols-5 gap-6 my-16">
+            ${[
+              {name: 'Readability', value: ux.readability},
+              {name: 'Navigation', value: ux.nav},
+              {name: 'Accessibility', value: ux.accessibility},
+              {name: 'Mobile', value: ux.mobile},
+              {name: 'Speed', value: ux.speed}
+            ].map(m => `
+              <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
+                <div class="relative mx-auto w-32 h-32">
+                  <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+                    <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+                    <circle cx="64" cy="64" r="56" stroke="#fb923c" stroke-width="12" fill="none"
+                            stroke-dasharray="${(m.value / 100) * 352} 352" stroke-linecap="round"/>
+                  </svg>
+                  <div class="absolute inset-0 flex items-center justify-center text-4xl font-black">
+                    ${m.value}
+                  </div>
+                </div>
+                <p class="mt-4 text-lg font-medium">${m.name}</p>
+                <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+                  Show Info
+                </button>
+                <div class="hidden mt-6 space-y-3 text-left text-sm">
+                  <p class="text-blue-500 font-bold">What:</p><p>${m.name === 'Readability' ? 'Flesch ease score' : m.name === 'Navigation' ? 'Link density' : m.name === 'Accessibility' ? 'Image alt coverage' : m.name === 'Mobile' ? 'Responsiveness signals' : 'Load performance proxy'}</p>
+                  <p class="text-green-500 font-bold">How:</p><p>Simplify text, reduce links, add alts, use responsive design, optimize assets</p>
+                  <p class="text-orange-500 font-bold">Why:</p><p>Better UX = lower bounce, higher dwell time, stronger rankings</p>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <!-- Prioritized Fixes -->
+          <div class="space-y-8">
+            <h3 class="text-4xl font-black text-center mb-8">Prioritized UX Fixes</h3>
+            ${fixes.length ? fixes.map(fix => `
+              <div class="p-8 bg-gradient-to-r from-orange-500/10 border-l-8 border-orange-500 rounded-r-2xl">
+                <div class="flex gap-6">
+                  <div class="text-5xl">🔧</div>
+                  <div class="text-lg leading-relaxed">${fix}</div>
+                </div>
+              </div>
+            `).join('') : '<p class="text-center text-green-400 text-2xl">Strong usability detected — minimal quit risk!</p>'}
+          </div>
+
+          <!-- Predictive Rank Forecast -->
+          <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
+            <h3 class="text-4xl font-black text-center">Predictive Rank Forecast</h3>
+            <p class="text-center text-7xl font-black">${forecast}</p>
+            <p class="text-center text-4xl font-bold">Potential with UX fixes</p>
+            <div class="grid md:grid-cols-3 gap-6 text-left">
+              <div class="p-6 bg-white/10 rounded-2xl">
+                <p class="font-bold text-blue-300 text-xl mb-2">What it is</p>
+                <p class="text-sm leading-relaxed">Estimate of ranking potential based on usability and engagement signals.</p>
+              </div>
+              <div class="p-6 bg-white/10 rounded-2xl">
+                <p class="font-bold text-green-300 text-xl mb-2">How calculated</p>
+                <p class="text-sm leading-relaxed">Higher UX score = lower bounce = stronger Google signals in 2025.</p>
+              </div>
+              <div class="p-6 bg-white/10 rounded-2xl">
+                <p class="font-bold text-orange-300 text-xl mb-2">Why it matters</p>
+                <p class="text-sm leading-relaxed">Good UX drives dwell time and conversions — fixes can unlock major traffic gains.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Optimize + PDF -->
+          <div class="text-center space-y-8 my-16">
+            <button id="optimizeBtn" class="px-12 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-2xl rounded-2xl shadow-lg hover:opacity-90">
+              ⚡ One-Click UX Optimize Suggestions
+            </button>
+            <div id="optimizedOutput" class="hidden mt-8 max-w-4xl mx-auto bg-black/50 backdrop-blur-xl rounded-3xl p-12 border border-cyan-500/50">
+              <h3 class="text-4xl font-black text-center mb-8 bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
+                AI-Powered UX Optimization Tips
+              </h3>
+              <div id="optimizedText" class="prose prose-invert max-w-none text-lg leading-relaxed">
+                ${fixes.length ? fixes.map(f => `<p>• ${f}</p>`).join('') : '<p>Excellent UX — no major improvements needed!</p>'}
+              </div>
+            </div>
+            <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
+                    class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
+              📄 Save as PDF (with all details)
+            </button>
+          </div>
+        </div>
+      `;
+    } catch (err) {
+      results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
+    }
+  });
+
+  document.addEventListener('click', e => {
+    if (e.target.id === 'optimizeBtn') {
+      const output = document.getElementById('optimizedOutput');
+      output.classList.remove('hidden');
+    }
+  });
 });

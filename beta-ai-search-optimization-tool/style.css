@@ -1,53 +1,29 @@
-/* Exact SEO Intent look – white cards, coloured borders, orange button */
-#loading {
-  @apply fixed bottom-0 left-0 right-0 h-6 bg-gradient-to-r from-orange-500 to-pink-600 z-50;
-}
-#progressText {
-  @apply absolute inset-0 flex items-center justify-center text-white font-bold text-base drop-shadow-lg;
-}
-#progressBar {
-  @apply h-full bg-white/40 transition-all duration-500;
+/* Custom styles beyond Tailwind, if needed (e.g., SVG tweaks) */
+#radar-chart svg {
+    width: 100%;
+    height: auto;
 }
 
-/* SVG circles – white inner */
-.score-ring-big, .module-circle {
-  position: relative;
-}
-.score-ring-big::after, .module-circle::after {
-  content: '';
-  position: absolute;
-  inset: 40px;
-  background: white;
-  border-radius: 50%;
-}
-.module-circle::after { inset: 20px; }
-.dark .score-ring-big::after, .dark .module-circle::after { background: #000; }
-
-/* White cards with coloured borders – exact match */
-.metric-card {
-  @apply bg-white dark:bg-gray-900 rounded-3xl p-8 shadow-lg;
-  border: 4px solid #e5e7eb;
-}
-.metric-card.high { border-color: #22c55e; }
-.metric-card.medium { border-color: #f59e0b; }
-.metric-card.low { border-color: #ef4444; }
-
-/* Orange Show Fixes button – pill */
-.show-fixes-btn {
-  @apply mt-6 px-8 py-3 bg-orange-500 text-white font-bold rounded-full hover:bg-orange-600 transition;
+/* Ensure mobile-friendliness overrides */
+@media (max-width: 640px) {
+    table {
+        font-size: 0.875rem;
+    }
 }
 
-/* What/How/Why colours */
-.what { @apply text-blue-500 font-bold; }
-.how { @apply text-green-500 font-bold; }
-.why { @apply text-orange-500 font-bold; }
 
-/* AI Fixes & Forecast – gradient cards */
-.ai-fixes-card {
-  background: linear-gradient(to right, #ff6b35, #ff00aa);
-  color: white;
-}
-.forecast-card {
-  background: linear-gradient(to right, #8b5cf6, #ec4899);
-  color: white;
+body { font-family: 'Inter', sans-serif; }
+.glow { text-shadow: 0 0 40px rgba(251, 146, 60, 0.6); }
+
+@keyframes animate-in {
+	from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+.animate-in { animation: animate-in 0.8s ease-out; }
+
+ #progress-bar {
+    background: linear-gradient(90deg, #f97316, #ec4899, #a855f7, #3b82f6);
+    background-size: 400% 400%;
+    animation: gradient-shift 8s linear infinite;
 }
