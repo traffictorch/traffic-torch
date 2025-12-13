@@ -1,0 +1,7 @@
+name = "cors-proxy-traffictorch"  # Must match your existing Worker name exactly
+main = "src/index.js"             # Your existing script location
+compatibility_date = "2025-12-14" # Latest for full features
+
+compatibility_flags = ["nodejs_compat"]  # Required for @cloudflare/puppeteer
+
+browser = { binding = "BROWSER" }  # Enables Browser Rendering – use env.BROWSER in code
