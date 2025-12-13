@@ -187,38 +187,46 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="text-xl text-gray-400">Scanned ${wordCount.toLocaleString()} words from main content</p>
           </div>
 
-          <!-- Small Metric Circles -->
-          <div class="grid md:grid-cols-5 gap-6 my-16">
-            ${[
-              {name: 'Perplexity', value: ai.perplexity},
-              {name: 'Burstiness', value: ai.burstiness},
-              {name: 'Repetition', value: ai.repetition + '%'},
-              {name: 'Sentence Length', value: ai.sentenceLength},
-              {name: 'Vocabulary', value: ai.vocab + '%'}
-            ].map(m => `
-              <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
-                <div class="relative mx-auto w-32 h-32">
-                  <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-                    <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-                    <circle cx="64" cy="64" r="56" stroke="#fb923c" stroke-width="12" fill="none"
-                            stroke-dasharray="${(parseFloat(m.value.replace('%','')) / 100) * 352} 352" stroke-linecap="round"/>
-                  </svg>
-                  <div class="absolute inset-0 flex items-center justify-center text-4xl font-black">
-                    ${m.value}
-                  </div>
-                </div>
-                <p class="mt-4 text-lg font-medium">${m.name}</p>
-                <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-                  Show Info
-                </button>
-                <div class="hidden mt-6 space-y-3 text-left text-sm">
-                  <p class="text-blue-500 font-bold">What:</p><p>${m.name === 'Perplexity' ? 'How predictable the text is' : m.name === 'Burstiness' ? 'Variation in sentence rhythm' : m.name === 'Repetition' ? 'How often phrases repeat' : m.name === 'Sentence Length' ? 'Average words per sentence' : 'Unique word percentage'}</p>
-                  <p class="text-green-500 font-bold">How:</p><p>Add stories, vary length, use synonyms, mix structures, enrich vocab</p>
-                  <p class="text-orange-500 font-bold">Why:</p><p>Google rewards natural, human-like writing — AI patterns hurt rankings</p>
-                </div>
-              </div>
-            `).join('')}
+	<!-- Small Metric Circles -->
+<div class="grid md:grid-cols-5 gap-6 my-16">
+  ${[
+    {name: 'Perplexity', value: ai.perplexity},
+    {name: 'Burstiness', value: ai.burstiness},
+    {name: 'Repetition', value: ai.repetition},
+    {name: 'Sentence Length', value: ai.sentenceLength},
+    {name: 'Vocabulary', value: ai.vocab}
+  ].map(m => {
+    let displayValue = m.value;
+    let percentValue = m.value;
+    if (m.name === 'Repetition' || m.name === 'Vocabulary') {
+      displayValue = m.value + '%';
+      percentValue = m.value;
+    }
+    return `
+      <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
+        <div class="relative mx-auto w-32 h-32">
+          <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+            <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+            <circle cx="64" cy="64" r="56" stroke="#fb923c" stroke-width="12" fill="none"
+                    stroke-dasharray="${(percentValue / 100) * 352} 352" stroke-linecap="round"/>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center text-4xl font-black">
+            ${displayValue}
           </div>
+        </div>
+        <p class="mt-4 text-lg font-medium">${m.name}</p>
+        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+          Show Info
+        </button>
+        <div class="hidden mt-6 space-y-3 text-left text-sm">
+          <p class="text-blue-500 font-bold">What:</p><p>${m.name === 'Perplexity' ? 'How predictable the text is' : m.name === 'Burstiness' ? 'Variation in sentence rhythm' : m.name === 'Repetition' ? 'How often phrases repeat' : m.name === 'Sentence Length' ? 'Average words per sentence' : 'Unique word percentage'}</p>
+          <p class="text-green-500 font-bold">How:</p><p>Add stories, vary length, use synonyms, mix structures, enrich vocab</p>
+          <p class="text-orange-500 font-bold">Why:</p><p>Google rewards natural, human-like writing — AI patterns hurt rankings</p>
+        </div>
+      </div>
+    `;
+  }).join('')}
+</div>
 
           <!-- Prioritized Fixes -->
           <div class="space-y-8">
