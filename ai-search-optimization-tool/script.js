@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!url) return;
 
     results.innerHTML = `
-      <div id="progress-bar" class="fixed bottom-0 left-0 w-full h-4 z-50"></div>
+      <div id="progress-bar" class="fixed bottom-0 left-0 w-full h-4 z-50 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600"></div>
       <div class="fixed bottom-6 left-0 right-0 text-center text-white font-bold text-lg z-50">
         <span id="progress-text">Analyzing for AI search engines...</span>
       </div>
@@ -39,9 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const mainEl = candidates.find(el => el && el.textContent.trim().length > 1000) || doc.body;
       mainEl.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie, .sidebar').forEach(el => el.remove());
       mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
-      const first300 = mainText.slice(0, 1200); // buffer for ~300 words
+      const first300 = mainText.slice(0, 1200);
 
-      // 1. Answerability / Direct Answer
+      // === All 8 module scoring logic (unchanged and complete) ===
       const hasBoldInFirst = /<strong>|<b>|<em>/i.test(first300);
       const hasDefinition = /\b(is|means|refers to|defined as)\b/i.test(first300.toLowerCase());
       const hasFAQSchema = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))
@@ -56,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
         (first300.length > 600 ? 10 : 0)
       );
 
-      // 2. Structured Data
       let schemaScore = 0;
       const jsonLdScripts = doc.querySelectorAll('script[type="application/ld+json"]');
       if (jsonLdScripts.length > 0) schemaScore += 30;
@@ -71,14 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       const structuredData = Math.min(100, schemaScore);
 
-      // 3. EEAT Signals
       const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
       const hasDate = !!doc.querySelector('time[datetime], meta[name="date"], .published, .updated, .date');
       const hasTrustedLinks = Array.from(doc.querySelectorAll('a[href^="https"]'))
         .some(a => !a.href.includes(new URL(url).hostname) && !a.href.includes('facebook.com') && !a.href.includes('twitter.com'));
       const eeat = (hasAuthor ? 40 : 0) + (hasDate ? 25 : 0) + (hasTrustedLinks ? 20 : 0) + (url.startsWith('https:') ? 15 : 0);
 
-      // 4. Scannability & Extraction Friendliness
       const headings = doc.querySelectorAll('h1,h2,h3,h4').length;
       const lists = doc.querySelectorAll('ul,ol').length;
       const tables = doc.querySelectorAll('table').length;
@@ -86,35 +83,29 @@ document.addEventListener('DOMContentLoaded', () => {
         .filter(p => p.textContent.trim().split(/\s+/).length < 35).length;
       const scannability = Math.min(100, headings * 6 + lists * 8 + tables * 15 + shortParas * 0.4);
 
-      // 5. Conversational / Human Tone
       const youCount = (mainText.match(/\byou\b|\byour\b|\byours\b/gi) || []).length;
       const iWeCount = (mainText.match(/\bI\b|\bwe\b|\bmy\b|\bour\b|\bme\b|\bus\b/gi) || []).length;
       const questions = (mainText.match(/\?/g) || []).length;
       const conversational = Math.min(100, (youCount * 4) + (iWeCount * 3) + (questions * 6));
 
-      // 6. Readability
       const words = mainText.split(/\s+/).filter(Boolean).length || 1;
       const sentences = (mainText.match(/[.!?]+/g) || []).length || 1;
       const syllables = mainText.split(/\s+/).reduce((a, w) => a + (w.match(/[aeiouy]+/gi) || []).length, 0);
       const flesch = 206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words);
       const readability = flesch > 80 ? 95 : flesch > 60 ? 90 : flesch > 40 ? 70 : 40;
 
-      // 7. Unique Human Insights
       const hasInsights = /\b(I tested|in my experience|we found|case study|based on my|hands-on|personally observed)\b/i.test(mainText);
       const uniqueInsights = hasInsights ? 95 : words > 2000 ? 70 : words > 1000 ? 50 : 30;
 
-      // 8. Anti-AI Detection Safety (burstiness)
       const sentencesArr = mainText.split(/[.!?]+/).filter(Boolean);
       const lengths = sentencesArr.map(s => s.split(/\s+/).length);
-      if (lengths.length < 5) {
-        var burstiness = 50;
-      } else {
+      let burstiness = 50;
+      if (lengths.length >= 5) {
         const avg = lengths.reduce((a,b) => a+b, 0) / lengths.length;
         const variance = lengths.reduce((a,b) => a + Math.pow(b - avg, 2), 0) / lengths.length;
         burstiness = variance > 40 ? 95 : variance > 20 ? 80 : variance > 10 ? 60 : 40;
       }
 
-      // Overall Score – weighted
       const overall = Math.round(
         answerability * 0.25 +
         structuredData * 0.15 +
@@ -137,13 +128,53 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: "Anti-AI Safety", score: burstiness, desc: "Sentence length variation (burstiness)" }
       ];
 
+      // === Prioritised Fixes (dynamic based on low scores) ===
+      const lowScoring = modules.filter(m => m.score < 70).sort((a,b) => a.score - b.score);
+      const prioritisedFixes = [];
+
+      if (lowScoring.some(m => m.name === "Answerability")) {
+        prioritisedFixes.push({ title: "Add Direct Answer in Opening", emoji: "💡", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
+          what: "A clear, bold, quotable answer AI engines can cite directly",
+          how: "Add a bold definition or summary in first 150–250 words. Use H2 questions and numbered steps.",
+          why: "Answerability is the #1 factor for AI citation and source selection"
+        });
+      }
+      if (lowScoring.some(m => m.name === "EEAT Signals")) {
+        prioritisedFixes.push({ title: "Add Author Bio & Photo", emoji: "👤", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
+          what: "Visible byline proving who wrote this",
+          how: "Headshot + name + bio + credentials + social links",
+          why: "Boosts Expertise & Trust by 30–40 points — Google's #1 E-E-A-T signal"
+        });
+      }
+      if (lowScoring.some(m => m.name === "Structured Data")) {
+        prioritisedFixes.push({ title: "Add Article + Person Schema", emoji: "✨", gradient: "from-purple-500/10 border-purple-500", color: "text-purple-600",
+          what: "Structured data that AI engines read directly",
+          how: "JSON-LD with @type Article + Person + author link. Add FAQPage if relevant.",
+          why: "Triggers rich answers and massive citation boost"
+        });
+      }
+      if (lowScoring.some(m => m.name === "Scannability")) {
+        prioritisedFixes.push({ title: "Boost Scannability with Lists & Tables", emoji: "📋", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
+          what: "Easy-to-extract facts via structured formatting",
+          how: "Add bullet/numbered lists, data tables, H2/H3 headings, short paragraphs",
+          why: "AI prioritizes instantly extractable content"
+        });
+      }
+      if (lowScoring.some(m => m.name === "Unique Insights")) {
+        prioritisedFixes.push({ title: "Add First-Hand Experience", emoji: "🧠", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
+          what: "Original insights that stand out from generic content",
+          how: "Include “I tested”, case studies, personal results, dated experiences",
+          why: "Prevents de-duplication and boosts originality"
+        });
+      }
+
       clearInterval(interval);
       document.querySelector('#progress-bar')?.remove();
       document.querySelector('.fixed.bottom-6')?.remove();
 
       results.innerHTML = `
         <div class="max-w-5xl mx-auto space-y-16 animate-in">
-          <!-- Big Score Circle -->
+          <!-- Big Overall Score -->
           <div class="flex justify-center my-12">
             <div class="relative">
               <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
@@ -166,13 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
 
-          <!-- Predictive Rank Forecast -->
-          <div class="p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl text-center">
-            <h3 class="text-4xl font-black mb-6">Predictive AI SERP Forecast</h3>
-            <p class="text-7xl font-black">${overall >= 90 ? 'Top 3' : overall >= 80 ? 'Top 5' : overall >= 70 ? 'Top 10' : overall >= 50 ? 'Page 1 Possible' : 'Page 2+'}</p>
-          </div>
-
-          <!-- 8 Modules -->
+          <!-- 8 Module Cards -->
           <div class="grid md:grid-cols-4 gap-6 my-16">
             ${modules.map(m => {
               const borderColor = m.score >= 80 ? 'border-green-500' : m.score >= 60 ? 'border-yellow-500' : 'border-red-500';
@@ -202,6 +227,49 @@ document.addEventListener('DOMContentLoaded', () => {
             }).join('')}
           </div>
 
+          <!-- Prioritised AI-Style Fixes -->
+          ${prioritisedFixes.length > 0 ? `
+            <div class="space-y-8">
+              <h3 class="text-4xl font-black text-center mb-8">Prioritised AI-Style Fixes</h3>
+              ${prioritisedFixes.map(fix => `
+                <div class="p-8 bg-gradient-to-r ${fix.gradient} border-l-8 rounded-r-2xl">
+                  <div class="flex gap-6">
+                    <div class="text-5xl">${fix.emoji}</div>
+                    <div>
+                      <h4 class="text-2xl font-bold ${fix.color}">${fix.title}</h4>
+                      <p class="mt-4 text-blue-500 font-bold">What:</p><p>${fix.what}</p>
+                      <p class="mt-2 text-green-500 font-bold">How:</p><p>${fix.how}</p>
+                      <p class="mt-2 text-orange-500 font-bold">Why:</p><p>${fix.why}</p>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+
+          <!-- Predictive Rank Forecast (now below fixes) -->
+          <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
+            <h3 class="text-4xl font-black text-center">Predictive AI SERP Forecast</h3>
+            <p class="text-center text-7xl font-black">${overall >= 90 ? 'Top 3' : overall >= 80 ? 'Top 5' : overall >= 70 ? 'Top 10' : overall >= 50 ? 'Page 1 Possible' : 'Page 2+'}</p>
+            <p class="text-center text-4xl font-bold">+${Math.round((100 - overall) * 1.8)}% potential traffic gain if fixed</p>
+            <p class="text-center text-lg italic opacity-80">Based on trust, direct answers, structure, and human signals — here's the breakdown:</p>
+            <div class="grid md:grid-cols-3 gap-6 text-left">
+              <div class="p-6 bg-white/10 rounded-2xl">
+                <p class="font-bold text-blue-300 text-xl mb-2">What it is</p>
+                <p class="text-sm leading-relaxed">Estimate of your page’s potential position in AI-powered search results (Perplexity, Grok, Gemini, ChatGPT Search, etc.).</p>
+              </div>
+              <div class="p-6 bg-white/10 rounded-2xl">
+                <p class="font-bold text-green-300 text-xl mb-2">How it's calculated</p>
+                <p class="text-sm leading-relaxed">Weighted: 25% Answerability, 15% Structured Data, 15% EEAT, 10% each Scannability/Tone/Readability, 8% Unique Insights, 7% Burstiness.</p>
+              </div>
+              <div class="p-6 bg-white/10 rounded-2xl">
+                <p class="font-bold text-orange-300 text-xl mb-2">Why it matters</p>
+                <p class="text-sm leading-relaxed">Top AI citations drive massive direct traffic. Fixing gaps can multiply visibility in days.</p>
+              </div>
+            </div>
+            <p class="text-center text-sm italic mt-6">Forecast is heuristic; actual performance varies by query and competition.</p>
+          </div>
+
           <!-- PDF Button -->
           <div class="text-center my-16">
             <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
@@ -225,7 +293,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         return map[name] || "Optimization factor for AI search visibility.";
       }
-
       function getHow(name) {
         const map = {
           "Answerability": "Bold definitions in first 300 words, FAQ schema, step-by-step lists.",
@@ -239,7 +306,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         return map[name] || "Implement best practices for this factor.";
       }
-
       function getWhy(name) {
         const map = {
           "Answerability": "AI engines quote direct answers — highest citation factor.",
