@@ -5,25 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Search Optimization Checker | Traffic Torch</title>
   <meta name="description" content="Free client-side tool to check how well your page is optimized for AI search engines like Perplexity, Grok, Gemini, ChatGPT Search.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/ai-search-optimization-tool/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Inter', sans-serif; }
-    .animate-in { animation: animate-in 0.8s ease-out; }
-    @keyframes animate-in {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    #progress-bar {
-      background: linear-gradient(90deg, #f97316, #ec4899, #a855f7, #3b82f6);
-      background-size: 400% 400%;
-      animation: gradient-shift 8s linear infinite;
-    }
-    @keyframes gradient-shift {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 100% 50%; }
-    }
-  </style>
+  <script src="/main.js" type="module"></script>
+  <script src="/ai-search-optimization-tool/script.js defer"></script>
+
 </head>
 <body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">
 	  <!-- Header with Hamburger (unchanged – perfect as-is) -->
@@ -139,7 +127,7 @@
       </div>
     </div>
   </footer>
+  
 
-  <script src="script.js"></script>
 </body>
 </html>
