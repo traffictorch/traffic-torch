@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="hidden mt-6 space-y-3 text-left text-sm">
                   <p class="text-blue-500 font-bold">What:</p><p>${key === 'Experience' ? 'Proof you've personally done what you're teaching.' : key === 'Expertise' ? 'Demonstrated subject-matter mastery.' : key === 'Authoritativeness' ? 'Recognition as the go-to source in your niche.' : 'Signals your site is safe and honest.'}</p>
                   <p class="text-green-500 font-bold">How:</p><p>${key === 'Experience' ? 'Use "I" statements, photos, case studies, dates.' : key === 'Expertise' ? 'Author box with photo, bio, credentials, certifications.' : key === 'Authoritativeness' ? 'High-quality backlinks, press mentions, schema, awards.' : 'HTTPS, contact page, privacy policy, updated dates.'}</p>
-                  <p class="text-orange-500 font-bold">Why:</p><p>${key === 'Experience' ? 'Google's #1 E-E-A-T signal in 2025.' : key === 'Expertise' ? 'Experts rank higher — full stop.' : key === 'Authoritativeness' ? 'Strongest long-term ranking factor.' : 'No trust = no traffic from Google.'}</p>
+                  <p class="text-orange-500 font-bold">Why:</p><p>${key === 'Experience' ? 'Google’s #1 E-E-A-T signal in 2025.' : key === 'Expertise' ? 'Experts rank higher — full stop.' : key === 'Authoritativeness' ? 'Strongest long-term ranking factor.' : 'No trust = no traffic from Google.'}</p>
                 </div>
               </div>
             `).join('')}
