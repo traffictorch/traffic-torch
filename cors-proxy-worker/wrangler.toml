@@ -1,0 +1,7 @@
+name = "cors-proxy-traffictorch"
+main = "src/index.js"
+compatibility_date = "2025-12-14"
+
+compatibility_flags = ["nodejs_compat"]
+
+browser = { binding = "BROWSER" }
