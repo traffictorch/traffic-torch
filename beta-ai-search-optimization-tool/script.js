@@ -7,12 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressText = document.getElementById('progressText');
   const PROXY = 'https://cors-proxy.traffictorch.workers.dev/?url=';
 
-  const modules = ["Fetching page","Extracting content","Detecting Schema","Readability","Conversational tone","Scannability","EEAT signals","Finalizing report"];
+  const modules = ["Fetching page","Extracting content","Answerability","Structured Data","EEAT","Scannability","Conversational Tone","Readability","Human Insights","Anti-AI Detection","Finalizing"];
 
   const fakeProgress = () => {
     let i = 0;
     const total = modules.length;
-    const duration = 4500 + Math.random()*2000;
+    const duration = 5000 + Math.random()*2000;
     const int = setInterval(() => {
       i++;
       progressBar.style.width = (i/total*100)+'%';
@@ -35,19 +35,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const words = text.split(/\s+/).filter(w=>w.length>0);
     const syllables = words.reduce((a,w)=>a+(w.toLowerCase().match(/[aeiouy]+/g)||[]).length,0);
     const fk = words.length === 0 ? 0 : 206.835 - 1.015*(words.length/(sentences.length||1)) - 84.6*(syllables/(words.length||1));
-    const readabilityScore = fk > 70 ? 96 : fk > 60 ? 85 : fk > 50 ? 70 : fk > 40 ? 50 : 32;
+    const readability = fk > 70 ? 96 : fk > 60 ? 85 : fk > 50 ? 70 : fk > 40 ? 50 : 32;
+
     const pronouns = (text.match(/\b(I|you|we|us|my|your|our|me)\b/gi)||[]).length;
     const questions = (text.match(/\?/g)||[]).length;
-    const conversationalScore = (pronouns > 10 || questions > 2) ? 96 : (pronouns > 3 || questions > 0) ? 70 : 45;
+    const conversational = (pronouns > 10 || questions > 2) ? 96 : (pronouns > 3 || questions > 0) ? 70 : 45;
+
     const lists = doc.querySelectorAll('ul,ol').length;
     const tables = doc.querySelectorAll('table').length;
     const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6').length;
-    const scannableScore = (lists+tables+headings > 10) ? 96 : (lists+tables+headings > 5) ? 70 : 45;
+    const scannable = (lists+tables+headings > 10) ? 96 : (lists+tables+headings > 5) ? 70 : 45;
+
     const author = !!doc.querySelector('[rel="author"],.author,.byline');
     const date = !!doc.querySelector('time,[pubdate]');
     const links = doc.querySelectorAll('a[href]').length;
-    const eeatScore = (author?30:0) + (date?25:0) + (links>15?30:links>5?15:0);
-    const total = hasSchema*25 + readabilityScore*0.2 + conversationalScore*0.2 + scannableScore*0.2 + eeatScore;
+    const eeat = (author?30:0) + (date?25:0) + (links>15?30:links>5?15:0);
+
+    const humanPhrases = text.match(/\b(I|we|my|our|in my experience|I tested|I found|case study)\b/gi)?.length || 0;
+    const humanInsight = humanPhrases > 5 ? 96 : humanPhrases > 2 ? 70 : 45;
+
+    const sentenceLengths = sentences.map(s => s.trim().split(/\s+/).length);
+    const avgLength = sentenceLengths.reduce((a,b)=>a+b,0)/sentenceLengths.length || 1;
+    const variance = sentenceLengths.reduce((a,b)=>a + Math.pow(b - avgLength,2),0)/sentenceLengths.length;
+    const burstiness = Math.sqrt(variance);
+    const antiAI = burstiness > 5 ? 96 : burstiness > 3 ? 70 : 45;
+
+    const answerability = /bold|strong|faq|summary/i.test(text.slice(0,300)) ? 96 : 70;
+
+    const total = answerability*0.25 + (hasSchema?96:32)*0.2 + eeat*0.2 + scannable*0.15 + conversational*0.1 + readability*0.05 + humanInsight*0.05 + antiAI*0.05;
     const score = Math.min(100, Math.round(total));
 
     let forecast = "Low visibility";
@@ -56,14 +71,24 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (score > 50) forecast = "Page 1 possible";
     else forecast = "Major fixes needed";
 
-    const aiFixes = [];
-    if (!hasSchema) aiFixes.push("Add Schema.org JSON-LD (FAQ, HowTo, Article)");
-    if (fk < 60) aiFixes.push("Shorten sentences to 15-20 words");
-    if (pronouns < 5) aiFixes.push("Use more personal language like 'you'");
-    if (lists + tables < 5) aiFixes.push("Add bullet points and tables");
-    if (links < 10) aiFixes.push("Link credible sources");
+    const aiFixes = [
+      {title:"Add Author Bio & Photo", what:"Visible byline proving who wrote this", how:"Headshot + name + bio + credentials + social links", why:"Boosts Expertise & Trust by 30–40 points — Google’s #1 E-E-A-T signal"},
+      {title:"Add Article + Person Schema", what:"Structured data Google reads", how:"JSON-LD with @type Article + Person + author link", why:"Rich results + massive E-E-A-T boost"},
+      {title:"Link credible sources", what:"External citations from trusted sites", how:"10+ high-authority outbound links", why:"Increases Authoritativeness and Trust"}
+    ];
 
-    return { score, forecast, aiFixes, structured: hasSchema?96:32, readability: readabilityScore, conversational: conversationalScore, scannable: scannableScore, eeat: eeatScore };
+    const getBorderClass = s => s >= 80 ? 'high' : s >= 60 ? 'medium' : 'low';
+
+    return { score, forecast, aiFixes, modules: [
+      {name:"Answerability",score:answerability,border:getBorderClass(answerability)},
+      {name:"Structured Data",score:hasSchema?96:32,border:getBorderClass(hasSchema?96:32)},
+      {name:"EEAT Signals",score:eeat,border:getBorderClass(eeat)},
+      {name:"Scannability",score:scannable,border:getBorderClass(scannable)},
+      {name:"Conversational Tone",score:conversational,border:getBorderClass(conversational)},
+      {name:"Readability",score:readability,border:getBorderClass(readability)},
+      {name:"Human Insights",score:humanInsight,border:getBorderClass(humanInsight)},
+      {name:"Anti-AI Detection",score:antiAI,border:getBorderClass(antiAI)}
+    ]};
   };
 
   form.addEventListener('submit', async e => {
@@ -90,102 +115,65 @@ document.addEventListener('DOMContentLoaded', () => {
       const r = analyze(text, doc);
 
       report.innerHTML = `
-        <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-12 border border-orange-500/30">
-          <div class="score-ring-big mb-12" style="--score:${r.score}%">
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="text-8xl font-black bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent drop-shadow-2xl">${r.score}<span class="text-5xl">%</span></div>
+        <div class="max-w-6xl mx-auto">
+          <div class="flex justify-center mb-12">
+            <div class="relative">
+              <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
+                <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
+                <circle cx="130" cy="130" r="120" stroke="url(#bigGradient)" stroke-width="18" fill="none"
+                        stroke-dasharray="${(r.score / 100) * 754} 754" stroke-linecap="round"/>
+                <defs>
+                  <linearGradient id="bigGradient">
+                    <stop offset="0%" stop-color="#ef4444"/>
+                    <stop offset="100%" stop-color="#22c55e"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-7xl font-black text-white drop-shadow-2xl">${r.score}<span class="text-4xl">%</span></div>
+              </div>
             </div>
           </div>
           <h2 class="text-5xl font-black text-center mb-16">AI Search Optimization Score</h2>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 max-w-6xl mx-auto mb-16">
-            <div class="metric-card text-center">
-              <div class="module-circle mb-4" style="--score:${r.structured}%">
-                <div class="module-score-text">${r.structured}</div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            ${r.modules.map(m=>`
+              <div class="metric-card ${m.border} text-center">
+                <div class="relative mx-auto w-32 h-32 mb-6">
+                  <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+                    <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+                    <circle cx="64" cy="64" r="56" stroke="${m.score >= 80 ? '#22c55e' : m.score >= 60 ? '#f59e0b' : '#ef4444'}"
+                            stroke-width="12" fill="none" stroke-dasharray="${(m.score/100)*352} 352" stroke-linecap="round"/>
+                  </svg>
+                  <div class="absolute inset-0 flex items-center justify-center text-4xl font-black">${m.score}</div>
+                </div>
+                <h3 class="text-xl font-bold mb-4">${m.name}</h3>
+                <button class="show-fixes-btn">Show Fixes</button>
+                <div class="hidden mt-6 space-y-4 text-left">
+                  <p class="what">What: [definition]</p>
+                  <p class="how">How: [how to fix]</p>
+                  <p class="why">Why: [why it matters]</p>
+                </div>
               </div>
-              <h3 class="text-xl font-bold">Structured Data</h3>
-              <p class="text-sm opacity-80 mt-2">Schema.org JSON-LD detected</p>
-              <details>
-                <summary class="text-orange-400 font-bold cursor-pointer hover:text-pink-400">Show Fixes →</summary>
-                <ul class="mt-3 space-y-2 text-sm pl-4 list-disc">
-                  <li>Add FAQ Schema</li>
-                  <li>Add HowTo Schema</li>
-                  <li>Add Article Schema</li>
-                </ul>
-              </details>
-            </div>
-            <div class="metric-card text-center">
-              <div class="module-circle mb-4" style="--score:${r.readability}%">
-                <div class="module-score-text">${r.readability}</div>
-              </div>
-              <h3 class="text-xl font-bold">Readability</h3>
-              <p class="text-sm opacity-80 mt-2">Flesch-Kincaid ease</p>
-              <details>
-                <summary class="text-orange-400 font-bold cursor-pointer hover:text-pink-400">Show Fixes →</summary>
-                <ul class="mt-3 space-y-2 text-sm pl-4 list-disc">
-                  <li>Short sentences</li>
-                  <li>Active voice</li>
-                  <li>Common words</li>
-                </ul>
-              </details>
-            </div>
-            <div class="metric-card text-center">
-              <div class="module-circle mb-4" style="--score:${r.conversational}%">
-                <div class="module-score-text">${r.conversational}</div>
-              </div>
-              <h3 class="text-xl font-bold">Conversational Tone</h3>
-              <p class="text-sm opacity-80 mt-2">Personal & engaging language</p>
-              <details>
-                <summary class="text-orange-400 font-bold cursor-pointer hover:text-pink-400">Show Fixes →</summary>
-                <ul class="mt-3 space-y-2 text-sm pl-4 list-disc">
-                  <li>Use "you", "I"</li>
-                  <li>Ask questions</li>
-                  <li>Add pronouns</li>
-                </ul>
-              </details>
-            </div>
-            <div class="metric-card text-center">
-              <div class="module-circle mb-4" style="--score:${r.scannable}%">
-                <div class="module-score-text">${r.scannable}</div>
-              </div>
-              <h3 class="text-xl font-bold">Scannable Format</h3>
-              <p class="text-sm opacity-80 mt-2">Lists, tables, headings</p>
-              <details>
-                <summary class="text-orange-400 font-bold cursor-pointer hover:text-pink-400">Show Fixes →</summary>
-                <ul class="mt-3 space-y-2 text-sm pl-4 list-disc">
-                  <li>Use bullets</li>
-                  <li>Add tables</li>
-                  <li>Number steps</li>
-                </ul>
-              </details>
-            </div>
-            <div class="metric-card text-center">
-              <div class="module-circle mb-4" style="--score:${r.eeat}%">
-                <div class="module-score-text">${r.eeat}</div>
-              </div>
-              <h3 class="text-xl font-bold">EEAT Signals</h3>
-              <p class="text-sm opacity-80 mt-2">Author, date, links</p>
-              <details>
-                <summary class="text-orange-400 font-bold cursor-pointer hover:text-pink-400">Show Fixes →</summary>
-                <ul class="mt-3 space-y-2 text-sm pl-4 list-disc">
-                  <li>Add author</li>
-                  <li>Show date</li>
-                  <li>Link sources</li>
-                </ul>
-              </details>
-            </div>
+            `).join('')}
           </div>
 
-          <div class="forecast-card text-center mb-12">
-            <h3 class="text-3xl font-bold mb-4">Predictive Rank Forecast</h3>
-            <p class="text-2xl text-orange-300">${r.forecast}</p>
+          <div class="ai-fixes-card rounded-3xl p-12">
+            <h3 class="text-4xl font-black text-center mb-10">Prioritised AI-Style Fixes</h3>
+            ${r.aiFixes.map(f=>`
+              <div class="bg-white/10 rounded-2xl p-8 mb-8">
+                <h4 class="text-3xl font-bold mb-6">${f.title}</h4>
+                <p class="what">What: ${f.what}</p>
+                <p class="how">How: ${f.how}</p>
+                <p class="why">Why: ${f.why}</p>
+              </div>
+            `).join('')}
           </div>
 
-          <div class="ai-fixes-card text-center">
-            <h3 class="text-3xl font-bold mb-6">AI-Generated Fixes</h3>
-            <ul class="space-y-4 text-left max-w-3xl mx-auto">
-              ${r.aiFixes.map(f=>`<li class="flex items-start"><span class="text-orange-400 mr-3">→</span>${f}</li>`).join('')}
-            </ul>
+          <div class="forecast-card rounded-3xl p-12 text-center">
+            <h3 class="text-4xl font-black mb-6">Predictive Rank Forecast</h3>
+            <p class="text-7xl font-black mb-4">${r.forecast}</p>
+            <p class="text-4xl font-bold mb-6">+${Math.round((100 - r.score) * 1.5)}% potential traffic gain if fixed</p>
           </div>
 
           <div class="mt-16 text-center">
@@ -195,6 +183,13 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
       `;
+
+      // Show Fixes toggle
+      report.addEventListener('click', e => {
+        if (e.target.classList.contains('show-fixes-btn')) {
+          e.target.nextElementSibling.classList.toggle('hidden');
+        }
+      });
 
       setTimeout(() => {
         loading.classList.add('hidden');

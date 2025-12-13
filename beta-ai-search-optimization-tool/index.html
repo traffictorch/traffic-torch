@@ -8,7 +8,6 @@
   <link rel="manifest" href="/manifest.json" />
   <link rel="icon" href="/favicon.ico" />
   <link rel="stylesheet" href="/style.css" />
-  <link rel="stylesheet" href="/tool-template.css" />
   <link rel="stylesheet" href="/ai-search-optimization-tool/style.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/main.js" type="module"></script>
@@ -52,7 +51,7 @@
   </header>
 
 <!-- Hero -->
-  <main class="max-w-5xl mx-auto px-6 py-20 text-center">
+<main class="max-w-5xl mx-auto px-6 py-20 text-center">
     <h1 class="text-6xl md:text-7xl font-black bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent leading-tight">
       AI Search Optimization Checker
     </h1>
@@ -72,14 +71,14 @@
     </form>
   </main>
 
-  <!-- Loading Bar -->
-  <div id="loading" class="hidden fixed bottom-0 left-0 right-0 h-3 bg-gradient-to-r from-orange-500 to-pink-600 z-50 overflow-hidden">
-    <div id="progressText" class="absolute inset-0 flex items-center justify-center text-white font-bold text-sm">Analyzing...</div>
+  <div id="loading" class="hidden fixed bottom-0 left-0 right-0 h-6 bg-gradient-to-r from-orange-500 to-pink-600 z-50">
+    <div id="progressText" class="absolute inset-0 flex items-center justify-center text-white font-bold text-base drop-shadow-lg">
+      Fetching page...
+    </div>
     <div id="progressBar" class="h-full bg-white/40 transition-all duration-500" style="width:0%"></div>
   </div>
 
-  <!-- Results -->
-  <section id="report" class="hidden max-w-7xl mx-auto px-6 py-20 print:bg-white print:text-black"></section>
+  <section id="report" class="hidden max-w-7xl mx-auto px-6 py-20"></section>
 
 	<!-- AddToAny BEGIN -->
 <div class="a2a_kit a2a_kit_size_32 a2a_default_style" data-a2a-url="https://traffictorch.net/" data-a2a-title="Traffic Torch">
