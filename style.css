@@ -117,3 +117,13 @@ html.light .score-circle circle.bg {
 .dark ::placeholder {
   color: #6b7280; /* gray-500 */
 }
+
+/* Desktop dropdown smooth */
+.group:hover .group-hover\\:block {
+  display: block;
+  animation: fadeIn 0.2s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
