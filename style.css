@@ -109,3 +109,11 @@ html.light .score-circle circle.bg {
 #mobileMenu a:hover {
   color: #fb923c; /* orange hover */
 }
+
+/* Ensure placeholder visibility */
+::placeholder {
+  color: #9ca3af; /* gray-400 */
+}
+.dark ::placeholder {
+  color: #6b7280; /* gray-500 */
+}

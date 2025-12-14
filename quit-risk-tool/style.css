@@ -50,8 +50,6 @@ body { transition: background-color 0.3s ease; }
     .text-9xl { font-size: 5.5rem !important; }
   }
   
-  
-
 
 /* Progress Bar – Thick, centered text, animated */
 #progress-bar {

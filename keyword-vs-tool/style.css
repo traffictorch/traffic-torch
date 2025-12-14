@@ -51,8 +51,6 @@ body { transition: background-color 0.3s ease; }
   }
   
   
-
-
 /* Progress Bar – Thick, centered text, animated */
 #progress-bar {
   height: 3rem; /* thicker */
