@@ -47,20 +47,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const bodyText = doc.body?.textContent?.replace(/\s+/g, ' ').trim() || '';
       const pageText = `${title} ${h1} ${metaDesc} ${bodyText}`.toLowerCase();
 
+      // Intent detection
       let intent = 'Informational';
       if (pageText.includes('buy') || pageText.includes('price') || pageText.includes('shop') || pageText.includes('add to cart') || pageText.includes('book') || pageText.includes('reserve')) intent = 'Transactional';
       else if (pageText.includes('best') || pageText.includes('review') || pageText.includes('vs') || pageText.includes('comparison')) intent = 'Commercial Investigation';
       detectedIntent.textContent = intent;
 
-      // Extract location from title (common cities/places)
-      const locationMatch = title.toLowerCase().match(/\b(byron|bay|sydney|melbourne|london|new york|paris|tokyo|berlin|amsterdam|bali|phuket|chiang mai)\b/i);
-      const location = locationMatch ? locationMatch[0].charAt(0).toUpperCase() + locationMatch[0].slice(1) : '';
+      // Extract meaningful keywords
+      const baseKeywords = extractMeaningfulKeywords(title + ' ' + h1 + ' ' + bodyText);
 
-      // Extract base keywords
-      const baseKeywords = extractBaseKeywords(title + ' ' + h1 + ' ' + bodyText);
-
-      // Generate smart suggestions
-      const suggestions = generateSmartSuggestions(baseKeywords, intent, location);
+      // Generate epic suggestions
+      const suggestions = generateEpicSuggestions(baseKeywords, intent);
 
       // Render
       suggestions.forEach(sugg => {
@@ -88,50 +85,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function extractBaseKeywords(text) {
-    const stop = new Set(['the', 'and', 'for', 'with', 'how', 'what', 'best', 'top', 'guide', 'review', 'in', 'at', 'on', 'by', 'near', 'of', 'a', 'an', 'to']);
+  function extractMeaningfulKeywords(text) {
+    const stop = new Set(['the', 'and', 'for', 'with', 'how', 'what', 'best', 'top', 'guide', 'review', 'in', 'at', 'on', 'by', 'near', 'of', 'a', 'an', 'to', 'is', 'are', 'you', 'your', 'we', 'our']);
     return text
       .toLowerCase()
       .replace(/[^\w\s]/g, ' ')
       .split(/\s+/)
-      .filter(w => w.length > 3 && !stop.has(w))
+      .filter(w => w.length > 4 && !stop.has(w))
       .slice(0, 10);
   }
 
-  function generateSmartSuggestions(keywords, intent, location) {
+  function generateEpicSuggestions(keywords, intent) {
     const placements = ['H1 or page title', 'Intro paragraph', 'Subheadings (H2/H3)', 'Image alt text', 'Meta description', 'Body content naturally', 'CTA buttons', 'FAQ section'];
     const whyBase = intent === 'Transactional' ? 'Drives buying intent and conversions' :
                     intent === 'Commercial Investigation' ? 'Matches comparison shoppers' :
                     'Improves relevance for searchers seeking info';
 
-    const filtered = keywords.filter(word => word.length > 3);
-
     const phrases = new Set();
 
-    // Location-based if detected
-    if (location) {
-      filtered.forEach(kw => {
-        const verb = kw.endsWith('ing') ? kw.slice(0, -3) + 'e' : kw;
-        phrases.add(`things to do in ${location}`);
-        phrases.add(`${location} ${kw}`);
-        phrases.add(`best ${kw} in ${location}`);
-        phrases.add(`places to ${verb} in ${location}`);
-      });
-    }
-
-    // General high-intent
-    filtered.forEach(kw => {
+    // Core high-intent patterns
+    keywords.forEach(kw => {
       const verb = kw.endsWith('ing') ? kw.slice(0, -3) + 'e' : kw;
       phrases.add(`how to ${verb}`);
       phrases.add(`best ${kw}`);
       phrases.add(`${kw} near me`);
+      phrases.add(`things to do with ${kw}`);
     });
 
-    // Transactional extras
+    // Intent boosters
     if (intent === 'Transactional') {
-      if (location) phrases.add(`book stay in ${location}`);
-      phrases.add(`reserve ${filtered[0] || 'room'}`);
+      phrases.add('book now');
+      phrases.add('reserve today');
     }
+
+    // Fallback strong phrases
+    phrases.add('ultimate guide');
+    phrases.add('2025');
+    phrases.add('complete review');
 
     const unique = Array.from(phrases).slice(0, 8);
 
