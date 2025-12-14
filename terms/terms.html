@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service | Traffic Torch</title>
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = saved || (preferDark ? 'dark' : 'light');
+      document.documentElement.classList.add(theme);
+    })();
+  </script>
+</head>
+<body class="min-h-screen">
+  <!-- Header (unchanged) -->
+  <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-4">
+        <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
+        <h1 class="text-[1.35rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+          Traffic Torch
+        </h1>
+      </a>
+      <button id="menuToggle" class="md:hidden text-3xl">☰</button>
+      <nav class="hidden md:flex gap-8 text-lg">
+        <a href="/" class="hover:text-orange-400 transition">Home</a>
+        <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a>
+        <a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a>
+        <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">AI Content</a>
+        <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a>
+        <a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a>
+        <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a>
+      </nav>
+      <button id="themeToggle" class="px-4 py-2 bg-white/10 rounded-full hover:bg-white/20 transition">
+        🌙
+      </button>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+      <nav class="flex flex-col gap-6 py-6 px-10 text-xl text-gray-100">
+        <a href="/" class="hover:text-orange-400 transition">Home</a>
+        <a href="/ai-seo-ux-tools/" class="hover:text-orange-400 transition font-bold">Tools</a>
+        <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+          <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a>
+          <a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a>
+          <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">AI Content</a>
+          <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a>
+          <a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a>
+          <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a>
+        </div>
+        <a href="/about/" class="hover:text-orange-400 transition">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content – Epic Terms -->
+  <main class="container mx-auto px-6 py-16 max-w-5xl">
+    <div class="text-center mb-16">
+      <h2 class="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Terms of Service 🔥
+      </h2>
+      <!-- Expanding Intro Summary -->
+      <details class="max-w-3xl mx-auto text-left bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-orange-500/30 cursor-pointer">
+        <summary class="text-2xl font-bold mb-4 flex items-center gap-2 cursor-pointer">
+          Quick Terms Summary <svg class="chevron ml-auto" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </summary>
+        <p class="text-xl text-gray-300 leading-relaxed">
+          Traffic Torch is your free SEO + UX sidekick. No warranties, use at own risk. Don't misuse tools. We respect your privacy. Have fun optimizing! 🚀
+        </p>
+      </details>
+    </div>
+
+    <!-- Epic Sections in Cards -->
+    <div class="grid md:grid-cols-2 gap-8">
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all">
+          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-spin">⚖️</div>
+          <h3 class="text-2xl font-bold mb-3">1. Acceptance of Terms</h3>
+          <p class="text-gray-300">By using Traffic Torch, you agree to these terms. If not, please don't use the site. Simple as that!</p>
+        </div>
+      </div>
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all">
+          <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🛡️</div>
+          <h3 class="text-2xl font-bold mb-3">2. Use of Service</h3>
+          <p class="text-gray-300">Our tools are free for personal/commercial use. No spam, no illegal stuff. We may update or suspend anytime.</p>
+        </div>
+      </div>
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all">
+          <div class="text-emerald-400 text-7xl mb-6 group-hover:animate-pulse">📊</div>
+          <h3 class="text-2xl font-bold mb-3">3. Data & Privacy</h3>
+          <p class="text-gray-300">We don't collect personal data. URLs you analyze are processed client-side. See Privacy Policy for details.</p>
+        </div>
+      </div>
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+          <div class="text-purple-400 text-7xl mb-6 group-hover:animate-wiggle">🚫</div>
+          <h3 class="text-2xl font-bold mb-3">4. Disclaimer</h3>
+          <p class="text-gray-300">Tools are for info only — no guarantees on rankings. Use at your risk. We're not liable for any issues.</p>
+        </div>
+      </div>
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50 md:col-span-2">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+          <div class="text-red-400 text-7xl mb-6 group-hover:animate-shake">📜</div>
+          <h3 class="text-2xl font-bold mb-3">5. Changes & Contact</h3>
+          <p class="text-gray-300">We can update terms anytime. Questions? Hit us up on X @guitaralize or via Grok.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- AddToAny -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+  <script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+  <!-- Footer (unchanged) -->
+  <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">
+    <div class="container mx-auto px-6 max-w-6xl">
+      <div class="grid md:grid-cols-4 gap-12 text-center md:text-left">
+        <div>
+          <a href="/">
+            <img src="/logo.webp" alt="Traffic Torch" class="w-20 mx-auto md:mx-0 rounded-2xl shadow-2xl mb-6">
+          </a>
+          <p class="text-gray-400 text-sm">Instant SEO + UX audit tools.<br>Optimising User Experience</p>
+        </div>
+        <div>
+          <a href="/ai-seo-ux-tools/" class="block"><h3 class="text-xl font-bold mb-6 text-orange-400 hover:text-orange-300 transition">Tools</h3></a>
+          <ul class="space-y-3 text-gray-400">
+            <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+            <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
+            <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">AI Content</a></li>
+            <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
+            <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a></li>
+            <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-6 text-orange-400">Company</h3>
+          <ul class="space-y-3 text-gray-400">
+            <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
+            <li><a href="https://x.com/guitaralize" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">Ylia@X</a></li>
+            <li><a href="https://grok.com/" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">Grok</a></li>
+            <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
+            <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
+          </ul>
+        </div>
+        <div>
+          <a href="/" class="block"><h3 class="text-xl font-bold mb-6 text-orange-400 hover:text-orange-300 transition">Traffic Torch</h3></a>
+          <p class="text-gray-400 text-sm"><a href="/tools.html" class="hover:text-orange-400 transition">UX Tools 🔦</a></p>
+          <p class="text-gray-400 text-sm"><a href="/tools.html" class="hover:text-orange-400 transition">SEO Tools 🚦</a></p>
+          <p class="text-gray-400 text-sm">Built with 🔥</p>
+          <p class="text-gray-500 text-xs mt-4">© 2025 Traffic Torch</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="/main.js" type="module"></script>
+</body>
+</html>
