@@ -52,13 +52,17 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (pageText.includes('best') || pageText.includes('review') || pageText.includes('vs') || pageText.includes('comparison')) intent = 'Commercial Investigation';
       detectedIntent.textContent = intent;
 
-      const domain = new URL(url).hostname.replace('www.', '').split('.')[0];
-      const possibleBrand = domain.replace(/[-_]/g, ' ');
-      const possibleLocation = title.toLowerCase().match(/\b(in|at|near|byron|bay|sydney|melbourne|london|new york|paris)\b/)?.[0] || '';
+      // Extract location from title (common cities/places)
+      const locationMatch = title.toLowerCase().match(/\b(byron|bay|sydney|melbourne|london|new york|paris|tokyo|berlin|amsterdam|bali|phuket|chiang mai)\b/i);
+      const location = locationMatch ? locationMatch[0].charAt(0).toUpperCase() + locationMatch[0].slice(1) : '';
 
+      // Extract base keywords
       const baseKeywords = extractBaseKeywords(title + ' ' + h1 + ' ' + bodyText);
-      const suggestions = generateSmartSuggestions(baseKeywords, intent, possibleLocation, possibleBrand);
 
+      // Generate smart suggestions
+      const suggestions = generateSmartSuggestions(baseKeywords, intent, location);
+
+      // Render
       suggestions.forEach(sugg => {
         const card = document.createElement('div');
         card.className = 'bg-gray-50 dark:bg-gray-700 rounded-xl p-5 space-y-3';
@@ -94,34 +98,36 @@ document.addEventListener('DOMContentLoaded', () => {
       .slice(0, 10);
   }
 
-  function generateSmartSuggestions(keywords, intent, location, brand) {
-    const stopWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'as', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'this', 'that', 'these', 'those', 'it', 'its', 'you', 'your', 'we', 'our', 'they', 'their', 'them', 'he', 'she', 'him', 'her', 'i', 'me', 'my', 'not', 'no', 'yes', 'all', 'some', 'any', 'one', 'two', 'three', 'first', 'last', 'new', 'old', 'big', 'small', 'good', 'best', 'more', 'most', 'less', 'few', 'many', 'much', 'little', 'here', 'there', 'when', 'where', 'why', 'how', 'what', 'who', 'which']);
-
+  function generateSmartSuggestions(keywords, intent, location) {
     const placements = ['H1 or page title', 'Intro paragraph', 'Subheadings (H2/H3)', 'Image alt text', 'Meta description', 'Body content naturally', 'CTA buttons', 'FAQ section'];
     const whyBase = intent === 'Transactional' ? 'Drives buying intent and conversions' :
                     intent === 'Commercial Investigation' ? 'Matches comparison shoppers' :
                     'Improves relevance for searchers seeking info';
 
-    const filtered = keywords.filter(word => word.length > 3 && !stopWords.has(word));
+    const filtered = keywords.filter(word => word.length > 3);
 
     const phrases = new Set();
 
+    // Location-based if detected
     if (location) {
       filtered.forEach(kw => {
+        const verb = kw.endsWith('ing') ? kw.slice(0, -3) + 'e' : kw;
         phrases.add(`things to do in ${location}`);
         phrases.add(`${location} ${kw}`);
         phrases.add(`best ${kw} in ${location}`);
-        phrases.add(`places to ${kw} in ${location}`);
+        phrases.add(`places to ${verb} in ${location}`);
       });
     }
 
+    // General high-intent
     filtered.forEach(kw => {
-      const verb = kw.endsWith('ing') ? kw.slice(0, -3) + 'e' : kw; // relaxing → relax
+      const verb = kw.endsWith('ing') ? kw.slice(0, -3) + 'e' : kw;
       phrases.add(`how to ${verb}`);
       phrases.add(`best ${kw}`);
       phrases.add(`${kw} near me`);
     });
 
+    // Transactional extras
     if (intent === 'Transactional') {
       if (location) phrases.add(`book stay in ${location}`);
       phrases.add(`reserve ${filtered[0] || 'room'}`);
