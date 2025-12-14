@@ -44,25 +44,26 @@ document.addEventListener('DOMContentLoaded', () => {
       const title = doc.querySelector('title')?.textContent?.trim() || '';
       const h1 = doc.querySelector('h1')?.textContent?.trim() || '';
       const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
-      const bodyText = doc.body?.textContent?.trim() || '';
+      const bodyText = doc.body?.textContent?.replace(/\s+/g, ' ').trim().slice(0, 2000) || '';
       const pageText = `${title} ${h1} ${metaDesc} ${bodyText}`.toLowerCase();
 
-      // Intent detection
       let intent = 'Informational';
-      if (pageText.includes('buy') || pageText.includes('price') || pageText.includes('shop') || pageText.includes('book') || pageText.includes('reserve')) intent = 'Transactional';
+      if (pageText.includes('buy') || pageText.includes('price') || pageText.includes('shop') || pageText.includes('add to cart') || pageText.includes('book') || pageText.includes('reserve')) intent = 'Transactional';
       else if (pageText.includes('best') || pageText.includes('review') || pageText.includes('vs') || pageText.includes('comparison')) intent = 'Commercial Investigation';
+      else if (pageText.includes('how to') || pageText.includes('guide') || pageText.includes('tutorial') || pageText.includes('what is')) intent = 'Informational';
       detectedIntent.textContent = intent;
 
-      // Generic detection: location/activity from title/H1
-      const titleWords = title.split(' ');
-      const locationCandidates = titleWords.filter(w => w.length > 3 && /[A-Z]/.test(w[0]));
-      const location = locationCandidates.length > 0 ? locationCandidates.join(' ') : '';
+      // Generic location detection
+      const locationPattern = /\b(in|at|near|byron bay|byron|sydney|melbourne|london|new york|paris|tokyo|bali|phuket)\b/g;
+      const locations = pageText.match(locationPattern) || [];
+      const location = locations[0] ? locations[0].charAt(0).toUpperCase() + locations[0].slice(1) : 'your area';
 
-      const activityKeywords = ['hotel', 'spa', 'retreat', 'resort', 'accommodation', 'stay', 'boutique', 'luxury', 'restaurant', 'cafe', 'surf', 'yoga', 'wellness'];
-      const activity = activityKeywords.find(k => pageText.includes(k)) || 'stay';
+      // Activity/type detection
+      const activityPatterns = ['hotel', 'spa', 'retreat', 'resort', 'accommodation', 'stay', 'boutique', 'luxury', 'pool', 'garden', 'bar', 'restaurant', 'surf', 'yoga', 'fishing', 'gear', 'rod', 'reel', 'lure', 'tackle'];
+      const activity = activityPatterns.find(k => pageText.includes(k)) || 'experience';
 
-      // Generate universal high-intent suggestions
-      const suggestions = generateUniversalSuggestions(activity, location, intent);
+      // Generate suggestions using templates
+      const suggestions = generateSuggestions(activity, location, intent);
 
       // Render
       suggestions.forEach(sugg => {
@@ -90,36 +91,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function generateUniversalSuggestions(activity, location, intent) {
+  function generateSuggestions(activity, location, intent) {
     const placements = ['H1 or page title', 'Intro paragraph', 'Subheadings (H2/H3)', 'Image alt text', 'Meta description', 'Body content naturally', 'CTA buttons', 'FAQ section'];
     const whyBase = intent === 'Transactional' ? 'Drives buying intent and conversions' :
                     intent === 'Commercial Investigation' ? 'Matches comparison shoppers' :
                     'Improves relevance for searchers seeking info';
 
-    const phrases = [];
-
-    if (location) {
-      phrases.push(`things to do in ${location}`);
-      phrases.push(`best things to do in ${location}`);
-      phrases.push(`luxury ${activity}s in ${location}`);
-      phrases.push(`best places to ${activity} in ${location}`);
-      phrases.push(`top ${location} ${activity}s 2025`);
-      phrases.push(`${location} ${activity} guide`);
-    }
-
-    // Generic fallbacks
-    phrases.push(`best ${activity}`);
-    phrases.push(`luxury ${activity}`);
-    phrases.push(`how to find the best ${activity}`);
-    phrases.push(`${activity} near me`);
+    const templates = [
+      `things to do in ${location}`,
+      `best things to do in ${location}`,
+      `luxury ${activity}s in ${location}`,
+      `best places to ${activity} in ${location}`,
+      `top ${location} ${activity}s 2025`,
+      `how to find the best ${activity}`,
+      `${activity} near me`,
+      `${location} ${activity} guide`
+    ];
 
     // Intent boosters
     if (intent === 'Transactional') {
-      phrases.push(`book ${activity} now`);
-      phrases.push(`reserve luxury ${activity}`);
+      templates.push(`book ${activity} now`);
+      templates.push(`best deals on ${activity} in ${location}`);
+    } else if (intent === 'Commercial Investigation') {
+      templates.push(`best ${activity} reviews`);
+      templates.push(`${activity} vs alternatives`);
+    } else if (intent === 'Informational') {
+      templates.push(`ultimate guide to ${activity}`);
+      templates.push(`${activity} tips for beginners`);
     }
 
-    const unique = [...new Set(phrases)].slice(0, 8);
+    const unique = [...new Set(templates)].slice(0, 8);
 
     return unique.map((phrase, i) => ({
       phrase,
