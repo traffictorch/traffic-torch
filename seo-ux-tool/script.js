@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.number').forEach(n => n.style.opacity = '0'); // Hide on load
+  document.querySelectorAll('.number').forEach(n => n.style.opacity = '0'); // Hide scores on load
 
   const form = document.getElementById('url-form');
   const input = document.getElementById('url-input');
@@ -83,10 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const res = await fetch(`https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(url)}`);
-      if (!res.ok) throw '';
+      if (!res.ok) throw new Error('Page not reachable');
       const html = await res.text();
-      updateMessage(); // Analyzing SEO...
+      if (html.length < 200) throw new Error('Empty response');
 
+      updateMessage(); // Analyzing SEO...
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const seo = analyzeSEO(doc);
       await new Promise(r => setTimeout(r, 800));
@@ -117,13 +118,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       stopLoader();
       results.classList.remove('hidden');
-    } catch {
+    } catch (err) {
+      console.error(err);
       stopLoader();
       alert('Failed to analyze — try another site');
     }
   });
 
-  // Your existing analysis functions (copy-paste unchanged from old script)
+  // Full original analysis functions — unchanged
   function analyzeSEO(doc) {
     let score = 100;
     const issues = [];
