@@ -50,9 +50,6 @@ body { transition: background-color 0.3s ease; }
     .text-9xl { font-size: 5.5rem !important; }
   }
   
-  
-
-
 /* Progress Bar – Thick, centered text, animated */
 #progress-bar {
   height: 3rem; /* thicker */
@@ -67,6 +64,9 @@ body { transition: background-color 0.3s ease; }
   100% { background-position: 0% 50%; }
 }
 
-
-
-
+#url-input {
+  background-color: #ffffff !important; /* Day mode solid white */
+}
+.dark #url-input {
+  background-color: rgba(31, 41, 55, 0.8) !important; /* Dark with blur */
+}
