@@ -87,24 +87,28 @@ document.addEventListener('DOMContentLoaded', () => {
       const html = await res.text();
       if (html.length < 200) throw new Error('Empty response');
 
-      updateMessage(); // Analyzing SEO...
+      // Module 1: SEO
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const seo = analyzeSEO(doc);
+      updateMessage(); // "Analyzing SEO signals..." already shown
       await new Promise(r => setTimeout(r, 800));
 
-      updateMessage(); // Checking mobile...
+      // Module 2: Mobile
       const mobile = analyzeMobile(doc);
+      updateMessage(); // "Checking mobile..."
       await new Promise(r => setTimeout(r, 800));
 
-      updateMessage(); // Evaluating performance...
+      // Module 3: Performance
       const perf = analyzePerf(html, doc);
+      updateMessage(); // "Evaluating performance..."
       await new Promise(r => setTimeout(r, 800));
 
-      updateMessage(); // Scanning accessibility...
+      // Module 4: Accessibility
       const access = analyzeAccess(doc);
+      updateMessage(); // "Scanning accessibility..."
       await new Promise(r => setTimeout(r, 800));
 
-      updateMessage(); // Finalizing...
+      updateMessage(); // "Finalizing..."
       await new Promise(r => setTimeout(r, 1200));
 
       updateScore('seo-score', seo.score);
@@ -119,13 +123,13 @@ document.addEventListener('DOMContentLoaded', () => {
       stopLoader();
       results.classList.remove('hidden');
     } catch (err) {
-      console.error(err);
+      console.error('Analysis error:', err);
       stopLoader();
       alert('Failed to analyze — try another site');
     }
   });
 
-  // Full original analysis functions — unchanged
+  // Your full original analysis functions
   function analyzeSEO(doc) {
     let score = 100;
     const issues = [];
