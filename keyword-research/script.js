@@ -32,70 +32,95 @@ document.addEventListener('DOMContentLoaded', () => {
     loader.classList.add('hidden');
   }
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const url = document.getElementById('url').value.trim();
-    if (!url) return;
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const url = document.getElementById('url').value.trim();
+  if (!url) return;
 
-    results.classList.add('hidden');
-    startLoader();
-    suggestionsGrid.innerHTML = '';
+  results.classList.add('hidden');
+  suggestionsGrid.innerHTML = '';
 
-    try {
-      const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(url)}`;
-      const response = await fetch(proxyUrl);
-      if (!response.ok) throw new Error('Failed to fetch page');
-      const html = await response.text();
+  // Start loader with timing
+  const startTime = Date.now();
+  const minDisplayTime = 3000; // Minimum 3 seconds
+  let messageIndex = 0;
 
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-      const title = doc.querySelector('title')?.textContent?.trim() || '';
-      const h1 = doc.querySelector('h1')?.textContent?.trim() || '';
-      const bodyText = doc.body?.textContent?.trim() || '';
-      const pageText = `${title} ${h1} ${bodyText}`.toLowerCase();
+  loader.classList.remove('hidden');
+  progressText.textContent = progressMessages[messageIndex++];
 
-      // Intent detection
-      let intent = 'Informational';
-      if (pageText.includes('buy') || pageText.includes('price') || pageText.includes('shop') || pageText.includes('book') || pageText.includes('reserve')) intent = 'Transactional';
-      else if (pageText.includes('best') || pageText.includes('review') || pageText.includes('vs') || pageText.includes('comparison')) intent = 'Commercial Investigation';
-      detectedIntent.textContent = intent;
+  // Controlled step updates every 3 seconds (educational pacing)
+  const stepInterval = setInterval(() => {
+    if (messageIndex < progressMessages.length) {
+      progressText.textContent = progressMessages[messageIndex++];
+    }
+  }, 3000);
 
-      // Core topic from title/H1
-      const coreMatch = title.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+){0,4})/) || h1.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+){0,4})/);
-      const coreTopic = coreMatch ? coreMatch[0].trim().toLowerCase() : 'experience';
+  try {
+    const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(url)}`;
+    const response = await fetch(proxyUrl);
+    if (!response.ok) throw new Error('Failed to fetch page');
+    const html = await response.text();
 
-      // Location detection
-      const locationMatch = title.match(/(?:in|at|near)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)/i);
-      const location = locationMatch ? locationMatch[1].trim() : '';
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
 
-      // Generate suggestions
-      const suggestions = generateUniversalSuggestions(coreTopic, location, intent);
+    const title = doc.querySelector('title')?.textContent?.trim() || '';
+    const h1 = doc.querySelector('h1')?.textContent?.trim() || '';
+    const bodyText = doc.body?.textContent?.trim() || '';
+    const pageText = `${title} ${h1} ${bodyText}`.toLowerCase();
 
-      // Render
-      suggestions.forEach(sugg => {
-        const card = document.createElement('div');
-        card.className = 'bg-gray-50 dark:bg-gray-700 rounded-xl p-5 space-y-3';
-        card.innerHTML = `
-          <div class="font-bold text-lg text-gray-900 dark:text-white">${sugg.phrase}</div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">
-            <span class="font-medium">Best placement:</span> ${sugg.placement}
-          </div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">
-            <span class="font-medium">Why it helps:</span> ${sugg.why}
-          </div>
-        `;
-        suggestionsGrid.appendChild(card);
-      });
+    // Intent detection
+    let intent = 'Informational';
+    if (pageText.includes('buy') || pageText.includes('price') || pageText.includes('shop') || pageText.includes('book') || pageText.includes('reserve')) intent = 'Transactional';
+    else if (pageText.includes('best') || pageText.includes('review') || pageText.includes('vs') || pageText.includes('comparison')) intent = 'Commercial Investigation';
 
-      stopLoader();
+    detectedIntent.textContent = intent;
+
+    // Core topic from title/H1
+    const coreMatch = title.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+){0,4})/) || h1.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+){0,4})/);
+    const coreTopic = coreMatch ? coreMatch[0].trim().toLowerCase() : 'experience';
+
+    // Location detection
+    const locationMatch = title.match(/(?:in|at|near)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)/i);
+    const location = locationMatch ? locationMatch[1].trim() : '';
+
+    // Generate suggestions
+    const suggestions = generateUniversalSuggestions(coreTopic, location, intent);
+
+    // Render suggestions
+    suggestions.forEach(sugg => {
+      const card = document.createElement('div');
+      card.className = 'bg-gray-50 dark:bg-gray-700 rounded-xl p-5 space-y-3';
+      card.innerHTML = `
+        <div class="font-bold text-lg text-gray-900 dark:text-white">${sugg.phrase}</div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">
+          <span class="font-medium">Best placement:</span> ${sugg.placement}
+        </div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">
+          <span class="font-medium">Why it helps:</span> ${sugg.why}
+        </div>
+      `;
+      suggestionsGrid.appendChild(card);
+    });
+
+    // Enforce minimum display time
+    const elapsed = Date.now() - startTime;
+    const delay = Math.max(0, minDisplayTime - elapsed);
+
+    setTimeout(() => {
+      clearInterval(stepInterval);
+      loader.classList.add('hidden');
       results.classList.remove('hidden');
       results.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    } catch (err) {
-      stopLoader();
-      alert('Sorry, something went wrong fetching the page. Try another URL or check later.');
-      console.error(err);
-    }
-  });
+    }, delay);
+
+  } catch (err) {
+    clearInterval(stepInterval);
+    loader.classList.add('hidden');
+    alert('Sorry, something went wrong fetching the page. Try another URL or check later.');
+    console.error(err);
+  }
+});
 
   function generateUniversalSuggestions(coreTopic, location, intent) {
     const placements = ['H1 or page title', 'Intro paragraph', 'Subheadings (H2/H3)', 'Image alt text', 'Meta description', 'Body content naturally', 'CTA buttons', 'FAQ section'];
