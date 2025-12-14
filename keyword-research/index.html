@@ -66,9 +66,9 @@
 
   <main class="max-w-4xl mx-auto px-4 py-12 md:py-16">
     <div class="text-center mb-12">
-      <h1 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
+      <h2 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
         Keyword Research Tool
-      </h1>
+      </h2>
       <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
         Enter any URL — we’ll scan the page, detect its search intent, and suggest 8 targeted keyword phrases you can naturally sprinkle to improve discoverability, SEO, and UX.
       </p>
@@ -99,21 +99,27 @@
       </form>
 
       <!-- In-place Laser Spinner Progress (hidden until submit) -->
-      <div id="progressContainer" class="mt-8 hidden">
-        <div class="flex flex-col items-center space-y-6">
-          <div class="relative">
-            <div class="w-32 h-32 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
-            <div class="absolute inset-0 w-32 h-32 rounded-full border-8 border-transparent border-t-blue-500 border-r-purple-500 animate-spin"></div>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <span class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="progressStep">Scanning...</span>
-            </div>
-          </div>
-          <p class="text-center text-gray-600 dark:text-gray-400 max-w-md" id="progressTip">
-            Fetching page content securely via our proxy...
-          </p>
-        </div>
-      </div>
-    </div>
+	<div id="loader" class="hidden flex flex-col items-center justify-center py-20">
+  <div class="relative">
+    <svg width="180" height="180" viewBox="0 0 180 180" class="animate-spin-slow">
+      <circle cx="90" cy="90" r="80" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+      <circle cx="90" cy="90" r="80" stroke="url(#gradient)" stroke-width="12" fill="none" stroke-dasharray="502" stroke-dashoffset="125" stroke-linecap="round" class="transition-all duration-1000"/>
+      <defs>
+        <linearGradient id="gradient">
+          <stop offset="0%" stop-color="#f97316"/>
+          <stop offset="50%" stop-color="#ec4899"/>
+          <stop offset="100%" stop-color="#a855f7"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+  <p class="mt-8 text-2xl font-bold text-center text-gray-700 dark:text-gray-300 animate-pulse">
+    <span id="progress-text">Fetching page...</span>
+  </p>
+  <p class="mt-2 text-lg text-center text-gray-500 dark:text-gray-400">
+    Pulling content securely via our CORS proxy...
+  </p>
+</div>
 
     <!-- Results Section (hidden until complete) -->
     <div id="results" class="mt-12 hidden">
