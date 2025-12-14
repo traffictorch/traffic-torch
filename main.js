@@ -53,3 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
     link.addEventListener('click', () => menu.classList.add('hidden'));
   });
 });
+
+// main.js – Apply mode before DOM load
+(function () {
+  const mode = localStorage.getItem('theme') || 'dark';
+  document.documentElement.classList.add(mode);
+})();
