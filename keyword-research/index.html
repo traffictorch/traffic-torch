@@ -5,8 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Keyword Research Tool • Traffic Torch</title>
   <meta name="description" content="Free keyword research tool that scans your page, detects search intent, and suggests targeted phrases you can sprinkle for better SEO and findability.">
-  <link rel="stylesheet" href="/assets/css/main.css">
+  <meta name="color-scheme" content="dark light">
   <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/keyword-research/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+  // Apply saved theme instantly on load (no flash)
+  (function() {
+    const saved = localStorage.getItem('theme');
+    const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (preferDark ? 'dark' : 'light');
+    document.documentElement.classList.add(theme);
+  })();
+</script>
+  <script src="/main.js" type="module"></script>
+  <script src="/keyword-research/script.js" defer></script>
+  
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
   <!-- Header & Nav (consistent with rest of site) -->
