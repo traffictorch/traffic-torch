@@ -47,24 +47,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const bodyText = doc.body?.textContent?.replace(/\s+/g, ' ').trim() || '';
       const pageText = `${title} ${h1} ${metaDesc} ${bodyText}`.toLowerCase();
 
-      // Intent detection
       let intent = 'Informational';
       if (pageText.includes('buy') || pageText.includes('price') || pageText.includes('shop') || pageText.includes('add to cart') || pageText.includes('book') || pageText.includes('reserve')) intent = 'Transactional';
       else if (pageText.includes('best') || pageText.includes('review') || pageText.includes('vs') || pageText.includes('comparison')) intent = 'Commercial Investigation';
       detectedIntent.textContent = intent;
 
-      // Extract brand/location from domain/title
       const domain = new URL(url).hostname.replace('www.', '').split('.')[0];
       const possibleBrand = domain.replace(/[-_]/g, ' ');
       const possibleLocation = title.toLowerCase().match(/\b(in|at|near|byron|bay|sydney|melbourne|london|new york|paris)\b/)?.[0] || '';
 
-      // Base keywords (filtered)
       const baseKeywords = extractBaseKeywords(title + ' ' + h1 + ' ' + bodyText);
-
-      // Generate smart suggestions
       const suggestions = generateSmartSuggestions(baseKeywords, intent, possibleLocation, possibleBrand);
 
-      // Render
       suggestions.forEach(sugg => {
         const card = document.createElement('div');
         card.className = 'bg-gray-50 dark:bg-gray-700 rounded-xl p-5 space-y-3';
@@ -101,33 +95,39 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function generateSmartSuggestions(keywords, intent, location, brand) {
+    const stopWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'as', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'this', 'that', 'these', 'those', 'it', 'its', 'you', 'your', 'we', 'our', 'they', 'their', 'them', 'he', 'she', 'him', 'her', 'i', 'me', 'my', 'not', 'no', 'yes', 'all', 'some', 'any', 'one', 'two', 'three', 'first', 'last', 'new', 'old', 'big', 'small', 'good', 'best', 'more', 'most', 'less', 'few', 'many', 'much', 'little', 'here', 'there', 'when', 'where', 'why', 'how', 'what', 'who', 'which']);
+
     const placements = ['H1 or page title', 'Intro paragraph', 'Subheadings (H2/H3)', 'Image alt text', 'Meta description', 'Body content naturally', 'CTA buttons', 'FAQ section'];
     const whyBase = intent === 'Transactional' ? 'Drives buying intent and conversions' :
                     intent === 'Commercial Investigation' ? 'Matches comparison shoppers' :
                     'Improves relevance for searchers seeking info';
 
-    const phrases = [];
+    const filtered = keywords.filter(word => word.length > 3 && !stopWords.has(word));
 
-    // Generic natural phrases
-    keywords.forEach(kw => {
-      if (location) {
-        phrases.push(`things to do in ${location}`);
-        phrases.push(`${location} ${kw}`);
-        phrases.push(`best ${kw} in ${location}`);
-      }
-      phrases.push(`best ${kw}`);
-      phrases.push(`how to ${kw}`);
-      phrases.push(`${kw} near me`);
-    });
+    const phrases = new Set();
 
-    // Intent-specific
-    if (intent === 'Transactional') {
-      phrases.push(`book ${location || 'stay'}`);
-      phrases.push(`reserve ${keywords[0] || 'room'}`);
+    if (location) {
+      filtered.forEach(kw => {
+        phrases.add(`things to do in ${location}`);
+        phrases.add(`${location} ${kw}`);
+        phrases.add(`best ${kw} in ${location}`);
+        phrases.add(`places to ${kw} in ${location}`);
+      });
     }
 
-    // Dedupe & limit
-    const unique = [...new Set(phrases.filter(p => !p.includes(brand)))].slice(0, 8);
+    filtered.forEach(kw => {
+      const verb = kw.endsWith('ing') ? kw.slice(0, -3) + 'e' : kw; // relaxing → relax
+      phrases.add(`how to ${verb}`);
+      phrases.add(`best ${kw}`);
+      phrases.add(`${kw} near me`);
+    });
+
+    if (intent === 'Transactional') {
+      if (location) phrases.add(`book stay in ${location}`);
+      phrases.add(`reserve ${filtered[0] || 'room'}`);
+    }
+
+    const unique = Array.from(phrases).slice(0, 8);
 
     return unique.map((phrase, i) => ({
       phrase,
