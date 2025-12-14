@@ -25,7 +25,7 @@
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
       <a href="/" class="flex items-center gap-4">
         <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
-        <h1 class="text-2xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        <h1 class="text-[1.35rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
           Traffic Torch
         </h1>
       </a>
@@ -59,7 +59,7 @@
   <!-- NEW: All Tools Dashboard (replaces old hero + small grid) -->
   <main class="container mx-auto px-6 py-16">
     <div class="text-center mb-16">
-      <h2 class="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+      <h2 class="text-5xl md:text-4xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
         UX & SEO Tools ⚖️
       </h2>
       <p class="text-xl text-gray-400 max-w-2xl mx-auto">
@@ -133,62 +133,57 @@
         </section>
     </div>
 
-    <!-- Tools Grid – Fully responsive 1→2→3→4 columns -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto">
-      
-      <!-- AI Content Audit -->
-      <a href="/ai-audit-tool/" class="group block transform hover:-translate-y-3 transition-all duration-300">
-        <div class="h-full bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-orange-500/30 hover:border-orange-400 shadow-2xl">
-          <div class="text-orange-400 text-7xl mb-6">🤖</div>
-          <h3 class="text-2xl font-bold mb-3">AI Audit Tool</h3>
-          <p class="text-gray-300">Deep AI detection + charts + instant fixes</p>
-        </div>
-      </a>
-
-      <!-- Quit / Quit Risk Tool-->
-      <a href="/quit-risk-tool/" class="group block transform hover:-translate-y-3 transition-all duration-300">
-        <div class="h-full bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-pink-500/30 hover:border-pink-400 shadow-2xl">
-          <div class="text-pink-400 text-7xl mb-6">⚡</div>
-          <h3 class="text-2xl font-bold mb-3">Quit Risk Tool</h3>
-          <p class="text-gray-300">UX friction & bounce prediction</p>
-        </div>
-      </a>
-      
-      <!-- Keyword Placement Tool -->
-      <a href="/keyword-tool/" class="group block transform hover:-translate-y-3 transition-all duration-300">
-        <div class="h-full bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-emerald-500/30 hover:border-emerald-400 shadow-2xl">
-          <div class="text-emerald-400 text-7xl mb-6">📝</div>
-          <h3 class="text-2xl font-bold mb-3">Keyword Tool</h3>
-          <p class="text-gray-300">Keyword Placement Tool</p>
-        </div>
-      </a>
-
-      <!-- Keywords Competitive Analysis -->
-      <a href="/keyword-vs-tool/" class="group block transform hover:-translate-y-3 transition-all duration-300">
-        <div class="h-full bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-purple-500/30 hover:border-purple-400 shadow-2xl">
-          <div class="text-purple-400 text-7xl mb-6">🆚</div>
-          <h3 class="text-2xl font-bold mb-3">Keyword VS Tool</h3>
-          <p class="text-gray-300">Side-by-side SERP & content comparison</p>
-        </div>
-      </a>
-
-      <!-- Search Intent + E-E-A-T -->
-      <a href="/seo-intent-tool/" class="group block transform hover:-translate-y-3 transition-all duration-300">
-        <div class="h-full bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-cyan-500/30 hover:border-cyan-400 shadow-2xl">
-          <div class="text-cyan-400 text-7xl mb-6">🎯</div>
+    <!-- Tools Grid (Creative: Hover glow/scale, colorful borders, emojis) -->
+    <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+      <!-- SEO Intent -->
+      <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+          <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
           <h3 class="text-2xl font-bold mb-3">SEO Intent Tool</h3>
-          <p class="text-gray-300">Topic clusters & authority scoring</p>
+          <p class="text-gray-300">Instant intent matching + E-E-A-T audit + fixes</p>
         </div>
       </a>
-
-      <!-- About Card – Always visible on dashboard -->
-      <a href="/about/" class="group block transform hover:-translate-y-3 transition-all duration-300">
-        <div class="h-full bg-gradient-to-br from-orange-600 to-pink-700 rounded-3xl p-12 shadow-2xl border border-orange-400/50">
-          <div class="text-white text-8xl mb-8">ℹ️</div>
-          <h3 class="text-3xl font-black mb-4">About Traffic Torch</h3>
-          <p class="text-orange-100 text-lg">Our mission, story, and why we built this</p>
+      <!-- Ai Search -->
+      <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all">
+          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+          <h3 class="text-2xl font-bold mb-3">Ai Search Tool</h3>
+          <p class="text-gray-300">Optimize for Perplexity, Grok, Gemini, ChatGPT Search</p>
         </div>
       </a>
+      <!-- AI Content -->
+      <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all">
+          <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+          <h3 class="text-2xl font-bold mb-3">AI Content Tool</h3>
+          <p class="text-gray-300">Detect AI patterns + humanize content + forecasts</p>
+        </div>
+      </a>
+      <!-- Quit Risk -->
+      <a href="/quit-risk-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all">
+          <div class="text-emerald-400 text-7xl mb-6 group-hover:animate-bounce">⚡</div>
+          <h3 class="text-2xl font-bold mb-3">Quit Risk Tool</h3>
+          <p class="text-gray-300">UX friction audit + bounce prediction + optimizations</p>
+        </div>
+      </a>
+      <!-- Keywords -->
+      <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+          <div class="text-purple-400 text-7xl mb-6 group-hover:animate-bounce">📝</div>
+          <h3 class="text-2xl font-bold mb-3">Keywords Tool</h3>
+          <p class="text-gray-300">On-page keyword placement score + density fixes</p>
+        </div>
+      </a>
+      <!-- VS -->
+      <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+          <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+          <h3 class="text-2xl font-bold mb-3">VS Tool</h3>
+          <p class="text-gray-300">Competitive keyword gap analysis + beat strategies</p>
+        </div>
+      </a>
+    </div>
 
       <!-- Add more tools here in the future using the same card pattern -->
       
@@ -245,7 +240,7 @@
           <p class="text-gray-400 text-sm">Instant SEO + UX audit tools.<br>Optimising User Experience</p>
         </div>
         <div>
-                    <a href="/tools.html" class="block"><h3 class="text-xl font-bold mb-6 text-orange-400 hover:text-orange-300 transition">Tools</h3></a>
+         <a href="/ai-seo-ux-tools/" class="block"><h3 class="text-xl font-bold mb-6 text-orange-400 hover:text-orange-300 transition">Tools</h3></a>
           <ul class="space-y-3 text-gray-400">
             <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
             <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
