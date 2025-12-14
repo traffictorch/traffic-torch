@@ -1,5 +1,4 @@
 /* Traffic Torch Analyzer 2025 — FINAL LOCAL CSS (dark + light + circles) */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap');
 
 :root {
   --bg-gradient: linear-gradient(to bottom right, #0f172a, #020617, #000000);
