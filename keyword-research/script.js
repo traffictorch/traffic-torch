@@ -1,18 +1,36 @@
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('keywordForm');
-  const progressContainer = document.getElementById('progressContainer');
-  const progressStep = document.getElementById('progressStep');
-  const progressTip = document.getElementById('progressTip');
+  const loader = document.getElementById('loader');
+  const progressText = document.getElementById('progress-text');
   const results = document.getElementById('results');
   const detectedIntent = document.getElementById('detectedIntent');
   const suggestionsGrid = document.getElementById('suggestionsGrid');
 
-  const progressSteps = [
-    { step: 'Fetching page...', tip: 'Pulling content securely via our CORS proxy...' },
-    { step: 'Scanning content...', tip: 'Analyzing headings, meta, and body text...' },
-    { step: 'Detecting intent...', tip: 'Identifying if the page is Informational, Commercial, Transactional, etc.' },
-    { step: 'Generating suggestions...', tip: 'Crafting targeted phrases you can sprinkle naturally.' }
+  const progressMessages = [
+    "Fetching page...",
+    "Scanning content...",
+    "Detecting intent...",
+    "Generating suggestions..."
   ];
+
+  let messageIndex = 0;
+  let interval;
+
+  function startLoader() {
+    loader.classList.remove('hidden');
+    messageIndex = 0;
+    progressText.textContent = progressMessages[messageIndex++];
+    interval = setInterval(() => {
+      if (messageIndex < progressMessages.length) {
+        progressText.textContent = progressMessages[messageIndex++];
+      }
+    }, 1800);
+  }
+
+  function stopLoader() {
+    clearInterval(interval);
+    loader.classList.add('hidden');
+  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -20,18 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!url) return;
 
     results.classList.add('hidden');
-    progressContainer.classList.remove('hidden');
+    startLoader();
     suggestionsGrid.innerHTML = '';
-    let stepIndex = 0;
-    const updateProgress = () => {
-      if (stepIndex < progressSteps.length) {
-        progressStep.textContent = progressSteps[stepIndex].step;
-        progressTip.textContent = progressSteps[stepIndex].tip;
-        stepIndex++;
-        setTimeout(updateProgress, 1800);
-      }
-    };
-    updateProgress();
 
     try {
       const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(url)}`;
@@ -52,15 +60,15 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (pageText.includes('best') || pageText.includes('review') || pageText.includes('vs') || pageText.includes('comparison')) intent = 'Commercial Investigation';
       detectedIntent.textContent = intent;
 
-      // Core topic from title/H1 (first meaningful phrase)
+      // Core topic from title/H1
       const coreMatch = title.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+){0,4})/) || h1.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+){0,4})/);
       const coreTopic = coreMatch ? coreMatch[0].trim().toLowerCase() : 'experience';
 
-      // Location detection (optional)
+      // Location detection
       const locationMatch = title.match(/(?:in|at|near)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)/i);
       const location = locationMatch ? locationMatch[1].trim() : '';
 
-      // Generate universal suggestions
+      // Generate suggestions
       const suggestions = generateUniversalSuggestions(coreTopic, location, intent);
 
       // Render
@@ -79,11 +87,11 @@ document.addEventListener('DOMContentLoaded', () => {
         suggestionsGrid.appendChild(card);
       });
 
-      progressContainer.classList.add('hidden');
+      stopLoader();
       results.classList.remove('hidden');
       results.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } catch (err) {
-      progressContainer.classList.add('hidden');
+      stopLoader();
       alert('Sorry, something went wrong fetching the page. Try another URL or check later.');
       console.error(err);
     }
@@ -97,21 +105,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const phrases = [];
 
-    // Always include these
     phrases.push(`best ${coreTopic}`);
     phrases.push(`how to ${coreTopic}`);
     phrases.push(`${coreTopic} near me`);
-    phrases.push(`top ${coreTopic} 2026`);
+    phrases.push(`top ${coreTopic} 2025`);
     phrases.push(`${coreTopic} reviews`);
     phrases.push(`ultimate guide to ${coreTopic}`);
 
-    // Location if detected
     if (location) {
       phrases.push(`best ${coreTopic} in ${location}`);
       phrases.push(`${location} ${coreTopic}`);
     }
 
-    // Intent-specific
     if (intent === 'Transactional') {
       phrases.push(`buy ${coreTopic}`);
       phrases.push(`best deals on ${coreTopic}`);
