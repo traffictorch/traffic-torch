@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = document.getElementById('url').value.trim();
     if (!url) return;
 
-    // Reset & show progress
     results.classList.add('hidden');
     progressContainer.classList.remove('hidden');
     suggestionsGrid.innerHTML = '';
@@ -35,33 +34,37 @@ document.addEventListener('DOMContentLoaded', () => {
     updateProgress();
 
     try {
-      // Step 1: Fetch page HTML via CORS proxy
       const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(url)}`;
       const response = await fetch(proxyUrl);
       if (!response.ok) throw new Error('Failed to fetch page');
       const html = await response.text();
 
-      // Step 2: Client-side parsing (lightweight)
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
       const title = doc.querySelector('title')?.textContent?.trim() || '';
       const h1 = doc.querySelector('h1')?.textContent?.trim() || '';
       const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
-      const bodyText = doc.body?.textContent?.replace(/\s+/g, ' ').trim().slice(0, 2000) || '';
+      const bodyText = doc.body?.textContent?.replace(/\s+/g, ' ').trim() || '';
       const pageText = `${title} ${h1} ${metaDesc} ${bodyText}`.toLowerCase();
 
-      // Step 3: Simple intent detection
+      // Intent detection
       let intent = 'Informational';
-      if (pageText.includes('buy') || pageText.includes('price') || pageText.includes('shop') || pageText.includes('add to cart')) intent = 'Transactional';
+      if (pageText.includes('buy') || pageText.includes('price') || pageText.includes('shop') || pageText.includes('add to cart') || pageText.includes('book') || pageText.includes('reserve')) intent = 'Transactional';
       else if (pageText.includes('best') || pageText.includes('review') || pageText.includes('vs') || pageText.includes('comparison')) intent = 'Commercial Investigation';
-      else if (pageText.includes('how to') || pageText.includes('guide') || pageText.includes('tutorial') || pageText.includes('what is')) intent = 'Informational';
       detectedIntent.textContent = intent;
 
-      // Step 4: Generate meaningful suggestions
-      const baseKeywords = extractBaseKeywords(title + ' ' + h1);
-      const suggestions = generateSuggestions(baseKeywords, intent);
+      // Extract brand/location from domain/title
+      const domain = new URL(url).hostname.replace('www.', '').split('.')[0];
+      const possibleBrand = domain.replace(/[-_]/g, ' ');
+      const possibleLocation = title.toLowerCase().match(/\b(in|at|near|byron|bay|sydney|melbourne|london|new york|paris)\b/)?.[0] || '';
 
-      // Render suggestions
+      // Base keywords (filtered)
+      const baseKeywords = extractBaseKeywords(title + ' ' + h1 + ' ' + bodyText);
+
+      // Generate smart suggestions
+      const suggestions = generateSmartSuggestions(baseKeywords, intent, possibleLocation, possibleBrand);
+
+      // Render
       suggestions.forEach(sugg => {
         const card = document.createElement('div');
         card.className = 'bg-gray-50 dark:bg-gray-700 rounded-xl p-5 space-y-3';
@@ -87,51 +90,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Helper: extract potential base keywords
   function extractBaseKeywords(text) {
-    const common = ['the', 'and', 'for', 'with', 'how', 'what', 'best', 'top', 'guide', 'review'];
+    const stop = new Set(['the', 'and', 'for', 'with', 'how', 'what', 'best', 'top', 'guide', 'review', 'in', 'at', 'on', 'by', 'near', 'of', 'a', 'an', 'to']);
     return text
       .toLowerCase()
-      .replace(/[^\w\s]/g, '')
-      .split(' ')
-      .filter(word => word.length > 4 && !common.includes(word))
-      .slice(0, 8);
+      .replace(/[^\w\s]/g, ' ')
+      .split(/\s+/)
+      .filter(w => w.length > 3 && !stop.has(w))
+      .slice(0, 10);
   }
 
-  // Helper: generate meaningful suggestions
-  function generateSuggestions(keywords, intent) {
-    const stopWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'as', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'this', 'that', 'these', 'those', 'it', 'its', 'you', 'your', 'we', 'our', 'they', 'their', 'them', 'he', 'she', 'him', 'her', 'i', 'me', 'my', 'not', 'no', 'yes', 'all', 'some', 'any', 'one', 'two', 'three', 'first', 'last', 'new', 'old', 'big', 'small', 'good', 'best', 'more', 'most', 'less', 'few', 'many', 'much', 'little', 'here', 'there', 'when', 'where', 'why', 'how', 'what', 'who', 'which']);
-
+  function generateSmartSuggestions(keywords, intent, location, brand) {
     const placements = ['H1 or page title', 'Intro paragraph', 'Subheadings (H2/H3)', 'Image alt text', 'Meta description', 'Body content naturally', 'CTA buttons', 'FAQ section'];
     const whyBase = intent === 'Transactional' ? 'Drives buying intent and conversions' :
                     intent === 'Commercial Investigation' ? 'Matches comparison shoppers' :
                     'Improves relevance for searchers seeking info';
 
-    // Filter keywords
-    const filtered = keywords.filter(word => word.length > 4 && !stopWords.has(word));
-
-    // Generate phrases
     const phrases = [];
-    for (let i = 0; i < filtered.length - 1; i++) {
-      const phrase = `${filtered[i]} ${filtered[i+1]}`;
-      phrases.push(phrase);
-      if (i < filtered.length - 2) {
-        const threeWord = `${filtered[i]} ${filtered[i+1]} ${filtered[i+2]}`;
-        phrases.push(threeWord);
+
+    // Generic natural phrases
+    keywords.forEach(kw => {
+      if (location) {
+        phrases.push(`things to do in ${location}`);
+        phrases.push(`${location} ${kw}`);
+        phrases.push(`best ${kw} in ${location}`);
       }
-    }
+      phrases.push(`best ${kw}`);
+      phrases.push(`how to ${kw}`);
+      phrases.push(`${kw} near me`);
+    });
 
     // Intent-specific
-    if (intent.includes('Informational')) {
-      if (filtered[0]) phrases.push(`how to ${filtered[0]}`);
-      if (filtered[1]) phrases.push(`what is ${filtered[1]}`);
-    } else if (intent.includes('Commercial')) {
-      if (filtered[0]) phrases.push(`best ${filtered[0]} 2025`);
-      if (filtered[1]) phrases.push(`${filtered[0]} vs ${filtered[1]}`);
+    if (intent === 'Transactional') {
+      phrases.push(`book ${location || 'stay'}`);
+      phrases.push(`reserve ${keywords[0] || 'room'}`);
     }
 
     // Dedupe & limit
-    const unique = [...new Set(phrases)].slice(0, 8);
+    const unique = [...new Set(phrases.filter(p => !p.includes(brand)))].slice(0, 8);
 
     return unique.map((phrase, i) => ({
       phrase,
