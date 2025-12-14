@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (messageIndex < progressMessages.length) {
         progressText.textContent = progressMessages[messageIndex++];
       }
-    }, 1800);
+    }, 3000);
   }
 
   function stopLoader() {
