@@ -48,21 +48,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Intent detection
       let intent = 'Informational';
-      if (pageText.includes('buy') || pageText.includes('price') || pageText.includes('shop') || pageText.includes('cart') || pageText.includes('book')) intent = 'Transactional';
+      if (pageText.includes('buy') || pageText.includes('price') || pageText.includes('shop') || pageText.includes('book') || pageText.includes('reserve')) intent = 'Transactional';
       else if (pageText.includes('best') || pageText.includes('review') || pageText.includes('vs') || pageText.includes('comparison')) intent = 'Commercial Investigation';
       detectedIntent.textContent = intent;
 
-      // Extract top meaningful keywords (frequency)
-      const words = pageText.match(/\w+/g) || [];
-      const freq = {};
-      words.forEach(w => freq[w] = (freq[w] || 0) + 1);
-      const topKeywords = Object.keys(freq)
-        .filter(w => w.length > 4 && freq[w] > 1)
-        .sort((a, b) => freq[b] - freq[a])
-        .slice(0, 6);
+      // Core topic from title/H1 (first meaningful phrase)
+      const coreMatch = title.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+){0,4})/) || h1.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+){0,4})/);
+      const coreTopic = coreMatch ? coreMatch[0].trim().toLowerCase() : 'experience';
 
-      // Generate suggestions using universal templates
-      const suggestions = generateUniversalSuggestions(topKeywords, intent);
+      // Location detection (optional)
+      const locationMatch = title.match(/(?:in|at|near)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)/i);
+      const location = locationMatch ? locationMatch[1].trim() : '';
+
+      // Generate universal suggestions
+      const suggestions = generateUniversalSuggestions(coreTopic, location, intent);
 
       // Render
       suggestions.forEach(sugg => {
@@ -90,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function generateUniversalSuggestions(keywords, intent) {
+  function generateUniversalSuggestions(coreTopic, location, intent) {
     const placements = ['H1 or page title', 'Intro paragraph', 'Subheadings (H2/H3)', 'Image alt text', 'Meta description', 'Body content naturally', 'CTA buttons', 'FAQ section'];
     const whyBase = intent === 'Transactional' ? 'Drives buying intent and conversions' :
                     intent === 'Commercial Investigation' ? 'Matches comparison shoppers' :
@@ -98,22 +97,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const phrases = [];
 
-    keywords.forEach(kw => {
-      const verb = kw.endsWith('ing') ? kw.slice(0, -3) + 'e' : kw;
-      phrases.push(`best ${kw}`);
-      phrases.push(`how to ${verb}`);
-      phrases.push(`${kw} near me`);
-      phrases.push(`top ${kw} 2025`);
-      phrases.push(`${kw} reviews`);
-    });
+    // Always include these
+    phrases.push(`best ${coreTopic}`);
+    phrases.push(`how to ${coreTopic}`);
+    phrases.push(`${coreTopic} near me`);
+    phrases.push(`top ${coreTopic} 2026`);
+    phrases.push(`${coreTopic} reviews`);
+    phrases.push(`ultimate guide to ${coreTopic}`);
 
-    if (intent === 'Transactional') {
-      phrases.push('buy ' + keywords[0]);
-      phrases.push('best deals on ' + keywords[0]);
+    // Location if detected
+    if (location) {
+      phrases.push(`best ${coreTopic} in ${location}`);
+      phrases.push(`${location} ${coreTopic}`);
     }
 
-    if (intent === 'Commercial Investigation') {
-      phrases.push(keywords[0] + ' vs ' + keywords[1]);
+    // Intent-specific
+    if (intent === 'Transactional') {
+      phrases.push(`buy ${coreTopic}`);
+      phrases.push(`best deals on ${coreTopic}`);
     }
 
     const unique = [...new Set(phrases)].slice(0, 8);
