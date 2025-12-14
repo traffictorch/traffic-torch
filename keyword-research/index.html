@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyword Research Tool • Traffic Torch</title>
+  <meta name="description" content="Free keyword research tool that scans your page, detects search intent, and suggests targeted phrases you can sprinkle for better SEO and findability.">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+  <!-- Header & Nav (consistent with rest of site) -->
+  <header class="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-40">
+    <!-- ... existing shared header markup ... -->
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-12 md:py-16">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
+        Keyword Research Tool
+      </h1>
+      <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+        Enter any URL — we’ll scan the page, detect its search intent, and suggest 8 targeted keyword phrases you can naturally sprinkle to improve discoverability, SEO, and UX.
+      </p>
+    </div>
+
+    <!-- URL Input Form -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8">
+      <form id="keywordForm" class="space-y-6">
+        <div>
+          <label for="url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Website URL to analyze
+          </label>
+          <input
+            type="url"
+            id="url"
+            required
+            placeholder="https://example.com/blog/best-coffee"
+            class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition"
+          >
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:from-blue-700 hover:to-purple-700 transition shadow-lg"
+        >
+          Analyze Page & Suggest Keywords
+        </button>
+      </form>
+
+      <!-- In-place Laser Spinner Progress (hidden until submit) -->
+      <div id="progressContainer" class="mt-8 hidden">
+        <div class="flex flex-col items-center space-y-6">
+          <div class="relative">
+            <div class="w-32 h-32 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
+            <div class="absolute inset-0 w-32 h-32 rounded-full border-8 border-transparent border-t-blue-500 border-r-purple-500 animate-spin"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="progressStep">Scanning...</span>
+            </div>
+          </div>
+          <p class="text-center text-gray-600 dark:text-gray-400 max-w-md" id="progressTip">
+            Fetching page content securely via our proxy...
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Section (hidden until complete) -->
+    <div id="results" class="mt-12 hidden">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8">
+        <div class="text-center mb-8">
+          <span class="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold text-lg">
+            Detected Intent: <span id="detectedIntent">—</span>
+          </span>
+        </div>
+
+        <h2 class="text-3xl font-black text-center mb-8 text-gray-900 dark:text-white">
+          Suggested Keyword Phrases
+        </h2>
+
+        <div class="grid gap-6 md:grid-cols-2" id="suggestionsGrid">
+          <!-- Suggestions injected here by JS -->
+        </div>
+
+        <div class="mt-10 text-center">
+          <p class="text-gray-600 dark:text-gray-400">
+            These phrases are chosen to match the page intent. Sprinkle them naturally in headings, intro text, alt attributes, and body content for maximum SEO and findability impact.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer (consistent) -->
+  <footer class="bg-gray-900 text-white py-8 mt-16">
+    <!-- ... existing footer ... -->
+  </footer>
+
+  <script src="/js/keyword-research.js"></script>
+</body>
+</html>
