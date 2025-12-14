@@ -2,21 +2,46 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
 
+  const progressMessages = [
+    "Fetching page...",
+    "Detecting search intent...",
+    "Evaluating E-E-A-T signals...",
+    "Measuring content depth & readability...",
+    "Scanning structured data...",
+    "Finalizing 360° score..."
+  ];
+
+  let messageIndex = 0;
+  let interval;
+
+  function startLoader() {
+    document.getElementById('loader').classList.remove('hidden');
+    messageIndex = 0;
+    document.getElementById('progress-text').textContent = progressMessages[messageIndex++];
+    interval = setInterval(() => {
+      if (messageIndex < progressMessages.length) {
+        document.getElementById('progress-text').textContent = progressMessages[messageIndex++];
+      }
+    }, 1200);
+  }
+
+  function stopLoader() {
+    clearInterval(interval);
+    document.getElementById('loader').classList.add('hidden');
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const url = document.getElementById('url-input').value.trim();
+    if (!url) return;
 
-    results.innerHTML = `
-      <div id="loading-bar" class="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-center py-4 font-bold text-lg shadow-2xl z-50">
-        Analyzing page — please wait...
-      </div>
-    `;
+    startLoader();
+    results.innerHTML = '';
     results.classList.remove('hidden');
 
     try {
       const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable – check URL');
-
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const text = doc.body?.textContent || '';
@@ -24,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const sentences = (text.match(/[.!?]+/g) || []).length || 1;
       const syllables = text.split(/\s+/).reduce((a, w) => a + (w.match(/[aeiouy]+/gi) || []).length, 0);
       const readability = Math.round(206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words));
-
       const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
       const schemaTypes = [];
       doc.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
@@ -34,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
           schemaTypes.push(...types.filter(Boolean));
         } catch {}
       });
-
       const titleLower = (doc.title || '').toLowerCase();
       let intent = 'Informational';
       let confidence = 60;
@@ -42,24 +65,31 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (/how|what|why|guide|tutorial|step|learn|explain|best way/i.test(titleLower)) { intent = 'Informational'; confidence = 94; }
       else if (/near me|location|store|city|local|hours|map|address/i.test(titleLower)) { intent = 'Local'; confidence = 87; }
       else if (/sign up|login|purchase|buy now|order|checkout|book/i.test(titleLower)) { intent = 'Transactional'; confidence = 91; }
-
       const eeat = {
         Experience: (text.match(/\b(I|we|my|our|I've|we've|me|us)\b/gi) || []).length > 12 ? 92 : 45,
         Expertise: hasAuthor ? 90 : 32,
         Authoritativeness: schemaTypes.length > 0 ? 94 : 40,
         Trustworthiness: url.startsWith('https') ? 96 : 60
       };
-
-      const eeatAvg = Math.round(Object.values(eeat).reduce((a, b) => a + b) / 4);
+      const eeatAvg = Math.round(Object.values(eeat).reduce((a, b) => a + b) / 4));
       const depthScore = words > 2000 ? 95 : words > 1200 ? 82 : words > 700 ? 65 : 35;
       const readScore = readability > 70 ? 90 : readability > 50 ? 75 : 45;
       const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length * 8) / 5);
 
-      document.getElementById('loading-bar')?.remove();
+      // Display delays for loader messages
+      await new Promise(r => setTimeout(r, 800)); // Intent
+      updateMessage();
+      await new Promise(r => setTimeout(r, 800)); // EEAT
+      updateMessage();
+      await new Promise(r => setTimeout(r, 800)); // Depth
+      updateMessage();
+      await new Promise(r => setTimeout(r, 800)); // Schema
+      updateMessage();
+      await new Promise(r => setTimeout(r, 1200)); // Finalizing
 
+      stopLoader();
       results.innerHTML = `
         <div class="max-w-5xl mx-auto space-y-16">
-
           <!-- Big Score Circle -->
           <div class="flex justify-center my-12">
             <div class="relative">
@@ -82,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
           </div>
-
           <!-- Intent -->
           <div class="text-center mb-12">
             <p class="text-4xl font-black mb-8">
@@ -104,7 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
           </div>
-
           <!-- E-E-A-T Breakdown -->
           <div class="grid md:grid-cols-4 gap-6 my-16">
             ${Object.entries(eeat).map(([key, val]) => `
@@ -132,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             `).join('')}
           </div>
-
           <!-- Content Depth + Readability + Schema Detected -->
           <div class="grid md:grid-cols-3 gap-8 my-16">
             <!-- Content Depth -->
@@ -147,7 +174,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p class="text-orange-500 font-bold">Why:</p><p>Depth is the #1 ranking factor in 2025 — Google rewards “best answer” pages.</p>
               </div>
             </div>
-
             <!-- Readability -->
             <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
               <h3 class="text-2xl font-bold mb-4">Readability</h3>
@@ -160,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p class="text-orange-500 font-bold">Why:</p><p>Google tracks bounce & dwell time — readable = longer sessions = higher rankings.</p>
               </div>
             </div>
-
             <!-- Schema Detected -->
             <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
               <h3 class="text-2xl font-bold mb-4">Schema Detected</h3>
@@ -178,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
           </div>
-
           <!-- Competitive Gap Table -->
           <div class="overflow-x-auto my-12">
             <table class="w-full border-collapse border border-gray-300 dark:border-gray-600 text-left">
@@ -198,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
               </tbody>
             </table>
           </div>
-
           <!-- Prioritised AI-Style Fixes -->
           <div class="space-y-8">
             <h3 class="text-4xl font-black text-center mb-8">Prioritised AI-Style Fixes</h3>
@@ -239,7 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               </div>` : ''}
           </div>
-
           <!-- Predictive Rank Forecast -->
           <div class="text-center mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
             <p class="text-3xl font-medium opacity-80">Predictive Rank Forecast</p>
@@ -254,20 +276,17 @@ document.addEventListener('DOMContentLoaded', () => {
               <p class="font-bold text-orange-300">Why:</p><p>Pages scoring 85+ consistently hit Top 10. 90+ = Top 3 lock. Your gap = ${100-overall} points of untapped traffic.</p>
             </div>
           </div>
-
           <!-- PDF Button -->
           <div class="text-center my-16">
-            <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();" 
+            <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
                  class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
               📄 Save as PDF (with all details)
             </button>
           </div>
-
         </div>
       `;
-
     } catch (err) {
-      document.getElementById('loading-bar')?.remove();
+      stopLoader();
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
     }
   });
