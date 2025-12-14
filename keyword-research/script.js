@@ -44,25 +44,25 @@ document.addEventListener('DOMContentLoaded', () => {
       const title = doc.querySelector('title')?.textContent?.trim() || '';
       const h1 = doc.querySelector('h1')?.textContent?.trim() || '';
       const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
-      const bodyText = doc.body?.textContent?.replace(/\s+/g, ' ').trim() || '';
+      const bodyText = doc.body?.textContent?.trim() || '';
       const pageText = `${title} ${h1} ${metaDesc} ${bodyText}`.toLowerCase();
 
       // Intent detection
       let intent = 'Informational';
-      if (pageText.includes('buy') || pageText.includes('price') || pageText.includes('shop') || pageText.includes('add to cart') || pageText.includes('book') || pageText.includes('reserve')) intent = 'Transactional';
+      if (pageText.includes('buy') || pageText.includes('price') || pageText.includes('shop') || pageText.includes('book') || pageText.includes('reserve')) intent = 'Transactional';
       else if (pageText.includes('best') || pageText.includes('review') || pageText.includes('vs') || pageText.includes('comparison')) intent = 'Commercial Investigation';
       detectedIntent.textContent = intent;
 
-      // Detect location (common cities/places)
-      const locationWords = ['byron', 'bay', 'sydney', 'melbourne', 'london', 'new york', 'paris', 'tokyo', 'bali', 'phuket'];
-      const detectedLocation = locationWords.find(w => pageText.includes(w)) || '';
-      const location = detectedLocation ? detectedLocation.charAt(0).toUpperCase() + detectedLocation.slice(1) : '';
+      // Generic detection: location/activity from title/H1
+      const titleWords = title.split(' ');
+      const locationCandidates = titleWords.filter(w => w.length > 3 && /[A-Z]/.test(w[0]));
+      const location = locationCandidates.length > 0 ? locationCandidates.join(' ') : '';
 
-      // Core topic from title/H1
-      const coreTopic = (title || h1 || 'experience').split(' ').slice(0, 3).join(' ');
+      const activityKeywords = ['hotel', 'spa', 'retreat', 'resort', 'accommodation', 'stay', 'boutique', 'luxury', 'restaurant', 'cafe', 'surf', 'yoga', 'wellness'];
+      const activity = activityKeywords.find(k => pageText.includes(k)) || 'stay';
 
-      // Generate epic suggestions using templates
-      const suggestions = generateEpicSuggestions(coreTopic, location, intent);
+      // Generate universal high-intent suggestions
+      const suggestions = generateUniversalSuggestions(activity, location, intent);
 
       // Render
       suggestions.forEach(sugg => {
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function generateEpicSuggestions(coreTopic, location, intent) {
+  function generateUniversalSuggestions(activity, location, intent) {
     const placements = ['H1 or page title', 'Intro paragraph', 'Subheadings (H2/H3)', 'Image alt text', 'Meta description', 'Body content naturally', 'CTA buttons', 'FAQ section'];
     const whyBase = intent === 'Transactional' ? 'Drives buying intent and conversions' :
                     intent === 'Commercial Investigation' ? 'Matches comparison shoppers' :
@@ -98,30 +98,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const phrases = [];
 
-    // Always include these high-intent patterns
     if (location) {
       phrases.push(`things to do in ${location}`);
       phrases.push(`best things to do in ${location}`);
-      phrases.push(`luxury stays in ${location}`);
-      phrases.push(`${location} accommodation`);
-      phrases.push(`best ${coreTopic} in ${location}`);
+      phrases.push(`luxury ${activity}s in ${location}`);
+      phrases.push(`best places to ${activity} in ${location}`);
+      phrases.push(`top ${location} ${activity}s 2025`);
+      phrases.push(`${location} ${activity} guide`);
     }
 
-    phrases.push(`best ${coreTopic}`);
-    phrases.push(`how to ${coreTopic.toLowerCase().replace('ing', 'e')}`);
-    phrases.push(`${coreTopic} near me`);
+    // Generic fallbacks
+    phrases.push(`best ${activity}`);
+    phrases.push(`luxury ${activity}`);
+    phrases.push(`how to find the best ${activity}`);
+    phrases.push(`${activity} near me`);
 
-    // Intent-specific
+    // Intent boosters
     if (intent === 'Transactional') {
-      phrases.push(`book ${coreTopic}`);
-      phrases.push(`reserve ${coreTopic}`);
+      phrases.push(`book ${activity} now`);
+      phrases.push(`reserve luxury ${activity}`);
     }
 
-    // Fallback strong phrases
-    phrases.push(`ultimate guide to ${coreTopic}`);
-    phrases.push(`${coreTopic} 2025`);
-
-    // Dedupe & limit
     const unique = [...new Set(phrases)].slice(0, 8);
 
     return unique.map((phrase, i) => ({
