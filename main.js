@@ -54,8 +54,4 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// main.js – Apply mode before DOM load
-(function () {
-  const mode = localStorage.getItem('theme') || 'dark';
-  document.documentElement.classList.add(mode);
-})();
+

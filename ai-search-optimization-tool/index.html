@@ -22,6 +22,15 @@
   <link rel="stylesheet" href="/ai-search-optimization-tool/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <script>
+  // Apply saved theme instantly on load (no flash)
+  (function() {
+    const saved = localStorage.getItem('theme');
+    const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (preferDark ? 'dark' : 'light');
+    document.documentElement.classList.add(theme);
+  })();
+</script>
   <script src="/main.js" type="module"></script>
   <script src="/ai-search-optimization-tool/script.js" defer></script>
 
