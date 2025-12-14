@@ -102,3 +102,10 @@ html.light circle.bg,
 html.light .score-circle circle.bg {
   fill: none !important;
 }
+
+#mobileMenu a {
+  color: #f3f4f6; /* light gray - visible on dark bg */
+}
+#mobileMenu a:hover {
+  color: #fb923c; /* orange hover */
+}
