@@ -43,27 +43,26 @@ document.addEventListener('DOMContentLoaded', () => {
       const doc = parser.parseFromString(html, 'text/html');
       const title = doc.querySelector('title')?.textContent?.trim() || '';
       const h1 = doc.querySelector('h1')?.textContent?.trim() || '';
-      const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
-      const bodyText = doc.body?.textContent?.replace(/\s+/g, ' ').trim().slice(0, 2000) || '';
-      const pageText = `${title} ${h1} ${metaDesc} ${bodyText}`.toLowerCase();
+      const bodyText = doc.body?.textContent?.trim() || '';
+      const pageText = `${title} ${h1} ${bodyText}`.toLowerCase();
 
+      // Intent detection
       let intent = 'Informational';
-      if (pageText.includes('buy') || pageText.includes('price') || pageText.includes('shop') || pageText.includes('add to cart') || pageText.includes('book') || pageText.includes('reserve')) intent = 'Transactional';
+      if (pageText.includes('buy') || pageText.includes('price') || pageText.includes('shop') || pageText.includes('cart') || pageText.includes('book')) intent = 'Transactional';
       else if (pageText.includes('best') || pageText.includes('review') || pageText.includes('vs') || pageText.includes('comparison')) intent = 'Commercial Investigation';
-      else if (pageText.includes('how to') || pageText.includes('guide') || pageText.includes('tutorial') || pageText.includes('what is')) intent = 'Informational';
       detectedIntent.textContent = intent;
 
-      // Generic location detection
-      const locationPattern = /\b(in|at|near|byron bay|byron|sydney|melbourne|london|new york|paris|tokyo|bali|phuket)\b/g;
-      const locations = pageText.match(locationPattern) || [];
-      const location = locations[0] ? locations[0].charAt(0).toUpperCase() + locations[0].slice(1) : 'your area';
+      // Extract top meaningful keywords (frequency)
+      const words = pageText.match(/\w+/g) || [];
+      const freq = {};
+      words.forEach(w => freq[w] = (freq[w] || 0) + 1);
+      const topKeywords = Object.keys(freq)
+        .filter(w => w.length > 4 && freq[w] > 1)
+        .sort((a, b) => freq[b] - freq[a])
+        .slice(0, 6);
 
-      // Activity/type detection
-      const activityPatterns = ['hotel', 'spa', 'retreat', 'resort', 'accommodation', 'stay', 'boutique', 'luxury', 'pool', 'garden', 'bar', 'restaurant', 'surf', 'yoga', 'fishing', 'gear', 'rod', 'reel', 'lure', 'tackle'];
-      const activity = activityPatterns.find(k => pageText.includes(k)) || 'experience';
-
-      // Generate suggestions using templates
-      const suggestions = generateSuggestions(activity, location, intent);
+      // Generate suggestions using universal templates
+      const suggestions = generateUniversalSuggestions(topKeywords, intent);
 
       // Render
       suggestions.forEach(sugg => {
@@ -91,36 +90,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function generateSuggestions(activity, location, intent) {
+  function generateUniversalSuggestions(keywords, intent) {
     const placements = ['H1 or page title', 'Intro paragraph', 'Subheadings (H2/H3)', 'Image alt text', 'Meta description', 'Body content naturally', 'CTA buttons', 'FAQ section'];
     const whyBase = intent === 'Transactional' ? 'Drives buying intent and conversions' :
                     intent === 'Commercial Investigation' ? 'Matches comparison shoppers' :
                     'Improves relevance for searchers seeking info';
 
-    const templates = [
-      `things to do in ${location}`,
-      `best things to do in ${location}`,
-      `luxury ${activity}s in ${location}`,
-      `best places to ${activity} in ${location}`,
-      `top ${location} ${activity}s 2025`,
-      `how to find the best ${activity}`,
-      `${activity} near me`,
-      `${location} ${activity} guide`
-    ];
+    const phrases = [];
 
-    // Intent boosters
+    keywords.forEach(kw => {
+      const verb = kw.endsWith('ing') ? kw.slice(0, -3) + 'e' : kw;
+      phrases.push(`best ${kw}`);
+      phrases.push(`how to ${verb}`);
+      phrases.push(`${kw} near me`);
+      phrases.push(`top ${kw} 2025`);
+      phrases.push(`${kw} reviews`);
+    });
+
     if (intent === 'Transactional') {
-      templates.push(`book ${activity} now`);
-      templates.push(`best deals on ${activity} in ${location}`);
-    } else if (intent === 'Commercial Investigation') {
-      templates.push(`best ${activity} reviews`);
-      templates.push(`${activity} vs alternatives`);
-    } else if (intent === 'Informational') {
-      templates.push(`ultimate guide to ${activity}`);
-      templates.push(`${activity} tips for beginners`);
+      phrases.push('buy ' + keywords[0]);
+      phrases.push('best deals on ' + keywords[0]);
     }
 
-    const unique = [...new Set(templates)].slice(0, 8);
+    if (intent === 'Commercial Investigation') {
+      phrases.push(keywords[0] + ' vs ' + keywords[1]);
+    }
+
+    const unique = [...new Set(phrases)].slice(0, 8);
 
     return unique.map((phrase, i) => ({
       phrase,
