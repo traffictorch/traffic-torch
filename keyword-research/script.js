@@ -53,11 +53,16 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (pageText.includes('best') || pageText.includes('review') || pageText.includes('vs') || pageText.includes('comparison')) intent = 'Commercial Investigation';
       detectedIntent.textContent = intent;
 
-      // Extract meaningful keywords
-      const baseKeywords = extractMeaningfulKeywords(title + ' ' + h1 + ' ' + bodyText);
+      // Detect location (common cities/places)
+      const locationWords = ['byron', 'bay', 'sydney', 'melbourne', 'london', 'new york', 'paris', 'tokyo', 'bali', 'phuket'];
+      const detectedLocation = locationWords.find(w => pageText.includes(w)) || '';
+      const location = detectedLocation ? detectedLocation.charAt(0).toUpperCase() + detectedLocation.slice(1) : '';
 
-      // Generate epic suggestions
-      const suggestions = generateEpicSuggestions(baseKeywords, intent);
+      // Core topic from title/H1
+      const coreTopic = (title || h1 || 'experience').split(' ').slice(0, 3).join(' ');
+
+      // Generate epic suggestions using templates
+      const suggestions = generateEpicSuggestions(coreTopic, location, intent);
 
       // Render
       suggestions.forEach(sugg => {
@@ -85,45 +90,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function extractMeaningfulKeywords(text) {
-    const stop = new Set(['the', 'and', 'for', 'with', 'how', 'what', 'best', 'top', 'guide', 'review', 'in', 'at', 'on', 'by', 'near', 'of', 'a', 'an', 'to', 'is', 'are', 'you', 'your', 'we', 'our']);
-    return text
-      .toLowerCase()
-      .replace(/[^\w\s]/g, ' ')
-      .split(/\s+/)
-      .filter(w => w.length > 4 && !stop.has(w))
-      .slice(0, 10);
-  }
-
-  function generateEpicSuggestions(keywords, intent) {
+  function generateEpicSuggestions(coreTopic, location, intent) {
     const placements = ['H1 or page title', 'Intro paragraph', 'Subheadings (H2/H3)', 'Image alt text', 'Meta description', 'Body content naturally', 'CTA buttons', 'FAQ section'];
     const whyBase = intent === 'Transactional' ? 'Drives buying intent and conversions' :
                     intent === 'Commercial Investigation' ? 'Matches comparison shoppers' :
                     'Improves relevance for searchers seeking info';
 
-    const phrases = new Set();
+    const phrases = [];
 
-    // Core high-intent patterns
-    keywords.forEach(kw => {
-      const verb = kw.endsWith('ing') ? kw.slice(0, -3) + 'e' : kw;
-      phrases.add(`how to ${verb}`);
-      phrases.add(`best ${kw}`);
-      phrases.add(`${kw} near me`);
-      phrases.add(`things to do with ${kw}`);
-    });
+    // Always include these high-intent patterns
+    if (location) {
+      phrases.push(`things to do in ${location}`);
+      phrases.push(`best things to do in ${location}`);
+      phrases.push(`luxury stays in ${location}`);
+      phrases.push(`${location} accommodation`);
+      phrases.push(`best ${coreTopic} in ${location}`);
+    }
 
-    // Intent boosters
+    phrases.push(`best ${coreTopic}`);
+    phrases.push(`how to ${coreTopic.toLowerCase().replace('ing', 'e')}`);
+    phrases.push(`${coreTopic} near me`);
+
+    // Intent-specific
     if (intent === 'Transactional') {
-      phrases.add('book now');
-      phrases.add('reserve today');
+      phrases.push(`book ${coreTopic}`);
+      phrases.push(`reserve ${coreTopic}`);
     }
 
     // Fallback strong phrases
-    phrases.add('ultimate guide');
-    phrases.add('2025');
-    phrases.add('complete review');
+    phrases.push(`ultimate guide to ${coreTopic}`);
+    phrases.push(`${coreTopic} 2025`);
 
-    const unique = Array.from(phrases).slice(0, 8);
+    // Dedupe & limit
+    const unique = [...new Set(phrases)].slice(0, 8);
 
     return unique.map((phrase, i) => ({
       phrase,
