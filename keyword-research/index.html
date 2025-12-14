@@ -23,10 +23,45 @@
   <script src="/keyword-research/script.js" defer></script>
   
 </head>
-<body class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-  <!-- Header & Nav (consistent with rest of site) -->
-  <header class="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-40">
-    <!-- ... existing shared header markup ... -->
+<body class="min-h-screen">
+  <!-- Header (unchanged) -->
+  <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-4">
+        <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
+        <h1 class="text-[1.35rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+          Traffic Torch
+        </h1>
+      </a>
+      <button id="menuToggle" class="md:hidden text-3xl">☰</button>
+      <nav class="hidden md:flex gap-8 text-lg">
+        <a href="/" class="hover:text-orange-400 transition">Home</a>
+        <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a>
+        <a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a>
+        <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a>
+        <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a>
+        <a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a>
+        <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a>
+      </nav>
+      <button id="themeToggle" class="px-4 py-2 bg-white/10 rounded-full hover:bg-white/20 transition">
+        🌙
+      </button>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+      <nav class="flex flex-col gap-6 py-6 px-10 text-xl text-gray-100">
+        <a href="/" class="hover:text-orange-400 transition">Home</a>
+        <a href="/ai-seo-ux-tools/" class="hover:text-orange-400 transition font-bold">Tools</a>
+        <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+          <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a>
+          <a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a>
+          <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a>
+          <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a>
+          <a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a>
+          <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a>
+        </div>
+        <a href="/about/" class="hover:text-orange-400 transition">About</a>
+      </nav>
+    </div>
   </header>
 
   <main class="max-w-4xl mx-auto px-4 py-12 md:py-16">
@@ -106,9 +141,60 @@
     </div>
   </main>
 
-  <!-- Footer (consistent) -->
-  <footer class="bg-gray-900 text-white py-8 mt-16">
-    <!-- ... existing footer ... -->
+  <!-- AddToAny -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+  <script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+  <!-- Footer (unchanged) -->
+  <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">
+    <div class="container mx-auto px-6 max-w-6xl">
+      <div class="grid md:grid-cols-4 gap-12 text-center md:text-left">
+        <div>
+          <a href="/">
+            <img src="/logo.webp" alt="Traffic Torch" class="w-20 mx-auto md:mx-0 rounded-2xl shadow-2xl mb-6">
+          </a>
+          <p class="text-gray-400 text-sm">Instant SEO + UX audit tools.<br>Optimising User Experience</p>
+        </div>
+        <div>
+          <a href="/ai-seo-ux-tools/" class="block"><h3 class="text-xl font-bold mb-6 text-orange-400 hover:text-orange-300 transition">Tools</h3></a>
+          <ul class="space-y-3 text-gray-400">
+            <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+            <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
+            <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a></li>
+            <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
+            <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a></li>
+            <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-6 text-orange-400">Company</h3>
+          <ul class="space-y-3 text-gray-400">
+            <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
+            <li><a href="https://x.com/guitaralize" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">Ylia@X</a></li>
+            <li><a href="https://grok.com/" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">Grok</a></li>
+            <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
+            <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
+          </ul>
+        </div>
+		<div>
+		<a href="/" class="block"><h3 class="text-xl font-bold mb-6 text-orange-400 hover:text-orange-300 transition">Traffic Torch</h3></a>
+		<p class="text-gray-400 text-sm"><a href="/ai-seo-ux-tools/#ai-tools" class="hover:text-orange-400 transition">Ai Tools 🔍</a></p>
+		<p class="text-gray-400 text-sm"><a href="/ai-seo-ux-tools/#seo-tools" class="hover:text-orange-400 transition">SEO Tools 🎯</a></p>
+		<p class="text-gray-400 text-sm"><a href="/ai-seo-ux-tools/#ux-tools" class="hover:text-orange-400 transition">UX Tools ⚡</a></p>
+          <p class="text-gray-400 text-sm">Built with 🔥</p>
+          <p class="text-gray-500 text-xs mt-4">© Traffic Torch</p>
+        </div>
+      </div>
+    </div>
   </footer>
 
 </body>
