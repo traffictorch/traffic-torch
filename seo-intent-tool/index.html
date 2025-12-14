@@ -5,8 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Intent + E-E-A-T Auditor | Traffic Torch</title>
     <meta name="description" content="Instant 360° intent & E-E-A-T audit with AI fixes and rank forecast.">
+    <meta name="color-scheme" content="dark light">
     <link rel="manifest" href="/manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+  // Apply saved theme instantly on load (no flash)
+  (function() {
+    const saved = localStorage.getItem('theme');
+    const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (preferDark ? 'dark' : 'light');
+    document.documentElement.classList.add(theme);
+  })();
+</script>    
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/seo-intent-tool/style.css">
 </head>
