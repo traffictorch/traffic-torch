@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = document.getElementById('url-input').value.trim();
     if (!url) return;
 
-	results.innerHTML = `
+	    results.innerHTML = `
       <div class="fixed inset-x-0 bottom-0 z-50">
         <div id="progress-bar" class="h-12 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 relative overflow-hidden">
           <div class="absolute inset-0 bg-gradient-to-r from-orange-600 via-pink-600 to-purple-700 opacity-50 animate-pulse"></div>
@@ -31,11 +31,52 @@ document.addEventListener('DOMContentLoaded', () => {
       "Finalizing AI search score..."
     ];
     let step = 0;
-    const interval = setInterval(() => {
+    const updateText = () => {
       if (step < progressTexts.length) {
         document.getElementById('progress-text').textContent = progressTexts[step++];
       }
-    }, 1200);
+    };
+    const interval = setInterval(updateText, 1200);
+    updateText(); // immediate first message
+
+    try {
+      const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
+      if (!res.ok) throw new Error('Page not reachable – check URL or try HTTPS');
+      const html = await res.text();
+
+      // Display delay after fetch
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      updateText(); // "Extracting main content..."
+
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      let mainText = '';
+      const candidates = [doc.querySelector('article'), doc.querySelector('main'), doc.querySelector('[role="main"]'), doc.body];
+      const mainEl = candidates.find(el => el && el.textContent.trim().length > 1000) || doc.body;
+      mainEl.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie, .sidebar').forEach(el => el.remove());
+      mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
+      const first300 = mainText.slice(0, 1200);
+
+      // Display delay after extraction
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      updateText(); // next messages will continue via interval
+
+      // ... rest of analysis unchanged ...
+
+      // Before rendering results — final display delay
+      await new Promise(resolve => setTimeout(resolve, 1200));
+
+      clearInterval(interval);
+      document.querySelector('#progress-bar')?.parentElement.remove();
+
+      // render results (unchanged)
+      results.innerHTML = `...`; // your full results HTML
+    } catch (err) {
+      clearInterval(interval);
+      document.querySelector('#progress-bar')?.parentElement.remove();
+      results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
+    }
 
     try {
       const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
