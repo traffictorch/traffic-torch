@@ -7,25 +7,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = document.getElementById('url-input').value.trim();
     if (!url) return;
 
-    results.innerHTML = `
-      <div id="progress-bar" class="fixed bottom-0 left-0 w-full h-4 z-50 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600"></div>
-      <div class="fixed bottom-6 left-0 right-0 text-center text-white font-bold text-lg z-50">
-        <span id="progress-text">Analyzing for AI search engines...</span>
+	results.innerHTML = `
+      <div class="fixed inset-x-0 bottom-0 z-50">
+        <div id="progress-bar" class="h-12 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 relative overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-r from-orange-600 via-pink-600 to-purple-700 opacity-50 animate-pulse"></div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span id="progress-text" class="text-white font-bold text-xl drop-shadow-lg">Fetching page...</span>
+          </div>
+        </div>
       </div>
     `;
     results.classList.remove('hidden');
 
     const progressTexts = [
-      "Fetching page...", "Extracting content...", "Checking direct answers...",
-      "Scanning structured data...", "Evaluating trust signals...", "Measuring scannability...",
-      "Analyzing tone & readability...", "Detecting uniqueness & burstiness..."
+      "Fetching page...",
+      "Extracting main content...",
+      "Checking direct answers & FAQ schema...",
+      "Scanning structured data...",
+      "Evaluating trust & author signals...",
+      "Measuring scannability & formatting...",
+      "Analyzing tone & readability...",
+      "Detecting uniqueness & human patterns...",
+      "Finalizing AI search score..."
     ];
     let step = 0;
     const interval = setInterval(() => {
       if (step < progressTexts.length) {
         document.getElementById('progress-text').textContent = progressTexts[step++];
       }
-    }, 1000);
+    }, 1200);
 
     try {
       const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
