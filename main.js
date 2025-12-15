@@ -55,3 +55,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
+// Optional: Close other details when one opens (accordion behavior if desired)
+  // Remove if you want multiple open at once
+  document.querySelectorAll('details').forEach((detail) => {
+    detail.addEventListener('toggle', () => {
+      if (detail.open) {
+        document.querySelectorAll('details').forEach((other) => {
+          if (other !== detail) other.open = false;
+        });
+      }
+    });
+  });

@@ -129,3 +129,101 @@ html.light .score-circle circle.bg {
 
 
 
+/* Epic expanding text boxes */
+/* Container for centering (add this where you place the sections) */
+  .expandable-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  /* Base card styles */
+  .expandable-card {
+    width: 100%;
+    max-width: 640px;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-out;
+    background: var(--card-bg, #ffffff);
+  }
+
+  /* Variant 1: Gradient accent */
+  .expandable-card--gradient summary {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+  }
+
+  /* Variant 2: Subtle border accent */
+  .expandable-card--border {
+    border: 3px solid #6366f1;
+  }
+  .expandable-card--border summary {
+    background: var(--card-bg, #ffffff);
+    color: var(--text-primary, #1f2937);
+  }
+
+  /* Header (summary) */
+  .expandable-header {
+    padding: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    list-style: none;
+  }
+  .expandable-header::-webkit-details-marker { display: none; }
+
+  .expandable-title {
+    flex: 1;
+  }
+
+  /* Icon animation */
+  .expandable-icon {
+    width: 28px;
+    height: 28px;
+    transition: transform 0.3s ease-out;
+  }
+  details[open] .expandable-icon {
+    transform: rotate(180deg);
+  }
+
+  /* Content */
+  .expandable-content {
+    padding: 1.5rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-secondary, #4b5563);
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 640px) {
+    .expandable-header {
+      font-size: 1.35rem;
+      padding: 1.25rem;
+    }
+    .expandable-content {
+      padding: 1.25rem;
+    }
+  }
+
+
+
