@@ -153,10 +153,10 @@ document.addEventListener('DOMContentLoaded', () => {
     stopSpinnerLoader();
     results.innerHTML = `
       <div class="max-w-5xl mx-auto space-y-16">
-        <!-- Big Score Circle (Red → Green) -->
+               <!-- Big Score Circle -->
         <div class="flex justify-center my-12">
           <div class="relative">
-             <svg width="260" height="260" viewBox="0 0 260 260" class="transform rotate-90">
+            <svg width="260" height="260" viewBox="0 0 260 260" class="transform rotate-90">
               <defs>
                 <linearGradient id="bigGradient">
                   <stop offset="0%" stop-color="#ef4444"/> <!-- Red low -->
@@ -177,7 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
         <!-- Small Metric Circles with Color Borders -->
-		// Inside results.innerHTML, replace the small metric circles grid with this updated block:
 <div class="grid md:grid-cols-3 gap-8 my-16">
   ${[
     {name: 'Meta Title & Desc', score: data.meta.yourMatches > 0 ? 100 : 0,
