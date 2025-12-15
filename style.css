@@ -129,35 +129,14 @@ html.light .score-circle circle.bg {
 
 
 
-@media (max-width: 768px) {  /* Adjust breakpoint as needed for your mobile view */
-  header {
-    display: flex;
-    align-items: center;      /* This vertically centers all child items perfectly */
-    justify-content: space-between;  /* Distributes: logo/left group, center if needed, right icons */
-    padding: 0.5rem 1rem;     /* Optional: better mobile padding */
-    min-height: 60px;         /* Ensure consistent height for centering */
-  }
-
-  /* If logo + title are wrapped together (recommended for left alignment) */
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 1rem;                /* Space between logo and title */
-  }
-
-  /* Right side icons group */
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;              /* Space between hamburger and day/night toggle */
-  }
-
-  /* Hamburger and toggle buttons - ensure no extra margins/line-height issues */
-  .hamburger-menu, .theme-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;        /* Consistent size */
-    line-height: 1;           /* Prevent line-height shifting */
+@media (max-width: 768px) {
+  .hamburger-menu {  /* Replace with your actual class/id */
+    position: relative;      /* Allows precise left/right and top/bottom adjustments */
+    left: 4px;               /* Move right (increase) or left (decrease/negative) */
+    top: -2px;               /* Move up (negative) or down (positive) */
+    
+    /* Example starting values - adjust these numbers pixel-by-pixel */
+    /* left: 0px;    */     /* Try values like -5px to 10px */
+    /* top: 0px;     */     /* Try values like -4px to 4px for vertical centering */
   }
 }
