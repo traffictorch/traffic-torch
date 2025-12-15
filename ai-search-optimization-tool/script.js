@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </svg>
               <div class="absolute inset-0 flex items-center justify-center">
                 <div class="text-center">
-                  <div class="text-7xl font-black text-white drop-shadow-2xl">${overall}</div>
+                  <div class="text-5xl font-black text-white drop-shadow-2xl">${overall}</div>
                   <div class="text-2xl text-white/90">/100</div>
                 </div>
               </div>
@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <!-- Predictive Rank Forecast (now below fixes) -->
           <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
             <h3 class="text-4xl font-black text-center">Predictive AI SERP Forecast</h3>
-            <p class="text-center text-7xl font-black">${overall >= 90 ? 'Top 3' : overall >= 80 ? 'Top 5' : overall >= 70 ? 'Top 10' : overall >= 50 ? 'Page 1 Possible' : 'Page 2+'}</p>
+            <p class="text-center text-5xl font-black">${overall >= 90 ? 'Top 3' : overall >= 80 ? 'Top 5' : overall >= 70 ? 'Top 10' : overall >= 50 ? 'Page 1 Possible' : 'Page 2+'}</p>
             <p class="text-center text-4xl font-bold">+${Math.round((100 - overall) * 1.8)}% potential traffic gain if fixed</p>
             <p class="text-center text-lg italic opacity-80">Based on trust, direct answers, structure, and human signals — here's the breakdown:</p>
             <div class="grid md:grid-cols-3 gap-6 text-left">
