@@ -157,17 +157,17 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="flex justify-center my-12">
           <div class="relative">
             <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
-              <defs>
-                <linearGradient id="bigGradient">
-                  <stop offset="0%" stop-color="#ef4444"/> <!-- Red for low scores (visible at top for low scores) -->
-                  <stop offset="50%" stop-color="#fb923c"/> <!-- Orange mid -->
-                  <stop offset="100%" stop-color="#22c55e"/> <!-- Green for high scores -->
-                </linearGradient>
-              </defs>
-              <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
-              <circle cx="130" cy="130" r="120" stroke="url(#bigGradient)" stroke-width="18" fill="none"
-                      stroke-dasharray="${(yourScore / 100) * 754} 754" stroke-linecap="round"/>
-            </svg>
+  			<defs>
+    		<linearGradient id="bigGradient">
+     		 <stop offset="0%" stop-color="#ef4444"/> <!-- Red low -->
+     		 <stop offset="50%" stop-color="#fb923c"/> <!-- Orange mid -->
+      		<stop offset="100%" stop-color="#22c55e"/> <!-- Green high -->
+ 		   </linearGradient>
+		  </defs>
+		  <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
+		  <circle cx="130" cy="130" r="120" stroke="url(#bigGradient)" stroke-width="18" fill="none"
+          stroke-dasharray="${(yourScore / 100) * 754} 754" stroke-linecap="round"/>
+		</svg>
             <div class="absolute inset-0 flex items-center justify-center">
               <div class="text-center">
                 <div class="text-6xl font-black text-white drop-shadow-2xl">${yourScore}</div>
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
       what: 'Looks for internal links using the target keyword in their anchor text.',
       how: 'Link to related pages on your site using the keyword or close variations as the clickable text.',
       why: 'Keyword-rich anchors strengthen internal linking structure and pass topical authority across your site.'},
-    {name: 'URL & Schema', score: (data.urlSchema.urlMatch + data.urlSchema.schema) * 50,
+    {name: 'URL & Schema', score: Math.min(100, (data.urlSchema.urlMatch ? 50 : 0) + (data.urlSchema.schema ? 50 : 0)),
       what: 'Checks if the keyword is in the URL and if structured data (JSON-LD) is present.',
       how: 'Use a clean, hyphenated URL containing the keyword; add Article or FAQ schema via JSON-LD in the head.',
       why: 'Keyword in URL is a direct relevance signal; schema enables rich snippets and boosts E-E-A-T perception.'}
