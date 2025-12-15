@@ -7,11 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const progressMessages = [
     "Fetching page...",
-    "Analyzing meta & headings...",
-    "Checking content density...",
-    "Scanning image alts...",
-    "Evaluating anchors...",
-    "Checking URL & schema...",
+    "Analyzing meta...",
+    "Analyzing headings...",
+    "Analyzing content...",
+    "Analyzing image alts...",
+    "Analyzing anchors...",
+    "Analyzing URL & schema...",
     "Finalizing score..."
   ];
 
@@ -92,71 +93,80 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = {};
     const fixes = [];
 
-    // Meta
+    // Module 1: Meta Title & Desc
     data.meta = {
       yourMatches: countPhrase(yourDoc.querySelector('title')?.textContent + yourDoc.querySelector('meta[name="description"]')?.content, phrase)
     };
-    yourScore += data.meta.yourMatches > 0 ? 25 : 0;
-    if (data.meta.yourMatches === 0) fixes.push({
+    const metaScore = data.meta.yourMatches > 0 ? 100 : 0;
+    yourScore += metaScore / 100 * 25;
+    if (metaScore < 100) fixes.push({
       issue: 'Add keyword to title and meta description',
-      what: 'No phrase in title or description',
-      how: 'Include keyword naturally in <title> and meta description',
-      why: 'Boosts CTR by 20-30% and relevance'
+      what: 'No keyword in meta',
+      how: 'Include in <title> and meta description tag',
+      why: 'Boosts CTR 20-30%'
     });
 
-    // H1
+    // Module 2: H1 & Headings
     const yourH1 = yourDoc.querySelector('h1')?.textContent.trim() || '';
-    data.h1 = { match: countPhrase(yourH1, phrase) };
-    yourScore += data.h1.match > 0 ? 15 : 0;
-    if (data.h1.match === 0) fixes.push({
+    data.headings = {
+      match: countPhrase(yourH1, phrase),
+      total: yourDoc.querySelectorAll('h1,h2,h3,h4,h5,h6').length
+    };
+    const headingsScore = data.headings.match > 0 ? 100 : 0;
+    yourScore += headingsScore / 100 * 15;
+    if (headingsScore < 100) fixes.push({
       issue: 'Add keyword to H1',
       what: 'H1 missing keyword',
-      how: 'Update main heading to include keyword',
-      why: 'Strongest on-page relevance signal'
+      how: 'Update main heading',
+      why: 'Strongest relevance signal'
     });
 
-    // Content
+    // Module 3: Content Density
     const yourWords = getWordCount(yourDoc);
     const yourContentMatches = countPhrase(getCleanContent(yourDoc), phrase);
     const yourDensity = yourWords ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
     data.content = { words: yourWords, density: yourDensity };
-    yourScore += yourWords > 800 ? 20 : 0;
-    if (yourWords < 800) fixes.push({
-      issue: `Add depth (${800 - yourWords} words recommended)`,
-      what: 'Content too short',
-      how: 'Add examples, FAQs, data, comparisons',
-      why: 'Depth is #1 ranking factor in 2025'
+    const contentScore = yourDensity >= 1 ? 100 : (yourDensity / 1 * 100);
+    yourScore += contentScore / 100 * 20;
+    if (contentScore < 100) fixes.push({
+      issue: `Improve density to 1-2.5% (currently ${yourDensity}%)`,
+      what: 'Keyword not used enough in content',
+      how: 'Add keyword 3-5 times naturally',
+      why: 'Balances relevance without stuffing'
     });
 
-    // Image Alts
+    // Module 4: Image Alts
     const yourImgs = yourDoc.querySelectorAll('img');
     const yourAltPhrase = Array.from(yourImgs).filter(img => countPhrase(img.alt || '', phrase) > 0).length;
     data.alts = { total: yourImgs.length, phrase: yourAltPhrase };
-    yourScore += yourAltPhrase > 0 ? 15 : 0;
-    if (yourAltPhrase === 0 && yourImgs.length > 0) fixes.push({
-      issue: 'Add keyword to key image alts',
-      what: 'Images missing keyword in alt',
-      how: 'Use descriptive alt with keyword',
+    const altsScore = yourAltPhrase > 0 ? 100 : 0;
+    yourScore += altsScore / 100 * 15;
+    if (altsScore < 100) fixes.push({
+      issue: 'Add keyword to image alts',
+      what: 'No keyword in alts',
+      how: 'Use descriptive alts with keyword',
       why: 'Image SEO + accessibility'
     });
 
-    // Anchors
+    // Module 5: Anchor Text
     const yourAnchors = Array.from(yourDoc.querySelectorAll('a')).filter(a => countPhrase(a.textContent || '', phrase) > 0).length;
     data.anchors = { count: yourAnchors };
-    yourScore += yourAnchors > 0 ? 10 : 0;
-    if (yourAnchors === 0) fixes.push({
+    const anchorsScore = yourAnchors > 0 ? 100 : 0;
+    yourScore += anchorsScore / 100 * 10;
+    if (anchorsScore < 100) fixes.push({
       issue: 'Add keyword to anchor text',
-      what: 'No internal links with keyword',
-      how: 'Link to related pages with keyword',
+      what: 'No links with keyword',
+      how: 'Link internally with keyword',
       why: 'Boosts internal relevance'
     });
 
-    // URL & Schema
+    // Module 6: URL & Schema
     data.urlSchema = {
       urlMatch: countPhrase(yourUrl, phrase),
       schema: yourDoc.querySelector('script[type="application/ld+json"]') ? 1 : 0
     };
-    yourScore += data.urlSchema.urlMatch > 0 ? 10 : 0;
+    const urlSchemaScore = (data.urlSchema.urlMatch > 0 ? 50 : 0) + (data.urlSchema.schema > 0 ? 50 : 0);
+    yourScore += urlSchemaScore / 100 * 10;
     if (data.urlSchema.urlMatch === 0) fixes.push({
       issue: 'Include keyword in URL',
       what: 'URL missing keyword',
@@ -166,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (data.urlSchema.schema === 0) fixes.push({
       issue: 'Add structured data',
       what: 'No schema markup',
-      how: 'Add JSON-LD Article/FAQ schema',
+      how: 'Add JSON-LD Article/FAQ',
       why: 'Rich results + E-E-A-T boost'
     });
 
@@ -176,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     results.innerHTML = `
       <div class="max-w-5xl mx-auto space-y-16">
-        <!-- Big Score Circle (Red → Green) -->
+        <!-- Big Score Circle (Red to Green) -->
         <div class="flex justify-center my-12">
           <div class="relative">
             <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
@@ -185,9 +195,9 @@ document.addEventListener('DOMContentLoaded', () => {
                       stroke-dasharray="${(yourScore / 100) * 754} 754" stroke-linecap="round"/>
               <defs>
                 <linearGradient id="bigGradient">
-                  <stop offset="0%" stop-color="#ef4444"/> <!-- Red low -->
-                  <stop offset="50%" stop-color="#fb923c"/> <!-- Orange mid -->
-                  <stop offset="100%" stop-color="#22c55e"/> <!-- Green high -->
+                  <stop offset="0%" stop-color="#ef4444"/> 
+                  <stop offset="50%" stop-color="#fb923c"/>
+                  <stop offset="100%" stop-color="#22c55e"/>
                 </linearGradient>
               </defs>
             </svg>
@@ -199,16 +209,15 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
         </div>
-
-        <!-- Small Metric Circles with Color Borders -->
+        <!-- Small Metric Circles -->
         <div class="grid md:grid-cols-3 gap-8 my-16">
           ${[
-            {name: 'Meta Title & Desc', score: data.meta.yourMatches > 0 ? 100 : 0},
-            {name: 'H1 & Headings', score: data.h1.match > 0 ? 100 : 0},
-            {name: 'Content Density', score: parseFloat(data.content.density)},
-            {name: 'Image Alts', score: data.alts.phrase > 0 ? 100 : 0},
-            {name: 'Anchor Text', score: data.anchors.count > 0 ? 100 : 0},
-            {name: 'URL & Schema', score: (data.urlSchema.urlMatch + data.urlSchema.schema) * 50}
+            {name: 'Meta Title & Desc', score: metaScore, what: 'Phrase in title/desc', how: 'Edit <title> and meta tag', why: 'CTR boost 20%'},
+            {name: 'H1 & Headings', score: headingsScore, what: 'Keyword in H1/headings', how: 'Update H1', why: 'Relevance signal'},
+            {name: 'Content Density', score: contentScore, what: 'Keyword usage in body', how: 'Add 3-5 times', why: 'Balances relevance'},
+            {name: 'Image Alts', score: altsScore, what: 'Keyword in alt text', how: 'Describe images with keyword', why: 'Image SEO'},
+            {name: 'Anchor Text', score: anchorsScore, what: 'Keyword in links', how: 'Internal links with keyword', why: 'Internal authority'},
+            {name: 'URL & Schema', score: urlSchemaScore, what: 'Keyword in URL/schema', how: 'Hyphenated URL + JSON-LD', why: 'Rich results'}
           ].map(m => {
             const borderColor = m.score >= 80 ? 'border-green-500' : m.score >= 60 ? 'border-yellow-500' : 'border-red-500';
             return `
@@ -217,8 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="relative w-24 h-24 mx-auto">
                   <svg width="96" height="96" viewBox="0 0 96 96" class="transform -rotate-90">
                     <circle cx="48" cy="48" r="40" stroke="#e5e7eb" stroke-width="10" fill="none"/>
-                    <circle cx="48" cy="48" r="40" stroke="${m.score >= 80 ? '#22c55e' : m.score >= 60 ? '#eab308' : '#ef4444'}"
-                            stroke-width="10" fill="none" stroke-dasharray="${(m.score / 100) * 251} 251" stroke-linecap="round"/>
+                    <circle cx="48" cy="48" r="40" stroke="${m.score >= 80 ? '#22c55e' : m.score >= 60 ? '#eab308' : '#ef4444'}" stroke-width="10" fill="none" stroke-dasharray="${(m.score / 100) * 251} 251" stroke-linecap="round"/>
                   </svg>
                   <div class="absolute inset-0 flex items-center justify-center text-3xl font-black">${Math.round(m.score)}</div>
                 </div>
@@ -226,16 +234,15 @@ document.addEventListener('DOMContentLoaded', () => {
                   Show Fixes
                 </button>
                 <div class="hidden mt-6 space-y-3 text-left text-sm">
-                  <p class="text-blue-500 font-bold">What:</p><p>Metric explanation</p>
-                  <p class="text-green-500 font-bold">How:</p><p>Fix steps</p>
-                  <p class="text-orange-500 font-bold">Why:</p><p>SEO/UX impact</p>
+                  <p class="text-blue-500 font-bold">What:</p><p>${m.what}</p>
+                  <p class="text-green-500 font-bold">How:</p><p>${m.how}</p>
+                  <p class="text-orange-500 font-bold">Why:</p><p>${m.why}</p>
                 </div>
               </div>
             `;
           }).join('')}
         </div>
-
-        <!-- Prioritized Fixes with What/How/Why -->
+        <!-- Prioritized Fixes -->
         <div class="space-y-8">
           <h3 class="text-4xl font-black text-center mb-8">Prioritized Fixes</h3>
           ${fixes.length ? fixes.map(fix => `
@@ -244,16 +251,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="text-5xl">🔧</div>
                 <div>
                   <h4 class="text-2xl font-bold text-orange-600 mb-4">${fix.issue}</h4>
-                  <p class="text-blue-500 font-bold">What:</p><p>${fix.what || 'Critical on-page gap'}</p>
-                  <p class="text-green-500 font-bold mt-2">How:</p><p>${fix.how || 'Implement keyword naturally'}</p>
-                  <p class="text-orange-500 font-bold mt-2">Why:</p><p>${fix.why || 'Boosts relevance and ranking'}</p>
+                  <p class="text-blue-500 font-bold">What:</p><p>${fix.what}</p>
+                  <p class="text-green-500 font-bold mt-2">How:</p><p>${fix.how}</p>
+                  <p class="text-orange-500 font-bold mt-2">Why:</p><p>${fix.why}</p>
                 </div>
               </div>
             </div>
           `).join('') : '<p class="text-center text-green-400 text-2xl">Strong optimization — keep it up!</p>'}
         </div>
-
-        <!-- Predictive Rank Forecast with Show Info -->
+        <!-- Predictive Rank Forecast -->
         <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
           <h3 class="text-4xl font-black text-center">Predictive Rank Forecast</h3>
           <p class="text-center text-7xl font-black">${yourScore >= 80 ? 'Top 10' : yourScore >= 60 ? 'Page 1 Possible' : 'Page 2+'}</p>
@@ -266,7 +272,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="font-bold text-orange-300">Why:</p><p>Pages scoring 80+ consistently rank Top 10. 90+ = Top 3 potential.</p>
           </div>
         </div>
-
         <!-- PDF -->
         <div class="text-center my-16">
           <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
