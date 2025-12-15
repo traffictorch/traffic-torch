@@ -153,15 +153,15 @@ document.addEventListener('DOMContentLoaded', () => {
     stopSpinnerLoader();
     results.innerHTML = `
       <div class="max-w-5xl mx-auto space-y-16">
-                <!-- Big Score Circle -->
+        <!-- Big Score Circle -->
         <div class="flex justify-center my-12">
           <div class="relative">
             <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
               <defs>
                 <linearGradient id="bigGradient">
-                  <stop offset="0%" stop-color="#ef4444"/> <!-- Red at start (visible for low scores) -->
+                  <stop offset="0%" stop-color="#ef4444"/> <!-- Red for low scores (visible at top for low scores) -->
                   <stop offset="50%" stop-color="#fb923c"/> <!-- Orange mid -->
-                  <stop offset="100%" stop-color="#22c55e"/> <!-- Green at end (visible for high scores) -->
+                  <stop offset="100%" stop-color="#22c55e"/> <!-- Green for high scores -->
                 </linearGradient>
               </defs>
               <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
