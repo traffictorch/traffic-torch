@@ -129,14 +129,3 @@ html.light .score-circle circle.bg {
 
 
 
-@media (max-width: 768px) {
-  .hamburger-menu {  /* Replace with your actual class/id */
-    position: relative;      /* Allows precise left/right and top/bottom adjustments */
-    left: 4px;               /* Move right (increase) or left (decrease/negative) */
-    top: -2px;               /* Move up (negative) or down (positive) */
-    
-    /* Example starting values - adjust these numbers pixel-by-pixel */
-    /* left: 0px;    */     /* Try values like -5px to 10px */
-    /* top: 0px;     */     /* Try values like -4px to 4px for vertical centering */
-  }
-}
