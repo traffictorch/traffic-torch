@@ -4,8 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const targetKeywordInput = document.getElementById('target-keyword');
   const results = document.getElementById('results');
   const PROXY = 'https://cors-proxy.traffictorch.workers.dev/';
-
-  const progressMessages = [
+  const progressModules = [
     "Fetching page...",
     "Analyzing meta & headings...",
     "Checking content density...",
@@ -14,35 +13,29 @@ document.addEventListener('DOMContentLoaded', () => {
     "Checking URL & schema...",
     "Finalizing score..."
   ];
-
-  let messageIndex = 0;
-  let interval;
-
-  function startLoader() {
+  let currentModuleIndex = 0;
+  let moduleInterval;
+  function startSpinnerLoader() {
     results.innerHTML = `
-      <div class="fixed inset-x-0 bottom-0 z-50">
-        <div id="progress-bar" class="h-12 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 relative overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-r from-orange-600 via-pink-600 to-purple-700 opacity-50 animate-pulse"></div>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <span id="progress-text" class="text-white font-bold text-xl drop-shadow-lg">Fetching page...</span>
-          </div>
-        </div>
+      <div id="loader" class="flex flex-col items-center justify-center space-y-4 mt-8">
+        <div class="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+        <p id="module-text" class="text-xl text-gray-600 dark:text-gray-300 font-medium"></p>
       </div>
     `;
     results.classList.remove('hidden');
-    messageIndex = 1;
-    interval = setInterval(() => {
-      if (messageIndex < progressMessages.length) {
-        document.getElementById('progress-text').textContent = progressMessages[messageIndex++];
+    document.getElementById('module-text').textContent = progressModules[0];
+    currentModuleIndex = 1;
+    moduleInterval = setInterval(() => {
+      if (currentModuleIndex < progressModules.length) {
+        document.getElementById('module-text').textContent = progressModules[currentModuleIndex++];
       }
     }, 1200);
   }
-
-  function stopLoader() {
-    clearInterval(interval);
-    document.querySelector('#progress-bar')?.parentElement.remove();
+  function stopSpinnerLoader() {
+    clearInterval(moduleInterval);
+    const loader = document.getElementById('loader');
+    if (loader) loader.remove();
   }
-
   const fetchPage = async (url) => {
     try {
       const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
@@ -53,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return null;
     }
   };
-
   const countPhrase = (text = '', phrase = '') => {
     if (!text || !phrase) return 0;
     const lower = text.toLowerCase();
@@ -63,35 +55,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cleanP.length > 4) matches += (lower.match(new RegExp(cleanP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')) || []).length;
     return matches;
   };
-
   const getCleanContent = (doc) => {
     if (!doc?.body) return '';
     const clone = doc.body.cloneNode(true);
     clone.querySelectorAll('nav, header, footer, aside, script, style, noscript, .menu, .nav, .navbar, .footer, .cookie, .popup').forEach(el => el.remove());
     return clone.textContent.replace(/\s+/g, ' ').trim();
   };
-
   const getWordCount = (doc) => getCleanContent(doc).split(/\s+/).filter(w => w.length > 0).length;
-
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const yourUrl = pageUrlInput.value.trim();
     const phrase = targetKeywordInput.value.trim();
     if (!yourUrl || !phrase) return;
-
-    startLoader();
-
+    startSpinnerLoader();
     const yourDoc = await fetchPage(yourUrl);
     if (!yourDoc) {
-      stopLoader();
+      stopSpinnerLoader();
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Page not reachable.</p>`;
       return;
     }
-
     let yourScore = 0;
     const data = {};
     const fixes = [];
-
     // Meta
     data.meta = {
       yourMatches: countPhrase(yourDoc.querySelector('title')?.textContent + yourDoc.querySelector('meta[name="description"]')?.content, phrase)
@@ -103,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
       how: 'Include keyword naturally in <title> and meta description',
       why: 'Boosts CTR by 20-30% and relevance'
     });
-
     // H1
     const yourH1 = yourDoc.querySelector('h1')?.textContent.trim() || '';
     data.h1 = { match: countPhrase(yourH1, phrase) };
@@ -114,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
       how: 'Update main heading to include keyword',
       why: 'Strongest on-page relevance signal'
     });
-
     // Content
     const yourWords = getWordCount(yourDoc);
     const yourContentMatches = countPhrase(getCleanContent(yourDoc), phrase);
@@ -127,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
       how: 'Add examples, FAQs, data, comparisons',
       why: 'Depth is #1 ranking factor in 2025'
     });
-
     // Image Alts
     const yourImgs = yourDoc.querySelectorAll('img');
     const yourAltPhrase = Array.from(yourImgs).filter(img => countPhrase(img.alt || '', phrase) > 0).length;
@@ -139,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
       how: 'Use descriptive alt with keyword',
       why: 'Image SEO + accessibility'
     });
-
     // Anchors
     const yourAnchors = Array.from(yourDoc.querySelectorAll('a')).filter(a => countPhrase(a.textContent || '', phrase) > 0).length;
     data.anchors = { count: yourAnchors };
@@ -150,7 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
       how: 'Link to related pages with keyword',
       why: 'Boosts internal relevance'
     });
-
     // URL & Schema
     data.urlSchema = {
       urlMatch: countPhrase(yourUrl, phrase),
@@ -169,11 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
       how: 'Add JSON-LD Article/FAQ schema',
       why: 'Rich results + E-E-A-T boost'
     });
-
     yourScore = Math.min(100, Math.round(yourScore));
-
-    stopLoader();
-
+    stopSpinnerLoader();
     results.innerHTML = `
       <div class="max-w-5xl mx-auto space-y-16">
         <!-- Big Score Circle (Red → Green) -->
@@ -199,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
         </div>
-
         <!-- Small Metric Circles with Color Borders -->
         <div class="grid md:grid-cols-3 gap-8 my-16">
           ${[
@@ -234,7 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
           }).join('')}
         </div>
-
         <!-- Prioritized Fixes with What/How/Why -->
         <div class="space-y-8">
           <h3 class="text-4xl font-black text-center mb-8">Prioritized Fixes</h3>
@@ -252,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           `).join('') : '<p class="text-center text-green-400 text-2xl">Strong optimization — keep it up!</p>'}
         </div>
-
         <!-- Predictive Rank Forecast with Show Info -->
         <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
           <h3 class="text-4xl font-black text-center">Predictive Rank Forecast</h3>
@@ -266,7 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="font-bold text-orange-300">Why:</p><p>Pages scoring 80+ consistently rank Top 10. 90+ = Top 3 potential.</p>
           </div>
         </div>
-
         <!-- PDF -->
         <div class="text-center my-16">
           <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
