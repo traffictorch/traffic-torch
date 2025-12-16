@@ -88,13 +88,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-          function makeItHuman(raw) {
+  function makeItHuman(raw) {
     let t = raw.trim();
     if (t.length < 250) return t;
 
-    // General cleanup — remove common navigation/CTA patterns without site-specific strings
+    // General cleanup
     t = t.replace(/Skip to (main )?content/gi, '')
-         .replace(/\b(?:Home|About|Services|Contact|Blog|Shop|Cart|Login|Signup|Reserve|Book Now|Make a Reservation|Explore|Discover|View More|Learn More|Get Started|Sign Up)\b/gi, '')
+         .replace(/\b(Home|About|Services|Contact|Blog|Shop|Cart|Login|Signup|Reserve|Book|Explore|Discover|View|Learn|Get Started|Sign Up)\b/gi, '')
          .replace(/\s+/g, ' ')
          .trim();
 
@@ -105,11 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
       very: ['truly', 'genuinely', 'highly'],
       good: ['excellent', 'strong', 'solid'],
       best: ['finest', 'leading', 'top'],
-      great: ['wonderful', 'outstanding', 'superb'],
       big: ['vast', 'extensive', 'significant'],
       small: ['limited', 'compact', 'minor'],
-      offer: ['provide', 'deliver', 'feature'],
-      experience: ['enjoy', 'discover', 'embrace'],
+      use: ['try', 'apply', 'work with', 'utilize'],
+      help: ['assist', 'support', 'boost', 'enhance'],
       important: ['key', 'essential', 'critical'],
       easy: ['simple', 'straightforward', 'clear']
     };
@@ -125,9 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     for (let s of sentences) {
       let sentence = s.trim();
-      if (!sentence || sentence.length < 30) continue; // skip short menu-like lines
+      if (!sentence || sentence.length < 30) continue;
 
-      // Rare subtle introducer for flow
       if (!introducerUsed && result.length > 2 && Math.random() < 0.15) {
         result.push(subtleIntroducers[Math.floor(Math.random() * subtleIntroducers.length)]);
         introducerUsed = true;
@@ -144,7 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       sentence = words.join(' ');
 
-      // Gentle split for long sentences
       if (sentence.split(' ').length > 25 && Math.random() < 0.5) {
         const mid = Math.floor(sentence.length / 2);
         const breakPoint = sentence.lastIndexOf([',', ';', '—', ':'][Math.floor(Math.random() * 4)], mid);
@@ -159,12 +156,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let final = result.join(' ').trim();
 
-    // Break into natural paragraphs (3–5 sentences)
-    const sentences = final.match(/[^.!?]+[.!?]+/g) || [final];
+    // Break into paragraphs
+    const allSentences = final.match(/[^.!?]+[.!?]+/g) || [final];
     let paragraphs = [];
     let current = [];
 
-    sentences.forEach(s => {
+    allSentences.forEach(s => {
       current.push(s.trim());
       if (current.length >= 4 || (current.length >= 2 && Math.random() < 0.3)) {
         paragraphs.push(current.join(' '));
@@ -175,7 +172,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     final = paragraphs.join('\n\n');
 
+    if (Math.random() < 0.25) {
+      const endings = [
+        'A compelling and natural presentation.',
+        'Clear communication that resonates.',
+        'Engaging content with authentic flow.',
+        'Ready to connect with your audience.'
+      ];
+      final += ' ' + endings[Math.floor(Math.random() * endings.length)];
+    }
+
     return final;
+  }
 
   function getGradeColor(normalized10) {
     if (normalized10 >= 8.0) return '#10b981'; // green
