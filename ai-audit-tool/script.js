@@ -191,36 +191,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <p class="text-center text-xl text-gray-600 dark:text-gray-400">Scanned ${wordCount.toLocaleString()} words from main content</p>
 
-            <!-- Metrics Grid -->
+                        <!-- Metrics Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8">
               ${[
-                {name: 'Perplexity', value: ai.perplexity},
-                {name: 'Burstiness', value: ai.burstiness},
-                {name: 'Repetition', value: ai.repetition + '%'},
-                {name: 'Sentence Length', value: ai.sentenceLength},
-                {name: 'Vocabulary', value: ai.vocab + '%'}
-              ].map(m => `
+                {name: 'Perplexity', value: ai.perplexity, display: ai.perplexity, max: 12},
+                {name: 'Burstiness', value: ai.burstiness, display: ai.burstiness, max: 10},
+                {name: 'Repetition', value: ai.repetition, display: ai.repetition + '%', max: 100},
+                {name: 'Sentence Length', value: ai.sentenceLength, display: ai.sentenceLength, max: 30},
+                {name: 'Vocabulary', value: ai.vocab, display: ai.vocab + '%', max: 100}
+              ].map(m => {
+                const numericValue = typeof m.value === 'number' ? m.value : parseFloat(m.value);
+                const percent = (numericValue / m.max) * 100;
+                const circumference = 440; // 2 * π * 70 ≈ 439.8
+                return `
                 <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 text-center">
                   <div class="relative w-40 h-40 mx-auto">
                     <svg viewBox="0 0 160 160" class="-rotate-90">
                       <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="16" fill="none"/>
                       <circle cx="80" cy="80" r="70" stroke="url(#brandGradient)" stroke-width="16" fill="none"
-                              stroke-dasharray="${(parseFloat(m.value.replace('%','')) / 100) * 440} 440"
+                              stroke-dasharray="${percent * circumference / 100} ${circumference}"
                               stroke-linecap="round"/>
                     </svg>
-                    <div class="absolute inset-0 flex items-center justify-center text-4xl md:text-5xl font-black text-gray-900 dark:text-white">${m.value}</div>
+                    <div class="absolute inset-0 flex items-center justify-center text-4xl md:text-5xl font-black text-gray-900 dark:text-white">${m.display}</div>
                   </div>
                   <p class="mt-6 text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-200">${m.name}</p>
                   <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-full hover:opacity-90 text-lg">
                     Show Info
                   </button>
                   <div class="hidden mt-6 space-y-4 text-left text-gray-700 dark:text-gray-300">
-                    <p><span class="text-blue-500 font-bold">What:</span> ${m.name === 'Perplexity' ? 'How predictable the text is' : m.name === 'Burstiness' ? 'Variation in sentence rhythm' : m.name === 'Repetition' ? 'How often phrases repeat' : m.name === 'Sentence Length' ? 'Average words per sentence' : 'Unique word percentage'}</p>
-                    <p><span class="text-green-500 font-bold">How:</span> Add stories, vary length, use synonyms, mix structures, enrich vocab</p>
-                    <p><span class="text-orange-500 font-bold">Why:</span> Google rewards natural, human-like writing</p>
+                    <p><span class="text-blue-500 font-bold">What:</span> ${m.name === 'Perplexity' ? 'How predictable the text is — higher = more AI-like' : m.name === 'Burstiness' ? 'Variation in sentence rhythm — higher = more natural' : m.name === 'Repetition' ? 'Repeated phrase frequency — lower = better' : m.name === 'Sentence Length' ? 'Average words per sentence — 15–23 ideal' : 'Unique word diversity — higher = better'}</p>
+                    <p><span class="text-green-500 font-bold">How to improve:</span> Add personal stories, vary sentence length, use synonyms, mix structures</p>
+                    <p><span class="text-orange-500 font-bold">Why it matters:</span> Google rewards natural, engaging, human-like content</p>
                   </div>
                 </div>
-              `).join('')}
+              `;
+              }).join('')}
             </div>
 
             <!-- Prioritized Fixes -->
