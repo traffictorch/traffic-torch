@@ -115,14 +115,15 @@ document.addEventListener('DOMContentLoaded', () => {
     yourScore += data.headings.yourH1Match > 0 ? 15 : 0;
     compScore += data.headings.compH1Match > 0 ? 15 : 0;
 
-    // Content Density
+    // Content Density & Depth
     const yourWords = getWordCount(yourDoc);
     const compWords = getWordCount(compDoc);
     const yourContentMatches = countPhrase(getCleanContent(yourDoc), phrase);
     const compContentMatches = countPhrase(getCleanContent(compDoc), phrase);
     const yourDensity = yourWords ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
     const compDensity = compWords ? (compContentMatches / compWords * 100).toFixed(1) : 0;
-    data.content = { yourWords, compWords, yourDensity, compDensity };
+    data.content = { yourWords, compWords, yourDensity, compDensity, yourContentMatches };
+
     yourScore += yourWords > 800 ? 20 : 0;
     compScore += compWords > 800 ? 20 : 0;
 
@@ -158,19 +159,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const forecastTier = yourScore >= 90 ? 'Top 3 Potential' : yourScore >= 80 ? 'Top 10 Likely' : yourScore >= 60 ? 'Page 1 Possible' : 'Page 2+';
     const gap = yourScore > compScore ? '+' + (yourScore - compScore) : yourScore < compScore ? (compScore - yourScore) : '±0';
 
-// Expanded fixes – check all gaps (in priority order)
- const fixes = [];
- if (data.meta.yourMatches === 0) fixes.push("Add phrase to title and meta description.");
- if (data.headings.yourH1Match === 0) fixes.push("Include phrase in H1 heading.");
- if (parseFloat(data.content.yourDensity) < 1 || yourContentMatches === 0) fixes.push("Improve content density.");
- if (yourWords < 800 || yourWords < compWords) fixes.push(`Expand content depth — aim for at least 800 words (currently ${yourWords}).`);
- if (data.alts.yourPhrase === 0) fixes.push("Include phrase in key image alt text.");
- if (data.anchors.your === 0) fixes.push("Use phrase in internal anchor text.");
- if (data.urlSchema.yourUrlMatch === 0) fixes.push("Include phrase in URL slug if possible.");
- if (data.urlSchema.yourSchema === 0) fixes.push("Add structured data (JSON-LD schema markup).");
+    // Expanded fixes – all gaps detected
+    const fixes = [];
+    if (data.meta.yourMatches === 0) fixes.push("Add phrase to title and meta description.");
+    if (data.headings.yourH1Match === 0) fixes.push("Include phrase in H1 heading.");
+    if (parseFloat(data.content.yourDensity) < 1 || yourContentMatches === 0) fixes.push("Improve content density.");
+    if (yourWords < 800 || yourWords < compWords) fixes.push(`Expand content depth — aim for at least 800 words (currently ${yourWords}).`);
+    if (data.alts.yourPhrase === 0) fixes.push("Include phrase in key image alt text.");
+    if (data.anchors.your === 0) fixes.push("Use phrase in internal anchor text.");
+    if (data.urlSchema.yourUrlMatch === 0) fixes.push("Include phrase in URL slug if possible.");
+    if (data.urlSchema.yourSchema === 0) fixes.push("Add structured data (JSON-LD schema markup).");
 
- // Limit to top 3 prioritized fixes
- const prioritizedFixes = fixes.slice(0, 3);
+    // Top 3 only
+    const prioritizedFixes = fixes.slice(0, 3);
 
     results.innerHTML = `
       <div class="max-w-5xl mx-auto space-y-16 animate-in">
@@ -216,76 +217,16 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="text-xl text-gray-400">Target phrase: "${phrase}"</p>
         </div>
 
-			 <!-- Small Metric Cards – Match Other Tools Design (Show Details Button) -->
+        <!-- Small Metric Cards -->
         <div class="grid md:grid-cols-3 gap-8 my-16">
           ${[
-            {
-              name: 'Meta Title & Desc',
-              you: data.meta.yourMatches > 0 ? 100 : 0,
-              comp: data.meta.compMatches > 0 ? 100 : 0,
-              border: data.meta.yourMatches > 0 ? 'border-green-500' : 'border-red-500',
-              educ: {
-                what: "Checks if your target phrase appears naturally in the page title and meta description.",
-                how: "Add the keyword near the start of the title (keep under 60 chars) and include it once in the meta description (under 155 chars).",
-                why: "Google uses title and description for rankings and click-through rates — pages with keyword in both see 20-30% higher CTR."
-              }
-            },
-            {
-              name: 'H1 & Headings',
-              you: data.headings.yourH1Match > 0 ? 100 : 0,
-              comp: data.headings.compH1Match > 0 ? 100 : 0,
-              border: data.headings.yourH1Match > 0 ? 'border-green-500' : 'border-red-500',
-              educ: {
-                what: "Evaluates whether your main H1 heading contains the target phrase.",
-                how: "Rewrite the H1 to include the exact or close-variant phrase while keeping it compelling and reader-focused.",
-                why: "H1 is the strongest on-page signal for topic relevance and helps Google understand what the page is about."
-              }
-            },
-            {
-              name: 'Content Density',
-              you: parseFloat(data.content.yourDensity),
-              comp: parseFloat(data.content.compDensity),
-              border: parseFloat(data.content.yourDensity) >= 1 ? 'border-green-500' : 'border-red-500',
-              educ: {
-                what: "Measures how often the target phrase appears relative to total word count (ideal 1-2%).",
-                how: "Add the phrase naturally in subheadings, intro, conclusion, and body — aim for 800+ words of in-depth content.",
-                why: "Proper density signals relevance without stuffing; longer, keyword-optimized content dominates rankings."
-              }
-            },
-            {
-              name: 'Image Alts',
-              you: data.alts.yourPhrase > 0 ? 100 : 0,
-              comp: data.alts.compPhrase > 0 ? 100 : 0,
-              border: data.alts.yourPhrase > 0 ? 'border-green-500' : 'border-red-500',
-              educ: {
-                what: "Checks if any image alt text contains the target phrase.",
-                how: "Update alt text of key images (hero, featured) to include the phrase descriptively.",
-                why: "Improves accessibility, enables image search traffic, and adds extra relevance signals."
-              }
-            },
-            {
-              name: 'Anchor Text',
-              you: data.anchors.your > 0 ? 100 : 0,
-              comp: data.anchors.comp > 0 ? 100 : 0,
-              border: data.anchors.your > 0 ? 'border-green-500' : 'border-red-500',
-              educ: {
-                what: "Looks for internal links using the target phrase as anchor text.",
-                how: "Add or edit internal links to use the phrase naturally where relevant.",
-                why: "Strengthens site-wide relevance and improves internal PageRank flow."
-              }
-            },
-            {
-              name: 'URL & Schema',
-              you: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)),
-              comp: Math.min(100, (data.urlSchema.compUrlMatch > 0 ? 50 : 0) + (data.urlSchema.compSchema ? 50 : 0)),
-              border: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)) >= 50 ? 'border-green-500' : 'border-red-500',
-              educ: {
-                what: "Combines URL keyword inclusion and structured data presence.",
-                how: "Include phrase in URL slug if possible; add JSON-LD schema (FAQ, Article, etc.).",
-                why: "Descriptive URLs aid crawling; schema unlocks rich snippets and better SERP visibility."
-              }
-            }
-          ].map((m, idx) => `
+            { name: 'Meta Title & Desc', you: data.meta.yourMatches > 0 ? 100 : 0, comp: data.meta.compMatches > 0 ? 100 : 0, border: data.meta.yourMatches > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Checks if your target phrase appears naturally in the page title and meta description.", how: "Add the keyword near the start of the title (keep under 60 chars) and include it once in the meta description (under 155 chars).", why: "Google uses title and description for rankings and click-through rates — pages with keyword in both see 20-30% higher CTR." } },
+            { name: 'H1 & Headings', you: data.headings.yourH1Match > 0 ? 100 : 0, comp: data.headings.compH1Match > 0 ? 100 : 0, border: data.headings.yourH1Match > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Evaluates whether your main H1 heading contains the target phrase.", how: "Rewrite the H1 to include the exact or close-variant phrase while keeping it compelling and reader-focused.", why: "H1 is the strongest on-page signal for topic relevance and helps Google understand what the page is about." } },
+            { name: 'Content Density', you: parseFloat(data.content.yourDensity), comp: parseFloat(data.content.compDensity), border: parseFloat(data.content.yourDensity) >= 1 ? 'border-green-500' : 'border-red-500', educ: { what: "Measures how often the target phrase appears relative to total word count (ideal 1-2%).", how: "Add the phrase naturally in subheadings, intro, conclusion, and body — aim for 800+ words of in-depth content.", why: "Proper density signals relevance without stuffing; longer, keyword-optimized content dominates rankings." } },
+            { name: 'Image Alts', you: data.alts.yourPhrase > 0 ? 100 : 0, comp: data.alts.compPhrase > 0 ? 100 : 0, border: data.alts.yourPhrase > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Checks if any image alt text contains the target phrase.", how: "Update alt text of key images (hero, featured) to include the phrase descriptively.", why: "Improves accessibility, enables image search traffic, and adds extra relevance signals." } },
+            { name: 'Anchor Text', you: data.anchors.your > 0 ? 100 : 0, comp: data.anchors.comp > 0 ? 100 : 0, border: data.anchors.your > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Looks for internal links using the target phrase as anchor text.", how: "Add or edit internal links to use the phrase naturally where relevant.", why: "Strengthens site-wide relevance and improves internal PageRank flow." } },
+            { name: 'URL & Schema', you: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)), comp: Math.min(100, (data.urlSchema.compUrlMatch > 0 ? 50 : 0) + (data.urlSchema.compSchema ? 50 : 0)), border: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)) >= 50 ? 'border-green-500' : 'border-red-500', educ: { what: "Combines URL keyword inclusion and structured data presence.", how: "Include phrase in URL slug if possible; add JSON-LD schema (FAQ, Article, etc.).", why: "Descriptive URLs aid crawling; schema unlocks rich snippets and better SERP visibility." } }
+                    ].map((m) => `
             <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 border-l-8 ${m.border}">
               <h4 class="text-xl font-bold text-center mb-6">${m.name}</h4>
               <div class="grid grid-cols-2 gap-6 mb-8">
@@ -316,29 +257,29 @@ document.addEventListener('DOMContentLoaded', () => {
                   <p class="mt-4 text-lg font-medium">Comp</p>
                 </div>
               </div>
-              <button onclick="this.closest('div').querySelector('.educ-details').classList.toggle('hidden')"
+              <button onclick="const details = this.closest('div').querySelector('.educ-details'); details.classList.toggle('hidden'); this.textContent = details.classList.contains('hidden') ? 'Show Details' : 'Hide Details';"
                       class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow">
                 Show Details
               </button>
-              <div class="educ-details mt-8 space-y-6">
+              <div class="educ-details mt-8 space-y-6 hidden">
                 <div>
                   <p class="font-semibold text-orange-600 dark:text-orange-400">What is it?</p>
-                  <p class="mt-2">${m.educ.what}</p>
+                  <p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.what}</p>
                 </div>
                 <div>
                   <p class="font-semibold text-orange-600 dark:text-orange-400">How to fix?</p>
-                  <p class="mt-2">${m.educ.how}</p>
+                  <p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.how}</p>
                 </div>
                 <div>
                   <p class="font-semibold text-orange-600 dark:text-orange-400">Why it matters?</p>
-                  <p class="mt-2">${m.educ.why}</p>
+                  <p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.why}</p>
                 </div>
               </div>
             </div>
           `).join('')}
         </div>
 
-                  <!-- Prioritized Gap Fixes – Top 3 Only -->
+        <!-- Prioritized Gap Fixes – Top 3 Only, Full Education -->
         <div class="space-y-8">
           <h3 class="text-4xl font-black text-center mb-8">Prioritized Gap Fixes</h3>
           ${prioritizedFixes.length ? prioritizedFixes.map(fix => {
@@ -437,7 +378,7 @@ Target 800–1500+ words of focused content.`,
             </div>
           `}
         </div>
-        
+
         <!-- Predictive Rank Forecast -->
         <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
           <h3 class="text-4xl font-black text-center mb-8">Predictive Rank Forecast</h3>
