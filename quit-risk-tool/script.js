@@ -32,10 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
       readability = Math.min(100, Math.max(0, Math.round(flesch)));
     }
 
-    const navScore = Math.min(100, Math.max(30, 100 - Math.floor(data.links / 2))) || 70;
-    const accScore = data.images.length === 0 ? 30 : Math.min(100, data.images.length * 8) || 65;
-    const mobileScore = 85;
-    const speedScore = 88;
+	const navScore = Math.min(100, Math.max(40, 100 - Math.floor(data.links / 3))); // Less penalizing for links
+    const accScore = data.images.length === 0 ? 40 : Math.min(100, 50 + data.images.length * 5); // Better baseline for images
+    const mobileScore = 90; // Slight boost
+    const speedScore = 85; // Slight adjustment
 
     const score = Math.round((readability + navScore + accScore + mobileScore + speedScore) / 5);
 
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="text-xl text-gray-400">Scanned ${uxData.links} links + ${uxData.images} images</p>
           </div>
 
-          <!-- Small Metric Circles -->
+		          <!-- Small Metric Circles - Modern Dynamic Color Style -->
           <div class="grid md:grid-cols-5 gap-6 my-16">
             ${[
               {name: 'Readability', value: ux.readability},
@@ -137,20 +137,22 @@ document.addEventListener('DOMContentLoaded', () => {
               {name: 'Accessibility', value: ux.accessibility},
               {name: 'Mobile', value: ux.mobile},
               {name: 'Speed', value: ux.speed}
-            ].map(m => `
+            ].map(m => {
+              const ringColor = m.value < 60 ? '#ef4444' : m.value < 80 ? '#fb923c' : '#22c55e';
+              return `
               <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
                 <div class="relative mx-auto w-32 h-32">
                   <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
                     <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-                    <circle cx="64" cy="64" r="56" stroke="#fb923c" stroke-width="12" fill="none"
+                    <circle cx="64" cy="64" r="56" stroke="${ringColor}" stroke-width="12" fill="none"
                             stroke-dasharray="${(m.value / 100) * 352} 352" stroke-linecap="round"/>
                   </svg>
-                  <div class="absolute inset-0 flex items-center justify-center text-4xl font-black">
+                  <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${ringColor};">
                     ${m.value}
                   </div>
                 </div>
                 <p class="mt-4 text-lg font-medium">${m.name}</p>
-                <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+                <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 rounded-full text-white text-sm hover:opacity-90" style="background-color: ${ringColor};">
                   Show Info
                 </button>
                 <div class="hidden mt-6 space-y-3 text-left text-sm">
@@ -159,7 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
                   <p class="text-orange-500 font-bold">Why:</p><p>Better UX = lower bounce, higher dwell time, stronger rankings</p>
                 </div>
               </div>
-            `).join('')}
+            `;
+            }).join('')}
           </div>
 
           <!-- Prioritized Fixes -->
