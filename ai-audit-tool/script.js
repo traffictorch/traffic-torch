@@ -122,10 +122,31 @@ document.addEventListener('DOMContentLoaded', () => {
     return final;
   }
 
-  function getGradeColor(normalizedScore) {
-    if (normalizedScore >= 80) return '#10b981'; // green
-    if (normalizedScore >= 60) return '#f97316'; // orange
-    return '#ef4444'; // red
+  function getMetricColor(metricName, value) {
+    if (metricName === 'Perplexity' || metricName === 'Repetition') {
+      // lower = better
+      if (value <= 6) return '#10b981'; // green
+      if (value <= 9) return '#f97316'; // orange
+      return '#ef4444'; // red
+    }
+    if (metricName === 'Burstiness') {
+      // higher = better
+      if (value >= 6) return '#10b981';
+      if (value >= 4) return '#f97316';
+      return '#ef4444';
+    }
+    if (metricName === 'Sentence Length') {
+      if (value >= 15 && value <= 23) return '#10b981';
+      if (value >= 10 && value <= 30) return '#f97316';
+      return '#ef4444';
+    }
+    if (metricName === 'Vocabulary') {
+      // higher = better
+      if (value >= 70) return '#10b981';
+      if (value >= 50) return '#f97316';
+      return '#ef4444';
+    }
+    return '#f97316'; // default
   }
 
   form.addEventListener('submit', async e => {
@@ -156,8 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
       analyzedText = text;
       const ai = analyzeAIContent(text);
       const yourScore = ai.score;
-      const mainNormalized = 100 - yourScore; // reverse for main score (lower AI = higher human)
-      const mainColor = getGradeColor(mainNormalized);
+      const mainColor = yourScore >= 70 ? '#ef4444' : yourScore >= 40 ? '#f97316' : '#10b981';
       const verdict = yourScore >= 70 ? 'Very Likely AI' : yourScore >= 40 ? 'Moderate AI Patterns' : 'Likely Human';
       const forecast = yourScore >= 70 ? 'Page 2+' : yourScore >= 50 ? 'Page 1 Possible' : yourScore >= 30 ? 'Top 10 Possible' : 'Top 3 Potential';
 
@@ -186,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               </div>
             </div>
-            <div class="text-center mt-2">
+            <div class="text-center mt-4">
               <p class="text-3xl font-bold" style="color: ${mainColor}">${verdict}</p>
             </div>
             <p class="text-center text-base text-gray-600">Scanned ${wordCount.toLocaleString()} words from main content</p>
@@ -194,27 +214,22 @@ document.addEventListener('DOMContentLoaded', () => {
             <!-- Small Metrics -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
               ${[
-                {name: 'Perplexity', value: ai.perplexity, max: 12, reverse: true},
-                {name: 'Burstiness', value: ai.burstiness, max: 10, reverse: false},
-                {name: 'Repetition', value: ai.repetition, display: ai.repetition + '%', max: 100, reverse: true},
-                {name: 'Sentence Length', value: ai.sentenceLength, max: 30, reverse: false}, // special handling below
-                {name: 'Vocabulary', value: ai.vocab, display: ai.vocab + '%', max: 100, reverse: false}
+                {name: 'Perplexity', value: ai.perplexity},
+                {name: 'Burstiness', value: ai.burstiness},
+                {name: 'Repetition', value: ai.repetition + '%'},
+                {name: 'Sentence Length', value: ai.sentenceLength},
+                {name: 'Vocabulary', value: ai.vocab + '%'}
               ].map(m => {
-                let normalized = (m.value / m.max) * 100;
-                if (m.reverse) normalized = 100 - normalized;
-                if (m.name === 'Sentence Length') {
-                  normalized = 100 - Math.abs(m.value - 19) * 5;
-                  normalized = Math.max(0, normalized);
-                }
-                const color = getGradeColor(normalized);
-                const display = m.display || m.value;
+                const color = getMetricColor(m.name, typeof m.value === 'string' ? parseFloat(m.value) : m.value);
+                const display = m.value;
+                const percent = m.name === 'Perplexity' ? (m.value / 12 * 100) : m.name === 'Burstiness' ? (m.value / 10 * 100) : m.name === 'Repetition' ? m.value.replace('%','') : m.name === 'Sentence Length' ? ((30 - Math.abs(m.value - 19)) / 30 * 100) : m.value.replace('%','');
                 return `
                 <div class="bg-white rounded-2xl shadow-md p-6 text-center">
                   <div class="relative w-32 h-32 mx-auto">
                     <svg viewBox="0 0 128 128" class="-rotate-90">
                       <circle cx="64" cy="64" r="56" stroke="#f1f5f9" stroke-width="12" fill="none"/>
                       <circle cx="64" cy="64" r="56" stroke="${color}" stroke-width="12" fill="none"
-                              stroke-dasharray="${normalized * 3.52 / 100} 352" stroke-linecap="round"/>
+                              stroke-dasharray="${percent * 3.52} 352" stroke-linecap="round"/>
                     </svg>
                     <div class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-gray-900">${display}</div>
                   </div>
@@ -232,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
               }).join('')}
             </div>
 
-            <!-- Prioritized Fixes, Forecast, etc. – unchanged -->
+            <!-- Prioritized Fixes, Forecast, Humanizer remain clean and consistent -->
 
           </div>
         </div>
