@@ -122,15 +122,23 @@ document.addEventListener('DOMContentLoaded', () => {
     return final;
   }
 
-  function getGradeColor(value, isMainScore = false) {
-    if (isMainScore) {
-      if (value >= 70) return '#10b981'; // green high human
-      if (value >= 40) return '#f97316'; // orange medium
-      return '#ef4444'; // red low AI
+  function getGradeColor(score, isMain = false, metricName = '') {
+    if (isMain) {
+      if (score >= 70) return '#ef4444'; // red – high AI
+      if (score >= 40) return '#f97316'; // orange – medium
+      return '#10b981'; // green – low AI = human
     }
-    // For individual metrics – higher is better except perplexity/repetition
-    if (value >= 70) return '#10b981';
-    if (value >= 40) return '#f97316';
+    // Individual metrics
+    let percent = score;
+    if (metricName === 'Perplexity' || metricName === 'Repetition') {
+      // higher = bad
+      if (percent >= 70) return '#ef4444';
+      if (percent >= 40) return '#f97316';
+      return '#10b981';
+    }
+    // higher = good
+    if (percent >= 70) return '#10b981';
+    if (percent >= 40) return '#f97316';
     return '#ef4444';
   }
 
@@ -163,8 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const ai = analyzeAIContent(text);
       const yourScore = ai.score;
       const mainColor = getGradeColor(yourScore, true);
-      const verdict = yourScore > 70 ? 'Very Likely AI' : yourScore > 40 ? 'Moderate AI Patterns' : 'Likely Human';
-      const forecast = yourScore > 70 ? 'Page 2+' : yourScore > 50 ? 'Page 1 Possible' : yourScore > 30 ? 'Top 10 Possible' : 'Top 3 Potential';
+      const verdict = yourScore >= 70 ? 'Very Likely AI' : yourScore >= 40 ? 'Moderate AI Patterns' : 'Likely Human';
+      const forecast = yourScore >= 70 ? 'Page 2+' : yourScore >= 50 ? 'Page 1 Possible' : yourScore >= 30 ? 'Top 10 Possible' : 'Top 3 Potential';
 
       results.innerHTML = `
         <style>
@@ -173,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="min-h-screen bg-gray-50 py-12 px-4">
           <div class="max-w-4xl mx-auto space-y-16">
 
-            <!-- Big Score Circle -->
+            <!-- Big Score Circle + Verdict Below -->
             <div class="flex justify-center">
               <div class="relative w-64 h-64">
                 <svg viewBox="0 0 256 256" class="absolute inset-0 -rotate-90">
@@ -189,12 +197,11 @@ document.addEventListener('DOMContentLoaded', () => {
                   <div class="text-lg text-gray-600">AI Score</div>
                   <div class="text-base text-gray-500">/100</div>
                 </div>
-                <div class="absolute -bottom-12 left-1/2 -translate-x-1/2 text-center">
-                  <p class="text-2xl font-bold" style="color: ${mainColor}">${verdict}</p>
-                </div>
               </div>
             </div>
-
+            <div class="text-center -mt-8">
+              <p class="text-3xl font-bold" style="color: ${mainColor}">${verdict}</p>
+            </div>
             <p class="text-center text-base text-gray-600">Scanned ${wordCount.toLocaleString()} words from main content</p>
 
             <!-- Small Metrics -->
@@ -202,14 +209,14 @@ document.addEventListener('DOMContentLoaded', () => {
               ${[
                 {name: 'Perplexity', value: ai.perplexity, max: 12},
                 {name: 'Burstiness', value: ai.burstiness, max: 10},
-                {name: 'Repetition', value: ai.repetition, display: ai.repetition + '%', max: 100},
+                {name: 'Repetition', value: ai.repetition + '%', max: 100},
                 {name: 'Sentence Length', value: ai.sentenceLength, max: 30},
-                {name: 'Vocabulary', value: ai.vocab, display: ai.vocab + '%', max: 100}
+                {name: 'Vocabulary', value: ai.vocab + '%', max: 100}
               ].map(m => {
-                const num = m.value;
+                const num = typeof m.value === 'string' ? parseFloat(m.value) : m.value;
                 const percent = (num / m.max) * 100;
-                const color = getGradeColor(percent);
-                const display = m.display || m.value;
+                const color = getGradeColor(percent, false, m.name);
+                const display = m.value;
                 return `
                 <div class="bg-white rounded-2xl shadow-md p-6 text-center">
                   <div class="relative w-32 h-32 mx-auto">
@@ -233,6 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
               `;
               }).join('')}
             </div>
+
 
 
             <!-- Prioritized Fixes -->
