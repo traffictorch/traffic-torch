@@ -336,31 +336,34 @@ document.addEventListener('DOMContentLoaded', () => {
           `).join('')}
         </div>
 
-             <!-- Prioritized Gap Fixes – Expanded with More Metrics -->
-     <div class="space-y-8">
-       <h3 class="text-4xl font-black text-center mb-8">Prioritized Gap Fixes</h3>
-       ${fixes.length ? fixes.map(fix => {
-                  let educ = {};
-         if (fix.includes('title and meta description')) {
-           educ = {
-             what: `Your page title or meta description does not contain the target phrase "${phrase}" — this is one of the strongest direct relevance signals search engines look for.`,
-             how: `• Place the exact phrase naturally near the beginning of the <title> tag
+                     <!-- Prioritized Gap Fixes – Match Metric Cards Design (Details Always Visible) -->
+        <div class="space-y-8">
+          <h3 class="text-4xl font-black text-center mb-8">Prioritized Gap Fixes</h3>
+          ${fixes.length ? fixes.map(fix => {
+            let border = 'border-red-500';
+            let educ = {};
+            if (fix.includes('title and meta description')) {
+              border = data.meta.yourMatches === 0 ? 'border-red-500' : 'border-green-500';
+              educ = {
+                what: `Your page title or meta description does not contain the target phrase "${phrase}" — this is one of the strongest direct relevance signals search engines look for.`,
+                how: `• Place the exact phrase naturally near the beginning of the <title> tag
 • Keep the full title under 60 characters to avoid truncation in search results
 • Include the phrase once in the meta description (keep under 155 characters)
 • Make both compelling and click-worthy while staying relevant
 
 Example title: "${phrase.charAt(0).toUpperCase() + phrase.slice(1)} | Your Brand"
 Example description: "Discover the best ${phrase} with expert tips, guides, and recommendations."`,
-             why: `Search engines use title and meta description to:
+                why: `Search engines use title and meta description to:
 • Determine page relevance and ranking position
 • Generate the blue link and snippet users see in results
 • Influence click-through rates (pages with keyword in both often see 20–30% higher CTR)
 Strong meta optimization is one of the highest-ROI on-page changes.`
-           };
-         } else if (fix.includes('content depth')) {
-           educ = {
-             what: `Your main content has only ${yourWords} words${compWords > yourWords ? ` — that's ${compWords - yourWords} fewer than your competitor's ${compWords} words` : ''}. Comprehensive coverage is increasingly important for ranking.`,
-             how: `Expand with genuinely valuable additions:
+              };
+            } else if (fix.includes('content depth')) {
+              border = yourWords < compWords ? 'border-red-500' : 'border-green-500';
+              educ = {
+                what: `Your main content has only ${yourWords} words${compWords > yourWords ? ` — that's ${compWords - yourWords} fewer than your competitor's ${compWords} words` : ''}. Comprehensive coverage is essential for competitive ranking.`,
+                how: `Expand with genuinely valuable additions:
 • Detailed FAQ section answering real user questions about "${phrase}"
 • Step-by-step guides or tutorials
 • Real examples, case studies, or customer scenarios
@@ -369,34 +372,36 @@ Strong meta optimization is one of the highest-ROI on-page changes.`
 • Practical tips, checklists, or actionable advice
 • Related subtopics that deepen understanding
 
-Target 800–1500+ words of focused, high-quality content while maintaining readability and natural phrase usage.`,
-             why: `In-depth content wins because it:
+Target 800–1500+ words of focused, high-quality content.`,
+                why: `In-depth content wins because it:
 • Demonstrates expertise and topical authority (key E-E-A-T factor)
 • Provides more context for natural keyword and semantic term usage
 • Improves user satisfaction and dwell time signals
 • Better satisfies complex search intent
 • Consistently outranks thin or superficial pages in competitive SERPs`
-           };
-         } else if (fix.includes('H1 heading')) {
-           educ = {
-             what: `Your main H1 heading does not include the target phrase "${phrase}" — this is the most prominent heading and a primary relevance indicator.`,
-             how: `Rewrite your H1 to:
+              };
+            } else if (fix.includes('H1 heading')) {
+              border = data.headings.yourH1Match === 0 ? 'border-red-500' : 'border-green-500';
+              educ = {
+                what: `Your main H1 heading does not include the target phrase "${phrase}" — this is the most prominent heading and a primary relevance indicator.`,
+                how: `Rewrite your H1 to:
 • Include the exact or close-variant phrase
 • Keep it benefit-focused and compelling for readers
 • Make it unique (avoid duplicating the title tag)
 • Use proper hierarchy (only one H1 per page)
 
 Good example: "Best ${phrase.charAt(0).toUpperCase() + phrase.slice(1)}: Complete Guide & Recommendations"`,
-             why: `The H1 is the strongest on-page heading signal because:
+                why: `The H1 is the strongest on-page heading signal because:
 • It tells search engines the primary topic at a glance
 • Appears prominently in browser tabs and SERP previews
 • Helps structure content for both users and crawlers
 • Directly influences relevance scoring for the target phrase`
-           };
-         } else if (fix.includes('content density')) {
-           educ = {
-             what: `The target phrase appears only ${yourContentMatches} time(s) in your main content (${data.content.yourDensity}% density) — below optimal levels for strong relevance.`,
-             how: `Improve natural placement by:
+              };
+            } else if (fix.includes('content density')) {
+              border = parseFloat(data.content.yourDensity) < 1 ? 'border-red-500' : 'border-green-500';
+              educ = {
+                what: `The target phrase appears only ${yourContentMatches} time(s) in your main content (${data.content.yourDensity}% density) — below optimal levels for strong relevance.`,
+                how: `Improve natural placement by:
 • Using the phrase in introduction and conclusion
 • Including it in 2–3 subheadings (H2/H3)
 • Weaving it into body paragraphs where contextually relevant
@@ -404,123 +409,118 @@ Good example: "Best ${phrase.charAt(0).toUpperCase() + phrase.slice(1)}: Complet
 • Aim for 1–2% density (3–6 occurrences per 1000 words)
 
 Focus on reader value — never force repetition.`,
-             why: `Optimal density matters because it:
+                why: `Optimal density matters because it:
 • Reinforces topical relevance without triggering over-optimization flags
 • Provides multiple internal context signals
 • Helps search engines confirm the page's focus
-• Supports featured snippet and "People Also Ask" eligibility
-Balanced, natural usage outperforms both under- and over-optimized content.`
-           };
-         } else if (fix.includes('image alt text')) {
-           educ = {
-             what: `None of your image alt attributes contain the target phrase "${phrase}" — a missed opportunity for relevance and accessibility.`,
-             how: `Update key images with descriptive alt text:
+• Supports featured snippet and "People Also Ask" eligibility`
+              };
+            } else if (fix.includes('image alt text')) {
+              border = data.alts.yourPhrase === 0 ? 'border-red-500' : 'border-green-500';
+              educ = {
+                what: `None of your image alt attributes contain the target phrase "${phrase}" — a missed opportunity for relevance and accessibility.`,
+                how: `Update key images with descriptive alt text:
 • Hero/main images: primary focus
 • Featured/product images: high visibility
 • Infographics or illustrative photos
 
 Examples:
 alt="${phrase.charAt(0).toUpperCase() + phrase.slice(1)} with ocean views"
-alt="Luxury accommodation in ${phrase} – swimming pool at sunset"
-
-Keep descriptive, concise, and user-focused.`,
-             why: `Optimized alt text:
+alt="Luxury accommodation in ${phrase} – swimming pool at sunset"`,
+                why: `Optimized alt text:
 • Improves accessibility for screen readers
 • Enables image search traffic and visibility
 • Adds another on-page relevance signal
-• Supports rich results and universal search blending
-• Helps search engines understand visual content context`
-           };
-         } else if (fix.includes('anchor text')) {
-           educ = {
-             what: `No internal links on your page use the target phrase "${phrase}" as anchor text — missing internal relevance distribution.`,
-             how: `Add or update internal links:
+• Supports rich results and universal search blending`
+              };
+            } else if (fix.includes('anchor text')) {
+              border = data.anchors.your === 0 ? 'border-red-500' : 'border-green-500';
+              educ = {
+                what: `No internal links on your page use the target phrase "${phrase}" as anchor text — missing internal relevance distribution.`,
+                how: `Add or update internal links:
 • Link to related pages using the exact or partial phrase
 • Place in contextually relevant paragraphs
-• Use natural variations (e.g., "best ${phrase}", "top ${phrase} options")
+• Use natural variations
 • Target 2–4 internal links where logical
 
 Example: See our guide to <a href="/related">luxury ${phrase}</a>.`,
-             why: `Strategic anchor text:
+                why: `Strategic anchor text:
 • Distributes page authority and relevance across your site
 • Helps search engines understand site structure and topic clusters
 • Improves user navigation and experience
-• Strengthens topical authority for the phrase site-wide`
-           };
-         } else if (fix.includes('URL slug')) {
-           educ = {
-             what: `Your page URL does not include the target phrase "${phrase}" — descriptive URLs are a direct relevance factor.`,
-             how: `If possible, restructure the URL to include the phrase:
+• Strengthens topical authority site-wide`
+              };
+            } else if (fix.includes('URL slug')) {
+              border = data.urlSchema.yourUrlMatch === 0 ? 'border-red-500' : 'border-green-500';
+              educ = {
+                what: `Your page URL does not include the target phrase "${phrase}" — descriptive URLs are a direct relevance factor.`,
+                how: `If possible, restructure the URL to include the phrase:
 • Keep it short, readable, and lowercase
 • Use hyphens to separate words
 • Avoid stop words and parameters
 
 Ideal format: yoursite.com/${phrase.replace(/\s+/g, '-')}
-
 Redirect old URL properly if changing.`,
-             why: `Keyword-rich URLs:
+                why: `Keyword-rich URLs:
 • Provide clear relevance signals at crawl time
 • Appear cleaner and more trustworthy in search results
 • Often achieve higher click-through rates
 • Support breadcrumb navigation and SERP formatting`
-           };
-         } else if (fix.includes('structured data')) {
-           educ = {
-             what: `Your page lacks structured data (JSON-LD schema markup) — search engines can't fully understand your content type and details.`,
-             how: `Add appropriate schema via a <script type="application/ld+json"> block:
+              };
+            } else if (fix.includes('structured data')) {
+              border = data.urlSchema.yourSchema === 0 ? 'border-red-500' : 'border-green-500';
+              educ = {
+                what: `Your page lacks structured data (JSON-LD schema markup) — search engines can't fully understand your content type and details.`,
+                how: `Add appropriate schema via a <script type="application/ld+json"> block:
 • FAQPage — if you have FAQs
 • Article or HowTo — for guides
 • LocalBusiness or Hotel — for location-based
 • Product or Offer — for commercial pages
 
 Use schema.org validator to test implementation.`,
-             why: `Schema markup:
+                why: `Schema markup:
 • Enables rich snippets (stars, FAQs, prices in SERPs)
 • Improves click-through rates dramatically
 • Helps search engines extract entities and relationships
 • Supports voice search and featured results
 • Future-proofs your content for evolving search features`
-           };
-         }
-         return `
-           <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 border-l-8 border-red-500">
-             <div class="flex gap-6 items-start">
-               <div class="text-5xl">🔧</div>
-               <div class="flex-1">
-                 <p class="text-2xl font-bold mb-4">${fix}</p>
-                 <button onclick="this.closest('div').querySelector('.fix-details').classList.toggle('hidden')"
-                         class="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow">
-                   Show Details
-                 </button>
-                 <div class="fix-details mt-8 space-y-6 hidden">
-                   <div>
-                     <p class="font-semibold text-orange-600 dark:text-orange-400">What is it?</p>
-                     <p class="mt-2">${educ.what || ''}</p>
-                   </div>
-                   <div>
-                     <p class="font-semibold text-orange-600 dark:text-orange-400">How to fix?</p>
-                     <p class="mt-2">${educ.how || ''}</p>
-                   </div>
-                   <div>
-                     <p class="font-semibold text-orange-600 dark:text-orange-400">Why it matters?</p>
-                     <p class="mt-2">${educ.why || ''}</p>
-                   </div>
-                 </div>
-               </div>
-             </div>
-           </div>
-         `;
-       }).join('') : `
-         <div class="text-center p-12 bg-green-50 dark:bg-green-900/20 rounded-2xl border-l-8 border-green-500">
-           <p class="text-3xl font-bold text-green-600 dark:text-green-400">
-             🎉 Strong position — no major gaps detected!
-           </p>
-           <p class="mt-4 text-xl text-gray-600 dark:text-gray-300">
-             Your page shows excellent on-page optimization for "${phrase}".
-           </p>
-         </div>
-       `}
-     </div>
+              };
+            }
+            return `
+              <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 border-l-8 ${border}">
+                <div class="flex gap-6 items-start">
+                  <div class="text-5xl">🔧</div>
+                  <div class="flex-1 space-y-6">
+                    <p class="text-2xl font-bold">${fix}</p>
+                    <div class="space-y-6">
+                      <div>
+                        <p class="font-semibold text-orange-600 dark:text-orange-400">What is it?</p>
+                        <p class="mt-2">${educ.what}</p>
+                      </div>
+                      <div>
+                        <p class="font-semibold text-orange-600 dark:text-orange-400">How to improve?</p>
+                        <p class="mt-2">${educ.how}</p>
+                      </div>
+                      <div>
+                        <p class="font-semibold text-orange-600 dark:text-orange-400">Why it matters?</p>
+                        <p class="mt-2">${educ.why}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('') : `
+            <div class="text-center p-12 bg-green-50 dark:bg-green-900/20 rounded-2xl border-l-8 border-green-500">
+              <p class="text-3xl font-bold text-green-600 dark:text-green-400">
+                🎉 Strong position — no major gaps detected!
+              </p>
+              <p class="mt-4 text-xl text-gray-600 dark:text-gray-300">
+                Your page shows excellent on-page optimization for "${phrase}".
+              </p>
+            </div>
+          `}
+        </div>
 
         <!-- Predictive Rank Forecast -->
         <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
