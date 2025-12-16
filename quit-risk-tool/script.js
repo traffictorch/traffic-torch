@@ -19,42 +19,45 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-    function analyzeUX(data) {
+      function analyzeUX(data) {
+    // Readability - safe Flesch calculation
     let readability = 60;
     if (data.text && data.text.length >= 200) {
       const text = data.text.replace(/\s+/g, ' ').trim();
       const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
       const words = text.split(/\s+/).filter(w => w.length > 0);
       const syl = text.match(/[aeiouy]+/gi) || [];
+
       let flesch = 60;
       if (sentences.length > 0 && words.length > 0) {
-        const avgSentenceLength = words.length / sentences.length;
-        const avgSylPerWord = syl.length / words.length;
-        flesch = 206.835 - 1.015 * avgSentenceLength - 84.6 * avgSylPerWord;
+        const avgSentence = words.length / sentences.length;
+        const avgSyllable = syl.length / words.length || 1;
+        flesch = 206.835 - 1.015 * avgSentence - 84.6 * avgSyllable;
       }
-      readability = Math.min(100, Math.max(0, Math.round(flesch)));
+      readability = Math.max(0, Math.min(100, Math.round(flesch)));
     }
 
-    const navScore = Math.min(100, Math.max(30, 100 - Math.floor(data.links / 4))); // Even less penalizing, realistic for modern sites
+    // Navigation - realistic for modern sites with many links
+    const navScore = Math.max(30, Math.min(100, 100 - Math.floor(data.links / 5)));
 
-    // Fixed Accessibility: safe calculation, realistic proxy (presence + moderate scaling)
-    let accScore = 50; // Base for having images
-    if (data.images.length === 0) {
-      accScore = 40;
-    } else {
-      accScore = Math.min(95, 50 + Math.min(data.images.length, 20) * 3); // Caps scaling to prevent overflow/NaN
+    // Accessibility - fixed NaN, realistic proxy (images present = better base)
+    let accScore = data.images.length === 0 ? 40 : 65;
+    if (data.images.length > 0) {
+      accScore = Math.min(95, 65 + Math.min(data.images.length, 15) * 2); // Safe scaling, no overflow
     }
 
     const mobileScore = 90;
     const speedScore = 85;
 
-    const scoreValues = [readability, navScore, accScore, mobileScore, speedScore];
-    const validScore = scoreValues.every(v => typeof v === 'number' && !isNaN(v) && isFinite(v))
-      ? Math.round(scoreValues.reduce((a, b) => a + b, 0) / 5)
-      : 55; // Fallback only if truly invalid
+    // Safe overall score calculation
+    const metrics = [readability, navScore, accScore, mobileScore, speedScore];
+    const validMetrics = metrics.filter(v => typeof v === 'number' && isFinite(v) && !isNaN(v));
+    const score = validMetrics.length === 5 
+      ? Math.round(validMetrics.reduce((a, b) => a + b, 0) / 5)
+      : 60; // Better fallback
 
     return {
-      score: validScore,
+      score,
       readability,
       nav: navScore,
       accessibility: accScore,
