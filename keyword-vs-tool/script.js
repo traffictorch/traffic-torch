@@ -211,68 +211,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 <!-- Small Metric Cards with Collapsible Education (How to improve) -->
         <div class="grid md:grid-cols-3 gap-8 my-16">
-          ${[
-            {
-              name: 'Meta Title & Desc',
-              you: data.meta.yourMatches > 0 ? 100 : 0,
-              comp: data.meta.compMatches > 0 ? 100 : 0,
-              educ: {
-                what: "The page title and meta description are the primary elements search engines evaluate for topical relevance and what users see in search results.",
-                how: "Add the exact target phrase naturally to the <title> tag (ideally near the start) and meta description. Keep title under 60 characters.",
-                why: "Strong meta relevance boosts click-through rates and sends clear topical signals to search engines."
-              }
-            },
-            {
-              name: 'H1 & Headings',
-              you: data.headings.yourH1Match > 0 ? 100 : 0,
-              comp: data.headings.compH1Match > 0 ? 100 : 0,
-              educ: {
-                what: "Headings (H1–H6) structure content and highlight key topics for both users and search engines.",
-                how: "Include the target phrase in your main H1 tag. Use related variations in H2–H6 for better structure.",
-                why: "Proper heading usage improves content hierarchy, readability, and on-page relevance scoring."
-              }
-            },
-            {
-              name: 'Content Density',
-              you: parseFloat(data.content.yourDensity),
-              comp: parseFloat(data.content.compDensity),
-              educ: {
-                what: "Content density measures the natural frequency of the target phrase within the main body text.",
-                how: "Expand your content with valuable details and naturally incorporate the phrase 3–6 times per 1000 words. Avoid repetition that feels forced.",
-                why: "Balanced density signals comprehensive topical coverage without risking keyword stuffing penalties."
-              }
-            },
-            {
-              name: 'Image Alts',
-              you: data.alts.yourPhrase > 0 ? 100 : 0,
-              comp: data.alts.compPhrase > 0 ? 100 : 0,
-              educ: {
-                what: "Image alt attributes describe visuals to search engines and screen readers.",
-                how: "Add the target phrase to alt text of your most important images (e.g., hero or feature images) in a descriptive way.",
-                why: "Enhances accessibility, supports image search visibility, and adds extra relevance signals."
-              }
-            },
-            {
-              name: 'Anchor Text',
-              you: data.anchors.your > 0 ? 100 : 0,
-              comp: data.anchors.comp > 0 ? 100 : 0,
-              educ: {
-                what: "Anchor text is the visible, clickable text in internal hyperlinks.",
-                how: "Create or update internal links using the target phrase as natural anchor text where contextually relevant.",
-                why: "Strengthens internal linking structure and distributes relevance across the site."
-              }
-            },
-            {
-              name: 'URL & Schema',
-              you: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)),
-              comp: Math.min(100, (data.urlSchema.compUrlMatch > 0 ? 50 : 0) + (data.urlSchema.compSchema ? 50 : 0)),
-              educ: {
-                what: "Combines URL descriptiveness and presence of structured data markup.",
-                how: "If possible, include the phrase in the URL slug. Add JSON-LD schema markup (e.g., FAQPage, Article, or LocalBusiness) to the page.",
-                why: "Descriptive URLs improve crawlability; schema enables rich snippets and better understanding by search engines."
-              }
-            }
-          ].map(m => `
+                 ${[
+         {
+           name: 'Meta Title & Desc',
+           you: data.meta.yourMatches > 0 ? 100 : 0,
+           comp: data.meta.compMatches > 0 ? 100 : 0,
+           educ: {
+             what: "The page title and meta description are the primary elements search engines evaluate for topical relevance and what users see in search results.",
+             how: "Add the exact target phrase naturally to the <title> tag (ideally near the start) and meta description. Keep title under 60 characters.",
+             why: "Strong meta relevance boosts click-through rates and sends clear topical signals to search engines."
+           }
+         },
+         {
+           name: 'H1 & Headings',
+           you: data.headings.yourH1Match > 0 ? 100 : 0,
+           comp: data.headings.compH1Match > 0 ? 100 : 0,
+           educ: {
+             what: "Headings (H1–H6) structure content and highlight key topics for both users and search engines.",
+             how: "Include the target phrase in your main H1 tag. Use related variations in H2–H6 for better structure.",
+             why: "Proper heading usage improves content hierarchy, readability, and on-page relevance scoring."
+           }
+         },
+         {
+           name: 'Content Density',
+           you: parseFloat(data.content.yourDensity),
+           comp: parseFloat(data.content.compDensity),
+           educ: {  // ← Fixed: added missing closing } from previous object
+             what: "Content density measures the natural frequency of the target phrase within the main body text.",
+             how: "Expand your content with valuable details and naturally incorporate the phrase 3–6 times per 1000 words. Avoid repetition that feels forced.",
+             why: "Balanced density signals comprehensive topical coverage without risking keyword stuffing penalties."
+           }
+         },
+         {
+           name: 'Image Alts',
+           you: data.alts.yourPhrase > 0 ? 100 : 0,
+           comp: data.alts.compPhrase > 0 ? 100 : 0,
+           educ: {
+             what: "Image alt attributes describe visuals to search engines and screen readers.",
+             how: "Add the target phrase to alt text of your most important images (e.g., hero or feature images) in a descriptive way.",
+             why: "Enhances accessibility, supports image search visibility, and adds extra relevance signals."
+           }
+         },
+         {
+           name: 'Anchor Text',
+           you: data.anchors.your > 0 ? 100 : 0,
+           comp: data.anchors.comp > 0 ? 100 : 0,
+           educ: {
+             what: "Anchor text is the visible, clickable text in internal hyperlinks.",
+             how: "Create or update internal links using the target phrase as natural anchor text where contextually relevant.",
+             why: "Strengthens internal linking structure and distributes relevance across the site."
+           }
+         },
+         {
+           name: 'URL & Schema',
+           you: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)),
+           comp: Math.min(100, (data.urlSchema.compUrlMatch > 0 ? 50 : 0) + (data.urlSchema.compSchema ? 50 : 0)),
+           educ: {
+             what: "Combines URL descriptiveness and presence of structured data markup.",
+             how: "If possible, include the phrase in the URL slug. Add JSON-LD schema markup (e.g., FAQPage, Article, or LocalBusiness) to the page.",
+             why: "Descriptive URLs improve crawlability; schema enables rich snippets and better understanding by search engines."
+           }
+         }
+       ].map(m => `
             <details class="group bg-white dark:bg-gray-900 rounded-2xl shadow-lg overflow-hidden">
               <summary class="p-6 cursor-pointer list-none">
                 <div class="text-center">
