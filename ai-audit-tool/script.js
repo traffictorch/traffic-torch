@@ -5,46 +5,39 @@ document.addEventListener('DOMContentLoaded', () => {
   const PROXY = 'https://cors-proxy.traffictorch.workers.dev/';
   let analyzedText = '';
 
-     function getMainContent(doc) {
-    // Try common main content containers first
-    const mainSelectors = 'main, article, [role="main"], #main, .main-content, .content-area, .site-content, .page-content, .post-content, .entry-content';
-    const mainEl = doc.querySelector(mainSelectors);
-    if (mainEl && mainEl.textContent.trim().length > 600) {
-      return mainEl;
+       function getMainContent(doc) {
+    // 1. Try explicit main content containers
+    const main = doc.querySelector('main, [role="main"], article, .main-content, .site-content, .content-area');
+    if (main && main.textContent.trim().length > 600) {
+      return main;
     }
 
-    // Collect all potential content elements
-    const contentEls = doc.querySelectorAll('p, div, section, .text, .description, .content');
-    let bestEl = null;
-    let maxLength = 0;
+    // 2. Find the element with the most paragraph-like content
+    const candidates = doc.querySelectorAll('div, section, article');
+    let best = null;
+    let bestScore = 0;
 
-    for (const el of contentEls) {
-      // Skip if inside nav/header/footer or has nav classes
-      if (el.closest('nav, header, footer, .menu, .navbar, .sidebar')) continue;
+    candidates.forEach(el => {
+      if (el.closest('header, nav, footer, aside, .menu, .sidebar')) return;
 
-      const text = el.textContent.trim();
-      if (text.length > maxLength && text.length > 400) {
-        // Favor elements with multiple sentences (more likely real content)
-        const sentenceCount = (text.match(/[.!?]/g) || []).length;
-        if (sentenceCount > 5) {
-          maxLength = text.length;
-          bestEl = el;
-        }
+      const paragraphs = el.querySelectorAll('p');
+      const textLength = el.textContent.trim().length;
+      const pCount = paragraphs.length;
+
+      // Score: favor lots of <p> tags and decent length
+      const score = pCount * 100 + textLength;
+      if (score > bestScore && textLength > 600 && textLength < 20000) {
+        bestScore = score;
+        best = el;
       }
-    }
-
-    if (bestEl) return bestEl;
-
-    // Final fallback: body with heavy junk removal
-    const body = doc.body.cloneNode(true);
-    const junk = [
-      'nav', 'header', 'footer', 'aside', '.menu', '.navbar', '.sidebar', '.nav', '.header', '.footer',
-      '.cookie', '.popup', '.advert', '.social', '.share', '.breadcrumbs', '.skip-link',
-      '[class*="menu"]', '[class*="nav"]', '[class*="header"]', '[class*="footer"]'
-    ];
-    junk.forEach(selector => {
-      body.querySelectorAll(selector).forEach(e => e.remove());
     });
+
+    if (best) return best;
+
+    // 3. Fallback: body with aggressive removal
+    const body = doc.body.cloneNode(true);
+    const removeSelectors = 'header, nav, footer, aside, .menu, .navbar, .sidebar, .cookie-banner, .popup, .social-links, .breadcrumbs';
+    body.querySelectorAll(removeSelectors).forEach(e => e.remove());
 
     return body;
   }
@@ -164,26 +157,25 @@ document.addEventListener('DOMContentLoaded', () => {
       result.push(sentence);
     }
 
-        let final = result.join(' ').trim();
+    let final = result.join(' ').trim();
 
-    // Break into readable paragraphs (3–5 sentences each)
-    const sentenceArray = final.match(/[^.!?]+[.!?]+/g) || [final];
+    // Break into natural paragraphs (3–5 sentences)
+    const sentences = final.match(/[^.!?]+[.!?]+/g) || [final];
     let paragraphs = [];
-    let currentPara = [];
+    let current = [];
 
-    sentenceArray.forEach(sentence => {
-      currentPara.push(sentence.trim());
-      if (currentPara.length >= 4 || Math.random() < 0.2) {
-        paragraphs.push(currentPara.join(' '));
-        currentPara = [];
+    sentences.forEach(s => {
+      current.push(s.trim());
+      if (current.length >= 4 || (current.length >= 2 && Math.random() < 0.3)) {
+        paragraphs.push(current.join(' '));
+        current = [];
       }
     });
-    if (currentPara.length > 0) paragraphs.push(currentPara.join(' '));
+    if (current.length) paragraphs.push(current.join(' '));
 
     final = paragraphs.join('\n\n');
 
     return final;
-  }
 
   function getGradeColor(normalized10) {
     if (normalized10 >= 8.0) return '#10b981'; // green
@@ -215,6 +207,19 @@ document.addEventListener('DOMContentLoaded', () => {
       cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
 
       let text = cleanElement.textContent || '';
+      // Universal cleanup - no site-specific strings
+      text = text
+        .replace(/Skip to (main )?content/gi, '')
+        .replace(/\b(?:Menu|Navigation|Home|About|Contact|Blog|Shop|Login|Signup|Reserve|Book|Explore|Discover|View|Learn|Subscribe|Follow us)\b/gi, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      // Keep only substantial lines
+      const lines = text.split('\n')
+        .map(l => l.trim())
+        .filter(l => l.length > 50);
+
+      text = lines.join(' ');
 
       // Universal cleanup — no site-specific strings
       text = text
@@ -328,24 +333,24 @@ document.addEventListener('DOMContentLoaded', () => {
               }).join('')}
             </div>
 
-          <!-- Humanize Text Section - Improved UX -->
+            <!-- Humanize Text Section - Final Polish -->
             <div class="mt-16 text-center space-y-8">
               <button id="humanizeBtn" class="px-16 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:opacity-90 transition">
                 ⚡ Generate Humanized Example
               </button>
               <div id="humanizedOutput" class="hidden max-w-5xl mx-auto">
                 <div class="bg-white rounded-3xl shadow-2xl p-10 md:p-16 border border-gray-200">
-                  <p class="text-center text-base text-gray-500 mb-10 italic font-medium">
-                    This is an AI-generated example rewrite for inspiration only.<br>
-                    Always review, edit for your brand voice, and verify facts before publishing.
+                  <p class="text-center text-base text-gray-600 mb-10 italic leading-relaxed">
+                    <strong>Note:</strong> This is an AI-generated example rewrite for inspiration only.<br>
+                    Always edit to match your brand voice, verify facts, and ensure originality before publishing.
                   </p>
                   <h3 class="text-4xl md:text-5xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
                     Example Humanized Version
                   </h3>
-                  <div id="humanizedText" class="prose prose-lg max-w-none text-gray-800 leading-relaxed text-left space-y-6"></div>
+                  <div id="humanizedText" class="prose prose-lg max-w-none text-gray-800 leading-relaxed text-left"></div>
                   <div class="mt-12 text-center">
                     <button onclick="navigator.clipboard.writeText(document.getElementById('humanizedText').innerText).then(()=>alert('Copied to clipboard!'))"
-                            class="px-12 py-5 bg-cyan-600 text-white font-bold text-xl rounded-2xl hover:bg-cyan-500 shadow-lg transition">
+                            class="px-12 py-5 bg-cyan-600 text-white font-bold text-xl rounded-2xl hover:bg-cyan-500 shadow-lg">
                       📋 Copy Text
                     </button>
                   </div>
@@ -371,10 +376,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const textDiv = document.getElementById('humanizedText');
       output.classList.add('hidden');
       setTimeout(() => {
-        const humanized = makeItHuman(analyzedText);
-        textDiv.innerHTML = humanized.replace(/\n\n/g, '</p><p class="mt-6">').replace(/\n/g, '<br>');
-        // Wrap in paragraph tags
-        textDiv.innerHTML = '<p>' + textDiv.innerHTML + '</p>';
+      const humanized = makeItHuman(analyzedText);
+      textDiv.innerHTML = humanized.replace(/\n\n/g, '</p><p class="mt-8">').replace(/\n/g, '<br>');
+      textDiv.innerHTML = '<p>' + textDiv.innerHTML + '</p>';
         output.classList.remove('hidden');
       }, 400);
     }
