@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Top 3 only
     const prioritizedFixes = fixes.slice(0, 3);
 
-        results.innerHTML = `
+                results.innerHTML = `
       <div class="max-w-5xl mx-auto space-y-16 animate-in">
         <!-- Big Score Circles -->
         <div class="grid md:grid-cols-2 gap-12 my-12">
@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { name: 'URL & Schema', you: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)), comp: Math.min(100, (data.urlSchema.compUrlMatch > 0 ? 50 : 0) + (data.urlSchema.compSchema ? 50 : 0)), border: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)) >= 50 ? 'border-green-500' : 'border-red-500', educ: { what: "Combines URL keyword inclusion and structured data presence.", how: "Include phrase in URL slug if possible; add JSON-LD schema (FAQ, Article, etc.).", why: "Descriptive URLs aid crawling; schema unlocks rich snippets and better SERP visibility." } }
           ].map((m) => `
             <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 border-l-8 ${m.border}">
-              <h4 class="text-xl font-bold text-center mb-6">${m.name}</h4>
+              <h4 class="text-xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100">${m.name}</h4>
               <div class="grid grid-cols-2 gap-6 mb-8">
                 <div class="text-center">
                   <div class="relative w-32 h-32 mx-auto">
@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
           `).join('')}
         </div>
 
-        <!-- Prioritized Gap Fixes – Top 3 with Full Rich Education -->
+        <!-- Prioritized Gap Fixes – Top 3 Only -->
         <div class="space-y-8">
           <h3 class="text-4xl font-black text-center mb-8">Prioritized Gap Fixes</h3>
           ${prioritizedFixes.length ? prioritizedFixes.map(fix => {
