@@ -164,18 +164,23 @@ document.addEventListener('DOMContentLoaded', () => {
       result.push(sentence);
     }
 
-    let final = result.join(' ').trim();
+        let final = result.join(' ').trim();
 
-    // Very rare neutral ending (universal)
-    if (Math.random() < 0.25) {
-      const endings = [
-        'A compelling and natural presentation.',
-        'Clear communication that resonates.',
-        'Engaging content with authentic flow.',
-        'Ready to connect with your audience.'
-      ];
-      final += ' ' + endings[Math.floor(Math.random() * endings.length)];
-    }
+    // Break into readable paragraphs (3–5 sentences each)
+    const sentenceArray = final.match(/[^.!?]+[.!?]+/g) || [final];
+    let paragraphs = [];
+    let currentPara = [];
+
+    sentenceArray.forEach(sentence => {
+      currentPara.push(sentence.trim());
+      if (currentPara.length >= 4 || Math.random() < 0.2) {
+        paragraphs.push(currentPara.join(' '));
+        currentPara = [];
+      }
+    });
+    if (currentPara.length > 0) paragraphs.push(currentPara.join(' '));
+
+    final = paragraphs.join('\n\n');
 
     return final;
   }
@@ -323,21 +328,25 @@ document.addEventListener('DOMContentLoaded', () => {
               }).join('')}
             </div>
 
-            <!-- Humanize Text Section (moved here, improved) -->
+          <!-- Humanize Text Section - Improved UX -->
             <div class="mt-16 text-center space-y-8">
-              <button id="humanizeBtn" class="px-16 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:opacity-90 transition transform hover:scale-105">
-                ⚡ One-Click Humanize Text
+              <button id="humanizeBtn" class="px-16 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:opacity-90 transition">
+                ⚡ Generate Humanized Example
               </button>
               <div id="humanizedOutput" class="hidden max-w-5xl mx-auto">
                 <div class="bg-white rounded-3xl shadow-2xl p-10 md:p-16 border border-gray-200">
+                  <p class="text-center text-base text-gray-500 mb-10 italic font-medium">
+                    This is an AI-generated example rewrite for inspiration only.<br>
+                    Always review, edit for your brand voice, and verify facts before publishing.
+                  </p>
                   <h3 class="text-4xl md:text-5xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
-                    Humanized Version (85–98% human pass rate)
+                    Example Humanized Version
                   </h3>
-                  <div id="humanizedText" class="prose prose-lg max-w-none text-gray-800 leading-relaxed text-left"></div>
+                  <div id="humanizedText" class="prose prose-lg max-w-none text-gray-800 leading-relaxed text-left space-y-6"></div>
                   <div class="mt-12 text-center">
                     <button onclick="navigator.clipboard.writeText(document.getElementById('humanizedText').innerText).then(()=>alert('Copied to clipboard!'))"
-                            class="px-12 py-5 bg-cyan-600 text-white font-bold text-xl rounded-2xl hover:bg-cyan-500 shadow-lg">
-                      📋 Copy Humanized Text
+                            class="px-12 py-5 bg-cyan-600 text-white font-bold text-xl rounded-2xl hover:bg-cyan-500 shadow-lg transition">
+                      📋 Copy Text
                     </button>
                   </div>
                 </div>
@@ -363,7 +372,9 @@ document.addEventListener('DOMContentLoaded', () => {
       output.classList.add('hidden');
       setTimeout(() => {
         const humanized = makeItHuman(analyzedText);
-        textDiv.innerHTML = humanized.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+        textDiv.innerHTML = humanized.replace(/\n\n/g, '</p><p class="mt-6">').replace(/\n/g, '<br>');
+        // Wrap in paragraph tags
+        textDiv.innerHTML = '<p>' + textDiv.innerHTML + '</p>';
         output.classList.remove('hidden');
       }, 400);
     }
