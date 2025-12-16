@@ -5,28 +5,46 @@ document.addEventListener('DOMContentLoaded', () => {
   const PROXY = 'https://cors-proxy.traffictorch.workers.dev/';
   let analyzedText = '';
 
-   function getMainContent(doc) {
-    const possibleMain = doc.querySelector('main, article, #main, .main, .content, .post, .page, [role="main"], .entry-content, .post-content, .article-body, .content-area, #content, .story-body');
-    if (possibleMain && possibleMain.textContent.trim().length > 500) return possibleMain;
+     function getMainContent(doc) {
+    // Try common main content containers first
+    const mainSelectors = 'main, article, [role="main"], #main, .main-content, .content-area, .site-content, .page-content, .post-content, .entry-content';
+    const mainEl = doc.querySelector(mainSelectors);
+    if (mainEl && mainEl.textContent.trim().length > 600) {
+      return mainEl;
+    }
 
-    const selectors = [
-      '.content', '.post', '.entry', '.article', '#content', '.main-content', '.page-content',
-      '[class*="content"]', '[class*="post"]', '[class*="article"]', '[class*="blog"]'
-    ];
-    for (const sel of selectors) {
-      const candidates = doc.querySelectorAll(sel);
-      for (const el of candidates) {
-        if (el.textContent.trim().length > 500) return el;
+    // Collect all potential content elements
+    const contentEls = doc.querySelectorAll('p, div, section, .text, .description, .content');
+    let bestEl = null;
+    let maxLength = 0;
+
+    for (const el of contentEls) {
+      // Skip if inside nav/header/footer or has nav classes
+      if (el.closest('nav, header, footer, .menu, .navbar, .sidebar')) continue;
+
+      const text = el.textContent.trim();
+      if (text.length > maxLength && text.length > 400) {
+        // Favor elements with multiple sentences (more likely real content)
+        const sentenceCount = (text.match(/[.!?]/g) || []).length;
+        if (sentenceCount > 5) {
+          maxLength = text.length;
+          bestEl = el;
+        }
       }
     }
 
+    if (bestEl) return bestEl;
+
+    // Final fallback: body with heavy junk removal
     const body = doc.body.cloneNode(true);
-    const junkSelectors = [
-      'nav', 'header', 'footer', 'aside', '.sidebar', '.menu', '.cookie', '.popup', '.advert',
-      '[class*="nav"]', '[class*="footer"]', '[class*="header"]', '.breadcrumbs', '.comments',
-      '.social', '.share', '.related', '.skip-link', 'a[aria-label*="skip"]'
+    const junk = [
+      'nav', 'header', 'footer', 'aside', '.menu', '.navbar', '.sidebar', '.nav', '.header', '.footer',
+      '.cookie', '.popup', '.advert', '.social', '.share', '.breadcrumbs', '.skip-link',
+      '[class*="menu"]', '[class*="nav"]', '[class*="header"]', '[class*="footer"]'
     ];
-    junkSelectors.forEach(s => body.querySelectorAll(s).forEach(e => e.remove()));
+    junk.forEach(selector => {
+      body.querySelectorAll(selector).forEach(e => e.remove());
+    });
 
     return body;
   }
@@ -77,49 +95,49 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-        function makeItHuman(raw) {
+          function makeItHuman(raw) {
     let t = raw.trim();
     if (t.length < 250) return t;
 
-    // Aggressive cleanup: remove common CTA/menu/short lines
+    // General cleanup — remove common navigation/CTA patterns without site-specific strings
     t = t.replace(/Skip to (main )?content/gi, '')
-         .replace(/(Make a Reservation|Book Now|Reserve|See Construction Announcement|Explore Rooms|Discover Restaurant|Check Schedule|Shop Gifts|Contact Us|Gift Vouchers|Merchandise|Live Entertainment)[\s\S]*?(?=[A-Z]|$)/gi, '')
+         .replace(/\b(?:Home|About|Services|Contact|Blog|Shop|Cart|Login|Signup|Reserve|Book Now|Make a Reservation|Explore|Discover|View More|Learn More|Get Started|Sign Up)\b/gi, '')
          .replace(/\s+/g, ' ')
          .trim();
 
-    // Split into sentences
     const sentences = t.match(/[^.!?]+[.!?]+/g) || [t];
     let result = [];
 
     const swaps = {
-      very: ['truly', 'exceptionally', 'genuinely'],
-      good: ['excellent', 'outstanding', 'wonderful'],
-      best: ['finest', 'leading', 'premier'],
-      big: ['vast', 'extensive', 'impressive'],
+      very: ['truly', 'genuinely', 'highly'],
+      good: ['excellent', 'strong', 'solid'],
+      best: ['finest', 'leading', 'top'],
+      great: ['wonderful', 'outstanding', 'superb'],
+      big: ['vast', 'extensive', 'significant'],
+      small: ['limited', 'compact', 'minor'],
       offer: ['provide', 'deliver', 'feature'],
-      experience: ['enjoy', 'discover', 'savor'],
-      iconic: ['legendary', 'timeless', 'renowned'],
-      breathtaking: ['stunning', 'spectacular', 'magnificent'],
-      perfect: ['ideal', 'ultimate', 'flawless']
+      experience: ['enjoy', 'discover', 'embrace'],
+      important: ['key', 'essential', 'critical'],
+      easy: ['simple', 'straightforward', 'clear']
     };
 
-    const subtleBursts = [
+    const subtleIntroducers = [
       'Notably,',
       'In particular,',
-      'Especially worth highlighting,',
-      'One standout feature is'
+      'Especially,',
+      'One key aspect is'
     ];
 
-    let burstUsed = false;
+    let introducerUsed = false;
 
     for (let s of sentences) {
       let sentence = s.trim();
-      if (!sentence || sentence.length < 20) continue;
+      if (!sentence || sentence.length < 30) continue; // skip short menu-like lines
 
-      // Rare subtle burst for flow
-      if (!burstUsed && result.length > 2 && Math.random() < 0.15) {
-        result.push(subtleBursts[Math.floor(Math.random() * subtleBursts.length)]);
-        burstUsed = true;
+      // Rare subtle introducer for flow
+      if (!introducerUsed && result.length > 2 && Math.random() < 0.15) {
+        result.push(subtleIntroducers[Math.floor(Math.random() * subtleIntroducers.length)]);
+        introducerUsed = true;
       }
 
       let words = sentence.split(' ');
@@ -133,11 +151,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       sentence = words.join(' ');
 
-      // Gentle sentence splitting for readability
+      // Gentle split for long sentences
       if (sentence.split(' ').length > 25 && Math.random() < 0.5) {
         const mid = Math.floor(sentence.length / 2);
-        const breakPoint = sentence.lastIndexOf([',', ';', '—'][Math.floor(Math.random() * 3)], mid);
-        if (breakPoint > mid - 25) {
+        const breakPoint = sentence.lastIndexOf([',', ';', '—', ':'][Math.floor(Math.random() * 4)], mid);
+        if (breakPoint > mid - 30 && breakPoint > 15) {
           result.push(sentence.slice(0, breakPoint + 1).trim());
           sentence = sentence.slice(breakPoint + 1).trim();
         }
@@ -148,13 +166,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let final = result.join(' ').trim();
 
-    // Very rare, neutral professional ending
+    // Very rare neutral ending (universal)
     if (Math.random() < 0.25) {
       const endings = [
-        'An experience worth discovering.',
-        'Where memorable moments begin.',
-        'Designed to inspire and delight.',
-        'Your next chapter awaits.'
+        'A compelling and natural presentation.',
+        'Clear communication that resonates.',
+        'Engaging content with authentic flow.',
+        'Ready to connect with your audience.'
       ];
       final += ' ' + endings[Math.floor(Math.random() * endings.length)];
     }
@@ -182,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     results.classList.remove('hidden');
 
-    try {
+        try {
       const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable');
       const html = await res.text();
@@ -190,16 +208,35 @@ document.addEventListener('DOMContentLoaded', () => {
       const mainElement = getMainContent(doc);
       const cleanElement = mainElement.cloneNode(true);
       cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
+
       let text = cleanElement.textContent || '';
-      text = text.replace(/Skip to (main )?content/gi, '').replace(/\s+/g, ' ').trim();
+
+      // Universal cleanup — no site-specific strings
+      text = text
+        // Remove "Skip to content" links
+        .replace(/Skip to (main )?content/gi, '')
+        // Remove common navigation/CTA words that often appear alone or in short lines
+        .replace(/\b(Home|About|Services|Contact|Blog|Shop|Cart|Login|Signup|Reserve|Book|Explore|Discover|View|Learn|Get Started|Sign Up|Menu|Accommodation|Food|Wine|Entertainment|Gift|Merchandise|Construction)\b/gi, '')
+        // Collapse whitespace
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      // Split into lines and keep only substantial ones (filter out menu items, short CTAs)
+      const lines = text.split('\n')
+        .map(l => l.trim())
+        .filter(l => l.length > 40 && !/^(Home|About|Contact|Reserve|Book|Menu|Shop|Login|$)/i.test(l));
+
+      text = lines.join(' ');
+
       const wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
       analyzedText = text;
+
       const ai = analyzeAIContent(text);
       const yourScore = ai.score;
-      const mainNormalized = 100 - yourScore; // reverse: lower AI score = better
+      const mainNormalized = 100 - yourScore; // reverse: lower AI score = better human
       const mainGradeColor = getGradeColor(mainNormalized / 10);
       const verdict = yourScore >= 70 ? 'Very Likely AI' : yourScore >= 40 ? 'Moderate AI Patterns' : 'Likely Human';
-
+      
       results.innerHTML = `
         <style>
           .animate-stroke { transition: stroke-dasharray 1.5s ease-out; }
