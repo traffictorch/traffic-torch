@@ -158,12 +158,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const forecastTier = yourScore >= 90 ? 'Top 3 Potential' : yourScore >= 80 ? 'Top 10 Likely' : yourScore >= 60 ? 'Page 1 Possible' : 'Page 2+';
     const gap = yourScore > compScore ? '+' + (yourScore - compScore) : yourScore < compScore ? (compScore - yourScore) : '±0';
 
-    const fixes = [];
-    if (yourScore < compScore) {
-      if (data.meta.yourMatches === 0 && data.meta.compMatches > 0) fixes.push("Add phrase to title and meta description.");
-      if (yourWords < compWords) fixes.push(`Add ${compWords - yourWords} words of depth.`);
-      if (yourAltPhrase === 0 && compAltPhrase > 0) fixes.push("Include phrase in key image alt text.");
-    }
+     const fixes = [];
+ if (yourScore < compScore || yourScore === compScore) {  // Show suggestions even if tied for education
+   if (data.meta.yourMatches === 0) fixes.push("Add phrase to title and meta description.");
+   if (yourWords < 800 || yourWords < compWords) fixes.push(`Expand content depth — aim for at least 800 words (currently ${yourWords}).`);
+   if (data.headings.yourH1Match === 0) fixes.push("Include phrase in H1 heading.");
+   if (parseFloat(data.content.yourDensity) < 1) fixes.push("Improve content density — naturally use phrase more frequently.");
+   if (data.alts.yourPhrase === 0) fixes.push("Include phrase in key image alt text.");
+   if (data.anchors.your === 0) fixes.push("Use phrase in internal anchor text.");
+   if (data.urlSchema.yourUrlMatch === 0) fixes.push("Include phrase in URL slug if possible.");
+   if (data.urlSchema.yourSchema === 0) fixes.push("Add structured data (JSON-LD schema markup).");
+ }
 
     results.innerHTML = `
       <div class="max-w-5xl mx-auto space-y-16 animate-in">
@@ -331,43 +336,67 @@ document.addEventListener('DOMContentLoaded', () => {
           `).join('')}
         </div>
 
-        <!-- Prioritized Gap Fixes -->
-        <div class="space-y-8">
-          <h3 class="text-4xl font-black text-center mb-8">Prioritized Gap Fixes</h3>
-          ${fixes.length ? fixes.map(fix => {
-            const education = {
-              "Add phrase to title and meta description.": {
-                what: "The page title and meta description are primary signals search engines use to understand topic relevance.",
-                how: "Include the exact target phrase naturally in both the <title> tag and meta description.",
-                why: "Strong meta relevance significantly boosts click-through rate and ranking signals."
-              },
-              "Include phrase in key image alt text.": {
-                what: "Image alt text helps search engines understand visual content and provides an additional relevance signal.",
-                how: "Add the target phrase to alt attributes of the most important/relevant images.",
-                why: "Improves accessibility and gives extra on-page keyword reinforcement."
-              }
-            }[fix] || {};
-            const depthMatch = fix.match(/Add (\d+) words of depth\./);
-            const depthEduc = depthMatch ? {
-              what: "Content depth shows topical authority and provides more context for the target phrase.",
-              how: "Expand sections with valuable, unique information while naturally incorporating related terms.",
-              why: "Longer, comprehensive content tends to rank higher for competitive phrases."
-            } : {};
-            return `
-              <div class="p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border-l-8 border-orange-500">
-                <div class="flex gap-6 items-start">
-                  <div class="text-5xl mt-1">🔧</div>
-                  <div class="flex-1 space-y-6">
-                    <p class="text-2xl font-bold">${fix}</p>
-                    ${(education.what || depthEduc.what) ? `<div><p class="font-semibold text-orange-600 dark:text-orange-400">What is it?</p><p class="mt-2">${education.what || depthEduc.what}</p></div>` : ''}
-                    ${(education.how || depthEduc.how) ? `<div><p class="font-semibold text-orange-600 dark:text-orange-400">How to fix?</p><p class="mt-2">${education.how || depthEduc.how}</p></div>` : ''}
-                    ${(education.why || depthEduc.why) ? `<div><p class="font-semibold text-orange-600 dark:text-orange-400">Why it matters?</p><p class="mt-2">${education.why || depthEduc.why}</p></div>` : ''}
-                  </div>
-                </div>
-              </div>
-            `;
-          }).join('') : '<p class="text-center text-green-500 dark:text-green-400 text-3xl font-bold">You are ahead or tied — strong position!</p>'}
-        </div>
+             <!-- Prioritized Gap Fixes – Expanded with More Metrics -->
+     <div class="space-y-8">
+       <h3 class="text-4xl font-black text-center mb-8">Prioritized Gap Fixes</h3>
+       ${fixes.length ? fixes.map(fix => {
+         let educ = {};
+         if (fix.includes('title and meta description')) {
+           educ = { what: "Your title or meta description is missing the target phrase — a top relevance signal.", how: "Add the phrase naturally near the start of the <title> (under 60 chars) and once in meta description (under 155 chars).", why: "Boosts click-through rates and strengthens ranking signals significantly." };
+         } else if (fix.includes('content depth')) {
+           educ = { what: `Your page has only ${yourWords} words of main content${compWords > yourWords ? ` (${compWords - yourWords} fewer than competitor)` : ''}.`, how: "Add valuable sections: FAQs, examples, step-by-step guides, stats, or user stories while naturally using the phrase.", why: "In-depth content builds topical authority and consistently outperforms shorter pages." };
+         } else if (fix.includes('H1 heading')) {
+           educ = { what: "Your H1 does not contain the target phrase.", how: "Rewrite the main H1 to include the exact or close-variant phrase while keeping it compelling and benefit-focused.", why: "H1 is the strongest heading signal for topic relevance." };
+         } else if (fix.includes('content density')) {
+           educ = { what: `Phrase appears only ${yourContentMatches} times (${data.content.yourDensity}% density).`, how: "Incorporate the phrase naturally in intro, subheadings, body, and conclusion — aim for 1-2% density.", why: "Balanced usage signals relevance without risking over-optimization." };
+         } else if (fix.includes('image alt text')) {
+           educ = { what: "No image alt text contains the target phrase.", how: "Update alt attributes of key images (hero, featured) descriptively to include the phrase.", why: "Improves accessibility and adds extra relevance + image search potential." };
+         } else if (fix.includes('anchor text')) {
+           educ = { what: "No internal links use the target phrase as anchor text.", how: "Add or edit relevant internal links to use the phrase naturally.", why: "Distributes relevance across your site and improves navigation." };
+         } else if (fix.includes('URL slug')) {
+           educ = { what: "The page URL does not contain the target phrase.", how: "If possible, restructure the URL to include the phrase (e.g., /phrase-relevant-page).", why: "Keyword-rich URLs are easier to crawl and often get higher click-through." };
+         } else if (fix.includes('structured data')) {
+           educ = { what: "No JSON-LD schema markup detected on your page.", how: "Add appropriate schema (FAQPage, Article, LocalBusiness, etc.) via <script type=\"application/ld+json\">.", why: "Enables rich snippets, better SERP visibility, and deeper search engine understanding." };
+         }
+         return `
+           <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 border-l-8 border-red-500">
+             <div class="flex gap-6 items-start">
+               <div class="text-5xl">🔧</div>
+               <div class="flex-1">
+                 <p class="text-2xl font-bold mb-4">${fix}</p>
+                 <button onclick="this.closest('div').querySelector('.fix-details').classList.toggle('hidden')"
+                         class="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow">
+                   Show Details
+                 </button>
+                 <div class="fix-details mt-8 space-y-6 hidden">
+                   <div>
+                     <p class="font-semibold text-orange-600 dark:text-orange-400">What is it?</p>
+                     <p class="mt-2">${educ.what || ''}</p>
+                   </div>
+                   <div>
+                     <p class="font-semibold text-orange-600 dark:text-orange-400">How to fix?</p>
+                     <p class="mt-2">${educ.how || ''}</p>
+                   </div>
+                   <div>
+                     <p class="font-semibold text-orange-600 dark:text-orange-400">Why it matters?</p>
+                     <p class="mt-2">${educ.why || ''}</p>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+         `;
+       }).join('') : `
+         <div class="text-center p-12 bg-green-50 dark:bg-green-900/20 rounded-2xl border-l-8 border-green-500">
+           <p class="text-3xl font-bold text-green-600 dark:text-green-400">
+             🎉 Strong position — no major gaps detected!
+           </p>
+           <p class="mt-4 text-xl text-gray-600 dark:text-gray-300">
+             Your page shows excellent on-page optimization for "${phrase}".
+           </p>
+         </div>
+       `}
+     </div>
 
         <!-- Predictive Rank Forecast -->
         <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
