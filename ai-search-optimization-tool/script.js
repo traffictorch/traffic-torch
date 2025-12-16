@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="absolute inset-0 flex items-center justify-center">
                <div class="text-center">
                 <div class="text-6xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">${yourScore}</div>
-                <div class="text-2xl text-white/90">/100</div>
+                <div class="text-2xl text-gray-300 dark:text-gray-600">/100</div>
               </div>
             </div>
             </div>
