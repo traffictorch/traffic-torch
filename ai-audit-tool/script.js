@@ -77,57 +77,55 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-      function makeItHuman(raw) {
+        function makeItHuman(raw) {
     let t = raw.trim();
-    if (t.length < 200) return t;
+    if (t.length < 250) return t;
 
-    // Aggressive but safe junk removal for menus, repeated nav, etc.
+    // Aggressive cleanup: remove common CTA/menu/short lines
     t = t.replace(/Skip to (main )?content/gi, '')
-         .replace(/(Menu|Accommodation|Food\s*&\s*Wine|Entertainment|Gift Vouchers|Merchandise|Contact|Reserve|Reservation|Book Now|Explore Rooms|Discover Restaurant|Live Entertainment|Shop Gifts|Construction Announcement)[\s\S]*?(?=([A-Z]|$))/gi, '')
+         .replace(/(Make a Reservation|Book Now|Reserve|See Construction Announcement|Explore Rooms|Discover Restaurant|Check Schedule|Shop Gifts|Contact Us|Gift Vouchers|Merchandise|Live Entertainment)[\s\S]*?(?=[A-Z]|$)/gi, '')
          .replace(/\s+/g, ' ')
          .trim();
 
+    // Split into sentences
     const sentences = t.match(/[^.!?]+[.!?]+/g) || [t];
     let result = [];
 
     const swaps = {
-      very: ['really', 'truly', 'extremely', 'highly'],
-      good: ['great', 'excellent', 'solid', 'strong'],
-      best: ['finest', 'top', 'leading', 'premier'],
-      big: ['large', 'major', 'significant', 'substantial'],
-      small: ['minor', 'limited', 'compact'],
-      use: ['try', 'apply', 'work with', 'utilize'],
-      help: ['assist', 'support', 'boost', 'enhance'],
-      important: ['key', 'critical', 'essential', 'vital'],
-      easy: ['simple', 'straightforward', 'clear', 'effortless'],
-      offer: ['provide', 'feature', 'deliver'],
-      experience: ['enjoy', 'discover', 'immerse in']
+      very: ['truly', 'exceptionally', 'genuinely'],
+      good: ['excellent', 'outstanding', 'wonderful'],
+      best: ['finest', 'leading', 'premier'],
+      big: ['vast', 'extensive', 'impressive'],
+      offer: ['provide', 'deliver', 'feature'],
+      experience: ['enjoy', 'discover', 'savor'],
+      iconic: ['legendary', 'timeless', 'renowned'],
+      breathtaking: ['stunning', 'spectacular', 'magnificent'],
+      perfect: ['ideal', 'ultimate', 'flawless']
     };
 
-    const naturalBursts = [
-      'Here’s something to consider:',
-      'One thing to note:',
-      'In practice:',
-      'What stands out is:',
-      'A helpful approach:'
+    const subtleBursts = [
+      'Notably,',
+      'In particular,',
+      'Especially worth highlighting,',
+      'One standout feature is'
     ];
 
     let burstUsed = false;
 
     for (let s of sentences) {
       let sentence = s.trim();
-      if (!sentence || sentence.length < 15) continue;
+      if (!sentence || sentence.length < 20) continue;
 
-      // Rare professional burst
-      if (!burstUsed && result.length > 1 && Math.random() < 0.15) {
-        result.push(naturalBursts[Math.floor(Math.random() * naturalBursts.length)]);
+      // Rare subtle burst for flow
+      if (!burstUsed && result.length > 2 && Math.random() < 0.15) {
+        result.push(subtleBursts[Math.floor(Math.random() * subtleBursts.length)]);
         burstUsed = true;
       }
 
       let words = sentence.split(' ');
       for (let i = 0; i < words.length; i++) {
         const clean = words[i].toLowerCase().replace(/[^a-z]/g, '');
-        if (swaps[clean] && Math.random() < 0.4) {
+        if (swaps[clean] && Math.random() < 0.35) {
           const options = swaps[clean];
           words[i] = words[i].replace(new RegExp(clean, 'gi'), options[Math.floor(Math.random() * options.length)]);
         }
@@ -135,11 +133,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       sentence = words.join(' ');
 
-      // Split long sentences for better flow
-      if (sentence.split(' ').length > 26 && Math.random() < 0.5) {
+      // Gentle sentence splitting for readability
+      if (sentence.split(' ').length > 25 && Math.random() < 0.5) {
         const mid = Math.floor(sentence.length / 2);
-        const breakPoint = sentence.lastIndexOf(['.', ',', ';', ':'][Math.floor(Math.random() * 4)], mid);
-        if (breakPoint > mid - 30 && breakPoint > 20) {
+        const breakPoint = sentence.lastIndexOf([',', ';', '—'][Math.floor(Math.random() * 3)], mid);
+        if (breakPoint > mid - 25) {
           result.push(sentence.slice(0, breakPoint + 1).trim());
           sentence = sentence.slice(breakPoint + 1).trim();
         }
@@ -150,13 +148,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let final = result.join(' ').trim();
 
-    // Rare, neutral professional ending
-    if (Math.random() < 0.3) {
+    // Very rare, neutral professional ending
+    if (Math.random() < 0.25) {
       const endings = [
-        'Your message, clear and compelling.',
-        'Engaging content that connects.',
-        'Natural writing that resonates.',
-        'Ready to capture attention.'
+        'An experience worth discovering.',
+        'Where memorable moments begin.',
+        'Designed to inspire and delight.',
+        'Your next chapter awaits.'
       ];
       final += ' ' + endings[Math.floor(Math.random() * endings.length)];
     }
