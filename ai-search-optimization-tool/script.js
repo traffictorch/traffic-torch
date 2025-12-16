@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
             </div>
-          </div>
+          </div> 
 
           <!-- 8 Module Cards -->
           <div class="grid md:grid-cols-4 gap-6 my-16">
