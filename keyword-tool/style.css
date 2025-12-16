@@ -167,7 +167,7 @@ h2 + p {
   color: #4b5563; /* gray-600 light mode */
 }
 .dark .text-left p {
-  color: #d1d5db !important; /* gray-300 dark mode */
+  color: #1e1f20 !important; /* gray-300 dark mode */
 }
 
 /* Predictive Rank Forecast info text */
