@@ -55,7 +55,40 @@ body { transition: background-color 0.3s ease; }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 
+/* Big Score Number Color - Light Mode */
+.score-low {
+  color: #ef4444 !important; /* Red for <60 */
+}
+.score-mid {
+  color: #fb923c !important; /* Orange for 60-79 */
+}
+.score-high {
+  color: #22c55e !important; /* Green for ≥80 */
+}
 
+/* Big Score Number Color - - Dark Mode Overrides */
+.dark .score-low {
+  color: #f87171 !important; /* Lighter red in dark mode */
+}
+.dark .score-mid {
+  color: #fdba74 !important; /* Lighter orange in dark mode */
+}
+.dark .score-high {
+  color: #86efac !important; /* Lighter green in dark mode */
+}
+
+/* /100 text - consistent gray in both modes */
+.score-slash {
+  color: #9ca3af !important; /* gray-400 */
+}
+.dark .score-slash {
+  color: #6b7280 !important; /* gray-500 in dark */
+}
+
+/* Optional: Ensure drop-shadow is visible in both modes */
+.score-number {
+  text-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
 
 
 
