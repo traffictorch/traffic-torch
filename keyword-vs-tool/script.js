@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
           `).join('')}
         </div>
 
-         <!-- Prioritized Gap Fixes – Full Rich Education + All Gaps -->
+                  <!-- Prioritized Gap Fixes – Top 3 Only -->
         <div class="space-y-8">
           <h3 class="text-4xl font-black text-center mb-8">Prioritized Gap Fixes</h3>
           ${prioritizedFixes.length ? prioritizedFixes.map(fix => {
@@ -364,7 +364,6 @@ Example title: "${phrase.charAt(0).toUpperCase() + phrase.slice(1)} | Your Brand
 • Statistics and data
 • Comparison tables
 • Practical tips or checklists
-
 Target 800–1500+ words of focused content.`,
                 why: `In-depth content demonstrates expertise, improves dwell time, satisfies intent better, and consistently ranks higher in competitive searches.`
               };
@@ -438,7 +437,7 @@ Target 800–1500+ words of focused content.`,
             </div>
           `}
         </div>
-
+        
         <!-- Predictive Rank Forecast -->
         <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
           <h3 class="text-4xl font-black text-center mb-8">Predictive Rank Forecast</h3>
