@@ -99,24 +99,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
       results.innerHTML = `
         <div class="max-w-5xl mx-auto space-y-16 py-12">
-          <!-- Big Overall Score Circle -->
+		 <!-- Big Overall Score Circle - Modern Keyword Tool Style -->
           <div class="flex justify-center my-12">
             <div class="relative">
-              <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
-                <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
-                <circle cx="130" cy="130" r="120" stroke="url(#bigGradient)" stroke-width="18" fill="none"
-                        stroke-dasharray="${(ux.score / 100) * 754} 754" stroke-linecap="round"/>
-                <defs>
-                  <linearGradient id="bigGradient">
-                    <stop offset="0%" stop-color="#ef4444"/>
-                    <stop offset="100%" stop-color="#22c55e"/>
-                  </linearGradient>
-                </defs>
+              <div class="absolute inset-0 bg-white/40 dark:bg-black/40 backdrop-blur-md rounded-full"></div>
+              <svg width="280" height="280" viewBox="0 0 280 280" class="transform -rotate-90">
+                <circle cx="140" cy="140" r="128" stroke="#e5e7eb" stroke-width="24" fill="none"/>
+                <circle cx="140" cy="140" r="128" stroke="${ux.score < 60 ? '#ef4444' : ux.score < 80 ? '#fb923c' : '#22c55e'}" stroke-width="24" fill="none"
+                        stroke-dasharray="${(ux.score / 100) * 804} 804" stroke-linecap="round"/>
               </svg>
-              <div class="absolute inset-0 flex items-center justify-center">
+              <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div class="text-center">
-                  <div class="text-7xl font-black text-white drop-shadow-2xl">${ux.score}</div>
-                  <div class="text-2xl text-white/90">/100 Usability</div>
+                  <div class="text-8xl font-black drop-shadow-2xl" style="color: ${ux.score < 60 ? '#ef4444' : ux.score < 80 ? '#fb923c' : '#22c55e'};">
+                    ${ux.score}
+                  </div>
+                  <div class="text-3xl text-gray-600 dark:text-gray-400">/100 Usability</div>
                 </div>
               </div>
             </div>
