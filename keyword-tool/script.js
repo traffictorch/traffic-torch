@@ -163,9 +163,9 @@ document.addEventListener('DOMContentLoaded', () => {
                       stroke-dasharray="${(yourScore / 100) * 754} 754" stroke-linecap="round"/>
             </svg>
             <div class="absolute inset-0 flex items-center justify-center">
-              <div class="text-center">
-                <div class="text-6xl font-black text-white drop-shadow-2xl">${yourScore}</div>
-                <div class="text-2xl text-white/90">/100</div>
+                <div class="text-center">
+                <div class="text-6xl font-black score-number ${yourScore >= 80 ? 'score-high' : yourScore >= 60 ? 'score-mid' : 'score-low'}">${yourScore}</div>
+                <div class="text-2xl score-slash">/100</div>
               </div>
             </div>
           </div>
