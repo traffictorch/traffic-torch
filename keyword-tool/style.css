@@ -99,17 +99,6 @@ body { transition: background-color 0.3s ease; }
 
 
 
-/* Dark mode text visibility fixes for details sections */
-.dark .text-blue-600 {
-  color: #60a5fa !important; /* Lighter blue for dark mode */
-}
-.dark .text-green-600 {
-  color: #6ee7b7 !important; /* Lighter green for dark mode */
-}
-.dark .text-orange-600 {
-  color: #fdba74 !important; /* Lighter orange for dark mode */
-}
-
 /* Ensure detail paragraphs are readable in dark mode */
 .dark .text-left p {
   color: #e5e7eb !important; /* Light gray text for content */
@@ -154,13 +143,8 @@ h2 + p {
   color: #f3f4f6; /* gray-100 dark mode */
 }
 
-/* "What is it?", "How to fix?", "Why it matters?" labels and content */
-.text-blue-600, .text-green-600, .text-orange-600 {
-  color: #1f2937 !important; /* dark gray in light mode */
-}
-.dark .text-blue-600, .dark .text-green-600, .dark .text-orange-600 {
-  color: #f3f4f6 !important; /* light gray in dark mode */
-}
+
+
 
 /* Detail paragraphs under labels - readable gray */
 .text-left p {
