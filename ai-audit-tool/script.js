@@ -156,9 +156,9 @@ document.addEventListener('DOMContentLoaded', () => {
       analyzedText = text;
       const ai = analyzeAIContent(text);
       const yourScore = ai.score;
-      const mainColor = yourScore >= 70 ? '#ef4444' : yourScore >= 40 ? '#f97316' : '#10b981';
+      const mainNormalized = 100 - yourScore; // reverse: lower AI score = better
+      const mainGradeColor = getGradeColor(mainNormalized / 10);
       const verdict = yourScore >= 70 ? 'Very Likely AI' : yourScore >= 40 ? 'Moderate AI Patterns' : 'Likely Human';
-      const forecast = yourScore >= 70 ? 'Page 2+' : yourScore >= 50 ? 'Page 1 Possible' : yourScore >= 30 ? 'Top 10 Possible' : 'Top 3 Potential';
 
       results.innerHTML = `
         <style>
@@ -167,50 +167,50 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="min-h-screen bg-gray-50 py-12 px-4">
           <div class="max-w-4xl mx-auto space-y-16">
 
-            <!-- Big Score Circle + Verdict Below -->
+            <!-- Big Score Circle -->
             <div class="flex justify-center">
               <div class="relative w-64 h-64">
                 <svg viewBox="0 0 256 256" class="absolute inset-0 -rotate-90">
                   <circle cx="128" cy="128" r="110" fill="none" stroke="#e2e8f0" stroke-width="24"/>
-                  <circle cx="128" cy="128" r="110" fill="none" stroke="${mainColor}" stroke-width="20"
+                  <circle cx="128" cy="128" r="110" fill="none" stroke="${mainGradeColor}" stroke-width="20"
                           stroke-dasharray="0 691"
                           stroke-linecap="round"
                           class="animate-stroke"
                           style="stroke-dasharray: ${(yourScore / 100) * 691} 691;"/>
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <div class="text-7xl font-black text-gray-900">${yourScore}</div>
+                  <div class="text-7xl font-black" style="color: ${mainGradeColor}">${yourScore}</div>
                   <div class="text-lg text-gray-600">AI Score</div>
                   <div class="text-base text-gray-500">/100</div>
                 </div>
               </div>
             </div>
             <div class="text-center mt-4">
-              <p class="text-3xl font-bold" style="color: ${mainColor}">${verdict}</p>
+              <p class="text-3xl font-bold" style="color: ${mainGradeColor}">${verdict}</p>
             </div>
             <p class="text-center text-base text-gray-600">Scanned ${wordCount.toLocaleString()} words from main content</p>
 
-            <!-- Small Metrics (all /10 scale) -->
+            <!-- Small Metrics (0–10 scale with colored number + left border) -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
               ${[
-                {name: 'Perplexity', raw: ai.perplexity, normalized: Math.max(0, 10 - (ai.perplexity - 4) / 0.8)}, // lower raw = higher score
+                {name: 'Perplexity', raw: ai.perplexity, normalized: Math.max(0, 10 - (ai.perplexity - 4) / 0.8)},
                 {name: 'Burstiness', raw: ai.burstiness, normalized: Math.min(10, ai.burstiness)},
                 {name: 'Repetition', raw: ai.repetition, normalized: Math.max(0, 10 - ai.repetition / 10)},
                 {name: 'Sentence Length', raw: ai.sentenceLength, normalized: Math.max(0, 10 - Math.abs(ai.sentenceLength - 19) * 0.5)},
                 {name: 'Vocabulary', raw: ai.vocab, normalized: ai.vocab / 10}
               ].map(m => {
-                const color = getGradeColor(m.normalized);
+                const gradeColor = getGradeColor(m.normalized);
                 const displayScore = m.normalized.toFixed(1);
                 return `
-                <div class="bg-white rounded-2xl shadow-md p-6 text-center">
+                <div class="bg-white rounded-2xl shadow-md p-6 text-center border-l-4" style="border-left-color: ${gradeColor}">
                   <div class="relative w-32 h-32 mx-auto">
                     <svg viewBox="0 0 128 128" class="-rotate-90">
                       <circle cx="64" cy="64" r="56" stroke="#f1f5f9" stroke-width="12" fill="none"/>
-                      <circle cx="64" cy="64" r="56" stroke="${color}" stroke-width="12" fill="none"
+                      <circle cx="64" cy="64" r="56" stroke="${gradeColor}" stroke-width="12" fill="none"
                               stroke-dasharray="${m.normalized * 35.2} 352" stroke-linecap="round"/>
                     </svg>
                     <div class="absolute inset-0 flex flex-col items-center justify-center">
-                      <div class="text-3xl font-bold text-gray-900">${displayScore}</div>
+                      <div class="text-3xl font-bold" style="color: ${gradeColor}">${displayScore}</div>
                       <div class="text-sm text-gray-500">/10</div>
                     </div>
                   </div>
@@ -219,16 +219,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     Show Info
                   </button>
                   <div class="hidden mt-4 space-y-2 text-sm text-gray-600">
-                    <p><span class="font-bold text-blue-600">What:</span> ${m.name === 'Perplexity' ? 'How predictable the text is (lower raw better)' : m.name === 'Burstiness' ? 'Variation in sentence length (higher better)' : m.name === 'Repetition' ? 'Repeated phrases % (lower better)' : m.name === 'Sentence Length' ? 'Average words per sentence (ideal 15–23)' : 'Unique word diversity % (higher better)'}</p>
-                    <p><span class="font-bold text-green-600">How to improve:</span> Add personal voice, vary structure, use synonyms, mix short/long sentences</p>
-                    <p><span class="font-bold text-orange-600">Why it matters:</span> Google rewards natural, engaging, human-like writing</p>
+                    <p><span class="font-bold text-blue-600">What:</span> ${m.name === 'Perplexity' ? 'How predictable the text is (lower better)' : m.name === 'Burstiness' ? 'Variation in sentence rhythm (higher better)' : m.name === 'Repetition' ? 'Repeated phrases (lower better)' : m.name === 'Sentence Length' ? 'Average words per sentence (ideal 15–23)' : 'Unique word diversity (higher better)'}</p>
+                    <p><span class="font-bold text-green-600">How to improve:</span> Add personal touch, vary structure, enrich vocabulary</p>
+                    <p><span class="font-bold text-orange-600">Why:</span> Google rewards natural human-like content</p>
                   </div>
                 </div>
               `;
               }).join('')}
             </div>
 
-            <!-- Prioritized Fixes, Forecast, Humanizer – same as previous clean version -->
+            <!-- Prioritized Fixes, Forecast, Humanizer remain clean and consistent with previous version -->
 
           </div>
         </div>
