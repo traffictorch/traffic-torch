@@ -50,9 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
     results.innerHTML = `
       <div class="flex flex-col items-center justify-center py-20">
         <div class="relative">
-          <div class="w-32 h-32 border-8 border-gray-200 rounded-full"></div>
-          <div class="absolute inset-0 w-32 h-32 border-8 border-orange-500 rounded-full animate-spin border-t-transparent"></div>
-        </div>
+          <div class="w-20 h-20 border-6 border-gray-200 rounded-full"></div>
+			<div class="absolute inset-0 w-20 h-20 border-6 border-orange-500 rounded-full animate-spin border-t-transparent"></div>
+		</div>
         <p class="mt-8 text-2xl font-medium text-gray-600 dark:text-gray-300">Analyzing pages for "${phrase}"...</p>
         <div id="progress-modules" class="mt-12 space-y-4 w-full max-w-md"></div>
       </div>
@@ -75,16 +75,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const interval = setInterval(() => {
       if (idx < messages.length) {
         progressModules.innerHTML += `
-          <div class="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl shadow">
-            <div class="w-8 h-8 bg-orange-500 rounded-full animate-pulse"></div>
-            <p class="text-lg">${messages[idx]}</p>
-          </div>
-        `;
+  <div class="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl shadow opacity-0 animate-fade-in">
+    <div class="w-8 h-8 bg-orange-500 rounded-full animate-pulse"></div>
+    <p class="text-lg">${messages[idx]}</p>
+  </div>
+`;
         idx++;
       } else {
         clearInterval(interval);
       }
-    }, Math.random() * 900 + 600);
+    }, Math.random() * 1200 + 800); // 800–2000ms delay
     results.dataset.interval = interval;
 
     const [yourDoc, compDoc] = await Promise.all([fetchPage(yourUrl), fetchPage(compUrl)]);
