@@ -74,17 +74,30 @@
         Instant UX usability score • Quit risk detection • Educational deep-dive fixes
       </p>
       
-      <div class="max-w-2xl mx-auto my-10">
-  <details>
-    <summary class="px-1 py-1 text-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full cursor-pointer flex justify-center items-center gap-4 shadow-md hover:shadow-lg transition-shadow">
-      How it works?
-      <span class="text-2xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
-    </summary>
-    <div class="mt-2 px-6 py-4 bg-white dark:bg-gray-800 rounded-2xl text-center text-gray-700 dark:text-gray-300 shadow-inner">
-      Coming soon.
-    </div>
-  </details>
-</div>
+<div class="max-w-4xl mx-auto my-12 space-y-8">
+
+  <!-- How it Works -->
+  <div class="max-w-2xl mx-auto">
+    <details>
+      <summary class="px-8 py-4 text-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full cursor-pointer flex justify-center items-center gap-4 shadow-md hover:shadow-lg transition-shadow">
+        How it works?
+        <span class="text-2xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
+      </summary>
+      <div class="mt-6 px-8 py-6 bg-white dark:bg-gray-900 rounded-3xl shadow-xl prose prose-lg dark:prose-invert max-w-none">
+        <h3 class="text-2xl font-black mb-4">Technical Analysis Process</h3>
+        <p>The Quit Risk Tool performs an instant client-side usability audit by securely fetching and parsing your page's HTML through a CORS proxy.</p>
+        <p>It evaluates five core UX factors directly from the DOM structure:</p>
+        <ul class="space-y-2">
+          <li><strong>Readability</strong>: Applies the Flesch Reading Ease formula to main content text — measuring sentence length and word complexity for ease of understanding.</li>
+          <li><strong>Navigation</strong>: Counts anchor links to detect potential menu overload or distraction risks that can increase cognitive load.</li>
+          <li><strong>Accessibility</strong>: Uses image count as a proxy for alt-text coverage potential, rewarding visual content while highlighting optimization needs.</li>
+          <li><strong>Mobile</strong>: Applies modern responsiveness heuristics based on common HTML patterns and viewport signals.</li>
+          <li><strong>Speed</strong>: Provides a performance proxy through asset density analysis, encouraging optimization best practices.</li>
+        </ul>
+        <p>These metrics are averaged into an overall usability score, generating prioritized fixes and a predictive ranking forecast based on engagement signal correlations.</p>
+      </div>
+    </details>
+  </div>
       
 	<form id="audit-form" class="max-w-2xl mx-auto space-y-4">
   <div class="flex flex-col sm:flex-row gap-4">
@@ -110,17 +123,28 @@
       <!-- Your existing report sections go here -->
     </div>
     
-    <div class="max-w-2xl mx-auto my-10">
-  <details>
-    <summary class="px-1 py-1 text-xl font-bold bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-full cursor-pointer flex justify-center items-center gap-4 shadow-md hover:shadow-lg transition-shadow">
-      Why it matters?
-      <span class="text-2xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
-    </summary>
-    <div class="mt-2 px-6 py-4 bg-white dark:bg-gray-800 rounded-2xl text-center text-gray-700 dark:text-gray-300 shadow-inner">
-      Coming soon.
-    </div>
-  </details>
-</div>
+<!-- Why it Matters -->
+  <div class="max-w-2xl mx-auto">
+    <details>
+      <summary class="px-8 py-4 text-xl font-bold bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-full cursor-pointer flex justify-center items-center gap-4 shadow-md hover:shadow-lg transition-shadow">
+        Why it matters?
+        <span class="text-2xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
+      </summary>
+      <div class="mt-6 px-8 py-6 bg-white dark:bg-gray-900 rounded-3xl shadow-xl prose prose-lg dark:prose-invert max-w-none">
+        <h3 class="text-2xl font-black mb-4">Impact on SEO & User Experience</h3>
+        <p>Search engines increasingly prioritize user experience signals as core ranking factors. Poor usability directly contributes to higher bounce rates, lower dwell time, and reduced engagement — all negative indicators for content quality.</p>
+        <p>A high quit risk page sends clear behavioral signals: users arrive, find the experience frustrating, and leave quickly (pogo-sticking). This pattern erodes topical authority and ranking stability over time.</p>
+        <p>Conversely, strong UX drives:</p>
+        <ul class="space-y-2">
+          <li>Longer session duration and deeper page views</li>
+          <li>Improved conversion rates and return visits</li>
+          <li>Positive engagement metrics that reinforce relevance</li>
+          <li>Greater resilience against algorithm updates focused on user satisfaction</li>
+        </ul>
+        <p>Addressing these foundational elements creates compounding benefits: better user retention, stronger ranking signals, and sustainable organic traffic growth.</p>
+      </div>
+    </details>
+  </div>
 
   </main>
 
