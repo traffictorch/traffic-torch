@@ -77,54 +77,87 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  function makeItHuman(raw) {
+    function makeItHuman(raw) {
     let t = raw.trim();
-    if (t.length < 150) return t;
-    t = t.replace(/\s+/g, ' ').trim();
+    if (t.length < 200) return t;
+
+    // Light clean-up (remove common junk patterns without over-stripping)
+    t = t.replace(/Skip to (main )?content/gi, '')
+         .replace(/\s+/g, ' ')
+         .trim();
+
     const sentences = t.match(/[^.!?]+[.!?]+/g) || [t];
     let result = [];
+
     const swaps = {
-      very: ['really', 'super', 'incredibly', 'totally', 'seriously'],
-      good: ['great', 'awesome', 'solid', 'fantastic', 'decent'],
-      bad: ['terrible', 'rough', 'awful', 'brutal'],
-      big: ['huge', 'massive', 'enormous'],
-      small: ['tiny', 'little'],
-      use: ['try', 'work with', 'play around with'],
-      help: ['boost', 'improve', 'lift'],
-      and: ['plus', ', and', '— also'],
-      but: ['though', 'yet', 'still'],
-      because: ['since', 'as'],
-      important: ['key', 'crucial', 'vital'],
-      easy: ['simple', 'straightforward', 'a breeze']
+      very: ['really', 'truly', 'extremely', 'highly'],
+      good: ['great', 'excellent', 'solid', 'strong'],
+      best: ['finest', 'top', 'leading', ' premier'],
+      big: ['large', 'major', 'significant', 'substantial'],
+      small: ['minor', 'limited', 'compact'],
+      use: ['try', 'apply', 'work with', 'utilize'],
+      help: ['assist', 'support', 'boost', 'enhance'],
+      important: ['key', 'critical', 'essential', 'vital'],
+      easy: ['simple', 'straightforward', 'clear', 'effortless']
     };
-    const naturalBursts = ['Here’s the thing:', 'Real quick:', 'Listen:', 'Honestly,', 'One thing I’ve noticed:', 'Quick tip:'];
+
+    const naturalBursts = [
+      'Here’s something to consider:',
+      'One thing to note:',
+      'In practice:',
+      'What stands out is:',
+      'A helpful approach:'
+    ];
+
     let burstUsed = false;
+
     for (let s of sentences) {
       let sentence = s.trim();
-      if (!sentence) continue;
-      if (!burstUsed && result.length > 1 && Math.random() < 0.25) {
+      if (!sentence || sentence.length < 10) continue;
+
+      // Occasional natural burst (rare, professional)
+      if (!burstUsed && result.length > 1 && Math.random() < 0.2) {
         result.push(naturalBursts[Math.floor(Math.random() * naturalBursts.length)]);
         burstUsed = true;
       }
+
       let words = sentence.split(' ');
       for (let i = 0; i < words.length; i++) {
         const clean = words[i].toLowerCase().replace(/[^a-z]/g, '');
-        if (swaps[clean] && Math.random() < 0.4) {
+        if (swaps[clean] && Math.random() < 0.35) {
           const options = swaps[clean];
           words[i] = words[i].replace(new RegExp(clean, 'gi'), options[Math.floor(Math.random() * options.length)]);
         }
       }
+
       sentence = words.join(' ');
-      if (sentence.split(' ').length > 25 && Math.random() < 0.5) {
-        const split = Math.floor(sentence.length / 2);
-        result.push(sentence.slice(0, split).trim() + '.');
-        sentence = sentence.slice(split).trim();
+
+      // Split long sentences for better readability
+      if (sentence.split(' ').length > 28 && Math.random() < 0.6) {
+        const mid = Math.floor(sentence.length / 2);
+        const breakPoint = sentence.lastIndexOf(' ', mid);
+        if (breakPoint > mid - 20) {
+          result.push(sentence.slice(0, breakPoint).trim() + '.');
+          sentence = sentence.slice(breakPoint).trim();
+        }
       }
+
       result.push(sentence);
     }
+
     let final = result.join(' ').trim();
-    const endings = ['Hope that helps!', 'That’s the real deal.', 'Simple as that.', 'Let me know how it goes.'];
-    if (Math.random() < 0.7) final += ' ' + endings[Math.floor(Math.random() * endings.length)];
+
+    // Rare, neutral, professional ending
+    if (Math.random() < 0.3) {
+      const endings = [
+        'This approach helps connect more naturally with readers.',
+        'A clear and engaging way to share your message.',
+        'Effective communication starts with natural flow.',
+        'Your content, refined and ready to resonate.'
+      ];
+      final += ' ' + endings[Math.floor(Math.random() * endings.length)];
+    }
+
     return final;
   }
 
@@ -196,7 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <p class="text-center text-base text-gray-600">Scanned ${wordCount.toLocaleString()} words from main content</p>
 		    <p class="text-center text-sm text-gray-500 mt-4 italic">Note: Humanized version is an AI-generated example based on detected main content. Always review and edit for accuracy and tone.</p>
-           
             <!-- Small Metrics (0–10 scale with colored number + left border) -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
               ${[
