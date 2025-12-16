@@ -1,4 +1,3 @@
-<script>
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
@@ -139,7 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const mainElement = getMainContent(doc);
-      const title = doc.querySelector('title')?.textContent?.trim() || 'Untitled';
       const cleanElement = mainElement.cloneNode(true);
       cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
       let text = cleanElement.textContent || '';
@@ -147,25 +145,29 @@ document.addEventListener('DOMContentLoaded', () => {
       const wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
       analyzedText = text;
       const ai = analyzeAIContent(text);
-      const yourScore = ai.score; // ← Fix: define variable used in template
+      const yourScore = ai.score;
       const forecast = ai.score > 70 ? 'Page 2+' : ai.score > 50 ? 'Page 1 Possible' : ai.score > 30 ? 'Top 10 Possible' : 'Top 3 Potential';
 
       results.innerHTML = `
-        <div class="max-w-5xl mx-auto space-y-16 animate-in">
-          <!-- Big Overall Score Circle (Keyword Torch style) -->
+        <style>
+          .animate-stroke { transition: stroke-dasharray 1.2s ease-out; }
+        </style>
+        <div class="max-w-5xl mx-auto space-y-16 animate-in px-4">
+          <!-- Big Overall Score Circle -->
           <div class="flex justify-center my-12">
             <div class="relative w-64 h-64">
               <svg viewBox="0 0 256 256" class="absolute inset-0 -rotate-90">
                 <circle cx="128" cy="128" r="110" fill="none" stroke="#e5e7eb" stroke-width="24"/>
                 <circle cx="128" cy="128" r="110" fill="none" stroke="url(#scoreGradient)" stroke-width="24"
-                        stroke-dasharray="${(yourScore / 100) * 691} 691"
+                        stroke-dasharray="0 691"
                         stroke-linecap="round"
-                        class="transition-all duration-1000 ease-out"/>
+                        class="animate-stroke"
+                        style="stroke-dasharray: ${(yourScore / 100) * 691} 691;"/>
                 <defs>
                   <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#10b981"/>   <!-- emerald-500 high score -->
-                    <stop offset="50%" stop-color="#f59e0b"/>  <!-- amber-500 mid -->
-                    <stop offset="100%" stop-color="#ef4444"/> <!-- red-500 low score -->
+                    <stop offset="0%" stop-color="#10b981"/>
+                    <stop offset="50%" stop-color="#f59e0b"/>
+                    <stop offset="100%" stop-color="#ef4444"/>
                   </linearGradient>
                 </defs>
               </svg>
@@ -174,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="text-xl text-white/80 -mt-2">AI Score</div>
                 <div class="text-sm text-white/60 mt-1">/100</div>
               </div>
-              <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-center">
+              <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 text-center w-full">
                 <p class="text-lg font-medium text-gray-400">
                   ${yourScore > 70 ? 'Very Likely AI' : yourScore > 40 ? 'Moderate AI Patterns' : 'Likely Human'}
                 </p>
@@ -182,13 +184,12 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
 
-          <!-- Detection Verdict -->
           <div class="text-center mb-12">
             <p class="text-xl text-gray-400">Scanned ${wordCount.toLocaleString()} words from main content</p>
           </div>
 
           <!-- Small Metric Circles -->
-          <div class="grid md:grid-cols-5 gap-6 my-16">
+          <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-8 my-16">
             ${[
               {name: 'Perplexity', value: ai.perplexity},
               {name: 'Burstiness', value: ai.burstiness},
@@ -208,9 +209,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
                       <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
                       <circle cx="64" cy="64" r="56" stroke="#fb923c" stroke-width="12" fill="none"
-                              stroke-dasharray="${(percentValue / 100) * 352} 352" stroke-linecap="round"/>
+                              stroke-dasharray="${(percentValue / 100) * 351.86} 351.86" stroke-linecap="round"/>
                     </svg>
-                    <div class="absolute inset-0 flex items-center justify-center text-4xl font-black">
+                    <div class="absolute inset-0 flex items-center justify-center text-4xl font-black text-gray-800 dark:text-gray-200">
                       ${displayValue}
                     </div>
                   </div>
@@ -233,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <h3 class="text-4xl font-black text-center mb-8">Prioritized AI-Style Fixes</h3>
             ${ai.score > 70 ? `
               <div class="p-8 bg-gradient-to-r from-red-500/10 border-l-8 border-red-500 rounded-r-2xl">
-                <div class="flex gap-6">
+                <div class="flex flex-col sm:flex-row gap-6 items-start">
                   <div class="text-5xl">🤖</div>
                   <div>
                     <h4 class="text-2xl font-bold text-red-600">Strong AI Patterns Detected</h4>
@@ -244,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               </div>` : ai.score > 40 ? `
               <div class="p-8 bg-gradient-to-r from-orange-500/10 border-l-8 border-orange-500 rounded-r-2xl">
-                <div class="flex gap-6">
+                <div class="flex flex-col sm:flex-row gap-6 items-start">
                   <div class="text-5xl">⚠️</div>
                   <div>
                     <h4 class="text-2xl font-bold text-orange-600">Moderate AI Patterns</h4>
@@ -254,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   </div>
                 </div>
               </div>` : `
-              <p class="text-center text-green-400 text-2xl">Excellent — text reads as highly human-like!</p>`}
+              <p class="text-center text-green-400 text-2xl font-bold">Excellent — text reads as highly human-like!</p>`}
           </div>
 
           <!-- Predictive Rank Forecast -->
@@ -280,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <!-- Humanizer + PDF -->
           <div class="text-center space-y-8 my-16">
-            <button id="humanizeBtn" class="px-12 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-2xl rounded-2xl shadow-lg hover:opacity-90">
+            <button id="humanizeBtn" class="px-12 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-2xl rounded-2xl shadow-lg hover:opacity-90 touch-manipulation">
               ⚡ One-Click Humanize Text
             </button>
             <div id="humanizedOutput" class="hidden mt-8 max-w-4xl mx-auto bg-black/50 backdrop-blur-xl rounded-3xl p-12 border border-cyan-500/50">
@@ -294,14 +295,14 @@ document.addEventListener('DOMContentLoaded', () => {
               </button>
             </div>
             <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
-                    class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
+                    class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 touch-manipulation">
               📄 Save as PDF (with all details)
             </button>
           </div>
         </div>
       `;
     } catch (err) {
-      results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
+      results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message || 'Unknown error'}</p>`;
     }
   });
 
@@ -318,4 +319,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-</script> 
