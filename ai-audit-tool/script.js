@@ -215,17 +215,18 @@ document.addEventListener('DOMContentLoaded', () => {
       cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
 
       let text = cleanElement.textContent || '';
+
       // Universal cleanup - no site-specific strings
       text = text
         .replace(/Skip to (main )?content/gi, '')
-        .replace(/\b(?:Menu|Navigation|Home|About|Contact|Blog|Shop|Login|Signup|Reserve|Book|Explore|Discover|View|Learn|Subscribe|Follow us)\b/gi, '')
+        .replace(/\b(?:Menu|Navigation|Home|About|Contact|Blog|Shop|Login|Signup|Reserve|Book|Explore|Discover|View|Learn|Subscribe|Follow us|Accommodation|Food|Wine|Entertainment|Gift|Merchandise|Construction)\b/gi, '')
         .replace(/\s+/g, ' ')
         .trim();
 
-      // Keep only substantial lines
+      // Keep only substantial lines (filter out menu items, short CTAs)
       const lines = text.split('\n')
         .map(l => l.trim())
-        .filter(l => l.length > 50);
+        .filter(l => l.length > 50 && !/^(Home|About|Contact|Reserve|Book|Menu|Shop|Login|$)/i.test(l));
 
       text = lines.join(' ');
 
