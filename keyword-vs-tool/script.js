@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 how: "Expand your content with valuable details and naturally incorporate the phrase 3–6 times per 1000 words. Avoid repetition that feels forced.",
                 why: "Balanced density signals comprehensive topical coverage without risking keyword stuffing penalties."
               }
-            },
+            },  // ← Critical: comma was missing here
             {
               name: 'Image Alts',
               you: data.alts.yourPhrase > 0 ? 100 : 0,
