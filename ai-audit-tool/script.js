@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     for (const sel of selectors) {
       const el = doc.querySelector(sel);
-      if (el && el.textContent.length > 300) return el;
+      if (el && el.textContent.trim().length > 300) return el;
     }
     const body = doc.body.cloneNode(true);
     const junk = ['nav','header','footer','aside','.sidebar','.menu','.cookie','.popup','.advert','[class*="nav"]','[class*="footer"]','[class*="header"]','.breadcrumbs','.comments'];
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
       trigramCount[tri] = (trigramCount[tri] || 0) + 1;
     }
     const trigramEntropy = -Object.values(trigramCount)
-      .reduce((sum, count) => sum + (count / (wordCount - 2)) * Math.log2(count / (wordCount - 2)), 0);
+      .reduce((sum, count) => sum + (count / (wordCount - 2 || 1)) * Math.log2(count / (wordCount - 2 || 1)), 0);
     const perplexity = Math.min(12, trigramEntropy.toFixed(1));
     let score = 0;
     score += perplexity > 8 ? (perplexity - 8) * 15 : 0;
@@ -126,12 +126,16 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const url = input.value.trim();
     if (!url) return;
+
     results.innerHTML = `
-      <div class="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-center py-4 font-bold text-lg shadow-2xl z-50">
-        Analyzing for AI patterns — please wait...
+      <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-gradient-to-r from-orange-500 to-pink-600 text-white text-xl font-bold px-12 py-6 rounded-2xl shadow-2xl">
+          Analyzing for AI patterns — please wait...
+        </div>
       </div>
     `;
     results.classList.remove('hidden');
+
     try {
       const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable');
@@ -146,163 +150,155 @@ document.addEventListener('DOMContentLoaded', () => {
       analyzedText = text;
       const ai = analyzeAIContent(text);
       const yourScore = ai.score;
-      const forecast = ai.score > 70 ? 'Page 2+' : ai.score > 50 ? 'Page 1 Possible' : ai.score > 30 ? 'Top 10 Possible' : 'Top 3 Potential';
+      const verdict = yourScore > 70 ? 'Very Likely AI' : yourScore > 40 ? 'Moderate AI Patterns' : 'Likely Human';
+      const forecast = yourScore > 70 ? 'Page 2+' : yourScore > 50 ? 'Page 1 Possible' : yourScore > 30 ? 'Top 10 Possible' : 'Top 3 Potential';
 
       results.innerHTML = `
         <style>
-          .animate-stroke { transition: stroke-dasharray 1.2s ease-out; }
+          .animate-stroke { transition: stroke-dasharray 1.8s ease-in-out; }
         </style>
-        <div class="max-w-5xl mx-auto space-y-16 animate-in px-4">
-          <!-- Big Overall Score Circle -->
-          <div class="flex justify-center my-12">
-            <div class="relative w-64 h-64">
-              <svg viewBox="0 0 256 256" class="absolute inset-0 -rotate-90">
-                <circle cx="128" cy="128" r="110" fill="none" stroke="#e5e7eb" stroke-width="24"/>
-                <circle cx="128" cy="128" r="110" fill="none" stroke="url(#scoreGradient)" stroke-width="24"
-                        stroke-dasharray="0 691"
-                        stroke-linecap="round"
-                        class="animate-stroke"
-                        style="stroke-dasharray: ${(yourScore / 100) * 691} 691;"/>
-                <defs>
-                  <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#10b981"/>
-                    <stop offset="50%" stop-color="#f59e0b"/>
-                    <stop offset="100%" stop-color="#ef4444"/>
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div class="absolute inset-0 flex flex-col items-center justify-center">
-                <div class="text-7xl font-black text-white drop-shadow-2xl">${yourScore}</div>
-                <div class="text-xl text-white/80 -mt-2">AI Score</div>
-                <div class="text-sm text-white/60 mt-1">/100</div>
-              </div>
-              <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 text-center w-full">
-                <p class="text-lg font-medium text-gray-400">
-                  ${yourScore > 70 ? 'Very Likely AI' : yourScore > 40 ? 'Moderate AI Patterns' : 'Likely Human'}
-                </p>
+        <div class="min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 text-white py-16 px-4">
+          <div class="max-w-6xl mx-auto space-y-24">
+
+            <!-- Big Score Circle -->
+            <div class="flex justify-center">
+              <div class="relative w-96 h-96">
+                <svg viewBox="0 0 384 384" class="absolute inset-0 -rotate-90">
+                  <circle cx="192" cy="192" r="170" fill="none" stroke="#1f2937" stroke-width="36"/>
+                  <circle cx="192" cy="192" r="170" fill="none" stroke="url(#torchGradient)" stroke-width="36"
+                          stroke-dasharray="0 1068"
+                          stroke-linecap="round"
+                          class="animate-stroke"
+                          style="stroke-dasharray: ${(yourScore / 100) * 1068} 1068;"/>
+                  <defs>
+                    <linearGradient id="torchGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#10b981"/>
+                      <stop offset="50%" stop-color="#f59e0b"/>
+                      <stop offset="100%" stop-color="#ef4444"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                  <div class="text-9xl font-black drop-shadow-2xl">${yourScore}</div>
+                  <div class="text-3xl font-bold opacity-90">AI Score</div>
+                  <div class="text-xl opacity-70">/100</div>
+                </div>
+                <div class="absolute -bottom-16 left-1/2 -translate-x-1/2 text-center">
+                  <p class="text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${verdict}</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="text-center mb-12">
-            <p class="text-xl text-gray-400">Scanned ${wordCount.toLocaleString()} words from main content</p>
-          </div>
+            <p class="text-center text-2xl opacity-80">Scanned ${wordCount.toLocaleString()} words from main content</p>
 
-          <!-- Small Metric Circles -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-8 my-16">
-            ${[
-              {name: 'Perplexity', value: ai.perplexity},
-              {name: 'Burstiness', value: ai.burstiness},
-              {name: 'Repetition', value: ai.repetition},
-              {name: 'Sentence Length', value: ai.sentenceLength},
-              {name: 'Vocabulary', value: ai.vocab}
-            ].map(m => {
-              let displayValue = m.value;
-              let percentValue = m.value;
-              if (m.name === 'Repetition' || m.name === 'Vocabulary') {
-                displayValue = m.value + '%';
-                percentValue = m.value;
-              }
-              return `
-                <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
-                  <div class="relative mx-auto w-32 h-32">
-                    <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-                      <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-                      <circle cx="64" cy="64" r="56" stroke="#fb923c" stroke-width="12" fill="none"
-                              stroke-dasharray="${(percentValue / 100) * 351.86} 351.86" stroke-linecap="round"/>
+            <!-- Metrics Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-10">
+              ${[
+                {name: 'Perplexity', value: ai.perplexity, max: 12},
+                {name: 'Burstiness', value: ai.burstiness, max: 10},
+                {name: 'Repetition', value: ai.repetition + '%', max: 100},
+                {name: 'Sentence Length', value: ai.sentenceLength, max: 30},
+                {name: 'Vocabulary', value: ai.vocab + '%', max: 100}
+              ].map(m => `
+                <div class="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl p-10 text-center border border-white/10">
+                  <div class="relative w-44 h-44 mx-auto">
+                    <svg viewBox="0 0 176 176" class="-rotate-90">
+                      <circle cx="88" cy="88" r="76" stroke="#1f2937" stroke-width="18" fill="none"/>
+                      <circle cx="88" cy="88" r="76" stroke="#fb923c" stroke-width="18" fill="none"
+                              stroke-dasharray="${(parseFloat(m.value) / m.max) * 477} 477"
+                              stroke-linecap="round"/>
                     </svg>
-                    <div class="absolute inset-0 flex items-center justify-center text-4xl font-black text-gray-800 dark:text-gray-200">
-                      ${displayValue}
-                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center text-5xl font-black">${m.value}</div>
                   </div>
-                  <p class="mt-4 text-lg font-medium">${m.name}</p>
-                  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+                  <p class="mt-8 text-2xl font-bold">${m.name}</p>
+                  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full font-bold hover:opacity-90 text-lg">
                     Show Info
                   </button>
-                  <div class="hidden mt-6 space-y-3 text-left text-sm">
-                    <p class="text-blue-500 font-bold">What:</p><p>${m.name === 'Perplexity' ? 'How predictable the text is' : m.name === 'Burstiness' ? 'Variation in sentence rhythm' : m.name === 'Repetition' ? 'How often phrases repeat' : m.name === 'Sentence Length' ? 'Average words per sentence' : 'Unique word percentage'}</p>
-                    <p class="text-green-500 font-bold">How:</p><p>Add stories, vary length, use synonyms, mix structures, enrich vocab</p>
-                    <p class="text-orange-500 font-bold">Why:</p><p>Google rewards natural, human-like writing — AI patterns hurt rankings</p>
+                  <div class="hidden mt-8 space-y-4 text-lg opacity-80">
+                    <p><span class="text-blue-400 font-bold">What:</span> ${m.name === 'Perplexity' ? 'How predictable the text is — higher = more AI-like' : m.name === 'Burstiness' ? 'Variation in sentence length — higher = more human' : m.name === 'Repetition' ? 'Repeated phrase patterns — lower = better' : m.name === 'Sentence Length' ? 'Average words per sentence — 15–23 ideal' : 'Unique word diversity — higher = better'}</p>
+                    <p><span class="text-green-400 font-bold">How to improve:</span> Add personal stories, vary sentence rhythm, use synonyms, mix short/long sentences</p>
+                    <p><span class="text-orange-400 font-bold">Why it matters:</span> Google prioritizes natural, engaging, human-like content</p>
                   </div>
                 </div>
-              `;
-            }).join('')}
-          </div>
+              `).join('')}
+            </div>
 
-          <!-- Prioritized Fixes -->
-          <div class="space-y-8">
-            <h3 class="text-4xl font-black text-center mb-8">Prioritized AI-Style Fixes</h3>
-            ${ai.score > 70 ? `
-              <div class="p-8 bg-gradient-to-r from-red-500/10 border-l-8 border-red-500 rounded-r-2xl">
-                <div class="flex flex-col sm:flex-row gap-6 items-start">
-                  <div class="text-5xl">🤖</div>
-                  <div>
-                    <h4 class="text-2xl font-bold text-red-600">Strong AI Patterns Detected</h4>
-                    <p class="mt-4 text-blue-500 font-bold">What:</p><p>High predictability, low variation, repetitive phrasing</p>
-                    <p class="mt-2 text-green-500 font-bold">How:</p><p>Add personal anecdotes, vary sentence rhythm, use richer vocabulary</p>
-                    <p class="mt-2 text-orange-500 font-bold">Why:</p><p>Google downgrades obvious AI content — human touch = better trust & rankings</p>
+            <!-- Prioritized Fixes -->
+            <div class="space-y-12">
+              <h2 class="text-5xl font-black text-center">Prioritized AI-Style Fixes</h2>
+              ${ai.score > 70 ? `
+                <div class="p-12 bg-gradient-to-r from-red-900/30 to-red-800/20 border-l-8 border-red-500 rounded-3xl shadow-2xl">
+                  <div class="flex flex-col md:flex-row gap-10 items-start">
+                    <div class="text-7xl">🤖</div>
+                    <div class="flex-1">
+                      <h3 class="text-4xl font-bold text-red-400 mb-6">Strong AI Patterns Detected</h3>
+                      <p class="text-xl"><span class="text-blue-400 font-bold">What:</span> High predictability, low variation, repetitive phrasing</p>
+                      <p class="text-xl mt-4"><span class="text-green-400 font-bold">How:</span> Add personal anecdotes, vary rhythm, enrich vocabulary</p>
+                      <p class="text-xl mt-4"><span class="text-orange-400 font-bold">Why:</span> Google downgrades obvious AI — human touch builds trust & rankings</p>
+                    </div>
                   </div>
-                </div>
-              </div>` : ai.score > 40 ? `
-              <div class="p-8 bg-gradient-to-r from-orange-500/10 border-l-8 border-orange-500 rounded-r-2xl">
-                <div class="flex flex-col sm:flex-row gap-6 items-start">
-                  <div class="text-5xl">⚠️</div>
-                  <div>
-                    <h4 class="text-2xl font-bold text-orange-600">Moderate AI Patterns</h4>
-                    <p class="mt-4 text-blue-500 font-bold">What:</p><p>Some uniformity and repetition</p>
-                    <p class="mt-2 text-green-500 font-bold">How:</p><p>Mix sentence lengths, add personal voice, reduce repeated phrases</p>
-                    <p class="mt-2 text-orange-500 font-bold">Why:</p><p>Small tweaks can push score into human territory</p>
+                </div>` : ai.score > 40 ? `
+                <div class="p-12 bg-gradient-to-r from-orange-900/30 to-orange-800/20 border-l-8 border-orange-500 rounded-3xl shadow-2xl">
+                  <div class="flex flex-col md:flex-row gap-10 items-start">
+                    <div class="text-7xl">⚠️</div>
+                    <div class="flex-1">
+                      <h3 class="text-4xl font-bold text-orange-400 mb-6">Moderate AI Patterns</h3>
+                      <p class="text-xl"><span class="text-blue-400 font-bold">What:</span> Some uniformity and repetition</p>
+                      <p class="text-xl mt-4"><span class="text-green-400 font-bold">How:</span> Mix sentence lengths, add voice, reduce repeats</p>
+                      <p class="text-xl mt-4"><span class="text-orange-400 font-bold">Why:</span> Small tweaks push into human territory</p>
+                    </div>
                   </div>
-                </div>
-              </div>` : `
-              <p class="text-center text-green-400 text-2xl font-bold">Excellent — text reads as highly human-like!</p>`}
-          </div>
+                </div>` : `
+                <p class="text-center text-5xl font-black text-green-400">Excellent — Highly Human-Like Writing! 🌟</p>`}
+            </div>
 
-          <!-- Predictive Rank Forecast -->
-          <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
-            <h3 class="text-4xl font-black text-center">Predictive Rank Forecast</h3>
-            <p class="text-center text-7xl font-black">${forecast}</p>
-            <p class="text-center text-4xl font-bold">Potential if humanized</p>
-            <div class="grid md:grid-cols-3 gap-6 text-left">
-              <div class="p-6 bg-white/10 rounded-2xl">
-                <p class="font-bold text-blue-300 text-xl mb-2">What it is</p>
-                <p class="text-sm leading-relaxed">Estimate of ranking potential based on human-like writing quality.</p>
-              </div>
-              <div class="p-6 bg-white/10 rounded-2xl">
-                <p class="font-bold text-green-300 text-xl mb-2">How calculated</p>
-                <p class="text-sm leading-relaxed">Lower AI score = higher human trust = better Google rankings.</p>
-              </div>
-              <div class="p-6 bg-white/10 rounded-2xl">
-                <p class="font-bold text-orange-300 text-xl mb-2">Why it matters</p>
-                <p class="text-sm leading-relaxed">Human-like content ranks higher and converts better — fixes can unlock big traffic gains.</p>
+            <!-- Predictive Rank Forecast -->
+            <div class="p-16 bg-gradient-to-r from-orange-600 to-pink-700 rounded-3xl shadow-2xl text-center space-y-10">
+              <h2 class="text-5xl font-black">Predictive Rank Forecast</h2>
+              <p class="text-8xl font-black">${forecast}</p>
+              <p class="text-4xl font-bold">Potential if humanized</p>
+              <div class="grid md:grid-cols-3 gap-10 mt-12 text-left">
+                <div class="bg-white/10 backdrop-blur rounded-2xl p-8">
+                  <p class="text-blue-300 text-2xl font-bold mb-4">What it is</p>
+                  <p class="text-lg leading-relaxed">Estimate of ranking potential based on human-like quality</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur rounded-2xl p-8">
+                  <p class="text-green-300 text-2xl font-bold mb-4">How calculated</p>
+                  <p class="text-lg leading-relaxed">Lower AI score = higher human trust = stronger Google rankings</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur rounded-2xl p-8">
+                  <p class="text-orange-300 text-2xl font-bold mb-4">Why it matters</p>
+                  <p class="text-lg leading-relaxed">Human-like content ranks higher and converts better</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Humanizer + PDF -->
-          <div class="text-center space-y-8 my-16">
-            <button id="humanizeBtn" class="px-12 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-2xl rounded-2xl shadow-lg hover:opacity-90 touch-manipulation">
-              ⚡ One-Click Humanize Text
-            </button>
-            <div id="humanizedOutput" class="hidden mt-8 max-w-4xl mx-auto bg-black/50 backdrop-blur-xl rounded-3xl p-12 border border-cyan-500/50">
-              <h3 class="text-4xl font-black text-center mb-8 bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
-                Humanized Version (85–98% human pass rate)
-              </h3>
-              <div id="humanizedText" class="prose prose-invert max-w-none text-lg leading-relaxed"></div>
-              <button onclick="navigator.clipboard.writeText(document.getElementById('humanizedText').innerText).then(()=>alert('Copied!'))"
-                      class="mt-8 px-10 py-4 bg-cyan-600 font-bold rounded-xl hover:bg-cyan-500">
-                📋 Copy Humanized Text
+            <!-- Humanizer & PDF -->
+            <div class="text-center space-y-12">
+              <button id="humanizeBtn" class="px-16 py-8 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-4xl rounded-3xl shadow-2xl hover:opacity-90 transition">
+                ⚡ One-Click Humanize Text
+              </button>
+              <div id="humanizedOutput" class="hidden mt-12 max-w-5xl mx-auto bg-black/60 backdrop-blur-2xl rounded-3xl p-16 border border-cyan-500/50 shadow-2xl">
+                <h3 class="text-5xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
+                  Humanized Version (85–98% human pass rate)
+                </h3>
+                <div id="humanizedText" class="prose prose-invert prose-2xl max-w-none text-left leading-relaxed"></div>
+                <button onclick="navigator.clipboard.writeText(document.getElementById('humanizedText').innerText).then(()=>alert('Copied to clipboard!'))"
+                        class="mt-12 px-14 py-6 bg-cyan-600 font-bold text-2xl rounded-2xl hover:bg-cyan-500">
+                  📋 Copy Humanized Text
+                </button>
+              </div>
+              <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
+                      class="px-16 py-8 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-3xl rounded-3xl shadow-2xl hover:opacity-90">
+                📄 Save Full Report as PDF
               </button>
             </div>
-            <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
-                    class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 touch-manipulation">
-              📄 Save as PDF (with all details)
-            </button>
+
           </div>
         </div>
       `;
     } catch (err) {
-      results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message || 'Unknown error'}</p>`;
+      results.innerHTML = `<div class="text-center py-20"><p class="text-red-400 text-3xl">Error: ${err.message || 'Failed to analyze page'}</p></div>`;
     }
   });
 
@@ -315,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const humanized = makeItHuman(analyzedText);
         textDiv.innerHTML = humanized.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
         output.classList.remove('hidden');
-      }, 400);
+      }, 500);
     }
   });
 });
