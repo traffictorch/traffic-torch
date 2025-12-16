@@ -236,29 +236,30 @@ document.addEventListener('DOMContentLoaded', () => {
               }).join('')}
             </div>
 
-                        <!-- Prioritized UX Fixes - Modern Keyword Tool Style -->
+                                 <!-- Prioritized UX Fixes - Premium Modern Design -->
             <div class="my-20">
-              <h3 class="text-4xl font-black text-center mb-12">Prioritized UX Fixes</h3>
-              ${fixes.length ? fixes.map(fix => `
-                <div class="group mb-8 max-w-4xl mx-auto">
-                  <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-xl hover:shadow-2xl transition-shadow border-l-8 border-orange-500">
-                    <div class="flex items-start gap-8">
-                      <div class="text-6xl mt-1">🔧</div>
-                      <div class="flex-1">
-                        <p class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">
-                          ${fix.split('.')[0] + '.'}
-                        </p>
-                        <p class="text-lg text-gray-600 dark:text-gray-400">
-                          ${fix.includes('.') ? fix.substring(fix.indexOf('.') + 1).trim() : ''}
-                        </p>
+              <h3 class="text-4xl md:text-5xl font-black text-center mb-16">Prioritized UX Fixes</h3>
+              ${fixes.length ? fixes.map(fix => {
+                const parts = fix.split('. ');
+                const primary = parts[0] + (parts[0].endsWith('.') ? '' : '.');
+                const secondary = parts.slice(1).join('. ').trim();
+                return `
+                  <div class="max-w-4xl mx-auto mb-10 group">
+                    <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 border-l-8 border-orange-500">
+                      <div class="flex items-start gap-8">
+                        <div class="text-6xl flex-shrink-0">🔧</div>
+                        <div class="flex-1">
+                          <p class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">${primary}</p>
+                          ${secondary ? `<p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">${secondary}</p>` : ''}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              `).join('') : `
+                `;
+              }).join('') : `
                 <div class="max-w-4xl mx-auto p-12 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-3xl shadow-2xl text-center">
-                  <p class="text-4xl font-black mb-4">🎉 Excellent Usability Detected!</p>
-                  <p class="text-2xl">Your page shows strong UX signals with very low quit risk. Keep up the great work!</p>
+                  <p class="text-4xl md:text-5xl font-black mb-6">🎉 Excellent Usability Achieved!</p>
+                  <p class="text-2xl leading-relaxed">Your page demonstrates outstanding user experience with minimal quit risk. These strong foundations support high engagement and stable rankings.</p>
                 </div>
               `}
             </div>
@@ -316,21 +317,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </button>
 
+                          <!-- Action Buttons - Fixed & Enhanced -->
+            <div class="text-center my-20 space-y-12">
+              <button id="optimizeBtn" class="group relative inline-flex items-center px-16 py-8 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-3xl md:text-4xl rounded-3xl shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105">
+                <span class="flex items-center gap-6">
+                  ⚡ One-Click UX Optimize Suggestions
+                </span>
+                <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </button>
+
               <div id="optimizedOutput" class="hidden mt-12 max-w-5xl mx-auto">
-                <div class="p-10 bg-gradient-to-br from-gray-900/90 to-black/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-cyan-500/30">
-                  <h3 class="text-4xl md:text-5xl font-black text-center mb-10 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                <div class="p-10 bg-gradient-to-br from-gray-900/90 to-black/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-cyan-500/40">
+                  <h3 class="text-4xl md:text-5xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
                     AI-Powered UX Optimization Tips
                   </h3>
-                  <div class="prose prose-invert prose-xl max-w-none space-y-6 text-left">
+                  <div class="space-y-8">
                     ${fixes.length ? fixes.map(f => `
-                      <div class="flex items-start gap-6 p-6 bg-white/5 rounded-2xl hover:bg-white/10 transition">
-                        <div class="text-4xl mt-1">✨</div>
-                        <p class="text-xl leading-relaxed">${f}</p>
+                      <div class="flex items-start gap-6 p-8 bg-white/5 rounded-2xl hover:bg-white/10 transition-all">
+                        <div class="text-5xl">✨</div>
+                        <p class="text-xl leading-relaxed text-gray-100">${f}</p>
                       </div>
                     `).join('') : `
                       <div class="p-12 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-3xl border border-green-500/50 text-center">
-                        <p class="text-4xl font-black text-green-300 mb-4">🎉 Outstanding Usability!</p>
-                        <p class="text-2xl text-green-200">Your page demonstrates excellent user experience with minimal quit risk. These strong foundations support sustained engagement and ranking performance.</p>
+                        <p class="text-4xl font-black text-green-300 mb-6">🎉 Outstanding Performance!</p>
+                        <p class="text-2xl text-green-200">No major improvements needed — your page is highly optimized for user satisfaction and engagement.</p>
                       </div>
                     `}
                   </div>
@@ -338,13 +348,14 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
 
               <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
-                      class="group relative px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
-                <span class="relative z-10 flex items-center gap-6 justify-center">
+                      class="group relative inline-flex items-center px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
+                <span class="flex items-center gap-6">
                   📄 Save Full Report as PDF
                 </span>
-                <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
             </div>
+
         `;
       } catch (err) {
         results.innerHTML = `
@@ -358,8 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('click', e => {
-    if (e.target.id === 'optimizeBtn') {
-      document.getElementById('optimizedOutput').classList.remove('hidden');
+    if (e.target.closest('#optimizeBtn')) {
+      document.getElementById('optimizedOutput').classList.toggle('hidden');
     }
   });
-});
