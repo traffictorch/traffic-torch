@@ -1,9 +1,9 @@
+<script>
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
   const PROXY = 'https://cors-proxy.traffictorch.workers.dev/';
-
   let analyzedText = '';
 
   function getMainContent(doc) {
@@ -127,14 +127,12 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const url = input.value.trim();
     if (!url) return;
-
     results.innerHTML = `
       <div class="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-center py-4 font-bold text-lg shadow-2xl z-50">
         Analyzing for AI patterns — please wait...
       </div>
     `;
     results.classList.remove('hidden');
-
     try {
       const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable');
@@ -149,84 +147,86 @@ document.addEventListener('DOMContentLoaded', () => {
       const wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
       analyzedText = text;
       const ai = analyzeAIContent(text);
-
+      const yourScore = ai.score; // ← Fix: define variable used in template
       const forecast = ai.score > 70 ? 'Page 2+' : ai.score > 50 ? 'Page 1 Possible' : ai.score > 30 ? 'Top 10 Possible' : 'Top 3 Potential';
 
       results.innerHTML = `
         <div class="max-w-5xl mx-auto space-y-16 animate-in">
-          <!-- Big Overall Score Circle -->
+          <!-- Big Overall Score Circle (Keyword Torch style) -->
           <div class="flex justify-center my-12">
-            <div class="relative">
-              <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
-                <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
-                <circle cx="130" cy="130" r="120" stroke="url(#bigGradient)" stroke-width="18" fill="none"
-                        stroke-dasharray="${(ai.score / 100) * 754} 754" stroke-linecap="round"/>
+            <div class="relative w-64 h-64">
+              <svg viewBox="0 0 256 256" class="absolute inset-0 -rotate-90">
+                <circle cx="128" cy="128" r="110" fill="none" stroke="#e5e7eb" stroke-width="24"/>
+                <circle cx="128" cy="128" r="110" fill="none" stroke="url(#scoreGradient)" stroke-width="24"
+                        stroke-dasharray="${(yourScore / 100) * 691} 691"
+                        stroke-linecap="round"
+                        class="transition-all duration-1000 ease-out"/>
                 <defs>
-                  <linearGradient id="bigGradient">
-                    <stop offset="0%" stop-color="#22c55e"/>
-                    <stop offset="100%" stop-color="#ef4444"/>
+                  <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#10b981"/>   <!-- emerald-500 high score -->
+                    <stop offset="50%" stop-color="#f59e0b"/>  <!-- amber-500 mid -->
+                    <stop offset="100%" stop-color="#ef4444"/> <!-- red-500 low score -->
                   </linearGradient>
                 </defs>
               </svg>
-              <div class="absolute inset-0 flex items-center justify-center">
-                <div class="text-center">
-                  <div class="text-7xl font-black text-white drop-shadow-2xl glow">${ai.score}</div>
-                  <div class="text-2xl text-white/90">/100 AI Detection</div>
-                </div>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <div class="text-7xl font-black text-white drop-shadow-2xl">${yourScore}</div>
+                <div class="text-xl text-white/80 -mt-2">AI Score</div>
+                <div class="text-sm text-white/60 mt-1">/100</div>
+              </div>
+              <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-center">
+                <p class="text-lg font-medium text-gray-400">
+                  ${yourScore > 70 ? 'Very Likely AI' : yourScore > 40 ? 'Moderate AI Patterns' : 'Likely Human'}
+                </p>
               </div>
             </div>
           </div>
 
           <!-- Detection Verdict -->
           <div class="text-center mb-12">
-            <p class="text-4xl font-black mb-8">
-              Detection: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-                ${ai.score > 70 ? 'Very Likely AI' : ai.score > 40 ? 'Moderate AI Patterns' : 'Likely Human'}
-              </span>
-            </p>
             <p class="text-xl text-gray-400">Scanned ${wordCount.toLocaleString()} words from main content</p>
           </div>
 
-	<!-- Small Metric Circles -->
-<div class="grid md:grid-cols-5 gap-6 my-16">
-  ${[
-    {name: 'Perplexity', value: ai.perplexity},
-    {name: 'Burstiness', value: ai.burstiness},
-    {name: 'Repetition', value: ai.repetition},
-    {name: 'Sentence Length', value: ai.sentenceLength},
-    {name: 'Vocabulary', value: ai.vocab}
-  ].map(m => {
-    let displayValue = m.value;
-    let percentValue = m.value;
-    if (m.name === 'Repetition' || m.name === 'Vocabulary') {
-      displayValue = m.value + '%';
-      percentValue = m.value;
-    }
-    return `
-      <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
-        <div class="relative mx-auto w-32 h-32">
-          <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-            <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-            <circle cx="64" cy="64" r="56" stroke="#fb923c" stroke-width="12" fill="none"
-                    stroke-dasharray="${(percentValue / 100) * 352} 352" stroke-linecap="round"/>
-          </svg>
-          <div class="absolute inset-0 flex items-center justify-center text-4xl font-black">
-            ${displayValue}
+          <!-- Small Metric Circles -->
+          <div class="grid md:grid-cols-5 gap-6 my-16">
+            ${[
+              {name: 'Perplexity', value: ai.perplexity},
+              {name: 'Burstiness', value: ai.burstiness},
+              {name: 'Repetition', value: ai.repetition},
+              {name: 'Sentence Length', value: ai.sentenceLength},
+              {name: 'Vocabulary', value: ai.vocab}
+            ].map(m => {
+              let displayValue = m.value;
+              let percentValue = m.value;
+              if (m.name === 'Repetition' || m.name === 'Vocabulary') {
+                displayValue = m.value + '%';
+                percentValue = m.value;
+              }
+              return `
+                <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
+                  <div class="relative mx-auto w-32 h-32">
+                    <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+                      <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+                      <circle cx="64" cy="64" r="56" stroke="#fb923c" stroke-width="12" fill="none"
+                              stroke-dasharray="${(percentValue / 100) * 352} 352" stroke-linecap="round"/>
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center text-4xl font-black">
+                      ${displayValue}
+                    </div>
+                  </div>
+                  <p class="mt-4 text-lg font-medium">${m.name}</p>
+                  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+                    Show Info
+                  </button>
+                  <div class="hidden mt-6 space-y-3 text-left text-sm">
+                    <p class="text-blue-500 font-bold">What:</p><p>${m.name === 'Perplexity' ? 'How predictable the text is' : m.name === 'Burstiness' ? 'Variation in sentence rhythm' : m.name === 'Repetition' ? 'How often phrases repeat' : m.name === 'Sentence Length' ? 'Average words per sentence' : 'Unique word percentage'}</p>
+                    <p class="text-green-500 font-bold">How:</p><p>Add stories, vary length, use synonyms, mix structures, enrich vocab</p>
+                    <p class="text-orange-500 font-bold">Why:</p><p>Google rewards natural, human-like writing — AI patterns hurt rankings</p>
+                  </div>
+                </div>
+              `;
+            }).join('')}
           </div>
-        </div>
-        <p class="mt-4 text-lg font-medium">${m.name}</p>
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-          Show Info
-        </button>
-        <div class="hidden mt-6 space-y-3 text-left text-sm">
-          <p class="text-blue-500 font-bold">What:</p><p>${m.name === 'Perplexity' ? 'How predictable the text is' : m.name === 'Burstiness' ? 'Variation in sentence rhythm' : m.name === 'Repetition' ? 'How often phrases repeat' : m.name === 'Sentence Length' ? 'Average words per sentence' : 'Unique word percentage'}</p>
-          <p class="text-green-500 font-bold">How:</p><p>Add stories, vary length, use synonyms, mix structures, enrich vocab</p>
-          <p class="text-orange-500 font-bold">Why:</p><p>Google rewards natural, human-like writing — AI patterns hurt rankings</p>
-        </div>
-      </div>
-    `;
-  }).join('')}
-</div>
 
           <!-- Prioritized Fixes -->
           <div class="space-y-8">
@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <div class="p-6 bg-white/10 rounded-2xl">
                 <p class="font-bold text-green-300 text-xl mb-2">How calculated</p>
-                <p class="text-sm leading-relaxed">Lower AI score = higher human trust = better Google rankings in 2025.</p>
+                <p class="text-sm leading-relaxed">Lower AI score = higher human trust = better Google rankings.</p>
               </div>
               <div class="p-6 bg-white/10 rounded-2xl">
                 <p class="font-bold text-orange-300 text-xl mb-2">Why it matters</p>
@@ -318,3 +318,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+</script>
