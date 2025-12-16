@@ -55,6 +55,10 @@ body { transition: background-color 0.3s ease; }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 
+
+
+
+
 /* Big Score Number Color - Light Mode */
 .score-low {
   color: #ef4444 !important; /* Red for <60 */
@@ -90,6 +94,11 @@ body { transition: background-color 0.3s ease; }
   text-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
+
+
+
+
+
 /* Dark mode text visibility fixes for details sections */
 .dark .text-blue-600 {
   color: #60a5fa !important; /* Lighter blue for dark mode */
@@ -123,6 +132,50 @@ body { transition: background-color 0.3s ease; }
 /* Small metric details toggle text */
 .dark .text-sm {
   color: #d1d5db !important;
+}
+
+
+
+
+
+/* Hero text below H2 - light gray in light mode, white in dark mode */
+h2 + p {
+  color: #6b7280; /* gray-500 light mode */
+}
+.dark h2 + p {
+  color: #f3f4f6; /* gray-100 dark mode */
+}
+
+/* Small metric card titles (h4) - dark in light mode, light in dark mode */
+.bg-white h4, .dark .bg-gray-900 h4 {
+  color: #1f2937; /* gray-800 light mode */
+}
+.dark .bg-gray-900 h4 {
+  color: #f3f4f6; /* gray-100 dark mode */
+}
+
+/* "What is it?", "How to fix?", "Why it matters?" labels and content */
+.text-blue-600, .text-green-600, .text-orange-600 {
+  color: #1f2937 !important; /* dark gray in light mode */
+}
+.dark .text-blue-600, .dark .text-green-600, .dark .text-orange-600 {
+  color: #f3f4f6 !important; /* light gray in dark mode */
+}
+
+/* Detail paragraphs under labels - readable gray */
+.text-left p {
+  color: #4b5563; /* gray-600 light mode */
+}
+.dark .text-left p {
+  color: #d1d5db !important; /* gray-300 dark mode */
+}
+
+/* Predictive Rank Forecast info text */
+.text-blue-300, .text-green-300, .text-orange-300 {
+  color: #6b7280 !important; /* gray-500 light mode */
+}
+.dark .text-blue-300, .dark .text-green-300, .dark .text-orange-300 {
+  color: #e5e7eb !important; /* gray-300 dark mode */
 }
 
 
