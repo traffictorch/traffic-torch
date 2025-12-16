@@ -122,31 +122,10 @@ document.addEventListener('DOMContentLoaded', () => {
     return final;
   }
 
-  function getMetricColor(metricName, value) {
-    if (metricName === 'Perplexity' || metricName === 'Repetition') {
-      // lower = better
-      if (value <= 6) return '#10b981'; // green
-      if (value <= 9) return '#f97316'; // orange
-      return '#ef4444'; // red
-    }
-    if (metricName === 'Burstiness') {
-      // higher = better
-      if (value >= 6) return '#10b981';
-      if (value >= 4) return '#f97316';
-      return '#ef4444';
-    }
-    if (metricName === 'Sentence Length') {
-      if (value >= 15 && value <= 23) return '#10b981';
-      if (value >= 10 && value <= 30) return '#f97316';
-      return '#ef4444';
-    }
-    if (metricName === 'Vocabulary') {
-      // higher = better
-      if (value >= 70) return '#10b981';
-      if (value >= 50) return '#f97316';
-      return '#ef4444';
-    }
-    return '#f97316'; // default
+  function getGradeColor(normalized10) {
+    if (normalized10 >= 8.0) return '#10b981'; // green
+    if (normalized10 >= 6.0) return '#f97316'; // orange
+    return '#ef4444'; // red
   }
 
   form.addEventListener('submit', async e => {
@@ -211,43 +190,45 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <p class="text-center text-base text-gray-600">Scanned ${wordCount.toLocaleString()} words from main content</p>
 
-            <!-- Small Metrics -->
+            <!-- Small Metrics (all /10 scale) -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
               ${[
-                {name: 'Perplexity', value: ai.perplexity},
-                {name: 'Burstiness', value: ai.burstiness},
-                {name: 'Repetition', value: ai.repetition + '%'},
-                {name: 'Sentence Length', value: ai.sentenceLength},
-                {name: 'Vocabulary', value: ai.vocab + '%'}
+                {name: 'Perplexity', raw: ai.perplexity, normalized: Math.max(0, 10 - (ai.perplexity - 4) / 0.8)}, // lower raw = higher score
+                {name: 'Burstiness', raw: ai.burstiness, normalized: Math.min(10, ai.burstiness)},
+                {name: 'Repetition', raw: ai.repetition, normalized: Math.max(0, 10 - ai.repetition / 10)},
+                {name: 'Sentence Length', raw: ai.sentenceLength, normalized: Math.max(0, 10 - Math.abs(ai.sentenceLength - 19) * 0.5)},
+                {name: 'Vocabulary', raw: ai.vocab, normalized: ai.vocab / 10}
               ].map(m => {
-                const color = getMetricColor(m.name, typeof m.value === 'string' ? parseFloat(m.value) : m.value);
-                const display = m.value;
-                const percent = m.name === 'Perplexity' ? (m.value / 12 * 100) : m.name === 'Burstiness' ? (m.value / 10 * 100) : m.name === 'Repetition' ? m.value.replace('%','') : m.name === 'Sentence Length' ? ((30 - Math.abs(m.value - 19)) / 30 * 100) : m.value.replace('%','');
+                const color = getGradeColor(m.normalized);
+                const displayScore = m.normalized.toFixed(1);
                 return `
                 <div class="bg-white rounded-2xl shadow-md p-6 text-center">
                   <div class="relative w-32 h-32 mx-auto">
                     <svg viewBox="0 0 128 128" class="-rotate-90">
                       <circle cx="64" cy="64" r="56" stroke="#f1f5f9" stroke-width="12" fill="none"/>
                       <circle cx="64" cy="64" r="56" stroke="${color}" stroke-width="12" fill="none"
-                              stroke-dasharray="${percent * 3.52} 352" stroke-linecap="round"/>
+                              stroke-dasharray="${m.normalized * 35.2} 352" stroke-linecap="round"/>
                     </svg>
-                    <div class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-gray-900">${display}</div>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                      <div class="text-3xl font-bold text-gray-900">${displayScore}</div>
+                      <div class="text-sm text-gray-500">/10</div>
+                    </div>
                   </div>
                   <p class="mt-4 text-base font-medium text-gray-700">${m.name}</p>
                   <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-3 px-6 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-full hover:bg-gray-300">
                     Show Info
                   </button>
                   <div class="hidden mt-4 space-y-2 text-sm text-gray-600">
-                    <p><span class="font-bold text-blue-600">What:</span> ${m.name === 'Perplexity' ? 'How predictable the text is (lower better)' : m.name === 'Burstiness' ? 'Variation in sentence rhythm (higher better)' : m.name === 'Repetition' ? 'Repeated phrases (lower better)' : m.name === 'Sentence Length' ? 'Average words per sentence (15–23 ideal)' : 'Unique word diversity (higher better)'}</p>
-                    <p><span class="font-bold text-green-600">How to improve:</span> Add personal touch, vary structure, enrich vocabulary</p>
-                    <p><span class="font-bold text-orange-600">Why:</span> Google rewards natural human-like content</p>
+                    <p><span class="font-bold text-blue-600">What:</span> ${m.name === 'Perplexity' ? 'How predictable the text is (lower raw better)' : m.name === 'Burstiness' ? 'Variation in sentence length (higher better)' : m.name === 'Repetition' ? 'Repeated phrases % (lower better)' : m.name === 'Sentence Length' ? 'Average words per sentence (ideal 15–23)' : 'Unique word diversity % (higher better)'}</p>
+                    <p><span class="font-bold text-green-600">How to improve:</span> Add personal voice, vary structure, use synonyms, mix short/long sentences</p>
+                    <p><span class="font-bold text-orange-600">Why it matters:</span> Google rewards natural, engaging, human-like writing</p>
                   </div>
                 </div>
               `;
               }).join('')}
             </div>
 
-            <!-- Prioritized Fixes, Forecast, Humanizer remain clean and consistent -->
+            <!-- Prioritized Fixes, Forecast, Humanizer – same as previous clean version -->
 
           </div>
         </div>
