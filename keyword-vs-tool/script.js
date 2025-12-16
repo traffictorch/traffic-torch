@@ -348,7 +348,7 @@ Target 800–1500+ words of focused content.`,
               <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 border-l-8 border-red-500 flex gap-6">
                 <div class="text-5xl flex-shrink-0">🔧</div>
                 <div class="flex-1 space-y-6">
-                  <p class="text-2xl font-bold">${fix}</p>
+                  <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">${fix}</p>
                   <div class="space-y-6">
                     <div>
                       <p class="font-semibold text-orange-600 dark:text-orange-400">What is it?</p>
