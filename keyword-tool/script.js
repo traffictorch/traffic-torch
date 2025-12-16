@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <circle cx="48" cy="48" r="40" stroke="${m.score >= 80 ? '#22c55e' : m.score >= 60 ? '#eab308' : '#ef4444'}"
                     stroke-width="10" fill="none" stroke-dasharray="${(m.score / 100) * 251} 251" stroke-linecap="round"/>
           </svg>
-          <div class="absolute inset-0 flex items-center justify-center text-3xl font-black ${textColor}">${Math.round(m.score)}</div>
+        <div class="absolute inset-0 flex items-center justify-center text-3xl font-black ${m.score >= 80 ? 'text-green-600 dark:text-green-400' : m.score >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">${displayScore}</div>
         </div>
         <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
           Show Details
