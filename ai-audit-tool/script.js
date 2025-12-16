@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ].map(m => {
                 const gradeColor = getGradeColor(m.normalized);
                 const displayScore = m.normalized.toFixed(1);
-                return `
+                                return `
                 <div class="bg-white rounded-2xl shadow-md p-6 text-center border-l-4" style="border-left-color: ${gradeColor}">
                   <div class="relative w-32 h-32 mx-auto">
                     <svg viewBox="0 0 128 128" class="-rotate-90">
@@ -218,10 +218,10 @@ document.addEventListener('DOMContentLoaded', () => {
                   <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-3 px-6 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-full hover:bg-gray-300">
                     Show Info
                   </button>
-                  <div class="hidden mt-4 space-y-2 text-sm text-gray-600">
-                    <p><span class="font-bold text-blue-600">What:</span> ${m.name === 'Perplexity' ? 'How predictable the text is (lower better)' : m.name === 'Burstiness' ? 'Variation in sentence rhythm (higher better)' : m.name === 'Repetition' ? 'Repeated phrases (lower better)' : m.name === 'Sentence Length' ? 'Average words per sentence (ideal 15–23)' : 'Unique word diversity (higher better)'}</p>
-                    <p><span class="font-bold text-green-600">How to improve:</span> Add personal touch, vary structure, enrich vocabulary</p>
-                    <p><span class="font-bold text-orange-600">Why:</span> Google rewards natural human-like content</p>
+                  <div class="hidden mt-4 space-y-3 text-sm text-gray-600 leading-relaxed">
+                    <p><span class="font-bold text-blue-600">What it is:</span> ${m.name === 'Perplexity' ? 'Measures how predictable your text is to AI detectors.' : m.name === 'Burstiness' ? 'Shows variation in sentence length for natural rhythm.' : m.name === 'Repetition' ? 'Tracks how often phrases or patterns repeat.' : m.name === 'Sentence Length' ? 'Average words per sentence (ideal 15–23).' : 'Percentage of unique words in your content.'}</p>
+                    <p><span class="font-bold text-green-600">How to improve:</span> ${m.name === 'Perplexity' || m.name === 'Repetition' ? 'Add personal stories, unexpected turns, and varied phrasing.' : 'Mix short and long sentences, use synonyms, and add anecdotes.'}</p>
+                    <p><span class="font-bold text-orange-600">Why it matters:</span> Google and readers prefer natural, engaging, human-like writing over predictable patterns.</p>
                   </div>
                 </div>
               `;
