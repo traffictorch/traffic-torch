@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
       const words = text.split(/\s+/).filter(w => w.length > 0);
       const syl = text.match(/[aeiouy]+/gi) || [];
-
       let flesch = 60;
       if (sentences.length > 0 && words.length > 0) {
         const avgSentence = words.length / sentences.length;
@@ -148,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         results.innerHTML = `
           <div class="max-w-5xl mx-auto space-y-16 py-12">
-            <!-- Big Overall Score Circle - Modern Keyword Tool Style -->
+            <!-- Big Overall Score Circle -->
             <div class="flex justify-center my-12">
               <div class="relative">
                 <div class="absolute inset-0 bg-white/40 dark:bg-black/40 backdrop-blur-md rounded-full"></div>
@@ -178,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <p class="text-xl text-gray-400">Scanned ${uxData.links} links + ${uxData.images} images</p>
             </div>
 
-                        <!-- Small Metric Circles - Detailed Educational Info -->
+            <!-- Small Metric Circles -->
             <div class="grid md:grid-cols-5 gap-6 my-16">
               ${[
                 {name: 'Readability', value: ux.readability},
@@ -236,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
               }).join('')}
             </div>
 
-                                 <!-- Prioritized UX Fixes - Premium Modern Design -->
+            <!-- Prioritized UX Fixes -->
             <div class="my-20">
               <h3 class="text-4xl md:text-5xl font-black text-center mb-16">Prioritized UX Fixes</h3>
               ${fixes.length ? fixes.map(fix => {
@@ -264,60 +263,38 @@ document.addEventListener('DOMContentLoaded', () => {
               `}
             </div>
 
-                       <!-- Predictive Rank Forecast - Modern Enhanced Design -->
+            <!-- Predictive Rank Forecast -->
             <div class="mt-20 p-10 bg-gradient-to-br from-orange-500/90 to-pink-600/90 backdrop-blur-xl rounded-3xl shadow-2xl text-white">
               <h3 class="text-4xl md:text-5xl font-black text-center mb-8">Predictive Rank Forecast</h3>
-              
               <div class="text-center mb-12">
                 <p class="text-6xl md:text-8xl font-black mb-4" style="color: ${ux.score < 60 ? '#fca5a5' : ux.score < 80 ? '#fdba74' : '#86efac'};">
                   ${forecast}
                 </p>
                 <p class="text-2xl md:text-3xl font-bold opacity-90">Potential ranking ceiling after applying UX improvements</p>
               </div>
-
               <div class="grid md:grid-cols-3 gap-8">
                 <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
                   <div class="text-5xl mb-4">🎯</div>
                   <p class="font-bold text-xl mb-3 text-cyan-200">What it means</p>
-                  <p class="text-sm leading-relaxed opacity-90">
-                    Estimated highest achievable position based on current usability and engagement signals compared to competing pages.
-                  </p>
+                  <p class="text-sm leading-relaxed opacity-90">Estimated highest achievable position based on current usability and engagement signals compared to competing pages.</p>
                 </div>
-                
                 <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
                   <div class="text-5xl mb-4">🧮</div>
                   <p class="font-bold text-xl mb-3 text-green-200">How it's calculated</p>
-                  <p class="text-sm leading-relaxed opacity-90">
-                    Stronger UX → lower bounce rate → higher dwell time → better behavioral signals that modern search algorithms reward.
-                  </p>
+                  <p class="text-sm leading-relaxed opacity-90">Stronger UX → lower bounce rate → higher dwell time → better behavioral signals that modern search algorithms reward.</p>
                 </div>
-                
                 <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
                   <div class="text-5xl mb-4">🚀</div>
                   <p class="font-bold text-xl mb-3 text-orange-200">Why it matters</p>
-                  <p class="text-sm leading-relaxed opacity-90">
-                    Fixing usability gaps can unlock significant traffic gains, improve conversion rates, and build long-term ranking resilience.
-                  </p>
+                  <p class="text-sm leading-relaxed opacity-90">Fixing usability gaps can unlock significant traffic gains, improve conversion rates, and build long-term ranking resilience.</p>
                 </div>
               </div>
-
               <div class="mt-10 text-center">
-                <p class="text-lg opacity-90 italic">
-                  Higher usability scores correlate with stronger performance in user-centric ranking factors.
-                </p>
+                <p class="text-lg opacity-90 italic">Higher usability scores correlate with stronger performance in user-centric ranking factors.</p>
               </div>
             </div>
 
-                        <!-- Action Buttons - Modern Enhanced Design -->
-            <div class="text-center my-20 space-y-10">
-              <button id="optimizeBtn" class="group relative px-16 py-8 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-3xl md:text-4xl rounded-3xl shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105">
-                <span class="relative z-10 flex items-center gap-6">
-                  ⚡ One-Click UX Optimize Suggestions
-                </span>
-                <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              </button>
-
-                          <!-- Action Buttons - Fixed & Enhanced -->
+            <!-- Action Buttons -->
             <div class="text-center my-20 space-y-12">
               <button id="optimizeBtn" class="group relative inline-flex items-center px-16 py-8 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-3xl md:text-4xl rounded-3xl shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105">
                 <span class="flex items-center gap-6">
@@ -355,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
             </div>
-
+          </div>
         `;
       } catch (err) {
         results.innerHTML = `
@@ -373,3 +350,4 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('optimizedOutput').classList.toggle('hidden');
     }
   });
+});
