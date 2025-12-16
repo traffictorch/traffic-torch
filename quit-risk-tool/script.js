@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <p class="text-xl text-gray-400">Scanned ${uxData.links} links + ${uxData.images} images</p>
             </div>
 
-            <!-- Small Metric Circles -->
+                        <!-- Small Metric Circles - Detailed Educational Info -->
             <div class="grid md:grid-cols-5 gap-6 my-16">
               ${[
                 {name: 'Readability', value: ux.readability},
@@ -188,6 +188,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 {name: 'Speed', value: ux.speed}
               ].map(m => {
                 const ringColor = m.value < 60 ? '#ef4444' : m.value < 80 ? '#fb923c' : '#22c55e';
+                let what = '', how = '', why = '';
+                if (m.name === 'Readability') {
+                  what = 'Measures text complexity using the Flesch Reading Ease formula — higher scores mean easier comprehension for broader audiences.';
+                  how = 'Write shorter sentences (under 20 words), use active voice, choose common words, break up long paragraphs, and add subheadings.';
+                  why = 'Easy-to-read content reduces cognitive load, keeps visitors engaged longer, lowers bounce rates, and signals quality to search engines.';
+                } else if (m.name === 'Navigation') {
+                  what = 'Evaluates link density and menu structure — too many links can overwhelm users and dilute focus.';
+                  how = 'Limit primary navigation to 5-7 items, use clear labels, group related pages, remove redundant links, and prioritize key actions.';
+                  why = 'Clean navigation helps users find information quickly, reduces frustration, improves dwell time, and strengthens topical relevance signals.';
+                } else if (m.name === 'Accessibility') {
+                  what = 'Proxies core accessibility through image handling and structural signals — essential for inclusive experiences.';
+                  how = 'Add descriptive alt text to every image, ensure color contrast ratios meet WCAG standards, use semantic HTML, and test with screen readers.';
+                  why = 'Accessible pages reach more users (including disabled), improve SEO through better crawlability, and build trust and compliance.';
+                } else if (m.name === 'Mobile') {
+                  what = 'Assesses responsiveness and mobile-friendly patterns in HTML structure and viewport configuration.';
+                  how = 'Include viewport meta tag, use flexible grids and images, test on real devices, ensure touch targets are large enough, and avoid horizontal scrolling.';
+                  why = 'Mobile-first experiences are critical as most traffic is mobile — poor mobile UX causes immediate bounces and ranking penalties.';
+                } else if (m.name === 'Speed') {
+                  what = 'Estimates perceived performance based on asset optimization and load patterns.';
+                  how = 'Compress and resize images, enable lazy loading, minify CSS/JS, use modern formats (WebP/AVIF), and leverage browser caching.';
+                  why = 'Faster pages improve user satisfaction, reduce bounce rates, increase conversions, and are directly rewarded in search rankings.';
+                }
                 return `
                 <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
                   <div class="relative mx-auto w-32 h-32">
@@ -204,69 +226,125 @@ document.addEventListener('DOMContentLoaded', () => {
                   <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 rounded-full text-white text-sm hover:opacity-90" style="background-color: ${ringColor};">
                     Show Info
                   </button>
-                  <div class="hidden mt-6 space-y-3 text-left text-sm">
-                    <p class="text-blue-500 font-bold">What:</p><p>${m.name === 'Readability' ? 'Flesch ease score' : m.name === 'Navigation' ? 'Link density' : m.name === 'Accessibility' ? 'Image alt coverage' : m.name === 'Mobile' ? 'Responsiveness signals' : 'Load performance proxy'}</p>
-                    <p class="text-green-500 font-bold">How:</p><p>Simplify text, reduce links, add alts, use responsive design, optimize assets</p>
-                    <p class="text-orange-500 font-bold">Why:</p><p>Better UX = lower bounce, higher dwell time, stronger rankings</p>
+                  <div class="hidden mt-6 space-y-4 text-left text-sm">
+                    <p><span class="font-bold text-blue-500">What it measures:</span> ${what}</p>
+                    <p><span class="font-bold text-green-500">How to improve:</span> ${how}</p>
+                    <p><span class="font-bold text-orange-500">Why it matters:</span> ${why}</p>
                   </div>
                 </div>
               `;
               }).join('')}
             </div>
 
-            <!-- Prioritized Fixes -->
-            <div class="space-y-8">
-              <h3 class="text-4xl font-black text-center mb-8">Prioritized UX Fixes</h3>
+                        <!-- Prioritized UX Fixes - Modern Keyword Tool Style -->
+            <div class="my-20">
+              <h3 class="text-4xl font-black text-center mb-12">Prioritized UX Fixes</h3>
               ${fixes.length ? fixes.map(fix => `
-                <div class="p-8 bg-gradient-to-r from-orange-500/10 border-l-8 border-orange-500 rounded-r-2xl">
-                  <div class="flex gap-6">
-                    <div class="text-5xl">🔧</div>
-                    <div class="text-lg leading-relaxed">${fix}</div>
+                <div class="group mb-8 max-w-4xl mx-auto">
+                  <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-xl hover:shadow-2xl transition-shadow border-l-8 border-orange-500">
+                    <div class="flex items-start gap-8">
+                      <div class="text-6xl mt-1">🔧</div>
+                      <div class="flex-1">
+                        <p class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+                          ${fix.split('.')[0] + '.'}
+                        </p>
+                        <p class="text-lg text-gray-600 dark:text-gray-400">
+                          ${fix.includes('.') ? fix.substring(fix.indexOf('.') + 1).trim() : ''}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              `).join('') : '<p class="text-center text-green-400 text-2xl">Strong usability detected — minimal quit risk!</p>'}
+              `).join('') : `
+                <div class="max-w-4xl mx-auto p-12 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-3xl shadow-2xl text-center">
+                  <p class="text-4xl font-black mb-4">🎉 Excellent Usability Detected!</p>
+                  <p class="text-2xl">Your page shows strong UX signals with very low quit risk. Keep up the great work!</p>
+                </div>
+              `}
             </div>
 
-            <!-- Predictive Rank Forecast -->
-            <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
-              <h3 class="text-4xl font-black text-center">Predictive Rank Forecast</h3>
-              <p class="text-center text-7xl font-black">${forecast}</p>
-              <p class="text-center text-4xl font-bold">Potential with UX fixes</p>
-              <div class="grid md:grid-cols-3 gap-6 text-left">
-                <div class="p-6 bg-white/10 rounded-2xl">
-                  <p class="font-bold text-blue-300 text-xl mb-2">What it is</p>
-                  <p class="text-sm leading-relaxed">Estimate of ranking potential based on usability and engagement signals.</p>
+                       <!-- Predictive Rank Forecast - Modern Enhanced Design -->
+            <div class="mt-20 p-10 bg-gradient-to-br from-orange-500/90 to-pink-600/90 backdrop-blur-xl rounded-3xl shadow-2xl text-white">
+              <h3 class="text-4xl md:text-5xl font-black text-center mb-8">Predictive Rank Forecast</h3>
+              
+              <div class="text-center mb-12">
+                <p class="text-6xl md:text-8xl font-black mb-4" style="color: ${ux.score < 60 ? '#fca5a5' : ux.score < 80 ? '#fdba74' : '#86efac'};">
+                  ${forecast}
+                </p>
+                <p class="text-2xl md:text-3xl font-bold opacity-90">Potential ranking ceiling after applying UX improvements</p>
+              </div>
+
+              <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
+                  <div class="text-5xl mb-4">🎯</div>
+                  <p class="font-bold text-xl mb-3 text-cyan-200">What it means</p>
+                  <p class="text-sm leading-relaxed opacity-90">
+                    Estimated highest achievable position based on current usability and engagement signals compared to competing pages.
+                  </p>
                 </div>
-                <div class="p-6 bg-white/10 rounded-2xl">
-                  <p class="font-bold text-green-300 text-xl mb-2">How calculated</p>
-                  <p class="text-sm leading-relaxed">Higher UX score = lower bounce = stronger signals for search algorithms.</p>
+                
+                <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
+                  <div class="text-5xl mb-4">🧮</div>
+                  <p class="font-bold text-xl mb-3 text-green-200">How it's calculated</p>
+                  <p class="text-sm leading-relaxed opacity-90">
+                    Stronger UX → lower bounce rate → higher dwell time → better behavioral signals that modern search algorithms reward.
+                  </p>
                 </div>
-                <div class="p-6 bg-white/10 rounded-2xl">
-                  <p class="font-bold text-orange-300 text-xl mb-2">Why it matters</p>
-                  <p class="text-sm leading-relaxed">Good UX drives dwell time and conversions — fixes can unlock major traffic gains.</p>
+                
+                <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
+                  <div class="text-5xl mb-4">🚀</div>
+                  <p class="font-bold text-xl mb-3 text-orange-200">Why it matters</p>
+                  <p class="text-sm leading-relaxed opacity-90">
+                    Fixing usability gaps can unlock significant traffic gains, improve conversion rates, and build long-term ranking resilience.
+                  </p>
                 </div>
+              </div>
+
+              <div class="mt-10 text-center">
+                <p class="text-lg opacity-90 italic">
+                  Higher usability scores correlate with stronger performance in user-centric ranking factors.
+                </p>
               </div>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="text-center space-y-8 my-16">
-              <button id="optimizeBtn" class="px-12 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-2xl rounded-2xl shadow-lg hover:opacity-90">
-                ⚡ One-Click UX Optimize Suggestions
+                        <!-- Action Buttons - Modern Enhanced Design -->
+            <div class="text-center my-20 space-y-10">
+              <button id="optimizeBtn" class="group relative px-16 py-8 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-3xl md:text-4xl rounded-3xl shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105">
+                <span class="relative z-10 flex items-center gap-6">
+                  ⚡ One-Click UX Optimize Suggestions
+                </span>
+                <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </button>
-              <div id="optimizedOutput" class="hidden mt-8 max-w-4xl mx-auto bg-black/50 backdrop-blur-xl rounded-3xl p-12 border border-cyan-500/50">
-                <h3 class="text-4xl font-black text-center mb-8 bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
-                  AI-Powered UX Optimization Tips
-                </h3>
-                <div class="prose prose-invert max-w-none text-lg leading-relaxed">
-                  ${fixes.length ? fixes.map(f => `<p>• ${f}</p>`).join('') : '<p>Excellent UX — no major improvements needed!</p>'}
+
+              <div id="optimizedOutput" class="hidden mt-12 max-w-5xl mx-auto">
+                <div class="p-10 bg-gradient-to-br from-gray-900/90 to-black/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-cyan-500/30">
+                  <h3 class="text-4xl md:text-5xl font-black text-center mb-10 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                    AI-Powered UX Optimization Tips
+                  </h3>
+                  <div class="prose prose-invert prose-xl max-w-none space-y-6 text-left">
+                    ${fixes.length ? fixes.map(f => `
+                      <div class="flex items-start gap-6 p-6 bg-white/5 rounded-2xl hover:bg-white/10 transition">
+                        <div class="text-4xl mt-1">✨</div>
+                        <p class="text-xl leading-relaxed">${f}</p>
+                      </div>
+                    `).join('') : `
+                      <div class="p-12 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-3xl border border-green-500/50 text-center">
+                        <p class="text-4xl font-black text-green-300 mb-4">🎉 Outstanding Usability!</p>
+                        <p class="text-2xl text-green-200">Your page demonstrates excellent user experience with minimal quit risk. These strong foundations support sustained engagement and ranking performance.</p>
+                      </div>
+                    `}
+                  </div>
                 </div>
               </div>
+
               <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
-                      class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
-                📄 Save as PDF (with all details)
+                      class="group relative px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
+                <span class="relative z-10 flex items-center gap-6 justify-center">
+                  📄 Save Full Report as PDF
+                </span>
+                <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </button>
             </div>
-          </div>
         `;
       } catch (err) {
         results.innerHTML = `
