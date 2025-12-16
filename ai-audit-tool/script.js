@@ -246,6 +246,29 @@ document.addEventListener('DOMContentLoaded', () => {
               }).join('')}
             </div>
 
+            <!-- Humanize Text Section (moved here, improved) -->
+            <div class="mt-16 text-center space-y-8">
+              <button id="humanizeBtn" class="px-16 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:opacity-90 transition transform hover:scale-105">
+                ⚡ One-Click Humanize Text
+              </button>
+              <div id="humanizedOutput" class="hidden max-w-5xl mx-auto">
+                <div class="bg-white rounded-3xl shadow-2xl p-10 md:p-16 border border-gray-200">
+                  <h3 class="text-4xl md:text-5xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
+                    Humanized Version (85–98% human pass rate)
+                  </h3>
+                  <div id="humanizedText" class="prose prose-lg max-w-none text-gray-800 leading-relaxed text-left"></div>
+                  <div class="mt-12 text-center">
+                    <button onclick="navigator.clipboard.writeText(document.getElementById('humanizedText').innerText).then(()=>alert('Copied to clipboard!'))"
+                            class="px-12 py-5 bg-cyan-600 text-white font-bold text-xl rounded-2xl hover:bg-cyan-500 shadow-lg">
+                      📋 Copy Humanized Text
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Predictive Rank Forecast (if you have it, keep below) -->
+            <!-- Prioritized Fixes (keep in current position or move if preferred) -->
             <!-- Prioritized Fixes, Forecast, Humanizer remain clean and consistent with previous version -->
 
           </div>
