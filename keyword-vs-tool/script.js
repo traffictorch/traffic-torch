@@ -46,12 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const phrase = phraseInput.value.trim();
     if (!yourUrl || !compUrl || !phrase) return;
 
-        results.classList.remove('hidden');
+            results.classList.remove('hidden');
     results.innerHTML = `
       <div class="flex flex-col items-center justify-center py-20">
         <div class="relative">
-          <div class="w-20 h-20 border-6 border-gray-200 dark:border-gray-700 rounded-full"></div>
-          <div class="absolute inset-0 w-20 h-20 border-6 border-orange-500 rounded-full animate-spin border-t-transparent"></div>
+          <div class="w-20 h-20 border-4 border-gray-200 dark:border-gray-700 rounded-full"></div>
+          <div class="absolute inset-0 w-20 h-20 border-4 border-t-orange-500 rounded-full animate-spin"></div>
         </div>
         <p class="mt-8 text-2xl font-medium text-gray-600 dark:text-gray-300">Analyzing pages for "${phrase}"...</p>
         <div id="progress-modules" class="mt-12 space-y-4 w-full max-w-md"></div>
@@ -75,21 +75,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let idx = 0;
     const interval = setInterval(() => {
       if (idx < messages.length) {
-        progressModules.insertAdjacentHTML('beforeend', `
-          <div class="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl shadow opacity-0 translate-y-4 transition-all duration-500" style="animation-delay: ${idx * 100}ms;">
+        progressModules.innerHTML += `
+          <div class="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl shadow animate-fade-in">
             <div class="w-8 h-8 bg-orange-500 rounded-full animate-pulse"></div>
             <p class="text-lg text-gray-800 dark:text-gray-200">${messages[idx]}</p>
           </div>
-        `);
-        // Trigger reflow to restart animation
-        void progressModules.lastElementChild.offsetHeight;
-        progressModules.lastElementChild.classList.remove('opacity-0', 'translate-y-4');
-        progressModules.lastElementChild.classList.add('opacity-100', 'translate-y-0');
+        `;
         idx++;
       } else {
         clearInterval(interval);
       }
-    }, Math.random() * 1200 + 800); // 800–2000ms delay
+    }, Math.random() * 1500 + 1000); // 1000–2500ms delay – slower and readable
 
     results.dataset.interval = interval;
 
