@@ -153,16 +153,16 @@ document.addEventListener('DOMContentLoaded', () => {
     stopSpinnerLoader();
     results.innerHTML = `
       <div class="max-w-5xl mx-auto space-y-16">
-                   <!-- Big Score Circle -->
+                     <!-- Big Score Circle -->
         <div class="flex justify-center my-12">
           <div class="relative">
             <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
               <defs>
-                <linearGradient id="bigGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#22c55e"/> <!-- Red (low, starts at top) -->
-                  <stop offset="50%" stop-color="#fb923c"/> <!-- Orange mid -->
-                  <stop offset="100%" stop-color="#ef4444"/> <!-- Green (high) -->
-                </linearGradient>
+                <radialGradient id="bigGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                  <stop offset="0%" stop-color="#ef4444"/> <!-- Red at center (low scores) -->
+                  <stop offset="60%" stop-color="#fb923c"/> <!-- Orange transition -->
+                  <stop offset="100%" stop-color="#22c55e"/> <!-- Green at edge (high scores) -->
+                </radialGradient>
               </defs>
               <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
               <circle cx="130" cy="130" r="120" stroke="url(#bigGradient)" stroke-width="18" fill="none"
