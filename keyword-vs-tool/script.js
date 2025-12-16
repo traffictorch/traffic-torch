@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Top 3 only
     const prioritizedFixes = fixes.slice(0, 3);
 
-    results.innerHTML = `
+        results.innerHTML = `
       <div class="max-w-5xl mx-auto space-y-16 animate-in">
         <!-- Big Score Circles -->
         <div class="grid md:grid-cols-2 gap-12 my-12">
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="text-xl text-gray-400">Target phrase: "${phrase}"</p>
         </div>
 
-        <!-- Small Metric Cards -->
+        <!-- Small Metric Cards – Collapsible Education -->
         <div class="grid md:grid-cols-3 gap-8 my-16">
           ${[
             { name: 'Meta Title & Desc', you: data.meta.yourMatches > 0 ? 100 : 0, comp: data.meta.compMatches > 0 ? 100 : 0, border: data.meta.yourMatches > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Checks if your target phrase appears naturally in the page title and meta description.", how: "Add the keyword near the start of the title (keep under 60 chars) and include it once in the meta description (under 155 chars).", why: "Google uses title and description for rankings and click-through rates — pages with keyword in both see 20-30% higher CTR." } },
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { name: 'Image Alts', you: data.alts.yourPhrase > 0 ? 100 : 0, comp: data.alts.compPhrase > 0 ? 100 : 0, border: data.alts.yourPhrase > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Checks if any image alt text contains the target phrase.", how: "Update alt text of key images (hero, featured) to include the phrase descriptively.", why: "Improves accessibility, enables image search traffic, and adds extra relevance signals." } },
             { name: 'Anchor Text', you: data.anchors.your > 0 ? 100 : 0, comp: data.anchors.comp > 0 ? 100 : 0, border: data.anchors.your > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Looks for internal links using the target phrase as anchor text.", how: "Add or edit internal links to use the phrase naturally where relevant.", why: "Strengthens site-wide relevance and improves internal PageRank flow." } },
             { name: 'URL & Schema', you: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)), comp: Math.min(100, (data.urlSchema.compUrlMatch > 0 ? 50 : 0) + (data.urlSchema.compSchema ? 50 : 0)), border: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)) >= 50 ? 'border-green-500' : 'border-red-500', educ: { what: "Combines URL keyword inclusion and structured data presence.", how: "Include phrase in URL slug if possible; add JSON-LD schema (FAQ, Article, etc.).", why: "Descriptive URLs aid crawling; schema unlocks rich snippets and better SERP visibility." } }
-                    ].map((m) => `
+          ].map((m) => `
             <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 border-l-8 ${m.border}">
               <h4 class="text-xl font-bold text-center mb-6">${m.name}</h4>
               <div class="grid grid-cols-2 gap-6 mb-8">
@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.what}</p>
                 </div>
                 <div>
-                  <p class="font-semibold text-orange-600 dark:text-orange-400">How to fix?</p>
+                  <p class="font-semibold text-orange-600 dark:text-orange-400">How to improve?</p>
                   <p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.how}</p>
                 </div>
                 <div>
@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
           `).join('')}
         </div>
 
-        <!-- Prioritized Gap Fixes – Top 3 Only, Full Education -->
+        <!-- Prioritized Gap Fixes – Top 3 with Full Rich Education -->
         <div class="space-y-8">
           <h3 class="text-4xl font-black text-center mb-8">Prioritized Gap Fixes</h3>
           ${prioritizedFixes.length ? prioritizedFixes.map(fix => {
@@ -291,7 +291,6 @@ document.addEventListener('DOMContentLoaded', () => {
 • Keep the full title under 60 characters
 • Include the phrase once in the meta description (under 155 characters)
 • Make both compelling and click-worthy
-
 Example title: "${phrase.charAt(0).toUpperCase() + phrase.slice(1)} | Your Brand"`,
                 why: `Search engines use title and meta to determine relevance and generate SERP previews. Pages with the phrase in both see 20–30% higher click-through rates and stronger ranking signals. This is one of the highest-ROI on-page changes.`
               };
