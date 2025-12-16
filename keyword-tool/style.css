@@ -163,9 +163,5 @@ h2 + p {
 }
 
 
-/* Tool cards text */
-.text-gray-300 {
-  --tw-text-opacity: 1;
-  color: rgb(117, 119, 123);
-}
+
 
