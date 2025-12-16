@@ -209,48 +209,122 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="text-xl text-gray-400">Target phrase: "${phrase}"</p>
         </div>
 
-        <!-- Small Metric Circles -->
+                <!-- Small Metric Cards with Collapsible Education (How to improve) -->
         <div class="grid md:grid-cols-3 gap-8 my-16">
           ${[
-            {name: 'Meta Title & Desc', you: data.meta.yourMatches > 0 ? 100 : 0, comp: data.meta.compMatches > 0 ? 100 : 0},
-            {name: 'H1 & Headings', you: data.headings.yourH1Match > 0 ? 100 : 0, comp: data.headings.compH1Match > 0 ? 100 : 0},
-            {name: 'Content Density', you: parseFloat(data.content.yourDensity), comp: parseFloat(data.content.compDensity)},
-            {name: 'Image Alts', you: data.alts.yourPhrase > 0 ? 100 : 0, comp: data.alts.compPhrase > 0 ? 100 : 0},
-            {name: 'Anchor Text', you: data.anchors.your > 0 ? 100 : 0, comp: data.anchors.comp > 0 ? 100 : 0},
-            {name: 'URL & Schema', you: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)),
-             comp: Math.min(100, (data.urlSchema.compUrlMatch > 0 ? 50 : 0) + (data.urlSchema.compSchema ? 50 : 0))}
+            {
+              name: 'Meta Title & Desc',
+              you: data.meta.yourMatches > 0 ? 100 : 0,
+              comp: data.meta.compMatches > 0 ? 100 : 0,
+              educ: {
+                what: "The page title and meta description are the primary elements search engines evaluate for topical relevance and what users see in search results.",
+                how: "Add the exact target phrase naturally to the <title> tag (ideally near the start) and meta description. Keep title under 60 characters.",
+                why: "Strong meta relevance boosts click-through rates and sends clear topical signals to search engines."
+              }
+            },
+            {
+              name: 'H1 & Headings',
+              you: data.headings.yourH1Match > 0 ? 100 : 0,
+              comp: data.headings.compH1Match > 0 ? 100 : 0,
+              educ: {
+                what: "Headings (H1–H6) structure content and highlight key topics for both users and search engines.",
+                how: "Include the target phrase in your main H1 tag. Use related variations in H2–H6 for better structure.",
+                why: "Proper heading usage improves content hierarchy, readability, and on-page relevance scoring."
+              }
+            },
+            {
+              name: 'Content Density',
+              you: parseFloat(data.content.yourDensity),
+              comp: parseFloat(data.content.compDensity),
+              educ: {
+                what: "Content density measures the natural frequency of the target phrase within the main body text.",
+                how: "Expand your content with valuable details and naturally incorporate the phrase 3–6 times per 1000 words. Avoid repetition that feels forced.",
+                why: "Balanced density signals comprehensive topical coverage without risking keyword stuffing penalties."
+              }
+            },
+            {
+              name: 'Image Alts',
+              you: data.alts.yourPhrase > 0 ? 100 : 0,
+              comp: data.alts.compPhrase > 0 ? 100 : 0,
+              educ: {
+                what: "Image alt attributes describe visuals to search engines and screen readers.",
+                how: "Add the target phrase to alt text of your most important images (e.g., hero or feature images) in a descriptive way.",
+                why: "Enhances accessibility, supports image search visibility, and adds extra relevance signals."
+              }
+            },
+            {
+              name: 'Anchor Text',
+              you: data.anchors.your > 0 ? 100 : 0,
+              comp: data.anchors.comp > 0 ? 100 : 0,
+              educ: {
+                what: "Anchor text is the visible, clickable text in internal hyperlinks.",
+                how: "Create or update internal links using the target phrase as natural anchor text where contextually relevant.",
+                why: "Strengthens internal linking structure and distributes relevance across the site."
+              }
+            },
+            {
+              name: 'URL & Schema',
+              you: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)),
+              comp: Math.min(100, (data.urlSchema.compUrlMatch > 0 ? 50 : 0) + (data.urlSchema.compSchema ? 50 : 0)),
+              educ: {
+                what: "Combines URL descriptiveness and presence of structured data markup.",
+                how: "If possible, include the phrase in the URL slug. Add JSON-LD schema markup (e.g., FAQPage, Article, or LocalBusiness) to the page.",
+                why: "Descriptive URLs improve crawlability; schema enables rich snippets and better understanding by search engines."
+              }
+            }
           ].map(m => `
-            <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
-              <h4 class="text-xl font-medium mb-4">${m.name}</h4>
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <div class="relative w-28 h-28 mx-auto">
-                    <svg width="112" height="112" viewBox="0 0 112 112" class="transform -rotate-90">
-                      <circle cx="56" cy="56" r="48" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-                      <circle cx="56" cy="56" r="48" stroke="${getCircleColor(m.you)}" stroke-width="12" fill="none"
-                              stroke-dasharray="${(m.you / 100) * 301} 301" stroke-linecap="round"/>
-                    </svg>
-                    <div class="absolute inset-0 flex flex-col items-center justify-center">
-                      <span class="text-3xl font-black ${getTextColorClass(m.you)}">${Math.round(m.you)}%</span>
+            <details class="group bg-white dark:bg-gray-900 rounded-2xl shadow-lg overflow-hidden">
+              <summary class="p-6 cursor-pointer list-none">
+                <div class="text-center">
+                  <h4 class="text-xl font-medium mb-4">${m.name}</h4>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <div class="relative w-28 h-28 mx-auto">
+                        <svg width="112" height="112" viewBox="0 0 112 112" class="transform -rotate-90">
+                          <circle cx="56" cy="56" r="48" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+                          <circle cx="56" cy="56" r="48" stroke="${getCircleColor(m.you)}" stroke-width="12" fill="none"
+                                  stroke-dasharray="${(m.you / 100) * 301} 301" stroke-linecap="round"/>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                          <span class="text-3xl font-black ${getTextColorClass(m.you)}">${Math.round(m.you)}%</span>
+                        </div>
+                      </div>
+                      <p class="mt-2 text-sm font-medium">You</p>
+                    </div>
+                    <div>
+                      <div class="relative w-28 h-28 mx-auto">
+                        <svg width="112" height="112" viewBox="0 0 112 112" class="transform -rotate-90">
+                          <circle cx="56" cy="56" r="48" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+                          <circle cx="56" cy="56" r="48" stroke="${getCircleColor(m.comp)}" stroke-width="12" fill="none"
+                                  stroke-dasharray="${(m.comp / 100) * 301} 301" stroke-linecap="round"/>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                          <span class="text-3xl font-black ${getTextColorClass(m.comp)}">${Math.round(m.comp)}%</span>
+                        </div>
+                      </div>
+                      <p class="mt-2 text-sm font-medium">Comp</p>
                     </div>
                   </div>
-                  <p class="mt-2 text-sm font-medium">You</p>
+                  <p class="mt-6 text-orange-600 dark:text-orange-400 font-medium">
+                    Click to show: What is it? • How to improve? • Why it matters?
+                  </p>
+                </div>
+              </summary>
+              <div class="px-6 pb-6 border-t border-gray-200 dark:border-gray-700 space-y-6">
+                <div>
+                  <p class="font-semibold text-orange-600 dark:text-orange-400">What is it?</p>
+                  <p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.what}</p>
                 </div>
                 <div>
-                  <div class="relative w-28 h-28 mx-auto">
-                    <svg width="112" height="112" viewBox="0 0 112 112" class="transform -rotate-90">
-                      <circle cx="56" cy="56" r="48" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-                      <circle cx="56" cy="56" r="48" stroke="${getCircleColor(m.comp)}" stroke-width="12" fill="none"
-                              stroke-dasharray="${(m.comp / 100) * 301} 301" stroke-linecap="round"/>
-                    </svg>
-                    <div class="absolute inset-0 flex flex-col items-center justify-center">
-                      <span class="text-3xl font-black ${getTextColorClass(m.comp)}">${Math.round(m.comp)}%</span>
-                    </div>
-                  </div>
-                  <p class="mt-2 text-sm font-medium">Comp</p>
+                  <p class="font-semibold text-orange-600 dark:text-orange-400">How to improve?</p>
+                  <p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.how}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-orange-600 dark:text-orange-400">Why it matters?</p>
+                  <p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.why}</p>
                 </div>
               </div>
-            </div>
+            </details>
           `).join('')}
         </div>
 
