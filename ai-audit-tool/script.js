@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let text = cleanElement.textContent || '';
 
-      // Universal cleanup - combine all steps into one pass
+      // Universal cleanup - combine all steps
       text = text
         .replace(/Skip to (main )?content/gi, '')
         .replace(/\b(?:Menu|Navigation|Home|About|Contact|Blog|Shop|Cart|Login|Signup|Reserve|Book|Explore|Discover|View|Learn|Subscribe|Follow us|Accommodation|Food|Wine|Entertainment|Gift|Merchandise|Construction)\b/gi, '')
