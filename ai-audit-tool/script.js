@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ].map(m => {
                 const gradeColor = getGradeColor(m.normalized);
                 const displayScore = m.normalized.toFixed(1);
-                                return `
+                return `
                 <div class="bg-white rounded-2xl shadow-md p-6 text-center border-l-4" style="border-left-color: ${gradeColor}">
                   <div class="relative w-32 h-32 mx-auto">
                     <svg viewBox="0 0 128 128" class="-rotate-90">
@@ -219,9 +219,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     Show Info
                   </button>
                   <div class="hidden mt-4 space-y-3 text-sm text-gray-600 leading-relaxed">
-                    <p><span class="font-bold text-blue-600">What it is:</span> ${m.name === 'Perplexity' ? 'Measures how predictable your text is to AI detectors.' : m.name === 'Burstiness' ? 'Shows variation in sentence length for natural rhythm.' : m.name === 'Repetition' ? 'Tracks how often phrases or patterns repeat.' : m.name === 'Sentence Length' ? 'Average words per sentence (ideal 15–23).' : 'Percentage of unique words in your content.'}</p>
-                    <p><span class="font-bold text-green-600">How to improve:</span> ${m.name === 'Perplexity' || m.name === 'Repetition' ? 'Add personal stories, unexpected turns, and varied phrasing.' : 'Mix short and long sentences, use synonyms, and add anecdotes.'}</p>
-                    <p><span class="font-bold text-orange-600">Why it matters:</span> Google and readers prefer natural, engaging, human-like writing over predictable patterns.</p>
+                    <p><span class="font-bold text-blue-600">What it is:</span> 
+                      ${m.name === 'Perplexity' ? 'How unpredictable your text appears to AI detectors.' : 
+                        m.name === 'Burstiness' ? 'How much your sentence lengths vary for natural flow.' : 
+                        m.name === 'Repetition' ? 'How often the same phrases or patterns appear.' : 
+                        m.name === 'Sentence Length' ? 'Average words per sentence (ideal 15–23).' : 
+                        'How diverse your word choice is across the content.'}
+                    </p>
+                    <p><span class="font-bold text-green-600">How to improve:</span> 
+                      ${m.name === 'Perplexity' ? 'Use varied phrasing, personal anecdotes, and unexpected ideas.' : 
+                        m.name === 'Burstiness' ? 'Mix short punchy sentences with longer detailed ones.' : 
+                        m.name === 'Repetition' ? 'Replace repeated phrases with synonyms and fresh expressions.' : 
+                        m.name === 'Sentence Length' ? 'Balance short and medium sentences for better rhythm.' : 
+                        'Incorporate synonyms, descriptive words, and less common vocabulary.'}
+                    </p>
+                    <p><span class="font-bold text-orange-600">Why it matters:</span> 
+                      ${m.name === 'Perplexity' ? 'Search engines penalize overly predictable content that feels AI-generated.' : 
+                        m.name === 'Burstiness' ? 'Search engines and readers prefer dynamic rhythm that keeps attention.' : 
+                        m.name === 'Repetition' ? 'Search engines downgrade repetitive text as low-quality or spammy.' : 
+                        m.name === 'Sentence Length' ? 'Search engines favor readable flow that matches human writing habits.' : 
+                        'Search engines reward rich vocabulary as a signal of expertise and depth.'}
+                    </p>
                   </div>
                 </div>
               `;
