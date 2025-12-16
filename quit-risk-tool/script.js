@@ -89,28 +89,70 @@ document.addEventListener('DOMContentLoaded', () => {
     return { text: "High Risk", color: "from-red-500 to-pink-600" };
   }
 
-  form.addEventListener('submit', async e => {
+	form.addEventListener('submit', async e => {
     e.preventDefault();
     const url = input.value.trim();
     if (!url) return;
 
-        results.innerHTML = `
-      <div class="flex flex-col items-center justify-center py-20 space-y-8">
+    results.classList.remove('hidden');
+
+    const loaderHTML = `
+      <div class="flex flex-col items-center justify-center py-20 space-y-12">
         <div class="relative">
-          <svg class="animate-spin h-20 w-20 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <svg class="animate-spin h-24 w-24 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
         </div>
-        <p class="text-2xl font-bold text-gray-700 dark:text-gray-300 text-center px-8">
-          Analyzing usability & quit risk signals...
-        </p>
-        <p class="text-lg text-gray-500 dark:text-gray-400 text-center max-w-2xl px-8">
-          Fetching page content, evaluating readability, navigation, accessibility, mobile readiness, and performance proxies.
-        </p>
+        <div class="text-center space-y-4">
+          <p class="text-3xl font-black text-gray-800 dark:text-gray-200">Analyzing your page...</p>
+          <p id="progressText" class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl px-8"></p>
+        </div>
       </div>
     `;
-    results.classList.remove('hidden');
+
+    results.innerHTML = loaderHTML;
+
+    const progressText = document.getElementById('progressText');
+
+    const steps = [
+      { text: "Fetching and parsing page HTML securely...", delay: 600 },
+      { text: "Extracting main content and text for readability analysis...", delay: 800 },
+      { text: "Counting navigation links and menu structure...", delay: 700 },
+      { text: "Evaluating images for accessibility signals...", delay: 600 },
+      { text: "Checking mobile responsiveness patterns...", delay: 500 },
+      { text: "Assessing performance proxies and asset optimization...", delay: 700 },
+      { text: "Calculating overall usability score and quit risk...", delay: 800 }
+    ];
+
+    let currentStep = 0;
+    const runStep = () => {
+      if (currentStep < steps.length) {
+        progressText.textContent = steps[currentStep].text;
+        currentStep++;
+        setTimeout(runStep, steps[currentStep - 1].delay);
+      } else {
+        // All progress messages shown — now do real fetch
+        performAnalysis();
+      }
+    };
+
+    runStep();
+
+    async function performAnalysis() {
+      try {
+        progressText.textContent = "Generating report and prioritized fixes...";
+        const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
+        if (!res.ok) throw new Error('Page not reachable or blocked');
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+
+        const uxData = getUXContent(doc);
+        const title = doc.querySelector('title')?.textContent?.trim() || 'Untitled Page';
+        const ux = analyzeUX(uxData);
+        const fixes = generateFixes(ux);
+        const forecast = predictForecast(ux.score);
+        const risk = getQuitRiskLabel(ux.score);
 
     try {
       const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
