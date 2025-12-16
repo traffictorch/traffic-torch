@@ -50,21 +50,125 @@ body { transition: background-color 0.3s ease; }
     .text-9xl { font-size: 5.5rem !important; }
   }
   
+  /* Loading Spinner */  
+.animate-spin { animation: spin 1s linear infinite; } 
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-/* Progress Bar – Thick, centered text, animated */
-#progress-bar {
-  height: 3rem; /* thicker */
-  background: linear-gradient(90deg, #f97316, #ec4899, #a855f7, #3b82f6);
-  background-size: 400% 400%;
-  animation: gradient-shift 12s ease infinite;
+
+
+
+
+
+/* Big Score Number Color - Light Mode */
+.score-low {
+  color: #ef4444 !important; /* Red for <60 */
+}
+.score-mid {
+  color: #fb923c !important; /* Orange for 60-79 */
+}
+.score-high {
+  color: #22c55e !important; /* Green for ≥80 */
 }
 
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* Big Score Number Color - - Dark Mode Overrides */
+.dark .score-low {
+  color: #f87171 !important; /* Lighter red in dark mode */
+}
+.dark .score-mid {
+  color: #fdba74 !important; /* Lighter orange in dark mode */
+}
+.dark .score-high {
+  color: #86efac !important; /* Lighter green in dark mode */
+}
+
+/* /100 text - consistent gray in both modes */
+.score-slash {
+  color: #9ca3af !important; /* gray-400 */
+}
+.dark .score-slash {
+  color: #6b7280 !important; /* gray-500 in dark */
+}
+
+/* Optional: Ensure drop-shadow is visible in both modes */
+.score-number {
+  text-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 
 
 
+
+
+/* Ensure detail paragraphs are readable in dark mode */
+.dark .text-left p {
+  color: #e5e7eb !important; /* Light gray text for content */
+}
+
+/* Predictive Rank Forecast info text in dark mode */
+.dark .text-blue-300 {
+  color: #93c5fd !important;
+}
+.dark .text-green-300 {
+  color: #86efac !important;
+}
+.dark .text-orange-300 {
+  color: #fbbf24 !important;
+}
+.dark .text-sm.italic {
+  color: #d1d5db !important; /* Softer gray for note */
+}
+
+/* Small metric details toggle text */
+.dark .text-sm {
+  color: #d1d5db !important;
+}
+
+
+
+
+
+/* Hero text below H2 - light gray in light mode, white in dark mode */
+h2 + p {
+  color: #6b7280; /* gray-500 light mode */
+}
+.dark h2 + p {
+  color: #f3f4f6; /* gray-100 dark mode */
+}
+
+/* Small metric card titles (h4) - dark in light mode, light in dark mode */
+.bg-white h4, .dark .bg-gray-900 h4 {
+  color: #1f2937; /* gray-800 light mode */
+}
+.dark .bg-gray-900 h4 {
+  color: #f3f4f6; /* gray-100 dark mode */
+}
+
+
+
+
+/* Detail paragraphs under labels - readable gray */
+.text-left p {
+  color: #4b5563; /* gray-600 light mode */
+}
+.dark .text-left p {
+  color: #1e1f20 !important; /* gray-300 dark mode */
+}
+
+/* Predictive Rank Forecast info text */
+.text-blue-300, .text-green-300, .text-orange-300 {
+  color: #6b7280 !important; /* gray-500 light mode */
+}
+.dark .text-blue-300, .dark .text-green-300, .dark .text-orange-300 {
+  color: #e5e7eb !important; /* gray-300 dark mode */
+}
+
+
+
+ /*  Animate-fade-in */ 
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
+}
