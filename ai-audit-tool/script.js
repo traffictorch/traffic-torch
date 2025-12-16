@@ -348,11 +348,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               </div>
             </div>
+            
+            <!-- Prioritized AI-Style Fixes - Improved -->
+            <div class="mt-20 space-y-8">
+              <h2 class="text-4xl md:text-5xl font-black text-center text-gray-900">Prioritized AI-Style Fixes</h2>
+              ${yourScore >= 70 ? `
+                <div class="bg-red-50 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-red-500">
+                  <h3 class="text-3xl font-bold text-red-600 mb-6">Very Likely AI Detected</h3>
+                  <p class="text-lg"><span class="font-bold text-blue-600">What:</span> Highly predictable patterns, low variation, repetitive phrasing</p>
+                  <p class="text-lg mt-4"><span class="font-bold text-green-600">How to improve:</span> Add personal stories, vary sentence rhythm, use richer and more diverse vocabulary</p>
+                  <p class="text-lg mt-4"><span class="font-bold text-orange-600">Why it matters:</span> Search engines heavily penalize obvious AI content in rankings</p>
+                </div>` : yourScore >= 40 ? `
+                <div class="bg-orange-50 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-orange-500">
+                  <h3 class="text-3xl font-bold text-orange-600 mb-6">Moderate AI Patterns</h3>
+                  <p class="text-lg"><span class="font-bold text-blue-600">What:</span> Some uniformity in structure and repeated phrases</p>
+                  <p class="text-lg mt-4"><span class="font-bold text-green-600">How to improve:</span> Mix short and long sentences, add personal voice, reduce repetition</p>
+                  <p class="text-lg mt-4"><span class="font-bold text-orange-600">Why it matters:</span> Small changes can move content into human-like territory and improve trust</p>
+                </div>` : `
+                <div class="bg-green-50 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-green-500">
+                  <h3 class="text-3xl font-bold text-green-600 mb-6">Excellent — Highly Human-Like!</h3>
+                  <p class="text-lg text-center">Your writing reads naturally with good variation and authentic voice.</p>
+                  <p class="text-lg mt-4 text-center">Keep up the great work — this style performs best in search rankings.</p>
+                </div>`}
+            </div>            
 
             <!-- Predictive Rank Forecast (if you have it, keep below) -->
-            <!-- Prioritized Fixes (keep in current position or move if preferred) -->
-            <!-- Prioritized Fixes, Forecast, Humanizer remain clean and consistent with previous version -->
-
+        
           </div>
         </div>
       `;
