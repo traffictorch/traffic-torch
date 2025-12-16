@@ -19,33 +19,47 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  function analyzeUX(data) {
+    function analyzeUX(data) {
     let readability = 60;
     if (data.text && data.text.length >= 200) {
       const text = data.text.replace(/\s+/g, ' ').trim();
       const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
       const words = text.split(/\s+/).filter(w => w.length > 0);
       const syl = text.match(/[aeiouy]+/gi) || [];
-      const flesch = sentences.length && words.length
-        ? 206.835 - 1.015 * (words.length / sentences.length) - 84.6 * (syl.length / words.length)
-        : 60;
+      let flesch = 60;
+      if (sentences.length > 0 && words.length > 0) {
+        const avgSentenceLength = words.length / sentences.length;
+        const avgSylPerWord = syl.length / words.length;
+        flesch = 206.835 - 1.015 * avgSentenceLength - 84.6 * avgSylPerWord;
+      }
       readability = Math.min(100, Math.max(0, Math.round(flesch)));
     }
 
-	const navScore = Math.min(100, Math.max(40, 100 - Math.floor(data.links / 3))); // Less penalizing for links
-    const accScore = data.images.length === 0 ? 40 : Math.min(100, 50 + data.images.length * 5); // Better baseline for images
-    const mobileScore = 90; // Slight boost
-    const speedScore = 85; // Slight adjustment
+    const navScore = Math.min(100, Math.max(30, 100 - Math.floor(data.links / 4))); // Even less penalizing, realistic for modern sites
 
-    const score = Math.round((readability + navScore + accScore + mobileScore + speedScore) / 5);
+    // Fixed Accessibility: safe calculation, realistic proxy (presence + moderate scaling)
+    let accScore = 50; // Base for having images
+    if (data.images.length === 0) {
+      accScore = 40;
+    } else {
+      accScore = Math.min(95, 50 + Math.min(data.images.length, 20) * 3); // Caps scaling to prevent overflow/NaN
+    }
 
-    return { 
-      score: score || 55, 
-      readability, 
-      nav: navScore, 
-      accessibility: accScore, 
-      mobile: mobileScore, 
-      speed: speedScore 
+    const mobileScore = 90;
+    const speedScore = 85;
+
+    const scoreValues = [readability, navScore, accScore, mobileScore, speedScore];
+    const validScore = scoreValues.every(v => typeof v === 'number' && !isNaN(v) && isFinite(v))
+      ? Math.round(scoreValues.reduce((a, b) => a + b, 0) / 5)
+      : 55; // Fallback only if truly invalid
+
+    return {
+      score: validScore,
+      readability,
+      nav: navScore,
+      accessibility: accScore,
+      mobile: mobileScore,
+      speed: speedScore
     };
   }
 
