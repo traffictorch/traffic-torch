@@ -5,23 +5,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const PROXY = 'https://cors-proxy.traffictorch.workers.dev/';
   let analyzedText = '';
 
-  function getMainContent(doc) {
-    const article = doc.querySelector('article');
-    if (article) return article;
-    const main = doc.querySelector('main') || doc.querySelector('[role="main"]');
-    if (main) return main;
+   function getMainContent(doc) {
+    const possibleMain = doc.querySelector('main, article, #main, .main, .content, .post, .page, [role="main"], .entry-content, .post-content, .article-body, .content-area, #content, .story-body');
+    if (possibleMain && possibleMain.textContent.trim().length > 500) return possibleMain;
+
     const selectors = [
-      '.post-content', '.entry-content', '.blog-post', '.content', '.post-body', '.article-body',
-      '#content', '.story-body', '.article__content', '.hentry', '.single-post', '.page-content',
-      '[class*="content"]', '[class*="post"]', '[class*="article"]'
+      '.content', '.post', '.entry', '.article', '#content', '.main-content', '.page-content',
+      '[class*="content"]', '[class*="post"]', '[class*="article"]', '[class*="blog"]'
     ];
     for (const sel of selectors) {
-      const el = doc.querySelector(sel);
-      if (el && el.textContent.trim().length > 300) return el;
+      const candidates = doc.querySelectorAll(sel);
+      for (const el of candidates) {
+        if (el.textContent.trim().length > 500) return el;
+      }
     }
+
     const body = doc.body.cloneNode(true);
-    const junk = ['nav','header','footer','aside','.sidebar','.menu','.cookie','.popup','.advert','[class*="nav"]','[class*="footer"]','[class*="header"]','.breadcrumbs','.comments'];
-    junk.forEach(s => body.querySelectorAll(s).forEach(e => e.remove()));
+    const junkSelectors = [
+      'nav', 'header', 'footer', 'aside', '.sidebar', '.menu', '.cookie', '.popup', '.advert',
+      '[class*="nav"]', '[class*="footer"]', '[class*="header"]', '.breadcrumbs', '.comments',
+      '.social', '.share', '.related', '.skip-link', 'a[aria-label*="skip"]'
+    ];
+    junkSelectors.forEach(s => body.querySelectorAll(s).forEach(e => e.remove()));
+
     return body;
   }
 
@@ -151,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const cleanElement = mainElement.cloneNode(true);
       cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
       let text = cleanElement.textContent || '';
-      text = text.replace(/\s+/g, ' ').replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu, ' ').trim();
+      text = text.replace(/Skip to (main )?content/gi, '').replace(/\s+/g, ' ').trim();
       const wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
       analyzedText = text;
       const ai = analyzeAIContent(text);
@@ -189,7 +195,8 @@ document.addEventListener('DOMContentLoaded', () => {
               <p class="text-3xl font-bold" style="color: ${mainGradeColor}">${verdict}</p>
             </div>
             <p class="text-center text-base text-gray-600">Scanned ${wordCount.toLocaleString()} words from main content</p>
-
+		    <p class="text-center text-sm text-gray-500 mt-4 italic">Note: Humanized version is an AI-generated example based on detected main content. Always review and edit for accuracy and tone.</p>
+           
             <!-- Small Metrics (0–10 scale with colored number + left border) -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
               ${[
