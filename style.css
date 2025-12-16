@@ -190,3 +190,9 @@ html.light .score-circle circle.bg {
   .expandable-card summary { font-size: 1.5rem; padding: 1.5rem; }
   .expandable-card > div { padding: 1.5rem; }
 }
+
+/* Tool cards text */
+.text-gray-300 {
+  --tw-text-opacity: 1;
+  color: rgb(117, 119, 123);
+}
