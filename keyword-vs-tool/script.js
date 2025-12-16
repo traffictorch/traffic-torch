@@ -158,16 +158,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const forecastTier = yourScore >= 90 ? 'Top 3 Potential' : yourScore >= 80 ? 'Top 10 Likely' : yourScore >= 60 ? 'Page 1 Possible' : 'Page 2+';
     const gap = yourScore > compScore ? '+' + (yourScore - compScore) : yourScore < compScore ? (compScore - yourScore) : '±0';
 
-// Expanded fixes – check all gaps
-    const fixes = [];
-    if (data.meta.yourMatches === 0) fixes.push("Add phrase to title and meta description.");
-    if (data.headings.yourH1Match === 0) fixes.push("Include phrase in H1 heading.");
-    if (parseFloat(data.content.yourDensity) < 1 || yourContentMatches === 0) fixes.push("Improve content density.");
-    if (yourWords < 800 || yourWords < compWords) fixes.push(`Expand content depth — aim for at least 800 words (currently ${yourWords}).`);
-    if (data.alts.yourPhrase === 0) fixes.push("Include phrase in key image alt text.");
-    if (data.anchors.your === 0) fixes.push("Use phrase in internal anchor text.");
-    if (data.urlSchema.yourUrlMatch === 0) fixes.push("Include phrase in URL slug if possible.");
-    if (data.urlSchema.yourSchema === 0) fixes.push("Add structured data (JSON-LD schema markup).");
+// Expanded fixes – check all gaps (in priority order)
+ const fixes = [];
+ if (data.meta.yourMatches === 0) fixes.push("Add phrase to title and meta description.");
+ if (data.headings.yourH1Match === 0) fixes.push("Include phrase in H1 heading.");
+ if (parseFloat(data.content.yourDensity) < 1 || yourContentMatches === 0) fixes.push("Improve content density.");
+ if (yourWords < 800 || yourWords < compWords) fixes.push(`Expand content depth — aim for at least 800 words (currently ${yourWords}).`);
+ if (data.alts.yourPhrase === 0) fixes.push("Include phrase in key image alt text.");
+ if (data.anchors.your === 0) fixes.push("Use phrase in internal anchor text.");
+ if (data.urlSchema.yourUrlMatch === 0) fixes.push("Include phrase in URL slug if possible.");
+ if (data.urlSchema.yourSchema === 0) fixes.push("Add structured data (JSON-LD schema markup).");
+
+ // Limit to top 3 prioritized fixes
+ const prioritizedFixes = fixes.slice(0, 3);
 
     results.innerHTML = `
       <div class="max-w-5xl mx-auto space-y-16 animate-in">
@@ -338,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
          <!-- Prioritized Gap Fixes – Full Rich Education + All Gaps -->
         <div class="space-y-8">
           <h3 class="text-4xl font-black text-center mb-8">Prioritized Gap Fixes</h3>
-          ${fixes.length ? fixes.map(fix => {
+          ${prioritizedFixes.length ? prioritizedFixes.map(fix => {
             let educ = {};
             if (fix.includes('title and meta description')) {
               educ = {
