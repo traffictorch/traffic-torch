@@ -225,28 +225,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
       results.innerHTML = `
         <div class="max-w-5xl mx-auto space-y-16 animate-in">
-          <!-- Big Overall Score -->
-          <div class="flex justify-center my-12">
-            <div class="relative">
-              <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
-                <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
-                <circle cx="130" cy="130" r="120" stroke="url(#bigGradient)" stroke-width="18" fill="none"
-                        stroke-dasharray="${(overall / 100) * 754} 754" stroke-linecap="round"/>
-                <defs>
-                  <linearGradient id="bigGradient">
-                    <stop offset="0%" stop-color="#ef4444"/>
-                    <stop offset="100%" stop-color="#22c55e"/>
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div class="absolute inset-0 flex items-center justify-center">
-                <div class="text-center">
-                  <div class="text-5xl font-black text-white drop-shadow-2xl">${overall}</div>
-                  <div class="text-2xl text-white/90">/100</div>
-                </div>
+                     <!-- Big Score Circle -->
+        <div class="flex justify-center my-12">
+          <div class="relative">
+            <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
+              <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
+              <circle cx="130" cy="130" r="120" stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#fb923c' : '#ef4444'}"
+                      stroke-width="18" fill="none"
+                      stroke-dasharray="${(yourScore / 100) * 754} 754" stroke-linecap="round"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="text-center">
+                <div class="text-6xl font-black text-white drop-shadow-2xl">${yourScore}</div>
+                <div class="text-2xl text-white/90">/100</div>
               </div>
             </div>
           </div>
+        </div>
 
           <!-- 8 Module Cards -->
           <div class="grid md:grid-cols-4 gap-6 my-16">
