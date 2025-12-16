@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     results.classList.remove('hidden');
 
-        try {
+     try {
       const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable');
       const html = await res.text();
@@ -216,40 +216,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let text = cleanElement.textContent || '';
 
-      // Universal cleanup - combine all steps
+      // Single universal cleanup pass
       text = text
         .replace(/Skip to (main )?content/gi, '')
         .replace(/\b(?:Menu|Navigation|Home|About|Contact|Blog|Shop|Cart|Login|Signup|Reserve|Book|Explore|Discover|View|Learn|Subscribe|Follow us|Accommodation|Food|Wine|Entertainment|Gift|Merchandise|Construction)\b/gi, '')
         .replace(/\s+/g, ' ')
         .trim();
 
-      // Single lines filtering - keep only substantial content
+      // Single lines filtering — keep only substantial content
       const lines = text.split('\n')
         .map(l => l.trim())
         .filter(l => l.length > 50 && !/^(Home|About|Contact|Reserve|Book|Menu|Shop|Login|$)/i.test(l));
 
       text = lines.join(' ');
 
-      // Universal cleanup — no site-specific strings
-      text = text
-        // Remove "Skip to content" links
-        .replace(/Skip to (main )?content/gi, '')
-        // Remove common navigation/CTA words that often appear alone or in short lines
-        .replace(/\b(Home|About|Services|Contact|Blog|Shop|Cart|Login|Signup|Reserve|Book|Explore|Discover|View|Learn|Get Started|Sign Up|Menu|Accommodation|Food|Wine|Entertainment|Gift|Merchandise|Construction)\b/gi, '')
-        // Collapse whitespace
-        .replace(/\s+/g, ' ')
-        .trim();
-
-      // Split into lines and keep only substantial ones (filter out menu items, short CTAs)
-      const lines = text.split('\n')
-        .map(l => l.trim())
-        .filter(l => l.length > 40 && !/^(Home|About|Contact|Reserve|Book|Menu|Shop|Login|$)/i.test(l));
-
-      text = lines.join(' ');
-
       const wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
       analyzedText = text;
-
       const ai = analyzeAIContent(text);
       const yourScore = ai.score;
       const mainNormalized = 100 - yourScore; // reverse: lower AI score = better human
