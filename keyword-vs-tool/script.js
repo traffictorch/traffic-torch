@@ -168,7 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (data.anchors.your === 0) fixes.push("Use phrase in internal anchor text.");
     if (data.urlSchema.yourUrlMatch === 0) fixes.push("Include phrase in URL slug if possible.");
     if (data.urlSchema.yourSchema === 0) fixes.push("Add structured data (JSON-LD schema markup).");
-    }
 
     results.innerHTML = `
       <div class="max-w-5xl mx-auto space-y-16 animate-in">
