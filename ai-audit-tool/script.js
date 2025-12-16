@@ -77,12 +77,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-    function makeItHuman(raw) {
+      function makeItHuman(raw) {
     let t = raw.trim();
     if (t.length < 200) return t;
 
-    // Light clean-up (remove common junk patterns without over-stripping)
+    // Aggressive but safe junk removal for menus, repeated nav, etc.
     t = t.replace(/Skip to (main )?content/gi, '')
+         .replace(/(Menu|Accommodation|Food\s*&\s*Wine|Entertainment|Gift Vouchers|Merchandise|Contact|Reserve|Reservation|Book Now|Explore Rooms|Discover Restaurant|Live Entertainment|Shop Gifts|Construction Announcement)[\s\S]*?(?=([A-Z]|$))/gi, '')
          .replace(/\s+/g, ' ')
          .trim();
 
@@ -92,13 +93,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const swaps = {
       very: ['really', 'truly', 'extremely', 'highly'],
       good: ['great', 'excellent', 'solid', 'strong'],
-      best: ['finest', 'top', 'leading', ' premier'],
+      best: ['finest', 'top', 'leading', 'premier'],
       big: ['large', 'major', 'significant', 'substantial'],
       small: ['minor', 'limited', 'compact'],
       use: ['try', 'apply', 'work with', 'utilize'],
       help: ['assist', 'support', 'boost', 'enhance'],
       important: ['key', 'critical', 'essential', 'vital'],
-      easy: ['simple', 'straightforward', 'clear', 'effortless']
+      easy: ['simple', 'straightforward', 'clear', 'effortless'],
+      offer: ['provide', 'feature', 'deliver'],
+      experience: ['enjoy', 'discover', 'immerse in']
     };
 
     const naturalBursts = [
@@ -113,10 +116,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     for (let s of sentences) {
       let sentence = s.trim();
-      if (!sentence || sentence.length < 10) continue;
+      if (!sentence || sentence.length < 15) continue;
 
-      // Occasional natural burst (rare, professional)
-      if (!burstUsed && result.length > 1 && Math.random() < 0.2) {
+      // Rare professional burst
+      if (!burstUsed && result.length > 1 && Math.random() < 0.15) {
         result.push(naturalBursts[Math.floor(Math.random() * naturalBursts.length)]);
         burstUsed = true;
       }
@@ -124,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let words = sentence.split(' ');
       for (let i = 0; i < words.length; i++) {
         const clean = words[i].toLowerCase().replace(/[^a-z]/g, '');
-        if (swaps[clean] && Math.random() < 0.35) {
+        if (swaps[clean] && Math.random() < 0.4) {
           const options = swaps[clean];
           words[i] = words[i].replace(new RegExp(clean, 'gi'), options[Math.floor(Math.random() * options.length)]);
         }
@@ -132,13 +135,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       sentence = words.join(' ');
 
-      // Split long sentences for better readability
-      if (sentence.split(' ').length > 28 && Math.random() < 0.6) {
+      // Split long sentences for better flow
+      if (sentence.split(' ').length > 26 && Math.random() < 0.5) {
         const mid = Math.floor(sentence.length / 2);
-        const breakPoint = sentence.lastIndexOf(' ', mid);
-        if (breakPoint > mid - 20) {
-          result.push(sentence.slice(0, breakPoint).trim() + '.');
-          sentence = sentence.slice(breakPoint).trim();
+        const breakPoint = sentence.lastIndexOf(['.', ',', ';', ':'][Math.floor(Math.random() * 4)], mid);
+        if (breakPoint > mid - 30 && breakPoint > 20) {
+          result.push(sentence.slice(0, breakPoint + 1).trim());
+          sentence = sentence.slice(breakPoint + 1).trim();
         }
       }
 
@@ -147,13 +150,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let final = result.join(' ').trim();
 
-    // Rare, neutral, professional ending
+    // Rare, neutral professional ending
     if (Math.random() < 0.3) {
       const endings = [
-        'This approach helps connect more naturally with readers.',
-        'A clear and engaging way to share your message.',
-        'Effective communication starts with natural flow.',
-        'Your content, refined and ready to resonate.'
+        'Your message, clear and compelling.',
+        'Engaging content that connects.',
+        'Natural writing that resonates.',
+        'Ready to capture attention.'
       ];
       final += ' ' + endings[Math.floor(Math.random() * endings.length)];
     }
