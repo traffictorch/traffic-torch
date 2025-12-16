@@ -158,17 +158,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const forecastTier = yourScore >= 90 ? 'Top 3 Potential' : yourScore >= 80 ? 'Top 10 Likely' : yourScore >= 60 ? 'Page 1 Possible' : 'Page 2+';
     const gap = yourScore > compScore ? '+' + (yourScore - compScore) : yourScore < compScore ? (compScore - yourScore) : '±0';
 
-     const fixes = [];
- if (yourScore < compScore || yourScore === compScore) {  // Show suggestions even if tied for education
-   if (data.meta.yourMatches === 0) fixes.push("Add phrase to title and meta description.");
-   if (yourWords < 800 || yourWords < compWords) fixes.push(`Expand content depth — aim for at least 800 words (currently ${yourWords}).`);
-   if (data.headings.yourH1Match === 0) fixes.push("Include phrase in H1 heading.");
-   if (parseFloat(data.content.yourDensity) < 1) fixes.push("Improve content density — naturally use phrase more frequently.");
-   if (data.alts.yourPhrase === 0) fixes.push("Include phrase in key image alt text.");
-   if (data.anchors.your === 0) fixes.push("Use phrase in internal anchor text.");
-   if (data.urlSchema.yourUrlMatch === 0) fixes.push("Include phrase in URL slug if possible.");
-   if (data.urlSchema.yourSchema === 0) fixes.push("Add structured data (JSON-LD schema markup).");
- }
+// Expanded fixes – check all gaps
+    const fixes = [];
+    if (data.meta.yourMatches === 0) fixes.push("Add phrase to title and meta description.");
+    if (data.headings.yourH1Match === 0) fixes.push("Include phrase in H1 heading.");
+    if (parseFloat(data.content.yourDensity) < 1 || yourContentMatches === 0) fixes.push("Improve content density.");
+    if (yourWords < 800 || yourWords < compWords) fixes.push(`Expand content depth — aim for at least 800 words (currently ${yourWords}).`);
+    if (data.alts.yourPhrase === 0) fixes.push("Include phrase in key image alt text.");
+    if (data.anchors.your === 0) fixes.push("Use phrase in internal anchor text.");
+    if (data.urlSchema.yourUrlMatch === 0) fixes.push("Include phrase in URL slug if possible.");
+    if (data.urlSchema.yourSchema === 0) fixes.push("Add structured data (JSON-LD schema markup).");
+    }
 
     results.innerHTML = `
       <div class="max-w-5xl mx-auto space-y-16 animate-in">
@@ -336,155 +336,75 @@ document.addEventListener('DOMContentLoaded', () => {
           `).join('')}
         </div>
 
-                            <!-- Prioritized Gap Fixes – Fixed with Full Detailed Education -->
+         <!-- Prioritized Gap Fixes – Full Rich Education + All Gaps -->
         <div class="space-y-8">
           <h3 class="text-4xl font-black text-center mb-8">Prioritized Gap Fixes</h3>
           ${fixes.length ? fixes.map(fix => {
-            let border = 'border-red-500';
             let educ = {};
             if (fix.includes('title and meta description')) {
-              border = data.meta.yourMatches === 0 ? 'border-red-500' : 'border-green-500';
               educ = {
                 what: `Your page title or meta description does not contain the target phrase "${phrase}" — this is one of the strongest direct relevance signals search engines look for.`,
                 how: `• Place the exact phrase naturally near the beginning of the <title> tag
-• Keep the full title under 60 characters to avoid truncation
+• Keep the full title under 60 characters
 • Include the phrase once in the meta description (under 155 characters)
 • Make both compelling and click-worthy
 
-Example title: "${phrase.charAt(0).toUpperCase() + phrase.slice(1)} | Your Brand"
-Example description: "Discover the best ${phrase} with expert tips, guides, and recommendations."`,
-                why: `Search engines use title and meta to:
-• Determine relevance and ranking
-• Generate the blue link and snippet in results
-• Influence click-through rates (pages with keyword in both see 20–30% higher CTR)
-This is one of the highest-ROI on-page optimizations.`
+Example title: "${phrase.charAt(0).toUpperCase() + phrase.slice(1)} | Your Brand"`,
+                why: `Search engines use title and meta to determine relevance and generate SERP previews. Pages with the phrase in both see 20–30% higher click-through rates and stronger ranking signals. This is one of the highest-ROI on-page changes.`
               };
             } else if (fix.includes('content depth')) {
-              border = yourWords < compWords ? 'border-red-500' : 'border-green-500';
               educ = {
-                what: `Your main content has only ${yourWords} words${compWords > yourWords ? ` — that's ${compWords - yourWords} fewer than the competitor's ${compWords} words` : ''}. Comprehensive depth is critical for ranking.`,
-                how: `Expand with valuable, reader-focused sections:
-• Detailed FAQ answering real user questions about "${phrase}"
-• Step-by-step guides or tutorials
-• Real-world examples, case studies, or scenarios
-• Relevant statistics, research, or data tables
-• Comparison tables or pros/cons lists
-• Practical tips, checklists, or actionable advice
+                what: `Your main content has only ${yourWords} words${compWords > yourWords ? ` — ${compWords - yourWords} fewer than the competitor` : ''}.`,
+                how: `Expand with valuable sections:
+• Detailed FAQ answering user questions
+• Step-by-step guides
+• Real examples or case studies
+• Statistics and data
+• Comparison tables
+• Practical tips or checklists
 
-Target 800–1500+ words while maintaining readability and natural flow.`,
-                why: `In-depth content:
-• Demonstrates expertise and topical authority (E-E-A-T)
-• Provides more context for natural keyword usage
-• Improves dwell time and user satisfaction
-• Better matches complex search intent
-• Consistently outranks shorter, thinner pages`
+Target 800–1500+ words of focused content.`,
+                why: `In-depth content demonstrates expertise, improves dwell time, satisfies intent better, and consistently ranks higher in competitive searches.`
               };
             } else if (fix.includes('H1 heading')) {
-              border = data.headings.yourH1Match === 0 ? 'border-red-500' : 'border-green-500';
               educ = {
-                what: `Your main H1 heading does not include the target phrase "${phrase}" — this is the most important heading for relevance.`,
-                how: `Rewrite your H1 to:
-• Include the exact or close-variant phrase
-• Make it benefit-focused and compelling
-• Keep it unique (don't duplicate title tag)
-• Use only one H1 per page
-
-Example: "Best ${phrase.charAt(0).toUpperCase() + phrase.slice(1)}: Complete Guide & Top Picks"`,
-                why: `The H1 is the strongest heading signal because:
-• It tells search engines the primary topic
-• Appears in browser tabs and SERP previews
-• Structures content for users and crawlers
-• Directly impacts relevance scoring`
+                what: `Your main H1 heading does not include the target phrase "${phrase}".`,
+                how: `Rewrite the H1 to include the exact or close-variant phrase while keeping it benefit-focused and unique from the title tag.`,
+                why: `The H1 is the strongest heading signal for topic relevance and helps search engines understand the page focus at a glance.`
               };
             } else if (fix.includes('content density')) {
-              border = parseFloat(data.content.yourDensity) < 1 ? 'border-red-500' : 'border-green-500';
               educ = {
-                what: `The target phrase appears only ${yourContentMatches} time(s) (${data.content.yourDensity}% density) — below optimal for strong relevance.`,
-                how: `Improve natural usage by:
-• Including the phrase in intro and conclusion
-• Using it in 2–3 subheadings (H2/H3)
-• Weaving it into body paragraphs contextually
-• Adding semantic variations
-• Aim for 1–2% density (3–6 times per 1000 words)
-
-Prioritize reader value over forced repetition.`,
-                why: `Optimal density:
-• Reinforces relevance without over-optimization risk
-• Provides multiple context signals
-• Supports featured snippets and related questions
-• Helps confirm page focus to search engines`
+                what: `The target phrase appears only ${yourContentMatches} time(s) (${data.content.yourDensity}% density).`,
+                how: `Incorporate the phrase naturally in intro, subheadings, body, and conclusion — aim for 1–2% density without forcing repetition.`,
+                why: `Balanced density reinforces relevance, provides context signals, and supports featured snippet eligibility without over-optimization risk.`
               };
             } else if (fix.includes('image alt text')) {
-              border = data.alts.yourPhrase === 0 ? 'border-red-500' : 'border-green-500';
               educ = {
-                what: `No image alt text contains the target phrase "${phrase}" — missing accessibility and relevance opportunity.`,
-                how: `Update key images:
-• Hero/main image
-• Featured or product images
-• Infographics or visuals
-
-Examples:
-alt="${phrase.charAt(0).toUpperCase() + phrase.slice(1)} with ocean views"
-alt="Luxury hotel in ${phrase} – swimming pool at sunset"`,
-                why: `Optimized alt text:
-• Improves accessibility
-• Enables image search traffic
-• Adds extra relevance signal
-• Supports rich results and universal search`
+                what: `No image alt text contains the target phrase "${phrase}".`,
+                how: `Update key images (hero, featured) with descriptive alt text that includes the phrase naturally.`,
+                why: `Improves accessibility, enables image search traffic, and adds extra relevance signals.`
               };
             } else if (fix.includes('anchor text')) {
-              border = data.anchors.your === 0 ? 'border-red-500' : 'border-green-500';
               educ = {
-                what: `No internal links use the target phrase "${phrase}" as anchor text.`,
-                how: `Add 2–4 relevant internal links:
-• Use exact or partial phrase naturally
-• Link to supporting pages
-• Place in contextually relevant paragraphs
-
-Example: See our full guide to <a href="/guide">luxury ${phrase}</a>.`,
-                why: `Strategic internal anchors:
-• Distribute relevance across site
-• Improve navigation and user experience
-• Strengthen topical clusters
-• Boost overall site authority`
+                what: `No internal links use the target phrase as anchor text.`,
+                how: `Add 2–4 relevant internal links using the phrase or variations naturally.`,
+                why: `Distributes relevance across your site and improves navigation and topical authority.`
               };
             } else if (fix.includes('URL slug')) {
-              border = data.urlSchema.yourUrlMatch === 0 ? 'border-red-500' : 'border-green-500';
               educ = {
-                what: `Your URL does not include the target phrase "${phrase}" — descriptive URLs are a relevance factor.`,
-                how: `Restructure if possible:
-• Include phrase in slug
-• Use hyphens, lowercase
-• Keep short and readable
-
-Ideal: yoursite.com/${phrase.replace(/\s+/g, '-')}
-301 redirect old URL if changing.`,
-                why: `Keyword-rich URLs:
-• Provide clear crawl-time relevance
-• Appear more trustworthy in results
-• Often get higher click-through
-• Support breadcrumb formatting`
+                what: `Your URL does not include the target phrase "${phrase}".`,
+                how: `Restructure the slug to include the phrase if possible (e.g., /${phrase.replace(/\s+/g, '-')}).`,
+                why: `Keyword-rich URLs provide clear relevance signals and often achieve higher click-through rates.`
               };
             } else if (fix.includes('structured data')) {
-              border = data.urlSchema.yourSchema === 0 ? 'border-red-500' : 'border-green-500';
               educ = {
-                what: `No structured data (JSON-LD schema) detected — search engines can't extract rich content details.`,
-                how: `Add appropriate schema:
-• FAQPage for questions
-• Article/HowTo for guides
-• LocalBusiness for locations
-• Product/Offer for commercial
-
-Use schema.org and validator to test.`,
-                why: `Schema enables:
-• Rich snippets (stars, FAQs, prices)
-• Higher click-through rates
-• Better entity understanding
-• Voice search and featured results support`
+                what: `No JSON-LD schema markup detected on your page.`,
+                how: `Add appropriate schema (FAQPage, Article, LocalBusiness, etc.) via a <script type="application/ld+json"> block.`,
+                why: `Enables rich snippets, improves SERP visibility, and helps search engines understand content better.`
               };
             }
             return `
-              <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 border-l-8 ${border} flex gap-6">
+              <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 border-l-8 border-red-500 flex gap-6">
                 <div class="text-5xl flex-shrink-0">🔧</div>
                 <div class="flex-1 space-y-6">
                   <p class="text-2xl font-bold">${fix}</p>
