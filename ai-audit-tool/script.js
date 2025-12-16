@@ -122,21 +122,20 @@ document.addEventListener('DOMContentLoaded', () => {
     return final;
   }
 
-  function getGradeColor(score, isMain = false, metricName = '') {
-    if (isMain) {
-      if (score >= 70) return '#ef4444'; // red – high AI
-      if (score >= 40) return '#f97316'; // orange – medium
-      return '#10b981'; // green – low AI = human
-    }
-    // Individual metrics
-    let percent = score;
+  function getGradeColor(value, metricName = '') {
+    let percent = value;
     if (metricName === 'Perplexity' || metricName === 'Repetition') {
-      // higher = bad
-      if (percent >= 70) return '#ef4444';
-      if (percent >= 40) return '#f97316';
-      return '#10b981';
+      // higher = bad → reverse grading
+      if (percent >= 70) return '#ef4444'; // red
+      if (percent >= 40) return '#f97316'; // orange
+      return '#10b981'; // green
     }
-    // higher = good
+    if (metricName === 'Sentence Length') {
+      if (value >= 15 && value <= 23) return '#10b981'; // ideal
+      if ((value >= 10 && value < 15) || (value > 23 && value <= 30)) return '#f97316';
+      return '#ef4444';
+    }
+    // normal: higher = good
     if (percent >= 70) return '#10b981';
     if (percent >= 40) return '#f97316';
     return '#ef4444';
@@ -170,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
       analyzedText = text;
       const ai = analyzeAIContent(text);
       const yourScore = ai.score;
-      const mainColor = getGradeColor(yourScore, true);
+      const mainColor = getGradeColor(yourScore, 'MainScore');
       const verdict = yourScore >= 70 ? 'Very Likely AI' : yourScore >= 40 ? 'Moderate AI Patterns' : 'Likely Human';
       const forecast = yourScore >= 70 ? 'Page 2+' : yourScore >= 50 ? 'Page 1 Possible' : yourScore >= 30 ? 'Top 10 Possible' : 'Top 3 Potential';
 
@@ -193,13 +192,13 @@ document.addEventListener('DOMContentLoaded', () => {
                           style="stroke-dasharray: ${(yourScore / 100) * 691} 691;"/>
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <div class="text-7xl font-black" style="color: ${mainColor}">${yourScore}</div>
+                  <div class="text-7xl font-black text-gray-900">${yourScore}</div>
                   <div class="text-lg text-gray-600">AI Score</div>
                   <div class="text-base text-gray-500">/100</div>
                 </div>
               </div>
             </div>
-            <div class="text-center -mt-8">
+            <div class="text-center">
               <p class="text-3xl font-bold" style="color: ${mainColor}">${verdict}</p>
             </div>
             <p class="text-center text-base text-gray-600">Scanned ${wordCount.toLocaleString()} words from main content</p>
@@ -215,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ].map(m => {
                 const num = typeof m.value === 'string' ? parseFloat(m.value) : m.value;
                 const percent = (num / m.max) * 100;
-                const color = getGradeColor(percent, false, m.name);
+                const color = getGradeColor(num, m.name);
                 const display = m.value;
                 return `
                 <div class="bg-white rounded-2xl shadow-md p-6 text-center">
@@ -228,36 +227,38 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-gray-900">${display}</div>
                   </div>
                   <p class="mt-4 text-base font-medium text-gray-700">${m.name}</p>
-                  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-3 px-5 py-1.5 bg-gray-200 text-gray-700 text-xs font-bold rounded-full hover:bg-gray-300">
+                  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-3 px-6 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-full hover:bg-gray-300">
                     Show Info
                   </button>
-                  <div class="hidden mt-3 space-y-2 text-xs text-gray-600">
-                    <p><span class="font-bold text-blue-600">What:</span> ${m.name === 'Perplexity' ? 'How predictable the text is' : m.name === 'Burstiness' ? 'Variation in sentence rhythm' : m.name === 'Repetition' ? 'Repeated phrases' : m.name === 'Sentence Length' ? 'Average words per sentence' : 'Unique word diversity'}</p>
-                    <p><span class="font-bold text-green-600">How:</span> Vary length, add stories, use synonyms</p>
-                    <p><span class="font-bold text-orange-600">Why:</span> Google favors natural writing</p>
+                  <div class="hidden mt-4 space-y-2 text-sm text-gray-600">
+                    <p><span class="font-bold text-blue-600">What:</span> ${m.name === 'Perplexity' ? 'How predictable the text is (lower better)' : m.name === 'Burstiness' ? 'Variation in sentence rhythm (higher better)' : m.name === 'Repetition' ? 'Repeated phrases (lower better)' : m.name === 'Sentence Length' ? 'Average words per sentence (15–23 ideal)' : 'Unique word diversity (higher better)'}</p>
+                    <p><span class="font-bold text-green-600">How to improve:</span> Add personal touch, vary structure, enrich vocabulary</p>
+                    <p><span class="font-bold text-orange-600">Why:</span> Google rewards natural human-like content</p>
                   </div>
                 </div>
               `;
               }).join('')}
             </div>
 
-
-
-            <!-- Prioritized Fixes -->
+            <!-- Prioritized AI-Style Fixes -->
             <div class="space-y-8">
               <h2 class="text-2xl font-bold text-center text-gray-900">Prioritized AI-Style Fixes</h2>
-              ${ai.score > 70 ? `
+              ${ai.score >= 70 ? `
+                <div class="bg-red-50 rounded-2xl p-8 shadow-sm border border-red-200">
+                  <p class="text-2xl font-bold text-red-600 text-center">Very Likely AI</p>
+                  <div class="mt-4 space-y-2 text-gray-700">
+                    <p><strong class="text-blue-600">What:</strong> High predictability, low variation, repetitive phrasing</p>
+                    <p><strong class="text-green-600">How:</strong> Add personal anecdotes, vary rhythm, enrich vocabulary</p>
+                    <p><strong class="text-orange-600">Why:</strong> Google downgrades obvious AI content</p>
+                  </div>
+                </div>` : ai.score >= 40 ? `
                 <div class="bg-orange-50 rounded-2xl p-8 shadow-sm border border-orange-200">
                   <p class="text-2xl font-bold text-orange-600 text-center">Moderate AI Patterns</p>
-                  <p class="mt-4 text-blue-600"><strong>What:</strong> Some uniformity and repetition</p>
-                  <p class="mt-2 text-green-600"><strong>How:</strong> Mix sentence lengths, add personal voice, reduce repeated phrases</p>
-                  <p class="mt-2 text-orange-600"><strong>Why:</strong> Small tweaks can push score into human territory</p>
-                </div>` : ai.score > 40 ? `
-                <div class="bg-orange-50 rounded-2xl p-8 shadow-sm border border-orange-200">
-                  <p class="text-2xl font-bold text-orange-600 text-center">Moderate AI Patterns</p>
-                  <p class="mt-4 text-blue-600"><strong>What:</strong> Some uniformity and repetition</p>
-                  <p class="mt-2 text-green-600"><strong>How:</strong> Mix sentence lengths, add personal voice, reduce repeated phrases</p>
-                  <p class="mt-2 text-orange-600"><strong>Why:</strong> Small tweaks can push score into human territory</p>
+                  <div class="mt-4 space-y-2 text-gray-700">
+                    <p><strong class="text-blue-600">What:</strong> Some uniformity and repetition</p>
+                    <p><strong class="text-green-600">How:</strong> Mix sentence lengths, add personal voice, reduce repeats</p>
+                    <p><strong class="text-orange-600">Why:</strong> Small tweaks can push into human territory</p>
+                  </div>
                 </div>` : `
                 <div class="bg-green-50 rounded-2xl p-8 shadow-sm border border-green-200">
                   <p class="text-2xl font-bold text-green-600 text-center">Excellent — Highly Human-Like Writing!</p>
@@ -285,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
 
-            <!-- Buttons -->
+            <!-- Humanizer & PDF -->
             <div class="flex flex-col items-center gap-6">
               <button id="humanizeBtn" class="px-10 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold text-xl rounded-xl shadow-lg hover:opacity-90">
                 ⚡ One-Click Humanize Text
@@ -295,8 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </button>
             </div>
 
-            <!-- Humanized Output -->
-            <div id="humanizedOutput" class="hidden max-w-4xl mx-auto bg-white rounded-3xl p-10 shadow-xl">
+            <div id="humanizedOutput" class="hidden max-w-4xl mx-auto bg-white rounded-3xl p-10 shadow-xl mt-12">
               <h3 class="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
                 Humanized Version (85–98% human pass rate)
               </h3>
