@@ -122,6 +122,18 @@ document.addEventListener('DOMContentLoaded', () => {
     return final;
   }
 
+  function getGradeColor(value, isMainScore = false) {
+    if (isMainScore) {
+      if (value >= 70) return '#10b981'; // green high human
+      if (value >= 40) return '#f97316'; // orange medium
+      return '#ef4444'; // red low AI
+    }
+    // For individual metrics – higher is better except perplexity/repetition
+    if (value >= 70) return '#10b981';
+    if (value >= 40) return '#f97316';
+    return '#ef4444';
+  }
+
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const url = input.value.trim();
@@ -129,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     results.innerHTML = `
       <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-        <div class="bg-gradient-to-r from-orange-500 to-pink-600 text-white text-xl font-bold px-12 py-6 rounded-xl shadow-2xl">
+        <div class="bg-white text-gray-800 text-xl font-bold px-12 py-6 rounded-xl shadow-2xl">
           Analyzing for AI patterns — please wait...
         </div>
       </div>
@@ -150,8 +162,8 @@ document.addEventListener('DOMContentLoaded', () => {
       analyzedText = text;
       const ai = analyzeAIContent(text);
       const yourScore = ai.score;
+      const mainColor = getGradeColor(yourScore, true);
       const verdict = yourScore > 70 ? 'Very Likely AI' : yourScore > 40 ? 'Moderate AI Patterns' : 'Likely Human';
-      const verdictClass = yourScore > 70 ? 'text-red-600' : yourScore > 40 ? 'text-orange-600' : 'text-green-600';
       const forecast = yourScore > 70 ? 'Page 2+' : yourScore > 50 ? 'Page 1 Possible' : yourScore > 30 ? 'Top 10 Possible' : 'Top 3 Potential';
 
       results.innerHTML = `
@@ -165,26 +177,20 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="flex justify-center">
               <div class="relative w-64 h-64">
                 <svg viewBox="0 0 256 256" class="absolute inset-0 -rotate-90">
-                  <circle cx="128" cy="128" r="110" fill="none" stroke="#e2e8f0" stroke-width="20"/>
-                  <circle cx="128" cy="128" r="110" fill="none" stroke="url(#brandGradient)" stroke-width="16"
+                  <circle cx="128" cy="128" r="110" fill="none" stroke="#e2e8f0" stroke-width="24"/>
+                  <circle cx="128" cy="128" r="110" fill="none" stroke="${mainColor}" stroke-width="20"
                           stroke-dasharray="0 691"
                           stroke-linecap="round"
                           class="animate-stroke"
                           style="stroke-dasharray: ${(yourScore / 100) * 691} 691;"/>
-                  <defs>
-                    <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stop-color="#f97316"/>
-                      <stop offset="100%" stop-color="#ec4899"/>
-                    </linearGradient>
-                  </defs>
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <div class="text-7xl font-black text-gray-900">${yourScore}</div>
+                  <div class="text-7xl font-black" style="color: ${mainColor}">${yourScore}</div>
                   <div class="text-lg text-gray-600">AI Score</div>
                   <div class="text-base text-gray-500">/100</div>
                 </div>
-                <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 text-center">
-                  <p class="text-2xl font-bold ${verdictClass}">${verdict}</p>
+                <div class="absolute -bottom-12 left-1/2 -translate-x-1/2 text-center">
+                  <p class="text-2xl font-bold" style="color: ${mainColor}">${verdict}</p>
                 </div>
               </div>
             </div>
@@ -196,36 +202,38 @@ document.addEventListener('DOMContentLoaded', () => {
               ${[
                 {name: 'Perplexity', value: ai.perplexity, max: 12},
                 {name: 'Burstiness', value: ai.burstiness, max: 10},
-                {name: 'Repetition', value: ai.repetition + '%', max: 100},
+                {name: 'Repetition', value: ai.repetition, display: ai.repetition + '%', max: 100},
                 {name: 'Sentence Length', value: ai.sentenceLength, max: 30},
-                {name: 'Vocabulary', value: ai.vocab + '%', max: 100}
+                {name: 'Vocabulary', value: ai.vocab, display: ai.vocab + '%', max: 100}
               ].map(m => {
-                const num = typeof m.value === 'string' ? parseFloat(m.value) : m.value;
+                const num = m.value;
                 const percent = (num / m.max) * 100;
-                const dash = percent * 3.52; // approx for r=56
+                const color = getGradeColor(percent);
+                const display = m.display || m.value;
                 return `
                 <div class="bg-white rounded-2xl shadow-md p-6 text-center">
                   <div class="relative w-32 h-32 mx-auto">
                     <svg viewBox="0 0 128 128" class="-rotate-90">
                       <circle cx="64" cy="64" r="56" stroke="#f1f5f9" stroke-width="12" fill="none"/>
-                      <circle cx="64" cy="64" r="56" stroke="url(#brandGradient)" stroke-width="10" fill="none"
-                              stroke-dasharray="${dash} 352" stroke-linecap="round"/>
+                      <circle cx="64" cy="64" r="56" stroke="${color}" stroke-width="12" fill="none"
+                              stroke-dasharray="${percent * 3.52} 352" stroke-linecap="round"/>
                     </svg>
-                    <div class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-gray-900">${m.value}</div>
+                    <div class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-gray-900">${display}</div>
                   </div>
                   <p class="mt-4 text-base font-medium text-gray-700">${m.name}</p>
-                  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-3 px-5 py-1.5 bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs font-bold rounded-full">
+                  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-3 px-5 py-1.5 bg-gray-200 text-gray-700 text-xs font-bold rounded-full hover:bg-gray-300">
                     Show Info
                   </button>
                   <div class="hidden mt-3 space-y-2 text-xs text-gray-600">
                     <p><span class="font-bold text-blue-600">What:</span> ${m.name === 'Perplexity' ? 'How predictable the text is' : m.name === 'Burstiness' ? 'Variation in sentence rhythm' : m.name === 'Repetition' ? 'Repeated phrases' : m.name === 'Sentence Length' ? 'Average words per sentence' : 'Unique word diversity'}</p>
                     <p><span class="font-bold text-green-600">How:</span> Vary length, add stories, use synonyms</p>
-                    <p><span class="font-bold text-orange-600">Why:</span> Google favors natural human writing</p>
+                    <p><span class="font-bold text-orange-600">Why:</span> Google favors natural writing</p>
                   </div>
                 </div>
               `;
               }).join('')}
             </div>
+
 
             <!-- Prioritized Fixes -->
             <div class="space-y-8">
