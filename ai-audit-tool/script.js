@@ -451,13 +451,13 @@ document.addEventListener('DOMContentLoaded', () => {
               <button onclick="saveAsPDF()" class="px-16 py-8 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-3xl md:text-4xl rounded-3xl shadow-2xl hover:opacity-90 transition">
                 📄 Save Full Report as PDF
               </button>
-            </div>         
+            </div>      
             
             
             
-		 </div>
+		</div>
         </div>
-      `;  
+      `;  // ← Closing backtick + semicolon here
 
     } catch (err) {
       results.innerHTML = `<div class="text-center py-20 text-red-600 text-2xl">Error: ${err.message}</div>`;
