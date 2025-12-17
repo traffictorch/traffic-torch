@@ -279,7 +279,7 @@ form.addEventListener('submit', async (e) => {
 
     setTimeout(() => {
       results.innerHTML = `
-        <!-- full results template with all sections -->
+        <!-- Your full results HTML template here -->
       `;
     }, remaining);
   } catch (err) {
