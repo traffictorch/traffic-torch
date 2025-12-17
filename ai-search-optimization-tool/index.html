@@ -104,6 +104,17 @@
   </div>
 </form>
 
+	<div id="analysis-progress" class="hidden mt-10 flex flex-col items-center justify-center py-8">
+  <div class="relative w-20 h-20">
+    <!-- Lazer spinner: thin orange partial ring -->
+    <div class="absolute inset-0 rounded-full border-4 border-gray-200"></div>
+    <div class="absolute inset-0 rounded-full border-4 border-orange-500 border-t-transparent animate-spin"></div>
+  </div>
+  <p id="progress-text" class="mt-6 text-xl font-medium text-gray-700 dark:text-gray-300 text-center">
+    Analyzing page...
+  </p>
+</div>
+
     <div id="results" class="hidden"></div>
   </div>
   

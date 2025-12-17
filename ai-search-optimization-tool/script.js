@@ -1,14 +1,24 @@
-document.addEventListener('DOMContentLoaded', () => {
+// Wait for required elements to exist before attaching listeners
+const waitForElements = () => {
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
+  const progressContainer = document.getElementById('analysis-progress');
+
+  if (form && results && progressContainer) {
+    initTool(form, results, progressContainer);
+  } else {
+    requestAnimationFrame(waitForElements);
+  }
+};
+
+const initTool = (form, results, progressContainer) => {
+  const progressText = document.getElementById('progress-text');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const url = document.getElementById('url-input').value.trim();
     if (!url) return;
 
-    const progressContainer = document.getElementById('analysis-progress');
-    const progressText = document.getElementById('progress-text');
     progressContainer.classList.remove('hidden');
     results.classList.add('hidden');
 
@@ -148,40 +158,35 @@ document.addEventListener('DOMContentLoaded', () => {
       const prioritisedFixes = [];
 
       if (lowScoring.some(m => m.name === "Answerability")) {
-        prioritisedFixes.push({
-          title: "Add Direct Answer in Opening", emoji: "💡", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
+        prioritisedFixes.push({ title: "Add Direct Answer in Opening", emoji: "💡", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
           what: "A clear, bold, quotable answer AI engines can cite directly",
           how: "Add a bold definition or summary in first 150–250 words. Use H2 questions and numbered steps.",
           why: "Answerability is the #1 factor for AI citation and source selection"
         });
       }
       if (lowScoring.some(m => m.name === "EEAT Signals")) {
-        prioritisedFixes.push({
-          title: "Add Author Bio & Photo", emoji: "👤", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
+        prioritisedFixes.push({ title: "Add Author Bio & Photo", emoji: "👤", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
           what: "Visible byline proving who wrote this",
           how: "Headshot + name + bio + credentials + social links",
           why: "Boosts Expertise & Trust by 30–40 points — Google's #1 E-E-A-T signal"
         });
       }
       if (lowScoring.some(m => m.name === "Structured Data")) {
-        prioritisedFixes.push({
-          title: "Add Article + Person Schema", emoji: "✨", gradient: "from-purple-500/10 border-purple-500", color: "text-purple-600",
+        prioritisedFixes.push({ title: "Add Article + Person Schema", emoji: "✨", gradient: "from-purple-500/10 border-purple-500", color: "text-purple-600",
           what: "Structured data that AI engines read directly",
           how: "JSON-LD with @type Article + Person + author link. Add FAQPage if relevant.",
           why: "Triggers rich answers and massive citation boost"
         });
       }
       if (lowScoring.some(m => m.name === "Scannability")) {
-        prioritisedFixes.push({
-          title: "Boost Scannability with Lists & Tables", emoji: "📋", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
+        prioritisedFixes.push({ title: "Boost Scannability with Lists & Tables", emoji: "📋", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
           what: "Easy-to-extract facts via structured formatting",
           how: "Add bullet/numbered lists, data tables, H2/H3 headings, short paragraphs",
           why: "AI prioritizes instantly extractable content"
         });
       }
       if (lowScoring.some(m => m.name === "Unique Insights")) {
-        prioritisedFixes.push({
-          title: "Add First-Hand Experience", emoji: "🧠", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
+        prioritisedFixes.push({ title: "Add First-Hand Experience", emoji: "🧠", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
           what: "Original insights that stand out from generic content",
           how: "Include “I tested”, case studies, personal results, dated experiences",
           why: "Prevents de-duplication and boosts originality"
@@ -300,7 +305,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         return map[name] || "Optimization factor for AI search visibility.";
       }
-
       function getHow(name) {
         const map = {
           "Answerability": "Bold definitions in first 300 words, FAQ schema, step-by-step lists.",
@@ -314,7 +318,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         return map[name] || "Implement best practices for this factor.";
       }
-
       function getWhy(name) {
         const map = {
           "Answerability": "AI engines quote direct answers — highest citation factor.",
@@ -336,4 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
     }
   });
-});
+};
+
+// Start waiting on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', waitForElements);
