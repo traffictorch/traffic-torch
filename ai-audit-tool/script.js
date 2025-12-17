@@ -430,9 +430,10 @@ form.addEventListener('submit', async (e) => {
             </div>
             
 
-            </div>
+			</div>
           </div>
-        `;
+        `;  // ← Closing backtick + semicolon fixed here
+
       } catch (err) {
         results.innerHTML = `
           <div class="text-center py-20">
