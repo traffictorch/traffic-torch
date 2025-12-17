@@ -192,9 +192,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 	form.addEventListener('submit', async (e) => {
- 	 e.preventDefault();
- 	 const url = input.value.trim();
- 	 if (!url) return;
+	  e.preventDefault();
+	  const url = input.value.trim();
+	  if (!url) return;
+
 
     // Immediate loading screen with spinner
     results.innerHTML = `
