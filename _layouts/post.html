@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }} | Traffic Torch News</title>
+    {% seo %}
+    <link rel="stylesheet" href="/assets/css/styles.css"> <!-- Assuming your main CSS file -->
+    <!-- Add PWA manifest and service worker links if already set up -->
+    <link rel="manifest" href="/manifest.json">
+    <!-- Day/Night mode script -->
+    <script>
+        // Existing day/night mode logic here, e.g., toggle based on user preference or system
+    </script>
+</head>
+<body>
+    <header>
+        <!-- Your existing menu code here, include the new News link as per step 8 -->
+    </header>
+    <main>
+        <article>
+            <h1>{{ page.title }}</h1>
+            <p>Published on: {{ page.date | date: "%B %d, %Y" }}</p>
+            {{ content }}
+            <section>
+                <h2>Share this post</h2>
+                <!-- Educational UX: Buttons to share for better exposure -->
+                <button onclick="shareOnX()">Share on X</button>
+                <button onclick="shareOnLinkedIn()">Share on LinkedIn</button>
+                <script>
+                    function shareOnX() {
+                        window.open('https://x.com/intent/tweet?url=' + encodeURIComponent(window.location.href) + '&text=' + encodeURIComponent(document.title));
+                    }
+                    function shareOnLinkedIn() {
+                        window.open('https://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(window.location.href) + '&title=' + encodeURIComponent(document.title));
+                    }
+                </script>
+            </section>
+            <section>
+                <h2>Related SEO Tips</h2>
+                <p>For better search exposure, ensure your posts include keywords, internal links, and alt text for images.</p>
+            </section>
+        </article>
+    </main>
+    <footer>
+        <!-- Your existing footer -->
+    </footer>
+</body>
+</html>

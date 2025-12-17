@@ -1,0 +1,13 @@
+title: Traffic Torch
+description: Instant 360° SEO and UX health score Analysis, report and education website.
+baseurl: "" # Adjust if your site is in a subdirectory
+url: "https://traffictorch.github.io" # Replace with your GitHub Pages URL
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post

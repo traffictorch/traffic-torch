@@ -1,0 +1,6 @@
+@media (max-width: 768px) {
+    main { padding: 10px; }
+    ul { list-style: none; padding: 0; }
+}
+body.light { background: white; color: black; }
+body.dark { background: black; color: white; }
