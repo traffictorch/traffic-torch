@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     results.classList.remove('hidden');
 
-     try {
+    try {
       const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable');
       const html = await res.text();
@@ -216,14 +216,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let text = cleanElement.textContent || '';
 
-      // Single universal cleanup pass
+      // Universal cleanup
       text = text
         .replace(/Skip to (main )?content/gi, '')
         .replace(/\b(?:Menu|Navigation|Home|About|Contact|Blog|Shop|Cart|Login|Signup|Reserve|Book|Explore|Discover|View|Learn|Subscribe|Follow us|Accommodation|Food|Wine|Entertainment|Gift|Merchandise|Construction)\b/gi, '')
         .replace(/\s+/g, ' ')
         .trim();
 
-      // Single lines filtering — keep only substantial content
+      // Single lines filtering
       const lines = text.split('\n')
         .map(l => l.trim())
         .filter(l => l.length > 50 && !/^(Home|About|Contact|Reserve|Book|Menu|Shop|Login|$)/i.test(l));
@@ -232,13 +232,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
       analyzedText = text;
+
       const ai = analyzeAIContent(text);
+
       const yourScore = ai.score;
-      const mainNormalized = 100 - yourScore; // reverse: lower AI score = better human
+      const mainNormalized = 100 - yourScore;
       const mainGradeColor = getGradeColor(mainNormalized / 10);
       const verdict = yourScore >= 70 ? 'Very Likely AI' : yourScore >= 40 ? 'Moderate AI Patterns' : 'Likely Human';
-      
-      results.innerHTML = `
+      const forecast = yourScore >= 70 ? 'Page 2+' : yourScore >= 50 ? 'Page 1 Possible' : yourScore >= 30 ? 'Top 10 Possible' : 'Top 3 Potential';
+
+      results.innerHTML =`
         <style>
           .animate-stroke { transition: stroke-dasharray 1.5s ease-out; }
         </style>
