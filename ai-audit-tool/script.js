@@ -426,23 +426,23 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
             
-            <!-- Save as PDF Button -->
+            <!-- Save as PDF Button - Fixed syntax -->
             <div class="mt-20 text-center">
               <button onclick="
-  document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
-  window.print();
-  window.onafterprint = function() {
-    document.querySelectorAll('[id^=\'humanized\'], .hidden').forEach(el => {
-      if (el.id === 'humanizedOutput' || el.id === 'humanizedText' || el.previousElementSibling?.textContent.includes('Show Info')) {
-        el.classList.add('hidden');
-      }
-    });
-    window.onafterprint = null;
-  };
-" class="px-16 py-8 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-3xl md:text-4xl rounded-3xl shadow-2xl hover:opacity-90 transition">
-  📄 Save Full Report as PDF
-</button>
-            </div>            
+                document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
+                window.print();
+                window.onafterprint = function() {
+                  document.querySelectorAll('.hidden').forEach(el => {
+                    if (el.closest('#humanizedOutput') || (el.previousElementSibling && el.previousElementSibling.textContent.includes('Show Info'))) {
+                      el.classList.add('hidden');
+                    }
+                  });
+                  window.onafterprint = null;
+                };
+              " class="px-16 py-8 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-3xl md:text-4xl rounded-3xl shadow-2xl hover:opacity-90 transition">
+                📄 Save Full Report as PDF
+              </button>
+            </div>           
             
             
             
