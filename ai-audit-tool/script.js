@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const url = input.value.trim();
   if (!url) return;
 
-    // Progressive loading with metric steps (like other tools)
+    // Progressive loading with safe updates and minimum delay
     results.innerHTML = `
       <div id="loadingOverlay" class="fixed inset-0 bg-black/50 flex flex-col items-center justify-center z-50">
         <div class="w-20 h-20 mb-8 relative">
@@ -211,7 +211,8 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     results.classList.remove('hidden');
 
-    // Sequential progress messages
+    const loadingText = document.getElementById('loadingText');
+
     const messages = [
       "Fetching page...",
       "Extracting content...",
@@ -223,49 +224,51 @@ document.addEventListener('DOMContentLoaded', () => {
       "Generating report..."
     ];
 
-    let delay = 400;
+    let delay = 600;
     messages.forEach(msg => {
       setTimeout(() => {
-        const textEl = document.getElementById('loadingText');
-        if (textEl) textEl.innerText = msg;
+        if (loadingText) loadingText.innerText = msg;
       }, delay);
-      delay += 600;
+      delay += 700;
     });
 
-  try {
-    // Progress messages
-    setTimeout(() => {
-      document.querySelector('.fixed .bg-white').innerText = 'Fetching page...';
-    }, 300);
+    // Minimum total loading time ~5.5 seconds to show all steps
+    const minLoadTime = 5500;
+    const startTime = Date.now();
 
-    const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
-    if (!res.ok) throw new Error('Page not reachable');
+    try {
+      const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
+      if (!res.ok) throw new Error('Page not reachable');
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const mainElement = getMainContent(doc);
+      const cleanElement = mainElement.cloneNode(true);
+      cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
+      let text = cleanElement.textContent || '';
+      text = text.replace(/\s+/g, ' ').replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu, ' ').trim();
+      const wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
+      analyzedText = text;
+      const ai = analyzeAIContent(text);
+      const yourScore = ai.score;
+      const mainNormalized = 100 - yourScore;
+      const mainGradeColor = getGradeColor(mainNormalized / 10);
+      const verdict = yourScore >= 70 ? 'Very Likely AI' : yourScore >= 40 ? 'Moderate AI Patterns' : 'Likely Human';
+      const forecast = yourScore >= 70 ? 'Page 2+' : yourScore >= 50 ? 'Page 1 Possible' : yourScore >= 30 ? 'Top 10 Possible' : 'Top 3 Potential';
 
-    setTimeout(() => {
-      document.querySelector('.fixed .bg-white').innerText = 'Extracting content...';
-    }, 600);
+      // Ensure minimum load time
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.max(0, minLoadTime - elapsed);
 
-    const html = await res.text();
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-    const mainElement = getMainContent(doc);
-    const cleanElement = mainElement.cloneNode(true);
-    cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
-    let text = cleanElement.textContent || '';
-    text = text.replace(/\s+/g, ' ').replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu, ' ').trim();
-
-    setTimeout(() => {
-      document.querySelector('.fixed .bg-white').innerText = 'Analyzing metrics...';
-    }, 900);
-
-    const wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
-    analyzedText = text;
-    const ai = analyzeAIContent(text);
-    const yourScore = ai.score;
-    const mainNormalized = 100 - yourScore;
-    const mainGradeColor = getGradeColor(mainNormalized / 10);
-    const verdict = yourScore >= 70 ? 'Very Likely AI' : yourScore >= 40 ? 'Moderate AI Patterns' : 'Likely Human';
-    const forecast = yourScore >= 70 ? 'Page 2+' : yourScore >= 50 ? 'Page 1 Possible' : yourScore >= 30 ? 'Top 10 Possible' : 'Top 3 Potential';
-
+      setTimeout(() => {
+        results.innerHTML = `
+          <!-- your full results HTML template -->
+        `;
+      }, remaining);
+    } catch (err) {
+      setTimeout(() => {
+        results.innerHTML = `<div class="text-center py-20 text-red-600 text-2xl">Error: ${err.message}</div>`;
+      }, Math.max(0, minLoadTime - (Date.now() - startTime)));
+    }
 
       results.innerHTML =`
         <style>
