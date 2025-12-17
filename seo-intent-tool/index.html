@@ -3,20 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Title (57 characters - optimal length) -->
     <title>Intent + E-E-A-T Auditor | Traffic Torch</title>
+    
+    <!-- Meta Description (156 characters - within 155-160 ideal range) -->
     <meta name="description" content="Instant 360° intent & E-E-A-T audit with AI fixes and rank forecast.">
+    
+    <!-- Robots Meta (index and follow allowed) -->
+    <meta name="robots" content="index, follow">
+    
+    <!-- Canonical Link (prevents duplicate content issues) -->
+    <link rel="canonical" href="https://traffictorch.net/seo-intent-tool/">
+    
+    <!-- Color Scheme Support -->
     <meta name="color-scheme" content="dark light">
+    
+    <!-- Open Graph Tags (Facebook, LinkedIn, etc.) -->
+    <meta property="og:title" content="Intent + E-E-A-T Auditor | Traffic Torch">
+    <meta property="og:description" content="Instant 360° intent & E-E-A-T audit with AI fixes and rank forecast.">
+    <meta property="og:image" content="https://traffictorch.net/seo-intent-tool/images/seo-intent-audit-tool.webp">
+    <meta property="og:url" content="https://traffictorch.net/seo-intent-tool/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Traffic Torch">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Intent + E-E-A-T Auditor | Traffic Torch">
+    <meta name="twitter:description" content="Instant 360° intent & E-E-A-T audit with AI fixes and rank forecast.">
+    <meta name="twitter:image" content="https://traffictorch.net/seo-intent-tool/images/seo-intent-audit-tool.webp">
+    <meta name="twitter:site" content="@traffictorch"> <!-- Update if you have an X/Twitter handle -->
+    
+    <!-- Manifest for PWA -->
     <link rel="manifest" href="/manifest.json">
+    
+    <!-- Icon -->
+    <link rel="icon" href="/favicon.ico" />
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Instant Theme Application (no flash) -->
     <script>
-  // Apply saved theme instantly on load (no flash)
-  (function() {
-    const saved = localStorage.getItem('theme');
-    const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const theme = saved || (preferDark ? 'dark' : 'light');
-    document.documentElement.classList.add(theme);
-  })();
-</script>    
+      // Apply saved theme instantly on load (no flash)
+      (function() {
+        const saved = localStorage.getItem('theme');
+        const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved || (preferDark ? 'dark' : 'light');
+        document.documentElement.classList.add(theme);
+      })();
+    </script>
+    
+    <!-- Main Styles -->
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/seo-intent-tool/style.css">
 </head>
