@@ -196,20 +196,41 @@ document.addEventListener('DOMContentLoaded', () => {
   const url = input.value.trim();
   if (!url) return;
 
-    // Simple loading overlay (no timed messages to avoid null errors)
+    // Progressive loading with metric steps (like other tools)
     results.innerHTML = `
       <div id="loadingOverlay" class="fixed inset-0 bg-black/50 flex flex-col items-center justify-center z-50">
-        <div class="w-20 h-20 mb-6 relative">
+        <div class="w-20 h-20 mb-8 relative">
           <svg viewBox="0 0 100 100" class="animate-spin">
             <circle cx="50" cy="50" r="40" stroke="#f97316" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
           </svg>
         </div>
-        <div class="bg-white text-gray-800 text-xl font-bold px-12 py-6 rounded-xl shadow-2xl">
+        <div id="loadingText" class="bg-white text-gray-800 text-xl font-bold px-12 py-6 rounded-xl shadow-2xl">
           Analyzing page for AI patterns...
         </div>
       </div>
     `;
     results.classList.remove('hidden');
+
+    // Sequential progress messages
+    const messages = [
+      "Fetching page...",
+      "Extracting content...",
+      "Analyzing Perplexity...",
+      "Analyzing Burstiness...",
+      "Analyzing Repetition...",
+      "Analyzing Sentence Length...",
+      "Analyzing Vocabulary...",
+      "Generating report..."
+    ];
+
+    let delay = 400;
+    messages.forEach(msg => {
+      setTimeout(() => {
+        const textEl = document.getElementById('loadingText');
+        if (textEl) textEl.innerText = msg;
+      }, delay);
+      delay += 600;
+    });
 
   try {
     // Progress messages
