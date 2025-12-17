@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://traffictorch.com/</loc>  <!-- Update to your actual domain or https://traffictorch.github.io/ -->
+    <lastmod>2025-12-18</lastmod>  <!-- Update manually or via script later -->
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <!-- Add more <url> entries for key pages/tools, e.g.:
+  <url>
+    <loc>https://traffictorch.com/tools/seo-analyzer</loc>
+    <lastmod>2025-12-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  -->
+</urlset>
