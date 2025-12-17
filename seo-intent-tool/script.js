@@ -314,20 +314,27 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
           
           
-          <!-- Predictive Rank Forecast -->
-          <div class="text-center mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
-            <p class="text-3xl font-medium opacity-80">Predictive Rank Forecast</p>
-            <p class="text-8xl font-black mt-6">${overall > 88 ? 'Top 3' : overall > 75 ? 'Top 10' : overall > 60 ? 'Page 1 Possible' : 'Page 2+'}</p>
-            <p class="text-4xl mt-8 font-bold">+${Math.round((100-overall)*1.5)}% traffic potential</p>
-            <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-10 px-10 py-4 bg-white text-gray-900 rounded-full hover:bg-gray-100 text-xl font-bold">
-              Show Expert Analysis
-            </button>
-            <div class="hidden mt-10 space-y-6 text-left max-w-3xl mx-auto text-lg">
-              <p class="font-bold text-blue-300">What:</p><p>SERP position estimate based on current E-E-A-T, depth, and intent match vs top 10 competitors.</p>
-              <p class="font-bold text-green-300">How:</p><p>Fix every red/orange gap → monitor GSC → resubmit URL → expect movement in 7–21 days.</p>
-              <p class="font-bold text-orange-300">Why:</p><p>Pages scoring 85+ consistently hit Top 10. 90+ = Top 3 lock. Your gap = ${100-overall} points of untapped traffic.</p>
-            </div>
-          </div>
+<!-- Predictive Rank Forecast -->
+<div class="text-center mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
+  <p class="text-3xl font-medium opacity-80">Predictive Rank Forecast</p>
+  <p class="text-8xl font-black mt-6">${overall > 88 ? 'Top 3' : overall > 75 ? 'Top 10' : overall > 60 ? 'Page 1 Possible' : 'Page 2+'}</p>
+  <p class="text-4xl mt-8 font-bold">+${Math.round((100-overall)*1.5)}% traffic potential</p>
+  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-10 px-10 py-4 bg-white text-gray-900 rounded-full hover:bg-gray-100 text-xl font-bold">
+    Show Expert Analysis
+  </button>
+  <div class="hidden mt-10 space-y-6 text-left max-w-3xl mx-auto text-lg">
+    <p class="font-bold text-blue-300">What it is?</p>
+    <p>An estimate of your likely SERP position based on current E-E-A-T strength, content depth, readability, intent match, and schema signals compared to typical top-ranking pages in competitive niches.</p>
+    
+    <p class="font-bold text-green-300">How to improve?</p>
+    <p>Address every red and orange gap identified in this report (author bio, depth, schema, etc.), monitor performance in Search Console, request indexing after major updates, and track ranking movement over 7–30 days as search engines re-evaluate your improved signals.</p>
+    
+    <p class="font-bold text-orange-300">Why it matters?</p>
+    <p>Pages consistently scoring 85+ secure Page 1 visibility, while 90+ often lock Top 3 positions. Closing your ${100-overall}-point gap directly translates to substantial organic traffic gains and long-term ranking stability.</p>
+  </div>
+</div>
+
+
           <!-- PDF Button -->
           <div class="text-center my-16">
             <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
