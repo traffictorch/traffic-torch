@@ -74,30 +74,53 @@
         Instant UX usability score • Quit risk detection • Educational deep-dive fixes
       </p>
       
-<div class="max-w-4xl mx-auto my-12 space-y-8">
+<!-- How it Works Accordion -->
+<div class="max-w-2xl mx-auto my-10">
+  <details>
+    <summary class="px-6 py-4 text-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full cursor-pointer flex justify-center items-center gap-4 shadow-md hover:shadow-lg transition-shadow">
+      How the Quit Risk Tool Works
+      <span class="text-2xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
+    </summary>
+    <div class="mt-6 px-8 py-8 bg-white dark:bg-gray-800 rounded-3xl shadow-inner space-y-8 text-gray-700 dark:text-gray-300">
+      <section class="text-left space-y-4">
+        <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Instant Client-Side Usability Audit</h3>
+        <p class="leading-relaxed">
+          This tool performs a real-time, privacy-safe analysis by fetching your page’s HTML via a secure CORS proxy and parsing the DOM directly in your browser.
+        </p>
+        <p class="leading-relaxed">
+          No data is stored or transmitted — everything happens instantly on your device.
+        </p>
+      </section>
 
-  <!-- How it Works -->
-  <div class="max-w-2xl mx-auto">
-    <details>
-      <summary class="px-8 py-4 text-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full cursor-pointer flex justify-center items-center gap-4 shadow-md hover:shadow-lg transition-shadow">
-        How it works?
-        <span class="text-2xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
-      </summary>
-      <div class="mt-6 px-8 py-8 bg-white dark:bg-gray-900 rounded-3xl shadow-xl prose prose-lg dark:prose-invert max-w-none">
-        <h2 class="text-3xl font-black mb-6">How the Quit Risk Tool Performs a Usability Audit</h2>
-        <p class="mb-4">This free tool delivers an instant, client-side usability and quit risk analysis by securely fetching your page's HTML via a CORS proxy and parsing the DOM structure.</p>
-        <p class="mb-6">It evaluates five essential user experience factors to calculate an overall usability score:</p>
-        <ul class="space-y-4 mb-6">
-          <li><strong>Readability</strong>: Uses the proven Flesch Reading Ease formula on main content text, scoring higher for shorter sentences and simpler words that improve comprehension.</li>
-          <li><strong>Navigation</strong>: Analyzes anchor link density to identify potential overload, encouraging focused menus that reduce cognitive load.</li>
-          <li><strong>Accessibility</strong>: Employs image count as a practical proxy for alt-text opportunities, rewarding visual-rich pages while flagging optimization needs.</li>
-          <li><strong>Mobile Readiness</strong>: Applies heuristics based on viewport meta tags and common responsive patterns in modern HTML.</li>
-          <li><strong>Speed Proxy</strong>: Estimates performance impact from asset density, promoting best practices like image optimization and lazy loading.</li>
+      <section class="space-y-6">
+        <h3 class="text-xl font-bold text-indigo-600 dark:text-indigo-400">The 5 Core Usability Factors Analyzed</h3>
+        <ul class="space-y-4 text-base list-disc list-inside">
+          <li><strong>Readability</strong> — Flesch Reading Ease score on main content: rewards clear, concise writing with short sentences and common words</li>
+          <li><strong>Navigation Clarity</strong> — Evaluates anchor link density to prevent menu overload and cognitive fatigue</li>
+          <li><strong>Accessibility Readiness</strong> — Uses image count as a proxy for alt-text completeness and inclusive design</li>
+          <li><strong>Mobile Optimization</strong> — Detects viewport meta, responsive patterns, and touch-friendly structure</li>
+          <li><strong>Performance Health</strong> — Estimates load impact from asset volume, encouraging lazy loading and optimization</li>
         </ul>
-        <p>The averaged score determines quit risk level, generates prioritized fixes, and provides a predictive ranking forecast tied to real engagement signals.</p>
-      </div>
-    </details>
-  </div>
+      </section>
+
+      <section class="space-y-4">
+        <p class="leading-relaxed">
+          These factors are combined into an overall <strong>Usability Score (0–100)</strong>, which determines your page’s quit risk level.
+        </p>
+        <p class="leading-relaxed font-medium">
+          You receive color-coded module breakdown, prioritized fixes, and a predictive engagement forecast based on real UX-SEO correlation.
+        </p>
+      </section>
+
+      <section class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 p-6 rounded-xl">
+        <h3 class="text-xl font-bold mb-3">Key Insight</h3>
+        <p class="text-sm leading-relaxed">
+          High quit risk doesn’t just hurt conversions — it directly damages SEO through poor behavioral signals like high bounce rates and low dwell time.
+        </p>
+      </section>
+    </div>
+  </details>
+</div>
       
 	<form id="audit-form" class="max-w-2xl mx-auto space-y-4">
   <div class="flex flex-col sm:flex-row gap-4">
@@ -123,28 +146,76 @@
       <!-- Your existing report sections go here -->
     </div>
     
-<!-- Why it Matters -->
-  <div class="max-w-2xl mx-auto">
-    <details>
-      <summary class="px-8 py-4 text-xl font-bold bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-full cursor-pointer flex justify-center items-center gap-4 shadow-md hover:shadow-lg transition-shadow">
-        Why it matters?
-        <span class="text-2xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
-      </summary>
-      <div class="mt-6 px-8 py-8 bg-white dark:bg-gray-900 rounded-3xl shadow-xl prose prose-lg dark:prose-invert max-w-none">
-        <h2 class="text-3xl font-black mb-6">Why Usability Directly Impacts SEO Rankings</h2>
-        <p class="mb-4">Modern search engines prioritize user experience signals as core ranking factors. Pages with high quit risk trigger negative behaviors like elevated bounce rates and short dwell times — clear indicators of poor content quality.</p>
-        <p class="mb-6">When users land on a frustrating page and leave quickly (pogo-sticking), it diminishes topical authority and long-term ranking stability.</p>
-        <p class="mb-6">Strong usability, however, drives positive outcomes:</p>
-        <ul class="space-y-4 mb-6">
-          <li>Extended session duration and deeper exploration</li>
-          <li>Higher conversion rates and repeat visits</li>
-          <li>Reinforced relevance through engagement metrics</li>
-          <li>Greater resilience during algorithm updates focused on user satisfaction</li>
-        </ul>
-        <p>Optimizing these foundational elements delivers compounding SEO benefits: improved retention, stronger behavioral signals, and sustainable organic traffic growth.</p>
-      </div>
-    </details>
-  </div>
+
+
+<!-- Why it Matters Accordion -->
+<div class="max-w-2xl mx-auto my-10">
+  <details>
+    <summary class="px-6 py-4 text-xl font-bold bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-full cursor-pointer flex justify-center items-center gap-4 shadow-md hover:shadow-lg transition-shadow">
+      Why Usability & Quit Risk Matter for SEO
+      <span class="text-2xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
+    </summary>
+    <div class="mt-6 px-8 py-8 bg-white dark:bg-gray-800 rounded-3xl shadow-inner space-y-8 text-gray-700 dark:text-gray-300">
+      <section class="text-left space-y-4">
+        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">User Experience Is Now a Core Ranking Factor</h3>
+        <p class="leading-relaxed">
+          Google and other search engines use real user behavior — bounce rate, dwell time, pogo-sticking — as direct quality signals.
+        </p>
+        <p class="leading-relaxed">
+          Pages that frustrate visitors and cause quick exits are penalized over time, even if technically optimized.
+        </p>
+      </section>
+
+      <section class="space-y-6">
+        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">What Strong Usability Delivers</h3>
+        <div class="space-y-5 text-sm">
+          <div class="flex gap-4">
+            <div class="text-3xl">⏱️</div>
+            <div>
+              <strong>Longer Dwell Time & Deeper Engagement</strong><br>
+              Users stay, explore, and signal satisfaction to search engines.
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl">📉</div>
+            <div>
+              <strong>Lower Bounce Rates</strong><br>
+              Fewer immediate exits = stronger perceived relevance and quality.
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl">🔄</div>
+            <div>
+              <strong>Higher Return Visits</strong><br>
+              Positive experiences build loyalty and recurring traffic.
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl">🛡️</div>
+            <div>
+              <strong>Algorithm Update Resilience</strong><br>
+              UX-focused sites thrive during Core Updates emphasizing helpfulness and satisfaction.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/30 p-6 rounded-xl">
+        <h3 class="text-xl font-bold mb-3">The Bottom Line</h3>
+        <p class="text-sm leading-relaxed">
+          Great usability isn’t just nice-to-have — it’s a <strong>competitive SEO requirement</strong> in today’s user-first search landscape.
+        </p>
+        <p class="text-sm font-medium mt-4">
+          Fix quit risk early → Improve user signals → Boost rankings and conversions long-term.
+        </p>
+      </section>
+
+      <p class="text-center text-sm italic opacity-70 mt-6">
+        User satisfaction drives modern SEO success.
+      </p>
+    </div>
+  </details>
+</div>
 
 </div>
 
