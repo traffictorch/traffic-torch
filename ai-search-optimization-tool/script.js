@@ -204,19 +204,16 @@ const initTool = (form, results, progressContainer) => {
             <div class="relative">
               <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
                 <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
-                <circle cx="130" cy="130" r="120" stroke="url(#bigGradient)" stroke-width="18" fill="none"
-                        stroke-dasharray="${(yourScore / 100) * 754} 754" stroke-linecap="round"/>
-                <defs>
-                  <linearGradient id="bigGradient">
-                    <stop offset="0%" stop-color="#ef4444"/>
-                    <stop offset="100%" stop-color="#22c55e"/>
-                  </linearGradient>
-                </defs>
+                <circle cx="130" cy="130" r="120" 
+                        stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'}"
+                        stroke-width="18" fill="none"
+                        stroke-dasharray="${(yourScore / 100) * 754} 754"
+                        stroke-linecap="round"/>
               </svg>
               <div class="absolute inset-0 flex items-center justify-center">
                 <div class="text-center">
                   <div class="text-6xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">${yourScore}</div>
-                  <div class="text-2xl text-gray-300 dark:text-gray-600">/100</div>
+                  <div class="text-2xl text-gray-500 dark:text-gray-400">/100</div>
                 </div>
               </div>
             </div>
@@ -224,18 +221,23 @@ const initTool = (form, results, progressContainer) => {
 
           <div class="grid md:grid-cols-4 gap-6 my-16">
             ${modules.map(m => {
-              const borderColor = m.score >= 80 ? 'border-green-500' : m.score >= 60 ? 'border-yellow-500' : 'border-red-500';
+              const borderColor = m.score >= 80 ? 'border-green-500' : m.score >= 60 ? 'border-orange-500' : 'border-red-500';
               const ringColor = m.score >= 80 ? '#22c55e' : m.score >= 60 ? '#eab308' : '#ef4444';
               return `
                 <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border ${borderColor}">
-                  <div class="relative mx-auto w-32 h-32">
-                    <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-                      <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-                      <circle cx="64" cy="64" r="56" stroke="${ringColor}"
-                              stroke-width="12" fill="none" stroke-dasharray="${(m.score/100)*352} 352" stroke-linecap="round"/>
-                    </svg>
-                    <div class="absolute inset-0 flex items-center justify-center text-4xl font-black">${m.score}</div>
-                  </div>
+                <div class="relative mx-auto w-32 h-32">
+                <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+                  <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+                  <circle cx="64" cy="64" r="56" 
+                          stroke="${m.score >= 80 ? '#22c55e' : m.score >= 60 ? '#f97316' : '#ef4444'}"
+                          stroke-width="12" fill="none" 
+                          stroke-dasharray="${(m.score/100)*352} 352" 
+                          stroke-linecap="round"/>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center text-4xl font-black ${m.score >= 80 ? 'text-green-600' : m.score >= 60 ? 'text-orange-600' : 'text-red-600'}">
+                  ${m.score}
+                </div>
+              </div>
                   <p class="mt-4 text-lg font-medium">${m.name}</p>
                   <p class="text-sm opacity-70 mt-2">${m.desc}</p>
                   <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
