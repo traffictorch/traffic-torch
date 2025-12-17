@@ -116,27 +116,27 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-          <!-- Intent -->
-          <div class="text-center mb-12">
-            <p class="text-4xl font-black mb-8">
-              Intent: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${intent}</span>
-              <span class="text-2xl text-gray-400">— ${confidence}% match</span>
-            </p>
-            <div class="max-w-3xl mx-auto grid md:grid-cols-3 gap-6 text-left">
-              <div class="p-6 bg-blue-500/10 border-l-4 border-blue-500 rounded-r-xl">
-                <p class="font-bold text-blue-500">What it is</p>
-                <p class="mt-2 text-sm leading-relaxed">The exact reason the user typed their query into Google.</p>
-              </div>
-              <div class="p-6 bg-green-500/10 border-l-4 border-green-500 rounded-r-xl">
-                <p class="font-bold text-green-500">How to satisfy it</p>
-                <p class="mt-2 text-sm leading-relaxed">Title, H1, and content must mirror the user's exact need — no fluff, no guessing.</p>
-              </div>
-              <div class="p-6 bg-orange-500/10 border-l-4 border-orange-500 rounded-r-xl">
-                <p class="font-bold text-orange-500">Why it matters</p>
-                <p class="mt-2 text-sm leading-relaxed">Google ranks intent-matching pages first. Wrong intent = instant bounce and zero rankings.</p>
-              </div>
-            </div>
-          </div>
+			<!-- Intent -->
+<div class="text-center mb-12">
+  <p class="text-4xl font-black mb-8">
+    Intent: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${intent}</span>
+    <span class="text-2xl text-gray-400">— ${confidence}% match</span>
+  </p>
+  <div class="max-w-3xl mx-auto grid md:grid-cols-3 gap-6 text-left">
+    <div class="p-6 bg-blue-500/10 border-l-4 border-blue-500 rounded-r-xl">
+      <p class="font-bold text-blue-500">What it is</p>
+      <p class="mt-2 text-sm leading-relaxed">The core motivation driving a user's search query — whether they're seeking information, researching options, ready to purchase, or looking for a local service. Understanding this ensures your content delivers exactly what searchers expect.</p>
+    </div>
+    <div class="p-6 bg-green-500/10 border-l-4 border-green-500 rounded-r-xl">
+      <p class="font-bold text-green-500">How to satisfy it</p>
+      <p class="mt-2 text-sm leading-relaxed">Craft your title, H1, meta description, and body content to directly address the user's specific need. Use matching language, structure (e.g., lists for comparisons, steps for how-tos), and calls-to-action — eliminate fluff, assumptions, or mismatched elements to create a seamless experience.</p>
+    </div>
+    <div class="p-6 bg-orange-500/10 border-l-4 border-orange-500 rounded-r-xl">
+      <p class="font-bold text-orange-500">Why it matters</p>
+      <p class="mt-2 text-sm leading-relaxed">Search engines prioritize pages that best align with user intent, as it leads to higher satisfaction, longer engagement, and lower bounces. Mismatched intent results in quick exits, poor signals, and lost rankings — while strong alignment drives traffic and conversions.</p>
+    </div>
+  </div>
+</div>
           
 			<!-- E-E-A-T Breakdown -->
 <div class="grid md:grid-cols-4 gap-6 my-16">
