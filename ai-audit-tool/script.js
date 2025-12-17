@@ -372,8 +372,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>`}
             </div>            
 
-            <!-- Predictive Rank Forecast (if you have it, keep below) -->
-        
+
+                    <!-- Predictive Rank Forecast - Improved -->
+            <div class="mt-20 p-10 md:p-16 bg-gradient-to-r from-orange-500 to-pink-600 rounded-3xl shadow-2xl text-white text-center space-y-8">
+              <h2 class="text-4xl md:text-5xl font-black">Predictive Rank Forecast</h2>
+              <p class="text-6xl md:text-8xl font-black" style="color: ${mainGradeColor}">${forecast}</p>
+              <p class="text-2xl md:text-3xl font-bold">Potential if humanized</p>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                <div class="bg-white/20 backdrop-blur rounded-2xl p-8">
+                  <p class="text-xl md:text-2xl font-bold text-blue-200 mb-4">What it is</p>
+                  <p class="text-base md:text-lg leading-relaxed">Estimate of ranking potential based on how human-like your content reads</p>
+                </div>
+                <div class="bg-white/20 backdrop-blur rounded-2xl p-8">
+                  <p class="text-xl md:text-2xl font-bold text-green-200 mb-4">How calculated</p>
+                  <p class="text-base md:text-lg leading-relaxed">Lower AI patterns = higher human trust = stronger search engine preference</p>
+                </div>
+                <div class="bg-white/20 backdrop-blur rounded-2xl p-8">
+                  <p class="text-xl md:text-2xl font-bold text-orange-200 mb-4">Why it matters</p>
+                  <p class="text-base md:text-lg leading-relaxed">Human-like content ranks higher, builds trust, and drives more organic traffic</p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Save as PDF Button -->
+            <div class="mt-20 text-center">
+              <button onclick="
+                // Show all hidden content for print
+                document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
+                // Trigger print
+                window.print();
+                // Hide again after print (user cancels or completes)
+                window.onafterprint = () => {
+                  document.querySelectorAll('.hidden').forEach(el => {
+                    if (el.closest('#humanizedOutput') || el.previousElementSibling?.textContent.includes('Show Info')) {
+                      el.classList.add('hidden');
+                    }
+                  });
+                };
+              " class="px-16 py-8 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-3xl md:text-4xl rounded-3xl shadow-2xl hover:opacity-90 transition">
+                📄 Save Full Report as PDF
+              </button>
+            </div>            
+            
+            
+            
           </div>
         </div>
       `;
