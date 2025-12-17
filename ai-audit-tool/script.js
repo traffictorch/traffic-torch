@@ -455,13 +455,14 @@ document.addEventListener('DOMContentLoaded', () => {
             
             
             
-          </div>
+		 </div>
         </div>
-      `;
-	  } catch (err) {
-    results.innerHTML = `<div class="text-center py-20 text-red-600 text-2xl">Error: ${err.message}</div>`;
-  }
-});
+      `;  
+
+    } catch (err) {
+      results.innerHTML = `<div class="text-center py-20 text-red-600 text-2xl">Error: ${err.message}</div>`;
+    }
+  });
   
 
 
