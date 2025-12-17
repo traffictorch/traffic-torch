@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://traffictorch.github.io/sitemap.xml
