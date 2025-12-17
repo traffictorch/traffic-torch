@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = document.getElementById('url-input').value.trim();
     if (!url) return;
 
-	    results.innerHTML = `
+    results.innerHTML = `
       <div class="fixed inset-x-0 bottom-0 z-50">
         <div id="progress-bar" class="h-12 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 relative overflow-hidden">
           <div class="absolute inset-0 bg-gradient-to-r from-orange-600 via-pink-600 to-purple-700 opacity-50 animate-pulse"></div>
@@ -37,51 +37,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
     const interval = setInterval(updateText, 1200);
-    updateText(); // immediate first message
+    updateText(); // immediate first
 
     try {
       const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable – check URL or try HTTPS');
       const html = await res.text();
 
-      // Display delay after fetch
       await new Promise(resolve => setTimeout(resolve, 800));
+      updateText();
 
-      updateText(); // "Extracting main content..."
-
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-      let mainText = '';
-      const candidates = [doc.querySelector('article'), doc.querySelector('main'), doc.querySelector('[role="main"]'), doc.body];
-      const mainEl = candidates.find(el => el && el.textContent.trim().length > 1000) || doc.body;
-      mainEl.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie, .sidebar').forEach(el => el.remove());
-      mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
-      const first300 = mainText.slice(0, 1200);
-
-      // Display delay after extraction
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      updateText(); // next messages will continue via interval
-
-      // ... rest of analysis unchanged ...
-
-      // Before rendering results — final display delay
-      await new Promise(resolve => setTimeout(resolve, 1200));
-
-      clearInterval(interval);
-      document.querySelector('#progress-bar')?.parentElement.remove();
-
-      // render results (unchanged)
-      results.innerHTML = `...`; // your full results HTML
-    } catch (err) {
-      clearInterval(interval);
-      document.querySelector('#progress-bar')?.parentElement.remove();
-      results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
-    }
-
-    try {
-      const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
-      if (!res.ok) throw new Error('Page not reachable – check URL or try HTTPS');
-      const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
       // Intelligent main content extraction
@@ -92,7 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
       mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
       const first300 = mainText.slice(0, 1200);
 
-      // === All 8 module scoring logic (unchanged and complete) ===
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // === All 8 module scoring logic ===
       const hasBoldInFirst = /<strong>|<b>|<em>/i.test(first300);
       const hasDefinition = /\b(is|means|refers to|defined as)\b/i.test(first300.toLowerCase());
       const hasFAQSchema = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))
@@ -168,6 +135,9 @@ document.addEventListener('DOMContentLoaded', () => {
         burstiness * 0.07
       );
 
+      // FIX: Define yourScore here
+      const yourScore = overall;
+
       const modules = [
         { name: "Answerability", score: answerability, desc: "Direct answers in first 300 words, FAQ schema, step-by-step structure" },
         { name: "Structured Data", score: structuredData, desc: "JSON-LD presence and relevant types" },
@@ -179,10 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: "Anti-AI Safety", score: burstiness, desc: "Sentence length variation (burstiness)" }
       ];
 
-      // === Prioritised Fixes (dynamic based on low scores) ===
+      // === Prioritised Fixes ===
       const lowScoring = modules.filter(m => m.score < 70).sort((a,b) => a.score - b.score);
       const prioritisedFixes = [];
-
       if (lowScoring.some(m => m.name === "Answerability")) {
         prioritisedFixes.push({ title: "Add Direct Answer in Opening", emoji: "💡", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
           what: "A clear, bold, quotable answer AI engines can cite directly",
@@ -219,9 +188,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
+      await new Promise(resolve => setTimeout(resolve, 1200));
       clearInterval(interval);
-      document.querySelector('#progress-bar')?.remove();
-      document.querySelector('.fixed.bottom-6')?.remove();
+      document.querySelector('#progress-bar')?.parentElement?.parentElement?.remove();
 
       results.innerHTML = `
         <div class="max-w-5xl mx-auto space-y-16 animate-in">
@@ -231,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
                 <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
                 <circle cx="130" cy="130" r="120" stroke="url(#bigGradient)" stroke-width="18" fill="none"
-                        stroke-dasharray="${(overall / 100) * 754} 754" stroke-linecap="round"/>
+                        stroke-dasharray="${(yourScore / 100) * 754} 754" stroke-linecap="round"/>
                 <defs>
                   <linearGradient id="bigGradient">
                     <stop offset="0%" stop-color="#ef4444"/>
@@ -240,14 +209,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 </defs>
               </svg>
               <div class="absolute inset-0 flex items-center justify-center">
-               <div class="text-center">
-                <div class="text-6xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">${yourScore}</div>
-                <div class="text-2xl text-gray-300 dark:text-gray-600">/100</div>
+                <div class="text-center">
+                  <div class="text-6xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">${yourScore}</div>
+                  <div class="text-2xl text-gray-300 dark:text-gray-600">/100</div>
+                </div>
               </div>
             </div>
-            </div>
-          </div> 
-
+          </div>
           <!-- 8 Module Cards -->
           <div class="grid md:grid-cols-4 gap-6 my-16">
             ${modules.map(m => {
@@ -277,7 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
               `;
             }).join('')}
           </div>
-
           <!-- Prioritised AI-Style Fixes -->
           ${prioritisedFixes.length > 0 ? `
             <div class="space-y-8">
@@ -297,12 +264,11 @@ document.addEventListener('DOMContentLoaded', () => {
               `).join('')}
             </div>
           ` : ''}
-
-          <!-- Predictive Rank Forecast (now below fixes) -->
+          <!-- Predictive Rank Forecast -->
           <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
             <h3 class="text-4xl font-black text-center">Predictive AI SERP Forecast</h3>
-            <p class="text-center text-5xl font-black">${overall >= 90 ? 'Top 3' : overall >= 80 ? 'Top 5' : overall >= 70 ? 'Top 10' : overall >= 50 ? 'Page 1 Possible' : 'Page 2+'}</p>
-            <p class="text-center text-4xl font-bold">+${Math.round((100 - overall) * 1.8)}% potential traffic gain if fixed</p>
+            <p class="text-center text-5xl font-black">${yourScore >= 90 ? 'Top 3' : yourScore >= 80 ? 'Top 5' : yourScore >= 70 ? 'Top 10' : yourScore >= 50 ? 'Page 1 Possible' : 'Page 2+'}</p>
+            <p class="text-center text-4xl font-bold">+${Math.round((100 - yourScore) * 1.8)}% potential traffic gain if fixed</p>
             <p class="text-center text-lg italic opacity-80">Based on trust, direct answers, structure, and human signals — here's the breakdown:</p>
             <div class="grid md:grid-cols-3 gap-6 text-left">
               <div class="p-6 bg-white/10 rounded-2xl">
@@ -320,7 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <p class="text-center text-sm italic mt-6">Forecast is heuristic; actual performance varies by query and competition.</p>
           </div>
-
           <!-- PDF Button -->
           <div class="text-center my-16">
             <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
@@ -373,8 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (err) {
       clearInterval(interval);
-      document.querySelector('#progress-bar')?.remove();
-      document.querySelector('.fixed.bottom-6')?.remove();
+      document.querySelector('#progress-bar')?.parentElement?.parentElement?.remove();
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
     }
   });
