@@ -255,46 +255,65 @@ document.addEventListener('DOMContentLoaded', () => {
               </tbody>
             </table>
           </div>
-          <!-- Prioritised AI-Style Fixes -->
-          <div class="space-y-8">
-            <h3 class="text-4xl font-black text-center mb-8">Prioritised AI-Style Fixes</h3>
-            ${!hasAuthor ? `
-              <div class="p-8 bg-gradient-to-r from-red-500/10 border-l-8 border-red-500 rounded-r-2xl">
-                <div class="flex gap-6">
-                  <div class="text-5xl">👤</div>
-                  <div>
-                    <h4 class="text-2xl font-bold text-red-600">Add Author Bio & Photo</h4>
-                    <p class="mt-4 text-blue-500 font-bold">What:</p><p>Visible byline proving who wrote this</p>
-                    <p class="mt-2 text-green-500 font-bold">How:</p><p>Headshot + name + bio + credentials + social links</p>
-                    <p class="mt-2 text-orange-500 font-bold">Why:</p><p>Boosts Expertise & Trust by 30–40 points — Google's #1 E-E-A-T signal</p>
-                  </div>
-                </div>
-              </div>` : ''}
-            ${words < 1500 ? `
-              <div class="p-8 bg-gradient-to-r from-orange-500/10 border-l-8 border-orange-500 rounded-r-2xl">
-                <div class="flex gap-6">
-                  <div class="text-5xl">✍️</div>
-                  <div>
-                    <h4 class="text-2xl font-bold text-orange-600">Add 1000+ Words of Depth</h4>
-                    <p class="mt-4 text-blue-500 font-bold">What:</p><p>Comprehensive coverage that answers every related question</p>
-                    <p class="mt-2 text-green-500 font-bold">How:</p><p>Examples, data, screenshots, FAQs, tools, comparisons</p>
-                    <p class="mt-2 text-orange-500 font-bold">Why:</p><p>Depth is the #1 ranking factor — Google rewards the best answer</p>
-                  </div>
-                </div>
-              </div>` : ''}
-            ${schemaTypes.length < 2 ? `
-              <div class="p-8 bg-gradient-to-r from-purple-500/10 border-l-8 border-purple-500 rounded-r-2xl">
-                <div class="flex gap-6">
-                  <div class="text-5xl">✨</div>
-                  <div>
-                    <h4 class="text-2xl font-bold text-purple-600">Add Article + Person Schema</h4>
-                    <p class="mt-4 text-blue-500 font-bold">What:</p><p>Structured data Google reads</p>
-                    <p class="mt-2 text-green-500 font-bold">How:</p><p>JSON-LD with @type Article + Person + author link</p>
-                    <p class="mt-2 text-orange-500 font-bold">Why:</p><p>Rich results + massive E-E-A-T boost</p>
-                  </div>
-                </div>
-              </div>` : ''}
+          
+          
+			<!-- Prioritised AI-Style Fixes -->
+<div class="space-y-8">
+  <h3 class="text-4xl font-black text-center mb-8">Prioritised AI-Style Fixes</h3>
+  ${!hasAuthor ? `
+    <div class="p-8 bg-gradient-to-r from-red-500/10 border-l-8 border-red-500 rounded-r-2xl">
+      <div class="flex gap-6">
+        <div class="text-5xl">👤</div>
+        <div>
+          <h4 class="text-2xl font-bold text-red-600">Add Author Bio & Photo</h4>
+          <div class="mt-4 space-y-3 text-sm">
+            <p class="text-blue-500 font-bold">What it is?</p>
+            <p>A visible author byline with name, photo, and credentials that proves a real expert created the content.</p>
+            <p class="text-green-500 font-bold">How to improve?</p>
+            <p>Add a detailed author box with professional headshot, full bio highlighting relevant experience/qualifications, links to social profiles or other work, and clear connection to the topic (e.g., “Written by [Name], 10+ years in [niche]”).</p>
+            <p class="text-orange-500 font-bold">Why it matters?</p>
+            <p>Search engines heavily weigh proven authorship for E-E-A-T — pages with strong author signals rank higher, build trust faster, and reduce bounce rates significantly.</p>
           </div>
+        </div>
+      </div>
+    </div>` : ''}
+  ${words < 1500 ? `
+    <div class="p-8 bg-gradient-to-r from-orange-500/10 border-l-8 border-orange-500 rounded-r-2xl">
+      <div class="flex gap-6">
+        <div class="text-5xl">✍️</div>
+        <div>
+          <h4 class="text-2xl font-bold text-orange-600">Expand Content Depth</h4>
+          <div class="mt-4 space-y-3 text-sm">
+            <p class="text-blue-500 font-bold">What it is?</p>
+            <p>Thorough, comprehensive coverage that fully answers the main query plus all related follow-up questions users typically have.</p>
+            <p class="text-green-500 font-bold">How to improve?</p>
+            <p>Add in-depth examples, data-backed statistics, step-by-step breakdowns, comparisons, visuals/screenshots, templates or tools, expert quotes, case studies, and expanded FAQs — aim for the most complete resource on the topic.</p>
+            <p class="text-orange-500 font-bold">Why it matters?</p>
+            <p>Depth remains the strongest on-page ranking factor — search engines consistently reward the most helpful, exhaustive pages with top positions and sustained traffic growth.</p>
+          </div>
+        </div>
+      </div>
+    </div>` : ''}
+  ${schemaTypes.length < 2 ? `
+    <div class="p-8 bg-gradient-to-r from-purple-500/10 border-l-8 border-purple-500 rounded-r-2xl">
+      <div class="flex gap-6">
+        <div class="text-5xl">✨</div>
+        <div>
+          <h4 class="text-2xl font-bold text-purple-600">Add Relevant Schema Markup</h4>
+          <div class="mt-4 space-y-3 text-sm">
+            <p class="text-blue-500 font-bold">What it is?</p>
+            <p>Structured data (JSON-LD) that explicitly defines your page type and key entities to search engines.</p>
+            <p class="text-green-500 font-bold">How to improve?</p>
+            <p>Implement at least two relevant types: Article (with author Person link), plus FAQPage, HowTo, Product, or BreadcrumbList as appropriate. Validate with official testing tools before publishing.</p>
+            <p class="text-orange-500 font-bold">Why it matters?</p>
+            <p>Proper schema unlocks rich results, boosts click-through rates dramatically, strengthens E-E-A-T signals, and helps search engines feature your content more prominently.</p>
+          </div>
+        </div>
+      </div>
+    </div>` : ''}
+</div>
+          
+          
           <!-- Predictive Rank Forecast -->
           <div class="text-center mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
             <p class="text-3xl font-medium opacity-80">Predictive Rank Forecast</p>
