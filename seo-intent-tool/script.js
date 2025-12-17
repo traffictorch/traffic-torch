@@ -90,25 +90,32 @@ document.addEventListener('DOMContentLoaded', () => {
       // === FULL REPORT OUTPUT (unchanged from your original) ===
       results.innerHTML = `
         <div class="max-w-5xl mx-auto space-y-16">
-          <!-- Big Score Circle -->
-			<div class="flex justify-center my-12">
-			  <div class="relative">
-			    <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
-			      <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
- 			     <circle cx="130" cy="130" r="120" 
- 			             stroke="${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'}" 
-  			            stroke-width="18" fill="none"
-  			            stroke-dasharray="${(overall / 100) * 754} 754" 
-  			            stroke-linecap="round"/>
-  			  </svg>
+			<!-- Big Score Circle -->
+<div class="flex justify-center my-12">
+  <div class="relative">
+    <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
+      <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
+      <circle cx="130" cy="130" r="120" 
+              stroke="${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'}" 
+              stroke-width="18" fill="none"
+              stroke-dasharray="${(overall / 100) * 754} 754" 
+              stroke-linecap="round"/>
+    </svg>
     <div class="absolute inset-0 flex items-center justify-center">
       <div class="text-center">
-        <div class="text-7xl font-black text-white drop-shadow-2xl">${overall}</div>
-        <div class="text-2xl text-white/90 -mt-2">/100</div>
+        <div class="text-7xl font-black" 
+             style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'};">
+          ${overall}
+        </div>
+        <div class="text-2xl opacity-80 -mt-2" 
+             style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'};">
+          /100
+        </div>
       </div>
     </div>
   </div>
 </div>
+
           <!-- Intent -->
           <div class="text-center mb-12">
             <p class="text-4xl font-black mb-8">
