@@ -190,8 +190,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if (normalized10 >= 6.0) return '#f97316'; // orange
     return '#ef4444'; // red
   }
+  
+  
+    function printReport() {
+    // Show all hidden content for print
+    document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
+    // Trigger print
+    window.print();
+    // Restore hidden state after print/cancel
+    window.onafterprint = () => {
+      document.querySelectorAll('.hidden').forEach(el => {
+        if (el.closest('#humanizedOutput') || 
+            (el.previousElementSibling && el.previousElementSibling.textContent.includes('Show Info'))) {
+          el.classList.add('hidden');
+        }
+      });
+      window.onafterprint = null;
+    };
+  }
+  
+  
 
-		form.addEventListener('submit', async (e) => {
+	form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const url = input.value.trim();
   if (!url) return;
@@ -426,23 +446,12 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
             
-            <!-- Save as PDF Button - Fixed syntax -->
+            <!-- Save as PDF Button - Fixed & Safe -->
             <div class="mt-20 text-center">
-              <button onclick="
-                document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
-                window.print();
-                window.onafterprint = function() {
-                  document.querySelectorAll('.hidden').forEach(el => {
-                    if (el.closest('#humanizedOutput') || (el.previousElementSibling && el.previousElementSibling.textContent.includes('Show Info'))) {
-                      el.classList.add('hidden');
-                    }
-                  });
-                  window.onafterprint = null;
-                };
-              " class="px-16 py-8 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-3xl md:text-4xl rounded-3xl shadow-2xl hover:opacity-90 transition">
+              <button onclick="printReport()" class="px-16 py-8 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-3xl md:text-4xl rounded-3xl shadow-2xl hover:opacity-90 transition">
                 📄 Save Full Report as PDF
               </button>
-            </div>           
+            </div>          
             
             
             
