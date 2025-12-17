@@ -137,39 +137,50 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
           </div>
-          <!-- E-E-A-T Breakdown -->
-          <div class="grid md:grid-cols-4 gap-6 my-16">
-			${Object.entries(eeat).map(([key, val]) => `
-  <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${val >= 80 ? 'border-green-500' : val >= 60 ? 'border-orange-500' : 'border-red-500'}">
-    <div class="relative mx-auto w-32 h-32">
-      <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-        <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-        <circle cx="64" cy="64" r="56" 
-                stroke="${val >= 80 ? '#22c55e' : val >= 60 ? '#f97316' : '#ef4444'}"
-                stroke-width="12" fill="none" 
-                stroke-dasharray="${(val/100)*352} 352" 
-                stroke-linecap="round"/>
-      </svg>
-      <div class="absolute inset-0 flex items-center justify-center text-4xl font-black"
-           style="color: ${val >= 80 ? '#22c55e' : val >= 60 ? '#f97316' : '#ef4444'};">
-        ${val}
+          
+			<!-- E-E-A-T Breakdown -->
+<div class="grid md:grid-cols-4 gap-6 my-16">
+  ${Object.entries(eeat).map(([key, val]) => `
+    <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${val >= 80 ? 'border-green-500' : val >= 60 ? 'border-orange-500' : 'border-red-500'}">
+      <div class="relative mx-auto w-32 h-32">
+        <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+          <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+          <circle cx="64" cy="64" r="56" 
+                  stroke="${val >= 80 ? '#22c55e' : val >= 60 ? '#f97316' : '#ef4444'}"
+                  stroke-width="12" fill="none" 
+                  stroke-dasharray="${(val/100)*352} 352" 
+                  stroke-linecap="round"/>
+        </svg>
+        <div class="absolute inset-0 flex items-center justify-center text-4xl font-black"
+             style="color: ${val >= 80 ? '#22c55e' : val >= 60 ? '#f97316' : '#ef4444'};">
+          ${val}
+        </div>
+      </div>
+      <p class="mt-4 text-lg font-medium">${key}</p>
+      <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+        Show Fixes
+      </button>
+      <div class="hidden mt-6 space-y-3 text-left text-sm">
+        <p class="text-blue-500 font-bold">What it is?</p>
+        <p>${key === 'Experience' ? 'Proof that the content creator has first-hand involvement in the topic, such as personal anecdotes, real-world applications, or direct participation, making the advice more relatable and credible.' 
+          : key === 'Expertise' ? 'Demonstrated deep knowledge and skill in the subject area, backed by qualifications, achievements, or specialized training, showing the author is a reliable source.' 
+          : key === 'Authoritativeness' ? 'Recognition of the site or author as a leading voice in the niche, often through citations, references from reputable sources, or industry accolades.' 
+          : 'Indicators that the site and content are reliable, secure, and transparent, fostering user confidence through clear policies and ethical practices.'}</p>
+        <p class="text-green-500 font-bold">How to improve?</p>
+        <p>${key === 'Experience' ? 'Incorporate first-person language like “I” or “we,” add personal photos or videos, include detailed case studies with outcomes, mention specific dates or timelines, and share lessons learned from your own trials and errors to make it authentic.' 
+          : key === 'Expertise' ? 'Add an author bio box with a professional photo, detailed biography highlighting relevant education or experience, list certifications, degrees, or publications, and link to other works or speaking engagements to build proof.' 
+          : key === 'Authoritativeness' ? 'Earn high-quality backlinks from trusted sites, get featured in press or media mentions, implement relevant schema markup like Organization or Person, display awards or endorsements, and contribute to industry forums or publications.' 
+          : 'Switch to HTTPS if not already, create a dedicated contact page with real details, add a privacy policy and terms of service, include content update dates, and ensure no misleading claims or ads to maintain transparency.'}</p>
+        <p class="text-orange-500 font-bold">Why it matters?</p>
+        <p>${key === 'Experience' ? 'Search engines favor content with genuine experience because it reduces misinformation, improves user satisfaction, and leads to longer dwell times, all of which boost rankings and traffic.' 
+          : key === 'Expertise' ? 'Proven expertise helps search engines identify high-quality content, reducing the risk of penalties and increasing visibility, as users trust and engage more with authoritative sources.' 
+          : key === 'Authoritativeness' ? 'It establishes your site as a go-to resource, enhancing link-building opportunities and search engine trust, which directly impacts long-term visibility and competitive edge.' 
+          : 'High trustworthiness signals prevent user bounces, build loyalty, and align with search engine guidelines, avoiding downgrades and ensuring steady organic traffic growth.'}</p>
       </div>
     </div>
-    <p class="mt-4 text-lg font-medium">${key}</p>
-    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-      Show Fixes
-    </button>
-    <div class="hidden mt-6 space-y-3 text-left text-sm">
-      <p class="text-blue-500 font-bold">What:</p>
-      <p>${key === 'Experience' ? 'Proof you’ve personally done what you’re teaching.' : key === 'Expertise' ? 'Demonstrated subject-matter mastery.' : key === 'Authoritativeness' ? 'Recognition as the go-to source in your niche.' : 'Signals your site is safe and honest.'}</p>
-      <p class="text-green-500 font-bold">How:</p>
-      <p>${key === 'Experience' ? 'Use “I” statements, photos, case studies, dates.' : key === 'Expertise' ? 'Author box with photo, bio, credentials, certifications.' : key === 'Authoritativeness' ? 'High-quality backlinks, press mentions, schema, awards.' : 'HTTPS, contact page, privacy policy, updated dates.'}</p>
-      <p class="text-orange-500 font-bold">Why:</p>
-      <p>${key === 'Experience' ? 'Google’s #1 E-E-A-T signal.' : key === 'Expertise' ? 'Experts rank higher — full stop.' : key === 'Authoritativeness' ? 'Strongest long-term ranking factor.' : 'No trust = no traffic from Google.'}</p>
-    </div>
-  </div>
-`).join('')}
-          </div>
+  `).join('')}
+</div>
+
           <!-- Content Depth + Readability + Schema Detected -->
           <div class="grid md:grid-cols-3 gap-8 my-16">
             <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
