@@ -181,46 +181,61 @@ document.addEventListener('DOMContentLoaded', () => {
   `).join('')}
 </div>
 
-          <!-- Content Depth + Readability + Schema Detected -->
-          <div class="grid md:grid-cols-3 gap-8 my-16">
-            <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
-              <h3 class="text-2xl font-bold mb-4">Content Depth</h3>
-              <p class="text-5xl font-black mb-2">${words.toLocaleString()}</p>
-              <p class="text-gray-500 mb-4">words</p>
-              <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Info</button>
-              <div class="hidden mt-6 space-y-3 text-left text-sm">
-                <p class="text-blue-500 font-bold">What:</p><p>Comprehensive coverage that fully answers the query and beyond.</p>
-                <p class="text-green-500 font-bold">How:</p><p>Add examples, data, screenshots, FAQs, tools, templates, comparisons.</p>
-                <p class="text-orange-500 font-bold">Why:</p><p>Depth is the #1 ranking factor — Google rewards “best answer” pages.</p>
-              </div>
-            </div>
-            <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
-              <h3 class="text-2xl font-bold mb-4">Readability</h3>
-              <p class="text-5xl font-black mb-2">${readability}</p>
-              <p class="text-gray-500 mb-4">Flesch score</p>
-              <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Info</button>
-              <div class="hidden mt-6 space-y-3 text-left text-sm">
-                <p class="text-blue-500 font-bold">What:</p><p>How easy your content is to consume.</p>
-                <p class="text-green-500 font-bold">How:</p><p>Short sentences, simple words, active voice, subheadings, bullets.</p>
-                <p class="text-orange-500 font-bold">Why:</p><p>Google tracks bounce & dwell time — readable = longer sessions = higher rankings.</p>
-              </div>
-            </div>
-            <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
-              <h3 class="text-2xl font-bold mb-4">Schema Detected</h3>
-              ${schemaTypes.length ? `
-                <select class="px-6 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-black dark:text-white">
-                  ${schemaTypes.map(t => `<option>${t}</option>`).join('')}
-                </select>
-                <p class="mt-4 text-green-500 font-bold">${schemaTypes.length} type${schemaTypes.length > 1 ? 's' : ''} found</p>
-              ` : '<p class="text-2xl text-red-500 mt-4">No schema detected</p>'}
-              <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Info</button>
-              <div class="hidden mt-6 space-y-3 text-left text-sm">
-                <p class="text-blue-500 font-bold">What:</p><p>Structured data that tells Google exactly what your page is about.</p>
-                <p class="text-green-500 font-bold">How:</p><p>Add JSON-LD for Article, Person, FAQPage, HowTo, Product, etc.</p>
-                <p class="text-orange-500 font-bold">Why:</p><p>Triggers rich results, improves CTR, strengthens E-E-A-T signals.</p>
-              </div>
-            </div>
-          </div>
+
+			<!-- Content Depth + Readability + Schema Detected -->
+<div class="grid md:grid-cols-3 gap-8 my-16">
+  <!-- Content Depth -->
+  <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
+    <h3 class="text-2xl font-bold mb-4">Content Depth</h3>
+    <p class="text-5xl font-black mb-2">${words.toLocaleString()}</p>
+    <p class="text-gray-500 mb-4">words</p>
+    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Fixes</button>
+    <div class="hidden mt-6 space-y-3 text-left text-sm">
+      <p class="text-blue-500 font-bold">What it is?</p>
+      <p>Comprehensive coverage that fully answers the user's query while going deeper with related questions, examples, and supporting details to provide the most complete resource possible.</p>
+      <p class="text-green-500 font-bold">How to improve?</p>
+      <p>Add real-world examples, statistics and data sources, screenshots or visuals, step-by-step guides, comparisons, templates or downloadable resources, FAQs addressing common follow-ups, and expert insights to expand value without fluff.</p>
+      <p class="text-orange-500 font-bold">Why it matters?</p>
+      <p>Depth is the strongest on-page ranking factor — search engines reward pages that fully satisfy user intent with the most helpful, thorough answer, leading to higher positions, longer dwell time, and more organic traffic.</p>
+    </div>
+  </div>
+  <!-- Readability -->
+  <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
+    <h3 class="text-2xl font-bold mb-4">Readability</h3>
+    <p class="text-5xl font-black mb-2">${readability}</p>
+    <p class="text-gray-500 mb-4">Flesch score</p>
+    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Fixes</button>
+    <div class="hidden mt-6 space-y-3 text-left text-sm">
+      <p class="text-blue-500 font-bold">What it is?</p>
+      <p>How easily users can read and understand your content — measured by sentence length, word complexity, and overall flow.</p>
+      <p class="text-green-500 font-bold">How to improve?</p>
+      <p>Use short sentences (under 20 words), simple everyday words, active voice, clear subheadings (H2/H3), bullet points and numbered lists, short paragraphs (3–4 lines max), bold key phrases, and transitional words to guide the reader smoothly.</p>
+      <p class="text-orange-500 font-bold">Why it matters?</p>
+      <p>Search engines track user behavior — highly readable content reduces bounce rates, increases time on page, and improves satisfaction signals, all of which directly boost rankings and conversions.</p>
+    </div>
+  </div>
+  <!-- Schema Detected -->
+  <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
+    <h3 class="text-2xl font-bold mb-4">Schema Detected</h3>
+    ${schemaTypes.length ? `
+      <select class="px-6 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-black dark:text-white">
+        ${schemaTypes.map(t => `<option>${t}</option>`).join('')}
+      </select>
+      <p class="mt-4 text-green-500 font-bold">${schemaTypes.length} type${schemaTypes.length > 1 ? 's' : ''} found</p>
+    ` : '<p class="text-2xl text-red-500 mt-4">No schema detected</p>'}
+    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Fixes</button>
+    <div class="hidden mt-6 space-y-3 text-left text-sm">
+      <p class="text-blue-500 font-bold">What it is?</p>
+      <p>Structured data (JSON-LD) that explicitly tells search engines what your page content represents — such as Article, FAQ, HowTo, Product, Person, Organization, etc.</p>
+      <p class="text-green-500 font-bold">How to improve?</p>
+      <p>Add JSON-LD script blocks in the <head> for relevant types (e.g., Article + author Person link, FAQPage for questions, HowTo for tutorials, BreadcrumbList for navigation). Validate using official structured data testing tools and implement the most relevant types for your content.</p>
+      <p class="text-orange-500 font-bold">Why it matters?</p>
+      <p>Schema enables rich snippets (stars, FAQs, carousels), increases click-through rates significantly, strengthens E-E-A-T signals, and helps search engines understand and feature your content more prominently in results.</p>
+    </div>
+  </div>
+</div>
+
+
           <!-- Competitive Gap Table -->
           <div class="overflow-x-auto my-12">
             <table class="w-full border-collapse border border-gray-300 dark:border-gray-600 text-left">
