@@ -190,9 +190,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       await new Promise(resolve => setTimeout(resolve, 1200));
       clearInterval(interval);
-      document.querySelector('#progress-bar')?.parentElement?.parentElement?.remove();
 
       results.innerHTML = `
+      console.log('Results rendered, overall score:', yourScore);
         <div class="max-w-5xl mx-auto space-y-16 animate-in">
           <!-- Big Overall Score -->
           <div class="flex justify-center my-12">
@@ -338,7 +338,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (err) {
       clearInterval(interval);
-      document.querySelector('#progress-bar')?.parentElement?.parentElement?.remove();
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
     }
   });
