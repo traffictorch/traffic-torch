@@ -191,102 +191,60 @@ document.addEventListener('DOMContentLoaded', () => {
     return '#ef4444'; // red
   }
 
-	form.addEventListener('submit', async (e) => {
-	  e.preventDefault();
-	  const url = input.value.trim();
-	  if (!url) return;
+		form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const url = input.value.trim();
+  if (!url) return;
 
-
-    // Immediate loading screen with spinner
-    results.innerHTML = `
-      <div class="fixed inset-0 bg-black/50 flex flex-col items-center justify-center z-50">
-        <div class="w-20 h-20 mb-6 relative">
-          <svg viewBox="0 0 100 100" class="animate-spin">
-            <circle cx="50" cy="50" r="40" stroke="#f97316" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
-          </svg>
-        </div>
-        <div class="bg-white text-gray-800 text-xl font-bold px-12 py-6 rounded-xl shadow-2xl">
-          Analyzing page for AI patterns...
-        </div>
+  // Immediate loading screen with spinner
+  results.innerHTML = `
+    <div class="fixed inset-0 bg-black/40 flex flex-col items-center justify-center z-50">
+      <div class="w-20 h-20 mb-6 relative">
+        <svg viewBox="0 0 100 100" class="animate-spin">
+          <circle cx="50" cy="50" r="40" stroke="#f97316" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
+        </svg>
       </div>
-    `;
-    results.classList.remove('hidden');
+      <div class="bg-white text-gray-800 text-xl font-bold px-12 py-6 rounded-xl shadow-2xl">
+        Analyzing page for AI patterns...
+      </div>
+    </div>
+  `;
+  results.classList.remove('hidden');
 
-    try {
-      // Simulate "slow" progress with timed messages (for UX, real delays)
-      setTimeout(() => {
-        document.querySelector('.fixed .bg-white').innerText = 'Fetching page...';
-      }, 300);
+  try {
+    // Progress messages
+    setTimeout(() => {
+      document.querySelector('.fixed .bg-white').innerText = 'Fetching page...';
+    }, 300);
 
-      const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
-      if (!res.ok) throw new Error('Page not reachable');
+    const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
+    if (!res.ok) throw new Error('Page not reachable');
 
-      setTimeout(() => {
-        document.querySelector('.fixed .bg-white').innerText = 'Extracting content...';
-      }, 600);
+    setTimeout(() => {
+      document.querySelector('.fixed .bg-white').innerText = 'Extracting content...';
+    }, 600);
 
-      const html = await res.text();
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-      const mainElement = getMainContent(doc);
-      const cleanElement = mainElement.cloneNode(true);
-      cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
-      let text = cleanElement.textContent || '';
-      text = text.replace(/\s+/g, ' ').replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu, ' ').trim();
-      const wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
-      analyzedText = text;
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const mainElement = getMainContent(doc);
+    const cleanElement = mainElement.cloneNode(true);
+    cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
+    let text = cleanElement.textContent || '';
+    text = text.replace(/\s+/g, ' ').replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu, ' ').trim();
 
-      setTimeout(() => {
-        document.querySelector('.fixed .bg-white').innerText = 'Analyzing metrics...';
-      }, 900);
+    setTimeout(() => {
+      document.querySelector('.fixed .bg-white').innerText = 'Analyzing metrics...';
+    }, 900);
 
-      const ai = analyzeAIContent(text);
+    const wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
+    analyzedText = text;
+    const ai = analyzeAIContent(text);
+    const yourScore = ai.score;
+    const mainNormalized = 100 - yourScore;
+    const mainGradeColor = getGradeColor(mainNormalized / 10);
+    const verdict = yourScore >= 70 ? 'Very Likely AI' : yourScore >= 40 ? 'Moderate AI Patterns' : 'Likely Human';
+    const forecast = yourScore >= 70 ? 'Page 2+' : yourScore >= 50 ? 'Page 1 Possible' : yourScore >= 30 ? 'Top 10 Possible' : 'Top 3 Potential';
 
-      // Render results after "delay"
-      setTimeout(() => {
-        results.innerHTML = `
-          <!-- your full results HTML template here -->
-        `;
-      }, 1200);
-    } catch (err) {
-      results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
-    }
-  });
-
-    try {
-      const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
-      if (!res.ok) throw new Error('Page not reachable');
-      const html = await res.text();
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-      const mainElement = getMainContent(doc);
-      const cleanElement = mainElement.cloneNode(true);
-      cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
-
-      let text = cleanElement.textContent || '';
-
-      // Universal cleanup
-      text = text
-        .replace(/Skip to (main )?content/gi, '')
-        .replace(/\b(?:Menu|Navigation|Home|About|Contact|Blog|Shop|Cart|Login|Signup|Reserve|Book|Explore|Discover|View|Learn|Subscribe|Follow us|Accommodation|Food|Wine|Entertainment|Gift|Merchandise|Construction)\b/gi, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-
-      // Single lines filtering
-      const lines = text.split('\n')
-        .map(l => l.trim())
-        .filter(l => l.length > 50 && !/^(Home|About|Contact|Reserve|Book|Menu|Shop|Login|$)/i.test(l));
-
-      text = lines.join(' ');
-
-      const wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
-      analyzedText = text;
-
-      const ai = analyzeAIContent(text);
-
-      const yourScore = ai.score;
-      const mainNormalized = 100 - yourScore;
-      const mainGradeColor = getGradeColor(mainNormalized / 10);
-      const verdict = yourScore >= 70 ? 'Very Likely AI' : yourScore >= 40 ? 'Moderate AI Patterns' : 'Likely Human';
-      const forecast = yourScore >= 70 ? 'Page 2+' : yourScore >= 50 ? 'Page 1 Possible' : yourScore >= 30 ? 'Top 10 Possible' : 'Top 3 Potential';
 
       results.innerHTML =`
         <style>
@@ -469,10 +427,12 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
       `;
-    } catch (err) {
-      results.innerHTML = `<div class="text-center py-20 text-red-600 text-2xl">Error: ${err.message}</div>`;
-    }
-  });
+	  } catch (err) {
+    results.innerHTML = `<div class="text-center py-20 text-red-600 text-2xl">Error: ${err.message}</div>`;
+  }
+});
+  
+
 
   document.addEventListener('click', e => {
     if (e.target.id === 'humanizeBtn') {
