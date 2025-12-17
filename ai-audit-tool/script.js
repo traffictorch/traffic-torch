@@ -191,10 +191,10 @@ document.addEventListener('DOMContentLoaded', () => {
     return '#ef4444'; // red
   }
 
-  form.addEventListener('submit', async e => {
-    e.preventDefault();
-    const url = input.value.trim();
-    if (!url) return;
+	form.addEventListener('submit', async (e) => {
+ 	 e.preventDefault();
+ 	 const url = input.value.trim();
+ 	 if (!url) return;
 
     // Immediate loading screen with spinner
     results.innerHTML = `
