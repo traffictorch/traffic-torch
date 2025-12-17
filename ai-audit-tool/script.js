@@ -447,21 +447,24 @@ form.addEventListener('submit', async (e) => {
               </div>
             </div>
             
-<!-- Save as PDF Button - Safe (no inline JS) -->
-            <div class="mt-20 text-center">
-              <button onclick="saveAsPDF()" class="px-16 py-8 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-3xl md:text-4xl rounded-3xl shadow-2xl hover:opacity-90 transition">
-                📄 Save Full Report as PDF
+              <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
+                      class="group relative inline-flex items-center px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
+                <span class="flex items-center gap-6">
+                  📄 Save Full Report as PDF
+                </span>
+                <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
             </div>
-           
-           
-           
           </div>
-        </div>
-      `;  // ← Closing backtick + semicolon fixed here
-
-    } catch (err) {
-      results.innerHTML = `<div class="text-center py-20 text-red-600 text-2xl">Error: ${err.message}</div>`;
+        `;
+      } catch (err) {
+        results.innerHTML = `
+          <div class="text-center py-20">
+            <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
+            <p class="mt-6 text-xl text-gray-400">Please check the URL and try again.</p>
+          </div>
+        `;
+      }
     }
   });
   
