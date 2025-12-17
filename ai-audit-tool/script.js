@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   
-    function printReport() {
+  function saveAsPDF() {
     // Show all hidden content for print
     document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
     // Trigger print
@@ -446,12 +446,12 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
             
-            <!-- Save as PDF Button - Fixed & Safe -->
+            <!-- Save as PDF Button - Safe & Fixed -->
             <div class="mt-20 text-center">
-              <button onclick="printReport()" class="px-16 py-8 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-3xl md:text-4xl rounded-3xl shadow-2xl hover:opacity-90 transition">
+              <button onclick="saveAsPDF()" class="px-16 py-8 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-3xl md:text-4xl rounded-3xl shadow-2xl hover:opacity-90 transition">
                 📄 Save Full Report as PDF
               </button>
-            </div>          
+            </div>         
             
             
             
