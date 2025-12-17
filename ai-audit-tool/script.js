@@ -4,26 +4,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const results = document.getElementById('results');
   const PROXY = 'https://cors-proxy.traffictorch.workers.dev/';
   let analyzedText = '';
+  let wordCount = 0; // Added to match your usage in template
 
-       function getMainContent(doc) {
+  function getMainContent(doc) {
     // 1. Try explicit main content containers
     const main = doc.querySelector('main, [role="main"], article, .main-content, .site-content, .content-area');
     if (main && main.textContent.trim().length > 600) {
       return main;
     }
-
     // 2. Find the element with the most paragraph-like content
     const candidates = doc.querySelectorAll('div, section, article');
     let best = null;
     let bestScore = 0;
-
     candidates.forEach(el => {
       if (el.closest('header, nav, footer, aside, .menu, .sidebar')) return;
-
       const paragraphs = el.querySelectorAll('p');
       const textLength = el.textContent.trim().length;
       const pCount = paragraphs.length;
-
       // Score: favor lots of <p> tags and decent length
       const score = pCount * 100 + textLength;
       if (score > bestScore && textLength > 600 && textLength < 20000) {
@@ -31,14 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
         best = el;
       }
     });
-
     if (best) return best;
-
     // 3. Fallback: body with aggressive removal
     const body = doc.body.cloneNode(true);
     const removeSelectors = 'header, nav, footer, aside, .menu, .navbar, .sidebar, .cookie-banner, .popup, .social-links, .breadcrumbs';
     body.querySelectorAll(removeSelectors).forEach(e => e.remove());
-
     return body;
   }
 
@@ -91,16 +85,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function makeItHuman(raw) {
     let t = raw.trim();
     if (t.length < 250) return t;
-
     // General cleanup
     t = t.replace(/Skip to (main )?content/gi, '')
          .replace(/\b(Home|About|Services|Contact|Blog|Shop|Cart|Login|Signup|Reserve|Book|Explore|Discover|View|Learn|Get Started|Sign Up)\b/gi, '')
          .replace(/\s+/g, ' ')
          .trim();
-
     const sentences = t.match(/[^.!?]+[.!?]+/g) || [t];
     let result = [];
-
     const swaps = {
       very: ['truly', 'genuinely', 'highly'],
       good: ['excellent', 'strong', 'solid'],
@@ -112,25 +103,20 @@ document.addEventListener('DOMContentLoaded', () => {
       important: ['key', 'essential', 'critical'],
       easy: ['simple', 'straightforward', 'clear']
     };
-
     const subtleIntroducers = [
       'Notably,',
       'In particular,',
       'Especially,',
       'One key aspect is'
     ];
-
     let introducerUsed = false;
-
     for (let s of sentences) {
       let sentence = s.trim();
       if (!sentence || sentence.length < 30) continue;
-
       if (!introducerUsed && result.length > 2 && Math.random() < 0.15) {
         result.push(subtleIntroducers[Math.floor(Math.random() * subtleIntroducers.length)]);
         introducerUsed = true;
       }
-
       let words = sentence.split(' ');
       for (let i = 0; i < words.length; i++) {
         const clean = words[i].toLowerCase().replace(/[^a-z]/g, '');
@@ -139,9 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
           words[i] = words[i].replace(new RegExp(clean, 'gi'), options[Math.floor(Math.random() * options.length)]);
         }
       }
-
       sentence = words.join(' ');
-
       if (sentence.split(' ').length > 25 && Math.random() < 0.5) {
         const mid = Math.floor(sentence.length / 2);
         const breakPoint = sentence.lastIndexOf([',', ';', '—', ':'][Math.floor(Math.random() * 4)], mid);
@@ -150,17 +134,13 @@ document.addEventListener('DOMContentLoaded', () => {
           sentence = sentence.slice(breakPoint + 1).trim();
         }
       }
-
       result.push(sentence);
     }
-
     let final = result.join(' ').trim();
-
     // Break into paragraphs
     const allSentences = final.match(/[^.!?]+[.!?]+/g) || [final];
     let paragraphs = [];
     let current = [];
-
     allSentences.forEach(s => {
       current.push(s.trim());
       if (current.length >= 4 || (current.length >= 2 && Math.random() < 0.3)) {
@@ -169,9 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
     if (current.length) paragraphs.push(current.join(' '));
-
     final = paragraphs.join('\n\n');
-
     if (Math.random() < 0.25) {
       const endings = [
         'A compelling and natural presentation.',
@@ -181,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ];
       final += ' ' + endings[Math.floor(Math.random() * endings.length)];
     }
-
     return final;
   }
 
@@ -190,96 +167,72 @@ document.addEventListener('DOMContentLoaded', () => {
     if (normalized10 >= 6.0) return '#f97316'; // orange
     return '#ef4444'; // red
   }
-  
-  
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const url = input.value.trim();
-  if (!url) return;
-
-  // Loading overlay with spinner
-  results.innerHTML = `
-    <div id="loadingOverlay" class="fixed inset-0 bg-black/50 flex flex-col items-center justify-center z-50">
-      <div class="w-20 h-20 mb-8 relative">
-        <svg viewBox="0 0 100 100" class="animate-spin">
-          <circle cx="50" cy="50" r="40" stroke="#f97316" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
-        </svg>
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const url = input.value.trim();
+    if (!url) return;
+    // Loading overlay with spinner
+    results.innerHTML = `
+      <div id="loadingOverlay" class="fixed inset-0 bg-black/50 flex flex-col items-center justify-center z-50">
+        <div class="w-20 h-20 mb-8 relative">
+          <svg viewBox="0 0 100 100" class="animate-spin">
+            <circle cx="50" cy="50" r="40" stroke="#f97316" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div id="loadingText" class="bg-white text-gray-800 text-xl font-bold px-12 py-6 rounded-xl shadow-2xl">
+          Analyzing page for AI patterns...
+        </div>
       </div>
-      <div id="loadingText" class="bg-white text-gray-800 text-xl font-bold px-12 py-6 rounded-xl shadow-2xl">
-        Analyzing page for AI patterns...
-      </div>
-    </div>
-  `;
-  results.classList.remove('hidden');
-
-  const loadingText = document.getElementById('loadingText');
-
-  const messages = [
-    "Fetching page...",
-    "Extracting content...",
-    "Analyzing Perplexity...",
-    "Analyzing Burstiness...",
-    "Analyzing Repetition...",
-    "Analyzing Sentence Length...",
-    "Analyzing Vocabulary...",
-    "Generating report..."
-  ];
-
-  let delay = 600;
-  messages.forEach(msg => {
-    setTimeout(() => {
-      if (loadingText) loadingText.innerText = msg;
-    }, delay);
-    delay += 700;
-  });
-
-  const minLoadTime = 5500;
-  const startTime = Date.now();
-
-  try {
-    const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
-    if (!res.ok) throw new Error('Page not reachable');
-    const html = await res.text();
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-    const mainElement = getMainContent(doc);
-    const cleanElement = mainElement.cloneNode(true);
-    cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
-    let text = cleanElement.textContent || '';
-    text = text.replace(/\s+/g, ' ').replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu, ' ').trim();
-    const wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
-    analyzedText = text;
-    const ai = analyzeAIContent(text);
-    const yourScore = ai.score;
-    const mainNormalized = 100 - yourScore;
-    const mainGradeColor = getGradeColor(mainNormalized / 10);
-    const verdict = yourScore >= 70 ? 'Very Likely AI' : yourScore >= 40 ? 'Moderate AI Patterns' : 'Likely Human';
-    const forecast = yourScore >= 70 ? 'Page 2+' : yourScore >= 50 ? 'Page 1 Possible' : yourScore >= 30 ? 'Top 10 Possible' : 'Top 3 Potential';
-
-    const elapsed = Date.now() - startTime;
-    const remaining = Math.max(0, minLoadTime - elapsed);
-
-    setTimeout(() => {
-      results.innerHTML = `
-        <!-- Your full results HTML template here -->
-      `;
-    }, remaining);
-  } catch (err) {
-    const elapsed = Date.now() - startTime;
-    const remaining = Math.max(0, minLoadTime - elapsed);
-    setTimeout(() => {
-      results.innerHTML = `<div class="text-center py-20 text-red-600 text-2xl">Error: ${err.message}</div>`;
-    }, remaining);
-  }
-});
-
-      results.innerHTML =`
+    `;
+    results.classList.remove('hidden');
+    const loadingText = document.getElementById('loadingText');
+    const messages = [
+      "Fetching page...",
+      "Extracting content...",
+      "Analyzing Perplexity...",
+      "Analyzing Burstiness...",
+      "Analyzing Repetition...",
+      "Analyzing Sentence Length...",
+      "Analyzing Vocabulary...",
+      "Generating report..."
+    ];
+    let delay = 600;
+    messages.forEach(msg => {
+      setTimeout(() => {
+        if (loadingText) loadingText.innerText = msg;
+      }, delay);
+      delay += 700;
+    });
+    const minLoadTime = 5500;
+    const startTime = Date.now();
+    try {
+      const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
+      if (!res.ok) throw new Error('Page not reachable');
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const mainElement = getMainContent(doc);
+      const cleanElement = mainElement.cloneNode(true);
+      cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
+      let text = cleanElement.textContent || '';
+      text = text.replace(/\s+/g, ' ').replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu, ' ').trim();
+      wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
+      analyzedText = text;
+      const ai = analyzeAIContent(text);
+      const yourScore = ai.score;
+      const mainNormalized = 100 - yourScore;
+      const mainGradeColor = getGradeColor(mainNormalized / 10);
+      const verdict = yourScore >= 70 ? 'Very Likely AI' : yourScore >= 40 ? 'Moderate AI Patterns' : 'Likely Human';
+      const forecast = yourScore >= 70 ? 'Page 2+' : yourScore >= 50 ? 'Page 1 Possible' : yourScore >= 30 ? 'Top 10 Possible' : 'Top 3 Potential';
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.max(0, minLoadTime - elapsed);
+      setTimeout(() => {
+        results.innerHTML =`
         <style>
           .animate-stroke { transition: stroke-dasharray 1.5s ease-out; }
         </style>
         <div class="min-h-screen bg-gray-50 py-12 px-4">
           <div class="max-w-4xl mx-auto space-y-16">
-
             <!-- Big Score Circle -->
             <div class="flex justify-center">
               <div class="relative w-64 h-64">
@@ -302,7 +255,7 @@ form.addEventListener('submit', async (e) => {
               <p class="text-3xl font-bold" style="color: ${mainGradeColor}">${verdict}</p>
             </div>
             <p class="text-center text-base text-gray-600">Scanned ${wordCount.toLocaleString()} words from main content</p>
-		    <p class="text-center text-sm text-gray-500 mt-4 italic">Note: Humanized version is an AI-generated example based on detected main content. Always review and edit for accuracy and tone.</p>
+    <p class="text-center text-sm text-gray-500 mt-4 italic">Note: Humanized version is an AI-generated example based on detected main content. Always review and edit for accuracy and tone.</p>
             <!-- Small Metrics (0–10 scale with colored number + left border) -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
               ${[
@@ -332,25 +285,25 @@ form.addEventListener('submit', async (e) => {
                     Show Info
                   </button>
                   <div class="hidden mt-4 space-y-3 text-sm text-gray-600 leading-relaxed">
-                    <p><span class="font-bold text-blue-600">What it is:</span> 
-                      ${m.name === 'Perplexity' ? 'How unpredictable your text appears to AI detectors.' : 
-                        m.name === 'Burstiness' ? 'How much your sentence lengths vary for natural flow.' : 
-                        m.name === 'Repetition' ? 'How often the same phrases or patterns appear.' : 
-                        m.name === 'Sentence Length' ? 'Average words per sentence (ideal 15–23).' : 
+                    <p><span class="font-bold text-blue-600">What it is:</span>
+                      ${m.name === 'Perplexity' ? 'How unpredictable your text appears to AI detectors.' :
+                        m.name === 'Burstiness' ? 'How much your sentence lengths vary for natural flow.' :
+                        m.name === 'Repetition' ? 'How often the same phrases or patterns appear.' :
+                        m.name === 'Sentence Length' ? 'Average words per sentence (ideal 15–23).' :
                         'How diverse your word choice is across the content.'}
                     </p>
-                    <p><span class="font-bold text-green-600">How to improve:</span> 
-                      ${m.name === 'Perplexity' ? 'Use varied phrasing, personal anecdotes, and unexpected ideas.' : 
-                        m.name === 'Burstiness' ? 'Mix short punchy sentences with longer detailed ones.' : 
-                        m.name === 'Repetition' ? 'Replace repeated phrases with synonyms and fresh expressions.' : 
-                        m.name === 'Sentence Length' ? 'Balance short and medium sentences for better rhythm.' : 
+                    <p><span class="font-bold text-green-600">How to improve:</span>
+                      ${m.name === 'Perplexity' ? 'Use varied phrasing, personal anecdotes, and unexpected ideas.' :
+                        m.name === 'Burstiness' ? 'Mix short punchy sentences with longer detailed ones.' :
+                        m.name === 'Repetition' ? 'Replace repeated phrases with synonyms and fresh expressions.' :
+                        m.name === 'Sentence Length' ? 'Balance short and medium sentences for better rhythm.' :
                         'Incorporate synonyms, descriptive words, and less common vocabulary.'}
                     </p>
-                    <p><span class="font-bold text-orange-600">Why it matters:</span> 
-                      ${m.name === 'Perplexity' ? 'Search engines penalize overly predictable content that feels AI-generated.' : 
-                        m.name === 'Burstiness' ? 'Search engines and readers prefer dynamic rhythm that keeps attention.' : 
-                        m.name === 'Repetition' ? 'Search engines downgrade repetitive text as low-quality or spammy.' : 
-                        m.name === 'Sentence Length' ? 'Search engines favor readable flow that matches human writing habits.' : 
+                    <p><span class="font-bold text-orange-600">Why it matters:</span>
+                      ${m.name === 'Perplexity' ? 'Search engines penalize overly predictable content that feels AI-generated.' :
+                        m.name === 'Burstiness' ? 'Search engines and readers prefer dynamic rhythm that keeps attention.' :
+                        m.name === 'Repetition' ? 'Search engines downgrade repetitive text as low-quality or spammy.' :
+                        m.name === 'Sentence Length' ? 'Search engines favor readable flow that matches human writing habits.' :
                         'Search engines reward rich vocabulary as a signal of expertise and depth.'}
                     </p>
                   </div>
@@ -358,7 +311,6 @@ form.addEventListener('submit', async (e) => {
               `;
               }).join('')}
             </div>
-
             <!-- Humanize Text Section - Final Polish -->
             <div class="mt-16 text-center space-y-8">
               <button id="humanizeBtn" class="px-16 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:opacity-90 transition">
@@ -383,7 +335,7 @@ form.addEventListener('submit', async (e) => {
                 </div>
               </div>
             </div>
-            
+           
             <!-- Prioritized AI-Style Fixes - Improved -->
             <div class="mt-20 space-y-8">
               <h2 class="text-4xl md:text-5xl font-black text-center text-gray-900">Prioritized AI-Style Fixes</h2>
@@ -405,9 +357,7 @@ form.addEventListener('submit', async (e) => {
                   <p class="text-lg text-center">Your writing reads naturally with good variation and authentic voice.</p>
                   <p class="text-lg mt-4 text-center">Keep up the great work — this style performs best in search rankings.</p>
                 </div>`}
-            </div>            
-
-
+            </div>
                     <!-- Predictive Rank Forecast - Improved -->
             <div class="mt-20 p-10 md:p-16 bg-gradient-to-r from-orange-500 to-pink-600 rounded-3xl shadow-2xl text-white text-center space-y-8">
               <h2 class="text-4xl md:text-5xl font-black">Predictive Rank Forecast</h2>
@@ -428,24 +378,24 @@ form.addEventListener('submit', async (e) => {
                 </div>
               </div>
             </div>
-            
-
-			</div>
+           
+</div>
           </div>
-        `;  // ← Closing backtick + semicolon fixed here
-
-      } catch (err) {
+        `;
+      }, remaining);
+    } catch (err) {
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.max(0, minLoadTime - elapsed);
+      setTimeout(() => {
         results.innerHTML = `
           <div class="text-center py-20">
             <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
             <p class="mt-6 text-xl text-gray-400">Please check the URL and try again.</p>
           </div>
         `;
-      }
+      }, remaining);
     }
   });
-  
-
 
   document.addEventListener('click', e => {
     if (e.target.id === 'humanizeBtn') {
