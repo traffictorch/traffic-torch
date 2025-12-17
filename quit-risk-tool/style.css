@@ -144,8 +144,6 @@ h2 + p {
 }
 
 
-
-
 /* Detail paragraphs under labels - readable gray */
 .text-left p {
   color: #4b5563; /* gray-600 light mode */
@@ -163,5 +161,18 @@ h2 + p {
 }
 
 
-
-
+/* quit-risk-features-checklist */
+  #quit-risk-features-checklist ul {
+    list-style: none;
+    padding: 0;
+  }
+  @media (max-width: 768px) {
+    #quit-risk-features-checklist li {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+ @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }

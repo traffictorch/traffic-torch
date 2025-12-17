@@ -164,4 +164,21 @@ h2 + p {
 
 
 
-
+/* ai-audit-features-checklist */
+  #ai-audit-features-checklist ul {
+    list-style: none;
+    padding: 0;
+  }
+  @media (max-width: 768px) {
+    #ai-audit-features-checklist li {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    
+    
+    

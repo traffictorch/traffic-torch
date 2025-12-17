@@ -51,21 +51,24 @@ body { transition: background-color 0.3s ease; }
   }
   
 
-/* Progress Bar – Thick, centered text, animated */
-#progress-bar {
-  height: 3rem; /* thicker */
-  background: linear-gradient(90deg, #f97316, #ec4899, #a855f7, #3b82f6);
-  background-size: 400% 400%;
-  animation: gradient-shift 12s ease infinite;
-}
+  /* AI ai-search-features-checklist */
+  #ai-search-features-checklist ul {
+    list-style: none;
+    padding: 0;
+  }
+  @media (max-width: 768px) {
+    #ai-search-features-checklist li {
+      flex-direction: column;
+      text-align: center;
+    }
 
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .checklist-card ul {
+      text-align: left;
+    }
 
 
 

@@ -191,3 +191,30 @@ html.light .score-circle circle.bg {
   .expandable-card > div { padding: 1.5rem; }
 }
 
+/* Bullet-point List */
+  .feature-list {
+    list-style: none;
+    padding: 0;
+  }
+  @media (min-width: 640px) {
+    .feature-list li {
+      align-items: center;
+    }
+  }
+  
+  /* SEO Checklist */
+    .checklist-category {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .checklist-category:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  }
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .checklist-category {
+      padding: 6;
+    }
+  }

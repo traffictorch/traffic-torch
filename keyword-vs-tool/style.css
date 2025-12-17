@@ -172,3 +172,20 @@ h2 + p {
 .animate-fade-in {
   animation: fade-in 0.5s ease-out forwards;
 }
+
+
+ /*  keyword-vs-features-checklist */
+  #keyword-vs-features-checklist ul {
+    list-style: none;
+    padding: 0;
+  }
+  @media (max-width: 768px) {
+    #keyword-vs-features-checklist li {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
