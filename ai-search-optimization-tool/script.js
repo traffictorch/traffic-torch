@@ -1,4 +1,3 @@
-<script>
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
@@ -8,11 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = document.getElementById('url-input').value.trim();
     if (!url) return;
 
-    // Show compact lazer spinner + progress text below form
     const progressContainer = document.getElementById('analysis-progress');
     const progressText = document.getElementById('progress-text');
     progressContainer.classList.remove('hidden');
-    results.classList.add('hidden'); // hide previous results
+    results.classList.add('hidden');
 
     const progressMessages = [
       'Fetching and parsing page...',
@@ -35,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
-    const interval = setInterval(updateProgress, 1500); // 1.5s per step → ~13.5s total visible progress
+    const interval = setInterval(updateProgress, 1500);
 
     try {
       const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
@@ -47,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
-      // Main content extraction
       let mainText = '';
       const candidates = [doc.querySelector('article'), doc.querySelector('main'), doc.querySelector('[role="main"]'), doc.body];
       const mainEl = candidates.find(el => el && el.textContent.trim().length > 1000) || doc.body;
@@ -58,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
       await new Promise(resolve => setTimeout(resolve, 1200));
       updateProgress();
 
-      // === 8 Module Scoring Logic ===
       const hasBoldInFirst = /<strong>|<b>|<em>/i.test(first300);
       const hasDefinition = /\b(is|means|refers to|defined as)\b/i.test(first300.toLowerCase());
       const hasFAQSchema = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))
@@ -150,43 +146,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const lowScoring = modules.filter(m => m.score < 70).sort((a, b) => a.score - b.score);
       const prioritisedFixes = [];
+
       if (lowScoring.some(m => m.name === "Answerability")) {
-        prioritisedFixes.push({ title: "Add Direct Answer in Opening", emoji: "💡", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
+        prioritisedFixes.push({
+          title: "Add Direct Answer in Opening", emoji: "💡", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
           what: "A clear, bold, quotable answer AI engines can cite directly",
           how: "Add a bold definition or summary in first 150–250 words. Use H2 questions and numbered steps.",
           why: "Answerability is the #1 factor for AI citation and source selection"
         });
       }
       if (lowScoring.some(m => m.name === "EEAT Signals")) {
-        prioritisedFixes.push({ title: "Add Author Bio & Photo", emoji: "👤", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
+        prioritisedFixes.push({
+          title: "Add Author Bio & Photo", emoji: "👤", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
           what: "Visible byline proving who wrote this",
           how: "Headshot + name + bio + credentials + social links",
           why: "Boosts Expertise & Trust by 30–40 points — Google's #1 E-E-A-T signal"
         });
       }
       if (lowScoring.some(m => m.name === "Structured Data")) {
-        prioritisedFixes.push({ title: "Add Article + Person Schema", emoji: "✨", gradient: "from-purple-500/10 border-purple-500", color: "text-purple-600",
+        prioritisedFixes.push({
+          title: "Add Article + Person Schema", emoji: "✨", gradient: "from-purple-500/10 border-purple-500", color: "text-purple-600",
           what: "Structured data that AI engines read directly",
           how: "JSON-LD with @type Article + Person + author link. Add FAQPage if relevant.",
           why: "Triggers rich answers and massive citation boost"
         });
       }
       if (lowScoring.some(m => m.name === "Scannability")) {
-        prioritisedFixes.push({ title: "Boost Scannability with Lists & Tables", emoji: "📋", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
+        prioritisedFixes.push({
+          title: "Boost Scannability with Lists & Tables", emoji: "📋", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
           what: "Easy-to-extract facts via structured formatting",
           how: "Add bullet/numbered lists, data tables, H2/H3 headings, short paragraphs",
           why: "AI prioritizes instantly extractable content"
         });
       }
       if (lowScoring.some(m => m.name === "Unique Insights")) {
-        prioritisedFixes.push({ title: "Add First-Hand Experience", emoji: "🧠", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
+        prioritisedFixes.push({
+          title: "Add First-Hand Experience", emoji: "🧠", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
           what: "Original insights that stand out from generic content",
           how: "Include “I tested”, case studies, personal results, dated experiences",
           why: "Prevents de-duplication and boosts originality"
         });
       }
 
-      // Final delay before showing results
       await new Promise(resolve => setTimeout(resolve, 1500));
       clearInterval(interval);
       progressContainer.classList.add('hidden');
@@ -194,7 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       results.innerHTML = `
         <div class="max-w-5xl mx-auto space-y-16 animate-in">
-          <!-- Big Overall Score -->
           <div class="flex justify-center my-12">
             <div class="relative">
               <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
@@ -217,7 +217,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
 
-          <!-- 8 Module Cards -->
           <div class="grid md:grid-cols-4 gap-6 my-16">
             ${modules.map(m => {
               const borderColor = m.score >= 80 ? 'border-green-500' : m.score >= 60 ? 'border-yellow-500' : 'border-red-500';
@@ -247,7 +246,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }).join('')}
           </div>
 
-          <!-- Prioritised Fixes -->
           ${prioritisedFixes.length > 0 ? `
             <div class="space-y-8">
               <h3 class="text-4xl font-black text-center mb-8">Prioritised AI-Style Fixes</h3>
@@ -267,7 +265,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           ` : ''}
 
-          <!-- Predictive Rank Forecast -->
           <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
             <h3 class="text-4xl font-black text-center">Predictive AI SERP Forecast</h3>
             <p class="text-center text-5xl font-black">${yourScore >= 90 ? 'Top 3' : yourScore >= 80 ? 'Top 5' : yourScore >= 70 ? 'Top 10' : yourScore >= 50 ? 'Page 1 Possible' : 'Page 2+'}</p>
@@ -281,7 +278,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="text-center text-sm italic mt-6">Forecast is heuristic; actual performance varies by query and competition.</p>
           </div>
 
-          <!-- PDF Button -->
           <div class="text-center my-16">
             <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
                     class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
@@ -291,17 +287,45 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
 
-      // Helper functions for module fix details
       function getWhat(name) {
-        const map = { "Answerability": "Direct, quotable answers AI engines can cite verbatim.", "Structured Data": "Machine-readable signals that trigger rich answers.", "EEAT Signals": "Proof of expertise, experience, authority, and trust.", "Scannability": "Easy extraction of key facts via lists, tables, headings.", "Conversational Tone": "Natural human language that matches user queries.", "Readability": "Simple, easy-to-summarize writing.", "Unique Insights": "Original first-hand experience that prevents de-duplication.", "Anti-AI Safety": "Human-like writing patterns that avoid AI-content filters." };
+        const map = {
+          "Answerability": "Direct, quotable answers AI engines can cite verbatim.",
+          "Structured Data": "Machine-readable signals that trigger rich answers.",
+          "EEAT Signals": "Proof of expertise, experience, authority, and trust.",
+          "Scannability": "Easy extraction of key facts via lists, tables, headings.",
+          "Conversational Tone": "Natural human language that matches user queries.",
+          "Readability": "Simple, easy-to-summarize writing.",
+          "Unique Insights": "Original first-hand experience that prevents de-duplication.",
+          "Anti-AI Safety": "Human-like writing patterns that avoid AI-content filters."
+        };
         return map[name] || "Optimization factor for AI search visibility.";
       }
+
       function getHow(name) {
-        const map = { "Answerability": "Bold definitions in first 300 words, FAQ schema, step-by-step lists.", "Structured Data": "Add JSON-LD Article, FAQPage, HowTo, Person schema.", "EEAT Signals": "Author byline with photo, publish/update dates, trusted outbound links.", "Scannability": "Use H2/H3 headings, bullets, tables, short paragraphs.", "Conversational Tone": "Address reader with “you”, share “I/we” experiences, ask questions.", "Readability": "Short sentences, active voice, common words (Flesch 60–70).", "Unique Insights": "Add personal testing, case studies, “In my experience…” statements.", "Anti-AI Safety": "Vary sentence length dramatically, avoid repetitive patterns." };
+        const map = {
+          "Answerability": "Bold definitions in first 300 words, FAQ schema, step-by-step lists.",
+          "Structured Data": "Add JSON-LD Article, FAQPage, HowTo, Person schema.",
+          "EEAT Signals": "Author byline with photo, publish/update dates, trusted outbound links.",
+          "Scannability": "Use H2/H3 headings, bullets, tables, short paragraphs.",
+          "Conversational Tone": "Address reader with “you”, share “I/we” experiences, ask questions.",
+          "Readability": "Short sentences, active voice, common words (Flesch 60–70).",
+          "Unique Insights": "Add personal testing, case studies, “In my experience…” statements.",
+          "Anti-AI Safety": "Vary sentence length dramatically, avoid repetitive patterns."
+        };
         return map[name] || "Implement best practices for this factor.";
       }
+
       function getWhy(name) {
-        const map = { "Answerability": "AI engines quote direct answers — highest citation factor.", "Structured Data": "Triggers rich results and improves citation likelihood.", "EEAT Signals": "Trust is the #1 decider for AI citations.", "Scannability": "AI loves instant extraction from structured elements.", "Conversational Tone": "Matches natural language queries.", "Readability": "Easier to summarize = higher ranking in AI results.", "Unique Insights": "Prevents de-duplication against generic content.", "Anti-AI Safety": "Avoids being filtered as low-quality AI-generated text." };
+        const map = {
+          "Answerability": "AI engines quote direct answers — highest citation factor.",
+          "Structured Data": "Triggers rich results and improves citation likelihood.",
+          "EEAT Signals": "Trust is the #1 decider for AI citations.",
+          "Scannability": "AI loves instant extraction from structured elements.",
+          "Conversational Tone": "Matches natural language queries.",
+          "Readability": "Easier to summarize = higher ranking in AI results.",
+          "Unique Insights": "Prevents de-duplication against generic content.",
+          "Anti-AI Safety": "Avoids being filtered as low-quality AI-generated text."
+        };
         return map[name] || "Improves visibility and citation in AI-powered search.";
       }
 
@@ -313,4 +337,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-</script>
