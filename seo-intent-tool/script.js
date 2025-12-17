@@ -2,28 +2,53 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
 
+  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const url = document.getElementById('url-input').value.trim();
+    if (!url) return;
 
+    // Clear previous results and show centered spinner + progress text
     results.innerHTML = `
-      <div id="loading-bar" class="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-center py-4 font-bold text-lg shadow-2xl z-50">
-        Analyzing page — please wait...
+      <div id="analysis-progress" class="flex flex-col items-center justify-center py-20">
+        <div class="relative w-20 h-20">
+          <svg class="animate-spin" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8" stroke-opacity="0.3"/>
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8"
+                    stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
+          </svg>
+        </div>
+        <p id="progress-text" class="mt-8 text-xl font-medium text-orange-500"></p>
       </div>
     `;
     results.classList.remove('hidden');
 
+    const progressText = document.getElementById('progress-text');
+
     try {
+      // Step 1: Fetch page
+      progressText.textContent = "Analyzing pages for Content Depth...";
+      await sleep(800);
+
       const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable – check URL');
-
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
+
+      // Step 2: Content Depth
+      progressText.textContent = "Analyzing pages for Readability...";
+      await sleep(800);
+
       const text = doc.body?.textContent || '';
       const words = text.split(/\s+/).filter(Boolean).length;
       const sentences = (text.match(/[.!?]+/g) || []).length || 1;
       const syllables = text.split(/\s+/).reduce((a, w) => a + (w.match(/[aeiouy]+/gi) || []).length, 0);
       const readability = Math.round(206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words));
+
+      // Step 3: E-E-A-T Signals
+      progressText.textContent = "Analyzing pages for E-E-A-T Signals...";
+      await sleep(800);
 
       const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
       const schemaTypes = [];
@@ -34,6 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
           schemaTypes.push(...types.filter(Boolean));
         } catch {}
       });
+
+      // Step 4: Intent
+      progressText.textContent = "Analyzing pages for Search Intent...";
+      await sleep(800);
 
       const titleLower = (doc.title || '').toLowerCase();
       let intent = 'Informational';
@@ -49,17 +78,18 @@ document.addEventListener('DOMContentLoaded', () => {
         Authoritativeness: schemaTypes.length > 0 ? 94 : 40,
         Trustworthiness: url.startsWith('https') ? 96 : 60
       };
-
       const eeatAvg = Math.round(Object.values(eeat).reduce((a, b) => a + b) / 4);
       const depthScore = words > 2000 ? 95 : words > 1200 ? 82 : words > 700 ? 65 : 35;
       const readScore = readability > 70 ? 90 : readability > 50 ? 75 : 45;
       const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length * 8) / 5);
 
-      document.getElementById('loading-bar')?.remove();
+      // Final step
+      progressText.textContent = "Generating Report...";
+      await sleep(600);
 
+      // === FULL REPORT OUTPUT (unchanged from your original) ===
       results.innerHTML = `
         <div class="max-w-5xl mx-auto space-y-16">
-
           <!-- Big Score Circle -->
           <div class="flex justify-center my-12">
             <div class="relative">
@@ -82,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
           </div>
-
           <!-- Intent -->
           <div class="text-center mb-12">
             <p class="text-4xl font-black mb-8">
@@ -104,7 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
           </div>
-
           <!-- E-E-A-T Breakdown -->
           <div class="grid md:grid-cols-4 gap-6 my-16">
             ${Object.entries(eeat).map(([key, val]) => `
@@ -127,15 +155,13 @@ document.addEventListener('DOMContentLoaded', () => {
                   <p class="text-green-500 font-bold">How:</p>
                   <p>${key === 'Experience' ? 'Use “I” statements, photos, case studies, dates.' : key === 'Expertise' ? 'Author box with photo, bio, credentials, certifications.' : key === 'Authoritativeness' ? 'High-quality backlinks, press mentions, schema, awards.' : 'HTTPS, contact page, privacy policy, updated dates.'}</p>
                   <p class="text-orange-500 font-bold">Why:</p>
-                  <p>${key === 'Experience' ? 'Google’s #1 E-E-A-T signal in 2025.' : key === 'Expertise' ? 'Experts rank higher — full stop.' : key === 'Authoritativeness' ? 'Strongest long-term ranking factor.' : 'No trust = no traffic from Google.'}</p>
+                  <p>${key === 'Experience' ? 'Google’s #1 E-E-A-T signal.' : key === 'Expertise' ? 'Experts rank higher — full stop.' : key === 'Authoritativeness' ? 'Strongest long-term ranking factor.' : 'No trust = no traffic from Google.'}</p>
                 </div>
               </div>
             `).join('')}
           </div>
-
           <!-- Content Depth + Readability + Schema Detected -->
           <div class="grid md:grid-cols-3 gap-8 my-16">
-            <!-- Content Depth -->
             <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
               <h3 class="text-2xl font-bold mb-4">Content Depth</h3>
               <p class="text-5xl font-black mb-2">${words.toLocaleString()}</p>
@@ -144,11 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="hidden mt-6 space-y-3 text-left text-sm">
                 <p class="text-blue-500 font-bold">What:</p><p>Comprehensive coverage that fully answers the query and beyond.</p>
                 <p class="text-green-500 font-bold">How:</p><p>Add examples, data, screenshots, FAQs, tools, templates, comparisons.</p>
-                <p class="text-orange-500 font-bold">Why:</p><p>Depth is the #1 ranking factor in 2025 — Google rewards “best answer” pages.</p>
+                <p class="text-orange-500 font-bold">Why:</p><p>Depth is the #1 ranking factor — Google rewards “best answer” pages.</p>
               </div>
             </div>
-
-            <!-- Readability -->
             <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
               <h3 class="text-2xl font-bold mb-4">Readability</h3>
               <p class="text-5xl font-black mb-2">${readability}</p>
@@ -160,8 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p class="text-orange-500 font-bold">Why:</p><p>Google tracks bounce & dwell time — readable = longer sessions = higher rankings.</p>
               </div>
             </div>
-
-            <!-- Schema Detected -->
             <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
               <h3 class="text-2xl font-bold mb-4">Schema Detected</h3>
               ${schemaTypes.length ? `
@@ -178,7 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
           </div>
-
           <!-- Competitive Gap Table -->
           <div class="overflow-x-auto my-12">
             <table class="w-full border-collapse border border-gray-300 dark:border-gray-600 text-left">
@@ -186,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <tr class="bg-gray-200 dark:bg-gray-700">
                   <th class="p-4 font-bold">Metric</th>
                   <th class="p-4 font-bold">Current</th>
-                  <th class="p-4 font-bold">Ideal (2025)</th>
+                  <th class="p-4 font-bold">Ideal</th>
                   <th class="p-4 font-bold">Gap</th>
                 </tr>
               </thead>
@@ -198,7 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
               </tbody>
             </table>
           </div>
-
           <!-- Prioritised AI-Style Fixes -->
           <div class="space-y-8">
             <h3 class="text-4xl font-black text-center mb-8">Prioritised AI-Style Fixes</h3>
@@ -222,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h4 class="text-2xl font-bold text-orange-600">Add 1000+ Words of Depth</h4>
                     <p class="mt-4 text-blue-500 font-bold">What:</p><p>Comprehensive coverage that answers every related question</p>
                     <p class="mt-2 text-green-500 font-bold">How:</p><p>Examples, data, screenshots, FAQs, tools, comparisons</p>
-                    <p class="mt-2 text-orange-500 font-bold">Why:</p><p>Depth is the #1 ranking factor in 2025 — Google rewards the best answer</p>
+                    <p class="mt-2 text-orange-500 font-bold">Why:</p><p>Depth is the #1 ranking factor — Google rewards the best answer</p>
                   </div>
                 </div>
               </div>` : ''}
@@ -239,7 +259,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               </div>` : ''}
           </div>
-
           <!-- Predictive Rank Forecast -->
           <div class="text-center mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
             <p class="text-3xl font-medium opacity-80">Predictive Rank Forecast</p>
@@ -254,20 +273,17 @@ document.addEventListener('DOMContentLoaded', () => {
               <p class="font-bold text-orange-300">Why:</p><p>Pages scoring 85+ consistently hit Top 10. 90+ = Top 3 lock. Your gap = ${100-overall} points of untapped traffic.</p>
             </div>
           </div>
-
           <!-- PDF Button -->
           <div class="text-center my-16">
-            <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();" 
+            <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
                  class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
               📄 Save as PDF (with all details)
             </button>
           </div>
-
         </div>
       `;
 
     } catch (err) {
-      document.getElementById('loading-bar')?.remove();
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
     }
   });
