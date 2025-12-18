@@ -72,13 +72,12 @@
 </a>
       <button id="menuToggle" class="md:hidden text-3xl relative left-2 -top-1">☰</button>
       <nav class="hidden md:flex gap-8 text-lg">
-        <a href="/" class="hover:text-orange-400 transition">Home</a>
         <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent 🎯</a>
         <a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search 🔍</a>
         <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content 🤖</a>
         <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk ⚡</a>
         <a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords 📝</a>
-        <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">Competition 🆚</a>
+        <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">Comp 🆚</a>
       </nav>
       <button id="themeToggle" class="px-4 py-2 bg-white/10 rounded-full hover:bg-white/20 transition">
         🌙
@@ -86,7 +85,6 @@
     </div>
 	<div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
   <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
-    <a href="/" class="text-gray-100 hover:text-orange-400 transition">Home</a>
     <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🛡️</a>
     <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
       <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">SEO Intent 🎯</a>
@@ -113,7 +111,58 @@
           Does Google trust your EEAT? Does it answer the searcher’s query?<br class="hidden md:block">
         </p>
         
-<!-- Enhanced How the SEO Intent Tool Works Accordion -->
+
+      
+      <form id="audit-form" class="max-w-2xl mx-auto mb-20 space-y-4">
+  <div class="flex flex-col md:flex-row gap-4">
+    <input
+      type="url"
+      id="url-input"
+      placeholder="https://example.com/your-page"
+      required
+      class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+    />
+    <button
+      type="submit"
+      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+    >
+      Analyze 🎯
+    </button>
+  </div>
+</form>
+
+<!-- Loading indicator - tight spacing, centered, modern spinner -->
+<section id="loading" class="hidden text-center mt-8">
+  <div class="inline-flex flex-col items-center gap-4">
+    <div class="w-20 h-20 border-8 border-gray-200 dark:border-gray-700 border-t-orange-500 dark:border-t-orange-400 rounded-full animate-spin"></div>
+    <p class="text-2xl font-medium text-orange-600 dark:text-orange-400">
+      Analyzing pages for E-E-A-T Signals...
+    </p>
+  </div>
+</section>
+
+<!-- Empty results container - JavaScript will fill this dynamically -->
+<section id="results" class="hidden space-y-16">
+  <!-- All report content (score, modules, gaps, forecast, fixes) goes here via JS -->
+</section>
+
+    <!-- AddToAny BEGIN -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_pinterest"></a>
+<a class="a2a_button_x"></a>
+<a class="a2a_button_reddit"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_copy_link"></a>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+</div>
+	<!-- AddToAny END -->  
+	
+	<!-- Enhanced How the SEO Intent Tool Works Accordion -->
 <div class="max-w-4xl mx-auto my-16">
   <details class="group">
 <summary class="px-5 py-6 text-1xl font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
@@ -184,236 +233,188 @@
     </div>
   </details>
 </div>
-      
-      <form id="audit-form" class="max-w-2xl mx-auto mb-20 space-y-4">
-  <div class="flex flex-col md:flex-row gap-4">
-    <input
-      type="url"
-      id="url-input"
-      placeholder="https://example.com/your-page"
-      required
-      class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
-    />
-    <button
-      type="submit"
-      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
-    >
-      Analyze 🎯
-    </button>
-  </div>
-</form>
-
-<!-- Loading indicator - tight spacing, centered, modern spinner -->
-<section id="loading" class="hidden text-center mt-8">
-  <div class="inline-flex flex-col items-center gap-4">
-    <div class="w-20 h-20 border-8 border-gray-200 dark:border-gray-700 border-t-orange-500 dark:border-t-orange-400 rounded-full animate-spin"></div>
-    <p class="text-2xl font-medium text-orange-600 dark:text-orange-400">
-      Analyzing pages for E-E-A-T Signals...
-    </p>
-  </div>
-</section>
-
-<!-- Empty results container - JavaScript will fill this dynamically -->
-<section id="results" class="hidden space-y-16">
-  <!-- All report content (score, modules, gaps, forecast, fixes) goes here via JS -->
-</section>
-
-    <!-- AddToAny BEGIN -->
-  <div style="display: flex; justify-content: center; margin: 30px 0;">
-  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
-<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
-<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-<a class="a2a_button_pinterest"></a>
-<a class="a2a_button_x"></a>
-<a class="a2a_button_reddit"></a>
-<a class="a2a_button_facebook"></a>
-<a class="a2a_button_copy_link"></a>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
-  </div>
-</div>
-	<!-- AddToAny END -->  
 
 
 <!-- Common On-Page SEO Elements to Check - General Educational Section -->
-<section class="mt-12 bg-gradient-to-br from-purple-50 to-indigo-100 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-2xl shadow-2xl border border-purple-200 dark:border-purple-800 overflow-hidden">
-  <div class="px-8 py-10">
-    <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400">
-      Common On-Page SEO Elements to Check
-    </h2>
-    
-    <p class="text-center text-lg text-gray-700 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-      Here are frequently overlooked on-page SEO elements that can impact rankings, visibility, and user experience across most websites.
-    </p>
-    
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-      <div class="flex items-start gap-4 p-5 bg-white dark:bg-gray-800 rounded-xl shadow-md">
-        <span class="flex-shrink-0 w-10 h-10 mt-0.5 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center">
-          <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-        </span>
-        <div>
-          <p class="font-semibold text-gray-900 dark:text-gray-100">Title Tag Optimized</p>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Primary keyword included, under 60 characters.</p>
+<section class="py-16 px-4 max-w-6xl mx-auto">
+  <div class="bg-gradient-to-br from-purple-50 to-indigo-100 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-3xl shadow-2xl border border-purple-200 dark:border-purple-800 overflow-hidden">
+    <div class="px-8 py-12">
+      <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600">
+        Common On-Page SEO Elements to Check
+      </h2>
+
+      <p class="text-center text-xl text-gray-700 dark:text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+        These frequently overlooked on-page SEO factors directly impact rankings, click-through rates, accessibility, rich snippets, and overall user experience. Fixing them delivers quick wins.
+      </p>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="flex items-start gap-5 p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+          <span class="text-4xl">📝</span>
+          <div>
+            <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Title Tag Optimized</p>
+            <p class="text-gray-700 dark:text-gray-300">Primary keyword near front, under 60 characters, compelling for clicks.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-5 p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+          <span class="text-4xl">🔴</span>
+          <div>
+            <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Meta Description Missing or Weak</p>
+            <p class="text-gray-700 dark:text-gray-300">Add 150–160 char compelling summary with keyword to boost CTR in SERPs.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-5 p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+          <span class="text-4xl">🔴</span>
+          <div>
+            <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Missing or Duplicate H1</p>
+            <p class="text-gray-700 dark:text-gray-300">Use one unique H1 containing main keyword for structure and relevance.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-5 p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+          <span class="text-4xl">🖼️</span>
+          <div>
+            <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Images Without Alt Text</p>
+            <p class="text-gray-700 dark:text-gray-300">Add descriptive, keyword-rich alt attributes for accessibility and image search traffic.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-5 p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+          <span class="text-4xl">✅</span>
+          <div>
+            <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Canonical Tag Present</p>
+            <p class="text-gray-700 dark:text-gray-300">Prevents duplicate content penalties and consolidates ranking signals.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-5 p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+          <span class="text-4xl">🏷️</span>
+          <div>
+            <p class="font-bold text-lg text-gray-900 dark:text-gray-100">No Structured Data (Schema)</p>
+            <p class="text-gray-700 dark:text-gray-300">Implement JSON-LD markup for rich snippets, better visibility, and enhanced SERP features.</p>
+          </div>
         </div>
       </div>
-      
-      <div class="flex items-start gap-4 p-5 bg-white dark:bg-gray-800 rounded-xl shadow-md">
-        <span class="flex-shrink-0 w-10 h-10 mt-0.5 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center">
-          <svg class="w-7 h-7 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
-        </span>
-        <div>
-          <p class="font-semibold text-gray-900 dark:text-gray-100">Meta Description Missing</p>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Add a compelling 150–160 char description with target keyword to boost CTR.</p>
-        </div>
-      </div>
-      
-      <div class="flex items-start gap-4 p-5 bg-white dark:bg-gray-800 rounded-xl shadow-md">
-        <span class="flex-shrink-0 w-10 h-10 mt-0.5 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center">
-          <svg class="w-7 h-7 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
-        </span>
-        <div>
-          <p class="font-semibold text-gray-900 dark:text-gray-100">No H1 Heading</p>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Include one unique H1 with main keyword for better structure and ranking signals.</p>
-        </div>
-      </div>
-      
-      <div class="flex items-start gap-4 p-5 bg-white dark:bg-gray-800 rounded-xl shadow-md">
-        <span class="flex-shrink-0 w-10 h-10 mt-0.5 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center">
-          <svg class="w-7 h-7 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
-        </span>
-        <div>
-          <p class="font-semibold text-gray-900 dark:text-gray-100">Images Lack Alt Text</p>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Add descriptive alt attributes with keywords for accessibility and image search traffic.</p>
-        </div>
-      </div>
-      
-      <div class="flex items-start gap-4 p-5 bg-white dark:bg-gray-800 rounded-xl shadow-md">
-        <span class="flex-shrink-0 w-10 h-10 mt-0.5 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center">
-          <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-        </span>
-        <div>
-          <p class="font-semibold text-gray-900 dark:text-gray-100">Canonical Tag Present</p>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Prevents duplicate content issues effectively.</p>
-        </div>
-      </div>
-      
-      <div class="flex items-start gap-4 p-5 bg-white dark:bg-gray-800 rounded-xl shadow-md">
-        <span class="flex-shrink-0 w-10 h-10 mt-0.5 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center">
-          <svg class="w-7 h-7 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
-        </span>
-        <div>
-          <p class="font-semibold text-gray-900 dark:text-gray-100">No Schema Markup</p>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Implement structured data for rich snippets and improved SERP visibility.</p>
-        </div>
-      </div>
+
+      <p class="text-center mt-12 text-xl font-semibold text-gray-800 dark:text-gray-200 max-w-4xl mx-auto">
+        Small on-page SEO fixes like these often deliver the biggest ranking and traffic improvements — run <strong>Keyword Torch</strong> for an instant full audit with prioritized AI recommendations.
+      </p>
     </div>
-    
-    <p class="text-center mt-10 text-lg font-medium text-gray-700 dark:text-gray-300">
-      Addressing these common on-page SEO elements can significantly improve search engine rankings, click-through rates, and overall site performance.
-    </p>
   </div>
 </section>
 
+<style>
+  @media (max-width: 1024px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 640px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
 <!-- On-Page SEO Checklist - Educational & Actionable (Already General) -->
-<section class="mt-12 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-black rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
-  <div class="px-8 py-10">
-    <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600 dark:from-green-400 dark:to-blue-400">
-      On-Page SEO Checklist for Maximum Ranking Potential
-    </h2>
-    
-    <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-      <!-- Column 1 -->
-      <ul class="space-y-6">
-        <li class="flex items-start gap-4">
-          <span class="flex-shrink-0 w-8 h-8 mt-1 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-          </span>
-          <div>
-            <p class="font-semibold text-lg text-gray-900 dark:text-gray-100">Optimized Title Tag</p>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">Include primary keyword naturally, keep under 60 characters, make it compelling for clicks.</p>
+<section class="py-16 px-4 max-w-6xl mx-auto">
+  <div class="bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-black rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+    <div class="px-8 py-12">
+      <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+        On-Page SEO Checklist for Maximum Ranking Potential
+      </h2>
+
+      <p class="text-center text-xl text-gray-700 dark:text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+        Master these proven on-page SEO best practices to boost search visibility, click-through rates, user experience, and rankings — many deliver quick, measurable wins.
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Left Column -->
+        <div class="space-y-8">
+          <div class="flex items-start gap-5 p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">📝</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Optimized Title Tag</p>
+              <p class="text-gray-700 dark:text-gray-300">Primary keyword near front, under 60 characters, compelling to drive clicks.</p>
+            </div>
           </div>
-        </li>
-        
-        <li class="flex items-start gap-4">
-          <span class="flex-shrink-0 w-8 h-8 mt-1 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-          </span>
-          <div>
-            <p class="font-semibold text-lg text-gray-900 dark:text-gray-100">Compelling Meta Description</p>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">150–160 characters, include target keyword and call-to-action to boost CTR.</p>
+
+          <div class="flex items-start gap-5 p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">📜</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Compelling Meta Description</p>
+              <p class="text-gray-700 dark:text-gray-300">150–160 characters with target keyword and strong call-to-action for higher CTR.</p>
+            </div>
           </div>
-        </li>
-        
-        <li class="flex items-start gap-4">
-          <span class="flex-shrink-0 w-8 h-8 mt-1 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-          </span>
-          <div>
-            <p class="font-semibold text-lg text-gray-900 dark:text-gray-100">Proper Heading Structure (H1–H6)</p>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">One unique H1 with main keyword, logical hierarchy improves crawlability and UX.</p>
+
+          <div class="flex items-start gap-5 p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">🏗️</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Proper Heading Hierarchy (H1–H6)</p>
+              <p class="text-gray-700 dark:text-gray-300">One unique H1 with main keyword, logical structure for crawlability and readability.</p>
+            </div>
           </div>
-        </li>
-        
-        <li class="flex items-start gap-4">
-          <span class="flex-shrink-0 w-8 h-8 mt-1 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-            <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
-          </span>
-          <div>
-            <p class="font-semibold text-lg text-gray-900 dark:text-gray-100">Avoid Keyword Stuffing</p>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">Natural keyword placement only — over-optimization triggers penalties.</p>
+
+          <div class="flex items-start gap-5 p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">⚠️</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Avoid Keyword Stuffing</p>
+              <p class="text-gray-700 dark:text-gray-300">Natural placement only — forced repetition risks penalties and hurts user trust.</p>
+            </div>
           </div>
-        </li>
-      </ul>
-      
-      <!-- Column 2 -->
-      <ul class="space-y-6">
-        <li class="flex items-start gap-4">
-          <span class="flex-shrink-0 w-8 h-8 mt-1 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-          </span>
-          <div>
-            <p class="font-semibold text-lg text-gray-900 dark:text-gray-100">Image Optimization & Alt Text</p>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">Descriptive alt attributes with keywords, compressed files for faster loading.</p>
+        </div>
+
+        <!-- Right Column -->
+        <div class="space-y-8">
+          <div class="flex items-start gap-5 p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">🖼️</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Image Optimization & Alt Text</p>
+              <p class="text-gray-700 dark:text-gray-300">Descriptive, keyword-rich alt attributes + compressed files for speed and accessibility.</p>
+            </div>
           </div>
-        </li>
-        
-        <li class="flex items-start gap-4">
-          <span class="flex-shrink-0 w-8 h-8 mt-1 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-          </span>
-          <div>
-            <p class="font-semibold text-lg text-gray-900 dark:text-gray-100">Internal & External Linking</p>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">Relevant internal links for crawl depth, authoritative external links for trust.</p>
+
+          <div class="flex items-start gap-5 p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">🔗</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Strategic Internal & External Linking</p>
+              <p class="text-gray-700 dark:text-gray-300">Relevant internal links for depth, authoritative outbound links to build topical trust.</p>
+            </div>
           </div>
-        </li>
-        
-        <li class="flex items-start gap-4">
-          <span class="flex-shrink-0 w-8 h-8 mt-1 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-          </span>
-          <div>
-            <p class="font-semibold text-lg text-gray-900 dark:text-gray-100">Mobile-Friendly & Fast Loading</p>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">Core Web Vitals optimized — LCP < 2.5s, responsive design essential.</p>
+
+          <div class="flex items-start gap-5 p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">⚡</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Mobile-Friendly & Lightning Fast</p>
+              <p class="text-gray-700 dark:text-gray-300">Core Web Vitals optimized (LCP < 2.5s), fully responsive design essential for modern ranking.</p>
+            </div>
           </div>
-        </li>
-        
-        <li class="flex items-start gap-4">
-          <span class="flex-shrink-0 w-8 h-8 mt-1 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-          </span>
-          <div>
-            <p class="font-semibold text-lg text-gray-900 dark:text-gray-100">Schema Markup Implementation</p>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">Add relevant structured data (FAQ, Article, etc.) for rich snippets.</p>
+
+          <div class="flex items-start gap-5 p-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">✅</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Schema Markup Implementation</p>
+              <p class="text-gray-700 dark:text-gray-300">Add relevant structured data (Article, FAQ, Product) for rich snippets and enhanced SERP visibility.</p>
+            </div>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
+
+      <p class="text-center mt-12 text-xl font-semibold text-gray-800 dark:text-gray-200 max-w-4xl mx-auto">
+        These on-page SEO best practices form the foundation of high-ranking pages. Run <strong>Keyword Torch</strong> for an instant, AI-powered audit with prioritized fixes tailored to your content.
+      </p>
     </div>
-    
-    <p class="text-center mt-10 text-lg font-medium text-gray-700 dark:text-gray-300">
-      Implement these on-page SEO best practices to improve search visibility, user experience, and rankings.
-    </p>
   </div>
 </section>
+
+<style>
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
 
 <div class="my-16"></div>
 
@@ -499,7 +500,21 @@
 
 </main>
 
-
+    <!-- AddToAny BEGIN -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_pinterest"></a>
+<a class="a2a_button_x"></a>
+<a class="a2a_button_reddit"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_copy_link"></a>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+</div>
+	<!-- AddToAny END --> 
       
       
   </div>

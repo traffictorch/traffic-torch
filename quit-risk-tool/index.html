@@ -93,13 +93,12 @@
 </a>
       <button id="menuToggle" class="md:hidden text-3xl relative left-2 -top-1">☰</button>
       <nav class="hidden md:flex gap-8 text-lg">
-        <a href="/" class="hover:text-orange-400 transition">Home</a>
         <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent 🎯</a>
         <a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search 🔍</a>
         <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content 🤖</a>
         <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk ⚡</a>
         <a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords 📝</a>
-        <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">Competition 🆚</a>
+        <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">Comp 🆚</a>
       </nav>
       <button id="themeToggle" class="px-4 py-2 bg-white/10 rounded-full hover:bg-white/20 transition">
         🌙
@@ -107,7 +106,6 @@
     </div>
 	<div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
   <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
-    <a href="/" class="text-gray-100 hover:text-orange-400 transition">Home</a>
     <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🛡️</a>
     <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
       <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">SEO Intent 🎯</a>
@@ -132,7 +130,49 @@
         Instant UX usability score • Quit risk detection • Educational deep-dive fixes
       </p>
       
-<!-- How it Works Accordion -->
+
+      
+	<form id="audit-form" class="max-w-2xl mx-auto space-y-4">
+  <div class="flex flex-col sm:flex-row gap-4">
+    <input
+      type="url"
+      id="url-input"
+      placeholder="https://example.com/your-page"
+      required
+      class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+    />
+    <button
+      type="submit"
+      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+    >
+      Analyze 
+    </button>
+  </div>
+</form>
+    </div>
+
+    <!-- Results container (JS will populate this) -->
+    <div id="results" class="hidden space-y-16 mt-16">
+      <!-- Your existing report sections go here -->
+    </div>
+    
+          	<!-- AddToAny BEGIN -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_pinterest"></a>
+<a class="a2a_button_x"></a>
+<a class="a2a_button_reddit"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_copy_link"></a>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+</div>
+	<!-- AddToAny END --> 
+	
+	<!-- How it Works Accordion -->
 <div class="max-w-2xl mx-auto my-10">
   <details>
     <summary class="px-6 py-4 text-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full cursor-pointer flex justify-center items-center gap-4 shadow-md hover:shadow-lg transition-shadow">
@@ -179,199 +219,297 @@
     </div>
   </details>
 </div>
-      
-	<form id="audit-form" class="max-w-2xl mx-auto space-y-4">
-  <div class="flex flex-col sm:flex-row gap-4">
-    <input
-      type="url"
-      id="url-input"
-      placeholder="https://example.com/your-page"
-      required
-      class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
-    />
-    <button
-      type="submit"
-      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
-    >
-      Analyze 
-    </button>
-  </div>
-</form>
-    </div>
-
-    <!-- Results container (JS will populate this) -->
-    <div id="results" class="hidden space-y-16 mt-16">
-      <!-- Your existing report sections go here -->
-    </div>
-    
-          	<!-- AddToAny BEGIN -->
-  <div style="display: flex; justify-content: center; margin: 30px 0;">
-  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
-<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
-<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-<a class="a2a_button_pinterest"></a>
-<a class="a2a_button_x"></a>
-<a class="a2a_button_reddit"></a>
-<a class="a2a_button_facebook"></a>
-<a class="a2a_button_copy_link"></a>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
-  </div>
-</div>
-	<!-- AddToAny END --> 
 	
-	<section id="quit-risk-features-checklist" class="py-16 px-4 max-w-5xl mx-auto">
+	<section id="quit-risk-features-checklist" class="py-16 px-4 max-w-6xl mx-auto">
   <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-cyan-600">
     Quit Risk &amp; UX Health Checklist: What This Tool Instantly Analyzes &amp; Fixes
   </h2>
-  <p class="text-center text-xl mb-12 max-w-4xl mx-auto">
-    Client-side bounce rate predictor and UX audit tool delivering a 0–100 Quit Risk Score with readability, mobile readiness, performance proxies, accessibility checks, AI-generated fixes, and predictive engagement forecasts.
+  <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-300 dark:text-gray-300">
+    Free client-side bounce rate predictor and UX audit tool delivering a 0–100 Quit Risk Score with readability, mobile readiness, performance proxies, accessibility checks, AI-generated fixes, and predictive engagement forecasts.
   </p>
 
-  <ul class="space-y-10 text-lg md:text-xl">
-    <li class="flex flex-col md:flex-row items-start gap-6 bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-      <span class="text-5xl flex-shrink-0">❌</span>
-      <div class="flex-1">
-        <p class="font-semibold mb-3">High bounce rates from poor readability and confusing content</p>
-        <p><span class="text-5xl text-green-600 inline-block">✅</span> <strong>Readability &amp; Comprehension Score (0–100)</strong>: Flesch-Kincaid grade level, sentence complexity, paragraph density analysis with simplification recommendations.</p>
+  <div class="grid md:grid-cols-2 gap-10">
+    <!-- Readability -->
+    <div class="challenge-card bg-gradient-to-br from-teal-900/20 to-cyan-900/20 dark:from-teal-900/30 dark:to-cyan-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-start gap-6 mb-6">
+        <span class="text-5xl">😓</span>
+        <p class="text-xl font-semibold">High bounce rates from poor readability?</p>
       </div>
-    </li>
+      <p class="text-lg leading-relaxed">Confusing content, long sentences, dense paragraphs driving readers away fast.</p>
+      <div class="mt-6 flex items-start gap-6">
+        <span class="text-5xl">📖</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">Readability & Comprehension Score</p>
+          <p class="text-lg">Flesch-Kincaid grade level, sentence complexity, paragraph density with simplification recommendations.</p>
+        </div>
+      </div>
+    </div>
 
-    <li class="flex flex-col md:flex-row items-start gap-6 bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-      <span class="text-5xl flex-shrink-0">❌</span>
-      <div class="flex-1">
-        <p class="font-semibold mb-3">Frustrating mobile experience driving users away instantly</p>
-        <p><span class="text-5xl text-green-600 inline-block">✅</span> <strong>Mobile &amp; PWA Readiness Audit</strong>: Viewport checks, touch target size, responsive layout detection, PWA compliance scoring for seamless smartphone use.</p>
+    <!-- Mobile Experience -->
+    <div class="challenge-card bg-gradient-to-br from-cyan-900/20 to-blue-900/20 dark:from-cyan-900/30 dark:to-blue-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-start gap-6 mb-6">
+        <span class="text-5xl">📱</span>
+        <p class="text-xl font-semibold">Frustrating mobile experience?</p>
       </div>
-    </li>
+      <p class="text-lg leading-relaxed">Tiny text, no viewport, poor touch targets causing instant quits on phones.</p>
+      <div class="mt-6 flex items-start gap-6">
+        <span class="text-5xl">✅</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">Mobile & PWA Readiness Audit</p>
+          <p class="text-lg">Viewport checks, touch target size, responsive layout, PWA compliance for seamless smartphone use.</p>
+        </div>
+      </div>
+    </div>
 
-    <li class="flex flex-col md:flex-row items-start gap-6 bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-      <span class="text-5xl flex-shrink-0">❌</span>
-      <div class="flex-1">
-        <p class="font-semibold mb-3">Slow perceived performance causing immediate quits</p>
-        <p><span class="text-5xl text-green-600 inline-block">✅</span> <strong>Performance Proxy Analysis</strong>: Image optimization, font loading, script bloat detection with Core Web Vitals-inspired recommendations.</p>
+    <!-- Performance -->
+    <div class="challenge-card bg-gradient-to-br from-blue-900/20 to-indigo-900/20 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-start gap-6 mb-6">
+        <span class="text-5xl">⏳</span>
+        <p class="text-xl font-semibold">Slow perceived performance?</p>
       </div>
-    </li>
+      <p class="text-lg leading-relaxed">Heavy images, render-blocking scripts, poor font loading making users impatient.</p>
+      <div class="mt-6 flex items-start gap-6">
+        <span class="text-5xl">⚡</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">Performance Proxy Analysis</p>
+          <p class="text-lg">Image optimization, font loading, script bloat detection with Core Web Vitals-inspired recommendations.</p>
+        </div>
+      </div>
+    </div>
 
-    <li class="flex flex-col md:flex-row items-start gap-6 bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-      <span class="text-5xl flex-shrink-0">❌</span>
-      <div class="flex-1">
-        <p class="font-semibold mb-3">Accessibility barriers excluding users and hurting SEO</p>
-        <p><span class="text-5xl text-green-600 inline-block">✅</span> <strong>Accessibility Health Check</strong>: Alt text presence, contrast ratios, heading structure, ARIA landmarks evaluation per WCAG guidelines.</p>
+    <!-- Accessibility -->
+    <div class="challenge-card bg-gradient-to-br from-indigo-900/20 to-purple-900/20 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-start gap-6 mb-6">
+        <span class="text-5xl">♿</span>
+        <p class="text-xl font-semibold">Accessibility barriers excluding users?</p>
       </div>
-    </li>
+      <p class="text-lg leading-relaxed">Missing alt text, low contrast, poor semantics hurting inclusivity and SEO.</p>
+      <div class="mt-6 flex items-start gap-6">
+        <span class="text-5xl">❤️</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">Accessibility Health Check</p>
+          <p class="text-lg">Alt text presence, contrast ratios, heading structure, ARIA landmarks per WCAG guidelines.</p>
+        </div>
+      </div>
+    </div>
 
-    <li class="flex flex-col md:flex-row items-start gap-6 bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-      <span class="text-5xl flex-shrink-0">❌</span>
-      <div class="flex-1">
-        <p class="font-semibold mb-3">Confusing navigation and poor information architecture</p>
-        <p><span class="text-5xl text-green-600 inline-block">✅</span> <strong>Navigation &amp; UX Flow Audit</strong>: Internal linking depth, breadcrumb potential, call-to-action clarity, and scannability scoring.</p>
+    <!-- Navigation & Flow -->
+    <div class="challenge-card bg-gradient-to-br from-purple-900/20 to-pink-900/20 dark:from-purple-900/30 dark:to-pink-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-start gap-6 mb-6">
+        <span class="text-5xl">🗺️</span>
+        <p class="text-xl font-semibold">Confusing navigation & information architecture?</p>
       </div>
-    </li>
+      <p class="text-lg leading-relaxed">Lost visitors due to unclear paths, weak CTAs, or poor scannability.</p>
+      <div class="mt-6 flex items-start gap-6">
+        <span class="text-5xl">🧭</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">Navigation & UX Flow Audit</p>
+          <p class="text-lg">Internal linking depth, breadcrumb potential, call-to-action clarity, and scannability scoring.</p>
+        </div>
+      </div>
+    </div>
 
-    <li class="flex flex-col md:flex-row items-start gap-6 bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-      <span class="text-5xl flex-shrink-0">❌</span>
-      <div class="flex-1">
-        <p class="font-semibold mb-3">No clear prediction of bounce rate or engagement loss</p>
-        <p><span class="text-5xl text-green-600 inline-block">✅</span> <strong>Overall Quit Risk Score (0–100 Gauge)</strong>: Master color-coded summary with estimated bounce rate range and engagement impact forecast.</p>
+    <!-- Overall Score -->
+    <div class="challenge-card bg-gradient-to-br from-pink-900/20 to-rose-900/20 dark:from-pink-900/30 dark:to-rose-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-start gap-6 mb-6">
+        <span class="text-5xl">🚪</span>
+        <p class="text-xl font-semibold">No prediction of bounce rate or engagement loss?</p>
       </div>
-    </li>
+      <p class="text-lg leading-relaxed">Guessing how many visitors will leave without clear metrics.</p>
+      <div class="mt-6 flex items-start gap-6">
+        <span class="text-5xl">✅</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">Overall Quit Risk Score (0–100)</p>
+          <p class="text-lg">Master color-coded summary with estimated bounce rate range and engagement impact forecast.</p>
+        </div>
+      </div>
+    </div>
 
-    <li class="flex flex-col md:flex-row items-start gap-6 bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-      <span class="text-5xl flex-shrink-0">❌</span>
-      <div class="flex-1">
-        <p class="font-semibold mb-3">Generic advice without prioritized UX improvements</p>
-        <p><span class="text-5xl text-green-600 inline-block">✅</span> <strong>AI-Generated Prioritized Fixes</strong>: Actionable recommendations ranked by bounce reduction potential and implementation ease.</p>
+    <!-- AI Fixes -->
+    <div class="challenge-card bg-gradient-to-br from-rose-900/20 to-orange-900/20 dark:from-rose-900/30 dark:to-orange-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-start gap-6 mb-6">
+        <span class="text-5xl">🤔</span>
+        <p class="text-xl font-semibold">Generic advice without prioritized improvements?</p>
       </div>
-    </li>
+      <p class="text-lg leading-relaxed">Overwhelmed by issues with no clear order or impact estimates.</p>
+      <div class="mt-6 flex items-start gap-6">
+        <span class="text-5xl">🔧</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">AI-Generated Prioritized Fixes</p>
+          <p class="text-lg">Actionable recommendations ranked by bounce reduction potential and implementation ease.</p>
+        </div>
+      </div>
+    </div>
 
-    <li class="flex flex-col md:flex-row items-start gap-6 bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-      <span class="text-5xl flex-shrink-0">❌</span>
-      <div class="flex-1">
-        <p class="font-semibold mb-3">Privacy concerns or slow server-based UX tools</p>
-        <p><span class="text-5xl text-green-600 inline-block">✅</span> <strong>Instant Private Client-Side Analysis</strong>: Mobile-friendly reports, dark mode support, educational insights, and PDF export – all in seconds.</p>
+    <!-- Privacy & Speed -->
+    <div class="challenge-card bg-gradient-to-br from-orange-900/20 to-amber-900/20 dark:from-orange-900/30 dark:to-amber-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300 md:col-span-2">
+      <div class="flex items-start gap-6 mb-6">
+        <span class="text-5xl">🔒</span>
+        <p class="text-xl font-semibold">Privacy concerns or slow UX tools?</p>
       </div>
-    </li>
-  </ul>
+      <p class="text-lg leading-relaxed">Data exposure, long waits, or server dependency in traditional tools.</p>
+      <div class="mt-6 flex items-start gap-6">
+        <span class="text-5xl">🛡️</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">Instant Private Client-Side Analysis</p>
+          <p class="text-lg">Mobile-friendly reports, dark mode support, educational insights, PDF export – all in seconds.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
+
+<style>
+  .challenge-card {
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
 
 <section id="quit-risk-seo-checklist" class="py-16 px-4 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
   <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-cyan-600">
     Ultimate Quit Risk &amp; UX Health Checklist
   </h2>
-  <p class="text-center text-xl mb-14 max-w-4xl mx-auto">
-    Instant bounce rate predictor and UX audit checklist. Get a 0–100 Quit Risk Score covering readability, mobile/PWA readiness, performance, accessibility, navigation – plus AI-generated fixes and engagement forecasts.
+  <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-300 dark:text-gray-300">
+    Free instant bounce rate predictor and UX audit checklist. Get a 0–100 Quit Risk Score covering readability, mobile/PWA readiness, performance, accessibility, navigation – plus AI-generated fixes and engagement forecasts.
   </p>
 
   <div class="grid md:grid-cols-2 gap-10">
     <!-- Readability & Content -->
-    <div class="checklist-card bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
-      <h3 class="text-2xl font-bold mb-8 text-teal-700 dark:text-teal-400">
-        Readability &amp; Content Experience
+    <div class="checklist-card bg-gradient-to-br from-teal-900/20 to-cyan-900/20 dark:from-teal-900/30 dark:to-cyan-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+      <h3 class="text-2xl font-bold mb-8 text-teal-700 dark:text-teal-400 flex items-center gap-4">
+        <span class="text-4xl">📖</span> Readability &amp; Content Experience
       </h3>
-      <ul class="space-y-6 text-lg">
-        <li class="flex items-start gap-5"><span class="text-5xl">❌</span> <div>Complex sentences &amp; dense paragraphs causing reader fatigue</div></li>
-        <li class="flex items-start gap-5"><span class="text-5xl text-green-600">✅</span> <div><strong>Readability Scoring</strong>: Flesch-Kincaid grade level, sentence complexity, paragraph length analysis</div></li>
+      <div class="space-y-8 text-lg">
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">😓</span>
+          <div>Complex sentences &amp; dense paragraphs causing reader fatigue</div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">✅</span>
+          <div><strong>Readability Scoring</strong>: Flesch-Kincaid grade level, sentence complexity, paragraph length analysis</div>
+        </div>
 
-        <li class="flex items-start gap-5"><span class="text-5xl">❌</span> <div>Poor scannability with walls of text</div></li>
-        <li class="flex items-start gap-5"><span class="text-5xl text-green-600">✅</span> <div>Heading usage, bullet/list detection, visual break recommendations for higher engagement</div></li>
-      </ul>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">👀</span>
+          <div>Poor scannability with walls of text</div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">📑</span>
+          <div>Heading usage, bullet/list detection, visual break recommendations for higher engagement</div>
+        </div>
+      </div>
     </div>
 
     <!-- Mobile & Performance -->
-    <div class="checklist-card bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
-      <h3 class="text-2xl font-bold mb-8 text-cyan-700 dark:text-cyan-400">
-        Mobile Readiness &amp; Performance
+    <div class="checklist-card bg-gradient-to-br from-cyan-900/20 to-blue-900/20 dark:from-cyan-900/30 dark:to-blue-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+      <h3 class="text-2xl font-bold mb-8 text-cyan-700 dark:text-cyan-400 flex items-center gap-4">
+        <span class="text-4xl">📱</span> Mobile Readiness &amp; Performance
       </h3>
-      <ul class="space-y-6 text-lg">
-        <li class="flex items-start gap-5"><span class="text-5xl">❌</span> <div>Pinch-zoom disabled or tiny touch targets</div></li>
-        <li class="flex items-start gap-5"><span class="text-5xl text-green-600">✅</span> <div><strong>Mobile &amp; PWA Audit</strong>: Viewport meta, touch-friendly elements, responsive design checks</div></li>
+      <div class="space-y-8 text-lg">
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">❌</span>
+          <div>Pinch-zoom disabled or tiny touch targets frustrating users</div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">✅</span>
+          <div><strong>Mobile &amp; PWA Audit</strong>: Viewport meta, touch-friendly elements, responsive design checks</div>
+        </div>
 
-        <li class="flex items-start gap-5"><span class="text-5xl">❌</span> <div>Heavy images, unoptimized fonts, render-blocking scripts</div></li>
-        <li class="flex items-start gap-5"><span class="text-5xl text-green-600">✅</span> <div><strong>Performance Proxy Checks</strong>: Image optimization flags, font loading strategy, script bloat detection</div></li>
-      </ul>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">⏳</span>
+          <div>Heavy images, unoptimized fonts, render-blocking scripts slowing load</div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">⚡</span>
+          <div><strong>Performance Proxy Checks</strong>: Image optimization flags, font loading strategy, script bloat detection</div>
+        </div>
+      </div>
     </div>
 
     <!-- Accessibility & Navigation -->
-    <div class="checklist-card bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
-      <h3 class="text-2xl font-bold mb-8 text-emerald-700 dark:text-emerald-400">
-        Accessibility &amp; Navigation Flow
+    <div class="checklist-card bg-gradient-to-br from-emerald-900/20 to-teal-900/20 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+      <h3 class="text-2xl font-bold mb-8 text-emerald-700 dark:text-emerald-400 flex items-center gap-4">
+        <span class="text-4xl">♿</span> Accessibility &amp; Navigation Flow
       </h3>
-      <ul class="space-y-6 text-lg">
-        <li class="flex items-start gap-5"><span class="text-5xl">❌</span> <div>Missing alt text, low contrast, improper heading order</div></li>
-        <li class="flex items-start gap-5"><span class="text-5xl text-green-600">✅</span> <div><strong>WCAG Accessibility Audit</strong>: Contrast ratios, alt attributes, semantic landmarks, ARIA usage</div></li>
+      <div class="space-y-8 text-lg">
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">❌</span>
+          <div>Missing alt text, low contrast, improper heading order excluding users</div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">❤️</span>
+          <div><strong>WCAG Accessibility Audit</strong>: Contrast ratios, alt attributes, semantic landmarks, ARIA usage</div>
+        </div>
 
-        <li class="flex items-start gap-5"><span class="text-5xl">❌</span> <div>Confusing internal linking &amp; unclear calls-to-action</div></li>
-        <li class="flex items-start gap-5"><span class="text-5xl text-green-600">✅</span> <div><strong>Navigation &amp; UX Flow Analysis</strong>: Link depth, CTA clarity, breadcrumb potential scoring</div></li>
-      </ul>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">🗺️</span>
+          <div>Confusing internal linking &amp; unclear calls-to-action</div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">🧭</span>
+          <div><strong>Navigation &amp; UX Flow Analysis</strong>: Link depth, CTA clarity, breadcrumb potential scoring</div>
+        </div>
+      </div>
     </div>
 
     <!-- Master Score & Outcomes -->
-    <div class="checklist-card bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 hover:shadow-3xl hover:-translate-y-3 transition-all duration-300 md:col-span-2">
-      <h3 class="text-2xl font-bold mb-8 text-cyan-700 dark:text-cyan-400 text-center">
-        Master Score &amp; Actionable Results
+    <div class="checklist-card bg-gradient-to-br from-cyan-900/20 to-teal-900/20 dark:from-cyan-900/30 dark:to-teal-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300 md:col-span-2">
+      <h3 class="text-2xl font-bold mb-8 text-cyan-700 dark:text-cyan-400 text-center flex items-center justify-center gap-4">
+        <span class="text-4xl">📊</span> Master Score &amp; Actionable Results
       </h3>
-      <ul class="space-y-6 text-lg max-w-4xl mx-auto">
-        <li class="flex items-start gap-5"><span class="text-5xl">❌</span> <div>No prediction of bounce rate or user drop-off risk</div></li>
-        <li class="flex items-start gap-5"><span class="text-5xl text-green-600">✅</span> <div><strong>Overall Quit Risk Score (0–100)</strong>: Color-coded gauge with estimated bounce rate range</div></li>
+      <div class="space-y-8 text-lg max-w-4xl mx-auto">
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">🚪</span>
+          <div>No prediction of bounce rate or user drop-off risk</div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">✅</span>
+          <div><strong>Overall Quit Risk Score (0–100)</strong>: Color-coded gauge with estimated bounce rate range</div>
+        </div>
 
-        <li class="flex items-start gap-5"><span class="text-5xl">❌</span> <div>Generic suggestions without impact prioritization</div></li>
-        <li class="flex items-start gap-5"><span class="text-5xl text-green-600">✅</span> <div><strong>AI-Prioritized Fixes</strong>: Recommendations ranked by bounce reduction potential + implementation ease</div></li>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">🤔</span>
+          <div>Generic suggestions without impact prioritization</div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">🔧</span>
+          <div><strong>AI-Prioritized Fixes</strong>: Recommendations ranked by bounce reduction potential + implementation ease</div>
+        </div>
 
-        <li class="flex items-start gap-5"><span class="text-5xl">❌</span> <div>Slow or privacy-invasive UX tools</div></li>
-        <li class="flex items-start gap-5"><span class="text-5xl text-green-600">✅</span> <div><strong>Instant Private Client-Side Report</strong>: Mobile-friendly dark mode, educational insights, PDF export</div></li>
-      </ul>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">🔒</span>
+          <div>Slow or privacy-invasive UX tools</div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">🛡️</span>
+          <div><strong>Instant Private Client-Side Report</strong>: Mobile-friendly dark mode, educational insights, PDF export</div>
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="text-center mt-16">
-    <p class="text-2xl font-semibold max-w-3xl mx-auto">
-      Run the quit risk &amp; UX health checklist to lower bounce rates and boost engagement in seconds.
+    <p class="text-2xl font-semibold max-w-3xl mx-auto text-gray-300 dark:text-gray-300">
+      Run the quit risk &amp; UX health checklist now – lower bounce rates and boost engagement in seconds.
     </p>
   </div>
 </section>
 
-
+<style>
+  .checklist-card {
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
   
   
       <!-- UX Tools Section -->
@@ -472,7 +610,21 @@
 
   </main>
 
-
+        	<!-- AddToAny BEGIN -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_pinterest"></a>
+<a class="a2a_button_x"></a>
+<a class="a2a_button_reddit"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_copy_link"></a>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+</div>
+	<!-- AddToAny END --> 
 
   <!-- Footer (exact match to gold standard) -->
   <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">
