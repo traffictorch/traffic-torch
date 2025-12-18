@@ -242,3 +242,68 @@ html.light .score-circle circle.bg {
     padding-right: 1rem !important;
   }
 }
+
+
+/* Why Traffic Torch section – perfect centering on all devices */
+#traffic-torch-features .grid {
+  width: 100%;
+  justify-content: center;
+}
+
+@media (max-width: 767px) {
+  #traffic-torch-features .grid {
+    grid-template-columns: 1fr;
+    max-width: 420px; /* Optional: constrains card width on mobile for better readability */
+  }
+  
+  #traffic-torch-features .challenge-card {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Ensure the full-width bottom card stays centered */
+#traffic-torch-features .md\\:col-span-2 {
+  justify-self: center;
+  width: 100%;
+  max-width: 800px; /* Keeps it from stretching too wide on large screens */
+}
+
+
+/* SEO UX Checklist section – perfect mobile layout & no overflow */
+#seo-ux-checklist .grid {
+  width: 100%;
+  justify-content: center;
+}
+
+#seo-ux-checklist .checklist-card {
+  width: 100%;
+  overflow: hidden;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+#seo-ux-checklist .checklist-card div {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px) {
+  #seo-ux-checklist .grid {
+    grid-template-columns: 1fr !important;
+    max-width: 420px; /* Optimal readable width on mobile */
+    padding: 0 1rem;
+  }
+
+  #seo-ux-checklist .checklist-card {
+    padding: 1.5rem !important;
+  }
+}
+
+/* Constrain container padding on small screens */
+@media (max-width: 640px) {
+  #seo-ux-checklist {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
