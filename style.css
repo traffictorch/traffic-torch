@@ -6,6 +6,10 @@
   --track: rgba(255,255,255,0.15);
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
 html.light {
   --bg-gradient: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1);
   --accent: #ea580c;
@@ -221,3 +225,20 @@ html.light .score-circle circle.bg {
     .challenge-card {
     border: 1px solid rgba(255,255,255,0.1);
   }
+  
+  /* Tools Grid – Fully responsive, no horizontal overflow on mobile */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 0 1rem;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .tools-grid {
+    grid-template-columns: 1fr;
+    padding: 0 0.5rem;
+    gap: 1.5rem;
+  }
+}
