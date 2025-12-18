@@ -222,8 +222,7 @@
     </div>
 	</div>
 	</div>
-	
-	      <!-- Add more tools here in the future using the same card pattern -->
+
       
             	<!-- AddToAny BEGIN -->
   <div style="display: flex; justify-content: center; margin: 30px 0;">
@@ -362,6 +361,7 @@
         </div>
       </a>
     </div>
+    
 	
       
 <section id="traffic-torch-features" class="py-16 px-4 max-w-6xl mx-auto">
@@ -471,7 +471,20 @@
   </div>
 </section>
 
-
+    <style>
+  details[open] summary ~ * {
+    animation: sweep 0.5s ease-in-out;
+  }
+  @keyframes sweep {
+    0% { opacity: 0; transform: translateY(-10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style> 
 
 <section id="seo-ux-checklist" class="py-16 px-4 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
   <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
@@ -603,7 +616,16 @@
   </div>
 </section>
 
-
+<style>
+  .challenge-card {
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
 
 <!-- Why Traffic Torch Matters Accordion -->
 <div class="max-w-4xl mx-auto my-20">
