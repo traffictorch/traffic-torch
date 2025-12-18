@@ -242,3 +242,15 @@ html.light .score-circle circle.bg {
     gap: 1.5rem;
   }
 }
+
+.container, .max-w-5xl, .max-w-6xl, .max-w-7xl, .max-w-4xl {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .px-6 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
