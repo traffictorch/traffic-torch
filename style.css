@@ -245,47 +245,34 @@ html.light .score-circle circle.bg {
 }
 
 
-/* Universal fix for all marketing card grids – no horizontal overflow on iPhone */
-.grid.md\\:grid-cols-2 {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2.5rem;
-  width: 100%;
-  max-width: 100%;
-  padding: 0 1rem;
-  box-sizing: border-box;
-}
-
-@media (min-width: 768px) {
-  .grid.md\\:grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0;
-  }
-}
-
-/* Force text wrapping inside cards – prevents long lines pushing width */
-.challenge-card,
-.checklist-card {
-  width: 100%;
-  overflow: hidden;
-  word-wrap: break-word;
-  hyphens: auto;
-}
-
-.challenge-card > div,
-.checklist-card > div,
-.challenge-card p,
-.checklist-card p {
-  word-break: break-word;
-  overflow-wrap: anywhere;
-}
-
-/* Reduce internal padding on mobile only */
+/* Mobile-only safety for challenge & checklist cards – fixes iPhone overflow without touching desktop */
 @media (max-width: 767px) {
+  /* Force single column only on mobile */
+  .grid.md\\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Constrain container padding */
+  #traffic-torch-features,
+  #seo-ux-checklist {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Reduce card padding + force text wrap */
   .challenge-card,
   .checklist-card {
     padding: 1.5rem !important;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .challenge-card > div,
+  .checklist-card > div,
+  .challenge-card p,
+  .checklist-card p {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    hyphens: auto;
   }
 }
