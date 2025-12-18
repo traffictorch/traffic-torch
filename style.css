@@ -217,4 +217,7 @@ html.light .score-circle circle.bg {
     .checklist-category {
       padding: 6;
     }
+  
+    .challenge-card {
+    border: 1px solid rgba(255,255,255,0.1);
   }
