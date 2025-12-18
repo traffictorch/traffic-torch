@@ -283,38 +283,3 @@ html.light .checklist-card h3 {
 }
 
 
-/* Gentle text wrapping for marketing cards – prevents overflow without breaking words oddly */
-.challenge-card p,
-.checklist-card p,
-.challenge-card div > div,
-.checklist-card div > div {
-  overflow-wrap: break-word; /* Breaks long words only if absolutely needed */
-  word-wrap: break-word; /* Legacy support */
-}
-
-/* Ensure flex items don't shrink too much */
-.challenge-card .flex > div,
-.checklist-card .flex > div {
-  min-width: 0; /* Allows flex children to shrink below content size – key for wrapping */
-}
-
-/* Extra safety for the longest lines */
-@media (max-width: 767px) {
-  .challenge-card .text-5xl,
-  .checklist-card .text-5xl {
-    font-size: 3rem !important; /* 48px – smaller but still impactful */
-  }
-
-  .challenge-card .text-4xl,
-  .checklist-card .text-4xl {
-    font-size: 2.5rem !important;
-  }
-}
-
-
-
-/* Ensure cards never exceed container width */
-.challenge-card,
-.checklist-card {
-  overflow: hidden; /* Clips any tiny overflow from shadows/emojis */
-}
