@@ -283,30 +283,31 @@ html.light .checklist-card h3 {
 }
 
 
-/* Fix long text overflow in marketing cards – iPhone safe, desktop untouched */
-.challenge-card .flex > div,
-.checklist-card .flex > div,
+/* Gentle text wrapping for marketing cards – prevents overflow without breaking words oddly */
 .challenge-card p,
 .checklist-card p,
-.challenge-card strong,
-.checklist-card strong {
-  word-break: break-word;
-  overflow-wrap: anywhere;
-  hyphens: auto;
+.challenge-card div > div,
+.checklist-card div > div {
+  overflow-wrap: break-word; /* Breaks long words only if absolutely needed */
+  word-wrap: break-word; /* Legacy support */
+}
+
+/* Ensure flex items don't shrink too much */
+.challenge-card .flex > div,
+.checklist-card .flex > div {
+  min-width: 0; /* Allows flex children to shrink below content size – key for wrapping */
 }
 
 /* Extra safety for the longest lines */
-.challenge-card div,
-.checklist-card div {
-  width: 100%;
-}
-
 @media (max-width: 767px) {
   .challenge-card .text-5xl,
-  .checklist-card .text-5xl,
+  .checklist-card .text-5xl {
+    font-size: 3rem !important; /* 48px – smaller but still impactful */
+  }
+
   .challenge-card .text-4xl,
   .checklist-card .text-4xl {
-    font-size: 3.5rem !important; /* ~56px instead of 80px/64px */
+    font-size: 2.5rem !important;
   }
 }
 
@@ -315,7 +316,5 @@ html.light .checklist-card h3 {
 /* Ensure cards never exceed container width */
 .challenge-card,
 .checklist-card {
-  width: 100% !important;
-  max-width: 100%;
-  overflow: hidden;
+  overflow: hidden; /* Clips any tiny overflow from shadows/emojis */
 }
