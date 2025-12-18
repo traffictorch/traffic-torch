@@ -226,6 +226,36 @@ html.light .score-circle circle.bg {
     border: 1px solid rgba(255,255,255,0.1);
   }
   
+  
+  /* Improve text contrast in light mode – target the pale gray descriptions */
+html.light .text-gray-300,
+html.light .text-gray-400,
+html.light p.text-gray-300,
+html.light p.text-gray-400 {
+  color: #374151 !important; /* gray-700 – dark enough, readable on white/light backgrounds */
+}
+
+/* Specifically target tool card descriptions and challenge card paragraphs */
+html.light .tool-card p,
+html.light .challenge-card p,
+html.light .checklist-card p {
+  color: #1f2937 !important; /* gray-800 – even stronger for smaller text */
+}
+
+/* Ensure headings and main content stay properly dark */
+html.light h1, html.light h2, html.light h3, html.light h4, html.light p {
+  color: #111827; /* gray-900 */
+}
+
+/* Subtitles and secondary text – safe medium contrast */
+html.light .text-xl, 
+html.light .text-lg,
+html.light .text-base {
+  color: #4b5563; /* gray-600 */
+}
+
+
+  
   /* Tools Grid – Fully responsive, no horizontal overflow on mobile */
 .tools-grid {
   display: grid;
