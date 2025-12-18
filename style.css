@@ -10,6 +10,12 @@ html, body {
   overflow-x: hidden;
 }
 
+/* Ensure no element can force horizontal scroll */
+* {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 html.light {
   --bg-gradient: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1);
   --accent: #ea580c;
