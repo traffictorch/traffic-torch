@@ -281,3 +281,41 @@ html.light .checklist-card strong {
 html.light .checklist-card h3 {
   color: inherit;
 }
+
+
+/* Fix long text overflow in marketing cards – iPhone safe, desktop untouched */
+.challenge-card .flex > div,
+.checklist-card .flex > div,
+.challenge-card p,
+.checklist-card p,
+.challenge-card strong,
+.checklist-card strong {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+/* Extra safety for the longest lines */
+.challenge-card div,
+.checklist-card div {
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  .challenge-card .text-5xl,
+  .checklist-card .text-5xl,
+  .challenge-card .text-4xl,
+  .checklist-card .text-4xl {
+    font-size: 3.5rem !important; /* ~56px instead of 80px/64px */
+  }
+}
+
+
+
+/* Ensure cards never exceed container width */
+.challenge-card,
+.checklist-card {
+  width: 100% !important;
+  max-width: 100%;
+  overflow: hidden;
+}
