@@ -11,15 +11,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Essential for real <lastmod> dates from git history
+          fetch-depth: 0  # Required for accurate git-based <lastmod> dates
 
       - name: Generate sitemap.xml
-        uses: cicirello/generate-sitemap@latest
+        uses: cicirello/generate-sitemap@v1
         with:
-          base-url-path: https://traffictorch.com  # Your live domain (update if needed)
-          drop-html-extension: true               # Clean URLs (no .html) – GitHub Pages supports this
-          include-file-extensions: html pdf       # Scans HTML and PDF files
-          exclude-paths: node_modules src dist _site  # Excludes common source/build folders
+          base-url-path: https://traffictorch.com/  # Your live domain (trailing slash required)
+          path-to-root: .                           # Site files at repository root
+          drop-html-extension: true                 # Clean URLs without .html (GitHub Pages handles this)
+          include-html: true
+          include-pdf: true
+          exclude-paths: node_modules src dist _site  # Exclude source/build folders
 
       - name: Commit and push updated sitemap.xml if changed
         uses: stefanzweifel/git-auto-commit-action@v5
