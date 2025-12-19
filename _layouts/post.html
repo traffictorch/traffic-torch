@@ -90,10 +90,12 @@
   </header>
 
     <main class="container mx-auto px-6 py-12 max-w-6xl">
-<article class="prose dark:prose-invert max-w-none bg-white/5 dark:bg-black/30 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-white/10">
-    <h1 class="text-5xl font-black mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">{{ page.title }}</h1>
-    <p class="text-sm opacity-70 mb-8">Published on: {{ page.date | date: "%B %d, %Y" }}</p>
-    {{ content }}
+<article class="bg-white/10 dark:bg-black/40 backdrop-blur-lg rounded-3xl p-10 md:p-16 border-2 border-white/20 dark:border-white/10 shadow-2xl">
+    <h1 class="text-5xl md:text-6xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">{{ page.title }}</h1>
+    <p class="text-base opacity-80 mb-12">Published on: {{ page.date | date: "%B %d, %Y" }}</p>
+    <div class="prose dark:prose-invert max-w-none text-lg leading-relaxed opacity-95">
+        {{ content }}
+    </div>
 </article>
 <section class="mt-12 text-center">
     <h2 class="text-2xl font-bold mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Share this post</h2>
