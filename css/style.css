@@ -1,11 +1,28 @@
-.radar-chart { max-width: 600px; margin: auto; }
+/* Radar Chart Styles */
+.radar-chart { width: 100% !important; height: auto !important; }
 
-.preview-thumbnail { border: 1px solid var(--border-color); width: 375px; height: 667px; overflow: hidden; position: relative; }
+/* Day/Night Variables */
+:root {
+  --chart-grid-light: rgba(0,0,0,0.1);
+  --chart-grid-dark: rgba(255,255,255,0.1);
+  --chart-text-light: #333;
+  --chart-text-dark: #eee;
+}
+.light {
+  --chart-grid: var(--chart-grid-light);
+  --chart-text: var(--chart-text-light);
+}
+.dark {
+  --chart-grid: var(--chart-grid-dark);
+  --chart-text: var(--chart-text-dark);
+}
 
-.badge { background: var(--primary-color); color: white; padding: 8px; border-radius: 4px; }
-
-.tooltip { position: absolute; background: var(--tooltip-bg); padding: 10px; border-radius: 4px; opacity: 0; transition: opacity 0.3s, transform 0.3s; } .info-icon:hover + .tooltip { opacity: 1; transform: translateY(-10px); }
-
-.tooltip { opacity: 0; transform: translateY(10px); transition: all 0.3s ease-in-out; } .info-icon:hover + .tooltip, .tooltip.active { opacity: 1; transform: translateY(0); }
-
-@keyframes bounce { 0% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  #visual-health-dashboard {
+    grid-template-columns: 1fr;
+  }
+  canvas#healthRadarChart {
+    height: 300px !important;
+  }
+}

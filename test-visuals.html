@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+ 
   <!-- Optimized SEO Title & Description -->
   <title>Traffic Torch – AI, SEO &amp; UX Tools: Instant Audits, Fixes &amp; Forecasts</title>
   <meta name="description" content="AI-powered SEO &amp; UX tools: Instant 0–100 scores for on-page optimization, competitive gaps, AI search visibility, content quality, bounce prediction, keyword research – all mobile-friendly." />
-  
-  
-  
+ 
   <meta name="color-scheme" content="dark light">
   <link rel="icon" href="/favicon.ico" />
   <link rel="manifest" href="/manifest.json" />
@@ -25,13 +23,10 @@
     document.documentElement.classList.add(theme);
   })();
   </script>
-  
+ 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
-  
+ 
 </head>
-
 <body class="min-h-screen">
   <!-- Header with Hamburger (unchanged – perfect as-is) -->
    <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
@@ -56,7 +51,7 @@
         🌙
       </button>
     </div>
-	<div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+<div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
   <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
     <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🛡️</a>
     <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
@@ -71,9 +66,7 @@
     <a href="/news.html" class="text-gray-100 hover:text-orange-400 transition">News</a>
   </nav>
 </div>
-
   </header>
-
   <!-- NEW: All Tools Dashboard (replaces old hero + small grid) -->
     <div class="text-center mb-16">
       <h1 class="text-3xl md:text-4xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
@@ -83,11 +76,10 @@
         Instant SEO + UX + Ai audits
       </p>
     </div>
-    
+   
   <!-- SEO UX TOOL -->
 <main class="container mx-auto px-6 py-4 max-w-5xl">
-
-	<form id="url-form" class="flex flex-col md:flex-row gap-4 max-w-3xl mx-auto mb-12 items-center">
+<form id="url-form" class="flex flex-col md:flex-row gap-4 max-w-3xl mx-auto mb-12 items-center">
   <input
     type="url"
     id="url-input"
@@ -102,7 +94,6 @@
     Analyze 💡
   </button>
 </form>
-
 <div id="loader" class="hidden fixed inset-x-0 bottom-0 z-50">
   <div id="progress-bar" class="h-12 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 relative overflow-hidden">
     <div class="absolute inset-0 bg-gradient-to-r from-orange-600 via-pink-600 to-purple-700 opacity-50 animate-pulse"></div>
@@ -111,9 +102,6 @@
     </div>
   </div>
 </div>
-
-    <div id="loader" class="hidden text-center py-20 text-2xl">Analising…</div>
-
     <div id="results" class="hidden grid md:grid-cols-2 lg:grid-cols-4 gap-8">
         <section id="seo-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
             <div class="score-circle" data-score="0">
@@ -127,7 +115,6 @@
             <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
             <div class="details hidden mt-6 text-left"><ul id="seo-issues" class="space-y-4"></ul></div>
         </section>
-
         <section id="mobile-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
             <div class="score-circle" data-score="0">
                 <svg viewBox="0 0 120 120">
@@ -140,7 +127,6 @@
             <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
             <div class="details hidden mt-6 text-left"><ul id="mobile-issues" class="space-y-4"></ul></div>
         </section>
-
         <section id="perf-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
             <div class="score-circle" data-score="0">
                 <svg viewBox="0 0 120 120">
@@ -153,7 +139,6 @@
             <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
             <div class="details hidden mt-6 text-left"><ul id="perf-issues" class="space-y-4"></ul></div>
         </section>
-
         <section id="access-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
             <div class="score-circle" data-score="0">
                 <svg viewBox="0 0 120 120">
@@ -165,35 +150,35 @@
             </div>
             <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
             <div class="details hidden mt-6 text-left"><ul id="access-issues" class="space-y-4"></ul></div>
-            
-            <canvas id="healthRadarChart" class="radar-chart"></canvas>
-            <div id="mobilePreview" class="preview-thumbnail"></div>
-            <button id="generateBadge">Generate Shareable Badge</button>
-            <div id="badgeOutput"></div>
-            <span class="metric" data-tooltip="technical-seo">Technical SEO: 85/100 <i class="info-icon"></i></span>
-            
-            
-            <img src="data:image/svg+xml;base64,...">
         </section>
     </div>
-	</div>
-	</div>
-
-
-    
-    
+    <section id="visual-health-dashboard" class="mt-16 grid gap-8 md:grid-cols-2">
+      <!-- Radar Chart Card -->
+      <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl p-8">
+        <h2 class="text-2xl font-bold mb-6 text-center">360° Health Radar</h2>
+        <canvas id="healthRadarChart" class="mx-auto max-w-full" height="400"></canvas>
+        <div id="radar-details" class="mt-6 text-center opacity-80"></div>
+      </div>
+      <!-- Placeholder for other visuals like mobile preview, badge, tooltips – add later -->
+      <div id="mobilePreview" class="preview-thumbnail hidden"></div>
+      <button id="generateBadge" class="hidden">Generate Shareable Badge</button>
+      <div id="badgeOutput" class="hidden"></div>
+      <span class="metric hidden" data-tooltip="technical-seo">Technical SEO: 85/100 <i class="info-icon"></i></span>
+    </section>
   </main>
-  
  
-
   <!-- Load JS last for speed -->
-  <script src="/main.js" type="module"></script>
-  <script src="/seo-ux-tool/script.js" defer></script>
   <script src="/js/main.js" type="module"></script>
+  <script src="/seo-ux-tool/script.js" defer></script>
   <script type="module" src="js/modules/home-enhancements.js"></script>
   <script type="module" src="js/modules/visual-enhancements.js"></script>
-
-
-  
+  <script type="module">
+    import { init as initRadar } from './js/modules/radar-chart.js';
+    // Simulate results ready for testing (replace with real analysis trigger later)
+    setTimeout(() => {
+      document.getElementById('results').classList.remove('hidden'); // Show results for context
+      initRadar({});
+    }, 1000);
+  </script>
 </body>
 </html>
