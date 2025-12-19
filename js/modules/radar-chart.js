@@ -14,23 +14,22 @@ const dimensions = [
 ];
 
 function getColor(score) {
-  if (score >= 80) return 'rgb(34, 197, 94)'; // green-500
-  if (score >= 50) return 'rgb(234, 179, 8)';  // yellow-500
-  return 'rgb(239, 68, 68)';                  // red-500
+  if (score >= 80) return 'rgb(34, 197, 94)';
+  if (score >= 50) return 'rgb(234, 179, 8)';
+  return 'rgb(239, 68, 68)';
 }
 
 export function init(analysisData = {}) {
-  console.log('Radar chart init called', analysisData);
+  console.log('Radar chart init called');
 
   const canvas = document.getElementById('healthRadarChart');
   const detailsEl = document.getElementById('radar-details');
   if (!canvas || !detailsEl) {
-    console.error('Radar chart canvas or details element not found!');
+    console.error('Canvas or details element missing');
     return;
   }
 
-  // Mock data for testing – varied scores
-  const scores = dimensions.map(() => Math.floor(Math.random() * 61) + 30); // 30-90 range
+  const scores = dimensions.map(() => Math.floor(Math.random() * 61) + 30);
   const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
 
   const data = {
@@ -57,7 +56,8 @@ export function init(analysisData = {}) {
     data: data,
     options: {
       responsive: true,
-      maintainAspectRatio: false,
+      maintainAspectRatio: true,
+      aspectRatio: 1, // Perfect square radar, scales beautifully on mobile
       animation: { duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1800 },
       plugins: { legend: { display: false } },
       scales: {
@@ -83,11 +83,11 @@ export function init(analysisData = {}) {
 
   if (radarChart) radarChart.destroy();
   radarChart = new Chart(canvas, config);
-  console.log('Radar chart rendered successfully');
+  console.log('Radar chart rendered');
 
   showOverall(overallScore);
 
-  // Theme change observer
+  // Theme observer (updates colors on toggle)
   const observer = new MutationObserver(() => {
     if (!radarChart) return;
     const newDark = document.documentElement.classList.contains('dark');
@@ -100,9 +100,6 @@ export function init(analysisData = {}) {
     radarChart.update('none');
   });
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-
-  // Resize handler for perfect mobile scaling
-  window.addEventListener('resize', () => radarChart?.resize());
 }
 
 function showOverall(score) {
@@ -122,6 +119,6 @@ function showDetailCard(dim, score, overall) {
     <p class="text-3xl font-bold ${colorClass}">${dim.label}: ${score}/100</p>
     <p class="mt-6 text-lg leading-relaxed">${dim.lesson}</p>
     <p class="mt-6 opacity-80">Top fix: Dive into the dedicated module for AI suggestions.</p>
-    <button class="mt-6 px-6 py-3 bg-orange-500 rounded-full hover:bg-orange-600 font-bold" onclick="showOverall(${overall})">Back to Overview</button>
+    <button class="mt-6 px-6 py-3 bg-orange-500 rounded-full hover:bg-orange-600 font-bold" onclick="(() => { showOverall(${overall}); })()">Back to Overview</button>
   `;
 }
