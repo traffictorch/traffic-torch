@@ -5,45 +5,117 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ page.title }} | Traffic Torch News</title>
     {% seo %}
-    <link rel="stylesheet" href="/style.css"> <!-- Assuming your main CSS file -->
-    <!-- Add PWA manifest and service worker links if already set up -->
+    <link rel="stylesheet" href="/style.css">
     <link rel="manifest" href="/manifest.json">
-    <!-- Day/Night mode script -->
-    <script>
-        // Existing day/night mode logic here, e.g., toggle based on user preference or system
-    </script>
 </head>
 <body>
-    <header>
-        <!-- Your existing menu code here, include the new News link as per step 8 -->
+    <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" class="flex items-center gap-4">
+                <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
+                <p class="text-[1.35rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+                    Traffic Torch
+                </p>
+            </a>
+            <button id="menuToggle" class="md:hidden text-3xl relative left-2 -top-1">☰</button>
+            <nav class="hidden md:flex gap-8 text-lg">
+                <a href="/" class="hover:text-orange-400 transition">Home</a>
+                <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent 🎯</a>
+                <a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search 🔍</a>
+                <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content 🤖</a>
+                <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk ⚡</a>
+                <a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords 📝</a>
+                <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">Competition 🆚</a>
+                <a href="/about/" class="hover:text-orange-400 transition">About</a>
+                <a href="/news.html" class="hover:text-orange-400 transition">News</a>
+            </nav>
+            <button id="themeToggle" class="px-4 py-2 bg-white/10 rounded-full hover:bg-white/20 transition">
+                🌙
+            </button>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+            <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+                <a href="/" class="text-gray-100 hover:text-orange-400 transition">Home</a>
+                <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🛡️</a>
+                <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+                    <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">SEO Intent 🎯</a>
+                    <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Search 🔍</a>
+                    <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Content 🤖</a>
+                    <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">Quit Risk ⚡</a>
+                    <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">Keywords 📝</a>
+                    <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">Competition 🆚</a>
+                </div>
+                <a href="/about/" class="text-gray-100 hover:text-orange-400 transition">About</a>
+                <a href="/news.html" class="text-gray-100 hover:text-orange-400 transition">News</a>
+            </nav>
+        </div>
     </header>
-    <main>
+
+    <main class="container mx-auto px-6 py-12 max-w-6xl">
         <article>
-            <h1>{{ page.title }}</h1>
-            <p>Published on: {{ page.date | date: "%B %d, %Y" }}</p>
+            <h1 class="text-4xl font-bold mb-4">{{ page.title }}</h1>
+            <p class="text-sm opacity-70 mb-8">Published on: {{ page.date | date: "%B %d, %Y" }}</p>
             {{ content }}
-            <section>
-                <h2>Share this post</h2>
-                <!-- Educational UX: Buttons to share for better exposure -->
-                <button onclick="shareOnX()">Share on X</button>
-                <button onclick="shareOnLinkedIn()">Share on LinkedIn</button>
-                <script>
-                    function shareOnX() {
-                        window.open('https://x.com/intent/tweet?url=' + encodeURIComponent(window.location.href) + '&text=' + encodeURIComponent(document.title));
-                    }
-                    function shareOnLinkedIn() {
-                        window.open('https://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(window.location.href) + '&title=' + encodeURIComponent(document.title));
-                    }
-                </script>
-            </section>
-            <section>
-                <h2>Related SEO Tips</h2>
-                <p>For better search exposure, ensure your posts include keywords, internal links, and alt text for images.</p>
+
+            <section class="mt-12">
+                <h2 class="text-2xl font-bold mb-6">Share this post</h2>
+                <!-- AddToAny BEGIN -->
+                <div style="display: flex; justify-content: center; margin: 30px 0;">
+                    <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+                        <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+                        <a class="a2a_button_pinterest"></a>
+                        <a class="a2a_button_x"></a>
+                        <a class="a2a_button_reddit"></a>
+                        <a class="a2a_button_facebook"></a>
+                        <a class="a2a_button_copy_link"></a>
+                    </div>
+                    <script defer src="https://static.addtoany.com/menu/page.js"></script>
+                </div>
+                <!-- AddToAny END -->
             </section>
         </article>
     </main>
-    <footer>
-        <!-- Your existing footer -->
+
+    <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">
+        <div class="container mx-auto px-6 max-w-6xl">
+            <div class="grid md:grid-cols-4 gap-12 text-center md:text-left">
+                <div>
+                    <a href="/">
+                        <img src="/logo.webp" alt="Traffic Torch" class="w-20 mx-auto md:mx-0 rounded-2xl shadow-2xl mb-6">
+                    </a>
+                    <p class="text-gray-400 text-sm">Instant SEO + UX audit tools.<br>Optimising User Experience</p>
+                </div>
+                <div>
+                    <a href="/ai-seo-ux-tools/" class="block"><h3 class="text-xl font-bold mb-6 text-orange-400 hover:text-orange-300 transition">Tools</h3></a>
+                    <ul class="space-y-3 text-gray-400">
+                        <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+                        <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
+                        <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a></li>
+                        <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
+                        <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a></li>
+                        <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-6 text-orange-400">Company</h3>
+                    <ul class="space-y-3 text-gray-400">
+                        <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
+                        <li><a href="https://x.com/guitaralize" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">Ylia@X</a></li>
+                        <li><a href="https://grok.com/" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">Grok</a></li>
+                        <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
+                        <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <a href="/" class="block"><h3 class="text-xl font-bold mb-6 text-orange-400 hover:text-orange-300 transition">Traffic Torch</h3></a>
+                    <p class="text-gray-400 text-sm"><a href="/ai-seo-ux-tools/#ai-tools" class="hover:text-orange-400 transition">Ai Tools 🔍</a></p>
+                    <p class="text-gray-400 text-sm"><a href="/ai-seo-ux-tools/#seo-tools" class="hover:text-orange-400 transition">SEO Tools 🎯</a></p>
+                    <p class="text-gray-400 text-sm"><a href="/ai-seo-ux-tools/#ux-tools" class="hover:text-orange-400 transition">UX Tools ⚡</a></p>
+                    <p class="text-gray-400 text-sm">Built with 🔥</p>
+                    <p class="text-gray-500 text-xs mt-4">© Traffic Torch</p>
+                </div>
+            </div>
+        </div>
     </footer>
 </body>
 </html>
