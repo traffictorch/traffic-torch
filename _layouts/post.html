@@ -1,14 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ page.title }} | Traffic Torch News</title>
     {% seo %}
     <link rel="stylesheet" href="/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="manifest" href="/manifest.json">
+    <script>
+// Apply saved theme instantly on load (no flash)
+(function() {
+  const saved = localStorage.getItem('theme');
+  const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = saved || (preferDark ? 'dark' : 'light');
+  document.documentElement.classList.add(theme);
+})();
+</script>
 </head>
-<body>
+<body class="min-h-screen">
     <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="/" class="flex items-center gap-4">
@@ -118,41 +128,6 @@
         </div>
     </footer>
     
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Theme toggle
-    const themeToggle = document.getElementById('themeToggle');
-    const html = document.documentElement;
-    if (themeToggle) {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') {
-            html.classList.add('light');
-            themeToggle.textContent = '🌙';
-        } else {
-            themeToggle.textContent = '☀️';
-        }
-        themeToggle.addEventListener('click', () => {
-            html.classList.toggle('light');
-            if (html.classList.contains('light')) {
-                localStorage.setItem('theme', 'light');
-                themeToggle.textContent = '🌙';
-            } else {
-                localStorage.removeItem('theme');
-                themeToggle.textContent = '☀️';
-            }
-        });
-    }
-
-    // Mobile menu toggle
-    const menuToggle = document.getElementById('menuToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    if (menuToggle && mobileMenu) {
-        menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-            menuToggle.textContent = mobileMenu.classList.contains('hidden') ? '☰' : '✕';
-        });
-    }
-});
-</script>
+<script src="/main.js" type="module"></script>
 </body>
 </html>
