@@ -159,6 +159,21 @@
         <canvas id="healthRadarChart" class="mx-auto max-w-full" height="400"></canvas>
         <div id="radar-details" class="mt-6 text-center opacity-80"></div>
       </div>
+      <!-- Mobile UX Preview -->
+      <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl p-8">
+  <h2 class="text-2xl font-bold mb-6 text-center">Mobile UX Preview</h2>
+  <div class="relative mx-auto max-w-sm">
+    <div id="mobile-frame" class="relative">
+      <!-- CSS device frame -->
+      <div class="phone-frame bg-black rounded-3xl shadow-2xl overflow-hidden">
+        <img id="mobile-screenshot" class="w-full block" alt="Mobile preview of analyzed page" />
+        <canvas id="heatmap-overlay" class="absolute inset-0 pointer-events-none"></canvas>
+      </div>
+    </div>
+    <div id="preview-status" class="mt-4 text-center opacity-80"></div>
+    <div id="preview-issues" class="mt-6 space-y-3 text-sm"></div>
+  </div>
+</div>
       <!-- Placeholder for other visuals like mobile preview, badge, tooltips – add later -->
       <div id="mobilePreview" class="preview-thumbnail hidden"></div>
       <button id="generateBadge" class="hidden">Generate Shareable Badge</button>
@@ -180,5 +195,21 @@
       initRadar({});
     }, 1000);
   </script>
+  
+  <script type="module">
+  import { init as initRadar } from './js/modules/radar-chart.js';
+  import { init as initMobile } from './js/modules/mobile-preview.js';
+
+  setTimeout(() => {
+    document.getElementById('results').classList.remove('hidden');
+    document.getElementById('visual-health-dashboard').classList.remove('hidden');
+
+    initRadar({});
+    
+    // Test with a real public site (or change to your test URL)
+    initMobile({}, 'https://httpbin.org/html'); // Simple test page
+    // For real use: initMobile(analysisData);
+  }, 1000);
+</script>
 </body>
 </html>

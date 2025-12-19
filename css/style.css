@@ -26,3 +26,44 @@
     height: 300px !important;
   }
 }
+
+/* Mobile Preview Device Frame */
+.phone-frame {
+  width: 375px;
+  max-width: 100%;
+  aspect-ratio: 375 / 812;
+  border: 16px black solid;
+  border-radius: 40px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  position: relative;
+}
+.phone-frame::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 30px;
+  background: black;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+.phone-frame::after {
+  content: '';
+  position: absolute;
+  bottom: 10px; left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 60px;
+  border: 4px white solid;
+  border-radius: 50%;
+}
+
+/* Responsive adjustment */
+@media (max-width: 480px) {
+  .phone-frame {
+    width: 100%;
+    border-width: 12px;
+    border-radius: 32px;
+  }
+}
