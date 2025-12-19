@@ -1,3 +1,5 @@
+---
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,17 +47,16 @@
   </nav>
     </div>
   </header>
-    <main>
+    <main class="container mx-auto px-6 py-12 max-w-6xl">
         <h1>Traffic Torch News</h1>
         <p>Stay updated with the latest on SEO, UX, and Traffic Torch features. Our posts provide educational value to improve your site's health score.</p>
-        <ul>
+        <ul class="space-y-12">
             {% for post in site.posts %}
-            <li>
-                <a href="{{ post.url }}">{{ post.title }}</a>
-                <p>{{ post.date | date: "%B %d, %Y" }} - {{ post.excerpt }}</p>
-            </li>
-            {% endfor %}
-        </ul>
+            <li class="border-b border-white/10 dark:border-white/5 pb-12 last:border-0">
+    <a href="{{ post.url }}" class="text-3xl font-bold hover:text-orange-400 transition block mb-2">{{ post.title }}</a>
+    <p class="text-sm opacity-70 mb-4">{{ post.date | date: "%B %d, %Y" }}</p>
+    <p class="leading-relaxed">{{ post.excerpt }}</p>
+</li>
         
         
               	<!-- AddToAny BEGIN -->

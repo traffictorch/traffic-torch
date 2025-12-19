@@ -1,0 +1,6 @@
+title: Traffic Torch
+description: Instant 360° SEO and UX health score Analysis, report and education website with deep-dive modules, competitive gap analysis, AI-generated fixes, and predictive rank forecasting.
+url: "https://traffictorch.net"
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
