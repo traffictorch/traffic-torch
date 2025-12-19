@@ -129,10 +129,10 @@ body { transition: background-color 0.3s ease; }
 
 /* Hero text below H2 - light gray in light mode, white in dark mode */
 h2 + p {
-  color: #6b7280; /* gray-500 light mode */
+  color: #939599; /* gray-500 light mode */
 }
 .dark h2 + p {
-  color: #f3f4f6; /* gray-100 dark mode */
+  color: #939599;
 }
 
 /* Small metric card titles (h4) - dark in light mode, light in dark mode */
