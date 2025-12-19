@@ -1,10 +1,40 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</script>
     <title>{{ page.title }} | Traffic Torch News</title>
     {% seo %}
+    <meta name="description" content="{{ page.excerpt | strip_html | truncatewords: 30 }} – Educational insights on instant 360° SEO/UX analysis, deep-dive modules, competitive gaps, AI fixes, and rank forecasting." />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="{{ page.url | absolute_url }}" />
+<meta property="og:title" content="{{ page.title }} – Traffic Torch News" />
+<meta property="og:description" content="{{ page.excerpt | strip_html | truncatewords: 30 }} – Educational insights on SEO/UX health, deep-dive modules, gaps, AI fixes, forecasting." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="{{ page.url | absolute_url }}" />
+<meta property="og:image" content="https://traffictorch.net/images/traffic-torch.webp" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="Traffic Torch" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{{ page.title }} – Traffic Torch News" />
+<meta name="twitter:description" content="{{ page.excerpt | strip_html | truncatewords: 30 }} – Educational insights on SEO/UX health, deep-dive modules, gaps, AI fixes, forecasting." />
+<meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch.webp" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{ page.title }}",
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "description": "{{ page.excerpt | strip_html | truncatewords: 30 }}",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "logo": "https://traffictorch.net/favicon.ico"
+  }
+}
+</script>
     <link rel="stylesheet" href="/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="manifest" href="/manifest.json">
@@ -60,28 +90,27 @@
   </header>
 
     <main class="container mx-auto px-6 py-12 max-w-6xl">
-        <article>
-            <h1 class="text-4xl font-bold mb-4">{{ page.title }}</h1>
-            <p class="text-sm opacity-70 mb-8">Published on: {{ page.date | date: "%B %d, %Y" }}</p>
-            {{ content }}
-
-            <section class="mt-12">
-                <h2 class="text-2xl font-bold mb-6">Share this post</h2>
-                <!-- AddToAny BEGIN -->
-                <div style="display: flex; justify-content: center; margin: 30px 0;">
-                    <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
-                        <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-                        <a class="a2a_button_pinterest"></a>
-                        <a class="a2a_button_x"></a>
-                        <a class="a2a_button_reddit"></a>
-                        <a class="a2a_button_facebook"></a>
-                        <a class="a2a_button_copy_link"></a>
-                    </div>
-                    <script defer src="https://static.addtoany.com/menu/page.js"></script>
-                </div>
-                <!-- AddToAny END -->
-            </section>
-        </article>
+<article class="prose dark:prose-invert max-w-none bg-white/5 dark:bg-black/30 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-white/10">
+    <h1 class="text-5xl font-black mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">{{ page.title }}</h1>
+    <p class="text-sm opacity-70 mb-8">Published on: {{ page.date | date: "%B %d, %Y" }}</p>
+    {{ content }}
+</article>
+<section class="mt-12 text-center">
+    <h2 class="text-2xl font-bold mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Share this post</h2>
+    <!-- AddToAny BEGIN -->
+    <div style="display: flex; justify-content: center; margin: 30px 0;">
+        <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+            <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+            <a class="a2a_button_pinterest"></a>
+            <a class="a2a_button_x"></a>
+            <a class="a2a_button_reddit"></a>
+            <a class="a2a_button_facebook"></a>
+            <a class="a2a_button_copy_link"></a>
+        </div>
+        <script defer src="https://static.addtoany.com/menu/page.js"></script>
+    </div>
+    <!-- AddToAny END -->
+</section>
     </main>
 
 <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">

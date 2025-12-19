@@ -3,9 +3,39 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>News | Traffic Torch</title>
+    <meta name="description" content="Stay updated with Traffic Torch news: educational posts on SEO, UX health scores, deep-dive modules, competitive gap analysis, AI-generated fixes, and predictive rank forecasting." />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://traffictorch.net/news.html" />
+<meta property="og:title" content="Traffic Torch News – AI SEO & UX Updates" />
+<meta property="og:description" content="Educational updates on instant 360° analysis, deep-dive modules, competitive gaps, AI fixes, and rank forecasting." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://traffictorch.net/news.html" />
+<meta property="og:image" content="https://traffictorch.net/images/traffic-torch.webp" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="Traffic Torch" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Traffic Torch News – AI SEO & UX Updates" />
+<meta name="twitter:description" content="Educational updates on instant 360° analysis, deep-dive modules, competitive gaps, AI fixes, and rank forecasting." />
+<meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch.webp" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "Traffic Torch News",
+  "description": "Educational posts on SEO, UX, deep-dive modules, competitive gap analysis, AI-generated fixes, and predictive rank forecasting.",
+  "url": "https://traffictorch.net/news.html",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "logo": "https://traffictorch.net/favicon.ico"
+  }
+}
+</script>
     {% seo %}
     <link rel="stylesheet" href="/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -61,19 +91,19 @@
 
   </header>
 
-    <main class="container mx-auto px-6 py-12 max-w-6xl">
-        <h1 class="text-4xl font-bold mb-8">Traffic Torch News</h1>
-        <p class="text-lg mb-12">Stay updated with the latest on SEO, UX, and Traffic Torch features. Our posts provide educational value to improve your site's health score, deep-dive modules, competitive gap analysis, AI-generated fixes, and predictive rank forecasting.</p>
-
-        <ul class="space-y-12">
-            {% for post in site.posts %}
-            <li class="border-b border-white/10 dark:border-white/5 pb-12 last:border-0">
-                <a href="{{ post.url }}" class="text-3xl font-bold hover:text-orange-400 transition block mb-2">{{ post.title }}</a>
-                <p class="text-sm opacity-70 mb-4">{{ post.date | date: "%B %d, %Y" }}</p>
-                <p class="leading-relaxed">{{ post.excerpt }}</p>
-            </li>
-            {% endfor %}
-        </ul>
+	<h1 class="text-5xl md:text-6xl font-black text-center mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch News</h1>
+<p class="text-xl text-center opacity-90 mb-16 max-w-4xl mx-auto leading-relaxed">Stay updated with the latest on SEO, UX, and Traffic Torch features. Our posts provide educational value to improve your site's health score, deep-dive modules, competitive gap analysis, AI-generated fixes, and predictive rank forecasting.</p>
+<ul class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {% for post in site.posts %}
+    <li class="bg-white/5 dark:bg-black/30 backdrop-blur-md rounded-2xl p-8 border border-white/10 hover:border-orange-400/50 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+        <a href="{{ post.url }}" class="block">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">{{ post.title }}</h2>
+            <p class="text-sm opacity-70 mb-4">{{ post.date | date: "%B %d, %Y" }}</p>
+            <p class="leading-relaxed opacity-90">{{ post.excerpt }}</p>
+        </a>
+    </li>
+    {% endfor %}
+</ul>
 
         <!-- AddToAny BEGIN -->
         <div style="display: flex; justify-content: center; margin: 30px 0;">
