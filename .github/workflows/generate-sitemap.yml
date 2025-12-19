@@ -5,22 +5,36 @@ on:
     branches: [ main ]
 
 jobs:
-  sitemap:
+  build-sitemap:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Required for accurate git-based <lastmod>
+      - uses: actions/checkout@v4
 
       - name: Generate sitemap.xml
-        uses: cicirello/generate-sitemap@v1
-        with:
-          base-url-path: https://traffictorch.com/  # Your domain with trailing slash
-          drop-html-extension: true                # Clean URLs (no .html) – recommended for modern sites
-          exclude-paths: src node_modules assets/js assets/css  # Exclude source/build noise if needed
+        run: |
+          DOMAIN="https://traffictorch.com/"
+          echo '<?xml version="1.0" encoding="UTF-8"?>' > sitemap.xml
+          echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' >> sitemap.xml
 
-      - name: Commit and push if sitemap changed
+          find . -type f $$ -name '*.html' -o -name '*.pdf' $$ ! -path './node_modules/*' ! -path './src/*' | while read file; do
+            rel_path="${file#./}"
+            url_path="${rel_path%/index.html}"
+            url_path="${url_path%.html}"
+            full_url="$$ {DOMAIN} $${url_path#/}"
+            if [[ "$url_path" != "/" && "$url_path" != "" ]]; then
+              full_url="${full_url}/"
+            fi
+            echo "  <url>" >> sitemap.xml
+            echo "    <loc>$full_url</loc>" >> sitemap.xml
+            echo "    <lastmod>$(date +%Y-%m-%d)</lastmod>" >> sitemap.xml
+            echo "    <changefreq>weekly</changefreq>" >> sitemap.xml
+            echo "    <priority>0.8</priority>" >> sitemap.xml
+            echo "  </url>" >> sitemap.xml
+          done
+
+          echo '</urlset>' >> sitemap.xml
+
+      - name: Commit and push sitemap.xml if changed
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Auto-update sitemap.xml"
