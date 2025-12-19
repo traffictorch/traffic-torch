@@ -115,12 +115,12 @@ body { transition: background-color 0.3s ease; }
   color: #fbbf24 !important;
 }
 .dark .text-sm.italic {
-  color: #d1d5db !important; /* Softer gray for note */
+  color: #939699 !important; /* Softer gray for note */
 }
 
 /* Small metric details toggle text */
 .dark .text-sm {
-  color: #d1d5db !important;
+  color: #939699 !important;
 }
 
 
