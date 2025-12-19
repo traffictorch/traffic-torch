@@ -83,6 +83,27 @@
 
 
 
+#visual-health-dashboard canvas {
+  max-height: 80vh; /* Safety cap – prevents extreme scaling on large screens */
+}
+
+
+
+
+/* Radar Chart Improvements */
+.radar-chart { width: 100%; height: auto; }
+#visual-health-dashboard { max-width: 800px; margin: auto; }
+#radar-details { min-height: 80px; padding: 1rem; }
+@media (max-width: 768px) {
+  #healthRadarChart { max-height: 300px; }
+  .radar-chart { font-size: 0.8rem; } /* Smaller labels on mobile */
+}
+
+
+
+
+
+
 
 
 
