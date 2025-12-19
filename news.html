@@ -123,5 +123,42 @@
             </div>
         </div>
     </footer>
+    
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    if (themeToggle) {
+        if (localStorage.theme === 'light') {
+            html.classList.add('light');
+            themeToggle.textContent = '🌙';
+        } else {
+            html.classList.remove('light');
+            themeToggle.textContent = '☀️';
+        }
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('light');
+            if (html.classList.contains('light')) {
+                localStorage.theme = 'light';
+                themeToggle.textContent = '🌙';
+            } else {
+                localStorage.theme = '';
+                themeToggle.textContent = '☀️';
+            }
+        });
+    }
+
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (menuToggle && mobileMenu) {
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            menuToggle.textContent = mobileMenu.classList.contains('hidden') ? '☰' : '✕';
+        });
+    }
+});
+</script>
 </body>
 </html>

@@ -283,3 +283,25 @@ html.light .checklist-card h3 {
 }
 
 
+
+
+
+/* News Blog Tweaks */
+
+.container {
+    width: 100%;
+    max-width: 1280px; /* Matches max-w-6xl approx */
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem; /* px-6 */
+    padding-right: 1.5rem;
+}
+
+main {
+    padding-top: 3rem; /* py-12 top */
+    padding-bottom: 3rem; /* py-12 bottom */
+}
+
+@media (min-width: 768px) {
+    main { padding-top: 4rem; padding-bottom: 4rem; }
+}
