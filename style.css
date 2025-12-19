@@ -290,18 +290,20 @@ html.light .checklist-card h3 {
 
 .container {
     width: 100%;
-    max-width: 1280px; /* Matches max-w-6xl approx */
+    max-width: 1280px; /* Approx max-w-6xl for consistency */
     margin-left: auto;
     margin-right: auto;
     padding-left: 1.5rem; /* px-6 */
     padding-right: 1.5rem;
+    box-sizing: border-box;
 }
 
 main {
-    padding-top: 3rem; /* py-12 top */
-    padding-bottom: 3rem; /* py-12 bottom */
+    min-height: 100vh; /* Ensures full height if needed */
+    padding-top: 4rem;
+    padding-bottom: 4rem;
 }
 
-@media (min-width: 768px) {
-    main { padding-top: 4rem; padding-bottom: 4rem; }
+@media (max-width: 768px) {
+    main { padding-top: 2rem; padding-bottom: 2rem; }
 }

@@ -118,26 +118,26 @@
         </div>
     </footer>
     
-    <script>
+<script>
 document.addEventListener('DOMContentLoaded', () => {
     // Theme toggle
     const themeToggle = document.getElementById('themeToggle');
     const html = document.documentElement;
     if (themeToggle) {
-        if (localStorage.theme === 'light') {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
             html.classList.add('light');
             themeToggle.textContent = '🌙';
         } else {
-            html.classList.remove('light');
             themeToggle.textContent = '☀️';
         }
         themeToggle.addEventListener('click', () => {
             html.classList.toggle('light');
             if (html.classList.contains('light')) {
-                localStorage.theme = 'light';
+                localStorage.setItem('theme', 'light');
                 themeToggle.textContent = '🌙';
             } else {
-                localStorage.theme = '';
+                localStorage.removeItem('theme');
                 themeToggle.textContent = '☀️';
             }
         });
