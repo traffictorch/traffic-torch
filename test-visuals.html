@@ -196,14 +196,19 @@
   <script src="/seo-ux-tool/script.js" defer></script>
   <script type="module" src="js/modules/home-enhancements.js"></script>
   <script type="module" src="js/modules/visual-enhancements.js"></script>
-  <script type="module">
-    import { init as initRadar } from './js/modules/radar-chart.js';
-    // Simulate results ready for testing (replace with real analysis trigger later)
-    setTimeout(() => {
-      document.getElementById('results').classList.remove('hidden'); // Show results for context
-      initRadar({});
-    }, 1000);
-  </script>
+<script type="module">
+  import { init as initRadar } from './js/modules/radar-chart.js';
+
+  // Force show sections for testing
+  document.getElementById('results').classList.remove('hidden');
+  const dashboard = document.getElementById('visual-health-dashboard');
+  if (dashboard) dashboard.classList.remove('hidden');
+
+  setTimeout(() => {
+    console.log('Triggering radar chart init for test');
+    initRadar({});
+  }, 2000);
+</script>
   
   
   
