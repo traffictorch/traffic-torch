@@ -21,12 +21,9 @@
     })();
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
-    <script src="/main.js" type="module"></script>
-  <script src="/seo-ux-tool/script.js" defer></script>
 </head>
 <body class="min-h-screen">
-  <!-- Header -->
+  <!-- Header with Theme Toggle -->
   <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
       <a href="/" class="flex items-center gap-4">
@@ -35,6 +32,9 @@
           Traffic Torch
         </p>
       </a>
+      <button id="themeToggle" class="py-1 bg-white/10 rounded-full hover:bg-white/20 transition px-4">
+        🌙
+      </button>
     </div>
   </header>
 
@@ -55,14 +55,24 @@
       </button>
     </form>
 
-    <!-- Results Grid – 4 Cards Only -->
-    <div id="results" class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <!-- Loader (required for script.js) -->
+    <div id="loader" class="hidden fixed inset-x-0 bottom-0 z-50">
+      <div id="progress-bar" class="h-12 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-orange-600 via-pink-600 to-purple-700 opacity-50 animate-pulse"></div>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <span id="progress-text" class="text-white font-bold text-xl drop-shadow-lg">Fetching page...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Grid -->
+    <div id="results" class="hidden grid md:grid-cols-2 lg:grid-cols-4 gap-8">
       <section id="seo-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
-        <div class="score-circle" data-score="85">
+        <div class="score-circle" data-score="0">
           <svg viewBox="0 0 120 120">
             <circle class="bg" cx="60" cy="60" r="54"/>
             <circle class="progress" cx="60" cy="60" r="54"/>
-            <text x="60" y="72" class="number">85</text>
+            <text x="60" y="72" class="number">0</text>
           </svg>
           <div class="label text-xl font-bold mt-4">On-Page SEO</div>
         </div>
@@ -71,11 +81,11 @@
       </section>
 
       <section id="mobile-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
-        <div class="score-circle" data-score="90">
+        <div class="score-circle" data-score="0">
           <svg viewBox="0 0 120 120">
             <circle class="bg" cx="60" cy="60" r="54"/>
             <circle class="progress" cx="60" cy="60" r="54"/>
-            <text x="60" y="72" class="number">90</text>
+            <text x="60" y="72" class="number">0</text>
           </svg>
           <div class="label text-xl font-bold mt-4">Mobile & PWA</div>
         </div>
@@ -84,11 +94,11 @@
       </section>
 
       <section id="perf-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
-        <div class="score-circle" data-score="75">
+        <div class="score-circle" data-score="0">
           <svg viewBox="0 0 120 120">
             <circle class="bg" cx="60" cy="60" r="54"/>
             <circle class="progress" cx="60" cy="60" r="54"/>
-            <text x="60" y="72" class="number">75</text>
+            <text x="60" y="72" class="number">0</text>
           </svg>
           <div class="label text-xl font-bold mt-4">Performance</div>
         </div>
@@ -97,11 +107,11 @@
       </section>
 
       <section id="access-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
-        <div class="score-circle" data-score="80">
+        <div class="score-circle" data-score="0">
           <svg viewBox="0 0 120 120">
             <circle class="bg" cx="60" cy="60" r="54"/>
             <circle class="progress" cx="60" cy="60" r="54"/>
-            <text x="60" y="72" class="number">80</text>
+            <text x="60" y="72" class="number">0</text>
           </svg>
           <div class="label text-xl font-bold mt-4">Accessibility</div>
         </div>
@@ -110,8 +120,8 @@
       </section>
     </div>
 
-    <!-- Single Radar Dashboard Card -->
-    <section id="visual-health-dashboard" class="mt-16">
+    <!-- Radar Dashboard -->
+    <section id="visual-health-dashboard" class="mt-16 hidden">
       <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl p-8 max-w-3xl mx-auto flex flex-col min-h-[500px]">
         <h2 class="text-2xl font-bold mb-8 text-center">360° Health Radar</h2>
         <div class="flex-1 relative">
@@ -124,19 +134,24 @@
 
   <div id="chartjs-tooltip" class="hidden"></div>
 
-  <!-- Single Clean Script -->
-<script type="module">
-  import { init as initRadar } from './js/modules/radar-chart.js';
+  <!-- Scripts -->
+  <script src="/main.js" type="module"></script>
+  <script src="/seo-ux-tool/script.js" defer></script>
 
-  // In production: This will be called from main analysis script after scores are set
-  // For test page: auto-init on load
-  window.addEventListener('load', () => {
-    document.getElementById('results').classList.remove('hidden');
-    document.getElementById('visual-health-dashboard').classList.remove('hidden');
-    initRadar();
-  });
-</script>
-  
-  
+  <script type="module">
+    import { init as initRadar } from './js/modules/radar-chart.js';
+
+    // Called from script.js after analysis completes
+    window.initRadarAfterAnalysis = () => {
+      document.getElementById('visual-health-dashboard').classList.remove('hidden');
+      initRadar();
+    };
+
+    // For testing only – remove in production
+    window.addEventListener('load', () => {
+      document.getElementById('results').classList.remove('hidden');
+      initRadarAfterAnalysis();
+    });
+  </script>
 </body>
 </html>
