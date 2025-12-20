@@ -3,155 +3,108 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Traffic Torch – AI, SEO &amp; UX Tools: Instant Audits, Fixes &amp; Forecasts</title>
-  <meta name="description" content="AI-powered SEO &amp; UX tools: Instant 0–100 scores for on-page optimization, competitive gaps, AI search visibility, content quality, bounce prediction, keyword research – all mobile-friendly." />
+  <title>SEO & UX analyzer - Traffic Torch</title>
   <meta name="color-scheme" content="dark light">
   <link rel="icon" href="/favicon.ico" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/seo-ux-tool/css/style.css">
+  <link rel="stylesheet" href="/seo-ux-tool/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    // Apply saved theme instantly on load (no flash)
-    (function() {
-      const saved = localStorage.getItem('theme');
-      const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const theme = saved || (preferDark ? 'dark' : 'light');
-      document.documentElement.classList.add(theme);
-    })();
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  // Apply saved theme instantly on load (no flash)
+  (function() {
+    const saved = localStorage.getItem('theme');
+    const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (preferDark ? 'dark' : 'light');
+    document.documentElement.classList.add(theme);
+  })();
+</script>
+  <script src="/main.js" type="module"></script>
+  <script src="/seo-ux-tool/script.js" defer></script>
 </head>
 <body class="min-h-screen">
-  <!-- Header with Theme Toggle -->
-  <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-      <a href="/" class="flex items-center gap-4">
-        <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
-        <p class="text-[1.35rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-          Traffic Torch
-        </p>
-      </a>
-      <button id="themeToggle" class="py-1 bg-white/10 rounded-full hover:bg-white/20 transition px-4">
-        🌙
-      </button>
+
+  <!-- ONLY THE TOOL — NO HEADER, NO MENU, NO FOOTER -->
+<main class="container mx-auto px-6 py-12 max-w-5xl">
+    <div class="text-center mb-12">
+        <h2 class="text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
+            SEO & UX Analyzer
+        </h2>
+        <p class="text-xl text-gray-400">Learn SEO • Improve UX • Educational fixes</p>
     </div>
-  </header>
 
-  <!-- Hero -->
-  <div class="text-center mb-16 mt-10">
-    <h1 class="text-3xl md:text-4xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-      UX & SEO Tools ⚖️
-    </h1>
-    <p class="text-xl text-gray-400 max-w-2xl mx-auto">Instant SEO + UX + Ai audits</p>
-  </div>
+	<form id="url-form" class="flex flex-col md:flex-row gap-4 max-w-3xl mx-auto mb-12 space-y-4">
+  <input
+    type="url"
+    id="url-input"
+    placeholder="https://example.com/your-page"
+    required
+    class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+  />
+  <button
+    type="submit"
+    class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+  >
+    Analyze 💡
+  </button>
+</form>
 
-  <main class="container mx-auto px-6 py-4 max-w-5xl">
-    <!-- Form -->
-    <form id="url-form" class="flex flex-col md:flex-row gap-4 max-w-3xl mx-auto mb-12 items-center">
-      <input type="url" id="url-input" placeholder="https://example.com/your-page" required class="flex-1 w-full px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-600 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg" />
-      <button type="submit" class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl">
-        Analyze 💡
-      </button>
-    </form>
-    
+    <div id="loader" class="hidden text-center py-20 text-2xl">Analising…</div>
 
-
-    <!-- Loader (required for script.js) -->
-    <div id="loader" class="hidden fixed inset-x-0 bottom-0 z-50">
-  <div id="progress-bar" class="h-12 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-r from-orange-600 via-pink-600 to-purple-700 opacity-50 animate-pulse"></div>
-    <div class="absolute inset-0 flex items-center justify-center">
-      <span id="progress-text" class="text-white font-bold text-xl drop-shadow-lg">Fetching page...</span>
-    </div>
-  </div>
-</div>
-
-    <!-- Results Grid -->
     <div id="results" class="hidden grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-      <section id="seo-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
-        <div class="score-circle" data-score="0">
-          <svg viewBox="0 0 120 120">
-            <circle class="bg" cx="60" cy="60" r="54"/>
-            <circle class="progress" cx="60" cy="60" r="54"/>
-            <text x="60" y="72" class="number">0</text>
-          </svg>
-          <div class="label text-xl font-bold mt-4">On-Page SEO</div>
-        </div>
-        <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-        <div class="details hidden mt-6 text-left"><ul id="seo-issues" class="space-y-4"></ul></div>
-      </section>
+        <section id="seo-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
+            <div class="score-circle" data-score="0">
+                <svg viewBox="0 0 120 120">
+                    <circle class="bg" cx="60" cy="60" r="54"/>
+                    <circle class="progress" cx="60" cy="60" r="54"/>
+                    <text x="60" y="72" class="number">0</text>
+                </svg>
+                <div class="label text-xl font-bold mt-4">On-Page SEO</div>
+            </div>
+            <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+            <div class="details hidden mt-6 text-left"><ul id="seo-issues" class="space-y-4"></ul></div>
+        </section>
 
-      <section id="mobile-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
-        <div class="score-circle" data-score="0">
-          <svg viewBox="0 0 120 120">
-            <circle class="bg" cx="60" cy="60" r="54"/>
-            <circle class="progress" cx="60" cy="60" r="54"/>
-            <text x="60" y="72" class="number">0</text>
-          </svg>
-          <div class="label text-xl font-bold mt-4">Mobile & PWA</div>
-        </div>
-        <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-        <div class="details hidden mt-6 text-left"><ul id="mobile-issues" class="space-y-4"></ul></div>
-      </section>
+        <section id="mobile-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
+            <div class="score-circle" data-score="0">
+                <svg viewBox="0 0 120 120">
+                    <circle class="bg" cx="60" cy="60" r="54"/>
+                    <circle class="progress" cx="60" cy="60" r="54"/>
+                    <text x="60" y="72" class="number">0</text>
+                </svg>
+                <div class="label text-xl font-bold mt-4">Mobile & PWA</div>
+            </div>
+            <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+            <div class="details hidden mt-6 text-left"><ul id="mobile-issues" class="space-y-4"></ul></div>
+        </section>
 
-      <section id="perf-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
-        <div class="score-circle" data-score="0">
-          <svg viewBox="0 0 120 120">
-            <circle class="bg" cx="60" cy="60" r="54"/>
-            <circle class="progress" cx="60" cy="60" r="54"/>
-            <text x="60" y="72" class="number">0</text>
-          </svg>
-          <div class="label text-xl font-bold mt-4">Performance</div>
-        </div>
-        <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-        <div class="details hidden mt-6 text-left"><ul id="perf-issues" class="space-y-4"></ul></div>
-      </section>
+        <section id="perf-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
+            <div class="score-circle" data-score="0">
+                <svg viewBox="0 0 120 120">
+                    <circle class="bg" cx="60" cy="60" r="54"/>
+                    <circle class="progress" cx="60" cy="60" r="54"/>
+                    <text x="60" y="72" class="number">0</text>
+                </svg>
+                <div class="label text-xl font-bold mt-4">Performance</div>
+            </div>
+            <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+            <div class="details hidden mt-6 text-left"><ul id="perf-issues" class="space-y-4"></ul></div>
+        </section>
 
-      <section id="access-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
-        <div class="score-circle" data-score="0">
-          <svg viewBox="0 0 120 120">
-            <circle class="bg" cx="60" cy="60" r="54"/>
-            <circle class="progress" cx="60" cy="60" r="54"/>
-            <text x="60" y="72" class="number">0</text>
-          </svg>
-          <div class="label text-xl font-bold mt-4">Accessibility</div>
-        </div>
-        <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-        <div class="details hidden mt-6 text-left"><ul id="access-issues" class="space-y-4"></ul></div>
-      </section>
+        <section id="access-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
+            <div class="score-circle" data-score="0">
+                <svg viewBox="0 0 120 120">
+                    <circle class="bg" cx="60" cy="60" r="54"/>
+                    <circle class="progress" cx="60" cy="60" r="54"/>
+                    <text x="60" y="72" class="number">0</text>
+                </svg>
+                <div class="label text-xl font-bold mt-4">Accessibility</div>
+            </div>
+            <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+            <div class="details hidden mt-6 text-left"><ul id="access-issues" class="space-y-4"></ul></div>
+        </section>
     </div>
-
-    <!-- Radar Dashboard -->
-    <section id="visual-health-dashboard" class="mt-16 hidden">
-      <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl p-8 max-w-3xl mx-auto flex flex-col min-h-[500px]">
-        <h2 class="text-2xl font-bold mb-8 text-center">360° Health Radar</h2>
-        <div class="flex-1 relative">
-          <canvas id="healthRadarChart" class="mx-auto max-w-full"></canvas>
-        </div>
-        <div id="radar-details" class="mt-8 text-center opacity-80"></div>
-      </div>
-    </section>
-    
-
-  <div id="chartjs-tooltip" class="hidden"></div>
-
-<div id="chartjs-tooltip" class="hidden"></div>
-
-<!-- Scripts -->
-<script src="/main.js" type="module"></script>
-<script src="/seo-ux-tool/script.js" defer></script>
-
-<script type="module">
-  import { init as initRadar } from './js/modules/radar-chart.js';
-
-  // Bridge for script.js to call after real analysis
-  window.initRadarAfterAnalysis = () => {
-    document.getElementById('visual-health-dashboard').classList.remove('hidden');
-    initRadar();
-  };
-</script>
-
+</main>
 
 </body>
 </html>
