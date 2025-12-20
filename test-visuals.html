@@ -9,7 +9,7 @@
   <link rel="icon" href="/favicon.ico" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/seo-ux-tool/css/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     // Apply saved theme instantly on load (no flash)
@@ -122,15 +122,18 @@
   <div id="chartjs-tooltip" class="hidden"></div>
 
   <!-- Single Clean Script -->
-  <script type="module">
-    import { init as initRadar } from './js/modules/radar-chart.js';
+<script type="module">
+  import { init as initRadar } from './js/modules/radar-chart.js';
 
+  // In production: This will be called from main analysis script after scores are set
+  // For test page: auto-init on load
+  window.addEventListener('load', () => {
     document.getElementById('results').classList.remove('hidden');
     document.getElementById('visual-health-dashboard').classList.remove('hidden');
-
-    setTimeout(() => {
-      initRadar();
-    }, 800);
-  </script>
+    initRadar();
+  });
+</script>
+  
+  
 </body>
 </html>

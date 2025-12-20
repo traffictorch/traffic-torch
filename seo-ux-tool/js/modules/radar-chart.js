@@ -187,3 +187,36 @@ function showDetails(dim, score) {
     `;
   }
 }
+
+
+
+// js/modules/radar-chart.js
+
+let radarChart = null;
+
+// ... (dimensions and helper functions same as before) ...
+
+export function init(analysisData = {}) {
+  const canvas = document.getElementById('healthRadarChart');
+  const detailsEl = document.getElementById('radar-details');
+  if (!canvas || !detailsEl) return;
+
+  // Destroy previous if re-initializing
+  if (radarChart) radarChart.destroy();
+
+  // ... (score calculation same – pulls from DOM data-score) ...
+
+  // ... (chart config same) ...
+
+  radarChart = new Chart(canvas, config);
+
+  // Theme observer (same)
+  // ...
+
+  showDetails(null, overallScore);
+
+  // Optional: Animate in after a short delay for smooth entry
+  setTimeout(() => {
+    radarChart.update();
+  }, 300);
+}
