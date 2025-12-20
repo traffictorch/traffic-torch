@@ -131,6 +131,22 @@
 
 
 
+#healthRadarChart {
+  width: 100% !important;
+  height: auto !important;
+}
+#visual-health-dashboard .rounded-3xl {
+  padding: 2rem;
+}
+@media (max-width: 640px) {
+  #visual-health-dashboard .rounded-3xl {
+    padding: 1rem;
+  }
+}
+
+
+
+
 
 
 

@@ -2,6 +2,8 @@
 
 let radarChart = null;
 
+Chart.register(ChartDataLabels);
+
 const dimensions = [
   { key: 'technicalSEO', short: 'SEO', full: 'Technical SEO', lesson: 'Meta tags, schema, canonicals – ensures crawlers see your site correctly.' },
   { key: 'content', short: 'Quality', full: 'Content Quality', lesson: 'Relevance, length, structure – drives trust and rankings.' },
@@ -60,6 +62,8 @@ export function init() {
 
   const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
 
+  const mobile = window.innerWidth < 640;
+
   const data = {
     labels: dimensions.map(d => d.short),
     datasets: [{
@@ -69,17 +73,11 @@ export function init() {
       borderWidth: 4,
       pointBackgroundColor: scores.map(getColor),
       pointBorderColor: '#fff',
-      pointRadius: 6,
-      pointHoverRadius: 10,
+      pointRadius: mobile ? 8 : 10,
+      pointHoverRadius: mobile ? 12 : 14,
       fill: true
     }]
   };
-
-  const isDark = document.documentElement.classList.contains('dark');
-  const gridColor = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
-  const textColor = isDark ? '#eee' : '#333';
-
-  const mobile = window.innerWidth < 640;
 
   const config = {
     type: 'radar',
@@ -87,7 +85,7 @@ export function init() {
     options: {
       responsive: true,
       maintainAspectRatio: true,
-      aspectRatio: mobile ? 1 : 1.2,
+      aspectRatio: mobile ? 0.9 : 1,
       plugins: {
         legend: { display: false },
         tooltip: {
@@ -98,28 +96,25 @@ export function init() {
               return [`Score: ${context.raw}/100`, dim.lesson];
             }
           },
-          titleFont: { size: mobile ? 13 : 15, weight: 'bold' },
-          bodyFont: { size: mobile ? 12 : 13 },
           padding: 12
+        },
+        datalabels: {
+          color: document.documentElement.classList.contains('dark') ? '#eee' : '#333',
+          font: { size: mobile ? 12 : 14, weight: 'bold' },
+          formatter: (value, context) => dimensions[context.dataIndex].short,
+          anchor: 'end',
+          align: 'end',
+          offset: 10
         }
       },
       scales: {
         r: {
           beginAtZero: true,
           max: 100,
-          ticks: { 
-            stepSize: 20, 
-            color: textColor,
-            font: { size: mobile ? 10 : 12 },
-            backdropColor: 'transparent'
-          },
-          grid: { color: gridColor },
-          pointLabels: {
-            color: textColor,
-            font: { size: mobile ? 11 : 13, weight: 'bold' },
-            padding: mobile ? 15 : 30
-          },
-          angleLines: { color: gridColor }
+          ticks: { display: false }, // Hide numbers to make bigger
+          grid: { color: document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' },
+          pointLabels: { display: false }, // Hide external labels – now internal
+          angleLines: { color: document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' }
         }
       },
       onClick: (e, elements) => {
@@ -130,18 +125,20 @@ export function init() {
           showDetails(null, overallScore);
         }
       }
-    }
+    },
+    plugins: [ChartDataLabels]
   };
 
   if (radarChart) radarChart.destroy();
   radarChart = new Chart(canvas, config);
 
-  // Theme support
+  // Theme observer
   const observer = new MutationObserver(() => {
     const dark = document.documentElement.classList.contains('dark');
-    const color = dark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
-    radarChart.options.scales.r.grid.color = color;
-    radarChart.options.scales.r.angleLines.color = color;
+    radarChart.options.plugins.datalabels.color = dark ? '#eee' : '#333';
+    const grid = dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+    radarChart.options.scales.r.grid.color = grid;
+    radarChart.options.scales.r.angleLines.color = grid;
     radarChart.update();
   });
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
