@@ -3,35 +3,45 @@
 let radarChart = null;
 
 const dimensions = [
-  { key: 'technicalSEO', label: 'Technical SEO', lesson: 'Meta tags, schema, canonicals, robots.txt – ensures crawlers see your site correctly. Fix: Add structured data for rich snippets.' },
-  { key: 'content', label: 'Content Quality', lesson: 'Relevance, uniqueness, E-E-A-T signals – drives rankings and user trust. Fix: Use AI audit for improvements.' },
-  { key: 'ux', label: 'UX Design', lesson: 'Navigation, clarity, CTAs – reduces bounce and improves dwell time. Fix: Optimize layout for user flow.' },
-  { key: 'speed', label: 'Page Speed', lesson: 'Core Web Vitals (LCP, FID, CLS) – critical for rankings and conversions. Fix: Compress images and minify JS.' },
-  { key: 'mobile', label: 'Mobile & PWA', lesson: 'Responsive design, touch targets, installability – mobile-first indexing priority. Fix: Use media queries.' },
-  { key: 'security', label: 'Security', lesson: 'HTTPS, secure headers – builds trust and avoids penalties. Fix: Enable HTTPS if not present.' },
-  { key: 'accessibility', label: 'Accessibility', lesson: 'WCAG compliance (alt text, contrast, ARIA) – inclusive and SEO bonus. Fix: Add alt text to images.' },
-  { key: 'backlinks', label: 'Backlinks', lesson: 'Quality inbound links – major ranking factor. Fix: Use external tools like Ahrefs for analysis (not available client-side).' }
+  { key: 'technicalSEO', label: 'Technical\nSEO', lesson: 'Meta tags, schema, canonicals – ensures crawlers see your site. Fix: Add JSON-LD schema.' },
+  { key: 'content', label: 'Content\nQuality', lesson: 'Relevance, E-E-A-T – drives trust. Fix: Use AI for content gaps.' },
+  { key: 'ux', label: 'UX\nDesign', lesson: 'Navigation, CTAs – reduces bounce. Fix: Simplify layout.' },
+  { key: 'speed', label: 'Page\nSpeed', lesson: 'Core Web Vitals – boosts rankings. Fix: Optimize images.' },
+  { key: 'mobile', label: 'Mobile\n& PWA', lesson: 'Responsive design – mobile-first priority. Fix: Test media queries.' },
+  { key: 'security', label: 'Security', lesson: 'HTTPS, headers – builds trust. Fix: Enable HTTPS.' },
+  { key: 'accessibility', label: 'Accessi-\nbility', lesson: 'WCAG (alt text, contrast) – inclusive SEO. Fix: Add ARIA labels.' },
+  { key: 'indexability', label: 'Index-\nability', lesson: 'Robots meta, canonical tags – controls crawlability. Fix: Remove noindex if page should rank.' }
 ];
 
 function getColor(score) {
-  if (score >= 80) return 'rgb(34, 197, 94)';
-  if (score >= 50) return 'rgb(234, 179, 8)';
-  return 'rgb(239, 68, 68)';
+  if (score >= 80) return 'rgb(34, 197, 94)';     // green
+  if (score >= 50) return 'rgb(234, 179, 8)';      // yellow
+  return 'rgb(239, 68, 68)';                      // red
 }
 
-export function init(analysisData) {
+export function init(analysisData = {}) {
   const canvas = document.getElementById('healthRadarChart');
   if (!canvas) return;
 
-  // Tie in real data from homepage tool (DOM pull – in production, update after analysis)
-  const seoScore = parseInt(document.querySelector('#seo-score .score-circle').dataset.score || 0);
-  const mobileScore = parseInt(document.querySelector('#mobile-score .score-circle').dataset.score || 0);
-  const perfScore = parseInt(document.querySelector('#perf-score .score-circle').dataset.score || 0);
-  const accessScore = parseInt(document.querySelector('#access-score .score-circle').dataset.score || 0);
-  const securityScore = location.protocol === 'https:' ? 100 : 0; // Client-side check
-  const contentScore = document.body.textContent.trim().length > 500 ? 80 : 40; // Basic heuristic
-  const uxScore = document.querySelectorAll('h1, h2, button, a').length > 5 ? 70 : 30; // Basic heuristic
-  const backlinksScore = 0; // Placeholder – educational note in tooltip
+  // Pull scores from homepage tool cards
+  const seoScore       = parseInt(document.querySelector('#seo-score .score-circle')?.dataset.score || 0);
+  const mobileScore    = parseInt(document.querySelector('#mobile-score .score-circle')?.dataset.score || 0);
+  const perfScore      = parseInt(document.querySelector('#perf-score .score-circle')?.dataset.score || 0);
+  const accessScore    = parseInt(document.querySelector('#access-score .score-circle')?.dataset.score || 0);
+
+  // Client-side estimates
+  const securityScore  = location.protocol === 'https:' ? 100 : 0;
+  const contentScore   = document.body.textContent.trim().length > 1000 ? 85 : (document.body.textContent.trim().length > 500 ? 65 : 40);
+  const uxScore        = document.querySelectorAll('h1, h2, h3, button, a[href]').length > 10 ? 75 : 45;
+
+  // Indexability check (fully client-side)
+  let indexabilityScore = 100;
+  const robotsMeta = document.querySelector('meta[name="robots"]');
+  if (robotsMeta && /noindex/i.test(robotsMeta.content)) {
+    indexabilityScore = 0;
+  } else if (!document.querySelector('link[rel="canonical"]')) {
+    indexabilityScore = 80; // missing canonical
+  }
 
   const scores = [
     seoScore,
@@ -41,10 +51,10 @@ export function init(analysisData) {
     mobileScore,
     securityScore,
     accessScore,
-    backlinksScore
+    indexabilityScore
   ];
 
-  const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) || 0;
+  const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
 
   const data = {
     labels: dimensions.map(d => d.label),
@@ -57,7 +67,8 @@ export function init(analysisData) {
       pointBackgroundColor: scores.map(getColor),
       pointBorderColor: '#fff',
       pointRadius: 5,
-      pointHoverRadius: 8
+      pointHoverRadius: 8,
+      fill: true
     }]
   };
 
@@ -80,11 +91,10 @@ export function init(analysisData) {
               const index = context.dataIndex;
               const score = context.raw;
               const lesson = dimensions[index].lesson;
-              const note = score === 0 ? 'No data – Run deep-dive module for full scan.' : '';
-              return `Score: ${score}/100\n${lesson}\n${note}`;
+              return `Score: ${score}/100\n${lesson}`;
             }
           },
-          bodyFont: { size: 14 },
+          bodyFont: { size: 13 },
           padding: 12
         }
       },
@@ -94,18 +104,21 @@ export function init(analysisData) {
           max: 100,
           ticks: { stepSize: 20, color: textColor, font: { size: 12 } },
           grid: { color: gridColor },
-          pointLabels: { color: textColor, font: { size: 12, weight: 'bold' }, padding: 10 },
-          angleLines: { color: gridColor },
-          maxRotation: 90,
-          minRotation: 0,
-          autoSkipPadding: 20 // Prevents cropping by auto-skipping/rotating
+          pointLabels: {
+            color: textColor,
+            font: { size: 12, weight: 'bold' },
+            padding: 20,
+            callback: label => label // uses \n for wrapping
+          },
+          angleLines: { color: gridColor }
         }
       },
-      interaction: { mode: 'index', intersect: false },
       onClick: (event, elements) => {
         if (elements.length > 0) {
           const index = elements[0].index;
           showDetailCard(dimensions[index], scores[index]);
+        } else {
+          showDetailCard(null, overallScore);
         }
       }
     }
@@ -114,26 +127,36 @@ export function init(analysisData) {
   if (radarChart) radarChart.destroy();
   radarChart = new Chart(canvas, config);
 
-  // Theme observer
+  // Theme change handling
   const observer = new MutationObserver(() => {
     const newDark = document.documentElement.classList.contains('dark');
-    radarChart.options.scales.r.grid.color = newDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
-    radarChart.options.scales.r.ticks.color = newDark ? '#eee' : '#333';
-    radarChart.options.scales.r.pointLabels.color = newDark ? '#eee' : '#333';
-    radarChart.options.scales.r.angleLines.color = newDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+    const newGrid = newDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+    const newText = newDark ? '#eee' : '#333';
+    radarChart.options.scales.r.grid.color = newGrid;
+    radarChart.options.scales.r.ticks.color = newText;
+    radarChart.options.scales.r.pointLabels.color = newText;
+    radarChart.options.scales.r.angleLines.color = newGrid;
     radarChart.update();
   });
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
-  showDetailCard(null, overallScore); // Initial overall view
+  showDetailCard(null, overallScore);
 }
 
 function showDetailCard(dim, score) {
   const details = document.getElementById('radar-details');
   if (dim) {
     const colorClass = score >= 80 ? 'text-green-400' : score >= 50 ? 'text-yellow-400' : 'text-red-400';
-    details.innerHTML = `<p class="text-2xl font-bold ${colorClass}">${dim.label}: ${score}/100</p><p class="mt-4">${dim.lesson}</p>`;
+    details.innerHTML = `
+      <p class="text-2xl font-bold ${colorClass}">${dim.label.replace('\n', ' ')}: ${score}/100</p>
+      <p class="mt-4 text-lg">${dim.lesson}</p>
+    `;
   } else {
-    details.innerHTML = `<p class="text-2xl font-bold">Overall: ${score}/100</p><p class="mt-4">Click points for details</p>`;
+    details.innerHTML = `
+      <p class="text-3xl font-bold bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Overall 360° Score: ${score}/100
+      </p>
+      <p class="mt-4">Tap a point for details & fixes</p>
+    `;
   }
 }
