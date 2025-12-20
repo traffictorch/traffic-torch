@@ -147,6 +147,33 @@
 
 
 
+#chartjs-tooltip {
+  opacity: 1;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 8px;
+  padding: 12px;
+  pointer-events: none;
+  transition: all 0.1s ease;
+  font-size: 14px;
+  max-width: 280px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 100;
+}
+@media (prefers-color-scheme: dark) {
+  #chartjs-tooltip {
+    background: rgba(255, 255, 255, 0.9);
+    color: black;
+  }
+}
+
+
+
+
+
+
+
 
 
 

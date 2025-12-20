@@ -2,8 +2,6 @@
 
 let radarChart = null;
 
-Chart.register(ChartDataLabels);
-
 const dimensions = [
   { key: 'technicalSEO', short: 'SEO', full: 'Technical SEO', lesson: 'Meta tags, schema, canonicals – ensures crawlers see your site correctly.' },
   { key: 'content', short: 'Quality', full: 'Content Quality', lesson: 'Relevance, length, structure – drives trust and rankings.' },
@@ -19,6 +17,63 @@ function getColor(score) {
   if (score >= 80) return 'rgb(34, 197, 94)';
   if (score >= 50) return 'rgb(234, 179, 8)';
   return 'rgb(239, 68, 68)';
+}
+
+function getOrCreateTooltip(chart) {
+  let tooltipEl = document.getElementById('chartjs-tooltip');
+  if (!tooltipEl) {
+    tooltipEl = document.createElement('div');
+    tooltipEl.id = 'chartjs-tooltip';
+    tooltipEl.innerHTML = '<div></div>';
+    document.body.appendChild(tooltipEl);
+  }
+  return tooltipEl;
+}
+
+function externalTooltipHandler(context) {
+  const {chart, tooltip} = context;
+  const tooltipEl = getOrCreateTooltip(chart);
+
+  if (tooltip.opacity === 0) {
+    tooltipEl.style.opacity = 0;
+    return;
+  }
+
+  if (tooltip.body) {
+    const index = tooltip.dataPoints[0].dataIndex;
+    const dim = dimensions[index];
+    const score = tooltip.dataPoints[0].raw;
+    const color = getColor(score);
+
+    const innerHtml = `
+      <div class="p-2">
+        <div class="font-bold text-lg">${dim.full}: <span style="color:${color}">${score}/100</span></div>
+        <div class="text-sm mt-2 opacity-90">${dim.lesson}</div>
+      </div>
+    `;
+
+    tooltipEl.querySelector('div').innerHTML = innerHtml;
+  }
+
+  const {offsetLeft: positionX, offsetTop: positionY} = chart.canvas;
+
+  // Position calculation with viewport clamping
+  let left = positionX + tooltip.caretX;
+  let top = positionY + tooltip.caretY - tooltipEl.offsetHeight - 20;
+
+  // Flip if off top
+  if (top < 0) top = positionY + tooltip.caretY + 20;
+
+  // Clamp horizontal
+  const tooltipWidth = tooltipEl.offsetWidth;
+  if (left + tooltipWidth > window.innerWidth) {
+    left = window.innerWidth - tooltipWidth - 10;
+  }
+  if (left < 0) left = 10;
+
+  tooltipEl.style.opacity = 1;
+  tooltipEl.style.left = left + 'px';
+  tooltipEl.style.top = top + 'px';
 }
 
 export function init() {
@@ -65,16 +120,16 @@ export function init() {
   const mobile = window.innerWidth < 640;
 
   const data = {
-    labels: dimensions.map(d => d.short),
+    labels: ['', '', '', '', '', '', '', ''],
     datasets: [{
       data: scores,
-      backgroundColor: 'rgba(249, 115, 22, 0.25)',
+      backgroundColor: 'rgba(249, 115, 22, 0.3)',
       borderColor: 'rgb(249, 115, 22)',
       borderWidth: 4,
       pointBackgroundColor: scores.map(getColor),
       pointBorderColor: '#fff',
       pointRadius: mobile ? 8 : 10,
-      pointHoverRadius: mobile ? 12 : 14,
+      pointHoverRadius: mobile ? 14 : 16,
       fill: true
     }]
   };
@@ -89,31 +144,17 @@ export function init() {
       plugins: {
         legend: { display: false },
         tooltip: {
-          callbacks: {
-            title: (context) => dimensions[context[0].dataIndex].full,
-            label: (context) => {
-              const dim = dimensions[context.dataIndex];
-              return [`Score: ${context.raw}/100`, dim.lesson];
-            }
-          },
-          padding: 12
-        },
-        datalabels: {
-          color: document.documentElement.classList.contains('dark') ? '#eee' : '#333',
-          font: { size: mobile ? 12 : 14, weight: 'bold' },
-          formatter: (value, context) => dimensions[context.dataIndex].short,
-          anchor: 'end',
-          align: 'end',
-          offset: 10
+          enabled: false, // Disable built-in
+          external: externalTooltipHandler // Use custom
         }
       },
       scales: {
         r: {
           beginAtZero: true,
           max: 100,
-          ticks: { display: false }, // Hide numbers to make bigger
+          ticks: { display: false },
           grid: { color: document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' },
-          pointLabels: { display: false }, // Hide external labels – now internal
+          pointLabels: { display: false },
           angleLines: { color: document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' }
         }
       },
@@ -125,23 +166,11 @@ export function init() {
           showDetails(null, overallScore);
         }
       }
-    },
-    plugins: [ChartDataLabels]
+    }
   };
 
   if (radarChart) radarChart.destroy();
   radarChart = new Chart(canvas, config);
-
-  // Theme observer
-  const observer = new MutationObserver(() => {
-    const dark = document.documentElement.classList.contains('dark');
-    radarChart.options.plugins.datalabels.color = dark ? '#eee' : '#333';
-    const grid = dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
-    radarChart.options.scales.r.grid.color = grid;
-    radarChart.options.scales.r.angleLines.color = grid;
-    radarChart.update();
-  });
-  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
   showDetails(null, overallScore);
 }
