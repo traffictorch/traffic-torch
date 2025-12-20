@@ -79,26 +79,41 @@ export function init() {
     return el && el.dataset.score ? parseInt(el.dataset.score, 10) : 0;
   };
 
+  // Real tool scores (updated by analysis.js)
   const seoScore       = getScore('#seo-score .score-circle');
   const mobileScore    = getScore('#mobile-score .score-circle');
   const perfScore      = getScore('#perf-score .score-circle');
   const accessScore    = getScore('#access-score .score-circle');
 
+  // Real client-side checks
   const securityScore  = location.protocol === 'https:' ? 100 : 0;
 
-  const textLength = document.body.textContent.trim().length;
-  const contentScore   = textLength > 1500 ? 90 : textLength > 800 ? 75 : textLength > 400 ? 55 : 30;
+  // Improved content estimate
+  const words = document.body.textContent.trim().split(/\s+/).length;
+  const headings = document.querySelectorAll('h1,h2,h3,h4,h5,h6').length;
+  const contentScore = words > 800 ? 90 : words > 400 ? 70 : words > 200 ? 50 : 30;
+  if (headings < 3) contentScore -= 10;
 
-  const interactiveEls = document.querySelectorAll('a[href], button, input, textarea, select').length;
-  const uxScore        = interactiveEls > 15 && document.querySelector('nav') ? 85 : interactiveEls > 8 ? 65 : 40;
+  // Improved UX estimate
+  const hasNav = !!document.querySelector('nav');
+  const interactive = document.querySelectorAll('a[href], button, input, textarea, select').length;
+  const hasViewport = !!document.querySelector('meta[name="viewport"]');
+  let uxScore = hasNav ? 60 : 30;
+  uxScore += interactive > 20 ? 30 : interactive > 10 ? 20 : 10;
+  uxScore += hasViewport ? 10 : 0;
 
+  // Improved Indexability
   let indexabilityScore = 100;
   const robots = document.querySelector('meta[name="robots"]');
-  if (robots && /noindex/i.test(robots.content)) {
-    indexabilityScore = 0;
-  } else if (!document.querySelector('link[rel="canonical"]')) {
-    indexabilityScore = 75;
+  if (robots) {
+    const content = robots.content.toLowerCase();
+    if (content.includes('noindex')) indexabilityScore = 0;
+    if (content.includes('nofollow')) indexabilityScore -= 20;
   }
+  const canonical = document.querySelector('link[rel="canonical"]');
+  if (!canonical) indexabilityScore -= 25;
+  const canonicals = document.querySelectorAll('link[rel="canonical"]');
+  if (canonicals.length > 1) indexabilityScore -= 15; // Multiple canonicals bad
 
   const scores = [
     seoScore,
