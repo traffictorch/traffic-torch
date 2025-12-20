@@ -3,26 +3,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const form = document.getElementById('url-form');
   const input = document.getElementById('url-input');
-  const result = mod.id === 'security' 
-  ? mod.fn(html, doc, input.value.trim())  // use raw input for accurate HTTP detection
-  : mod.fn(html, doc, url);
+  const results = document.getElementById('results');
   const overallContainer = document.getElementById('overall-container');
   const progressContainer = document.getElementById('progress-container');
   const progressText = document.getElementById('progress-text');
 
-	function cleanUrl(u) {
-  let trimmed = u.trim();
-  if (!trimmed) return '';
+  function cleanUrl(u) {
+    let trimmed = u.trim();
+    if (!trimmed) return '';
 
-  // If already has http:// or https://, return as-is
-  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    // If already has protocol, keep it exactly as typed
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
 
-  // If user explicitly typed "http://something", keep it (rare but supported)
-  if (trimmed.startsWith('http://')) return 'http://' + trimmed.slice(7);
-
-  // Default to https:// for everything else (domains, paths, www.)
-  return 'https://' + trimmed;
-}
+    // Default to https:// for everything else (domains, paths, www.)
+    return 'https://' + trimmed;
+  }
 
   function updateScore(id, score) {
     const circle = document.querySelector('#' + id + ' .score-circle');
@@ -76,7 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async e => {
     e.preventDefault();
 
-    let url = cleanUrl(input.value);
+    const originalInput = input.value.trim();
+    let url = cleanUrl(originalInput);
+
     if (!url) {
       alert('Please enter a URL');
       return;
@@ -87,13 +84,11 @@ document.addEventListener('DOMContentLoaded', () => {
     progressContainer.classList.remove('hidden');
     progressText.textContent = 'Fetching page...';
 
-	const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
+    const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
 
     try {
       const res = await fetch(proxyUrl);
-      if (!res.ok) {
-        throw new Error('Network response was not ok');
-      }
+      if (!res.ok) throw new Error('Network response was not ok');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
@@ -112,11 +107,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       for (const mod of modules) {
         progressText.textContent = `Analyzing ${mod.name}...`;
-        const result = mod.fn(html, doc, url);
+
+        // Pass original user input only to security module for accurate HTTP detection
+        const result = mod.id === 'security'
+          ? mod.fn(html, doc, originalInput)
+          : mod.fn(html, doc, url);
+
         scores.push(result.score);
         updateScore(`${mod.id}-score`, result.score);
         populateIssues(`${mod.id}-issues`, result.issues);
-        await new Promise(r => setTimeout(r, 300)); // Visual pacing
+        await new Promise(r => setTimeout(r, 300));
       }
 
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
@@ -131,8 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // All analysis functions remain exactly as you provided (unchanged below)
-  // === ORIGINAL + NEW MODULES (no changes needed here) ===
+  // === ALL ANALYSIS FUNCTIONS (unchanged) ===
 
   function analyzeSEO(html, doc) {
     let score = 100;
@@ -512,7 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function analyzeSecurity(html, doc, url) {
     let score = 100;
     const issues = [];
-    if (!url.startsWith('https:')) {
+    if (!url.toLowerCase().startsWith('https:')) {
       score -= 50;
       issues.push({
         issue: 'Not served over HTTPS',
