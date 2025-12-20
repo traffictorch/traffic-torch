@@ -137,18 +137,31 @@
             <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
             <div class="details hidden mt-6 text-left"><ul id="perf-issues" class="space-y-4"></ul></div>
         </section>
-<section id="visual-health-dashboard" class="mt-16">
-  <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl p-8 max-w-3xl mx-auto">
-    <h2 class="text-2xl font-bold mb-8 text-center">360° Health Radar</h2>
-    <div class="relative"> <!-- Wrapper for external tooltip positioning -->
-      <canvas id="healthRadarChart" class="mx-auto max-w-full"></canvas>
+
+        <section id="access-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
+            <div class="score-circle" data-score="0">
+                <svg viewBox="0 0 120 120">
+                    <circle class="bg" cx="60" cy="60" r="54"/>
+                    <circle class="progress" cx="60" cy="60" r="54"/>
+                    <text x="60" y="72" class="number">0</text>
+                </svg>
+                <div class="label text-xl font-bold mt-4">Accessibility</div>
+            </div>
+            <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+            <div class="details hidden mt-6 text-left"><ul id="access-issues" class="space-y-4"></ul></div>
+            
+            <canvas id="healthRadarChart" class="radar-chart"></canvas>
+            <div id="mobilePreview" class="preview-thumbnail"></div>
+            <button id="generateBadge">Generate Shareable Badge</button>
+            <div id="badgeOutput"></div>
+            <span class="metric" data-tooltip="technical-seo">Technical SEO: 85/100 <i class="info-icon"></i></span>
+            
+        </section>
     </div>
-    <div id="radar-details" class="mt-8 text-center opacity-80"></div>
-  </div>
-</section>
-    </div>
-    
-    
+	</div>
+	</div>
+
+
 <section id="visual-health-dashboard" class="mt-16">
   <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl p-8 max-w-3xl mx-auto flex flex-col min-h-[500px]">
     <h2 class="text-2xl font-bold mb-8 text-center">360° Health Radar</h2>
