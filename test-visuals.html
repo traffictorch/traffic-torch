@@ -147,13 +147,19 @@
   </div>
 </section>
     </div>
-    <section id="visual-health-dashboard" class="mt-16 max-w-2xl mx-auto">
-      <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl p-8">
-        <h2 class="text-2xl font-bold mb-6 text-center">360° Health Radar</h2>
-        <canvas id="healthRadarChart" class="mx-auto max-w-full"></canvas>
-        <div id="radar-details" class="mt-6 text-center opacity-80"></div>
-      </div>
-    </section>
+    
+    
+<section id="visual-health-dashboard" class="mt-16">
+  <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl p-8 max-w-3xl mx-auto flex flex-col min-h-[500px]">
+    <h2 class="text-2xl font-bold mb-8 text-center">360° Health Radar</h2>
+    <div class="flex-1 relative">
+      <canvas id="healthRadarChart" class="mx-auto max-w-full"></canvas>
+    </div>
+    <div id="radar-details" class="mt-8 text-center opacity-80"></div>
+  </div>
+</section>
+    
+    
   </main>
   <script type="module" src="js/modules/home-enhancements.js"></script>
   <script type="module" src="js/modules/visual-enhancements.js"></script>
