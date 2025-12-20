@@ -1,9 +1,0 @@
-const data = { labels: ['Technical SEO', 'Content', 'UX', 'Speed', 'Mobile', 'Security', 'Accessibility'], datasets: [{ label: 'Health', data: [85, 92, 78, 65, 90, 95, 82], backgroundColor: 'rgba(0, 255, 0, 0.2)', borderColor: 'green' }] };
-
-const ctx = document.getElementById('healthRadarChart').getContext('2d'); new Chart(ctx, { type: 'radar', data, options: { scales: { r: { beginAtZero: true, max: 100 } }, plugins: { tooltip: { callbacks: { label: (context) =>
-
-const url = encodeURIComponent(analyzedPage); fetch('https://cors-proxy.traffictorch.workers.dev/?https://api.apiflash.com/v1/urltoscreenshot?access_key=YOUR_KEY&url=' + url + '&width=375&height=667&format=png&response_type=image') .then(response => response.blob()) .then(blob => { const img = new Image(); img.src = URL.createObjectURL(blob); img.onload = () => { document.getElementById('mobilePreview').appendChild(img); addHeatmapOverlays(img); }; });
-
-function addHeatmapOverlays(img) { const canvas = document.createElement('canvas'); canvas.width = 375; canvas.height = 667; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0); // Draw red overlays based on issues, e.g., if slow header: ctx.fillStyle = 'rgba(255,0,0,0.3)'; ctx.fillRect(0, 0, 375, 100); img.src = canvas.toDataURL(); }
-
-document.getElementById('generateBadge').addEventListener('click', () => { const score = overallScore; const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('width', '200'); svg.setAttribute('height', '50'); const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); rect.setAttribute('width', '200'); rect.setAttribute('height', '50'); rect.setAttribute('fill', getColorByScore(score)); svg.appendChild(rect); const text = document.createElementNS('http://www.w3.org/2000/svg', 'text'); text.setAttribute('x', '10'); text.setAttribute('y', '30'); text.textContent =

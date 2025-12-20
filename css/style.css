@@ -116,6 +116,21 @@
 
 
 
+#visual-health-dashboard .rounded-3xl {
+  overflow: hidden;
+}
+#healthRadarChart {
+  width: 100% !important;
+  max-height: 70vh;
+}
+@media (max-width: 640px) {
+  #healthRadarChart {
+    max-height: 55vh;
+  }
+}
+
+
+
 
 
 
