@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const results = document.getElementById('results');
   const loader = document.getElementById('loader');
 
-  function cleanUrl(u) { 
-    return u.trim() && !/^https?:\/\//i.test(u) ? 'https://' + u.trim() : u.trim(); 
+  function cleanUrl(u) {
+    return u.trim() && !/^https?:\/\//i.test(u) ? 'https://' + u.trim() : u.trim();
   }
 
   function updateScore(id, score) {
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     num.textContent = score;
     num.setAttribute('dominant-baseline', 'middle');
     num.style.opacity = '1';
-    circle.dataset.score = score; // Critical for radar chart
+    circle.dataset.score = score; // ← Critical: radar chart reads this
   }
 
   function populateIssues(id, issues) {
@@ -89,8 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
       loader.classList.add('hidden');
       results.classList.remove('hidden');
 
-      // Trigger radar with real scores
-      if (window.initRadarAfterAnalysis) {
+      // Trigger radar chart with real scores
+      if (typeof window.initRadarAfterAnalysis === 'function') {
         window.initRadarAfterAnalysis();
       }
     } catch {
@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function analyzeAccess(doc) {
     let score = 100;
     const issues = [];
-    const missingAlts = Array.from(doc.querySelectorAll('img')).filter(i => !i.alt || i.alt.trim() === '').length;
+    const missingAlts = Array.from(doc.querySelectorAll('img')).filter(i => !i.alt || i.alt.trim() === '');
     if (missingAlts) {
       score -= Math.min(35, missingAlts * 8);
       issues.push({

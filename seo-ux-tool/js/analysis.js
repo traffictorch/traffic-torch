@@ -17,3 +17,10 @@ document.getElementById('url-form').addEventListener('submit', async (e) => {
   // Initialize radar with fresh real data
   initRadar();
 });
+
+
+// After all scores updated and results shown
+document.getElementById('visual-health-dashboard').classList.remove('hidden');
+if (window.initRadarAfterAnalysis) {
+  window.initRadarAfterAnalysis();
+}
