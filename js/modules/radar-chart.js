@@ -14,33 +14,30 @@ const dimensions = [
 ];
 
 function getColor(score) {
-  if (score >= 80) return 'rgb(34, 197, 94)';     // green
-  if (score >= 50) return 'rgb(234, 179, 8)';      // yellow
-  return 'rgb(239, 68, 68)';                      // red
+  if (score >= 80) return 'rgb(34, 197, 94)';
+  if (score >= 50) return 'rgb(234, 179, 8)';
+  return 'rgb(239, 68, 68)';
 }
 
 export function init(analysisData = {}) {
   const canvas = document.getElementById('healthRadarChart');
   if (!canvas) return;
 
-  // Pull scores from homepage tool cards
   const seoScore       = parseInt(document.querySelector('#seo-score .score-circle')?.dataset.score || 0);
   const mobileScore    = parseInt(document.querySelector('#mobile-score .score-circle')?.dataset.score || 0);
   const perfScore      = parseInt(document.querySelector('#perf-score .score-circle')?.dataset.score || 0);
   const accessScore    = parseInt(document.querySelector('#access-score .score-circle')?.dataset.score || 0);
 
-  // Client-side estimates
   const securityScore  = location.protocol === 'https:' ? 100 : 0;
   const contentScore   = document.body.textContent.trim().length > 1000 ? 85 : (document.body.textContent.trim().length > 500 ? 65 : 40);
   const uxScore        = document.querySelectorAll('h1, h2, h3, button, a[href]').length > 10 ? 75 : 45;
 
-  // Indexability check (fully client-side)
   let indexabilityScore = 100;
   const robotsMeta = document.querySelector('meta[name="robots"]');
   if (robotsMeta && /noindex/i.test(robotsMeta.content)) {
     indexabilityScore = 0;
   } else if (!document.querySelector('link[rel="canonical"]')) {
-    indexabilityScore = 80; // missing canonical
+    indexabilityScore = 80;
   }
 
   const scores = [
@@ -107,8 +104,7 @@ export function init(analysisData = {}) {
           pointLabels: {
             color: textColor,
             font: { size: 12, weight: 'bold' },
-            padding: 20,
-            callback: label => label // uses \n for wrapping
+            padding: 20
           },
           angleLines: { color: gridColor }
         }
@@ -127,7 +123,6 @@ export function init(analysisData = {}) {
   if (radarChart) radarChart.destroy();
   radarChart = new Chart(canvas, config);
 
-  // Theme change handling
   const observer = new MutationObserver(() => {
     const newDark = document.documentElement.classList.contains('dark');
     const newGrid = newDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
