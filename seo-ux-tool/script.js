@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     progressContainer.classList.remove('hidden');
     progressText.textContent = 'Fetching page...';
 
-    const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?' + encodeURIComponent(url);
+	const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
 
     try {
       const res = await fetch(proxyUrl);
