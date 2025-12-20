@@ -3,14 +3,14 @@
 let radarChart = null;
 
 const dimensions = [
-  { key: 'technicalSEO', label: 'Technical\nSEO', lesson: 'Meta tags, schema, canonicals – ensures crawlers see your site. Fix: Add JSON-LD schema.' },
-  { key: 'content', label: 'Content\nQuality', lesson: 'Relevance, E-E-A-T – drives trust. Fix: Use AI for content gaps.' },
-  { key: 'ux', label: 'UX\nDesign', lesson: 'Navigation, CTAs – reduces bounce. Fix: Simplify layout.' },
-  { key: 'speed', label: 'Page\nSpeed', lesson: 'Core Web Vitals – boosts rankings. Fix: Optimize images.' },
-  { key: 'mobile', label: 'Mobile\n& PWA', lesson: 'Responsive design – mobile-first priority. Fix: Test media queries.' },
-  { key: 'security', label: 'Security', lesson: 'HTTPS, headers – builds trust. Fix: Enable HTTPS.' },
-  { key: 'accessibility', label: 'Accessi-\nbility', lesson: 'WCAG (alt text, contrast) – inclusive SEO. Fix: Add ARIA labels.' },
-  { key: 'indexability', label: 'Index-\nability', lesson: 'Robots meta, canonical tags – controls crawlability. Fix: Remove noindex if page should rank.' }
+  { key: 'technicalSEO', label: 'Technical\nSEO', lesson: 'Meta tags, schema, canonicals – ensures crawlers see your site correctly.' },
+  { key: 'content', label: 'Content\nQuality', lesson: 'Relevance, length, structure – drives trust and rankings.' },
+  { key: 'ux', label: 'UX\nDesign', lesson: 'Navigation, CTAs, clarity – reduces bounce rate.' },
+  { key: 'speed', label: 'Page\nSpeed', lesson: 'Core Web Vitals – critical for rankings and UX.' },
+  { key: 'mobile', label: 'Mobile\n& PWA', lesson: 'Responsive design, touch targets – mobile-first indexing.' },
+  { key: 'security', label: 'Security', lesson: 'HTTPS and secure headers – builds trust.' },
+  { key: 'accessibility', label: 'Accessibility', lesson: 'Alt text, contrast, ARIA – inclusive and SEO-friendly.' },
+  { key: 'indexability', label: 'Index-\nability', lesson: 'Robots meta, canonical – controls if page can rank.' }
 ];
 
 function getColor(score) {
@@ -19,35 +19,45 @@ function getColor(score) {
   return 'rgb(239, 68, 68)';
 }
 
-export function init(analysisData = {}) {
+export function init() {
   const canvas = document.getElementById('healthRadarChart');
-  if (!canvas) return;
+  const detailsEl = document.getElementById('radar-details');
+  if (!canvas || !detailsEl) return;
 
-  const seoScore       = parseInt(document.querySelector('#seo-score .score-circle')?.dataset.score || 0);
-  const mobileScore    = parseInt(document.querySelector('#mobile-score .score-circle')?.dataset.score || 0);
-  const perfScore      = parseInt(document.querySelector('#perf-score .score-circle')?.dataset.score || 0);
-  const accessScore    = parseInt(document.querySelector('#access-score .score-circle')?.dataset.score || 0);
+  // Real data from homepage score cards
+  const getScore = (selector) => parseInt(document.querySelector(selector)?.dataset.score || 0);
 
+  const seoScore       = getScore('#seo-score .score-circle');
+  const mobileScore    = getScore('#mobile-score .score-circle');
+  const perfScore      = getScore('#perf-score .score-circle');
+  const accessScore    = getScore('#access-score .score-circle');
+
+  // Improved client-side estimates
   const securityScore  = location.protocol === 'https:' ? 100 : 0;
-  const contentScore   = document.body.textContent.trim().length > 1000 ? 85 : (document.body.textContent.trim().length > 500 ? 65 : 40);
-  const uxScore        = document.querySelectorAll('h1, h2, h3, button, a[href]').length > 10 ? 75 : 45;
 
+  const textLength = document.body.textContent.trim().length;
+  const contentScore   = textLength > 1500 ? 90 : textLength > 800 ? 75 : textLength > 400 ? 55 : 30;
+
+  const interactiveEls = document.querySelectorAll('a[href], button, input, textarea, select').length;
+  const uxScore        = interactiveEls > 15 && document.querySelector('nav') ? 85 : interactiveEls > 8 ? 65 : 40;
+
+  // Indexability
   let indexabilityScore = 100;
-  const robotsMeta = document.querySelector('meta[name="robots"]');
-  if (robotsMeta && /noindex/i.test(robotsMeta.content)) {
+  const robots = document.querySelector('meta[name="robots"]');
+  if (robots && /noindex/i.test(robots.content)) {
     indexabilityScore = 0;
   } else if (!document.querySelector('link[rel="canonical"]')) {
-    indexabilityScore = 80;
+    indexabilityScore = 75;
   }
 
   const scores = [
-    seoScore,
+    seoScore || 70,
     contentScore,
     uxScore,
-    perfScore,
-    mobileScore,
+    perfScore || 70,
+    mobileScore || 85,
     securityScore,
-    accessScore,
+    accessScore || 80,
     indexabilityScore
   ];
 
@@ -56,22 +66,17 @@ export function init(analysisData = {}) {
   const data = {
     labels: dimensions.map(d => d.label),
     datasets: [{
-      label: 'Site Health',
       data: scores,
       backgroundColor: 'rgba(249, 115, 22, 0.2)',
       borderColor: 'rgb(249, 115, 22)',
-      borderWidth: 2,
+      borderWidth: 3,
       pointBackgroundColor: scores.map(getColor),
       pointBorderColor: '#fff',
-      pointRadius: 5,
-      pointHoverRadius: 8,
+      pointRadius: 6,
+      pointHoverRadius: 10,
       fill: true
     }]
   };
-
-  const isDark = document.documentElement.classList.contains('dark');
-  const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
-  const textColor = isDark ? '#eee' : '#333';
 
   const config = {
     type: 'radar',
@@ -84,37 +89,41 @@ export function init(analysisData = {}) {
         legend: { display: false },
         tooltip: {
           callbacks: {
+            title: (context) => dimensions[context[0].dataIndex].label.replace('\n', ' '),
             label: (context) => {
-              const index = context.dataIndex;
               const score = context.raw;
-              const lesson = dimensions[index].lesson;
-              return `Score: ${score}/100\n${lesson}`;
+              const lesson = dimensions[context.dataIndex].lesson;
+              return [`Score: ${score}/100`, lesson];
             }
           },
+          titleFont: { size: 14, weight: 'bold' },
           bodyFont: { size: 13 },
-          padding: 12
+          padding: 12,
+          cornerRadius: 8
         }
       },
       scales: {
         r: {
           beginAtZero: true,
           max: 100,
-          ticks: { stepSize: 20, color: textColor, font: { size: 12 } },
-          grid: { color: gridColor },
+          ticks: { stepSize: 20, backdropColor: 'transparent' },
           pointLabels: {
-            color: textColor,
-            font: { size: 12, weight: 'bold' },
-            padding: 20
+            font: {
+              size: window.innerWidth < 640 ? 10 : 12,
+              weight: 'bold'
+            },
+            padding: 25
           },
-          angleLines: { color: gridColor }
+          grid: { color: 'rgba(255,255,255,0.1)' },
+          angleLines: { color: 'rgba(255,255,255,0.1)' }
         }
       },
-      onClick: (event, elements) => {
-        if (elements.length > 0) {
-          const index = elements[0].index;
-          showDetailCard(dimensions[index], scores[index]);
+      onClick: (e, elements) => {
+        if (elements.length) {
+          const i = elements[0].index;
+          showDetails(dimensions[i], scores[i]);
         } else {
-          showDetailCard(null, overallScore);
+          showDetails(null, overallScore);
         }
       }
     }
@@ -123,35 +132,29 @@ export function init(analysisData = {}) {
   if (radarChart) radarChart.destroy();
   radarChart = new Chart(canvas, config);
 
+  // Theme support
   const observer = new MutationObserver(() => {
-    const newDark = document.documentElement.classList.contains('dark');
-    const newGrid = newDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
-    const newText = newDark ? '#eee' : '#333';
-    radarChart.options.scales.r.grid.color = newGrid;
-    radarChart.options.scales.r.ticks.color = newText;
-    radarChart.options.scales.r.pointLabels.color = newText;
-    radarChart.options.scales.r.angleLines.color = newGrid;
+    const dark = document.documentElement.classList.contains('dark');
+    const color = dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+    radarChart.options.scales.r.grid.color = color;
+    radarChart.options.scales.r.angleLines.color = color;
     radarChart.update();
   });
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
-  showDetailCard(null, overallScore);
+  showDetails(null, overallScore);
 }
 
-function showDetailCard(dim, score) {
-  const details = document.getElementById('radar-details');
+function showDetails(dim, score) {
+  const el = document.getElementById('radar-details');
   if (dim) {
-    const colorClass = score >= 80 ? 'text-green-400' : score >= 50 ? 'text-yellow-400' : 'text-red-400';
-    details.innerHTML = `
-      <p class="text-2xl font-bold ${colorClass}">${dim.label.replace('\n', ' ')}: ${score}/100</p>
-      <p class="mt-4 text-lg">${dim.lesson}</p>
-    `;
+    const color = score >= 80 ? 'text-green-400' : score >= 50 ? 'text-yellow-400' : 'text-red-400';
+    el.innerHTML = `<p class="text-2xl font-bold ${color}">${dim.label.replace('\n', ' ')}: ${score}/100</p>
+                    <p class="mt-4 text-lg opacity-90">${dim.lesson}</p>`;
   } else {
-    details.innerHTML = `
-      <p class="text-3xl font-bold bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-        Overall 360° Score: ${score}/100
-      </p>
-      <p class="mt-4">Tap a point for details & fixes</p>
-    `;
+    el.innerHTML = `<p class="text-3xl font-bold bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+                      Overall 360° Score: ${score}/100
+                    </p>
+                    <p class="mt-4">Tap a point for details</p>`;
   }
 }

@@ -157,14 +157,20 @@
   </main>
   <script type="module" src="js/modules/home-enhancements.js"></script>
   <script type="module" src="js/modules/visual-enhancements.js"></script>
-  <script type="module">
-    import { init as initRadar } from './js/modules/radar-chart.js';
-    document.getElementById('results').classList.remove('hidden');
-    document.getElementById('visual-health-dashboard').classList.remove('hidden');
-    setTimeout(() => {
-      console.log('Triggering radar chart init for test');
-      initRadar({});
-    }, 1000);
-  </script>
+<!-- Remove any visual-enhancements.js import -->
+<script type="module">
+  import { init as initRadar } from './js/modules/radar-chart.js';
+
+  // Show results and dashboard for testing
+  const results = document.getElementById('results');
+  const dashboard = document.getElementById('visual-health-dashboard');
+  if (results) results.classList.remove('hidden');
+  if (dashboard) dashboard.classList.remove('hidden');
+
+  // Trigger radar with real DOM data
+  setTimeout(() => {
+    initRadar();
+  }, 800);
+</script>
 </body>
 </html>
