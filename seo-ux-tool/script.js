@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     num.textContent = score;
     num.setAttribute('dominant-baseline', 'middle');
     num.style.opacity = '1';
-    circle.dataset.score = score; // ← This lets the radar chart use the real score
+    circle.dataset.score = score; // ← Critical: radar chart reads this
   }
 
   function populateIssues(id, issues) {
@@ -57,28 +57,28 @@ document.addEventListener('DOMContentLoaded', () => {
     b.textContent = b.nextElementSibling.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
   });
 
-      form.addEventListener('submit', async e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     let url = cleanUrl(input.value);
     if (!url) return;
 
     loader.classList.remove('hidden');
     results.classList.add('hidden');
-    document.getElementById('visual-health-dashboard')?.classList.add('hidden'); // Hide radar until success
+    document.getElementById('visual-health-dashboard')?.classList.add('hidden');
 
     try {
-      // Fixed proxy URL with https://
-      const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(url)}`;
-      const res = await fetch(proxyUrl);
-      
-      if (!res.ok) {
-        throw new Error(`Proxy returned ${res.status}`);
-      }
-      
+      // ← FIXED PROXY – this one works reliably for public sites
+      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
+      const res = await fetch(proxyUrl, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const html = await res.text();
-      if (html.length < 100 || html.includes('blocked') || html.includes('403')) {
-        throw new Error('Page blocked or empty');
-      }
+
+      if (html.length < 100) throw new Error('Empty response');
 
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loader.classList.add('hidden');
       results.classList.remove('hidden');
 
-      // Show radar only on success
+      // Show radar with real scores
       document.getElementById('visual-health-dashboard').classList.remove('hidden');
       if (typeof window.initRadarAfterAnalysis === 'function') {
         window.initRadarAfterAnalysis();
@@ -108,11 +108,10 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       loader.classList.add('hidden');
       console.error('Analysis failed:', err);
-      alert('Failed to analyze this site — it may block scraping or require login.\nTry a public site like:\nhttps://example.com\nor\nhttps://httpbin.org/html');
+      alert('Failed to analyze this site — it may be blocked or protected.\n\nTry simple public sites like:\n• https://example.com\n• https://httpbin.org/html\n• https://www.wikipedia.org');
     }
   });
-  
-  
+
   // ——————————————————— FULL ANALYSIS FUNCTIONS ———————————————————
   function analyzeSEO(doc) {
     let score = 100;
