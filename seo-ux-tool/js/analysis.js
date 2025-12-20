@@ -1,6 +1,6 @@
 // /seo-ux-tool/js/analysis.js
 
-import { init as initRadar } from '../../js/modules/radar-chart.js';
+import { init as initRadar } from '/seo-ux-tool/js/modules/radar-chart.js';
 
 document.getElementById('url-form').addEventListener('submit', async (e) => {
   e.preventDefault();
