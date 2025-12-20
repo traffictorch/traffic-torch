@@ -3,16 +3,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const form = document.getElementById('url-form');
   const input = document.getElementById('url-input');
-  const results = document.getElementById('results');
+  const result = mod.id === 'security' 
+  ? mod.fn(html, doc, input.value.trim())  // use raw input for accurate HTTP detection
+  : mod.fn(html, doc, url);
   const overallContainer = document.getElementById('overall-container');
   const progressContainer = document.getElementById('progress-container');
   const progressText = document.getElementById('progress-text');
 
-  function cleanUrl(u) {
-    const trimmed = u.trim();
-    if (!trimmed) return '';
-    return /^https?:\/\//i.test(trimmed) ? trimmed : 'https://' + trimmed;
-  }
+	function cleanUrl(u) {
+  let trimmed = u.trim();
+  if (!trimmed) return '';
+
+  // If already has http:// or https://, return as-is
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+
+  // If user explicitly typed "http://something", keep it (rare but supported)
+  if (trimmed.startsWith('http://')) return 'http://' + trimmed.slice(7);
+
+  // Default to https:// for everything else (domains, paths, www.)
+  return 'https://' + trimmed;
+}
 
   function updateScore(id, score) {
     const circle = document.querySelector('#' + id + ' .score-circle');
