@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     num.textContent = score;
     num.setAttribute('dominant-baseline', 'middle');
     num.style.opacity = '1';
-    circle.dataset.score = score; // ← Critical: radar chart reads this
+    circle.dataset.score = score; // ← This lets the radar chart use the real score
   }
 
   function populateIssues(id, issues) {
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loader.classList.add('hidden');
       results.classList.remove('hidden');
 
-      // Trigger radar chart with real scores
+      // ← This line makes the radar chart update with the real scores
       if (typeof window.initRadarAfterAnalysis === 'function') {
         window.initRadarAfterAnalysis();
       }
@@ -100,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ——————————————————— FULL ANALYSIS FUNCTIONS ———————————————————
-
   function analyzeSEO(doc) {
     let score = 100;
     const issues = [];
