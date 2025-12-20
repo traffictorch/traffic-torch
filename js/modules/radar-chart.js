@@ -24,6 +24,7 @@ function getOrCreateTooltip() {
   if (!tooltipEl) {
     tooltipEl = document.createElement('div');
     tooltipEl.id = 'chartjs-tooltip';
+    tooltipEl.classList.add('hidden');
     document.body.appendChild(tooltipEl);
   }
   return tooltipEl;
@@ -34,7 +35,7 @@ function externalTooltipHandler(context) {
   const tooltipEl = getOrCreateTooltip();
 
   if (tooltip.opacity === 0) {
-    tooltipEl.style.opacity = 0;
+    tooltipEl.classList.add('hidden');
     return;
   }
 
@@ -44,29 +45,24 @@ function externalTooltipHandler(context) {
     const score = tooltip.dataPoints[0].raw;
 
     tooltipEl.innerHTML = `
-      <div class="font-bold">${dim.full}: <span style="color:${getColor(score)}">${score}/100</span></div>
-      <div class="mt-2 text-sm opacity-90">${dim.lesson}</div>
+      <div class="p-3">
+        <div class="font-bold text-lg">${dim.full}: <span style="color:${getColor(score)}">${score}/100</span></div>
+        <div class="text-sm mt-2 opacity-90">${dim.lesson}</div>
+      </div>
     `;
   }
 
   const canvasRect = chart.canvas.getBoundingClientRect();
-  const tooltipWidth = tooltipEl.offsetWidth;
-  const tooltipHeight = tooltipEl.offsetHeight;
-
-  let left = canvasRect.left + tooltip.caretX - tooltipWidth / 2;
-  let top = canvasRect.top + tooltip.caretY - tooltipHeight - 10; // Above point
+  let left = canvasRect.left + tooltip.caretX - tooltipEl.offsetWidth / 2;
+  let top = canvasRect.top + tooltip.caretY - tooltipEl.offsetHeight - 10;
 
   // Clamp to viewport
-  const padding = 10;
-  left = Math.max(padding, Math.min(left, window.innerWidth - tooltipWidth - padding));
-  top = Math.max(padding, Math.min(top, window.innerHeight - tooltipHeight - padding));
+  left = Math.max(10, Math.min(left, window.innerWidth - tooltipEl.offsetWidth - 10));
+  top = Math.max(10, Math.min(top, window.innerHeight - tooltipEl.offsetHeight - 10));
 
-  // Flip to below if above would go off top
-  if (top < padding) {
-    top = canvasRect.top + tooltip.caretY + 10;
-  }
+  if (top < 10) top = canvasRect.top + tooltip.caretY + 10;
 
-  tooltipEl.style.opacity = 1;
+  tooltipEl.classList.remove('hidden');
   tooltipEl.style.left = left + 'px';
   tooltipEl.style.top = top + 'px';
 }
@@ -76,7 +72,32 @@ export function init() {
   const detailsEl = document.getElementById('radar-details');
   if (!canvas || !detailsEl) return;
 
-  // ... (score calculation same as before) ...
+  let seoScore, mobileScore, perfScore, accessScore, securityScore, contentScore, uxScore, indexabilityScore;
+
+  {
+    const getScore = (selector) => parseInt(document.querySelector(selector)?.dataset.score || 0);
+
+    seoScore       = getScore('#seo-score .score-circle');
+    mobileScore    = getScore('#mobile-score .score-circle');
+    perfScore      = getScore('#perf-score .score-circle');
+    accessScore    = getScore('#access-score .score-circle');
+
+    securityScore  = location.protocol === 'https:' ? 100 : 0;
+
+    const textLength = document.body.textContent.trim().length;
+    contentScore   = textLength > 1500 ? 90 : textLength > 800 ? 75 : textLength > 400 ? 55 : 30;
+
+    const interactiveEls = document.querySelectorAll('a[href], button, input, textarea, select').length;
+    uxScore        = interactiveEls > 15 && document.querySelector('nav') ? 85 : interactiveEls > 8 ? 65 : 40;
+
+    indexabilityScore = 100;
+    const robots = document.querySelector('meta[name="robots"]');
+    if (robots && /noindex/i.test(robots.content)) {
+      indexabilityScore = 0;
+    } else if (!document.querySelector('link[rel="canonical"]')) {
+      indexabilityScore = 75;
+    }
+  }
 
   const scores = [
     seoScore || 70,
@@ -149,7 +170,6 @@ export function init() {
   showDetails(null, overallScore);
 }
 
-// showDetails function same as before
 function showDetails(dim, score) {
   const el = document.getElementById('radar-details');
   if (dim) {
