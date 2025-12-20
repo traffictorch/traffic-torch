@@ -57,23 +57,29 @@ document.addEventListener('DOMContentLoaded', () => {
     b.textContent = b.nextElementSibling.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
   });
 
-    form.addEventListener('submit', async e => {
+      form.addEventListener('submit', async e => {
     e.preventDefault();
     let url = cleanUrl(input.value);
     if (!url) return;
 
     loader.classList.remove('hidden');
     results.classList.add('hidden');
+    document.getElementById('visual-health-dashboard')?.classList.add('hidden'); // Hide radar until success
 
     try {
-      const res = await fetch(`https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(url)}`);
+      // Fixed proxy URL with https://
+      const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(url)}`;
+      const res = await fetch(proxyUrl);
+      
       if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
+        throw new Error(`Proxy returned ${res.status}`);
       }
+      
       const html = await res.text();
-      if (html.length < 100) {
-        throw new Error('Empty or blocked response');
+      if (html.length < 100 || html.includes('blocked') || html.includes('403')) {
+        throw new Error('Page blocked or empty');
       }
+
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
       const seo = analyzeSEO(doc);
@@ -94,16 +100,19 @@ document.addEventListener('DOMContentLoaded', () => {
       loader.classList.add('hidden');
       results.classList.remove('hidden');
 
-      // Radar trigger – correct position
+      // Show radar only on success
+      document.getElementById('visual-health-dashboard').classList.remove('hidden');
       if (typeof window.initRadarAfterAnalysis === 'function') {
         window.initRadarAfterAnalysis();
       }
     } catch (err) {
       loader.classList.add('hidden');
-      alert('Failed to analyze this site — it may block scraping or require login. Try a public site like https://example.com or https://httpbin.org/html');
+      console.error('Analysis failed:', err);
+      alert('Failed to analyze this site — it may block scraping or require login.\nTry a public site like:\nhttps://example.com\nor\nhttps://httpbin.org/html');
     }
   });
-
+  
+  
   // ——————————————————— FULL ANALYSIS FUNCTIONS ———————————————————
   function analyzeSEO(doc) {
     let score = 100;
