@@ -49,62 +49,134 @@
   </button>
 </form>
 
-    <div id="loader" class="hidden text-center py-20 text-2xl">Analising…</div>
+    
+    <div id="overall-container" class="text-center my-12 hidden">
+      <h2 class="text-3xl font-bold mb-6">Overall SEO & UX Health Score</h2>
+      <div id="overall-score" class="inline-block">
+        <div class="score-circle large" data-score="0">
+          <svg viewBox="0 0 200 200">
+            <circle class="bg" cx="100" cy="100" r="90"/>
+            <circle class="progress" cx="100" cy="100" r="90"/>
+            <text x="100" y="120" class="number text-5xl">0</text>
+          </svg>
+          <div class="label text-2xl font-bold mt-6">Overall Score</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="progress-container" class="text-center my-8 hidden">
+      <div class="spinner mx-auto mb-4"></div>
+      <p id="progress-text" class="text-xl font-medium">Initializing analysis...</p>
+    </div>
 
     <div id="results" class="hidden grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <section id="seo-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
-            <div class="score-circle" data-score="0">
-                <svg viewBox="0 0 120 120">
-                    <circle class="bg" cx="60" cy="60" r="54"/>
-                    <circle class="progress" cx="60" cy="60" r="54"/>
-                    <text x="60" y="72" class="number">0</text>
-                </svg>
-                <div class="label text-xl font-bold mt-4">On-Page SEO</div>
-            </div>
-            <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-            <div class="details hidden mt-6 text-left"><ul id="seo-issues" class="space-y-4"></ul></div>
-        </section>
+      <!-- Existing 4 modules -->
+      <section id="seo-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
+        <div class="score-circle" data-score="0">
+          <svg viewBox="0 0 120 120">
+            <circle class="bg" cx="60" cy="60" r="54"/>
+            <circle class="progress" cx="60" cy="60" r="54"/>
+            <text x="60" y="72" class="number">0</text>
+          </svg>
+          <div class="label text-xl font-bold mt-4">On-Page SEO</div>
+        </div>
+        <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+        <div class="details hidden mt-6 text-left"><ul id="seo-issues" class="space-y-4"></ul></div>
+      </section>
 
-        <section id="mobile-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
-            <div class="score-circle" data-score="0">
-                <svg viewBox="0 0 120 120">
-                    <circle class="bg" cx="60" cy="60" r="54"/>
-                    <circle class="progress" cx="60" cy="60" r="54"/>
-                    <text x="60" y="72" class="number">0</text>
-                </svg>
-                <div class="label text-xl font-bold mt-4">Mobile & PWA</div>
-            </div>
-            <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-            <div class="details hidden mt-6 text-left"><ul id="mobile-issues" class="space-y-4"></ul></div>
-        </section>
+      <section id="mobile-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
+        <div class="score-circle" data-score="0">
+          <svg viewBox="0 0 120 120">
+            <circle class="bg" cx="60" cy="60" r="54"/>
+            <circle class="progress" cx="60" cy="60" r="54"/>
+            <text x="60" y="72" class="number">0</text>
+          </svg>
+          <div class="label text-xl font-bold mt-4">Mobile & PWA</div>
+        </div>
+        <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+        <div class="details hidden mt-6 text-left"><ul id="mobile-issues" class="space-y-4"></ul></div>
+      </section>
 
-        <section id="perf-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
-            <div class="score-circle" data-score="0">
-                <svg viewBox="0 0 120 120">
-                    <circle class="bg" cx="60" cy="60" r="54"/>
-                    <circle class="progress" cx="60" cy="60" r="54"/>
-                    <text x="60" y="72" class="number">0</text>
-                </svg>
-                <div class="label text-xl font-bold mt-4">Performance</div>
-            </div>
-            <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-            <div class="details hidden mt-6 text-left"><ul id="perf-issues" class="space-y-4"></ul></div>
-        </section>
+      <section id="perf-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
+        <div class="score-circle" data-score="0">
+          <svg viewBox="0 0 120 120">
+            <circle class="bg" cx="60" cy="60" r="54"/>
+            <circle class="progress" cx="60" cy="60" r="54"/>
+            <text x="60" y="72" class="number">0</text>
+          </svg>
+          <div class="label text-xl font-bold mt-4">Performance</div>
+        </div>
+        <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+        <div class="details hidden mt-6 text-left"><ul id="perf-issues" class="space-y-4"></ul></div>
+      </section>
 
-        <section id="access-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
-            <div class="score-circle" data-score="0">
-                <svg viewBox="0 0 120 120">
-                    <circle class="bg" cx="60" cy="60" r="54"/>
-                    <circle class="progress" cx="60" cy="60" r="54"/>
-                    <text x="60" y="72" class="number">0</text>
-                </svg>
-                <div class="label text-xl font-bold mt-4">Accessibility</div>
-            </div>
-            <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-            <div class="details hidden mt-6 text-left"><ul id="access-issues" class="space-y-4"></ul></div>
-        </section>
+      <section id="access-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
+        <div class="score-circle" data-score="0">
+          <svg viewBox="0 0 120 120">
+            <circle class="bg" cx="60" cy="60" r="54"/>
+            <circle class="progress" cx="60" cy="60" r="54"/>
+            <text x="60" y="72" class="number">0</text>
+          </svg>
+          <div class="label text-xl font-bold mt-4">Accessibility</div>
+        </div>
+        <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+        <div class="details hidden mt-6 text-left"><ul id="access-issues" class="space-y-4"></ul></div>
+      </section>
+
+      <!-- New 4 modules -->
+      <section id="content-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
+        <div class="score-circle" data-score="0">
+          <svg viewBox="0 0 120 120">
+            <circle class="bg" cx="60" cy="60" r="54"/>
+            <circle class="progress" cx="60" cy="60" r="54"/>
+            <text x="60" y="72" class="number">0</text>
+          </svg>
+          <div class="label text-xl font-bold mt-4">Content Quality</div>
+        </div>
+        <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+        <div class="details hidden mt-6 text-left"><ul id="content-issues" class="space-y-4"></ul></div>
+      </section>
+
+      <section id="ux-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
+        <div class="score-circle" data-score="0">
+          <svg viewBox="0 0 120 120">
+            <circle class="bg" cx="60" cy="60" r="54"/>
+            <circle class="progress" cx="60" cy="60" r="54"/>
+            <text x="60" y="72" class="number">0</text>
+          </svg>
+          <div class="label text-xl font-bold mt-4">UX Design</div>
+        </div>
+        <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+        <div class="details hidden mt-6 text-left"><ul id="ux-issues" class="space-y-4"></ul></div>
+      </section>
+
+      <section id="security-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
+        <div class="score-circle" data-score="0">
+          <svg viewBox="0 0 120 120">
+            <circle class="bg" cx="60" cy="60" r="54"/>
+            <circle class="progress" cx="60" cy="60" r="54"/>
+            <text x="60" y="72" class="number">0</text>
+          </svg>
+          <div class="label text-xl font-bold mt-4">Security</div>
+        </div>
+        <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+        <div class="details hidden mt-6 text-left"><ul id="security-issues" class="space-y-4"></ul></div>
+      </section>
+
+      <section id="indexability-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
+        <div class="score-circle" data-score="0">
+          <svg viewBox="0 0 120 120">
+            <circle class="bg" cx="60" cy="60" r="54"/>
+            <circle class="progress" cx="60" cy="60" r="54"/>
+            <text x="60" y="72" class="number">0</text>
+          </svg>
+          <div class="label text-xl font-bold mt-4">Indexability</div>
+        </div>
+        <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+        <div class="details hidden mt-6 text-left"><ul id="indexability-issues" class="space-y-4"></ul></div>
+      </section>
     </div>
-</main>
-
+  </main>
 </body>
 </html>
+

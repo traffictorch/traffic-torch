@@ -50,18 +50,29 @@ body { transition: background-color 0.3s ease; }
     .text-9xl { font-size: 5.5rem !important; }
   }
   
-/* Progress Bar – Thick, centered text, animated */
-#progress-bar {
-  height: 3rem; /* thicker */
-  background: linear-gradient(90deg, #f97316, #ec4899, #a855f7, #3b82f6);
-  background-size: 400% 400%;
-  animation: gradient-shift 12s ease infinite;
+
+
+
+/* Overall Score Circle */
+.score-circle.large svg { width: 200px; height: 200px; }
+.score-circle.large .number { font-size: 60px; }
+@media (max-width: 768px) {
+  .score-circle.large svg { width: 150px; height: 150px; }
+  .score-circle.large .number { font-size: 45px; }
+}
+.spinner {
+  border: 8px solid rgba(255,255,255,0.1);
+  border-top: 8px solid #f97316;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1.2s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
+
 
 
