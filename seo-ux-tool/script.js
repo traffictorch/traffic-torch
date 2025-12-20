@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     b.textContent = b.nextElementSibling.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
   });
 
-  form.addEventListener('submit', async e => {
+    form.addEventListener('submit', async e => {
     e.preventDefault();
     let url = cleanUrl(input.value);
     if (!url) return;
@@ -67,8 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const res = await fetch(`https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(url)}`);
-      if (!res.ok) throw '';
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
       const html = await res.text();
+      if (html.length < 100) {
+        throw new Error('Empty or blocked response');
+      }
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
       const seo = analyzeSEO(doc);
@@ -89,13 +94,13 @@ document.addEventListener('DOMContentLoaded', () => {
       loader.classList.add('hidden');
       results.classList.remove('hidden');
 
-      // ← This line makes the radar chart update with the real scores
+      // Radar trigger – correct position
       if (typeof window.initRadarAfterAnalysis === 'function') {
         window.initRadarAfterAnalysis();
       }
-    } catch {
+    } catch (err) {
       loader.classList.add('hidden');
-      alert('Failed to analyze — try another site');
+      alert('Failed to analyze this site — it may block scraping or require login. Try a public site like https://example.com or https://httpbin.org/html');
     }
   });
 
