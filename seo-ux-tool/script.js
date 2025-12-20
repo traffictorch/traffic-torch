@@ -12,11 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const trimmed = u.trim();
     if (!trimmed) return '';
 
-    const lower = trimmed.toLowerCase();
-    if (lower.startsWith('http://') || lower.startsWith('https://')) {
-      return trimmed;
-    }
+    // If protocol already present, keep it
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
 
+    // Default to https:// for all bare domains/paths
     return 'https://' + trimmed;
   }
 
@@ -109,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
       for (const mod of modules) {
         progressText.textContent = `Analyzing ${mod.name}...`;
 
+        // Pass original input to security for accurate detection
         const analysisUrl = mod.id === 'security' ? originalInput : url;
         const result = mod.fn(html, doc, analysisUrl);
 
