@@ -80,10 +80,39 @@ export function init() {
   };
 
   // Real tool scores (updated by analysis.js)
-  const seoScore       = getScore('#seo-score .score-circle');
-  const mobileScore    = getScore('#mobile-score .score-circle');
-  const perfScore      = getScore('#perf-score .score-circle');
-  const accessScore    = getScore('#access-score .score-circle');
+  let seoScore = getScore('#seo-score .score-circle');
+  let mobileScore = getScore('#mobile-score .score-circle');
+  let perfScore = getScore('#perf-score .score-circle');
+  let accessScore = getScore('#access-score .score-circle');
+
+  const securityScore = location.protocol === 'https:' ? 100 : 0;
+
+  let contentScore = textLength > 1500 ? 90 : textLength > 800 ? 75 : textLength > 400 ? 55 : 30;
+  if (headings < 3) contentScore -= 10;
+
+  let uxScore = hasNav ? 60 : 30;
+  uxScore += interactive > 20 ? 30 : interactive > 10 ? 20 : 10;
+  uxScore += hasViewport ? 10 : 0;
+
+  let indexabilityScore = 100;
+  if (robots) {
+    const content = robots.content.toLowerCase();
+    if (content.includes('noindex')) indexabilityScore = 0;
+    if (content.includes('nofollow')) indexabilityScore -= 20;
+  }
+  if (!canonical) indexabilityScore -= 25;
+  if (canonicals.length > 1) indexabilityScore -= 15;
+
+  const scores = [
+    seoScore,
+    contentScore,
+    uxScore,
+    perfScore,
+    mobileScore,
+    securityScore,
+    accessScore,
+    indexabilityScore
+  ];
 
   // Real client-side checks
   const securityScore  = location.protocol === 'https:' ? 100 : 0;
