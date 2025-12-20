@@ -19,63 +19,6 @@ function getColor(score) {
   return 'rgb(239, 68, 68)';
 }
 
-function getOrCreateTooltip(chart) {
-  let tooltipEl = document.getElementById('chartjs-tooltip');
-  if (!tooltipEl) {
-    tooltipEl = document.createElement('div');
-    tooltipEl.id = 'chartjs-tooltip';
-    tooltipEl.innerHTML = '<div></div>';
-    document.body.appendChild(tooltipEl);
-  }
-  return tooltipEl;
-}
-
-function externalTooltipHandler(context) {
-  const {chart, tooltip} = context;
-  const tooltipEl = getOrCreateTooltip(chart);
-
-  if (tooltip.opacity === 0) {
-    tooltipEl.style.opacity = 0;
-    return;
-  }
-
-  if (tooltip.body) {
-    const index = tooltip.dataPoints[0].dataIndex;
-    const dim = dimensions[index];
-    const score = tooltip.dataPoints[0].raw;
-    const color = getColor(score);
-
-    const innerHtml = `
-      <div class="p-2">
-        <div class="font-bold text-lg">${dim.full}: <span style="color:${color}">${score}/100</span></div>
-        <div class="text-sm mt-2 opacity-90">${dim.lesson}</div>
-      </div>
-    `;
-
-    tooltipEl.querySelector('div').innerHTML = innerHtml;
-  }
-
-  const {offsetLeft: positionX, offsetTop: positionY} = chart.canvas;
-
-  // Position calculation with viewport clamping
-  let left = positionX + tooltip.caretX;
-  let top = positionY + tooltip.caretY - tooltipEl.offsetHeight - 20;
-
-  // Flip if off top
-  if (top < 0) top = positionY + tooltip.caretY + 20;
-
-  // Clamp horizontal
-  const tooltipWidth = tooltipEl.offsetWidth;
-  if (left + tooltipWidth > window.innerWidth) {
-    left = window.innerWidth - tooltipWidth - 10;
-  }
-  if (left < 0) left = 10;
-
-  tooltipEl.style.opacity = 1;
-  tooltipEl.style.left = left + 'px';
-  tooltipEl.style.top = top + 'px';
-}
-
 export function init() {
   const canvas = document.getElementById('healthRadarChart');
   const detailsEl = document.getElementById('radar-details');
@@ -128,7 +71,7 @@ export function init() {
       borderWidth: 4,
       pointBackgroundColor: scores.map(getColor),
       pointBorderColor: '#fff',
-      pointRadius: mobile ? 8 : 10,
+      pointRadius: mobile ? 9 : 11,
       pointHoverRadius: mobile ? 14 : 16,
       fill: true
     }]
@@ -144,8 +87,24 @@ export function init() {
       plugins: {
         legend: { display: false },
         tooltip: {
-          enabled: false, // Disable built-in
-          external: externalTooltipHandler // Use custom
+          position: 'nearest',
+          yAlign: 'bottom', // Tooltip appears above the point
+          xAlign: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.9)',
+          titleColor: '#fff',
+          bodyColor: '#fff',
+          borderColor: 'rgb(249, 115, 22)',
+          borderWidth: 2,
+          cornerRadius: 8,
+          padding: 12,
+          displayColors: false,
+          callbacks: {
+            title: (context) => dimensions[context[0].dataIndex].full,
+            label: (context) => {
+              const dim = dimensions[context.dataIndex];
+              return [`Score: ${context.raw}/100`, dim.lesson];
+            }
+          }
         }
       },
       scales: {
@@ -171,6 +130,19 @@ export function init() {
 
   if (radarChart) radarChart.destroy();
   radarChart = new Chart(canvas, config);
+
+  // Theme support
+  const observer = new MutationObserver(() => {
+    const dark = document.documentElement.classList.contains('dark');
+    const color = dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+    radarChart.options.scales.r.grid.color = color;
+    radarChart.options.scales.r.angleLines.color = color;
+    radarChart.options.tooltip.backgroundColor = dark ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.9)';
+    radarChart.options.tooltip.titleColor = dark ? '#fff' : '#000';
+    radarChart.options.tooltip.bodyColor = dark ? '#fff' : '#000';
+    radarChart.update();
+  });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
   showDetails(null, overallScore);
 }
