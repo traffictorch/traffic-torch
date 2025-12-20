@@ -54,10 +54,15 @@ function externalTooltipHandler(context) {
   let left = canvasRect.left + tooltip.caretX - tooltipEl.offsetWidth / 2;
   let top = canvasRect.top + tooltip.caretY - tooltipEl.offsetHeight - 10;
 
-  left = Math.max(10, Math.min(left, window.innerWidth - tooltipEl.offsetWidth - 10));
-  top = Math.max(10, Math.min(top, window.innerHeight - tooltipEl.offsetHeight - 10));
+  // Clamp to viewport
+  const padding = 10;
+  left = Math.max(padding, Math.min(left, window.innerWidth - tooltipEl.offsetWidth - padding));
+  top = Math.max(padding, Math.min(top, window.innerHeight - tooltipEl.offsetHeight - padding));
 
-  if (top < 10) top = canvasRect.top + tooltip.caretY + 10;
+  // Flip to below if above would go off top
+  if (top < padding) {
+    top = canvasRect.top + tooltip.caretY + 20;
+  }
 
   tooltipEl.classList.remove('hidden');
   tooltipEl.style.left = left + 'px';
@@ -69,9 +74,35 @@ export function init() {
   const detailsEl = document.getElementById('radar-details');
   if (!canvas || !detailsEl) return;
 
-  let radarChart = null; // Declare inside – safe for multiple calls
+  let radarChart = null; // Safe for multiple calls
 
-  // ... (score calculation same as before) ...
+  let seoScore, mobileScore, perfScore, accessScore;
+  let securityScore, contentScore, uxScore, indexabilityScore;
+
+  {
+    const getScore = (selector) => parseInt(document.querySelector(selector)?.dataset.score || 0);
+
+    seoScore       = getScore('#seo-score .score-circle');
+    mobileScore    = getScore('#mobile-score .score-circle');
+    perfScore      = getScore('#perf-score .score-circle');
+    accessScore    = getScore('#access-score .score-circle');
+
+    securityScore  = location.protocol === 'https:' ? 100 : 0;
+
+    const textLength = document.body.textContent.trim().length;
+    contentScore   = textLength > 1500 ? 90 : textLength > 800 ? 75 : textLength > 400 ? 55 : 30;
+
+    const interactiveEls = document.querySelectorAll('a[href], button, input, textarea, select').length;
+    uxScore        = interactiveEls > 15 && document.querySelector('nav') ? 85 : interactiveEls > 8 ? 65 : 40;
+
+    indexabilityScore = 100;
+    const robots = document.querySelector('meta[name="robots"]');
+    if (robots && /noindex/i.test(robots.content)) {
+      indexabilityScore = 0;
+    } else if (!document.querySelector('link[rel="canonical"]')) {
+      indexabilityScore = 75;
+    }
+  }
 
   const scores = [
     seoScore || 70,
