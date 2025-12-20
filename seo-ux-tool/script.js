@@ -12,11 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let trimmed = u.trim();
     if (!trimmed) return '';
 
-    // If already has protocol, keep it exactly as typed
+    // Keep full protocol if already present
     if (/^https?:\/\//i.test(trimmed)) return trimmed;
 
-    // Default to https:// for everything else (domains, paths, www.)
-    return 'https://' + trimmed;
+    // Preserve explicit http:// if user typed it
+    if (trimmed.toLowerCase().startsWith('http://')) {
+      return 'http://' + trimmed.slice(7).replace(/^\/\//, '');
+    }
+
+    // Default to https:// for all other cases (domains, paths, www.)
+    return 'https://' + trimmed.replace(/^\/\//, '');
   }
 
   function updateScore(id, score) {
@@ -72,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
 
     const originalInput = input.value.trim();
-    let url = cleanUrl(originalInput);
+    const url = cleanUrl(originalInput);
 
     if (!url) {
       alert('Please enter a URL');
@@ -108,10 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
       for (const mod of modules) {
         progressText.textContent = `Analyzing ${mod.name}...`;
 
-        // Pass original user input only to security module for accurate HTTP detection
-        const result = mod.id === 'security'
-          ? mod.fn(html, doc, originalInput)
-          : mod.fn(html, doc, url);
+        // Use original input only for security check
+        const analysisUrl = mod.id === 'security' ? originalInput : url;
+        const result = mod.fn(html, doc, analysisUrl);
 
         scores.push(result.score);
         updateScore(`${mod.id}-score`, result.score);
@@ -130,8 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Failed to analyze — try another site or check the URL');
     }
   });
-
-  // === ALL ANALYSIS FUNCTIONS (unchanged) ===
 
   function analyzeSEO(html, doc) {
     let score = 100;
@@ -511,7 +513,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function analyzeSecurity(html, doc, url) {
     let score = 100;
     const issues = [];
-    if (!url.toLowerCase().startsWith('https:')) {
+    const lowerUrl = url.toLowerCase();
+
+    if (lowerUrl.startsWith('http://')) {
       score -= 50;
       issues.push({
         issue: 'Not served over HTTPS',
@@ -521,6 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
         seoWhy: 'Google marks HTTP sites as insecure and downgrades rankings.'
       });
     }
+
     const mixedContent = doc.querySelector('img[src^="http://"], script[src^="http://"], link[href^="http://"]');
     if (mixedContent) {
       score -= 20;
