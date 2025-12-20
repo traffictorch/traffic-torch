@@ -1,4 +1,6 @@
-// js/modules/radar-chart.js
+// /seo-ux-tool/js/modules/radar-chart.js
+
+let radarChart = null;
 
 const dimensions = [
   { key: 'technicalSEO', short: 'SEO', full: 'Technical SEO', lesson: 'Meta tags, schema, canonicals – ensures crawlers see your site correctly.' },
@@ -54,15 +56,11 @@ function externalTooltipHandler(context) {
   let left = canvasRect.left + tooltip.caretX - tooltipEl.offsetWidth / 2;
   let top = canvasRect.top + tooltip.caretY - tooltipEl.offsetHeight - 10;
 
-  // Clamp to viewport
   const padding = 10;
   left = Math.max(padding, Math.min(left, window.innerWidth - tooltipEl.offsetWidth - padding));
   top = Math.max(padding, Math.min(top, window.innerHeight - tooltipEl.offsetHeight - padding));
 
-  // Flip to below if above would go off top
-  if (top < padding) {
-    top = canvasRect.top + tooltip.caretY + 20;
-  }
+  if (top < padding) top = canvasRect.top + tooltip.caretY + 20;
 
   tooltipEl.classList.remove('hidden');
   tooltipEl.style.left = left + 'px';
@@ -74,44 +72,42 @@ export function init() {
   const detailsEl = document.getElementById('radar-details');
   if (!canvas || !detailsEl) return;
 
-  let radarChart = null; // Safe for multiple calls
+  let radarChart = null;
 
-  let seoScore, mobileScore, perfScore, accessScore;
-  let securityScore, contentScore, uxScore, indexabilityScore;
+  const getScore = (selector) => {
+    const el = document.querySelector(selector);
+    return el && el.dataset.score ? parseInt(el.dataset.score, 10) : 0;
+  };
 
-  {
-    const getScore = (selector) => parseInt(document.querySelector(selector)?.dataset.score || 0);
+  const seoScore       = getScore('#seo-score .score-circle');
+  const mobileScore    = getScore('#mobile-score .score-circle');
+  const perfScore      = getScore('#perf-score .score-circle');
+  const accessScore    = getScore('#access-score .score-circle');
 
-    seoScore       = getScore('#seo-score .score-circle');
-    mobileScore    = getScore('#mobile-score .score-circle');
-    perfScore      = getScore('#perf-score .score-circle');
-    accessScore    = getScore('#access-score .score-circle');
+  const securityScore  = location.protocol === 'https:' ? 100 : 0;
 
-    securityScore  = location.protocol === 'https:' ? 100 : 0;
+  const textLength = document.body.textContent.trim().length;
+  const contentScore   = textLength > 1500 ? 90 : textLength > 800 ? 75 : textLength > 400 ? 55 : 30;
 
-    const textLength = document.body.textContent.trim().length;
-    contentScore   = textLength > 1500 ? 90 : textLength > 800 ? 75 : textLength > 400 ? 55 : 30;
+  const interactiveEls = document.querySelectorAll('a[href], button, input, textarea, select').length;
+  const uxScore        = interactiveEls > 15 && document.querySelector('nav') ? 85 : interactiveEls > 8 ? 65 : 40;
 
-    const interactiveEls = document.querySelectorAll('a[href], button, input, textarea, select').length;
-    uxScore        = interactiveEls > 15 && document.querySelector('nav') ? 85 : interactiveEls > 8 ? 65 : 40;
-
-    indexabilityScore = 100;
-    const robots = document.querySelector('meta[name="robots"]');
-    if (robots && /noindex/i.test(robots.content)) {
-      indexabilityScore = 0;
-    } else if (!document.querySelector('link[rel="canonical"]')) {
-      indexabilityScore = 75;
-    }
+  let indexabilityScore = 100;
+  const robots = document.querySelector('meta[name="robots"]');
+  if (robots && /noindex/i.test(robots.content)) {
+    indexabilityScore = 0;
+  } else if (!document.querySelector('link[rel="canonical"]')) {
+    indexabilityScore = 75;
   }
 
   const scores = [
-    seoScore || 70,
+    seoScore,
     contentScore,
     uxScore,
-    perfScore || 70,
-    mobileScore || 85,
+    perfScore,
+    mobileScore,
     securityScore,
-    accessScore || 80,
+    accessScore,
     indexabilityScore
   ];
 
