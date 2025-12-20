@@ -9,19 +9,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressText = document.getElementById('progress-text');
 
   function cleanUrl(u) {
-    let trimmed = u.trim();
+    const trimmed = u.trim();
     if (!trimmed) return '';
 
-    // Keep full protocol if already present
-    if (/^https?:\/\//i.test(trimmed)) return trimmed;
-
-    // Preserve explicit http:// if user typed it
-    if (trimmed.toLowerCase().startsWith('http://')) {
-      return 'http://' + trimmed.slice(7).replace(/^\/\//, '');
+    const lower = trimmed.toLowerCase();
+    if (lower.startsWith('http://') || lower.startsWith('https://')) {
+      return trimmed;
     }
 
-    // Default to https:// for all other cases (domains, paths, www.)
-    return 'https://' + trimmed.replace(/^\/\//, '');
+    return 'https://' + trimmed;
   }
 
   function updateScore(id, score) {
@@ -113,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
       for (const mod of modules) {
         progressText.textContent = `Analyzing ${mod.name}...`;
 
-        // Use original input only for security check
         const analysisUrl = mod.id === 'security' ? originalInput : url;
         const result = mod.fn(html, doc, analysisUrl);
 
