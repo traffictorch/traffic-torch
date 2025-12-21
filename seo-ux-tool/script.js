@@ -307,15 +307,13 @@ document.addEventListener('DOMContentLoaded', () => {
      
      
      
-      // 360° Health Radar Chart (desktop only)
+           // 360° Health Radar Chart (desktop only)
       if (window.innerWidth >= 768) {
         const radarCtx = document.getElementById('health-radar').getContext('2d');
-
         // Detect current theme for colors
         const isDark = document.documentElement.classList.contains('dark');
         const gridColor = isDark ? 'rgba(255,255,255,0.2)' : '#9ca3af'; // gray-400 light
         const tickColor = isDark ? '#fff' : '#9ca3af'; // gray-400 light
-
         new Chart(radarCtx, {
           type: 'radar',
           data: {
@@ -349,12 +347,12 @@ document.addEventListener('DOMContentLoaded', () => {
               r: {
                 angleLines: { color: gridColor },
                 grid: { color: gridColor },
-                pointLabels: { 
+                pointLabels: {
                   font: { size: 15, weight: 'bold' },
-                  color: isDark ? '#fff' : '#374151'
+                  color: isDark ? '#9ca3af' : '#374151'  // gray-400 in dark, gray-700 in light
                 },
-                ticks: { 
-                  color: tickColor,
+                ticks: {
+                  color: isDark ? '#9ca3af' : '#6b7280',  // gray-400 dark, gray-500 light
                   backdropColor: 'transparent',
                   beginAtZero: true,
                   max: 100,
@@ -392,7 +390,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           }
         });
-
         document.getElementById('radar-container').classList.remove('hidden');
       }
       
