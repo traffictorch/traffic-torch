@@ -77,59 +77,73 @@ body { transition: background-color 0.3s ease; }
 
 
 /* Color Grade in Score in Score Circle */
-.score-circle .progress {
-  stroke: #f87171; /* default red */
-  transition: stroke 0.5s ease;
-}
-.score-circle[data-score="80"],
-.score-circle[data-score="81"],
-.score-circle[data-score="82"],
-.score-circle[data-score="83"],
-.score-circle[data-score="84"],
-.score-circle[data-score="85"],
-.score-circle[data-score="86"],
-.score-circle[data-score="87"],
-.score-circle[data-score="88"],
-.score-circle[data-score="89"],
-.score-circle[data-score="90"],
-.score-circle[data-score="91"],
-.score-circle[data-score="92"],
-.score-circle[data-score="93"],
-.score-circle[data-score="94"],
-.score-circle[data-score="95"],
-.score-circle[data-score="96"],
-.score-circle[data-score="97"],
-.score-circle[data-score="98"],
-.score-circle[data-score="99"],
-.score-circle[data-score="100"] {
-  stroke: #34d399; /* green-400 */
-}
-.score-circle[data-score="60"],
-.score-circle[data-score="61"],
-.score-circle[data-score="62"],
-.score-circle[data-score="63"],
-.score-circle[data-score="64"],
-.score-circle[data-score="65"],
-.score-circle[data-score="66"],
-.score-circle[data-score="67"],
-.score-circle[data-score="68"],
-.score-circle[data-score="69"],
-.score-circle[data-score="70"],
-.score-circle[data-score="71"],
-.score-circle[data-score="72"],
-.score-circle[data-score="73"],
-.score-circle[data-score="74"],
-.score-circle[data-score="75"],
-.score-circle[data-score="76"],
-.score-circle[data-score="77"],
-.score-circle[data-score="78"],
-.score-circle[data-score="79"] {
-  stroke: #fb923c; /* orange-400 */
+/* Default number color */
+.score-circle .number {
+  fill: #f87171; /* red-400 */
+  transition: fill 0.5s ease;
 }
 
-.stroke-red-400 { stroke: #f87171; }
-.stroke-orange-400 { stroke: #fb923c; }
-.stroke-green-400 { stroke: #34d399; }
+/* Green for 80+ */
+.score-circle[data-score="80"] ~ .label .number,
+.score-circle[data-score="81"] ~ .label .number,
+.score-circle[data-score="82"] ~ .label .number,
+.score-circle[data-score="83"] ~ .label .number,
+.score-circle[data-score="84"] ~ .label .number,
+.score-circle[data-score="85"] ~ .label .number,
+.score-circle[data-score="86"] ~ .label .number,
+.score-circle[data-score="87"] ~ .label .number,
+.score-circle[data-score="88"] ~ .label .number,
+.score-circle[data-score="89"] ~ .label .number,
+.score-circle[data-score="90"] ~ .label .number,
+.score-circle[data-score="91"] ~ .label .number,
+.score-circle[data-score="92"] ~ .label .number,
+.score-circle[data-score="93"] ~ .label .number,
+.score-circle[data-score="94"] ~ .label .number,
+.score-circle[data-score="95"] ~ .label .number,
+.score-circle[data-score="96"] ~ .label .number,
+.score-circle[data-score="97"] ~ .label .number,
+.score-circle[data-score="98"] ~ .label .number,
+.score-circle[data-score="99"] ~ .label .number,
+.score-circle[data-score="100"] ~ .label .number,
+.score-circle[data-score="80"] .number,
+.score-circle[data-score="81"] .number,
+/* ... repeat up to 100 if needed */
+.score-circle[data-score="100"] .number {
+  fill: #34d399; /* green-400 */
+}
+
+/* Orange for 60–79 */
+.score-circle[data-score^="6"] .number,
+.score-circle[data-score^="7"] .number {
+  fill: #fb923c; /* orange-400 */
+}
+
+/* Keep progress circle neutral (light gray or subtle) */
+.score-circle .progress {
+  stroke: rgba(255, 255, 255, 0.3);
+  transition: stroke-dasharray 0.8s ease;
+}
+
+
+
+
+.text-red-400 { color: #f87171; fill: #f87171; }
+.text-orange-400 { color: #fb923c; fill: #fb923c; }
+.text-green-400 { color: #34d399; fill: #34d399; }
+
+/* Make progress ring subtle and consistent */
+.score-circle .progress {
+  stroke: rgba(255, 255, 255, 0.2);
+}
+
+/* Background ring */
+.score-circle .bg {
+  stroke: rgba(255, 255, 255, 0.1);
+}
+
+
+
+
 
 
 
