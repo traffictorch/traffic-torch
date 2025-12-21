@@ -316,15 +316,9 @@
 
       <!-- Phone Frame -->
       <div class="flex justify-center">
-        <div id="phone-frame" class="iphone-frame portrait">
-          <div class="phone-inner">
-            <iframe id="preview-iframe" src="" sandbox="allow-scripts allow-same-origin allow-popups allow-top-navigation"></iframe>
-            <div id="iframe-fallback" class="fallback-message">
-              <p>This site blocks preview in iframe.</p>
-              <a id="fallback-link" href="" target="_blank" class="fallback-btn">Open in New Tab</a>
-            </div>
-          </div>
-          <div id="highlight-overlays"></div>
+        <div id="phone-frame" class="iphone-frame portrait relative">
+          <iframe id="preview-iframe" src="" sandbox="allow-scripts allow-same-origin allow-popups" class="w-full h-full rounded-[40px]"></iframe>
+          <div id="highlight-overlays" class="absolute inset-0 pointer-events-none"></div>
         </div>
       </div>
 
