@@ -245,3 +245,34 @@ body { transition: background-color 0.3s ease; }
   font-size: 2rem;
   cursor: pointer;
 }
+
+
+
+
+/* Rotate iframe content in landscape */
+#preview-iframe.landscape-content {
+  transform: rotate(90deg);
+  transform-origin: center;
+  width: 812px !important;
+  height: 375px !important;
+}
+
+/* Fallback when site blocks iframe */
+#iframe-fallback {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  color: #fff;
+  font-size: 1.2rem;
+}
+#iframe-blocked #preview-iframe {
+  display: none;
+}
+#iframe-blocked #iframe-fallback {
+  display: flex;
+}
+
+
+
