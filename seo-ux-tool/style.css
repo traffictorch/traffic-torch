@@ -1,65 +1,4 @@
-/* Only needed for the radar chart – everything else is Tailwind */
-.radar {
-  width: 200px;
-  height: 200px;
-  margin: 2rem auto;
-  display: block;
-}
-
-/* Remove any old body background rules – we use the wrapper div now */
-body { transition: background-color 0.3s ease; }
-
-/* Fix green card once and for all */
-.health-score polygon { fill: rgba(16, 185, 129, 0.3); }
-
-.radar { width: 180px; height: 180px; margin: 1.5rem auto; display: block; }
-.health-score h2 { margin-bottom: 0.5rem; }
-
-
-  /* LOCAL TOOL FIX – MOBILE-FRIENDLY REPORT (WORKS 100% – Dec 2025) */
-  @media (max-width: 1024px) {
-    /* Kill narrow containers */
-    .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
-      max-width: 100% !important;
-      padding-left: 1rem !important;
-      padding-right: 1rem !important;
-    }
-
-    /* Reduce huge padding on form + report cards */
-    .p-12, .p-10, .p-8 {
-      padding: 1.5rem !important;
-    }
-
-    /* Smaller title */
-    .text-5xl {
-      font-size: 2rem !important;
-      line-height: 1.1 !important;
-    }
-
-    /* Smaller giant percentage */
-    .text-9xl {
-      font-size: 6rem !important;
-      line-height: 1 !important;
-    }
-  }
-
-  /* Optional: slightly tighter on very small phones */
-  @media (max-width: 480px) {
-    .p-12, .p-10 { padding: 1.25rem !important; }
-    .text-5xl { font-size: 1.875rem !important; }
-    .text-9xl { font-size: 5.5rem !important; }
-  }
-  
-
-
-
-/* Overall Score Circle */
-.score-circle.large svg { width: 200px; height: 200px; }
-.score-circle.large .number { font-size: 60px; }
-@media (max-width: 768px) {
-  .score-circle.large svg { width: 150px; height: 150px; }
-  .score-circle.large .number { font-size: 45px; }
-}
+/* Spinner */
 .spinner {
   border: 8px solid rgba(255,255,255,0.1);
   border-top: 8px solid #f97316;
@@ -67,63 +6,59 @@ body { transition: background-color 0.3s ease; }
   width: 60px;
   height: 60px;
   animation: spin 1.2s linear infinite;
+  margin: 0 auto;
 }
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-
-
-
-/* Color Grade in Score in Score Circle */
-
-/* Card border grade color */
-.score-card {
-  border-width: 6px;
-  border-style: solid;
-  border-color: transparent;
-  transition: border-color 0.6s ease;
+/* Score Circles - Base */
+.score-circle svg {
+  width: 120px;
+  height: 120px;
 }
-.border-red-500 { border-color: #f87171 !important; }
-.border-orange-500 { border-color: #fb923c !important; }
-.border-green-500 { border-color: #34d399 !important; }
-
-
-
-
-
-
-/* Fix ring start at 12 o'clock for all circles */
+.score-circle .bg {
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 10;
+  fill: none;
+}
 .score-circle .progress {
   stroke-width: 10;
   stroke-linecap: round;
+  fill: none;
   transform: rotate(-90deg);
   transform-origin: 50% 50%;
   transition: stroke-dasharray 1s ease, stroke 0.6s ease;
 }
-
-/* Background ring subtle */
-.score-circle .bg {
-  stroke: rgba(255, 255, 255, 0.15);
-  stroke-width: 10;
-}
-
-/* Number styling */
 .score-circle .number {
+  font-size: 48px;
   font-weight: 900;
+  fill: #1e293b;
   text-anchor: middle;
   dominant-baseline: middle;
   transition: fill 0.6s ease;
+}
+
+/* Large Overall Score Circle */
+.score-circle.large svg {
+  width: 200px;
+  height: 200px;
 }
 .score-circle.large .number {
   font-size: 80px;
 }
 @media (max-width: 768px) {
-  .score-circle.large .number { font-size: 60px; }
+  .score-circle.large svg {
+    width: 150px;
+    height: 150px;
+  }
+  .score-circle.large .number {
+    font-size: 60px;
+  }
 }
 
-/* Force Tailwind colors */
+/* Grade Colors - Ring and Number */
 .stroke-red-400 { stroke: #f87171 !important; }
 .stroke-orange-400 { stroke: #fb923c !important; }
 .stroke-green-400 { stroke: #34d399 !important; }
@@ -131,63 +66,41 @@ body { transition: background-color 0.3s ease; }
 .text-orange-400 { fill: #fb923c !important; }
 .text-green-400 { fill: #34d399 !important; }
 
-
-
-
-/* Overall score */
-/* Glowing neon border by grade */
+/* Module Card Border by Grade */
 .score-card {
-  position: relative;
-  transition: all 0.6s ease;
-  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 3rem;
+  padding: 2rem;
+  text-align: center;
+  border: 4px solid transparent;
+  transition: border-color 0.6s ease, transform 0.4s ease;
+}
+.score-card:hover {
+  transform: translateY(-8px);
+}
+.score-card.red { border-color: #f87171; }
+.score-card.orange { border-color: #fb923c; }
+.score-card.green { border-color: #34d399; }
+
+/* Mobile Responsiveness */
+@media (max-width: 1024px) {
+  .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
+    max-width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  .p-12, .p-10, .p-8 {
+    padding: 1.5rem !important;
+  }
+  .text-5xl {
+    font-size: 2.5rem !important;
+  }
+}
+@media (max-width: 480px) {
+  .p-12, .p-10, .p-8 { padding: 1.25rem !important; }
+  .text-5xl { font-size: 2rem !important; }
 }
 
-/* Default subtle inner glow */
-.score-card::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  background: conic-gradient(from 90deg at 50% 50%, transparent, currentColor 50%, transparent);
-  border-radius: inherit;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* Activate glow on grade */
-.score-card.red {
-  box-shadow: 0 0 30px rgba(248, 113, 113, 0.6);
-  border: 3px solid #f87171;
-}
-.score-card.red::before {
-  opacity: 0.8;
-  color: #f87171;
-}
-
-.score-card.orange {
-  box-shadow: 0 0 30px rgba(251, 146, 60, 0.6);
-  border: 3px solid #fb923c;
-}
-.score-card.orange::before {
-  opacity: 0.8;
-  color: #fb923c;
-}
-
-.score-card.green {
-  box-shadow: 0 0 30px rgba(52, 211, 153, 0.6);
-  border: 3px solid #34d399;
-}
-.score-card.green::before {
-  opacity: 0.8;
-  color: #34d399;
-}
-
-/* Overall card extra glow */
-#overall-score .score-card {
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-}
-#overall-score .score-card.red { box-shadow: 0 0 60px rgba(248, 113, 113, 0.8), 0 20px 40px rgba(0, 0, 0, 0.3); }
-#overall-score .score-card.orange { box-shadow: 0 0 60px rgba(251, 146, 60, 0.8), 0 20px 40px rgba(0, 0, 0, 0.3); }
-#overall-score .score-card.green { box-shadow: 0 0 60px rgba(52, 211, 153, 0.8), 0 20px 40px rgba(0, 0, 0, 0.3); }
 
