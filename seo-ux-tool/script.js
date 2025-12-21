@@ -307,13 +307,13 @@ document.addEventListener('DOMContentLoaded', () => {
      
      
      
-           // 360° Health Radar Chart (desktop only)
+		      // 360° Health Radar Chart (desktop only)
       if (window.innerWidth >= 768) {
         const radarCtx = document.getElementById('health-radar').getContext('2d');
-        // Detect current theme for colors
         const isDark = document.documentElement.classList.contains('dark');
-        const gridColor = isDark ? 'rgba(255,255,255,0.2)' : '#9ca3af'; // gray-400 light
-        const tickColor = isDark ? '#fff' : '#9ca3af'; // gray-400 light
+        const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+        const labelColor = isDark ? '#9ca3af' : '#4b5563'; // gray-400 dark, gray-600 light
+
         new Chart(radarCtx, {
           type: 'radar',
           data: {
@@ -323,20 +323,20 @@ document.addEventListener('DOMContentLoaded', () => {
               data: scores,
               backgroundColor: isDark ? 'rgba(251, 146, 60, 0.2)' : 'rgba(251, 146, 60, 0.15)',
               borderColor: '#fb923c',
-              borderWidth: 4,
-              pointRadius: 8,
-              pointHoverRadius: 12,
+              borderWidth: 3,
+              pointRadius: 6,
+              pointHoverRadius: 10,
               pointBackgroundColor: (context) => {
                 const value = context.parsed.r;
-                if (value < 60) return '#f87171'; // red-400
-                if (value < 80) return '#fb923c'; // orange-400
-                return '#34d399'; // green-400
+                if (value < 60) return '#f87171';
+                if (value < 80) return '#fb923c';
+                return '#34d399';
               },
               pointHoverBackgroundColor: (context) => {
                 const value = context.parsed.r;
-                if (value < 60) return '#ef4444'; // red-500
-                if (value < 80) return '#f97316'; // orange-500
-                return '#10b981'; // green-500
+                if (value < 60) return '#ef4444';
+                if (value < 80) return '#f97316';
+                return '#10b981';
               }
             }]
           },
@@ -348,36 +348,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 angleLines: { color: gridColor },
                 grid: { color: gridColor },
                 pointLabels: {
-                  font: { size: 15, weight: 'bold' },
-                  color: isDark ? '#9ca3af' : '#374151'  // gray-400 in dark, gray-700 in light
+                  font: { size: 14, weight: 'bold' },
+                  color: labelColor
                 },
                 ticks: {
-                  color: isDark ? '#9ca3af' : '#6b7280',  // gray-400 dark, gray-500 light
+                  color: labelColor,
                   backdropColor: 'transparent',
                   beginAtZero: true,
                   max: 100,
-                  stepSize: 20
+                  stepSize: 20,
+                  callback: (value) => value // show 20 40 60 80 100
                 }
               }
             },
             plugins: {
               tooltip: {
                 enabled: true,
-                mode: 'nearest',
-                intersect: true,
                 callbacks: {
                   title: (context) => context[0].label,
                   label: (context) => {
                     const value = context.parsed.r;
                     const impacts = {
-                      'On-Page SEO': 'SEO: Core signals (title, meta, H1) | UX: Clear hierarchy & readability',
-                      'Mobile & PWA': 'SEO: Mobile-first indexing | UX: Fast, installable experience',
-                      'Performance': 'SEO: Core Web Vitals ranking factor | UX: Speed reduces bounce',
-                      'Accessibility': 'SEO: Google favors accessible sites | UX: Inclusive for all users',
-                      'Content Quality': 'SEO: Depth & relevance boost rankings | UX: Helpful, readable content',
-                      'UX Design': 'SEO: Engagement signals (dwell time) | UX: Intuitive navigation',
-                      'Security': 'SEO: HTTPS required | UX: Builds user trust',
-                      'Indexability': 'SEO: Foundation for crawling | UX: Enables discovery'
+                      'On-Page SEO': 'Core SEO signals (title, meta, H1) + clear hierarchy',
+                      'Mobile & PWA': 'Mobile-first indexing + installable experience',
+                      'Performance': 'Core Web Vitals ranking factor + speed reduces bounce',
+                      'Accessibility': 'Google favors accessible sites + inclusive UX',
+                      'Content Quality': 'Depth & relevance boost rankings + helpful content',
+                      'UX Design': 'Engagement signals (dwell time) + intuitive navigation',
+                      'Security': 'HTTPS required + builds user trust',
+                      'Indexability': 'Foundation for crawling + enables discovery'
                     };
                     return [
                       `Score: ${value}/100`,
