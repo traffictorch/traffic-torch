@@ -20,11 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	  function updateScore(id, score) {
     const circle = document.querySelector('#' + id + ' .score-circle');
     const card = circle?.closest('.score-card');
-    if (!circle) return;
+    if (!circle || !card) return;
 
     score = Math.round(score);
-    const isOverall = id === 'overall-score';
-    const radius = isOverall ? 90 : 54;
+    const radius = id === 'overall-score' ? 90 : 54;
     const circumference = 2 * Math.PI * radius;
     const dash = (score / 100) * circumference;
 
@@ -35,24 +34,24 @@ document.addEventListener('DOMContentLoaded', () => {
     num.textContent = score;
     num.style.opacity = '1';
 
-    // Clean classes
+    // Remove old grade classes
+    card.classList.remove('red', 'orange', 'green');
     progress.classList.remove('stroke-red-400', 'stroke-orange-400', 'stroke-green-400');
     num.classList.remove('text-red-400', 'text-orange-400', 'text-green-400');
-    if (card) card.classList.remove('border-red-500', 'border-orange-500', 'border-green-500');
 
-    // Apply grade colors
+    // Apply grade for neon glow, ring, and number
     if (score < 60) {
+      card.classList.add('red');
       progress.classList.add('stroke-red-400');
       num.classList.add('text-red-400');
-      if (card) card.classList.add('border-red-500');
     } else if (score < 80) {
+      card.classList.add('orange');
       progress.classList.add('stroke-orange-400');
       num.classList.add('text-orange-400');
-      if (card) card.classList.add('border-orange-500');
     } else {
+      card.classList.add('green');
       progress.classList.add('stroke-green-400');
       num.classList.add('text-green-400');
-      if (card) card.classList.add('border-green-500');
     }
   }
 
