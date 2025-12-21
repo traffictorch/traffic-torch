@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const priorityFixes = document.getElementById('priority-fixes');
   const forecastModule = document.getElementById('forecast-module');
   const savePdfBtn = document.getElementById('save-pdf');
+  const copyBadgeBtn = document.getElementById('copy-badge');
 
   function cleanUrl(u) {
     const trimmed = u.trim();
