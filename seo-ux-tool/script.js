@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
         document.getElementById('radar-container').classList.remove('hidden');
-      }
+      } 
       
       
       
