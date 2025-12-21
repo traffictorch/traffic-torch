@@ -102,7 +102,7 @@
               <text x="100" y="110" class="number">0</text>
             </svg>
           </div>
-          <div class="text-3xl font-bold mt-8 text-white/90">Overall Score</div>
+          <div class="text-3xl font-bold mt-8 text-gray-400">Overall Score</div>
         </div>
       </div>
     </div>
@@ -270,9 +270,34 @@
       </div>
     </div>
 
-    <div id="forecast" class="hidden max-w-4xl mx-auto my-16 text-center">
-      <h2 class="text-3xl font-bold mb-6">Predictive Rank Forecast</h2>
-      <p class="text-2xl leading-relaxed" id="forecast-text"></p>
+	    <div id="forecast-module" class="hidden max-w-5xl mx-auto my-24">
+      <h2 class="text-5xl font-black text-center mb-16 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Predictive Rank Forecast
+      </h2>
+      <div class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-12 text-center border-4 border-transparent shadow-2xl">
+        <div class="score-circle large mb-12" data-score="0" id="forecast-circle">
+          <svg viewBox="0 0 200 200">
+            <circle class="bg" cx="100" cy="100" r="90"/>
+            <circle class="progress" cx="100" cy="100" r="90"/>
+            <text x="100" y="110" class="number">0</text>
+          </svg>
+        </div>
+        <h3 class="text-3xl font-bold mb-8" id="forecast-title">Potential Top 10 Placement</h3>
+        <div class="space-y-6 text-left max-w-3xl mx-auto">
+          <p class="text-xl">
+            <span class="font-bold text-blue-300">What is it?</span><br>
+            <span id="forecast-what">An AI-powered prediction of where this page could rank in Google search results after implementing recommended fixes, based on current score, competition density, and historical ranking patterns for similar pages.</span>
+          </p>
+          <p class="text-xl">
+            <span class="font-bold text-green-300">How to improve?</span><br>
+            <span id="forecast-how">Prioritize the Top 3 fixes above. Each major improvement typically boosts overall score by 10–20 points, moving you closer to top positions.</span>
+          </p>
+          <p class="text-xl">
+            <span class="font-bold text-red-300">Why it matters?</span><br>
+            <span id="forecast-why">Pages scoring 80+ frequently appear in the top 10. Every 10-point increase can double organic traffic. This forecast shows your realistic upside potential.</span>
+          </p>
+        </div>
+      </div>
     </div>
     
     
