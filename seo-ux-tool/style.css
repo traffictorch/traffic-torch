@@ -125,7 +125,14 @@ body { transition: background-color 0.3s ease; }
 .score-card.orange { border-color: #fb923c; }
 .score-card.green { border-color: #34d399; }
 
-/* Overall Score Card - Holographic Neon Glow + Perfect Centering */
+/* Overall Score Card - Perfect Centering + Holographic Neon Glow */
+#overall-container .flex > .score-card {
+  max-width: 420px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Holographic Neon Glow - Animated Gradient Border by Grade */
 #overall-score .score-card {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(20px);
@@ -136,11 +143,9 @@ body { transition: background-color 0.3s ease; }
   position: relative;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  max-width: 400px;
-  margin: 0 auto;
 }
 
-/* Animated Holographic Neon Border Glow */
+/* Neon glow border */
 #overall-score .score-card::before {
   content: '';
   position: absolute;
@@ -154,7 +159,7 @@ body { transition: background-color 0.3s ease; }
   z-index: -1;
 }
 
-/* Grade-specific neon glow */
+/* Grade-specific glow */
 #overall-score .score-card.red::before {
   background: conic-gradient(from 0deg, #f87171, #ef4444, #dc2626, #b91c1c);
 }
@@ -170,13 +175,13 @@ body { transition: background-color 0.3s ease; }
   100% { transform: rotate(360deg); }
 }
 
-/* Inner glass reflection */
+/* Inner glass shine */
 #overall-score .score-card::after {
   content: '';
   position: absolute;
   inset: 4px;
   border-radius: 3rem;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 70%);
   pointer-events: none;
   z-index: -1;
 }
