@@ -171,63 +171,66 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      // Predictive Rank Forecast
-      const forecastCircle = document.querySelector('#forecast-circle');
+
+      // Predictive Rank Forecast (no circle, big gain text)
       const forecastTitle = document.getElementById('forecast-title');
+      const forecastGain = document.getElementById('forecast-gain');
       const forecastWhat = document.getElementById('forecast-what');
       const forecastHow = document.getElementById('forecast-how');
       const forecastWhy = document.getElementById('forecast-why');
 
-      let forecastScore = overallScore;
       let title = '';
+      let gain = '';
       let what = '';
       let how = '';
       let why = '';
 
       if (overallScore >= 90) {
-        forecastScore = 98;
         title = 'Dominant Top 3 Position';
+        gain = '+0–10% potential traffic gain';
         what = 'Your page is already in elite territory — highly optimized and authoritative.';
         how = 'Maintain excellence and monitor competitors.';
         why = 'Top 3 positions capture the majority of clicks. You are already winning.';
       } else if (overallScore >= 80) {
-        forecastScore = 95;
         title = 'Strong Top 5 Potential';
+        gain = '+50–85% potential traffic gain if fixed';
         what = 'With minor refinements, this page can compete for featured positions.';
         how = 'Implement the top priority fixes to push into the 90+ club.';
         why = 'Top 5 results get premium visibility and rich snippet opportunities.';
       } else if (overallScore >= 70) {
-        forecastScore = 88;
         title = 'Realistic Top 10 Opportunity';
+        gain = '+100–200% potential traffic gain if fixed';
         what = 'Solid foundation — fixing key issues can deliver major ranking gains.';
         how = 'Focus on the Top 3 fixes; expect significant movement within weeks.';
         why = 'Breaking into page 1 can increase traffic by 5–10x for competitive terms.';
       } else if (overallScore >= 60) {
-        forecastScore = 82;
         title = 'Page 1 Possible with Focused Effort';
+        gain = '+200–400% potential traffic gain if fixed';
         what = 'Moderate issues are holding you back from high visibility.';
         how = 'Address critical on-page and technical problems first.';
         why = 'Page 1 vs page 2 is the difference between traffic and obscurity.';
       } else {
-        forecastScore = 75;
         title = 'Major Upside Potential';
+        gain = '+400%+ potential traffic gain if fixed';
         what = 'Significant opportunities exist — this page has strong recovery potential.';
         how = 'Start with the highest-impact fixes shown above.';
         why = 'Turning around low-scoring pages often yields the biggest traffic gains.';
       }
 
-      updateScore('forecast-circle', forecastScore);
       forecastTitle.textContent = title;
+      forecastGain.textContent = gain;
       forecastWhat.textContent = what;
       forecastHow.textContent = how;
       forecastWhy.textContent = why;
 
-      // Show results
+      // Show all result sections
       progressContainer.classList.add('hidden');
       overallContainer.classList.remove('hidden');
       priorityFixes.classList.remove('hidden');
-      if (forecastModule) forecastModule.classList.remove('hidden');
+      forecastModule.classList.remove('hidden');
       results.classList.remove('hidden');
+      
+      
 
     } catch (err) {
       progressContainer.classList.add('hidden');

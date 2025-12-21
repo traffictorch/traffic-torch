@@ -270,33 +270,33 @@
       </div>
     </div>
 
-	    <div id="forecast-module" class="hidden max-w-5xl mx-auto my-24">
+    <div id="forecast-module" class="hidden max-w-5xl mx-auto my-24">
       <h2 class="text-5xl font-black text-center mb-16 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
         Predictive Rank Forecast
       </h2>
-      <div class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-12 text-center border-4 border-transparent shadow-2xl">
-        <div class="score-circle large mb-12" data-score="0" id="forecast-circle">
-          <svg viewBox="0 0 200 200">
-            <circle class="bg" cx="100" cy="100" r="90"/>
-            <circle class="progress" cx="100" cy="100" r="90"/>
-            <text x="100" y="110" class="number">0</text>
-          </svg>
+      <div class="rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-orange-600/90 to-pink-600/90 p-12 text-white">
+        <h3 class="text-5xl md:text-6xl font-black text-center mb-6" id="forecast-title">Strong Top 5 Potential</h3>
+        <p class="text-4xl md:text-5xl font-black text-center mb-12" id="forecast-gain">+85% potential traffic gain if fixed</p>
+        <p class="text-xl text-center mb-16 opacity-90">
+          Based on trust, direct answers, structure, and human signals — here's the breakdown:
+        </p>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="bg-white/10 backdrop-blur rounded-2xl p-8">
+            <h4 class="text-2xl font-bold mb-4 text-blue-300">What is it?</h4>
+            <p id="forecast-what" class="text-lg leading-relaxed">An AI-powered prediction of where this page could rank in search results after implementing recommended fixes, based on current score and key ranking factors.</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur rounded-2xl p-8">
+            <h4 class="text-2xl font-bold mb-4 text-green-300">How to improve?</h4>
+            <p id="forecast-how" class="text-lg leading-relaxed">Prioritize the Top 3 fixes above. Each major improvement boosts overall score by 10–20 points, moving you closer to top positions.</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur rounded-2xl p-8">
+            <h4 class="text-2xl font-bold mb-4 text-yellow-300">Why it matters?</h4>
+            <p id="forecast-why" class="text-lg leading-relaxed">Pages scoring 80+ frequently appear in top 10. Every 10-point increase can double organic traffic. This shows your realistic upside.</p>
+          </div>
         </div>
-        <h3 class="text-3xl font-bold mb-8" id="forecast-title">Potential Top 10 Placement</h3>
-        <div class="space-y-6 text-left max-w-3xl mx-auto">
-          <p class="text-xl">
-            <span class="font-bold text-blue-300">What is it?</span><br>
-            <span id="forecast-what">An AI-powered prediction of where this page could rank in Google search results after implementing recommended fixes, based on current score, competition density, and historical ranking patterns for similar pages.</span>
-          </p>
-          <p class="text-xl">
-            <span class="font-bold text-green-300">How to improve?</span><br>
-            <span id="forecast-how">Prioritize the Top 3 fixes above. Each major improvement typically boosts overall score by 10–20 points, moving you closer to top positions.</span>
-          </p>
-          <p class="text-xl">
-            <span class="font-bold text-red-300">Why it matters?</span><br>
-            <span id="forecast-why">Pages scoring 80+ frequently appear in the top 10. Every 10-point increase can double organic traffic. This forecast shows your realistic upside potential.</span>
-          </p>
-        </div>
+        <p class="text-center mt-12 text-lg opacity-80">
+          Forecast is heuristic; actual performance varies by query and competition.
+        </p>
       </div>
     </div>
     
