@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressContainer = document.getElementById('progress-container');
   const progressText = document.getElementById('progress-text');
   const priorityFixes = document.getElementById('priority-fixes');
-  const forecastSection = document.getElementById('forecast');
+  const forecastModule = document.getElementById('forecast-module');
 
   function cleanUrl(u) {
     const trimmed = u.trim();
@@ -17,13 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'https://' + trimmed;
   }
 
-	  function updateScore(id, score) {
+  function updateScore(id, score) {
     const circle = document.querySelector('#' + id + ' .score-circle');
     const card = circle?.closest('.score-card');
     if (!circle) return;
 
     score = Math.round(score);
-    const radius = id === 'overall-score' ? 90 : 54;
+    const radius = id === 'overall-score' || id === 'forecast-circle' ? 90 : 54;
     const circumference = 2 * Math.PI * radius;
     const dash = (score / 100) * circumference;
 
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     num.textContent = score;
     num.style.opacity = '1';
 
-    // Remove old classes
+    // Clean classes
     progress.classList.remove('stroke-red-400', 'stroke-orange-400', 'stroke-green-400');
     num.classList.remove('text-red-400', 'text-orange-400', 'text-green-400');
     if (card) card.classList.remove('red', 'orange', 'green');
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
       num.classList.add('text-green-400');
       if (card) card.classList.add('green');
     }
-  }  
+  }
 
   function populateIssues(id, issues) {
     const ul = document.getElementById(id);
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     results.classList.add('hidden');
     overallContainer.classList.add('hidden');
     priorityFixes.classList.add('hidden');
-    forecastSection.classList.add('hidden');
+    if (forecastModule) forecastModule.classList.add('hidden');
     progressContainer.classList.remove('hidden');
     progressText.textContent = 'Fetching page...';
 
@@ -150,69 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       updateScore('overall-score', overallScore);
-      
-      
-            // Predictive Rank Forecast
-      const forecastCircle = document.querySelector('#forecast-circle');
-      const forecastTitle = document.getElementById('forecast-title');
-      const forecastWhat = document.getElementById('forecast-what');
-      const forecastHow = document.getElementById('forecast-how');
-      const forecastWhy = document.getElementById('forecast-why');
-
-      let forecastScore = overallScore;
-      let potentialGain = 0;
-      let title = '';
-      let what = '';
-      let how = '';
-      let why = '';
-
-      if (overallScore >= 90) {
-        forecastScore = 98;
-        potentialGain = 0;
-        title = 'Dominant Top 3 Position';
-        what = 'Your page is already in elite territory — highly optimized and authoritative.';
-        how = 'Maintain excellence and monitor competitors.';
-        why = 'Top 3 positions capture the majority of clicks. You are already winning.';
-      } else if (overallScore >= 80) {
-        forecastScore = 95;
-        potentialGain = 15;
-        title = 'Strong Top 5 Potential';
-        what = 'With minor refinements, this page can compete for featured positions.';
-        how = 'Implement the top priority fixes to push into the 90+ club.';
-        why = 'Top 5 results get premium visibility and rich snippet opportunities.';
-      } else if (overallScore >= 70) {
-        forecastScore = 88;
-        potentialGain = 18;
-        title = 'Realistic Top 10 Opportunity';
-        what = 'Solid foundation — fixing key issues can deliver major ranking gains.';
-        how = 'Focus on the Top 3 fixes; expect significant movement within weeks.';
-        why = 'Breaking into page 1 can increase traffic by 5–10x for competitive terms.';
-      } else if (overallScore >= 60) {
-        forecastScore = 82;
-        potentialGain = 22;
-        title = 'Page 1 Possible with Focused Effort';
-        what = 'Moderate issues are holding you back from high visibility.';
-        how = 'Address critical on-page and technical problems first.';
-        why = 'Page 1 vs page 2 is the difference between traffic and obscurity.';
-      } else {
-        forecastScore = 75;
-        potentialGain = 30;
-        title = 'Major Upside Potential';
-        what = 'Significant opportunities exist — this page has strong recovery potential.';
-        how = 'Start with the highest-impact fixes shown above.';
-        why = 'Turning around low-scoring pages often yields the biggest traffic gains.';
-      }
-
-      updateScore('forecast-circle', forecastScore);
-      forecastTitle.textContent = title;
-      forecastWhat.textContent = what;
-      forecastHow.textContent = how;
-      forecastWhy.textContent = why;
-
-      // Show the module
-      document.getElementById('forecast-module').classList.remove('hidden');
-      
-      
 
       // Top 3 Priority Fixes
       allIssues.sort((a, b) => b.impact - a.impact);
@@ -235,25 +172,61 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // Predictive Rank Forecast
-      let forecast = '';
+      const forecastCircle = document.querySelector('#forecast-circle');
+      const forecastTitle = document.getElementById('forecast-title');
+      const forecastWhat = document.getElementById('forecast-what');
+      const forecastHow = document.getElementById('forecast-how');
+      const forecastWhy = document.getElementById('forecast-why');
+
+      let forecastScore = overallScore;
+      let title = '';
+      let what = '';
+      let how = '';
+      let why = '';
+
       if (overallScore >= 90) {
-        forecast = 'Excellent optimization. Your page is highly competitive and very likely to secure top rankings.';
+        forecastScore = 98;
+        title = 'Dominant Top 3 Position';
+        what = 'Your page is already in elite territory — highly optimized and authoritative.';
+        how = 'Maintain excellence and monitor competitors.';
+        why = 'Top 3 positions capture the majority of clicks. You are already winning.';
       } else if (overallScore >= 80) {
-        forecast = 'Strong performance. Minor improvements could place you in the top 5–10 results.';
+        forecastScore = 95;
+        title = 'Strong Top 5 Potential';
+        what = 'With minor refinements, this page can compete for featured positions.';
+        how = 'Implement the top priority fixes to push into the 90+ club.';
+        why = 'Top 5 results get premium visibility and rich snippet opportunities.';
       } else if (overallScore >= 70) {
-        forecast = 'Solid foundation. Fixing key issues may significantly improve your ranking position.';
+        forecastScore = 88;
+        title = 'Realistic Top 10 Opportunity';
+        what = 'Solid foundation — fixing key issues can deliver major ranking gains.';
+        how = 'Focus on the Top 3 fixes; expect significant movement within weeks.';
+        why = 'Breaking into page 1 can increase traffic by 5–10x for competitive terms.';
       } else if (overallScore >= 60) {
-        forecast = 'Moderate issues present. Addressing priorities could greatly enhance visibility and traffic.';
+        forecastScore = 82;
+        title = 'Page 1 Possible with Focused Effort';
+        what = 'Moderate issues are holding you back from high visibility.';
+        how = 'Address critical on-page and technical problems first.';
+        why = 'Page 1 vs page 2 is the difference between traffic and obscurity.';
       } else {
-        forecast = 'Critical optimizations required. Implementing fixes is essential for effective search presence.';
+        forecastScore = 75;
+        title = 'Major Upside Potential';
+        what = 'Significant opportunities exist — this page has strong recovery potential.';
+        how = 'Start with the highest-impact fixes shown above.';
+        why = 'Turning around low-scoring pages often yields the biggest traffic gains.';
       }
-      document.getElementById('forecast-text').textContent = forecast;
+
+      updateScore('forecast-circle', forecastScore);
+      forecastTitle.textContent = title;
+      forecastWhat.textContent = what;
+      forecastHow.textContent = how;
+      forecastWhy.textContent = why;
 
       // Show results
       progressContainer.classList.add('hidden');
       overallContainer.classList.remove('hidden');
       priorityFixes.classList.remove('hidden');
-      forecastSection.classList.remove('hidden');
+      if (forecastModule) forecastModule.classList.remove('hidden');
       results.classList.remove('hidden');
 
     } catch (err) {
@@ -263,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ================== ALL ANALYSIS FUNCTIONS (unchanged + enhanced) ==================
+  // ================== ANALYSIS FUNCTIONS ==================
 
   function analyzeSEO(html, doc) {
     let score = 100;
@@ -507,11 +480,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function analyzeAccess(html, doc) {
     let score = 100;
     const issues = [];
-    const missingAlts = Array.from(doc.querySelectorAll('img')).filter(i => !i.alt || i.alt.trim() === '').length;
-    if (missingAlts) {
-      score -= Math.min(35, missingAlts * 8);
+    const missingAlts = Array.from(doc.querySelectorAll('img')).filter(i => !i.alt || i.alt.trim() === '');
+    if (missingAlts.length) {
+      score -= Math.min(35, missingAlts.length * 8);
       issues.push({
-        issue: `${missingAlts} images missing alt text`,
+        issue: `${missingAlts.length} images missing alt text`,
         what: 'Images have no description for screen readers.',
         fix: 'Add descriptive alt (or alt="" if decorative)',
         uxWhy: 'Blind users can’t understand what the image shows.',
