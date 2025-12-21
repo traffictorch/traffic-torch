@@ -254,8 +254,14 @@ body { transition: background-color 0.3s ease; }
 
 
 /* 360 Health Radar */
-canvas#health-radar {
+#radar-container canvas#health-radar {
   max-width: 600px;
+  width: 100%;
   margin: 0 auto;
+}
+
+/* Subtle improvement for grid visibility in both modes */
+.chartjs-render-monitor {
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
 }
 

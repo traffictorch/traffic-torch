@@ -307,91 +307,106 @@ document.addEventListener('DOMContentLoaded', () => {
      
      
      
-      // 360° Health Radar Chart (desktop only)
-      if (window.innerWidth >= 768) {
-        const radarCtx = document.getElementById('health-radar').getContext('2d');
-        const isDark = document.documentElement.classList.contains('dark');
-        const gridColor = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
-        const labelColor = isDark ? '#9ca3af' : '#4b5563'; // gray-400 dark, gray-600 light
+// 360° Health Radar Chart (desktop only)
+if (window.innerWidth >= 768) {
+  const radarCtx = document.getElementById('health-radar').getContext('2d');
+  const isDark = document.documentElement.classList.contains('dark');
+  const gridColor = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
+  const labelColor = isDark ? '#9ca3af' : '#4b5563'; // gray-400 / gray-600
 
-        new Chart(radarCtx, {
-          type: 'radar',
-          data: {
-            labels: ['On-Page SEO', 'Mobile & PWA', 'Performance', 'Accessibility', 'Content Quality', 'UX Design', 'Security', 'Indexability'],
-            datasets: [{
-              label: 'Health Score',
-              data: scores,
-              backgroundColor: isDark ? 'rgba(251, 146, 60, 0.2)' : 'rgba(251, 146, 60, 0.15)',
-              borderColor: '#fb923c',
-              borderWidth: 3,
-              pointRadius: 8,
-              pointHoverRadius: 12,
-              pointBackgroundColor: (context) => {
-                const value = context.parsed.r;
-                if (value < 60) return '#f87171';
-                if (value < 80) return '#fb923c';
-                return '#34d399';
-              },
-              pointHoverBackgroundColor: (context) => {
-                const value = context.parsed.r;
-                if (value < 60) return '#ef4444';
-                if (value < 80) return '#f97316';
-                return '#10b981';
-              }
-            }]
+  const chart = new Chart(radarCtx, {
+    type: 'radar',
+    data: {
+      labels: ['On-Page SEO', 'Mobile & PWA', 'Performance', 'Accessibility', 'Content Quality', 'UX Design', 'Security', 'Indexability'],
+      datasets: [{
+        label: 'Health Score',
+        data: scores, // assuming scores is defined elsewhere with your 8 values
+        backgroundColor: isDark ? 'rgba(251, 146, 60, 0.2)' : 'rgba(251, 146, 60, 0.15)',
+        borderColor: '#fb923c',
+        borderWidth: 3,
+        pointRadius: 8,
+        pointHoverRadius: 12,
+        pointBackgroundColor: (ctx) => {
+          const v = ctx.parsed?.r ?? 0;
+          if (v < 60) return '#f87171';     // red
+          if (v < 80) return '#fb923c';     // orange
+          return '#34d399';                 // green
+        },
+        pointHoverBackgroundColor: (ctx) => {
+          const v = ctx.parsed?.r ?? 0;
+          if (v < 60) return '#ef4444';
+          if (v < 80) return '#f97316';
+          return '#10b981';
+        }
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        intersect: true, // works for hover & tap
+        mode: 'point'
+      },
+      scales: {
+        r: {
+          beginAtZero: true,
+          min: 0,
+          max: 100,
+          ticks: {
+            stepSize: 20,
+            color: labelColor,
+            backdropColor: 'transparent',
+            callback: (value) => value // shows 0,20,40,60,80,100
           },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              r: {
-                angleLines: { color: gridColor },
-                grid: { color: gridColor },
-                pointLabels: {
-                  font: { size: 14, weight: 'bold' },
-                  color: labelColor
-                },
-                ticks: {
-                  color: labelColor,
-                  backdropColor: 'transparent',
-                  beginAtZero: true,
-                  max: 100,
-                  stepSize: 20,
-                  callback: (value) => value // shows 20 40 60 80 100
-                }
-              }
-            },
-            plugins: {
-              tooltip: {
-                enabled: true,
-                intersect: true,
-                callbacks: {
-                  title: (context) => context[0].label,
-                  label: (context) => {
-                    const value = context.parsed.r;
-                    const impacts = {
-                      'On-Page SEO': 'Core SEO signals (title, meta, H1) + clear hierarchy',
-                      'Mobile & PWA': 'Mobile-first indexing + installable experience',
-                      'Performance': 'Core Web Vitals ranking factor + speed reduces bounce',
-                      'Accessibility': 'Google favors accessible sites + inclusive UX',
-                      'Content Quality': 'Depth & relevance boost rankings + helpful content',
-                      'UX Design': 'Engagement signals (dwell time) + intuitive navigation',
-                      'Security': 'HTTPS required + builds user trust',
-                      'Indexability': 'Foundation for crawling + enables discovery'
-                    };
-                    return [
-                      `Score: ${value}/100`,
-                      impacts[context[0].label] || 'Strong performance in this area'
-                    ];
-                  }
-                }
-              },
-              legend: { display: false }
+          grid: { color: gridColor },
+          angleLines: { color: gridColor },
+          pointLabels: {
+            color: labelColor,
+            font: { size: 14, weight: 'bold' }
+          }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: (ctx) => ctx[0].label,
+            label: (ctx) => {
+              const value = Math.round(ctx.parsed.r);
+              let grade = '';
+              if (value < 20) grade = 'Very Poor';
+              else if (value < 40) grade = 'Poor';
+              else if (value < 60) grade = 'Fair (major issues)';
+              else if (value < 80) grade = 'Good (room for improvement)';
+              else grade = 'Excellent';
+
+              const impacts = {
+                'On-Page SEO': 'Core SEO signals (title, meta, H1) + clear hierarchy',
+                'Mobile & PWA': 'Mobile-first indexing + installable experience',
+                'Performance': 'Core Web Vitals ranking factor + speed reduces bounce',
+                'Accessibility': 'Google favors accessible sites + inclusive UX',
+                'Content Quality': 'Depth & relevance boost rankings + helpful content',
+                'UX Design': 'Engagement signals (dwell time) + intuitive navigation',
+                'Security': 'HTTPS required + builds user trust',
+                'Indexability': 'Foundation for crawling + enables discovery'
+              };
+
+              return [
+                `Score: ${value}/100`,
+                `Grade: ${grade}`,
+                impacts[ctx.label] || 'Strong performance in this area'
+              ];
             }
           }
-        });
-        document.getElementById('radar-container').classList.remove('hidden');
+        }
       }
+    }
+  });
+
+  // Reveal title + container only after chart is fully rendered
+  document.getElementById('radar-title').classList.remove('hidden');
+  document.getElementById('radar-container').classList.remove('hidden');
+}
       
       
       
