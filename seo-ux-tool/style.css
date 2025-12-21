@@ -81,6 +81,12 @@ body { transition: background-color 0.3s ease; }
   
   
   
+/* What How Why Padding */  
+  .p-8 {
+  padding: 0.5rem;
+}
+
+
 
 /* Score Circles - Perfect Centering */
 .score-circle {
