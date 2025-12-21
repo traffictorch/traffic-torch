@@ -19,35 +19,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	  function updateScore(id, score) {
     const circle = document.querySelector('#' + id + ' .score-circle');
-    const card = circle.closest('.score-card');
+    const card = circle?.closest('.score-card');
     if (!circle) return;
+
     score = Math.round(score);
     const radius = id === 'overall-score' ? 90 : 54;
     const circumference = 2 * Math.PI * radius;
     const dash = (score / 100) * circumference;
-    circle.querySelector('.progress').style.strokeDasharray = `${dash} ${circumference}`;
+
+    const progress = circle.querySelector('.progress');
+    progress.style.strokeDasharray = `${dash} ${circumference}`;
 
     const num = circle.querySelector('.number');
     num.textContent = score;
     num.style.opacity = '1';
-    circle.dataset.score = score;
 
-    // Remove previous grade classes from card and number
-    if (card) {
-      card.classList.remove('red', 'orange', 'green');
-    }
+    // Remove old classes
+    progress.classList.remove('stroke-red-400', 'stroke-orange-400', 'stroke-green-400');
     num.classList.remove('text-red-400', 'text-orange-400', 'text-green-400');
+    if (card) card.classList.remove('red', 'orange', 'green');
 
-    // Apply grade
+    // Apply new grade
     if (score < 60) {
-      if (card) card.classList.add('red');
+      progress.classList.add('stroke-red-400');
       num.classList.add('text-red-400');
+      if (card) card.classList.add('red');
     } else if (score < 80) {
-      if (card) card.classList.add('orange');
+      progress.classList.add('stroke-orange-400');
       num.classList.add('text-orange-400');
+      if (card) card.classList.add('orange');
     } else {
-      if (card) card.classList.add('green');
+      progress.classList.add('stroke-green-400');
       num.classList.add('text-green-400');
+      if (card) card.classList.add('green');
     }
   }
 

@@ -89,20 +89,20 @@
 </form>
 
     
-	    <div id="overall-container" class="hidden my-16">
-      <h2 class="text-4xl font-black text-center mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+	    <div id="overall-container" class="hidden my-20">
+      <h2 class="text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
         Overall SEO & UX Health Score
       </h2>
       <div class="flex justify-center">
-        <div id="overall-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-12 text-center border-4 border-transparent">
+        <div class="score-card bg-white/10 dark:bg-white/5 backdrop-blur-xl rounded-3xl p-12 text-center shadow-2xl border-4 border-transparent">
           <div class="score-circle large" data-score="0">
             <svg viewBox="0 0 200 200">
               <circle class="bg" cx="100" cy="100" r="90"/>
               <circle class="progress" cx="100" cy="100" r="90"/>
               <text x="100" y="110" class="number">0</text>
             </svg>
-            <div class="label text-3xl font-bold mt-8">Overall Score</div>
           </div>
+          <div class="text-3xl font-bold mt-8 text-white/90">Overall Score</div>
         </div>
       </div>
     </div>
@@ -221,38 +221,53 @@
     </div>
     
     
-    <div id="priority-fixes" class="hidden max-w-6xl mx-auto my-20">
+	    <div id="priority-fixes" class="hidden max-w-6xl mx-auto my-24">
       <h2 class="text-5xl font-black text-center mb-16 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
         Top 3 Priority Fixes
       </h2>
-      <div class="grid md:grid-cols-3 gap-12">
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-red-900/40 to-red-800/20 backdrop-blur-2xl border border-red-500/50 p-10 shadow-2xl transform hover:scale-105 transition">
-          <div class="absolute top-4 right-4 text-8xl font-black text-red-500/20">1</div>
-          <strong id="priority1-issue" class="text-2xl font-bold block mb-6 text-white relative z-10"></strong>
-          <div class="space-y-5 text-gray-100 relative z-10">
-            <p><span class="font-bold text-blue-300">What is it?</span><br><span id="priority1-what" class="text-lg leading-relaxed"></span></p>
-            <p><span class="font-bold text-green-300">How to improve?</span><br><span id="priority1-fix" class="text-lg leading-relaxed"></span></p>
-            <p><span class="font-bold text-red-300">Why it matters?</span><br><span id="priority1-why" class="text-lg leading-relaxed"></span></p>
+      <div class="grid md:grid-cols-3 gap-10">
+        <!-- Card 1 -->
+        <div class="bg-white/10 dark:bg-white/5 backdrop-blur-2xl rounded-3xl overflow-hidden shadow-2xl border border-red-500/30 hover:border-red-500/60 transition">
+          <div class="bg-gradient-to-br from-red-600/40 to-red-800/20 py-8 text-center">
+            <div class="text-8xl font-black text-red-400">1</div>
+          </div>
+          <div class="p-10">
+            <strong id="priority1-issue" class="text-2xl font-bold block mb-8 text-white"></strong>
+            <div class="space-y-6 text-gray-200">
+              <p><span class="font-bold text-blue-300">What is it?</span><br><span id="priority1-what" class="text-lg leading-relaxed"></span></p>
+              <p><span class="font-bold text-green-300">How to improve?</span><br><span id="priority1-fix" class="text-lg leading-relaxed"></span></p>
+              <p><span class="font-bold text-red-300">Why it matters?</span><br><span id="priority1-why" class="text-lg leading-relaxed"></span></p>
+            </div>
           </div>
         </div>
 
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-900/40 to-orange-800/20 backdrop-blur-2xl border border-orange-500/50 p-10 shadow-2xl transform hover:scale-105 transition">
-          <div class="absolute top-4 right-4 text-8xl font-black text-orange-500/20">2</div>
-          <strong id="priority2-issue" class="text-2xl font-bold block mb-6 text-white relative z-10"></strong>
-          <div class="space-y-5 text-gray-100 relative z-10">
-            <p><span class="font-bold text-blue-300">What is it?</span><br><span id="priority2-what" class="text-lg leading-relaxed"></span></p>
-            <p><span class="font-bold text-green-300">How to improve?</span><br><span id="priority2-fix" class="text-lg leading-relaxed"></span></p>
-            <p><span class="font-bold text-red-300">Why it matters?</span><br><span id="priority2-why" class="text-lg leading-relaxed"></span></p>
+        <!-- Card 2 -->
+        <div class="bg-white/10 dark:bg-white/5 backdrop-blur-2xl rounded-3xl overflow-hidden shadow-2xl border border-orange-500/30 hover:border-orange-500/60 transition">
+          <div class="bg-gradient-to-br from-orange-600/40 to-orange-800/20 py-8 text-center">
+            <div class="text-8xl font-black text-orange-400">2</div>
+          </div>
+          <div class="p-10">
+            <strong id="priority2-issue" class="text-2xl font-bold block mb-8 text-white"></strong>
+            <div class="space-y-6 text-gray-200">
+              <p><span class="font-bold text-blue-300">What is it?</span><br><span id="priority2-what" class="text-lg leading-relaxed"></span></p>
+              <p><span class="font-bold text-green-300">How to improve?</span><br><span id="priority2-fix" class="text-lg leading-relaxed"></span></p>
+              <p><span class="font-bold text-red-300">Why it matters?</span><br><span id="priority2-why" class="text-lg leading-relaxed"></span></p>
+            </div>
           </div>
         </div>
 
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-green-900/40 to-emerald-800/20 backdrop-blur-2xl border border-green-500/50 p-10 shadow-2xl transform hover:scale-105 transition">
-          <div class="absolute top-4 right-4 text-8xl font-black text-green-500/20">3</div>
-          <strong id="priority3-issue" class="text-2xl font-bold block mb-6 text-white relative z-10"></strong>
-          <div class="space-y-5 text-gray-100 relative z-10">
-            <p><span class="font-bold text-blue-300">What is it?</span><br><span id="priority3-what" class="text-lg leading-relaxed"></span></p>
-            <p><span class="font-bold text-green-300">How to improve?</span><br><span id="priority3-fix" class="text-lg leading-relaxed"></span></p>
-            <p><span class="font-bold text-red-300">Why it matters?</span><br><span id="priority3-why" class="text-lg leading-relaxed"></span></p>
+        <!-- Card 3 -->
+        <div class="bg-white/10 dark:bg-white/5 backdrop-blur-2xl rounded-3xl overflow-hidden shadow-2xl border border-green-500/30 hover:border-green-500/60 transition">
+          <div class="bg-gradient-to-br from-green-600/40 to-emerald-800/20 py-8 text-center">
+            <div class="text-8xl font-black text-green-400">3</div>
+          </div>
+          <div class="p-10">
+            <strong id="priority3-issue" class="text-2xl font-bold block mb-8 text-white"></strong>
+            <div class="space-y-6 text-gray-200">
+              <p><span class="font-bold text-blue-300">What is it?</span><br><span id="priority3-what" class="text-lg leading-relaxed"></span></p>
+              <p><span class="font-bold text-green-300">How to improve?</span><br><span id="priority3-fix" class="text-lg leading-relaxed"></span></p>
+              <p><span class="font-bold text-red-300">Why it matters?</span><br><span id="priority3-why" class="text-lg leading-relaxed"></span></p>
+            </div>
           </div>
         </div>
       </div>
