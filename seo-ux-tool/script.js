@@ -307,16 +307,16 @@ document.addEventListener('DOMContentLoaded', () => {
      
      
      
-// 360° Health Radar Chart (desktop only)
+	// 360° Health Radar Chart (desktop only)
 if (window.innerWidth >= 768) {
   const radarCtx = document.getElementById('health-radar').getContext('2d');
   const isDark = document.documentElement.classList.contains('dark');
 
-  // Lighter gray-400 for grid, labels, and line in both modes (cleaner look)
-  const gridColor = isDark ? '#9ca3af' : 'rgba(0, 0, 0, 0.2)'; // gray-400 dark, subtle light
-  const labelColor = '#9ca3af'; // gray-400 in both modes for consistency
-  const lineColor = '#9ca3af'; // gray-400 instead of orange
-  const fillColor = isDark ? 'rgba(156, 163, 175, 0.15)' : 'rgba(156, 163, 175, 0.1)'; // very subtle gray fill
+  // Improved visibility in dark mode
+  const gridColor = isDark ? 'rgba(156, 163, 175, 0.5)' : 'rgba(0, 0, 0, 0.2)'; // gray-400 with 50% opacity dark
+  const labelColor = '#9ca3af'; // gray-400 consistent
+  const lineColor = '#9ca3af'; // gray-400 line
+  const fillColor = isDark ? 'rgba(156, 163, 175, 0.25)' : 'rgba(156, 163, 175, 0.1)'; // more visible fill in dark
 
   const chart = new Chart(radarCtx, {
     type: 'radar',
@@ -327,9 +327,9 @@ if (window.innerWidth >= 768) {
         data: scores,
         backgroundColor: fillColor,
         borderColor: lineColor,
-        borderWidth: 3,
-        pointRadius: 8,
-        pointHoverRadius: 12,
+        borderWidth: 4, // thicker for visibility
+        pointRadius: 9,
+        pointHoverRadius: 14,
         pointBackgroundColor: (ctx) => {
           const v = ctx.parsed?.r ?? 0;
           if (v < 60) return '#f87171';     // red
@@ -384,22 +384,28 @@ if (window.innerWidth >= 768) {
               else if (value < 80) grade = 'Good (room for improvement)';
               else grade = 'Excellent';
 
-              const impacts = {
-                'On-Page SEO': 'Core SEO signals (title, meta, H1) + clear hierarchy',
-                'Mobile & PWA': 'Mobile-first indexing + installable experience',
-                'Performance': 'Core Web Vitals ranking factor + speed reduces bounce',
-                'Accessibility': 'Google favors accessible sites + inclusive UX',
-                'Content Quality': 'Depth & relevance boost rankings + helpful content',
-                'UX Design': 'Engagement signals (dwell time) + intuitive navigation',
-                'Security': 'HTTPS required + builds user trust',
-                'Indexability': 'Foundation for crawling + enables discovery'
-              };
+              const metricKey = ctx.label; // exact match to your module keys
 
-              return [
+              // Pull real fixes from your existing modules data (adjust object/name if needed, e.g. reports[metricKey], details[metricKey])
+              // Assuming 'modules' is a global object with { 'On-Page SEO': { fixSummary: 'Bullet1\nBullet2' }, ... }
+              const fixes = (typeof modules !== 'undefined' && modules[metricKey]?.fixSummary) 
+                ? modules[metricKey].fixSummary.split('\n') 
+                : ['Click "Show Fixes" in the module below for detailed recommendations'];
+
+              const lines = [
                 `Score: ${value}/100`,
                 `Grade: ${grade}`,
-                impacts[ctx.label] || 'Strong performance in this area'
+                '' // empty line
               ];
+
+              if (value < 100) {
+                lines.push('How to Improve:');
+                lines.push(...fixes);
+              } else {
+                lines.push('Strong performance – keep it up!');
+              }
+
+              return lines;
             }
           }
         }
