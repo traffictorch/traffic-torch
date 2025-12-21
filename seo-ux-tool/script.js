@@ -90,9 +90,51 @@ document.addEventListener('DOMContentLoaded', () => {
       b.textContent = b.nextElementSibling.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
     };
   });
+  
+  
+  
+  
+    // Save as PDF - single listener (added once on page load)
+  if (savePdfBtn) {
+    savePdfBtn.addEventListener('click', () => {
+      // Hide non-print elements
+      document.querySelectorAll('#url-form, #save-pdf, #mobile-preview, .expand').forEach(el => {
+        el.style.display = 'none';
+      });
+
+      // Add print styles
+      const printStyle = document.createElement('style');
+      printStyle.innerHTML = `
+        @media print {
+          body { background: white !important; color: black !important; }
+          .score-card { background: white !important; border: 2px solid #333 !important; box-shadow: none !important; }
+          .bg-clip-text { -webkit-background-clip: text; background-clip: text; color: #e53e3e !important; }
+          .hidden { display: block !important; }
+          #mobile-preview, #url-form, #save-pdf { display: none !important; }
+        }
+      `;
+      document.head.appendChild(printStyle);
+
+      window.print();
+
+      // Restore after print/cancel
+      window.onafterprint = () => {
+        document.querySelectorAll('#url-form, #save-pdf, #mobile-preview, .expand').forEach(el => {
+          el.style.display = '';
+        });
+        document.head.removeChild(printStyle);
+      };
+    });
+  }
+  
+  
+  
+  
+  
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
+    if (savePdfBtn) savePdfBtn.classList.add('hidden');
     const originalInput = input.value.trim();
     const url = cleanUrl(originalInput);
     if (!url) {
@@ -231,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
       forecastModule.classList.remove('hidden');
       results.classList.remove('hidden');
       
-      
+     if (savePdfBtn) savePdfBtn.classList.remove('hidden');
       
       
       
@@ -311,6 +353,11 @@ document.addEventListener('DOMContentLoaded', () => {
       
       
       
+     
+     
+         if (savePdfBtn) savePdfBtn.classList.remove('hidden');
+     
+     
       
       
 
