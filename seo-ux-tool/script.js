@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressText = document.getElementById('progress-text');
   const priorityFixes = document.getElementById('priority-fixes');
   const forecastModule = document.getElementById('forecast-module');
+  const savePdfBtn = document.getElementById('save-pdf');
 
   function cleanUrl(u) {
     const trimmed = u.trim();
