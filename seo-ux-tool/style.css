@@ -245,3 +245,73 @@ body { transition: background-color 0.3s ease; }
   font-size: 2rem;
   cursor: pointer;
 }
+
+
+
+
+
+
+/* Mobile Preview - Responsive Frame */
+.frame-base {
+  max-width: 100%;
+  margin: 0 auto;
+  background: #000;
+  border-radius: 60px;
+  padding: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  transition: all 0.6s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Device frames only on larger screens */
+@media (min-width: 640px) {
+  .iphone-frame {
+    background: linear-gradient(to bottom, #111, #000);
+  }
+  .iphone-frame::before { /* Notch */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 160px;
+    height: 30px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+  }
+  .android-frame {
+    background: linear-gradient(to bottom, #222, #000);
+  }
+  .android-frame::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 24px;
+    background: #111;
+  }
+  .portrait { width: 375px; height: 812px; }
+  .landscape { width: 812px; height: 375px; transform: rotate(90deg); }
+}
+
+/* Mobile devices: clean full-width view */
+@media (max-width: 639px) {
+  .frame-base {
+    width: 100% !important;
+    height: 80vh;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+  #preview-iframe {
+    border-radius: 0;
+    height: 100%;
+  }
+  .landscape {
+    transform: none;
+    height: 60vh;
+  }
+}
