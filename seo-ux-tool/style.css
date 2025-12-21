@@ -77,69 +77,43 @@ body { transition: background-color 0.3s ease; }
 
 
 /* Color Grade in Score in Score Circle */
-/* Default number color */
+/* Ensure background ring is visible but subtle */
+.score-circle .bg {
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 8;
+}
+
+/* Progress ring — starts neutral, colored by JS */
+.score-circle .progress {
+  stroke: #f87171; /* default fallback red */
+  stroke-width: 8;
+  transition: stroke 0.6s ease, stroke-dasharray 0.8s ease;
+}
+
+/* Number text — large, bold, colored by grade via JS classes */
 .score-circle .number {
-  fill: #f87171; /* red-400 */
+  font-size: 48px;
+  font-weight: 900;
+  fill: currentColor;
+  text-anchor: middle;
+  dominant-baseline: middle;
   transition: fill 0.5s ease;
 }
 
-/* Green for 80+ */
-.score-circle[data-score="80"] ~ .label .number,
-.score-circle[data-score="81"] ~ .label .number,
-.score-circle[data-score="82"] ~ .label .number,
-.score-circle[data-score="83"] ~ .label .number,
-.score-circle[data-score="84"] ~ .label .number,
-.score-circle[data-score="85"] ~ .label .number,
-.score-circle[data-score="86"] ~ .label .number,
-.score-circle[data-score="87"] ~ .label .number,
-.score-circle[data-score="88"] ~ .label .number,
-.score-circle[data-score="89"] ~ .label .number,
-.score-circle[data-score="90"] ~ .label .number,
-.score-circle[data-score="91"] ~ .label .number,
-.score-circle[data-score="92"] ~ .label .number,
-.score-circle[data-score="93"] ~ .label .number,
-.score-circle[data-score="94"] ~ .label .number,
-.score-circle[data-score="95"] ~ .label .number,
-.score-circle[data-score="96"] ~ .label .number,
-.score-circle[data-score="97"] ~ .label .number,
-.score-circle[data-score="98"] ~ .label .number,
-.score-circle[data-score="99"] ~ .label .number,
-.score-circle[data-score="100"] ~ .label .number,
-.score-circle[data-score="80"] .number,
-.score-circle[data-score="81"] .number,
-/* ... repeat up to 100 if needed */
-.score-circle[data-score="100"] .number {
-  fill: #34d399; /* green-400 */
+/* Large overall score adjustments */
+.score-circle.large .number {
+  font-size: 80px;
+}
+@media (max-width: 768px) {
+  .score-circle.large .number {
+    font-size: 60px;
+  }
 }
 
-/* Orange for 60–79 */
-.score-circle[data-score^="6"] .number,
-.score-circle[data-score^="7"] .number {
-  fill: #fb923c; /* orange-400 */
-}
-
-/* Keep progress circle neutral (light gray or subtle) */
-.score-circle .progress {
-  stroke: rgba(255, 255, 255, 0.3);
-  transition: stroke-dasharray 0.8s ease;
-}
-
-
-
-
+/* Tailwind color classes for dynamic use */
 .text-red-400 { color: #f87171; fill: #f87171; }
 .text-orange-400 { color: #fb923c; fill: #fb923c; }
 .text-green-400 { color: #34d399; fill: #34d399; }
-
-/* Make progress ring subtle and consistent */
-.score-circle .progress {
-  stroke: rgba(255, 255, 255, 0.2);
-}
-
-/* Background ring */
-.score-circle .bg {
-  stroke: rgba(255, 255, 255, 0.1);
-}
 
 
 

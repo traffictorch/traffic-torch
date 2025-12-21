@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'https://' + trimmed;
   }
 
-	  function updateScore(id, score) {
+  function updateScore(id, score) {
     const circle = document.querySelector('#' + id + ' .score-circle');
     if (!circle) return;
     score = Math.round(score);
@@ -32,15 +32,19 @@ document.addEventListener('DOMContentLoaded', () => {
     num.style.opacity = '1';
     circle.dataset.score = score;
 
-    // Remove all grade classes
+    // Remove all color classes from progress and number
+    progress.classList.remove('stroke-red-400', 'stroke-orange-400', 'stroke-green-400');
     num.classList.remove('text-red-400', 'text-orange-400', 'text-green-400');
 
-    // Apply color to the NUMBER TEXT based on score
+    // Apply colors based on grade
     if (score < 60) {
+      progress.classList.add('stroke-red-400');
       num.classList.add('text-red-400');
     } else if (score < 80) {
+      progress.classList.add('stroke-orange-400');
       num.classList.add('text-orange-400');
     } else {
+      progress.classList.add('stroke-green-400');
       num.classList.add('text-green-400');
     }
   }
