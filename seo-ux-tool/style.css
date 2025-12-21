@@ -70,7 +70,7 @@
 .text-orange-400 { fill: #fb923c !important; }
 .text-green-400 { fill: #34d399 !important; }
 
-/* Module Cards - Original Clean Look + Grade Border Only */
+/* Module Cards - Clean Original */
 .score-card {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(16px);
@@ -88,27 +88,39 @@
 .score-card.orange { border-color: #fb923c; }
 .score-card.green { border-color: #34d399; }
 
-.score-card {
-  border: 4px solid transparent;
-  transition: border-color 0.6s ease;
-}
-.score-card.red { border-color: #f87171; }
-.score-card.orange { border-color: #fb923c; }
-.score-card.green { border-color: #34d399; }
-
-/* Overall Score Card - Same Style as Modules */
+/* Overall Score - Holographic Neon Glow */
 #overall-score .score-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-radius: 3rem;
   padding: 4rem;
   text-align: center;
-  border: 4px solid transparent;
-  transition: border-color 0.6s ease;
+  position: relative;
+  overflow: hidden;
 }
-#overall-score .score-card.red { border-color: #f87171; }
-#overall-score .score-card.orange { border-color: #fb923c; }
-#overall-score .score-card.green { border-color: #34d399; }
+#overall-score .score-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 3rem;
+  padding: 4px;
+  background: linear-gradient(45deg, #f87171, #fb923c, #34d399, #f87171);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.8;
+  pointer-events: none;
+}
+#overall-score .score-card.red::before {
+  background: linear-gradient(45deg, #f87171, #ef4444, #dc2626);
+}
+#overall-score .score-card.orange::before {
+  background: linear-gradient(45deg, #fb923c, #f97316, #ea580c);
+}
+#overall-score .score-card.green::before {
+  background: linear-gradient(45deg, #34d399, #10b981, #059669);
+}
 
 /* Mobile Responsiveness */
 @media (max-width: 1024px) {
@@ -128,5 +140,3 @@
   .p-12, .p-10, .p-8 { padding: 1.25rem !important; }
   .text-5xl { font-size: 2rem !important; }
 }
-
-
