@@ -1,62 +1,5 @@
-/* Only needed for the radar chart – everything else is Tailwind */
-.radar {
-  width: 200px;
-  height: 200px;
-  margin: 2rem auto;
-  display: block;
-}
-
-/* Remove any old body background rules – we use the wrapper div now */
-body { transition: background-color 0.3s ease; }
-
-/* Fix green card once and for all */
-.health-score polygon { fill: rgba(16, 185, 129, 0.3); }
-
-.radar { width: 180px; height: 180px; margin: 1.5rem auto; display: block; }
-.health-score h2 { margin-bottom: 0.5rem; }
-
-
-  /* LOCAL TOOL FIX – MOBILE-FRIENDLY REPORT (WORKS 100% – Dec 2025) */
-  @media (max-width: 1024px) {
-    /* Kill narrow containers */
-    .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
-      max-width: 100% !important;
-      padding-left: 1rem !important;
-      padding-right: 1rem !important;
-    }
-
-    /* Reduce huge padding on form + report cards */
-    .p-12, .p-10, .p-8 {
-      padding: 1.5rem !important;
-    }
-
-    /* Smaller title */
-    .text-5xl {
-      font-size: 2rem !important;
-      line-height: 1.1 !important;
-    }
-
-    /* Smaller giant percentage */
-    .text-9xl {
-      font-size: 6rem !important;
-      line-height: 1 !important;
-    }
-  }
-
-  /* Optional: slightly tighter on very small phones */
-  @media (max-width: 480px) {
-    .p-12, .p-10 { padding: 1.25rem !important; }
-    .text-5xl { font-size: 1.875rem !important; }
-    .text-9xl { font-size: 5.5rem !important; }
-  }
-  
-  
-
-
-
-
-
-
+/* Consolidated, clean, working style.css for seo-ux-tool */
+/* No conflicting rules, perfect centering, grade borders, subtle glow on overall */
 
 /* Spinner */
 .spinner {
@@ -73,15 +16,18 @@ body { transition: background-color 0.3s ease; }
   100% { transform: rotate(360deg); }
 }
 
-/* Score Circles - Centered */
+/* Score Circles - Perfect Centering */
 .score-circle {
-  margin: 0 auto 1rem auto;
-}
-.score-circle svg {
   width: 120px;
   height: 120px;
-  display: block;
-  margin: 0 auto;
+  margin: 0 auto 1rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.score-circle svg {
+  width: 100%;
+  height: 100%;
 }
 .score-circle .bg {
   stroke: rgba(255, 255, 255, 0.15);
@@ -105,15 +51,16 @@ body { transition: background-color 0.3s ease; }
 }
 
 /* Large Overall Circle */
-.score-circle.large svg {
+.score-circle.large {
   width: 200px;
   height: 200px;
+  margin-bottom: 2rem;
 }
 .score-circle.large .number {
   font-size: 80px;
 }
 @media (max-width: 768px) {
-  .score-circle.large svg {
+  .score-circle.large {
     width: 150px;
     height: 150px;
   }
@@ -130,7 +77,7 @@ body { transition: background-color 0.3s ease; }
 .text-orange-400 { fill: #fb923c !important; }
 .text-green-400 { fill: #34d399 !important; }
 
-/* Module Cards - Clean Original */
+/* Score Cards - Clean Glass + Grade Border */
 .score-card {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(16px);
@@ -148,38 +95,29 @@ body { transition: background-color 0.3s ease; }
 .score-card.orange { border-color: #fb923c; }
 .score-card.green { border-color: #34d399; }
 
-/* Overall Score - Holographic Neon Glow */
+/* Overall Score Card - Centered + Subtle Glow */
 #overall-score .score-card {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: 3rem;
   padding: 4rem;
   text-align: center;
-  position: relative;
-  overflow: hidden;
+  border: 4px solid transparent;
+  transition: border-color 0.6s ease;
+  box-shadow: 0 0 30px rgba(251, 146, 60, 0.2);
 }
-#overall-score .score-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 3rem;
-  padding: 4px;
-  background: linear-gradient(45deg, #f87171, #fb923c, #34d399, #f87171);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0.8;
-  pointer-events: none;
+#overall-score .score-card.red { 
+  border-color: #f87171; 
+  box-shadow: 0 0 30px rgba(248, 113, 113, 0.3);
 }
-#overall-score .score-card.red::before {
-  background: linear-gradient(45deg, #f87171, #ef4444, #dc2626);
+#overall-score .score-card.orange { 
+  border-color: #fb923c; 
+  box-shadow: 0 0 30px rgba(251, 146, 60, 0.3);
 }
-#overall-score .score-card.orange::before {
-  background: linear-gradient(45deg, #fb923c, #f97316, #ea580c);
-}
-#overall-score .score-card.green::before {
-  background: linear-gradient(45deg, #34d399, #10b981, #059669);
+#overall-score .score-card.green { 
+  border-color: #34d399; 
+  box-shadow: 0 0 30px rgba(52, 211, 153, 0.3);
 }
 
 /* Mobile Responsiveness */
@@ -201,70 +139,11 @@ body { transition: background-color 0.3s ease; }
   .text-5xl { font-size: 2rem !important; }
 }
 
-
-
-/* Force perfect centering for all score circles */
-.score-circle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 1rem auto;
+/* Legacy radar (keep for future) */
+.radar {
+  width: 180px;
+  height: 180px;
+  margin: 1.5rem auto;
+  display: block;
 }
-.score-circle svg {
-  width: 100%;
-  height: 100%;
-}
-
-/* Large overall circle */
-.score-circle.large {
-  width: 200px;
-  height: 200px;
-}
-@media (max-width: 768px) {
-  .score-circle.large {
-    width: 150px;
-    height: 150px;
-  }
-}
-
-/* Ensure SVG text is centered */
-.score-circle .number {
-  dominant-baseline: middle;
-  text-anchor: middle;
-}
-
-
-
-
-
-/* Holographic Neon Glow for Overall Card */
-#overall-score .score-card {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 3rem;
-  padding: 4rem;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-}
-#overall-score .score-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 3rem;
-  padding: 4px;
-  background: conic-gradient(from 0deg, #f87171, #fb923c, #34d399, #10b981, #3b82f6, #8b5cf6, #ec4899, #f87171);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0.7;
-  animation: neon-pulse 8s linear infinite;
-  pointer-events: none;
-}
-@keyframes neon-pulse {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+body { transition: background-color 0.3s ease; }
