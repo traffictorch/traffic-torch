@@ -192,12 +192,6 @@ body { transition: background-color 0.3s ease; }
   background: #111;
 }
 
-/* Landscape Mode */
-.landscape {
-  width: 812px;
-  height: 375px;
-  transform: rotate(90deg);
-}
 
 /* Iframe */
 #preview-iframe {
