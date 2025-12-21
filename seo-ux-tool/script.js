@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       
       
-		      // Live Mobile Preview - robust with fallback for blocked sites
+		      // Live Mobile Preview - fixed loading + better proxy handling
       const previewIframe = document.getElementById('preview-iframe');
       const deviceFrame = document.getElementById('device-frame');
       const placeholder = document.getElementById('placeholder');
@@ -258,13 +258,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       function loadPreview() {
+        // Reset UI
         placeholder.classList.remove('hidden');
         previewIframe.classList.add('hidden');
         directLink.classList.add('hidden');
+        placeholder.innerHTML = `
+          <p class="text-2xl font-bold mb-4">Loading preview...</p>
+          <div class="spinner mx-auto"></div>
+        `;
 
-        // Always use proxy to bypass most embedding blocks
+        // Always try proxy first (better chance to strip X-Frame-Options)
         const proxiedUrl = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`;
-        
         previewIframe.src = proxiedUrl;
 
         previewIframe.onload = () => {
@@ -273,12 +277,20 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         previewIframe.onerror = () => {
-          placeholder.innerHTML = `
-            <p class="text-xl font-bold mb-4">Preview blocked by site security</p>
-            <p class="text-lg opacity-80 mb-8">This site prevents embedding in iframes.</p>
-          `;
-          directLink.href = url;
-          directLink.classList.remove('hidden');
+          // Fallback to direct if proxy fails (rare)
+          previewIframe.src = url;
+          previewIframe.onload = () => {
+            placeholder.classList.add('hidden');
+            previewIframe.classList.remove('hidden');
+          };
+          previewIframe.onerror = () => {
+            placeholder.innerHTML = `
+              <p class="text-xl font-bold mb-4">Preview blocked by site security</p>
+              <p class="text-lg opacity-80 mb-8">This site prevents embedding in iframes (X-Frame-Options).</p>
+            `;
+            directLink.href = url;
+            directLink.classList.remove('hidden');
+          };
         };
       }
 
