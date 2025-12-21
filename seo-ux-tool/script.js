@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!circle) return;
 
     score = Math.round(score);
-    const radius = id === 'overall-score' ? 90 : 54;
+    const isOverall = id === 'overall-score';
+    const radius = isOverall ? 90 : 54;
     const circumference = 2 * Math.PI * radius;
     const dash = (score / 100) * circumference;
 
@@ -34,24 +35,24 @@ document.addEventListener('DOMContentLoaded', () => {
     num.textContent = score;
     num.style.opacity = '1';
 
-    // Remove old classes
+    // Clean classes
     progress.classList.remove('stroke-red-400', 'stroke-orange-400', 'stroke-green-400');
     num.classList.remove('text-red-400', 'text-orange-400', 'text-green-400');
-    if (card) card.classList.remove('red', 'orange', 'green');
+    if (card) card.classList.remove('border-red-500', 'border-orange-500', 'border-green-500');
 
-    // Apply new grade
+    // Apply grade colors
     if (score < 60) {
       progress.classList.add('stroke-red-400');
       num.classList.add('text-red-400');
-      if (card) card.classList.add('red');
+      if (card) card.classList.add('border-red-500');
     } else if (score < 80) {
       progress.classList.add('stroke-orange-400');
       num.classList.add('text-orange-400');
-      if (card) card.classList.add('orange');
+      if (card) card.classList.add('border-orange-500');
     } else {
       progress.classList.add('stroke-green-400');
       num.classList.add('text-green-400');
-      if (card) card.classList.add('green');
+      if (card) card.classList.add('border-green-500');
     }
   }
 

@@ -77,51 +77,59 @@ body { transition: background-color 0.3s ease; }
 
 
 /* Color Grade in Score in Score Circle */
-/* Progress ring starts at 12 o'clock */
+
+/* Card border grade color */
+.score-card {
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent;
+  transition: border-color 0.6s ease;
+}
+.border-red-500 { border-color: #f87171 !important; }
+.border-orange-500 { border-color: #fb923c !important; }
+.border-green-500 { border-color: #34d399 !important; }
+
+
+
+
+
+
+/* Fix ring start at 12 o'clock for all circles */
 .score-circle .progress {
-  stroke-width: 8;
-  stroke: #f87171; /* fallback */
-  stroke-dasharray: 0 339; /* initial */
+  stroke-width: 10;
+  stroke-linecap: round;
   transform: rotate(-90deg);
   transform-origin: 50% 50%;
-  transition: stroke 0.6s ease;
+  transition: stroke-dasharray 1s ease, stroke 0.6s ease;
 }
 
-/* Background ring */
+/* Background ring subtle */
 .score-circle .bg {
   stroke: rgba(255, 255, 255, 0.15);
-  stroke-width: 8;
+  stroke-width: 10;
 }
 
-/* Number color by grade */
+/* Number styling */
 .score-circle .number {
-  font-size: 48px;
   font-weight: 900;
-  fill: #1e293b; /* default */
   text-anchor: middle;
   dominant-baseline: middle;
-  transition: fill 0.5s ease;
+  transition: fill 0.6s ease;
 }
-
-/* Large overall */
 .score-circle.large .number {
   font-size: 80px;
-}
-.score-circle.large .progress {
-  stroke-dasharray: 0 565;
 }
 @media (max-width: 768px) {
   .score-circle.large .number { font-size: 60px; }
 }
 
-/* Dynamic Tailwind classes for ring and text */
+/* Force Tailwind colors */
 .stroke-red-400 { stroke: #f87171 !important; }
 .stroke-orange-400 { stroke: #fb923c !important; }
 .stroke-green-400 { stroke: #34d399 !important; }
 .text-red-400 { fill: #f87171 !important; }
 .text-orange-400 { fill: #fb923c !important; }
 .text-green-400 { fill: #34d399 !important; }
-
 
 
 
