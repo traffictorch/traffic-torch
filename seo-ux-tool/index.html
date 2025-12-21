@@ -77,7 +77,7 @@
   <input
     type="text"
     id="url-input"
-    placeholder="example.com/page/ or https://yoursite.com"
+    placeholder="example.com/page/"
     class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
   />
   <button
@@ -307,18 +307,23 @@
     Live Mobile Preview 📱
   </h2>
   <p class="text-center text-lg opacity-80 mb-8 px-4">
-    Interactive view of your site on mobile. Pinch-zoom, scroll, and tap to test UX. 
-    On small screens, use "Full Screen View" for the best experience.
+    See exactly how your site looks and feels on mobile. Pinch to zoom, scroll, and tap to test UX. 
+    On phones, it automatically uses full-screen for the best experience.
   </p>
+
   <div class="flex flex-wrap justify-center gap-4 mb-8">
-    <button id="view-toggle" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Desktop View</button>
-    <button id="device-toggle" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Android Frame</button>
-    <button id="orientation-toggle" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Landscape</button>
-    <button id="fullscreen-toggle" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Full Screen View</button>
+    <button id="mobile-view-btn" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition active">Mobile View</button>
+    <button id="desktop-view-btn" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Desktop View</button>
   </div>
+
   <div class="flex justify-center">
-    <div id="phone-frame" class="frame-base iphone-frame portrait">
-      <iframe id="preview-iframe" src="" sandbox="allow-scripts allow-same-origin allow-popups allow-modals" loading="lazy" class="w-full h-full rounded-[40px]"></iframe>
+    <div id="device-frame" class="relative mx-auto">
+      <iframe 
+        id="preview-iframe" 
+        sandbox="allow-scripts allow-same-origin allow-popups allow-modals allow-forms"
+        loading="lazy"
+        class="bg-white"
+      ></iframe>
     </div>
   </div>
 </div>

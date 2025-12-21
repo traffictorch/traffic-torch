@@ -237,67 +237,46 @@ document.addEventListener('DOMContentLoaded', () => {
       
       
       
-		      // Mobile Preview - fully responsive & mobile-friendly
+		      // Live Mobile Preview - clean & reliable
       const previewIframe = document.getElementById('preview-iframe');
-      const phoneFrame = document.getElementById('phone-frame');
-      const viewToggle = document.getElementById('view-toggle');
-      const deviceToggle = document.getElementById('device-toggle');
-      const orientationToggle = document.getElementById('orientation-toggle');
-      const fullscreenToggle = document.getElementById('fullscreen-toggle');
+      const deviceFrame = document.getElementById('device-frame');
+      const mobileBtn = document.getElementById('mobile-view-btn');
+      const desktopBtn = document.getElementById('desktop-view-btn');
 
-      let isMobileView = true;
-      let isIphone = true;
-      let isPortrait = true;
+      let currentView = 'mobile';
 
-      function updateFrame() {
-        if (window.innerWidth >= 640 && isMobileView) {
-          phoneFrame.style.width = isPortrait ? '375px' : '812px';
-          phoneFrame.style.height = isPortrait ? '812px' : '375px';
-          phoneFrame.className = `frame-base ${isIphone ? 'iphone-frame' : 'android-frame'} ${isPortrait ? 'portrait' : 'landscape'}`;
+      function switchView(view) {
+        currentView = view;
+        deviceFrame.className = `relative mx-auto ${view}`;
+        
+        mobileBtn.classList.toggle('active', view === 'mobile');
+        desktopBtn.classList.toggle('active', view === 'desktop');
+        
+        // Force mobile viewport width
+        if (view === 'mobile') {
+          previewIframe.style.width = '375px';
+          previewIframe.style.height = '812px';
         } else {
-          phoneFrame.style.width = '100%';
-          phoneFrame.style.height = '80vh';
-          phoneFrame.className = 'frame-base';
+          previewIframe.style.width = '100%';
+          previewIframe.style.height = '100%';
         }
+        
+        // Reload to trigger responsive breakpoints
+        previewIframe.src = url;
       }
 
-      viewToggle.addEventListener('click', () => {
-        isMobileView = !isMobileView;
-        viewToggle.textContent = isMobileView ? 'Desktop View' : 'Mobile View';
-        updateFrame();
-      });
+      mobileBtn.addEventListener('click', () => switchView('mobile'));
+      desktopBtn.addEventListener('click', () => switchView('desktop'));
 
-      deviceToggle.addEventListener('click', () => {
-        if (window.innerWidth >= 640 && isMobileView) {
-          isIphone = !isIphone;
-          deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
-          updateFrame();
-        }
-      });
-
-      orientationToggle.addEventListener('click', () => {
-        if (window.innerWidth >= 640 && isMobileView) {
-          isPortrait = !isPortrait;
-          orientationToggle.textContent = isPortrait ? 'Landscape' : 'Portrait';
-          updateFrame();
-        }
-      });
-
-      fullscreenToggle.addEventListener('click', () => {
-        isMobileView = false;
-        viewToggle.textContent = 'Mobile View';
-        updateFrame();
-      });
-
-      window.addEventListener('resize', updateFrame);
-
-      // Load with CORS proxy fallback
+      // Load with proxy fallback
       previewIframe.src = url;
       previewIframe.onerror = () => {
         previewIframe.src = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`;
       };
 
-      updateFrame();
+      // Start in mobile view
+      switchView('mobile');
+
       document.getElementById('mobile-preview').classList.remove('hidden');
       
       
