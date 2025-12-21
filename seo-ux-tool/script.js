@@ -237,78 +237,80 @@ document.addEventListener('DOMContentLoaded', () => {
       
       
       
-		      // Live Mobile Preview - direct first, proxy fallback only when needed
+	      // Mobile Preview
       const previewIframe = document.getElementById('preview-iframe');
-      const deviceFrame = document.getElementById('device-frame');
-      const placeholder = document.getElementById('placeholder');
-      const mobileBtn = document.getElementById('mobile-view-btn');
-      const desktopBtn = document.getElementById('desktop-view-btn');
-      const directLink = document.getElementById('open-direct-link');
+      const phoneFrame = document.getElementById('phone-frame');
+      const viewToggle = document.getElementById('view-toggle');
+      const deviceToggle = document.getElementById('device-toggle');
+      const orientationToggle = document.getElementById('orientation-toggle');
+      const highlightOverlays = document.getElementById('highlight-overlays');
 
-      let currentView = 'mobile';
+      previewIframe.src = url;
 
-      function switchView(view) {
-        currentView = view;
-        deviceFrame.className = `relative mx-auto ${view}`;
+      // Toggles
+      let isMobile = true;
+      let isIphone = true;
+      let isPortrait = true;
 
-        mobileBtn.classList.toggle('active', view === 'mobile');
-        desktopBtn.classList.toggle('active', view === 'desktop');
+      viewToggle.addEventListener('click', () => {
+        isMobile = !isMobile;
+        phoneFrame.style.width = isMobile ? '375px' : '100%';
+        phoneFrame.style.height = isMobile ? '812px' : '800px';
+        viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
+      });
 
-        loadPreview();
-      }
+      deviceToggle.addEventListener('click', () => {
+        isIphone = !isIphone;
+        phoneFrame.classList.toggle('iphone-frame', isIphone);
+        phoneFrame.classList.toggle('android-frame', !isIphone);
+        deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
+      });
 
-      function loadPreview() {
-        placeholder.classList.remove('hidden');
-        previewIframe.classList.add('hidden');
-        directLink.classList.add('hidden');
+      orientationToggle.addEventListener('click', () => {
+        isPortrait = !isPortrait;
+        phoneFrame.classList.toggle('portrait', isPortrait);
+        phoneFrame.classList.toggle('landscape', !isPortrait);
+        orientationToggle.textContent = isPortrait ? 'Landscape' : 'Portrait';
+      });
 
-        placeholder.innerHTML = `
-          <p class="text-2xl font-bold mb-4">Loading preview...</p>
-          <div class="spinner mx-auto"></div>
-        `;
+      // Simple highlights from mobile issues
+      const mobileIssues = allIssues.filter(i => ['Mobile & PWA', 'Performance', 'Accessibility'].includes(i.module));
+      mobileIssues.slice(0, 3).forEach((issue, idx) => {
+        const hl = document.createElement('div');
+        hl.classList.add('issue-highlight');
+        hl.style.top = `${20 + idx * 25}%`;
+        hl.style.left = '5%';
+        hl.style.width = '90%';
+        hl.style.height = '20%';
+        hl.addEventListener('click', () => {
+          showPopup(issue);
+        });
+        highlightOverlays.appendChild(hl);
+      });
 
-        // Force viewport size
-        if (currentView === 'mobile') {
-          previewIframe.style.width = '375px';
-          previewIframe.style.height = '812px';
-        } else {
-          previewIframe.style.width = '100%';
-          previewIframe.style.height = '100%';
+      function showPopup(issue) {
+        let popup = document.getElementById('highlight-popup');
+        if (!popup) {
+          popup = document.createElement('div');
+          popup.id = 'highlight-popup';
+          popup.innerHTML = `
+            <div class="popup-content relative">
+              <span class="close">&times;</span>
+              <h3 class="text-2xl font-bold mb-4">${issue.issue}</h3>
+              <p class="mb-4"><span class="font-bold text-blue-300">What is it?</span><br>${issue.what}</p>
+              <p class="mb-4"><span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}</p>
+              <p><span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}</p>
+            </div>
+          `;
+          document.body.appendChild(popup);
+          popup.querySelector('.close').addEventListener('click', () => popup.style.display = 'none');
         }
-
-        // Try direct load first (fast & reliable for most sites)
-        previewIframe.src = url;
-
-        previewIframe.onload = () => {
-          placeholder.classList.add('hidden');
-          previewIframe.classList.remove('hidden');
-        };
-
-        previewIframe.onerror = () => {
-          // Fallback to proxy only if direct fails
-          const proxiedUrl = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`;
-          previewIframe.src = proxiedUrl;
-
-          previewIframe.onload = () => {
-            placeholder.classList.add('hidden');
-            previewIframe.classList.remove('hidden');
-          };
-
-          previewIframe.onerror = () => {
-            placeholder.innerHTML = `
-              <p class="text-xl font-bold mb-4">Preview unavailable</p>
-              <p class="text-lg opacity-80 mb-8">This site blocks embedding.</p>
-            `;
-            directLink.href = url;
-            directLink.classList.remove('hidden');
-          };
-        };
+        popup.querySelector('h3').textContent = issue.issue;
+        popup.querySelectorAll('p')[0].innerHTML = `<span class="font-bold text-blue-300">What is it?</span><br>${issue.what}`;
+        popup.querySelectorAll('p')[1].innerHTML = `<span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}`;
+        popup.querySelectorAll('p')[2].innerHTML = `<span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}`;
+        popup.style.display = 'flex';
       }
-
-      mobileBtn.addEventListener('click', () => switchView('mobile'));
-      desktopBtn.addEventListener('click', () => switchView('desktop'));
-
-      switchView('mobile');
 
       document.getElementById('mobile-preview').classList.remove('hidden');
       

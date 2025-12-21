@@ -302,39 +302,30 @@
     
     
     
-		<div id="mobile-preview" class="hidden max-w-5xl mx-auto my-24">
-  <h2 class="text-4xl md:text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-    Live Mobile Preview 📱
-  </h2>
-  <p class="text-center text-lg opacity-80 mb-8 px-4">
-    See exactly how your site looks and feels on mobile. Pinch to zoom, scroll, and tap to test UX. 
-    On phones, it automatically uses full-screen for the best experience. 
-    <strong>Note:</strong> Some sites block previews for security — use the button below to open directly.
-  </p>
+    <div id="mobile-preview" class="hidden max-w-5xl mx-auto my-24">
+      <h2 class="text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Mobile UX Preview
+      </h2>
 
-  <div class="flex flex-wrap justify-center gap-4 mb-8">
-    <button id="mobile-view-btn" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition active">Mobile View</button>
-    <button id="desktop-view-btn" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Desktop View</button>
-    <a id="open-direct-link" href="#" target="_blank" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-full font-bold hover:from-orange-600 hover:to-pink-700 transition hidden">
-      Open Site Directly 🚀
-    </a>
-  </div>
-
-  <div class="flex justify-center">
-    <div id="device-frame" class="relative mx-auto">
-      <iframe 
-        id="preview-iframe" 
-        sandbox="allow-scripts allow-same-origin allow-popups allow-modals allow-forms"
-        loading="lazy"
-        class="bg-white hidden"
-      ></iframe>
-      <div id="placeholder" class="flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-3xl p-10 text-center">
-        <p class="text-2xl font-bold mb-4">Loading preview...</p>
-        <div class="spinner mx-auto"></div>
+      <!-- Controls -->
+      <div class="flex justify-center gap-4 mb-8 flex-wrap">
+        <button id="view-toggle" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Switch to Desktop</button>
+        <button id="device-toggle" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Android Frame</button>
+        <button id="orientation-toggle" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Landscape</button>
       </div>
+
+      <!-- Phone Frame -->
+      <div class="flex justify-center">
+        <div id="phone-frame" class="iphone-frame portrait relative">
+          <iframe id="preview-iframe" src="" sandbox="allow-scripts allow-same-origin allow-popups" class="w-full h-full rounded-[40px]"></iframe>
+          <div id="highlight-overlays" class="absolute inset-0 pointer-events-none"></div>
+        </div>
+      </div>
+
+      <p class="text-center mt-8 text-xl opacity-80">
+        Interactive preview — scroll and tap inside. Highlighted areas show mobile issues.
+      </p>
     </div>
-  </div>
-</div>
     
     
     
