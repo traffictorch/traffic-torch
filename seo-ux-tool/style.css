@@ -1,5 +1,39 @@
-/* Consolidated, clean, working style.css for seo-ux-tool */
-/* No conflicting rules, perfect centering, grade borders, subtle glow on overall */
+/* Legacy radar and health-score (keep untouched) */
+.radar {
+  width: 200px;
+  height: 200px;
+  margin: 2rem auto;
+  display: block;
+}
+body { transition: background-color 0.3s ease; }
+.health-score polygon { fill: rgba(16, 185, 129, 0.3); }
+.radar { width: 180px; height: 180px; margin: 1.5rem auto; display: block; }
+.health-score h2 { margin-bottom: 0.5rem; }
+
+/* Mobile Responsiveness (your original) */
+@media (max-width: 1024px) {
+  .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
+    max-width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  .p-12, .p-10, .p-8 {
+    padding: 1.5rem !important;
+  }
+  .text-5xl {
+    font-size: 2rem !important;
+    line-height: 1.1 !important;
+  }
+  .text-9xl {
+    font-size: 6rem !important;
+    line-height: 1 !important;
+  }
+}
+@media (max-width: 480px) {
+  .p-12, .p-10 { padding: 1.25rem !important; }
+  .text-5xl { font-size: 1.875rem !important; }
+  .text-9xl { font-size: 5.5rem !important; }
+}
 
 /* Spinner */
 .spinner {
@@ -16,18 +50,15 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Score Circles - Perfect Centering */
+/* Score Circles - Original Centered Look */
 .score-circle {
-  width: 120px;
-  height: 120px;
   margin: 0 auto 1rem auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 .score-circle svg {
-  width: 100%;
-  height: 100%;
+  width: 120px;
+  height: 120px;
+  display: block;
+  margin: 0 auto;
 }
 .score-circle .bg {
   stroke: rgba(255, 255, 255, 0.15);
@@ -51,16 +82,15 @@
 }
 
 /* Large Overall Circle */
-.score-circle.large {
+.score-circle.large svg {
   width: 200px;
   height: 200px;
-  margin-bottom: 2rem;
 }
 .score-circle.large .number {
   font-size: 80px;
 }
 @media (max-width: 768px) {
-  .score-circle.large {
+  .score-circle.large svg {
     width: 150px;
     height: 150px;
   }
@@ -77,7 +107,7 @@
 .text-orange-400 { fill: #fb923c !important; }
 .text-green-400 { fill: #34d399 !important; }
 
-/* Score Cards - Clean Glass + Grade Border */
+/* Module Cards - Original Clean Look + Grade Border */
 .score-card {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(16px);
@@ -95,7 +125,7 @@
 .score-card.orange { border-color: #fb923c; }
 .score-card.green { border-color: #34d399; }
 
-/* Overall Score Card - Centered + Subtle Glow */
+/* Overall Score - Same as Modules + Subtle Glow */
 #overall-score .score-card {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(16px);
@@ -119,31 +149,3 @@
   border-color: #34d399; 
   box-shadow: 0 0 30px rgba(52, 211, 153, 0.3);
 }
-
-/* Mobile Responsiveness */
-@media (max-width: 1024px) {
-  .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
-    max-width: 100% !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-  .p-12, .p-10, .p-8 {
-    padding: 1.5rem !important;
-  }
-  .text-5xl {
-    font-size: 2.5rem !important;
-  }
-}
-@media (max-width: 480px) {
-  .p-12, .p-10, .p-8 { padding: 1.25rem !important; }
-  .text-5xl { font-size: 2rem !important; }
-}
-
-/* Legacy radar (keep for future) */
-.radar {
-  width: 180px;
-  height: 180px;
-  margin: 1.5rem auto;
-  display: block;
-}
-body { transition: background-color 0.3s ease; }
