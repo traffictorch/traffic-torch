@@ -304,6 +304,65 @@ document.addEventListener('DOMContentLoaded', () => {
      if (savePdfBtn) savePdfBtn.classList.remove('hidden');
      document.getElementById('copy-badge').classList.remove('hidden');
      
+     
+     
+     
+      // 360° Health Radar Chart (desktop only)
+      if (window.innerWidth >= 768) {
+        const radarCtx = document.getElementById('health-radar').getContext('2d');
+        new Chart(radarCtx, {
+          type: 'radar',
+          data: {
+            labels: ['On-Page SEO', 'Mobile & PWA', 'Performance', 'Accessibility', 'Content Quality', 'UX Design', 'Security', 'Indexability'],
+            datasets: [{
+              label: 'Health Score',
+              data: scores,
+              backgroundColor: 'rgba(251, 146, 60, 0.2)',
+              borderColor: '#fb923c',
+              pointBackgroundColor: '#fb923c',
+              borderWidth: 3,
+              pointRadius: 6,
+              pointHoverRadius: 10
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              r: {
+                angleLines: { color: 'rgba(255,255,255,0.2)' },
+                grid: { color: 'rgba(255,255,255,0.1)' },
+                pointLabels: { font: { size: 14, weight: 'bold' } },
+                ticks: { backdropColor: 'transparent', color: '#fff', beginAtZero: true, max: 100, stepSize: 20 }
+              }
+            },
+            plugins: {
+              tooltip: {
+                callbacks: {
+                  title: (context) => context[0].label,
+                  label: (context) => {
+                    const value = context.parsed.r;
+                    const impacts = {
+                      'On-Page SEO': 'SEO: Core ranking signals (title, meta, headings) | UX: Clear content hierarchy',
+                      'Mobile & PWA': 'SEO: Mobile-first indexing essential | UX: Fast, installable experience',
+                      'Performance': 'SEO: Core Web Vitals direct ranking factor | UX: Speed = lower bounce',
+                      'Accessibility': 'SEO: Google favors accessible sites | UX: Inclusive for all users',
+                      'Content Quality': 'SEO: Depth & relevance = higher rankings | UX: Helpful, readable content',
+                      'UX Design': 'SEO: Engagement signals (time on page) | UX: Intuitive navigation',
+                      'Security': 'SEO: HTTPS required for ranking | UX: Trust & safety',
+                      'Indexability': 'SEO: Crawlability foundation | UX: No direct impact but enables discovery'
+                    };
+                    return [`Score: ${value}/100`, impacts[context[0].label] || ''];
+                  }
+                }
+              },
+              legend: { display: false }
+            }
+          }
+        });
+        document.getElementById('radar-container').classList.remove('hidden');
+      }
+      
       
       
       
