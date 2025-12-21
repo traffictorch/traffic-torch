@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
       num.classList.add('text-green-400');
       if (card) card.classList.add('green');
     }
-  }
+  }  
 
   function populateIssues(id, issues) {
     const ul = document.getElementById(id);
