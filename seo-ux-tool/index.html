@@ -314,17 +314,17 @@
         <button id="orientation-toggle" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Landscape</button>
       </div>
 
-      <!-- Phone Frame - Centered -->
+      <!-- Phone Frame -->
       <div class="flex justify-center">
-        <div id="phone-frame" class="iphone-frame portrait relative bg-black rounded-[60px] p-5 shadow-2xl transition-all duration-500">
-          <div class="relative w-full h-full bg-white rounded-[40px] overflow-hidden">
-            <iframe id="preview-iframe" src="" class="w-full h-full border-0" sandbox="allow-scripts allow-same-origin allow-popups allow-top-navigation-by-user-activation"></iframe>
-            <div id="highlight-overlays" class="absolute inset-0 pointer-events-none"></div>
-            <div id="iframe-fallback" class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-white text-center px-8 hidden">
-              <p class="mb-4 text-lg">This site blocks iframe preview.</p>
-              <a id="fallback-link" href="" target="_blank" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full font-bold hover:shadow-lg transition">Open in New Tab</a>
+        <div id="phone-frame" class="iphone-frame portrait">
+          <div class="phone-inner">
+            <iframe id="preview-iframe" src="" sandbox="allow-scripts allow-same-origin allow-popups allow-top-navigation"></iframe>
+            <div id="iframe-fallback" class="fallback-message">
+              <p>This site blocks preview in iframe.</p>
+              <a id="fallback-link" href="" target="_blank" class="fallback-btn">Open in New Tab</a>
             </div>
           </div>
+          <div id="highlight-overlays"></div>
         </div>
       </div>
 

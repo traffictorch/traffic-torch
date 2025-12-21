@@ -237,29 +237,25 @@ document.addEventListener('DOMContentLoaded', () => {
       
       
       
-      // Mobile UX Preview - Fixed
+      // Mobile Preview - Fixed and Simple
       const previewIframe = document.getElementById('preview-iframe');
-      const iframeWrapper = document.getElementById('iframe-wrapper');
-      const fallbackLink = document.getElementById('fallback-link');
       const phoneFrame = document.getElementById('phone-frame');
+      const iframeFallback = document.getElementById('iframe-fallback');
+      const fallbackLink = document.getElementById('fallback-link');
       const viewToggle = document.getElementById('view-toggle');
       const deviceToggle = document.getElementById('device-toggle');
       const orientationToggle = document.getElementById('orientation-toggle');
-      const highlightOverlays = document.getElementById('highlight-overlays');
 
-      // Load URL
       previewIframe.src = url;
       fallbackLink.href = url;
 
-      // Check if iframe is blocked
       previewIframe.onload = () => {
-        iframeWrapper.classList.remove('iframe-blocked');
+        iframeFallback.classList.remove('show');
       };
       previewIframe.onerror = () => {
-        iframeWrapper.classList.add('iframe-blocked');
+        iframeFallback.classList.add('show');
       };
 
-      // Initial state
       let isMobile = true;
       let isIphone = true;
       let isPortrait = true;
@@ -267,17 +263,11 @@ document.addEventListener('DOMContentLoaded', () => {
       viewToggle.addEventListener('click', () => {
         isMobile = !isMobile;
         if (isMobile) {
+          phoneFrame.classList.remove('desktop');
           phoneFrame.style.width = isPortrait ? '375px' : '812px';
           phoneFrame.style.height = isPortrait ? '812px' : '375px';
-          previewIframe.style.width = '100%';
-          previewIframe.style.height = '100%';
-          previewIframe.classList.remove('landscape-content');
         } else {
-          phoneFrame.style.width = '100%';
-          phoneFrame.style.height = '800px';
-          previewIframe.style.width = '100%';
-          previewIframe.style.height = '100%';
-          previewIframe.classList.remove('landscape-content');
+          phoneFrame.classList.add('desktop');
         }
         viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
       });
@@ -290,38 +280,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       orientationToggle.addEventListener('click', () => {
-        if (!isMobile) return; // Only in mobile view
+        if (!isMobile) return;
         isPortrait = !isPortrait;
         phoneFrame.classList.toggle('portrait', isPortrait);
         phoneFrame.classList.toggle('landscape', !isPortrait);
-        phoneFrame.style.width = isPortrait ? '375px' : '812px';
-        phoneFrame.style.height = isPortrait ? '812px' : '375px';
-        if (!isPortrait) {
-          previewIframe.classList.add('landscape-content');
-        } else {
-          previewIframe.classList.remove('landscape-content');
-        }
         orientationToggle.textContent = isPortrait ? 'Landscape' : 'Portrait';
       });
-
-      // Highlights (same as before)
-      const mobileIssues = allIssues.filter(i => ['Mobile & PWA', 'Performance', 'Accessibility'].includes(i.module));
-      mobileIssues.slice(0, 3).forEach((issue, idx) => {
-        const hl = document.createElement('div');
-        hl.classList.add('issue-highlight');
-        hl.style.top = `${15 + idx * 25}%`;
-        hl.style.left = '5%';
-        hl.style.width = '90%';
-        hl.style.height = '20%';
-        hl.addEventListener('click', () => showPopup(issue));
-        highlightOverlays.appendChild(hl);
-      });
-
-      // Reuse your existing showPopup function or add simple one
-      function showPopup(issue) {
-        // Use same popup as before or simple alert for now
-        alert(`${issue.issue}\n\nWhat is it?\n${issue.what}\n\nHow to fix?\n${issue.fix}\n\nWhy it matters?\nUX: ${issue.uxWhy} | SEO: ${issue.seoWhy}`);
-      }
 
       document.getElementById('mobile-preview').classList.remove('hidden');
       
