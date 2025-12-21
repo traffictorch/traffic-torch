@@ -237,11 +237,13 @@ document.addEventListener('DOMContentLoaded', () => {
       
       
       
-		      // Live Mobile Preview - clean & reliable
+		      // Live Mobile Preview - robust with fallback for blocked sites
       const previewIframe = document.getElementById('preview-iframe');
       const deviceFrame = document.getElementById('device-frame');
+      const placeholder = document.getElementById('placeholder');
       const mobileBtn = document.getElementById('mobile-view-btn');
       const desktopBtn = document.getElementById('desktop-view-btn');
+      const directLink = document.getElementById('open-direct-link');
 
       let currentView = 'mobile';
 
@@ -252,29 +254,38 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileBtn.classList.toggle('active', view === 'mobile');
         desktopBtn.classList.toggle('active', view === 'desktop');
         
-        // Force mobile viewport width
-        if (view === 'mobile') {
-          previewIframe.style.width = '375px';
-          previewIframe.style.height = '812px';
-        } else {
-          previewIframe.style.width = '100%';
-          previewIframe.style.height = '100%';
-        }
+        loadPreview();
+      }
+
+      function loadPreview() {
+        placeholder.classList.remove('hidden');
+        previewIframe.classList.add('hidden');
+        directLink.classList.add('hidden');
+
+        // Always use proxy to bypass most embedding blocks
+        const proxiedUrl = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`;
         
-        // Reload to trigger responsive breakpoints
-        previewIframe.src = url;
+        previewIframe.src = proxiedUrl;
+
+        previewIframe.onload = () => {
+          placeholder.classList.add('hidden');
+          previewIframe.classList.remove('hidden');
+        };
+
+        previewIframe.onerror = () => {
+          placeholder.innerHTML = `
+            <p class="text-xl font-bold mb-4">Preview blocked by site security</p>
+            <p class="text-lg opacity-80 mb-8">This site prevents embedding in iframes.</p>
+          `;
+          directLink.href = url;
+          directLink.classList.remove('hidden');
+        };
       }
 
       mobileBtn.addEventListener('click', () => switchView('mobile'));
       desktopBtn.addEventListener('click', () => switchView('desktop'));
 
-      // Load with proxy fallback
-      previewIframe.src = url;
-      previewIframe.onerror = () => {
-        previewIframe.src = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`;
-      };
-
-      // Start in mobile view
+      // Initial load
       switchView('mobile');
 
       document.getElementById('mobile-preview').classList.remove('hidden');

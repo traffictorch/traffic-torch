@@ -223,3 +223,30 @@ body { transition: background-color 0.3s ease; }
     padding: 0.5rem 1rem;
   }
 }
+
+
+#placeholder {
+  width: 375px;
+  height: 812px;
+  max-width: 100%;
+}
+
+@media (min-width: 641px) {
+  #device-frame.mobile #placeholder {
+    width: 375px;
+    height: 812px;
+  }
+}
+
+#device-frame.desktop #placeholder {
+  width: 100%;
+  height: 80vh;
+  max-width: 1200px;
+}
+
+@media (max-width: 640px) {
+  #placeholder {
+    width: 100% !important;
+    height: 80vh !important;
+  }
+}
