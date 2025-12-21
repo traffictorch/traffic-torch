@@ -266,12 +266,6 @@ document.addEventListener('DOMContentLoaded', () => {
         deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
       });
 
-      orientationToggle.addEventListener('click', () => {
-        isPortrait = !isPortrait;
-        phoneFrame.classList.toggle('portrait', isPortrait);
-        phoneFrame.classList.toggle('landscape', !isPortrait);
-        orientationToggle.textContent = isPortrait ? 'Landscape' : 'Portrait';
-      });
 
       // Simple highlights from mobile issues
       const mobileIssues = allIssues.filter(i => ['Mobile & PWA', 'Performance', 'Accessibility'].includes(i.module));
