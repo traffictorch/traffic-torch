@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       
       
-		      // Live Mobile Preview - aggressive proxy usage + true mobile viewport + graceful fallback
+		      // Live Mobile Preview - direct first, proxy fallback only when needed
       const previewIframe = document.getElementById('preview-iframe');
       const deviceFrame = document.getElementById('device-frame');
       const placeholder = document.getElementById('placeholder');
@@ -245,13 +245,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const desktopBtn = document.getElementById('desktop-view-btn');
       const directLink = document.getElementById('open-direct-link');
 
-      let currentView = 'mobile'; // Start in mobile view
+      let currentView = 'mobile';
 
       function switchView(view) {
         currentView = view;
         deviceFrame.className = `relative mx-auto ${view}`;
 
-        // Update button states
         mobileBtn.classList.toggle('active', view === 'mobile');
         desktopBtn.classList.toggle('active', view === 'desktop');
 
@@ -259,7 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       function loadPreview() {
-        // Reset UI state
         placeholder.classList.remove('hidden');
         previewIframe.classList.add('hidden');
         directLink.classList.add('hidden');
@@ -269,10 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="spinner mx-auto"></div>
         `;
 
-        // Always force through your updated proxy (strips X-Frame-Options & CSP)
-        const proxiedUrl = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`;
-
-        // Force mobile viewport by setting fixed width in mobile view
+        // Force viewport size
         if (currentView === 'mobile') {
           previewIframe.style.width = '375px';
           previewIframe.style.height = '812px';
@@ -281,33 +276,40 @@ document.addEventListener('DOMContentLoaded', () => {
           previewIframe.style.height = '100%';
         }
 
-        previewIframe.src = proxiedUrl;
+        // Try direct load first (fast & reliable for most sites)
+        previewIframe.src = url;
 
-        // Success: hide placeholder, show iframe
         previewIframe.onload = () => {
           placeholder.classList.add('hidden');
           previewIframe.classList.remove('hidden');
         };
 
-        // Failure: show educational fallback + direct open button
         previewIframe.onerror = () => {
-          placeholder.innerHTML = `
-            <p class="text-xl font-bold mb-4">Live preview unavailable</p>
-            <p class="text-lg opacity-80 mb-8">This site blocks embedding for security reasons.</p>
-          `;
-          directLink.href = url;
-          directLink.classList.remove('hidden');
+          // Fallback to proxy only if direct fails
+          const proxiedUrl = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`;
+          previewIframe.src = proxiedUrl;
+
+          previewIframe.onload = () => {
+            placeholder.classList.add('hidden');
+            previewIframe.classList.remove('hidden');
+          };
+
+          previewIframe.onerror = () => {
+            placeholder.innerHTML = `
+              <p class="text-xl font-bold mb-4">Preview unavailable</p>
+              <p class="text-lg opacity-80 mb-8">This site blocks embedding.</p>
+            `;
+            directLink.href = url;
+            directLink.classList.remove('hidden');
+          };
         };
       }
 
-      // Button listeners
       mobileBtn.addEventListener('click', () => switchView('mobile'));
       desktopBtn.addEventListener('click', () => switchView('desktop'));
 
-      // Initial load in mobile view
       switchView('mobile');
 
-      // Show the entire section
       document.getElementById('mobile-preview').classList.remove('hidden');
       
       
