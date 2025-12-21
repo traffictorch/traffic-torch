@@ -26,11 +26,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const radius = id === 'overall-score' ? 90 : 54;
     const circumference = 2 * Math.PI * radius;
     const dash = (score / 100) * circumference;
-    circle.querySelector('.progress').style.strokeDasharray = `${dash} ${circumference}`;
+    const progress = circle.querySelector('.progress');
+    progress.style.strokeDasharray = `${dash} ${circumference}`;
+
     const num = circle.querySelector('.number');
     num.textContent = score;
     num.style.opacity = '1';
     circle.dataset.score = score;
+
+    // Remove previous color classes
+    progress.classList.remove('stroke-red-400', 'stroke-orange-400', 'stroke-green-400');
+    if (score < 60) {
+      progress.classList.add('stroke-red-400');
+    } else if (score < 80) {
+      progress.classList.add('stroke-orange-400');
+    } else {
+      progress.classList.add('stroke-green-400');
+    }
   }
 
   function populateIssues(id, issues) {
@@ -121,14 +133,67 @@ document.addEventListener('DOMContentLoaded', () => {
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       updateScore('overall-score', overallScore);
 
+	
+	
+	      // Collect all issues from all modules
+      let allIssues = [];
+      modules.forEach(mod => {
+        const result = mod.fn(html, doc, originalInput);
+        allIssues = allIssues.concat(result.issues.map(iss => ({
+          ...iss,
+          module: mod.name,
+          impact: 100 - result.score  // rough impact proxy
+        })));
+      });
+
+      // Sort by impact (highest first) and take top 3
+      allIssues.sort((a, b) => b.impact - a.impact);
+      const top3 = allIssues.slice(0, 3);
+
+      // Populate priority fixes
+      if (top3.length > 0) {
+        document.getElementById('priority1-issue').textContent = top3[0]?.issue || 'Great job!';
+        document.getElementById('priority1-what').textContent = top3[0]?.what || '';
+        document.getElementById('priority1-fix').textContent = top3[0]?.fix || '';
+        document.getElementById('priority1-why').textContent = `UX: ${top3[0]?.uxWhy || ''} | SEO: ${top3[0]?.seoWhy || ''}`;
+      }
+      if (top3.length > 1) {
+        document.getElementById('priority2-issue').textContent = top3[1].issue;
+        document.getElementById('priority2-what').textContent = top3[1].what;
+        document.getElementById('priority2-fix').textContent = top3[1].fix;
+        document.getElementById('priority2-why').textContent = `UX: ${top3[1].uxWhy} | SEO: ${top3[1].seoWhy}`;
+      }
+      if (top3.length > 2) {
+        document.getElementById('priority3-issue').textContent = top3[2].issue;
+        document.getElementById('priority3-what').textContent = top3[2].what;
+        document.getElementById('priority3-fix').textContent = top3[2].fix;
+        document.getElementById('priority3-why').textContent = `UX: ${top3[2].uxWhy} | SEO: ${top3[2].seoWhy}`;
+      }
+
+      // Show sections
+      document.getElementById('priority-fixes').classList.remove('hidden');
+      document.getElementById('forecast').classList.remove('hidden');
+
+      // Predictive forecast text
+      let forecast = '';
+      if (overallScore >= 90) {
+        forecast = 'Excellent! With this score, your page is highly competitive and likely to rank in top positions for relevant searches.';
+      } else if (overallScore >= 80) {
+        forecast = 'Strong performance. Fixing the top issues could push you into the top 5–10 results.';
+      } else if (overallScore >= 70) {
+        forecast = 'Good foundation. Addressing priority fixes may improve rankings by 20–40 positions.';
+      } else if (overallScore >= 60) {
+        forecast = 'Moderate issues detected. Resolving the top 3 could significantly boost visibility and traffic.';
+      } else {
+        forecast = 'Critical improvements needed. Fixing these issues is essential to appear in search results effectively.';
+      }
+      document.getElementById('forecast-text').textContent = forecast;
+
       progressContainer.classList.add('hidden');
       overallContainer.classList.remove('hidden');
       results.classList.remove('hidden');
-    } catch (err) {
-      progressContainer.classList.add('hidden');
-      alert('Failed to analyze — try another site or check the URL');
-    }
-  });
+  
+  
 
   function analyzeSEO(html, doc) {
     let score = 100;
