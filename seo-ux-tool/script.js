@@ -311,8 +311,12 @@ document.addEventListener('DOMContentLoaded', () => {
 if (window.innerWidth >= 768) {
   const radarCtx = document.getElementById('health-radar').getContext('2d');
   const isDark = document.documentElement.classList.contains('dark');
-  const gridColor = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
-  const labelColor = isDark ? '#9ca3af' : '#4b5563'; // gray-400 / gray-600
+
+  // Lighter gray-400 for grid, labels, and line in both modes (cleaner look)
+  const gridColor = isDark ? '#9ca3af' : 'rgba(0, 0, 0, 0.2)'; // gray-400 dark, subtle light
+  const labelColor = '#9ca3af'; // gray-400 in both modes for consistency
+  const lineColor = '#9ca3af'; // gray-400 instead of orange
+  const fillColor = isDark ? 'rgba(156, 163, 175, 0.15)' : 'rgba(156, 163, 175, 0.1)'; // very subtle gray fill
 
   const chart = new Chart(radarCtx, {
     type: 'radar',
@@ -320,9 +324,9 @@ if (window.innerWidth >= 768) {
       labels: ['On-Page SEO', 'Mobile & PWA', 'Performance', 'Accessibility', 'Content Quality', 'UX Design', 'Security', 'Indexability'],
       datasets: [{
         label: 'Health Score',
-        data: scores, // assuming scores is defined elsewhere with your 8 values
-        backgroundColor: isDark ? 'rgba(251, 146, 60, 0.2)' : 'rgba(251, 146, 60, 0.15)',
-        borderColor: '#fb923c',
+        data: scores,
+        backgroundColor: fillColor,
+        borderColor: lineColor,
         borderWidth: 3,
         pointRadius: 8,
         pointHoverRadius: 12,
@@ -344,7 +348,7 @@ if (window.innerWidth >= 768) {
       responsive: true,
       maintainAspectRatio: false,
       interaction: {
-        intersect: true, // works for hover & tap
+        intersect: true,
         mode: 'point'
       },
       scales: {
@@ -356,7 +360,7 @@ if (window.innerWidth >= 768) {
             stepSize: 20,
             color: labelColor,
             backdropColor: 'transparent',
-            callback: (value) => value // shows 0,20,40,60,80,100
+            callback: (value) => value
           },
           grid: { color: gridColor },
           angleLines: { color: gridColor },
@@ -403,7 +407,7 @@ if (window.innerWidth >= 768) {
     }
   });
 
-  // Reveal title + container only after chart is fully rendered
+  // Reveal only after chart renders
   document.getElementById('radar-title').classList.remove('hidden');
   document.getElementById('radar-container').classList.remove('hidden');
 }

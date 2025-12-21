@@ -260,7 +260,7 @@ body { transition: background-color 0.3s ease; }
   margin: 0 auto;
 }
 
-/* Subtle improvement for grid visibility in both modes */
+/* Optional subtle shadow for depth */
 .chartjs-render-monitor {
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
 }
