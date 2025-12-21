@@ -307,11 +307,11 @@ document.addEventListener('DOMContentLoaded', () => {
      
      
      
-		      // 360° Health Radar Chart (desktop only)
+      // 360° Health Radar Chart (desktop only)
       if (window.innerWidth >= 768) {
         const radarCtx = document.getElementById('health-radar').getContext('2d');
         const isDark = document.documentElement.classList.contains('dark');
-        const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+        const gridColor = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
         const labelColor = isDark ? '#9ca3af' : '#4b5563'; // gray-400 dark, gray-600 light
 
         new Chart(radarCtx, {
@@ -324,8 +324,8 @@ document.addEventListener('DOMContentLoaded', () => {
               backgroundColor: isDark ? 'rgba(251, 146, 60, 0.2)' : 'rgba(251, 146, 60, 0.15)',
               borderColor: '#fb923c',
               borderWidth: 3,
-              pointRadius: 6,
-              pointHoverRadius: 10,
+              pointRadius: 8,
+              pointHoverRadius: 12,
               pointBackgroundColor: (context) => {
                 const value = context.parsed.r;
                 if (value < 60) return '#f87171';
@@ -357,13 +357,14 @@ document.addEventListener('DOMContentLoaded', () => {
                   beginAtZero: true,
                   max: 100,
                   stepSize: 20,
-                  callback: (value) => value // show 20 40 60 80 100
+                  callback: (value) => value // shows 20 40 60 80 100
                 }
               }
             },
             plugins: {
               tooltip: {
                 enabled: true,
+                intersect: true,
                 callbacks: {
                   title: (context) => context[0].label,
                   label: (context) => {
@@ -390,7 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
         document.getElementById('radar-container').classList.remove('hidden');
-      } 
+      }
       
       
       

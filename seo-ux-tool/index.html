@@ -91,8 +91,13 @@
   </button>
 </form>
 
-
-    <div id="radar-container" class="hidden md:block my-24">
+    <div id="progress-container" class="text-center my-8 hidden">
+      <div class="spinner mx-auto mb-4"></div>
+      <p id="progress-text" class="text-xl font-medium">Initializing analysis...</p>
+    </div>
+    
+          
+          <div id="radar-container" class="hidden md:block my-24">
       <h2 class="text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
         360° Health Radar
       </h2>
@@ -120,13 +125,10 @@
       </div>
     </div>
 
-    <div id="progress-container" class="text-center my-8 hidden">
-      <div class="spinner mx-auto mb-4"></div>
-      <p id="progress-text" class="text-xl font-medium">Initializing analysis...</p>
-    </div>
 
-    <div id="results" class="hidden grid md:grid-cols-2 lg:grid-cols-4 gap-8">
       <!-- Existing 4 modules -->
+    <div id="results" class="hidden grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+      
       <section id="seo-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center">
         <div class="score-circle" data-score="0">
           <svg viewBox="0 0 120 120">

@@ -251,3 +251,11 @@ body { transition: background-color 0.3s ease; }
   opacity: 1 !important;
 }
 
+
+
+/* 360 Health Radar */
+canvas#health-radar {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
