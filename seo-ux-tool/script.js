@@ -7,15 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const overallContainer = document.getElementById('overall-container');
   const progressContainer = document.getElementById('progress-container');
   const progressText = document.getElementById('progress-text');
+  const priorityFixes = document.getElementById('priority-fixes');
+  const forecastSection = document.getElementById('forecast');
 
   function cleanUrl(u) {
     const trimmed = u.trim();
     if (!trimmed) return '';
-
-    // If protocol already present, keep it
     if (/^https?:\/\//i.test(trimmed)) return trimmed;
-
-    // Default to https:// for all bare domains/paths
     return 'https://' + trimmed;
   }
 
@@ -34,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     num.style.opacity = '1';
     circle.dataset.score = score;
 
-    // Remove previous color classes
+    // Dynamic color: red <60, orange 60-79, green >=80
     progress.classList.remove('stroke-red-400', 'stroke-orange-400', 'stroke-green-400');
     if (score < 60) {
       progress.classList.add('stroke-red-400');
@@ -82,10 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
-
     const originalInput = input.value.trim();
     const url = cleanUrl(originalInput);
-
     if (!url) {
       alert('Please enter a URL');
       return;
@@ -93,12 +89,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     results.classList.add('hidden');
     overallContainer.classList.add('hidden');
+    priorityFixes.classList.add('hidden');
+    forecastSection.classList.add('hidden');
     progressContainer.classList.remove('hidden');
     progressText.textContent = 'Fetching page...';
 
     const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
 
-	    try {
+    try {
       const res = await fetch(proxyUrl);
       if (!res.ok) throw new Error('Network response was not ok');
       const html = await res.text();
@@ -122,16 +120,16 @@ document.addEventListener('DOMContentLoaded', () => {
         progressText.textContent = `Analyzing ${mod.name}...`;
         const analysisUrl = mod.id === 'security' ? originalInput : url;
         const result = mod.fn(html, doc, analysisUrl);
+
         scores.push(result.score);
         updateScore(`${mod.id}-score`, result.score);
         populateIssues(`${mod.id}-issues`, result.issues);
 
-        // Collect issues with impact score for priority ranking
         result.issues.forEach(iss => {
           allIssues.push({
             ...iss,
             module: mod.name,
-            impact: Math.min(50, 100 - result.score)  // higher penalty = higher impact
+            impact: 100 - result.score
           });
         });
 
@@ -141,11 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       updateScore('overall-score', overallScore);
 
-      // Sort issues by impact and take top 3
+      // Top 3 Priority Fixes
       allIssues.sort((a, b) => b.impact - a.impact);
       const top3 = allIssues.slice(0, 3);
 
-      // Populate Top 3 Priority Fixes
       ['1', '2', '3'].forEach((num, idx) => {
         const issue = top3[idx];
         const prefix = `priority${num}`;
@@ -153,43 +150,45 @@ document.addEventListener('DOMContentLoaded', () => {
           document.getElementById(`${prefix}-issue`).textContent = issue.issue;
           document.getElementById(`${prefix}-what`).textContent = issue.what;
           document.getElementById(`${prefix}-fix`).textContent = issue.fix;
-          document.getElementById(`${prefix}-why`).textContent = `UX: ${issue.uxWhy || 'Improves usability and engagement'} | SEO: ${issue.seoWhy || 'Boosts ranking signals'}`;
+          document.getElementById(`${prefix}-why`).textContent = `UX: ${issue.uxWhy || 'Improves usability'} | SEO: ${issue.seoWhy || 'Boosts ranking'}`;
         } else {
-          document.getElementById(`${prefix}-issue`).textContent = 'No major issues detected';
+          document.getElementById(`${prefix}-issue`).textContent = 'No major issues';
           document.getElementById(`${prefix}-what`).textContent = 'This area is performing well.';
-          document.getElementById(`${prefix}-fix`).textContent = 'Keep up the great work!';
-          document.getElementById(`${prefix}-why`).textContent = 'Strong performance contributes to better rankings and user satisfaction.';
+          document.getElementById(`${prefix}-fix`).textContent = 'Maintain current standards.';
+          document.getElementById(`${prefix}-why`).textContent = 'Strong performance supports high rankings and great user experience.';
         }
       });
 
       // Predictive Rank Forecast
       let forecast = '';
       if (overallScore >= 90) {
-        forecast = 'Excellent! Your page is highly optimized and very likely to rank in top positions for competitive keywords.';
+        forecast = 'Excellent optimization. Your page is highly competitive and very likely to secure top rankings.';
       } else if (overallScore >= 80) {
-        forecast = 'Strong performance. With minor fixes, you could compete in the top 5–10 results.';
+        forecast = 'Strong performance. Minor improvements could place you in the top 5–10 results.';
       } else if (overallScore >= 70) {
-        forecast = 'Good foundation. Addressing the top issues may improve rankings significantly.';
+        forecast = 'Solid foundation. Fixing key issues may significantly improve your ranking position.';
       } else if (overallScore >= 60) {
-        forecast = 'Room for improvement. Fixing priority issues could dramatically increase visibility.';
+        forecast = 'Moderate issues present. Addressing priorities could greatly enhance visibility and traffic.';
       } else {
-        forecast = 'Critical optimizations needed. Implementing these fixes is essential for search visibility.';
+        forecast = 'Critical optimizations required. Implementing fixes is essential for effective search presence.';
       }
       document.getElementById('forecast-text').textContent = forecast;
 
       // Show results
       progressContainer.classList.add('hidden');
       overallContainer.classList.remove('hidden');
-      document.getElementById('priority-fixes').classList.remove('hidden');
-      document.getElementById('forecast').classList.remove('hidden');
+      priorityFixes.classList.remove('hidden');
+      forecastSection.classList.remove('hidden');
       results.classList.remove('hidden');
+
     } catch (err) {
       progressContainer.classList.add('hidden');
       alert('Failed to analyze — try another site or check the URL');
       console.error(err);
     }
-  
-  
+  });
+
+  // ================== ALL ANALYSIS FUNCTIONS (unchanged + enhanced) ==================
 
   function analyzeSEO(html, doc) {
     let score = 100;
@@ -570,7 +569,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 100;
     const issues = [];
     const lowerUrl = url.toLowerCase();
-
     if (lowerUrl.startsWith('http://')) {
       score -= 50;
       issues.push({
@@ -581,7 +579,6 @@ document.addEventListener('DOMContentLoaded', () => {
         seoWhy: 'Google marks HTTP sites as insecure and downgrades rankings.'
       });
     }
-
     const mixedContent = doc.querySelector('img[src^="http://"], script[src^="http://"], link[href^="http://"]');
     if (mixedContent) {
       score -= 20;
