@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
 
-    try {
+	    try {
       const res = await fetch(proxyUrl);
       if (!res.ok) throw new Error('Network response was not ok');
       const html = await res.text();
@@ -116,82 +116,78 @@ document.addEventListener('DOMContentLoaded', () => {
       ];
 
       const scores = [];
+      const allIssues = [];
 
       for (const mod of modules) {
         progressText.textContent = `Analyzing ${mod.name}...`;
-
-        // Pass original input to security for accurate detection
         const analysisUrl = mod.id === 'security' ? originalInput : url;
         const result = mod.fn(html, doc, analysisUrl);
-
         scores.push(result.score);
         updateScore(`${mod.id}-score`, result.score);
         populateIssues(`${mod.id}-issues`, result.issues);
+
+        // Collect issues with impact score for priority ranking
+        result.issues.forEach(iss => {
+          allIssues.push({
+            ...iss,
+            module: mod.name,
+            impact: Math.min(50, 100 - result.score)  // higher penalty = higher impact
+          });
+        });
+
         await new Promise(r => setTimeout(r, 300));
       }
 
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       updateScore('overall-score', overallScore);
 
-	
-	
-	      // Collect all issues from all modules
-      let allIssues = [];
-      modules.forEach(mod => {
-        const result = mod.fn(html, doc, originalInput);
-        allIssues = allIssues.concat(result.issues.map(iss => ({
-          ...iss,
-          module: mod.name,
-          impact: 100 - result.score  // rough impact proxy
-        })));
-      });
-
-      // Sort by impact (highest first) and take top 3
+      // Sort issues by impact and take top 3
       allIssues.sort((a, b) => b.impact - a.impact);
       const top3 = allIssues.slice(0, 3);
 
-      // Populate priority fixes
-      if (top3.length > 0) {
-        document.getElementById('priority1-issue').textContent = top3[0]?.issue || 'Great job!';
-        document.getElementById('priority1-what').textContent = top3[0]?.what || '';
-        document.getElementById('priority1-fix').textContent = top3[0]?.fix || '';
-        document.getElementById('priority1-why').textContent = `UX: ${top3[0]?.uxWhy || ''} | SEO: ${top3[0]?.seoWhy || ''}`;
-      }
-      if (top3.length > 1) {
-        document.getElementById('priority2-issue').textContent = top3[1].issue;
-        document.getElementById('priority2-what').textContent = top3[1].what;
-        document.getElementById('priority2-fix').textContent = top3[1].fix;
-        document.getElementById('priority2-why').textContent = `UX: ${top3[1].uxWhy} | SEO: ${top3[1].seoWhy}`;
-      }
-      if (top3.length > 2) {
-        document.getElementById('priority3-issue').textContent = top3[2].issue;
-        document.getElementById('priority3-what').textContent = top3[2].what;
-        document.getElementById('priority3-fix').textContent = top3[2].fix;
-        document.getElementById('priority3-why').textContent = `UX: ${top3[2].uxWhy} | SEO: ${top3[2].seoWhy}`;
-      }
+      // Populate Top 3 Priority Fixes
+      ['1', '2', '3'].forEach((num, idx) => {
+        const issue = top3[idx];
+        const prefix = `priority${num}`;
+        if (issue) {
+          document.getElementById(`${prefix}-issue`).textContent = issue.issue;
+          document.getElementById(`${prefix}-what`).textContent = issue.what;
+          document.getElementById(`${prefix}-fix`).textContent = issue.fix;
+          document.getElementById(`${prefix}-why`).textContent = `UX: ${issue.uxWhy || 'Improves usability and engagement'} | SEO: ${issue.seoWhy || 'Boosts ranking signals'}`;
+        } else {
+          document.getElementById(`${prefix}-issue`).textContent = 'No major issues detected';
+          document.getElementById(`${prefix}-what`).textContent = 'This area is performing well.';
+          document.getElementById(`${prefix}-fix`).textContent = 'Keep up the great work!';
+          document.getElementById(`${prefix}-why`).textContent = 'Strong performance contributes to better rankings and user satisfaction.';
+        }
+      });
 
-      // Show sections
-      document.getElementById('priority-fixes').classList.remove('hidden');
-      document.getElementById('forecast').classList.remove('hidden');
-
-      // Predictive forecast text
+      // Predictive Rank Forecast
       let forecast = '';
       if (overallScore >= 90) {
-        forecast = 'Excellent! With this score, your page is highly competitive and likely to rank in top positions for relevant searches.';
+        forecast = 'Excellent! Your page is highly optimized and very likely to rank in top positions for competitive keywords.';
       } else if (overallScore >= 80) {
-        forecast = 'Strong performance. Fixing the top issues could push you into the top 5–10 results.';
+        forecast = 'Strong performance. With minor fixes, you could compete in the top 5–10 results.';
       } else if (overallScore >= 70) {
-        forecast = 'Good foundation. Addressing priority fixes may improve rankings by 20–40 positions.';
+        forecast = 'Good foundation. Addressing the top issues may improve rankings significantly.';
       } else if (overallScore >= 60) {
-        forecast = 'Moderate issues detected. Resolving the top 3 could significantly boost visibility and traffic.';
+        forecast = 'Room for improvement. Fixing priority issues could dramatically increase visibility.';
       } else {
-        forecast = 'Critical improvements needed. Fixing these issues is essential to appear in search results effectively.';
+        forecast = 'Critical optimizations needed. Implementing these fixes is essential for search visibility.';
       }
       document.getElementById('forecast-text').textContent = forecast;
 
+      // Show results
       progressContainer.classList.add('hidden');
       overallContainer.classList.remove('hidden');
+      document.getElementById('priority-fixes').classList.remove('hidden');
+      document.getElementById('forecast').classList.remove('hidden');
       results.classList.remove('hidden');
+    } catch (err) {
+      progressContainer.classList.add('hidden');
+      alert('Failed to analyze — try another site or check the URL');
+      console.error(err);
+    }
   
   
 
