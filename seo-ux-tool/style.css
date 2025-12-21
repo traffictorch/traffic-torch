@@ -242,3 +242,12 @@ body { transition: background-color 0.3s ease; }
 
 
 
+
+/* Copy Code Badge */
+#score-badge a:hover {
+  color: #fb923c !important;
+}
+#score-badge a:hover > span {
+  opacity: 1 !important;
+}
+
