@@ -131,14 +131,25 @@ document.addEventListener('DOMContentLoaded', () => {
   
   
     // Copy Badge HTML button
-  const copyBadgeBtn = document.getElementById('copy-badge');
-  if (copyBadgeBtn) {
+	  if (copyBadgeBtn) {
     copyBadgeBtn.addEventListener('click', () => {
-      const badgeHtml = document.getElementById('score-badge').outerHTML;
+      const badgeHtml = `
+<!-- Traffic Torch Optimized Badge -->
+<a href="https://traffictorch.net/" target="_blank" style="display: inline-block; position: relative; font-family: system-ui, sans-serif; font-weight: bold; font-size: 20px; color: #fb923c; text-decoration: none;">
+  Traffic Torch Optimized 🛡️
+  <span style="position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 8px; padding: 8px 16px; background: #1f2937; color: white; font-size: 14px; border-radius: 8px; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap;">
+    UX, SEO & AI Optimization
+  </span>
+</a>
+<style>
+  a:hover > span { opacity: 1; }
+</style>
+      `.trim();
+
       navigator.clipboard.writeText(badgeHtml).then(() => {
-        alert('Badge HTML copied! Paste it on your site.');
+        alert('Badge code copied! Paste anywhere on your site.');
       }).catch(() => {
-        prompt('Copy this badge HTML:', badgeHtml);
+        prompt('Copy this badge code:', badgeHtml);
       });
     });
   }
