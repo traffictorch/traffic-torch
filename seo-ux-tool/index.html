@@ -302,6 +302,33 @@
     
     
     
+        <div id="mobile-preview" class="hidden max-w-5xl mx-auto my-24">
+      <h2 class="text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Mobile UX Preview
+      </h2>
+
+      <!-- Controls -->
+      <div class="flex justify-center gap-4 mb-8 flex-wrap">
+        <button id="view-toggle" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Switch to Desktop</button>
+        <button id="device-toggle" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Android Frame</button>
+        <button id="orientation-toggle" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Landscape</button>
+      </div>
+
+      <!-- Phone Frame -->
+      <div class="flex justify-center">
+        <div id="phone-frame" class="iphone-frame portrait relative">
+          <iframe id="preview-iframe" src="" sandbox="allow-scripts allow-same-origin allow-popups" class="w-full h-full rounded-[40px]"></iframe>
+          <div id="highlight-overlays" class="absolute inset-0 pointer-events-none"></div>
+        </div>
+      </div>
+
+      <p class="text-center mt-8 text-xl opacity-80">
+        Interactive preview — scroll and tap inside. Highlighted areas show mobile issues.
+      </p>
+    </div>
+    
+    
+    
     
     
     

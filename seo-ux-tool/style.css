@@ -126,9 +126,6 @@ body { transition: background-color 0.3s ease; }
 .score-card.green { border-color: #34d399; }
 
 
-
-
-
 /* Perfect centering for the large overall score circle */
 #overall-score .score-circle.large {
   display: flex;
@@ -144,4 +141,107 @@ body { transition: background-color 0.3s ease; }
     width: 150px;
     height: 150px;
   }
+}
+
+
+
+
+
+
+
+/* Mobile Preview Frame Base */
+#phone-frame {
+  width: 375px;
+  height: 812px;
+  background: #000;
+  border-radius: 60px;
+  padding: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  transition: all 0.6s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* iPhone Frame */
+.iphone-frame {
+  background: linear-gradient(to bottom, #111, #000);
+}
+.iphone-frame::before { /* Notch */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 30px;
+  background: #000;
+  border-radius: 0 0 20px 20px;
+}
+
+/* Android Frame */
+.android-frame {
+  background: linear-gradient(to bottom, #222, #000);
+}
+.android-frame::before { /* No notch, subtle bar */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: #111;
+}
+
+/* Landscape Mode */
+.landscape {
+  width: 812px;
+  height: 375px;
+  transform: rotate(90deg);
+}
+
+/* Iframe */
+#preview-iframe {
+  border: none;
+  background: #fff;
+}
+
+/* Highlight Overlays */
+#highlight-overlays .issue-highlight {
+  position: absolute;
+  background: rgba(251, 146, 60, 0.4);
+  border: 2px dashed #fb923c;
+  border-radius: 8px;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+#highlight-overlays .issue-highlight:hover {
+  background: rgba(251, 146, 60, 0.6);
+}
+
+/* Popup for highlight click */
+#highlight-popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+#highlight-popup .popup-content {
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 2rem;
+  padding: 2rem;
+  max-width: 90%;
+  max-height: 90%;
+  overflow-y: auto;
+}
+#highlight-popup .close {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 2rem;
+  cursor: pointer;
 }
