@@ -149,3 +149,66 @@ body { transition: background-color 0.3s ease; }
   border-color: #34d399;
   box-shadow: 0 0 40px rgba(52, 211, 153, 0.4);
 }
+
+
+/* Force perfect centering for overall card */
+#overall-score .score-card {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+
+/* Holographic Neon Glow for Overall Score Card */
+#overall-score .score-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 3rem;
+  padding: 4rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: none;
+}
+
+/* Animated neon border glow (gradient by grade) */
+#overall-score .score-card::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 3rem;
+  background: conic-gradient(from 0deg at 50% 50%, #f87171, #fb923c, #34d399, #10b981, #3b82f6, #8b5cf6, #ec4899, #f87171);
+  filter: blur(20px);
+  opacity: 0.6;
+  animation: neon-rotate 10s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Grade-specific neon glow */
+#overall-score .score-card.red::before {
+  background: conic-gradient(from 0deg, #f87171, #ef4444, #dc2626, #b91c1c);
+}
+#overall-score .score-card.orange::before {
+  background: conic-gradient(from 0deg, #fb923c, #f97316, #ea580c, #c2410c);
+}
+#overall-score .score-card.green::before {
+  background: conic-gradient(from 0deg, #34d399, #10b981, #059669, #047857);
+}
+
+@keyframes neon-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Inner subtle glow */
+#overall-score .score-card::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 3rem;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+  z-index: -1;
+}
