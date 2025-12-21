@@ -130,11 +130,26 @@ document.addEventListener('DOMContentLoaded', () => {
   
   
   
+    // Copy Badge HTML button
+  const copyBadgeBtn = document.getElementById('copy-badge');
+  if (copyBadgeBtn) {
+    copyBadgeBtn.addEventListener('click', () => {
+      const badgeHtml = document.getElementById('score-badge').outerHTML;
+      navigator.clipboard.writeText(badgeHtml).then(() => {
+        alert('Badge HTML copied! Paste it on your site.');
+      }).catch(() => {
+        prompt('Copy this badge HTML:', badgeHtml);
+      });
+    });
+  }
+  
+  
   
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
     if (savePdfBtn) savePdfBtn.classList.add('hidden');
+    document.getElementById('copy-badge').classList.add('hidden');
     const originalInput = input.value.trim();
     const url = cleanUrl(originalInput);
     if (!url) {
@@ -274,7 +289,8 @@ document.addEventListener('DOMContentLoaded', () => {
       results.classList.remove('hidden');
       
      if (savePdfBtn) savePdfBtn.classList.remove('hidden');
-      
+     document.getElementById('copy-badge').classList.remove('hidden');
+     
       
       
       
