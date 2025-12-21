@@ -77,30 +77,17 @@ body { transition: background-color 0.3s ease; }
 
 
 /* Color Grade in Score in Score Circle */
-/* Ensure background ring is visible but subtle */
-.score-circle .bg {
-  stroke: rgba(255, 255, 255, 0.15);
-  stroke-width: 8;
-}
-
-/* Progress ring — starts neutral, colored by JS */
-.score-circle .progress {
-  stroke: #f87171; /* default fallback red */
-  stroke-width: 8;
-  transition: stroke 0.6s ease, stroke-dasharray 0.8s ease;
-}
-
-/* Number text — large, bold, colored by grade via JS classes */
+/* Score number coloring (text only) */
 .score-circle .number {
   font-size: 48px;
   font-weight: 900;
-  fill: currentColor;
+  fill: #1e293b; /* default dark gray */
   text-anchor: middle;
   dominant-baseline: middle;
   transition: fill 0.5s ease;
 }
 
-/* Large overall score adjustments */
+/* Large overall number */
 .score-circle.large .number {
   font-size: 80px;
 }
@@ -110,10 +97,25 @@ body { transition: background-color 0.3s ease; }
   }
 }
 
-/* Tailwind color classes for dynamic use */
-.text-red-400 { color: #f87171; fill: #f87171; }
-.text-orange-400 { color: #fb923c; fill: #fb923c; }
-.text-green-400 { color: #34d399; fill: #34d399; }
+/* Card border color based on score grade */
+.score-card {
+  border: 4px solid transparent;
+  transition: border-color 0.6s ease;
+}
+.score-card.red { border-color: #f87171; }
+.score-card.orange { border-color: #fb923c; }
+.score-card.green { border-color: #34d399; }
+
+/* Progress ring subtle neutral */
+.score-circle .bg {
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 8;
+}
+.score-circle .progress {
+  stroke: rgba(255, 255, 255, 0.3);
+  stroke-width: 8;
+  transition: stroke-dasharray 0.8s ease;
+}
 
 
 
