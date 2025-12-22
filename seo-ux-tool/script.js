@@ -161,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   
-
   form.addEventListener('submit', async e => {
     e.preventDefault();
     if (savePdfBtn) savePdfBtn.classList.add('hidden');
@@ -285,11 +284,9 @@ document.addEventListener('DOMContentLoaded', () => {
       // Smooth reveal of all results
       progressContainer.classList.add('hidden');
       resultsWrapper.classList.remove('hidden');
-
-      // Reveal radar title (only inner hidden left)
       document.getElementById('radar-title').classList.remove('hidden');
 
-      // Explicitly show buttons (they have hidden class)
+      // Show buttons
       if (savePdfBtn) savePdfBtn.classList.remove('hidden');
       document.getElementById('copy-badge').classList.remove('hidden');
 
@@ -301,8 +298,6 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsWrapper.style.opacity = '1';
         resultsWrapper.style.transform = 'translateY(0)';
       });
-
-      // Smooth scroll to results
       resultsWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
       // 360° Health Radar Chart (desktop only)
@@ -459,6 +454,14 @@ document.addEventListener('DOMContentLoaded', () => {
         popup.querySelectorAll('p')[2].innerHTML = `<span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}`;
         popup.style.display = 'flex';
       }
+
+      // FIXED: Attach "Show Fixes" buttons AFTER results are revealed
+      document.querySelectorAll('.expand').forEach(b => {
+        b.onclick = () => {
+          b.nextElementSibling.classList.toggle('hidden');
+          b.textContent = b.nextElementSibling.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
+        };
+      });
 
     } catch (err) {
       progressContainer.classList.add('hidden');
