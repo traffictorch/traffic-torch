@@ -307,3 +307,51 @@ main {
 @media (max-width: 768px) {
     main { padding-top: 2rem; padding-bottom: 2rem; }
 }
+
+
+
+/* Print styles – hide both menus reliably + clean layout */
+@media print {
+  /* Hide desktop sidebar */
+  aside,
+  #sidebar,
+  .sidebar,
+  .main-navigation,
+  nav {
+    display: none !important;
+  }
+
+  /* Hide mobile menu/hamburger */
+  #mobile-menu,
+  .mobile-menu,
+  .mobile-nav,
+  .hamburger,
+  [class*="mobile"] nav {
+    display: none !important;
+  }
+
+  /* Expand content to full page */
+  main,
+  .content,
+  #results,
+  .report {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Optional: better print readability */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Hide any interactive elements */
+  button,
+  .controls,
+  #print-button { /* if you have custom print btn, keep it */
+    display: none !important;
+  }
+}
