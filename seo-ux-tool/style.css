@@ -377,3 +377,20 @@ body { transition: background-color 0.3s ease; }
     stroke-linejoin: round;
     text-shadow: none !important; /* removes any conflicting shadow */
   }
+  
+  
+  
+    /* Thin black outline around score progress circles for better contrast and definition */
+  .score-card .progress {
+    paint-order: stroke fill;
+    stroke: #ffffff;
+    stroke-width: 3px; /* adjust 6-10px for thickness - slightly thicker than numbers for visibility */
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Optional: Also apply to background circle if you want subtle separation */
+  .score-card .bg {
+    stroke: #ffffff;
+    stroke-width: 2px;
+  }
