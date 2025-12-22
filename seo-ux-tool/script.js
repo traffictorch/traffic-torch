@@ -423,122 +423,76 @@ if (window.innerWidth >= 768) {
       
       
       
-		// Mobile Preview with robust slow-site & block detection
-const mobilePreviewContainer = document.getElementById('mobile-preview');
-const previewIframe = document.getElementById('preview-iframe');
-const phoneFrame = document.getElementById('phone-frame');
-const viewToggle = document.getElementById('view-toggle');
-const deviceToggle = document.getElementById('device-toggle');
-const highlightOverlays = document.getElementById('highlight-overlays');
-const blockedMessage = document.getElementById('preview-blocked-message');
+      // Mobile Preview
+      const previewIframe = document.getElementById('preview-iframe');
+      const phoneFrame = document.getElementById('phone-frame');
+      const viewToggle = document.getElementById('view-toggle');
+      const deviceToggle = document.getElementById('device-toggle');
+      const orientationToggle = document.getElementById('orientation-toggle');
+      const highlightOverlays = document.getElementById('highlight-overlays');
 
-function loadMobilePreview(url) {
-  if (!url || !url.startsWith('http')) {
-    mobilePreviewContainer.classList.add('hidden');
-    return;
-  }
+      previewIframe.src = url;
 
-  // Reset state
-  previewIframe.src = '';
-  highlightOverlays.innerHTML = '';
-  blockedMessage.classList.add('hidden');
-  mobilePreviewContainer.classList.remove('hidden');
+      // Toggles
+      let isMobile = true;
+      let isIphone = true;
+      let isPortrait = true;
 
-  // Remove previous listeners to prevent duplicates
-  viewToggle.onclick = null;
-  deviceToggle.onclick = null;
+      viewToggle.addEventListener('click', () => {
+        isMobile = !isMobile;
+        phoneFrame.style.width = isMobile ? '375px' : '100%';
+        phoneFrame.style.height = isMobile ? '812px' : '800px';
+        viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
+      });
 
-  let checkInterval;
-  let timeoutId = setTimeout(() => {
-    clearInterval(checkInterval);
-    showBlocked();
-  }, 12000); // 12 seconds – generous for slow sites
+      deviceToggle.addEventListener('click', () => {
+        isIphone = !isIphone;
+        phoneFrame.classList.toggle('iphone-frame', isIphone);
+        phoneFrame.classList.toggle('android-frame', !isIphone);
+        deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
+      });
 
-  function checkIfBlocked() {
-    let isBlocked = false;
-    try {
-      // Try to access content – throws if cross-origin blocked
-      const doc = previewIframe.contentDocument || previewIframe.contentWindow.document;
-      if (!doc || !doc.body || doc.body.innerHTML.trim() === '') {
-        isBlocked = true;
-      }
-    } catch (e) {
-      // Any access error when location is blank/about:blank = blocked
-      try {
-        if (!previewIframe.contentWindow.location.href || 
-            previewIframe.contentWindow.location.href === 'about:blank') {
-          isBlocked = true;
+
+      // Simple highlights from mobile issues
+      const mobileIssues = allIssues.filter(i => ['Mobile & PWA', 'Performance', 'Accessibility'].includes(i.module));
+      mobileIssues.slice(0, 3).forEach((issue, idx) => {
+        const hl = document.createElement('div');
+        hl.classList.add('issue-highlight');
+        hl.style.top = `${20 + idx * 25}%`;
+        hl.style.left = '5%';
+        hl.style.width = '90%';
+        hl.style.height = '20%';
+        hl.addEventListener('click', () => {
+          showPopup(issue);
+        });
+        highlightOverlays.appendChild(hl);
+      });
+
+      function showPopup(issue) {
+        let popup = document.getElementById('highlight-popup');
+        if (!popup) {
+          popup = document.createElement('div');
+          popup.id = 'highlight-popup';
+          popup.innerHTML = `
+            <div class="popup-content relative">
+              <span class="close">&times;</span>
+              <h3 class="text-2xl font-bold mb-4">${issue.issue}</h3>
+              <p class="mb-4"><span class="font-bold text-blue-300">What is it?</span><br>${issue.what}</p>
+              <p class="mb-4"><span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}</p>
+              <p><span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}</p>
+            </div>
+          `;
+          document.body.appendChild(popup);
+          popup.querySelector('.close').addEventListener('click', () => popup.style.display = 'none');
         }
-      } catch (_) {
-        isBlocked = true;
+        popup.querySelector('h3').textContent = issue.issue;
+        popup.querySelectorAll('p')[0].innerHTML = `<span class="font-bold text-blue-300">What is it?</span><br>${issue.what}`;
+        popup.querySelectorAll('p')[1].innerHTML = `<span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}`;
+        popup.querySelectorAll('p')[2].innerHTML = `<span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}`;
+        popup.style.display = 'flex';
       }
-    }
 
-    if (isBlocked) {
-      clearInterval(checkInterval);
-      clearTimeout(timeoutId);
-      showBlocked();
-    } else {
-      // Success – content accessible
-      clearInterval(checkInterval);
-      clearTimeout(timeoutId);
-      setupPreview();
-    }
-  }
-
-  function showBlocked() {
-    previewIframe.src = ''; // removes browser error screen
-    highlightOverlays.innerHTML = '';
-    blockedMessage.classList.remove('hidden');
-  }
-
-  function setupPreview() {
-    let isMobile = true;
-    let isIphone = true;
-
-    viewToggle.onclick = () => {
-      isMobile = !isMobile;
-      phoneFrame.style.width = isMobile ? '375px' : '100%';
-      phoneFrame.style.height = isMobile ? '812px' : '800px';
-      viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
-    };
-
-    deviceToggle.onclick = () => {
-      isIphone = !isIphone;
-      phoneFrame.classList.toggle('iphone-frame', isIphone);
-      phoneFrame.classList.toggle('android-frame', !isIphone);
-      deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
-    };
-
-    // Highlights
-    const mobileIssues = allIssues.filter(i => ['Mobile & PWA', 'Performance', 'Accessibility'].includes(i.module));
-    mobileIssues.slice(0, 3).forEach((issue, idx) => {
-      const hl = document.createElement('div');
-      hl.classList.add('issue-highlight');
-      hl.style.top = `${20 + idx * 25}%`;
-      hl.style.left = '5%';
-      hl.style.width = '90%';
-      hl.style.height = '20%';
-      hl.addEventListener('click', () => showPopup(issue));
-      highlightOverlays.appendChild(hl);
-    });
-  }
-
-  // Your existing showPopup function (keep unchanged)
-  function showPopup(issue) {
-    // ... your popup code
-  }
-
-  // Start loading and checking
-  previewIframe.src = url;
-
-  // Check immediately and every 500ms
-  checkIfBlocked();
-  checkInterval = setInterval(checkIfBlocked, 500);
-}
-
-// Call after analysis
-loadMobilePreview(url);
+      document.getElementById('mobile-preview').classList.remove('hidden');
       
       
       
