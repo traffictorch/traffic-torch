@@ -345,9 +345,9 @@ body { transition: background-color 0.3s ease; }
   }
 
   /* Restore grade-based colored borders */
-  .score-card.border-red-500 { border: 8px solid #ef4444 !important; }
-  .score-card.border-orange-500 { border: 8px solid #f97316 !important; }
-  .score-card.border-green-500 { border: 8px solid #22c55e !important; }
+  .score-card.border-red-500 { border: 3px solid #ef4444 !important; }
+  .score-card.border-orange-500 { border: 3px solid #f97316 !important; }
+  .score-card.border-green-500 { border: 3px solid #22c55e !important; }
 
   /* Labels */
   .score-card .label,
@@ -372,7 +372,7 @@ body { transition: background-color 0.3s ease; }
   .score-card .number {
     paint-order: stroke fill;
     stroke: #ffffff;
-    stroke-width: 8px; /* adjust 4-8px for thickness */
+    stroke-width: 3px; /* adjust 4-8px for thickness */
     stroke-linecap: round;
     stroke-linejoin: round;
     text-shadow: none !important; /* removes any conflicting shadow */
