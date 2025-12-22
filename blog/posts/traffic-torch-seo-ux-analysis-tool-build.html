@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ 
+  <!-- Post-specific SEO Title & Description -->
+  <title>Traffic Torch SEO UX Analysis Tool Build: Behind the Scenes in Development – Traffic Torch Insights</title>
+  <meta name="description" content="Deep dive into building Traffic Torch: a privacy-first, client-side instant SEO and UX analysis tool with 360° audits, AI fixes, predictive forecasts, and mobile previews – all free and educational." />
+
+  <!-- Robots & Canonical -->
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://traffictorch.net/blog/posts/traffic-torch-seo-ux-analysis-tool-build.html" />
+ 
+  <!-- Open Graph Tags -->
+  <meta property="og:title" content="Traffic Torch SEO UX Analysis Tool Build: Behind the Scenes in Development" />
+  <meta property="og:description" content="Discover how we built a blazing-fast, privacy-focused SEO & UX auditor running entirely in-browser with advanced modules, radar charts, and AI insights." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://traffictorch.net/blog/posts/traffic-torch-seo-ux-analysis-tool-build.html" />
+  <meta property="og:image" content="https://traffictorch.net/blog/images/traffic-torch-seo-ux-analysis-tool-build/featured.webp" /> 
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="Traffic Torch" />
+ 
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Traffic Torch SEO UX Analysis Tool Build: Behind the Scenes in Development" />
+  <meta name="twitter:description" content="Deep dive into building Traffic Torch: a privacy-first, client-side instant SEO and UX analysis tool with 360° audits, AI fixes, predictive forecasts, and mobile previews – all free and educational." />
+  <meta name="twitter:image" content="https://traffictorch.net/blog/images/traffic-torch-seo-ux-analysis-tool-build/featured.webp" /> <!-- UPDATE -->
+  <meta name="twitter:site" content="@TrafficTorch" />
+ 
+  <!-- Structured Data: BlogPosting -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Traffic Torch SEO UX Analysis Tool Build: Behind the Scenes in Development",
+    "description": "Deep dive into building Traffic Torch: a privacy-first, client-side instant SEO and UX analysis tool with 360° audits, AI fixes, predictive forecasts, and mobile previews – all free and educational.",
+    "image": "https://traffictorch.net/blog/images/traffic-torch-seo-ux-analysis-tool-build/featured.webp", <!-- UPDATE -->
+    "datePublished": "2025-12-23",
+    "dateModified": "2025-12-23",
+    "author": {
+      "@type": "Organization",
+      "name": "Traffic Torch"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Traffic Torch",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://traffictorch.net/logo.webp"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://traffictorch.net/blog/posts/traffic-torch-seo-ux-analysis-tool-build.html"
+    }
+  }
+  </script>
+ 
+  <!-- Organization schema (unchanged) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "url": "https://traffictorch.net/",
+    "logo": "https://traffictorch.net/favicon.ico",
+    "description": "AI-powered instant SEO and UX health analysis tools – mobile-friendly."
+  }
+  </script>
+ 
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+  (function() {
+    const saved = localStorage.getItem('theme');
+    const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (preferDark ? 'dark' : 'light');
+    document.documentElement.classList.add(theme);
+  })();
+  </script>
+</head>
+<body class="min-h-screen">
+  <!-- Header (unchanged) -->
+  <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-4">
+        <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
+        <p class="text-[1.35rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+          Traffic Torch
+        </p>
+      </a>
+      <button id="menuToggle" class="md:hidden text-3xl relative left-2 -top-1">☰</button>
+      <nav class="hidden md:flex gap-8 text-lg">
+        <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent 🎯</a>
+        <a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search 🔍</a>
+        <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content 🤖</a>
+        <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk ⚡</a>
+        <a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords 📝</a>
+        <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">Comp 🆚</a>
+        <a href="/news.html" class="hover:text-orange-400 transition">News</a>
+      </nav>
+      <button id="themeToggle" class="py-1 bg-white/10 rounded-full hover:bg-white/20 transition">
+        🌙
+      </button>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+      <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+        <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🛡️</a>
+        <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+          <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">SEO Intent 🎯</a>
+          <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Search 🔍</a>
+          <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Content 🤖</a>
+          <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">Quit Risk ⚡</a>
+          <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">Keywords 📝</a>
+          <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">Competition 🆚</a>
+        </div>
+        <a href="/about/" class="text-gray-100 hover:text-orange-400 transition">About</a>
+        <a href="/news.html" class="text-gray-100 hover:text-orange-400 transition">News</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Top Share Buttons -->
+  <!-- Top Share Buttons -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+    <script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+
+  <!-- Blog Post Content Area -->
+  <main class="py-16 bg-gray-50 dark:bg-gray-900">
+    <article class="max-w-4xl mx-auto px-6 prose prose-lg dark:prose-invert">
+      <!-- Featured Image -->
+      <img src="/blog/images/traffic-torch-seo-ux-analysis-tool-build/featured.webp" alt="Traffic Torch instant SEO and UX analysis dashboard with radar chart and module scores" class="w-full rounded-xl shadow-2xl mb-12 -mt-24 object-cover h-96">
+
+      <!-- Post Title -->
+      <h1 class="text-5xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Traffic Torch SEO UX Analysis Tool Build: Behind the Scenes in Development
+      </h1>
+
+      <!-- Publish Date -->
+      <p class="text-gray-500 dark:text-gray-400 text-lg italic mb-12">
+        Published on December 23
+      </p>
+
+      <!-- Epic Long-Form Content -->
+      <p class="lead text-xl mb-8">At <strong>Traffic Torch</strong>, we set out to revolutionize free SEO and UX auditing by creating a tool that's <em>truly instant, completely private, and deeply educational</em>. No sign-ups, no servers touching your data, no compromises on speed or quality.</p>
+
+      <p>The centerpiece of our site is the <a href="https://traffictorch.net/" class="text-orange-500 hover:underline">instant SEO & UX analyzer</a>: a comprehensive 360° health report featuring eight advanced modules, AI-prioritized fixes, predictive ranking forecasts, and an interactive mobile preview — all executed <strong>entirely in your browser</strong>.</p>
+
+      <h2>The Vision: Building an Instant, Privacy-First, Educational Powerhouse</h2>
+
+      <p>Traditional online SEO tools often fall short: they're slow (server waits), invasive (data uploads), gated (paywalls/sign-ups), or superficial (basic checks only). Traffic Torch flips the script with core principles that define modern web best practices:</p>
+
+      <ul>
+        <li><strong>Instant results</strong>: Full professional-grade audit in seconds</li>
+        <li><strong>Zero data transmission</strong>: All analysis happens client-side</li>
+        <li><strong>No tracking or cookies</strong>: Absolute privacy guaranteed</li>
+        <li><strong>Educational depth</strong>: Every score includes explanations, fixes, and why it matters</li>
+        <li><strong>Mobile-first design</strong>: Beautiful, responsive, and touch-friendly on any device</li>
+        <li><strong>PWA-ready</strong>: Installable for offline-like feel (manifest included)</li>
+      </ul>
+
+      <p>This isn't just a tool — it's a demonstration of how powerful, trustworthy web apps can be when built with the latest standards.</p>
+
+      <figure>
+        <img src="https://www.justinmind.com/wp-content/uploads/2018/12/6-best-practices-for-Dashboard-Design-Justinmind-header.png" alt="Modern clean SEO UX audit dashboard interface with cards and metrics – similar to Traffic Torch's educational layout" class="w-full rounded-xl shadow-lg my-8">
+        <figcaption class="text-center text-gray-500 italic">Clean, modern dashboard design emphasizing clarity and user education (inspired example)</figcaption>
+      </figure>
+
+      <h2>How Traffic Torch Works Under the Hood: Pure Client-Side Magic</h2>
+
+      <p>The entire audit pipeline runs locally in your browser — no backend servers involved:</p>
+
+      <ol>
+        <li>You enter any public URL</li>
+        <li>Page HTML is fetched securely via our <a href="https://cors-proxy.traffictorch.workers.dev/" class="text-orange-500 hover:underline">CORS proxy worker</a></li>
+        <li>Content is parsed safely using native <code>DOMParser</code></li>
+        <li>Eight specialized analysis modules run concurrently</li>
+        <li>Results render with smooth Tailwind animations and Chart.js visuals</li>
+      </ol>
+
+      <p>No logs. No storage. No third-party analytics. Your data never leaves your device.</p>
+
+      <figure>
+        <img src="https://www.ionos.com/digitalguide/fileadmin/DigitalGuide/Screenshots_2022/Client-side-rendering-diagram.png" alt="Diagram illustrating client-side processing vs server-side – highlighting Traffic Torch's privacy-first approach" class="w-full rounded-xl shadow-lg my-8">
+        <figcaption class="text-center text-gray-500 italic">Client-side execution ensures maximum privacy and speed</figcaption>
+      </figure>
+
+      <h2>Standout Features That Make Traffic Torch Next-Level</h2>
+
+      <h3>The Epic 360° Health Radar Chart</h3>
+
+      <p>Powered by lightweight Chart.js, this interactive radar instantly visualizes strengths and weaknesses across all eight core metrics.</p>
+
+      <figure>
+        <img src="https://ppcexpo.com/blog/wp-content/uploads/2025/07/radar-chart-main.jpeg" alt="Radar chart displaying balanced website performance metrics including SEO, accessibility, UX, and speed" class="w-full rounded-xl shadow-lg my-8">
+        <figcaption class="text-center text-gray-500 italic">360° radar overview: Green = strong, orange = needs work, red = critical</figcaption>
+      </figure>
+
+      <h3>Eight Deep-Dive Professional Modules</h3>
+
+      <p>Each module delivers a 0–100 score with detailed, actionable insights:</p>
+
+      <ul>
+        <li><strong>On-Page SEO</strong>: Title, meta, headings, keyword density</li>
+        <li><strong>Mobile & PWA Readiness</strong>: Viewport, touch targets, manifest</li>
+        <li><strong>Performance</strong>: Load times, resource optimization</li>
+        <li><strong>Accessibility</strong>: ARIA, contrast, alt text</li>
+        <li><strong>Content Quality</strong>: Readability, structure, engagement</li>
+        <li><strong>UX Design</strong>: Navigation, friction points, quit risk</li>
+        <li><strong>Security</strong>: HTTPS, mixed content, vulnerabilities</li>
+        <li><strong>Indexability</strong>: Robots, sitemap, crawl errors</li>
+      </ul>
+
+      <figure>
+        <img src="https://assets.justinmind.com/wp-content/uploads/2020/02/dashboard-layout-hierarchy.png" alt="Detailed module cards with scores, explanations, and AI-generated fix buttons" class="w-full rounded-xl shadow-lg my-8">
+        <figcaption class="text-center text-gray-500 italic">Educational module breakdowns with "Show Fixes" interactivity</figcaption>
+      </figure>
+
+      <h3>Interactive Mobile Preview Frame</h3>
+
+      <p>See exactly how your site renders on mobile, with highlighted issues and device toggles.</p>
+
+      <figure>
+        <img src="https://developer.chrome.com/static/docs/devtools/device-mode/image/the-device-frame-the-nes-4cc890fc88ef7.png" alt="Interactive mobile preview tool showing website inside realistic phone frame" class="w-full rounded-xl shadow-lg my-8">
+        <figcaption class="text-center text-gray-500 italic">Toggle between iPhone/Android views for real mobile UX testing</figcaption>
+      </figure>
+
+      <h3>AI-Prioritized Fixes & Predictive Forecasting</h3>
+
+      <p>Top issues get dedicated cards explaining <em>what</em> the problem is, <em>how</em> to fix it, and <em>why</em> it matters. Predictive section forecasts potential traffic/ranking gains post-optimization.</p>
+
+      <h3>Polished Presentation & Tech Stack</h3>
+
+      <p>Built with the latest best practices for speed and accessibility:</p>
+
+      <ul>
+        <li>HTML5 semantic structure</li>
+        <li>Tailwind CSS v3+ for responsive, utility-first styling</li>
+        <li>Vanilla JS (ES6+) for lightweight logic</li>
+        <li>Chart.js for dynamic visuals</li>
+        <li>Secure Cloudflare Worker CORS proxy</li>
+        <li>Full dark/light mode support</li>
+        <li>PWA manifest for installability</li>
+      </ul>
+
+      <figure>
+        <img src="https://tailkits.com/_ipx/_/modernize-3.png" alt="Modern web tech stack featuring Tailwind CSS and Chart.js in a clean dashboard" class="w-full rounded-xl shadow-lg my-8">
+        <figcaption class="text-center text-gray-500 italic">Tailwind + Chart.js powering beautiful, performant visuals</figcaption>
+      </figure>
+
+      <p>Everything is open and forkable on GitHub — contributions welcome!</p>
+
+      <h2>Ready to Experience the Future of SEO & UX Auditing?</h2>
+
+      <p class="text-2xl font-bold text-center my-12">
+        <a href="https://traffictorch.net/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-full hover:shadow-2xl transition transform hover:scale-105">
+          Try Traffic Torch Instant Analyzer Now 🚦
+        </a>
+      </p>
+
+      <p>We're continuously evolving based on community feedback. Have ideas, suggestions, or spot something to improve? Reach out — we're all ears.</p>
+
+      <p>Thanks for diving deep with us! 🚀</p>
+
+    </article>
+  </main>
+
+  <!-- Tools Grid (kept on every post for education & navigation) -->
+  <div class="tools-grid max-w-7xl mx-auto px-6 py-16">
+    <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+      <!-- SEO Intent -->
+      <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+          <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+          <h3 class="text-2xl font-bold mb-3">SEO Intent Tool</h3>
+          <p class="text-gray-400">Instant intent matching + E-E-A-T audit + fixes</p>
+        </div>
+      </a>
+      <!-- Ai Search -->
+      <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all">
+          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+          <h3 class="text-2xl font-bold mb-3">Ai Search Tool</h3>
+          <p class="text-gray-400">Optimize for Perplexity, Grok, Gemini, ChatGPT Search</p>
+        </div>
+      </a>
+      <!-- AI Content -->
+      <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all">
+          <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+          <h3 class="text-2xl font-bold mb-3">AI Content Tool</h3>
+          <p class="text-gray-400">Detect AI patterns + humanize content + forecasts</p>
+        </div>
+      </a>
+      <!-- Quit Risk -->
+      <a href="/quit-risk-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all">
+          <div class="text-emerald-400 text-7xl mb-6 group-hover:animate-bounce">⚡</div>
+          <h3 class="text-2xl font-bold mb-3">Quit Risk Tool</h3>
+          <p class="text-gray-400">UX friction audit + bounce prediction + optimizations</p>
+        </div>
+      </a>
+      <!-- Keywords -->
+      <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+          <div class="text-purple-400 text-7xl mb-6 group-hover:animate-bounce">📝</div>
+          <h3 class="text-2xl font-bold mb-3">Keyword Tool</h3>
+          <p class="text-gray-400">On-page keyword placement score + density fixes</p>
+        </div>
+      </a>
+      <!-- VS -->
+      <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+          <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+          <h3 class="text-2xl font-bold mb-3">VS Tool</h3>
+          <p class="text-gray-400">Competitive keyword gap analysis + beat strategies</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Bottom Share Buttons -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+    <script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+
+  <!-- Footer (unchanged) -->
+  <footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">
+    <div class="container mx-auto px-6 max-w-6xl">
+      <div class="grid md:grid-cols-4 gap-12 text-center md:text-left">
+        <div>
+          <a href="/">
+            <img src="/logo.webp" alt="Traffic Torch" class="w-20 mx-auto md:mx-0 rounded-2xl shadow-2xl mb-6">
+          </a>
+          <p class="text-gray-300 text-sm"><a href="/" class="hover:text-orange-400 transition">Traffic Torch<br>SEO + UX + Ai audit tools</a></p>
+        </div>
+        <div>
+          <a href="/ai-seo-ux-tools/" class="block"><h3 class="text-xl font-bold mb-6 text-orange-400 hover:text-orange-300 transition">Tools</h3></a>
+          <ul class="space-y-3 text-gray-300 list-none">
+            <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+            <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
+            <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a></li>
+            <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
+            <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a></li>
+            <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-6 text-orange-400">Company</h3>
+          <ul class="space-y-3 text-gray-300 list-none">
+            <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
+            <li><a href="/news.html" class="hover:text-orange-400 transition">News</a></li>
+            <li><a href="https://x.com/guitaralize" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">Ylia@X</a></li>
+            <li><a href="https://grok.com/" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">Grok</a></li>
+            <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
+            <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-6 text-orange-400">Traffic Torch</h3>
+          <ul class="space-y-3 text-gray-300 list-none">
+            <li><a href="/ai-seo-ux-tools/#ai-tools" class="hover:text-orange-400 transition">Ai Tools 🤖</a></li>
+            <li><a href="/ai-seo-ux-tools/#seo-tools" class="hover:text-orange-400 transition">SEO Tools 🎯</a></li>
+            <li><a href="/ai-seo-ux-tools/#ux-tools" class="hover:text-orange-400 transition">UX Tools ⚡</a></li>
+          </ul>
+          <p class="text-gray-300 text-sm mt-4">Built with 🔥</p>
+          <p class="text-gray-300 text-xs mt-4">© Traffic Torch</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/main.js" type="module"></script>
+</body>
+</html>
