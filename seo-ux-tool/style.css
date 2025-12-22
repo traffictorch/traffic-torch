@@ -311,3 +311,23 @@ body { transition: background-color 0.3s ease; }
   50% { opacity: 1; }
 }
 .animate-glow { animation: glow 4s ease-in-out infinite; }
+
+  .force-dark-card {
+    background-color: #111827 !important; /* Tailwind gray-900 = very dark gray/black */
+    color: white !important;
+    border: none !important;
+  }
+  .force-dark-card .label,
+  .force-dark-card > div:last-child { /* targets Overall Score text */
+    color: #34d399 !important; /* green-400 for labels */
+  }
+  .force-dark-card .number {
+    fill: white !important;
+    color: white !important;
+  }
+  .force-dark-card button {
+    color: white !important;
+  }
+  .force-dark-card .details {
+    color: #d1d5db !important; /* gray-300 for issue text */
+  }
