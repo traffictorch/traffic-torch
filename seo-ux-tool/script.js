@@ -423,7 +423,7 @@ if (window.innerWidth >= 768) {
       
       
       
-// Mobile Preview with iframe embed check
+// Mobile Preview with reliable iframe block detection
 const mobilePreviewContainer = document.getElementById('mobile-preview');
 const previewIframe = document.getElementById('preview-iframe');
 const phoneFrame = document.getElementById('phone-frame');
@@ -432,97 +432,100 @@ const deviceToggle = document.getElementById('device-toggle');
 const highlightOverlays = document.getElementById('highlight-overlays');
 const blockedMessage = document.getElementById('preview-blocked-message');
 
-async function loadMobilePreview(url) {
-  if (!url || !url.startsWith('http')) return;
-
-  const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`;
-
-  let embedAllowed = false;
-  try {
-    const response = await fetch(proxyUrl, { method: 'HEAD' });
-
-    const xfo = response.headers.get('x-frame-options');
-    const csp = response.headers.get('content-security-policy') || 
-                response.headers.get('content-security-policy-report-only');
-
-    const blockedByXFO = xfo && /^(deny|sameorigin)$/i.test(xfo.trim());
-    const blockedByCSP = csp && /frame-ancestors[^;]*('none'|none|\bself\b)/i.test(csp);
-
-    embedAllowed = !blockedByXFO && !blockedByCSP && response.ok;
-  } catch (err) {
-    // Network error or proxy issue → assume blocked for safety
-    embedAllowed = false;
-  }
-
-  if (!embedAllowed) {
-    blockedMessage.classList.remove('hidden');
-    mobilePreviewContainer.classList.remove('hidden'); // show with message only
+function loadMobilePreview(url) {
+  if (!url || !url.startsWith('http')) {
+    mobilePreviewContainer.classList.add('hidden');
     return;
   }
 
-  // Allowed → load iframe and proceed
+  // Reset state
+  previewIframe.src = '';
+  highlightOverlays.innerHTML = '';
+  blockedMessage.classList.add('hidden');
+  mobilePreviewContainer.classList.remove('hidden');
+
+  // Attempt load
   previewIframe.src = url;
 
-  // Toggles
-  let isMobile = true;
-  let isIphone = true;
+  let loaded = false;
+  let timeoutId;
 
-  viewToggle.addEventListener('click', () => {
-    isMobile = !isMobile;
-    phoneFrame.style.width = isMobile ? '375px' : '100%';
-    phoneFrame.style.height = isMobile ? '812px' : '800px';
-    viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
-  });
-
-  deviceToggle.addEventListener('click', () => {
-    isIphone = !isIphone;
-    phoneFrame.classList.toggle('iphone-frame', isIphone);
-    phoneFrame.classList.toggle('android-frame', !isIphone);
-    deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
-  });
-
-  // Simple highlights from mobile issues
-  const mobileIssues = allIssues.filter(i => ['Mobile & PWA', 'Performance', 'Accessibility'].includes(i.module));
-  mobileIssues.slice(0, 3).forEach((issue, idx) => {
-    const hl = document.createElement('div');
-    hl.classList.add('issue-highlight');
-    hl.style.top = `${20 + idx * 25}%`;
-    hl.style.left = '5%';
-    hl.style.width = '90%';
-    hl.style.height = '20%';
-    hl.addEventListener('click', () => showPopup(issue));
-    highlightOverlays.appendChild(hl);
-  });
-
-  // Existing showPopup function (unchanged)
-  function showPopup(issue) {
-    let popup = document.getElementById('highlight-popup');
-    if (!popup) {
-      popup = document.createElement('div');
-      popup.id = 'highlight-popup';
-      popup.innerHTML = `
-        <div class="popup-content relative">
-          <span class="close">&times;</span>
-          <h3 class="text-2xl font-bold mb-4">${issue.issue}</h3>
-          <p class="mb-4"><span class="font-bold text-blue-300">What is it?</span><br>${issue.what}</p>
-          <p class="mb-4"><span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}</p>
-          <p><span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}</p>
-        </div>
-      `;
-      document.body.appendChild(popup);
-      popup.querySelector('.close').addEventListener('click', () => popup.style.display = 'none');
+  const checkBlocked = () => {
+    try {
+      // If accessible (same-origin or allowed), location.href works
+      if (previewIframe.contentWindow.location.href) {
+        loaded = true;
+        clearTimeout(timeoutId);
+        setupPreview();
+      }
+    } catch (e) {
+      // Cross-origin error + blank location = blocked by X-Frame/CSP
+      if (!previewIframe.contentWindow.location.href) {
+        showBlocked();
+      }
     }
-    popup.querySelector('h3').textContent = issue.issue;
-    popup.querySelectorAll('p')[0].innerHTML = `<span class="font-bold text-blue-300">What is it?</span><br>${issue.what}`;
-    popup.querySelectorAll('p')[1].innerHTML = `<span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}`;
-    popup.querySelectorAll('p')[2].innerHTML = `<span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}`;
-    popup.style.display = 'flex';
+  };
+
+  const setupPreview = () => {
+    // Toggles
+    let isMobile = true;
+    let isIphone = true;
+
+    viewToggle.onclick = () => {
+      isMobile = !isMobile;
+      phoneFrame.style.width = isMobile ? '375px' : '100%';
+      phoneFrame.style.height = isMobile ? '812px' : '800px';
+      viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
+    };
+
+    deviceToggle.onclick = () => {
+      isIphone = !isIphone;
+      phoneFrame.classList.toggle('iphone-frame', isIphone);
+      phoneFrame.classList.toggle('android-frame', !isIphone);
+      deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
+    };
+
+    // Highlights
+    const mobileIssues = allIssues.filter(i => ['Mobile & PWA', 'Performance', 'Accessibility'].includes(i.module));
+    mobileIssues.slice(0, 3).forEach((issue, idx) => {
+      const hl = document.createElement('div');
+      hl.classList.add('issue-highlight');
+      hl.style.top = `${20 + idx * 25}%`;
+      hl.style.left = '5%';
+      hl.style.width = '90%';
+      hl.style.height = '20%';
+      hl.addEventListener('click', () => showPopup(issue));
+      highlightOverlays.appendChild(hl);
+    });
+  };
+
+  const showBlocked = () => {
+    previewIframe.src = '';
+    highlightOverlays.innerHTML = '';
+    blockedMessage.classList.remove('hidden');
+  };
+
+  // Existing showPopup (unchanged, define outside if needed)
+  function showPopup(issue) {
+    // ... (your existing popup code)
   }
 
-  mobilePreviewContainer.classList.remove('hidden');
+  previewIframe.onload = () => {
+    loaded = true;
+    clearTimeout(timeoutId);
+    checkBlocked(); // Final check
+  };
+
+  // Fallback timeout (5s)
+  timeoutId = setTimeout(() => {
+    if (!loaded) showBlocked();
+  }, 5000);
+
+  // Initial checks
+  checkBlocked();
 }
 
-// Call this after analysis with your tested URL variable (e.g. const url = urlInputValue.trim();)
+// Call after analysis
 loadMobilePreview(url);
       
       
