@@ -306,57 +306,73 @@ body { transition: background-color 0.3s ease; }
 
 
 
-  /* Refined Glowing Black Module Cards */
-  @keyframes subtle-glow {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 0.6; }
-  }
-
+<style>
+  /* Futuristic Neon-Framed Black Cards - Inspired by the right reference image */
   .score-card {
     position: relative;
-    background-color: #0f172a !important; /* deep black-slate */
-    border-radius: 1.5rem !important;
+    background: #0a0a0a !important; /* Deep black */
+    border-radius: 2.5rem !important; /* Softer rounded corners */
     overflow: hidden;
-    transition: all 0.3s ease;
+    padding: 2rem !important;
+    box-shadow: 
+      inset 0 0 30px rgba(34, 197, 94, 0.2), /* Subtle inner green glow */
+      0 0 40px rgba(34, 197, 94, 0.4); /* Outer neon halo */
+    transition: all 0.4s ease;
   }
 
-  /* Subtle neon halo */
+  /* Thick neon green border/frame with multi-layer glow */
   .score-card::before {
     content: '';
     position: absolute;
-    top: -2px; left: -2px; right: -2px; bottom: -2px;
-    background: linear-gradient(45deg, #22c55e, #3b82f6, #ec4899, #f97316);
-    border-radius: inherit;
+    top: -8px; left: -8px; right: -8px; bottom: -8px;
+    border: 8px solid #22c55e; /* Bright green neon core */
+    border-radius: 3rem;
+    box-shadow: 
+      0 0 20px #22c55e,
+      0 0 40px #22c55e,
+      0 0 60px rgba(34, 197, 94, 0.6),
+      inset 0 0 30px rgba(34, 197, 94, 0.4); /* Inner bevel glow */
     z-index: -1;
-    opacity: 0;
-    filter: blur(16px);
-    transition: opacity 0.5s ease;
-    animation: subtle-glow 8s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* Hover intensification */
+  .score-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 
+      inset 0 0 40px rgba(34, 197, 94, 0.3),
+      0 0 60px rgba(34, 197, 94, 0.6);
   }
 
   .score-card:hover::before {
-    opacity: 0.5; /* less intense */
+    box-shadow: 
+      0 0 30px #22c55e,
+      0 0 60px #22c55e,
+      0 0 90px rgba(34, 197, 94, 0.8),
+      inset 0 0 40px rgba(34, 197, 94, 0.5);
   }
 
-  /* Gentle hover lift */
-  .score-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
-  }
+  /* Restore grade-based colored borders if your JS adds them (optional fallback) */
+  .score-card.border-red-500 { border: 4px solid #ef4444 !important; }
+  .score-card.border-orange-500 { border: 4px solid #f97316 !important; }
+  .score-card.border-green-500 { border: 4px solid #22c55e !important; }
 
-  /* Restore grade-based colored borders */
-  .score-card.border-red-500 { border: 3px solid #ef4444 !important; }
-  .score-card.border-orange-500 { border: 3px solid #f97316 !important; }
-  .score-card.border-green-500 { border: 3px solid #22c55e !important; }
-
-  /* Labels */
+  /* Glowing green labels */
   .score-card .label,
-  .score-card > div:last-child {
-    color: #34d399 !important;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  .score-card > div:last-child { /* Overall Score text */
+    color: #a7f3d0 !important; /* Light neon green */
+    text-shadow: 
+      0 0 10px #22c55e,
+      0 0 20px #22c55e;
+    font-weight: bold;
   }
 
-  /* Keep dynamic score number colors (no override) */
+  /* Enhance progress ring glow (builds on your existing black outline) */
+  .score-card .progress {
+    filter: drop-shadow(0 0 8px currentColor); /* Neon glow following dynamic color */
+  }
+
+  /* Button and details */
   .score-card button {
     color: white !important;
   }
@@ -364,6 +380,7 @@ body { transition: background-color 0.3s ease; }
   .score-card .details {
     color: #d1d5db !important;
   }
+</style>
   
   
   
