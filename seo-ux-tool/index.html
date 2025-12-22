@@ -25,11 +25,11 @@
 </head>
 <body class="min-h-screen">
 
-<header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5 print:border-none print:bg-white dark:print:bg-white print:shadow-none">
-  <div class="container mx-auto px-6 py-4 flex justify-between items-center print:px-0 print:py-6 print:justify-center">
-    <a href="/" class="flex items-center gap-4 print:gap-3">
-      <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl print:w-12">
-      <p class="text-[1.35rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent print:text-black print:bg-none print:text-3xl">
+<header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5 print:static print:bg-white print:border-none print:shadow-none">
+  <div class="container mx-auto px-6 py-4 flex justify-between items-center print:justify-center print:px-12 print:py-10">
+    <a href="/" class="flex items-center gap-4">
+      <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl print:w-20">
+      <p class="text-[1.35rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent print:text-black print:bg-none print:text-6xl print:font-black">
         Traffic Torch
       </p>
     </a>
@@ -45,16 +45,16 @@
       <a href="/news.html" class="hover:text-orange-400 transition">News</a>
     </nav>
 
-    <!-- Mobile Controls - hidden on print -->
+    <!-- Mobile hamburger & theme toggle - hidden on print -->
     <div class="flex items-center gap-4 print:hidden">
-      <button id="menuToggle" class="md:hidden text-3xl relative left-2 -top-1">☰</button>
-      <button id="themeToggle" class="py-1 bg-white/10 rounded-full hover:bg-white/20 transition">
+      <button id="menuToggle" class="md:hidden text-3xl print:hidden">☰</button>
+      <button id="themeToggle" class="py-1 bg-white/10 rounded-full hover:bg-white/20 transition print:hidden">
         🌙
       </button>
     </div>
   </div>
 
-  <!-- Mobile Menu Dropdown - hidden on print -->
+  <!-- Mobile Menu - force hidden on print even if JS opens it -->
   <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10 print:hidden">
     <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
       <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🛡️</a>

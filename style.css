@@ -312,46 +312,42 @@ main {
 
 /* Print styles – hide both menus reliably + clean layout */
 @media print {
-  /* Hide desktop sidebar */
-  aside,
-  #sidebar,
-  .sidebar,
-  .main-navigation,
-  nav {
+  #mobileMenu {
     display: none !important;
   }
 
-  /* Hide mobile menu/hamburger */
-  #mobile-menu,
-  .mobile-menu,
-  .mobile-nav,
-  .hamburger,
-  [class*="mobile"] nav {
+  /* Hide hamburger button and theme toggle */
+  #menuToggle,
+  #themeToggle {
     display: none !important;
   }
 
-  /* Expand content to full page */
-  main,
-  .content,
-  #results,
-  .report {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding: 0 !important;
-    max-width: 100% !important;
-    width: 100% !important;
+  /* Hide desktop navigation */
+  header nav {
+    display: none !important;
   }
 
-  /* Optional: better print readability */
+  /* Clean centered header */
+  header > div {
+    justify-content: center !important;
+    padding: 4rem 0 !important;
+  }
+
+  /* Full clean page */
+  .container {
+    max-width: none !important;
+    padding: 0 6rem !important;
+  }
+
   body {
     background: white !important;
     color: black !important;
   }
 
-  /* Hide any interactive elements */
-  button,
-  .controls,
-  #print-button { /* if you have custom print btn, keep it */
-    display: none !important;
+  .backdrop-blur-xl,
+  .bg-white/5,
+  .dark\:bg-black\/40 {
+    background: white !important;
+    backdrop-filter: none !important;
   }
 }
