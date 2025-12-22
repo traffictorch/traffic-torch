@@ -157,6 +157,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   
+
+
+
   
 
   form.addEventListener('submit', async e => {
@@ -169,19 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Please enter a URL');
       return;
     }
-
-    results.classList.add('hidden');
-    overallContainer.classList.add('hidden');
-    priorityFixes.classList.add('hidden');
-    if (forecastModule) forecastModule.classList.add('hidden');
     progressContainer.classList.remove('hidden');
     progressText.textContent = 'Fetching page...';
-
     const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
-
-
-
-
 
     try {
       const res = await fetch(proxyUrl);
@@ -289,9 +282,12 @@ document.addEventListener('DOMContentLoaded', () => {
       forecastHow.textContent = how;
       forecastWhy.textContent = why;
 
-      // Smooth reveal of all results
+      // Smooth reveal of ALL results
       progressContainer.classList.add('hidden');
       resultsWrapper.classList.remove('hidden');
+
+      // Reveal radar title (the only inner hidden element left)
+      document.getElementById('radar-title').classList.remove('hidden');
 
       // Animation
       resultsWrapper.style.opacity = '0';
@@ -400,9 +396,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           }
         });
-        // Reveal radar title and container
-        document.getElementById('radar-title').classList.remove('hidden');
-        document.getElementById('radar-container').classList.remove('hidden');
       }
 
       // Mobile Preview
@@ -462,7 +455,6 @@ document.addEventListener('DOMContentLoaded', () => {
         popup.querySelectorAll('p')[2].innerHTML = `<span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}`;
         popup.style.display = 'flex';
       }
-      document.getElementById('mobile-preview').classList.remove('hidden');
 
       if (savePdfBtn) savePdfBtn.classList.remove('hidden');
 
@@ -472,7 +464,6 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error(err);
     }
   });
-
 
 
 
