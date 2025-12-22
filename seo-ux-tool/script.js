@@ -179,12 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
 
-
-
-
-
-
-        try {
+       try {
       const res = await fetch(proxyUrl);
       if (!res.ok) throw new Error('Network response was not ok');
       const html = await res.text();
@@ -285,10 +280,18 @@ document.addEventListener('DOMContentLoaded', () => {
       forecastHow.textContent = how;
       forecastWhy.textContent = why;
 
-      // NEW: Smooth reveal of all results
+      // FIXED: Smooth reveal of ALL results
       const resultsWrapper = document.getElementById('results-wrapper');
       progressContainer.classList.add('hidden');
       resultsWrapper.classList.remove('hidden');
+
+      // Ensure inner hidden elements show (radar title, mobile preview, buttons)
+      document.getElementById('radar-title').classList.remove('hidden');
+      document.getElementById('mobile-preview').classList.remove('hidden');
+      if (savePdfBtn) savePdfBtn.classList.remove('hidden');
+      document.getElementById('copy-badge').classList.remove('hidden');
+
+      // Smooth animation
       resultsWrapper.style.opacity = '0';
       resultsWrapper.style.transform = 'translateY(30px)';
       resultsWrapper.style.transition = 'opacity 1s ease, transform 1s ease';
@@ -298,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       resultsWrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-      // 360° Health Radar Chart (desktop only) - runs inside wrapper
+      // 360° Health Radar Chart (desktop only)
       if (window.innerWidth >= 768) {
         const radarCtx = document.getElementById('health-radar').getContext('2d');
         const isDark = document.documentElement.classList.contains('dark');
@@ -392,7 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      // Mobile Preview - runs inside wrapper
+      // Mobile Preview
       const previewIframe = document.getElementById('preview-iframe');
       const phoneFrame = document.getElementById('phone-frame');
       const viewToggle = document.getElementById('view-toggle');
@@ -450,8 +453,98 @@ document.addEventListener('DOMContentLoaded', () => {
         popup.style.display = 'flex';
       }
 
-      if (savePdfBtn) savePdfBtn.classList.remove('hidden');
-      document.getElementById('copy-badge').classList.remove('hidden');
+    } catch (err) {
+      progressContainer.classList.add('hidden');
+      alert('Failed to analyze — try another site or check the URL');
+      console.error(err);
+    }
+  });
+      
+      
+      
+      
+      
+      
+      // Mobile Preview
+      const previewIframe = document.getElementById('preview-iframe');
+      const phoneFrame = document.getElementById('phone-frame');
+      const viewToggle = document.getElementById('view-toggle');
+      const deviceToggle = document.getElementById('device-toggle');
+      const orientationToggle = document.getElementById('orientation-toggle');
+      const highlightOverlays = document.getElementById('highlight-overlays');
+
+      previewIframe.src = url;
+
+      // Toggles
+      let isMobile = true;
+      let isIphone = true;
+      let isPortrait = true;
+
+      viewToggle.addEventListener('click', () => {
+        isMobile = !isMobile;
+        phoneFrame.style.width = isMobile ? '375px' : '100%';
+        phoneFrame.style.height = isMobile ? '812px' : '800px';
+        viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
+      });
+
+      deviceToggle.addEventListener('click', () => {
+        isIphone = !isIphone;
+        phoneFrame.classList.toggle('iphone-frame', isIphone);
+        phoneFrame.classList.toggle('android-frame', !isIphone);
+        deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
+      });
+
+
+      // Simple highlights from mobile issues
+      const mobileIssues = allIssues.filter(i => ['Mobile & PWA', 'Performance', 'Accessibility'].includes(i.module));
+      mobileIssues.slice(0, 3).forEach((issue, idx) => {
+        const hl = document.createElement('div');
+        hl.classList.add('issue-highlight');
+        hl.style.top = `${20 + idx * 25}%`;
+        hl.style.left = '5%';
+        hl.style.width = '90%';
+        hl.style.height = '20%';
+        hl.addEventListener('click', () => {
+          showPopup(issue);
+        });
+        highlightOverlays.appendChild(hl);
+      });
+
+      function showPopup(issue) {
+        let popup = document.getElementById('highlight-popup');
+        if (!popup) {
+          popup = document.createElement('div');
+          popup.id = 'highlight-popup';
+          popup.innerHTML = `
+            <div class="popup-content relative">
+              <span class="close">&times;</span>
+              <h3 class="text-2xl font-bold mb-4">${issue.issue}</h3>
+              <p class="mb-4"><span class="font-bold text-blue-300">What is it?</span><br>${issue.what}</p>
+              <p class="mb-4"><span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}</p>
+              <p><span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}</p>
+            </div>
+          `;
+          document.body.appendChild(popup);
+          popup.querySelector('.close').addEventListener('click', () => popup.style.display = 'none');
+        }
+        popup.querySelector('h3').textContent = issue.issue;
+        popup.querySelectorAll('p')[0].innerHTML = `<span class="font-bold text-blue-300">What is it?</span><br>${issue.what}`;
+        popup.querySelectorAll('p')[1].innerHTML = `<span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}`;
+        popup.querySelectorAll('p')[2].innerHTML = `<span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}`;
+        popup.style.display = 'flex';
+      }
+
+      document.getElementById('mobile-preview').classList.remove('hidden');
+      
+      
+      
+     
+     
+         if (savePdfBtn) savePdfBtn.classList.remove('hidden');
+     
+     
+      
+      
 
     } catch (err) {
       progressContainer.classList.add('hidden');
