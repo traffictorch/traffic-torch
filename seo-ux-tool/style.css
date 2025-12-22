@@ -305,29 +305,64 @@ body { transition: background-color 0.3s ease; }
 
 
 
-/* Glowing Black Module Cards */
-@keyframes glow {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
-}
-.animate-glow { animation: glow 4s ease-in-out infinite; }
 
-  .force-dark-card {
-    background-color: #111827 !important; /* Tailwind gray-900 = very dark gray/black */
+  /* Epic Glowing Black Module Cards */
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 0.9; }
+  }
+
+  .score-card {
+    position: relative;
+    background-color: #0f172a !important; /* slate-900, deeper black */
+    border-radius: 1.5rem !important;
+    overflow: hidden;
+    transition: all 0.4s ease;
+  }
+
+  /* Neon glow halo (no extra HTML needed) */
+  .score-card::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    background: linear-gradient(45deg, #22c55e, #3b82f6, #ec4899, #f97316);
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0;
+    filter: blur(20px);
+    transition: opacity 0.6s ease;
+    animation: glow-pulse 6s ease-in-out infinite;
+  }
+
+  .score-card:hover::before {
+    opacity: 0.8;
+  }
+
+  /* Subtle inner glow on hover */
+  .score-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(34, 197, 94, 0.3);
+  }
+
+  /* Restore original colored borders (your JS adds these classes) */
+  .score-card.border-red-500 { border: 4px solid #ef4444 !important; }
+  .score-card.border-orange-500 { border: 4px solid #f97316 !important; }
+  .score-card.border-green-500 { border: 4px solid #22c55e !important; }
+
+  /* Bright labels and text */
+  .score-card .label,
+  .score-card > div:last-child {
+    color: #34d399 !important; /* green-400 */
+    text-shadow: 0 2px 10px rgba(34, 197, 94, 0.4);
+  }
+
+  /* Restore original dynamic score number colors - NO override */
+  /* Removed any .number fill/color override */
+
+  .score-card button {
     color: white !important;
-    border: none !important;
   }
-  .force-dark-card .label,
-  .force-dark-card > div:last-child { /* targets Overall Score text */
-    color: #34d399 !important; /* green-400 for labels */
-  }
-  .force-dark-card .number {
-    fill: white !important;
-    color: white !important;
-  }
-  .force-dark-card button {
-    color: white !important;
-  }
-  .force-dark-card .details {
-    color: #d1d5db !important; /* gray-300 for issue text */
+
+  .score-card .details {
+    color: #d1d5db !important;
   }
