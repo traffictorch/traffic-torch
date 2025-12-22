@@ -179,12 +179,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
 
-    try {
+
+
+
+
+
+        try {
       const res = await fetch(proxyUrl);
       if (!res.ok) throw new Error('Network response was not ok');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
-
       const modules = [
         { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
         { id: 'mobile', name: 'Mobile & PWA', fn: analyzeMobile },
@@ -195,19 +199,15 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'security', name: 'Security', fn: analyzeSecurity },
         { id: 'indexability', name: 'Indexability', fn: analyzeIndexability }
       ];
-
       const scores = [];
       const allIssues = [];
-
       for (const mod of modules) {
         progressText.textContent = `Analyzing ${mod.name}...`;
         const analysisUrl = mod.id === 'security' ? originalInput : url;
         const result = mod.fn(html, doc, analysisUrl);
-
         scores.push(result.score);
         updateScore(`${mod.id}-score`, result.score);
         populateIssues(`${mod.id}-issues`, result.issues);
-
         result.issues.forEach(iss => {
           allIssues.push({
             ...iss,
@@ -215,17 +215,13 @@ document.addEventListener('DOMContentLoaded', () => {
             impact: 100 - result.score
           });
         });
-
         await new Promise(r => setTimeout(r, 300));
       }
-
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       updateScore('overall-score', overallScore);
-
       // Top 3 Priority Fixes
       allIssues.sort((a, b) => b.impact - a.impact);
       const top3 = allIssues.slice(0, 3);
-
       ['1', '2', '3'].forEach((num, idx) => {
         const issue = top3[idx];
         const prefix = `priority${num}`;
@@ -241,21 +237,17 @@ document.addEventListener('DOMContentLoaded', () => {
           document.getElementById(`${prefix}-why`).textContent = 'Strong performance supports high rankings and great user experience.';
         }
       });
-
-
-      // Predictive Rank Forecast (no circle, big gain text)
+      // Predictive Rank Forecast
       const forecastTitle = document.getElementById('forecast-title');
       const forecastGain = document.getElementById('forecast-gain');
       const forecastWhat = document.getElementById('forecast-what');
       const forecastHow = document.getElementById('forecast-how');
       const forecastWhy = document.getElementById('forecast-why');
-
       let title = '';
       let gain = '';
       let what = '';
       let how = '';
       let why = '';
-
       if (overallScore >= 90) {
         title = 'Dominant Top 3 Position';
         gain = '+0–10% potential traffic gain';
@@ -287,173 +279,140 @@ document.addEventListener('DOMContentLoaded', () => {
         how = 'Start with the highest-impact fixes shown above.';
         why = 'Turning around low-scoring pages often yields the biggest traffic gains.';
       }
-
       forecastTitle.textContent = title;
       forecastGain.textContent = gain;
       forecastWhat.textContent = what;
       forecastHow.textContent = how;
       forecastWhy.textContent = why;
 
-      // Show all result sections
+      // NEW: Smooth reveal of all results
+      const resultsWrapper = document.getElementById('results-wrapper');
       progressContainer.classList.add('hidden');
-      overallContainer.classList.remove('hidden');
-      priorityFixes.classList.remove('hidden');
-      forecastModule.classList.remove('hidden');
-      results.classList.remove('hidden');
-      
-     if (savePdfBtn) savePdfBtn.classList.remove('hidden');
-     document.getElementById('copy-badge').classList.remove('hidden');
-     
-     
-     
-     
-	// 360° Health Radar Chart (desktop only)
-if (window.innerWidth >= 768) {
-  const radarCtx = document.getElementById('health-radar').getContext('2d');
-  const isDark = document.documentElement.classList.contains('dark');
+      resultsWrapper.classList.remove('hidden');
+      resultsWrapper.style.opacity = '0';
+      resultsWrapper.style.transform = 'translateY(30px)';
+      resultsWrapper.style.transition = 'opacity 1s ease, transform 1s ease';
+      requestAnimationFrame(() => {
+        resultsWrapper.style.opacity = '1';
+        resultsWrapper.style.transform = 'translateY(0)';
+      });
+      resultsWrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-  // Improved visibility in dark mode
-  const gridColor = isDark ? 'rgba(156, 163, 175, 0.5)' : 'rgba(0, 0, 0, 0.2)'; // gray-400 with 50% opacity dark
-  const labelColor = '#9ca3af'; // gray-400 consistent
-  const lineColor = '#9ca3af'; // gray-400 line
-  const fillColor = isDark ? 'rgba(156, 163, 175, 0.25)' : 'rgba(156, 163, 175, 0.1)'; // more visible fill in dark
-
-  const chart = new Chart(radarCtx, {
-    type: 'radar',
-    data: {
-      labels: ['On-Page SEO', 'Mobile & PWA', 'Performance', 'Accessibility', 'Content Quality', 'UX Design', 'Security', 'Indexability'],
-      datasets: [{
-        label: 'Health Score',
-        data: scores,
-        backgroundColor: fillColor,
-        borderColor: lineColor,
-        borderWidth: 4, // thicker for visibility
-        pointRadius: 9,
-        pointHoverRadius: 14,
-        pointBackgroundColor: (ctx) => {
-          const v = ctx.parsed?.r ?? 0;
-          if (v < 60) return '#f87171';     // red
-          if (v < 80) return '#fb923c';     // orange
-          return '#34d399';                 // green
-        },
-        pointHoverBackgroundColor: (ctx) => {
-          const v = ctx.parsed?.r ?? 0;
-          if (v < 60) return '#ef4444';
-          if (v < 80) return '#f97316';
-          return '#10b981';
-        }
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: {
-        intersect: true,
-        mode: 'point'
-      },
-      scales: {
-        r: {
-          beginAtZero: true,
-          min: 0,
-          max: 100,
-          ticks: {
-            stepSize: 20,
-            color: labelColor,
-            backdropColor: 'transparent',
-            callback: (value) => value
-          },
-          grid: { color: gridColor },
-          angleLines: { color: gridColor },
-          pointLabels: {
-            color: labelColor,
-            font: { size: 14, weight: 'bold' }
-          }
-        }
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            title: (ctx) => ctx[0].label,
-            label: (ctx) => {
-              const value = Math.round(ctx.parsed.r);
-              let grade = '';
-              if (value < 20) grade = 'Very Poor';
-              else if (value < 40) grade = 'Poor';
-              else if (value < 60) grade = 'Fair (major issues)';
-              else if (value < 80) grade = 'Good (room for improvement)';
-              else grade = 'Excellent';
-
-              const metricKey = ctx.label; // exact match to your module keys
-
-              // Pull real fixes from your existing modules data (adjust object/name if needed, e.g. reports[metricKey], details[metricKey])
-              // Assuming 'modules' is a global object with { 'On-Page SEO': { fixSummary: 'Bullet1\nBullet2' }, ... }
-              const fixes = (typeof modules !== 'undefined' && modules[metricKey]?.fixSummary) 
-                ? modules[metricKey].fixSummary.split('\n') 
-                : ['Click "Show Fixes" in the module below for detailed recommendations'];
-
-              const lines = [
-                `Score: ${value}/100`,
-                `Grade: ${grade}`,
-                '' // empty line
-              ];
-
-              if (value < 100) {
-                lines.push('How to Improve:');
-                lines.push(...fixes);
-              } else {
-                lines.push('Strong performance – keep it up!');
+      // 360° Health Radar Chart (desktop only) - runs inside wrapper
+      if (window.innerWidth >= 768) {
+        const radarCtx = document.getElementById('health-radar').getContext('2d');
+        const isDark = document.documentElement.classList.contains('dark');
+        const gridColor = isDark ? 'rgba(156, 163, 175, 0.5)' : 'rgba(0, 0, 0, 0.2)';
+        const labelColor = '#9ca3af';
+        const lineColor = '#9ca3af';
+        const fillColor = isDark ? 'rgba(156, 163, 175, 0.25)' : 'rgba(156, 163, 175, 0.1)';
+        const chart = new Chart(radarCtx, {
+          type: 'radar',
+          data: {
+            labels: ['On-Page SEO', 'Mobile & PWA', 'Performance', 'Accessibility', 'Content Quality', 'UX Design', 'Security', 'Indexability'],
+            datasets: [{
+              label: 'Health Score',
+              data: scores,
+              backgroundColor: fillColor,
+              borderColor: lineColor,
+              borderWidth: 4,
+              pointRadius: 9,
+              pointHoverRadius: 14,
+              pointBackgroundColor: (ctx) => {
+                const v = ctx.parsed?.r ?? 0;
+                if (v < 60) return '#f87171';
+                if (v < 80) return '#fb923c';
+                return '#34d399';
+              },
+              pointHoverBackgroundColor: (ctx) => {
+                const v = ctx.parsed?.r ?? 0;
+                if (v < 60) return '#ef4444';
+                if (v < 80) return '#f97316';
+                return '#10b981';
               }
-
-              return lines;
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { intersect: true, mode: 'point' },
+            scales: {
+              r: {
+                beginAtZero: true,
+                min: 0,
+                max: 100,
+                ticks: {
+                  stepSize: 20,
+                  color: labelColor,
+                  backdropColor: 'transparent',
+                  callback: (value) => value
+                },
+                grid: { color: gridColor },
+                angleLines: { color: gridColor },
+                pointLabels: {
+                  color: labelColor,
+                  font: { size: 14, weight: 'bold' }
+                }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  title: (ctx) => ctx[0].label,
+                  label: (ctx) => {
+                    const value = Math.round(ctx.parsed.r);
+                    let grade = '';
+                    if (value < 20) grade = 'Very Poor';
+                    else if (value < 40) grade = 'Poor';
+                    else if (value < 60) grade = 'Fair (major issues)';
+                    else if (value < 80) grade = 'Good (room for improvement)';
+                    else grade = 'Excellent';
+                    const metricKey = ctx.label;
+                    const fixes = (typeof modules !== 'undefined' && modules[metricKey]?.fixSummary)
+                      ? modules[metricKey].fixSummary.split('\n')
+                      : ['Click "Show Fixes" in the module below for detailed recommendations'];
+                    const lines = [
+                      `Score: ${value}/100`,
+                      `Grade: ${grade}`,
+                      ''
+                    ];
+                    if (value < 100) {
+                      lines.push('How to Improve:');
+                      lines.push(...fixes);
+                    } else {
+                      lines.push('Strong performance – keep it up!');
+                    }
+                    return lines;
+                  }
+                }
+              }
             }
           }
-        }
+        });
       }
-    }
-  });
 
-  // Reveal only after chart renders
-  document.getElementById('radar-title').classList.remove('hidden');
-  document.getElementById('radar-container').classList.remove('hidden');
-}
-      
-      
-      
-      
-      
-      
-      // Mobile Preview
+      // Mobile Preview - runs inside wrapper
       const previewIframe = document.getElementById('preview-iframe');
       const phoneFrame = document.getElementById('phone-frame');
       const viewToggle = document.getElementById('view-toggle');
       const deviceToggle = document.getElementById('device-toggle');
-      const orientationToggle = document.getElementById('orientation-toggle');
       const highlightOverlays = document.getElementById('highlight-overlays');
-
       previewIframe.src = url;
-
-      // Toggles
       let isMobile = true;
       let isIphone = true;
-      let isPortrait = true;
-
       viewToggle.addEventListener('click', () => {
         isMobile = !isMobile;
         phoneFrame.style.width = isMobile ? '375px' : '100%';
         phoneFrame.style.height = isMobile ? '812px' : '800px';
         viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
       });
-
       deviceToggle.addEventListener('click', () => {
         isIphone = !isIphone;
         phoneFrame.classList.toggle('iphone-frame', isIphone);
         phoneFrame.classList.toggle('android-frame', !isIphone);
         deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
       });
-
-
-      // Simple highlights from mobile issues
       const mobileIssues = allIssues.filter(i => ['Mobile & PWA', 'Performance', 'Accessibility'].includes(i.module));
       mobileIssues.slice(0, 3).forEach((issue, idx) => {
         const hl = document.createElement('div');
@@ -467,7 +426,6 @@ if (window.innerWidth >= 768) {
         });
         highlightOverlays.appendChild(hl);
       });
-
       function showPopup(issue) {
         let popup = document.getElementById('highlight-popup');
         if (!popup) {
@@ -492,17 +450,8 @@ if (window.innerWidth >= 768) {
         popup.style.display = 'flex';
       }
 
-      document.getElementById('mobile-preview').classList.remove('hidden');
-      
-      
-      
-     
-     
-         if (savePdfBtn) savePdfBtn.classList.remove('hidden');
-     
-     
-      
-      
+      if (savePdfBtn) savePdfBtn.classList.remove('hidden');
+      document.getElementById('copy-badge').classList.remove('hidden');
 
     } catch (err) {
       progressContainer.classList.add('hidden');
