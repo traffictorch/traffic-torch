@@ -285,8 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
       progressContainer.classList.add('hidden');
       resultsWrapper.classList.remove('hidden');
       document.getElementById('radar-title').classList.remove('hidden');
-
-      // Show buttons
       if (savePdfBtn) savePdfBtn.classList.remove('hidden');
       document.getElementById('copy-badge').classList.remove('hidden');
 
@@ -300,162 +298,170 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       resultsWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-      // 360° Health Radar Chart (desktop only)
-      if (window.innerWidth >= 768) {
-        const radarCtx = document.getElementById('health-radar').getContext('2d');
-        const isDark = document.documentElement.classList.contains('dark');
-        const gridColor = isDark ? 'rgba(156, 163, 175, 0.5)' : 'rgba(0, 0, 0, 0.2)';
-        const labelColor = '#9ca3af';
-        const lineColor = '#9ca3af';
-        const fillColor = isDark ? 'rgba(156, 163, 175, 0.25)' : 'rgba(156, 163, 175, 0.1)';
-        const chart = new Chart(radarCtx, {
-          type: 'radar',
-          data: {
-            labels: ['On-Page SEO', 'Mobile & PWA', 'Performance', 'Accessibility', 'Content Quality', 'UX Design', 'Security', 'Indexability'],
-            datasets: [{
-              label: 'Health Score',
-              data: scores,
-              backgroundColor: fillColor,
-              borderColor: lineColor,
-              borderWidth: 4,
-              pointRadius: 9,
-              pointHoverRadius: 14,
-              pointBackgroundColor: (ctx) => {
-                const v = ctx.parsed?.r ?? 0;
-                if (v < 60) return '#f87171';
-                if (v < 80) return '#fb923c';
-                return '#34d399';
-              },
-              pointHoverBackgroundColor: (ctx) => {
-                const v = ctx.parsed?.r ?? 0;
-                if (v < 60) return '#ef4444';
-                if (v < 80) return '#f97316';
-                return '#10b981';
-              }
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: {
-              intersect: true,
-              mode: 'point'
-            },
-            scales: {
-              r: {
-                beginAtZero: true,
-                min: 0,
-                max: 100,
-                ticks: {
-                  stepSize: 20,
-                  color: labelColor,
-                  backdropColor: 'transparent',
-                  callback: (value) => value
+      // 360° Health Radar Chart (desktop only) - safe
+      try {
+        if (window.innerWidth >= 768) {
+          const radarCtx = document.getElementById('health-radar').getContext('2d');
+          const isDark = document.documentElement.classList.contains('dark');
+          const gridColor = isDark ? 'rgba(156, 163, 175, 0.5)' : 'rgba(0, 0, 0, 0.2)';
+          const labelColor = '#9ca3af';
+          const lineColor = '#9ca3af';
+          const fillColor = isDark ? 'rgba(156, 163, 175, 0.25)' : 'rgba(156, 163, 175, 0.1)';
+          const chart = new Chart(radarCtx, {
+            type: 'radar',
+            data: {
+              labels: ['On-Page SEO', 'Mobile & PWA', 'Performance', 'Accessibility', 'Content Quality', 'UX Design', 'Security', 'Indexability'],
+              datasets: [{
+                label: 'Health Score',
+                data: scores,
+                backgroundColor: fillColor,
+                borderColor: lineColor,
+                borderWidth: 4,
+                pointRadius: 9,
+                pointHoverRadius: 14,
+                pointBackgroundColor: (ctx) => {
+                  const v = ctx.parsed?.r ?? 0;
+                  if (v < 60) return '#f87171';
+                  if (v < 80) return '#fb923c';
+                  return '#34d399';
                 },
-                grid: { color: gridColor },
-                angleLines: { color: gridColor },
-                pointLabels: {
-                  color: labelColor,
-                  font: { size: 14, weight: 'bold' }
+                pointHoverBackgroundColor: (ctx) => {
+                  const v = ctx.parsed?.r ?? 0;
+                  if (v < 60) return '#ef4444';
+                  if (v < 80) return '#f97316';
+                  return '#10b981';
                 }
-              }
+              }]
             },
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                callbacks: {
-                  title: (ctx) => ctx[0].label,
-                  label: (ctx) => {
-                    const value = Math.round(ctx.parsed.r);
-                    let grade = '';
-                    if (value < 20) grade = 'Very Poor';
-                    else if (value < 40) grade = 'Poor';
-                    else if (value < 60) grade = 'Fair (major issues)';
-                    else if (value < 80) grade = 'Good (room for improvement)';
-                    else grade = 'Excellent';
-                    const metricKey = ctx.label;
-                    const fixes = (typeof modules !== 'undefined' && modules[metricKey]?.fixSummary)
-                      ? modules[metricKey].fixSummary.split('\n')
-                      : ['Click "Show Fixes" in the module below for detailed recommendations'];
-                    const lines = [
-                      `Score: ${value}/100`,
-                      `Grade: ${grade}`,
-                      ''
-                    ];
-                    if (value < 100) {
-                      lines.push('How to Improve:');
-                      lines.push(...fixes);
-                    } else {
-                      lines.push('Strong performance – keep it up!');
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              interaction: {
+                intersect: true,
+                mode: 'point'
+              },
+              scales: {
+                r: {
+                  beginAtZero: true,
+                  min: 0,
+                  max: 100,
+                  ticks: {
+                    stepSize: 20,
+                    color: labelColor,
+                    backdropColor: 'transparent',
+                    callback: (value) => value
+                  },
+                  grid: { color: gridColor },
+                  angleLines: { color: gridColor },
+                  pointLabels: {
+                    color: labelColor,
+                    font: { size: 14, weight: 'bold' }
+                  }
+                }
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    title: (ctx) => ctx[0].label,
+                    label: (ctx) => {
+                      const value = Math.round(ctx.parsed.r);
+                      let grade = '';
+                      if (value < 20) grade = 'Very Poor';
+                      else if (value < 40) grade = 'Poor';
+                      else if (value < 60) grade = 'Fair (major issues)';
+                      else if (value < 80) grade = 'Good (room for improvement)';
+                      else grade = 'Excellent';
+                      const metricKey = ctx.label;
+                      const fixes = (typeof modules !== 'undefined' && modules[metricKey]?.fixSummary)
+                        ? modules[metricKey].fixSummary.split('\n')
+                        : ['Click "Show Fixes" in the module below for detailed recommendations'];
+                      const lines = [
+                        `Score: ${value}/100`,
+                        `Grade: ${grade}`,
+                        ''
+                      ];
+                      if (value < 100) {
+                        lines.push('How to Improve:');
+                        lines.push(...fixes);
+                      } else {
+                        lines.push('Strong performance – keep it up!');
+                      }
+                      return lines;
                     }
-                    return lines;
                   }
                 }
               }
             }
-          }
-        });
-      }
-
-      // Mobile Preview
-      const previewIframe = document.getElementById('preview-iframe');
-      const phoneFrame = document.getElementById('phone-frame');
-      const viewToggle = document.getElementById('view-toggle');
-      const deviceToggle = document.getElementById('device-toggle');
-      const highlightOverlays = document.getElementById('highlight-overlays');
-      previewIframe.src = url;
-      let isMobile = true;
-      let isIphone = true;
-      viewToggle.addEventListener('click', () => {
-        isMobile = !isMobile;
-        phoneFrame.style.width = isMobile ? '375px' : '100%';
-        phoneFrame.style.height = isMobile ? '812px' : '800px';
-        viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
-      });
-      deviceToggle.addEventListener('click', () => {
-        isIphone = !isIphone;
-        phoneFrame.classList.toggle('iphone-frame', isIphone);
-        phoneFrame.classList.toggle('android-frame', !isIphone);
-        deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
-      });
-      const mobileIssues = allIssues.filter(i => ['Mobile & PWA', 'Performance', 'Accessibility'].includes(i.module));
-      mobileIssues.slice(0, 3).forEach((issue, idx) => {
-        const hl = document.createElement('div');
-        hl.classList.add('issue-highlight');
-        hl.style.top = `${20 + idx * 25}%`;
-        hl.style.left = '5%';
-        hl.style.width = '90%';
-        hl.style.height = '20%';
-        hl.addEventListener('click', () => {
-          showPopup(issue);
-        });
-        highlightOverlays.appendChild(hl);
-      });
-      function showPopup(issue) {
-        let popup = document.getElementById('highlight-popup');
-        if (!popup) {
-          popup = document.createElement('div');
-          popup.id = 'highlight-popup';
-          popup.innerHTML = `
-            <div class="popup-content relative">
-              <span class="close">&times;</span>
-              <h3 class="text-2xl font-bold mb-4">${issue.issue}</h3>
-              <p class="mb-4"><span class="font-bold text-blue-300">What is it?</span><br>${issue.what}</p>
-              <p class="mb-4"><span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}</p>
-              <p><span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}</p>
-            </div>
-          `;
-          document.body.appendChild(popup);
-          popup.querySelector('.close').addEventListener('click', () => popup.style.display = 'none');
+          });
         }
-        popup.querySelector('h3').textContent = issue.issue;
-        popup.querySelectorAll('p')[0].innerHTML = `<span class="font-bold text-blue-300">What is it?</span><br>${issue.what}`;
-        popup.querySelectorAll('p')[1].innerHTML = `<span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}`;
-        popup.querySelectorAll('p')[2].innerHTML = `<span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}`;
-        popup.style.display = 'flex';
+      } catch (chartErr) {
+        console.warn('Radar chart failed (non-critical)', chartErr);
       }
 
-      // FIXED: Attach "Show Fixes" buttons AFTER results are revealed
+      // Mobile Preview - safe
+      try {
+        const previewIframe = document.getElementById('preview-iframe');
+        const phoneFrame = document.getElementById('phone-frame');
+        const viewToggle = document.getElementById('view-toggle');
+        const deviceToggle = document.getElementById('device-toggle');
+        const highlightOverlays = document.getElementById('highlight-overlays');
+        previewIframe.src = url;
+        let isMobile = true;
+        let isIphone = true;
+        viewToggle.addEventListener('click', () => {
+          isMobile = !isMobile;
+          phoneFrame.style.width = isMobile ? '375px' : '100%';
+          phoneFrame.style.height = isMobile ? '812px' : '800px';
+          viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
+        });
+        deviceToggle.addEventListener('click', () => {
+          isIphone = !isIphone;
+          phoneFrame.classList.toggle('iphone-frame', isIphone);
+          phoneFrame.classList.toggle('android-frame', !isIphone);
+          deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
+        });
+        const mobileIssues = allIssues.filter(i => ['Mobile & PWA', 'Performance', 'Accessibility'].includes(i.module));
+        mobileIssues.slice(0, 3).forEach((issue, idx) => {
+          const hl = document.createElement('div');
+          hl.classList.add('issue-highlight');
+          hl.style.top = `${20 + idx * 25}%`;
+          hl.style.left = '5%';
+          hl.style.width = '90%';
+          hl.style.height = '20%';
+          hl.addEventListener('click', () => {
+            showPopup(issue);
+          });
+          highlightOverlays.appendChild(hl);
+        });
+        function showPopup(issue) {
+          let popup = document.getElementById('highlight-popup');
+          if (!popup) {
+            popup = document.createElement('div');
+            popup.id = 'highlight-popup';
+            popup.innerHTML = `
+              <div class="popup-content relative">
+                <span class="close">&times;</span>
+                <h3 class="text-2xl font-bold mb-4">${issue.issue}</h3>
+                <p class="mb-4"><span class="font-bold text-blue-300">What is it?</span><br>${issue.what}</p>
+                <p class="mb-4"><span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}</p>
+                <p><span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}</p>
+              </div>
+            `;
+            document.body.appendChild(popup);
+            popup.querySelector('.close').addEventListener('click', () => popup.style.display = 'none');
+          }
+          popup.querySelector('h3').textContent = issue.issue;
+          popup.querySelectorAll('p')[0].innerHTML = `<span class="font-bold text-blue-300">What is it?</span><br>${issue.what}`;
+          popup.querySelectorAll('p')[1].innerHTML = `<span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}`;
+          popup.querySelectorAll('p')[2].innerHTML = `<span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}`;
+          popup.style.display = 'flex';
+        }
+      } catch (previewErr) {
+        console.warn('Mobile preview failed (non-critical)', previewErr);
+      }
+
+      // Show Fixes buttons
       document.querySelectorAll('.expand').forEach(b => {
         b.onclick = () => {
           b.nextElementSibling.classList.toggle('hidden');
@@ -464,9 +470,10 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
     } catch (err) {
-      progressContainer.classList.add('hidden');
       alert('Failed to analyze — try another site or check the URL');
       console.error(err);
+    } finally {
+      progressContainer.classList.add('hidden');
     }
   });
 
