@@ -6,27 +6,40 @@ body.light { background: white; color: black; }
 body.dark { background: black; color: white; }
 
 
-/* Fix blog post spacing - only applies to post content */
-.post-content p {
+
+/* Blog post spacing fix - modern readable layout */
+.post p,
+.entry-content p,
+.page-content p,
+.content p {
   margin-bottom: 1.5rem !important;
 }
 
-.post-content h2, .post-content h3, .post-content h4 {
-  margin-top: 2.5rem !important;
+.post h2,
+.post h3,
+.entry-content h2,
+.entry-content h3 {
+  margin-top: 3rem !important;
   margin-bottom: 1rem !important;
 }
 
-.post-content ul, .post-content ol {
+.post ul,
+.post ol,
+.entry-content ul,
+.entry-content ol {
   margin-bottom: 1.5rem !important;
+  padding-left: 1.5rem;
 }
 
-.post-content li {
-  margin-bottom: 0.5rem;
+.post li,
+.entry-content li {
+  margin-bottom: 0.75rem;
 }
 
-.post-content img {
-  margin: 2rem auto !important;
+.post img,
+.entry-content img {
+  margin: 2.5rem auto !important;
   display: block;
   border-radius: 1rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
