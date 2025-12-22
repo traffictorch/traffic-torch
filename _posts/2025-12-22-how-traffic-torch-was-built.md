@@ -33,10 +33,6 @@ Most online SEO tools are slow, invasive, or overly simplistic. We built Traffic
 The tool feels fast and trustworthy because it actually is.
 
 
-![Traffic Torch SEO & UX Analyzer Interface](/images/news/2025-12-22-how-traffic-torch-was-built/seo-ux-analysis-tool-800x333px.webp)
-*The clean, mobile-friendly interface — ready for instant analysis.*
-
-
 ## How It Works Under the Hood
 
 
