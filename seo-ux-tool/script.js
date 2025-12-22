@@ -423,76 +423,107 @@ if (window.innerWidth >= 768) {
       
       
       
-      // Mobile Preview
-      const previewIframe = document.getElementById('preview-iframe');
-      const phoneFrame = document.getElementById('phone-frame');
-      const viewToggle = document.getElementById('view-toggle');
-      const deviceToggle = document.getElementById('device-toggle');
-      const orientationToggle = document.getElementById('orientation-toggle');
-      const highlightOverlays = document.getElementById('highlight-overlays');
+// Mobile Preview with iframe embed check
+const mobilePreviewContainer = document.getElementById('mobile-preview');
+const previewIframe = document.getElementById('preview-iframe');
+const phoneFrame = document.getElementById('phone-frame');
+const viewToggle = document.getElementById('view-toggle');
+const deviceToggle = document.getElementById('device-toggle');
+const highlightOverlays = document.getElementById('highlight-overlays');
+const blockedMessage = document.getElementById('preview-blocked-message');
 
-      previewIframe.src = url;
+async function loadMobilePreview(url) {
+  if (!url || !url.startsWith('http')) return;
 
-      // Toggles
-      let isMobile = true;
-      let isIphone = true;
-      let isPortrait = true;
+  const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`;
 
-      viewToggle.addEventListener('click', () => {
-        isMobile = !isMobile;
-        phoneFrame.style.width = isMobile ? '375px' : '100%';
-        phoneFrame.style.height = isMobile ? '812px' : '800px';
-        viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
-      });
+  let embedAllowed = false;
+  try {
+    const response = await fetch(proxyUrl, { method: 'HEAD' });
 
-      deviceToggle.addEventListener('click', () => {
-        isIphone = !isIphone;
-        phoneFrame.classList.toggle('iphone-frame', isIphone);
-        phoneFrame.classList.toggle('android-frame', !isIphone);
-        deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
-      });
+    const xfo = response.headers.get('x-frame-options');
+    const csp = response.headers.get('content-security-policy') || 
+                response.headers.get('content-security-policy-report-only');
 
+    const blockedByXFO = xfo && /^(deny|sameorigin)$/i.test(xfo.trim());
+    const blockedByCSP = csp && /frame-ancestors[^;]*('none'|none|\bself\b)/i.test(csp);
 
-      // Simple highlights from mobile issues
-      const mobileIssues = allIssues.filter(i => ['Mobile & PWA', 'Performance', 'Accessibility'].includes(i.module));
-      mobileIssues.slice(0, 3).forEach((issue, idx) => {
-        const hl = document.createElement('div');
-        hl.classList.add('issue-highlight');
-        hl.style.top = `${20 + idx * 25}%`;
-        hl.style.left = '5%';
-        hl.style.width = '90%';
-        hl.style.height = '20%';
-        hl.addEventListener('click', () => {
-          showPopup(issue);
-        });
-        highlightOverlays.appendChild(hl);
-      });
+    embedAllowed = !blockedByXFO && !blockedByCSP && response.ok;
+  } catch (err) {
+    // Network error or proxy issue → assume blocked for safety
+    embedAllowed = false;
+  }
 
-      function showPopup(issue) {
-        let popup = document.getElementById('highlight-popup');
-        if (!popup) {
-          popup = document.createElement('div');
-          popup.id = 'highlight-popup';
-          popup.innerHTML = `
-            <div class="popup-content relative">
-              <span class="close">&times;</span>
-              <h3 class="text-2xl font-bold mb-4">${issue.issue}</h3>
-              <p class="mb-4"><span class="font-bold text-blue-300">What is it?</span><br>${issue.what}</p>
-              <p class="mb-4"><span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}</p>
-              <p><span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}</p>
-            </div>
-          `;
-          document.body.appendChild(popup);
-          popup.querySelector('.close').addEventListener('click', () => popup.style.display = 'none');
-        }
-        popup.querySelector('h3').textContent = issue.issue;
-        popup.querySelectorAll('p')[0].innerHTML = `<span class="font-bold text-blue-300">What is it?</span><br>${issue.what}`;
-        popup.querySelectorAll('p')[1].innerHTML = `<span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}`;
-        popup.querySelectorAll('p')[2].innerHTML = `<span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}`;
-        popup.style.display = 'flex';
-      }
+  if (!embedAllowed) {
+    blockedMessage.classList.remove('hidden');
+    mobilePreviewContainer.classList.remove('hidden'); // show with message only
+    return;
+  }
 
-      document.getElementById('mobile-preview').classList.remove('hidden');
+  // Allowed → load iframe and proceed
+  previewIframe.src = url;
+
+  // Toggles
+  let isMobile = true;
+  let isIphone = true;
+
+  viewToggle.addEventListener('click', () => {
+    isMobile = !isMobile;
+    phoneFrame.style.width = isMobile ? '375px' : '100%';
+    phoneFrame.style.height = isMobile ? '812px' : '800px';
+    viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
+  });
+
+  deviceToggle.addEventListener('click', () => {
+    isIphone = !isIphone;
+    phoneFrame.classList.toggle('iphone-frame', isIphone);
+    phoneFrame.classList.toggle('android-frame', !isIphone);
+    deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
+  });
+
+  // Simple highlights from mobile issues
+  const mobileIssues = allIssues.filter(i => ['Mobile & PWA', 'Performance', 'Accessibility'].includes(i.module));
+  mobileIssues.slice(0, 3).forEach((issue, idx) => {
+    const hl = document.createElement('div');
+    hl.classList.add('issue-highlight');
+    hl.style.top = `${20 + idx * 25}%`;
+    hl.style.left = '5%';
+    hl.style.width = '90%';
+    hl.style.height = '20%';
+    hl.addEventListener('click', () => showPopup(issue));
+    highlightOverlays.appendChild(hl);
+  });
+
+  // Existing showPopup function (unchanged)
+  function showPopup(issue) {
+    let popup = document.getElementById('highlight-popup');
+    if (!popup) {
+      popup = document.createElement('div');
+      popup.id = 'highlight-popup';
+      popup.innerHTML = `
+        <div class="popup-content relative">
+          <span class="close">&times;</span>
+          <h3 class="text-2xl font-bold mb-4">${issue.issue}</h3>
+          <p class="mb-4"><span class="font-bold text-blue-300">What is it?</span><br>${issue.what}</p>
+          <p class="mb-4"><span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}</p>
+          <p><span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}</p>
+        </div>
+      `;
+      document.body.appendChild(popup);
+      popup.querySelector('.close').addEventListener('click', () => popup.style.display = 'none');
+    }
+    popup.querySelector('h3').textContent = issue.issue;
+    popup.querySelectorAll('p')[0].innerHTML = `<span class="font-bold text-blue-300">What is it?</span><br>${issue.what}`;
+    popup.querySelectorAll('p')[1].innerHTML = `<span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}`;
+    popup.querySelectorAll('p')[2].innerHTML = `<span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}`;
+    popup.style.display = 'flex';
+  }
+
+  mobilePreviewContainer.classList.remove('hidden');
+}
+
+// Call this after analysis with your tested URL variable (e.g. const url = urlInputValue.trim();)
+loadMobilePreview(url);
       
       
       
