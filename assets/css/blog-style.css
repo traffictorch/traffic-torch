@@ -4,3 +4,29 @@
 }
 body.light { background: white; color: black; }
 body.dark { background: black; color: white; }
+
+
+/* Fix blog post spacing - only applies to post content */
+.post-content p {
+  margin-bottom: 1.5rem !important;
+}
+
+.post-content h2, .post-content h3, .post-content h4 {
+  margin-top: 2.5rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.post-content ul, .post-content ol {
+  margin-bottom: 1.5rem !important;
+}
+
+.post-content li {
+  margin-bottom: 0.5rem;
+}
+
+.post-content img {
+  margin: 2rem auto !important;
+  display: block;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
