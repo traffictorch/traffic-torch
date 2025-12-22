@@ -139,11 +139,12 @@
     <script defer src="https://static.addtoany.com/menu/page.js"></script>
   </div>
 
-  <!-- Blog Post Content Area -->
-  <main class="py-16 bg-gray-50 dark:bg-gray-900">
-    <article class="max-w-4xl mx-auto px-6 prose prose-lg dark:prose-invert">
+<!-- Updated Blog Post Content Area -->
+<main class="py-16 bg-gray-100 dark:bg-gray-950">
+  <article class="max-w-4xl mx-auto px-6">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden p-8 md:p-16 prose prose-lg dark:prose-invert max-w-none">
       <!-- Featured Image -->
-      <img src="/blog/images/traffic-torch-seo-ux-analysis-tool-build/featured.webp" alt="Traffic Torch instant SEO and UX analysis dashboard with radar chart and module scores" class="w-full rounded-xl shadow-2xl mb-12 -mt-24 object-cover h-96">
+      <img src="/blog/images/traffic-torch-seo-ux-analysis-tool-build/featured.webp" alt="Traffic Torch instant SEO and UX analysis dashboard with radar chart and module scores" class="w-full rounded-2xl shadow-xl mb-12 object-cover h-96">
 
       <!-- Post Title -->
       <h1 class="text-5xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
@@ -151,20 +152,22 @@
       </h1>
 
       <!-- Publish Date -->
-      <p class="text-gray-500 dark:text-gray-400 text-lg italic mb-12">
+      <p class="text-gray-600 dark:text-gray-400 text-lg italic mb-12">
         Published on December 23
       </p>
 
-      <!-- Epic Long-Form Content -->
-      <p class="lead text-xl mb-8">At <strong>Traffic Torch</strong>, we set out to revolutionize free SEO and UX auditing by creating a tool that's <em>truly instant, completely private, and deeply educational</em>. No sign-ups, no servers touching your data, no compromises on speed or quality.</p>
+      <!-- Lead Paragraph -->
+      <p class="text-xl mb-8 text-gray-800 dark:text-gray-200 leading-relaxed">
+        At <strong>Traffic Torch</strong>, we set out to revolutionize free SEO and UX auditing by creating a tool that's <em>truly instant, completely private, and deeply educational</em>. No sign-ups, no servers touching your data, no compromises on speed or quality.
+      </p>
 
-      <p>The centerpiece of our site is the <a href="https://traffictorch.net/" class="text-orange-500 hover:underline">instant SEO & UX analyzer</a>: a comprehensive 360° health report featuring eight advanced modules, AI-prioritized fixes, predictive ranking forecasts, and an interactive mobile preview — all executed <strong>entirely in your browser</strong>.</p>
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+        The centerpiece of our site is the <a href="https://traffictorch.net/" class="text-orange-500 hover:underline">instant SEO & UX analyzer</a>: a comprehensive 360° health report featuring eight advanced modules, AI-prioritized fixes, predictive ranking forecasts, and an interactive mobile preview — all executed <strong>entirely in your browser</strong>.
+      </p>
 
-      <h2>The Vision: Building an Instant, Privacy-First, Educational Powerhouse</h2>
-
-      <p>Traditional online SEO tools often fall short: they're slow (server waits), invasive (data uploads), gated (paywalls/sign-ups), or superficial (basic checks only). Traffic Torch flips the script with core principles that define modern web best practices:</p>
-
-      <ul>
+      <h2 class="text-4xl font-bold text-gray-900 dark:text-gray-100 mt-16 mb-8">The Vision: Building an Instant, Privacy-First, Educational Powerhouse</h2>
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed">Traditional online SEO tools often fall short: they're slow (server waits), invasive (data uploads), gated (paywalls/sign-ups), or superficial (basic checks only). Traffic Torch flips the script with core principles that define modern web best practices:</p>
+      <ul class="space-y-4 my-8 text-gray-700 dark:text-gray-300">
         <li><strong>Instant results</strong>: Full professional-grade audit in seconds</li>
         <li><strong>Zero data transmission</strong>: All analysis happens client-side</li>
         <li><strong>No tracking or cookies</strong>: Absolute privacy guaranteed</li>
@@ -172,49 +175,42 @@
         <li><strong>Mobile-first design</strong>: Beautiful, responsive, and touch-friendly on any device</li>
         <li><strong>PWA-ready</strong>: Installable for offline-like feel (manifest included)</li>
       </ul>
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed">This isn't just a tool — it's a demonstration of how powerful, trustworthy web apps can be when built with the latest standards.</p>
 
-      <p>This isn't just a tool — it's a demonstration of how powerful, trustworthy web apps can be when built with the latest standards.</p>
-
-      <figure>
-        <img src="https://www.justinmind.com/wp-content/uploads/2018/12/6-best-practices-for-Dashboard-Design-Justinmind-header.png" alt="Modern clean SEO UX audit dashboard interface with cards and metrics – similar to Traffic Torch's educational layout" class="w-full rounded-xl shadow-lg my-8">
-        <figcaption class="text-center text-gray-500 italic">Clean, modern dashboard design emphasizing clarity and user education (inspired example)</figcaption>
+      <figure class="my-12">
+        <img src="https://cdn.prod.website-files.com/5e593fb060cf877cf875dd1f/647e129b753c0df5ff23cc05_6479341d794b0caa0702742d_software-dashboard-webflow-template.png" alt="Modern dark-mode dashboard with cards and metrics, illustrating clean SEO/UX tool interfaces" class="w-full rounded-2xl shadow-lg">
+        <figcaption class="text-center text-sm text-gray-600 dark:text-gray-400 italic mt-4">Modern dashboard design emphasizing clarity and user education (inspired example)</figcaption>
       </figure>
 
-      <h2>How Traffic Torch Works Under the Hood: Pure Client-Side Magic</h2>
-
-      <p>The entire audit pipeline runs locally in your browser — no backend servers involved:</p>
-
-      <ol>
+      <h2 class="text-4xl font-bold text-gray-900 dark:text-gray-100 mt-16 mb-8">How Traffic Torch Works Under the Hood: Pure Client-Side Magic</h2>
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed">The entire audit pipeline runs locally in your browser — no backend servers involved:</p>
+      <ol class="space-y-4 my-8 text-gray-700 dark:text-gray-300 list-decimal list-inside">
         <li>You enter any public URL</li>
         <li>Page HTML is fetched securely via our <a href="https://cors-proxy.traffictorch.workers.dev/" class="text-orange-500 hover:underline">CORS proxy worker</a></li>
         <li>Content is parsed safely using native <code>DOMParser</code></li>
         <li>Eight specialized analysis modules run concurrently</li>
         <li>Results render with smooth Tailwind animations and Chart.js visuals</li>
       </ol>
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed">No logs. No storage. No third-party analytics. Your data never leaves your device.</p>
 
-      <p>No logs. No storage. No third-party analytics. Your data never leaves your device.</p>
-
-      <figure>
-        <img src="https://www.ionos.com/digitalguide/fileadmin/DigitalGuide/Screenshots_2022/Client-side-rendering-diagram.png" alt="Diagram illustrating client-side processing vs server-side – highlighting Traffic Torch's privacy-first approach" class="w-full rounded-xl shadow-lg my-8">
-        <figcaption class="text-center text-gray-500 italic">Client-side execution ensures maximum privacy and speed</figcaption>
+      <figure class="my-12">
+        <img src="https://images.prismic.io/prismic-main/ZjhQ5EMTzAJOCi_3_SSR.jpeg?auto=format,compress" alt="Diagram comparing client-side rendering (privacy-focused) vs server-side rendering" class="w-full rounded-2xl shadow-lg">
+        <figcaption class="text-center text-sm text-gray-600 dark:text-gray-400 italic mt-4">Client-side execution ensures maximum privacy and speed</figcaption>
       </figure>
 
-      <h2>Standout Features That Make Traffic Torch Next-Level</h2>
+      <h2 class="text-4xl font-bold text-gray-900 dark:text-gray-100 mt-16 mb-8">Standout Features That Make Traffic Torch Next-Level</h2>
 
-      <h3>The Epic 360° Health Radar Chart</h3>
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-6">The Epic 360° Health Radar Chart</h3>
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed">Powered by lightweight Chart.js, this interactive radar instantly visualizes strengths and weaknesses across all eight core metrics.</p>
 
-      <p>Powered by lightweight Chart.js, this interactive radar instantly visualizes strengths and weaknesses across all eight core metrics.</p>
-
-      <figure>
-        <img src="https://ppcexpo.com/blog/wp-content/uploads/2025/07/radar-chart-main.jpeg" alt="Radar chart displaying balanced website performance metrics including SEO, accessibility, UX, and speed" class="w-full rounded-xl shadow-lg my-8">
-        <figcaption class="text-center text-gray-500 italic">360° radar overview: Green = strong, orange = needs work, red = critical</figcaption>
+      <figure class="my-12">
+        <img src="https://www.slidekit.com/wp-content/uploads/2025/08/Dark-Gradient-Radar-Chart-for-PowerPoint-Google-Slides.jpg" alt="Dark-mode radar chart showing balanced performance metrics" class="w-full rounded-2xl shadow-lg">
+        <figcaption class="text-center text-sm text-gray-600 dark:text-gray-400 italic mt-4">360° radar overview: Green = strong, orange = needs work, red = critical</figcaption>
       </figure>
 
-      <h3>Eight Deep-Dive Professional Modules</h3>
-
-      <p>Each module delivers a 0–100 score with detailed, actionable insights:</p>
-
-      <ul>
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-6">Eight Deep-Dive Professional Modules</h3>
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed">Each module delivers a 0–100 score with detailed, actionable insights:</p>
+      <ul class="space-y-4 my-8 text-gray-700 dark:text-gray-300">
         <li><strong>On-Page SEO</strong>: Title, meta, headings, keyword density</li>
         <li><strong>Mobile & PWA Readiness</strong>: Viewport, touch targets, manifest</li>
         <li><strong>Performance</strong>: Load times, resource optimization</li>
@@ -225,29 +221,25 @@
         <li><strong>Indexability</strong>: Robots, sitemap, crawl errors</li>
       </ul>
 
-      <figure>
-        <img src="https://assets.justinmind.com/wp-content/uploads/2020/02/dashboard-layout-hierarchy.png" alt="Detailed module cards with scores, explanations, and AI-generated fix buttons" class="w-full rounded-xl shadow-lg my-8">
-        <figcaption class="text-center text-gray-500 italic">Educational module breakdowns with "Show Fixes" interactivity</figcaption>
+      <figure class="my-12">
+        <img src="https://tailwindflex.com/storage/thumbnails/admin-dashboard-cards/canvas.min.webp?v=1" alt="Tailwind CSS dashboard cards with scores and metrics" class="w-full rounded-2xl shadow-lg">
+        <figcaption class="text-center text-sm text-gray-600 dark:text-gray-400 italic mt-4">Educational module breakdowns with interactive elements</figcaption>
       </figure>
 
-      <h3>Interactive Mobile Preview Frame</h3>
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-6">Interactive Mobile Preview Frame</h3>
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed">See exactly how your site renders on mobile, with highlighted issues and device toggles.</p>
 
-      <p>See exactly how your site renders on mobile, with highlighted issues and device toggles.</p>
-
-      <figure>
-        <img src="https://developer.chrome.com/static/docs/devtools/device-mode/image/the-device-frame-the-nes-4cc890fc88ef7.png" alt="Interactive mobile preview tool showing website inside realistic phone frame" class="w-full rounded-xl shadow-lg my-8">
-        <figcaption class="text-center text-gray-500 italic">Toggle between iPhone/Android views for real mobile UX testing</figcaption>
+      <figure class="my-12">
+        <img src="https://developer.chrome.com/static/docs/devtools/device-mode/image/sensors-45d0ddc6fc3a9.png" alt="Chrome DevTools device mode showing mobile preview frame" class="w-full rounded-2xl shadow-lg">
+        <figcaption class="text-center text-sm text-gray-600 dark:text-gray-400 italic mt-4">Toggle between device views for real mobile UX testing</figcaption>
       </figure>
 
-      <h3>AI-Prioritized Fixes & Predictive Forecasting</h3>
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-6">AI-Prioritized Fixes & Predictive Forecasting</h3>
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed">Top issues get dedicated cards explaining <em>what</em> the problem is, <em>how</em> to fix it, and <em>why</em> it matters. Predictive section forecasts potential traffic/ranking gains post-optimization.</p>
 
-      <p>Top issues get dedicated cards explaining <em>what</em> the problem is, <em>how</em> to fix it, and <em>why</em> it matters. Predictive section forecasts potential traffic/ranking gains post-optimization.</p>
-
-      <h3>Polished Presentation & Tech Stack</h3>
-
-      <p>Built with the latest best practices for speed and accessibility:</p>
-
-      <ul>
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-6">Polished Presentation & Tech Stack</h3>
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed">Built with the latest best practices for speed and accessibility:</p>
+      <ul class="space-y-4 my-8 text-gray-700 dark:text-gray-300">
         <li>HTML5 semantic structure</li>
         <li>Tailwind CSS v3+ for responsive, utility-first styling</li>
         <li>Vanilla JS (ES6+) for lightweight logic</li>
@@ -257,27 +249,24 @@
         <li>PWA manifest for installability</li>
       </ul>
 
-      <figure>
-        <img src="https://tailkits.com/_ipx/_/modernize-3.png" alt="Modern web tech stack featuring Tailwind CSS and Chart.js in a clean dashboard" class="w-full rounded-xl shadow-lg my-8">
-        <figcaption class="text-center text-gray-500 italic">Tailwind + Chart.js powering beautiful, performant visuals</figcaption>
+      <figure class="my-12">
+        <img src="https://redpixelthemes.com/blog/images/4e7889ba-fd43-43a9-a538-72fdfedf08cb.webp" alt="Tailwind CSS admin dashboard with modern cards and layout" class="w-full rounded-2xl shadow-lg">
+        <figcaption class="text-center text-sm text-gray-600 dark:text-gray-400 italic mt-4">Tailwind + modern components powering beautiful, performant visuals</figcaption>
       </figure>
 
-      <p>Everything is open and forkable on GitHub — contributions welcome!</p>
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed">Everything is open and forkable on GitHub — contributions welcome!</p>
 
-      <h2>Ready to Experience the Future of SEO & UX Auditing?</h2>
-
+      <h2 class="text-4xl font-bold text-gray-900 dark:text-gray-100 mt-16 mb-8">Ready to Experience the Future of SEO & UX Auditing?</h2>
       <p class="text-2xl font-bold text-center my-12">
         <a href="https://traffictorch.net/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-full hover:shadow-2xl transition transform hover:scale-105">
           Try Traffic Torch Instant Analyzer Now 🚦
         </a>
       </p>
-
-      <p>We're continuously evolving based on community feedback. Have ideas, suggestions, or spot something to improve? Reach out — we're all ears.</p>
-
-      <p>Thanks for diving deep with us! 🚀</p>
-
-    </article>
-  </main>
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed text-center">We're continuously evolving based on community feedback. Have ideas, suggestions, or spot something to improve? Reach out — we're all ears.</p>
+      <p class="text-center text-lg font-semibold mt-8">Thanks for diving deep with us! 🚀</p>
+    </div>
+  </article>
+</main>
 
   <!-- Tools Grid (kept on every post for education & navigation) -->
   <div class="tools-grid max-w-7xl mx-auto px-6 py-16">
