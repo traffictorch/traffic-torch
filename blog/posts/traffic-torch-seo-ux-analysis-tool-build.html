@@ -146,10 +146,10 @@
   
   
 
-<!-- Fixed Blog Post Content Area (solid backgrounds, works exactly like other pages) -->
-<main class="py-16 bg-gray-50 dark:bg-gray-900">
+<!-- Fixed Blog Post Content Area (glassmorphism like tool page/header) -->
+<main class="py-16 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-sm">
   <article class="max-w-4xl mx-auto px-6">
-    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden p-8 md:p-16 prose prose-lg dark:prose-invert max-w-none">
+    <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden p-8 md:p-16 prose prose-lg dark:prose-invert max-w-none border border-white/10 dark:border-white/5">
       <!-- Featured Image -->
       <img src="/blog/images/traffic-torch-seo-ux-analysis-tool-build/featured.webp" alt="Traffic Torch instant SEO and UX analysis dashboard with radar chart and module scores" class="w-full rounded-2xl shadow-xl mb-12 object-cover h-96">
 
@@ -169,7 +169,7 @@
       </p>
 
       <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-        The centerpiece of our site is the <a href="https://traffictorch.net/" class="text-orange-500 hover:underline">instant SEO & UX analyzer</a>: a comprehensive 360° health report featuring eight advanced modules, AI-prioritized fixes, predictive ranking forecasts, and an interactive mobile preview — all executed <strong>entirely in your browser</strong>.
+        The centerpiece of our site is the <a href="https://traffictorch.net/" class="text-orange-500 dark:text-orange-400 hover:underline">instant SEO & UX analyzer</a>: a comprehensive 360° health report featuring eight advanced modules, AI-prioritized fixes, predictive ranking forecasts, and an interactive mobile preview — all executed <strong>entirely in your browser</strong>.
       </p>
 
       <h2 class="text-4xl font-bold text-gray-900 dark:text-gray-100 mt-16 mb-8">The Vision: Building an Instant, Privacy-First, Educational Powerhouse</h2>
@@ -192,7 +192,7 @@
       <p class="text-gray-700 dark:text-gray-300 leading-relaxed">The entire audit pipeline runs locally in your browser — no backend servers involved:</p>
       <ol class="space-y-4 my-8 text-gray-700 dark:text-gray-300 list-decimal list-inside">
         <li>You enter any public URL</li>
-        <li>Page HTML is fetched securely via our <a href="https://cors-proxy.traffictorch.workers.dev/" class="text-orange-500 hover:underline">CORS proxy worker</a></li>
+        <li>Page HTML is fetched securely via our <a href="https://cors-proxy.traffictorch.workers.dev/" class="text-orange-500 dark:text-orange-400 hover:underline">CORS proxy worker</a></li>
         <li>Content is parsed safely using native <code>DOMParser</code></li>
         <li>Eight specialized analysis modules run concurrently</li>
         <li>Results render with smooth Tailwind animations and Chart.js visuals</li>
