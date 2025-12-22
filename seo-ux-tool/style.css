@@ -325,7 +325,7 @@ body { transition: background-color 0.3s ease; }
     content: '';
     position: absolute;
     top: -2px; left: -2px; right: -2px; bottom: -2px;
-    background: linear-gradient(45deg, #E60000, #FF7800, #2DC937);
+    background: linear-gradient(45deg, #000000);
     border-radius: inherit;
     z-index: -1;
     opacity: 0;
