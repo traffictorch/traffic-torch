@@ -43,3 +43,22 @@ body.dark { background: black; color: white; }
   border-radius: 1rem;
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
+
+
+
+
+.prose p {
+  margin-bottom: 1.75rem !important;
+}
+.prose h2, .prose h3 {
+  margin-top: 3rem !important;
+  margin-bottom: 1.5rem !important;
+}
+.prose ul, .prose ol {
+  margin-bottom: 2rem !important;
+}
+.prose img {
+  margin: 3rem auto !important;
+  border-radius: 1rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
