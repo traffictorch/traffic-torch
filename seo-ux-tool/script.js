@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       resultsWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-      // 360° Health Radar Chart (desktop only) - safe
+      // 360° Health Radar Chart (desktop only) - FIXED label order
       try {
         if (window.innerWidth >= 768) {
           const radarCtx = document.getElementById('health-radar').getContext('2d');
@@ -307,10 +307,14 @@ document.addEventListener('DOMContentLoaded', () => {
           const labelColor = '#9ca3af';
           const lineColor = '#9ca3af';
           const fillColor = isDark ? 'rgba(156, 163, 175, 0.25)' : 'rgba(156, 163, 175, 0.1)';
+
+          // FIXED: Labels now dynamically match modules order exactly
+          const radarLabels = modules.map(m => m.name);
+
           const chart = new Chart(radarCtx, {
             type: 'radar',
             data: {
-              labels: ['On-Page SEO', 'Mobile & PWA', 'Performance', 'Accessibility', 'Content Quality', 'UX Design', 'Security', 'Indexability'],
+              labels: radarLabels,
               datasets: [{
                 label: 'Health Score',
                 data: scores,
