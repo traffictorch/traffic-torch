@@ -423,7 +423,7 @@ if (window.innerWidth >= 768) {
       
       
       
-// Mobile Preview with reliable iframe block detection
+		// Mobile Preview with robust slow-site & block detection
 const mobilePreviewContainer = document.getElementById('mobile-preview');
 const previewIframe = document.getElementById('preview-iframe');
 const phoneFrame = document.getElementById('phone-frame');
@@ -444,30 +444,55 @@ function loadMobilePreview(url) {
   blockedMessage.classList.add('hidden');
   mobilePreviewContainer.classList.remove('hidden');
 
-  // Attempt load
-  previewIframe.src = url;
+  // Remove previous listeners to prevent duplicates
+  viewToggle.onclick = null;
+  deviceToggle.onclick = null;
 
-  let loaded = false;
-  let timeoutId;
+  let checkInterval;
+  let timeoutId = setTimeout(() => {
+    clearInterval(checkInterval);
+    showBlocked();
+  }, 12000); // 12 seconds – generous for slow sites
 
-  const checkBlocked = () => {
+  function checkIfBlocked() {
+    let isBlocked = false;
     try {
-      // If accessible (same-origin or allowed), location.href works
-      if (previewIframe.contentWindow.location.href) {
-        loaded = true;
-        clearTimeout(timeoutId);
-        setupPreview();
+      // Try to access content – throws if cross-origin blocked
+      const doc = previewIframe.contentDocument || previewIframe.contentWindow.document;
+      if (!doc || !doc.body || doc.body.innerHTML.trim() === '') {
+        isBlocked = true;
       }
     } catch (e) {
-      // Cross-origin error + blank location = blocked by X-Frame/CSP
-      if (!previewIframe.contentWindow.location.href) {
-        showBlocked();
+      // Any access error when location is blank/about:blank = blocked
+      try {
+        if (!previewIframe.contentWindow.location.href || 
+            previewIframe.contentWindow.location.href === 'about:blank') {
+          isBlocked = true;
+        }
+      } catch (_) {
+        isBlocked = true;
       }
     }
-  };
 
-  const setupPreview = () => {
-    // Toggles
+    if (isBlocked) {
+      clearInterval(checkInterval);
+      clearTimeout(timeoutId);
+      showBlocked();
+    } else {
+      // Success – content accessible
+      clearInterval(checkInterval);
+      clearTimeout(timeoutId);
+      setupPreview();
+    }
+  }
+
+  function showBlocked() {
+    previewIframe.src = ''; // removes browser error screen
+    highlightOverlays.innerHTML = '';
+    blockedMessage.classList.remove('hidden');
+  }
+
+  function setupPreview() {
     let isMobile = true;
     let isIphone = true;
 
@@ -497,32 +522,19 @@ function loadMobilePreview(url) {
       hl.addEventListener('click', () => showPopup(issue));
       highlightOverlays.appendChild(hl);
     });
-  };
-
-  const showBlocked = () => {
-    previewIframe.src = '';
-    highlightOverlays.innerHTML = '';
-    blockedMessage.classList.remove('hidden');
-  };
-
-  // Existing showPopup (unchanged, define outside if needed)
-  function showPopup(issue) {
-    // ... (your existing popup code)
   }
 
-  previewIframe.onload = () => {
-    loaded = true;
-    clearTimeout(timeoutId);
-    checkBlocked(); // Final check
-  };
+  // Your existing showPopup function (keep unchanged)
+  function showPopup(issue) {
+    // ... your popup code
+  }
 
-  // Fallback timeout (5s)
-  timeoutId = setTimeout(() => {
-    if (!loaded) showBlocked();
-  }, 5000);
+  // Start loading and checking
+  previewIframe.src = url;
 
-  // Initial checks
-  checkBlocked();
+  // Check immediately and every 500ms
+  checkIfBlocked();
+  checkInterval = setInterval(checkIfBlocked, 500);
 }
 
 // Call after analysis
