@@ -47,7 +47,7 @@ No server processing. No logs. No storage.
 
 A visual overview of all eight metrics using Chart.js. Instantly spot strengths and weaknesses.
 
-![360° Health Radar Chart](/images/news/360-health-radar-chart-800x408px.webp)
+![360° Health Radar Chart](/images/news/2025-12-22-how-traffic-torch-was-built/360-health-radar-chart-800x408px.webp)
 
 *The radar chart visualizes performance across all modules — green for strong, orange for improvement needed, red for critical issues.*
 
@@ -55,7 +55,7 @@ A visual overview of all eight metrics using Chart.js. Instantly spot strengths 
 
 Each module scores 0–100 and provides actionable insights:
 
-![SEO & UX Analysis Modules](/images/news/seo-ux-analysis-modules-800x482px.webp)
+![SEO & UX Analysis Modules](/images/news/2025-12-22-how-traffic-torch-was-built/seo-ux-analysis-modules-800x482px.webp)
 
 *Detailed module cards with scores, "Show Fixes" buttons, and prioritized recommendations.*
 
@@ -72,7 +72,7 @@ Each module scores 0–100 and provides actionable insights:
 
 See exactly how your page appears on mobile, with clickable highlights for mobile-specific issues.
 
-![Mobile Previewer Tool](/images/news/mobile-previewer-tool-800x440px.webp)
+![Mobile Previewer Tool](/images/news/2025-12-22-how-traffic-torch-was-built/mobile-previewer-tool-800x440px.webp)
 
 *Interactive phone frame with toggle between iPhone/Android and desktop view.*
 
@@ -99,7 +99,9 @@ The tool runs entirely in-browser – no data sent to servers.
 
 Traffic Torch is open for contributions – fork on GitHub to build your own version!
 
-Ready to audit your site? **[Try Traffic Torch now →](https://traffictorch.net/)**
+
+
+Ready to audit your site? **[Test Traffic Torch 🚦 →](https://traffictorch.net/)**
 
 Just enter any URL and see the full report instantly.
 
