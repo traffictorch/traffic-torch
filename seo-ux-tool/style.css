@@ -372,7 +372,7 @@ body { transition: background-color 0.3s ease; }
   .score-card .number {
     paint-order: stroke fill;
     stroke: #ffffff;
-    stroke-width: 4px; /* adjust 4-8px for thickness */
+    stroke-width: 3px; /* adjust 4-8px for thickness */
     stroke-linecap: round;
     stroke-linejoin: round;
     text-shadow: none !important; /* removes any conflicting shadow */
