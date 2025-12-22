@@ -371,8 +371,8 @@ body { transition: background-color 0.3s ease; }
     /* Thin black outline around score numbers for better contrast on colored rings */
   .score-card .number {
     paint-order: stroke fill;
-    stroke: #000000;
-    stroke-width: 6px; /* adjust 4-8px for thickness */
+    stroke: #ffffff;
+    stroke-width: 4px; /* adjust 4-8px for thickness */
     stroke-linecap: round;
     stroke-linejoin: round;
     text-shadow: none !important; /* removes any conflicting shadow */
