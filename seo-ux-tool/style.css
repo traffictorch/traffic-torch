@@ -384,7 +384,7 @@ body { transition: background-color 0.3s ease; }
   .score-card .progress {
     paint-order: stroke fill;
     stroke: #ffffff;
-    stroke-width: 3px; /* adjust 6-10px for thickness - slightly thicker than numbers for visibility */
+    stroke-width: 12px; /* adjust 6-10px for thickness - slightly thicker than numbers for visibility */
     stroke-linecap: round;
     stroke-linejoin: round;
   }
@@ -392,5 +392,5 @@ body { transition: background-color 0.3s ease; }
   /* Optional: Also apply to background circle if you want subtle separation */
   .score-card .bg {
     stroke: #ffffff;
-    stroke-width: 2px;
+    stroke-width: 12px;
   }
