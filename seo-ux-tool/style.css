@@ -306,29 +306,6 @@ body { transition: background-color 0.3s ease; }
 
 
 
-/* Mobile preview popup - better dark mode readability */
-#highlight-popup {
-  @apply fixed inset-0 flex items-center justify-center z-50 bg-black/80;
-}
-
-#highlight-popup .popup-content {
-  @apply bg-gray-900 dark:bg-black border border-gray-700 rounded-3xl p-8 max-w-lg w-full mx-4 shadow-2xl;
-}
-
-#highlight-popup h3 {
-  @apply text-2xl font-bold mb-4 text-orange-400;
-}
-
-#highlight-popup p {
-  @apply mb-4 text-gray-200;
-}
-
-#highlight-popup .close {
-  @apply absolute top-4 right-6 text-4xl text-gray-400 hover:text-orange-400 cursor-pointer transition;
-}
-
-
-
 
   /* Refined Glowing Black Module Cards */
   @keyframes subtle-glow {
@@ -404,17 +381,46 @@ body { transition: background-color 0.3s ease; }
   
   
   
-  /* White outline around score progress circles to match number outline */
+    /* Thin black outline around score progress circles for better contrast and definition */
   .score-card .progress {
     paint-order: stroke fill;
-    stroke: #ffffff !important; /* white to match numbers */
-    stroke-width: 12px !important; /* keeps thickness */
+    stroke: #ffffff;
+    stroke-width: 12px; /* adjust 6-10px for thickness - slightly thicker than numbers for visibility */
     stroke-linecap: round;
     stroke-linejoin: round;
   }
 
-  /* White outline on background circle for consistency */
+  /* Optional: Also apply to background circle if you want subtle separation */
   .score-card .bg {
-    stroke: #ffffff !important; /* white */
-    stroke-width: 12px !important; /* matches progress */
+    stroke: #ffffff;
+    stroke-width: 12px;
   }
+  
+  
+  
+  /* Mobile preview popup - black background in dark mode */
+#highlight-popup {
+  background: rgba(0, 0, 0, 0.9) !important;
+}
+
+#highlight-popup .popup-content {
+  background: #111827 !important; /* gray-900 */
+  color: #f3f4f6 !important; /* gray-100 */
+  border: 1px solid #374151 !important; /* gray-700 */
+}
+
+#highlight-popup h3 {
+  color: #fb923c !important; /* orange-400 */
+}
+
+#highlight-popup p {
+  color: #e5e7eb !important; /* gray-200 */
+}
+
+#highlight-popup .close {
+  color: #9ca3af !important; /* gray-400 */
+}
+
+#highlight-popup .close:hover {
+  color: #fb923c !important;
+}
