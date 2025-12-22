@@ -282,12 +282,16 @@ document.addEventListener('DOMContentLoaded', () => {
       forecastHow.textContent = how;
       forecastWhy.textContent = why;
 
-      // Smooth reveal of ALL results
+      // Smooth reveal of all results
       progressContainer.classList.add('hidden');
       resultsWrapper.classList.remove('hidden');
 
-      // Reveal radar title (the only inner hidden element left)
+      // Reveal radar title (only inner hidden left)
       document.getElementById('radar-title').classList.remove('hidden');
+
+      // Explicitly show buttons (they have hidden class)
+      if (savePdfBtn) savePdfBtn.classList.remove('hidden');
+      document.getElementById('copy-badge').classList.remove('hidden');
 
       // Animation
       resultsWrapper.style.opacity = '0';
@@ -455,8 +459,6 @@ document.addEventListener('DOMContentLoaded', () => {
         popup.querySelectorAll('p')[2].innerHTML = `<span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}`;
         popup.style.display = 'flex';
       }
-
-      if (savePdfBtn) savePdfBtn.classList.remove('hidden');
 
     } catch (err) {
       progressContainer.classList.add('hidden');
