@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "How Traffic Torch Was Built: Behind-the-Scenes of Our Instant SEO & UX Analysis Tool"
-date: 2025-12-22 16:00:00 +0000
-categories: development tool seo ux ai
+title: "How Traffic Torch Was Built: Behind-the-Scenes of Our Instant SEO & UX Tool"
+date: 2025-12-22
+categories: development seo ux ai tools
 ---
 
 # How Traffic Torch Was Built: Behind-the-Scenes of Our Instant SEO & UX Analysis Tool
