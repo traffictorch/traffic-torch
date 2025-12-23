@@ -1025,7 +1025,31 @@
   <script src="/main.js" type="module"></script>
   <script src="/seo-ux-tool/script.js" defer></script>
 
+<script>
+  // Sidebar Collapse
+  const sidebar = document.getElementById('desktopSidebar');
+  const collapseBtn = document.getElementById('sidebarCollapse');
+  const sidebarTitle = document.getElementById('sidebarTitle');
+  const sidebarTexts = document.querySelectorAll('.sidebar-text');
 
+  collapseBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('w-64');
+    sidebar.classList.toggle('w-16');
+    sidebarTitle.classList.toggle('hidden');
+    sidebarTexts.forEach(text => text.classList.toggle('hidden'));
+    collapseBtn.textContent = sidebar.classList.contains('w-16') ? '→' : '←';
+  });
+
+  // Header scrolled effect (optional modern glassmorphism enhancement)
+  const header = document.getElementById('mainHeader');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('bg-white/80', window.scrollY > 20);
+    header.classList.toggle('dark:bg-black/80', window.scrollY > 20);
+    header.classList.toggle('backdrop-blur-2xl', window.scrollY > 20);
+  });
+
+  // Your existing mobile menu toggle and theme toggle code here if needed
+</script>
   
 </body>
 </html>
