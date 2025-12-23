@@ -57,24 +57,30 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// 4. Desktop Sidebar Collapse (safe addition – only runs if elements exist)
+// 4. Desktop Sidebar Collapse - Improved button at bottom
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
+const collapseText = document.getElementById('collapseText');
+const collapseIcon = document.getElementById('collapseIcon');
 
-if (sidebar && collapseBtn) {
+if (sidebar && collapseBtn && collapseText && collapseIcon) {
   collapseBtn.addEventListener('click', () => {
     sidebar.classList.toggle('w-64');
     sidebar.classList.toggle('w-20');
 
+    // Toggle text labels
     document.querySelectorAll('.sidebar-text').forEach(text => {
       text.classList.toggle('hidden');
     });
 
+    // Update button text and icon
     if (sidebar.classList.contains('w-20')) {
-      collapseBtn.textContent = '▶';
+      collapseText.textContent = 'Expand';
+      collapseIcon.textContent = '→';
       collapseBtn.setAttribute('aria-label', 'Expand sidebar');
     } else {
-      collapseBtn.textContent = '◀';
+      collapseText.textContent = 'Collapse';
+      collapseIcon.textContent = '←';
       collapseBtn.setAttribute('aria-label', 'Collapse sidebar');
     }
   });
