@@ -21,7 +21,7 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Dark/Light Mode Variables */
+/* Dark/Light Mode Background & Text */
 html:not(.light) {
   background: linear-gradient(to bottom right, #0f172a, #020617, #000000);
   color: white;
@@ -32,9 +32,15 @@ html.light {
   color: #0f172a;
 }
 
-/* Header & Footer */
+/* Header & Footer – Glass Effect + Critical Sticky for Header */
 header, footer {
   backdrop-filter: blur(12px);
+}
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
 /* Mobile Menu Links */
@@ -185,13 +191,7 @@ main {
   }
 }
 
-/* Sticky Header & Desktop Sidebar */
-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-
+/* Desktop Sidebar */
 #desktopSidebar {
   position: sticky;
   top: 0;
