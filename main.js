@@ -57,31 +57,30 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// 4. Desktop Sidebar Collapse - Improved button at bottom
+// 4. Desktop Sidebar Collapse - Icons-only mode, hide title & button when collapsed
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
-const collapseText = document.getElementById('collapseText');
-const collapseIcon = document.getElementById('collapseIcon');
+const sidebarTitle = document.getElementById('sidebarTitle');
 
-if (sidebar && collapseBtn && collapseText && collapseIcon) {
+if (sidebar && collapseBtn && sidebarTitle) {
   collapseBtn.addEventListener('click', () => {
     sidebar.classList.toggle('w-64');
     sidebar.classList.toggle('w-20');
 
-    // Toggle text labels
+    // Toggle menu text
     document.querySelectorAll('.sidebar-text').forEach(text => {
       text.classList.toggle('hidden');
     });
 
-    // Update button text and icon
+    // Toggle logo title and collapse button visibility
     if (sidebar.classList.contains('w-20')) {
-      collapseText.textContent = 'Expand';
-      collapseIcon.textContent = '→';
-      collapseBtn.setAttribute('aria-label', 'Expand sidebar');
+      sidebarTitle.classList.add('hidden');
+      collapseBtn.classList.add('hidden');
+      collapseBtn.textContent = '→';  // Prepare for expand
     } else {
-      collapseText.textContent = 'Collapse';
-      collapseIcon.textContent = '←';
-      collapseBtn.setAttribute('aria-label', 'Collapse sidebar');
+      sidebarTitle.classList.remove('hidden');
+      collapseBtn.classList.remove('hidden');
+      collapseBtn.textContent = '←';
     }
   });
 }
