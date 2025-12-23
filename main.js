@@ -58,39 +58,40 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 4. Desktop Sidebar Collapse - Fixed visibility & day/night contrast
-const sidebar = document.getElementById('desktopSidebar');
-const collapseBtn = document.getElementById('sidebarCollapse');
-const sidebarTitle = document.getElementById('sidebarTitle');
 
-if (sidebar && collapseBtn && sidebarTitle) {
+  // Sidebar Collapse
+  const sidebar = document.getElementById('desktopSidebar');
+  const collapseBtn = document.getElementById('sidebarCollapse');
+  const sidebarTitle = document.getElementById('sidebarTitle');
+  const sidebarTexts = document.querySelectorAll('.sidebar-text');
   collapseBtn.addEventListener('click', () => {
     sidebar.classList.toggle('w-64');
     sidebar.classList.toggle('w-20');
-
-    // Toggle menu labels and title
-    document.querySelectorAll('.sidebar-text').forEach(text => {
-      text.classList.toggle('hidden');
-    });
     sidebarTitle.classList.toggle('hidden');
-
-    // Swap icon direction (← = collapse, → = expand)
-    if (sidebar.classList.contains('w-20')) {
-      collapseBtn.textContent = '→';
-    } else {
-      collapseBtn.textContent = '←';
-    }
+    sidebarTexts.forEach(text => text.classList.toggle('hidden'));
+    collapseBtn.textContent = sidebar.classList.contains('w-20') ? '→' : '←';
   });
-}
 
-
-
-// 5. Sticky Headers + Desktop Sidebar Sticky 
-  const header = document.querySelector('header'); // Or '#mainHeader' if you added an ID
+  // Header on-scroll enhancement (solid background)
+  const header = document.querySelector('header');
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 30) {
-      header.classList.add('bg-white/70', 'dark:bg-black/70', 'backdrop-blur-2xl', 'shadow-lg');
-    } else {
-      header.classList.remove('bg-white/70', 'dark:bg-black/70', 'backdrop-blur-2xl', 'shadow-lg');
-    }
+    header.classList.toggle('bg-white/80', window.scrollY > 20);
+    header.classList.toggle('dark:bg-black/80', window.scrollY > 20);
+    header.classList.toggle('shadow-md', window.scrollY > 20);
   });
+
+  // Existing mobile menu toggle (add if not present)
+  const menuToggle = document.getElementById('menuToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  menuToggle.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+  });
+
+  // Theme toggle (stub; implement your logic)
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', () => {
+    document.documentElement.classList.toggle('dark');
+    themeToggle.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+  });
+
   
