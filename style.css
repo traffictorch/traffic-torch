@@ -1,8 +1,191 @@
+/* Traffic Torch – Global Styles (Shared Across All Pages) */
 
+:root {
+  --accent: #f97316;
+}
 
+* {
+  box-sizing: border-box;
+}
 
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
 
-/* Sticky header & sidebar – Fixed to match current JS (w-20 collapsed default / w-64 expanded toggle) */
+body {
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark/Light Mode Variables */
+html:not(.light) {
+  background: linear-gradient(to bottom right, #0f172a, #020617, #000000);
+  color: white;
+}
+
+html.light {
+  background: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1);
+  color: #0f172a;
+}
+
+/* Header & Footer */
+header, footer {
+  backdrop-filter: blur(12px);
+}
+
+/* Mobile Menu Links */
+#mobileMenu a {
+  color: #f3f4f6;
+}
+
+#mobileMenu a:hover {
+  color: #fb923c;
+}
+
+/* Placeholder */
+::placeholder {
+  color: #9ca3af;
+}
+
+html.light ::placeholder {
+  color: #6b7280;
+}
+
+/* Dropdown Animation */
+.group:hover .group-hover\:block {
+  display: block;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Expandable Accordions */
+.expandable-wrapper {
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.expandable-card {
+  width: 100%;
+  max-width: 640px;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+}
+
+.expandable-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+}
+
+.expandable-card summary {
+  padding: 1.75rem 2rem;
+  font-size: 1.6rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  color: white;
+  user-select: none;
+}
+
+.expandable-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.expandable-card summary::after {
+  content: "↓";
+  font-size: 2rem;
+  transition: transform 0.3s ease;
+}
+
+.expandable-card[open] summary::after {
+  transform: rotate(180deg);
+}
+
+.expandable-card > div {
+  padding: 2rem;
+  font-size: 1.2rem;
+  text-align: center;
+  line-height: 1.7;
+}
+
+@media (max-width: 640px) {
+  .expandable-wrapper { padding: 1.5rem 0.5rem; }
+  .expandable-card summary { font-size: 1.5rem; padding: 1.5rem; }
+  .expandable-card > div { padding: 1.5rem; }
+}
+
+/* Tools Grid */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 0 1rem;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .tools-grid {
+    grid-template-columns: 1fr;
+    padding: 0 0.5rem;
+    gap: 1.5rem;
+  }
+}
+
+/* Container & Padding Safety */
+@media (max-width: 768px) {
+  .px-6 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
+/* SEO Checklist Mobile */
+@media (max-width: 767px) {
+  #seo-ux-checklist .grid {
+    grid-template-columns: 1fr !important;
+  }
+  .checklist-card {
+    padding: 1.5rem !important;
+  }
+}
+
+html.light .checklist-card {
+  color: #1f2937;
+}
+
+html.light .checklist-card strong {
+  color: #111827;
+}
+
+/* Main Padding */
+main {
+  min-height: 100vh;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+@media (max-width: 768px) {
+  main {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+/* Sticky Header & Desktop Sidebar */
 header {
   position: sticky;
   top: 0;
@@ -17,24 +200,21 @@ header {
   transition: width 0.3s ease-in-out;
 }
 
-/* Show text/title only when expanded (JS adds w-64) */
 #desktopSidebar.w-64 .sidebar-text,
 #desktopSidebar.w-64 #sidebarTitle {
   display: inline !important;
 }
 
-/* Desktop main content shift – matches collapsed/expanded states */
 @media (min-width: 768px) {
   .main-content {
-    margin-left: 5rem; /* Default collapsed: w-20 = 5rem */
+    margin-left: 5rem;
   }
-  
+
   #desktopSidebar.w-64 ~ .main-content {
-    margin-left: 16rem; /* Expanded: w-64 = 16rem */
+    margin-left: 16rem;
   }
 }
 
-/* Dark mode scrollbar styling */
 .dark #desktopSidebar::-webkit-scrollbar {
   width: 8px;
 }
@@ -43,6 +223,3 @@ header {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
 }
-
-
-
