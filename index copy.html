@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Optimized SEO Title & Description -->
+  <title>Traffic Torch – AI, SEO &amp; UX Tools: Instant Audits, Fixes &amp; Forecasts</title>
+  <meta name="description" content="AI-powered SEO &amp; UX tools: Instant 0–100 scores for on-page optimization, competitive gaps, AI search visibility, content quality, bounce prediction, keyword research – all mobile-friendly." />
+  
+  <!-- Robots & Canonical -->
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://traffictorch.net/" />
+  
+  <!-- Open Graph Tags (Facebook, LinkedIn, etc.) -->
+  <meta property="og:title" content="Traffic Torch – AI SEO &amp; UX Tools Suite" />
+  <meta property="og:description" content="Instant AI-powered tools for SEO &amp; UX health: On-page audit, competitive gap analysis, AI search optimization, content humanizer, quit risk predictor, keyword research – private &amp; mobile-ready." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://traffictorch.net/" />
+  <meta property="og:image" content="https://traffictorch.net/images/traffic-torch.webp" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="Traffic Torch" />
+  
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Traffic Torch – AI SEO &amp; UX Tools Suite" />
+  <meta name="twitter:description" content="Instant AI-powered tools for SEO &amp; UX health: On-page audit, competitive gap analysis, AI search optimization, content humanizer, quit risk predictor, keyword research – private &amp; mobile-ready." />
+  <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch.webp" />
+  <meta name="twitter:site" content="@TrafficTorch" /> <!-- Update if you have an X handle -->
+  
+  <!-- Structured Data (JSON-LD): WebApplication + Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Traffic Torch",
+    "description": "Suite of AI-powered SEO and UX analysis tools delivering instant 0–100 scores, deep audits, AI-generated fixes, and predictive forecasts.",
+    "url": "https://traffictorch.net/",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web Browser",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "On-page SEO audit",
+      "Competitive keyword gap analysis",
+      "AI search optimization",
+      "AI content detection & humanizer",
+      "Bounce rate & UX health predictor",
+      "Keyword research with volume & difficulty"
+    ],
+    "image": "https://traffictorch.net/images/traffic-torch.webp",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Traffic Torch"
+    }
+  }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "url": "https://traffictorch.net/",
+    "logo": "https://traffictorch.net/favicon.ico",
+    "description": "AI-powered instant SEO and UX health analysis tools – mobile-friendly."
+  }
+  </script>
+  
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/seo-ux-tool/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+  // Apply saved theme instantly on load (no flash)
+  (function() {
+    const saved = localStorage.getItem('theme');
+    const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (preferDark ? 'dark' : 'light');
+    document.documentElement.classList.add(theme);
+  })();
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+    <aside id="desktopSidebar" class="hidden md:flex w-20 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">
+      <!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+          <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0">
+          <span id="sidebarTitle" class="text-[1.35rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+      <!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚡</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📝</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Comp</span>
+        </a>
+        <a href="/news.html" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📰</span> <span class="sidebar-text hidden">News</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-400 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          →
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+            <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
+            <p class="text-[1.35rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-400 relative left-2 -top-1">☰</button>
+          
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-400 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+          
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-4 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🛡️</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">SEO Intent 🎯</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Search 🔍</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Content 🤖</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">Quit Risk ⚡</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">Keywords 📝</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">Competition 🆚</a>
+            </div>
+            <a href="/about/" class="text-gray-100 hover:text-orange-400 transition">About</a>
+            <a href="/news.html" class="text-gray-100 hover:text-orange-400 transition">News</a>
+          </nav>
+        </div>
+      </header>
+      
+
+
+
+    
+  <!-- SEO UX TOOL -->
+   <main class="container mx-auto px-6 py-4 max-w-5xl">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
+            UX & SEO Analyzer ⚖️
+        </h1>
+        <p class="text-xl text-gray-400">Improve UX • Learn SEO </p>
+    </div>
+    
+    
+<form id="url-form" class="flex flex-col md:flex-row gap-4 max-w-3xl mx-auto mb-12">
+  <input
+    type="text"
+    id="url-input"
+    placeholder="example.com/page/"
+    class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+  />
+  <button
+    type="submit"
+    class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+  >
+    Analyze 💡
+  </button>
+</form>
+
+    <div id="progress-container" class="text-center my-8 hidden">
+      <div class="spinner mx-auto mb-4"></div>
+      <p id="progress-text" class="text-xl font-medium">Initializing analysis...</p>
+    </div>
+    
+ <div id="results-wrapper" class="hidden">
+   <div id="radar-container" class="hidden md:block my-24">
+    <h2 id="radar-title" class="text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+      360° Health Radar
+    </h2>
+    <div class="flex justify-center">
+      <canvas id="health-radar" class="max-w-full h-[600px]"></canvas>
+    </div>
+  </div>
+
+<div id="overall-container" class="my-20">
+  <h2 class="text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Overall SEO & UX Health Score
+  </h2>
+  <div class="flex justify-center">
+    <div id="overall-score" class="score-card force-dark-card">
+      <div class="score-circle large mb-8" data-score="0">
+        <svg viewBox="0 0 200 200">
+          <circle class="bg" cx="100" cy="100" r="90"/>
+          <circle class="progress" cx="100" cy="100" r="90"/>
+          <text x="100" y="110" class="number">0</text>
+        </svg>
+      </div>
+      <div class="text-3xl font-bold mt-8 text-gray-400">Overall Score</div>
+    </div>
+  </div>
+</div>
+<div id="results" class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+  <section id="seo-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
+    <div class="score-circle" data-score="0">
+      <svg viewBox="0 0 120 120">
+        <circle class="bg" cx="60" cy="60" r="54"/>
+        <circle class="progress" cx="60" cy="60" r="54"/>
+        <text x="60" y="72" class="number">0</text>
+      </svg>
+      <div class="label text-xl font-bold mt-4">On-Page SEO</div>
+    </div>
+    <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+    <div class="details hidden mt-6 text-left"><ul id="seo-issues" class="space-y-4"></ul></div>
+  </section>
+  <section id="mobile-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
+    <div class="score-circle" data-score="0">
+      <svg viewBox="0 0 120 120">
+        <circle class="bg" cx="60" cy="60" r="54"/>
+        <circle class="progress" cx="60" cy="60" r="54"/>
+        <text x="60" y="72" class="number">0</text>
+      </svg>
+      <div class="label text-xl font-bold mt-4">Mobile & PWA</div>
+    </div>
+    <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+    <div class="details hidden mt-6 text-left"><ul id="mobile-issues" class="space-y-4"></ul></div>
+  </section>
+  <section id="perf-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
+    <div class="score-circle" data-score="0">
+      <svg viewBox="0 0 120 120">
+        <circle class="bg" cx="60" cy="60" r="54"/>
+        <circle class="progress" cx="60" cy="60" r="54"/>
+        <text x="60" y="72" class="number">0</text>
+      </svg>
+      <div class="label text-xl font-bold mt-4">Performance</div>
+    </div>
+    <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+    <div class="details hidden mt-6 text-left"><ul id="perf-issues" class="space-y-4"></ul></div>
+  </section>
+  <section id="access-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
+    <div class="score-circle" data-score="0">
+      <svg viewBox="0 0 120 120">
+        <circle class="bg" cx="60" cy="60" r="54"/>
+        <circle class="progress" cx="60" cy="60" r="54"/>
+        <text x="60" y="72" class="number">0</text>
+      </svg>
+      <div class="label text-xl font-bold mt-4">Accessibility</div>
+    </div>
+    <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+    <div class="details hidden mt-6 text-left"><ul id="access-issues" class="space-y-4"></ul></div>
+  </section>
+  <section id="content-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
+    <div class="score-circle" data-score="0">
+      <svg viewBox="0 0 120 120">
+        <circle class="bg" cx="60" cy="60" r="54"/>
+        <circle class="progress" cx="60" cy="60" r="54"/>
+        <text x="60" y="72" class="number">0</text>
+      </svg>
+      <div class="label text-xl font-bold mt-4">Content Quality</div>
+    </div>
+    <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+    <div class="details hidden mt-6 text-left"><ul id="content-issues" class="space-y-4"></ul></div>
+  </section>
+  <section id="ux-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
+    <div class="score-circle" data-score="0">
+      <svg viewBox="0 0 120 120">
+        <circle class="bg" cx="60" cy="60" r="54"/>
+        <circle class="progress" cx="60" cy="60" r="54"/>
+        <text x="60" y="72" class="number">0</text>
+      </svg>
+      <div class="label text-xl font-bold mt-4">UX Design</div>
+    </div>
+    <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+    <div class="details hidden mt-6 text-left"><ul id="ux-issues" class="space-y-4"></ul></div>
+  </section>
+  <section id="security-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
+    <div class="score-circle" data-score="0">
+      <svg viewBox="0 0 120 120">
+        <circle class="bg" cx="60" cy="60" r="54"/>
+        <circle class="progress" cx="60" cy="60" r="54"/>
+        <text x="60" y="72" class="number">0</text>
+      </svg>
+      <div class="label text-xl font-bold mt-4">Security</div>
+    </div>
+    <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+    <div class="details hidden mt-6 text-left"><ul id="security-issues" class="space-y-4"></ul></div>
+  </section>
+  <section id="indexability-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
+    <div class="score-circle" data-score="0">
+      <svg viewBox="0 0 120 120">
+        <circle class="bg" cx="60" cy="60" r="54"/>
+        <circle class="progress" cx="60" cy="60" r="54"/>
+        <text x="60" y="72" class="number">0</text>
+      </svg>
+      <div class="label text-xl font-bold mt-4">Indexability</div>
+    </div>
+    <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+    <div class="details hidden mt-6 text-left"><ul id="indexability-issues" class="space-y-4"></ul></div>
+  </section>
+</div>
+
+  <div id="priority-fixes" class="max-w-6xl mx-auto my-24">
+    <h2 class="text-5xl font-black text-center mb-16 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+      Top 3 Priority Fixes
+    </h2>
+    <div class="grid md:grid-cols-3 gap-12">
+      <div class="rounded-3xl overflow-hidden shadow-2xl bg-white/10 backdrop-blur-xl border border-red-500/50">
+        <div class="bg-gradient-to-b from-red-600/40 to-transparent py-10 text-center">
+          <div class="text-6xl font-black text-red-400">1</div>
+        </div>
+        <div class="p-5">
+          <strong id="priority1-issue" class="text-2xl font-bold block mb-8 text-gray-400"></strong>
+          <div class="space-y-6">
+            <p class="text-gray-400"><span class="font-bold text-blue-400">What is it?</span><br><span id="priority1-what" class="text-lg leading-relaxed"></span></p>
+            <p class="text-gray-400"><span class="font-bold text-green-400">How to improve?</span><br><span id="priority1-fix" class="text-lg leading-relaxed"></span></p>
+            <p class="text-gray-400"><span class="font-bold text-red-400">Why it matters?</span><br><span id="priority1-why" class="text-lg leading-relaxed"></span></p>
+          </div>
+        </div>
+      </div>
+      <div class="rounded-3xl overflow-hidden shadow-2xl bg-white/10 backdrop-blur-xl border border-orange-500/50">
+        <div class="bg-gradient-to-b from-orange-600/40 to-transparent py-10 text-center">
+          <div class="text-6xl font-black text-orange-400">2</div>
+        </div>
+        <div class="p-5">
+          <strong id="priority2-issue" class="text-2xl font-bold block mb-8 text-gray-400"></strong>
+          <div class="space-y-6">
+            <p class="text-gray-400"><span class="font-bold text-blue-400">What is it?</span><br><span id="priority2-what" class="text-lg leading-relaxed"></span></p>
+            <p class="text-gray-400"><span class="font-bold text-green-400">How to improve?</span><br><span id="priority2-fix" class="text-lg leading-relaxed"></span></p>
+            <p class="text-gray-400"><span class="font-bold text-red-400">Why it matters?</span><br><span id="priority2-why" class="text-lg leading-relaxed"></span></p>
+          </div>
+        </div>
+      </div>
+      <div class="rounded-3xl overflow-hidden shadow-2xl bg-white/10 backdrop-blur-xl border border-green-500/50">
+        <div class="bg-gradient-to-b from-green-600/40 to-transparent py-10 text-center">
+          <div class="text-6xl font-black text-green-400">3</div>
+        </div>
+        <div class="p-5">
+          <strong id="priority3-issue" class="text-2xl font-bold block mb-8 text-gray-400"></strong>
+          <div class="space-y-6">
+            <p class="text-gray-400"><span class="font-bold text-blue-400">What is it?</span><br><span id="priority3-what" class="text-lg leading-relaxed"></span></p>
+            <p class="text-gray-400"><span class="font-bold text-green-400">How to improve?</span><br><span id="priority3-fix" class="text-lg leading-relaxed"></span></p>
+            <p class="text-gray-400"><span class="font-bold text-red-400">Why it matters?</span><br><span id="priority3-why" class="text-lg leading-relaxed"></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="forecast-module" class="max-w-5xl mx-auto my-24">
+    <h2 class="text-5xl font-black text-center mb-16 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+      Predictive Rank Forecast
+    </h2>
+    <div class="rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-orange-600/90 to-pink-600/90 p-12 text-white">
+      <h3 class="text-5xl md:text-6xl font-black text-center mb-6" id="forecast-title">Strong Top 5 Potential</h3>
+      <p class="text-4xl md:text-5xl font-black text-center mb-12" id="forecast-gain">+85% potential traffic gain if fixed</p>
+      <p class="text-xl text-center mb-16 opacity-90">
+        Based on trust, direct answers, structure, and human signals — here's the breakdown:
+      </p>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white/10 backdrop-blur rounded-2xl p-8">
+          <h4 class="text-2xl font-bold mb-4 text-blue-300">What is it?</h4>
+          <p id="forecast-what" class="text-lg leading-relaxed">An AI-powered prediction of where this page could rank in search results after implementing recommended fixes, based on current score and key ranking factors.</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur rounded-2xl p-8">
+          <h4 class="text-2xl font-bold mb-4 text-green-300">How to improve?</h4>
+          <p id="forecast-how" class="text-lg leading-relaxed">Prioritize the Top 3 fixes above. Each major improvement boosts overall score by 10–20 points, moving you closer to top positions.</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur rounded-2xl p-8">
+          <h4 class="text-2xl font-bold mb-4 text-yellow-300">Why it matters?</h4>
+          <p id="forecast-why" class="text-lg leading-relaxed">Pages scoring 80+ frequently appear in top 10. Every 10-point increase can double organic traffic. This shows your realistic upside.</p>
+        </div>
+      </div>
+      <p class="text-center mt-12 text-lg opacity-80">
+        Forecast is heuristic; actual performance varies by query and competition.
+      </p>
+    </div>
+  </div>
+
+  <div id="mobile-preview" class="max-w-5xl mx-auto my-24">
+    <h2 class="text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+      Mobile UX Preview
+    </h2>
+    <div class="flex justify-center gap-4 mb-8 flex-wrap">
+      <button id="view-toggle" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Switch to Desktop</button>
+      <button id="device-toggle" class="px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Android Frame</button>
+    </div>
+    <div class="flex justify-center">
+      <div id="phone-frame" class="iphone-frame portrait relative">
+        <iframe id="preview-iframe" src="" sandbox="allow-scripts allow-popups" class="w-full h-full rounded-[40px]"></iframe>
+        <div id="highlight-overlays" class="absolute inset-0 pointer-events-none"></div>
+      </div>
+    </div>
+    <p class="text-center mt-8 text-xl opacity-80">
+      Interactive preview — scroll and tap inside. Highlighted areas show mobile issues.
+    </p>
+  </div>
+
+  <div class="flex justify-center my-16">
+    <button id="save-pdf" class="hidden px-12 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl text-xl">
+      Save Report as PDF 📄
+    </button>
+  </div>
+
+  <div id="score-badge" class="hidden my-16 text-center">
+    <a href="https://traffictorch.net/" target="_blank" style="display: inline-block; position: relative; font-family: system-ui, -apple-system, sans-serif; font-weight: bold; font-size: 13px; color: #969696; text-decoration: none;">
+      Traffic Torch Optimized 🛡️
+      <span style="position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 8px; padding: 8px 16px; background: #1f2937; color: white; font-size: 14px; border-radius: 8px; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10;">
+        UX, SEO & AI Optimization
+      </span>
+    </a>
+  </div>
+
+  <div class="flex justify-center my-16">
+    <button id="copy-badge" class="hidden px-12 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl text-xl">
+      Copy Badge Code 🛡️
+    </button>
+  </div>
+</div>
+
+
+
+
+            	<!-- AddToAny BEGIN -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_pinterest"></a>
+<a class="a2a_button_x"></a>
+<a class="a2a_button_reddit"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_copy_link"></a>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+</div>
+	<!-- AddToAny END --> 
+	
+	<!-- How Traffic Torch Works Accordion -->
+<div class="max-w-4xl mx-auto my-20">
+  <details>
+    <summary class="px-4 py-4 text-1xl font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+      How Traffic Torch Works?
+      <span class="text-3xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
+    </summary>
+    <div class="mt-6 px-8 py-10 bg-white dark:bg-gray-800 rounded-3xl shadow-inner space-y-10 text-gray-700 dark:text-gray-300">
+      <section class="text-left space-y-6">
+        <h3 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">Complete SEO & UX Toolkit with Instant Online Analysis</h3>
+        <p class="text-lg leading-relaxed">
+          Every Traffic Torch tool runs entirely in your browser. We use a secure CORS proxy to fetch page HTML without impacting servers or exposing data.
+        </p>
+        <p class="text-lg leading-relaxed">
+          Nothing is stored, logged, or transmitted — your privacy is guaranteed. Results appear in seconds, optimized for mobile and desktop.
+        </p>
+      </section>
+
+      <section class="space-y-8">
+        <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Our Growing Suite of Tools</h3>
+        <div class="grid md:grid-cols-2 gap-8 text-base">
+          <div class="space-y-4">
+            <h4 class="font-bold text-lg">Keyword Torch 📝</h4>
+            <p>Full on-page SEO audit against your target keyword — title, meta, headings, content, images, schema, and more.</p>
+          </div>
+          <div class="space-y-4">
+            <h4 class="font-bold text-lg">Keyword Competition 🆚</h4>
+            <p>Side-by-side relevance comparison with a top-ranking competitor for any phrase.</p>
+          </div>
+          <div class="space-y-4">
+            <h4 class="font-bold text-lg">AI Search Optimization 🔍</h4>
+            <p>Scores your page for citation potential in AI-powered search (Google AI Overviews, Perplexity, Grok, Gemini).</p>
+          </div>
+          <div class="space-y-4">
+            <h4 class="font-bold text-lg">SEO Intent 🎯</h4>
+            <p>Analyzes how well your content matches informational, navigational, commercial, or transactional intent.</p>
+          </div>
+          <div class="space-y-4">
+            <h4 class="font-bold text-lg">AI Content Audit 🤖</h4>
+            <p>Detects AI-like patterns (perplexity, burstiness, repetition) and suggests humanizing improvements.</p>
+          </div>
+          <div class="space-y-4">
+            <h4 class="font-bold text-lg">Quit Risk ⚡</h4>
+            <p>Usability audit covering readability, navigation, accessibility, mobile readiness, and performance proxies.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="space-y-6">
+        <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Shared Features Across All Tools</h3>
+        <ul class="space-y-4 text-base list-disc list-inside">
+          <li>0–100 scoring with color-coded gauges and module breakdowns</li>
+          <li>Prioritized, actionable fixes with expert education</li>
+          <li>Predictive ranking or traffic forecasts where applicable</li>
+          <li>Mobile-friendly reports with dark mode support</li>
+          <li>PDF export for sharing insights</li>
+        </ul>
+      </section>
+
+      <section class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 p-8 rounded-xl">
+        <h3 class="text-2xl font-bold mb-4">Built for Real Results</h3>
+        <p class="text-base leading-relaxed">
+          Each tool focuses on factors you control today — on-page, UX, intent, authenticity — delivering quick wins while building long-term authority.
+        </p>
+      </section>
+    </div>
+  </details>
+</div>
+	
+
+<!-- Tools Grid (Creative: Hover glow/scale, colorful borders, emojis) -->
+    <div class="tools-grid max-w-7xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+      <!-- SEO Intent -->
+      <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+          <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+          <h3 class="text-2xl font-bold mb-3">SEO Intent Tool</h3>
+          <p class="text-gray-400">Instant intent matching + E-E-A-T audit + fixes</p>
+        </div>
+      </a>
+      <!-- Ai Search -->
+      <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all">
+          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+          <h3 class="text-2xl font-bold mb-3">Ai Search Tool</h3>
+          <p class="text-gray-400">Optimize for Perplexity, Grok, Gemini, ChatGPT Search</p>
+        </div>
+      </a>
+      <!-- AI Content -->
+      <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all">
+          <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+          <h3 class="text-2xl font-bold mb-3">AI Content Tool</h3>
+          <p class="text-gray-400">Detect AI patterns + humanize content + forecasts</p>
+        </div>
+      </a>
+      <!-- Quit Risk -->
+      <a href="/quit-risk-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all">
+          <div class="text-emerald-400 text-7xl mb-6 group-hover:animate-bounce">⚡</div>
+          <h3 class="text-2xl font-bold mb-3">Quit Risk Tool</h3>
+          <p class="text-gray-400">UX friction audit + bounce prediction + optimizations</p>
+        </div>
+      </a>
+      <!-- Keywords -->
+      <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+          <div class="text-purple-400 text-7xl mb-6 group-hover:animate-bounce">📝</div>
+          <h3 class="text-2xl font-bold mb-3">Keyword Tool</h3>
+          <p class="text-gray-400">On-page keyword placement score + density fixes</p>
+        </div>
+      </a>
+      <!-- VS -->
+      <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+          <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+          <h3 class="text-2xl font-bold mb-3">VS Tool</h3>
+          <p class="text-gray-400">Competitive keyword gap analysis + beat strategies</p>
+        </div>
+      </a>
+    </div>
+</div>
+    
+    
+     <!-- Tool SEO Checklist -->
+<section id="seo-ux-checklist" class="py-16 px-1 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
+  <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    Ultimate Instant SEO &amp; UX Checklist for Ranking Success
+  </h2>
+  <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-400 dark:text-gray-300">
+    Master on-page SEO audits, competitive gap analysis, AI search optimization, E-E-A-T signals, mobile UX health checks – with free online tools delivering 0–100 scores, AI-generated fixes, and predictive forecasts in seconds.
+  </p>
+
+   <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+    <!-- On-Page SEO Essentials -->
+    <div class="checklist-card bg-gradient-to-br from-green-900/20 to-emerald-900/20 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <h3 class="text-2xl font-bold mb-8 text-green-700 dark:text-green-400 flex items-center gap-4">
+        <span class="text-4xl">📝</span> On-Page SEO Audit Essentials
+      </h3>
+      <div class="space-y-8 text-lg">
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">🔻</span>
+          <div><strong>Weak title tags &amp; meta descriptions</strong> reducing click-through rates</div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">📈</span>
+          <div><strong>Keyword Torch</strong>: Instant title/meta optimization with keyword placement, length checks, and CTR forecasts</div>
+        </div>
+
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">🔻</span>
+          <div><strong>Poor heading structure &amp; keyword density</strong> hurting relevance</div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">📈</span>
+          <div>Deep H1–H6 analysis, density fixes, and content relevance scoring</div>
+        </div>
+
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">🔻</span>
+          <div><strong>Unoptimized images &amp; missing schema markup</strong></div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">📈</span>
+          <div>Alt text checks, file size optimization, structured data validation &amp; rich snippet recommendations</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Competitive & Intent -->
+    <div class="checklist-card bg-gradient-to-br from-blue-900/20 to-indigo-900/20 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <h3 class="text-2xl font-bold mb-8 text-blue-700 dark:text-blue-400 flex items-center gap-4">
+        <span class="text-4xl">⚔️</span> Competitive Analysis &amp; Search Intent
+      </h3>
+      <div class="space-y-8 text-lg">
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">🥈</span>
+          <div><strong>Keyword gaps vs top-ranking competitors</strong> holding you back</div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">🎯</span>
+          <div><strong>Keyword VS</strong>: Side-by-side gap analysis with exact missing terms &amp; proven beat strategies</div>
+        </div>
+
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">❓</span>
+          <div><strong>Mismatched search intent</strong> (informational, commercial and transactional)</div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">🎯</span>
+          <div>Full intent matching audit + comprehensive E-E-A-T signal evaluation and fixes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Era Optimization -->
+    <div class="checklist-card bg-gradient-to-br from-purple-900/20 to-pink-900/20 dark:from-purple-900/30 dark:to-pink-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <h3 class="text-2xl font-bold mb-8 text-purple-700 dark:text-purple-400 flex items-center gap-4">
+        <span class="text-4xl">🤖</span> AI Search &amp; Content Optimization
+      </h3>
+      <div class="space-y-8 text-lg">
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">👻</span>
+          <div><strong>Invisible in AI-powered search results</strong> (Google AIO, Perplexity, Grok, Gemini)</div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">🌟</span>
+          <div><strong>AI Search Optimization</strong>: Citation potential scoring + targeted visibility fixes</div>
+        </div>
+
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">⚠️</span>
+          <div><strong>AI-generated content patterns</strong> risking penalties</div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">✍️</span>
+          <div><strong>AI Content Audit</strong>: Perplexity and burstiness detection + expert humanizing suggestions</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UX & Performance -->
+    <div class="checklist-card bg-gradient-to-br from-orange-900/20 to-amber-900/20 dark:from-orange-900/30 dark:to-amber-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <h3 class="text-2xl font-bold mb-8 text-orange-700 dark:text-orange-400 flex items-center gap-4">
+        <span class="text-4xl">📱</span> Mobile UX &amp; Usability Health Check
+      </h3>
+      <div class="space-y-8 text-lg">
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">🚪</span>
+          <div><strong>High bounce rates</strong> from poor readability &amp; navigation</div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">❤️</span>
+          <div><strong>Quit Risk Tool</strong>: Readability scoring, navigation audit, bounce prediction &amp; retention fixes</div>
+        </div>
+
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">♿</span>
+          <div><strong>Mobile/PWA issues &amp; accessibility barriers</strong></div>
+        </div>
+        <div class="flex items-start gap-5">
+          <span class="text-5xl">✅</span>
+          <div>Mobile readiness, PWA compliance, performance proxies, WCAG accessibility checks</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center mt-16">
+    <p class="text-2xl font-semibold max-w-4xl mx-auto text-gray-400 dark:text-gray-300">
+      All checks powered by instant, private, client-side analysis – with 0–100 gauges, AI-generated fixes, predictive forecasts, and PDF export.
+    </p>
+  </div>
+</section>
+
+	
+      <!-- Tool topics and functions -->
+<section id="traffic-torch-features" class="py-16 px-1 max-w-6xl mx-auto">
+  <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-red-600">
+    Why Traffic Torch? Fix Real SEO &amp; UX Problems – Instantly
+  </h2>
+  <p class="text-center text-xl mb-12 max-w-4xl mx-auto text-gray-400 dark:text-gray-500">
+    Free online tools delivering comprehensive SEO audits, UX health checks, AI search optimization, competitive gap analysis, and AI-powered actionable fixes – all in seconds.
+  </p>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+    <!-- On-Page SEO -->
+    <div class="challenge-card bg-gradient-to-br from-red-900/20 to-orange-900/20 dark:from-red-900/30 dark:to-orange-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-start gap-5 mb-6">
+        <span class="text-5xl">📉</span>
+        <p class="text-xl font-semibold">Struggling with weak on-page SEO?</p>
+      </div>
+      <p class="text-lg leading-relaxed">Low keyword density, poor titles/meta, missing schema, unoptimized images quietly hurting your rankings.</p>
+      <div class="mt-6 flex items-start gap-5">
+        <span class="text-5xl"></span>
+        <div>
+		<a 
+		  href="https://traffictorch.net/keyword-tool/" 
+		  class="font-bold text-green-500 text-xl hover:text-orange-500 hover:underline transition-colors duration-200" 
+		  title="Go to Keyword Torch - Instant keyword analysis and optimization tool"
+		>
+		  Keyword Torch
+		</a>
+          <p class="text-lg">Instant full on-page SEO audit with 0–100 score, keyword placement, density fixes, and AI-prioritized recommendations.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Competitive Gaps -->
+    <div class="challenge-card bg-gradient-to-br from-purple-900/20 to-indigo-900/20 dark:from-purple-900/30 dark:to-indigo-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-start gap-5 mb-6">
+        <span class="text-5xl">🥈</span>
+        <p class="text-xl font-semibold">Competitors always ranking higher?</p>
+      </div>
+      <p class="text-lg leading-relaxed">Hidden keyword and content gaps with no clear strategy to overtake top pages.</p>
+      <div class="mt-6 flex items-start gap-5">
+        <span class="text-5xl">⚔️</span>
+        <div>
+		<a 
+		  href="https://traffictorch.net/keyword-vs-tool/" 
+		  class="font-bold text-green-500 text-xl hover:text-orange-500 hover:underline transition-colors duration-200" 
+		  title="Go to Keyword VS - Head-to-head keyword comparison and competitive analysis tool"
+		>
+		  Keyword VS Tool
+		</a>
+          <p class="text-lg">Side-by-side competitive gap analysis revealing missing terms and exact strategies to beat top-ranking pages.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Search Visibility -->
+    <div class="challenge-card bg-gradient-to-br from-pink-900/20 to-purple-900/20 dark:from-pink-900/30 dark:to-purple-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-start gap-5 mb-6">
+        <span class="text-5xl">👻</span>
+        <p class="text-xl font-semibold">Invisible in AI-powered search?</p>
+      </div>
+      <p class="text-lg leading-relaxed">Your content ignored by Google AI Overviews, Perplexity, Grok, Gemini, and ChatGPT answers.</p>
+      <div class="mt-6 flex items-start gap-5">
+        <span class="text-5xl">🤖</span>
+        <div>
+		<a 
+		  href="https://traffictorch.net/ai-search-optimization-tool/" 
+		  class="font-bold text-green-500 text-xl hover:text-orange-500 hover:underline transition-colors duration-200" 
+		  title="Go to AI Search Optimization - Optimize content for AI-powered search engines and conversational queries"
+		>
+		  AI Search Optimization Tool
+		</a>
+          <p class="text-lg">Specialized citation potential scoring with targeted fixes to dominate modern AI search engines.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Content Detection -->
+    <div class="challenge-card bg-gradient-to-br from-gray-900/20 to-zinc-900/20 dark:from-gray-900/30 dark:to-zinc-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-start gap-5 mb-6">
+        <span class="text-5xl">⚠️</span>
+        <p class="text-xl font-semibold">AI-generated content getting flagged?</p>
+      </div>
+      <p class="text-lg leading-relaxed">Low perplexity/burstiness, repetitive patterns risking penalties and poor reader engagement.</p>
+      <div class="mt-6 flex items-start gap-5">
+        <span class="text-5xl">✍️</span>
+        <div>
+		<a 
+		  href="https://traffictorch.net/ai-audit-tool/" 
+		  class="font-bold text-green-500 text-xl hover:text-orange-500 hover:underline transition-colors duration-200" 
+		  title="Go to AI Content Audit - Comprehensive AI-powered content quality and optimization analysis"
+		>
+		  AI Content Audit Tool
+		</a>
+          <p class="text-lg">Detect AI-like patterns and get expert humanizing suggestions with predictive impact forecasts.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- UX & Bounce Rate -->
+    <div class="challenge-card bg-gradient-to-br from-teal-900/20 to-cyan-900/20 dark:from-teal-900/30 dark:to-cyan-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-start gap-5 mb-6">
+        <span class="text-5xl">🚪</span>
+        <p class="text-xl font-semibold">Visitors leaving too quickly?</p>
+      </div>
+      <p class="text-lg leading-relaxed">High bounce rates from poor readability, mobile experience, accessibility, or confusing navigation.</p>
+      <div class="mt-6 flex items-start gap-5">
+        <span class="text-5xl">📱</span>
+        <div>
+		<a 
+		  href="https://traffictorch.net/quit-risk-tool/" 
+		  class="font-bold text-green-500 text-xl hover:text-orange-500 hover:underline transition-colors duration-200" 
+		  title="Go to Quit Risk Tool - Analyze employee turnover risk with AI-powered insights and retention strategies"
+		>
+		  Quit Risk Usability Tool
+		</a>
+          <p class="text-lg">Comprehensive UX audit with bounce prediction, readability, mobile/PWA readiness, performance, and accessibility optimizations.</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- SEO Intent Tool -->
+<div class="tool-card bg-gradient-to-br from-emerald-900/20 to-lime-900/20 dark:from-emerald-900/30 dark:to-lime-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+  <div class="flex items-start gap-6 mb-6">
+    <span class="text-5xl">🔍</span>
+    <p class="text-xl font-semibold">Misaligned content intent?</p>
+  </div>
+  <p class="text-lg leading-relaxed">Ranking poorly because your content doesn't match what searchers (and AI) actually want.</p>
+  <div class="mt-6 flex items-start gap-6">
+    <span class="text-5xl">🧠</span>
+    <div>
+      <a 
+        href="https://traffictorch.net/seo-intent-tool/" 
+        class="font-bold text-green-500 text-xl hover:text-orange-500 hover:underline transition-colors duration-200 inline-block"
+        title="Go to SEO Intent Tool - Analyze search intent and optimize content alignment"
+      >
+        SEO Intent Tool
+      </a>
+      <p class="text-lg">Instantly classify informational, navigational, commercial, or transactional intent. Get AI-powered query breakdown, content gap insights & optimization recommendations.</p>
+    </div>
+  </div>
+</div>
+
+    <!-- Shared Features & Privacy -->
+    <div class="challenge-card bg-gradient-to-br from-green-900/20 to-emerald-900/20 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300 md:col-span-2">
+      <div class="flex items-start gap-5 mb-6">
+        <span class="text-5xl">😓</span>
+        <p class="text-xl font-semibold">Frustrated with slow, invasive tools?</p>
+      </div>
+      <p class="text-lg leading-relaxed">Privacy concerns, long wait times, generic advice, no impact forecasts, or overwhelming reports.</p>
+      <div class="mt-6 flex items-start gap-5">
+        <span class="text-5xl">🛡️</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">All Tools – Built Different</p>
+          <p class="text-lg">100% Online analysis, instant results, 0–100 gauges, AI-prioritized fixes, predictive forecasts, deep education, dark mode reports &amp; PDF export.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Why Traffic Torch Matters Accordion -->
+<div class="max-w-4xl mx-auto my-20">
+  <details>
+    <summary class="px-4 py-4 text-1xl font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+      Why Search matters?
+      <span class="text-3xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
+    </summary>
+    <div class="mt-6 px-8 py-10 bg-white dark:bg-gray-800 rounded-3xl shadow-inner space-y-10 text-gray-700 dark:text-gray-300">
+      <section class="text-left space-y-6">
+        <h3 class="text-3xl font-bold text-purple-600 dark:text-purple-400">Search Has Evolved — So Must Your Strategy</h3>
+        <p class="text-lg leading-relaxed">
+          Traditional keyword stuffing no longer works. Today’s search engines — including AI-powered answers — reward pages that demonstrate relevance, trustworthiness, usability, and genuine value.
+        </p>
+        <p class="text-lg leading-relaxed">
+          Traffic Torch gives you the exact diagnostics and fixes to excel in this new landscape.
+        </p>
+      </section>
+
+      <section class="space-y-8">
+        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Compounding Benefits Across the Suite</h3>
+        <div class="space-y-6 text-base">
+          <div class="flex gap-6">
+            <div class="text-4xl">🚀</div>
+            <div>
+              <strong>Higher Rankings & AI Citations</strong><br>
+              Optimized on-page, intent, and human signals push you to Page 1 and into AI answer boxes.
+            </div>
+          </div>
+          <div class="flex gap-6">
+            <div class="text-4xl">📈</div>
+            <div>
+              <strong>More Organic Traffic</strong><br>
+              Better relevance, richer snippets, and stronger UX drive sustained growth.
+            </div>
+          </div>
+          <div class="flex gap-6">
+            <div class="text-4xl">😊</div>
+            <div>
+              <strong>Superior User Experience</strong><br>
+              Clear, authentic, accessible content keeps visitors engaged and converting.
+            </div>
+          </div>
+          <div class="flex gap-6">
+            <div class="text-4xl">🛡️</div>
+            <div>
+              <strong>Future-Proof Resilience</strong><br>
+              Align with Google’s Helpful Content, Core Updates, and emerging AI search standards.
+            </div>
+          </div>
+          <div class="flex gap-6">
+            <div class="text-4xl">💪</div>
+            <div>
+              <strong>Competitive Advantage</strong><br>
+              Most sites ignore these signals. Master them to outrank and outlast competitors.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/30 p-8 rounded-xl">
+        <h3 class="text-2xl font-bold mb-4">The Big Picture</h3>
+        <p class="text-base leading-relaxed">
+          Traffic Torch isn’t just a collection of tools — it’s a complete system for building search-engine-friendly, user-loved websites that drive real business results.
+        </p>
+        <p class="text-base font-medium mt-6">
+          Run audits regularly, implement fixes, re-test, and watch your traffic, rankings, and conversions grow.
+        </p>
+      </section>
+
+      <p class="text-center text-lg italic opacity-70 mt-8">
+        Master modern SEO & UX → Build traffic that lasts.
+      </p>
+    </div>
+  </details>
+</div>
+    
+    
+  </main>
+  
+      	<!-- AddToAny BEGIN -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_pinterest"></a>
+<a class="a2a_button_x"></a>
+<a class="a2a_button_reddit"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_copy_link"></a>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+</div>
+	<!-- AddToAny END --> 
+
+  <!-- Footer (unchanged – already perfect) -->
+<footer class="border-t border-white/10 mt-32 py-16 bg-black/50 backdrop-blur-xl">
+    <div class="container mx-auto px-6 max-w-6xl">
+        <div class="grid md:grid-cols-4 gap-12 text-center md:text-left">
+            <div>
+                <a href="/">
+                    <img src="/logo.webp" alt="Traffic Torch" class="w-20 mx-auto md:mx-0 rounded-2xl shadow-2xl mb-6">
+                </a>
+                <p class="text-gray-300 text-sm"><a href="/" class="hover:text-orange-400 transition">Traffic Torch<br>SEO + UX + Ai audit tools</a></p>
+            </div>
+            <div>
+                <a href="/ai-seo-ux-tools/" class="block"><h3 class="text-xl font-bold mb-6 text-orange-400 hover:text-orange-300 transition">Tools</h3></a>
+                <ul class="space-y-3 text-gray-300 list-none">
+                    <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+                    <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
+                    <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a></li>
+                    <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
+                    <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a></li>
+                    <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-6 text-orange-400">Company</h3>
+                <ul class="space-y-3 text-gray-300 list-none">
+                    <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
+                    <li><a href="/news.html" class="hover:text-orange-400 transition">News</a></li>
+                    <li><a href="https://x.com/guitaralize" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">Ylia@X</a></li>
+                    <li><a href="https://grok.com/" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">Grok</a></li>
+                    <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
+                    <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-6 text-orange-400">Traffic Torch</h3>
+                <ul class="space-y-3 text-gray-300 list-none">
+                    <li><a href="/ai-seo-ux-tools/#ai-tools" class="hover:text-orange-400 transition">Ai Tools 🤖</a></li>
+                    <li><a href="/ai-seo-ux-tools/#seo-tools" class="hover:text-orange-400 transition">SEO Tools 🎯</a></li>
+                    <li><a href="/ai-seo-ux-tools/#ux-tools" class="hover:text-orange-400 transition">UX Tools ⚡</a></li>
+                </ul>
+                <p class="text-gray-300 text-sm mt-4">Built with 🔥</p>
+                <p class="text-gray-300 text-xs mt-4">© Traffic Torch</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+  <!-- Load JS last for speed -->
+  <script src="/main.js" type="module"></script>
+  <script src="/seo-ux-tool/script.js" defer></script>
+
+
+  
+</body>
+</html>
