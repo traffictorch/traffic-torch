@@ -6,6 +6,25 @@
   --track: rgba(255,255,255,0.15);
 }
 
+
+
+
+html {
+  overflow-x: clip; /* Primary: clips overflow without breaking sticky */
+  overflow-y: overlay; /* Optional: allows vertical scroll with overlay scrollbar for better UX */
+}
+
+body {
+  overflow-x: hidden; /* Fallback for older browsers that don't support clip */
+  min-width: 100%; /* Ensures body doesn't shrink below viewport */
+  width: 100vw; /* Covers full viewport width */
+}
+
+
+
+
+
+
 * {
   box-sizing: border-box;
 }
