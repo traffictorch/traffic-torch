@@ -1,92 +1,81 @@
-  // 1. Theme Toggle - Fixed & robust (Tailwind 'class' strategy latest best practice)
-  const themeToggle = document.getElementById('themeToggle');
+// 1. Theme Toggle - Fixed to match original custom 'light' class setup
+const toggle = document.getElementById('themeToggle');
 
-  if (themeToggle) {
-    const html = document.documentElement;
+if (toggle) {
+  const html = document.documentElement;
 
-    // One-time cleanup: remove any outdated 'light' class if exists
+  // Determine if we should start in light mode
+  const preferLight = localStorage.theme === 'light' ||
+                      (!localStorage.theme && window.matchMedia('(prefers-color-scheme: light)').matches);
+
+  if (preferLight) {
+    html.classList.add('light');
+    toggle.textContent = '☀️';  // In light mode: show sun = invite to dark
+  } else {
     html.classList.remove('light');
+    toggle.textContent = '🌙';  // In dark mode: show moon = invite to light
+  }
 
-    // Determine initial theme
-    let isDark = localStorage.theme === 'dark' ||
-                 (!localStorage.theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  // Toggle on click
+  toggle.addEventListener('click', () => {
+    html.classList.toggle('light');
+    const isLight = html.classList.contains('light');
 
-    if (isDark) {
-      html.classList.add('dark');
+    localStorage.theme = isLight ? 'light' : 'dark';
+    toggle.textContent = isLight ? '☀️' : '🌙';
+  });
+}
+
+// 2. PWA Install (unchanged)
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.createElement('button');
+  btn.textContent = 'Install App';
+  btn.className = 'fixed bottom-6 right-6 z-50 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-white font-bold';
+  btn.onclick = () => deferredPrompt.prompt();
+  document.body.appendChild(btn);
+});
+
+// 3. Mobile menu (unchanged – preserved exactly)
+document.addEventListener('DOMContentLoaded', () => {
+  const button = document.getElementById('menuToggle');
+  const menu = document.getElementById('mobileMenu');
+  // If missing on a page, just exit (404 page etc)
+  if (!button || !menu) return;
+  button.addEventListener('click', () => {
+    menu.classList.toggle('hidden');
+   
+    // Optional: change aria for screen readers
+    const expanded = button.getAttribute('aria-expanded') === 'true';
+    button.setAttribute('aria-expanded', !expanded);
+  });
+  // Close when clicking a link (nice UX)
+  menu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => menu.classList.add('hidden'));
+  });
+});
+
+// 4. Desktop Sidebar Collapse (safe addition – only runs if elements exist)
+const sidebar = document.getElementById('desktopSidebar');
+const collapseBtn = document.getElementById('sidebarCollapse');
+
+if (sidebar && collapseBtn) {
+  collapseBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('w-64');
+    sidebar.classList.toggle('w-20');
+
+    document.querySelectorAll('.sidebar-text').forEach(text => {
+      text.classList.toggle('hidden');
+    });
+
+    if (sidebar.classList.contains('w-20')) {
+      collapseBtn.textContent = '▶';
+      collapseBtn.setAttribute('aria-label', 'Expand sidebar');
     } else {
-      html.classList.remove('dark');
+      collapseBtn.textContent = '◀';
+      collapseBtn.setAttribute('aria-label', 'Collapse sidebar');
     }
-
-    // Set correct initial icon: 🌙 when light (invite to dark), ☀️ when dark (invite to light)
-    themeToggle.textContent = isDark ? '☀️' : '🌙';
-
-    // Toggle on click
-    themeToggle.addEventListener('click', () => {
-      html.classList.toggle('dark');
-      isDark = html.classList.contains('dark');
-
-      localStorage.theme = isDark ? 'dark' : 'light';
-      themeToggle.textContent = isDark ? '☀️' : '🌙';
-    });
-  }
-
-  // 2. PWA Install Prompt (unchanged)
-  let deferredPrompt;
-  window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    deferredPrompt = e;
-    const btn = document.createElement('button');
-    btn.textContent = 'Install App';
-    btn.className = 'fixed bottom-6 right-6 z-50 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-white font-bold';
-    btn.onclick = () => {
-      deferredPrompt.prompt();
-      btn.remove();
-    };
-    document.body.appendChild(btn);
   });
-
-  // 3. Mobile Menu Toggle (unchanged + polished)
-  document.addEventListener('DOMContentLoaded', () => {
-    const button = document.getElementById('menuToggle');
-    const menu = document.getElementById('mobileMenu');
-
-    if (!button || !menu) return;
-
-    button.addEventListener('click', () => {
-      menu.classList.toggle('hidden');
-      const expanded = button.getAttribute('aria-expanded') === 'true';
-      button.setAttribute('aria-expanded', !expanded);
-      button.textContent = menu.classList.contains('hidden') ? '☰' : '✕';
-    });
-
-    menu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        menu.classList.add('hidden');
-        button.setAttribute('aria-expanded', 'false');
-        button.textContent = '☰';
-      });
-    });
-  });
-
-  // 4. Desktop Sidebar Collapse (unchanged)
-  const sidebar = document.getElementById('desktopSidebar');
-  const collapseBtn = document.getElementById('sidebarCollapse');
-
-  if (sidebar && collapseBtn) {
-    collapseBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('w-64');
-      sidebar.classList.toggle('w-20');
-
-      document.querySelectorAll('.sidebar-text').forEach(text => {
-        text.classList.toggle('hidden');
-      });
-
-      if (sidebar.classList.contains('w-20')) {
-        collapseBtn.textContent = '▶';
-        collapseBtn.setAttribute('aria-label', 'Expand sidebar');
-      } else {
-        collapseBtn.textContent = '◀';
-        collapseBtn.setAttribute('aria-label', 'Collapse sidebar');
-      }
-    });
-  }
+}
