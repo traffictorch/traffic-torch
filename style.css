@@ -241,16 +241,26 @@ header {
 
 
 
-/* Hide sidebar title (Traffic Torch text) when collapsed */
+/* Desktop Sidebar Collapse - Clean & Consistent */
+#desktopSidebar {
+  transition: width 0.3s ease-in-out;
+}
+#desktopSidebar.collapsed {
+  width: 80px !important;
+}
+#desktopSidebar.collapsed .sidebar-link {
+  justify-content: center !important;
+}
+#desktopSidebar.collapsed .sidebar-text {
+  display: none !important;
+}
 #desktopSidebar.collapsed #sidebarTitle {
   display: none !important;
 }
-
-/* Optional: center logo only when title hidden */
 #desktopSidebar.collapsed .flex.items-center.justify-center {
   justify-content: center !important;
 }
-#desktopSidebar.collapsed .flex.items-center.justify-center img {
-  margin-right: 0 !important;
+#desktopSidebar.collapsed img {
+  margin: 0 auto !important;
 }
 

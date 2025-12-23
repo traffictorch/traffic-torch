@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// 4. Desktop Sidebar Collapse - Clean & Consistent (uses .collapsed class + CSS)
+// Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text)
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
 const desktopMenuToggle = document.getElementById('desktopMenuToggle');
@@ -67,6 +67,8 @@ if (sidebar && (collapseBtn || desktopMenuToggle)) {
     sidebar.classList.toggle('collapsed');
 
     const isCollapsed = sidebar.classList.contains('collapsed');
+    
+    // Button icons
     if (collapseBtn) {
       collapseBtn.textContent = isCollapsed ? '→' : '←';
     }
@@ -75,13 +77,11 @@ if (sidebar && (collapseBtn || desktopMenuToggle)) {
     }
   };
 
-  if (collapseBtn) collapseBtn.addEventListener('click', toggleSidebar);
-  if (desktopMenuToggle) desktopMenuToggle.addEventListener('click', toggleSidebar);
+  collapseBtn?.addEventListener('click', toggleSidebar);
+  desktopMenuToggle?.addEventListener('click', toggleSidebar);
 
   // Start expanded
-  if (sidebar.classList.contains('collapsed')) {
-    toggleSidebar();
-  }
+  if (sidebar.classList.contains('collapsed')) toggleSidebar();
 }
 
 
