@@ -57,29 +57,38 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// 4. Desktop Sidebar Collapse - Fixed visibility & day/night contrast
+// 4. Desktop Sidebar Collapse - Enhanced: collapsed by default, dual triggers (bottom button + new header hamburger)
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
+const desktopMenuToggle = document.getElementById('desktopMenuToggle'); // New header button
 const sidebarTitle = document.getElementById('sidebarTitle');
+const sidebarTexts = document.querySelectorAll('.sidebar-text');
 
-if (sidebar && collapseBtn && sidebarTitle) {
-  collapseBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('w-64');
+if (sidebar && (collapseBtn || desktopMenuToggle) && sidebarTitle) {
+  const toggleSidebar = () => {
     sidebar.classList.toggle('w-20');
-
-    // Toggle menu labels and title
-    document.querySelectorAll('.sidebar-text').forEach(text => {
-      text.classList.toggle('hidden');
-    });
+    sidebar.classList.toggle('w-64');
     sidebarTitle.classList.toggle('hidden');
-
-    // Swap icon direction (← = collapse, → = expand)
-    if (sidebar.classList.contains('w-20')) {
-      collapseBtn.textContent = '→';
-    } else {
-      collapseBtn.textContent = '←';
+    sidebarTexts.forEach(text => text.classList.toggle('hidden'));
+    
+    // Update both buttons' icons
+    const isCollapsed = sidebar.classList.contains('w-20');
+    if (collapseBtn) {
+      collapseBtn.textContent = isCollapsed ? '→' : '←';
     }
-  });
+    if (desktopMenuToggle) {
+      desktopMenuToggle.textContent = isCollapsed ? '☰' : '✖'; // ✕ or × for close when expanded
+    }
+  };
+
+  // Attach to both triggers
+  if (collapseBtn) collapseBtn.addEventListener('click', toggleSidebar);
+  if (desktopMenuToggle) desktopMenuToggle.addEventListener('click', toggleSidebar);
+
+  // Initial state: ensure collapsed (in case JS loads after render)
+  if (!sidebar.classList.contains('w-20')) {
+    toggleSidebar();
+  }
 }
 
 
