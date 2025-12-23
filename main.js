@@ -57,39 +57,44 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// 4. Desktop Sidebar Collapse - Enhanced: EXPANDED by default, dual triggers (bottom button + header hamburger)
+// 4. Desktop Sidebar Collapse - Clean & Consistent (uses .collapsed class + CSS)
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
-const desktopMenuToggle = document.getElementById('desktopMenuToggle'); // Header hamburger button
+const desktopMenuToggle = document.getElementById('desktopMenuToggle');
 const sidebarTitle = document.getElementById('sidebarTitle');
-const sidebarTexts = document.querySelectorAll('.sidebar-text');
 
 if (sidebar && (collapseBtn || desktopMenuToggle) && sidebarTitle) {
   const toggleSidebar = () => {
-    sidebar.classList.toggle('w-20');
-    sidebar.classList.toggle('w-64');
-    sidebarTitle.classList.toggle('hidden');
-    sidebarTexts.forEach(text => text.classList.toggle('hidden'));
-   
-    // Update both buttons' icons
-    const isCollapsed = sidebar.classList.contains('w-20');
+    sidebar.classList.toggle('collapsed');
+
+    // Sync title visibility
+    if (sidebar.classList.contains('collapsed')) {
+      sidebarTitle.classList.add('hidden');
+    } else {
+      sidebarTitle.classList.remove('hidden');
+    }
+
+    // Update button icons
+    const isCollapsed = sidebar.classList.contains('collapsed');
     if (collapseBtn) {
       collapseBtn.textContent = isCollapsed ? '→' : '←';
     }
     if (desktopMenuToggle) {
-      desktopMenuToggle.textContent = isCollapsed ? '☰' : '✖'; // ✕ for close when expanded
+      desktopMenuToggle.textContent = isCollapsed ? '☰' : '✖';
     }
   };
 
-  // Attach to both triggers
+  // Attach to both buttons
   if (collapseBtn) collapseBtn.addEventListener('click', toggleSidebar);
   if (desktopMenuToggle) desktopMenuToggle.addEventListener('click', toggleSidebar);
 
-  // Initial state: ensure EXPANDED on load (in case HTML starts collapsed)
-  if (sidebar.classList.contains('w-20')) {
+  // Ensure EXPANDED by default on load
+  if (sidebar.classList.contains('collapsed')) {
     toggleSidebar();
   }
 }
+
+
 
 
   
