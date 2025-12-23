@@ -81,3 +81,13 @@ if (sidebar && collapseBtn && sidebarTitle) {
     }
   });
 }
+
+
+
+// 5. Sticky Headers + Desktop Sidebar Sticky 
+const header = document.querySelector('.site-header') || document.querySelector('header');
+  if (header) {
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 20); /* Low threshold for quick effect */
+    });
+  }
