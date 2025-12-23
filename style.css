@@ -368,92 +368,63 @@ header {
 
 
 
-/* 1. Global box-sizing (prevents padding/border from causing overflow) */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+/* Mobile Overflow Fixes - Fully responsive container and grids (no horizontal scroll on iPhone) */
+
+@media (max-width: 1024px) {
+  /* Make container fluid - overrides any fixed width (including from assets/css/style.css) */
+  .container {
+    width: 100% !important;
+    max-width: none !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* Neutralize any negative margins on grids/columns/gutters that cause overflow */
+  .columns,
+  .tools-grid,
+  [class*="col-"],
+  [class*="gutter"],
+  .grid,
+  .flex-row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    gap: 1rem; /* Modern spacing instead of negative margins */
+  }
+
+  /* Ensure columns/cards stack or flex properly without overflowing */
+  [class*="col-"],
+  .tool-card,
+  .score-card,
+  .expandable-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Specifically scale down large elements like the overall score card/circle */
+  #overall-score,
+  .score-card,
+  .score-circle {
+    max-width: 100% !important;
+    width: auto !important;
+    margin: 0 auto !important;
+  }
 }
 
-/* 2. Make all images and media fully responsive */
+/* Global safety: Clip any rare remaining overflow without breaking sticky header */
+body {
+  overflow-x: clip;
+}
+
+/* Ensure images and media never overflow */
 img,
+svg,
 video,
-iframe,
-object,
-embed {
+iframe {
   max-width: 100%;
   height: auto;
   display: block;
-}
-
-/* 3. Fix the main container - remove fixed width on mobile */
-.container {
-  width: 100% !important;           /* Override any fixed width (e.g., 980px) */
-  max-width: 980px;                 /* Keep maximum on larger screens */
-  margin-right: auto;
-  margin-left: auto;
-  padding-right: 16px;              /* Consistent safe padding */
-  padding-left: 16px;
-}
-
-/* Optional: Apply similar fluid behavior to other container classes if used */
-.container-md,
-.container-lg,
-.container-xl {
-  width: 100% !important;
-  max-width: none;                  /* Remove hard limits on small screens */
-}
-
-/* 4. Fix grid/column systems with negative margins (common overflow cause) */
-.columns,
-[class*="gutter"] {
-  margin-right: 0 !important;
-  margin-left: 0 !important;
-}
-
-.column {
-  padding-right: 0 !important;
-  padding-left: 0 !important;
-}
-
-/* Restore proper gutters only on larger screens */
-@media (min-width: 544px) {
-  .columns,
-  [class*="gutter"] {
-    margin-right: -10px;            /* Adjust to match your original gutter value */
-    margin-left: -10px;
-  }
-  .column {
-    padding-right: 10px;
-    padding-left: 10px;
-  }
-}
-
-/* 5. Target the large overall score card that overflows on mobile */
-#overall-score,
-.overall-score-score-card,
-.score-card.green,
-.score-card {
-  width: 100% !important;
-  max-width: 320px !important;      /* Safe max size on mobile */
-  margin: 0 auto;                   /* Keep it centered */
-}
-
-/* Scale down the large circular score element */
-.score-circle.large {
-  width: 100% !important;
-  max-width: 180px !important;      /* Prevents it from forcing horizontal scroll */
-  height: auto !important;
-}
-
-/* 6. Modern safe overflow handling (does NOT break position: sticky) */
-body {
-  overflow-x: clip;                 /* Clips any remaining overflow without creating a scroll container */
-}
-
-/* Optional fallback for very old browsers */
-@supports not (overflow-x: clip) {
-  body {
-    overflow-x: hidden;
-  }
 }
