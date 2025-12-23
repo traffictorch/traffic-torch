@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// 4. Desktop Sidebar Collapse - Icons-only mode, hide title & button when collapsed
+// 4. Desktop Sidebar Collapse - Fixed visibility & day/night contrast
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
 const sidebarTitle = document.getElementById('sidebarTitle');
@@ -67,19 +67,16 @@ if (sidebar && collapseBtn && sidebarTitle) {
     sidebar.classList.toggle('w-64');
     sidebar.classList.toggle('w-20');
 
-    // Toggle menu text
+    // Toggle menu labels and title
     document.querySelectorAll('.sidebar-text').forEach(text => {
       text.classList.toggle('hidden');
     });
+    sidebarTitle.classList.toggle('hidden');
 
-    // Toggle logo title and collapse button visibility
+    // Swap icon direction (← = collapse, → = expand)
     if (sidebar.classList.contains('w-20')) {
-      sidebarTitle.classList.add('hidden');
-      collapseBtn.classList.add('hidden');
-      collapseBtn.textContent = '→';  // Prepare for expand
+      collapseBtn.textContent = '→';
     } else {
-      sidebarTitle.classList.remove('hidden');
-      collapseBtn.classList.remove('hidden');
       collapseBtn.textContent = '←';
     }
   });
