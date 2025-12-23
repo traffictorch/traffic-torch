@@ -368,63 +368,41 @@ header {
 
 
 
-/* Mobile Overflow Fixes - Fully responsive container and grids (no horizontal scroll on iPhone) */
+/* Strong Mobile Overflow Fix - Overrides legacy fixed container and negative gutters from assets/css/style.css */
 
 @media (max-width: 1024px) {
-  /* Make container fluid - overrides any fixed width (including from assets/css/style.css) */
-  .container {
+  /* Force container fully fluid, override any fixed px width */
+  .container,
+  div.container {  /* Higher specificity if needed */
     width: 100% !important;
     max-width: none !important;
-    padding-left: 16px !important;
-    padding-right: 16px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
+    min-width: 0 !important;     /* Prevents min-width inheritance issues */
+    padding-left: 12px !important;   /* Slightly smaller safe padding for narrow iPhones */
+    padding-right: 12px !important;
   }
 
-  /* Neutralize any negative margins on grids/columns/gutters that cause overflow */
+  /* Completely remove negative margins and padding that cause extra width */
   .columns,
-  .tools-grid,
-  [class*="col-"],
+  .columns *,
   [class*="gutter"],
-  .grid,
-  .flex-row {
+  .column,
+  .col,
+  [class*="col-"] {
     margin-left: 0 !important;
     margin-right: 0 !important;
-    gap: 1rem; /* Modern spacing instead of negative margins */
-  }
-
-  /* Ensure columns/cards stack or flex properly without overflowing */
-  [class*="col-"],
-  .tool-card,
-  .score-card,
-  .expandable-card {
-    width: 100% !important;
-    max-width: 100% !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
 
-  /* Specifically scale down large elements like the overall score card/circle */
-  #overall-score,
-  .score-card,
-  .score-circle {
-    max-width: 100% !important;
-    width: auto !important;
-    margin: 0 auto !important;
+  /* Ensure any floated columns (from old assets CSS) don't overflow */
+  .column,
+  [class*="column"] {
+    float: none !important;
+    width: 100% !important;
   }
 }
 
-/* Global safety: Clip any rare remaining overflow without breaking sticky header */
-body {
-  overflow-x: clip;
-}
-
-/* Ensure images and media never overflow */
-img,
-svg,
-video,
-iframe {
-  max-width: 100%;
-  height: auto;
-  display: block;
+/* Global clip as safety net (already present, but reinforce) */
+html, body {
+  overflow-x: clip !important;
 }
