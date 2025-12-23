@@ -174,29 +174,8 @@ html.light .score-circle circle.bg {
 }
 
 
-/* SEO Checklist – mobile overflow fix + perfect single column (iPhone safe) */
-@media (max-width: 767px) {
-  #seo-ux-checklist .grid {
-    grid-template-columns: 1fr !important;
-    padding: 0 1rem;
-  }
+/* SEO Checklist – mobile overflow fix + perfect single column (iPhone safe) ????????? */
 
-  .checklist-card {
-    padding: 1.5rem !important;
-    width: 100%;
-    max-width: 100%;
-    overflow: hidden;
-  }
-
-  .checklist-card h3,
-  .checklist-card div,
-  .checklist-card p,
-  .checklist-card strong {
-    word-break: break-word;
-    overflow-wrap: anywhere;
-    hyphens: auto;
-  }
-}
 
 /* Light mode text contrast on checklist cards */
 html.light .checklist-card {
@@ -210,11 +189,6 @@ html.light .checklist-card strong {
 html.light .checklist-card h3 {
   color: inherit;
 }
-
-
-
-
-
 
 
 

@@ -57,10 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// 4. Desktop Sidebar Collapse - Enhanced: collapsed by default, dual triggers (bottom button + new header hamburger)
+// 4. Desktop Sidebar Collapse - Enhanced: EXPANDED by default, dual triggers (bottom button + header hamburger)
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
-const desktopMenuToggle = document.getElementById('desktopMenuToggle'); // New header button
+const desktopMenuToggle = document.getElementById('desktopMenuToggle'); // Header hamburger button
 const sidebarTitle = document.getElementById('sidebarTitle');
 const sidebarTexts = document.querySelectorAll('.sidebar-text');
 
@@ -70,14 +70,14 @@ if (sidebar && (collapseBtn || desktopMenuToggle) && sidebarTitle) {
     sidebar.classList.toggle('w-64');
     sidebarTitle.classList.toggle('hidden');
     sidebarTexts.forEach(text => text.classList.toggle('hidden'));
-    
+   
     // Update both buttons' icons
     const isCollapsed = sidebar.classList.contains('w-20');
     if (collapseBtn) {
       collapseBtn.textContent = isCollapsed ? '→' : '←';
     }
     if (desktopMenuToggle) {
-      desktopMenuToggle.textContent = isCollapsed ? '☰' : '✖'; // ✕ or × for close when expanded
+      desktopMenuToggle.textContent = isCollapsed ? '☰' : '✖'; // ✕ for close when expanded
     }
   };
 
@@ -85,8 +85,8 @@ if (sidebar && (collapseBtn || desktopMenuToggle) && sidebarTitle) {
   if (collapseBtn) collapseBtn.addEventListener('click', toggleSidebar);
   if (desktopMenuToggle) desktopMenuToggle.addEventListener('click', toggleSidebar);
 
-  // Initial state: ensure collapsed (in case JS loads after render)
-  if (!sidebar.classList.contains('w-20')) {
+  // Initial state: ensure EXPANDED on load (in case HTML starts collapsed)
+  if (sidebar.classList.contains('w-20')) {
     toggleSidebar();
   }
 }
