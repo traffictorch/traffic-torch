@@ -33,74 +33,6 @@ body {
 
 html.light body { color: #0f172a; }
 
-/* Header & footer stay perfect from global design */
-header, footer { backdrop-filter: blur(12px); }
-
-/* Tool-specific — beautiful circles */
-.score-card {
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(12px);
-  border-radius: 24px;
-  padding: .2rem;
-  text-align: center;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-}
-
-html.light .score-card {
-  background: rgba(255,255,255,0.7);
-}
-
-.score-circle { width:150px; height:150px; margin:0 auto 1rem; }
-.score-circle svg { width:100%; height:100%; }
-
-.bg { 
-  fill: none !important; 
-  stroke: var(--track); 
-  stroke-width: 14; 
-}
-html.light .bg { 
-  fill: none !important; 
-  stroke: rgba(0,0,0,0.15) !important; 
-}
-
-.progress { fill:none; stroke:#f97316; stroke-width:14; stroke-linecap:round; stroke-dasharray:0 339; transition:all .8s ease; }
-.number { font:bold 44px system-ui; fill:white; text-anchor:middle; dominant-baseline:middle; opacity:0; transition:opacity .5s; }
-html.light .number { fill:#0f172a; }
-
-.score-circle[data-score^="7"] .progress,
-.score-circle[data-score^="8"] .progress,
-.score-circle[data-score^="9"] .progress,
-.score-circle[data-score="100"] .progress { stroke:#10b981; }
-.score-circle[data-score^="5"] .progress,
-.score-circle[data-score^="6"] .progress { stroke:#f59e0b; }
-
-.label { font-size:1.3rem; font-weight:700; margin-top:12px; }
-.expand { margin-top:1rem; padding:1rem 2rem; background:var(--accent); color:white; border:none; border-radius:50px; font-weight:600; cursor:pointer; }
-
-.seo-score {
-.p-8 {
-  padding: 0.5rem !important;
-}
-
-.details {
-  width: 100%;
-  max-width: none;
-  margin-top: 1.5rem;
-  padding: 0 0rem !important;
-}
-.details li {
-  width: 100%;
-  max-width: 100%;
-  padding: 0.5rem !important;
-  background: rgba(255,255,255,0.1);
-  border-radius: 16px;
-  margin-bottom: 1rem;
-  word-wrap: break-word;
-}
-html.light .details li { background: rgba(0,0,0,0.07); }
-html.light .details li { background: rgba(0,0,0,0.05); }
-#loader { text-align:center; padding:4rem; font-size:1.5rem; opacity:0.8; }
-.hidden { display:none; }
 
 /* Restore gradient for Analyze button in light mode */
 html.light #url-form button {
@@ -333,30 +265,3 @@ header {
   border-radius: 4px;
 }
 
-
-
-
-
-/* Fix sticky header visibility – solid fallback for glass effect */
-header {
-  background: rgba(255, 255, 255, 0.1) !important; /* light semi-glass */
-}
-
-html.light header {
-  background: rgba(0, 0, 0, 0.1) !important; /* dark semi-glass in light mode for contrast */
-}
-
-.dark header {
-  background: rgba(0, 0, 0, 0.2) !important;
-}
-
-
-/* Fix sticky header visibility – add solid fallback over transparent Tailwind bg */
-header {
-  background: rgba(0, 0, 0, 0.3) !important; /* Dark mode default – visible glass */
-  backdrop-filter: blur(12px); /* Keep blur if not already */
-}
-
-html.light header {
-  background: rgba(255, 255, 255, 0.3) !important; /* Light mode contrast */
-}
