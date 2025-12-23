@@ -223,3 +223,51 @@ main {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
 }
+
+
+
+
+
+
+
+/* Sticky header & sidebar – Matches current JS (w-20 default / w-64 expanded) */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+#desktopSidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  transition: width 0.3s ease-in-out;
+}
+
+/* Show text/title when expanded (JS adds w-64) */
+#desktopSidebar.w-64 .sidebar-text,
+#desktopSidebar.w-64 #sidebarTitle {
+  display: inline !important;
+}
+
+/* Content shift on desktop */
+@media (min-width: 768px) {
+  .main-content {
+    margin-left: 5rem; /* collapsed w-20 */
+  }
+
+  #desktopSidebar.w-64 ~ .main-content {
+    margin-left: 16rem; /* expanded w-64 */
+  }
+}
+
+/* Scrollbar */
+.dark #desktopSidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dark #desktopSidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
