@@ -236,3 +236,28 @@ header {
   border-radius: 4px;
 }
 
+
+
+
+
+
+/* Fully hide sidebar text in collapsed state */
+#desktopSidebar.collapsed .sidebar-text {
+  display: none !important;
+}
+
+/* When collapsed: center icons perfectly, no extra space for text */
+#desktopSidebar.collapsed .sidebar-link {
+  justify-content: center !important;
+}
+
+/* Reduce sidebar width when collapsed for cleaner look */
+#desktopSidebar.collapsed {
+  width: 80px !important; /* icons only – adjust if needed (e.g., 72px or 64px) */
+}
+
+/* Optional: smoother transition for width */
+#desktopSidebar {
+  transition: width 0.3s ease-in-out;
+}
+
