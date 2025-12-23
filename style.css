@@ -1,37 +1,7 @@
-/* Traffic Torch Analyzer 2025 — FINAL LOCAL CSS (dark + light + circles) */
-
-:root {
-  --bg-gradient: linear-gradient(to bottom right, #0f172a, #020617, #000000);
-  --accent: #f97316;
-  --track: rgba(255,255,255,0.15);
-}
-
-html, body {
-  overflow-x: hidden;
-  width: 100%;
-  max-width: 100vw;
-}
-
-* {
-  box-sizing: border-box;
-}
 
 
-html.light {
-  --bg-gradient: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1);
-  --accent: #ea580c;
-  --track: rgba(0,0,0,0.15);
-}
-
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--bg-gradient);
-  color: white;
-  min-height: 100vh;
-  margin: 0;
-}
-
-html.light body { color: #0f172a; }
+/* Header & footer stay perfect from global design */
+header, footer { backdrop-filter: blur(12px); }
 
 
 /* Restore gradient for Analyze button in light mode */
