@@ -9,18 +9,6 @@
 
 
 
-html {
-  overflow-x: clip; /* Primary: clips overflow without breaking sticky */
-  overflow-y: overlay; /* Optional: allows vertical scroll with overlay scrollbar for better UX */
-}
-
-body {
-  overflow-x: hidden; /* Fallback for older browsers that don't support clip */
-  min-width: 100%; /* Ensures body doesn't shrink below viewport */
-  width: 100vw; /* Covers full viewport width */
-}
-
-
 
 
 
@@ -374,3 +362,33 @@ header {
   margin: 0 auto !important;
 }
 
+
+
+
+
+/* Prevent images and media from overflowing */
+img,
+video,
+iframe,
+object,
+embed {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Ensure flex/grid items in cards don't overflow */
+.card, /* Adjust selector to match your card classes, e.g., .report-card, .module-card */
+[class*="card"] {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  overflow-wrap: break-word; /* Breaks long words if needed */
+}
+
+/* Global box-sizing for consistency (add if not already present) */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
