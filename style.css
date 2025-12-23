@@ -349,3 +349,14 @@ html.light header {
 .dark header {
   background: rgba(0, 0, 0, 0.2) !important;
 }
+
+
+/* Fix sticky header visibility – add solid fallback over transparent Tailwind bg */
+header {
+  background: rgba(0, 0, 0, 0.3) !important; /* Dark mode default – visible glass */
+  backdrop-filter: blur(12px); /* Keep blur if not already */
+}
+
+html.light header {
+  background: rgba(255, 255, 255, 0.3) !important; /* Light mode contrast */
+}
