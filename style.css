@@ -310,5 +310,11 @@ main {
 
 
 
+/* Fix Menu Jerking */
+header > div.flex {
+  flex-nowrap: true;
+}
+
+
 
 
