@@ -81,44 +81,94 @@
   <script src="/keyword-research/script.js" defer></script>
 </head>
 
-<body class="min-h-screen">
-  <!-- Header (unchanged) -->
-  <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-      <a href="/" class="flex items-center gap-4">
-  <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
-  <p class="text-[1.35rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-    Traffic Torch
-  </p>
-</a>
-      <button id="menuToggle" class="md:hidden text-3xl relative left-2 -top-1">☰</button>
-      <nav class="hidden md:flex gap-8 text-lg">
-        <a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent 🎯</a>
-        <a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search 🔍</a>
-        <a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content 🤖</a>
-        <a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk ⚡</a>
-        <a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords 📝</a>
-        <a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">Comp 🆚</a>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+    <aside id="desktopSidebar" class="hidden md:flex w-20 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">
+      <!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+          <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0">
+          <span id="sidebarTitle" class="text-[1.35rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+      <!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚡</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📝</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Comp</span>
+        </a>
+        <a href="/news.html" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📰</span> <span class="sidebar-text hidden">News</span>
+        </a>
       </nav>
-      <button id="themeToggle" class="px-4 py-2 bg-white/10 rounded-full hover:bg-white/20 transition">
-        🌙
-      </button>
-    </div>
-	<div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
-  <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
-    <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🛡️</a>
-    <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
-      <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">SEO Intent 🎯</a>
-      <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Search 🔍</a>
-      <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Content 🤖</a>
-      <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">Quit Risk ⚡</a>
-      <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">Keywords 📝</a>
-      <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">Competition 🆚</a>
-    </div>
-    <a href="/about/" class="text-gray-100 hover:text-orange-400 transition">About</a>
-  </nav>
-    </div>
-  </header>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-400 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          →
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+            <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
+            <p class="text-[1.35rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-400 relative left-2 -top-1">☰</button>
+          
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-400 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+          
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-4 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🛡️</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">SEO Intent 🎯</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Search 🔍</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Content 🤖</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">Quit Risk ⚡</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">Keywords 📝</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">Competition 🆚</a>
+            </div>
+            <a href="/about/" class="text-gray-100 hover:text-orange-400 transition">About</a>
+            <a href="/news.html" class="text-gray-100 hover:text-orange-400 transition">News</a>
+          </nav>
+        </div>
+      </header>
 
   <main class="max-w-4xl mx-auto px-4 py-4 md:py-16">
     <div class="text-center mb-12">
