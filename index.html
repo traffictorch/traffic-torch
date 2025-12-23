@@ -89,72 +89,82 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
-  <!-- Main Layout Wrapper - Column on mobile, row on desktop, flex-1 for full height -->
-  <div class="flex flex-col md:flex-row flex-1">
-    <!-- Desktop-only Sticky Sidebar -->
-    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out flex-col sticky top-0 h-screen overflow-y-auto self-start">
-      <!-- Sidebar Header with Logo -->
-      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
-        <a href="/" class="flex items-center gap-4">
-          <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0">
-          <span id="sidebarTitle" class="text-[1.35rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-            Traffic Torch
-          </span>
-        </a>
-      </div>
-      <!-- Menu Items -->
-      <nav class="p-6 space-y-4 flex-1">
-        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🎯</span> <span class="sidebar-text">SEO Intent</span>
-        </a>
-        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🔍</span> <span class="sidebar-text">Ai Search</span>
-        </a>
-        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🤖</span> <span class="sidebar-text">Ai Content</span>
-        </a>
-        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">⚡</span> <span class="sidebar-text">Quit Risk</span>
-        </a>
-        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">📝</span> <span class="sidebar-text">Keywords</span>
-        </a>
-        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🆚</span> <span class="sidebar-text">Comp</span>
-        </a>
-        <a href="/news.html" class="sidebar-link flex items-center gap-4 text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">📰</span> <span class="sidebar-text">News</span>
-        </a>
-      </nav>
-      <!-- Collapse/Expand Button -->
-      <div class="p-4 border-t border-white/10 dark:border-white/5">
-        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-400 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
-          ←
-        </button>
-      </div>
-    </aside>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
 
-    <!-- Main Content Column -->
-    <div class="flex flex-col flex-1">
-      <!-- Sticky Header -->
-      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5 transition-all duration-300">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex min-h-screen">
+
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+<aside id="desktopSidebar" class="hidden md:block w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col">
+  <!-- Sidebar Header with Logo -->
+  <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+    <a href="/" class="flex items-center gap-4">
+      <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0">
+      <span id="sidebarTitle" class="text-[1.35rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Traffic Torch
+      </span>
+    </a>
+  </div>
+
+  <!-- Menu Items -->
+  <nav class="p-6 space-y-4 flex-1">
+    <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+      <span class="text-2xl">🎯</span> <span class="sidebar-text">SEO Intent</span>
+    </a>
+    <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+      <span class="text-2xl">🔍</span> <span class="sidebar-text">Ai Search</span>
+    </a>
+    <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+      <span class="text-2xl">🤖</span> <span class="sidebar-text">Ai Content</span>
+    </a>
+    <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+      <span class="text-2xl">⚡</span> <span class="sidebar-text">Quit Risk</span>
+    </a>
+    <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+      <span class="text-2xl">📝</span> <span class="sidebar-text">Keywords</span>
+    </a>
+    <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+      <span class="text-2xl">🆚</span> <span class="sidebar-text">Comp</span>
+    </a>
+    <a href="/news.html" class="sidebar-link flex items-center gap-4 text-lg text-gray-400 dark:text-white/90 hover:text-orange-400 transition">
+      <span class="text-2xl">📰</span> <span class="sidebar-text">News</span>
+    </a>
+  </nav>
+
+  <!-- Collapse/Expand Button - Always visible -->
+  <div class="p-4 border-t border-white/10 dark:border-white/5">
+    <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-400 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+      ←
+    </button>
+  </div>
+</aside>
+
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-          <!-- Logo hidden on desktop -->
+          <!-- Logo hidden on desktop since in sidebar -->
           <a href="/" class="flex items-center gap-4 md:hidden">
             <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
             <p class="text-[1.35rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
               Traffic Torch
             </p>
           </a>
+          <!-- Empty spacer on desktop to balance theme button -->
           <div class="w-10 md:hidden"></div>
+
           <button id="menuToggle" class="md:hidden text-3xl relative left-2 -top-1">☰</button>
-          <!-- Theme Toggle -->
+
+          <!-- Desktop top nav removed - now fully in sidebar -->
+
           <button id="themeToggle" class="py-1 px-4 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
             🌙
           </button>
         </div>
-        <!-- Mobile Menu -->
+
+        <!-- Mobile Menu Dropdown (unchanged) -->
         <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
           <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
             <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🛡️</a>
@@ -172,16 +182,17 @@
         </div>
       </header>
 
-      <!-- Main Content with padding for header height -->
-      <main class="container mx-auto px-6 py-16 max-w-5xl flex-1"> <!-- Increased py-16 to ~header height + margin -->
-        <div class="text-center mb-12">
-          <h1 class="text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
+
+
+    
+  <!-- SEO UX TOOL -->
+   <main class="container mx-auto px-6 py-4 max-w-5xl">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
             UX & SEO Analyzer ⚖️
-          </h1>
-          <p class="text-xl text-gray-400">Improve UX • Learn SEO </p>
-        </div>
-
-
+        </h1>
+        <p class="text-xl text-gray-400">Improve UX • Learn SEO </p>
+    </div>
     
     
 <form id="url-form" class="flex flex-col md:flex-row gap-4 max-w-3xl mx-auto mb-12">
@@ -1028,6 +1039,7 @@
   <!-- Load JS last for speed -->
   <script src="/main.js" type="module"></script>
   <script src="/seo-ux-tool/script.js" defer></script>
+
 
   
 </body>

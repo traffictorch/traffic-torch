@@ -58,40 +58,29 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 4. Desktop Sidebar Collapse - Fixed visibility & day/night contrast
+const sidebar = document.getElementById('desktopSidebar');
+const collapseBtn = document.getElementById('sidebarCollapse');
+const sidebarTitle = document.getElementById('sidebarTitle');
 
-  // Sidebar Collapse
-  const sidebar = document.getElementById('desktopSidebar');
-  const collapseBtn = document.getElementById('sidebarCollapse');
-  const sidebarTitle = document.getElementById('sidebarTitle');
-  const sidebarTexts = document.querySelectorAll('.sidebar-text');
+if (sidebar && collapseBtn && sidebarTitle) {
   collapseBtn.addEventListener('click', () => {
     sidebar.classList.toggle('w-64');
     sidebar.classList.toggle('w-20');
+
+    // Toggle menu labels and title
+    document.querySelectorAll('.sidebar-text').forEach(text => {
+      text.classList.toggle('hidden');
+    });
     sidebarTitle.classList.toggle('hidden');
-    sidebarTexts.forEach(text => text.classList.toggle('hidden'));
-    collapseBtn.textContent = sidebar.classList.contains('w-20') ? '→' : '←';
-  });
 
-  // Header on-scroll enhancement (solid background)
-  const header = document.querySelector('header');
-  window.addEventListener('scroll', () => {
-    header.classList.toggle('bg-white/80', window.scrollY > 20);
-    header.classList.toggle('dark:bg-black/80', window.scrollY > 20);
-    header.classList.toggle('shadow-md', window.scrollY > 20);
+    // Swap icon direction (← = collapse, → = expand)
+    if (sidebar.classList.contains('w-20')) {
+      collapseBtn.textContent = '→';
+    } else {
+      collapseBtn.textContent = '←';
+    }
   });
+}
 
-  // Existing mobile menu toggle (add if not present)
-  const menuToggle = document.getElementById('menuToggle');
-  const mobileMenu = document.getElementById('mobileMenu');
-  menuToggle.addEventListener('click', () => {
-    mobileMenu.classList.toggle('hidden');
-  });
-
-  // Theme toggle (stub; implement your logic)
-  const themeToggle = document.getElementById('themeToggle');
-  themeToggle.addEventListener('click', () => {
-    document.documentElement.classList.toggle('dark');
-    themeToggle.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
-  });
 
   
