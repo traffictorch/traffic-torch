@@ -3,103 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- 
+  
   <!-- Optimized SEO Title & Description -->
   <title>Traffic Torch – AI, SEO &amp; UX Tools: Instant Audits, Fixes &amp; Forecasts</title>
   <meta name="description" content="AI-powered SEO &amp; UX tools: Instant 0–100 scores for on-page optimization, competitive gaps, AI search visibility, content quality, bounce prediction, keyword research – all mobile-friendly." />
- 
+  
   <!-- Robots & Canonical -->
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://traffictorch.net/" />
- 
-  <!-- Open Graph & Twitter Cards (kept for completeness) -->
+  
+  <!-- Open Graph Tags (Facebook, LinkedIn, etc.) -->
   <meta property="og:title" content="Traffic Torch – AI SEO &amp; UX Tools Suite" />
-  <meta property="og:description" content="Instant AI-powered tools for SEO &amp; UX health." />
+  <meta property="og:description" content="Instant AI-powered tools for SEO &amp; UX health: On-page audit, competitive gap analysis, AI search optimization, content humanizer, quit risk predictor, keyword research – private &amp; mobile-ready." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://traffictorch.net/" />
   <meta property="og:image" content="https://traffictorch.net/images/traffic-torch.webp" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="Traffic Torch" />
+  
+  <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Traffic Torch – AI SEO &amp; UX Tools Suite" />
-  <meta name="twitter:description" content="Instant AI-powered tools for SEO &amp; UX health." />
+  <meta name="twitter:description" content="Instant AI-powered tools for SEO &amp; UX health: On-page audit, competitive gap analysis, AI search optimization, content humanizer, quit risk predictor, keyword research – private &amp; mobile-ready." />
   <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch.webp" />
- 
+  <meta name="twitter:site" content="@TrafficTorch" /> <!-- Update if you have an X handle -->
+  
+  <!-- Structured Data (JSON-LD): WebApplication + Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Traffic Torch",
+    "description": "Suite of AI-powered SEO and UX analysis tools delivering instant 0–100 scores, deep audits, AI-generated fixes, and predictive forecasts.",
+    "url": "https://traffictorch.net/",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web Browser",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "On-page SEO audit",
+      "Competitive keyword gap analysis",
+      "AI search optimization",
+      "AI content detection & humanizer",
+      "Bounce rate & UX health predictor",
+      "Keyword research with volume & difficulty"
+    ],
+    "image": "https://traffictorch.net/images/traffic-torch.webp",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Traffic Torch"
+    }
+  }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "url": "https://traffictorch.net/",
+    "logo": "https://traffictorch.net/favicon.ico",
+    "description": "AI-powered instant SEO and UX health analysis tools – mobile-friendly."
+  }
+  </script>
+  
   <meta name="color-scheme" content="dark light">
   <link rel="icon" href="/favicon.ico" />
- 
-  <!-- Tailwind CDN -->
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/seo-ux-tool/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
- 
-  <!-- Chart.js CDN (if needed for tools) -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
- 
-  <!-- Embedded CSS -->
-  <style>
-    /* Base resets */
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      line-height: 1.6;
-      min-height: 100vh;
-    }
-
-    /* Sticky header & sidebar */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
-    #desktopSidebar {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      transition: width 0.3s ease-in-out;
-    }
-    #desktopSidebar.expanded {
-      width: 16rem !important; /* override Tailwind w-20 */
-    }
-    #desktopSidebar.expanded .sidebar-text,
-    #desktopSidebar.expanded #sidebarTitle {
-      display: inline !important;
-    }
-    #sidebarCollapse.rotate {
-      transform: rotate(180deg);
-    }
-
-    /* Desktop content shift */
-    @media (min-width: 768px) {
-      .main-content {
-        margin-left: 5rem; /* w-20 = 5rem */
-      }
-      #desktopSidebar.expanded ~ .main-content {
-        margin-left: 16rem;
-      }
-    }
-
-    /* Scrollbar styling for dark mode */
-    .dark #desktopSidebar::-webkit-scrollbar {
-      width: 8px;
-    }
-    .dark #desktopSidebar::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 4px;
-    }
-  </style>
- 
   <script>
-    // Apply saved theme instantly (no flash)
-    (function() {
-      const saved = localStorage.getItem('theme');
-      const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const theme = saved || (preferDark ? 'dark' : 'light');
-      document.documentElement.classList.add(theme);
-    })();
-  </script>
+  // Apply saved theme instantly on load (no flash)
+  (function() {
+    const saved = localStorage.getItem('theme');
+    const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (preferDark ? 'dark' : 'light');
+    document.documentElement.classList.add(theme);
+  })();
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
   <!-- Main Layout Container -->
@@ -1044,60 +1032,9 @@
     </div>
   </div>
  
-  <!-- Embedded JavaScript -->
-  <script>
-    // Theme Toggle
-    const themeToggle = document.getElementById('themeToggle');
-    themeToggle.addEventListener('click', () => {
-      const html = document.documentElement;
-      if (html.classList.contains('dark')) {
-        html.classList.remove('dark');
-        html.classList.add('light');
-        localStorage.setItem('theme', 'light');
-        themeToggle.textContent = '🌙';
-      } else {
-        html.classList.remove('light');
-        html.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-        themeToggle.textContent = '☀️';
-      }
-    });
+  <!-- Load JS last for speed -->
+  <script src="/main.js" type="module"></script>
+  <script src="/seo-ux-tool/script.js" defer></script>
 
-    // Mobile Menu Toggle
-    const menuToggle = document.getElementById('menuToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    menuToggle.addEventListener('click', () => {
-      mobileMenu.classList.toggle('hidden');
-      menuToggle.textContent = mobileMenu.classList.contains('hidden') ? '☰' : '✕';
-    });
-
-    // Desktop Sidebar Full Hide/Show
-    const desktopMenuToggle = document.getElementById('desktopMenuToggle');
-    const desktopSidebar = document.getElementById('desktopSidebar');
-    if (desktopMenuToggle && desktopSidebar) {
-      desktopMenuToggle.addEventListener('click', () => {
-        desktopSidebar.classList.toggle('hidden');
-        desktopMenuToggle.textContent = desktopSidebar.classList.contains('hidden') ? '☰' : '✕';
-      });
-    }
-
-    // Sidebar Collapse/Expand
-    const sidebarCollapse = document.getElementById('sidebarCollapse');
-    if (sidebarCollapse) {
-      sidebarCollapse.addEventListener('click', () => {
-        desktopSidebar.classList.toggle('expanded');
-        sidebarCollapse.classList.toggle('rotate');
-        sidebarCollapse.textContent = desktopSidebar.classList.contains('expanded') ? '←' : '→';
-      });
-    }
-
-    // Reset mobile menu on resize
-    window.addEventListener('resize', () => {
-      if (window.innerWidth >= 768) {
-        mobileMenu.classList.add('hidden');
-        menuToggle.textContent = '☰';
-      }
-    });
-  </script>
 </body>
 </html>

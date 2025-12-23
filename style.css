@@ -310,8 +310,48 @@ main {
 
 
 
-/* Fix Menu Jerking */
+    /* Sticky header & sidebar */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    #desktopSidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      transition: width 0.3s ease-in-out;
+    }
+    #desktopSidebar.expanded {
+      width: 16rem !important; /* override Tailwind w-20 */
+    }
+    #desktopSidebar.expanded .sidebar-text,
+    #desktopSidebar.expanded #sidebarTitle {
+      display: inline !important;
+    }
+    #sidebarCollapse.rotate {
+      transform: rotate(180deg);
+    }
 
+    /* Desktop content shift */
+    @media (min-width: 768px) {
+      .main-content {
+        margin-left: 5rem; /* w-20 = 5rem */
+      }
+      #desktopSidebar.expanded ~ .main-content {
+        margin-left: 16rem;
+      }
+    }
+
+    /* Scrollbar styling for dark mode */
+    .dark #desktopSidebar::-webkit-scrollbar {
+      width: 8px;
+    }
+    .dark #desktopSidebar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
 
 
 
