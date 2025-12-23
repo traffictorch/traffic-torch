@@ -311,9 +311,6 @@ main {
 
 
 /* Fix Menu Jerking */
-header .flex {
-  flex-wrap: nowrap;
-}
 
 
 
