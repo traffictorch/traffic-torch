@@ -1,5 +1,3 @@
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
   // 1. Theme Toggle - Fixed & robust (Tailwind 'class' strategy latest best practice)
   const themeToggle = document.getElementById('themeToggle');
 
@@ -92,4 +90,3 @@
       }
     });
   }
-</script>
