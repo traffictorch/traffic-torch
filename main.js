@@ -61,20 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
 const desktopMenuToggle = document.getElementById('desktopMenuToggle');
-const sidebarTitle = document.getElementById('sidebarTitle');
 
-if (sidebar && (collapseBtn || desktopMenuToggle) && sidebarTitle) {
+if (sidebar && (collapseBtn || desktopMenuToggle)) {
   const toggleSidebar = () => {
     sidebar.classList.toggle('collapsed');
 
-    // Sync title visibility
-    if (sidebar.classList.contains('collapsed')) {
-      sidebarTitle.classList.add('hidden');
-    } else {
-      sidebarTitle.classList.remove('hidden');
-    }
-
-    // Update button icons
     const isCollapsed = sidebar.classList.contains('collapsed');
     if (collapseBtn) {
       collapseBtn.textContent = isCollapsed ? '→' : '←';
@@ -84,11 +75,10 @@ if (sidebar && (collapseBtn || desktopMenuToggle) && sidebarTitle) {
     }
   };
 
-  // Attach to both buttons
   if (collapseBtn) collapseBtn.addEventListener('click', toggleSidebar);
   if (desktopMenuToggle) desktopMenuToggle.addEventListener('click', toggleSidebar);
 
-  // Ensure EXPANDED by default on load
+  // Start expanded
   if (sidebar.classList.contains('collapsed')) {
     toggleSidebar();
   }
