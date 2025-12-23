@@ -71,4 +71,30 @@ body { transition: background-color 0.3s ease; }
 }
 
 
+/* LOCAL DARK MODE TEXT VISIBILITY FIX – High-contrast text for this tool page only */
+.dark body {
+  color: white !important; /* Force main text white in dark mode */
+}
+
+.dark p,
+.dark li,
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6,
+.dark span,
+.dark div {
+  color: rgb(229, 231, 235) !important; /* Light gray fallback for body text */
+}
+
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-gray-700,
+.dark .text-gray-600,
+.dark .text-gray-500 {
+  color: rgb(243, 244, 246) !important; /* Near-white for any gray/dark text classes */
+}
+
+.dark a {
+  color: rgb(147, 197, 253) !important; /* Visible blue for links */
+}
+
+
 
