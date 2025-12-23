@@ -85,9 +85,12 @@ if (sidebar && collapseBtn && sidebarTitle) {
 
 
 // 5. Sticky Headers + Desktop Sidebar Sticky 
-const header = document.querySelector('.site-header') || document.querySelector('header');
-  if (header) {
-    window.addEventListener('scroll', () => {
-      header.classList.toggle('scrolled', window.scrollY > 20); /* Low threshold for quick effect */
-    });
-  }
+  const header = document.querySelector('header'); // Or '#mainHeader' if you added an ID
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 30) {
+      header.classList.add('bg-white/70', 'dark:bg-black/70', 'backdrop-blur-2xl', 'shadow-lg');
+    } else {
+      header.classList.remove('bg-white/70', 'dark:bg-black/70', 'backdrop-blur-2xl', 'shadow-lg');
+    }
+  });
+  
