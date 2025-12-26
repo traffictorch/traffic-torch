@@ -87,3 +87,11 @@ header, footer { backdrop-filter: blur(12px); }
   word-break: break-word;
   hyphens: auto;
 }
+
+@media (max-width: 767px) {
+  header .flex.items-center.gap-4 .text-$$ 1\.35rem $$ {
+    font-size: 1.125rem !important; /* ~18px, reduces from ~21.6px to fit single line */
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+}
