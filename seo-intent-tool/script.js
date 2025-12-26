@@ -6,8 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-		const url = cleanUrl(document.getElementById('url-input').value);
-		if (!url) return;
+    
+    // Shared function — normalizes URL input (used in all Traffic Torch tools)
+function cleanUrl(u) {
+  const trimmed = u.trim();
+  if (!trimmed) return '';
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return 'https://' + trimmed;
+}
 
     // Clear previous results and show centered spinner + progress text
 	results.innerHTML = `
