@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       // Step 1: Fetch page
-      progressText.textContent = "Analyzing pages for Content Depth...";
+      progressText.textContent = "Analyzing Content Depth...";
       await sleep(800);
 
       const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
       // Step 2: Content Depth
-      progressText.textContent = "Analyzing pages for Readability...";
+      progressText.textContent = "Analyzing Readability...";
       await sleep(800);
 
       const text = doc.body?.textContent || '';
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const readability = Math.round(206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words));
 
       // Step 3: E-E-A-T Signals
-      progressText.textContent = "Analyzing pages for E-E-A-T Signals...";
+      progressText.textContent = "Analyzing E-E-A-T Signals...";
       await sleep(800);
 
       const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // Step 4: Intent
-      progressText.textContent = "Analyzing pages for Search Intent...";
+      progressText.textContent = "Analyzing Search Intent...";
       await sleep(800);
 
       const titleLower = (doc.title || '').toLowerCase();
