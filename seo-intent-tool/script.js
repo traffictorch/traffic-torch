@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+		const url = cleanUrl(document.getElementById('url-input').value);
+		if (!url) return;
     
     // Shared function — normalizes URL input (used in all Traffic Torch tools)
 function cleanUrl(u) {
@@ -37,7 +39,7 @@ results.classList.remove('hidden');
       progressText.textContent = "Analyzing Content Depth...";
       await sleep(800);
 
-      const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
+	  const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable – check URL');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
