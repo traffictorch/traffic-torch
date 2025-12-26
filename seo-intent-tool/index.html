@@ -179,15 +179,11 @@
   </div>
 </form>
 
-<!-- Loading indicator - tight spacing, centered, modern spinner -->
-<section id="loading" class="hidden text-center mt-8">
-  <div class="inline-flex flex-col items-center gap-4">
-    <div class="w-20 h-20 border-8 border-gray-200 dark:border-gray-700 border-t-orange-500 dark:border-t-orange-400 rounded-full animate-spin"></div>
-    <p class="text-2xl font-medium text-orange-600 dark:text-orange-400">
-      Analyzing pages for E-E-A-T Signals...
-    </p>
-  </div>
-</section>
+<!-- Loading indicator - matches home page analyzer style -->
+<div id="progress-container" class="text-center my-8 hidden">
+  <div class="spinner mx-auto mb-4"></div>
+  <p id="progress-text" class="text-xl text-gray-400 font-medium">Initializing analysis...</p>
+</div>
 
 <!-- Empty results container - JavaScript will fill this dynamically -->
 <section id="results" class="hidden space-y-16">
