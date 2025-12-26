@@ -68,3 +68,12 @@ header, footer { backdrop-filter: blur(12px); }
 #desktopSidebar.collapsed .logo-container-or-img { /* If needed for logo centering */
   justify-content: center !important;
 }
+
+
+
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
