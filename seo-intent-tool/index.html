@@ -179,13 +179,15 @@
   </div>
 </form>
 
-<!-- Loading indicator - fixed to match home page: smaller padding, text restored -->
-<div id="progress-container" class="text-center my-4 hidden"> <!-- reduced my-8 → my-4 for less padding -->
-  <div class="spinner mx-auto mb-3"></div> <!-- smaller mb-4 → mb-3 -->
-  <p id="progress-text" class="text-xl font-medium text-gray-400 dark:text-gray-400 mt-2">
-    Initializing analysis...
-  </p>
-</div>
+<!-- Loading indicator - tight spacing, centered, modern spinner -->
+<section id="loading" class="hidden text-center mt-2">
+  <div class="inline-flex flex-col items-center gap-4">
+    <div class="w-20 h-20 border-8 border-gray-200 dark:border-gray-700 border-t-orange-500 dark:border-t-orange-400 rounded-full animate-spin"></div>
+    <p class="text-2xl font-medium text-orange-600 dark:text-orange-400">
+      Analyzing Signals...
+    </p>
+  </div>
+</section>
 
 <!-- Empty results container - JavaScript will fill this dynamically -->
 <section id="results" class="hidden space-y-16">

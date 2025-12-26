@@ -51,18 +51,4 @@ body { transition: background-color 0.3s ease; }
   }
   
   
-/* Spinner - improved visibility for dark backgrounds */
-.spinner {
-  border: 8px solid rgba(255, 255, 255, 0.2); /* Slightly stronger base */
-  border-top: 8px solid #f97316;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 1.2s linear infinite;
-  margin: 0 auto;
-}
-
-.dark .spinner {
-  border-color: rgba(255, 255, 255, 0.15); /* Better contrast in dark */
-}
 
