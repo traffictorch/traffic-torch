@@ -51,8 +51,8 @@ body { transition: background-color 0.3s ease; }
   }
   
   
-  
-  
+
+
 /* Fix text visibility in dark/night mode for results table */
 /* Ensures table text is light-colored on dark background */
 @media (prefers-color-scheme: dark) {
@@ -81,3 +81,8 @@ body { transition: background-color 0.3s ease; }
 .dark #results td:nth-child(4) {
   color: #fdba74 !important; /* Adjust to match your warning color palette */
 }
+
+
+
+
+
