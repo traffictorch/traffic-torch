@@ -236,25 +236,45 @@ results.classList.remove('hidden');
 </div>
 
 
-          <!-- Competitive Gap Table -->
-          <div class="overflow-x-auto my-12">
-            <table class="w-full border-collapse border border-gray-300 dark:border-gray-600 text-left">
-              <thead>
-                <tr class="bg-gray-200 dark:bg-gray-700">
-                  <th class="p-4 font-bold">Metric</th>
-                  <th class="p-4 font-bold">Current</th>
-                  <th class="p-4 font-bold">Ideal</th>
-                  <th class="p-4 font-bold">Gap</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="border-b"><td class="p-4">Word Count</td><td class="p-4">${words}</td><td class="p-4">>1,500</td><td class="p-4 ${words<1500?'text-red-500':'text-green-500'}">${words<1500?'Add '+(1500-words)+' words':'Good'}</td></tr>
-                <tr class="border-b"><td class="p-4">Readability</td><td class="p-4">${readability}</td><td class="p-4">60-70</td><td class="p-4 ${readability<60||readability>70?'text-orange-500':'text-green-500'}">${readability<60||readability>70?'Adjust':'Good'}</td></tr>
-                <tr class="border-b"><td class="p-4">Schema Types</td><td class="p-4">${schemaTypes.length}</td><td class="p-4">≥2</td><td class="p-4 ${schemaTypes.length<2?'text-red-500':'text-green-500'}">${schemaTypes.length<2?'Add':'Good'}</td></tr>
-                <tr><td class="p-4">Author Bio</td><td class="p-4">${hasAuthor?'Yes':'No'}</td><td class="p-4">Yes</td><td class="p-4 ${!hasAuthor?'text-red-500':'text-green-500'}">${!hasAuthor?'Add':'Good'}</td></tr>
-              </tbody>
-            </table>
-          </div>
+<!-- Competitive Gap Table - fixed night mode visibility -->
+<div class="overflow-x-auto my-12">
+  <table class="w-full border-collapse border border-gray-300 dark:border-gray-600 text-left">
+    <thead>
+      <tr class="bg-gray-200 dark:bg-gray-700">
+        <th class="p-4 font-bold">Metric</th>
+        <th class="p-4 font-bold">Current</th>
+        <th class="p-4 font-bold">Ideal</th>
+        <th class="p-4 font-bold">Gap</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="border-b">
+        <td class="p-4 text-gray-300">Word Count</td>
+        <td class="p-4 text-gray-300">${words}</td>
+        <td class="p-4 text-gray-300">>1,500</td>
+        <td class="p-4 $$ {words < 1500 ? 'text-red-500' : 'text-green-500'}"> $${words < 1500 ? 'Add ' + (1500 - words) + ' words' : 'Good'}</td>
+      </tr>
+      <tr class="border-b">
+        <td class="p-4 text-gray-300">Readability</td>
+        <td class="p-4 text-gray-300">${readability}</td>
+        <td class="p-4 text-gray-300">60-70</td>
+        <td class="p-4 $$ {readability < 60 || readability > 70 ? 'text-orange-500' : 'text-green-500'}"> $${readability < 60 || readability > 70 ? 'Adjust' : 'Good'}</td>
+      </tr>
+      <tr class="border-b">
+        <td class="p-4 text-gray-300">Schema Types</td>
+        <td class="p-4 text-gray-300">${schemaTypes.length}</td>
+        <td class="p-4 text-gray-300">≥2</td>
+        <td class="p-4 $$ {schemaTypes.length < 2 ? 'text-red-500' : 'text-green-500'}"> $${schemaTypes.length < 2 ? 'Add' : 'Good'}</td>
+      </tr>
+      <tr>
+        <td class="p-4 text-gray-300">Author Bio</td>
+        <td class="p-4 text-gray-300">${hasAuthor ? 'Yes' : 'No'}</td>
+        <td class="p-4 text-gray-300">Yes</td>
+        <td class="p-4 $$ {!hasAuthor ? 'text-red-500' : 'text-green-500'}"> $${!hasAuthor ? 'Add' : 'Good'}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
           
           
 			<!-- Prioritised AI-Style Fixes -->
