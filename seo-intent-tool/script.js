@@ -10,19 +10,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!url) return;
 
     // Clear previous results and show centered spinner + progress text
-    results.innerHTML = `
-      <div id="analysis-progress" class="flex flex-col items-center justify-center py-20">
-        <div class="relative w-20 h-20">
-          <svg class="animate-spin" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8" stroke-opacity="0.3"/>
-            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8"
-                    stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
-          </svg>
-        </div>
-        <p id="progress-text" class="mt-4 text-xl font-medium text-orange-500"></p>
-      </div>
-    `;
-    results.classList.remove('hidden');
+	results.innerHTML = `
+  <div id="analysis-progress" class="flex flex-col items-center justify-center py-8 mt-8">
+    <div class="relative w-20 h-20">
+      <svg class="animate-spin" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8" stroke-opacity="0.3"/>
+        <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8"
+                stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
+      </svg>
+    </div>
+    <p id="progress-text" class="mt-6 text-xl font-medium text-orange-500"></p> <!-- optional: mt-6 for closer text -->
+  </div>
+`;
+results.classList.remove('hidden');
 
     const progressText = document.getElementById('progress-text');
 
