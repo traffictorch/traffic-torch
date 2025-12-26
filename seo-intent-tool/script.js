@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Clear previous results and show centered spinner + progress text
 	results.innerHTML = `
-  <div id="analysis-progress" class="flex flex-col items-center justify-center py-8 mt-8">
+  <div id="analysis-progress" class="flex flex-col items-center justify-center py-4 mt-4">
     <div class="relative w-20 h-20">
       <svg class="animate-spin" viewBox="0 0 100 100">
         <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8" stroke-opacity="0.3"/>
