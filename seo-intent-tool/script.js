@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
           </svg>
         </div>
-        <p id="progress-text" class="mt-8 text-xl font-medium text-orange-500"></p>
+        <p id="progress-text" class="mt-4 text-xl font-medium text-orange-500"></p>
       </div>
     `;
     results.classList.remove('hidden');
