@@ -236,11 +236,11 @@ results.classList.remove('hidden');
 </div>
 
 
-<!-- Competitive Gap Table - visibility fix, Gap column untouched -->
+<!-- Competitive Gap Table - visibility fix with text-gray-400, Gap completely unchanged -->
 <div class="overflow-x-auto my-12">
   <table class="w-full border-collapse border border-gray-300 dark:border-gray-600 text-left">
     <thead>
-      <tr class="bg-gray-400 dark:bg-gray-400">
+      <tr class="bg-gray-200 dark:bg-gray-700">
         <th class="p-4 font-bold">Metric</th>
         <th class="p-4 font-bold">Current</th>
         <th class="p-4 font-bold">Ideal</th>
