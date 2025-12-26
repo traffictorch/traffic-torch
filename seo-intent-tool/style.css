@@ -53,21 +53,16 @@ body { transition: background-color 0.3s ease; }
   
   /* Loading Spinner */
 .spinner {
+  border: 8px solid rgba(255,255,255,0.1);
+  border-top: 8px solid #f97316;
+  border-radius: 50%;
   width: 60px;
   height: 60px;
-  border: 6px solid rgba(156, 163, 175, 0.3); /* gray-400 transparent */
-  border-top: 6px solid rgb(251, 146, 60); /* orange-400 */
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 1.2s linear infinite;
+  margin: 0 auto;
 }
-
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-.dark .spinner {
-  border-color: rgba(75, 85, 99, 0.3); /* gray-600 transparent in dark */
-  border-top-color: rgb(251, 146, 60); /* keep orange */
 }
 
