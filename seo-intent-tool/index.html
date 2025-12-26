@@ -179,10 +179,10 @@
   </div>
 </form>
 
-<!-- Loading indicator - matched to home page style -->
-<div id="progress-container" class="text-center my-8 hidden">
-  <div class="spinner mx-auto mb-4"></div> <!-- Reuses home page .spinner class -->
-  <p id="progress-text" class="text-xl font-medium text-gray-600 dark:text-gray-400">
+<!-- Loading indicator - fixed to match home page: smaller padding, text restored -->
+<div id="progress-container" class="text-center my-4 hidden"> <!-- reduced my-8 → my-4 for less padding -->
+  <div class="spinner mx-auto mb-3"></div> <!-- smaller mb-4 → mb-3 -->
+  <p id="progress-text" class="text-xl font-medium text-gray-400 dark:text-gray-400 mt-2">
     Initializing analysis...
   </p>
 </div>
