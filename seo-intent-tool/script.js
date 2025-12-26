@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Clear previous results and show centered spinner + progress text
 	results.innerHTML = `
-  <div id="analysis-progress" class="flex flex-col items-center justify-center py-4 mt-4">
+  <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 mt-2">
     <div class="relative w-20 h-20">
       <svg class="animate-spin" viewBox="0 0 100 100">
         <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8" stroke-opacity="0.3"/>
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
       </svg>
     </div>
-    <p id="progress-text" class="mt-6 text-xl font-medium text-orange-500"></p> <!-- optional: mt-6 for closer text -->
+    <p id="progress-text" class="mt-4 text-xl font-medium text-orange-500"></p> <!-- optional: mt-6 for closer text -->
   </div>
 `;
 results.classList.remove('hidden');
@@ -236,7 +236,7 @@ results.classList.remove('hidden');
 </div>
 
 
-<!-- Competitive Gap Table - fixed night mode visibility and Gap text -->
+<!-- Competitive Gap Table - gray-400 for visibility, Gap untouched -->
 <div class="overflow-x-auto my-12">
   <table class="w-full border-collapse border border-gray-300 dark:border-gray-600 text-left">
     <thead>
@@ -249,28 +249,28 @@ results.classList.remove('hidden');
     </thead>
     <tbody>
       <tr class="border-b">
-        <td class="p-4 text-gray-300">Word Count</td>
-        <td class="p-4 text-gray-300">${words}</td>
-        <td class="p-4 text-gray-300">>1,500</td>
-        <td class="p-4 $$ {words < 1500 ? 'text-red-500' : 'text-green-500'}"> $${words < 1500 ? 'Add ' + (1500 - words) + ' words' : 'Good'}</td>
+        <td class="p-4 text-gray-400">Word Count</td>
+        <td class="p-4 text-gray-400">${words}</td>
+        <td class="p-4 text-gray-400">>1,500</td>
+        <td class="p-4 $$ {words<1500?'text-red-500':'text-green-500'}"> $${words<1500?'Add '+(1500-words)+' words':'Good'}</td>
       </tr>
       <tr class="border-b">
-        <td class="p-4 text-gray-300">Readability</td>
-        <td class="p-4 text-gray-300">${readability}</td>
-        <td class="p-4 text-gray-300">60-70</td>
-        <td class="p-4 $$ {readability < 60 || readability > 70 ? 'text-orange-500' : 'text-green-500'}"> $${readability < 60 || readability > 70 ? 'Adjust' : 'Good'}</td>
+        <td class="p-4 text-gray-400">Readability</td>
+        <td class="p-4 text-gray-400">${readability}</td>
+        <td class="p-4 text-gray-400">60-70</td>
+        <td class="p-4 $$ {readability<60||readability>70?'text-orange-500':'text-green-500'}"> $${readability<60||readability>70?'Adjust':'Good'}</td>
       </tr>
       <tr class="border-b">
-        <td class="p-4 text-gray-300">Schema Types</td>
-        <td class="p-4 text-gray-300">${schemaTypes.length}</td>
-        <td class="p-4 text-gray-300">≥2</td>
-        <td class="p-4 $$ {schemaTypes.length < 2 ? 'text-red-500' : 'text-green-500'}"> $${schemaTypes.length < 2 ? 'Add' : 'Good'}</td>
+        <td class="p-4 text-gray-400">Schema Types</td>
+        <td class="p-4 text-gray-400">${schemaTypes.length}</td>
+        <td class="p-4 text-gray-400">≥2</td>
+        <td class="p-4 $$ {schemaTypes.length<2?'text-red-500':'text-green-500'}"> $${schemaTypes.length<2?'Add':'Good'}</td>
       </tr>
       <tr>
-        <td class="p-4 text-gray-300">Author Bio</td>
-        <td class="p-4 text-gray-300">${hasAuthor ? 'Yes' : 'No'}</td>
-        <td class="p-4 text-gray-300">Yes</td>
-        <td class="p-4 $$ {!hasAuthor ? 'text-red-500' : 'text-green-500'}"> $${!hasAuthor ? 'Add' : 'Good'}</td>
+        <td class="p-4 text-gray-400">Author Bio</td>
+        <td class="p-4 text-gray-400">${hasAuthor?'Yes':'No'}</td>
+        <td class="p-4 text-gray-400">Yes</td>
+        <td class="p-4 $$ {!hasAuthor?'text-red-500':'text-green-500'}"> $${!hasAuthor?'Add':'Good'}</td>
       </tr>
     </tbody>
   </table>
