@@ -71,3 +71,19 @@ header, footer { backdrop-filter: blur(12px); }
 
 
 
+
+/* Mobile Friendly */
+@media (max-width: 640px) {
+  .text-5xl {
+    font-size: 2.25rem;  /* reduce from 3rem to 36px */
+  }
+  .text-6xl {
+    font-size: 2.5rem;  /* reduce from 3.75rem */
+  }
+}
+
+#priority-fixes p, .details p, .details li {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}

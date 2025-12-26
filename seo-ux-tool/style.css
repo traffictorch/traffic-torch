@@ -189,12 +189,11 @@ body { transition: background-color 0.3s ease; }
 
 /* Mobile Preview Frame Base */
 #phone-frame {
-  width: 375px;
-  height: 812px;
-  background: #000;
-  border-radius: 60px;
-  padding: 20px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  width: min(100%, 375px);
+  height: auto;
+  aspect-ratio: 9 / 19.5;
+  margin: 0 auto;
+  padding: 20px;20px 40px rgba(0,0,0,0.3);
   transition: all 0.6s ease;
   position: relative;
   overflow: hidden;
