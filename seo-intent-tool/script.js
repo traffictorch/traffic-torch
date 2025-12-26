@@ -1,45 +1,49 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('audit-form');
-  const results = document.getElementById('results');
-
-  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-		const url = cleanUrl(document.getElementById('url-input').value);
-		if (!url) return;
-    
-    // Shared function — normalizes URL input (used in all Traffic Torch tools)
 function cleanUrl(u) {
   const trimmed = u.trim();
   if (!trimmed) return '';
   if (/^https?:\/\//i.test(trimmed)) return trimmed;
-  return 'https://' + trimmed;
+
+  // Remove leading "www." if present to avoid duplicate issues
+  let cleaned = trimmed;
+  if (cleaned.toLowerCase().startsWith('www.')) {
+    cleaned = cleaned.slice(4);
+  }
+  return 'https://' + cleaned;
 }
 
-    // Clear previous results and show centered spinner + progress text
-	results.innerHTML = `
-  <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 mt-2">
-    <div class="relative w-20 h-20">
-      <svg class="animate-spin" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8" stroke-opacity="0.3"/>
-        <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8"
-                stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
-      </svg>
-    </div>
-    <p id="progress-text" class="mt-4 text-xl font-medium text-orange-500"></p> <!-- optional: mt-6 for closer text -->
-  </div>
-`;
-results.classList.remove('hidden');
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('audit-form');
+  const results = document.getElementById('results');
+  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Use shared cleanUrl — works with: example.com, www.example.com, https://example.com
+    const url = cleanUrl(document.getElementById('url-input').value);
+    if (!url) return;
+
+    // Clear previous results and show centered spinner + progress text
+    results.innerHTML = `
+      <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 mt-2">
+        <div class="relative w-20 h-20">
+          <svg class="animate-spin" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8" stroke-opacity="0.3"/>
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8"
+                    stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
+          </svg>
+        </div>
+        <p id="progress-text" class="mt-4 text-xl font-medium text-orange-500"></p>
+      </div>
+    `;
+    results.classList.remove('hidden');
     const progressText = document.getElementById('progress-text');
 
     try {
       // Step 1: Fetch page
       progressText.textContent = "Analyzing Content Depth...";
       await sleep(800);
-
-	  const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
+      const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable – check URL');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
@@ -47,7 +51,6 @@ results.classList.remove('hidden');
       // Step 2: Content Depth
       progressText.textContent = "Analyzing Readability...";
       await sleep(800);
-
       const text = doc.body?.textContent || '';
       const words = text.split(/\s+/).filter(Boolean).length;
       const sentences = (text.match(/[.!?]+/g) || []).length || 1;
@@ -57,7 +60,6 @@ results.classList.remove('hidden');
       // Step 3: E-E-A-T Signals
       progressText.textContent = "Analyzing E-E-A-T Signals...";
       await sleep(800);
-
       const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
       const schemaTypes = [];
       doc.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
@@ -71,7 +73,6 @@ results.classList.remove('hidden');
       // Step 4: Intent
       progressText.textContent = "Analyzing Search Intent...";
       await sleep(800);
-
       const titleLower = (doc.title || '').toLowerCase();
       let intent = 'Informational';
       let confidence = 60;
