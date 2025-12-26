@@ -339,28 +339,6 @@ header {
 
 
 
-/* Desktop Sidebar Collapse - Clean & Consistent */
-#desktopSidebar {
-  transition: width 0.3s ease-in-out;
-}
-#desktopSidebar.collapsed {
-  width: 80px !important;
-}
-#desktopSidebar.collapsed .sidebar-link {
-  justify-content: center !important;
-}
-#desktopSidebar.collapsed .sidebar-text {
-  display: none !important;
-}
-#desktopSidebar.collapsed #sidebarTitle {
-  display: none !important;
-}
-#desktopSidebar.collapsed .flex.items-center.justify-center {
-  justify-content: center !important;
-}
-#desktopSidebar.collapsed img {
-  margin: 0 auto !important;
-}
 
 
 
@@ -368,41 +346,4 @@ header {
 
 
 
-/* Strong Mobile Overflow Fix - Overrides legacy fixed container and negative gutters from assets/css/style.css */
 
-@media (max-width: 1024px) {
-  /* Force container fully fluid, override any fixed px width */
-  .container,
-  div.container {  /* Higher specificity if needed */
-    width: 100% !important;
-    max-width: none !important;
-    min-width: 0 !important;     /* Prevents min-width inheritance issues */
-    padding-left: 12px !important;   /* Slightly smaller safe padding for narrow iPhones */
-    padding-right: 12px !important;
-  }
-
-  /* Completely remove negative margins and padding that cause extra width */
-  .columns,
-  .columns *,
-  [class*="gutter"],
-  .column,
-  .col,
-  [class*="col-"] {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-
-  /* Ensure any floated columns (from old assets CSS) don't overflow */
-  .column,
-  [class*="column"] {
-    float: none !important;
-    width: 100% !important;
-  }
-}
-
-/* Global clip as safety net (already present, but reinforce) */
-html, body {
-  overflow-x: clip !important;
-}
