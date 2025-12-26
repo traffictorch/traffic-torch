@@ -88,10 +88,14 @@ header, footer { backdrop-filter: blur(12px); }
   hyphens: auto;
 }
 
-@media (max-width: 767px) {
-  header .flex.items-center.gap-4 .text-$$ 1\.35rem $$ {
-    font-size: 1.125rem !important; /* ~18px, reduces from ~21.6px to fit single line */
+@media (max-width: 420px) {
+  header .flex.items-center.gap-4 .text-$$ 1\.35rem $$,
+  header .flex.items-center.gap-4 p {
+    font-size: 1rem !important;  /* ~16px, down from 21.6px – ensures fit in tight space */
     line-height: 1.2;
     white-space: nowrap;
+  }
+  header .flex.items-center.gap-4 {
+    gap: 0.5rem;  /* reduce gap further for extra room */
   }
 }
