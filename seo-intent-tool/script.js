@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const url = cleanUrl(document.getElementById('url-input').value);
+	const url = cleanUrl(document.getElementById('url-input').value);
     if (!url) return;
 
     // Clear previous results and show centered spinner + progress text
