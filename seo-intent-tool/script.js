@@ -1,13 +1,14 @@
 function cleanUrl(u) {
   const trimmed = u.trim();
   if (!trimmed) return '';
+  // Keep full URL if http/https already present
   if (/^https?:\/\//i.test(trimmed)) return trimmed;
-
-  // Remove leading "www." if present to avoid duplicate issues
+  // Remove leading www. if present (avoids double-www issues)
   let cleaned = trimmed;
   if (cleaned.toLowerCase().startsWith('www.')) {
     cleaned = cleaned.slice(4);
   }
+  // Always default to secure HTTPS
   return 'https://' + cleaned;
 }
 
@@ -19,11 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Use shared cleanUrl — works with: example.com, www.example.com, https://example.com
+    // Standard URL cleaning — works with: example.com, www.example.com, https://example.com
     const url = cleanUrl(document.getElementById('url-input').value);
     if (!url) return;
 
-    // Clear previous results and show centered spinner + progress text
+    // Show loading spinner
     results.innerHTML = `
       <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 mt-2">
         <div class="relative w-20 h-20">
@@ -40,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressText = document.getElementById('progress-text');
 
     try {
-      // Step 1: Fetch page
       progressText.textContent = "Analyzing Content Depth...";
       await sleep(800);
       const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
@@ -48,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
-      // Step 2: Content Depth
       progressText.textContent = "Analyzing Readability...";
       await sleep(800);
       const text = doc.body?.textContent || '';
@@ -57,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const syllables = text.split(/\s+/).reduce((a, w) => a + (w.match(/[aeiouy]+/gi) || []).length, 0);
       const readability = Math.round(206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words));
 
-      // Step 3: E-E-A-T Signals
       progressText.textContent = "Analyzing E-E-A-T Signals...";
       await sleep(800);
       const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
@@ -70,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch {}
       });
 
-      // Step 4: Intent
       progressText.textContent = "Analyzing Search Intent...";
       await sleep(800);
       const titleLower = (doc.title || '').toLowerCase();
@@ -92,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const readScore = readability > 70 ? 90 : readability > 50 ? 75 : 45;
       const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length * 8) / 5);
 
-      // Final step
       progressText.textContent = "Generating Report...";
       await sleep(600);
 
