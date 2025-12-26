@@ -236,7 +236,7 @@ results.classList.remove('hidden');
 </div>
 
 
-<!-- Competitive Gap Table - fixed night mode visibility -->
+<!-- Competitive Gap Table - fixed night mode visibility and Gap text -->
 <div class="overflow-x-auto my-12">
   <table class="w-full border-collapse border border-gray-300 dark:border-gray-600 text-left">
     <thead>
