@@ -31,3 +31,40 @@ html.light body { color: #0f172a; }
 /* Header & footer stay perfect from global design */
 header, footer { backdrop-filter: blur(12px); }
 
+
+
+
+
+
+/* DesktopSidebar */
+#desktopSidebar {
+  width: 16rem !important; /* Matches your Tailwind w-64 (256px) for expanded */
+  transition: width 0.3s ease-in-out;
+}
+
+#desktopSidebar.collapsed {
+  width: 5rem !important; /* 80px – narrow icon-only mode */
+}
+
+
+#desktopSidebar .sidebar-text,
+#desktopSidebar #sidebarTitle {
+  display: none; /* Hidden by default like your current hidden class */
+}
+
+#desktopSidebar:not(.collapsed) .sidebar-text,
+#desktopSidebar:not(.collapsed) #sidebarTitle {
+  display: block; /* Visible only when expanded */
+}
+
+
+#desktopSidebar.collapsed .sidebar-link {
+  justify-content: center !important; /* Overrides md:justify-start */
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  gap: 0 !important; /* Removes the gap-4 space */
+}
+
+#desktopSidebar.collapsed .logo-container-or-img { /* If needed for logo centering */
+  justify-content: center !important;
+}
