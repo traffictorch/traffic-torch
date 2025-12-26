@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!url) return;
 
     // Clear previous results and show centered spinner + progress text
-    results.innerHTML = ``
-  <div id="progress-container" class="text-center my-8">
-    <div class="spinner mx-auto mb-4"></div>
-    <p id="progress-text" class="text-xl font-medium text-gray-600 dark:text-gray-400">
+results.innerHTML = `
+  <div id="progress-container" class="text-center py-20"> <!-- taller for breathing room like original -->
+    <div class="spinner mx-auto mb-6"></div> <!-- larger bottom margin for separation -->
+    <p id="progress-text" class="text-2xl font-medium text-orange-500 dark:text-orange-400 mt-4">
       Initializing analysis...
     </p>
   </div>
