@@ -355,8 +355,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     backdropColor: 'transparent',
                     callback: (value) => value
                   },
-                  grid: { color: gridColor },
-                  angleLines: { color: gridColor },
+                  grid: { color: 'rgb(156, 163, 175)' },
+                  angleLines: { color: 'rgb(156, 163, 175)' },
                   pointLabels: {
                     color: labelColor,
                     font: { size: 14, weight: 'bold' }

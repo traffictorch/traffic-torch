@@ -384,7 +384,7 @@ body { transition: background-color 0.3s ease; }
     /* Thin black outline around score progress circles for better contrast and definition */
   .score-card .progress {
     paint-order: stroke fill;
-    stroke: #ffffff;
+    stroke: #000000;
     stroke-width: 12px; /* adjust 6-10px for thickness - slightly thicker than numbers for visibility */
     stroke-linecap: round;
     stroke-linejoin: round;
