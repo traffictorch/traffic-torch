@@ -59,7 +59,7 @@ body { transition: background-color 0.3s ease; }
   #results table,
   #results th,
   #results td {
-    color: #85878a !important; /* Light gray-white for excellent readability */
+    color: #f3f4f6 !important; /* Light gray-white for excellent readability */
   }
 
   /* Specifically target Gap column text (often red/orange) to make it visible */
@@ -75,7 +75,7 @@ body { transition: background-color 0.3s ease; }
 .dark #results table,
 .dark #results th,
 .dark #results td {
-  color: #85878a !important;
+  color: #f3f4f6 !important;
 }
 
 .dark #results td:nth-child(4) {
