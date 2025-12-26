@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Clear previous results and show centered spinner + progress text
 results.innerHTML = `
-  <div id="progress-container" class="text-center py-20"> <!-- taller for breathing room like original -->
-    <div class="spinner mx-auto mb-6"></div> <!-- larger bottom margin for separation -->
+  <div id="progress-container" class="text-center py-32 min-h-screen flex flex-col items-center justify-center">
+    <div class="spinner mx-auto mb-6"></div> <!-- Uses shared .spinner from style.css – spins automatically -->
     <p id="progress-text" class="text-2xl font-medium text-orange-500 dark:text-orange-400 mt-4">
       Initializing analysis...
     </p>
