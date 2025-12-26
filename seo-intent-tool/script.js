@@ -268,11 +268,11 @@ results.classList.remove('hidden');
         <h4 class="text-2xl font-bold text-red-600">Add Author Bio & Photo</h4>
         <div class="mt-4 space-y-3 text-sm">
           <p class="text-blue-500 font-bold">What it is?</p>
-          <p class="text-gray-400 dark:text-gray-300">A visible author byline with name, photo, and credentials that proves a real expert created the content.</p>
+          <p class="text-gray-400 dark:text-gray-400">A visible author byline with name, photo, and credentials that proves a real expert created the content.</p>
           <p class="text-green-500 font-bold">How to improve?</p>
-          <p class="text-gray-400 dark:text-gray-300">Add a detailed author box with professional headshot, full bio highlighting relevant experience/qualifications, links to social profiles or other work, and clear connection to the topic (e.g., “Written by [Name], 10+ years in [niche]”).</p>
+          <p class="text-gray-400 dark:text-gray-400">Add a detailed author box with professional headshot, full bio highlighting relevant experience/qualifications, links to social profiles or other work, and clear connection to the topic (e.g., “Written by [Name], 10+ years in [niche]”).</p>
           <p class="text-orange-500 font-bold">Why it matters?</p>
-          <p class="text-gray-400 dark:text-gray-300">Search engines heavily weigh proven authorship for E-E-A-T — pages with strong author signals rank higher, build trust faster, and reduce bounce rates significantly.</p>
+          <p class="text-gray-400 dark:text-gray-400">Search engines heavily weigh proven authorship for E-E-A-T — pages with strong author signals rank higher, build trust faster, and reduce bounce rates significantly.</p>
         </div>
       </div>
     </div>
@@ -285,11 +285,11 @@ ${words < 1500 ? `
         <h4 class="text-2xl font-bold text-orange-600">Expand Content Depth</h4>
         <div class="mt-4 space-y-3 text-sm">
           <p class="text-blue-500 font-bold">What it is?</p>
-          <p class="text-gray-400 dark:text-gray-300">Thorough, comprehensive coverage that fully answers the main query plus all related follow-up questions users typically have.</p>
+          <p class="text-gray-400 dark:text-gray-400">Thorough, comprehensive coverage that fully answers the main query plus all related follow-up questions users typically have.</p>
           <p class="text-green-500 font-bold">How to improve?</p>
-          <p class="text-gray-400 dark:text-gray-300">Add in-depth examples, data-backed statistics, step-by-step breakdowns, comparisons, visuals/screenshots, templates or tools, expert quotes, case studies, and expanded FAQs — aim for the most complete resource on the topic.</p>
+          <p class="text-gray-400 dark:text-gray-400">Add in-depth examples, data-backed statistics, step-by-step breakdowns, comparisons, visuals/screenshots, templates or tools, expert quotes, case studies, and expanded FAQs — aim for the most complete resource on the topic.</p>
           <p class="text-orange-500 font-bold">Why it matters?</p>
-          <p class="text-gray-400 dark:text-gray-300">Depth remains the strongest on-page ranking factor — search engines consistently reward the most helpful, exhaustive pages with top positions and sustained traffic growth.</p>
+          <p class="text-gray-400 dark:text-gray-400">Depth remains the strongest on-page ranking factor — search engines consistently reward the most helpful, exhaustive pages with top positions and sustained traffic growth.</p>
         </div>
       </div>
     </div>
@@ -302,11 +302,11 @@ ${schemaTypes.length < 2 ? `
         <h4 class="text-2xl font-bold text-purple-600">Add Relevant Schema Markup</h4>
         <div class="mt-4 space-y-3 text-sm">
           <p class="text-blue-500 font-bold">What it is?</p>
-          <p class="text-gray-400 dark:text-gray-300">Structured data (JSON-LD) that explicitly defines your page type and key entities to search engines.</p>
+          <p class="text-gray-400 dark:text-gray-400">Structured data (JSON-LD) that explicitly defines your page type and key entities to search engines.</p>
           <p class="text-green-500 font-bold">How to improve?</p>
-          <p class="text-gray-400 dark:text-gray-300">Implement at least two relevant types: Article (with author Person link), plus FAQPage, HowTo, Product, or BreadcrumbList as appropriate. Validate with official testing tools before publishing.</p>
+          <p class="text-gray-400 dark:text-gray-400">Implement at least two relevant types: Article (with author Person link), plus FAQPage, HowTo, Product, or BreadcrumbList as appropriate. Validate with official testing tools before publishing.</p>
           <p class="text-orange-500 font-bold">Why it matters?</p>
-          <p class="text-gray-400 dark:text-gray-300">Proper schema unlocks rich results, boosts click-through rates dramatically, strengthens E-E-A-T signals, and helps search engines feature your content more prominently.</p>
+          <p class="text-gray-400 dark:text-gray-400">Proper schema unlocks rich results, boosts click-through rates dramatically, strengthens E-E-A-T signals, and helps search engines feature your content more prominently.</p>
         </div>
       </div>
     </div>
