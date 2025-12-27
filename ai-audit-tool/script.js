@@ -179,7 +179,7 @@ const urlToFetch = normalizedUrl; // use this for fetch
     if (!url) return;
     // Progressive module loader – exact match to other Traffic Torch tools
     results.innerHTML = `
-      <div class="py-20 text-center">
+      <div class="py-4 text-center">
         <div class="inline-block w-16 h-16 mb-8">
           <svg viewBox="0 0 100 100" class="animate-spin text-orange-500">
             <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
@@ -196,7 +196,7 @@ const urlToFetch = normalizedUrl; // use this for fetch
     const messages = [
       "Fetching page...",
       "Extracting main content...",
-      "Analyzing perplexity & burstiness...",
+      "Test perplexity & burstiness...",
       "Checking repetition patterns...",
       "Evaluating sentence variation...",
       "Assessing vocabulary depth...",
