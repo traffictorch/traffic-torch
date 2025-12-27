@@ -81,30 +81,79 @@ body { transition: background-color 0.3s ease; }
 
 
 
-
-/* Mobile Responsiveness (your original) */
-@media (max-width: 1024px) {
-  .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
+/* Mobile-friendly report - force full width and reduce padding on small screens */
+@media (max-width: 768px) {
+  .max-w-5xl {
     max-width: 100% !important;
     padding-left: 1rem !important;
     padding-right: 1rem !important;
   }
-  .p-12, .p-10, .p-8 {
+  .p-8, .p-6, .p-12 {
     padding: 1.5rem !important;
   }
-  .text-5xl {
-    font-size: 2rem !important;
-    line-height: 1.1 !important;
+  .text-7xl, .text-8xl {
+    font-size: 4rem !important;
   }
-  .text-9xl {
-    font-size: 6rem !important;
-    line-height: 1 !important;
+  .text-5xl {
+    font-size: 2.5rem !important;
+  }
+  .text-4xl {
+    font-size: 2rem !important;
+  }
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+  .md\\:grid-cols-3, .md\\:grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+  table {
+    font-size: 0.875rem !important;
+  }
+  table th, table td {
+    padding: 0.75rem !important;
   }
 }
+
 @media (max-width: 480px) {
-  .p-12, .p-10 { padding: 1.25rem !important; }
-  .text-5xl { font-size: 1.875rem !important; }
-  .text-9xl { font-size: 5.5rem !important; }
+  .p-8, .p-6, .p-12 {
+    padding: 1rem !important;
+  }
+  .text-7xl, .text-8xl {
+    font-size: 3.5rem !important;
+  }
+  .text-5xl {
+    font-size: 2.25rem !important;
+  }
+}
+
+
+
+
+/* Prevent iPhone viewport stretch + horizontal bounce on results load (latest pure CSS fix) */
+#results .max-w-5xl {
+  max-width: 100% !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  overflow-x: hidden;  /* Clip any temporary wide child during insert */
+}
+
+#results .overflow-x-auto,
+#results table {
+  width: 100% !important;
+  max-width: 100% !important;
+  table-layout: fixed;         /* Forces even column widths – prevents overflow */
+  overflow-wrap: break-word;
+}
+
+#results table th,
+#results table td {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Smooth internal horizontal scroll if needed */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
 }
 
 
