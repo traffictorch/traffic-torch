@@ -130,29 +130,24 @@ body { transition: background-color 0.3s ease; }
 
 
 
-/* Fix iPhone horizontal stretch on results load */
-html, body {
-  overflow-x: hidden;
-  width: 100%;
+/* Fix iPhone stretch only on results load – target wide elements inside results */
+#results {
+  overflow-x: hidden;  /* Clip any temporary wide content in results */
 }
 
-/* Ensure main wrapper doesn't overflow */
-.max-w-5xl {
-  overflow-x: hidden;
-}
-
-/* Make table content wrap/break to prevent forcing page width */
-table {
+#results table {
   width: 100% !important;
-  table-layout: fixed;
+  table-layout: fixed;         /* Force columns to fit */
+  overflow-wrap: break-word;   /* Break long text/URLs */
+}
+
+#results table th,
+#results table td {
   overflow-wrap: break-word;
+  word-break: break-word;      /* Safe break for any long strings */
 }
 
-table th, table td {
-  word-break: break-all;
-}
-
-/* Enable smooth horizontal scrolling inside table wrapper on iOS */
+/* Ensure internal horizontal scroll works smoothly on iOS */
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
 }
