@@ -59,32 +59,71 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!yourUrl || !compUrl || !phrase) return;
 
 
-// Replace the loading/progress block (from results.classList.remove('hidden') to the line before scoring) with this clean version
+// Replace from results.classList.remove('hidden') to the scoring section with this debugged version
 
     results.classList.remove('hidden');
+    results.innerHTML = `
+      <div class="flex flex-col items-center justify-center pt-32 pb-32 min-h-screen">
+        <div class="relative w-28 h-28">
+          <div class="absolute inset-0 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
+          <div class="absolute inset-0 rounded-full border-8 border-t-orange-500 border-r-pink-500 border-b-transparent border-l-transparent animate-spin"></div>
+        </div>
+        <p class="mt-12 text-3xl font-bold text-orange-600 dark:text-orange-400">Fetching pages...</p>
+      </div>
+    `;
+
+    // Step 1: Fetch both pages FIRST (fast, silent)
+    let yourDoc, compDoc;
+    try {
+      [yourDoc, compDoc] = await Promise.all([fetchPage(yourUrl), fetchPage(compUrl)]);
+    } catch (err) {
+      yourDoc = compDoc = null;
+    }
+
+    // Immediate error if fetch failed
+    if (!yourDoc || !compDoc) {
+      results.innerHTML = `
+        <div class="text-center py-32 px-6 max-w-3xl mx-auto">
+          <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-8">
+            Error: Could not load one or both pages
+          </p>
+          <p class="text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
+            Please check:
+            <ul class="mt-4 space-y-2 text-left list-disc pl-8">
+              <li>URLs are correct and publicly accessible</li>
+              <li>Pages are not behind login or blocked by robots.txt</li>
+              <li>No ad-blocker or firewall blocking the request</li>
+            </ul>
+          </p>
+        </div>
+      `;
+      return;
+    }
+
+    // Step 2: Now that data is ready, show nice progress animation for ~6 seconds
     results.innerHTML = `
       <div class="flex flex-col items-center justify-start pt-24 pb-32 min-h-screen bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
         <div class="relative w-28 h-28">
           <div class="absolute inset-0 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
           <div class="absolute inset-0 rounded-full border-8 border-t-orange-500 border-r-pink-500 border-b-transparent border-l-transparent animate-spin"></div>
         </div>
-        <p class="mt-12 text-3xl font-bold text-orange-600 dark:text-orange-400">Analyzing "${phrase}"...</p>
-        <p class="mt-4 text-xl text-gray-600 dark:text-gray-400">Side-by-side competitor comparison</p>
+        <p class="mt-12 text-3xl font-bold text-orange-600 dark:text-orange-400">Deep analysis in progress...</p>
+        <p class="mt-4 text-xl text-gray-600 dark:text-gray-400">Comparing "${phrase}" relevance</p>
         <div id="progress-modules" class="mt-16 space-y-5 w-full max-w-xl px-6"></div>
       </div>
     `;
 
     const progressModules = document.getElementById('progress-modules');
     const messages = [
-      "Fetching both pages securely",
-      "Parsing content & metadata",
-      "Analyzing keyword placement",
-      "Evaluating depth & relevance",
-      "Calculating scores & gaps"
+      "Parsing titles, meta & headings",
+      "Analyzing content depth & keyword usage",
+      "Checking images, anchors & schema",
+      "Calculating Phrase Power Scores",
+      "Generating prioritized gap fixes"
     ];
 
     let idx = 0;
-    const delay = 1200; // 1.2 seconds per step → 5 steps = 6 seconds total
+    const delay = 1200; // 1.2s × 5 steps = 6 seconds
     const interval = setInterval(() => {
       if (idx < messages.length) {
         progressModules.innerHTML += `
@@ -106,29 +145,19 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }, delay);
 
-    results.dataset.interval = interval;
+    // Step 3: Wait exactly until all progress steps complete before showing results
+    await new Promise(resolve => {
+      const check = setInterval(() => {
+        if (idx >= messages.length) {
+          clearInterval(check);
+          clearInterval(interval);
+          resolve();
+        }
+      }, 200);
+    });
 
-    // Normal fetch — no artificial blocking
-    const [yourDoc, compDoc] = await Promise.all([fetchPage(yourUrl), fetchPage(compUrl)]);
-
-    // Always clear progress animation
-    if (results.dataset.interval) clearInterval(results.dataset.interval);
-
-    if (!yourDoc || !compDoc) {
-      results.innerHTML = `
-        <div class="text-center py-32 px-6">
-          <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-6">
-            Error: Could not load one or both pages
-          </p>
-          <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl">
-            Please check that both URLs are valid, publicly accessible, and not blocked by robots.txt or login.
-          </p>
-        </div>
-      `;
-      return;
-    }
-
-    // ... rest of scoring, data calculation, and results rendering remains exactly unchanged
+    // Now render final results (data already available)
+    // ... [all your existing scoring code from "let yourScore = 0;" onward remains 100% unchanged]
 
     let yourScore = 0;
     let compScore = 0;
