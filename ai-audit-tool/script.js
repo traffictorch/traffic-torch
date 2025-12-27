@@ -6,6 +6,18 @@ document.addEventListener('DOMContentLoaded', () => {
   let analyzedText = '';
   let wordCount = 0; // Added to match your usage in template
 
+  // === ADDED FIX: Force https:// and remove any http:// (tool works without http) ===
+  const normalizeUrl = (url) => {
+    let normalized = url.trim();
+    if (!normalized.startsWith('http://') && !normalized.startsWith('https://')) {
+      normalized = 'https://' + normalized;
+    } else if (normalized.startsWith('http://')) {
+      normalized = 'https://' + normalized.slice(7);
+    }
+    return normalized;
+  };
+  // ===========================================================================
+
   function getMainContent(doc) {
     // 1. Try explicit main content containers
     const main = doc.querySelector('main, [role="main"], article, .main-content, .site-content, .content-area');
@@ -35,6 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
     body.querySelectorAll(removeSelectors).forEach(e => e.remove());
     return body;
   }
+  
+  
+  
 
   function analyzeAIContent(text) {
     if (!text || text.length < 200) {
