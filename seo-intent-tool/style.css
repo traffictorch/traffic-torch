@@ -51,36 +51,37 @@ body { transition: background-color 0.3s ease; }
   }
   
   
-
-
-/* Fix text visibility in dark/night mode for results table */
-/* Ensures table text is light-colored on dark background */
-@media (prefers-color-scheme: dark) {
-  #results table,
-  #results th,
-  #results td {
-    color: #f3f4f6 !important; /* Light gray-white for excellent readability */
+  
+   /* Save as PDF */
+ @media print {
+  #audit-form, #analysis-progress, header, footer, nav, aside, .no-print {
+    display: none !important;
   }
-
-  /* Specifically target Gap column text (often red/orange) to make it visible */
-  #results td:nth-child(4),
-  #results .gap-column {  /* Add a class if needed, or use this selector */
-    color: #fdba74 !important; /* Light orange for warnings, or #ef4444 for red */
+  body {
+    background: white !important;
+    color: black !important;
   }
+  .hidden {
+    display: block !important;
+  }
+  .bg-white, .dark\\:bg-gray-900 {
+    background: white !important;
+  }
+  .text-gray-900, .dark\\:text-gray-100 {
+    color: black !important;
+  }
+  .shadow-lg {
+    box-shadow: none !important;
+  }
+  .max-w-5xl {
+    max-width: none !important;
+  }
+} 
 
-  /* If using a .dark class toggle instead of prefers-color-scheme, duplicate under .dark {} */
-}
 
-/* If your site uses a manual .dark class toggle (e.g., via JS), add this as well */
-.dark #results table,
-.dark #results th,
-.dark #results td {
-  color: #f3f4f6 !important;
-}
 
-.dark #results td:nth-child(4) {
-  color: #fdba74 !important; /* Adjust to match your warning color palette */
-}
+
+
 
 
 
