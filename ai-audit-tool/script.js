@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function getGradeColor(normalized10) {
     if (normalized10 >= 8.0) return '#10b981'; // green
     if (normalized10 >= 6.0) return '#f97316'; // orange
-    return '#ef4444'; // red
+    return '#000'; // black
   }
 
   form.addEventListener('submit', async (e) => {
@@ -365,8 +365,8 @@ const urlToFetch = normalizedUrl; // use this for fetch
             </div>
                     <!-- Predictive Rank Forecast - Improved -->
             <div class="mt-20 p-10 md:p-16 bg-gradient-to-r from-orange-500 to-pink-600 rounded-3xl shadow-2xl text-white text-center space-y-8">
-              <h2 class="text-4xl md:text-5xl font-black">Predictive Rank Forecast</h2>
-              <p class="text-6xl md:text-8xl font-black" style="color: ${mainGradeColor}">${forecast}</p>
+              <h2 class="text-4xl md:text-4xl font-black">Predictive Rank Forecast</h2>
+              <p class="text-4xl md:text-4xl font-black" style="color: ${mainGradeColor}">${forecast}</p>
               <p class="text-2xl md:text-3xl font-bold">Potential if humanized</p>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
                 <div class="bg-white/20 backdrop-blur rounded-2xl p-8">
