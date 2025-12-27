@@ -130,23 +130,34 @@ body { transition: background-color 0.3s ease; }
 
 
 
-/* Prevent iOS Safari horizontal rubber-band bounce on swipe (pure CSS, reliable on current iOS) */
-html {
-  overflow: hidden;
-  height: 100%;
-  position: fixed;
+/* Fix iOS Safari horizontal stretch + rubber-band bounce on swipe (exact method from home tool success) */
+html, body {
+  overflow-x: hidden;          /* Prevent page-level horizontal overflow/bounce */
+  width: 100%;                 /* Lock width to viewport */
+  min-width: 0;                /* Additional safety for flex/table issues */
+}
+
+/* Ensure results container and table never force horizontal stretch */
+#results {
+  overflow-x: hidden;          /* Clip any temporary wide content during insert */
   width: 100%;
 }
 
-body {
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: 100%;
-  width: 100%;
-  -webkit-overflow-scrolling: touch;  /* Smooth momentum scrolling */
+#results .overflow-x-auto,
+#results table {
+  width: 100% !important;
+  max-width: 100%;
+  table-layout: fixed;         /* Force table to respect container width */
+  overflow-wrap: break-word;   /* Break long text/URLs in cells */
 }
 
-/* Ensure internal horizontal scroll (table) works smoothly */
+#results table th,
+#results table td {
+  word-break: break-word;      /* Ensure no unbreakable content widens table */
+  overflow-wrap: anywhere;
+}
+
+/* Keep internal horizontal scroll smooth on iOS */
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
 }
