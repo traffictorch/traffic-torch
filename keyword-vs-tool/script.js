@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <!-- Prioritized Gap Fixes – Top 3 Only -->
         <div class="space-y-8">
-          <h3 class="text-4xl font-black text-center mb-8">Prioritized Gap Fixes</h3>
+          <h3 class="text-4xl font-black text-orange-500 text-center mb-8">Prioritized Gap Fixes</h3>
           ${prioritizedFixes.length ? prioritizedFixes.map(fix => {
             let educ = {};
             if (fix.includes('title and meta description')) {
