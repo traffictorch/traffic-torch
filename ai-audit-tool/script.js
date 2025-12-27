@@ -47,9 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     body.querySelectorAll(removeSelectors).forEach(e => e.remove());
     return body;
   }
-  
-  
-  
+});
 
   function analyzeAIContent(text) {
     if (!text || text.length < 200) {
