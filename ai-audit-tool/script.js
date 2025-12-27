@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let t = raw.trim();
     if (t.length < 250) return t;
 
-    // Basic cleanup
+    // Clean up navigation/menu noise
     t = t.replace(/Skip to (main )?content/gi, '')
          .replace(/\b(Home|About|Services|Contact|Blog|Shop|Cart|Login|Signup|Reserve|Book|Explore|Discover|View|Learn|Get Started|Sign Up)\b/gi, '')
          .replace(/\s+/g, ' ')
@@ -102,11 +102,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let result = [];
 
     const swaps = {
-      very: ['really', 'truly', 'quite'],
-      good: ['great', 'excellent', 'solid'],
-      best: ['top', 'finest', 'leading'],
-      important: ['key', 'essential', 'crucial'],
-      easy: ['simple', 'straightforward', 'clear']
+      very: ['really', 'truly', 'quite', 'highly'],
+      good: ['great', 'excellent', 'solid', 'strong'],
+      best: ['top', 'finest', 'leading', 'ultimate'],
+      important: ['key', 'essential', 'crucial', 'vital'],
+      easy: ['simple', 'straightforward', 'clear', 'effortless'],
+      use: ['try', 'apply', 'work with', 'go with'],
+      help: ['assist', 'support', 'boost', 'enhance']
     };
 
     for (let s of sentences) {
@@ -114,6 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!sentence || sentence.length < 30) continue;
 
       let words = sentence.split(' ');
+
+      // Apply word swaps for natural variation (moderate probability)
       for (let i = 0; i < words.length; i++) {
         const clean = words[i].toLowerCase().replace(/[^a-z]/g, '');
         if (swaps[clean] && Math.random() < 0.4) {
@@ -124,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       sentence = words.join(' ');
 
-      // Gentle sentence splitting for rhythm
+      // Occasionally split long sentences for better rhythm
       if (sentence.split(' ').length > 25 && Math.random() < 0.5) {
         const mid = Math.floor(sentence.length / 2);
         const breakPoint = sentence.lastIndexOf([',', ';', '—', ':'][Math.floor(Math.random() * 4)], mid);
@@ -139,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let final = result.join(' ').trim();
 
-    // Natural paragraph breaks
+    // Create natural paragraph breaks
     const allSentences = final.match(/[^.!?]+[.!?]+/g) || [final];
     let paragraphs = [];
     let current = [];
@@ -418,16 +422,13 @@ const urlToFetch = normalizedUrl; // use this for fetch
       output.classList.add('hidden');
       setTimeout(() => {
       const humanized = makeItHuman(analyzedText);
-      
-      // Format humanized text: ALL example text bold, proper paragraphs
-      let formatted = humanized
-        .replace(/\n\n/g, '</p><p class="mt-8 font-bold leading-relaxed">')  // New paragraph: bold
-        .replace(/\n/g, '<br>');                                            // Line breaks
-
-      // Wrap everything in bold paragraphs – first paragraph also bold
-      textDiv.innerHTML = '<p class="font-bold leading-relaxed">' + formatted + '</p>';
-      
-      output.classList.remove('hidden');
+      // Make the entire humanized example bold for clear visual distinction
+textDiv.innerHTML = '<p class="font-bold leading-relaxed">' + 
+  humanized.replace(/\n\n/g, '</p><p class="mt-8 font-bold leading-relaxed">')
+           .replace(/\n/g, '<br>') + 
+  '</p>';
+      textDiv.innerHTML = '<p>' + textDiv.innerHTML + '</p>';
+        output.classList.remove('hidden');
       }, 400);
     }
   });
