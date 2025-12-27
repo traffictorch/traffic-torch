@@ -130,23 +130,21 @@ body { transition: background-color 0.3s ease; }
 
 
 
-/* Fix iPhone horizontal stretch/bounce on results load – match home tool (no root overflow, only prevent actual overflow in results) */
-
-/* Main containers full width + padding (already in your media queries – ensure present) */
+/* Fix viewport stretch on iPhone results load – match home tool mobile container safety */
 @media (max-width: 1024px) {
-  .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
+  #results .max-w-5xl {
     max-width: 100% !important;
     padding-left: 1rem !important;
     padding-right: 1rem !important;
   }
 }
 
-/* Target results table to prevent it forcing page width */
+/* Force competitive gap table to always fit container (no stretch trigger) */
 #results .overflow-x-auto,
 #results table {
   width: 100% !important;
   max-width: 100% !important;
-  table-layout: fixed;
+  table-layout: fixed;               /* Even column distribution – key to no overflow */
   overflow-wrap: break-word;
 }
 
@@ -154,9 +152,10 @@ body { transition: background-color 0.3s ease; }
 #results table td {
   word-break: break-word;
   overflow-wrap: anywhere;
+  padding: 0.75rem !important;       /* Consistent cell padding */
 }
 
-/* Smooth internal table scroll on iOS */
+/* Smooth internal scroll if table ever needs it */
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
 }
