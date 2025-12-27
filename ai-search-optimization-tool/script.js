@@ -163,40 +163,35 @@ const initTool = (form, results, progressContainer) => {
         prioritisedFixes.push({ title: "Add Direct Answer in Opening", emoji: "💡", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
           what: "A clear, bold, quotable answer AI engines can cite directly",
           how: "Add a bold definition or summary in first 150–250 words. Use H2 questions and numbered steps.",
-          why: "Answerability is the #1 factor for AI citation and source selection",
-          descClass: "text-gray-400"  // Applies gray-400 to What/How/Why texts in both modes
+          why: "Answerability is the #1 factor for AI citation and source selection"
         });
       }
       if (lowScoring.some(m => m.name === "EEAT Signals")) {
         prioritisedFixes.push({ title: "Add Author Bio & Photo", emoji: "👤", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
           what: "Visible byline proving who wrote this",
           how: "Headshot + name + bio + credentials + social links",
-          why: "Boosts Expertise & Trust by 30–40 points — Google's #1 E-E-A-T signal",
-          descClass: "text-gray-400"  // Applies gray-400 to What/How/Why texts in both modes
+          why: "Boosts Expertise & Trust by 30–40 points — Google's #1 E-E-A-T signal"
         });
       }
       if (lowScoring.some(m => m.name === "Structured Data")) {
         prioritisedFixes.push({ title: "Add Article + Person Schema", emoji: "✨", gradient: "from-purple-500/10 border-purple-500", color: "text-purple-600",
           what: "Structured data that AI engines read directly",
           how: "JSON-LD with @type Article + Person + author link. Add FAQPage if relevant.",
-          why: "Triggers rich answers and massive citation boost",
-          descClass: "text-gray-400"  // Applies gray-400 to What/How/Why texts in both modes
+          why: "Triggers rich answers and massive citation boost"
         });
       }
       if (lowScoring.some(m => m.name === "Scannability")) {
         prioritisedFixes.push({ title: "Boost Scannability with Lists & Tables", emoji: "📋", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
           what: "Easy-to-extract facts via structured formatting",
           how: "Add bullet/numbered lists, data tables, H2/H3 headings, short paragraphs",
-          why: "AI prioritizes instantly extractable content",
-          descClass: "text-gray-400"  // Applies gray-400 to What/How/Why texts in both modes
+          why: "AI prioritizes instantly extractable content"
         });
       }
       if (lowScoring.some(m => m.name === "Unique Insights")) {
         prioritisedFixes.push({ title: "Add First-Hand Experience", emoji: "🧠", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
           what: "Original insights that stand out from generic content",
           how: "Include “I tested”, case studies, personal results, dated experiences",
-          why: "Prevents de-duplication and boosts originality",
-          descClass: "text-gray-400"  // Applies gray-400 to What/How/Why texts in both modes
+          why: "Prevents de-duplication and boosts originality"
         });
       }
 
@@ -260,18 +255,19 @@ const initTool = (form, results, progressContainer) => {
             }).join('')}
           </div>
 
-          ${prioritisedFixes.length > 0 ? `
-            <div class="space-y-8">
-              <h3 class="text-4xl font-bold text-green-400 text-center mb-8">Prioritised AI-Style Fixes</h3>
-              ${prioritisedFixes.map(fix => `
+		     ${prioritisedFixes.map(fix => `
                 <div class="p-8 bg-gradient-to-r ${fix.gradient} border-l-8 rounded-r-2xl">
                   <div class="flex gap-6">
                     <div class="text-5xl">${fix.emoji}</div>
                     <div>
                       <h4 class="text-2xl font-bold ${fix.color}">${fix.title}</h4>
-                      <p class="mt-4 text-blue-500 font-bold">What:</p><p>${fix.what}</p>
-                      <p class="mt-2 text-green-500 font-bold">How:</p><p>${fix.how}</p>
-                      <p class="mt-2 text-orange-500 font-bold">Why:</p><p>${fix.why}</p>
+                      <!-- Labels keep accent colors, descriptions fixed to gray-400 for visibility in night mode -->
+                      <p class="mt-4 text-blue-500 font-bold">What:</p>
+                      <p class="text-gray-400">${fix.what}</p>
+                      <p class="mt-2 text-green-500 font-bold">How:</p>
+                      <p class="text-gray-400">${fix.how}</p>
+                      <p class="mt-2 text-orange-500 font-bold">Why:</p>
+                      <p class="text-gray-400">${fix.why}</p>
                     </div>
                   </div>
                 </div>
