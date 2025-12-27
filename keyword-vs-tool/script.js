@@ -84,25 +84,20 @@ document.addEventListener('DOMContentLoaded', () => {
       "Generating prioritized gap fixes"
     ];
 
-    let idx = 0;
+	let idx = 0;
     const interval = setInterval(() => {
       if (idx < messages.length) {
         progressModules.innerHTML += `
-          <div class="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl shadow opacity-0 translate-y-4 transition-all duration-700">
+          <div class="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl shadow animate-in">
             <div class="w-8 h-8 bg-orange-500 rounded-full animate-pulse"></div>
             <p class="text-lg text-gray-800 dark:text-gray-200">${messages[idx]}</p>
           </div>
         `;
-        // Trigger animation
-        setTimeout(() => {
-          progressModules.lastElementChild.classList.remove('opacity-0', 'translate-y-4');
-          progressModules.lastElementChild.classList.add('opacity-100', 'translate-y-0');
-        }, 50);
         idx++;
       } else {
         clearInterval(interval);
       }
-    }, Math.random() * 1600 + 1200); // 1200–2800ms delay – slow and readable
+    }, Math.random() * 1600 + 1200);
 
     results.dataset.interval = interval;
 
