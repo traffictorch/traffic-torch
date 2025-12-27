@@ -3,6 +3,7 @@ const waitForElements = () => {
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
   const progressContainer = document.getElementById('analysis-progress');
+
   if (form && results && progressContainer) {
     initTool(form, results, progressContainer);
   } else {
@@ -12,14 +13,6 @@ const waitForElements = () => {
 
 const initTool = (form, results, progressContainer) => {
   const progressText = document.getElementById('progress-text');
-
-  // Normalize URL - adds https:// if missing (required for CORS proxy)
-  function cleanUrl(u) {
-    const trimmed = u.trim();
-    if (!trimmed) return '';
-    if (/^https?:\/\//i.test(trimmed)) return trimmed;
-    return 'https://' + trimmed;
-  }
   
   
 
