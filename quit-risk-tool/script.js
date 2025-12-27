@@ -19,65 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
   
-  
-  
-  
-  form.addEventListener('submit', async e => {
-    e.preventDefault();
-
-    let url = input.value.trim(); // Trim whitespace
-
-    if (!url) {
-      results.innerHTML = `<div class="text-center py-20"><p class="text-3xl text-red-500 font-bold">Please enter a URL</p></div>`;
-      return;
-    }
-
-    // Normalize URL: Add https:// if no protocol provided
-    if (!/^https?:\/\//i.test(url)) {
-      url = 'https://' + url;
-    } else if (/^http:\/\//i.test(url)) {
-      // Upgrade http to https for better compatibility
-      url = url.replace(/^http:\/\//i, 'https://');
-    }
-
-    results.classList.remove('hidden');
-    const loaderHTML = `<!-- existing loader HTML unchanged -->`;
-    results.innerHTML = loaderHTML;
-    // ... (existing progress steps and runStep() unchanged) ...
-
-    async function performAnalysis() {
-      try {
-        progressText.textContent = "Generating report and prioritized fixes...";
-
-        // Add realistic User-Agent to bypass anti-bot detection on many sites
-        const res = await fetch(PROXY + '?url=' + encodeURIComponent(url), {
-          headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'
-          }
-        });
-
-        if (!res.ok) {
-          let errMsg = 'Page not reachable';
-          if (res.status === 400) errMsg += ' (proxy rejected request — likely blocked by target site protection)';
-          if (res.status >= 500) errMsg += ' (server error on target site)';
-          throw new Error(errMsg);
-        }
-
-        const html = await res.text();
-        // ... (rest of existing analysis unchanged) ...
-      } catch (err) {
-        results.innerHTML = `
-          <div class="text-center py-20">
-            <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
-            <p class="mt-6 text-xl text-gray-400">Please check the URL and try again.</p>
-          </div>
-        `;
-      }
-    }
-  });
-  
-  
-  
 
   function analyzeUX(data) {
     let readability = 60;
@@ -144,8 +85,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
-    const url = input.value.trim();
-    if (!url) return;
+    let url = input.value.trim();
+
+    if (!url) {
+      results.innerHTML = `<div class="text-center py-20"><p class="text-3xl text-red-500 font-bold">Please enter a URL</p></div>`;
+      return;
+    }
+
+    // Fix: Allow input without http/https — add https:// automatically
+    if (!/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+      input.value = url; // Show full URL in the input field (matches other tools)
+    }
 
     results.classList.remove('hidden');
 
