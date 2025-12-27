@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!yourUrl || !compUrl || !phrase) return;
 
 
-// Replace the loading/progress block (from results.classList.remove('hidden') to after the await Promise.all) with this final version
+// Replace the loading/progress block (from results.classList.remove('hidden') to the line before scoring) with this clean version
 
     results.classList.remove('hidden');
     results.innerHTML = `
@@ -69,28 +69,27 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="absolute inset-0 rounded-full border-8 border-t-orange-500 border-r-pink-500 border-b-transparent border-l-transparent animate-spin"></div>
         </div>
         <p class="mt-12 text-3xl font-bold text-orange-600 dark:text-orange-400">Analyzing "${phrase}"...</p>
-        <p class="mt-4 text-xl text-gray-600 dark:text-gray-400">Comparing your page vs competitor</p>
-        <div id="progress-modules" class="mt-16 space-y-5 w-full max-w-2xl px-6"></div>
+        <p class="mt-4 text-xl text-gray-600 dark:text-gray-400">Side-by-side competitor comparison</p>
+        <div id="progress-modules" class="mt-16 space-y-5 w-full max-w-xl px-6"></div>
       </div>
     `;
 
     const progressModules = document.getElementById('progress-modules');
     const messages = [
-      "Fetching and parsing your page",
-      "Fetching and parsing competitor page",
-      "Analyzing titles, meta & headings",
-      "Evaluating content depth & keyword usage",
-      "Checking images, anchors & schema",
-      "Calculating Phrase Power Scores & gaps"
+      "Fetching both pages securely",
+      "Parsing content & metadata",
+      "Analyzing keyword placement",
+      "Evaluating depth & relevance",
+      "Calculating scores & gaps"
     ];
 
     let idx = 0;
-    const delay = 1800; // 1.8s per step → 6 steps = ~10.8 seconds total
+    const delay = 1200; // 1.2 seconds per step → 5 steps = 6 seconds total
     const interval = setInterval(() => {
       if (idx < messages.length) {
         progressModules.innerHTML += `
-          <div class="flex items-center gap-5 p-5 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg
-                  opacity-0 translate-y-4 transition-all duration-700 ease-out">
+          <div class="flex items-center gap-5 p-5 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-lg
+                  opacity-0 translate-y-4 transition-all duration-600 ease-out">
             <div class="w-9 h-9 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full animate-pulse flex-shrink-0"></div>
             <p class="text-lg font-medium text-gray-800 dark:text-gray-200">${messages[idx]}</p>
           </div>
@@ -109,32 +108,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     results.dataset.interval = interval;
 
-    // Run fetches in parallel
-    const fetchPromise = Promise.all([fetchPage(yourUrl), fetchPage(compUrl)]);
+    // Normal fetch — no artificial blocking
+    const [yourDoc, compDoc] = await Promise.all([fetchPage(yourUrl), fetchPage(compUrl)]);
 
-    // Wait for BOTH fetches AND full progress animation to complete
-    const [yourDoc, compDoc] = await Promise.all([
-      fetchPromise,
-      // Artificial promise that resolves only when all messages shown
-      new Promise(resolve => {
-        const check = setInterval(() => {
-          if (idx >= messages.length) {
-            clearInterval(check);
-            resolve();
-          }
-        }, 200);
-      })
-    ]);
-
-    // Final cleanup
+    // Always clear progress animation
     if (results.dataset.interval) clearInterval(results.dataset.interval);
 
     if (!yourDoc || !compDoc) {
-      results.innerHTML = `<p class="text-red-500 dark:text-red-400 text-center text-3xl py-32">Error: Could not load one or both pages. Please check URLs and try again.</p>`;
+      results.innerHTML = `
+        <div class="text-center py-32 px-6">
+          <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-6">
+            Error: Could not load one or both pages
+          </p>
+          <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl">
+            Please check that both URLs are valid, publicly accessible, and not blocked by robots.txt or login.
+          </p>
+        </div>
+      `;
       return;
     }
 
-    // ... rest of scoring and results rendering unchanged
+    // ... rest of scoring, data calculation, and results rendering remains exactly unchanged
 
     let yourScore = 0;
     let compScore = 0;
