@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Step 2: Now that data is ready, show nice progress animation for ~6 seconds
     results.innerHTML = `
-      <div class="flex flex-col items-center justify-start pt-24 pb-32 min-h-screen bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
+      <div class="flex flex-col items-center justify-start pt-8 pb-32 min-h-screen bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
         <div class="relative w-28 h-28">
           <div class="absolute inset-0 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
           <div class="absolute inset-0 rounded-full border-8 border-t-orange-500 border-r-pink-500 border-b-transparent border-l-transparent animate-spin"></div>
