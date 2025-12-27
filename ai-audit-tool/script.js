@@ -423,12 +423,10 @@ const urlToFetch = normalizedUrl; // use this for fetch
       setTimeout(() => {
       const humanized = makeItHuman(analyzedText);
       
-      // Format ONLY the generated humanized text as bold with proper paragraphs
       let formatted = humanized
-        .replace(/\n\n/g, '</p><p class="mt-8 font-bold leading-relaxed">')  // New paragraphs bold + spaced
-        .replace(/\n/g, '<br>');                                            // Line breaks
-
-      // Insert with bold applied only to the example content
+        .replace(/\n\n/g, '</p><p class="mt-8 font-bold leading-relaxed">')
+        .replace(/\n/g, '<br>');
+      
       textDiv.innerHTML = '<p class="font-bold leading-relaxed">' + formatted + '</p>';
       
       output.classList.remove('hidden');
