@@ -4,12 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   // Define cleanUrl inside DOMContentLoaded, before use (exact match to home page tool)
-  function cleanUrl(u) {
-    const trimmed = u.trim();
-    if (!trimmed) return '';
-    if (/^https?:\/\//i.test(trimmed)) return trimmed;
-    return 'https://' + trimmed;
-  }
+	function cleanUrl(u) {
+  const trimmed = u.trim();
+  if (!trimmed) return '';
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  // Add https:// only to the host part if path is present (avoids // in path)
+  const parts = trimmed.split('/', 1);
+  const host = parts[0];
+  const path = trimmed.slice(host.length);
+  return 'https://' + host + path;
+}
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
