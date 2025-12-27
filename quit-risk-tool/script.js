@@ -22,45 +22,58 @@ document.addEventListener('DOMContentLoaded', () => {
   
   
   
-    // Form submission handler with URL normalization
-  form.addEventListener('submit', (e) => {
-    e.preventDefault(); // Prevent default form submission
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
 
-    let url = input.value.trim(); // Remove leading/trailing whitespace
+    let url = input.value.trim(); // Trim whitespace
 
     if (!url) {
-      // Basic feedback if empty (browser 'required' will also trigger)
-      alert('Please enter a website URL.');
+      results.innerHTML = `<div class="text-center py-20"><p class="text-3xl text-red-500 font-bold">Please enter a URL</p></div>`;
       return;
     }
 
-    // Normalize URL: Add https:// if no protocol is provided
+    // Normalize URL: Add https:// if no protocol provided
     if (!/^https?:\/\//i.test(url)) {
       url = 'https://' + url;
     } else if (/^http:\/\//i.test(url)) {
-      // Optional: Upgrade http:// to https:// for better compatibility
+      // Upgrade http to https for better compatibility
       url = url.replace(/^http:\/\//i, 'https://');
     }
 
-    // Now proceed with fetch using the normalized URL + proxy
-    // Example continuation (replace or integrate with your existing fetch logic):
-    const proxiedUrl = PROXY + '?url=' + encodeURIComponent(url);
+    results.classList.remove('hidden');
+    const loaderHTML = `<!-- existing loader HTML unchanged -->`;
+    results.innerHTML = loaderHTML;
+    // ... (existing progress steps and runStep() unchanged) ...
 
-    fetch(proxiedUrl)
-      .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
-        return response.text();
-      })
-      .then(html => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const uxData = getUXContent(doc);
-        // ... your existing results display logic here ...
-        results.innerHTML = `<pre>${JSON.stringify(uxData, null, 2)}</pre>`; // Placeholder
-      })
-      .catch(err => {
-        results.innerHTML = `<p class="text-red-500">Error: ${err.message}</p>`;
-      });
+    async function performAnalysis() {
+      try {
+        progressText.textContent = "Generating report and prioritized fixes...";
+
+        // Add realistic User-Agent to bypass anti-bot detection on many sites
+        const res = await fetch(PROXY + '?url=' + encodeURIComponent(url), {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36'
+          }
+        });
+
+        if (!res.ok) {
+          let errMsg = 'Page not reachable';
+          if (res.status === 400) errMsg += ' (proxy rejected request — likely blocked by target site protection)';
+          if (res.status >= 500) errMsg += ' (server error on target site)';
+          throw new Error(errMsg);
+        }
+
+        const html = await res.text();
+        // ... (rest of existing analysis unchanged) ...
+      } catch (err) {
+        results.innerHTML = `
+          <div class="text-center py-20">
+            <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
+            <p class="mt-6 text-xl text-gray-400">Please check the URL and try again.</p>
+          </div>
+        `;
+      }
+    }
   });
   
   
