@@ -128,25 +128,43 @@ body { transition: background-color 0.3s ease; }
 
 
 
-/* Critical fix: Force all multi-column grids to single column on mobile (prevents horizontal overflow on iPhone) */
+
+/* Critical iPhone Safari fix: Force single column + reduce gaps on mobile */
 @media (max-width: 768px) {
-  .grid {
-    grid-template-columns: 1fr !important;
-  }
+  /* All grids become single column */
+  .grid,
   .md\\:grid-cols-2,
-  .md\\:grid-cols-3 {
+  .md\\:grid-cols-3,
+  .md\\:grid-cols-4 {
     grid-template-columns: 1fr !important;
   }
-  .gap-12,
+  /* Reduce large gaps that cause overflow */
+  .gap-12 {
+    gap: 3rem !important;
+  }
   .gap-8 {
     gap: 2rem !important;
   }
-}
-
-/* Extra safety for very small screens */
-@media (max-width: 480px) {
+  .gap-6 {
+    gap: 1.5rem !important;
+  }
+  /* Prevent any horizontal scroll */
   body {
     overflow-x: hidden !important;
+  }
+}
+
+/* Extra tight for very small iPhones */
+@media (max-width: 480px) {
+  .gap-12 {
+    gap: 2rem !important;
+  }
+  .gap-8 {
+    gap: 1.5rem !important;
+  }
+  .p-8,
+  .p-12 {
+    padding: 1.25rem !important;
   }
 }
 
