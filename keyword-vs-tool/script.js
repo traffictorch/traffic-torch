@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const phraseInput = document.getElementById('target-phrase');
   const results = document.getElementById('results');
   const PROXY = 'https://cors-proxy.traffictorch.workers.dev/';
-
   const fetchPage = async (url) => {
     try {
       const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
@@ -16,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return null;
     }
   };
-
   const countPhrase = (text = '', phrase = '') => {
     if (!text || !phrase) return 0;
     const lower = text.toLowerCase();
@@ -26,27 +24,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cleanP.length > 4) matches += (lower.match(new RegExp(cleanP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')) || []).length;
     return matches;
   };
-
   const getCleanContent = (doc) => {
     if (!doc?.body) return '';
     const clone = doc.body.cloneNode(true);
     clone.querySelectorAll('nav, header, footer, aside, script, style, noscript, .menu, .nav, .navbar, .footer, .cookie, .popup').forEach(el => el.remove());
     return clone.textContent.replace(/\s+/g, ' ').trim();
   };
-
   const getWordCount = (doc) => getCleanContent(doc).split(/\s+/).filter(w => w.length > 0).length;
-
   const getCircleColor = (score) => score < 60 ? '#ef4444' : score < 80 ? '#fb923c' : '#22c55e';
   const getTextColorClass = (score) => score < 60 ? 'text-red-600 dark:text-red-400' : score < 80 ? 'text-orange-500 dark:text-orange-400' : 'text-green-600 dark:text-green-400';
-
   form.addEventListener('submit', async e => {
     e.preventDefault();
-
     // Read raw input values
     let yourUrl = yourInput.value.trim();
     let compUrl = compInput.value.trim();
     const phrase = phraseInput.value.trim();
-
     // Comment: Add https:// automatically if user forgot the protocol (matches other tools)
     if (yourUrl && !yourUrl.startsWith('http')) {
       yourUrl = 'https://' + yourUrl;
@@ -54,12 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (compUrl && !compUrl.startsWith('http')) {
       compUrl = 'https://' + compUrl;
     }
-
     // Now check if fields are empty (after protocol fix)
     if (!yourUrl || !compUrl || !phrase) return;
-
-
-// Replace from results.classList.remove('hidden') to the scoring section with this debugged version
 
     results.classList.remove('hidden');
     results.innerHTML = `
@@ -123,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     let idx = 0;
-    const delay = 1200; // 1.2s × 5 steps = 6 seconds
+    const delay = 1200;
     const interval = setInterval(() => {
       if (idx < messages.length) {
         progressModules.innerHTML += `
@@ -157,12 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Now render final results (data already available)
-    // ... [all your existing scoring code from "let yourScore = 0;" onward remains 100% unchanged]
-
     let yourScore = 0;
     let compScore = 0;
     const data = {};
-
     // Meta Title & Description
     data.meta = {
       yourMatches: countPhrase(yourDoc.querySelector('title')?.textContent + yourDoc.querySelector('meta[name="description"]')?.content, phrase),
@@ -170,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     yourScore += data.meta.yourMatches > 0 ? 25 : 0;
     compScore += data.meta.compMatches > 0 ? 25 : 0;
-
     // H1 & Headings
     data.headings = {
       yourH1Match: countPhrase(yourDoc.querySelector('h1')?.textContent.trim() || '', phrase),
@@ -178,7 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     yourScore += data.headings.yourH1Match > 0 ? 15 : 0;
     compScore += data.headings.compH1Match > 0 ? 15 : 0;
-
     // Content Density & Depth
     const yourWords = getWordCount(yourDoc);
     const compWords = getWordCount(compDoc);
@@ -187,10 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const yourDensity = yourWords ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
     const compDensity = compWords ? (compContentMatches / compWords * 100).toFixed(1) : 0;
     data.content = { yourWords, compWords, yourDensity, compDensity, yourContentMatches };
-
     yourScore += yourWords > 800 ? 20 : 0;
     compScore += compWords > 800 ? 20 : 0;
-
     // Image Alts
     const yourImgs = yourDoc.querySelectorAll('img');
     const compImgs = compDoc.querySelectorAll('img');
@@ -199,14 +180,12 @@ document.addEventListener('DOMContentLoaded', () => {
     data.alts = { yourPhrase: yourAltPhrase, compPhrase: compAltPhrase };
     yourScore += yourAltPhrase > 0 ? 15 : 0;
     compScore += compAltPhrase > 0 ? 15 : 0;
-
     // Anchors
     const yourAnchors = Array.from(yourDoc.querySelectorAll('a')).filter(a => countPhrase(a.textContent || '', phrase) > 0).length;
     const compAnchors = Array.from(compDoc.querySelectorAll('a')).filter(a => countPhrase(a.textContent || '', phrase) > 0).length;
     data.anchors = { your: yourAnchors, comp: compAnchors };
     yourScore += yourAnchors > 0 ? 10 : 0;
     compScore += compAnchors > 0 ? 10 : 0;
-
     // URL & Schema
     data.urlSchema = {
       yourUrlMatch: countPhrase(yourUrl, phrase),
@@ -216,13 +195,15 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     yourScore += data.urlSchema.yourUrlMatch > 0 ? 10 : 0;
     compScore += data.urlSchema.compUrlMatch > 0 ? 10 : 0;
-
     yourScore = Math.min(100, Math.round(yourScore));
     compScore = Math.min(100, Math.round(compScore));
 
+    // FIX: Normalize to 95 max points for full circle fill
+    const yourDash = (yourScore / 95) * 754;
+    const compDash = (compScore / 95) * 754;
+
     const forecastTier = yourScore >= 90 ? 'Top 3 Potential' : yourScore >= 80 ? 'Top 10 Likely' : yourScore >= 60 ? 'Page 1 Possible' : 'Page 2+';
     const gap = yourScore > compScore ? '+' + (yourScore - compScore) : yourScore < compScore ? (compScore - yourScore) : '±0';
-
     // Expanded fixes – all gaps detected
     const fixes = [];
     if (data.meta.yourMatches === 0) fixes.push("Add phrase to title and meta description.");
@@ -233,10 +214,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (data.anchors.your === 0) fixes.push("Use phrase in internal anchor text.");
     if (data.urlSchema.yourUrlMatch === 0) fixes.push("Include phrase in URL slug if possible.");
     if (data.urlSchema.yourSchema === 0) fixes.push("Add structured data (JSON-LD schema markup).");
-
     // Top 3 only
     const prioritizedFixes = fixes.slice(0, 3);
-
                 results.innerHTML = `
       <div class="max-w-5xl mx-auto space-y-16 animate-in">
         <!-- Big Score Circles -->
@@ -247,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
                 <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="20" fill="none"/>
                 <circle cx="130" cy="130" r="120" stroke="${getCircleColor(yourScore)}" stroke-width="20" fill="none"
-                        stroke-dasharray="${(yourScore / 100) * 754} 754" stroke-linecap="round" class="drop-shadow-lg"/>
+                        stroke-dasharray="${yourDash} 754" stroke-linecap="round" class="drop-shadow-lg"/>
               </svg>
               <div class="absolute inset-0 flex flex-col items-center justify-center">
                 <span class="text-7xl font-black ${getTextColorClass(yourScore)} drop-shadow-2xl">${yourScore}</span>
@@ -261,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
                 <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="20" fill="none"/>
                 <circle cx="130" cy="130" r="120" stroke="${getCircleColor(compScore)}" stroke-width="20" fill="none"
-                        stroke-dasharray="${(compScore / 100) * 754} 754" stroke-linecap="round" class="drop-shadow-lg"/>
+                        stroke-dasharray="${compDash} 754" stroke-linecap="round" class="drop-shadow-lg"/>
               </svg>
               <div class="absolute inset-0 flex flex-col items-center justify-center">
                 <span class="text-7xl font-black ${getTextColorClass(compScore)} drop-shadow-2xl">${compScore}</span>
@@ -270,7 +249,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
         </div>
-
         <!-- Gap Verdict -->
         <div class="text-center mb-12">
           <p class="text-4xl font-bold text-green-500 mb-8">
@@ -280,7 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
           </p>
           <p class="text-xl text-gray-500">Target phrase: "${phrase}"</p>
         </div>
-
         <!-- Small Metric Cards – Collapsible Education -->
         <div class="grid md:grid-cols-3 gap-8 my-16">
           ${[
@@ -342,7 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           `).join('')}
         </div>
-
         <!-- Prioritized Gap Fixes – Top 3 Only -->
         <div class="space-y-8">
           <h3 class="text-4xl font-black text-orange-500 text-center mb-8">Prioritized Gap Fixes</h3>
@@ -441,7 +417,6 @@ Target 800–1500+ words of focused content.`,
             </div>
           `}
         </div>
-
         <!-- Predictive Rank Forecast -->
         <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
           <h3 class="text-4xl font-black text-center mb-8">Predictive Rank Forecast</h3>
@@ -464,12 +439,11 @@ Target 800–1500+ words of focused content.`,
             This on-page phrase power comparison indicates relative relevance strength. Higher scores correlate with better ranking potential for the target phrase, though off-page factors (backlinks, domain authority) also play a major role.
           </p>
         </div>
-
         <!-- PDF Button -->
         <div class="text-center my-16">
           <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
                   class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
-            📄 Save Report as PDF 
+            📄 Save Report as PDF
           </button>
         </div>
       </div>
