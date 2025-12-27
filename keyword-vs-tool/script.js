@@ -59,13 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!yourUrl || !compUrl || !phrase) return;
 
                 results.classList.remove('hidden');
-    results.innerHTML = `
-      <div class="flex flex-col items-center justify-center py-0">
+	results.innerHTML = `
+      <div class="flex flex-col items-center justify-start pt-20 min-h-screen">
         <div class="relative">
           <div class="w-20 h-20 border-4 border-gray-200 dark:border-gray-700 rounded-full"></div>
           <div class="absolute inset-0 w-20 h-20 border-4 border-t-orange-500 border-r-orange-500 border-b-transparent border-l-transparent rounded-full animate-spin"></div>
         </div>
-        <p class="mt-8 text-2xl font-medium text-gray-600 dark:text-gray-300">Analyzing pages for "${phrase}"...</p>
+        <p class="mt-8 text-2xl font-medium text-orange-600 dark:text-orange-400">Analyzing pages for "${phrase}"...</p>
         <div id="progress-modules" class="mt-12 space-y-4 w-full max-w-lg"></div>
       </div>
     `;
