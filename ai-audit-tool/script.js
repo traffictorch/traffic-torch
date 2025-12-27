@@ -422,13 +422,16 @@ const urlToFetch = normalizedUrl; // use this for fetch
       output.classList.add('hidden');
       setTimeout(() => {
       const humanized = makeItHuman(analyzedText);
-      // Make the entire humanized example bold for clear visual distinction
-textDiv.innerHTML = '<p class="font-bold leading-relaxed">' + 
-  humanized.replace(/\n\n/g, '</p><p class="mt-8 font-bold leading-relaxed">')
-           .replace(/\n/g, '<br>') + 
-  '</p>';
-      textDiv.innerHTML = '<p>' + textDiv.innerHTML + '</p>';
-        output.classList.remove('hidden');
+      
+      // Format ONLY the generated humanized text as bold with proper paragraphs
+      let formatted = humanized
+        .replace(/\n\n/g, '</p><p class="mt-8 font-bold leading-relaxed">')  // New paragraphs bold + spaced
+        .replace(/\n/g, '<br>');                                            // Line breaks
+
+      // Insert with bold applied only to the example content
+      textDiv.innerHTML = '<p class="font-bold leading-relaxed">' + formatted + '</p>';
+      
+      output.classList.remove('hidden');
       }, 400);
     }
   });
