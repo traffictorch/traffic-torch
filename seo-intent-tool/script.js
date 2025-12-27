@@ -1,20 +1,19 @@
-function cleanUrl(u) {
-  const trimmed = u.trim();
-  if (!trimmed) return '';
-  if (/^https?:\/\//i.test(trimmed)) return trimmed;
-  return 'https://' + trimmed;
-}
-
-
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
-
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  // Define cleanUrl here - inside DOMContentLoaded, before submit handler (matches home page tool exactly)
+  function cleanUrl(u) {
+    const trimmed = u.trim();
+    if (!trimmed) return '';
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    return 'https://' + trimmed;
+  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-	const url = cleanUrl(document.getElementById('url-input').value);
+    const url = cleanUrl(document.getElementById('url-input').value);
     if (!url) return;
 
     // Clear previous results and show centered spinner + progress text
