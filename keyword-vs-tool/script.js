@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 results.classList.remove('hidden');
     results.innerHTML = `
-      <div class="flex flex-col items-center justify-center py-32">
+      <div class="flex flex-col items-center justify-center py-0">
         <div class="relative">
           <div class="w-20 h-20 border-4 border-gray-200 dark:border-gray-700 rounded-full"></div>
           <div class="absolute inset-0 w-20 h-20 border-4 border-t-orange-500 border-r-orange-500 border-b-transparent border-l-transparent rounded-full animate-spin"></div>
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Big Score Circles -->
         <div class="grid md:grid-cols-2 gap-12 my-12">
           <div class="text-center">
-            <h3 class="text-2xl font-bold mb-4">Your Phrase Power Score</h3>
+            <h3 class="text-2xl font-bold text-green-500 mb-4">Your Phrase Power Score</h3>
             <div class="relative mx-auto w-64 h-64">
               <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
                 <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="20" fill="none"/>
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
           <div class="text-center">
-            <h3 class="text-2xl font-bold mb-4">Competitor Phrase Power Score</h3>
+            <h3 class="text-2xl font-bold text-red-500 mb-4">Competitor Phrase Power Score</h3>
             <div class="relative mx-auto w-64 h-64">
               <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
                 <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="20" fill="none"/>
@@ -424,7 +424,7 @@ Target 800–1500+ words of focused content.`,
         <div class="text-center my-16">
           <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
                   class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
-            📄 Save as PDF (with all details)
+            📄 Save Report as PDF 
           </button>
         </div>
       </div>
