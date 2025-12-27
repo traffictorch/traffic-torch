@@ -130,22 +130,23 @@ body { transition: background-color 0.3s ease; }
 
 
 
-/* Fix iOS Safari horizontal rubber-band shift/swipe on pages that fit viewport */
+/* Prevent iOS Safari horizontal rubber-band bounce on swipe (pure CSS, reliable on current iOS) */
 html {
+  overflow: hidden;
+  height: 100%;
   position: fixed;
   width: 100%;
-  overflow: hidden;
 }
 
 body {
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;  /* Keeps smooth momentum vertical scroll */
+  overflow-x: hidden;
+  height: 100%;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;  /* Smooth momentum scrolling */
 }
 
-/* Ensure table still scrolls horizontally internally */
+/* Ensure internal horizontal scroll (table) works smoothly */
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
 }
