@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const results = document.getElementById('results');
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-  // Define cleanUrl here - inside DOMContentLoaded, before submit handler (matches home page tool exactly)
+  // Define cleanUrl inside DOMContentLoaded, before use (exact match to home page tool)
   function cleanUrl(u) {
     const trimmed = u.trim();
     if (!trimmed) return '';
@@ -13,7 +13,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const url = cleanUrl(document.getElementById('url-input').value);
+
+    const inputValue = document.getElementById('url-input').value;
+    const url = cleanUrl(inputValue);
+
+    // Debug: Open console (F12) to see this log — confirms if cleanUrl ran and what URL is sent
+    console.log('Input:', inputValue);
+    console.log('Cleaned URL sent to proxy:', url);
+
     if (!url) return;
 
     // Clear previous results and show centered spinner + progress text
