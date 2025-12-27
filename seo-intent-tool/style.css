@@ -129,42 +129,32 @@ body { transition: background-color 0.3s ease; }
 
 
 
-/* Final iPhone fix: single column + reduced gap + padding + overflow hidden */
-@media (max-width: 768px) {
-  /* Force single column for all grids */
-  .grid,
-  .md\\:grid-cols-2,
-  .md\\:grid-cols-3,
-  .md\\:grid-cols-4 {
-    grid-template-columns: 1fr !important;
-  }
-  /* Reduce gaps to prevent overflow */
-  .gap-12 { gap: 3rem !important; }
-  .gap-10 { gap: 2.5rem !important; }
-  .gap-8  { gap: 2rem !important; }
-  .gap-6  { gap: 1.5rem !important; }
-  /* Container padding */
-  .container,
-  .max-w-5xl,
-  .max-w-6xl,
-  .max-w-4xl,
-  .max-w-3xl {
-    max-width: 100% !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-  /* Card padding reduction */
-  .p-12, .p-10, .p-8 {
-    padding: 1.5rem !important;
-  }
-  /* Prevent any scroll */
-  body, html {
-    overflow-x: hidden !important;
-  }
+
+/* Fix iPhone horizontal stretch on results load */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
 }
 
-/* Extra for very small iPhones */
-@media (max-width: 480px) {
-  .gap-12, .gap-10, .gap-8 { gap: 1.5rem !important; }
-  .p-12, .p-10, .p-8 { padding: 1.25rem !important; }
+/* Ensure main wrapper doesn't overflow */
+.max-w-5xl {
+  overflow-x: hidden;
 }
+
+/* Make table content wrap/break to prevent forcing page width */
+table {
+  width: 100% !important;
+  table-layout: fixed;
+  overflow-wrap: break-word;
+}
+
+table th, table td {
+  word-break: break-all;
+}
+
+/* Enable smooth horizontal scrolling inside table wrapper on iOS */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+
