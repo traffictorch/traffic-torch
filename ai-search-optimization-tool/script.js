@@ -159,51 +159,46 @@ const initTool = (form, results, progressContainer) => {
       const lowScoring = modules.filter(m => m.score < 70).sort((a, b) => a.score - b.score);
       const prioritisedFixes = [];
 
-       if (lowScoring.some(m => m.name === "Answerability")) {
-         prioritisedFixes.push({ title: "Add Direct Answer in Opening", emoji: "💡", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
-           what: "A clear, bold, quotable answer AI engines can cite directly",
-           how: "Add a bold definition or summary in first 150–250 words. Use H2 questions and numbered steps.",
-           why: "Answerability is the #1 factor for AI citation and source selection"
-+          // Shared class for What/How/Why description texts – gray-400 in both modes
-+          , descriptionClass: "text-gray-400 dark:text-gray-400"
-         });
-       }
-       if (lowScoring.some(m => m.name === "EEAT Signals")) {
-         prioritisedFixes.push({ title: "Add Author Bio & Photo", emoji: "👤", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
-           what: "Visible byline proving who wrote this",
-           how: "Headshot + name + bio + credentials + social links",
-           why: "Boosts Expertise & Trust by 30–40 points — Google's #1 E-E-A-T signal"
-+          // Shared class for What/How/Why description texts – gray-400 in both modes
-+          , descriptionClass: "text-gray-400 dark:text-gray-400"
-         });
-       }
-       if (lowScoring.some(m => m.name === "Structured Data")) {
-         prioritisedFixes.push({ title: "Add Article + Person Schema", emoji: "✨", gradient: "from-purple-500/10 border-purple-500", color: "text-purple-600",
-           what: "Structured data that AI engines can read directly",
-           how: "JSON-LD with @type Article + Person + author link. Add FAQPage if relevant.",
-           why: "Triggers rich answers and massive citation boost"
-+          // Shared class for What/How/Why description texts – gray-400 in both modes
-+          , descriptionClass: "text-gray-400 dark:text-gray-400"
-         });
-       }
-       if (lowScoring.some(m => m.name === "Scannability")) {
-         prioritisedFixes.push({ title: "Boost Scannability with Lists & Tables", emoji: "📋", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
-           what: "Easy-to-extract facts via structured formatting",
-           how: "Add bullet/numbered lists, data tables, H2/H3 headings, short paragraphs",
-           why: "AI prioritizes instantly extractable content"
-+          // Shared class for What/How/Why description texts – gray-400 in both modes
-+          , descriptionClass: "text-gray-400 dark:text-gray-400"
-         });
-       }
-       if (lowScoring.some(m => m.name === "Unique Insights")) {
-         prioritisedFixes.push({ title: "Add First-Hand Experience", emoji: "🧠", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
-           what: "Original insights that stand out from generic content",
-           how: "Include “I tested”, case studies, personal results, dated experiences",
-           why: "Prevents de-duplication and boosts originality"
-+          // Shared class for What/How/Why description texts – gray-400 in both modes
-+          , descriptionClass: "text-gray-400 dark:text-gray-400"
-         });
-       }
+      if (lowScoring.some(m => m.name === "Answerability")) {
+        prioritisedFixes.push({ title: "Add Direct Answer in Opening", emoji: "💡", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
+          what: "A clear, bold, quotable answer AI engines can cite directly",
+          how: "Add a bold definition or summary in first 150–250 words. Use H2 questions and numbered steps.",
+          why: "Answerability is the #1 factor for AI citation and source selection",
+          descClass: "text-gray-400"  // Applies gray-400 to What/How/Why texts in both modes
+        });
+      }
+      if (lowScoring.some(m => m.name === "EEAT Signals")) {
+        prioritisedFixes.push({ title: "Add Author Bio & Photo", emoji: "👤", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
+          what: "Visible byline proving who wrote this",
+          how: "Headshot + name + bio + credentials + social links",
+          why: "Boosts Expertise & Trust by 30–40 points — Google's #1 E-E-A-T signal",
+          descClass: "text-gray-400"  // Applies gray-400 to What/How/Why texts in both modes
+        });
+      }
+      if (lowScoring.some(m => m.name === "Structured Data")) {
+        prioritisedFixes.push({ title: "Add Article + Person Schema", emoji: "✨", gradient: "from-purple-500/10 border-purple-500", color: "text-purple-600",
+          what: "Structured data that AI engines read directly",
+          how: "JSON-LD with @type Article + Person + author link. Add FAQPage if relevant.",
+          why: "Triggers rich answers and massive citation boost",
+          descClass: "text-gray-400"  // Applies gray-400 to What/How/Why texts in both modes
+        });
+      }
+      if (lowScoring.some(m => m.name === "Scannability")) {
+        prioritisedFixes.push({ title: "Boost Scannability with Lists & Tables", emoji: "📋", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
+          what: "Easy-to-extract facts via structured formatting",
+          how: "Add bullet/numbered lists, data tables, H2/H3 headings, short paragraphs",
+          why: "AI prioritizes instantly extractable content",
+          descClass: "text-gray-400"  // Applies gray-400 to What/How/Why texts in both modes
+        });
+      }
+      if (lowScoring.some(m => m.name === "Unique Insights")) {
+        prioritisedFixes.push({ title: "Add First-Hand Experience", emoji: "🧠", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
+          what: "Original insights that stand out from generic content",
+          how: "Include “I tested”, case studies, personal results, dated experiences",
+          why: "Prevents de-duplication and boosts originality",
+          descClass: "text-gray-400"  // Applies gray-400 to What/How/Why texts in both modes
+        });
+      }
 
       await new Promise(resolve => setTimeout(resolve, 1500));
       clearInterval(interval);
