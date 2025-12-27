@@ -418,12 +418,13 @@ const urlToFetch = normalizedUrl; // use this for fetch
       output.classList.add('hidden');
       setTimeout(() => {
       const humanized = makeItHuman(analyzedText);
-      // Insert humanized text with bold styling and proper paragraph breaks
+      
+      // Format humanized text: ALL example text bold, proper paragraphs
       let formatted = humanized
-        .replace(/\n\n/g, '</p><p class="mt-8 font-bold leading-relaxed">')  // Paragraph breaks
-        .replace(/\n/g, '<br>');  // Line breaks within paragraphs
+        .replace(/\n\n/g, '</p><p class="mt-8 font-bold leading-relaxed">')  // New paragraph: bold
+        .replace(/\n/g, '<br>');                                            // Line breaks
 
-      // Wrap in opening/closing p tags with bold class
+      // Wrap everything in bold paragraphs – first paragraph also bold
       textDiv.innerHTML = '<p class="font-bold leading-relaxed">' + formatted + '</p>';
       
       output.classList.remove('hidden');
