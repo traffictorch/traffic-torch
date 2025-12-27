@@ -81,83 +81,30 @@ body { transition: background-color 0.3s ease; }
 
 
 
-/* Mobile-friendly report - force full width and reduce padding on small screens */
-@media (max-width: 768px) {
-  .max-w-5xl {
+
+/* Mobile Responsiveness (your original) */
+@media (max-width: 1024px) {
+  .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
     max-width: 100% !important;
     padding-left: 1rem !important;
     padding-right: 1rem !important;
   }
-  .p-8, .p-6, .p-12 {
+  .p-12, .p-10, .p-8 {
     padding: 1.5rem !important;
   }
-  .text-7xl, .text-8xl {
-    font-size: 4rem !important;
-  }
   .text-5xl {
-    font-size: 2.5rem !important;
-  }
-  .text-4xl {
     font-size: 2rem !important;
+    line-height: 1.1 !important;
   }
-  .grid {
-    grid-template-columns: 1fr !important;
-  }
-  .md\\:grid-cols-3, .md\\:grid-cols-4 {
-    grid-template-columns: 1fr !important;
-  }
-  table {
-    font-size: 0.875rem !important;
-  }
-  table th, table td {
-    padding: 0.75rem !important;
+  .text-9xl {
+    font-size: 6rem !important;
+    line-height: 1 !important;
   }
 }
-
 @media (max-width: 480px) {
-  .p-8, .p-6, .p-12 {
-    padding: 1rem !important;
-  }
-  .text-7xl, .text-8xl {
-    font-size: 3.5rem !important;
-  }
-  .text-5xl {
-    font-size: 2.25rem !important;
-  }
-}
-
-
-
-
-
-/* Fix viewport stretch on iPhone results load – match home tool mobile container safety */
-@media (max-width: 1024px) {
-  #results .max-w-5xl {
-    max-width: 100% !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-}
-
-/* Force competitive gap table to always fit container (no stretch trigger) */
-#results .overflow-x-auto,
-#results table {
-  width: 100% !important;
-  max-width: 100% !important;
-  table-layout: fixed;               /* Even column distribution – key to no overflow */
-  overflow-wrap: break-word;
-}
-
-#results table th,
-#results table td {
-  word-break: break-word;
-  overflow-wrap: anywhere;
-  padding: 0.75rem !important;       /* Consistent cell padding */
-}
-
-/* Smooth internal scroll if table ever needs it */
-.overflow-x-auto {
-  -webkit-overflow-scrolling: touch;
+  .p-12, .p-10 { padding: 1.25rem !important; }
+  .text-5xl { font-size: 1.875rem !important; }
+  .text-9xl { font-size: 5.5rem !important; }
 }
 
 
