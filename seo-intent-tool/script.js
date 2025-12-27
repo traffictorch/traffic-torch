@@ -365,48 +365,7 @@ ${schemaTypes.length < 2 ? `
   `;
 
 
-// Hide the spinner/progress after report is generated (prevents it showing in print)
-const analysisProgress = document.getElementById('analysis-progress');
-if (analysisProgress) {
-  analysisProgress.style.display = 'none';
-}
 
-// Save as PDF - clean report only, expand sections, hide form/spinner, restore on close/cancel
-const savePdfBtn = document.getElementById('save-pdf-btn');
-if (savePdfBtn) {
-  savePdfBtn.addEventListener('click', () => {
-    // Expand all hidden sections for full report in PDF
-    document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
-
-    // Hide form and spinner for clean print
-    document.getElementById('audit-form').style.display = 'none';
-    if (analysisProgress) analysisProgress.style.display = 'none';
-
-    // Print-optimized styles - clean black-on-white, force hidden to show, no shadows
-    const printStyle = document.createElement('style');
-    printStyle.innerHTML = `
-      @media print {
-        body { background: white !important; color: black !important; }
-        .bg-white, .dark\\:bg-gray-900 { background: white !important; }
-        .text-gray-900, .dark\\:text-gray-100 { color: black !important; }
-        .border-gray-300, .dark\\:border-gray-700 { border-color: #ccc !important; }
-        .shadow-lg { box-shadow: none !important; }
-        .hidden { display: block !important; }
-        #audit-form, #analysis-progress { display: none !important; }
-      }
-    `;
-    document.head.appendChild(printStyle);
-
-    window.print();
-
-    // Restore layout when print dialog closes (even if cancelled)
-    window.onafterprint = () => {
-      document.getElementById('audit-form').style.display = '';
-      if (analysisProgress) analysisProgress.style.display = '';
-      document.head.removeChild(printStyle);
-    };
-  });
-}
   
   
   
