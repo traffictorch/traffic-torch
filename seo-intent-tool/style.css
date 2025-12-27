@@ -127,48 +127,24 @@ body { transition: background-color 0.3s ease; }
 }
 
 
+@media (max-width: 1024px) {
+  .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
+    max-width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
 
-
-/* Critical iPhone Safari fix: Force single column + reduce gaps on mobile */
+/* Critical iPhone fix: Force grids to single column on mobile */
 @media (max-width: 768px) {
-  /* All grids become single column */
-  .grid,
-  .md\\:grid-cols-2,
-  .md\\:grid-cols-3,
-  .md\\:grid-cols-4 {
+  .grid {
     grid-template-columns: 1fr !important;
   }
-  /* Reduce large gaps that cause overflow */
-  .gap-12 {
-    gap: 3rem !important;
+  .md\\:grid-cols-2,
+  .md\\:grid-cols-3 {
+    grid-template-columns: 1fr !important;
   }
-  .gap-8 {
-    gap: 2rem !important;
-  }
-  .gap-6 {
-    gap: 1.5rem !important;
-  }
-  /* Prevent any horizontal scroll */
   body {
     overflow-x: hidden !important;
   }
 }
-
-/* Extra tight for very small iPhones */
-@media (max-width: 480px) {
-  .gap-12 {
-    gap: 2rem !important;
-  }
-  .gap-8 {
-    gap: 1.5rem !important;
-  }
-  .p-8,
-  .p-12 {
-    padding: 1.25rem !important;
-  }
-}
-
-
-
-
-
