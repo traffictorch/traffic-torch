@@ -289,17 +289,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
                   <div class="text-5xl mb-4">🎯</div>
                   <p class="font-bold text-xl mb-3 text-cyan-200">What it means</p>
-                  <p class="text-sm leading-relaxed opacity-90">Estimated highest achievable position based on current usability and engagement signals compared to competing pages.</p>
+                  <p class="text-gray-500 leading-relaxed opacity-90">Estimated highest achievable position based on current usability and engagement signals compared to competing pages.</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
                   <div class="text-5xl mb-4">🧮</div>
                   <p class="font-bold text-xl mb-3 text-green-200">How it's calculated</p>
-                  <p class="text-sm leading-relaxed opacity-90">Stronger UX → lower bounce rate → higher dwell time → better behavioral signals that modern search algorithms reward.</p>
+                  <p class="text-gray-500 leading-relaxed opacity-90">Stronger UX → lower bounce rate → higher dwell time → better behavioral signals that modern search algorithms reward.</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
                   <div class="text-5xl mb-4">🚀</div>
                   <p class="font-bold text-xl mb-3 text-orange-200">Why it matters</p>
-                  <p class="text-sm leading-relaxed opacity-90">Fixing usability gaps can unlock significant traffic gains, improve conversion rates, and build long-term ranking resilience.</p>
+                  <p class="text-gray-500 leading-relaxed opacity-90">Fixing usability gaps can unlock significant traffic gains, improve conversion rates, and build long-term ranking resilience.</p>
                 </div>
               </div>
               <div class="mt-10 text-center">
