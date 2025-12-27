@@ -2,21 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
-  const PROXY = 'https://cors-proxy.traffictorch.workers.dev/';
+  const PROXY = 'https://cors-proxy.traffictorch.workers.dev/?url=';
   let analyzedText = '';
   let wordCount = 0; // Added to match your usage in template
-
-  // === ADDED FIX: Force https:// and remove any http:// (tool works without http) ===
-  const normalizeUrl = (url) => {
-    let normalized = url.trim();
-    if (!normalized.startsWith('http://') && !normalized.startsWith('https://')) {
-      normalized = 'https://' + normalized;
-    } else if (normalized.startsWith('http://')) {
-      normalized = 'https://' + normalized.slice(7);
-    }
-    return normalized;
-  };
-  // ===========================================================================
 
   function getMainContent(doc) {
     // 1. Try explicit main content containers
@@ -47,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
     body.querySelectorAll(removeSelectors).forEach(e => e.remove());
     return body;
   }
-});
 
   function analyzeAIContent(text) {
     if (!text || text.length < 200) {
@@ -184,6 +171,11 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const url = input.value.trim();
+    let normalizedUrl = url;
+if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
+  normalizedUrl = 'https://' + normalizedUrl;
+}
+const urlToFetch = normalizedUrl; // use this for fetch
     if (!url) return;
     // Loading overlay with spinner
     results.innerHTML = `
@@ -220,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const minLoadTime = 5500;
     const startTime = Date.now();
     try {
-      const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
+      const res = await fetch(PROXY + encodeURIComponent(urlToFetch));
       if (!res.ok) throw new Error('Page not reachable');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
