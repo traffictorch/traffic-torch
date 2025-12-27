@@ -90,9 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function makeItHuman(raw) {
     let t = raw.trim();
-    if (t.length < 300) return t; // Too short – no change
+    if (t.length < 250) return t;
 
-    // Clean up common noise
+    // Basic cleanup
     t = t.replace(/Skip to (main )?content/gi, '')
          .replace(/\b(Home|About|Services|Contact|Blog|Shop|Cart|Login|Signup|Reserve|Book|Explore|Discover|View|Learn|Get Started|Sign Up)\b/gi, '')
          .replace(/\s+/g, ' ')
@@ -101,116 +101,58 @@ document.addEventListener('DOMContentLoaded', () => {
     const sentences = t.match(/[^.!?]+[.!?]+/g) || [t];
     let result = [];
 
-    // Expanded word swaps for more variation
     const swaps = {
-      very: ['really', 'truly', 'extremely', 'quite'],
-      good: ['great', 'excellent', 'solid', 'strong'],
-      best: ['top', 'finest', 'leading', 'ultimate'],
-      big: ['huge', 'massive', 'significant', 'major'],
-      small: ['tiny', 'limited', 'minor', 'compact'],
-      use: ['try', 'work with', 'apply', 'go with'],
-      help: ['assist', 'support', 'boost', 'aid'],
-      important: ['key', 'crucial', 'essential', 'vital'],
-      easy: ['simple', 'straightforward', 'effortless', 'clear'],
-      new: ['fresh', 'latest', 'recent', 'brand-new'],
-      many: ['lots of', 'plenty of', 'numerous', 'a ton of'],
-      show: ['reveal', 'highlight', 'demonstrate', 'illustrate']
+      very: ['really', 'truly', 'quite'],
+      good: ['great', 'excellent', 'solid'],
+      best: ['top', 'finest', 'leading'],
+      important: ['key', 'essential', 'crucial'],
+      easy: ['simple', 'straightforward', 'clear']
     };
-
-    // Human-like transitional phrases
-    const transitions = [
-      'In my experience,',
-      'One thing I've noticed is',
-      'Interestingly,',
-      'What stands out is',
-      'Here's the thing:',
-      'To be honest,',
-      'Personally, I find'
-    ];
-
-    let transitionUsed = false;
 
     for (let s of sentences) {
       let sentence = s.trim();
-      if (!sentence || sentence.length < 20) continue;
-
-      // Occasionally add a transitional phrase
-      if (!transitionUsed && result.length > 1 && Math.random() < 0.25) {
-        result.push(transitions[Math.floor(Math.random() * transitions.length)]);
-        transitionUsed = true;
-      }
+      if (!sentence || sentence.length < 30) continue;
 
       let words = sentence.split(' ');
-
-      // Higher chance of word swaps for noticeable change
       for (let i = 0; i < words.length; i++) {
         const clean = words[i].toLowerCase().replace(/[^a-z]/g, '');
-        if (swaps[clean] && Math.random() < 0.5) { // Increased from 0.35 to 0.5
+        if (swaps[clean] && Math.random() < 0.4) {
           const options = swaps[clean];
-          const replacement = options[Math.floor(Math.random() * options.length)];
-          words[i] = words[i].replace(new RegExp(clean, 'gi'), replacement);
+          words[i] = words[i].replace(new RegExp(clean, 'gi'), options[Math.floor(Math.random() * options.length)]);
         }
       }
 
       sentence = words.join(' ');
 
-      // More aggressive sentence splitting for natural rhythm
-      if (sentence.split(' ').length > 28 && Math.random() < 0.7) { // Increased chance
+      // Gentle sentence splitting for rhythm
+      if (sentence.split(' ').length > 25 && Math.random() < 0.5) {
         const mid = Math.floor(sentence.length / 2);
-        const breakChars = [',', ';', '—', ':', ' that', ' which'];
-        let breakPoint = -1;
-        for (const char of breakChars) {
-          const pos = sentence.lastIndexOf(char, mid);
-          if (pos > mid - 40 && pos > 20) {
-            breakPoint = pos;
-            break;
-          }
-        }
-        if (breakPoint > 0) {
+        const breakPoint = sentence.lastIndexOf([',', ';', '—', ':'][Math.floor(Math.random() * 4)], mid);
+        if (breakPoint > mid - 30 && breakPoint > 15) {
           result.push(sentence.slice(0, breakPoint + 1).trim());
           sentence = sentence.slice(breakPoint + 1).trim();
-          if (sentence && !sentence.match(/^[A-Z]/)) {
-            sentence = sentence.charAt(0).toLowerCase() + sentence.slice(1);
-          }
         }
       }
-
-      // Add contractions occasionally
-      sentence = sentence.replace(/\bcan not\b/gi, "can't")
-                         .replace(/\bdo not\b/gi, "don't")
-                         .replace(/\bwill not\b/gi, "won't")
-                         .replace(/\bis not\b/gi, "isn't");
 
       result.push(sentence);
     }
 
     let final = result.join(' ').trim();
 
-    // Better paragraph breaks
+    // Natural paragraph breaks
     const allSentences = final.match(/[^.!?]+[.!?]+/g) || [final];
     let paragraphs = [];
     let current = [];
-    for (let s of allSentences) {
+    allSentences.forEach(s => {
       current.push(s.trim());
-      if (current.length >= 4 || (current.length >= 2 && Math.random() < 0.5)) {
+      if (current.length >= 4 || (current.length >= 2 && Math.random() < 0.3)) {
         paragraphs.push(current.join(' '));
         current = [];
       }
-    }
+    });
     if (current.length) paragraphs.push(current.join(' '));
 
     final = paragraphs.join('\n\n');
-
-    // Occasional natural closing
-    if (Math.random() < 0.4) {
-      const closings = [
-        'Hope that helps make sense of it.',
-        'That's the key takeaway for me.',
-        'Pretty straightforward once you see it that way.',
-        'Let me know if you'd like more examples.'
-      ];
-      final += '\n\n' + closings[Math.floor(Math.random() * closings.length)];
-    }
 
     return final;
   }
@@ -476,9 +418,15 @@ const urlToFetch = normalizedUrl; // use this for fetch
       output.classList.add('hidden');
       setTimeout(() => {
       const humanized = makeItHuman(analyzedText);
-      textDiv.innerHTML = humanized.replace(/\n\n/g, '</p><p class="mt-8">').replace(/\n/g, '<br>');
-      textDiv.innerHTML = '<p>' + textDiv.innerHTML + '</p>';
-        output.classList.remove('hidden');
+      // Insert humanized text with bold styling and proper paragraph breaks
+      let formatted = humanized
+        .replace(/\n\n/g, '</p><p class="mt-8 font-bold leading-relaxed">')  // Paragraph breaks
+        .replace(/\n/g, '<br>');  // Line breaks within paragraphs
+
+      // Wrap in opening/closing p tags with bold class
+      textDiv.innerHTML = '<p class="font-bold leading-relaxed">' + formatted + '</p>';
+      
+      output.classList.remove('hidden');
       }, 400);
     }
   });
