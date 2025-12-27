@@ -58,47 +58,43 @@ document.addEventListener('DOMContentLoaded', () => {
     // Now check if fields are empty (after protocol fix)
     if (!yourUrl || !compUrl || !phrase) return;
 
-                results.classList.remove('hidden');
-	results.innerHTML = `
-      <div class="flex flex-col items-center justify-start pt-20 min-h-screen">
-        <div class="relative">
-          <div class="w-20 h-20 border-4 border-gray-200 dark:border-gray-700 rounded-full"></div>
-          <div class="absolute inset-0 w-20 h-20 border-4 border-t-orange-500 border-r-orange-500 border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+
+    results.classList.remove('hidden');
+    results.innerHTML = `
+      <div class="flex flex-col items-center justify-start pt-24 pb-32 min-h-screen bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
+        <div class="relative w-28 h-28">
+          <div class="absolute inset-0 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
+          <div class="absolute inset-0 rounded-full border-8 border-t-orange-500 border-r-pink-500 border-b-transparent border-l-transparent animate-spin"></div>
         </div>
-        <p class="mt-8 text-2xl font-medium text-orange-600 dark:text-orange-400">Analyzing pages for "${phrase}"...</p>
-        <div id="progress-modules" class="mt-12 space-y-4 w-full max-w-lg"></div>
+        <p class="mt-12 text-3xl font-bold text-orange-600 dark:text-orange-400">Analyzing "${phrase}"...</p>
+        <p class="mt-4 text-xl text-gray-600 dark:text-gray-400">Comparing your page vs competitor</p>
+        <div id="progress-modules" class="mt-16 space-y-5 w-full max-w-2xl px-6"></div>
       </div>
     `;
 
     const progressModules = document.getElementById('progress-modules');
     const messages = [
-      "Fetching your page via secure proxy",
-      "Fetching competitor page",
-      "Parsing meta title & description",
-      "Scanning headings (H1-H6)",
-      "Analyzing main content depth & density",
-      "Checking image alt texts",
-      "Reviewing internal anchor text",
-      "Evaluating URL structure & schema markup",
-      "Calculating Phrase Power Scores",
-      "Generating prioritized gap fixes"
+      "Fetching and parsing your page",
+      "Fetching and parsing competitor page",
+      "Analyzing titles, meta & headings",
+      "Evaluating content depth & keyword usage",
+      "Checking images, anchors & schema",
+      "Calculating Phrase Power Scores & gaps"
     ];
 
-	let idx = 0;
+    let idx = 0;
+    const delay = 1800; // 1.8 seconds per step → ~11 seconds total, matches other tools
     const interval = setInterval(() => {
       if (idx < messages.length) {
-        // Comment: Each new item starts hidden and fades/slides in using Tailwind transitions
         progressModules.innerHTML += `
-          <div class="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl shadow 
+          <div class="flex items-center gap-5 p-5 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg
                   opacity-0 translate-y-4 transition-all duration-700 ease-out">
-            <div class="w-8 h-8 bg-orange-500 rounded-full animate-pulse"></div>
-            <p class="text-lg text-gray-800 dark:text-gray-200">${messages[idx]}</p>
+            <div class="w-9 h-9 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full animate-pulse flex-shrink-0"></div>
+            <p class="text-lg font-medium text-gray-800 dark:text-gray-200">${messages[idx]}</p>
           </div>
         `;
-        // Trigger reflow and animate the last added item
         const lastItem = progressModules.lastElementChild;
         if (lastItem) {
-          // Force reflow to restart animation
           void lastItem.offsetWidth;
           lastItem.classList.remove('opacity-0', 'translate-y-4');
           lastItem.classList.add('opacity-100', 'translate-y-0');
@@ -107,17 +103,21 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         clearInterval(interval);
       }
-    }, Math.random() * 1600 + 1200);
+    }, delay);
 
     results.dataset.interval = interval;
 
+    // Run fetches in background — show results as soon as both pages load (no forced wait)
     const [yourDoc, compDoc] = await Promise.all([fetchPage(yourUrl), fetchPage(compUrl)]);
+
+    // Always clear progress animation
     if (results.dataset.interval) clearInterval(results.dataset.interval);
 
     if (!yourDoc || !compDoc) {
-      results.innerHTML = `<p class="text-red-500 dark:text-red-400 text-center text-2xl py-20">Error: One or both pages could not be loaded.</p>`;
+      results.innerHTML = `<p class="text-red-500 dark:text-red-400 text-center text-3xl py-32">Error: Could not load one or both pages. Please check URLs and try again.</p>`;
       return;
     }
+
 
     let yourScore = 0;
     let compScore = 0;
