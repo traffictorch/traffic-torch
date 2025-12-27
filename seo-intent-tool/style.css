@@ -130,16 +130,22 @@ body { transition: background-color 0.3s ease; }
 
 
 
-/* Prevent horizontal rubber-band bounce on iOS Safari (modern CSS – no impact on position: sticky) */
-html, body {
-  overscroll-behavior-x: none;
+/* Fix iPhone horizontal stretch/bounce on results load – match home tool (no root overflow, only prevent actual overflow in results) */
+
+/* Main containers full width + padding (already in your media queries – ensure present) */
+@media (max-width: 1024px) {
+  .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
+    max-width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
 }
 
-/* Safety: Force table to fit and break long content (prevents actual overflow causing stretch) */
+/* Target results table to prevent it forcing page width */
 #results .overflow-x-auto,
 #results table {
   width: 100% !important;
-  max-width: 100%;
+  max-width: 100% !important;
   table-layout: fixed;
   overflow-wrap: break-word;
 }
@@ -150,7 +156,7 @@ html, body {
   overflow-wrap: anywhere;
 }
 
-/* Smooth internal horizontal scroll */
+/* Smooth internal table scroll on iOS */
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
 }
