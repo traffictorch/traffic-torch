@@ -363,39 +363,48 @@ ${schemaTypes.length < 2 ? `
       </div> <!-- end space-y-16 -->
     </div> <!-- end max-w-5xl -->
   `;
-  // Save as PDF - expand details, hide form, restore layout on close/cancel (matches home page tool)
-  const savePdfBtn = document.getElementById('save-pdf-btn');
-  if (savePdfBtn) {
-    savePdfBtn.addEventListener('click', () => {
-      // Expand all hidden sections for full PDF
-      document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
 
-      // Hide form to clean up print
-      document.getElementById('audit-form').style.display = 'none';
 
-      // Print-optimized styles
-      const printStyle = document.createElement('style');
-      printStyle.innerHTML = `
-        @media print {
-          body { background: white !important; color: black !important; }
-          .bg-white, .dark\\:bg-gray-900 { background: white !important; }
-          .text-gray-900, .dark\\:text-gray-100 { color: black !important; }
-          .border-gray-300, .dark\\:border-gray-700 { border-color: #333 !important; }
-          .shadow-lg { box-shadow: none !important; }
-          #audit-form { display: none !important; }
-        }
-      `;
-      document.head.appendChild(printStyle);
+// Save as PDF - expand details, hide non-report elements, clean print, restore on close/cancel
+const savePdfBtn = document.getElementById('save-pdf-btn');
+if (savePdfBtn) {
+  savePdfBtn.addEventListener('click', () => {
+    // Expand all hidden sections for full report in PDF
+    document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
 
-      window.print();
+    // Hide form and any spinner/progress if present
+    document.getElementById('audit-form').style.display = 'none';
+    const progress = document.getElementById('analysis-progress');
+    if (progress) progress.style.display = 'none';
 
-      // Restore layout when print dialog closes (even if cancelled)
-      window.onafterprint = () => {
-        document.getElementById('audit-form').style.display = '';
-        document.head.removeChild(printStyle);
-      };
-    });
-  }
+    // Print-optimized styles - clean black-on-white, no shadows, force hidden to show
+    const printStyle = document.createElement('style');
+    printStyle.innerHTML = `
+      @media print {
+        body { background: white !important; color: black !important; }
+        .bg-white, .dark\\:bg-gray-900 { background: white !important; }
+        .text-gray-900, .dark\\:text-gray-100 { color: black !important; }
+        .border-gray-300, .dark\\:border-gray-700 { border-color: #ccc !important; }
+        .shadow-lg { box-shadow: none !important; }
+        .hidden { display: block !important; }
+        #audit-form, #analysis-progress { display: none !important; }
+      }
+    `;
+    document.head.appendChild(printStyle);
+
+    window.print();
+
+    // Restore layout when print dialog closes (even if cancelled)
+    window.onafterprint = () => {
+      document.getElementById('audit-form').style.display = '';
+      if (progress) progress.style.display = '';
+      document.head.removeChild(printStyle);
+    };
+  });
+}
+  
+  
+  
 } catch (err) {
   results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
 }
