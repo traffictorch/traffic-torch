@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <!-- Quit Risk Verdict -->
             <div class="text-center mb-12">
-              <p class="text-4xl font-black mb-8">
+              <p class="text-4xl font-bold text-gray-500 mb-8">
                 Quit Risk: <span class="bg-gradient-to-r ${risk.color} bg-clip-text text-transparent">
                   ${risk.text}
                 </span>
