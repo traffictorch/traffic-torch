@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <!-- Gap Verdict -->
         <div class="text-center mb-12">
-          <p class="text-4xl font-black mb-8">
+          <p class="text-4xl font-bold text-green-500 mb-8">
             Competitive Gap: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
               ${yourScore > compScore ? 'You Lead' : yourScore < compScore ? 'Competitor Leads' : 'Neck & Neck'}
             </span>

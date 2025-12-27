@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Predictive Rank Forecast -->
         <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
           <h3 class="text-4xl font-black text-center">Predictive Rank Forecast</h3>
-          <p class="text-center text-7xl font-black">${yourScore >= 90 ? 'Top 3 Potential' : yourScore >= 80 ? 'Top 10' : yourScore >= 60 ? 'Page 1 Possible' : 'Page 2+'}</p>
+          <p class="text-center text-4xl font-black">${yourScore >= 90 ? 'Top 3 Potential' : yourScore >= 80 ? 'Top 10' : yourScore >= 60 ? 'Page 1 Possible' : 'Page 2+'}</p>
           <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mx-auto block px-10 py-4 bg-white text-gray-900 rounded-full hover:bg-gray-100 text-xl font-bold">
             Show Info
           </button>
