@@ -365,19 +365,24 @@ ${schemaTypes.length < 2 ? `
   `;
 
 
-// Save as PDF - expand details, hide non-report elements, clean print, restore on close/cancel
+// Hide the spinner/progress after report is generated (prevents it showing in print)
+const analysisProgress = document.getElementById('analysis-progress');
+if (analysisProgress) {
+  analysisProgress.style.display = 'none';
+}
+
+// Save as PDF - clean report only, expand sections, hide form/spinner, restore on close/cancel
 const savePdfBtn = document.getElementById('save-pdf-btn');
 if (savePdfBtn) {
   savePdfBtn.addEventListener('click', () => {
     // Expand all hidden sections for full report in PDF
     document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
 
-    // Hide form and any spinner/progress if present
+    // Hide form and spinner for clean print
     document.getElementById('audit-form').style.display = 'none';
-    const progress = document.getElementById('analysis-progress');
-    if (progress) progress.style.display = 'none';
+    if (analysisProgress) analysisProgress.style.display = 'none';
 
-    // Print-optimized styles - clean black-on-white, no shadows, force hidden to show
+    // Print-optimized styles - clean black-on-white, force hidden to show, no shadows
     const printStyle = document.createElement('style');
     printStyle.innerHTML = `
       @media print {
@@ -397,7 +402,7 @@ if (savePdfBtn) {
     // Restore layout when print dialog closes (even if cancelled)
     window.onafterprint = () => {
       document.getElementById('audit-form').style.display = '';
-      if (progress) progress.style.display = '';
+      if (analysisProgress) analysisProgress.style.display = '';
       document.head.removeChild(printStyle);
     };
   });
