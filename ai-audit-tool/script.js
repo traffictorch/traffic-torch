@@ -185,8 +185,8 @@ const urlToFetch = normalizedUrl; // use this for fetch
             <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
           </svg>
         </div>
-        <p id="progressText" class="text-2xl font-bold text-gray-800 dark:text-gray-200">Fetching page...</p>
-        <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">Analyzing content for AI patterns – please wait</p>
+		<p id="progressText" class="text-2xl font-bold text-orange-600 dark:text-orange-400">Fetching page...</p>
+        <p class="mt-4 text-sm text-gray-500 dark:text-gray-500">Analyzing content for AI patterns – please wait</p>
       </div>
     `;
     results.classList.remove('hidden');
