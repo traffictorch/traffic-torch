@@ -6,8 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressContainer = document.getElementById('analysis-progress');
   const progressText = document.getElementById('progress-text');
 
-  if (!form || !urlInput || !results || !progressContainer) {
-    console.error('Required elements not found');
+  // Check ALL required elements (including progressText)
+  if (!form || !urlInput || !results || !progressContainer || !progressText) {
+    console.error('One or more required elements not found in DOM');
     return;
   }
 
@@ -21,13 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Prepend https:// if no protocol
+    // Prepend https:// if no protocol present
     if (!/^https?:\/\//i.test(url)) {
       url = 'https://' + url;
-      urlInput.value = url; // Update field to educate user on full URL
+      urlInput.value = url; // Educates user by showing full URL
     }
 
-    // Validate URL format
+    // Validate final URL format
     try {
       new URL(url);
     } catch (_) {
