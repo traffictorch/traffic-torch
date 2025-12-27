@@ -18,8 +18,28 @@ const initTool = (form, results, progressContainer) => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const url = document.getElementById('url-input').value.trim();
-    if (!url) return;
+    let inputUrl = document.getElementById('url-input').value.trim();
+
+if (!inputUrl) {
+  alert('Please enter a URL to analyze.');
+  return;
+}
+
+// Add https:// if no protocol is provided
+if (!/^https?:\/\//i.test(inputUrl)) {
+  inputUrl = 'https://' + inputUrl;
+  document.getElementById('url-input').value = inputUrl; // Show full URL to user
+}
+
+// Validate the final URL
+try {
+  new URL(inputUrl);
+} catch (_) {
+  alert('Please enter a valid URL (e.g., example.com or https://example.com)');
+  return;
+}
+
+const url = inputUrl; // Now use this validated full URL in the fetch
 
     progressContainer.classList.remove('hidden');
     results.classList.add('hidden');
