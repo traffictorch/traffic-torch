@@ -422,14 +422,9 @@ const urlToFetch = normalizedUrl; // use this for fetch
       output.classList.add('hidden');
       setTimeout(() => {
       const humanized = makeItHuman(analyzedText);
-      
-      let formatted = humanized
-        .replace(/\n\n/g, '</p><p class="mt-8 font-bold leading-relaxed">')
-        .replace(/\n/g, '<br>');
-      
-      textDiv.innerHTML = '<p class="font-bold leading-relaxed">' + formatted + '</p>';
-      
-      output.classList.remove('hidden');
+      textDiv.innerHTML = humanized.replace(/\n\n/g, '</p><p class="mt-8">').replace(/\n/g, '<br>');
+      textDiv.innerHTML = '<p>' + textDiv.innerHTML + '</p>';
+        output.classList.remove('hidden');
       }, 400);
     }
   });
