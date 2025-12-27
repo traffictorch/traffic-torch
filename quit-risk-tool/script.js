@@ -18,6 +18,53 @@ document.addEventListener('DOMContentLoaded', () => {
       text: main.textContent || ''
     };
   }
+  
+  
+  
+  
+    // Form submission handler with URL normalization
+  form.addEventListener('submit', (e) => {
+    e.preventDefault(); // Prevent default form submission
+
+    let url = input.value.trim(); // Remove leading/trailing whitespace
+
+    if (!url) {
+      // Basic feedback if empty (browser 'required' will also trigger)
+      alert('Please enter a website URL.');
+      return;
+    }
+
+    // Normalize URL: Add https:// if no protocol is provided
+    if (!/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+    } else if (/^http:\/\//i.test(url)) {
+      // Optional: Upgrade http:// to https:// for better compatibility
+      url = url.replace(/^http:\/\//i, 'https://');
+    }
+
+    // Now proceed with fetch using the normalized URL + proxy
+    // Example continuation (replace or integrate with your existing fetch logic):
+    const proxiedUrl = PROXY + '?url=' + encodeURIComponent(url);
+
+    fetch(proxiedUrl)
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.text();
+      })
+      .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const uxData = getUXContent(doc);
+        // ... your existing results display logic here ...
+        results.innerHTML = `<pre>${JSON.stringify(uxData, null, 2)}</pre>`; // Placeholder
+      })
+      .catch(err => {
+        results.innerHTML = `<p class="text-red-500">Error: ${err.message}</p>`;
+      });
+  });
+  
+  
+  
 
   function analyzeUX(data) {
     let readability = 60;
