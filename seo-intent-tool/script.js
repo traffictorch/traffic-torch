@@ -353,18 +353,51 @@ ${schemaTypes.length < 2 ? `
 </div>
 
 
-          <!-- PDF Button -->
-          <div class="text-center my-16">
-            <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
-                 class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
-              📄 Save as PDF
-            </button>
-          </div>
+        <!-- PDF Button -->
+        <div class="text-center my-16">
+          <button id="save-pdf-btn"
+               class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
+            📄 Save as PDF (with all details)
+          </button>
         </div>
-      `;
+      </div> <!-- end space-y-16 -->
+    </div> <!-- end max-w-5xl -->
+  `;
+  // Save as PDF - expand details, hide form, restore layout on close/cancel (matches home page tool)
+  const savePdfBtn = document.getElementById('save-pdf-btn');
+  if (savePdfBtn) {
+    savePdfBtn.addEventListener('click', () => {
+      // Expand all hidden sections for full PDF
+      document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
 
-    } catch (err) {
-      results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
-    }
+      // Hide form to clean up print
+      document.getElementById('audit-form').style.display = 'none';
+
+      // Print-optimized styles
+      const printStyle = document.createElement('style');
+      printStyle.innerHTML = `
+        @media print {
+          body { background: white !important; color: black !important; }
+          .bg-white, .dark\\:bg-gray-900 { background: white !important; }
+          .text-gray-900, .dark\\:text-gray-100 { color: black !important; }
+          .border-gray-300, .dark\\:border-gray-700 { border-color: #333 !important; }
+          .shadow-lg { box-shadow: none !important; }
+          #audit-form { display: none !important; }
+        }
+      `;
+      document.head.appendChild(printStyle);
+
+      window.print();
+
+      // Restore layout when print dialog closes (even if cancelled)
+      window.onafterprint = () => {
+        document.getElementById('audit-form').style.display = '';
+        document.head.removeChild(printStyle);
+      };
+    });
+  }
+} catch (err) {
+  results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
+}
   });
 });
