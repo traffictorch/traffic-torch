@@ -68,117 +68,89 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const getWordCount = (doc) => getCleanContent(doc).split(/\s+/).filter(w => w.length > 0).length;
   form.addEventListener('submit', async e => {
+    
+    
+    
+    
+    
+    
     e.preventDefault();
-    
-    
+
     const yourUrl = pageUrlInput.value.trim();
     const phrase = targetKeywordInput.value.trim();
     if (!yourUrl || !phrase) return;
 
-    // Auto-prepend https:// if no protocol provided (allows input like "example.com/path")
+    // Auto-prepend https:// if no protocol provided
     let fullUrl = yourUrl;
     if (!/^https?:\/\//i.test(yourUrl)) {
       fullUrl = 'https://' + yourUrl;
-      pageUrlInput.value = fullUrl; // Update input so user sees the full URL
+      pageUrlInput.value = fullUrl; // Show full URL to user
     }
 
     startSpinnerLoader();
+
     const yourDoc = await fetchPage(fullUrl);
 
-    // ... (keep all existing code between here unchanged) ...
-
-    // URL & Schema - uses fullUrl for accurate keyword matching
-    data.urlSchema = {
-      urlMatch: countPhrase(fullUrl, phrase),
-      schema: yourDoc.querySelector('script[type="application/ld+json"]') ? 1 : 0
-    };
-    
-    
-    
-    startSpinnerLoader();
-    const yourDoc = await fetchPage(yourUrl);
     if (!yourDoc) {
       stopSpinnerLoader();
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Page not reachable.</p>`;
       return;
     }
+
     let yourScore = 0;
     const data = {};
     const fixes = [];
+
     // Meta
     data.meta = {
       yourMatches: countPhrase(yourDoc.querySelector('title')?.textContent + yourDoc.querySelector('meta[name="description"]')?.content, phrase)
     };
     yourScore += data.meta.yourMatches > 0 ? 25 : 0;
-    if (data.meta.yourMatches === 0) fixes.push({
-      issue: 'Add keyword to title and meta description',
-      what: 'Your page lacks the target keyword in the title tag or meta description, reducing visibility in search results.',
-      how: 'Incorporate the keyword naturally at the beginning of the title (under 60 characters) and once in the meta description (under 155 characters) to make it compelling.',
-      why: 'These elements are key for search engines to match queries and encourage clicks, potentially boosting CTR by 20-30% when optimized.'
-    });
+    if (data.meta.yourMatches === 0) fixes.push({ /* ... existing fix object ... */ });
+
     // H1
     const yourH1 = yourDoc.querySelector('h1')?.textContent.trim() || '';
     data.h1 = { match: countPhrase(yourH1, phrase) };
     yourScore += data.h1.match > 0 ? 15 : 0;
-    if (data.h1.match === 0) fixes.push({
-      issue: 'Add keyword to H1',
-      what: 'The main H1 heading is missing the target keyword.',
-      how: 'Revise the H1 to feature the keyword or a close variant, ensuring it remains engaging and user-focused.',
-      why: 'H1 tags help search engines grasp the page topic quickly, serving as a core on-page factor for better rankings.'
-    });
+    if (data.h1.match === 0) fixes.push({ /* ... existing fix object ... */ });
+
     // Content
     const yourWords = getWordCount(yourDoc);
     const yourContentMatches = countPhrase(getCleanContent(yourDoc), phrase);
     const yourDensity = yourWords ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
     data.content = { words: yourWords, density: yourDensity };
     yourScore += yourWords > 800 ? 20 : 0;
-    if (yourWords < 800) fixes.push({
-      issue: `Add depth (${800 - yourWords} words recommended)`,
-      what: 'Your content is shorter than ideal, limiting its ability to cover the topic comprehensively.',
-      how: 'Expand with detailed sections like examples, FAQs, comparisons, or data to reach at least 800 words while maintaining quality.',
-      why: 'Longer, in-depth content often ranks higher as it provides more value and signals expertise to search engines.'
-    });
+    if (yourWords < 800) fixes.push({ /* ... existing fix object ... */ });
+
     // Image Alts
     const yourImgs = yourDoc.querySelectorAll('img');
     const yourAltPhrase = Array.from(yourImgs).filter(img => countPhrase(img.alt || '', phrase) > 0).length;
     data.alts = { total: yourImgs.length, phrase: yourAltPhrase };
     yourScore += yourAltPhrase > 0 ? 15 : 0;
-    if (yourAltPhrase === 0 && yourImgs.length > 0) fixes.push({
-      issue: 'Add keyword to key image alts',
-      what: 'None of your images have the target keyword in alt text.',
-      how: 'Add descriptive alt text including the keyword to important images (e.g., hero or feature images) without stuffing.',
-      why: 'Alt text improves accessibility, enables image search traffic, and adds relevance signals.'
-    });
+    if (yourAltPhrase === 0 && yourImgs.length > 0) fixes.push({ /* ... existing fix object ... */ });
+
     // Anchors
     const yourAnchors = Array.from(yourDoc.querySelectorAll('a')).filter(a => countPhrase(a.textContent || '', phrase) > 0).length;
     data.anchors = { count: yourAnchors };
     yourScore += yourAnchors > 0 ? 10 : 0;
-    if (yourAnchors === 0) fixes.push({
-      issue: 'Add keyword to anchor text',
-      what: 'No internal links use the target keyword in anchor text.',
-      how: 'Link to related pages using the keyword or natural variations as the clickable text.',
-      why: 'Keyword-rich anchors help distribute topical authority across your site.'
-    });
-    // URL & Schema
+    if (yourAnchors === 0) fixes.push({ /* ... existing fix object ... */ });
+
+    // URL & Schema - uses fullUrl
     data.urlSchema = {
-      urlMatch: countPhrase(yourUrl, phrase),
+      urlMatch: countPhrase(fullUrl, phrase),
       schema: yourDoc.querySelector('script[type="application/ld+json"]') ? 1 : 0
     };
     yourScore += data.urlSchema.urlMatch > 0 ? 10 : 0;
-    if (data.urlSchema.urlMatch === 0) fixes.push({
-      issue: 'Include keyword in URL',
-      what: 'The page URL does not contain the target keyword.',
-      how: 'Use a clean, hyphenated URL with the keyword (e.g., /your-keyword-guide) and set up redirects if changing.',
-      why: 'Keyword in URL provides a clear relevance signal to users and search engines.'
-    });
-    if (data.urlSchema.schema === 0) fixes.push({
-      issue: 'Add structured data',
-      what: 'No structured data (schema markup) is detected.',
-      how: 'Add JSON-LD for Article, FAQ, or relevant schema type in the <head>.',
-      why: 'Schema enables rich results in search, increasing visibility and click-through rates.'
-    });
+    if (data.urlSchema.urlMatch === 0) fixes.push({ /* ... existing fix object ... */ });
+    if (data.urlSchema.schema === 0) fixes.push({ /* ... existing fix object ... */ });
+
     yourScore = Math.min(100, Math.round(yourScore));
     stopSpinnerLoader();
+    
+    
+    
+    
+    
     results.innerHTML = `
       <div class="max-w-5xl mx-auto space-y-16">
         <!-- Big Score Circle -->
