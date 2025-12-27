@@ -128,6 +128,29 @@ body { transition: background-color 0.3s ease; }
 
 
 
+/* Force all grids to single column on mobile – fixes overflow on iPhone */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+  .md\\:grid-cols-2,
+  .md\\:grid-cols-3 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Ensure no horizontal overflow globally on small screens */
+@media (max-width: 480px) {
+  body {
+    overflow-x: hidden;
+  }
+  .container,
+  .max-w-5xl {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
 
 
 
