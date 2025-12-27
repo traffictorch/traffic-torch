@@ -59,6 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!yourUrl || !compUrl || !phrase) return;
 
 
+// Replace the loading/progress block (from results.classList.remove('hidden') to after the await Promise.all) with this final version
+
     results.classList.remove('hidden');
     results.innerHTML = `
       <div class="flex flex-col items-center justify-start pt-24 pb-32 min-h-screen bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
@@ -83,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     let idx = 0;
-    const delay = 1800; // 1.8 seconds per step → ~11 seconds total, matches other tools
+    const delay = 1800; // 1.8s per step → 6 steps = ~10.8 seconds total
     const interval = setInterval(() => {
       if (idx < messages.length) {
         progressModules.innerHTML += `
@@ -107,10 +109,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     results.dataset.interval = interval;
 
-    // Run fetches in background — show results as soon as both pages load (no forced wait)
-    const [yourDoc, compDoc] = await Promise.all([fetchPage(yourUrl), fetchPage(compUrl)]);
+    // Run fetches in parallel
+    const fetchPromise = Promise.all([fetchPage(yourUrl), fetchPage(compUrl)]);
 
-    // Always clear progress animation
+    // Wait for BOTH fetches AND full progress animation to complete
+    const [yourDoc, compDoc] = await Promise.all([
+      fetchPromise,
+      // Artificial promise that resolves only when all messages shown
+      new Promise(resolve => {
+        const check = setInterval(() => {
+          if (idx >= messages.length) {
+            clearInterval(check);
+            resolve();
+          }
+        }, 200);
+      })
+    ]);
+
+    // Final cleanup
     if (results.dataset.interval) clearInterval(results.dataset.interval);
 
     if (!yourDoc || !compDoc) {
@@ -118,6 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // ... rest of scoring and results rendering unchanged
 
     let yourScore = 0;
     let compScore = 0;
