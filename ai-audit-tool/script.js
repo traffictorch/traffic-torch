@@ -177,20 +177,19 @@ if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://'
 }
 const urlToFetch = normalizedUrl; // use this for fetch
     if (!url) return;
-    // Loading overlay with spinner
-    results.innerHTML = `
-      <div id="loadingOverlay" class="fixed inset-0 bg-black/50 flex flex-col items-center justify-center z-50">
-        <div class="w-20 h-20 mb-8 relative">
-          <svg viewBox="0 0 100 100" class="animate-spin">
-            <circle cx="50" cy="50" r="40" stroke="#f97316" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
-          </svg>
-        </div>
-        <div id="loadingText" class="bg-white text-gray-800 text-xl font-bold px-12 py-6 rounded-xl shadow-2xl">
-          Analyzing page for AI patterns...
-        </div>
-      </div>
-    `;
-    results.classList.remove('hidden');
+// Simple, clean loader – matches other Traffic Torch tools exactly
+results.innerHTML = `
+  <div class="py-20 text-center">
+    <div class="inline-block w-16 h-16 mb-8">
+      <svg viewBox="0 0 100 100" class="animate-spin text-orange-500">
+        <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
+      </svg>
+    </div>
+    <p class="text-xl font-bold text-gray-700 dark:text-gray-300">Analyzing content for AI patterns...</p>
+    <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">This usually takes 10–20 seconds</p>
+  </div>
+`;
+results.classList.remove('hidden');
     const loadingText = document.getElementById('loadingText');
     const messages = [
       "Fetching page...",
