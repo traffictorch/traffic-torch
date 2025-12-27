@@ -41,9 +41,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
-    const yourUrl = yourInput.value.trim();
-    const compUrl = compInput.value.trim();
+
+    // Read raw input values
+    let yourUrl = yourInput.value.trim();
+    let compUrl = compInput.value.trim();
     const phrase = phraseInput.value.trim();
+
+    // Comment: Add https:// automatically if user forgot the protocol (matches other tools)
+    if (yourUrl && !yourUrl.startsWith('http')) {
+      yourUrl = 'https://' + yourUrl;
+    }
+    if (compUrl && !compUrl.startsWith('http')) {
+      compUrl = 'https://' + compUrl;
+    }
+
+    // Now check if fields are empty (after protocol fix)
     if (!yourUrl || !compUrl || !phrase) return;
 
                 results.classList.remove('hidden');
