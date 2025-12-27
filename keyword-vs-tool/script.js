@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </svg>
               <div class="absolute inset-0 flex flex-col items-center justify-center">
                 <span class="text-7xl font-black ${getTextColorClass(yourScore)} drop-shadow-2xl">${yourScore}</span>
-                <span class="text-2xl text-gray-500 dark:text-gray-400">/100</span>
+                <span class="text-2xl text-gray-500 dark:text-gray-500">/100</span>
               </div>
             </div>
           </div>
@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </svg>
               <div class="absolute inset-0 flex flex-col items-center justify-center">
                 <span class="text-7xl font-black ${getTextColorClass(compScore)} drop-shadow-2xl">${compScore}</span>
-                <span class="text-2xl text-gray-500 dark:text-gray-400">/100</span>
+                <span class="text-2xl text-gray-500 dark:text-gray-500">/100</span>
               </div>
             </div>
           </div>
@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ${yourScore > compScore ? 'You Lead' : yourScore < compScore ? 'Competitor Leads' : 'Neck & Neck'}
             </span>
           </p>
-          <p class="text-xl text-gray-400">Target phrase: "${phrase}"</p>
+          <p class="text-xl text-gray-500">Target phrase: "${phrase}"</p>
         </div>
 
         <!-- Small Metric Cards – Collapsible Education -->

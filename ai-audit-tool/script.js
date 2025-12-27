@@ -408,7 +408,7 @@ const urlToFetch = normalizedUrl; // use this for fetch
         results.innerHTML = `
           <div class="text-center py-20">
             <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
-            <p class="mt-6 text-xl text-gray-400">Please check the URL and try again.</p>
+            <p class="mt-6 text-xl text-gray-500">Please check the URL and try again.</p>
           </div>
         `;
       }, remaining);

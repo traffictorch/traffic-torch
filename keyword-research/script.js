@@ -93,10 +93,10 @@ form.addEventListener('submit', async (e) => {
       card.className = 'bg-gray-50 dark:bg-gray-700 rounded-xl p-5 space-y-3';
       card.innerHTML = `
         <div class="font-bold text-lg text-gray-900 dark:text-white">${sugg.phrase}</div>
-        <div class="text-sm text-gray-600 dark:text-gray-400">
+        <div class="text-sm text-gray-600 dark:text-gray-500">
           <span class="font-medium">Best placement:</span> ${sugg.placement}
         </div>
-        <div class="text-sm text-gray-600 dark:text-gray-400">
+        <div class="text-sm text-gray-600 dark:text-gray-500">
           <span class="font-medium">Why it helps:</span> ${sugg.why}
         </div>
       `;

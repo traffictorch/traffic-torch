@@ -235,7 +235,7 @@ const url = inputUrl; // Now use this validated full URL in the fetch
               <div class="absolute inset-0 flex items-center justify-center">
                 <div class="text-center">
                   <div class="text-6xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">${yourScore}</div>
-                  <div class="text-2xl text-gray-500 dark:text-gray-400">/100</div>
+                  <div class="text-2xl text-gray-500 dark:text-gray-500">/100</div>
                 </div>
               </div>
             </div>
@@ -283,15 +283,15 @@ const url = inputUrl; // Now use this validated full URL in the fetch
                       <h4 class="text-2xl font-bold ${fix.color}">${fix.title}</h4>
                       <div class="mt-4">
                         <p class="text-blue-500 font-bold">What:</p>
-                        <p class="text-gray-400 mt-1">${fix.what}</p>
+                        <p class="text-gray-500 mt-1">${fix.what}</p>
                       </div>
                       <div class="mt-2">
                         <p class="text-green-500 font-bold">How:</p>
-                        <p class="text-gray-400 mt-1">${fix.how}</p>
+                        <p class="text-gray-500 mt-1">${fix.how}</p>
                       </div>
                       <div class="mt-2">
                         <p class="text-orange-500 font-bold">Why:</p>
-                        <p class="text-gray-400 mt-1">${fix.why}</p>
+                        <p class="text-gray-500 mt-1">${fix.why}</p>
                       </div>
                     </div>
                   </div>

@@ -244,9 +244,9 @@ document.addEventListener('DOMContentLoaded', () => {
                   Show Details
                 </button>
                 <div class="hidden mt-6 space-y-3 text-left text-sm">
-                  <p class="text-blue-600 dark:text-blue-400 font-bold">What is it?</p><p class="text-gray-600 dark:text-gray-400">${m.what}</p>
-                  <p class="text-green-600 dark:text-green-400 font-bold mt-2">How to fix?</p><p class="text-gray-600 dark:text-gray-400">${m.how}</p>
-                  <p class="text-orange-600 dark:text-orange-400 font-bold mt-2">Why it matters?</p><p class="text-gray-600 dark:text-gray-400">${m.why}</p>
+                  <p class="text-blue-600 dark:text-blue-400 font-bold">What is it?</p><p class="text-gray-600 dark:text-gray-500">${m.what}</p>
+                  <p class="text-green-600 dark:text-green-400 font-bold mt-2">How to fix?</p><p class="text-gray-600 dark:text-gray-500">${m.how}</p>
+                  <p class="text-orange-600 dark:text-orange-400 font-bold mt-2">Why it matters?</p><p class="text-gray-600 dark:text-gray-500">${m.why}</p>
                 </div>
               </div>
             `;
@@ -262,9 +262,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="text-5xl">🔧</div>
                 <div class="w-full">
                   <h4 class="text-2xl font-bold text-orange-600 mb-4">${fix.issue}</h4>
-                  <p class="text-blue-600 dark:text-blue-400 font-bold">What is it?</p><p class="text-gray-600 dark:text-gray-400">${fix.what}</p>
-                  <p class="text-green-600 dark:text-green-400 font-bold mt-3">How to fix?</p><p class="text-gray-600 dark:text-gray-400">${fix.how}</p>
-                  <p class="text-orange-600 dark:text-orange-400 font-bold mt-3">Why it matters?</p><p class="text-gray-600 dark:text-gray-400">${fix.why}</p>
+                  <p class="text-blue-600 dark:text-blue-400 font-bold">What is it?</p><p class="text-gray-600 dark:text-gray-500">${fix.what}</p>
+                  <p class="text-green-600 dark:text-green-400 font-bold mt-3">How to fix?</p><p class="text-gray-600 dark:text-gray-500">${fix.how}</p>
+                  <p class="text-orange-600 dark:text-orange-400 font-bold mt-3">Why it matters?</p><p class="text-gray-600 dark:text-gray-500">${fix.why}</p>
                 </div>
               </div>
             </div>

@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="text-8xl font-black drop-shadow-2xl" style="color: ${ux.score < 60 ? '#ef4444' : ux.score < 80 ? '#fb923c' : '#22c55e'};">
                       ${ux.score}
                     </div>
-                    <div class="text-3xl text-gray-600 dark:text-gray-400">/100 Usability</div>
+                    <div class="text-3xl text-gray-600 dark:text-gray-500">/100 Usability</div>
                   </div>
                 </div>
               </div>
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   ${risk.text}
                 </span>
               </p>
-              <p class="text-xl text-gray-400">Scanned ${uxData.links} links + ${uxData.images} images</p>
+              <p class="text-xl text-gray-500">Scanned ${uxData.links} links + ${uxData.images} images</p>
             </div>
             <!-- Small Metric Circles -->
             <div class="grid md:grid-cols-5 gap-6 my-16">
@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
         results.innerHTML = `
           <div class="text-center py-20">
             <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
-            <p class="mt-6 text-xl text-gray-400">Please check the URL and try again.</p>
+            <p class="mt-6 text-xl text-gray-500">Please check the URL and try again.</p>
           </div>
         `;
       }

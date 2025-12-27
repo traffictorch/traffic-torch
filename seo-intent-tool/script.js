@@ -136,22 +136,22 @@ results.classList.remove('hidden');
 
 			<!-- Intent -->
 <div class="text-center mb-12">
-  <p class="text-4xl font-bold text-gray-400 mb-8">
+  <p class="text-4xl font-bold text-gray-500 mb-8">
     Intent: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${intent}</span>
-    <span class="text-2xl text-gray-400">— ${confidence}% match</span>
+    <span class="text-2xl text-gray-500">— ${confidence}% match</span>
   </p>
   <div class="max-w-3xl mx-auto grid md:grid-cols-3 gap-6 text-left">
     <div class="p-6 bg-blue-500/10 border-l-4 border-blue-500 rounded-r-xl">
       <p class="font-bold text-blue-500">What it is</p>
-      <p class="mt-2 text-sm text-gray-400 leading-relaxed">The core motivation driving a user's search query — whether they're seeking information, researching options, ready to purchase, or looking for a local service. Understanding this ensures your content delivers exactly what searchers expect.</p>
+      <p class="mt-2 text-sm text-gray-500 leading-relaxed">The core motivation driving a user's search query — whether they're seeking information, researching options, ready to purchase, or looking for a local service. Understanding this ensures your content delivers exactly what searchers expect.</p>
     </div>
     <div class="p-6 bg-green-500/10 border-l-4 border-green-500 rounded-r-xl">
       <p class="font-bold text-green-500">How to satisfy it</p>
-      <p class="mt-2 text-sm text-gray-400 leading-relaxed">Craft your title, H1, meta description, and body content to directly address the user's specific need. Use matching language, structure (e.g., lists for comparisons, steps for how-tos), and calls-to-action — eliminate fluff, assumptions, or mismatched elements to create a seamless experience.</p>
+      <p class="mt-2 text-sm text-gray-500 leading-relaxed">Craft your title, H1, meta description, and body content to directly address the user's specific need. Use matching language, structure (e.g., lists for comparisons, steps for how-tos), and calls-to-action — eliminate fluff, assumptions, or mismatched elements to create a seamless experience.</p>
     </div>
     <div class="p-6 bg-orange-500/10 border-l-4 border-orange-500 rounded-r-xl">
       <p class="font-bold text-orange-500">Why it matters</p>
-      <p class="mt-2 text-sm text-gray-400 leading-relaxed">Search engines prioritize pages that best align with user intent, as it leads to higher satisfaction, longer engagement, and lower bounces. Mismatched intent results in quick exits, poor signals, and lost rankings — while strong alignment drives traffic and conversions.</p>
+      <p class="mt-2 text-sm text-gray-500 leading-relaxed">Search engines prioritize pages that best align with user intent, as it leads to higher satisfaction, longer engagement, and lower bounces. Mismatched intent results in quick exits, poor signals, and lost rankings — while strong alignment drives traffic and conversions.</p>
     </div>
   </div>
 </div>
@@ -266,10 +266,10 @@ results.classList.remove('hidden');
                 </tr>
               </thead>
               <tbody>
-                <tr class="border-b"><td class="p-4 text-gray-400">Word Count</td><td class="p-4 text-gray-400">${words}</td><td class="p-4 text-gray-400">>1,500</td><td class="p-4 ${words<1500?'text-red-500':'text-green-500'}">${words<1500?'Add '+(1500-words)+' words':'Good'}</td></tr>
-                <tr class="border-b"><td class="p-4 text-gray-400">Readability</td><td class="p-4 text-gray-400">${readability}</td><td class="p-4 text-gray-400">60-70</td><td class="p-4 ${readability<60||readability>70?'text-orange-500':'text-green-500'}">${readability<60||readability>70?'Adjust':'Good'}</td></tr>
-                <tr class="border-b"><td class="p-4 text-gray-400">Schema Types</td><td class="p-4 text-gray-400">${schemaTypes.length}</td><td class="p-4 text-gray-400">≥2</td><td class="p-4 ${schemaTypes.length<2?'text-red-500':'text-green-500'}">${schemaTypes.length<2?'Add':'Good'}</td></tr>
-                <tr><td class="p-4 text-gray-400">Author Bio</td><td class="p-4 text-gray-400">${hasAuthor?'Yes':'No'}</td><td class="p-4 text-gray-400">Yes</td><td class="p-4 ${!hasAuthor?'text-red-500':'text-green-500'}">${!hasAuthor?'Add':'Good'}</td></tr>
+                <tr class="border-b"><td class="p-4 text-gray-500">Word Count</td><td class="p-4 text-gray-500">${words}</td><td class="p-4 text-gray-500">>1,500</td><td class="p-4 ${words<1500?'text-red-500':'text-green-500'}">${words<1500?'Add '+(1500-words)+' words':'Good'}</td></tr>
+                <tr class="border-b"><td class="p-4 text-gray-500">Readability</td><td class="p-4 text-gray-500">${readability}</td><td class="p-4 text-gray-500">60-70</td><td class="p-4 ${readability<60||readability>70?'text-orange-500':'text-green-500'}">${readability<60||readability>70?'Adjust':'Good'}</td></tr>
+                <tr class="border-b"><td class="p-4 text-gray-500">Schema Types</td><td class="p-4 text-gray-500">${schemaTypes.length}</td><td class="p-4 text-gray-500">≥2</td><td class="p-4 ${schemaTypes.length<2?'text-red-500':'text-green-500'}">${schemaTypes.length<2?'Add':'Good'}</td></tr>
+                <tr><td class="p-4 text-gray-500">Author Bio</td><td class="p-4 text-gray-500">${hasAuthor?'Yes':'No'}</td><td class="p-4 text-gray-500">Yes</td><td class="p-4 ${!hasAuthor?'text-red-500':'text-green-500'}">${!hasAuthor?'Add':'Good'}</td></tr>
               </tbody>
             </table>
           </div>
@@ -286,11 +286,11 @@ results.classList.remove('hidden');
         <h4 class="text-2xl font-bold text-red-600">Add Author Bio & Photo</h4>
         <div class="mt-4 space-y-3 text-sm">
           <p class="text-blue-500 font-bold">What it is?</p>
-          <p class="text-gray-500 dark:text-gray-400">A visible author byline with name, photo, and credentials that proves a real expert created the content.</p>
+          <p class="text-gray-500 dark:text-gray-500">A visible author byline with name, photo, and credentials that proves a real expert created the content.</p>
           <p class="text-green-500 font-bold">How to improve?</p>
-          <p class="text-gray-500 dark:text-gray-400">Add a detailed author box with professional headshot, full bio highlighting relevant experience/qualifications, links to social profiles or other work, and clear connection to the topic (e.g., “Written by [Name], 10+ years in [niche]”).</p>
+          <p class="text-gray-500 dark:text-gray-500">Add a detailed author box with professional headshot, full bio highlighting relevant experience/qualifications, links to social profiles or other work, and clear connection to the topic (e.g., “Written by [Name], 10+ years in [niche]”).</p>
           <p class="text-orange-500 font-bold">Why it matters?</p>
-          <p class="text-gray-500 dark:text-gray-400">Search engines heavily weigh proven authorship for E-E-A-T — pages with strong author signals rank higher, build trust faster, and reduce bounce rates significantly.</p>
+          <p class="text-gray-500 dark:text-gray-500">Search engines heavily weigh proven authorship for E-E-A-T — pages with strong author signals rank higher, build trust faster, and reduce bounce rates significantly.</p>
         </div>
       </div>
     </div>
@@ -303,11 +303,11 @@ ${words < 1500 ? `
         <h4 class="text-2xl font-bold text-orange-600">Expand Content Depth</h4>
         <div class="mt-4 space-y-3 text-sm">
           <p class="text-blue-500 font-bold">What it is?</p>
-          <p class="text-gray-500 dark:text-gray-400">Thorough, comprehensive coverage that fully answers the main query plus all related follow-up questions users typically have.</p>
+          <p class="text-gray-500 dark:text-gray-500">Thorough, comprehensive coverage that fully answers the main query plus all related follow-up questions users typically have.</p>
           <p class="text-green-500 font-bold">How to improve?</p>
-          <p class="text-gray-500 dark:text-gray-400">Add in-depth examples, data-backed statistics, step-by-step breakdowns, comparisons, visuals/screenshots, templates or tools, expert quotes, case studies, and expanded FAQs — aim for the most complete resource on the topic.</p>
+          <p class="text-gray-500 dark:text-gray-500">Add in-depth examples, data-backed statistics, step-by-step breakdowns, comparisons, visuals/screenshots, templates or tools, expert quotes, case studies, and expanded FAQs — aim for the most complete resource on the topic.</p>
           <p class="text-orange-500 font-bold">Why it matters?</p>
-          <p class="text-gray-500 dark:text-gray-400">Depth remains the strongest on-page ranking factor — search engines consistently reward the most helpful, exhaustive pages with top positions and sustained traffic growth.</p>
+          <p class="text-gray-500 dark:text-gray-500">Depth remains the strongest on-page ranking factor — search engines consistently reward the most helpful, exhaustive pages with top positions and sustained traffic growth.</p>
         </div>
       </div>
     </div>
@@ -320,11 +320,11 @@ ${schemaTypes.length < 2 ? `
         <h4 class="text-2xl font-bold text-purple-600">Add Relevant Schema Markup</h4>
         <div class="mt-4 space-y-3 text-sm">
           <p class="text-blue-500 font-bold">What it is?</p>
-          <p class="text-gray-500 dark:text-gray-400">Structured data (JSON-LD) that explicitly defines your page type and key entities to search engines.</p>
+          <p class="text-gray-500 dark:text-gray-500">Structured data (JSON-LD) that explicitly defines your page type and key entities to search engines.</p>
           <p class="text-green-500 font-bold">How to improve?</p>
-          <p class="text-gray-500 dark:text-gray-400">Implement at least two relevant types: Article (with author Person link), plus FAQPage, HowTo, Product, or BreadcrumbList as appropriate. Validate with official testing tools before publishing.</p>
+          <p class="text-gray-500 dark:text-gray-500">Implement at least two relevant types: Article (with author Person link), plus FAQPage, HowTo, Product, or BreadcrumbList as appropriate. Validate with official testing tools before publishing.</p>
           <p class="text-orange-500 font-bold">Why it matters?</p>
-          <p class="text-gray-500 dark:text-gray-400">Proper schema unlocks rich results, boosts click-through rates dramatically, strengthens E-E-A-T signals, and helps search engines feature your content more prominently.</p>
+          <p class="text-gray-500 dark:text-gray-500">Proper schema unlocks rich results, boosts click-through rates dramatically, strengthens E-E-A-T signals, and helps search engines feature your content more prominently.</p>
         </div>
       </div>
     </div>
