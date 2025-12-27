@@ -130,10 +130,6 @@ body { transition: background-color 0.3s ease; }
 
 
 
-/* Disable horizontal rubber-band bounce on iOS Safari (current pure-CSS solution – works with sticky headers) */
-html, body {
-  overscroll-behavior-x: none;
-}
 
 /* Safety: prevent dynamic table from causing real viewport stretch (keep from previous) */
 #results .max-w-5xl {
