@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function getGradeColor(normalized10) {
     if (normalized10 >= 8.0) return '#10b981'; // green
     if (normalized10 >= 6.0) return '#f97316'; // orange
-    return '#000'; // black
+    return '#ef4444'; // red
   }
 
   form.addEventListener('submit', async (e) => {
@@ -383,22 +383,15 @@ const urlToFetch = normalizedUrl; // use this for fetch
                 </div>
               </div>
             </div>
-          
+           
+          <div class="text-center my-16">
+            <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
+                    class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
+              📄 Save as PDF
+            </button>
           </div>
         </div>
-
-        <!-- Added: Save as PDF button – placed at the very end of the report -->
-        <div class="mt-20 text-center pb-12">
-          <button id="savePdfBtn" class="px-16 py-6 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:opacity-90 transition">
-            💾 Save Report as PDF
-          </button>
-          <p class="mt-4 text-sm text-gray-500 italic">
-            Tip: Use your browser's print dialog → Choose "Save as PDF" for best results (includes full styling and colors)
-          </p>
-        </div>
-      </div>
-    </div>
-  `;
+      `;
       }, remaining);
     } catch (err) {
       const elapsed = Date.now() - startTime;
