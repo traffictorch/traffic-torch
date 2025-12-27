@@ -31,6 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }, 600); // Quicker interval to show all faster
   }
+  
+  
+  
+  
+  
   function stopSpinnerLoader() {
     clearInterval(moduleInterval);
     const loader = document.getElementById('loader');
@@ -64,9 +69,32 @@ document.addEventListener('DOMContentLoaded', () => {
   const getWordCount = (doc) => getCleanContent(doc).split(/\s+/).filter(w => w.length > 0).length;
   form.addEventListener('submit', async e => {
     e.preventDefault();
+    
+    
     const yourUrl = pageUrlInput.value.trim();
     const phrase = targetKeywordInput.value.trim();
     if (!yourUrl || !phrase) return;
+
+    // Auto-prepend https:// if no protocol provided (allows input like "example.com/path")
+    let fullUrl = yourUrl;
+    if (!/^https?:\/\//i.test(yourUrl)) {
+      fullUrl = 'https://' + yourUrl;
+      pageUrlInput.value = fullUrl; // Update input so user sees the full URL
+    }
+
+    startSpinnerLoader();
+    const yourDoc = await fetchPage(fullUrl);
+
+    // ... (keep all existing code between here unchanged) ...
+
+    // URL & Schema - uses fullUrl for accurate keyword matching
+    data.urlSchema = {
+      urlMatch: countPhrase(fullUrl, phrase),
+      schema: yourDoc.querySelector('script[type="application/ld+json"]') ? 1 : 0
+    };
+    
+    
+    
     startSpinnerLoader();
     const yourDoc = await fetchPage(yourUrl);
     if (!yourDoc) {
