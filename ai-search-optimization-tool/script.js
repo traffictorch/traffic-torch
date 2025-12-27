@@ -1,42 +1,26 @@
-// Initialize the tool once DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
+// Wait for required elements to exist before attaching listeners
+const waitForElements = () => {
   const form = document.getElementById('audit-form');
-  const urlInput = document.getElementById('url-input');
   const results = document.getElementById('results');
   const progressContainer = document.getElementById('analysis-progress');
-  const progressText = document.getElementById('progress-text');
 
-  // Check ALL required elements (including progressText)
-  if (!form || !urlInput || !results || !progressContainer || !progressText) {
-    console.error('One or more required elements not found in DOM');
-    return;
+  if (form && results && progressContainer) {
+    initTool(form, results, progressContainer);
+  } else {
+    requestAnimationFrame(waitForElements);
   }
+};
+
+const initTool = (form, results, progressContainer) => {
+  const progressText = document.getElementById('progress-text');
+  
+  
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    const url = document.getElementById('url-input').value.trim();
+    if (!url) return;
 
-    let url = urlInput.value.trim();
-
-    if (!url) {
-      alert('Please enter a URL to analyze.');
-      return;
-    }
-
-    // Prepend https:// if no protocol present
-    if (!/^https?:\/\//i.test(url)) {
-      url = 'https://' + url;
-      urlInput.value = url; // Educates user by showing full URL
-    }
-
-    // Validate final URL format
-    try {
-      new URL(url);
-    } catch (_) {
-      alert('Please enter a valid URL (e.g., example.com or https://example.com)');
-      return;
-    }
-
-    // Show progress and hide previous results
     progressContainer.classList.remove('hidden');
     results.classList.add('hidden');
 
