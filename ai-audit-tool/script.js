@@ -179,7 +179,7 @@ const urlToFetch = normalizedUrl; // use this for fetch
     if (!url) return;
     // Progressive module loader – exact match to other Traffic Torch tools
     results.innerHTML = `
-      <div class="py-4 text-center">
+      <div class="py-0 text-center">
         <div class="inline-block w-16 h-16 mb-8">
           <svg viewBox="0 0 100 100" class="animate-spin text-orange-500">
             <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
@@ -239,7 +239,7 @@ const urlToFetch = normalizedUrl; // use this for fetch
         <style>
           .animate-stroke { transition: stroke-dasharray 1.5s ease-out; }
         </style>
-        <div class="min-h-screen bg-gray-50 py-12 px-4">
+		<div class="min-h-screen bg-gray-100 dark:bg-gray-900 py-12 px-4">
           <div class="max-w-4xl mx-auto space-y-16">
             <!-- Big Score Circle -->
             <div class="flex justify-center">
