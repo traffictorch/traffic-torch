@@ -200,6 +200,20 @@
   </div>
 </form>
     </div>
+    
+    <div id="results" class="hidden space-y-16 mt-16">
+  <!-- New: Dedicated analysis progress section (spinner + updating text) -->
+  <div id="analysis-progress" class="mt-10 flex flex-col items-center justify-center py-8">
+    <div class="relative w-20 h-20">
+      <!-- Background ring -->
+      <div class="absolute inset-0 rounded-full border-4 border-gray-200 dark:border-gray-700"></div>
+      <!-- Animated orange partial ring spinner -->
+      <div class="absolute inset-0 rounded-full border-4 border-orange-500 border-t-transparent animate-spin"></div>
+    </div>
+    <p id="progress-text" class="mt-8 text-2xl font-medium text-orange-600 dark:text-orange-400">
+      Analyzing pages for your keywords...
+    </p>
+  </div>
 
     <!-- Results container (JS will populate this) -->
     <div id="results" class="hidden space-y-16 mt-16">

@@ -87,12 +87,22 @@ document.addEventListener('DOMContentLoaded', () => {
 	let idx = 0;
     const interval = setInterval(() => {
       if (idx < messages.length) {
+        // Comment: Each new item starts hidden and fades/slides in using Tailwind transitions
         progressModules.innerHTML += `
-          <div class="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl shadow animate-in">
+          <div class="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl shadow 
+                  opacity-0 translate-y-4 transition-all duration-700 ease-out">
             <div class="w-8 h-8 bg-orange-500 rounded-full animate-pulse"></div>
             <p class="text-lg text-gray-800 dark:text-gray-200">${messages[idx]}</p>
           </div>
         `;
+        // Trigger reflow and animate the last added item
+        const lastItem = progressModules.lastElementChild;
+        if (lastItem) {
+          // Force reflow to restart animation
+          void lastItem.offsetWidth;
+          lastItem.classList.remove('opacity-0', 'translate-y-4');
+          lastItem.classList.add('opacity-100', 'translate-y-0');
+        }
         idx++;
       } else {
         clearInterval(interval);
