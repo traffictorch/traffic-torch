@@ -136,7 +136,7 @@ results.classList.remove('hidden');
 
 			<!-- Intent -->
 <div class="text-center mb-12">
-  <p class="text-4xl font-black mb-8">
+  <p class="text-4xl font-bold text-gray-400 mb-8">
     Intent: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${intent}</span>
     <span class="text-2xl text-gray-400">— ${confidence}% match</span>
   </p>
