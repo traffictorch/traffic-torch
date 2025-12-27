@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
       text: main.textContent || ''
     };
   }
-  
 
   function analyzeUX(data) {
     let readability = 60;
@@ -35,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       readability = Math.max(0, Math.min(100, Math.round(flesch)));
     }
-
     const navScore = Math.max(30, Math.min(100, 100 - Math.floor(data.links / 5)));
     let accScore = data.images.length === 0 ? 40 : 65;
     if (data.images.length > 0) {
@@ -43,13 +41,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const mobileScore = 90;
     const speedScore = 85;
-
     const metrics = [readability, navScore, accScore, mobileScore, speedScore];
     const validMetrics = metrics.filter(v => typeof v === 'number' && isFinite(v) && !isNaN(v));
     const score = validMetrics.length === 5
       ? Math.round(validMetrics.reduce((a, b) => a + b, 0) / 5)
       : 60;
-
     return {
       score,
       readability,
@@ -85,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
+
     let url = input.value.trim();
 
     if (!url) {
@@ -92,30 +89,16 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Fix: Allow input without http/https — add https:// automatically
+    // Allow input without protocol — auto-add https:// and update field
     if (!/^https?:\/\//i.test(url)) {
       url = 'https://' + url;
-      input.value = url; // Show full URL in the input field (matches other tools)
+      input.value = url;
     }
 
+    // Show results container and static loading section
     results.classList.remove('hidden');
+    document.getElementById('loading').classList.remove('hidden');
 
-    const loaderHTML = `
-      <div class="flex flex-col items-center justify-center py-20 space-y-12">
-        <div class="relative">
-          <svg class="animate-spin h-24 w-24 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-        </div>
-        <div class="text-center space-y-4">
-          <p class="text-3xl font-black text-gray-800 dark:text-gray-200">Analyzing your page...</p>
-          <p id="progressText" class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl px-8"></p>
-        </div>
-      </div>
-    `;
-
-    results.innerHTML = loaderHTML;
     const progressText = document.getElementById('progressText');
 
     const steps = [
@@ -138,6 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         performAnalysis();
       }
     };
+
     runStep();
 
     async function performAnalysis() {
@@ -146,15 +130,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
         if (!res.ok) throw new Error('Page not reachable or blocked');
+
         const html = await res.text();
         const doc = new DOMParser().parseFromString(html, 'text/html');
-
         const uxData = getUXContent(doc);
-        const title = doc.querySelector('title')?.textContent?.trim() || 'Untitled Page';
         const ux = analyzeUX(uxData);
         const fixes = generateFixes(ux);
         const forecast = predictForecast(ux.score);
         const risk = getQuitRiskLabel(ux.score);
+
+        // Hide loading and show full report
+        document.getElementById('loading').classList.add('hidden');
 
         results.innerHTML = `
           <div class="max-w-5xl mx-auto space-y-16 py-12">
@@ -177,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               </div>
             </div>
-
             <!-- Quit Risk Verdict -->
             <div class="text-center mb-12">
               <p class="text-4xl font-bold text-gray-500 mb-8">
@@ -187,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
               </p>
               <p class="text-xl text-gray-400">Scanned ${uxData.links} links + ${uxData.images} images</p>
             </div>
-
             <!-- Small Metric Circles -->
             <div class="grid md:grid-cols-5 gap-6 my-16">
               ${[
@@ -245,8 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
               `;
               }).join('')}
             </div>
-
-          <!-- Action Buttons -->
+            <!-- Action Buttons -->
             <div class="text-center my-20 space-y-12">
               <button id="optimizeBtn" class="group relative inline-flex items-center px-16 py-8 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-3xl md:text-4xl rounded-3xl shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105">
                 <span class="flex items-center gap-6">
@@ -254,7 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </span>
                 <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
-
               <div id="optimizedOutput" class="hidden mt-12 max-w-5xl mx-auto">
                 <div class="p-10 bg-gradient-to-br from-gray-900/90 to-black/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-cyan-500/40">
                   <h3 class="text-4xl md:text-5xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
@@ -275,39 +257,36 @@ document.addEventListener('DOMContentLoaded', () => {
                   </div>
                 </div>
               </div>
-
-            <!-- Predictive Rank Forecast -->
-            <div class="mt-20 p-10 bg-gradient-to-br from-orange-500/90 to-pink-600/90 backdrop-blur-xl rounded-3xl shadow-2xl text-white">
-              <h3 class="text-4xl md:text-5xl font-black text-center mb-8">Predictive Rank Forecast</h3>
-              <div class="text-center mb-12">
-                <p class="text-6xl md:text-8xl font-black mb-4" style="color: ${ux.score < 60 ? '#fca5a5' : ux.score < 80 ? '#fdba74' : '#86efac'};">
-                  ${forecast}
-                </p>
-                <p class="text-2xl md:text-3xl font-bold opacity-90">Potential ranking ceiling after applying UX improvements</p>
-              </div>
-              <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
-                  <div class="text-5xl mb-4">🎯</div>
-                  <p class="font-bold text-xl mb-3 text-cyan-200">What it means</p>
-                  <p class="text-gray-500 leading-relaxed opacity-90">Estimated highest achievable position based on current usability and engagement signals compared to competing pages.</p>
+              <!-- Predictive Rank Forecast -->
+              <div class="mt-20 p-10 bg-gradient-to-br from-orange-500/90 to-pink-600/90 backdrop-blur-xl rounded-3xl shadow-2xl text-white">
+                <h3 class="text-4xl md:text-5xl font-black text-center mb-8">Predictive Rank Forecast</h3>
+                <div class="text-center mb-12">
+                  <p class="text-6xl md:text-8xl font-black mb-4" style="color: ${ux.score < 60 ? '#fca5a5' : ux.score < 80 ? '#fdba74' : '#86efac'};">
+                    ${forecast}
+                  </p>
+                  <p class="text-2xl md:text-3xl font-bold opacity-90">Potential ranking ceiling after applying UX improvements</p>
                 </div>
-                <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
-                  <div class="text-5xl mb-4">🧮</div>
-                  <p class="font-bold text-xl mb-3 text-green-200">How it's calculated</p>
-                  <p class="text-gray-500 leading-relaxed opacity-90">Stronger UX → lower bounce rate → higher dwell time → better behavioral signals that modern search algorithms reward.</p>
+                <div class="grid md:grid-cols-3 gap-8">
+                  <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
+                    <div class="text-5xl mb-4">🎯</div>
+                    <p class="font-bold text-xl mb-3 text-cyan-200">What it means</p>
+                    <p class="text-gray-500 leading-relaxed opacity-90">Estimated highest achievable position based on current usability and engagement signals compared to competing pages.</p>
+                  </div>
+                  <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
+                    <div class="text-5xl mb-4">🧮</div>
+                    <p class="font-bold text-xl mb-3 text-green-200">How it's calculated</p>
+                    <p class="text-gray-500 leading-relaxed opacity-90">Stronger UX → lower bounce rate → higher dwell time → better behavioral signals that modern search algorithms reward.</p>
+                  </div>
+                  <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
+                    <div class="text-5xl mb-4">🚀</div>
+                    <p class="font-bold text-xl mb-3 text-orange-200">Why it matters</p>
+                    <p class="text-gray-500 leading-relaxed opacity-90">Fixing usability gaps can unlock significant traffic gains, improve conversion rates, and build long-term ranking resilience.</p>
+                  </div>
                 </div>
-                <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
-                  <div class="text-5xl mb-4">🚀</div>
-                  <p class="font-bold text-xl mb-3 text-orange-200">Why it matters</p>
-                  <p class="text-gray-500 leading-relaxed opacity-90">Fixing usability gaps can unlock significant traffic gains, improve conversion rates, and build long-term ranking resilience.</p>
+                <div class="mt-10 text-center">
+                  <p class="text-lg opacity-90 italic">Higher usability scores correlate with stronger performance in user-centric ranking factors.</p>
                 </div>
               </div>
-              <div class="mt-10 text-center">
-                <p class="text-lg opacity-90 italic">Higher usability scores correlate with stronger performance in user-centric ranking factors.</p>
-              </div>
-            </div>
-
-
               <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
                       class="group relative inline-flex items-center px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
                 <span class="flex items-center gap-6">
@@ -319,6 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         `;
       } catch (err) {
+        document.getElementById('loading').classList.add('hidden');
         results.innerHTML = `
           <div class="text-center py-20">
             <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
