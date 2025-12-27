@@ -177,37 +177,41 @@ if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://'
 }
 const urlToFetch = normalizedUrl; // use this for fetch
     if (!url) return;
-// Simple, clean loader – matches other Traffic Torch tools exactly
-results.innerHTML = `
-  <div class="py-20 text-center">
-    <div class="inline-block w-16 h-16 mb-8">
-      <svg viewBox="0 0 100 100" class="animate-spin text-orange-500">
-        <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
-      </svg>
-    </div>
-    <p class="text-xl font-bold text-gray-700 dark:text-gray-300">Analyzing content for AI patterns...</p>
-    <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">This usually takes 10–20 seconds</p>
-  </div>
-`;
-results.classList.remove('hidden');
-    const loadingText = document.getElementById('loadingText');
+    // Progressive module loader – exact match to other Traffic Torch tools
+    results.innerHTML = `
+      <div class="py-20 text-center">
+        <div class="inline-block w-16 h-16 mb-8">
+          <svg viewBox="0 0 100 100" class="animate-spin text-orange-500">
+            <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
+          </svg>
+        </div>
+        <p id="progressText" class="text-2xl font-bold text-gray-800 dark:text-gray-200">Fetching page...</p>
+        <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">Analyzing content for AI patterns – please wait</p>
+      </div>
+    `;
+    results.classList.remove('hidden');
+
+    // Progressive step messages – exact sequence as other tools
+    const progressText = document.getElementById('progressText');
     const messages = [
       "Fetching page...",
-      "Extracting content...",
-      "Analyzing Perplexity...",
-      "Analyzing Burstiness...",
-      "Analyzing Repetition...",
-      "Analyzing Sentence Length...",
-      "Analyzing Vocabulary...",
-      "Generating report..."
+      "Extracting main content...",
+      "Analyzing perplexity & burstiness...",
+      "Checking repetition patterns...",
+      "Evaluating sentence variation...",
+      "Assessing vocabulary depth...",
+      "Calculating AI likelihood score...",
+      "Generating full report..."
     ];
-    let delay = 600;
+    let delay = 800;
     messages.forEach(msg => {
       setTimeout(() => {
-        if (loadingText) loadingText.innerText = msg;
+        if (progressText) progressText.textContent = msg;
       }, delay);
-      delay += 700;
+      delay += 800;
     });
+
+    // Enforce minimum load time for smooth UX
     const minLoadTime = 5500;
     const startTime = Date.now();
     try {
