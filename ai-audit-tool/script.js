@@ -383,10 +383,22 @@ const urlToFetch = normalizedUrl; // use this for fetch
                 </div>
               </div>
             </div>
-           
-</div>
+          
           </div>
-        `;
+        </div>
+
+        <!-- Added: Save as PDF button – placed at the very end of the report -->
+        <div class="mt-20 text-center pb-12">
+          <button id="savePdfBtn" class="px-16 py-6 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:opacity-90 transition">
+            💾 Save Report as PDF
+          </button>
+          <p class="mt-4 text-sm text-gray-500 italic">
+            Tip: Use your browser's print dialog → Choose "Save as PDF" for best results (includes full styling and colors)
+          </p>
+        </div>
+      </div>
+    </div>
+  `;
       }, remaining);
     } catch (err) {
       const elapsed = Date.now() - startTime;
