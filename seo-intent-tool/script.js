@@ -353,47 +353,12 @@ ${schemaTypes.length < 2 ? `
 </div>
 
 
-// Setup PDF save - expand all sections, hide form/button, restore on close/cancel
-const savePdfBtn = document.getElementById('save-pdf-btn');
-if (savePdfBtn) {
-  savePdfBtn.addEventListener('click', () => {
-    // Expand all hidden fix sections for PDF
-    document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden'));
-    // Hide form and PDF button during print
-    document.getElementById('audit-form').style.display = 'none';
-    savePdfBtn.style.display = 'none';
-
-    // Add print styles for clean output
-    const printStyle = document.createElement('style');
-    printStyle.innerHTML = `
-      @media print {
-        body { background: white !important; color: black !important; }
-        .bg-white, .dark\\:bg-gray-900 { background: white !important; }
-        .text-gray-900, .dark\\:text-gray-100 { color: black !important; }
-        .border-gray-300, .dark\\:border-gray-700 { border-color: #ccc !important; }
-        .shadow-lg { box-shadow: none !important; }
-      }
-    `;
-    document.head.appendChild(printStyle);
-
-    window.print();
-
-    // Restore layout after print dialog closes (works on cancel too)
-    window.onafterprint = () => {
-      document.getElementById('audit-form').style.display = '';
-      savePdfBtn.style.display = '';
-      document.head.removeChild(printStyle);
-    };
-  });
-}
-
-
           <!-- PDF Button -->
           <div class="text-center my-16">
-            <button id="save-pdf-btn"
-     class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
-  📄 Save as PDF
-</button>
+            <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
+                 class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
+              📄 Save as PDF
+            </button>
           </div>
         </div>
       `;
