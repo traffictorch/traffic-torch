@@ -276,7 +276,7 @@ const urlToFetch = normalizedUrl; // use this for fetch
                 const gradeColor = getGradeColor(m.normalized);
                 const displayScore = m.normalized.toFixed(1);
                 return `
-                <div class="bg-white rounded-2xl shadow-md p-6 text-center border-l-4" style="border-left-color: ${gradeColor}">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 text-center border-l-4" style="border-left-color: ${gradeColor}">
                   <div class="relative w-32 h-32 mx-auto">
                     <svg viewBox="0 0 128 128" class="-rotate-90">
                       <circle cx="64" cy="64" r="56" stroke="#f1f5f9" stroke-width="12" fill="none"/>
@@ -325,7 +325,7 @@ const urlToFetch = normalizedUrl; // use this for fetch
                 ⚡ Generate Humanized Example
               </button>
               <div id="humanizedOutput" class="hidden max-w-5xl mx-auto">
-                <div class="bg-white rounded-3xl shadow-2xl p-10 md:p-16 border border-gray-200">
+                <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-10 md:p-16 border border-gray-200">
                   <p class="text-center text-base text-gray-600 mb-10 italic leading-relaxed">
                     <strong>Note:</strong> This is an AI-generated example rewrite for inspiration only.<br>
                     Always edit to match your brand voice, verify facts, and ensure originality before publishing.
@@ -372,15 +372,15 @@ const urlToFetch = normalizedUrl; // use this for fetch
               <p class="text-4xl md:text-4xl font-black" style="color: ${mainGradeColor}">${forecast}</p>
               <p class="text-2xl md:text-3xl font-bold">Potential if humanized</p>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                <div class="bg-white/20 backdrop-blur rounded-2xl p-8">
+                <div class="bg-white dark:bg-gray-800/20 backdrop-blur rounded-2xl p-8">
                   <p class="text-xl md:text-2xl font-bold text-blue-200 mb-4">What it is</p>
                   <p class="text-base md:text-lg leading-relaxed">Estimate of ranking potential based on how human-like your content reads</p>
                 </div>
-                <div class="bg-white/20 backdrop-blur rounded-2xl p-8">
+                <div class="bg-white dark:bg-gray-800/20 backdrop-blur rounded-2xl p-8">
                   <p class="text-xl md:text-2xl font-bold text-green-200 mb-4">How calculated</p>
                   <p class="text-base md:text-lg leading-relaxed">Lower AI patterns = higher human trust = stronger search engine preference</p>
                 </div>
-                <div class="bg-white/20 backdrop-blur rounded-2xl p-8">
+                <div class="bg-white dark:bg-gray-800/20 backdrop-blur rounded-2xl p-8">
                   <p class="text-xl md:text-2xl font-bold text-orange-200 mb-4">Why it matters</p>
                   <p class="text-base md:text-lg leading-relaxed">Human-like content ranks higher, builds trust, and drives more organic traffic</p>
                 </div>
