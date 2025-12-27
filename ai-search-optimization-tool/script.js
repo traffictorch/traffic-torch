@@ -255,25 +255,28 @@ const initTool = (form, results, progressContainer) => {
             }).join('')}
           </div>
 
-		     ${prioritisedFixes.map(fix => `
+              ${prioritisedFixes.map(fix => `
                 <div class="p-8 bg-gradient-to-r ${fix.gradient} border-l-8 rounded-r-2xl">
                   <div class="flex gap-6">
                     <div class="text-5xl">${fix.emoji}</div>
-                    <div>
+                    <div class="flex-1">
                       <h4 class="text-2xl font-bold ${fix.color}">${fix.title}</h4>
-                      <!-- Labels keep accent colors, descriptions fixed to gray-400 for visibility in night mode -->
-                      <p class="mt-4 text-blue-500 font-bold">What:</p>
-                      <p class="text-gray-400">${fix.what}</p>
-                      <p class="mt-2 text-green-500 font-bold">How:</p>
-                      <p class="text-gray-400">${fix.how}</p>
-                      <p class="mt-2 text-orange-500 font-bold">Why:</p>
-                      <p class="text-gray-400">${fix.why}</p>
+                      <div class="mt-4">
+                        <p class="text-blue-500 font-bold">What:</p>
+                        <p class="text-gray-400 mt-1">${fix.what}</p>
+                      </div>
+                      <div class="mt-2">
+                        <p class="text-green-500 font-bold">How:</p>
+                        <p class="text-gray-400 mt-1">${fix.how}</p>
+                      </div>
+                      <div class="mt-2">
+                        <p class="text-orange-500 font-bold">Why:</p>
+                        <p class="text-gray-400 mt-1">${fix.why}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               `).join('')}
-            </div>
-          ` : ''}
 
           <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
             <h3 class="text-4xl font-black text-center">Predictive AI SERP Forecast</h3>
