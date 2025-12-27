@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="mt-20 p-10 bg-gradient-to-br from-orange-500/90 to-pink-600/90 backdrop-blur-xl rounded-3xl shadow-2xl text-white">
                 <h3 class="text-4xl md:text-5xl font-black text-center mb-8">Predictive Rank Forecast</h3>
                 <div class="text-center mb-12">
-                  <p class="text-6xl md:text-8xl font-black mb-4" style="color: ${ux.score < 60 ? '#fca5a5' : ux.score < 80 ? '#fdba74' : '#86efac'};">
+                  <p class="text-4xl md:text-8xl font-black mb-4" style="color: ${ux.score < 60 ? '#fca5a5' : ux.score < 80 ? '#fdba74' : '#86efac'};">
                     ${forecast}
                   </p>
                   <p class="text-2xl md:text-3xl font-bold opacity-90">Potential ranking ceiling after applying UX improvements</p>
