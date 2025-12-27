@@ -127,24 +127,44 @@ body { transition: background-color 0.3s ease; }
 }
 
 
-@media (max-width: 1024px) {
-  .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
+
+
+/* Fix iPhone horizontal overflow: single column grids + padding + overflow hidden */
+@media (max-width: 768px) {
+  .container,
+  .max-w-5xl,
+  .max-w-6xl,
+  .max-w-4xl {
     max-width: 100% !important;
     padding-left: 1rem !important;
     padding-right: 1rem !important;
   }
-}
-
-/* Critical iPhone fix: Force grids to single column on mobile */
-@media (max-width: 768px) {
-  .grid {
-    grid-template-columns: 1fr !important;
-  }
+  .grid,
   .md\\:grid-cols-2,
   .md\\:grid-cols-3 {
     grid-template-columns: 1fr !important;
   }
   body {
     overflow-x: hidden !important;
+  }
+  .gap-12 {
+    gap: 3rem !important;
+  }
+  .gap-10 {
+    gap: 2.5rem !important;
+  }
+  .gap-8 {
+    gap: 2rem !important;
+  }
+}
+@media (max-width: 480px) {
+  .gap-12,
+  .gap-10,
+  .gap-8 {
+    gap: 2rem !important;
+  }
+  .p-8,
+  .p-12 {
+    padding: 1.25rem !important;
   }
 }
