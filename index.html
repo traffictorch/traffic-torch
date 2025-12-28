@@ -80,26 +80,6 @@
   <link rel="stylesheet" href="/seo-ux-tool/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
 <script>
-  tailwind.config = {
-    darkMode: 'class',
-  }
-</script>
-<style>
-  @media (prefers-color-scheme: dark) {
-    :root:not(.light) {
-      color-scheme: dark;
-    }
-  }
-  @media (prefers-color-scheme: light) {
-    :root:not(.light) {
-      color-scheme: light;
-    }
-  }
-  .dark {
-    color-scheme: dark;
-  }
-</style>
-<script>
   (function() {
     const saved = localStorage.getItem('theme');
     const preferLight = saved === 'light' || (!saved && window.matchMedia('(prefers-color-scheme: light)').matches);
@@ -178,9 +158,9 @@
           </button>
           
           <!-- Theme Toggle -->
-		<button id="themeToggle" data-icon-light="☀️" data-icon-dark="🌙" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
- 		 🌙
-		</button>
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
         </div>
         <!-- Mobile Menu Dropdown (unchanged) -->
         <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
@@ -884,31 +864,6 @@
   <script src="/main.js" type="module"></script>
   <script src="/seo-ux-tool/script.js" defer></script>
 
-<script>
-  const html = document.documentElement;
-  const toggle = document.getElementById('themeToggle');
-
-  if (toggle) {
-    // Initial theme application
-    const saved = localStorage.getItem('theme');
-    const preferLight = saved === 'light' || (!saved && window.matchMedia('(prefers-color-scheme: light)').matches);
-    if (preferLight) {
-      html.classList.add('light');
-    } else {
-      html.classList.remove('light');
-    }
-    // Set initial icon
-    toggle.textContent = html.classList.contains('light') ? toggle.dataset.iconLight : toggle.dataset.iconDark;
-
-    // Toggle handler
-    toggle.addEventListener('click', () => {
-      html.classList.toggle('light');
-      const isLight = html.classList.contains('light');
-      localStorage.setItem('theme', isLight ? 'light' : 'dark');
-      toggle.textContent = isLight ? toggle.dataset.iconLight : toggle.dataset.iconDark;
-    });
-  }
-</script>
 
   
 </body>
