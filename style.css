@@ -18,11 +18,7 @@ html.light {
   --track: rgba(0,0,0,0.15);
 }
 
-body {
-  @apply text-gray-900 dark:text-gray-100;
-}
 
-html.light body { color: #0f172a; }
 
 /* Header & footer stay perfect from global design */
 header, footer { backdrop-filter: blur(12px); }
