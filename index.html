@@ -84,8 +84,20 @@
     darkMode: 'class',
   }
 </script>
-<style type="text/tailwindcss">
-  @variant dark (&:where(:not(.light), :not(.light) *));
+<style>
+  @media (prefers-color-scheme: dark) {
+    :root:not(.light) {
+      color-scheme: dark;
+    }
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not(.light) {
+      color-scheme: light;
+    }
+  }
+  .dark {
+    color-scheme: dark;
+  }
 </style>
 <script>
   (function() {
