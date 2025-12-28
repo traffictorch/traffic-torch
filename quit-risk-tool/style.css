@@ -252,3 +252,36 @@ h2 + p {
     font-size: 2.25rem !important;
   }
 }
+
+
+
+/* Disable horizontal rubber-band bounce on iOS Safari (current pure-CSS solution – works with sticky headers) */
+html, body {
+  overscroll-behavior-x: none;
+}
+
+/* Safety: prevent dynamic table from causing real viewport stretch (keep from previous) */
+#results .max-w-5xl {
+  max-width: 100% !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+#results .overflow-x-auto,
+#results table {
+  width: 100% !important;
+  max-width: 100% !important;
+  table-layout: fixed;
+  overflow-wrap: break-word;
+}
+
+#results table th,
+#results table td {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Smooth internal scroll */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}
