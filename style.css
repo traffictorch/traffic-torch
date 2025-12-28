@@ -19,8 +19,14 @@ html.light {
 }
 
 body {
-  @apply text-gray-900 dark:text-gray-100;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-gradient);
+  color: white;
+  min-height: 100vh;
+  margin: 0;
 }
+
+html.light body { color: #0f172a; }
 
 /* Header & footer stay perfect from global design */
 header, footer { backdrop-filter: blur(12px); }
