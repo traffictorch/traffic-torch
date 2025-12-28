@@ -80,6 +80,11 @@
   <link rel="stylesheet" href="/seo-ux-tool/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
+  <script>
     (function() {
       const saved = localStorage.getItem('theme');
       const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
