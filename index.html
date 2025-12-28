@@ -79,14 +79,19 @@
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/seo-ux-tool/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+  tailwind.config = {
+    darkMode: 'class',
+  }
+</script>
 <script>
   (function() {
     const saved = localStorage.getItem('theme');
-    const preferLight = saved === 'light' || (!saved && window.matchMedia('(prefers-color-scheme: light)').matches);
-    if (preferLight) {
-      document.documentElement.classList.add('light');
+    const preferDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (preferDark) {
+      document.documentElement.classList.add('dark');
     } else {
-      document.documentElement.classList.remove('light');
+      document.documentElement.classList.remove('dark');
     }
   })();
 </script>

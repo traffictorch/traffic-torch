@@ -1,28 +1,16 @@
-// 1. Theme Toggle - Fixed to match original custom 'light' class setup
+// 1. Theme Toggle - Standard Tailwind 'dark' class
 const toggle = document.getElementById('themeToggle');
-
 if (toggle) {
   const html = document.documentElement;
-
-  // Determine if we should start in light mode
-  const preferLight = localStorage.theme === 'light' ||
-                      (!localStorage.theme && window.matchMedia('(prefers-color-scheme: light)').matches);
-
-  if (preferLight) {
-    html.classList.add('light');
-    toggle.textContent = '☀️';  // In light mode: show sun = invite to dark
-  } else {
-    html.classList.remove('light');
-    toggle.textContent = '🌙';  // In dark mode: show moon = invite to light
-  }
-
+  // Set initial icon based on current mode
+  const isDark = html.classList.contains('dark');
+  toggle.textContent = isDark ? '☀️' : '🌙';
   // Toggle on click
   toggle.addEventListener('click', () => {
-    html.classList.toggle('light');
-    const isLight = html.classList.contains('light');
-
-    localStorage.theme = isLight ? 'light' : 'dark';
-    toggle.textContent = isLight ? '☀️' : '🌙';
+    html.classList.toggle('dark');
+    const isDarkNow = html.classList.contains('dark');
+    localStorage.theme = isDarkNow ? 'dark' : 'light';
+    toggle.textContent = isDarkNow ? '☀️' : '🌙';
   });
 }
 
