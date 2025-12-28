@@ -77,13 +77,21 @@
   <link rel="stylesheet" href="/blog/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
+  tailwind.config = {
+    darkMode: 'class',
+  }
+</script>
+<script>
   (function() {
     const saved = localStorage.getItem('theme');
-    const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const theme = saved || (preferDark ? 'dark' : 'light');
-    document.documentElement.classList.add(theme);
+    const preferDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (preferDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   })();
-  </script>
+</script>
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
   <!-- Main Layout Container - Desktop flex with sidebar -->

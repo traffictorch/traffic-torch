@@ -69,14 +69,21 @@
   <link rel="stylesheet" href="/ai-audit-tool/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-  // Apply saved theme instantly on load (no flash)
+  tailwind.config = {
+    darkMode: 'class',
+  }
+</script>
+<script>
   (function() {
     const saved = localStorage.getItem('theme');
-    const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const theme = saved || (preferDark ? 'dark' : 'light');
-    document.documentElement.classList.add(theme);
+    const preferDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (preferDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   })();
-  </script>
+</script>
   <script src="/main.js" type="module"></script>
   <script src="/ai-audit-tool/script.js" defer></script>
 </head>
