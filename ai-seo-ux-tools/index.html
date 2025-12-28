@@ -119,8 +119,7 @@
   <!-- Main Layout Container - Desktop flex with sidebar -->
   <div class="flex flex-1 min-h-screen">
     <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
-<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">
-<!-- Sidebar Header with Logo -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      <!-- Sidebar Header with Logo -->
       <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
         <a href="/" class="flex items-center gap-4">
           <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0">
@@ -175,12 +174,12 @@
           <!-- Empty spacer on mobile to balance -->
           <div class="w-10 md:hidden"></div>
           <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
-         
+          
           <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
           <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
             ☰
           </button>
-         
+          
           <!-- Theme Toggle -->
           <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
             🌙
@@ -203,6 +202,7 @@
           </nav>
         </div>
       </header>
+      
   <!-- Main Dashboard -->
   <main class="container mx-auto px-6 py-4 w-full">
     <div class="text-center mb-16">
