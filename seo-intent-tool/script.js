@@ -58,10 +58,22 @@ results.classList.remove('hidden');
       progressText.textContent = "Analyzing Readability...";
       await sleep(800);
 
-      const text = doc.body?.textContent || '';
-      const words = text.split(/\s+/).filter(Boolean).length;
-      const sentences = (text.match(/[.!?]+/g) || []).length || 1;
-      const syllables = text.split(/\s+/).reduce((a, w) => a + (w.match(/[aeiouy]+/gi) || []).length, 0);
+// Improved visible/main content text extraction for accurate word count
+let text = '';
+if ('innerText' in doc.body) {
+  text = doc.body.innerText;
+} else {
+  text = doc.body.textContent || '';
+}
+// Clean whitespace: collapse multiple spaces/newlines/tabs, trim
+text = text.replace(/\s+/g, ' ').trim();
+// Count words more accurately (alphanumeric sequences, ignores punctuation-only)
+const words = text ? (text.match(/\b\w+\b/g) || []).length : 0;
+const sentences = text ? (text.match(/[.!?]+/g) || []).length || 1 : 1;
+// Approximate syllables: count vowel groups per word (improved over old method)
+const syllables = text ? text.split(/\s+/).reduce((acc, word) => {
+  return acc + (word.toLowerCase().match(/[aeiouy]+/g) || []).length;
+}, 0) : 0;
       const readability = Math.round(206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words));
 
       // Step 3: E-E-A-T Signals
