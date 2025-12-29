@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'https://' + host + path;
   }
 
-  // Clean PDF print without breaking layout
   function printReport() {
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
@@ -26,10 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <script src="https://cdn.tailwindcss.com"></script>
         <style>
           body { font-family: system-ui, sans-serif; padding: 2rem; background: white; color: black; }
-          @media print {
-            body { padding: 1rem; }
-            button { display: none; }
-          }
+          @media print { body { padding: 1rem; } button { display: none; } .hidden { display: block !important; } }
         </style>
       </head>
       <body>
@@ -45,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
     printWindow.document.close();
     printWindow.focus();
     printWindow.print();
-    // Optional: close after short delay if user cancels
     printWindow.addEventListener('afterprint', () => printWindow.close());
   }
 
@@ -73,13 +68,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressText = document.getElementById('progress-text');
 
     try {
-      progressText.textContent = "Fetching & Analyzing Page...";
+      progressText.textContent = "Analyzing Content Depth...";
       await sleep(800);
       const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable – check URL');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
+      // Visible text extraction
       function getVisibleText(root) {
         let text = '';
         const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
@@ -87,24 +83,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const parent = node.parentElement;
             if (!parent) return NodeFilter.FILTER_REJECT;
             const tag = parent.tagName.toLowerCase();
-            if (['script', 'style', 'noscript', 'head', 'iframe', 'object', 'embed'].includes(tag)) {
-              return NodeFilter.FILTER_REJECT;
-            }
-            if (parent.hasAttribute('hidden') || parent.getAttribute('aria-hidden') === 'true') {
-              return NodeFilter.FILTER_REJECT;
-            }
+            if (['script', 'style', 'noscript', 'head', 'iframe', 'object', 'embed'].includes(tag)) return NodeFilter.FILTER_REJECT;
+            if (parent.hasAttribute('hidden') || parent.getAttribute('aria-hidden') === 'true') return NodeFilter.FILTER_REJECT;
             return NodeFilter.FILTER_ACCEPT;
           }
         });
-        while (walker.nextNode()) {
-          text += walker.currentNode.textContent + ' ';
-        }
+        while (walker.nextNode()) text += walker.currentNode.textContent + ' ';
         return text.trim();
       }
 
       const text = getVisibleText(doc.body) || '';
       const cleanedText = text.replace(/\s+/g, ' ').trim();
-      const words = cleanedText ? cleanedText.split(' ').filter(w => w.length > 0).length : 0;
+      const words = cleanedText ? cleanedText.split(' ').filter(word => word.length > 0).length : 0;
       const sentences = cleanedText ? (cleanedText.match(/[.!?]+/g) || []).length || 1 : 1;
       const syllables = cleanedText ? cleanedText.split(' ').reduce((acc, word) => {
         const vowelGroups = (word.toLowerCase().match(/[aeiouy]+/g) || []).length;
@@ -112,9 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 0) : 0;
       const readability = words > 0 ? Math.round(206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words)) : 0;
 
-      progressText.textContent = "Analyzing E-E-A-T & Schema...";
+      progressText.textContent = "Analyzing E-E-A-T Signals...";
       await sleep(800);
-
       const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i], .byline, [itemprop="author"]');
       const schemaTypes = [];
       doc.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
@@ -125,25 +114,23 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch {}
       });
 
+      progressText.textContent = "Analyzing Search Intent...";
+      await sleep(800);
       const titleLower = (doc.title || '').toLowerCase();
       const bodyLower = cleanedText.toLowerCase();
       let intent = 'Informational';
       let confidence = 60;
-      if (/buy|price|deal|shop|cart|purchase|order|checkout/i.test(titleLower + bodyLower)) {
-        intent = 'Transactional'; confidence = 91;
-      } else if (/best|review|vs|comparison|top/i.test(titleLower + bodyLower)) {
-        intent = 'Commercial'; confidence = 90;
-      } else if (/near me|location|store|hours|address|map/i.test(titleLower + bodyLower)) {
-        intent = 'Local'; confidence = 87;
-      } else if (/how|what|why|guide|tutorial|learn/i.test(titleLower + bodyLower)) {
-        intent = 'Informational'; confidence = 94;
-      }
+      if (/buy|best|review|price|deal|shop|discount|vs|comparison/i.test(titleLower)) { intent = 'Commercial'; confidence = 90; }
+      else if (/how|what|why|guide|tutorial|step|learn|explain|best way/i.test(titleLower)) { intent = 'Informational'; confidence = 94; }
+      else if (/near me|location|store|city|local|hours|map|address/i.test(titleLower)) { intent = 'Local'; confidence = 87; }
+      else if (/sign up|login|purchase|buy now|order|checkout|book/i.test(titleLower)) { intent = 'Transactional'; confidence = 91; }
+      if (/buy|price|deal|shop|cart|purchase|order|checkout/i.test(bodyLower)) { intent = 'Transactional'; confidence = Math.max(confidence, 91); }
 
       const isProductPage = /add to cart|price|buy now|in stock|product/i.test(bodyLower);
       const firstPersonMatches = text.match(/\b(I|we|my|our|I've|we've|me|us)\b/gi) || [];
       const firstPersonCount = firstPersonMatches.length;
-      const experienceEvidence = firstPersonCount > 5 ? `Strong: ${firstPersonCount} first-person references found` : 'Limited personal voice detected';
-      const credentialKeywords = (text.match(/\b(PhD|doctor|certified|years? experience|expert|author|published)\b/gi) || []).length;
+      const experienceEvidence = firstPersonCount > 12 ? 'Very strong (many personal anecdotes)' : firstPersonCount > 5 ? `Strong (${firstPersonCount} first-person references)` : 'Limited or none';
+      const credentialKeywords = (text.match(/\b(PhD|doctor|certified|years? experience|expert|author|published|qualification)\b/gi) || []).length;
 
       const eeat = {
         Experience: firstPersonCount > 12 ? 92 : firstPersonCount > 5 ? 75 : 45,
@@ -152,12 +139,11 @@ document.addEventListener('DOMContentLoaded', () => {
         Trustworthiness: url.startsWith('https') ? 96 : 60
       };
       const eeatAvg = Math.round(Object.values(eeat).reduce((a, b) => a + b) / 4);
-
-      const depthScore = words > 2000 ? 95 : words > 1200 ? 82 : words > 700 ? 65 : words > 300 ? 50 : 35;
-      const readScore = readability > 70 ? 90 : readability > 50 ? 75 : readability > 30 ? 55 : 35;
+      const depthScore = words > 2000 ? 95 : words > 1200 ? 82 : words > 700 ? 65 : 35;
+      const readScore = readability > 70 ? 90 : readability > 50 ? 75 : 45;
       const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length * 8) / 5);
 
-      progressText.textContent = "Generating Detailed Report...";
+      progressText.textContent = "Generating Report...";
       await sleep(600);
 
       results.innerHTML = `
@@ -200,24 +186,19 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     <div class="p-6 bg-green-500/10 border-l-4 border-green-500 rounded-r-xl">
       <p class="font-bold text-green-500">How to satisfy it</p>
-      <p class="mt-2 text-sm text-gray-500 leading-relaxed">Craft your title, H1, meta description, and body content to directly address the user's specific need. Use matching language, structure (e.g., lists for comparisons, steps for how-tos), and calls-to-action — eliminate fluff, assumptions, or mismatched elements.</p>
+      <p class="mt-2 text-sm text-gray-500 leading-relaxed">Craft your title, H1, meta description, and body content to directly address the user's specific need. Use matching language, structure (e.g., lists for comparisons, steps for how-tos), and calls-to-action — eliminate fluff, assumptions, or mismatched elements to create a seamless experience.</p>
     </div>
     <div class="p-6 bg-orange-500/10 border-l-4 border-orange-500 rounded-r-xl">
       <p class="font-bold text-orange-500">Why it matters</p>
-      <p class="mt-2 text-sm text-gray-500 leading-relaxed">Search engines prioritize pages that best align with user intent, leading to higher satisfaction, longer engagement, and lower bounces. Strong alignment drives traffic and conversions.</p>
+      <p class="mt-2 text-sm text-gray-500 leading-relaxed">Search engines prioritize pages that best align with user intent, as it leads to higher satisfaction, longer engagement, and lower bounces. Mismatched intent results in quick exits, poor signals, and lost rankings — while strong alignment drives traffic and conversions.</p>
     </div>
   </div>
-  <p class="mt-8 text-lg text-gray-600">Your page shows <strong>${intent}</strong> signals via title and body content — excellent foundation!</p>
 </div>
 
-<!-- E-E-A-T Breakdown with Evidence -->
+<!-- E-E-A-T Breakdown -->
 <div class="grid md:grid-cols-4 gap-6 my-16">
   ${Object.entries(eeat).map(([key, val]) => {
-    let evidence = '';
-    if (key === 'Experience') evidence = experienceEvidence;
-    else if (key === 'Expertise') evidence = hasAuthor ? 'Author byline detected' : credentialKeywords > 0 ? `${credentialKeywords} credential mentions` : 'No expertise signals';
-    else if (key === 'Authoritativeness') evidence = schemaTypes.length ? `${schemaTypes.length} schema type(s)` : 'No schema';
-    else evidence = url.startsWith('https') ? 'Secure HTTPS' : 'HTTP (insecure)';
+    let evidence = key === 'Experience' ? experienceEvidence : key === 'Expertise' ? (hasAuthor ? 'Author byline detected' : credentialKeywords > 0 ? `${credentialKeywords} credential signals` : 'No signals') : key === 'Authoritativeness' ? `${schemaTypes.length} schema type(s)` : 'Secure HTTPS';
     return `
     <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${val >= 80 ? 'border-green-500' : val >= 60 ? 'border-orange-500' : 'border-red-500'}">
       <div class="relative mx-auto w-32 h-32">
@@ -237,34 +218,44 @@ document.addEventListener('DOMContentLoaded', () => {
       <p class="mt-4 text-lg font-medium">${key}</p>
       <p class="mt-2 text-sm text-gray-600">${evidence}</p>
       <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-        Show Tailored Fix
+        Show Fixes
       </button>
       <div class="hidden mt-6 space-y-3 text-left text-sm">
-        <p class="text-green-600 font-bold">Recommended action:</p>
-        <p>${key === 'Experience' ? 'Add more personal anecdotes and first-person storytelling to prove real experience.'
-          : key === 'Expertise' ? 'Include visible author bio with qualifications, certifications, or achievements.'
-          : key === 'Authoritativeness' ? 'Implement relevant schema markup and earn quality backlinks.'
-          : 'Ensure HTTPS and add trust elements like contact page and privacy policy.'}</p>
+        <p class="text-blue-500 font-bold">What it is?</p>
+        <p>${key === 'Experience' ? 'Proof that the content creator has first-hand involvement in the topic, such as personal anecdotes, real-world applications, or direct participation, making the advice more relatable and credible.'
+          : key === 'Expertise' ? 'Demonstrated deep knowledge and skill in the subject area, backed by qualifications, achievements, or specialized training, showing the author is a reliable source.'
+          : key === 'Authoritativeness' ? 'Recognition of the site or author as a leading voice in the niche, often through citations, references from reputable sources, or industry accolades.'
+          : 'Indicators that the site and content are reliable, secure, and transparent, fostering user confidence through clear policies and ethical practices.'}</p>
+        <p class="text-green-500 font-bold">How to improve?</p>
+        <p>${key === 'Experience' ? 'Incorporate first-person language like “I” or “we,” add personal photos or videos, include detailed case studies with outcomes, mention specific dates or timelines, and share lessons learned from your own trials and errors to make it authentic.'
+          : key === 'Expertise' ? 'Add an author bio box with a professional photo, detailed biography highlighting relevant education or experience, list certifications, degrees, or publications, and link to other works or speaking engagements to build proof.'
+          : key === 'Authoritativeness' ? 'Earn high-quality backlinks from trusted sites, get featured in press or media mentions, implement relevant schema markup like Organization or Person, display awards or endorsements, and contribute to industry forums or publications.'
+          : 'Switch to HTTPS if not already, create a dedicated contact page with real details, add a privacy policy and terms of service, include content update dates, and ensure no misleading claims or ads to maintain transparency.'}</p>
+        <p class="text-orange-500 font-bold">Why it matters?</p>
+        <p>${key === 'Experience' ? 'Search engines favor content with genuine experience because it reduces misinformation, improves user satisfaction, and leads to longer dwell times, all of which boost rankings and traffic.'
+          : key === 'Expertise' ? 'Proven expertise helps search engines identify high-quality content, reducing the risk of penalties and increasing visibility, as users trust and engage more with authoritative sources.'
+          : key === 'Authoritativeness' ? 'It establishes your site as a go-to resource, enhancing link-building opportunities and search engine trust, which directly impacts long-term visibility and competitive edge.'
+          : 'High trustworthiness signals prevent user bounces, build loyalty, and align with search engine guidelines, avoiding downgrades and ensuring steady organic traffic growth.'}</p>
       </div>
-    </div>`;
-  }).join('')}
+    </div>
+  `).join('')}
 </div>
 
-<!-- Content Depth + Readability + Schema -->
+<!-- Content Depth + Readability + Schema Detected -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
-  <!-- Depth -->
+  <!-- Content Depth -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
     <h3 class="text-2xl font-bold mb-4">Content Depth</h3>
     <p class="text-5xl font-black mb-2">${words.toLocaleString()}</p>
     <p class="text-gray-500 mb-4">words</p>
-    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Tailored Fixes</button>
+    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Fixes</button>
     <div class="hidden mt-6 space-y-3 text-left text-sm">
-      <p class="text-blue-500 font-bold">Current status</p>
-      <p>${words < 800 ? `Only ${words} words — thin for ranking potential.` : 'Strong depth achieved!'}</p>
-      <p class="text-green-500 font-bold">How to improve</p>
-      <p>${isProductPage ? 'Add detailed ingredients, benefits, usage guides, customer stories, and FAQ.' : 'Expand with examples, data, comparisons, case studies, and structured sections.'}</p>
-      <p class="text-orange-500 font-bold">Why it matters</p>
-      <p>Depth is the #1 on-page ranking factor — comprehensive pages win top positions.</p>
+      <p class="text-blue-500 font-bold">What it is?</p>
+      <p>Comprehensive coverage that fully answers the user's query while going deeper with related questions, examples, and supporting details to provide the most complete resource possible.</p>
+      <p class="text-green-500 font-bold">How to improve?</p>
+      <p>${isProductPage ? 'Add ingredients, harvest process, taste notes, recipes, health benefits, customer stories, and FAQs.' : 'Add real-world examples, statistics and data sources, screenshots or visuals, step-by-step guides, comparisons, templates or downloadable resources, FAQs addressing common follow-ups, and expert insights to expand value without fluff.'}</p>
+      <p class="text-orange-500 font-bold">Why it matters?</p>
+      <p>Depth is the strongest on-page ranking factor — search engines reward pages that fully satisfy user intent with the most helpful, thorough answer, leading to higher positions, longer dwell time, and more organic traffic.</p>
     </div>
   </div>
   <!-- Readability -->
@@ -275,14 +266,14 @@ document.addEventListener('DOMContentLoaded', () => {
     <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Fixes</button>
     <div class="hidden mt-6 space-y-3 text-left text-sm">
       <p class="text-blue-500 font-bold">What it is?</p>
-      <p>How easily users can read and understand your content.</p>
+      <p>How easily users can read and understand your content — measured by sentence length, word complexity, and overall flow.</p>
       <p class="text-green-500 font-bold">How to improve?</p>
-      <p>${readability < 60 ? 'Shorten sentences, use active voice, bullet points, and simple words.' : 'Excellent — maintain clear, scannable format.'}</p>
+      <p>Use short sentences (under 20 words), simple everyday words, active voice, clear subheadings (H2/H3), bullet points and numbered lists, short paragraphs (3–4 lines max), bold key phrases, and transitional words to guide the reader smoothly.</p>
       <p class="text-orange-500 font-bold">Why it matters?</p>
-      <p>Readable content reduces bounces and boosts engagement signals.</p>
+      <p>Search engines track user behavior — highly readable content reduces bounce rates, increases time on page, and improves satisfaction signals, all of which directly boost rankings and conversions.</p>
     </div>
   </div>
-  <!-- Schema -->
+  <!-- Schema Detected -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
     <h3 class="text-2xl font-bold mb-4">Schema Detected</h3>
     ${schemaTypes.length ? `
@@ -293,10 +284,12 @@ document.addEventListener('DOMContentLoaded', () => {
     ` : '<p class="text-2xl text-red-500 mt-4">No schema detected</p>'}
     <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Fixes</button>
     <div class="hidden mt-6 space-y-3 text-left text-sm">
-      <p class="text-green-500 font-bold">Recommended schema</p>
-      <p>${isProductPage ? 'Product, Review, BreadcrumbList' : 'Article, Person, FAQPage, HowTo'}</p>
+      <p class="text-blue-500 font-bold">What it is?</p>
+      <p>Structured data (JSON-LD) that explicitly tells search engines what your page content represents — such as Article, FAQ, HowTo, Product, Person, Organization, etc.</p>
+      <p class="text-green-500 font-bold">How to improve?</p>
+      <p>Add JSON-LD script blocks in the <head> for relevant types (e.g., ${isProductPage ? 'Product + Review' : 'Article + author Person link, FAQPage'}). Validate using official structured data testing tools.</p>
       <p class="text-orange-500 font-bold">Why it matters?</p>
-      <p>Enables rich snippets, boosts CTR, and strengthens E-E-A-T.</p>
+      <p>Schema enables rich snippets (stars, FAQs, carousels), increases click-through rates significantly, strengthens E-E-A-T signals, and helps search engines understand and feature your content more prominently in results.</p>
     </div>
   </div>
 </div>
@@ -321,30 +314,60 @@ document.addEventListener('DOMContentLoaded', () => {
   </table>
 </div>
 
-<!-- AI-Generated Prioritised Fixes (Dynamic) -->
-<div class="space-y-8 my-16">
-  <h3 class="text-4xl font-bold text-green-400 text-center mb-8">AI-Generated Prioritised Fixes</h3>
-  ${(() => {
-    const fixes = [];
-    if (!hasAuthor) fixes.push({p:1, t:'Add Author Byline & Bio', d:'Critical for E-E-A-T — add name, photo, credentials.'});
-    if (words < 1000) fixes.push({p:2, t:'Expand Content Depth', d:`Only ${words} words. Add ${isProductPage ? 'specs, benefits, reviews, FAQ' : 'examples, data, sections'} to reach 1,500+.`});
-    if (schemaTypes.length < 2) fixes.push({p:3, t:'Add Schema Markup', d:`Implement ${isProductPage ? 'Product + Review' : 'Article + Person + FAQ'} for rich results.`});
-    if (firstPersonCount < 6) fixes.push({p:4, t:'Boost Personal Experience', d:'Use more "I/we" storytelling to prove real expertise.'});
-    if (readability < 60) fixes.push({p:5, t:'Improve Readability', d:'Break long sentences, add bullets, use simpler words.'});
-    while (fixes.length < 3 && fixes.length > 0) {
-      fixes.push({p:fixes.length+1, t:'Maintain Strength', d:'Continue building on existing strong signals.'});
-    }
-    return fixes.slice(0,5).map(f => `
-      <div class="p-8 bg-gradient-to-r from-${f.p===1?'red':f.p===2?'orange':'purple'}-500/10 border-l-8 border-${f.p===1?'red':f.p===2?'orange':'purple'}-500 rounded-r-2xl">
-        <div class="flex gap-6">
-          <div class="text-5xl">${f.p===1?'🔴':f.p===2?'🟠':'🟣'}</div>
-          <div>
-            <h4 class="text-2xl font-bold">${f.t}</h4>
-            <p class="mt-4 text-gray-600">${f.d}</p>
-          </div>
+<!-- Prioritised AI-Style Fixes -->
+<div class="space-y-8">
+  <h3 class="text-4xl font-bold text-green-400 text-center mb-8">Prioritised AI-Style Fixes</h3>
+  ${!hasAuthor ? `
+  <div class="p-8 bg-gradient-to-r from-red-500/10 border-l-8 border-red-500 rounded-r-2xl">
+    <div class="flex gap-6">
+      <div class="text-5xl">👤</div>
+      <div>
+        <h4 class="text-2xl font-bold text-red-600">Add Author Bio & Photo</h4>
+        <div class="mt-4 space-y-3 text-sm">
+          <p class="text-blue-500 font-bold">What it is?</p>
+          <p>A visible author byline with name, photo, and credentials that proves a real expert created the content.</p>
+          <p class="text-green-500 font-bold">How to improve?</p>
+          <p>Add a detailed author box with professional headshot, full bio highlighting relevant experience/qualifications, links to social profiles or other work, and clear connection to the topic.</p>
+          <p class="text-orange-500 font-bold">Why it matters?</p>
+          <p>Search engines heavily weigh proven authorship for E-E-A-T — pages with strong author signals rank higher, build trust faster, and reduce bounce rates significantly.</p>
         </div>
-      </div>`).join('');
-  })()}
+      </div>
+    </div>
+  </div>` : ''}
+  ${words < 1500 ? `
+  <div class="p-8 bg-gradient-to-r from-orange-500/10 border-l-8 border-orange-500 rounded-r-2xl">
+    <div class="flex gap-6">
+      <div class="text-5xl">✍️</div>
+      <div>
+        <h4 class="text-2xl font-bold text-orange-600">Expand Content Depth</h4>
+        <div class="mt-4 space-y-3 text-sm">
+          <p class="text-blue-500 font-bold">What it is?</p>
+          <p>Thorough, comprehensive coverage that fully answers the main query plus all related follow-up questions users typically have.</p>
+          <p class="text-green-500 font-bold">How to improve?</p>
+          <p>${isProductPage ? 'Add detailed product specs, benefits, usage tips, customer testimonials, and FAQ section.' : 'Add in-depth examples, data-backed statistics, step-by-step breakdowns, comparisons, visuals/screenshots, templates or tools, expert quotes, case studies, and expanded FAQs.'}</p>
+          <p class="text-orange-500 font-bold">Why it matters?</p>
+          <p>Depth remains the strongest on-page ranking factor — search engines consistently reward the most helpful, exhaustive pages with top positions and sustained traffic growth.</p>
+        </div>
+      </div>
+    </div>
+  </div>` : ''}
+  ${schemaTypes.length < 2 ? `
+  <div class="p-8 bg-gradient-to-r from-purple-500/10 border-l-8 border-purple-500 rounded-r-2xl">
+    <div class="flex gap-6">
+      <div class="text-5xl">✨</div>
+      <div>
+        <h4 class="text-2xl font-bold text-purple-600">Add Relevant Schema Markup</h4>
+        <div class="mt-4 space-y-3 text-sm">
+          <p class="text-blue-500 font-bold">What it is?</p>
+          <p>Structured data (JSON-LD) that explicitly defines your page type and key entities to search engines.</p>
+          <p class="text-green-500 font-bold">How to improve?</p>
+          <p>Implement at least two relevant types: ${isProductPage ? 'Product (with Review)' : 'Article (with author Person link), plus FAQPage or HowTo'}.</p>
+          <p class="text-orange-500 font-bold">Why it matters?</p>
+          <p>Proper schema unlocks rich results, boosts click-through rates dramatically, strengthens E-E-A-T signals, and helps search engines feature your content more prominently.</p>
+        </div>
+      </div>
+    </div>
+  </div>` : ''}
 </div>
 
 <!-- Predictive Rank Forecast -->
@@ -352,10 +375,20 @@ document.addEventListener('DOMContentLoaded', () => {
   <p class="text-3xl font-medium opacity-80">Predictive Rank Forecast</p>
   <p class="text-8xl font-black mt-6">${overall > 88 ? 'Top 3' : overall > 75 ? 'Top 10' : overall > 60 ? 'Page 1 Possible' : 'Page 2+'}</p>
   <p class="text-4xl mt-8 font-bold">+${Math.round((100-overall)*1.5)}% traffic potential</p>
-  <p class="mt-6 text-xl">Close the ${100-overall}-point gap with the fixes above.</p>
+  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-10 px-10 py-4 bg-white text-gray-900 rounded-full hover:bg-gray-100 text-xl font-bold">
+    Show Expert Analysis
+  </button>
+  <div class="hidden mt-10 space-y-6 text-left max-w-3xl mx-auto text-lg">
+    <p class="font-bold text-blue-300">What it is?</p>
+    <p>An estimate of your likely SERP position based on current E-E-A-T strength, content depth, readability, intent match, and schema signals compared to typical top-ranking pages in competitive niches.</p>
+    <p class="font-bold text-green-300">How to improve?</p>
+    <p>Address every red and orange gap identified in this report (author bio, depth, schema, etc.), monitor performance in Search Console, request indexing after major updates, and track ranking movement over 7–30 days as search engines re-evaluate your improved signals.</p>
+    <p class="font-bold text-orange-300">Why it matters?</p>
+    <p>Pages consistently scoring 85+ secure Page 1 visibility, while 90+ often lock Top 3 positions. Closing your ${100-overall}-point gap directly translates to substantial organic traffic gains and long-term ranking stability.</p>
+  </div>
 </div>
 
-<!-- Clean PDF Button -->
+<!-- PDF Button -->
 <div class="text-center my-16">
   <button onclick="printReport()"
        class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
