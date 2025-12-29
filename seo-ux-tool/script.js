@@ -486,145 +486,203 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ================== ANALYSIS FUNCTIONS ==================
 
-  function analyzeSEO(html, doc) {
-    let score = 100;
-    const issues = [];
-    const title = doc.querySelector('title')?.textContent.trim();
-    if (!title) {
-      score -= 25;
-      issues.push({
-        issue: 'Missing <title> tag',
-        what: 'No title appears in Google search results or browser tabs.',
-        fix: '<title>Your Main Keyword – Brand Name (50–60 characters)</title>',
-        uxWhy: 'Users see "Untitled" or blank tab — looks broken and unprofessional.',
-        seoWhy: 'Zero chance of ranking or getting clicks — Google shows nothing.'
-      });
-    } else if (title.length < 30 || title.length > 65) {
+function analyzeSEO(html, doc) {
+  let score = 100;
+  const issues = [];
+
+  const title = doc.querySelector('title')?.textContent.trim() || '';
+  const mainKeywordRaw = title ? title.split(' ')[0] : '';
+  const mainKeyword = mainKeywordRaw.toLowerCase();
+
+  // Missing title
+  if (!title) {
+    score -= 25;
+    issues.push({
+      issue: 'Missing <title> tag',
+      what: 'No title appears in Google search results or browser tabs.',
+      fix: '<title>Your Main Keyword – Brand Name (50–60 characters)</title>',
+      uxWhy: 'Users see "Untitled" or blank tab — looks broken and unprofessional.',
+      seoWhy: 'Zero chance of ranking or getting clicks — Google shows nothing.'
+    });
+  } else {
+    // Title too short
+    if (title.length < 30) {
       score -= 18;
       issues.push({
-        issue: `Title length: ${title.length} characters`,
-        what: 'Title is too short or too long — gets cut off in search results.',
-        fix: 'Keep 50–60 characters, main keywords first',
-        uxWhy: 'Users see truncated title in tabs and search results.',
-        seoWhy: 'Google cuts long titles → lost keyword visibility and lower CTR.'
+        issue: `Title too short (${title.length} characters)`,
+        what: `Your page title is significantly below the recommended length.\nCurrent title: "${title}"`,
+        fix: 'Aim for 50–60 characters. Place your main keyword first.',
+        uxWhy: 'Short titles look incomplete in search results and browser tabs.',
+        seoWhy: 'Wastes valuable SERP space and reduces click-through rate.'
       });
     }
-    const desc = doc.querySelector('meta[name="description"]')?.content?.trim();
-    if (!desc) {
-      score -= 20;
+    // Title too long
+    if (title.length > 65) {
+      score -= 18;
       issues.push({
-        issue: 'Missing meta description',
-        what: 'No snippet text shows under your link in Google.',
-        fix: '<meta name="description" content="Compelling 150-char summary with keyword">',
-        uxWhy: 'Users have no idea what the page is about before clicking.',
-        seoWhy: 'Google writes its own bad snippet → massive CTR drop.'
-      });
-    } else if (desc.length < 100 || desc.length > 160) {
-      score -= 12;
-      issues.push({
-        issue: `Meta description: ${desc.length} characters`,
-        what: 'Description too short or long — not fully displayed.',
-        fix: 'Ideal length: 120–158 characters',
-        uxWhy: 'Users see incomplete or generic text.',
-        seoWhy: 'Google may replace it → lower click-through rate.'
+        issue: `Title too long (${title.length} characters)`,
+        what: `Your page title will be truncated in Google search results.\nCurrent title: "${title}"`,
+        fix: 'Keep it under 65 characters while keeping the main keyword early.',
+        uxWhy: 'Users see a cut-off title and may miss important information.',
+        seoWhy: 'Google truncates long titles → lower visibility and CTR.'
       });
     }
-    if (!doc.querySelector('h1')) {
-      score -= 12;
-      issues.push({
-        issue: 'No <h1> heading',
-        what: 'Page has no main heading — no clear topic.',
-        fix: '<h1>Main Keyword – Page Topic</h1>',
-        uxWhy: 'Users don’t instantly know what the page is about.',
-        seoWhy: 'H1 is the strongest on-page ranking signal.'
-      });
-    }
-    const mainKeyword = title?.split(' ')[0]?.toLowerCase() || '';
-    if (mainKeyword && doc.body && !doc.body.textContent.toLowerCase().slice(0, 500).includes(mainKeyword)) {
-      score -= 10;
-      issues.push({
-        issue: 'Main keyword not in first 100 words',
-        what: 'Primary keyword missing from opening content.',
-        fix: 'Include keyword naturally in first paragraph',
-        uxWhy: 'Users expect to see what they searched for immediately.',
-        seoWhy: 'Google expects topic relevance from the start.'
-      });
-    }
-    if (mainKeyword && !doc.querySelector('h1')?.textContent.toLowerCase().includes(mainKeyword)) {
-      score -= 10;
-      issues.push({
-        issue: 'Main keyword missing from H1',
-        what: 'H1 doesn’t contain the primary keyword.',
-        fix: 'Add main keyword to H1 heading',
-        uxWhy: 'Users expect the heading to match their search.',
-        seoWhy: 'Strongest relevance signal for ranking.'
-      });
-    }
-    if (doc.querySelector('meta[name="keywords"]')) {
-      score -= 8;
-      issues.push({
-        issue: 'Meta keywords tag found',
-        what: 'Obsolete tag still present on page.',
-        fix: 'Remove <meta name="keywords"> completely',
-        uxWhy: 'No user impact.',
-        seoWhy: 'Google ignores it — can hurt trust with some engines.'
-      });
-    }
-    if (!doc.querySelector('meta[property="og:title"], meta[name="twitter:card"]')) {
-      score -= 15;
-      issues.push({
-        issue: 'Missing Open Graph / Twitter cards',
-        what: 'No rich preview when shared on social media.',
-        fix: 'Add og:title, og:image, twitter:card tags',
-        uxWhy: 'Shared links look broken or generic.',
-        seoWhy: 'Social traffic drops dramatically without rich previews.'
-      });
-    }
-    const robots = doc.querySelector('meta[name="robots"]');
-    if (robots && /noindex/i.test(robots.content)) {
-      score -= 30;
-      issues.push({
-        issue: 'Page blocked from Google (noindex)',
-        what: 'Robots meta tells search engines not to index this page.',
-        fix: 'Remove noindex or change to index,follow',
-        uxWhy: 'No impact on users.',
-        seoWhy: 'You are completely invisible in search results.'
-      });
-    }
-    if (!doc.querySelector('link[rel="canonical"]')) {
-      score -= 8;
-      issues.push({
-        issue: 'Missing canonical tag',
-        what: 'No preferred URL defined for this page.',
-        fix: '<link rel="canonical" href="https://yoursite.com/page">',
-        uxWhy: 'No direct impact.',
-        seoWhy: 'Risk of duplicate content penalties.'
-      });
-    }
-    if (!doc.querySelector('script[type="application/ld+json"], [itemscope]')) {
-      score -= 10;
-      issues.push({
-        issue: 'No structured data (schema)',
-        what: 'No machine-readable data for rich results.',
-        fix: 'Add JSON-LD schema (Article, FAQ, Organization, etc)',
-        uxWhy: 'No rich snippets in search.',
-        seoWhy: 'Missing featured snippets, knowledge panels, rich cards.'
-      });
-    }
-    const imgs = doc.querySelectorAll('img');
-    const noAlt = Array.from(imgs).filter(i => !i.alt || i.alt.trim() === '');
-    if (noAlt.length) {
-      score -= Math.min(20, noAlt.length * 5);
-      issues.push({
-        issue: `${noAlt.length} images missing alt text`,
-        what: 'Images have no description for screen readers or Google Images.',
-        fix: 'Add descriptive alt="…" (or alt="" if decorative)',
-        uxWhy: 'Blind users can’t understand images.',
-        seoWhy: 'No ranking in Google Images search.'
-      });
-    }
-    return { score: Math.max(0, Math.round(score)), issues };
   }
+
+  // Meta description
+  const desc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
+  if (!desc) {
+    score -= 20;
+    issues.push({
+      issue: 'Missing meta description',
+      what: 'No snippet text shows under your link in Google search results.',
+      fix: '<meta name="description" content="Compelling 120–158 character summary with primary keyword">',
+      uxWhy: 'Users have no clear idea what the page is about before clicking.',
+      seoWhy: 'Google generates a poor snippet → massive drop in click-through rate.'
+    });
+  } else {
+    // Description too short
+    if (desc.length < 100) {
+      score -= 12;
+      issues.push({
+        issue: `Meta description too short (${desc.length} characters)`,
+        what: `Your meta description is too brief and may not display fully or persuasively.\nCurrent description: "${desc}"`,
+        fix: 'Expand to 120–158 characters with a compelling summary.',
+        uxWhy: 'Users see very little context in search results.',
+        seoWhy: 'Google may replace it with unrelated page text → lower CTR.'
+      });
+    }
+    // Description too long
+    if (desc.length > 160) {
+      score -= 12;
+      issues.push({
+        issue: `Meta description too long (${desc.length} characters)`,
+        what: `Your meta description will be truncated in search results.\nCurrent description: "${desc}"`,
+        fix: 'Keep it between 120–158 characters for full display.',
+        uxWhy: 'Important parts of your message get cut off.',
+        seoWhy: 'Truncation reduces effectiveness and click-through rate.'
+      });
+    }
+  }
+
+  // Missing H1
+  const h1Element = doc.querySelector('h1');
+  const h1Text = h1Element?.textContent.trim() || '';
+  if (!h1Element) {
+    score -= 12;
+    issues.push({
+      issue: 'No <h1> heading',
+      what: 'Page has no main heading — no clear topic signal.',
+      fix: '<h1>Main Keyword – Page Topic</h1>',
+      uxWhy: 'Users don’t instantly understand what the page is about.',
+      seoWhy: 'H1 is one of the strongest on-page ranking signals.'
+    });
+  }
+
+  // Main keyword in first 100 words
+  if (mainKeyword && doc.body) {
+    const first500Chars = doc.body.textContent.toLowerCase().slice(0, 500);
+    if (!first500Chars.includes(mainKeyword)) {
+      score -= 10;
+      issues.push({
+        issue: `Main keyword "${mainKeywordRaw}" missing from first 100 words`,
+        what: `The primary keyword from your title ("${mainKeywordRaw}") does not appear early in the content.`,
+        fix: `Include "${mainKeywordRaw}" naturally in the first paragraph.`,
+        uxWhy: 'Users expect to see what they searched for right away.',
+        seoWhy: 'Google looks for topic relevance from the very beginning of the page.'
+      });
+    }
+  }
+
+  // Main keyword in H1
+  if (mainKeyword && h1Text && !h1Text.toLowerCase().includes(mainKeyword)) {
+    score -= 10;
+    issues.push({
+      issue: `Main keyword "${mainKeywordRaw}" missing from H1`,
+      what: `Your H1 does not contain the primary keyword from the title.\nCurrent H1: "${h1Text || 'None'}"`,
+      fix: `Update H1 to include "${mainKeywordRaw}" naturally.`,
+      uxWhy: 'Users expect the main heading to match their search intent.',
+      seoWhy: 'H1 is the strongest on-page relevance signal for ranking.'
+    });
+  }
+
+  // Meta keywords tag (obsolete)
+  if (doc.querySelector('meta[name="keywords"]')) {
+    score -= 8;
+    issues.push({
+      issue: 'Meta keywords tag found',
+      what: 'Obsolete tag still present on page.',
+      fix: 'Remove <meta name="keywords"> completely',
+      uxWhy: 'No user impact.',
+      seoWhy: 'Google ignores it — can hurt trust with some engines.'
+    });
+  }
+
+  // Open Graph / Twitter cards
+  if (!doc.querySelector('meta[property="og:title"], meta[name="twitter:card"]')) {
+    score -= 15;
+    issues.push({
+      issue: 'Missing Open Graph / Twitter cards',
+      what: 'No rich preview when shared on social media.',
+      fix: 'Add og:title, og:description, og:image, twitter:card tags',
+      uxWhy: 'Shared links appear broken or generic.',
+      seoWhy: 'Social traffic drops dramatically without rich previews.'
+    });
+  }
+
+  // Robots noindex
+  const robots = doc.querySelector('meta[name="robots"]');
+  if (robots && /noindex/i.test(robots.content)) {
+    score -= 30;
+    issues.push({
+      issue: 'Page blocked from Google (noindex)',
+      what: 'Robots meta tells search engines not to index this page.',
+      fix: 'Remove noindex or change to index,follow',
+      uxWhy: 'No impact on users.',
+      seoWhy: 'You are completely invisible in search results.'
+    });
+  }
+
+  // Canonical tag
+  if (!doc.querySelector('link[rel="canonical"]')) {
+    score -= 8;
+    issues.push({
+      issue: 'Missing canonical tag',
+      what: 'No preferred URL defined for this page.',
+      fix: '<link rel="canonical" href="https://yoursite.com/page">',
+      uxWhy: 'No direct impact.',
+      seoWhy: 'Risk of duplicate content penalties.'
+    });
+  }
+
+  // Structured data
+  if (!doc.querySelector('script[type="application/ld+json"], [itemscope]')) {
+    score -= 10;
+    issues.push({
+      issue: 'No structured data (schema)',
+      what: 'No machine-readable data for rich results.',
+      fix: 'Add JSON-LD schema (Article, FAQ, Organization, etc)',
+      uxWhy: 'No rich snippets in search results.',
+      seoWhy: 'Missing featured snippets, knowledge panels, rich cards.'
+    });
+  }
+
+  // Alt text
+  const imgs = doc.querySelectorAll('img');
+  const noAlt = Array.from(imgs).filter(i => !i.alt || i.alt.trim() === '');
+  if (noAlt.length) {
+    score -= Math.min(20, noAlt.length * 5);
+    issues.push({
+      issue: `${noAlt.length} image${noAlt.length === 1 ? '' : 's'} missing alt text`,
+      what: 'Images have no description for screen readers or Google Images.',
+      fix: 'Add descriptive alt="…" (or alt="" if decorative)',
+      uxWhy: 'Blind users can’t understand what the image shows.',
+      seoWhy: 'No ranking in Google Images search.'
+    });
+  }
+
+  return { score: Math.max(0, Math.round(score)), issues };
+}
 
   function analyzeMobile(html, doc) {
     let score = 100;
