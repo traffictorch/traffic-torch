@@ -60,8 +60,31 @@ results.classList.remove('hidden');
       
       
 
-// Reliable SEO content depth: use body.innerText for visible rendered text (universal, matches browser view, excludes boilerplate/scripts)
-const text = doc.body?.innerText || doc.body?.textContent || '';
+// Reliable visible text extraction: use TreeWalker to collect text nodes, exclude non-content tags (approximates innerText in detached DOM)
+function getVisibleText(root) {
+  let text = '';
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode: (node) => {
+      const parent = node.parentElement;
+      if (!parent) return NodeFilter.FILTER_REJECT;
+      const tag = parent.tagName.toLowerCase();
+      if (['script', 'style', 'noscript', 'head', 'iframe', 'object', 'embed'].includes(tag)) {
+        return NodeFilter.FILTER_REJECT;
+      }
+      // Skip if hidden attribute (approximate, since no computed style)
+      if (parent.hasAttribute('hidden') || parent.getAttribute('aria-hidden') === 'true') {
+        return NodeFilter.FILTER_REJECT;
+      }
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  while (walker.nextNode()) {
+    text += walker.currentNode.textContent + ' ';
+  }
+  return text.trim();
+}
+
+const text = getVisibleText(doc.body) || '';
 const cleanedText = text.replace(/\s+/g, ' ').trim();
 const words = cleanedText ? cleanedText.split(' ').filter(word => word.length > 0).length : 0;
 
