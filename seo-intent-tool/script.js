@@ -60,16 +60,10 @@ results.classList.remove('hidden');
       
       
 
-// Accurate main content word count: target primary content selectors (common for blogs/e-commerce)
-let contentElement = doc.querySelector('main') || 
-                     doc.querySelector('.entry-content') || 
-                     doc.querySelector('.post-content') || 
-                     doc.querySelector('.content') || 
-                     doc.querySelector('article') || 
-                     doc.querySelector('.product-description') || 
-                     doc.querySelector('.description') || 
-                     doc.querySelector('#content') ||
-                     doc.body;
+// Accurate main content extraction: expanded selectors for broader site compatibility (blogs, GitHub, e-commerce, etc.)
+let contentElement = doc.querySelector(
+  'main, article, [role="main"], .article-body, .post-content, .entry-content, .markdown-body, .content, .main-content, #main, #content, .product-description, .woocommerce-product-details__short-description, .post-body, .blog-post, .page-content'
+) || doc.body;
 
 const text = contentElement?.innerText || contentElement?.textContent || '';
 const cleanedText = text.replace(/\s+/g, ' ').trim();
