@@ -502,8 +502,8 @@ function analyzeSEO(html, doc) {
 
   if (primaryKeywordRaw) {
     issues.push({
-      issue: 'Primary Keyword Detected',
-      what: `We use "${primaryKeywordRaw}" as your page's primary keyword/phrase (main title section). This guides recommendations.`,
+      issue: 'Primary Keyword',
+      what: `We detect "${primaryKeywordRaw}" as your page's primary keyword/phrase (main title section). This guides recommendations.`,
       fix: 'Ensure it\'s prominent in headings and early content.',
       uxWhy: 'Quickly confirms relevance for users.',
       seoWhy: 'Strong on-page alignment boosts ranking signals.'
@@ -863,48 +863,122 @@ function analyzeSEO(html, doc) {
     }
     return { score: Math.max(0, Math.round(score)), issues };
   }
+  
+  
+  
+  
+  
 
-  function analyzeContentQuality(html, doc) {
-    let score = 100;
-    const issues = [];
-    const text = doc.body.textContent.trim();
-    const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
-    if (wordCount < 300) {
-      score -= 30;
-      issues.push({
-        issue: `Thin content (${wordCount} words)`,
-        what: 'Page has very little meaningful text content.',
-        fix: 'Expand content to at least 600–800 words of unique, helpful information.',
-        uxWhy: 'Users find little value and leave quickly (high bounce rate).',
-        seoWhy: 'Google favors comprehensive, in-depth pages for most queries.'
-      });
-    }
-    const sentences = text.split(/[.!?]+/).length || 1;
-    const syllablesApprox = text.split(/\s+/).reduce((c, w) => c + (w.match(/[aeiouy]/gi) || []).length, 0);
-    const flesch = 206.835 - 1.015 * (wordCount / sentences) - 84.6 * (syllablesApprox / wordCount);
-    if (flesch < 50) {
+function analyzeContentQuality(html, doc) {
+  let score = 100;
+  const issues = [];
+
+  // Get clean body text
+  const bodyText = doc.body ? doc.body.textContent.replace(/\s+/g, ' ').trim() : '';
+  const words = bodyText.split(/\s+/).filter(w => w.length > 0);
+  const wordCount = words.length;
+
+  // 1. Thin Content Check
+  if (wordCount < 300) {
+    const severity = wordCount < 100 ? 40 : 30;
+    score -= severity;
+    issues.push({
+      issue: `Thin content detected (${wordCount} words)`,
+      what: 'The page contains limited unique, valuable text content.',
+      fix: 'Expand with helpful sections: detailed descriptions, benefits, FAQs, guides, or testimonials. Aim for 600+ words where appropriate for the topic.',
+      uxWhy: 'Users expect substance; thin pages feel incomplete and cause quick exits.',
+      seoWhy: 'Google rewards comprehensive pages that fully answer user intent.'
+    });
+  } else if (wordCount > 3000) {
+    score -= 10;
+    issues.push({
+      issue: `Very long content (${wordCount} words)`,
+      what: 'Extensive text without sufficient structure can overwhelm readers.',
+      fix: 'Add clear H2/H3 headings every 300–400 words, use bullet points, and consider a table of contents.',
+      uxWhy: 'Improves scannability, especially on mobile devices.',
+      seoWhy: 'Better structure increases engagement metrics like time-on-page and scroll depth.'
+    });
+  }
+
+  // 2. Improved Readability (Flesch Reading Ease) – only if enough content
+  if (wordCount >= 50) {
+    const sentences = Math.max(1, bodyText.split(/[.!?]+/).filter(s => s.trim()).length);
+
+    // Better syllable approximation
+    let syllableCount = 0;
+    words.forEach(word => {
+      let clean = word.toLowerCase().replace(/[^a-z]/g, '');
+      if (clean.length === 0) return;
+      if (clean.length <= 3) {
+        syllableCount += 1;
+        return;
+      }
+      let matches = clean.match(/[aeiouy]+/g);
+      syllableCount += matches ? matches.length : 1;
+      // Adjust for common silent endings
+      if (clean.endsWith('es') || clean.endsWith('ed')) {
+        syllableCount = Math.max(1, syllableCount - 1);
+      }
+    });
+
+    const avgSentenceLength = wordCount / sentences;
+    const avgSyllables = syllableCount / wordCount;
+    const fleschScore = Math.round(206.835 - 1.015 * avgSentenceLength - 84.6 * avgSyllables);
+
+    let grade = '';
+    if (fleschScore >= 90) grade = 'Very Easy (grade 5)';
+    else if (fleschScore >= 80) grade = 'Easy (grade 6–7)';
+    else if (fleschScore >= 70) grade = 'Fairly Easy (grade 8)';
+    else if (fleschScore >= 60) grade = 'Standard (grade 9–10)';
+    else if (fleschScore >= 50) grade = 'Fairly Difficult (college)';
+    else grade = 'Difficult (college graduate)';
+
+    // Only penalize if truly hard to read (below 60 = standard web target)
+    if (fleschScore < 60) {
       score -= 20;
       issues.push({
-        issue: 'Difficult readability',
-        what: 'Text is too complex for average readers.',
-        fix: 'Use shorter sentences, simpler words, active voice, and paragraphs under 4 lines.',
-        uxWhy: 'Users struggle to understand and abandon the page.',
-        seoWhy: 'Better readability improves time-on-page and engagement signals.'
+        issue: `Readability needs improvement (Flesch score: ${fleschScore} – ${grade})`,
+        what: 'The text uses longer sentences and/or more complex vocabulary than ideal for most web users.',
+        fix: 'Aim for 15–20 words per sentence on average. Use common words, active voice, short paragraphs (≤4 lines), and bullet points where possible.',
+        uxWhy: 'Easier reading keeps visitors engaged longer and reduces cognitive strain, especially on mobile.',
+        seoWhy: 'Improved readability boosts dwell time, lowers bounce rate, and sends positive user experience signals to Google.'
       });
     }
-    const hTags = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
-    if (hTags.length < 3) {
-      score -= 10;
-      issues.push({
-        issue: 'Too few headings',
-        what: 'Content lacks proper structure with headings.',
-        fix: 'Use H2/H3 headings to break up sections every 300–400 words.',
-        uxWhy: 'Users scan content — headings help them find what they need fast.',
-        seoWhy: 'Headings improve content organization and crawlability.'
-      });
-    }
-    return { score: Math.max(0, Math.round(score)), issues };
   }
+
+  // 3. Heading Structure
+  const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
+  if (headings.length < 3 && wordCount > 400) {
+    score -= 15;
+    issues.push({
+      issue: 'Insufficient heading structure',
+      what: 'Content has few or no subheadings to guide readers.',
+      fix: 'Add descriptive H2 and H3 headings every 300–400 words to create clear sections.',
+      uxWhy: 'Headings help users scan and find relevant information quickly.',
+      seoWhy: 'Proper hierarchy improves crawlability and increases chances of featured snippets.'
+    });
+  }
+
+  // 4. Lack of Lists (educational best practice)
+  const lists = doc.querySelectorAll('ul, ol').length;
+  if (lists === 0 && wordCount > 500) {
+    score -= 10;
+    issues.push({
+      issue: 'No bullet or numbered lists used',
+      what: 'Key information is presented in dense paragraphs instead of scannable lists.',
+      fix: 'Convert features, benefits, steps, or options into bulleted or numbered lists.',
+      uxWhy: 'Lists dramatically improve skimmability and comprehension.',
+      seoWhy: 'Encourages deeper engagement and can trigger rich list results in search.'
+    });
+  }
+
+  return { score: Math.max(0, Math.round(score)), issues };
+}
+
+
+
+
+
 
   function analyzeUXDesign(html, doc) {
     let score = 100;
