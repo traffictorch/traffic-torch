@@ -498,21 +498,22 @@ function analyzeSEO(html, doc) {
     const sections = title.split(/[\|\–\-]/);
     primaryKeywordRaw = sections[0].trim();
   }
-  const primaryKeyword = primaryKeywordRaw.toLowerCase().replace(/luxury|resorts?|hotels?|best|top|official/g, '').trim();
-  const keywordParts = primaryKeyword.split(/\s+/).filter(p => p.length >= 3);
+  // Clean for matching parts
+  const cleaned = primaryKeywordRaw.toLowerCase().replace(/\b(the|a|an|and|or|luxury|resorts?|hotels?|best|top|official)\b/g, '').trim();
+  const keywordParts = cleaned.split(/\s+/).filter(p => p.length >= 3);
 
-  // New: Primary Keyword informational item (always first, non-scoring)
+  // Primary Keyword informational (first)
   if (primaryKeywordRaw) {
     issues.push({
       issue: 'Primary Keyword Detected',
-      what: `We use "${primaryKeywordRaw}" as your page's primary keyword/phrase (the main section of your title before separators like "|"). This guides our on-page recommendations.`,
-      fix: 'Lead with your target keyword in the title for optimal relevance.',
-      uxWhy: 'Helps users and search engines quickly understand the page focus.',
-      seoWhy: 'Strong title alignment is a core ranking factor.'
+      what: `We use "${primaryKeywordRaw}" as your page's primary keyword/phrase (main title section). This guides recommendations.`,
+      fix: 'Ensure it's prominent in headings and early content.',
+      uxWhy: 'Quickly confirms relevance for users.',
+      seoWhy: 'Strong on-page alignment boosts ranking signals.'
     });
   }
 
-  // Missing title
+  // Title checks
   if (!title) {
     score -= 25;
     issues.push({
@@ -528,7 +529,7 @@ function analyzeSEO(html, doc) {
       issues.push({
         issue: `Title too short (${title.length} characters)`,
         what: `Your page title is significantly below the recommended length.\nCurrent title: "${title}"`,
-        fix: 'Aim for 50–60 characters. Place your primary keyword first.',
+        fix: 'Aim for 50–60 characters with descriptive keywords.',
         uxWhy: 'Short titles look incomplete in search results and browser tabs.',
         seoWhy: 'Wastes valuable SERP space and reduces click-through rate.'
       });
@@ -545,16 +546,16 @@ function analyzeSEO(html, doc) {
     }
   }
 
-  // Meta description (unchanged)
+  // Meta description - FIXED: proper missing detection
   const desc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
   if (!desc) {
     score -= 20;
     issues.push({
       issue: 'Missing meta description',
-      what: 'No snippet text shows under your link in Google.',
+      what: 'No snippet text shows under your link in Google search results.',
       fix: '<meta name="description" content="Compelling 120–158 character summary with primary keyword">',
       uxWhy: 'Users have no idea what the page is about before clicking.',
-      seoWhy: 'Google writes its own bad snippet → massive CTR drop.'
+      seoWhy: 'Google generates a poor snippet → massive drop in click-through rate.'
     });
   } else {
     if (desc.length < 100) {
@@ -562,9 +563,9 @@ function analyzeSEO(html, doc) {
       issues.push({
         issue: `Meta description too short (${desc.length} characters)`,
         what: `Your meta description is too brief.\nCurrent description: "${desc}"`,
-        fix: 'Expand to 120–158 characters.',
-        uxWhy: 'Users see very little context.',
-        seoWhy: 'Lower click-through rate.'
+        fix: 'Expand to 120–158 characters with compelling details.',
+        uxWhy: 'Users see very little context in search results.',
+        seoWhy: 'Google may replace it → lower click-through rate.'
       });
     }
     if (desc.length > 160) {
@@ -579,23 +580,23 @@ function analyzeSEO(html, doc) {
     }
   }
 
-  // Main heading: now accept <h1> or <h2>
-  const mainHeadingElement = doc.querySelector('h1') || doc.querySelector('h2');
+  // Main heading: now H1, H2, or H3 (common for hero sections)
+  const mainHeadingElement = doc.querySelector('h1') || doc.querySelector('h2') || doc.querySelector('h3');
   const mainHeadingText = mainHeadingElement?.textContent.trim() || '';
   if (!mainHeadingElement) {
-    score -= 10;
+    score -= 8;
     issues.push({
-      issue: 'No main heading (<h1> or <h2>)',
+      issue: 'No main heading (<h1>, <h2>, or <h3>)',
       what: 'Page lacks a clear primary heading for topic and hierarchy.',
-      fix: 'Add <h1> or <h2> with your primary keyword.',
-      uxWhy: 'Users rely on headings to scan and understand content quickly.',
-      seoWhy: 'Strong heading structure is key for crawlability and ranking.'
+      fix: 'Add a prominent heading with your primary keyword.',
+      uxWhy: 'Users rely on headings to quickly understand the page.',
+      seoWhy: 'Headings are key for structure and relevance signals.'
     });
   }
 
   // Flexible match helper
   function flexibleMatch(textLower) {
-    if (!primaryKeyword) return true;
+    if (keywordParts.length === 0) return true;
     const matches = keywordParts.filter(part => textLower.includes(part));
     return matches.length >= Math.max(1, Math.ceil(keywordParts.length * 0.6));
   }
@@ -607,7 +608,7 @@ function analyzeSEO(html, doc) {
       score -= 10;
       issues.push({
         issue: `Primary keyword "${primaryKeywordRaw}" missing from opening content`,
-        what: `The main phrase from your title is not in the early visible text.`,
+        what: 'The main phrase does not appear early in visible text.',
         fix: 'Include it naturally in the first paragraph.',
         uxWhy: 'Users expect immediate relevance.',
         seoWhy: 'Google prioritizes early topic signals.'
@@ -622,13 +623,14 @@ function analyzeSEO(html, doc) {
       score -= 10;
       issues.push({
         issue: `Primary keyword "${primaryKeywordRaw}" missing from main heading`,
-        what: `Main heading does not include the primary keyword.\nCurrent heading: "${mainHeadingText || 'None found'}"`,
-        fix: 'Incorporate the primary keyword naturally.',
-        uxWhy: 'Users expect the heading to match intent.',
-        seoWhy: 'Strongest on-page relevance signal.'
+        what: `Main heading lacks the primary keyword.\nCurrent heading: "${mainHeadingText}"`,
+        fix: 'Incorporate naturally.',
+        uxWhy: 'Users expect heading to match intent.',
+        seoWhy: 'Strongest relevance signal.'
       });
     }
   }
+
 
   // Remaining checks unchanged
   if (doc.querySelector('meta[name="keywords"]')) {
