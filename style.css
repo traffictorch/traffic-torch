@@ -112,10 +112,11 @@ header, footer { backdrop-filter: blur(12px); }
   min-width: 0;
 }
 
-/* Contain overflow to prevent Safari viewport recalculation */
+/* Contain overflow + layout to prevent Safari viewport recalculation during expand/reflow */
 details > div,
 .grid,
 .flex,
 .container {
   overflow-x: hidden;
+  contain: layout style; /* Modern addition: isolates layout/reflow, stops temporary width changes */
 }
