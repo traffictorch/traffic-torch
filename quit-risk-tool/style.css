@@ -285,3 +285,51 @@ html, body {
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
 }
+
+
+
+
+
+/* Base styles - keep large on desktop */
+#overall-score-circle {
+    width: 280px;
+    height: 280px;
+}
+
+/* Tablet and smaller */
+@media (max-width: 768px) {
+    #overall-score-container {
+        max-width: 260px;
+        margin: 0 auto;
+    }
+    
+    #overall-score-circle {
+        width: 260px !important;
+        height: 260px !important;
+    }
+    
+    /* Also scale down the score text if needed */
+    #overall-score-container .text-6xl { /* assuming score number uses text-6xl or similar */
+        font-size: 3.5rem !important;
+    }
+}
+
+/* Mobile small screens */
+@media (max-width: 480px) {
+    #overall-score-container {
+        max-width: 220px;
+    }
+    
+    #overall-score-circle {
+        width: 220px !important;
+        height: 220px !important;
+    }
+    
+    #overall-score-container .text-6xl {
+        font-size: 3rem !important;
+    }
+    
+    #overall-score-container .text-2xl { /* for "/100 Usability" label */
+        font-size: 1.25rem !important;
+    }
+}
