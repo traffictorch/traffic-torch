@@ -60,9 +60,9 @@ results.classList.remove('hidden');
       
       
 
-// Accurate main content extraction: expanded selectors for broader site compatibility (blogs, GitHub, e-commerce, etc.)
+// Accurate main content extraction: prioritize <main> for modern sites, expanded selectors for max compatibility
 let contentElement = doc.querySelector(
-  'main, article, [role="main"], .article-body, .post-content, .entry-content, .markdown-body, .content, .main-content, #main, #content, .product-description, .woocommerce-product-details__short-description, .post-body, .blog-post, .page-content'
+  'main, [role="main"], article, .entry-content, .post-content, .markdown-body, .content, .main-content, .primary-content, .site-content, #main, #content, #primary, .page-content, .blog-post, .post-body, .product-description, .woocommerce-product-details__short-description, section'
 ) || doc.body;
 
 const text = contentElement?.innerText || contentElement?.textContent || '';
