@@ -107,10 +107,10 @@ results.classList.remove('hidden');
 
       // === FULL REPORT OUTPUT (unchanged from your original) ===
       results.innerHTML = `
-<!-- Big Score Circle -->
+<!-- Big Score Circle - Mobile-Fixed Version -->
 <div class="flex justify-center my-12 px-4">
-  <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md">
-    <svg viewBox="0 0 260 260" class="transform -rotate-90 w-full h-auto">
+  <div class="relative" style="width: min(90vw, 320px); aspect-ratio: 1/1;">
+    <svg viewBox="0 0 260 260" class="transform -rotate-90 w-full h-full">
       <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
       <circle cx="130" cy="130" r="120"
               stroke="${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'}"
@@ -120,12 +120,12 @@ results.classList.remove('hidden');
     </svg>
     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
       <div class="text-center">
-        <div class="font-black drop-shadow-2xl text-5xl xs:text-6xl sm:text-7xl md:text-8xl"
-             style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'}; line-height: 1;">
+        <div class="font-black drop-shadow-2xl text-6xl leading-none"
+             style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'}; font-size: clamp(3.5rem, 14vw, 6rem);">
           ${overall}
         </div>
-        <div class="text-lg sm:text-xl md:text-2xl lg:text-3xl opacity-80 -mt-2"
-             style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'};">
+        <div class="opacity-80 -mt-2"
+             style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'}; font-size: clamp(1.25rem, 5vw, 2rem);">
           /100
         </div>
       </div>
