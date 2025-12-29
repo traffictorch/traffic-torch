@@ -60,40 +60,8 @@ results.classList.remove('hidden');
       
       
 
-// Reliable main content extraction: simplified Readability.js-like algorithm for universal accuracy
-function extractMainContent(doc) {
-  const candidates = [];
-  const potentialNodes = doc.querySelectorAll('div, section, article, main, p, .content, .entry-content, .post-content, .main-content');
-
-  function scoreNode(node) {
-    const text = node.textContent || '';
-    const textLength = text.trim().length;
-    if (textLength < 200) return 0; // Too short
-    const links = node.querySelectorAll('a').length;
-    const linkDensity = links / (text.split(/\s+/).length + 1);
-    const classWeight = /article|content|post|body/i.test(node.className || node.id || '') ? 50 : 0;
-    return textLength - (linkDensity * 1000) + classWeight; // Penalize high links, boost semantic classes
-  }
-
-  Array.from(potentialNodes).forEach(node => {
-    const score = scoreNode(node);
-    if (score > 0) candidates.push({ node, score });
-  });
-
-  if (candidates.length === 0) return doc.body; // Fallback to body if no candidates
-
-  candidates.sort((a, b) => b.score - a.score);
-  const bestNode = candidates[0].node.cloneNode(true);
-
-  // Cleanup boilerplate
-  const removeSelectors = 'script, style, noscript, nav, footer, header, aside, [role="navigation"], [class*="menu"], [class*="nav"], [class*="footer"], [class*="ad"], [class*="advert"], [class*="sidebar"], [class*="widget"]';
-  bestNode.querySelectorAll(removeSelectors).forEach(el => el.remove());
-
-  return bestNode;
-}
-
-const mainContent = extractMainContent(doc);
-const text = mainContent?.innerText || mainContent?.textContent || '';
+// Reliable SEO content depth: use body.innerText for visible rendered text (universal, matches browser view, excludes boilerplate/scripts)
+const text = doc.body?.innerText || doc.body?.textContent || '';
 const cleanedText = text.replace(/\s+/g, ' ').trim();
 const words = cleanedText ? cleanedText.split(' ').filter(word => word.length > 0).length : 0;
 
