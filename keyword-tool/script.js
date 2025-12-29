@@ -73,12 +73,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
-
     const yourUrl = pageUrlInput.value.trim();
     const phrase = targetKeywordInput.value.trim();
     if (!yourUrl || !phrase) return;
 
-    // Auto-prepend https:// if no protocol provided
     let fullUrl = yourUrl;
     if (!/^https?:\/\//i.test(yourUrl)) {
       fullUrl = 'https://' + yourUrl;
@@ -98,7 +96,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = {};
     const fixes = [];
 
-    // Meta Title & Description
+    // Helper: advance progress text + delay (syncs perfectly with 600ms interval)
+    const nextStep = async (stepIndex) => {
+      if (stepIndex < progressModules.length) {
+        document.getElementById('module-text').textContent = progressModules[stepIndex];
+      }
+      await new Promise(resolve => setTimeout(resolve, 800)); // Slightly longer than interval for smooth feel
+    };
+
+    // Step 1: Meta
+    await nextStep(1);
     data.meta = {
       yourMatches: countPhrase(yourDoc.querySelector('title')?.textContent + ' ' + yourDoc.querySelector('meta[name="description"]')?.content, phrase)
     };
@@ -110,7 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
       why: 'These elements are key for search engines to match queries and encourage clicks, potentially boosting CTR by 20-30% when optimized.'
     });
 
-    // H1
+    // Step 2: H1
+    await nextStep(2);
     const yourH1 = yourDoc.querySelector('h1')?.textContent.trim() || '';
     data.h1 = { match: countPhrase(yourH1, phrase) };
     yourScore += data.h1.match > 0 ? 15 : 0;
@@ -121,7 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
       why: 'H1 tags help search engines grasp the page topic quickly, serving as a core on-page factor for better rankings.'
     });
 
-    // Content Depth & Density
+    // Step 3: Content
+    await nextStep(3);
     const yourWords = getWordCount(yourDoc);
     const yourContentMatches = countPhrase(getCleanContent(yourDoc), phrase);
     const yourDensity = yourWords ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
@@ -134,7 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
       why: 'Longer, in-depth content often ranks higher as it provides more value and signals expertise to search engines.'
     });
 
-    // Image Alts
+    // Step 4: Images
+    await nextStep(4);
     const yourImgs = yourDoc.querySelectorAll('img');
     const yourAltPhrase = Array.from(yourImgs).filter(img => countPhrase(img.alt || '', phrase) > 0).length;
     data.alts = { total: yourImgs.length, phrase: yourAltPhrase };
@@ -146,7 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
       why: 'Alt text improves accessibility, enables image search traffic, and adds relevance signals.'
     });
 
-    // Anchor Text
+    // Step 5: Anchors
+    await nextStep(5);
     const yourAnchors = Array.from(yourDoc.querySelectorAll('a')).filter(a => countPhrase(a.textContent || '', phrase) > 0).length;
     data.anchors = { count: yourAnchors };
     yourScore += yourAnchors > 0 ? 10 : 0;
@@ -157,7 +168,8 @@ document.addEventListener('DOMContentLoaded', () => {
       why: 'Keyword-rich anchors help distribute topical authority across your site.'
     });
 
-    // URL & Schema
+    // Step 6: URL & Schema
+    await nextStep(6);
     data.urlSchema = {
       urlMatch: countPhrase(fullUrl, phrase),
       schema: yourDoc.querySelector('script[type="application/ld+json"]') ? 1 : 0
@@ -175,6 +187,9 @@ document.addEventListener('DOMContentLoaded', () => {
       how: 'Add JSON-LD for Article, FAQ, or relevant schema type in the <head>.',
       why: 'Schema enables rich results in search, increasing visibility and click-through rates.'
     });
+
+    // Final step
+    await nextStep(7);
 
     yourScore = Math.min(100, Math.round(yourScore));
     stopSpinnerLoader();
@@ -201,7 +216,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
-
         <!-- Small Metric Circles -->
         <div class="grid md:grid-cols-3 gap-8 my-16">
           ${[
@@ -255,7 +269,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
           }).join('')}
         </div>
-
         <!-- Prioritized Fixes -->
         <div class="space-y-8">
           <h3 class="text-4xl font-bold text-center text-orange-600 mb-8">Prioritized Fixes</h3>
@@ -273,7 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           `).join('') : '<p class="text-center text-green-500 text-2xl font-bold">Strong optimization — keep it up!</p>'}
         </div>
-
         <!-- Predictive Rank Forecast -->
         <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
           <h3 class="text-4xl font-black text-center">Predictive Rank Forecast</h3>
@@ -288,7 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="text-sm italic mt-4">Note: Actual rankings depend on competition, backlinks, and user signals — this is an on-page health indicator only.</p>
           </div>
         </div>
-
         <!-- Save as PDF -->
         <div class="text-center my-16">
           <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
