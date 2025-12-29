@@ -492,28 +492,24 @@ function analyzeSEO(html, doc) {
 
   const title = doc.querySelector('title')?.textContent.trim() || '';
   
-  // Primary keyword: full section before separator
   let primaryKeywordRaw = '';
   if (title) {
     const sections = title.split(/[\|\–\-]/);
     primaryKeywordRaw = sections[0].trim();
   }
-  // Clean for matching parts
   const cleaned = primaryKeywordRaw.toLowerCase().replace(/\b(the|a|an|and|or|luxury|resorts?|hotels?|best|top|official)\b/g, '').trim();
   const keywordParts = cleaned.split(/\s+/).filter(p => p.length >= 3);
 
-  // Primary Keyword informational (first)
   if (primaryKeywordRaw) {
     issues.push({
       issue: 'Primary Keyword Detected',
       what: `We use "${primaryKeywordRaw}" as your page's primary keyword/phrase (main title section). This guides recommendations.`,
-      fix: 'Ensure it's prominent in headings and early content.',
+      fix: 'Ensure it\'s prominent in headings and early content.',
       uxWhy: 'Quickly confirms relevance for users.',
       seoWhy: 'Strong on-page alignment boosts ranking signals.'
     });
   }
 
-  // Title checks
   if (!title) {
     score -= 25;
     issues.push({
@@ -546,7 +542,6 @@ function analyzeSEO(html, doc) {
     }
   }
 
-  // Meta description - FIXED: proper missing detection
   const desc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
   if (!desc) {
     score -= 20;
@@ -580,7 +575,6 @@ function analyzeSEO(html, doc) {
     }
   }
 
-  // Main heading: now H1, H2, or H3 (common for hero sections)
   const mainHeadingElement = doc.querySelector('h1') || doc.querySelector('h2') || doc.querySelector('h3');
   const mainHeadingText = mainHeadingElement?.textContent.trim() || '';
   if (!mainHeadingElement) {
@@ -594,14 +588,12 @@ function analyzeSEO(html, doc) {
     });
   }
 
-  // Flexible match helper
   function flexibleMatch(textLower) {
     if (keywordParts.length === 0) return true;
     const matches = keywordParts.filter(part => textLower.includes(part));
     return matches.length >= Math.max(1, Math.ceil(keywordParts.length * 0.6));
   }
 
-  // Primary keyword in opening content
   if (primaryKeywordRaw && doc.body) {
     const first500Lower = doc.body.textContent.toLowerCase().slice(0, 500);
     if (!flexibleMatch(first500Lower)) {
@@ -616,7 +608,6 @@ function analyzeSEO(html, doc) {
     }
   }
 
-  // Primary keyword in main heading
   if (primaryKeywordRaw && mainHeadingText) {
     const headingLower = mainHeadingText.toLowerCase();
     if (!flexibleMatch(headingLower)) {
@@ -631,8 +622,6 @@ function analyzeSEO(html, doc) {
     }
   }
 
-
-  // Remaining checks unchanged
   if (doc.querySelector('meta[name="keywords"]')) {
     score -= 8;
     issues.push({
@@ -704,6 +693,11 @@ function analyzeSEO(html, doc) {
 
   return { score: Math.max(0, Math.round(score)), issues };
 }
+
+
+
+
+
 
   function analyzeMobile(html, doc) {
     let score = 100;
