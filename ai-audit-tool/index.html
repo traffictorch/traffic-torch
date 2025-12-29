@@ -286,108 +286,134 @@
   <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-700 dark:text-gray-300">
     Free instant checklist to detect AI-generated content patterns, avoid search engine penalties, and improve rankings. Get 0–10 scores for perplexity, burstiness, repetition, vocabulary diversity – plus expert humanizing fixes and predictive SEO impact forecasts.
   </p>
-  <div class="grid md:grid-cols-2 gap-10">
-    <!-- Linguistic Patterns -->
-    <div class="checklist-card bg-gradient-to-br from-red-900/20 to-orange-900/20 dark:from-red-900/30 dark:to-orange-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
-      <h3 class="text-2xl font-bold mb-8 text-green-400 flex items-center gap-4">
-        <span class="text-4xl">🤖</span> Linguistic Patterns &amp; Natural Flow
-      </h3>
-      <div class="space-y-8 text-lg">
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">🧩</span>
-          <div class="text-gray-800 dark:text-gray-100">Highly predictable wording typical of AI output</div>
-        </div>
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">✅</span>
-          <div class="text-gray-800 dark:text-gray-100"><strong>Perplexity Score (0–10)</strong>: Instant measurement of text predictability with targeted variation suggestions</div>
-        </div>
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">📏</span>
-          <div class="text-gray-800 dark:text-gray-100">Uniform sentence lengths creating robotic rhythm</div>
-        </div>
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">🌊</span>
-          <div class="text-gray-800 dark:text-gray-100"><strong>Burstiness Score (0–10)</strong>: Analyzes sentence length variation for natural, engaging human-like flow</div>
-        </div>
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">🔄</span>
-          <div class="text-gray-800 dark:text-gray-100">Excessive repetition of words and phrases</div>
-        </div>
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">✂️</span>
-          <div class="text-gray-800 dark:text-gray-100"><strong>Repetition Detection (0–10)</strong>: Highlights overused terms with precise replacement recommendations</div>
-        </div>
+
+  <!-- Expandable Checklist Accordion -->
+  <div class="max-w-4xl mx-auto">
+    <details class="group">
+      <summary class="px-6 py-5 text-1xl font-black bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+        AI Vs Human Content Checklist 📝
+        <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+      </summary>
+      <div class="mt-8 px-8 py-10 bg-white dark:bg-gray-800 rounded-2xl shadow-inner space-y-12 text-gray-700 dark:text-gray-300">
+        <!-- Good vs Bad Practices Intro -->
+        <section class="space-y-6">
+          <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 text-center">Best Practices ✅ vs Things to Avoid ❌</h3>
+          <ul class="space-y-4 text-lg list-none">
+            <li class="flex items-start gap-4"><span class="text-3xl">✅</span> <div>Vary sentence length and structure for natural rhythm</div></li>
+            <li class="flex items-start gap-4"><span class="text-3xl">✅</span> <div>Use personal anecdotes, opinions, and conversational tone</div></li>
+            <li class="flex items-start gap-4"><span class="text-3xl">✅</span> <div>Incorporate sensory details and specific examples</div></li>
+            <li class="flex items-start gap-4"><span class="text-3xl">✅</span> <div>Mix complex and simple vocabulary naturally</div></li>
+            <li class="flex items-start gap-4"><span class="text-3xl">❌</span> <div>Avoid repetitive phrase patterns and boilerplate openings</div></li>
+            <li class="flex items-start gap-4"><span class="text-3xl">❌</span> <div>Don't use overly formal or perfectly uniform formatting</div></li>
+            <li class="flex items-start gap-4"><span class="text-3xl">❌</span> <div>Steer clear of generic transitions like "In conclusion" repeatedly</div></li>
+            <li class="flex items-start gap-4"><span class="text-3xl">❌</span> <div>Eliminate predictable list structures without variation</div></li>
+          </ul>
+        </section>
+
+        <!-- Linguistic Patterns -->
+        <section class="space-y-6">
+          <h3 class="text-2xl font-bold text-green-400 flex items-center gap-4">
+            <span class="text-4xl">🤖</span> Linguistic Patterns &amp; Natural Flow
+          </h3>
+          <div class="space-y-6 text-lg">
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">🧩</span>
+              <div>Highly predictable wording typical of AI output</div>
+            </div>
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">✅</span>
+              <div><strong>Perplexity Score (0–10)</strong>: Instant measurement of text predictability with targeted variation suggestions</div>
+            </div>
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">📏</span>
+              <div>Uniform sentence lengths creating robotic rhythm</div>
+            </div>
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">🌊</span>
+              <div><strong>Burstiness Score (0–10)</strong>: Analyzes sentence length variation for natural, engaging human-like flow</div>
+            </div>
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">🔄</span>
+              <div>Excessive repetition of words and phrases</div>
+            </div>
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">✂️</span>
+              <div><strong>Repetition Detection (0–10)</strong>: Highlights overused terms with precise replacement recommendations</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Vocabulary & Readability -->
+        <section class="space-y-6">
+          <h3 class="text-2xl font-bold text-orange-400 flex items-center gap-4">
+            <span class="text-4xl">📚</span> Vocabulary Diversity &amp; Readability
+          </h3>
+          <div class="space-y-6 text-lg">
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">🔤</span>
+              <div>Limited word choice making content feel generic and AI-like</div>
+            </div>
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">🌈</span>
+              <div><strong>Vocabulary Diversity Score (0–10)</strong>: Evaluates lexical richness with enrichment strategies</div>
+            </div>
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">📐</span>
+              <div>Sentence lengths outside optimal readability range</div>
+            </div>
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">⚖️</span>
+              <div><strong>Average Sentence Length Audit</strong>: Compares to ideal 15–23 words with actionable shortening/lengthening tips</div>
+            </div>
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">⚠️</span>
+              <div>Overall high AI detection risk lowering trust and rankings</div>
+            </div>
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">✅</span>
+              <div><strong>Master AI Detection Risk Gauge</strong>: Color-coded summary (green/orange/red) with estimated SEO penalty risk</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Fixes & Outcomes -->
+        <section class="space-y-6">
+          <h3 class="text-2xl font-bold text-red-400 text-center flex items-center justify-center gap-4">
+            <span class="text-4xl">✍️</span> Humanization Fixes &amp; SEO Impact
+          </h3>
+          <div class="space-y-6 text-lg">
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">🤔</span>
+              <div>No clear guidance on making AI content undetectable and ranking-safe</div>
+            </div>
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">✅</span>
+              <div><strong>Expert Humanizing Suggestions</strong>: Educational rewrite examples and techniques ranked by impact</div>
+            </div>
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">❓</span>
+              <div>Uncertain how fixes will affect search performance</div>
+            </div>
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">📈</span>
+              <div><strong>Predictive Ranking Impact Forecasts</strong>: Estimated traffic and visibility gains after applying recommendations</div>
+            </div>
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">🔒</span>
+              <div>Slow, server-based AI detectors risking privacy</div>
+            </div>
+            <div class="flex items-start gap-5">
+              <span class="text-5xl">🛡️</span>
+              <div><strong>100% Free Instant Analysis</strong>: Client-side processing with mobile-friendly dark-mode reports and PDF export</div>
+            </div>
+          </div>
+        </section>
+
+        <p class="text-center text-xl font-semibold pt-8">
+          Detect AI patterns instantly and learn expert techniques to create authentic, ranking-winning content.
+        </p>
       </div>
-    </div>
-    <!-- Vocabulary & Readability -->
-    <div class="checklist-card bg-gradient-to-br from-orange-900/20 to-amber-900/20 dark:from-orange-900/30 dark:to-amber-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
-      <h3 class="text-2xl font-bold mb-8 text-orange-400 flex items-center gap-4">
-        <span class="text-4xl">📚</span> Vocabulary Diversity &amp; Readability
-      </h3>
-      <div class="space-y-8 text-lg">
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">🔤</span>
-          <div class="text-gray-800 dark:text-gray-100">Limited word choice making content feel generic and AI-like</div>
-        </div>
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">🌈</span>
-          <div class="text-gray-800 dark:text-gray-100"><strong>Vocabulary Diversity Score (0–10)</strong>: Evaluates lexical richness with enrichment strategies</div>
-        </div>
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">📐</span>
-          <div class="text-gray-800 dark:text-gray-100">Sentence lengths outside optimal readability range</div>
-        </div>
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">⚖️</span>
-          <div class="text-gray-800 dark:text-gray-100"><strong>Average Sentence Length Audit</strong>: Compares to ideal 15–23 words with actionable shortening/lengthening tips</div>
-        </div>
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">⚠️</span>
-          <div class="text-gray-800 dark:text-gray-100">Overall high AI detection risk lowering trust and rankings</div>
-        </div>
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">✅</span>
-          <div class="text-gray-800 dark:text-gray-100"><strong>Master AI Detection Risk Gauge</strong>: Color-coded summary (green/orange/red) with estimated SEO penalty risk</div>
-        </div>
-      </div>
-    </div>
-    <!-- Fixes & Outcomes -->
-    <div class="checklist-card bg-gradient-to-br from-pink-900/20 to-rose-900/20 dark:from-pink-900/30 dark:to-rose-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300 md:col-span-2">
-      <h3 class="text-2xl font-bold mb-8 text-red-400 text-center flex items-center justify-center gap-4">
-        <span class="text-4xl">✍️</span> Humanization Fixes &amp; SEO Impact
-      </h3>
-      <div class="space-y-8 text-lg max-w-4xl mx-auto">
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">🤔</span>
-          <div class="text-gray-800 dark:text-gray-100">No clear guidance on making AI content undetectable and ranking-safe</div>
-        </div>
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">✅</span>
-          <div class="text-gray-800 dark:text-gray-100"><strong>Expert Humanizing Suggestions</strong>: Educational rewrite examples and techniques ranked by impact</div>
-        </div>
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">❓</span>
-          <div class="text-gray-800 dark:text-gray-100">Uncertain how fixes will affect search performance</div>
-        </div>
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">📈</span>
-          <div class="text-gray-800 dark:text-gray-100"><strong>Predictive Ranking Impact Forecasts</strong>: Estimated traffic and visibility gains after applying recommendations</div>
-        </div>
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">🔒</span>
-          <div class="text-gray-800 dark:text-gray-100">Slow, server-based AI detectors risking privacy</div>
-        </div>
-        <div class="flex items-start gap-5">
-          <span class="text-5xl">🛡️</span>
-          <div class="text-gray-800 dark:text-gray-100"><strong>100% Free Instant Analysis</strong>: Client-side processing with mobile-friendly dark-mode reports and PDF export</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="text-center mt-16">
-    <p class="text-2xl font-semibold max-w-3xl mx-auto text-gray-800 dark:text-gray-100">
-      AI content audit checklist - Detect issues and learn how to improve your webpages.
-    </p>
+    </details>
   </div>
 </section>
 
