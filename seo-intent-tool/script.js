@@ -60,12 +60,19 @@ results.classList.remove('hidden');
       
       
 
-// Accurate main content extraction: prioritize <main> for modern sites, expanded selectors for max compatibility
-let contentElement = doc.querySelector(
-  'main, [role="main"], article, .entry-content, .post-content, .markdown-body, .content, .main-content, .primary-content, .site-content, #main, #content, #primary, .page-content, .blog-post, .post-body, .product-description, .woocommerce-product-details__short-description, section'
-) || doc.body;
+// Accurate word count: aggregate visible text from content-rich elements (headings, paragraphs, lists), exclude boilerplate areas
+const contentSelectors = 'h1, h2, h3, h4, h5, h6, p, li, blockquote, td, th, caption, figcaption';
+const excludeSelectors = 'nav, footer, header, aside, script, style, noscript, [class*="menu"], [class*="nav"], [role="navigation"], [id*="footer"], [class*="footer"]';
 
-const text = contentElement?.innerText || contentElement?.textContent || '';
+let textParts = [];
+doc.querySelectorAll(contentSelectors).forEach(el => {
+  // Skip if element or any parent matches exclude
+  if (el.closest(excludeSelectors)) return;
+  const elText = el.innerText || el.textContent || '';
+  if (elText.trim()) textParts.push(elText);
+});
+
+const text = textParts.join(' ');
 const cleanedText = text.replace(/\s+/g, ' ').trim();
 const words = cleanedText ? cleanedText.split(' ').filter(word => word.length > 0).length : 0;
 
