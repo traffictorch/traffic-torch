@@ -297,3 +297,10 @@ html, body {
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
 }
+
+
+
+/* Fix Safari horizontal viewport bounce on grid expand (allows items to shrink below content size) */
+#keyword-vs-seo-checklist .checklist-card {
+  min-width: 0;
+}
