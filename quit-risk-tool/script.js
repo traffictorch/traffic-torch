@@ -142,27 +142,28 @@ document.addEventListener('DOMContentLoaded', () => {
         // Hide loading and show full report
         document.getElementById('loading').classList.add('hidden');
 
-results.innerHTML = `
-  <div class="max-w-5xl mx-auto space-y-16 py-12">
-    <!-- Big Overall Score Circle -->
-    <div class="flex justify-center my-12 px-4">
-      <div class="relative w-full max-w-md">
-        <div class="absolute inset-0 bg-white/40 dark:bg-black/40 backdrop-blur-md rounded-full"></div>
-        <svg viewBox="0 0 280 280" class="transform -rotate-90 w-full max-w-[280px]">
-          <circle cx="140" cy="140" r="128" stroke="#e5e7eb" stroke-width="24" fill="none"/>
-          <circle cx="140" cy="140" r="128" stroke="${ux.score < 60 ? '#ef4444' : ux.score < 80 ? '#fb923c' : '#22c55e'}" stroke-width="24" fill="none"
-                  stroke-dasharray="${(ux.score / 100) * 804} 804" stroke-linecap="round"/>
-        </svg>
-        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div class="text-center">
-            <div class="text-6xl md:text-7xl lg:text-8xl font-black drop-shadow-2xl" style="color: ${ux.score < 60 ? '#ef4444' : ux.score < 80 ? '#fb923c' : '#22c55e'};">
-              ${ux.score}
-            </div>
-            <div class="text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-500 mt-2">/100 Usability</div>
-          </div>
+        results.innerHTML = `
+<!-- Big Overall Score Circle -->
+<div class="flex justify-center my-12 px-4">
+  <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md"> <!-- Key: responsive max-width -->
+    <div class="absolute inset-0 bg-white/40 dark:bg-black/40 backdrop-blur-md rounded-full"></div>
+    <svg viewBox="0 0 280 280" class="transform -rotate-90 w-full h-auto"> <!-- Removed fixed width/height -->
+      <circle cx="140" cy="140" r="128" stroke="#e5e7eb" stroke-width="24" fill="none"/>
+      <circle cx="140" cy="140" r="128" stroke="${ux.score < 60 ? '#ef4444' : ux.score < 80 ? '#fb923c' : '#22c55e'}" 
+              stroke-width="24" fill="none"
+              stroke-dasharray="${(ux.score / 100) * 804} 804" stroke-linecap="round"/>
+    </svg>
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <div class="text-center">
+        <div class="font-black drop-shadow-2xl text-5xl xs:text-6xl sm:text-7xl md:text-8xl" 
+             style="color: ${ux.score < 60 ? '#ef4444' : ux.score < 80 ? '#fb923c' : '#22c55e'}; line-height: 1;">
+          ${ux.score}
         </div>
+        <div class="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-500 mt-2">/100 Usability</div>
       </div>
     </div>
+  </div>
+</div>
             <!-- Quit Risk Verdict -->
             <div class="text-center mb-12">
               <p class="text-4xl font-bold text-gray-500 mb-8">
