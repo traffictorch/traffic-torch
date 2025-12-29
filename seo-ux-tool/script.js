@@ -492,40 +492,14 @@ function analyzeSEO(html, doc) {
 
   const title = doc.querySelector('title')?.textContent.trim() || '';
   
-  // Smarter main keyword extraction: split by separators, take first meaningful phrase, skip stop words
-  const stopWords = ['a', 'an', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'luxury', 'best', 'top', 'hotel', 'resort', 'collection'];
-  let mainKeywordRaw = '';
+  // Improved primary keyword extraction: take full section before separator, clean it
+  let primaryKeywordRaw = '';
   if (title) {
-    // Split by common title separators
-    const sections = title.split(/[\|\–\-]/).map(s => s.trim());
-    const primarySection = sections[0]; // Usually the main topic before brand
-    const words = primarySection.split(/\s+/).filter(w => w.length > 0);
-    const candidateWords = [];
-    for (const word of words) {
-      const lowerWord = word.toLowerCase();
-      if (word.length >= 4 && !stopWords.includes(lowerWord)) {
-        candidateWords.push(word);
-      }
-    }
-    mainKeywordRaw = candidateWords.join(' '); // e.g., "Byron Bay"
-    // Fallback to first section if no candidates
-    if (!mainKeywordRaw && sections.length > 0) {
-      mainKeywordRaw = sections[0];
-    }
+    const sections = title.split(/[\|\–\-]/);
+    primaryKeywordRaw = sections[0].trim();
   }
-  const mainKeyword = mainKeywordRaw.toLowerCase();
-  const keywordParts = mainKeyword.split(' '); // For partial matching, e.g., "byron" and "bay"
-
-  // Educational note (always first, non-scoring)
-  if (mainKeywordRaw) {
-    issues.push({
-      issue: 'How we detect your main keyword',
-      what: `Based on your page title, we identify "${mainKeywordRaw}" as the primary target keyword or phrase (focusing on the first meaningful section before separators like "|", skipping common words). This powers our targeted checks.`,
-      fix: 'If this doesn\'t match your intent, lead your title with the exact keyword/phrase. Note: On JavaScript-heavy sites, our analysis uses pre-rendered HTML, so dynamic content may not be fully detected – for best accuracy, ensure key elements are in static HTML.',
-      uxWhy: 'Clear keyword focus helps users quickly confirm relevance.',
-      seoWhy: 'Titles guide search engines on page topic – strong matches boost rankings.'
-    });
-  }
+  const primaryKeyword = primaryKeywordRaw.toLowerCase().replace(/luxury|resorts?|hotels?|best|top|official/g, '').trim();
+  const keywordParts = primaryKeyword.split(/\s+/).filter(p => p.length >= 3); // core meaningful parts
 
   // Missing title
   if (!title) {
@@ -533,29 +507,27 @@ function analyzeSEO(html, doc) {
     issues.push({
       issue: 'Missing <title> tag',
       what: 'No title appears in Google search results or browser tabs.',
-      fix: '<title>Your Main Keyword – Brand Name (50–60 characters)</title>',
+      fix: '<title>Your Primary Keyword – Brand Name (50–60 characters)</title>',
       uxWhy: 'Users see "Untitled" or blank tab — looks broken and unprofessional.',
       seoWhy: 'Zero chance of ranking or getting clicks — Google shows nothing.'
     });
   } else {
-    // Title too short
     if (title.length < 30) {
       score -= 18;
       issues.push({
         issue: `Title too short (${title.length} characters)`,
         what: `Your page title is significantly below the recommended length.\nCurrent title: "${title}"`,
-        fix: 'Aim for 50–60 characters. Place your main keyword first.',
+        fix: 'Aim for 50–60 characters. Place your primary keyword first.',
         uxWhy: 'Short titles look incomplete in search results and browser tabs.',
         seoWhy: 'Wastes valuable SERP space and reduces click-through rate.'
       });
     }
-    // Title too long
     if (title.length > 65) {
       score -= 18;
       issues.push({
         issue: `Title too long (${title.length} characters)`,
         what: `Your page title will be truncated in Google search results.\nCurrent title: "${title}"`,
-        fix: 'Keep it under 65 characters while keeping the main keyword early.',
+        fix: 'Keep it under 65 characters while keeping the primary keyword early.',
         uxWhy: 'Users see a cut-off title and may miss important information.',
         seoWhy: 'Google truncates long titles → lower visibility and CTR.'
       });
@@ -569,12 +541,11 @@ function analyzeSEO(html, doc) {
     issues.push({
       issue: 'Missing meta description',
       what: 'No snippet text shows under your link in Google.',
-      fix: '<meta name="description" content="Compelling 120–158 character summary with keyword">',
+      fix: '<meta name="description" content="Compelling 120–158 character summary with primary keyword">',
       uxWhy: 'Users have no idea what the page is about before clicking.',
       seoWhy: 'Google writes its own bad snippet → massive CTR drop.'
     });
   } else {
-    // Description too short
     if (desc.length < 100) {
       score -= 12;
       issues.push({
@@ -585,7 +556,6 @@ function analyzeSEO(html, doc) {
         seoWhy: 'Google may replace it with unrelated page text → lower CTR.'
       });
     }
-    // Description too long
     if (desc.length > 160) {
       score -= 12;
       issues.push({
@@ -598,7 +568,7 @@ function analyzeSEO(html, doc) {
     }
   }
 
-  // No H1 heading
+  // H1 detection
   const h1Element = doc.querySelector('h1');
   const h1Text = h1Element?.textContent.trim() || '';
   if (!h1Element) {
@@ -606,52 +576,50 @@ function analyzeSEO(html, doc) {
     issues.push({
       issue: 'No <h1> heading',
       what: 'Page has no main heading — no clear topic.',
-      fix: '<h1>Main Keyword – Page Topic</h1>',
+      fix: '<h1>Primary Keyword – Page Topic</h1>',
       uxWhy: 'Users don’t instantly know what the page is about.',
       seoWhy: 'H1 is the strongest on-page ranking signal.'
     });
   }
 
-  // Main keyword not in first 100 words (with variations)
-  if (mainKeyword && doc.body) {
+  // Helper: flexible match — true if most keyword parts appear anywhere in text
+  function flexibleMatch(textLower) {
+    if (!primaryKeyword) return true;
+    const matches = keywordParts.filter(part => textLower.includes(part));
+    return matches.length >= Math.max(1, Math.ceil(keywordParts.length * 0.6)); // at least 60% or 1 part
+  }
+
+  // Primary keyword in first 100 words
+  if (primaryKeywordRaw && doc.body) {
     const first500Lower = doc.body.textContent.toLowerCase().slice(0, 500);
-    let found = first500Lower.includes(mainKeyword);
-    if (!found && keywordParts.length > 1) {
-      // Check for partial matches if multi-word
-      found = keywordParts.every(part => first500Lower.includes(part));
-    }
-    if (!found) {
+    if (!flexibleMatch(first500Lower)) {
       score -= 10;
       issues.push({
-        issue: `Main keyword "${mainKeywordRaw}" not in first 100 words`,
-        what: `The primary keyword/phrase from your title ("${mainKeywordRaw}") is missing from the opening content.`,
-        fix: `Include "${mainKeywordRaw}" naturally in the first paragraph (or variations like "${keywordParts.join(' ')}").`,
+        issue: `Primary keyword "${primaryKeywordRaw}" missing from opening content`,
+        what: `The main phrase from your title ("${primaryKeywordRaw}") does not appear early enough.`,
+        fix: `Include your primary keyword naturally in the first paragraph.`,
         uxWhy: 'Users expect to see what they searched for immediately.',
-        seoWhy: 'Google expects topic relevance from the start.'
+        seoWhy: 'Google expects strong topic relevance from the start.'
       });
     }
   }
 
-  // Main keyword missing from H1 (with variations)
-  if (mainKeyword && h1Text) {
+  // Primary keyword in H1
+  if (primaryKeywordRaw && h1Text) {
     const h1Lower = h1Text.toLowerCase();
-    let foundInH1 = h1Lower.includes(mainKeyword);
-    if (!foundInH1 && keywordParts.length > 1) {
-      foundInH1 = keywordParts.every(part => h1Lower.includes(part));
-    }
-    if (!foundInH1) {
+    if (!flexibleMatch(h1Lower)) {
       score -= 10;
       issues.push({
-        issue: `Main keyword "${mainKeywordRaw}" missing from H1`,
-        what: `H1 doesn’t contain the primary keyword/phrase.\nCurrent H1: "${h1Text || 'None found'}"`,
-        fix: `Add "${mainKeywordRaw}" to H1 naturally (or variations).`,
-        uxWhy: 'Users expect the heading to match their search.',
-        seoWhy: 'Strongest relevance signal for ranking.'
+        issue: `Primary keyword "${primaryKeywordRaw}" missing from H1`,
+        what: `Your H1 does not include the primary keyword phrase.\nCurrent H1: "${h1Text || 'None found'}"`,
+        fix: `Incorporate your primary keyword into the H1 naturally.`,
+        uxWhy: 'Users expect the main heading to match their search intent.',
+        seoWhy: 'H1 is the strongest on-page relevance signal.'
       });
     }
   }
 
-  // Meta keywords tag found
+  // Remaining checks unchanged
   if (doc.querySelector('meta[name="keywords"]')) {
     score -= 8;
     issues.push({
@@ -663,7 +631,6 @@ function analyzeSEO(html, doc) {
     });
   }
 
-  // Missing Open Graph / Twitter cards
   if (!doc.querySelector('meta[property="og:title"], meta[name="twitter:card"]')) {
     score -= 15;
     issues.push({
@@ -675,7 +642,6 @@ function analyzeSEO(html, doc) {
     });
   }
 
-  // Page blocked from Google (noindex)
   const robots = doc.querySelector('meta[name="robots"]');
   if (robots && /noindex/i.test(robots.content)) {
     score -= 30;
@@ -688,7 +654,6 @@ function analyzeSEO(html, doc) {
     });
   }
 
-  // Missing canonical tag
   if (!doc.querySelector('link[rel="canonical"]')) {
     score -= 8;
     issues.push({
@@ -700,7 +665,6 @@ function analyzeSEO(html, doc) {
     });
   }
 
-  // No structured data (schema)
   if (!doc.querySelector('script[type="application/ld+json"], [itemscope]')) {
     score -= 10;
     issues.push({
@@ -712,7 +676,6 @@ function analyzeSEO(html, doc) {
     });
   }
 
-  // Images missing alt text
   const imgs = doc.querySelectorAll('img');
   const noAlt = Array.from(imgs).filter(i => !i.alt || i.alt.trim() === '');
   if (noAlt.length) {
