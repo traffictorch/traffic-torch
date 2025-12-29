@@ -102,20 +102,20 @@ header, footer { backdrop-filter: blur(12px); }
 }
 
 
-/* Site-wide fix for iOS Safari horizontal viewport bounce/stretch on dynamic expand/load */
-/* Allows grid/flex items (cards with emojis/padding/shadows) to shrink slightly during reflow */
-.grid > *, 
-.flex > *, 
-.checklist-card, 
-/* Add any other card classes from tools/results here, e.g. .result-card, .tool-output-card */
-[class*="grid-cols-"] > *, 
-[class*="flex-"] > * {
+/* Site-wide fix for iOS Safari viewport stretch/bounce on dynamic expand/load (grid/flex reflow quirk) */
+/* Allows cards/items to shrink below intrinsic min-content (large emojis/padding/shadows) during reflow */
+.grid > *,
+.flex > *,
+.checklist-card,
+/* Add other card classes here, e.g. .result-card, .tool-card, .output-item */
+[class*="grid-cols-"] > * {
   min-width: 0;
 }
 
-/* Contain any perceived overflow during expand/reflow */
+/* Contain overflow to prevent Safari viewport recalculation */
 details > div,
 .grid,
-.flex {
+.flex,
+.container {
   overflow-x: hidden;
 }
