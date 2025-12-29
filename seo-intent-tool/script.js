@@ -107,7 +107,7 @@ results.classList.remove('hidden');
 
       // === FULL REPORT OUTPUT (unchanged from your original) ===
       results.innerHTML = `
-<!-- Big Score Circle - Mobile-Fixed Version -->
+<!-- Big Score Circle - Fixed & Consistent Version -->
 <div class="flex justify-center my-12 px-4">
   <div class="relative" style="width: min(90vw, 320px); aspect-ratio: 1/1;">
     <svg viewBox="0 0 260 260" class="transform -rotate-90 w-full h-full">
@@ -120,7 +120,7 @@ results.classList.remove('hidden');
     </svg>
     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
       <div class="text-center">
-        <div class="font-black drop-shadow-2xl text-6xl leading-none"
+        <div class="font-black drop-shadow-2xl leading-none"
              style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'}; font-size: clamp(3.5rem, 14vw, 6rem);">
           ${overall}
         </div>
