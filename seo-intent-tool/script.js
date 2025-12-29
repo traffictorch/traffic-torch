@@ -60,28 +60,40 @@ results.classList.remove('hidden');
       
       
 
-// Universal main content word count: aggregate from rich text elements, exclude boilerplate containers
-const contentSelectors = 'h1, h2, h3, h4, h5, h6, p, li, blockquote, td, th, caption, figcaption, div, span';
-const excludeSelectors = 'nav, footer, header, aside, script, style, noscript, [class*="menu"], [class*="nav"], [role="navigation"], [id*="footer"], [class*="footer"], [class*="cookie"], [class*="popup"]';
+// Reliable main content extraction: simplified Readability.js-like algorithm for universal accuracy
+function extractMainContent(doc) {
+  const candidates = [];
+  const potentialNodes = doc.querySelectorAll('div, section, article, main, p, .content, .entry-content, .post-content, .main-content');
 
-let textParts = [];
-doc.querySelectorAll(contentSelectors).forEach(el => {
-  // Skip only if the element itself is in an excluded container
-  if (el.matches(excludeSelectors)) return;
-  const elText = (el.innerText || el.textContent || '').trim();
-  if (elText.length > 10) { // Ignore very short noise (e.g., "Read more")
-    textParts.push(elText);
+  function scoreNode(node) {
+    const text = node.textContent || '';
+    const textLength = text.trim().length;
+    if (textLength < 200) return 0; // Too short
+    const links = node.querySelectorAll('a').length;
+    const linkDensity = links / (text.split(/\s+/).length + 1);
+    const classWeight = /article|content|post|body/i.test(node.className || node.id || '') ? 50 : 0;
+    return textLength - (linkDensity * 1000) + classWeight; // Penalize high links, boost semantic classes
   }
-});
 
-// Fallback: if too few words, include body fallback minus exclusions
-if (textParts.join(' ').split(' ').length < 50) {
-  const bodyText = doc.body?.innerText || doc.body?.textContent || '';
-  const cleanedBody = bodyText.replace(/\s+/g, ' ').trim();
-  textParts = [cleanedBody]; // Override with full visible as safety net
+  Array.from(potentialNodes).forEach(node => {
+    const score = scoreNode(node);
+    if (score > 0) candidates.push({ node, score });
+  });
+
+  if (candidates.length === 0) return doc.body; // Fallback to body if no candidates
+
+  candidates.sort((a, b) => b.score - a.score);
+  const bestNode = candidates[0].node.cloneNode(true);
+
+  // Cleanup boilerplate
+  const removeSelectors = 'script, style, noscript, nav, footer, header, aside, [role="navigation"], [class*="menu"], [class*="nav"], [class*="footer"], [class*="ad"], [class*="advert"], [class*="sidebar"], [class*="widget"]';
+  bestNode.querySelectorAll(removeSelectors).forEach(el => el.remove());
+
+  return bestNode;
 }
 
-const text = textParts.join(' ');
+const mainContent = extractMainContent(doc);
+const text = mainContent?.innerText || mainContent?.textContent || '';
 const cleanedText = text.replace(/\s+/g, ' ').trim();
 const words = cleanedText ? cleanedText.split(' ').filter(word => word.length > 0).length : 0;
 
