@@ -58,21 +58,18 @@ results.classList.remove('hidden');
       progressText.textContent = "Analyzing Readability...";
       await sleep(800);
 
-// Improved visible/main content text extraction for accurate word count
-let text = '';
-if ('innerText' in doc.body) {
-  text = doc.body.innerText;
-} else {
-  text = doc.body.textContent || '';
-}
-// Clean whitespace: collapse multiple spaces/newlines/tabs, trim
-text = text.replace(/\s+/g, ' ').trim();
-// Count words more accurately (alphanumeric sequences, ignores punctuation-only)
-const words = text ? (text.match(/\b\w+\b/g) || []).length : 0;
-const sentences = text ? (text.match(/[.!?]+/g) || []).length || 1 : 1;
-// Approximate syllables: count vowel groups per word (improved over old method)
-const syllables = text ? text.split(/\s+/).reduce((acc, word) => {
-  return acc + (word.toLowerCase().match(/[aeiouy]+/g) || []).length;
+// Accurate visible word count: use innerText for rendered/main content (excludes nav/footer/hidden/boilerplate)
+const text = doc.body?.innerText || doc.body?.textContent || '';
+// Collapse whitespace and trim
+const cleanedText = text.replace(/\s+/g, ' ').trim();
+// Count words reliably
+const words = cleanedText ? cleanedText.split(' ').filter(word => word.length > 0).length : 0;
+
+// Sentences and syllables based on cleaned visible text
+const sentences = cleanedText ? (cleanedText.match(/[.!?]+/g) || []).length || 1 : 1;
+const syllables = cleanedText ? cleanedText.split(' ').reduce((acc, word) => {
+  const vowelGroups = (word.toLowerCase().match(/[aeiouy]+/g) || []).length;
+  return acc + Math.max(vowelGroups, 1); // At least 1 syllable per word
 }, 0) : 0;
       const readability = Math.round(206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words));
 
