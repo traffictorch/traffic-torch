@@ -57,20 +57,32 @@ results.classList.remove('hidden');
       // Step 2: Content Depth
       progressText.textContent = "Analyzing Readability...";
       await sleep(800);
+      
+      
 
-// Accurate visible word count: use innerText for rendered/main content (excludes nav/footer/hidden/boilerplate)
-const text = doc.body?.innerText || doc.body?.textContent || '';
-// Collapse whitespace and trim
+// Accurate main content word count: target primary content selectors (common for blogs/e-commerce)
+let contentElement = doc.querySelector('main') || 
+                     doc.querySelector('.entry-content') || 
+                     doc.querySelector('.post-content') || 
+                     doc.querySelector('.content') || 
+                     doc.querySelector('article') || 
+                     doc.querySelector('.product-description') || 
+                     doc.querySelector('.description') || 
+                     doc.querySelector('#content') ||
+                     doc.body;
+
+const text = contentElement?.innerText || contentElement?.textContent || '';
 const cleanedText = text.replace(/\s+/g, ' ').trim();
-// Count words reliably
 const words = cleanedText ? cleanedText.split(' ').filter(word => word.length > 0).length : 0;
 
-// Sentences and syllables based on cleaned visible text
 const sentences = cleanedText ? (cleanedText.match(/[.!?]+/g) || []).length || 1 : 1;
 const syllables = cleanedText ? cleanedText.split(' ').reduce((acc, word) => {
   const vowelGroups = (word.toLowerCase().match(/[aeiouy]+/g) || []).length;
-  return acc + Math.max(vowelGroups, 1); // At least 1 syllable per word
+  return acc + Math.max(vowelGroups, 1);
 }, 0) : 0;
+
+
+
       const readability = Math.round(206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words));
 
       // Step 3: E-E-A-T Signals
