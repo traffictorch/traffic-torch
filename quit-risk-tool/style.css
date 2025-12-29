@@ -290,46 +290,38 @@ html, body {
 
 
 
-/* Base styles - keep large on desktop */
-#overall-score-circle {
-    width: 280px;
-    height: 280px;
+/* Responsive Overall Score Circle - fixes mobile overflow on all tools */
+.overall-score-wrapper {
+    width: 100%;
+    max-width: 320px;          /* Cap maximum size on large screens */
+    margin: 0 auto;            /* Center it */
+    padding: 1rem;             /* Breathing room on very small screens */
 }
 
-/* Tablet and smaller */
-@media (max-width: 768px) {
-    #overall-score-container {
-        max-width: 260px;
-        margin: 0 auto;
-    }
-    
-    #overall-score-circle {
-        width: 260px !important;
-        height: 260px !important;
-    }
-    
-    /* Also scale down the score text if needed */
-    #overall-score-container .text-6xl { /* assuming score number uses text-6xl or similar */
-        font-size: 3.5rem !important;
-    }
+.overall-score-wrapper svg {
+    width: 100% !important;    /* Make SVG fully responsive */
+    height: auto !important;
+    max-width: 280px;          /* Maintain original max */
 }
 
-/* Mobile small screens */
+.overall-score-wrapper .text-8xl {
+    font-size: clamp(3.5rem, 15vw, 6rem) !important;  /* Fluid scaling: tiny phone → desktop */
+    line-height: 1;
+}
+
+.overall-score-wrapper .text-3xl {
+    font-size: clamp(1.25rem, 5vw, 2rem) !important;
+    margin-top: 0.5rem;
+}
+
+/* Extra safety for very small screens */
 @media (max-width: 480px) {
-    #overall-score-container {
-        max-width: 220px;
+    .overall-score-wrapper {
+        max-width: 260px;
+        padding: 0.5rem;
     }
     
-    #overall-score-circle {
-        width: 220px !important;
-        height: 220px !important;
-    }
-    
-    #overall-score-container .text-6xl {
-        font-size: 3rem !important;
-    }
-    
-    #overall-score-container .text-2xl { /* for "/100 Usability" label */
-        font-size: 1.25rem !important;
+    .overall-score-wrapper .text-8xl {
+        font-size: 4.5rem !important;
     }
 }
