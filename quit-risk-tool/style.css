@@ -290,38 +290,3 @@ html, body {
 
 
 
-/* Responsive Overall Score Circle - fixes mobile overflow on all tools */
-.overall-score-wrapper {
-    width: 100%;
-    max-width: 320px;          /* Cap maximum size on large screens */
-    margin: 0 auto;            /* Center it */
-    padding: 1rem;             /* Breathing room on very small screens */
-}
-
-.overall-score-wrapper svg {
-    width: 100% !important;    /* Make SVG fully responsive */
-    height: auto !important;
-    max-width: 280px;          /* Maintain original max */
-}
-
-.overall-score-wrapper .text-8xl {
-    font-size: clamp(3.5rem, 15vw, 6rem) !important;  /* Fluid scaling: tiny phone → desktop */
-    line-height: 1;
-}
-
-.overall-score-wrapper .text-3xl {
-    font-size: clamp(1.25rem, 5vw, 2rem) !important;
-    margin-top: 0.5rem;
-}
-
-/* Extra safety for very small screens */
-@media (max-width: 480px) {
-    .overall-score-wrapper {
-        max-width: 260px;
-        padding: 0.5rem;
-    }
-    
-    .overall-score-wrapper .text-8xl {
-        font-size: 4.5rem !important;
-    }
-}
