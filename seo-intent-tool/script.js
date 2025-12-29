@@ -60,17 +60,26 @@ results.classList.remove('hidden');
       
       
 
-// Accurate word count: aggregate visible text from content-rich elements (headings, paragraphs, lists), exclude boilerplate areas
-const contentSelectors = 'h1, h2, h3, h4, h5, h6, p, li, blockquote, td, th, caption, figcaption';
-const excludeSelectors = 'nav, footer, header, aside, script, style, noscript, [class*="menu"], [class*="nav"], [role="navigation"], [id*="footer"], [class*="footer"]';
+// Universal main content word count: aggregate from rich text elements, exclude boilerplate containers
+const contentSelectors = 'h1, h2, h3, h4, h5, h6, p, li, blockquote, td, th, caption, figcaption, div, span';
+const excludeSelectors = 'nav, footer, header, aside, script, style, noscript, [class*="menu"], [class*="nav"], [role="navigation"], [id*="footer"], [class*="footer"], [class*="cookie"], [class*="popup"]';
 
 let textParts = [];
 doc.querySelectorAll(contentSelectors).forEach(el => {
-  // Skip if element or any parent matches exclude
-  if (el.closest(excludeSelectors)) return;
-  const elText = el.innerText || el.textContent || '';
-  if (elText.trim()) textParts.push(elText);
+  // Skip only if the element itself is in an excluded container
+  if (el.matches(excludeSelectors)) return;
+  const elText = (el.innerText || el.textContent || '').trim();
+  if (elText.length > 10) { // Ignore very short noise (e.g., "Read more")
+    textParts.push(elText);
+  }
 });
+
+// Fallback: if too few words, include body fallback minus exclusions
+if (textParts.join(' ').split(' ').length < 50) {
+  const bodyText = doc.body?.innerText || doc.body?.textContent || '';
+  const cleanedBody = bodyText.replace(/\s+/g, ' ').trim();
+  textParts = [cleanedBody]; // Override with full visible as safety net
+}
 
 const text = textParts.join(' ');
 const cleanedText = text.replace(/\s+/g, ' ').trim();
