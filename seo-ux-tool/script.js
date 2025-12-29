@@ -491,8 +491,41 @@ function analyzeSEO(html, doc) {
   const issues = [];
 
   const title = doc.querySelector('title')?.textContent.trim() || '';
-  const mainKeywordRaw = title ? title.split(' ')[0] : '';
+  
+  // Smarter main keyword extraction: split by separators, take first meaningful phrase, skip stop words
+  const stopWords = ['a', 'an', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'luxury', 'best', 'top', 'hotel', 'resort', 'collection'];
+  let mainKeywordRaw = '';
+  if (title) {
+    // Split by common title separators
+    const sections = title.split(/[\|\–\-]/).map(s => s.trim());
+    const primarySection = sections[0]; // Usually the main topic before brand
+    const words = primarySection.split(/\s+/).filter(w => w.length > 0);
+    const candidateWords = [];
+    for (const word of words) {
+      const lowerWord = word.toLowerCase();
+      if (word.length >= 4 && !stopWords.includes(lowerWord)) {
+        candidateWords.push(word);
+      }
+    }
+    mainKeywordRaw = candidateWords.join(' '); // e.g., "Byron Bay"
+    // Fallback to first section if no candidates
+    if (!mainKeywordRaw && sections.length > 0) {
+      mainKeywordRaw = sections[0];
+    }
+  }
   const mainKeyword = mainKeywordRaw.toLowerCase();
+  const keywordParts = mainKeyword.split(' '); // For partial matching, e.g., "byron" and "bay"
+
+  // Educational note (always first, non-scoring)
+  if (mainKeywordRaw) {
+    issues.push({
+      issue: 'How we detect your main keyword',
+      what: `Based on your page title, we identify "${mainKeywordRaw}" as the primary target keyword or phrase (focusing on the first meaningful section before separators like "|", skipping common words). This powers our targeted checks.`,
+      fix: 'If this doesn\'t match your intent, lead your title with the exact keyword/phrase. Note: On JavaScript-heavy sites, our analysis uses pre-rendered HTML, so dynamic content may not be fully detected – for best accuracy, ensure key elements are in static HTML.',
+      uxWhy: 'Clear keyword focus helps users quickly confirm relevance.',
+      seoWhy: 'Titles guide search engines on page topic – strong matches boost rankings.'
+    });
+  }
 
   // Missing title
   if (!title) {
@@ -535,10 +568,10 @@ function analyzeSEO(html, doc) {
     score -= 20;
     issues.push({
       issue: 'Missing meta description',
-      what: 'No snippet text shows under your link in Google search results.',
-      fix: '<meta name="description" content="Compelling 120–158 character summary with primary keyword">',
-      uxWhy: 'Users have no clear idea what the page is about before clicking.',
-      seoWhy: 'Google generates a poor snippet → massive drop in click-through rate.'
+      what: 'No snippet text shows under your link in Google.',
+      fix: '<meta name="description" content="Compelling 120–158 character summary with keyword">',
+      uxWhy: 'Users have no idea what the page is about before clicking.',
+      seoWhy: 'Google writes its own bad snippet → massive CTR drop.'
     });
   } else {
     // Description too short
@@ -565,48 +598,60 @@ function analyzeSEO(html, doc) {
     }
   }
 
-  // Missing H1
+  // No H1 heading
   const h1Element = doc.querySelector('h1');
   const h1Text = h1Element?.textContent.trim() || '';
   if (!h1Element) {
     score -= 12;
     issues.push({
       issue: 'No <h1> heading',
-      what: 'Page has no main heading — no clear topic signal.',
+      what: 'Page has no main heading — no clear topic.',
       fix: '<h1>Main Keyword – Page Topic</h1>',
-      uxWhy: 'Users don’t instantly understand what the page is about.',
-      seoWhy: 'H1 is one of the strongest on-page ranking signals.'
+      uxWhy: 'Users don’t instantly know what the page is about.',
+      seoWhy: 'H1 is the strongest on-page ranking signal.'
     });
   }
 
-  // Main keyword in first 100 words
+  // Main keyword not in first 100 words (with variations)
   if (mainKeyword && doc.body) {
-    const first500Chars = doc.body.textContent.toLowerCase().slice(0, 500);
-    if (!first500Chars.includes(mainKeyword)) {
+    const first500Lower = doc.body.textContent.toLowerCase().slice(0, 500);
+    let found = first500Lower.includes(mainKeyword);
+    if (!found && keywordParts.length > 1) {
+      // Check for partial matches if multi-word
+      found = keywordParts.every(part => first500Lower.includes(part));
+    }
+    if (!found) {
       score -= 10;
       issues.push({
-        issue: `Main keyword "${mainKeywordRaw}" missing from first 100 words`,
-        what: `The primary keyword from your title ("${mainKeywordRaw}") does not appear early in the content.`,
-        fix: `Include "${mainKeywordRaw}" naturally in the first paragraph.`,
-        uxWhy: 'Users expect to see what they searched for right away.',
-        seoWhy: 'Google looks for topic relevance from the very beginning of the page.'
+        issue: `Main keyword "${mainKeywordRaw}" not in first 100 words`,
+        what: `The primary keyword/phrase from your title ("${mainKeywordRaw}") is missing from the opening content.`,
+        fix: `Include "${mainKeywordRaw}" naturally in the first paragraph (or variations like "${keywordParts.join(' ')}").`,
+        uxWhy: 'Users expect to see what they searched for immediately.',
+        seoWhy: 'Google expects topic relevance from the start.'
       });
     }
   }
 
-  // Main keyword in H1
-  if (mainKeyword && h1Text && !h1Text.toLowerCase().includes(mainKeyword)) {
-    score -= 10;
-    issues.push({
-      issue: `Main keyword "${mainKeywordRaw}" missing from H1`,
-      what: `Your H1 does not contain the primary keyword from the title.\nCurrent H1: "${h1Text || 'None'}"`,
-      fix: `Update H1 to include "${mainKeywordRaw}" naturally.`,
-      uxWhy: 'Users expect the main heading to match their search intent.',
-      seoWhy: 'H1 is the strongest on-page relevance signal for ranking.'
-    });
+  // Main keyword missing from H1 (with variations)
+  if (mainKeyword && h1Text) {
+    const h1Lower = h1Text.toLowerCase();
+    let foundInH1 = h1Lower.includes(mainKeyword);
+    if (!foundInH1 && keywordParts.length > 1) {
+      foundInH1 = keywordParts.every(part => h1Lower.includes(part));
+    }
+    if (!foundInH1) {
+      score -= 10;
+      issues.push({
+        issue: `Main keyword "${mainKeywordRaw}" missing from H1`,
+        what: `H1 doesn’t contain the primary keyword/phrase.\nCurrent H1: "${h1Text || 'None found'}"`,
+        fix: `Add "${mainKeywordRaw}" to H1 naturally (or variations).`,
+        uxWhy: 'Users expect the heading to match their search.',
+        seoWhy: 'Strongest relevance signal for ranking.'
+      });
+    }
   }
 
-  // Meta keywords tag (obsolete)
+  // Meta keywords tag found
   if (doc.querySelector('meta[name="keywords"]')) {
     score -= 8;
     issues.push({
@@ -618,19 +663,19 @@ function analyzeSEO(html, doc) {
     });
   }
 
-  // Open Graph / Twitter cards
+  // Missing Open Graph / Twitter cards
   if (!doc.querySelector('meta[property="og:title"], meta[name="twitter:card"]')) {
     score -= 15;
     issues.push({
       issue: 'Missing Open Graph / Twitter cards',
       what: 'No rich preview when shared on social media.',
-      fix: 'Add og:title, og:description, og:image, twitter:card tags',
-      uxWhy: 'Shared links appear broken or generic.',
+      fix: 'Add og:title, og:image, twitter:card tags',
+      uxWhy: 'Shared links look broken or generic.',
       seoWhy: 'Social traffic drops dramatically without rich previews.'
     });
   }
 
-  // Robots noindex
+  // Page blocked from Google (noindex)
   const robots = doc.querySelector('meta[name="robots"]');
   if (robots && /noindex/i.test(robots.content)) {
     score -= 30;
@@ -643,7 +688,7 @@ function analyzeSEO(html, doc) {
     });
   }
 
-  // Canonical tag
+  // Missing canonical tag
   if (!doc.querySelector('link[rel="canonical"]')) {
     score -= 8;
     issues.push({
@@ -655,28 +700,28 @@ function analyzeSEO(html, doc) {
     });
   }
 
-  // Structured data
+  // No structured data (schema)
   if (!doc.querySelector('script[type="application/ld+json"], [itemscope]')) {
     score -= 10;
     issues.push({
       issue: 'No structured data (schema)',
       what: 'No machine-readable data for rich results.',
       fix: 'Add JSON-LD schema (Article, FAQ, Organization, etc)',
-      uxWhy: 'No rich snippets in search results.',
+      uxWhy: 'No rich snippets in search.',
       seoWhy: 'Missing featured snippets, knowledge panels, rich cards.'
     });
   }
 
-  // Alt text
+  // Images missing alt text
   const imgs = doc.querySelectorAll('img');
   const noAlt = Array.from(imgs).filter(i => !i.alt || i.alt.trim() === '');
   if (noAlt.length) {
     score -= Math.min(20, noAlt.length * 5);
     issues.push({
-      issue: `${noAlt.length} image${noAlt.length === 1 ? '' : 's'} missing alt text`,
+      issue: `${noAlt.length} images missing alt text`,
       what: 'Images have no description for screen readers or Google Images.',
       fix: 'Add descriptive alt="…" (or alt="" if decorative)',
-      uxWhy: 'Blind users can’t understand what the image shows.',
+      uxWhy: 'Blind users can’t understand images.',
       seoWhy: 'No ranking in Google Images search.'
     });
   }
