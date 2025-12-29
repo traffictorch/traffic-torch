@@ -180,24 +180,27 @@ document.addEventListener('DOMContentLoaded', () => {
     stopSpinnerLoader();
 
     results.innerHTML = `
-      <div class="max-w-5xl mx-auto space-y-16">
-        <!-- Big Score Circle -->
-        <div class="flex justify-center my-12">
-          <div class="relative">
-            <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
-              <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
-              <circle cx="130" cy="130" r="120" stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#fb923c' : '#ef4444'}"
-                      stroke-width="18" fill="none"
-                      stroke-dasharray="${(yourScore / 100) * 754} 754" stroke-linecap="round"/>
-            </svg>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="text-center">
-                <div class="text-6xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">${yourScore}</div>
-                <div class="text-2xl text-gray-300 dark:text-gray-600">/100</div>
-              </div>
-            </div>
-          </div>
+<!-- Big Score Circle - Responsive & Mobile-Friendly -->
+<div class="flex justify-center my-12 px-4">
+  <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square">
+    <svg viewBox="0 0 260 260" class="w-full h-full transform -rotate-90">
+      <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
+      <circle cx="130" cy="130" r="120"
+              stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#fb923c' : '#ef4444'}"
+              stroke-width="18" fill="none"
+              stroke-dasharray="${(yourScore / 100) * 754} 754"
+              stroke-linecap="round"/>
+    </svg>
+    <div class="absolute inset-0 flex items-center justify-center">
+      <div class="text-center">
+        <div class="text-5xl sm:text-6xl md:text-7xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
+          ${yourScore}
         </div>
+        <div class="text-xl sm:text-2xl text-gray-300 dark:text-gray-600">/100</div>
+      </div>
+    </div>
+  </div>
+</div>
 
         <!-- Small Metric Circles -->
         <div class="grid md:grid-cols-3 gap-8 my-16">

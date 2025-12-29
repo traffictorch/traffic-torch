@@ -238,38 +238,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const prioritizedFixes = fixes.slice(0, 3);
 
                 results.innerHTML = `
-      <div class="max-w-5xl mx-auto space-y-16 animate-in">
-        <!-- Big Score Circles -->
-        <div class="grid md:grid-cols-2 gap-12 my-12">
-          <div class="text-center">
-            <h3 class="text-2xl font-bold text-green-500 mb-4">Your Phrase Power Score</h3>
-            <div class="relative mx-auto w-64 h-64">
-              <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
-                <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="20" fill="none"/>
-                <circle cx="130" cy="130" r="120" stroke="${getCircleColor(yourScore)}" stroke-width="20" fill="none"
-                        stroke-dasharray="${(yourScore / 100) * 754} 754" stroke-linecap="round" class="drop-shadow-lg"/>
-              </svg>
-              <div class="absolute inset-0 flex flex-col items-center justify-center">
-                <span class="text-7xl font-black ${getTextColorClass(yourScore)} drop-shadow-2xl">${yourScore}</span>
-                <span class="text-2xl text-gray-500 dark:text-gray-500">/100</span>
-              </div>
-            </div>
-          </div>
-          <div class="text-center">
-            <h3 class="text-2xl font-bold text-red-500 mb-4">Competitor Phrase Power Score</h3>
-            <div class="relative mx-auto w-64 h-64">
-              <svg width="260" height="260" viewBox="0 0 260 260" class="transform -rotate-90">
-                <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="20" fill="none"/>
-                <circle cx="130" cy="130" r="120" stroke="${getCircleColor(compScore)}" stroke-width="20" fill="none"
-                        stroke-dasharray="${(compScore / 100) * 754} 754" stroke-linecap="round" class="drop-shadow-lg"/>
-              </svg>
-              <div class="absolute inset-0 flex flex-col items-center justify-center">
-                <span class="text-7xl font-black ${getTextColorClass(compScore)} drop-shadow-2xl">${compScore}</span>
-                <span class="text-2xl text-gray-500 dark:text-gray-500">/100</span>
-              </div>
-            </div>
-          </div>
-        </div>
+<!-- Big Score Circles - Responsive & Mobile-Friendly -->
+<div class="grid md:grid-cols-2 gap-8 lg:gap-12 my-12 px-4">
+  <div class="text-center">
+    <h3 class="text-2xl font-bold text-green-500 mb-6">Your Phrase Power Score</h3>
+    <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square mx-auto">
+      <svg viewBox="0 0 260 260" class="w-full h-full transform -rotate-90">
+        <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="20" fill="none"/>
+        <circle cx="130" cy="130" r="120"
+                stroke="${getCircleColor(yourScore)}"
+                stroke-width="20" fill="none"
+                stroke-dasharray="${(yourScore / 100) * 754} 754"
+                stroke-linecap="round" class="drop-shadow-lg"/>
+      </svg>
+      <div class="absolute inset-0 flex flex-col items-center justify-center">
+        <span class="text-5xl sm:text-6xl md:text-7xl font-black ${getTextColorClass(yourScore)} drop-shadow-2xl">
+          ${yourScore}
+        </span>
+        <span class="text-xl sm:text-2xl text-gray-500 dark:text-gray-500">/100</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center">
+    <h3 class="text-2xl font-bold text-red-500 mb-6">Competitor Phrase Power Score</h3>
+    <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square mx-auto">
+      <svg viewBox="0 0 260 260" class="w-full h-full transform -rotate-90">
+        <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="20" fill="none"/>
+        <circle cx="130" cy="130" r="120"
+                stroke="${getCircleColor(compScore)}"
+                stroke-width="20" fill="none"
+                stroke-dasharray="${(compScore / 100) * 754} 754"
+                stroke-linecap="round" class="drop-shadow-lg"/>
+      </svg>
+      <div class="absolute inset-0 flex flex-col items-center justify-center">
+        <span class="text-5xl sm:text-6xl md:text-7xl font-black ${getTextColorClass(compScore)} drop-shadow-2xl">
+          ${compScore}
+        </span>
+        <span class="text-xl sm:text-2xl text-gray-500 dark:text-gray-500">/100</span>
+      </div>
+    </div>
+  </div>
+</div>
 
         <!-- Gap Verdict -->
         <div class="text-center mb-12">
