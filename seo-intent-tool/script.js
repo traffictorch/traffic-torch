@@ -141,7 +141,8 @@ const syllables = cleanedText ? cleanedText.split(' ').reduce((acc, word) => {
       
       
       
-            function printCleanReport() {
+      // Clean PDF export — same working pattern as home page tool
+      function printCleanReport() {
         const printWindow = window.open('', '_blank');
         if (!printWindow) {
           alert('Please allow pop-ups for this site to enable clean PDF export.');
