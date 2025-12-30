@@ -138,6 +138,50 @@ const syllables = cleanedText ? cleanedText.split(' ').reduce((acc, word) => {
       // Final step
       progressText.textContent = "Generating Report...";
       await sleep(600);
+      
+      
+      
+            function printCleanReport() {
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+          alert('Please allow pop-ups for this site to enable clean PDF export.');
+          return;
+        }
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Traffic Torch SEO Intent Report</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <style>
+              body { padding: 2rem; background: white; color: black; }
+              @media print {
+                body { padding: 1rem; }
+                button { display: none !important; }
+                .hidden { display: block !important; }
+              }
+            </style>
+          </head>
+          <body>
+            <h1 class="text-4xl font-black text-center mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch SEO Intent Report
+            </h1>
+            <div class="max-w-5xl mx-auto">
+              ${results.innerHTML}
+            </div>
+          </body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+        printWindow.addEventListener('afterprint', () => printWindow.close());
+      }
+      
+      
+      
 
       // === FULL REPORT OUTPUT (unchanged from your original) ===
       results.innerHTML = `
@@ -386,58 +430,15 @@ ${schemaTypes.length < 2 ? `
 </div>
 
 
-<!-- PDF Button -->
-<div class="text-center my-16">
-  <button onclick="printCleanReport()"
-       class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
-    📄 Save as PDF
-  </button>
-</div>
+          <!-- PDF Button -->
+          <div class="text-center my-16">
+            <button onclick="printCleanReport()"
+                 class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
+              📄 Save as PDF
+            </button>
+          </div>
 
 
-      function printCleanReport() {
-        const printWindow = window.open('', '_blank');
-        if (!printWindow) {
-          alert('Please allow pop-ups to enable clean PDF export.');
-          return;
-        }
-        printWindow.document.write(`
-          <!DOCTYPE html>
-          <html lang="en">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Traffic Torch SEO Intent Report</title>
-            <script src="https://cdn.tailwindcss.com"></script>
-            <style>
-              body { padding: 2rem; background: white; color: black; }
-              @media print {
-                body { padding: 1rem; }
-                button { display: none !important; }
-                .hidden { display: block !important; }
-              }
-            </style>
-          </head>
-          <body>
-            <h1 class="text-4xl font-black text-center mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
-              Traffic Torch SEO Intent Report
-            </h1>
-            <div class="max-w-5xl mx-auto">
-              ${results.innerHTML}
-            </div>
-          </body>
-          </html>
-        `);
-        printWindow.document.close();
-        printWindow.focus();
-        printWindow.print();
-        printWindow.addEventListener('afterprint', () => printWindow.close());
-      }
-
-
-
-  
-  
   
 } catch (err) {
   results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
