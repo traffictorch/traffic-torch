@@ -342,6 +342,8 @@ const initTool = (form, results, progressContainer) => {
         };
         return map[name] || "This factor significantly impacts AI search performance and citation likelihood.";
       }
+      
+      
       function getFixes(name) {
         let fixes = '';
         if (name === "Answerability") {
@@ -396,6 +398,8 @@ const initTool = (form, results, progressContainer) => {
         }
         return fixes || '<p class="text-green-600 dark:text-green-400">All checks passed — great job!</p>';
       }
+      
+      
 
       const moduleKeywords = {
         "Answerability": ["Bold/strong", "Clear definition", "FAQPage schema", "Question-style H2", "Step-by-step", "Strong opening"],

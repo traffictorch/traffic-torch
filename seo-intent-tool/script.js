@@ -493,13 +493,14 @@ const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
   </div>
 </div>
 
-<!-- PDF Button -->
-<div class="text-center my-16">
-  <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
-       class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
-    📄 Save as PDF
-  </button>
-</div>
+          <!-- PDF Button -->
+          <div class="text-center my-16">
+            <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
+                    class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
+              📄 Save as PDF
+            </button>
+          </div>
+        </div>
       `;
 
     } catch (err) {
