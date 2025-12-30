@@ -77,7 +77,7 @@ const initTool = (form, results, progressContainer) => {
       const hasQuestionH2 = Array.from(doc.querySelectorAll('h2')).some(h => /[?!]/.test(h.textContent));
       const hasSteps = /\b(step|guide|how to|instructions|follow these)\b/i.test(first300.toLowerCase());
 
-      const answerability = Math.min(100,
+      let answerability = Math.min(100,
         (hasBoldInFirst || hasDefinition ? 30 : 0) +
         (hasFAQSchema ? 25 : 0) +
         (hasQuestionH2 ? 15 : 0) +
@@ -110,20 +110,20 @@ const initTool = (form, results, progressContainer) => {
           }
         } catch {}
       });
-      const structuredData = Math.min(100, schemaScore);
+      let structuredData = Math.min(100, schemaScore);
 
       const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
       const hasDate = !!doc.querySelector('time[datetime], meta[name="date"], .published, .updated, .date');
       const hasTrustedLinks = Array.from(doc.querySelectorAll('a[href^="https"]'))
         .some(a => !a.href.includes(new URL(url).hostname) && !a.href.includes('facebook.com') && !a.href.includes('twitter.com'));
-      const eeat = (hasAuthor ? 40 : 0) + (hasDate ? 25 : 0) + (hasTrustedLinks ? 20 : 0) + (url.startsWith('https:') ? 15 : 0);
+      let eeat = (hasAuthor ? 40 : 0) + (hasDate ? 25 : 0) + (hasTrustedLinks ? 20 : 0) + (url.startsWith('https:') ? 15 : 0);
 
       const headings = doc.querySelectorAll('h1,h2,h3,h4').length;
       const lists = doc.querySelectorAll('ul,ol').length;
       const tables = doc.querySelectorAll('table').length;
       const shortParas = Array.from(mainEl.querySelectorAll('p'))
         .filter(p => p.textContent.trim().split(/\s+/).length < 35).length;
-      const scannability = Math.min(100, headings * 6 + lists * 8 + tables * 15 + shortParas * 0.4);
+      let scannability = Math.min(100, headings * 6 + lists * 8 + tables * 15 + shortParas * 0.4);
 
       const youCount = (mainText.match(/\byou\b|\byour\b|\byours\b/gi) || []).length;
       const iWeCount = (mainText.match(/\bI\b|\bwe\b|\bmy\b|\bour\b|\bme\b|\bus\b/gi) || []).length;
@@ -160,9 +160,9 @@ const initTool = (form, results, progressContainer) => {
       sentenceStarts.forEach(s => startFreq[s] = (startFreq[s] || 0) + 1);
       const hasPredictable = Object.values(startFreq).some(c => c > 3);
 
-      const conversational = Math.min(100, (youCount * 4) + (iWeCount * 3) + (questions * 6) + (painPoints * 5));
+      let conversational = Math.min(100, (youCount * 4) + (iWeCount * 3) + (questions * 6) + (painPoints * 5));
 
-      const readability = Math.round((flesch > 80 ? 95 : flesch > 60 ? 90 : flesch > 40 ? 70 : 40) * 0.4 +
+      let readability = Math.round((flesch > 80 ? 95 : flesch > 60 ? 90 : flesch > 40 ? 70 : 40) * 0.4 +
         variationScore * 0.3 +
         (passivePatterns.length < 5 ? 95 : passivePatterns.length < 10 ? 70 : 50) * 0.15 +
         (complexRatio < 15 ? 95 : complexRatio < 20 ? 80 : 60) * 0.15);
@@ -173,9 +173,9 @@ const initTool = (form, results, progressContainer) => {
       if (hasInterviews) uniqueInsights += 10;
       uniqueInsights = Math.min(100, uniqueInsights + (hasInsights ? 15 : 0));
 
-      const antiAiSafety = Math.round(variationScore * 0.5 + (repeatedWords <= 2 ? 95 : repeatedWords <= 5 ? 70 : 50) * 0.3 + (hasPredictable ? 50 : 95) * 0.2);
+      let antiAiSafety = Math.round(variationScore * 0.5 + (repeatedWords <= 2 ? 95 : repeatedWords <= 5 ? 70 : 50) * 0.3 + (hasPredictable ? 50 : 95) * 0.2);
 
-      // Adjust scores based on passed tests ratio
+      // Adjust scores to better align with passed tests
       let answerPassed = [hasBoldInFirst, hasDefinition, hasFAQSchema, hasQuestionH2, hasSteps, first300.length > 600].filter(Boolean).length;
       let adjustedAnswerability = Math.round(answerability * (answerPassed / 6));
 
