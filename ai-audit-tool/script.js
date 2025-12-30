@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const words = text.split(/\s+/).filter(w => w.length > 0);
     wordCount = words.length;
 
-    // Helper: entropy calculation
     function entropy(counts, total) {
       return -Object.values(counts).reduce((sum, c) => {
         const p = c / total;
@@ -49,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 0);
     }
 
-    // 1. Perplexity module
+    // Perplexity
     const bigrams = {};
     for (let i = 0; i < words.length - 1; i++) {
       const gram = words[i] + ' ' + words[i + 1];
@@ -64,11 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const trigramEntropy = words.length > 2 ? entropy(trigrams, words.length - 2) : 5;
 
-    const perplexityScore1 = Math.min(10, Math.max(0, (trigramEntropy - 4) / 0.8)); // higher = more human
+    const perplexityScore1 = Math.min(10, Math.max(0, (trigramEntropy - 4) / 0.8));
     const perplexityScore2 = Math.min(10, Math.max(0, (bigramEntropy - 4) / 0.8));
     const perplexityModule = (perplexityScore1 + perplexityScore2) / 2;
 
-    // 2. Burstiness module
+    // Burstiness
     const sentenceLengths = sentences.map(s => s.split(/\s+/).filter(w => w.length).length);
     const avgSentLen = sentenceLengths.reduce((a, b) => a + b, 0) / sentenceLengths.length || 20;
     const sentVariance = sentenceLengths.reduce((sum, len) => sum + Math.pow(len - avgSentLen, 2), 0) / sentenceLengths.length;
@@ -80,10 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const wordBurstiness = Math.sqrt(wordVariance);
 
     const burstinessScore1 = Math.min(10, sentBurstiness);
-    const burstinessScore2 = Math.min(10, wordBurstiness * 2); // scale to similar range
+    const burstinessScore2 = Math.min(10, wordBurstiness * 2);
     const burstinessModule = (burstinessScore1 + burstinessScore2) / 2;
 
-    // 3. Repetition module
+    // Repetition
     const maxBigram = Math.max(...Object.values(bigrams), 1);
     const bigramRep = Math.min(10, (maxBigram / (wordCount / 100)) * 1);
 
@@ -94,17 +93,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const repetitionScore2 = 10 - trigramRep;
     const repetitionModule = (repetitionScore1 + repetitionScore2) / 2;
 
-    // 4. Sentence Length module
+    // Sentence Length
     const avgSentenceLength = avgSentLen;
     const sentLenScore = Math.max(0, 10 - Math.abs(avgSentenceLength - 19) * 0.5);
 
     const commaCounts = sentences.map(s => (s.match(/,/g) || []).length);
     const avgCommas = commaCounts.reduce((a, b) => a + b, 0) / commaCounts.length || 0;
-    const complexityScore = Math.min(10, avgCommas * 2.5); // higher complexity = more human
+    const complexityScore = Math.min(10, avgCommas * 2.5);
 
     const sentenceLengthModule = (sentLenScore + complexityScore) / 2;
 
-    // 5. Vocabulary module
+    // Vocabulary
     const uniqueWords = new Set(words).size;
     const vocabDiversity = (uniqueWords / wordCount) * 100;
     const vocabScore = vocabDiversity / 10;
@@ -113,20 +112,13 @@ document.addEventListener('DOMContentLoaded', () => {
     words.forEach(w => wordFreq[w] = (wordFreq[w] || 0) + 1);
     const hapax = Object.values(wordFreq).filter(c => c === 1).length;
     const rareWordRatio = (hapax / wordCount) * 100;
-    const rareScore = Math.min(10, rareWordRatio * 0.5); // scale appropriately
+    const rareScore = Math.min(10, rareWordRatio * 0.5);
 
     const vocabularyModule = (vocabScore + rareScore) / 2;
 
-    const moduleScores = [
-      perplexityModule,
-      burstinessModule,
-      repetitionModule,
-      sentenceLengthModule,
-      vocabularyModule
-    ];
-
+    const moduleScores = [perplexityModule, burstinessModule, repetitionModule, sentenceLengthModule, vocabularyModule];
     const totalModuleSum = moduleScores.reduce((a, b) => a + b, 0);
-    const totalScore = Math.round(totalModuleSum * 2); // out of 100
+    const totalScore = Math.round(totalModuleSum * 2);
 
     return {
       moduleScores,
@@ -238,105 +230,82 @@ document.addEventListener('DOMContentLoaded', () => {
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
                   <div class="text-7xl font-black" style="color: ${mainGradeColor}">${yourScore}</div>
-                  <div class="text-lg text-gray-600">AI Score</div>
-                  <div class="text-base text-gray-500">/100</div>
+                  <div class="text-lg text-gray-600 dark:text-gray-400">AI Score</div>
+                  <div class="text-base text-gray-500 dark:text-gray-500">/100</div>
                 </div>
               </div>
             </div>
             <div class="text-center mt-4">
               <p class="text-3xl font-bold" style="color: ${mainGradeColor}">${verdict}</p>
             </div>
-            <p class="text-center text-base text-gray-600">Scanned ${wordCount.toLocaleString()} words from main content</p>
-
-            <!-- Pass/Fail Sub-Metrics List -->
-            <div class="mt-12 space-y-6 text-left max-w-md mx-auto">
-              <h3 class="text-2xl font-bold text-center text-gray-800">Metric Breakdown</h3>
-              <div class="space-y-2">
-                <p class="font-medium">Perplexity:</p>
-                <p>${getPassFail(analysis.details.perplexity.scores.trigram)} Trigram Entropy</p>
-                <p>${getPassFail(analysis.details.perplexity.scores.bigram)} Bigram Entropy</p>
-              </div>
-              <div class="space-y-2">
-                <p class="font-medium">Burstiness:</p>
-                <p>${getPassFail(analysis.details.burstiness.scores.sentence)} Sentence Length Variation</p>
-                <p>${getPassFail(analysis.details.burstiness.scores.word)} Word Length Burstiness</p>
-              </div>
-              <div class="space-y-2">
-                <p class="font-medium">Repetition:</p>
-                <p>${getPassFail(analysis.details.repetition.scores.bigram)} Bigram Repetition</p>
-                <p>${getPassFail(analysis.details.repetition.scores.trigram)} Trigram Repetition</p>
-              </div>
-              <div class="space-y-2">
-                <p class="font-medium">Sentence Length:</p>
-                <p>${getPassFail(analysis.details.sentenceLength.scores.avg)} Average Length</p>
-                <p>${getPassFail(analysis.details.sentenceLength.scores.complexity)} Sentence Complexity</p>
-              </div>
-              <div class="space-y-2">
-                <p class="font-medium">Vocabulary:</p>
-                <p>${getPassFail(analysis.details.vocabulary.scores.diversity)} Diversity</p>
-                <p>${getPassFail(analysis.details.vocabulary.scores.rare)} Rare Word Frequency</p>
-              </div>
-            </div>
+            <p class="text-center text-base text-gray-600 dark:text-gray-400">Scanned ${wordCount.toLocaleString()} words from main content</p>
 
             <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
               ${[
-                {name: 'Perplexity', score: analysis.moduleScores[0], details: analysis.details.perplexity, info: 'Measures how unpredictable your text is through bigram and trigram entropy calculations. High entropy indicates varied and surprising word sequences, which are hallmarks of human writing. AI-generated text often has lower entropy due to its reliance on common patterns.', fixes: {trigram: analysis.details.perplexity.scores.trigram < 6 ? 'To fix low trigram entropy, incorporate unexpected word combinations and personal anecdotes that break predictable flows. Vary your phrasing by drawing from diverse experiences or opinions, making the text feel more organic. Avoid formulaic structures by editing for surprise in every third sentence.' : '', bigram: analysis.details.perplexity.scores.bigram < 6 ? 'Improve bigram entropy by swapping common two-word pairs with creative alternatives, like using synonyms or rephrasing sentences. Add transitional phrases that arent overused, and include idiomatic expressions unique to your voice. This creates a less robotic rhythm and boosts overall unpredictability.' : ''}},
+                {name: 'Perplexity', score: analysis.moduleScores[0], details: analysis.details.perplexity, info: 'Measures how unpredictable your text is through bigram and trigram entropy calculations. High entropy indicates varied and surprising word sequences, which are hallmarks of human writing. AI-generated text often has lower entropy due to its reliance on common patterns.', fixes: {trigram: analysis.details.perplexity.scores.trigram < 6 ? 'To fix low trigram entropy, incorporate unexpected word combinations and personal anecdotes that break predictable flows. Vary your phrasing by drawing from diverse experiences or opinions, making the text feel more organic. Avoid formulaic structures by editing for surprise in every third sentence.' : '', bigram: analysis.details.perplexity.scores.bigram < 6 ? 'Improve bigram entropy by swapping common two-word pairs with creative alternatives, like using synonyms or rephrasing sentences. Add transitional phrases that aren’t overused, and include idiomatic expressions unique to your voice. This creates a less robotic rhythm and boosts overall unpredictability.' : ''}},
                 {name: 'Burstiness', score: analysis.moduleScores[1], details: analysis.details.burstiness, info: 'Evaluates the variation in sentence and word lengths to ensure natural rhythm in your content. Human writing typically mixes short, punchy sentences with longer, descriptive ones for engagement. Consistent lengths can signal AI generation, as it often prioritizes uniformity over dynamic flow.', fixes: {sentence: analysis.details.burstiness.scores.sentence < 6 ? 'To address low sentence burstiness, alternate between short, impactful sentences and longer, explanatory ones throughout your text. This creates a more engaging rhythm that mimics human speech patterns. Review paragraphs for uniformity and split or combine sentences to add variety.' : '', word: analysis.details.burstiness.scores.word < 6 ? 'Fix word length burstiness by mixing short, simple words with longer, more descriptive ones to avoid monotony. Incorporate varied vocabulary that includes both everyday terms and specialized jargon where appropriate. This enhances readability and makes the content feel more authentic and less machine-like.' : ''}},
-                {name: 'Repetition', score: analysis.moduleScores[2], details: analysis.details.repetition, info: 'Detects overuse of bigram and trigram phrases, which can make text feel redundant and AI-like. Human writers naturally vary expressions to maintain interest and flow. High repetition scores indicate a need for more diverse phrasing to improve originality and engagement.', fixes: {bigram: analysis.details.repetition.scores.bigram < 6 ? 'Reduce bigram repetition by identifying common two-word phrases and replacing them with synonyms or restructured sentences. Use a thesaurus to find fresh alternatives and ensure no phrase dominates. This will make your writing more dynamic and less predictable.' : '', trigram: analysis.details.repetition.scores.trigram < 6 ? 'To fix trigram repetition, scan for recurring three-word sequences and rewrite them with varied structures or vocabulary. Introduce new ideas or transitions to break patterns. Editing for diversity here will elevate the texts natural feel and reduce AI flags.' : ''}},
+                {name: 'Repetition', score: analysis.moduleScores[2], details: analysis.details.repetition, info: 'Detects overuse of bigram and trigram phrases, which can make text feel redundant and AI-like. Human writers naturally vary expressions to maintain interest and flow. High repetition scores indicate a need for more diverse phrasing to improve originality and engagement.', fixes: {bigram: analysis.details.repetition.scores.bigram < 6 ? 'Reduce bigram repetition by identifying common two-word phrases and replacing them with synonyms or restructured sentences. Use a thesaurus to find fresh alternatives and ensure no phrase dominates. This will make your writing more dynamic and less predictable.' : '', trigram: analysis.details.repetition.scores.trigram < 6 ? 'To fix trigram repetition, scan for recurring three-word sequences and rewrite them with varied structures or vocabulary. Introduce new ideas or transitions to break patterns. Editing for diversity here will elevate the text’s natural feel and reduce AI flags.' : ''}},
                 {name: 'Sentence Length', score: analysis.moduleScores[3], details: analysis.details.sentenceLength, info: 'Combines average sentence length with complexity measures like comma usage to assess structural depth. Ideal human writing balances lengths between 15-23 words while incorporating clauses for nuance. Deviations can suggest overly simplistic or convoluted AI output, impacting readability.', fixes: {avg: analysis.details.sentenceLength.scores.avg < 6 ? 'Adjust average sentence length by breaking up long run-ons or combining short fragments to hit the 15-23 word sweet spot. This improves flow and readability for users. Regularly count words per sentence during edits to achieve balance.' : '', complexity: analysis.details.sentenceLength.scores.complexity < 6 ? 'Increase sentence complexity by adding clauses with commas, semicolons, or conjunctions to layer ideas. This adds depth without overwhelming the reader. Aim for 1-2 clauses per sentence in key sections to mimic human thought processes.' : ''}},
                 {name: 'Vocabulary', score: analysis.moduleScores[4], details: analysis.details.vocabulary, info: 'Assesses unique word diversity and the frequency of rare words to gauge lexical richness. Human content often includes a broad, context-specific vocabulary with unique terms. Low scores here point to limited word choice, common in AI for efficiency, reducing perceived expertise.', fixes: {diversity: analysis.details.vocabulary.scores.diversity < 6 ? 'Boost vocabulary diversity by incorporating synonyms and avoiding word repetition through active editing. Draw from broader themes or analogies to introduce new terms. This enriches the text and signals deeper knowledge to search engines.' : '', rare: analysis.details.vocabulary.scores.rare < 6 ? 'Enhance rare word frequency by adding unique, context-specific terms that appear only once or twice. Research niche vocabulary related to your topic and weave it in naturally. This creates a more authentic, expert tone and improves SEO signals.' : ''}}
               ].map(m => {
                 const gradeColor = getGradeColor(m.score);
                 const displayScore = m.score.toFixed(1);
                 const failedFixes = Object.values(m.fixes).filter(f => f).join('<br><br>');
+                const sub1Name = m.name === 'Perplexity' ? 'Trigram Entropy' : m.name === 'Burstiness' ? 'Sentence Length Variation' : m.name === 'Repetition' ? 'Bigram Repetition' : m.name === 'Sentence Length' ? 'Average Length' : 'Diversity';
+                const sub2Name = m.name === 'Perplexity' ? 'Bigram Entropy' : m.name === 'Burstiness' ? 'Word Length Burstiness' : m.name === 'Repetition' ? 'Trigram Repetition' : m.name === 'Sentence Length' ? 'Sentence Complexity' : 'Rare Word Frequency';
+                const sub1Score = m.name === 'Perplexity' ? m.details.scores.trigram : m.name === 'Burstiness' ? m.details.scores.sentence : m.name === 'Repetition' ? m.details.scores.bigram : m.name === 'Sentence Length' ? m.details.scores.avg : m.details.scores.diversity;
+                const sub2Score = m.name === 'Perplexity' ? m.details.scores.bigram : m.name === 'Burstiness' ? m.details.scores.word : m.name === 'Repetition' ? m.details.scores.trigram : m.name === 'Sentence Length' ? m.details.scores.complexity : m.details.scores.rare;
                 return `
-                <div class="bg-white rounded-2xl shadow-md p-6 text-center border-l-4" style="border-left-color: ${gradeColor}">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 text-center border-l-4" style="border-left-color: ${gradeColor}">
                   <div class="relative w-32 h-32 mx-auto">
                     <svg viewBox="0 0 128 128" class="-rotate-90">
-                      <circle cx="64" cy="64" r="56" stroke="#f1f5f9" stroke-width="12" fill="none"/>
+                      <circle cx="64" cy="64" r="56" stroke="#f1f5f9 dark:#374151" stroke-width="12" fill="none"/>
                       <circle cx="64" cy="64" r="56" stroke="${gradeColor}" stroke-width="12" fill="none"
                               stroke-dasharray="${m.score * 35.2} 352" stroke-linecap="round"/>
                     </svg>
                     <div class="absolute inset-0 flex flex-col items-center justify-center">
                       <div class="text-3xl font-bold" style="color: ${gradeColor}">${displayScore}</div>
-                      <div class="text-sm text-gray-500">/10</div>
+                      <div class="text-sm text-gray-500 dark:text-gray-400">/10</div>
                     </div>
                   </div>
-                  <p class="mt-4 text-base font-medium text-gray-700">${m.name}</p>
-                  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-3 px-6 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-full hover:bg-gray-300">
+                  <p class="mt-4 text-base font-bold text-gray-800 dark:text-gray-200">${m.name}</p>
+                  <div class="mt-3 space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                    <p>${getPassFail(sub1Score)} ${sub1Name}</p>
+                    <p>${getPassFail(sub2Score)} ${sub2Name}</p>
+                  </div>
+                  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-full hover:bg-gray-300 dark:hover:bg-gray-600">
                     Show Fixes & Details
                   </button>
-                  <div class="hidden mt-4 space-y-3 text-sm text-gray-600 leading-relaxed">
-                    ${failedFixes ? `<p><span class="font-bold text-red-600">How to Fix Failed Tests:</span><br>${failedFixes}</p>` : ''}
-                    <p><span class="font-bold text-blue-600">What it is:</span> ${m.info}</p>
-                    <p><span class="font-bold text-green-600">How to Improve Overall:</span> Use varied phrasing, personal anecdotes, and unexpected ideas to boost scores. Mix short and long elements for rhythm, and incorporate synonyms or rarer words. Always edit with readability in mind to align with human patterns.</p>
-                    <p><span class="font-bold text-orange-600">Why it matters:</span> Search engines prioritize human-like content for higher rankings and user trust. Strong scores here reduce AI penalties and improve engagement metrics. Ultimately, this leads to better organic traffic and authority signals.</p>
+                  <div class="hidden mt-4 space-y-4 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                    ${failedFixes ? `<p><span class="font-bold text-red-600 dark:text-red-400">How to Fix Failed Tests:</span><br><br>${failedFixes}</p>` : ''}
+                    <p><span class="font-bold text-blue-600 dark:text-blue-400">What it is:</span> ${m.info}</p>
+                    <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve Overall:</span> Use varied phrasing, personal anecdotes, and unexpected ideas to boost scores. Mix short and long elements for rhythm, and incorporate synonyms or rarer words. Always edit with readability in mind to align with human patterns.</p>
+                    <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters:</span> Search engines prioritize human-like content for higher rankings and user trust. Strong scores here reduce AI penalties and improve engagement metrics. Ultimately, this leads to better organic traffic and authority signals.</p>
                   </div>
                 </div>
-              `;
+                `;
               }).join('')}
             </div>
 
             <div class="mt-20 space-y-8">
-              <h2 class="text-4xl md:text-5xl font-black text-center text-gray-900">Prioritized AI-Style Fixes</h2>
+              <h2 class="text-4xl md:text-5xl font-black text-center text-gray-900 dark:text-gray-100">Prioritized AI-Style Fixes</h2>
               ${yourScore >= 70 ? `
-                <div class="bg-red-50 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-red-500">
-                  <h3 class="text-3xl font-bold text-red-600 mb-6">Very Likely AI Detected</h3>
-                  <p class="text-lg"><span class="font-bold text-blue-600">What:</span> Multiple modules show strong AI patterns</p>
-                  <p class="text-lg mt-4"><span class="font-bold text-green-600">How to improve:</span> Add personal anecdotes, vary rhythm dramatically, reduce repetition, deepen sentence structure</p>
+                <div class="bg-red-50 dark:bg-red-900/20 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-red-500">
+                  <h3 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-6">Very Likely AI Detected</h3>
+                  <p class="text-lg text-gray-800 dark:text-gray-200"><span class="font-bold text-blue-600 dark:text-blue-400">What:</span> Multiple modules show strong AI patterns</p>
+                  <p class="text-lg mt-4 text-gray-800 dark:text-gray-200"><span class="font-bold text-green-600 dark:text-green-400">How to improve:</span> Add personal anecdotes, vary rhythm dramatically, reduce repetition, deepen sentence structure</p>
                 </div>` : yourScore >= 40 ? `
-                <div class="bg-orange-50 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-orange-500">
-                  <h3 class="text-3xl font-bold text-orange-600 mb-6">Moderate AI Patterns</h3>
-                  <p class="text-lg"><span class="font-bold text-blue-600">What:</span> Some uniformity detected across metrics</p>
-                  <p class="text-lg mt-4"><span class="font-bold text-green-600">How to improve:</span> Focus on weak modules shown above</p>
+                <div class="bg-orange-50 dark:bg-orange-900/20 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-orange-500">
+                  <h3 class="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-6">Moderate AI Patterns</h3>
+                  <p class="text-lg text-gray-800 dark:text-gray-200"><span class="font-bold text-blue-600 dark:text-blue-400">What:</span> Some uniformity detected across metrics</p>
+                  <p class="text-lg mt-4 text-gray-800 dark:text-gray-200"><span class="font-bold text-green-600 dark:text-green-400">How to improve:</span> Focus on weak modules shown above</p>
                 </div>` : `
-                <div class="bg-green-50 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-green-500">
-                  <h3 class="text-3xl font-bold text-green-600 mb-6">Excellent — Highly Human-Like!</h3>
-                  <p class="text-lg text-center">Strong performance across all modules. Keep writing naturally!</p>
+                <div class="bg-green-50 dark:bg-green-900/20 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-green-500">
+                  <h3 class="text-3xl font-bold text-green-600 dark:text-green-400 mb-6">Excellent — Highly Human-Like!</h3>
+                  <p class="text-lg text-center text-gray-800 dark:text-gray-200">Strong performance across all modules. Keep writing naturally!</p>
                 </div>`}
             </div>
 
-            <!-- Restored Full Predictive Rank Forecast -->
             <div class="mt-20 p-10 md:p-16 bg-gradient-to-r from-orange-500 to-pink-600 rounded-3xl shadow-2xl text-white text-center space-y-8">
               <h2 class="text-4xl md:text-4xl font-black">Predictive Rank Forecast</h2>
               <p class="text-4xl md:text-4xl font-black" style="color: ${mainGradeColor}">${forecast}</p>
@@ -374,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
         results.innerHTML = `
           <div class="text-center py-20">
             <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
-            <p class="mt-6 text-xl text-gray-500">Please check the URL and try again.</p>
+            <p class="mt-6 text-xl text-gray-500 dark:text-gray-400">Please check the URL and try again.</p>
           </div>
         `;
       }, remaining);
