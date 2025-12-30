@@ -141,7 +141,7 @@ const initTool = (form, results, progressContainer) => {
       if (lengths.length >= 5) {
         const avg = lengths.reduce((a, b) => a + b, 0) / lengths.length;
         const variance = lengths.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / lengths.length;
-        variationScore = variance > 40 ? 95 : variance > 20 ? 80 : variance > 10 ? 60 : 40;
+        variationScore = variance > 50 ? 100 : variance > 40 ? 95 : variance > 20 ? 80 : variance > 10 ? 60 : 40;
       }
       const passivePatterns = mainText.match(/\b(is|are|was|were|been|be|being)\b.*\b(by|using|with|through)\b/gi) || [];
       const complexWords = mainText.split(/\s+/).filter(w => (w.match(/[aeiouy]+/gi) || []).length >= 3).length;
@@ -402,14 +402,14 @@ const initTool = (form, results, progressContainer) => {
       
 
       const moduleKeywords = {
-        "Answerability": ["Bold/strong", "Clear definition", "FAQPage schema", "Question-style H2", "Step-by-step", "Strong opening"],
-        "Structured Data": ["JSON-LD", "Article/BlogPosting", "FAQPage/HowTo", "Person schema"],
-        "EEAT Signals": ["Author byline", "Publish/update date", "Trusted outbound", "Secure HTTPS"],
-        "Scannability": ["headings", "lists", "tables", "Short paragraphs", "heading density"],
-        "Conversational Tone": ["\"you\"", "\"I/we\"", "questions", "pain points"],
-        "Readability": ["Flesch", "variation", "passive", "complex words"],
-        "Unique Insights": ["First-hand", "Dated/timely", "Interviews/quotes", "Deep content"],
-        "Anti-AI Safety": ["burstiness", "repetition", "predictable"]
+        "Answerability": ["Bold/strong formatting in opening", "Clear definition pattern in opening", "FAQPage schema detected", "Question-style H2 headings", "Step-by-step language in opening", "Strong opening section (>600 chars)"],
+        "Structured Data": ["JSON-LD structured data present", "Article/BlogPosting schema type", "FAQPage/HowTo schema type", "Person schema for author"],
+        "EEAT Signals": ["Author byline visible", "Publish/update date shown", "Trusted outbound links", "Secure HTTPS connection"],
+        "Scannability": ["Sufficient headings (H1-H4)", "Bullet/numbered lists used", "Data tables present", "Short paragraphs (<35 words)", "Excellent heading density"],
+        "Conversational Tone": ["Direct \"you\" address (>5)", "Personal \"I/we\" sharing", "Engaging questions asked", "Reader pain points acknowledged"],
+        "Readability": ["Good Flesch score (>60)", "Natural sentence variation", "Low passive voice", "Low complex words (<15%)"],
+        "Unique Insights": ["First-hand experience markers", "Dated/timely results mentioned", "Interviews/quotes included", "Deep content (1500+ words)"],
+        "Anti-AI Safety": ["High sentence burstiness", "Low word repetition", "No predictable sentence starts"]
       };
 
       results.innerHTML = `
