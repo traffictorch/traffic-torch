@@ -3,12 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const results = document.getElementById('results');
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-  // Define cleanUrl inside DOMContentLoaded, before use
   function cleanUrl(u) {
     const trimmed = u.trim();
     if (!trimmed) return '';
     if (/^https?:\/\//i.test(trimmed)) return trimmed;
-    // Add https:// only to the host part if path is present
     const parts = trimmed.split('/', 1);
     const host = parts[0];
     const path = trimmed.slice(host.length);
@@ -23,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Cleaned URL sent to proxy:', url);
     if (!url) return;
 
-    // Show spinner
     results.innerHTML = `
       <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 mt-2">
         <div class="relative w-20 h-20">
@@ -40,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressText = document.getElementById('progress-text');
 
     try {
-      // Step 1: Fetch page
       progressText.textContent = "Analyzing Content Depth...";
       await sleep(800);
       const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
@@ -48,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
-      // Visible text extraction
       function getVisibleText(root) {
         let text = '';
         const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
@@ -56,12 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const parent = node.parentElement;
             if (!parent) return NodeFilter.FILTER_REJECT;
             const tag = parent.tagName.toLowerCase();
-            if (['script', 'style', 'noscript', 'head', 'iframe', 'object', 'embed'].includes(tag)) {
-              return NodeFilter.FILTER_REJECT;
-            }
-            if (parent.hasAttribute('hidden') || parent.getAttribute('aria-hidden') === 'true') {
-              return NodeFilter.FILTER_REJECT;
-            }
+            if (['script', 'style', 'noscript', 'head', 'iframe', 'object', 'embed'].includes(tag)) return NodeFilter.FILTER_REJECT;
+            if (parent.hasAttribute('hidden') || parent.getAttribute('aria-hidden') === 'true') return NodeFilter.FILTER_REJECT;
             return NodeFilter.FILTER_ACCEPT;
           }
         });
@@ -73,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const text = getVisibleText(doc.body) || '';
       const cleanedText = text.replace(/\s+/g, ' ').trim();
-      const words = cleanedText ? cleanedText.split(' ').filter(word => word.length > 0).length : 0;
+      const words = cleanedText ? cleanedText.split(' ').filter(w => w.length > 0).length : 0;
       const sentences = cleanedText ? (cleanedText.match(/[.!?]+/g) || []).length || 1 : 1;
       const syllables = cleanedText ? cleanedText.split(' ').reduce((acc, word) => {
         const vowelGroups = (word.toLowerCase().match(/[aeiouy]+/g) || []).length;
@@ -81,10 +72,50 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 0) : 0;
       const readability = Math.round(206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words));
 
-      // Step 3: E-E-A-T Signals
       progressText.textContent = "Analyzing E-E-A-T Signals...";
       await sleep(800);
-      const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
+
+      // === EXPERIENCE ===
+      const firstPersonCount = (cleanedText.match(/\b(I|we|my|our|I've|we've|me|us|myself|ourselves)\b/gi) || []).length;
+      const anecdotePhrases = (cleanedText.match(/\b(in my experience|I tested|we found that|from my trials|I tried|we tried|my results|our case study)\b/gi) || []).length;
+      const timelineMentions = (cleanedText.match(/\b(last year|in 20\d{2}|this year|over the past \d+|since \d{4})\b.*\b(I|we)\b/gi) || []).length;
+      const personalMedia = !!doc.querySelector('img[alt*="my" i], img[alt*="our" i], video caption, figure figcaption');
+
+      const experienceMetrics = {
+        firstPerson: firstPersonCount > 15 ? 100 : firstPersonCount > 5 ? 60 : 20,
+        anecdotes: anecdotePhrases > 2 ? 100 : anecdotePhrases > 0 ? 60 : 20,
+        timelines: timelineMentions > 1 ? 100 : timelineMentions > 0 ? 70 : 20,
+        personalMedia: personalMedia ? 100 : 20
+      };
+      const experienceScore = Math.round(Object.values(experienceMetrics).reduce((a, b) => a + b) / 4);
+
+      const failedExperience = [];
+      if (experienceMetrics.firstPerson < 80) failedExperience.push("Add more first-person language (“I/we/my/our”) throughout the content");
+      if (experienceMetrics.anecdotes < 80) failedExperience.push("Include personal anecdotes or real-world examples");
+      if (experienceMetrics.timelines < 80) failedExperience.push("Mention specific timelines or dates from your experience");
+      if (experienceMetrics.personalMedia < 80) failedExperience.push("Add original photos/videos with personal captions");
+
+      // === EXPERTISE ===
+      const hasAuthorByline = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
+      const hasAuthorBio = !!doc.querySelector('.author-bio, .bio, [class*="bio" i], .about-author, .author-description, .author-box');
+      const credentialKeywords = (cleanedText.match(/\b(PhD|MD|doctor|certified|licensed|years? of experience|expert in|specialist|award-winning|published in|fellow|board-certified)\b/gi) || []).length;
+      const hasCitations = !!doc.querySelector('cite, .references, .sources, a[href*="doi.org"], a[href*="pubmed"], a[href*="researchgate"], footer a[href*="/references"]');
+
+      const expertiseMetrics = {
+        byline: hasAuthorByline ? 100 : 20,
+        bio: hasAuthorBio ? 100 : 20,
+        credentials: credentialKeywords > 2 ? 100 : credentialKeywords > 0 ? 60 : 20,
+        citations: hasCitations ? 100 : 20
+      };
+      const expertiseScore = Math.round(Object.values(expertiseMetrics).reduce((a, b) => a + b) / 4);
+
+      const failedExpertise = [];
+      if (!hasAuthorByline) failedExpertise.push("Add a visible author byline/name");
+      if (!hasAuthorBio) failedExpertise.push("Create an author bio section with photo and background");
+      if (credentialKeywords <= 2) failedExpertise.push("Mention relevant qualifications, certifications, or years of experience");
+      if (!hasCitations) failedExpertise.push("Include citations or links to supporting sources");
+
+      // === AUTHORITATIVENESS ===
       const schemaTypes = [];
       doc.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
         try {
@@ -93,25 +124,42 @@ document.addEventListener('DOMContentLoaded', () => {
           schemaTypes.push(...types.filter(Boolean));
         } catch {}
       });
+      const hasAwards = !!cleanedText.match(/\b(award|winner|featured in|recognized by|endorsed by|best \d{4})\b/gi);
+      const hasAboutLinks = !!doc.querySelector('a[href*="/about"], a[href*="/team"], nav a:contains("About")');
 
-      // Evidence strings
-      const experienceEvidence = (text.match(/\b(I|we|my|our|I've|we've|me|us)\b/gi) || []).length > 12 
-        ? `Strong: ${(text.match(/\b(I|we|my|our|I've|we've|me|us)\b/gi) || []).length} first-person references found`
-        : "Limited personal voice detected";
+      const authoritativenessMetrics = {
+        schema: schemaTypes.length > 1 ? 100 : schemaTypes.length > 0 ? 70 : 20,
+        awards: hasAwards ? 100 : 20,
+        aboutLinks: hasAboutLinks ? 100 : 20
+      };
+      const authoritativenessScore = Math.round(Object.values(authoritativenessMetrics).reduce((a, b) => a + b) / 3);
 
-      const expertiseEvidence = hasAuthor 
-        ? "Author byline detected" 
-        : "No clear author signals";
+      const failedAuthoritativeness = [];
+      if (schemaTypes.length < 2) failedAuthoritativeness.push("Implement relevant JSON-LD schema (Article, Person, Organization)");
+      if (!hasAwards) failedAuthoritativeness.push("Mention any awards, endorsements, or media features");
+      if (!hasAboutLinks) failedAuthoritativeness.push("Add links to an About or Team page");
 
-      const authoritativenessEvidence = schemaTypes.length > 0 
-        ? `${schemaTypes.length} schema type${schemaTypes.length > 1 ? 's' : ''} found` 
-        : "No schema detected";
+      // === TRUSTWORTHINESS ===
+      const isHttps = url.startsWith('https');
+      const hasContact = !!doc.querySelector('a[href*="/contact"], a[href*="mailto:"], a[href*="tel:"], footer:contains("Contact")');
+      const hasPolicies = !!doc.querySelector('a[href*="/privacy"], a[href*="/terms"], footer a:contains("Privacy")');
+      const hasUpdateDate = !!doc.querySelector('time[datetime], .updated, .last-modified, meta[name="date"]');
 
-      const trustworthinessEvidence = url.startsWith('https') 
-        ? "Secure HTTPS connection" 
-        : "HTTP (insecure)";
+      const trustworthinessMetrics = {
+        https: isHttps ? 100 : 20,
+        contact: hasContact ? 100 : 20,
+        policies: hasPolicies ? 100 : 20,
+        updateDate: hasUpdateDate ? 100 : 20
+      };
+      const trustworthinessScore = Math.round(Object.values(trustworthinessMetrics).reduce((a, b) => a + b) / 4);
 
-      // Step 4: Intent
+      const failedTrustworthiness = [];
+      if (!isHttps) failedTrustworthiness.push("Switch to HTTPS");
+      if (!hasContact) failedTrustworthiness.push("Add a visible Contact page or contact details");
+      if (!hasPolicies) failedTrustworthiness.push("Include links to Privacy Policy and/or Terms");
+      if (!hasUpdateDate) failedTrustworthiness.push("Display a last updated date");
+
+      // Intent Analysis
       progressText.textContent = "Analyzing Search Intent...";
       await sleep(800);
       const titleLower = (doc.title || '').toLowerCase();
@@ -122,18 +170,11 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (/near me|location|store|city|local|hours|map|address/i.test(titleLower)) { intent = 'Local'; confidence = 87; }
       else if (/sign up|login|purchase|buy now|order|checkout|book/i.test(titleLower)) { intent = 'Transactional'; confidence = 91; }
 
-      const eeat = {
-        Experience: (text.match(/\b(I|we|my|our|I've|we've|me|us)\b/gi) || []).length > 12 ? 92 : 45,
-        Expertise: hasAuthor ? 90 : 32,
-        Authoritativeness: schemaTypes.length > 0 ? 94 : 40,
-        Trustworthiness: url.startsWith('https') ? 96 : 60
-      };
-      const eeatAvg = Math.round(Object.values(eeat).reduce((a, b) => a + b) / 4);
+      const eeatAvg = Math.round((experienceScore + expertiseScore + authoritativenessScore + trustworthinessScore) / 4);
       const depthScore = words > 2000 ? 95 : words > 1200 ? 82 : words > 700 ? 65 : 35;
       const readScore = readability > 70 ? 90 : readability > 50 ? 75 : 45;
       const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length * 8) / 5);
 
-      // Final step
       progressText.textContent = "Generating Report...";
       await sleep(600);
 
@@ -186,63 +227,74 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-<!-- E-E-A-T Breakdown -->
+<!-- E-E-A-T Breakdown with ✅/❌ signals -->
 <div class="grid md:grid-cols-4 gap-6 my-16">
-  ${Object.entries(eeat).map(([key, val]) => {
-    let evidence = '';
-    if (key === 'Experience') evidence = experienceEvidence;
-    else if (key === 'Expertise') evidence = expertiseEvidence;
-    else if (key === 'Authoritativeness') evidence = authoritativenessEvidence;
-    else if (key === 'Trustworthiness') evidence = trustworthinessEvidence;
-
-    let shortFix = '';
-    if (key === 'Experience') {
-      shortFix = val >= 80 
-        ? "Excellent personal voice — keep sharing authentic stories!" 
-        : "Add personal anecdotes and more “I/we” language to prove real-world experience.";
-    } else if (key === 'Expertise') {
-      shortFix = hasAuthor 
-        ? "Clear author signal detected — maintain visible credentials." 
-        : "Add visible author box with photo, bio, and credentials.";
-    } else if (key === 'Authoritativeness') {
-      shortFix = schemaTypes.length > 0 
-        ? "Good schema usage — consider adding more relevant types." 
-        : "Add relevant schema (Article, Person, Organization) to establish authority.";
-    } else if (key === 'Trustworthiness') {
-      shortFix = url.startsWith('https') 
-        ? "Secure connection established — excellent trust signal." 
-        : "Switch to HTTPS to enable full trust signals.";
-    }
+  ${[
+    { key: 'Experience', score: experienceScore, metrics: experienceMetrics, failed: failedExperience },
+    { key: 'Expertise', score: expertiseScore, metrics: expertiseMetrics, failed: failedExpertise },
+    { key: 'Authoritativeness', score: authoritativenessScore, metrics: authoritativenessMetrics, failed: failedAuthoritativeness },
+    { key: 'Trustworthiness', score: trustworthinessScore, metrics: trustworthinessMetrics, failed: failedTrustworthiness }
+  ].map(({key, score, metrics, failed}) => {
+    const color = score >= 80 ? '#22c55e' : score >= 60 ? '#f97316' : '#ef4444';
+    const border = score >= 80 ? 'border-green-500' : score >= 60 ? 'border-orange-500' : 'border-red-500';
+    const fixesList = failed.length ? 
+      `<p class="font-medium mb-2 text-orange-600">How to fix the failed signals:</p><ul class="list-disc pl-5 space-y-2">${failed.map(f => `<li>${f}</li>`).join('')}</ul>` :
+      '<p class="text-green-600 font-medium">All signals strong — no fixes needed!</p>';
 
     return `
-    <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${val >= 80 ? 'border-green-500' : val >= 60 ? 'border-orange-500' : 'border-red-500'}">
+    <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${border}">
       <div class="relative mx-auto w-32 h-32">
         <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
           <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
           <circle cx="64" cy="64" r="56"
-                  stroke="${val >= 80 ? '#22c55e' : val >= 60 ? '#f97316' : '#ef4444'}"
+                  stroke="${color}"
                   stroke-width="12" fill="none"
-                  stroke-dasharray="${(val/100)*352} 352"
+                  stroke-dasharray="${(score/100)*352} 352"
                   stroke-linecap="round"/>
         </svg>
-        <div class="absolute inset-0 flex items-center justify-center text-4xl font-black"
-             style="color: ${val >= 80 ? '#22c55e' : val >= 60 ? '#f97316' : '#ef4444'};">
-          ${val}
+        <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${color};">
+          ${score}
         </div>
       </div>
       <p class="mt-4 text-lg font-medium">${key}</p>
-      <p class="mt-2 text-sm text-gray-500">${evidence}</p>
-      <button onclick="this.parentNode.querySelector('.short-fix').classList.toggle('hidden');" 
+
+      <!-- ✅/❌ Signal List -->
+      <div class="mt-3 space-y-1 text-sm text-left max-w-xs mx-auto">
+        ${key === 'Experience' ? `
+          ${metrics.firstPerson >= 80 ? '<p>✅ Strong first-person language</p>' : '<p>❌ Limited first-person language</p>'}
+          ${metrics.anecdotes >= 80 ? '<p>✅ Personal anecdotes included</p>' : '<p>❌ Missing personal anecdotes</p>'}
+          ${metrics.timelines >= 80 ? '<p>✅ Timeline/date mentions</p>' : '<p>❌ No timeline/date mentions</p>'}
+          ${metrics.personalMedia >= 80 ? '<p>✅ Personal media/captions</p>' : '<p>❌ No personal media detected</p>'}
+        ` : key === 'Expertise' ? `
+          ${metrics.byline >= 80 ? '<p>✅ Author byline present</p>' : '<p>❌ No author byline</p>'}
+          ${metrics.bio >= 80 ? '<p>✅ Author bio section</p>' : '<p>❌ Missing author bio</p>'}
+          ${metrics.credentials >= 80 ? '<p>✅ Credentials mentioned</p>' : '<p>❌ Few/no credentials</p>'}
+          ${metrics.citations >= 80 ? '<p>✅ Citations/references</p>' : '<p>❌ No citations found</p>'}
+        ` : key === 'Authoritativeness' ? `
+          ${metrics.schema >= 80 ? '<p>✅ Strong schema markup</p>' : '<p>❌ Limited/no schema</p>'}
+          ${metrics.awards >= 80 ? '<p>✅ Awards/endorsements mentioned</p>' : '<p>❌ No awards mentioned</p>'}
+          ${metrics.aboutLinks >= 80 ? '<p>✅ About/Team links</p>' : '<p>❌ Missing About links</p>'}
+        ` : `
+          ${metrics.https >= 80 ? '<p>✅ Secure HTTPS</p>' : '<p>❌ HTTP (insecure)</p>'}
+          ${metrics.contact >= 80 ? '<p>✅ Contact info present</p>' : '<p>❌ No contact details</p>'}
+          ${metrics.policies >= 80 ? '<p>✅ Privacy/Terms links</p>' : '<p>❌ Missing policy links</p>'}
+          ${metrics.updateDate >= 80 ? '<p>✅ Update date shown</p>' : '<p>❌ No update date</p>'}
+        `}
+      </div>
+
+      <button onclick="this.parentNode.querySelector('.fixes-panel').classList.toggle('hidden');"
               class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-        Show Fix
+        ${failed.length ? 'Show Fixes (' + failed.length + ')' : 'All Clear'}
       </button>
-      <div class="short-fix hidden mt-4 text-left text-sm bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-        <p>${shortFix}</p>
-        <button onclick="this.parentNode.parentNode.querySelector('.full-details').classList.toggle('hidden');" 
-                class="mt-3 text-xs text-orange-500 hover:underline">
+
+      <div class="fixes-panel hidden mt-4 text-left text-sm bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
+        ${fixesList}
+        <button onclick="this.parentNode.parentNode.querySelector('.full-details').classList.toggle('hidden');"
+                class="mt-4 text-xs text-orange-500 hover:underline block">
           More details →
         </button>
       </div>
+
       <div class="full-details hidden mt-6 space-y-3 text-left text-sm">
         <p class="text-blue-500 font-bold">What it is?</p>
         <p>${key === 'Experience' ? 'Proof that the content creator has first-hand involvement in the topic, such as personal anecdotes, real-world applications, or direct participation, making the advice more relatable and credible.'
@@ -329,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <tr class="border-b"><td class="p-4 text-gray-500">Word Count</td><td class="p-4 text-gray-500">${words}</td><td class="p-4 text-gray-500">>1,500</td><td class="p-4 ${words<1500?'text-red-500':'text-green-500'}">${words<1500?'Add '+(1500-words)+' words':'Good'}</td></tr>
       <tr class="border-b"><td class="p-4 text-gray-500">Readability</td><td class="p-4 text-gray-500">${readability}</td><td class="p-4 text-gray-500">60-70</td><td class="p-4 ${readability<60||readability>70?'text-orange-500':'text-green-500'}">${readability<60||readability>70?'Adjust':'Good'}</td></tr>
       <tr class="border-b"><td class="p-4 text-gray-500">Schema Types</td><td class="p-4 text-gray-500">${schemaTypes.length}</td><td class="p-4 text-gray-500">≥2</td><td class="p-4 ${schemaTypes.length<2?'text-red-500':'text-green-500'}">${schemaTypes.length<2?'Add':'Good'}</td></tr>
-      <tr><td class="p-4 text-gray-500">Author Bio</td><td class="p-4 text-gray-500">${hasAuthor?'Yes':'No'}</td><td class="p-4 text-gray-500">Yes</td><td class="p-4 ${!hasAuthor?'text-red-500':'text-green-500'}">${!hasAuthor?'Add':'Good'}</td></tr>
+      <tr><td class="p-4 text-gray-500">Author Bio</td><td class="p-4 text-gray-500">${hasAuthorByline?'Yes':'No'}</td><td class="p-4 text-gray-500">Yes</td><td class="p-4 ${!hasAuthorByline?'text-red-500':'text-green-500'}">${!hasAuthorByline?'Add':'Good'}</td></tr>
     </tbody>
   </table>
 </div>
@@ -337,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <!-- Prioritised AI-Style Fixes -->
 <div class="space-y-8">
   <h3 class="text-4xl font-bold text-green-400 text-center mb-8">Prioritised AI-Style Fixes</h3>
-  ${!hasAuthor ? `
+  ${!hasAuthorByline ? `
   <div class="p-8 bg-gradient-to-r from-red-500/10 border-l-8 border-red-500 rounded-r-2xl">
     <div class="flex gap-6">
       <div class="text-5xl">👤</div>
@@ -347,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="text-blue-500 font-bold">What it is?</p>
           <p class="text-gray-500 dark:text-gray-500">A visible author byline with name, photo, and credentials that proves a real expert created the content.</p>
           <p class="text-green-500 font-bold">How to improve?</p>
-          <p class="text-gray-500 dark:text-gray-500">Add a detailed author box with professional headshot, full bio highlighting relevant experience/qualifications, links to social profiles or other work, and clear connection to the topic (e.g., “Written by [Name], 10+ years in [niche]”).</p>
+          <p class="text-gray-500 dark:text-gray-500">Add a detailed author box with professional headshot, full bio highlighting relevant experience/qualifications, links to social profiles or other work, and clear connection to the topic.</p>
           <p class="text-orange-500 font-bold">Why it matters?</p>
           <p class="text-gray-500 dark:text-gray-500">Search engines heavily weigh proven authorship for E-E-A-T — pages with strong author signals rank higher, build trust faster, and reduce bounce rates significantly.</p>
         </div>
