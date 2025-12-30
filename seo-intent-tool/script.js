@@ -396,9 +396,9 @@ ${schemaTypes.length < 2 ? `
 
 
       function printCleanReport() {
-        const printWindow = window.open('', '_blank', 'width=900,height=800');
+        const printWindow = window.open('', '_blank');
         if (!printWindow) {
-          alert('Please allow popups for clean PDF export');
+          alert('Please allow pop-ups to enable clean PDF export.');
           return;
         }
         printWindow.document.write(`
@@ -407,7 +407,7 @@ ${schemaTypes.length < 2 ? `
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Traffic Torch SEO Report</title>
+            <title>Traffic Torch SEO Intent Report</title>
             <script src="https://cdn.tailwindcss.com"></script>
             <style>
               body { padding: 2rem; background: white; color: black; }
@@ -418,7 +418,7 @@ ${schemaTypes.length < 2 ? `
               }
             </style>
           </head>
-          <body class="bg-white text-black">
+          <body>
             <h1 class="text-4xl font-black text-center mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
               Traffic Torch SEO Intent Report
             </h1>
@@ -431,7 +431,6 @@ ${schemaTypes.length < 2 ? `
         printWindow.document.close();
         printWindow.focus();
         printWindow.print();
-        // Auto-close after print (most browsers support afterprint)
         printWindow.addEventListener('afterprint', () => printWindow.close());
       }
 
