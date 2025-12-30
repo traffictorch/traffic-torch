@@ -77,7 +77,7 @@ const initTool = (form, results, progressContainer) => {
       const hasQuestionH2 = Array.from(doc.querySelectorAll('h2')).some(h => /[?!]/.test(h.textContent));
       const hasSteps = /\b(step|guide|how to|instructions|follow these)\b/i.test(first300.toLowerCase());
 
-      // Answerability - direct points
+      // Answerability - direct points (6 checks → 100)
       let answerability = 0;
       if (hasBoldInFirst || hasDefinition) answerability += 30;
       if (hasFAQSchema) answerability += 25;
@@ -85,7 +85,7 @@ const initTool = (form, results, progressContainer) => {
       if (hasSteps) answerability += 20;
       if (first300.length > 600) answerability += 10;
 
-      // Structured Data - core + optional bonus
+      // Structured Data - core + optional bonus (4 checks → 100)
       let hasArticle = false;
       let hasFaqHowto = false;
       let hasPerson = false;
@@ -112,7 +112,7 @@ const initTool = (form, results, progressContainer) => {
         } catch {}
       });
 
-      // EEAT Signals - direct points
+      // EEAT Signals - direct points (4 checks → 100)
       const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
       const hasDate = !!doc.querySelector('time[datetime], meta[name="date"], .published, .updated, .date');
       const hasTrustedLinks = Array.from(doc.querySelectorAll('a[href^="https"]'))
@@ -123,7 +123,7 @@ const initTool = (form, results, progressContainer) => {
       if (hasTrustedLinks) eeat += 20;
       if (url.startsWith('https:')) eeat += 15;
 
-      // Scannability - core + bonus
+      // Scannability - core + bonus (5 checks → 100)
       const headings = doc.querySelectorAll('h1,h2,h3,h4').length;
       const lists = doc.querySelectorAll('ul,ol').length;
       const tables = doc.querySelectorAll('table').length;
@@ -131,12 +131,12 @@ const initTool = (form, results, progressContainer) => {
         .filter(p => p.textContent.trim().split(/\s+/).length < 35).length;
       let scannability = 0;
       if (headings > 5) scannability += 30;
-      if (headings > 8) scannability += 20; // bonus density
+      if (headings > 8) scannability += 20; // bonus
       if (lists > 2) scannability += 20;
       if (tables > 0) scannability += 15;
       if (shortParas > 5) scannability += 15;
 
-      // Conversational Tone - direct points
+      // Conversational Tone - direct points (4 checks → 100)
       const youCount = (mainText.match(/\byou\b|\byour\b|\byours\b/gi) || []).length;
       const iWeCount = (mainText.match(/\bI\b|\bwe\b|\bmy\b|\bour\b|\bme\b|\bus\b/gi) || []).length;
       const questions = (mainText.match(/\?/g) || []).length;
@@ -147,7 +147,7 @@ const initTool = (form, results, progressContainer) => {
       if (questions > 2) conversational += 20;
       if (painPoints > 3) conversational += 25;
 
-      // Readability - direct points
+      // Readability - direct points (4 checks → 100)
       const words = mainText.split(/\s+/).filter(Boolean).length || 1;
       const sentences = (mainText.match(/[.!?]+/g) || []).length || 1;
       const syllables = mainText.split(/\s+/).reduce((a, w) => a + (w.match(/[aeiouy]+/gi) || []).length, 0);
@@ -169,9 +169,9 @@ const initTool = (form, results, progressContainer) => {
       if (passivePatterns.length < 5) readability += 20;
       if (complexRatio < 15) readability += 15;
 
-      // Unique Insights - direct points
+      // Unique Insights - direct points (4 checks → 100)
       const hasInsights = /\b(I tested|in my experience|we found|case study|based on my|hands-on|personally observed)\b/i.test(mainText);
-      const hasDated = /\b(in last year|in this year|recently tested|results from)\b/i.test(mainText); // time-proof
+      const hasDated = /\b(in last year|in this year|recently tested|results from)\b/i.test(mainText);
       const hasInterviews = /\b(interview|spoke with|talked to|surveyed|asked|quoted|said ".*"|^".*"\s*-)\b/i.test(mainText);
       let uniqueInsights = 0;
       if (words > 1500) uniqueInsights += 30;
@@ -179,7 +179,7 @@ const initTool = (form, results, progressContainer) => {
       if (hasDated) uniqueInsights += 20;
       if (hasInterviews) uniqueInsights += 15;
 
-      // Anti-AI Safety - direct points
+      // Anti-AI Safety - direct points (3 checks → 100)
       const wordFreq = {};
       mainText.toLowerCase().split(/\s+/).forEach(w => wordFreq[w] = (wordFreq[w] || 0) + 1);
       const repeatedWords = Object.values(wordFreq).filter(c => c > 10).length;
