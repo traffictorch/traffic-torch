@@ -280,55 +280,98 @@ const initTool = (form, results, progressContainer) => {
 
       function getWhat(name) {
         const map = {
-          "Answerability": "Direct, quotable answers AI engines can cite verbatim.",
-          "Structured Data": "Machine-readable signals that trigger rich answers.",
-          "EEAT Signals": "Proof of expertise, experience, authority, and trust.",
-          "Scannability": "Easy extraction of key facts via lists, tables, headings.",
-          "Conversational Tone": "Natural human language that matches user queries.",
-          "Readability": "Simple, easy-to-summarize writing.",
-          "Unique Insights": "Original first-hand experience that prevents de-duplication.",
-          "Anti-AI Safety": "Human-like writing patterns that avoid AI-content filters."
+          "Answerability": "The degree to which your page provides direct, concise, and quotable answers right at the beginning. AI engines prioritize pages that immediately satisfy user intent with clear summaries they can cite verbatim in search results.",
+          "Structured Data": "Machine-readable markup (JSON-LD) that explicitly tells search engines what type of content your page contains. This helps trigger rich results, better understanding, and higher likelihood of being selected as a source.",
+          "EEAT Signals": "Visible indicators of Expertise, Experience, Authoritativeness, and Trustworthiness. These include author information, dates, secure connection, and links to reputable sources — critical for AI trust evaluation.",
+          "Scannability": "How easily both humans and AI can quickly extract key facts from your page. Well-structured content with headings, lists, tables, and short paragraphs is far more likely to be parsed and cited.",
+          "Conversational Tone": "Writing that feels natural and human by directly addressing the reader, using personal pronouns, asking questions, and acknowledging pain points. This matches how real people search and communicate.",
+          "Readability": "How simple and clear your writing is to understand and summarize. High readability (good Flesch score, varied sentences, active voice, simple words) makes content easier for AI to process accurately.",
+          "Unique Insights": "Original, first-hand information that can't be found elsewhere — personal testing, case studies, interviews, or timely observations. This prevents de-duplication and boosts perceived value.",
+          "Anti-AI Safety": "Subtle human writing patterns like natural sentence variation, low repetition, and unpredictable structure. These help avoid being mistakenly flagged as low-quality AI-generated content."
         };
-        return map[name] || "Optimization factor for AI search visibility.";
+        return map[name] || "An important factor for AI search visibility and citation.";
       }
+
       function getHow(name) {
         const map = {
-          "Answerability": "Bold definitions in first 300 words, FAQ schema, step-by-step lists.",
-          "Structured Data": "Add JSON-LD Article, FAQPage, HowTo, Person schema.",
-          "EEAT Signals": "Author byline with photo, publish/update dates, trusted outbound links.",
-          "Scannability": "Use H2/H3 headings, bullets, tables, short paragraphs.",
-          "Conversational Tone": "Address reader with “you”, share “I/we” experiences, ask questions.",
-          "Readability": "Short sentences, active voice, common words (Flesch 60–70).",
-          "Unique Insights": "Add personal testing, case studies, “In my experience…” statements.",
-          "Anti-AI Safety": "Vary sentence length dramatically, avoid repetitive patterns."
+          "Answerability": "Place a bold, complete answer in the first 150–300 words. Use definition-style phrasing, question-based H2 headings, FAQ or HowTo structured data, and numbered step-by-step instructions where relevant.",
+          "Structured Data": "Add a JSON-LD script tag containing Article/BlogPosting type. Include FAQPage or HowTo schema if applicable, and connect authorship with Person markup for maximum signal strength.",
+          "EEAT Signals": "Display a clear author byline with photo and bio. Show publish and update dates prominently. Link out to trusted authority sites and ensure your page uses HTTPS.",
+          "Scannability": "Break content with frequent H2/H3 headings. Use bullet points, numbered lists, and data tables liberally. Keep paragraphs short (2–4 lines) and include visual separators when helpful.",
+          "Conversational Tone": "Address the reader directly with “you”. Share personal insights using “I” or “we”. Include rhetorical questions and acknowledge common reader frustrations or challenges.",
+          "Readability": "Target a Flesch Reading Ease score above 60. Mix short and medium sentences. Prefer active voice and replace complex words with simpler alternatives when meaning allows.",
+          "Unique Insights": "Include personal testing results, case studies, or observations. Reference recent experiments or findings. Add direct quotes from interviews or surveys for exclusive value.",
+          "Anti-AI Safety": "Deliberately vary sentence length and structure throughout. Use synonyms instead of repeating words. Avoid starting multiple sentences the same way."
         };
-        return map[name] || "Implement best practices for this factor.";
+        return map[name] || "Follow established best practices for this optimization area.";
       }
+
       function getWhy(name) {
         const map = {
-          "Answerability": "AI engines quote direct answers — highest citation factor.",
-          "Structured Data": "Triggers rich results and improves citation likelihood.",
-          "EEAT Signals": "Trust is the #1 decider for AI citations.",
-          "Scannability": "AI loves instant extraction from structured elements.",
-          "Conversational Tone": "Matches natural language queries.",
-          "Readability": "Easier to summarize = higher ranking in AI results.",
-          "Unique Insights": "Prevents de-duplication against generic content.",
-          "Anti-AI Safety": "Avoids being filtered as low-quality AI-generated text."
+          "Answerability": "AI-powered search engines heavily favor pages that provide immediate, quotable answers. Direct answers are the #1 factor for being cited in overviews and generative results.",
+          "Structured Data": "Proper markup gives explicit signals that improve understanding and trigger rich features. Pages with relevant schema are significantly more likely to be selected as authoritative sources.",
+          "EEAT Signals": "Trust is the primary deciding factor for AI citation. Clear authorship, dates, and credible references prove the content comes from a reliable, experienced source.",
+          "Scannability": "AI engines prioritize content that can be quickly and accurately extracted. Well-formatted elements like lists and tables are easiest to parse and reuse in answers.",
+          "Conversational Tone": "Natural human language closely matches real user queries. Conversational writing feels authentic and builds reader connection — both valued by modern search systems.",
+          "Readability": "Clear, simple writing is easier for AI to accurately summarize and cite. High readability reduces misinterpretation and improves overall content quality perception.",
+          "Unique Insights": "Original first-hand information stands out from generic content. Unique value prevents de-duplication and positions your page as an authoritative primary source.",
+          "Anti-AI Safety": "Human-like variation helps avoid accidental filtering as low-quality generated text. Natural patterns maintain visibility while preserving authentic voice."
         };
-        return map[name] || "Improves visibility and citation in AI-powered search.";
+        return map[name] || "This factor significantly impacts AI search performance and citation likelihood.";
       }
       function getFixes(name) {
         const map = {
-          "Answerability": "<p>• Bold key answers in opening</p><p>• Add definition phrasing</p><p>• Use FAQ/HowTo schema</p><p>• Question H2s</p><p>• Step-by-step guides</p>",
-          "Structured Data": "<p>• Add JSON-LD block</p><p>• Include Article type</p><p>• Add FAQPage/HowTo</p><p>• Link Person schema</p>",
-          "EEAT Signals": "<p>• Visible author byline</p><p>• Publish date</p><p>• Trusted outbound links</p><p>• Use HTTPS</p>",
-          "Scannability": "<p>• More headings</p><p>• Bullet lists</p><p>• Tables for data</p><p>• Short paragraphs</p><p>• High heading density</p>",
-          "Conversational Tone": "<p>• Use 'you' frequently</p><p>• Share personal 'I/we'</p><p>• Ask questions</p><p>• Mention reader struggles</p>",
-          "Readability": "<p>• Aim Flesch >60</p><p>• Vary sentence length</p><p>• Reduce passive voice</p><p>• Use simpler words</p>",
-          "Unique Insights": "<p>• Add personal markers</p><p>• Mention timely results</p><p>• Include quotes/interviews</p><p>• Write in-depth content</p>",
-          "Anti-AI Safety": "<p>• High variation in sentences</p><p>• Avoid repeating words</p><p>• Vary sentence starts</p>"
+          "Answerability": `
+            <p>• <strong>Bold key answers in opening:</strong> Place the main answer in bold text within the first paragraph so AI can easily quote it.</p>
+            <p>• <strong>Add definition phrasing:</strong> Start with clear phrases like “X means…” or “X is defined as…” to directly satisfy definitional queries.</p>
+            <p>• <strong>Use FAQ/HowTo schema:</strong> Add structured data markup that tells search engines this page answers common questions or provides steps.</p>
+            <p>• <strong>Question H2s:</strong> Use heading tags formatted as questions (e.g., “How do I fix X?”) to match real user searches.</p>
+            <p>• <strong>Step-by-step guides:</strong> Include numbered lists with clear actions — AI engines love extractable instructions.</p>
+          `,
+          "Structured Data": `
+            <p>• <strong>Add JSON-LD block:</strong> Include a script tag with structured data that search engines can read directly.</p>
+            <p>• <strong>Include Article type:</strong> Mark the page as an Article or BlogPosting so AI knows it's authoritative content.</p>
+            <p>• <strong>Add FAQPage/HowTo:</strong> If the page answers questions or teaches a process, add the matching schema type.</p>
+            <p>• <strong>Link Person schema:</strong> Connect the content to an author profile using Person markup for better trust signals.</p>
+          `,
+          "EEAT Signals": `
+            <p>• <strong>Visible author byline:</strong> Show the writer's name, photo, and short bio near the top or bottom of the article.</p>
+            <p>• <strong>Publish date:</strong> Clearly display when the article was published and last updated.</p>
+            <p>• <strong>Trusted outbound links:</strong> Link to reputable sources (universities, government sites, known authorities) to build credibility.</p>
+            <p>• <strong>Use HTTPS:</strong> Ensure your site uses a secure connection — basic but essential for trust.</p>
+          `,
+          "Scannability": `
+            <p>• <strong>More headings:</strong> Break content into logical sections with H2 and H3 tags every 300–400 words.</p>
+            <p>• <strong>Bullet lists:</strong> Turn long paragraphs into scannable bullet or numbered lists.</p>
+            <p>• <strong>Tables for data:</strong> Present comparisons, specs, or stats in clean tables instead of paragraphs.</p>
+            <p>• <strong>Short paragraphs:</strong> Keep most paragraphs under 4 lines for faster reading and easier AI extraction.</p>
+            <p>• <strong>High heading density:</strong> Aim for a heading every few hundred words to guide both users and AI.</p>
+          `,
+          "Conversational Tone": `
+            <p>• <strong>Use 'you' frequently:</strong> Address the reader directly (“you can”, “your results”) to create connection.</p>
+            <p>• <strong>Share personal 'I/we':</strong> Include phrases like “I tested this” or “we found that” to sound human.</p>
+            <p>• <strong>Ask questions:</strong> Pose rhetorical questions that mirror what readers are thinking.</p>
+            <p>• <strong>Mention reader struggles:</strong> Acknowledge pain points (“tired of slow results?”, “frustrated with…”) to build empathy.</p>
+          `,
+          "Readability": `
+            <p>• <strong>Aim Flesch >60:</strong> Target a reading ease score above 60 by using shorter sentences and common words.</p>
+            <p>• <strong>Vary sentence length:</strong> Mix short punchy sentences with medium ones for natural rhythm.</p>
+            <p>• <strong>Reduce passive voice:</strong> Prefer active voice (“We tested X” instead of “X was tested by us”).</p>
+            <p>• <strong>Use simpler words:</strong> Replace complex jargon with everyday alternatives where possible.</p>
+          `,
+          "Unique Insights": `
+            <p>• <strong>Add personal markers:</strong> Include phrases like “In my experience”, “I tested”, or “we observed” to show original research.</p>
+            <p>• <strong>Mention timely results:</strong> Reference recent tests or current findings to prove freshness.</p>
+            <p>• <strong>Include quotes/interviews:</strong> Add direct quotes from experts or survey respondents for exclusive value.</p>
+            <p>• <strong>Write in-depth content:</strong> Go beyond surface-level advice with detailed analysis and original data.</p>
+          `,
+          "Anti-AI Safety": `
+            <p>• <strong>High variation in sentences:</strong> Deliberately mix very short and longer sentences for human-like flow.</p>
+            <p>• <strong>Avoid repeating words:</strong> Use synonyms and varied phrasing instead of repeating the same terms.</p>
+            <p>• <strong>Vary sentence starts:</strong> Don’t begin every sentence with the same structure or subject.</p>
+          `
         };
-        return map[name] || "<p>Optimize based on failed checks above.</p>";
+        return map[name] || "<p>Review the checks above and apply relevant best practices to improve this module.</p>";
       }
 
       const moduleKeywords = {
