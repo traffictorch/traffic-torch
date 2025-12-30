@@ -289,4 +289,45 @@ html, body {
 
 
 
+/* Remove colored text for pass/fail - use neutral colors that work perfectly in both day and night modes */
+.pass-fail-summary {
+  margin: 15px 0;
+  font-size: 0.95em;
+  line-height: 1.6;
+  color: #374151; /* gray-700 light */
+}
+.dark .pass-fail-summary {
+  color: #d1d5db; /* gray-300 dark */
+}
 
+.pass-fail-summary p {
+  margin: 6px 0;
+}
+
+/* Keep only the emoji indicators, no colored text */
+.pass-fail-summary .pass::before {
+  content: "✅ ";
+}
+.pass-fail-summary .fail::before {
+  content: "❌ ";
+}
+
+/* Ensure details panel text remains readable */
+.details-panel {
+  color: #374151;
+}
+.dark .details-panel {
+  color: #d1d5db;
+}
+.details-panel h5 {
+  color: #111827;
+}
+.dark .details-panel h5 {
+  color: #f3f4f6;
+}
+.details-panel strong {
+  color: #1f2937;
+}
+.dark .details-panel strong {
+  color: #e5e7eb;
+}
