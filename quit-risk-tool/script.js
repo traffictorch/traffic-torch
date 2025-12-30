@@ -339,34 +339,78 @@ function buildModuleHTML(moduleName, value, moduleData) {
             </div>
           </div>
 
-          <!-- Action Buttons Section -->
-          <div class="text-center my-20 space-y-12">
-            <button id="optimizeBtn" class="group relative inline-flex items-center px-16 py-8 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-3xl md:text-4xl rounded-3xl shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105">
-              <span class="flex items-center gap-6">
-                ⚡ One-Click UX Optimize Suggestions
-              </span>
-              <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </button>
-            <div id="optimizedOutput" class="hidden mt-12 max-w-5xl mx-auto">
-              <div class="p-10 bg-gradient-to-br from-gray-900/90 to-black/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-cyan-500/40">
-                <h3 class="text-4xl md:text-5xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-                  AI-Powered UX Optimization Tips
-                </h3>
-                <div class="space-y-8">
-                  ${fixes.length ? fixes.map(f => `
-                    <div class="flex items-start gap-6 p-8 bg-white/5 rounded-2xl hover:bg-white/10 transition-all">
-                      <div class="text-5xl">✨</div>
-                      <p class="text-xl leading-relaxed text-gray-100">${f}</p>
-                    </div>
-                  `).join('') : `
-                    <div class="p-12 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-3xl border border-green-500/50 text-center">
-                      <p class="text-4xl font-black text-green-300 mb-6">🎉 Outstanding Performance!</p>
-                      <p class="text-2xl text-green-200">No major improvements needed — your page is highly optimized for user satisfaction and engagement.</p>
-                    </div>
-                  `}
-                </div>
-              </div>
-            </div>
+
+
+
+// quit-risk-tool/script.js - replace one-click suggestions with Top 3 Priority Fixes
+
+let allFailed = [];
+
+if (ux.readability < 65) {
+  factorDefinitions.readability.factors.forEach(f => {
+    if (ux.readability < f.threshold) allFailed.push({ ...f, module: 'Readability', priority: 5 });
+  });
+}
+if (ux.nav < 70) {
+  factorDefinitions.navigation.factors.forEach(f => {
+    if (ux.nav < f.threshold) allFailed.push({ ...f, module: 'Navigation', priority: 4 });
+  });
+}
+if (ux.speed < 85) {
+  factorDefinitions.performance.factors.forEach(f => {
+    if (ux.speed < f.threshold) allFailed.push({ ...f, module: 'Performance', priority: 3 });
+  });
+}
+if (ux.accessibility < 75) {
+  factorDefinitions.accessibility.factors.forEach(f => {
+    if (ux.accessibility < f.threshold) allFailed.push({ ...f, module: 'Accessibility', priority: 2 });
+  });
+}
+if (ux.mobile < 90) {
+  factorDefinitions.mobile.factors.forEach(f => {
+    if (ux.mobile < f.threshold) allFailed.push({ ...f, module: 'Mobile', priority: 1 });
+  });
+}
+
+// Sort by priority descending, then take top 3
+allFailed.sort((a, b) => b.priority - a.priority);
+const top3 = allFailed.slice(0, 3);
+
+let priorityFixesHTML = '';
+if (top3.length > 0) {
+  priorityFixesHTML = top3.map((fix, index) => `
+    <div class="flex items-start gap-6 p-8 bg-gradient-to-r from-purple-600/10 to-cyan-600/10 rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all">
+      <div class="text-5xl font-black text-purple-600">${index + 1}</div>
+      <div>
+        <p class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">${fix.module} → ${fix.name}</p>
+        <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">${fix.howToFix}</p>
+      </div>
+    </div>
+  `).join('');
+} else {
+  priorityFixesHTML = `
+    <div class="p-12 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-3xl border border-green-500/50 text-center">
+      <p class="text-4xl font-black text-green-600 dark:text-green-400 mb-6">🎉 Outstanding UX!</p>
+      <p class="text-2xl text-gray-700 dark:text-gray-300">No critical improvements needed — your page delivers excellent user experience across all modules.</p>
+    </div>`;
+}
+
+
+<div class="text-center my-20">
+  <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent mb-12">
+    Top 3 Priority UX Fixes
+  </h2>
+  <div class="max-w-5xl mx-auto space-y-8">
+    ${priorityFixesHTML}
+  </div>
+  <p class="mt-12 text-xl text-gray-600 dark:text-gray-400">
+    Fixing these high-impact issues will deliver the biggest gains in user satisfaction, engagement, and quit risk reduction.
+  </p>
+</div>
+            
+            
+            
+            
             <div class="mt-20 p-10 bg-gradient-to-br from-orange-500/90 to-pink-600/90 backdrop-blur-xl rounded-3xl shadow-2xl text-white">
               <h3 class="text-4xl md:text-5xl font-black text-center mb-8">Predictive Rank Forecast</h3>
               <div class="text-center mb-12">
