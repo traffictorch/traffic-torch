@@ -7,16 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const factorDefinitions = {
     readability: {
       factors: [
-        { name: "Flesch Reading Ease Score", threshold: 65, shortDesc: "Measures how easy your text is to read using the classic Flesch formula. Higher scores mean broader audience comprehension. Low scores indicate complex or dense writing.",
-          howToFix: "Simplify vocabulary and use shorter sentences. Aim for common words that most people understand easily. Break complex ideas into smaller, digestible parts." },
-        { name: "Flesch-Kincaid Grade Level", threshold: 65, shortDesc: "Estimates the U.S. school grade needed to understand the text. Most successful web content targets grade 8 or lower. High scores limit your audience reach.",
-          howToFix: "Target grade 8 or below. Shorten sentences and reduce syllables per word. Test with readability tools and revise accordingly." },
-        { name: "Average Sentence Length", threshold: 70, shortDesc: "Long sentences increase cognitive load on screens. Ideal web average is under 20 words. Varied but concise sentences improve flow.",
-          howToFix: "Keep average below 20 words. Mix short and medium sentences. Break up any sentence over 25 words." },
-        { name: "Paragraph Density & Length", threshold: 70, shortDesc: "Long, dense paragraphs create walls of text that deter readers. Short paragraphs with whitespace aid scannability. Modern users prefer bite-sized blocks.",
-          howToFix: "Limit paragraphs to 3-5 sentences. Use single-sentence paragraphs for emphasis. Add generous spacing between ideas." },
-        { name: "Overall Text Scannability", threshold: 70, shortDesc: "Measures use of bolding, lists, subheadings, and visual hierarchy. Most visitors scan before reading fully. Strong scannability captures attention quickly.",
-          howToFix: "Bold key points, use bullet lists, and add descriptive subheadings. Highlight important phrases strategically. Front-load critical information." }
+        { name: "Flesch Reading Ease Score", threshold: 65, shortDesc: "Measures how easy your text is to read using the classic Flesch formula. Higher scores mean broader audience comprehension. Low scores indicate complex or dense writing.", howToFix: "Simplify vocabulary and use shorter sentences. Aim for common words that most people understand easily. Break complex ideas into smaller, digestible parts." },
+        { name: "Flesch-Kincaid Grade Level", threshold: 65, shortDesc: "Estimates the U.S. school grade needed to understand the text. Most successful web content targets grade 8 or lower. High scores limit your audience reach.", howToFix: "Target grade 8 or below. Shorten sentences and reduce syllables per word. Test with readability tools and revise accordingly." },
+        { name: "Average Sentence Length", threshold: 70, shortDesc: "Long sentences increase cognitive load on screens. Ideal web average is under 20 words. Varied but concise sentences improve flow.", howToFix: "Keep average below 20 words. Mix short and medium sentences. Break up any sentence over 25 words." },
+        { name: "Paragraph Density & Length", threshold: 70, shortDesc: "Long, dense paragraphs create walls of text that deter readers. Short paragraphs with whitespace aid scannability. Modern users prefer bite-sized blocks.", howToFix: "Limit paragraphs to 3-5 sentences. Use single-sentence paragraphs for emphasis. Add generous spacing between ideas." },
+        { name: "Overall Text Scannability", threshold: 70, shortDesc: "Measures use of bolding, lists, subheadings, and visual hierarchy. Most visitors scan before reading fully. Strong scannability captures attention quickly.", howToFix: "Bold key points, use bullet lists, and add descriptive subheadings. Highlight important phrases strategically. Front-load critical information." }
       ],
       moduleWhat: "Readability assesses how easily visitors can understand and scan your content. It combines multiple proven metrics including Flesch formulas, sentence length, paragraph structure, and visual formatting. High readability keeps users engaged longer and reduces bounce rates.",
       moduleHow: "Use simple, active language and short sentences. Break content into short paragraphs with clear subheadings. Incorporate bullet points, bold text, and whitespace to guide the eye. Always edit with the average reader in mind.",
@@ -24,14 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     navigation: {
       factors: [
-        { name: "Link Density Evaluation", threshold: 70, shortDesc: "Too many links create choice overload and dilute focus. Optimal density balances navigation with clarity. Excessive links confuse users and weaken topical signals.",
-          howToFix: "Audit and remove redundant or low-value links. Focus on quality over quantity. Keep primary navigation focused on key user goals." },
-        { name: "Menu Structure Clarity", threshold: 75, shortDesc: "Clear, logical menus help users find information quickly. Simple hierarchy reduces frustration. Poor structure leads to higher bounce rates.",
-          howToFix: "Limit top-level items to 5-7. Use descriptive labels users understand. Organize by user needs, not internal structure." },
-        { name: "Internal Linking Balance", threshold: 70, shortDesc: "Balanced internal links guide users deeper into your site. They spread authority and improve crawlability. Isolated pages get less traffic and ranking power.",
-          howToFix: "Add contextual links from body content to related pages. Link important pages from high-traffic content. Use descriptive anchor text naturally." },
-        { name: "CTA Prominence & Visibility", threshold: 80, shortDesc: "Clear calls-to-action guide users toward goals. Prominent placement reduces friction. Hidden CTAs mean missed conversions.",
-          howToFix: "Place primary CTAs above the fold with contrasting colors. Use action-oriented text and sufficient size. Add secondary CTAs further down." }
+        { name: "Link Density Evaluation", threshold: 70, shortDesc: "Too many links create choice overload and dilute focus. Optimal density balances navigation with clarity. Excessive links confuse users and weaken topical signals.", howToFix: "Audit and remove redundant or low-value links. Focus on quality over quantity. Keep primary navigation focused on key user goals." },
+        { name: "Menu Structure Clarity", threshold: 75, shortDesc: "Clear, logical menus help users find information quickly. Simple hierarchy reduces frustration. Poor structure leads to higher bounce rates.", howToFix: "Limit top-level items to 5-7. Use descriptive labels users understand. Organize by user needs, not internal structure." },
+        { name: "Internal Linking Balance", threshold: 70, shortDesc: "Balanced internal links guide users deeper into your site. They spread authority and improve crawlability. Isolated pages get less traffic and ranking power.", howToFix: "Add contextual links from body content to related pages. Link important pages from high-traffic content. Use descriptive anchor text naturally." },
+        { name: "CTA Prominence & Visibility", threshold: 80, shortDesc: "Clear calls-to-action guide users toward goals. Prominent placement reduces friction. Hidden CTAs mean missed conversions.", howToFix: "Place primary CTAs above the fold with contrasting colors. Use action-oriented text and sufficient size. Add secondary CTAs further down." }
       ],
       moduleWhat: "Navigation Clarity evaluates how easily users can move through your site. It examines link density, menu organization, internal linking patterns, and call-to-action visibility. Strong navigation reduces frustration and improves flow.",
       moduleHow: "Keep menus simple with clear labels. Use contextual links naturally in content. Make primary actions stand out visually. Guide users logically toward their goals.",
@@ -39,14 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     accessibility: {
       factors: [
-        { name: "Alt Text Coverage", threshold: 75, shortDesc: "Missing alt text excludes screen reader users and hurts image SEO. Complete coverage ensures inclusivity. Decorative images should have empty alt attributes.",
-          howToFix: "Add concise, descriptive alt text to every meaningful image. Use empty alt for purely decorative ones. Audit images during content creation." },
-        { name: "Color Contrast Ratios", threshold: 75, shortDesc: "Insufficient contrast makes text hard to read for low-vision users. WCAG AA standards ensure readability. Poor contrast causes strain in various conditions.",
-          howToFix: "Test with contrast checkers and meet 4.5:1 ratio. Adjust colors rather than relying on bolding. Provide alternatives where needed." },
-        { name: "Semantic HTML Structure", threshold: 70, shortDesc: "Proper headings and landmarks help screen readers navigate. Semantic markup creates logical outline. It improves both accessibility and SEO understanding.",
-          howToFix: "Use single H1 and proper heading hierarchy. Implement landmarks like main, nav, footer. Replace generic divs with meaningful elements." },
-        { name: "Overall WCAG Compliance", threshold: 70, shortDesc: "WCAG guidelines cover perceivability, operability, and robustness. Compliance creates truly inclusive experiences. It reduces legal risk and expands reach.",
-          howToFix: "Run regular automated audits. Fix keyboard navigation issues. Test with screen readers when possible." }
+        { name: "Alt Text Coverage", threshold: 75, shortDesc: "Missing alt text excludes screen reader users and hurts image SEO. Complete coverage ensures inclusivity. Decorative images should have empty alt attributes.", howToFix: "Add concise, descriptive alt text to every meaningful image. Use empty alt for purely decorative ones. Audit images during content creation." },
+        { name: "Color Contrast Ratios", threshold: 75, shortDesc: "Insufficient contrast makes text hard to read for low-vision users. WCAG AA standards ensure readability. Poor contrast causes strain in various conditions.", howToFix: "Test with contrast checkers and meet 4.5:1 ratio. Adjust colors rather than relying on bolding. Provide alternatives where needed." },
+        { name: "Semantic HTML Structure", threshold: 70, shortDesc: "Proper headings and landmarks help screen readers navigate. Semantic markup creates logical outline. It improves both accessibility and SEO understanding.", howToFix: "Use single H1 and proper heading hierarchy. Implement landmarks like main, nav, footer. Replace generic divs with meaningful elements." },
+        { name: "Overall WCAG Compliance", threshold: 70, shortDesc: "WCAG guidelines cover perceivability, operability, and robustness. Compliance creates truly inclusive experiences. It reduces legal risk and expands reach.", howToFix: "Run regular automated audits. Fix keyboard navigation issues. Test with screen readers when possible." }
       ],
       moduleWhat: "Accessibility Health measures how inclusive your page is for users with disabilities. It checks alt text, contrast, semantic structure, and overall WCAG alignment. Good accessibility serves 15-20% of users with impairments.",
       moduleHow: "Provide alt text for all images. Ensure sufficient color contrast. Use proper HTML semantics and landmarks. Test with accessibility tools regularly.",
@@ -54,14 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     mobile: {
       factors: [
-        { name: "Viewport Configuration", threshold: 90, shortDesc: "Viewport meta tag controls mobile layout scaling. Missing or incorrect tag causes zoomed-out desktop view. Proper setting enables responsive behavior.",
-          howToFix: "Add exact meta tag: width=device-width, initial-scale=1. Avoid restricting zoom. Test on real devices." },
-        { name: "Responsive Breakpoints", threshold: 85, shortDesc: "Responsive design adapts layout to screen size. Poor breakpoints cause horizontal scrolling. Content should reflow naturally on all devices.",
-          howToFix: "Use relative units and flexible grids. Test at common breakpoints. Adopt mobile-first approach." },
-        { name: "Touch Target Size", threshold: 85, shortDesc: "Small tap targets cause mis-taps on mobile. Minimum recommended size is 44×44 pixels. Adequate spacing prevents errors.",
-          howToFix: "Add padding around links and buttons. Ensure at least 44px targets. Test tapping on actual phones." },
-        { name: "PWA Readiness Indicators", threshold: 80, shortDesc: "PWA features enable install prompts and offline capability. Manifest and service worker are required. They improve engagement significantly.",
-          howToFix: "Add valid manifest.json with icons and name. Implement basic service worker. Ensure HTTPS." }
+        { name: "Viewport Configuration", threshold: 90, shortDesc: "Viewport meta tag controls mobile layout scaling. Missing or incorrect tag causes zoomed-out desktop view. Proper setting enables responsive behavior.", howToFix: "Add exact meta tag: width=device-width, initial-scale=1. Avoid restricting zoom. Test on real devices." },
+        { name: "Responsive Breakpoints", threshold: 85, shortDesc: "Responsive design adapts layout to screen size. Poor breakpoints cause horizontal scrolling. Content should reflow naturally on all devices.", howToFix: "Use relative units and flexible grids. Test at common breakpoints. Adopt mobile-first approach." },
+        { name: "Touch Target Size", threshold: 85, shortDesc: "Small tap targets cause mis-taps on mobile. Minimum recommended size is 44×44 pixels. Adequate spacing prevents errors.", howToFix: "Add padding around links and buttons. Ensure at least 44px targets. Test tapping on actual phones." },
+        { name: "PWA Readiness Indicators", threshold: 80, shortDesc: "PWA features enable install prompts and offline capability. Manifest and service worker are required. They improve engagement significantly.", howToFix: "Add valid manifest.json with icons and name. Implement basic service worker. Ensure HTTPS." }
       ],
       moduleWhat: "Mobile & PWA Readiness checks how well your page works on phones and tablets. It evaluates viewport, responsiveness, touch targets, and progressive web app signals. Mobile traffic dominates modern web usage.",
       moduleHow: "Implement proper viewport meta tag. Use responsive design with flexible layouts. Ensure large touch targets. Add manifest and service worker for PWA features.",
@@ -69,18 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     performance: {
       factors: [
-        { name: "Asset Volume Flags", threshold: 80, shortDesc: "Large total asset size slows loading dramatically. Every kilobyte counts on mobile networks. Lean pages load faster across connections.",
-          howToFix: "Compress images aggressively. Remove unused resources. Minify CSS and JavaScript." },
-        { name: "Script Bloat Detection", threshold: 85, shortDesc: "Excessive JavaScript delays interactivity. Unused code wastes bandwidth. Lean scripts enable faster rendering.",
-          howToFix: "Remove unused JS completely. Defer non-critical scripts. Use lightweight alternatives." },
-        { name: "Font Optimization", threshold: 85, shortDesc: "Too many web fonts delay text display. Large font files hurt performance. Optimized fonts balance design with speed.",
-          howToFix: "Limit to essential weights. Use font-display: swap. Prefer system fonts when possible." },
-        { name: "Lazy Loading Media", threshold: 80, shortDesc: "Offscreen images and videos should load only when needed. Lazy loading reduces initial payload. Critical content loads first.",
-          howToFix: "Add loading='lazy' to below-fold images and iframes. Implement for videos too." },
-        { name: "Image Optimization", threshold: 80, shortDesc: "Images are usually the largest assets. Next-gen formats reduce size dramatically. Proper sizing prevents over-delivery.",
-          howToFix: "Convert to WebP/AVIF. Compress appropriately. Serve device-sized images." },
-        { name: "Script Minification & Deferral", threshold: 85, shortDesc: "Render-blocking resources delay visible content. Minified and deferred scripts load faster. Async loading improves perceived speed.",
-          howToFix: "Minify all code. Defer non-critical scripts. Async third-party resources." }
+        { name: "Asset Volume Flags", threshold: 80, shortDesc: "Large total asset size slows loading dramatically. Every kilobyte counts on mobile networks. Lean pages load faster across connections.", howToFix: "Compress images aggressively. Remove unused resources. Minify CSS and JavaScript." },
+        { name: "Script Bloat Detection", threshold: 85, shortDesc: "Excessive JavaScript delays interactivity. Unused code wastes bandwidth. Lean scripts enable faster rendering.", howToFix: "Remove unused JS completely. Defer non-critical scripts. Use lightweight alternatives." },
+        { name: "Font Optimization", threshold: 85, shortDesc: "Too many web fonts delay text display. Large font files hurt performance. Optimized fonts balance design with speed.", howToFix: "Limit to essential weights. Use font-display: swap. Prefer system fonts when possible." },
+        { name: "Lazy Loading Media", threshold: 80, shortDesc: "Offscreen images and videos should load only when needed. Lazy loading reduces initial payload. Critical content loads first.", howToFix: "Add loading='lazy' to below-fold images and iframes. Implement for videos too." },
+        { name: "Image Optimization", threshold: 80, shortDesc: "Images are usually the largest assets. Next-gen formats reduce size dramatically. Proper sizing prevents over-delivery.", howToFix: "Convert to WebP/AVIF. Compress appropriately. Serve device-sized images." },
+        { name: "Script Minification & Deferral", threshold: 85, shortDesc: "Render-blocking resources delay visible content. Minified and deferred scripts load faster. Async loading improves perceived speed.", howToFix: "Minify all code. Defer non-critical scripts. Async third-party resources." }
       ],
       moduleWhat: "Performance Optimization measures loading speed and resource efficiency. It flags heavy assets, script bloat, font issues, lazy loading, and image optimization. Speed is critical for user satisfaction and rankings.",
       moduleHow: "Compress and optimize all assets. Lazy load offscreen content. Minify and defer scripts. Use modern image formats.",
@@ -138,16 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  function generateFixes(ux) {
-    const fixes = [];
-    if (ux.readability < 65) fixes.push("Use shorter sentences and paragraphs. Aim for active voice and common words.");
-    if (ux.nav < 70) fixes.push("Simplify navigation — limit top-level menu items and reduce overall link density.");
-    if (ux.accessibility < 75) fixes.push("Add meaningful alt text to every image. Ensure sufficient color contrast.");
-    if (ux.mobile < 90) fixes.push("Confirm viewport meta tag is present and test responsive breakpoints.");
-    if (ux.speed < 85) fixes.push("Compress images, enable lazy loading, and minify CSS/JS.");
-    return fixes;
-  }
-
   function predictForecast(score) {
     if (score >= 85) return "Top 3 Potential";
     if (score >= 75) return "Top 10 Potential";
@@ -161,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return { text: "High Risk", color: "from-red-500 to-pink-600" };
   }
 
-function buildModuleHTML(moduleName, value, moduleData) {
+  function buildModuleHTML(moduleName, value, moduleData) {
     const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
     const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
 
@@ -213,21 +180,17 @@ function buildModuleHTML(moduleName, value, moduleData) {
           </div>
         </div>
         <p class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">${moduleName}</p>
-        
         <div class="mt-6 text-left text-sm" style="overflow-wrap: break-word; word-break: break-word;">
           ${passFailHTML}
         </div>
-        
         <button class="more-details mt-6 px-6 py-2 rounded-full text-white text-sm hover:opacity-90" style="background-color: ${ringColor};">
           More Details
         </button>
-        
         <div class="details-panel hidden mt-8" style="overflow-wrap: break-word; word-break: break-word;">
           ${detailsHTML}
         </div>
       </div>`;
   }
-
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
@@ -276,7 +239,6 @@ function buildModuleHTML(moduleName, value, moduleData) {
         const doc = new DOMParser().parseFromString(html, 'text/html');
         const uxData = getUXContent(doc);
         const ux = analyzeUX(uxData);
-        const fixes = generateFixes(ux);
         const forecast = predictForecast(ux.score);
         const risk = getQuitRiskLabel(ux.score);
 
@@ -290,6 +252,55 @@ function buildModuleHTML(moduleName, value, moduleData) {
         const accessHTML = buildModuleHTML('Accessibility', ux.accessibility, factorDefinitions.accessibility);
         const mobileHTML = buildModuleHTML('Mobile', ux.mobile, factorDefinitions.mobile);
         const speedHTML = buildModuleHTML('Speed', ux.speed, factorDefinitions.performance);
+
+        // Top 3 Priority Fixes
+        let allFailed = [];
+        if (ux.readability < 65) {
+          factorDefinitions.readability.factors.forEach(f => {
+            if (ux.readability < f.threshold) allFailed.push({ ...f, module: 'Readability', priority: 5 });
+          });
+        }
+        if (ux.nav < 70) {
+          factorDefinitions.navigation.factors.forEach(f => {
+            if (ux.nav < f.threshold) allFailed.push({ ...f, module: 'Navigation', priority: 4 });
+          });
+        }
+        if (ux.speed < 85) {
+          factorDefinitions.performance.factors.forEach(f => {
+            if (ux.speed < f.threshold) allFailed.push({ ...f, module: 'Performance', priority: 3 });
+          });
+        }
+        if (ux.accessibility < 75) {
+          factorDefinitions.accessibility.factors.forEach(f => {
+            if (ux.accessibility < f.threshold) allFailed.push({ ...f, module: 'Accessibility', priority: 2 });
+          });
+        }
+        if (ux.mobile < 90) {
+          factorDefinitions.mobile.factors.forEach(f => {
+            if (ux.mobile < f.threshold) allFailed.push({ ...f, module: 'Mobile', priority: 1 });
+          });
+        }
+        allFailed.sort((a, b) => b.priority - a.priority);
+        const top3 = allFailed.slice(0, 3);
+
+        let priorityFixesHTML = '';
+        if (top3.length > 0) {
+          priorityFixesHTML = top3.map((fix, index) => `
+            <div class="flex items-start gap-6 p-8 bg-gradient-to-r from-purple-600/10 to-cyan-600/10 rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all">
+              <div class="text-5xl font-black text-purple-600">${index + 1}</div>
+              <div>
+                <p class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">${fix.module} → ${fix.name}</p>
+                <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">${fix.howToFix}</p>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          priorityFixesHTML = `
+            <div class="p-12 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-3xl border border-green-500/50 text-center">
+              <p class="text-4xl font-black text-green-600 dark:text-green-400 mb-6">🎉 Outstanding UX!</p>
+              <p class="text-2xl text-gray-700 dark:text-gray-300">No critical improvements needed — your page delivers excellent user experience across all modules.</p>
+            </div>`;
+        }
 
         results.innerHTML = `
           <!-- Big Overall Score Circle -->
@@ -324,127 +335,59 @@ function buildModuleHTML(moduleName, value, moduleData) {
             <p class="text-xl text-gray-500">Scanned ${uxData.links} links + ${uxData.images} images</p>
           </div>
 
-          <!-- Modules Groups -->
+          <!-- Modules -->
           <div class="grid gap-6 my-16">
-            <div class="grid md:grid-cols-1">
-              ${readabilityHTML}
+            <div class="grid md:grid-cols-1">${readabilityHTML}</div>
+            <div class="grid md:grid-cols-2 gap-6">${navHTML}${accessHTML}</div>
+            <div class="grid md:grid-cols-2 gap-6">${mobileHTML}${speedHTML}</div>
+          </div>
+
+          <!-- Top 3 Priority Fixes -->
+          <div class="text-center my-20">
+            <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent mb-12">
+              Top 3 Priority UX Fixes
+            </h2>
+            <div class="max-w-5xl mx-auto space-y-8">
+              ${priorityFixesHTML}
             </div>
-            <div class="grid md:grid-cols-2 gap-6">
-              ${navHTML}
-              ${accessHTML}
+            <p class="mt-12 text-xl text-gray-600 dark:text-gray-400">
+              Fixing these high-impact issues will deliver the biggest gains in user satisfaction, engagement, and quit risk reduction.
+            </p>
+          </div>
+
+          <!-- Predictive Rank Forecast -->
+          <div class="mt-20 p-10 bg-gradient-to-br from-orange-500/90 to-pink-600/90 backdrop-blur-xl rounded-3xl shadow-2xl text-white">
+            <h3 class="text-4xl md:text-5xl font-black text-center mb-8">Predictive Rank Forecast</h3>
+            <div class="text-center mb-12">
+              <p class="text-4xl md:text-8xl font-black mb-4" style="color: ${safeScore < 60 ? '#fca5a5' : safeScore < 80 ? '#fdba74' : '#86efac'};">
+                ${forecast}
+              </p>
+              <p class="text-2xl md:text-3xl font-bold opacity-90">Potential ranking ceiling after applying UX improvements</p>
             </div>
-            <div class="grid md:grid-cols-2 gap-6">
-              ${mobileHTML}
-              ${speedHTML}
+            <div class="grid md:grid-cols-3 gap-8">
+              <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
+                <div class="text-5xl mb-4">🎯</div>
+                <p class="font-bold text-xl mb-3 text-cyan-200">What it means</p>
+                <p class="text-gray-300 opacity-90">Estimated highest achievable position based on current usability and engagement signals compared to competing pages.</p>
+              </div>
+              <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
+                <div class="text-5xl mb-4">🧮</div>
+                <p class="font-bold text-xl mb-3 text-green-200">How it's calculated</p>
+                <p class="text-gray-300 opacity-90">Stronger UX → lower bounce rate → higher dwell time → better behavioral signals that modern search algorithms reward.</p>
+              </div>
+              <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
+                <div class="text-5xl mb-4">🚀</div>
+                <p class="font-bold text-xl mb-3 text-orange-200">Why it matters</p>
+                <p class="text-gray-300 opacity-90">Fixing usability gaps can unlock significant traffic gains, improve conversion rates, and build long-term ranking resilience.</p>
+              </div>
             </div>
           </div>
 
-
-
-
-// quit-risk-tool/script.js - replace one-click suggestions with Top 3 Priority Fixes
-
-let allFailed = [];
-
-if (ux.readability < 65) {
-  factorDefinitions.readability.factors.forEach(f => {
-    if (ux.readability < f.threshold) allFailed.push({ ...f, module: 'Readability', priority: 5 });
-  });
-}
-if (ux.nav < 70) {
-  factorDefinitions.navigation.factors.forEach(f => {
-    if (ux.nav < f.threshold) allFailed.push({ ...f, module: 'Navigation', priority: 4 });
-  });
-}
-if (ux.speed < 85) {
-  factorDefinitions.performance.factors.forEach(f => {
-    if (ux.speed < f.threshold) allFailed.push({ ...f, module: 'Performance', priority: 3 });
-  });
-}
-if (ux.accessibility < 75) {
-  factorDefinitions.accessibility.factors.forEach(f => {
-    if (ux.accessibility < f.threshold) allFailed.push({ ...f, module: 'Accessibility', priority: 2 });
-  });
-}
-if (ux.mobile < 90) {
-  factorDefinitions.mobile.factors.forEach(f => {
-    if (ux.mobile < f.threshold) allFailed.push({ ...f, module: 'Mobile', priority: 1 });
-  });
-}
-
-// Sort by priority descending, then take top 3
-allFailed.sort((a, b) => b.priority - a.priority);
-const top3 = allFailed.slice(0, 3);
-
-let priorityFixesHTML = '';
-if (top3.length > 0) {
-  priorityFixesHTML = top3.map((fix, index) => `
-    <div class="flex items-start gap-6 p-8 bg-gradient-to-r from-purple-600/10 to-cyan-600/10 rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all">
-      <div class="text-5xl font-black text-purple-600">${index + 1}</div>
-      <div>
-        <p class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">${fix.module} → ${fix.name}</p>
-        <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">${fix.howToFix}</p>
-      </div>
-    </div>
-  `).join('');
-} else {
-  priorityFixesHTML = `
-    <div class="p-12 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-3xl border border-green-500/50 text-center">
-      <p class="text-4xl font-black text-green-600 dark:text-green-400 mb-6">🎉 Outstanding UX!</p>
-      <p class="text-2xl text-gray-700 dark:text-gray-300">No critical improvements needed — your page delivers excellent user experience across all modules.</p>
-    </div>`;
-}
-
-
-<div class="text-center my-20">
-  <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent mb-12">
-    Top 3 Priority UX Fixes
-  </h2>
-  <div class="max-w-5xl mx-auto space-y-8">
-    ${priorityFixesHTML}
-  </div>
-  <p class="mt-12 text-xl text-gray-600 dark:text-gray-400">
-    Fixing these high-impact issues will deliver the biggest gains in user satisfaction, engagement, and quit risk reduction.
-  </p>
-</div>
-            
-            
-            
-            
-            <div class="mt-20 p-10 bg-gradient-to-br from-orange-500/90 to-pink-600/90 backdrop-blur-xl rounded-3xl shadow-2xl text-white">
-              <h3 class="text-4xl md:text-5xl font-black text-center mb-8">Predictive Rank Forecast</h3>
-              <div class="text-center mb-12">
-                <p class="text-4xl md:text-8xl font-black mb-4" style="color: ${safeScore < 60 ? '#fca5a5' : safeScore < 80 ? '#fdba74' : '#86efac'};">
-                  ${forecast}
-                </p>
-                <p class="text-2xl md:text-3xl font-bold opacity-90">Potential ranking ceiling after applying UX improvements</p>
-              </div>
-              <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
-                  <div class="text-5xl mb-4">🎯</div>
-                  <p class="font-bold text-xl mb-3 text-cyan-200">What it means</p>
-                  <p class="text-gray-500 leading-relaxed opacity-90">Estimated highest achievable position based on current usability and engagement signals compared to competing pages.</p>
-                </div>
-                <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
-                  <div class="text-5xl mb-4">🧮</div>
-                  <p class="font-bold text-xl mb-3 text-green-200">How it's calculated</p>
-                  <p class="text-gray-500 leading-relaxed opacity-90">Stronger UX → lower bounce rate → higher dwell time → better behavioral signals that modern search algorithms reward.</p>
-                </div>
-                <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
-                  <div class="text-5xl mb-4">🚀</div>
-                  <p class="font-bold text-xl mb-3 text-orange-200">Why it matters</p>
-                  <p class="text-gray-500 leading-relaxed opacity-90">Fixing usability gaps can unlock significant traffic gains, improve conversion rates, and build long-term ranking resilience.</p>
-                </div>
-              </div>
-              <div class="mt-10 text-center">
-                <p class="text-lg opacity-90 italic">Higher usability scores correlate with stronger performance in user-centric ranking factors.</p>
-              </div>
-            </div>
+          <!-- PDF Button -->
+          <div class="text-center my-16">
             <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
                     class="group relative inline-flex items-center px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
-              <span class="flex items-center gap-6">
-                📄 Save Report as PDF
-              </span>
+              <span class="flex items-center gap-6">📄 Save Report as PDF</span>
               <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
           </div>
@@ -463,11 +406,6 @@ if (top3.length > 0) {
 
   document.addEventListener('click', e => {
     const btn = e.target.closest('.more-details');
-    if (btn) {
-      btn.nextElementSibling.classList.toggle('hidden');
-    }
-    if (e.target.closest('#optimizeBtn')) {
-      document.getElementById('optimizedOutput').classList.toggle('hidden');
-    }
+    if (btn) btn.nextElementSibling.classList.toggle('hidden');
   });
 });
