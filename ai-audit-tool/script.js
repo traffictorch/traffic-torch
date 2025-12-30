@@ -375,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-<div class="mt-20 py-12 px-8 bg-gradient-to-r from-orange-500 to-pink-600 rounded-3xl shadow-2xl text-white">
+<div class="mt-20 py-16 px-8 bg-gradient-to-r from-orange-500 to-pink-600 rounded-3xl shadow-2xl text-white">
   <h2 class="text-5xl md:text-6xl font-black text-center mb-16">Performance Forecast</h2>
 
   ${(() => {
@@ -400,24 +400,24 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="text-2xl">/100</div>
           </div>
         </div>
-        <p class="text-3xl md:text-4xl font-bold max-w-3xl mx-auto">Your content demonstrates excellent human-like quality, supporting strong search visibility and user trust</p>
+        <p class="text-3xl md:text-4xl font-bold max-w-4xl mx-auto">Your content exhibits excellent human-like quality, positioned for strong search visibility and sustained performance</p>
       </div>`;
     }
 
     return `
-    <div class="flex flex-col md:flex-row items-center justify-center gap-12 lg:gap-24">
+    <div class="flex flex-col md:flex-row items-center justify-center gap-12 lg:gap-32">
       <!-- Current -->
       <div class="flex flex-col items-center space-y-8">
         <div class="relative w-72 h-72">
           <svg viewBox="0 0 288 288" class="absolute inset-0 -rotate-90">
-            <circle cx="144" cy="144" r="120" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="28"/>
-            <circle cx="144" cy="144" r="120" fill="none" stroke="${currentColor}" stroke-width="24"
+            <circle cx="144" cy="144" r="120" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="32"/>
+            <circle cx="144" cy="144" r="120" fill="none" stroke="${currentColor}" stroke-width="28"
                     stroke-dasharray="${(yourScore / 100) * 754} 754" stroke-linecap="round"/>
           </svg>
           <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
             <div class="text-8xl font-black">${yourScore}</div>
-            <div class="text-2xl opacity-90">Current</div>
-            <div class="text-xl">Human Score /100</div>
+            <div class="text-2xl opacity-90">Current Human Score</div>
+            <div class="text-xl">/100</div>
           </div>
         </div>
         <p class="text-xl text-center opacity-90 max-w-xs">Based on current content</p>
@@ -426,7 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <!-- Connector -->
       <div class="flex flex-col items-center space-y-4">
         <div class="text-6xl font-bold">→</div>
-        <p class="text-xl font-medium text-center">Apply recommended fixes</p>
+        <p class="text-xl font-medium text-center px-6">Apply recommended fixes</p>
       </div>
 
       <!-- Optimized -->
@@ -440,11 +440,11 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
             <div class="text-7xl mb-2">🏆</div>
             <div class="text-8xl font-black">${optimizedScore}</div>
-            <div class="text-2xl opacity-90">Optimized</div>
-            <div class="text-xl">Human Score /100</div>
+            <div class="text-2xl opacity-90">Optimized Human Score</div>
+            <div class="text-xl">/100</div>
           </div>
         </div>
-        <p class="text-2xl font-bold text-green-200">+${boost} point potential</p>
+        <p class="text-2xl font-bold text-green-200">+${boost} point improvement</p>
         <p class="text-xl text-center opacity-90 max-w-xs">After applying fixes</p>
       </div>
     </div>
@@ -452,15 +452,15 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="mt-20 grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl mx-auto">
       <div class="bg-white/15 backdrop-blur-lg rounded-2xl p-8 text-center">
         <p class="text-2xl font-bold mb-4">Increase Search Engine Visibility</p>
-        <p class="opacity-90 leading-relaxed">Higher human-like quality improves relevance signals and ranking potential</p>
+        <p class="opacity-90 leading-relaxed">Enhanced human-like quality strengthens relevance and authority signals</p>
       </div>
       <div class="bg-white/15 backdrop-blur-lg rounded-2xl p-8 text-center">
         <p class="text-2xl font-bold mb-4">Improve User Engagement</p>
-        <p class="opacity-90 leading-relaxed">Natural, authentic content encourages longer visits and better reader experience</p>
+        <p class="opacity-90 leading-relaxed">Authentic content promotes longer sessions and positive user experience</p>
       </div>
       <div class="bg-white/15 backdrop-blur-lg rounded-2xl p-8 text-center">
         <p class="text-2xl font-bold mb-4">Enhance Brand Credibility</p>
-        <p class="opacity-90 leading-relaxed">Expert, human-written content builds trust and authority with your audience</p>
+        <p class="opacity-90 leading-relaxed">Expert, natural writing builds trust and establishes long-term authority</p>
       </div>
     </div>
     `;
