@@ -7,12 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let wordCount = 0;
 
   function getMainContent(doc) {
-    // 1. Try explicit main content containers
     const main = doc.querySelector('main, [role="main"], article, .main-content, .site-content, .content-area');
-    if (main && main.textContent.trim().length > 600) {
-      return main;
-    }
-    // 2. Find the element with the most paragraph-like content
+    if (main && main.textContent.trim().length > 600) return main;
+
     const candidates = doc.querySelectorAll('div, section, article');
     let best = null;
     let bestScore = 0;
@@ -21,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const paragraphs = el.querySelectorAll('p');
       const textLength = el.textContent.trim().length;
       const pCount = paragraphs.length;
-      // Score: favor lots of <p> tags and decent length
       const score = pCount * 100 + textLength;
       if (score > bestScore && textLength > 600 && textLength < 20000) {
         bestScore = score;
@@ -29,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
     if (best) return best;
-    // 3. Fallback: body with aggressive removal
+
     const body = doc.body.cloneNode(true);
     const removeSelectors = 'header, nav, footer, aside, .menu, .navbar, .sidebar, .cookie-banner, .popup, .social-links, .breadcrumbs';
     body.querySelectorAll(removeSelectors).forEach(e => e.remove());
@@ -38,54 +34,117 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function analyzeAIContent(text) {
     if (!text || text.length < 200) {
-      return { score: 50, perplexity: 7, burstiness: 4, repetition: 15, sentenceLength: 18, vocab: 65 };
+      return { moduleScores: [5,5,5,5,5], totalScore: 50 };
     }
     text = text.replace(/\s+/g, ' ').trim().toLowerCase();
     const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
     const words = text.split(/\s+/).filter(w => w.length > 0);
-    const wordCount = words.length;
-    const sentenceLengths = sentences.map(s => s.split(/\s+/).filter(w => w.length).length);
-    const avgSentenceLength = sentenceLengths.reduce((a, b) => a + b, 0) / sentenceLengths.length || 20;
-    const variance = sentenceLengths.reduce((sum, len) => sum + Math.pow(len - avgSentenceLength, 2), 0) / sentenceLengths.length;
-    const burstiness = Math.sqrt(variance).toFixed(1);
+    wordCount = words.length;
+
+    // Helper: entropy calculation
+    function entropy(counts, total) {
+      return -Object.values(counts).reduce((sum, c) => {
+        const p = c / total;
+        return sum + p * Math.log2(p);
+      }, 0);
+    }
+
+    // 1. Perplexity module
     const bigrams = {};
     for (let i = 0; i < words.length - 1; i++) {
       const gram = words[i] + ' ' + words[i + 1];
       bigrams[gram] = (bigrams[gram] || 0) + 1;
     }
-    const maxBigram = Math.max(...Object.values(bigrams), 1);
-    const repetition = Math.min(99, Math.round((maxBigram / (wordCount / 100)) * 10));
-    const uniqueWords = new Set(words).size;
-    const vocab = Math.round((uniqueWords / wordCount) * 100);
-    const trigramCount = {};
+    const bigramEntropy = words.length > 1 ? entropy(bigrams, words.length - 1) : 5;
+
+    const trigrams = {};
     for (let i = 0; i < words.length - 2; i++) {
-      const tri = words.slice(i, i + 3).join(' ');
-      trigramCount[tri] = (trigramCount[tri] || 0) + 1;
+      const gram = words.slice(i, i + 3).join(' ');
+      trigrams[gram] = (trigrams[gram] || 0) + 1;
     }
-    const trigramEntropy = -Object.values(trigramCount)
-      .reduce((sum, count) => sum + (count / (wordCount - 2 || 1)) * Math.log2(count / (wordCount - 2 || 1)), 0);
-    const perplexity = Math.min(12, trigramEntropy.toFixed(1));
-    let score = 0;
-    score += perplexity > 8 ? (perplexity - 8) * 15 : 0;
-    score += burstiness < 4.5 ? (4.5 - burstiness) * 12 : 0;
-    score += repetition > 15 ? (repetition - 15) * 2 : 0;
-    score += avgSentenceLength > 23 || avgSentenceLength < 15 ? 10 : 0;
-    score += vocab < 60 ? (60 - vocab) : 0;
-    score = Math.min(95, Math.max(5, Math.round(score)));
+    const trigramEntropy = words.length > 2 ? entropy(trigrams, words.length - 2) : 5;
+
+    const perplexityScore1 = Math.min(10, Math.max(0, (trigramEntropy - 4) / 0.8)); // higher = more human
+    const perplexityScore2 = Math.min(10, Math.max(0, (bigramEntropy - 4) / 0.8));
+    const perplexityModule = (perplexityScore1 + perplexityScore2) / 2;
+
+    // 2. Burstiness module
+    const sentenceLengths = sentences.map(s => s.split(/\s+/).filter(w => w.length).length);
+    const avgSentLen = sentenceLengths.reduce((a, b) => a + b, 0) / sentenceLengths.length || 20;
+    const sentVariance = sentenceLengths.reduce((sum, len) => sum + Math.pow(len - avgSentLen, 2), 0) / sentenceLengths.length;
+    const sentBurstiness = Math.sqrt(sentVariance);
+
+    const wordLengths = words.map(w => w.length);
+    const avgWordLen = wordLengths.reduce((a, b) => a + b, 0) / wordLengths.length;
+    const wordVariance = wordLengths.reduce((sum, len) => sum + Math.pow(len - avgWordLen, 2), 0) / wordLengths.length;
+    const wordBurstiness = Math.sqrt(wordVariance);
+
+    const burstinessScore1 = Math.min(10, sentBurstiness);
+    const burstinessScore2 = Math.min(10, wordBurstiness * 2); // scale to similar range
+    const burstinessModule = (burstinessScore1 + burstinessScore2) / 2;
+
+    // 3. Repetition module
+    const maxBigram = Math.max(...Object.values(bigrams), 1);
+    const bigramRep = Math.min(10, (maxBigram / (wordCount / 100)) * 1);
+
+    const maxTrigram = Math.max(...Object.values(trigrams), 1);
+    const trigramRep = Math.min(10, (maxTrigram / (wordCount / 100)) * 2);
+
+    const repetitionScore1 = 10 - bigramRep;
+    const repetitionScore2 = 10 - trigramRep;
+    const repetitionModule = (repetitionScore1 + repetitionScore2) / 2;
+
+    // 4. Sentence Length module
+    const avgSentenceLength = avgSentLen;
+    const sentLenScore = Math.max(0, 10 - Math.abs(avgSentenceLength - 19) * 0.5);
+
+    const commaCounts = sentences.map(s => (s.match(/,/g) || []).length);
+    const avgCommas = commaCounts.reduce((a, b) => a + b, 0) / commaCounts.length || 0;
+    const complexityScore = Math.min(10, avgCommas * 2.5); // higher complexity = more human
+
+    const sentenceLengthModule = (sentLenScore + complexityScore) / 2;
+
+    // 5. Vocabulary module
+    const uniqueWords = new Set(words).size;
+    const vocabDiversity = (uniqueWords / wordCount) * 100;
+    const vocabScore = vocabDiversity / 10;
+
+    const wordFreq = {};
+    words.forEach(w => wordFreq[w] = (wordFreq[w] || 0) + 1);
+    const hapax = Object.values(wordFreq).filter(c => c === 1).length;
+    const rareWordRatio = (hapax / wordCount) * 100;
+    const rareScore = Math.min(10, rareWordRatio * 0.5); // scale appropriately
+
+    const vocabularyModule = (vocabScore + rareScore) / 2;
+
+    const moduleScores = [
+      perplexityModule,
+      burstinessModule,
+      repetitionModule,
+      sentenceLengthModule,
+      vocabularyModule
+    ];
+
+    const totalModuleSum = moduleScores.reduce((a, b) => a + b, 0);
+    const totalScore = Math.round(totalModuleSum * 2); // out of 100
+
     return {
-      score,
-      perplexity: parseFloat(perplexity),
-      burstiness: parseFloat(burstiness),
-      repetition,
-      sentenceLength: Math.round(avgSentenceLength),
-      vocab
+      moduleScores,
+      totalScore,
+      details: {
+        perplexity: { trigram: trigramEntropy.toFixed(1), bigram: bigramEntropy.toFixed(1) },
+        burstiness: { sentence: sentBurstiness.toFixed(1), word: wordBurstiness.toFixed(1) },
+        repetition: { bigram: bigramRep.toFixed(1), trigram: trigramRep.toFixed(1) },
+        sentenceLength: { avg: Math.round(avgSentenceLength), complexity: avgCommas.toFixed(1) },
+        vocabulary: { diversity: vocabDiversity.toFixed(1), rare: rareWordRatio.toFixed(1) }
+      }
     };
   }
 
   function getGradeColor(normalized10) {
-    if (normalized10 >= 8.0) return '#10b981'; // green
-    if (normalized10 >= 6.0) return '#f97316'; // orange
-    return '#ef4444'; // red
+    if (normalized10 >= 8.0) return '#10b981';
+    if (normalized10 >= 6.0) return '#f97316';
+    return '#ef4444';
   }
 
   form.addEventListener('submit', async (e) => {
@@ -115,12 +174,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const messages = [
       "Fetching page...",
       "Extracting main content...",
-      "Test perplexity & burstiness...",
+      "Analyzing predictability...",
+      "Measuring variation & rhythm...",
       "Checking repetition patterns...",
-      "Evaluating sentence variation...",
-      "Assessing vocabulary depth...",
-      "Calculating AI likelihood score...",
-      "Generating full report..."
+      "Evaluating structure & depth...",
+      "Assessing vocabulary richness...",
+      "Calculating final AI score..."
     ];
     let delay = 800;
     messages.forEach(msg => {
@@ -145,10 +204,11 @@ document.addEventListener('DOMContentLoaded', () => {
       text = text.replace(/\s+/g, ' ').replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu, ' ').trim();
       wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
       analyzedText = text;
-      const ai = analyzeAIContent(text);
-      const yourScore = ai.score;
-      const mainNormalized = 100 - yourScore;
-      const mainGradeColor = getGradeColor(mainNormalized / 10);
+
+      const analysis = analyzeAIContent(text);
+      const yourScore = analysis.totalScore;
+      const humanScore = 100 - yourScore;
+      const mainGradeColor = getGradeColor(humanScore / 10);
       const verdict = yourScore >= 70 ? 'Very Likely AI' : yourScore >= 40 ? 'Moderate AI Patterns' : 'Likely Human';
       const forecast = yourScore >= 70 ? 'Page 2+' : yourScore >= 50 ? 'Page 1 Possible' : yourScore >= 30 ? 'Top 10 Possible' : 'Top 3 Potential';
 
@@ -162,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </style>
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900 py-12 px-4">
           <div class="max-w-4xl mx-auto space-y-16">
-            <!-- Big Score Circle -->
             <div class="flex justify-center">
               <div class="relative w-64 h-64">
                 <svg viewBox="0 0 256 256" class="absolute inset-0 -rotate-90">
@@ -185,24 +244,23 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <p class="text-center text-base text-gray-600">Scanned ${wordCount.toLocaleString()} words from main content</p>
 
-            <!-- Small Metrics (0–10 scale with colored number + left border) -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
               ${[
-                {name: 'Perplexity', raw: ai.perplexity, normalized: Math.max(0, 10 - (ai.perplexity - 4) / 0.8)},
-                {name: 'Burstiness', raw: ai.burstiness, normalized: Math.min(10, ai.burstiness)},
-                {name: 'Repetition', raw: ai.repetition, normalized: Math.max(0, 10 - ai.repetition / 10)},
-                {name: 'Sentence Length', raw: ai.sentenceLength, normalized: Math.max(0, 10 - Math.abs(ai.sentenceLength - 19) * 0.5)},
-                {name: 'Vocabulary', raw: ai.vocab, normalized: ai.vocab / 10}
+                {name: 'Perplexity', score: analysis.moduleScores[0], details: analysis.details.perplexity, info: 'Measures text unpredictability using bigram and trigram entropy.'},
+                {name: 'Burstiness', score: analysis.moduleScores[1], details: analysis.details.burstiness, info: 'Evaluates variation in sentence and word lengths for natural rhythm.'},
+                {name: 'Repetition', score: analysis.moduleScores[2], details: analysis.details.repetition, info: 'Detects overuse of bigram and trigram phrases.'},
+                {name: 'Sentence Length', score: analysis.moduleScores[3], details: analysis.details.sentenceLength, info: 'Combines average length with structural complexity (commas/clauses).'},
+                {name: 'Vocabulary', score: analysis.moduleScores[4], details: analysis.details.vocabulary, info: 'Assesses unique word diversity and rare word usage.'}
               ].map(m => {
-                const gradeColor = getGradeColor(m.normalized);
-                const displayScore = m.normalized.toFixed(1);
+                const gradeColor = getGradeColor(m.score);
+                const displayScore = m.score.toFixed(1);
                 return `
                 <div class="bg-white rounded-2xl shadow-md p-6 text-center border-l-4" style="border-left-color: ${gradeColor}">
                   <div class="relative w-32 h-32 mx-auto">
                     <svg viewBox="0 0 128 128" class="-rotate-90">
                       <circle cx="64" cy="64" r="56" stroke="#f1f5f9" stroke-width="12" fill="none"/>
                       <circle cx="64" cy="64" r="56" stroke="${gradeColor}" stroke-width="12" fill="none"
-                              stroke-dasharray="${m.normalized * 35.2} 352" stroke-linecap="round"/>
+                              stroke-dasharray="${m.score * 35.2} 352" stroke-linecap="round"/>
                     </svg>
                     <div class="absolute inset-0 flex flex-col items-center justify-center">
                       <div class="text-3xl font-bold" style="color: ${gradeColor}">${displayScore}</div>
@@ -211,78 +269,41 @@ document.addEventListener('DOMContentLoaded', () => {
                   </div>
                   <p class="mt-4 text-base font-medium text-gray-700">${m.name}</p>
                   <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-3 px-6 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-full hover:bg-gray-300">
-                    Show Info
+                    Show Details
                   </button>
                   <div class="hidden mt-4 space-y-3 text-sm text-gray-600 leading-relaxed">
-                    <p><span class="font-bold text-blue-600">What it is:</span>
-                      ${m.name === 'Perplexity' ? 'How unpredictable your text appears to AI detectors.' :
-                        m.name === 'Burstiness' ? 'How much your sentence lengths vary for natural flow.' :
-                        m.name === 'Repetition' ? 'How often the same phrases or patterns appear.' :
-                        m.name === 'Sentence Length' ? 'Average words per sentence (ideal 15–23).' :
-                        'How diverse your word choice is across the content.'}
-                    </p>
-                    <p><span class="font-bold text-green-600">How to improve:</span>
-                      ${m.name === 'Perplexity' ? 'Use varied phrasing, personal anecdotes, and unexpected ideas.' :
-                        m.name === 'Burstiness' ? 'Mix short punchy sentences with longer detailed ones.' :
-                        m.name === 'Repetition' ? 'Replace repeated phrases with synonyms and fresh expressions.' :
-                        m.name === 'Sentence Length' ? 'Balance short and medium sentences for better rhythm.' :
-                        'Incorporate synonyms, descriptive words, and less common vocabulary.'}
-                    </p>
-                    <p><span class="font-bold text-orange-600">Why it matters:</span>
-                      ${m.name === 'Perplexity' ? 'Search engines penalize overly predictable content that feels AI-generated.' :
-                        m.name === 'Burstiness' ? 'Search engines and readers prefer dynamic rhythm that keeps attention.' :
-                        m.name === 'Repetition' ? 'Search engines downgrade repetitive text as low-quality or spammy.' :
-                        m.name === 'Sentence Length' ? 'Search engines favor readable flow that matches human writing habits.' :
-                        'Search engines reward rich vocabulary as a signal of expertise and depth.'}
-                    </p>
+                    <p>${m.info}</p>
+                    <p><strong>Sub-metrics:</strong> ${Object.entries(m.details).map(([k,v]) => `${k}: ${v}`).join(' | ')}</p>
+                    <p><span class="font-bold text-green-600">How to improve:</span> Increase variation, use personal voice, mix structures, and incorporate rarer vocabulary.</p>
                   </div>
                 </div>
               `;
               }).join('')}
             </div>
 
-            <!-- Prioritized AI-Style Fixes -->
             <div class="mt-20 space-y-8">
               <h2 class="text-4xl md:text-5xl font-black text-center text-gray-900">Prioritized AI-Style Fixes</h2>
               ${yourScore >= 70 ? `
                 <div class="bg-red-50 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-red-500">
                   <h3 class="text-3xl font-bold text-red-600 mb-6">Very Likely AI Detected</h3>
-                  <p class="text-lg"><span class="font-bold text-blue-600">What:</span> Highly predictable patterns, low variation, repetitive phrasing</p>
-                  <p class="text-lg mt-4"><span class="font-bold text-green-600">How to improve:</span> Add personal stories, vary sentence rhythm, use richer and more diverse vocabulary</p>
-                  <p class="text-lg mt-4"><span class="font-bold text-orange-600">Why it matters:</span> Search engines heavily penalize obvious AI content in rankings</p>
+                  <p class="text-lg"><span class="font-bold text-blue-600">What:</span> Multiple modules show strong AI patterns</p>
+                  <p class="text-lg mt-4"><span class="font-bold text-green-600">How to improve:</span> Add personal anecdotes, vary rhythm dramatically, reduce repetition, deepen sentence structure</p>
                 </div>` : yourScore >= 40 ? `
                 <div class="bg-orange-50 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-orange-500">
                   <h3 class="text-3xl font-bold text-orange-600 mb-6">Moderate AI Patterns</h3>
-                  <p class="text-lg"><span class="font-bold text-blue-600">What:</span> Some uniformity in structure and repeated phrases</p>
-                  <p class="text-lg mt-4"><span class="font-bold text-green-600">How to improve:</span> Mix short and long sentences, add personal voice, reduce repetition</p>
-                  <p class="text-lg mt-4"><span class="font-bold text-orange-600">Why it matters:</span> Small changes can move content into human-like territory and improve trust</p>
+                  <p class="text-lg"><span class="font-bold text-blue-600">What:</span> Some uniformity detected across metrics</p>
+                  <p class="text-lg mt-4"><span class="font-bold text-green-600">How to improve:</span> Focus on weak modules shown above</p>
                 </div>` : `
                 <div class="bg-green-50 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-green-500">
                   <h3 class="text-3xl font-bold text-green-600 mb-6">Excellent — Highly Human-Like!</h3>
-                  <p class="text-lg text-center">Your writing reads naturally with good variation and authentic voice.</p>
-                  <p class="text-lg mt-4 text-center">Keep up the great work — this style performs best in search rankings.</p>
+                  <p class="text-lg text-center">Strong performance across all modules. Keep writing naturally!</p>
                 </div>`}
             </div>
 
-            <!-- Predictive Rank Forecast -->
             <div class="mt-20 p-10 md:p-16 bg-gradient-to-r from-orange-500 to-pink-600 rounded-3xl shadow-2xl text-white text-center space-y-8">
               <h2 class="text-4xl md:text-4xl font-black">Predictive Rank Forecast</h2>
               <p class="text-4xl md:text-4xl font-black" style="color: ${mainGradeColor}">${forecast}</p>
-              <p class="text-2xl md:text-3xl font-bold">Potential if humanized</p>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                <div class="bg-white/20 backdrop-blur rounded-2xl p-8">
-                  <p class="text-xl md:text-2xl font-bold text-blue-200 mb-4">What it is</p>
-                  <p class="text-base md:text-lg leading-relaxed">Estimate of ranking potential based on how human-like your content reads</p>
-                </div>
-                <div class="bg-white/20 backdrop-blur rounded-2xl p-8">
-                  <p class="text-xl md:text-2xl font-bold text-green-200 mb-4">How calculated</p>
-                  <p class="text-base md:text-lg leading-relaxed">Lower AI patterns = higher human trust = stronger search engine preference</p>
-                </div>
-                <div class="bg-white/20 backdrop-blur rounded-2xl p-8">
-                  <p class="text-xl md:text-2xl font-bold text-orange-200 mb-4">Why it matters</p>
-                  <p class="text-base md:text-lg leading-relaxed">Human-like content ranks higher, builds trust, and drives more organic traffic</p>
-                </div>
-              </div>
+              <p class="text-2xl md:text-3xl font-bold">Potential if optimized further</p>
             </div>
 
             <div class="text-center my-16">
