@@ -214,6 +214,7 @@ const initTool = (form, results, progressContainer) => {
         { name: "Unique Insights", score: uniqueInsights, desc: "First-hand markers, dated results, interviews" },
         { name: "Anti-AI Safety", score: antiAiSafety, desc: "Variation, low repetition, no predictable patterns" }
       ];
+      const lowScoring = modules.filter(m => m.score < 70).sort((a, b) => a.score - b.score);
 
       const tests = [
         { emoji: hasBoldInFirst ? '✅' : '❌', text: 'Bold/strong formatting in opening', passed: hasBoldInFirst },
