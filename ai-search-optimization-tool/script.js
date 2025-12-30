@@ -77,64 +77,81 @@ const initTool = (form, results, progressContainer) => {
       const hasQuestionH2 = Array.from(doc.querySelectorAll('h2')).some(h => /[?!]/.test(h.textContent));
       const hasSteps = /\b(step|guide|how to|instructions|follow these)\b/i.test(first300.toLowerCase());
 
-      let answerability = Math.min(100,
-        (hasBoldInFirst || hasDefinition ? 30 : 0) +
-        (hasFAQSchema ? 25 : 0) +
-        (hasQuestionH2 ? 15 : 0) +
-        (hasSteps ? 20 : 0) +
-        (first300.length > 600 ? 10 : 0)
-      );
+      // Answerability - direct points
+      let answerability = 0;
+      if (hasBoldInFirst || hasDefinition) answerability += 30;
+      if (hasFAQSchema) answerability += 25;
+      if (hasQuestionH2) answerability += 15;
+      if (hasSteps) answerability += 20;
+      if (first300.length > 600) answerability += 10;
 
-      let schemaScore = 0;
+      // Structured Data - core + optional bonus
       let hasArticle = false;
       let hasFaqHowto = false;
       let hasPerson = false;
       const jsonLdScripts = doc.querySelectorAll('script[type="application/ld+json"]');
       const hasJsonLd = jsonLdScripts.length > 0;
-      if (hasJsonLd) schemaScore += 30;
+      let structuredData = 0;
+      if (hasJsonLd) structuredData += 30;
       jsonLdScripts.forEach(s => {
         try {
           const data = JSON.parse(s.textContent);
           const types = Array.isArray(data) ? data.map(i => i['@type']) : [data['@type']];
           if (types.some(t => ['Article', 'BlogPosting'].includes(t))) {
-            schemaScore += 30;
+            structuredData += 30;
             hasArticle = true;
           }
           if (types.some(t => ['FAQPage', 'HowTo'].includes(t))) {
-            schemaScore += 25;
+            structuredData += 20; // bonus
             hasFaqHowto = true;
           }
           if (types.includes('Person')) {
-            schemaScore += 15;
+            structuredData += 20;
             hasPerson = true;
           }
         } catch {}
       });
-      let structuredData = Math.min(100, schemaScore);
 
+      // EEAT Signals - direct points
       const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
       const hasDate = !!doc.querySelector('time[datetime], meta[name="date"], .published, .updated, .date');
       const hasTrustedLinks = Array.from(doc.querySelectorAll('a[href^="https"]'))
         .some(a => !a.href.includes(new URL(url).hostname) && !a.href.includes('facebook.com') && !a.href.includes('twitter.com'));
-      let eeat = (hasAuthor ? 40 : 0) + (hasDate ? 25 : 0) + (hasTrustedLinks ? 20 : 0) + (url.startsWith('https:') ? 15 : 0);
+      let eeat = 0;
+      if (hasAuthor) eeat += 40;
+      if (hasDate) eeat += 25;
+      if (hasTrustedLinks) eeat += 20;
+      if (url.startsWith('https:')) eeat += 15;
 
+      // Scannability - core + bonus
       const headings = doc.querySelectorAll('h1,h2,h3,h4').length;
       const lists = doc.querySelectorAll('ul,ol').length;
       const tables = doc.querySelectorAll('table').length;
       const shortParas = Array.from(mainEl.querySelectorAll('p'))
         .filter(p => p.textContent.trim().split(/\s+/).length < 35).length;
-      let scannability = Math.min(100, headings * 6 + lists * 8 + tables * 15 + shortParas * 0.4);
+      let scannability = 0;
+      if (headings > 5) scannability += 30;
+      if (headings > 8) scannability += 20; // bonus density
+      if (lists > 2) scannability += 20;
+      if (tables > 0) scannability += 15;
+      if (shortParas > 5) scannability += 15;
 
+      // Conversational Tone - direct points
       const youCount = (mainText.match(/\byou\b|\byour\b|\byours\b/gi) || []).length;
       const iWeCount = (mainText.match(/\bI\b|\bwe\b|\bmy\b|\bour\b|\bme\b|\bus\b/gi) || []).length;
       const questions = (mainText.match(/\?/g) || []).length;
       const painPoints = (mainText.match(/\b(struggle|problem|issue|challenge|frustrat|hard|difficult|pain|annoy|confus|overwhelm|fail|mistake|wrong)\b/gi) || []).length;
+      let conversational = 0;
+      if (youCount > 5) conversational += 30;
+      if (iWeCount > 3) conversational += 25;
+      if (questions > 2) conversational += 20;
+      if (painPoints > 3) conversational += 25;
 
+      // Readability - direct points
       const words = mainText.split(/\s+/).filter(Boolean).length || 1;
       const sentences = (mainText.match(/[.!?]+/g) || []).length || 1;
       const syllables = mainText.split(/\s+/).reduce((a, w) => a + (w.match(/[aeiouy]+/gi) || []).length, 0);
       const flesch = 206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words);
-
       const sentencesArr = mainText.split(/[.!?]+/).filter(Boolean);
       const lengths = sentencesArr.map(s => s.split(/\s+/).length);
       let variationScore = 50;
@@ -146,81 +163,56 @@ const initTool = (form, results, progressContainer) => {
       const passivePatterns = mainText.match(/\b(is|are|was|were|been|be|being)\b.*\b(by|using|with|through)\b/gi) || [];
       const complexWords = mainText.split(/\s+/).filter(w => (w.match(/[aeiouy]+/gi) || []).length >= 3).length;
       const complexRatio = words > 0 ? (complexWords / words) * 100 : 0;
+      let readability = 0;
+      if (flesch > 60) readability += 40;
+      if (variationScore > 70) readability += 25;
+      if (passivePatterns.length < 5) readability += 20;
+      if (complexRatio < 15) readability += 15;
 
+      // Unique Insights - direct points
       const hasInsights = /\b(I tested|in my experience|we found|case study|based on my|hands-on|personally observed)\b/i.test(mainText);
-      const hasDated = /\b(in \d{4}|last year|this year|recently tested|results from)\b/i.test(mainText);
+      const hasDated = /\b(in last year|in this year|recently tested|results from)\b/i.test(mainText); // time-proof
       const hasInterviews = /\b(interview|spoke with|talked to|surveyed|asked|quoted|said ".*"|^".*"\s*-)\b/i.test(mainText);
+      let uniqueInsights = 0;
+      if (words > 1500) uniqueInsights += 30;
+      if (hasInsights) uniqueInsights += 35;
+      if (hasDated) uniqueInsights += 20;
+      if (hasInterviews) uniqueInsights += 15;
 
+      // Anti-AI Safety - direct points
       const wordFreq = {};
       mainText.toLowerCase().split(/\s+/).forEach(w => wordFreq[w] = (wordFreq[w] || 0) + 1);
       const repeatedWords = Object.values(wordFreq).filter(c => c > 10).length;
-
       const sentenceStarts = sentencesArr.map(s => s.trim().split(/\s+/)[0]?.toLowerCase() || '');
       const startFreq = {};
       sentenceStarts.forEach(s => startFreq[s] = (startFreq[s] || 0) + 1);
       const hasPredictable = Object.values(startFreq).some(c => c > 3);
-
-      let conversational = Math.min(100, (youCount * 4) + (iWeCount * 3) + (questions * 6) + (painPoints * 5));
-
-      let readability = Math.round((flesch > 80 ? 95 : flesch > 60 ? 90 : flesch > 40 ? 70 : 40) * 0.4 +
-        variationScore * 0.3 +
-        (passivePatterns.length < 5 ? 95 : passivePatterns.length < 10 ? 70 : 50) * 0.15 +
-        (complexRatio < 15 ? 95 : complexRatio < 20 ? 80 : 60) * 0.15);
-
-      let uniqueInsights = words > 2000 ? 70 : words > 1000 ? 50 : 30;
-      if (hasInsights) uniqueInsights = Math.max(uniqueInsights, 80);
-      if (hasDated) uniqueInsights += 10;
-      if (hasInterviews) uniqueInsights += 10;
-      uniqueInsights = Math.min(100, uniqueInsights + (hasInsights ? 15 : 0));
-
-      let antiAiSafety = Math.round(variationScore * 0.5 + (repeatedWords <= 2 ? 95 : repeatedWords <= 5 ? 70 : 50) * 0.3 + (hasPredictable ? 50 : 95) * 0.2);
-
-      // Adjust scores to better align with passed tests
-      let answerPassed = [hasBoldInFirst, hasDefinition, hasFAQSchema, hasQuestionH2, hasSteps, first300.length > 600].filter(Boolean).length;
-      let adjustedAnswerability = Math.round(answerability * (answerPassed / 6));
-
-      let structuredPassed = [hasJsonLd, hasArticle, hasFaqHowto, hasPerson].filter(Boolean).length;
-      let adjustedStructuredData = Math.round(structuredData * (structuredPassed / 4));
-
-      let eeatPassed = [hasAuthor, hasDate, hasTrustedLinks, url.startsWith('https:')].filter(Boolean).length;
-      let adjustedEeat = Math.round(eeat * (eeatPassed / 4));
-
-      let scannabilityPassed = [headings > 5, lists > 2, tables > 0, shortParas > 5, headings > 8].filter(Boolean).length;
-      let adjustedScannability = Math.round(scannability * (scannabilityPassed / 5));
-
-      let conversationalPassed = [youCount > 5, iWeCount > 3, questions > 2, painPoints > 3].filter(Boolean).length;
-      let adjustedConversational = Math.round(conversational * (conversationalPassed / 4));
-
-      let readabilityPassed = [flesch > 60, variationScore > 70, passivePatterns.length < 5, complexRatio < 15].filter(Boolean).length;
-      let adjustedReadability = Math.round(readability * (readabilityPassed / 4));
-
-      let uniquePassed = [hasInsights, hasDated, hasInterviews, words > 1500].filter(Boolean).length;
-      let adjustedUniqueInsights = Math.round(uniqueInsights * (uniquePassed / 4));
-
-      let antiAiPassed = [variationScore > 70, repeatedWords <= 2, !hasPredictable].filter(Boolean).length;
-      let adjustedAntiAiSafety = Math.round(antiAiSafety * (antiAiPassed / 3));
+      let antiAiSafety = 0;
+      if (variationScore > 70) antiAiSafety += 50;
+      if (repeatedWords <= 2) antiAiSafety += 30;
+      if (!hasPredictable) antiAiSafety += 20;
 
       const overall = Math.round(
-        adjustedAnswerability * 0.25 +
-        adjustedStructuredData * 0.15 +
-        adjustedEeat * 0.15 +
-        adjustedScannability * 0.10 +
-        adjustedConversational * 0.12 +
-        adjustedReadability * 0.10 +
-        adjustedUniqueInsights * 0.08 +
-        adjustedAntiAiSafety * 0.05
+        answerability * 0.25 +
+        structuredData * 0.15 +
+        eeat * 0.15 +
+        scannability * 0.10 +
+        conversational * 0.12 +
+        readability * 0.10 +
+        uniqueInsights * 0.08 +
+        antiAiSafety * 0.05
       );
       const yourScore = overall;
 
       const modules = [
-        { name: "Answerability", score: adjustedAnswerability, desc: "Direct answers in first 300 words, FAQ schema, step-by-step structure" },
-        { name: "Structured Data", score: adjustedStructuredData, desc: "JSON-LD presence and relevant types" },
-        { name: "EEAT Signals", score: adjustedEeat, desc: "Author, dates, trusted links, HTTPS" },
-        { name: "Scannability", score: adjustedScannability, desc: "Headings, lists, tables, short paragraphs" },
-        { name: "Conversational Tone", score: adjustedConversational, desc: "You/I/we, questions, pain point acknowledgment" },
-        { name: "Readability", score: adjustedReadability, desc: "Flesch ease, variation, low passive/complex words" },
-        { name: "Unique Insights", score: adjustedUniqueInsights, desc: "First-hand markers, dated results, interviews" },
-        { name: "Anti-AI Safety", score: adjustedAntiAiSafety, desc: "Variation, low repetition, no predictable patterns" }
+        { name: "Answerability", score: answerability, desc: "Direct answers in first 300 words, FAQ schema, step-by-step structure" },
+        { name: "Structured Data", score: structuredData, desc: "JSON-LD presence and relevant types" },
+        { name: "EEAT Signals", score: eeat, desc: "Author, dates, trusted links, HTTPS" },
+        { name: "Scannability", score: scannability, desc: "Headings, lists, tables, short paragraphs" },
+        { name: "Conversational Tone", score: conversational, desc: "You/I/we, questions, pain point acknowledgment" },
+        { name: "Readability", score: readability, desc: "Flesch ease, variation, low passive/complex words" },
+        { name: "Unique Insights", score: uniqueInsights, desc: "First-hand markers, dated results, interviews" },
+        { name: "Anti-AI Safety", score: antiAiSafety, desc: "Variation, low repetition, no predictable patterns" }
       ];
 
       const tests = [
@@ -342,8 +334,6 @@ const initTool = (form, results, progressContainer) => {
         };
         return map[name] || "This factor significantly impacts AI search performance and citation likelihood.";
       }
-      
-      
       function getFixes(name) {
         let fixes = '';
         if (name === "Answerability") {
@@ -398,8 +388,6 @@ const initTool = (form, results, progressContainer) => {
         }
         return fixes || '<p class="text-green-600 dark:text-green-400">All checks passed — great job!</p>';
       }
-      
-      
 
       const moduleKeywords = {
         "Answerability": ["Bold/strong formatting in opening", "Clear definition pattern in opening", "FAQPage schema detected", "Question-style H2 headings", "Step-by-step language in opening", "Strong opening section (>600 chars)"],
