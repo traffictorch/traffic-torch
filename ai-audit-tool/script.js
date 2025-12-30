@@ -44,28 +44,29 @@ document.addEventListener('DOMContentLoaded', () => {
     function entropy(counts, total) {
       return -Object.values(counts).reduce((sum, c) => {
         const p = c / total;
-        return sum + p * Math.log2(p);
+        return sum + (p > 0 ? p * Math.log2(p) : 0);
       }, 0);
     }
 
-    // Perplexity (higher entropy = more human)
+    // Perplexity - higher entropy = more human-like
     const bigrams = {};
     for (let i = 0; i < words.length - 1; i++) {
       const gram = words[i] + ' ' + words[i + 1];
       bigrams[gram] = (bigrams[gram] || 0) + 1;
     }
-    const bigramEntropy = words.length > 1 ? entropy(bigrams, words.length - 1) : 5;
+    const bigramEntropy = words.length > 1 ? entropy(bigrams, words.length - 1) : 6;
 
     const trigrams = {};
     for (let i = 0; i < words.length - 2; i++) {
       const gram = words.slice(i, i + 3).join(' ');
       trigrams[gram] = (trigrams[gram] || 0) + 1;
     }
-    const trigramEntropy = words.length > 2 ? entropy(trigrams, words.length - 2) : 5;
+    const trigramEntropy = words.length > 2 ? entropy(trigrams, words.length - 2) : 6;
 
-    const perplexityScore1 = Math.min(10, Math.max(0, (trigramEntropy - 4) / 0.8));
-    const perplexityScore2 = Math.min(10, Math.max(0, (bigramEntropy - 4) / 0.8));
-    const perplexityModule = perplexityScore1 + perplexityScore2; // max 20
+    // Scale entropy to 0-10: ideal human ~7-9+, AI often <6
+    const perplexityScore1 = Math.min(10, Math.max(0, (trigramEntropy - 5) * 2)); // boosted scaling
+    const perplexityScore2 = Math.min(10, Math.max(0, (bigramEntropy - 5) * 2));
+    const perplexityModule = perplexityScore1 + perplexityScore2;
 
     // Burstiness
     const sentenceLengths = sentences.map(s => s.split(/\s+/).filter(w => w.length).length);
@@ -74,50 +75,51 @@ document.addEventListener('DOMContentLoaded', () => {
     const sentBurstiness = Math.sqrt(sentVariance);
 
     const wordLengths = words.map(w => w.length);
-    const avgWordLen = wordLengths.reduce((a, b) => a + b, 0) / wordLengths.length;
+    const avgWordLen = wordLengths.reduce((a, b) => a + b, 0) / wordLengths.length || 6;
     const wordVariance = wordLengths.reduce((sum, len) => sum + Math.pow(len - avgWordLen, 2), 0) / wordLengths.length;
     const wordBurstiness = Math.sqrt(wordVariance);
 
-    const burstinessScore1 = Math.min(10, sentBurstiness);
-    const burstinessScore2 = Math.min(10, wordBurstiness * 2);
+    const burstinessScore1 = Math.min(10, sentBurstiness * 1.2); // human ~5-8
+    const burstinessScore2 = Math.min(10, wordBurstiness * 2.5);
     const burstinessModule = burstinessScore1 + burstinessScore2;
 
-    // Repetition (lower repetition = more human)
+    // Repetition - lower = better
     const maxBigram = Math.max(...Object.values(bigrams), 1);
-    const bigramRep = Math.min(10, (maxBigram / (wordCount / 100)) * 1);
+    const bigramRep = Math.min(10, (maxBigram / Math.max(wordCount / 100, 1)) * 1.2);
 
     const maxTrigram = Math.max(...Object.values(trigrams), 1);
-    const trigramRep = Math.min(10, (maxTrigram / (wordCount / 100)) * 2);
+    const trigramRep = Math.min(10, (maxTrigram / Math.max(wordCount / 100, 1)) * 2.5);
 
     const repetitionScore1 = 10 - bigramRep;
     const repetitionScore2 = 10 - trigramRep;
     const repetitionModule = repetitionScore1 + repetitionScore2;
 
     // Sentence Length
-    const sentLenScore = Math.max(0, 10 - Math.abs(avgSentLen - 19) * 0.5);
+    const sentLenDeviation = Math.abs(avgSentLen - 19);
+    const sentLenScore = Math.max(0, 10 - sentLenDeviation * 0.8);
 
     const commaCounts = sentences.map(s => (s.match(/,/g) || []).length);
     const avgCommas = commaCounts.reduce((a, b) => a + b, 0) / commaCounts.length || 0;
-    const complexityScore = Math.min(10, avgCommas * 2.5);
+    const complexityScore = Math.min(10, avgCommas * 3); // human often 1-3 commas
 
     const sentenceLengthModule = sentLenScore + complexityScore;
 
     // Vocabulary
     const uniqueWords = new Set(words).size;
     const vocabDiversity = (uniqueWords / wordCount) * 100;
-    const vocabScore = vocabDiversity / 10;
+    const vocabScore = Math.min(10, vocabDiversity - 40); // good >60%
 
     const wordFreq = {};
     words.forEach(w => wordFreq[w] = (wordFreq[w] || 0) + 1);
     const hapax = Object.values(wordFreq).filter(c => c === 1).length;
     const rareWordRatio = (hapax / wordCount) * 100;
-    const rareScore = Math.min(10, rareWordRatio * 0.5);
+    const rareScore = Math.min(10, rareWordRatio * 0.6); // good ~15-25%
 
     const vocabularyModule = vocabScore + rareScore;
 
     const moduleScores = [perplexityModule, burstinessModule, repetitionModule, sentenceLengthModule, vocabularyModule];
     const totalModuleSum = moduleScores.reduce((a, b) => a + b, 0);
-    const totalScore = Math.round(totalModuleSum); // out of 100
+    const totalScore = Math.round(totalModuleSum);
 
     return {
       moduleScores,
@@ -133,9 +135,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getGradeColor(humanNormalized10) {
-    if (humanNormalized10 >= 8.0) return '#10b981'; // green
-    if (humanNormalized10 >= 6.0) return '#f97316'; // orange
-    return '#ef4444'; // red
+    if (humanNormalized10 >= 8.0) return '#10b981';
+    if (humanNormalized10 >= 6.0) return '#f97316';
+    return '#ef4444';
   }
 
   function getPassFail(score) {
@@ -246,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 {name: 'Sentence Length', score: analysis.moduleScores[3], details: analysis.details.sentenceLength, info: 'Combines average sentence length with complexity measures like comma usage to assess structural depth. Ideal human writing balances lengths between 15-23 words while incorporating clauses for nuance. Deviations can suggest overly simplistic or convoluted AI output, impacting readability.', fixes: {avg: analysis.details.sentenceLength.scores.avg < 6 ? 'Adjust average sentence length by breaking up long run-ons or combining short fragments to hit the 15-23 word sweet spot. This improves flow and readability for users. Regularly count words per sentence during edits to achieve balance.' : '', complexity: analysis.details.sentenceLength.scores.complexity < 6 ? 'Increase sentence complexity by adding clauses with commas, semicolons, or conjunctions to layer ideas. This adds depth without overwhelming the reader. Aim for 1-2 clauses per sentence in key sections to mimic human thought processes.' : ''}},
                 {name: 'Vocabulary', score: analysis.moduleScores[4], details: analysis.details.vocabulary, info: 'Assesses unique word diversity and the frequency of rare words to gauge lexical richness. Human content often includes a broad, context-specific vocabulary with unique terms. Low scores here point to limited word choice, common in AI for efficiency, reducing perceived expertise.', fixes: {diversity: analysis.details.vocabulary.scores.diversity < 6 ? 'Boost vocabulary diversity by incorporating synonyms and avoiding word repetition through active editing. Draw from broader themes or analogies to introduce new terms. This enriches the text and signals deeper knowledge to search engines.' : '', rare: analysis.details.vocabulary.scores.rare < 6 ? 'Enhance rare word frequency by adding unique, context-specific terms that appear only once or twice. Research niche vocabulary related to your topic and weave it in naturally. This creates a more authentic, expert tone and improves SEO signals.' : ''}}
               ].map(m => {
-                const gradeColor = getGradeColor(m.score / 2); // normalize to 0-10 for color
+                const gradeColor = getGradeColor(m.score / 2);
                 const displayScore = m.score.toFixed(1);
                 const failedFixes = Object.values(m.fixes).filter(f => f).join('<br><br>');
                 const sub1Name = m.name === 'Perplexity' ? 'Trigram Entropy' : m.name === 'Burstiness' ? 'Sentence Length Variation' : m.name === 'Repetition' ? 'Bigram Repetition' : m.name === 'Sentence Length' ? 'Average Length' : 'Diversity';
@@ -271,8 +273,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p>${getPassFail(sub1Score)} ${sub1Name}</p>
                     <p>${getPassFail(sub2Score)} ${sub2Name}</p>
                   </div>
-                  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-full hover:bg-gray-300 dark:hover:bg-gray-600">
-                    Show Fixes & Details
+                  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold rounded-full shadow-md transition">
+                    More Details
                   </button>
                   <div class="hidden mt-4 space-y-4 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                     ${failedFixes ? `<p><span class="font-bold text-red-600 dark:text-red-400">How to Fix Failed Tests:</span><br><br>${failedFixes}</p>` : ''}
