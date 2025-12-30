@@ -375,111 +375,94 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-<div class="mt-20 p-10 md:p-20 bg-gradient-to-r from-orange-600 via-pink-600 to-purple-700 rounded-3xl shadow-2xl text-white overflow-hidden relative">
-  <h2 class="text-5xl md:text-7xl font-black text-center mb-12 drop-shadow-lg">Ranking Transformation Forecast</h2>
+<div class="mt-20 py-12 px-8 bg-gradient-to-r from-orange-500 to-pink-600 rounded-3xl shadow-2xl text-white">
+  <h2 class="text-5xl md:text-6xl font-black text-center mb-12">Performance Forecast</h2>
 
   ${(() => {
     const failingModules = [analysis.moduleScores[0], analysis.moduleScores[1], analysis.moduleScores[2], analysis.moduleScores[3], analysis.moduleScores[4]].filter(s => s < 20).length;
     const boost = failingModules * 15;
     const optimizedScore = Math.min(100, yourScore + boost);
-    const optimizedForecast = optimizedScore >= 80 ? 'Top 3 Dominance' : optimizedScore >= 70 ? 'Top 5 Lock' : optimizedScore >= 60 ? 'Top 10 Strong' : optimizedScore >= 50 ? 'Page 1 Solid' : 'Page 1 Possible';
 
     if (failingModules === 0) {
       return `
-      <div class="text-center py-16">
-        <div class="relative w-64 h-64 mx-auto mb-8">
-          <div class="absolute inset-0 bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-600 rounded-full animate-pulse"></div>
-          <div class="absolute inset-4 bg-gradient-to-br from-amber-300 to-yellow-500 rounded-full"></div>
-          <svg viewBox="0 0 256 256" class="absolute inset-0">
-            <circle cx="128" cy="128" r="110" fill="none" stroke="#fff" stroke-width="20" opacity="0.3"/>
-            <circle cx="128" cy="128" r="110" fill="none" stroke="#fff" stroke-width="16"
-                    stroke-dasharray="691 691" stroke-linecap="round"/>
+      <div class="text-center space-y-8">
+        <div class="relative w-72 h-72 mx-auto">
+          <svg viewBox="0 0 288 288" class="absolute inset-0 -rotate-90">
+            <circle cx="144" cy="144" r="120" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="28"/>
+            <circle cx="144" cy="144" r="120" fill="none" stroke="#10b981" stroke-width="24"
+                    stroke-dasharray="754 754" stroke-linecap="round"/>
           </svg>
           <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <div class="text-6xl mb-4">🏆</div>
-            <div class="text-4xl md:text-5xl font-black drop-shadow-2xl">Elite Status</div>
-            <div class="text-xl mt-2 opacity-90">You're already dominating</div>
+            <div class="text-8xl font-black">${yourScore}</div>
+            <div class="text-2xl opacity-90">Human Score</div>
+            <div class="text-xl">/100</div>
           </div>
         </div>
-        <p class="text-3xl font-bold">Maintain this level → Own the SERPs</p>
+        <p class="text-3xl font-bold">Your content is fully optimized for strong search performance</p>
+        <p class="text-xl opacity-90">Maintain this level to maximize visibility and engagement</p>
       </div>`;
     }
 
     return `
-    <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 lg:gap-20">
-      <!-- Current State -->
-      <div class="flex flex-col items-center">
-        <div class="relative w-56 h-56">
-          <svg viewBox="0 0 224 224" class="absolute inset-0 -rotate-90">
-            <circle cx="112" cy="112" r="100" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="24"/>
-            <circle cx="112" cy="112" r="100" fill="none" stroke="#fff" stroke-width="20"
-                    stroke-dasharray="${(yourScore / 100) * 628} 628" stroke-linecap="round"
-                    class="drop-shadow-lg"/>
-          </svg>
-          <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-            <div class="text-3xl md:text-4xl font-black leading-tight">${forecast}</div>
-            <div class="text-lg mt-2 opacity-80">Current Potential</div>
-          </div>
-        </div>
-        <p class="mt-6 text-xl text-center">Based on today's content</p>
-      </div>
-
-      <!-- Epic Connector -->
-      <div class="flex flex-col items-center">
-        <div class="text-4xl md:text-6xl font-black animate-pulse">→</div>
-        <div class="text-xl md:text-2xl font-bold tracking-wider mt-2 bg-gradient-to-r from-yellow-300 to-amber-300 bg-clip-text text-transparent">
-          FIX → UNLOCK
-        </div>
-      </div>
-
-      <!-- Optimized Epic Badge -->
-      <div class="flex flex-col items-center">
-        <div class="relative w-64 h-64 scale-110">
-          <div class="absolute inset-0 bg-gradient-to-br from-yellow-400 via-amber-400 to-orange-500 rounded-full animate-ping opacity-30"></div>
-          <div class="absolute inset-4 bg-gradient-to-br from-amber-300 to-yellow-400 rounded-full shadow-2xl"></div>
-          <svg viewBox="0 0 256 256" class="absolute inset-0">
-            <circle cx="128" cy="128" r="110" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="24"/>
+    <div class="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-20">
+      <!-- Current Score -->
+      <div class="flex flex-col items-center space-y-6">
+        <div class="relative w-64 h-64">
+          <svg viewBox="0 0 256 256" class="absolute inset-0 -rotate-90">
+            <circle cx="128" cy="128" r="110" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="24"/>
             <circle cx="128" cy="128" r="110" fill="none" stroke="#fff" stroke-width="20"
-                    stroke-dasharray="${(optimizedScore / 100) * 691} 691" stroke-linecap="round"
-                    class="drop-shadow-2xl"/>
+                    stroke-dasharray="${(yourScore / 100) * 691} 691" stroke-linecap="round"/>
           </svg>
-          <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-8">
-            <div class="text-5xl mb-3">🏆</div>
-            <div class="text-4xl md:text-5xl font-black leading-tight drop-shadow-2xl">${optimizedForecast}</div>
-            <div class="text-xl mt-2 opacity-90">After Optimization</div>
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+            <div class="text-7xl font-black">${yourScore}</div>
+            <div class="text-xl opacity-90">Current</div>
+            <div class="text-lg">Human Score /100</div>
           </div>
         </div>
-        <p class="mt-8 text-2xl font-bold text-yellow-200 text-center">
-          +${boost} Human Score Potential
-        </p>
-        <p class="mt-4 text-xl text-center">By fixing your top priorities</p>
+        <p class="text-xl text-center opacity-90">Based on current content</p>
+      </div>
+
+      <!-- Connector -->
+      <div class="flex flex-col items-center space-y-2">
+        <div class="text-5xl font-bold">→</div>
+        <p class="text-lg font-medium text-center px-4">Apply recommended fixes</p>
+      </div>
+
+      <!-- Optimized Score -->
+      <div class="flex flex-col items-center space-y-6">
+        <div class="relative w-64 h-64">
+          <svg viewBox="0 0 256 256" class="absolute inset-0 -rotate-90">
+            <circle cx="128" cy="128" r="110" fill="none" stroke="rgba(16,185,129,0.3)" stroke-width="28"/>
+            <circle cx="128" cy="128" r="110" fill="none" stroke="#10b981" stroke-width="24"
+                    stroke-dasharray="691 691" stroke-linecap="round"/>
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+            <div class="text-7xl font-black">${optimizedScore}</div>
+            <div class="text-xl opacity-90">Optimized</div>
+            <div class="text-lg">Human Score /100</div>
+          </div>
+        </div>
+        <p class="text-xl text-center font-medium">+${boost} point potential</p>
+        <p class="text-lg text-center opacity-90">After applying fixes</p>
       </div>
     </div>
 
-    <p class="text-3xl md:text-4xl font-black text-center mt-16 drop-shadow-lg">
-      Transform your content → Dominate the rankings
-    </p>
+    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      <div class="bg-white/15 backdrop-blur rounded-2xl p-6 text-center">
+        <p class="text-xl font-bold mb-2">Increase Search Engine Visibility</p>
+        <p class="opacity-90">Higher human-like quality signals stronger relevance and authority</p>
+      </div>
+      <div class="bg-white/15 backdrop-blur rounded-2xl p-6 text-center">
+        <p class="text-xl font-bold mb-2">Improve User Engagement</p>
+        <p class="opacity-90">Natural, varied content encourages longer visits and better experience</p>
+      </div>
+      <div class="bg-white/15 backdrop-blur rounded-2xl p-6 text-center">
+        <p class="text-xl font-bold mb-2">Enhance Brand Credibility</p>
+        <p class="opacity-90">Authentic writing builds trust and positions you as an expert source</p>
+      </div>
+    </div>
     `;
   })()}
-
-  <!-- Educational Cards -->
-  <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
-    <div class="bg-white/15 backdrop-blur rounded-2xl p-8 text-center">
-      <div class="text-5xl mb-4">🔍</div>
-      <p class="text-2xl font-bold mb-3">Realistic Projection</p>
-      <p>Based on proven linguistic signals that search engines reward today</p>
-    </div>
-    <div class="bg-white/15 backdrop-blur rounded-2xl p-8 text-center">
-      <div class="text-5xl mb-4">⚡</div>
-      <p class="text-2xl font-bold mb-3">Action = Results</p>
-      <p>Targeted fixes directly improve the patterns engines trust most</p>
-    </div>
-    <div class="bg-white/15 backdrop-blur rounded-2xl p-8 text-center">
-      <div class="text-5xl mb-4">🚀</div>
-      <p class="text-2xl font-bold mb-3">Future-Proof Edge</p>
-      <p>Human authenticity wins now — and will keep winning</p>
-    </div>
-  </div>
 </div>
             
             
