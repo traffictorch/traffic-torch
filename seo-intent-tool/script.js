@@ -243,6 +243,9 @@ const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
   </div>
 </div>
 
+
+
+
 <!-- E-E-A-T Breakdown with ✅/❌ signals -->
 <div class="grid md:grid-cols-4 gap-6 my-16">
   ${[
@@ -253,7 +256,7 @@ const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
   ].map(({key, score, metrics, failed}) => {
     const color = score >= 80 ? '#22c55e' : score >= 60 ? '#f97316' : '#ef4444';
     const border = score >= 80 ? 'border-green-500' : score >= 60 ? 'border-orange-500' : 'border-red-500';
-    const fixesList = failed.length ? 
+    const fixesList = failed.length ?
       `<p class="font-medium mb-2 text-orange-600">How to fix the failed signals:</p><ul class="list-disc pl-5 space-y-2">${failed.map(f => `<li>${f}</li>`).join('')}</ul>` :
       '<p class="text-green-600 font-medium">All signals strong — no fixes needed!</p>';
 
@@ -298,14 +301,24 @@ const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
         `}
       </div>
 
-      <button onclick="this.parentNode.querySelector('.fixes-panel').classList.toggle('hidden');"
+      <!-- Fixed toggle button: closes More details when hiding Fixes -->
+      <button onclick="
+        const card = this.parentNode;
+        const fixesPanel = card.querySelector('.fixes-panel');
+        const fullDetails = card.querySelector('.full-details');
+        fixesPanel.classList.toggle('hidden');
+        if (fixesPanel.classList.contains('hidden')) {
+          fullDetails.classList.add('hidden');
+        }
+      "
               class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
         ${failed.length ? 'Show Fixes (' + failed.length + ')' : 'All Clear'}
       </button>
 
       <div class="fixes-panel hidden mt-4 text-left text-sm bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
         ${fixesList}
-        <button onclick="this.parentNode.parentNode.querySelector('.full-details').classList.toggle('hidden');"
+        <!-- More robust More details toggle -->
+        <button onclick="this.closest('.fixes-panel').nextElementSibling.classList.toggle('hidden');"
                 class="mt-4 text-xs text-orange-500 hover:underline block">
           More details →
         </button>
@@ -331,6 +344,10 @@ const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
     </div>`;
   }).join('')}
 </div>
+
+
+
+
 
 <!-- Content Depth + Readability + Schema Detected -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
