@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const results = document.getElementById('results');
   const PROXY = 'https://cors-proxy.traffictorch.workers.dev/?url=';
   let analyzedText = '';
-  let wordCount = 0; // Added to match your usage in template
+  let wordCount = 0;
 
   function getMainContent(doc) {
     // 1. Try explicit main content containers
@@ -82,91 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-
-
-
-
-
-
-  function makeItHuman(raw) {
-    let t = raw.trim();
-    if (t.length < 250) return t;
-
-    // Clean up navigation/menu noise
-    t = t.replace(/Skip to (main )?content/gi, '')
-         .replace(/\b(Home|About|Services|Contact|Blog|Shop|Cart|Login|Signup|Reserve|Book|Explore|Discover|View|Learn|Get Started|Sign Up)\b/gi, '')
-         .replace(/\s+/g, ' ')
-         .trim();
-
-    const sentences = t.match(/[^.!?]+[.!?]+/g) || [t];
-    let result = [];
-
-    const swaps = {
-      very: ['really', 'truly', 'quite', 'highly'],
-      good: ['great', 'excellent', 'solid', 'strong'],
-      best: ['top', 'finest', 'leading', 'ultimate'],
-      important: ['key', 'essential', 'crucial', 'vital'],
-      easy: ['simple', 'straightforward', 'clear', 'effortless'],
-      use: ['try', 'apply', 'work with', 'go with'],
-      help: ['assist', 'support', 'boost', 'enhance']
-    };
-
-    for (let s of sentences) {
-      let sentence = s.trim();
-      if (!sentence || sentence.length < 30) continue;
-
-      let words = sentence.split(' ');
-
-      // Apply word swaps for natural variation (moderate probability)
-      for (let i = 0; i < words.length; i++) {
-        const clean = words[i].toLowerCase().replace(/[^a-z]/g, '');
-        if (swaps[clean] && Math.random() < 0.4) {
-          const options = swaps[clean];
-          words[i] = words[i].replace(new RegExp(clean, 'gi'), options[Math.floor(Math.random() * options.length)]);
-        }
-      }
-
-      sentence = words.join(' ');
-
-      // Occasionally split long sentences for better rhythm
-      if (sentence.split(' ').length > 25 && Math.random() < 0.5) {
-        const mid = Math.floor(sentence.length / 2);
-        const breakPoint = sentence.lastIndexOf([',', ';', '—', ':'][Math.floor(Math.random() * 4)], mid);
-        if (breakPoint > mid - 30 && breakPoint > 15) {
-          result.push(sentence.slice(0, breakPoint + 1).trim());
-          sentence = sentence.slice(breakPoint + 1).trim();
-        }
-      }
-
-      result.push(sentence);
-    }
-
-    let final = result.join(' ').trim();
-
-    // Create natural paragraph breaks
-    const allSentences = final.match(/[^.!?]+[.!?]+/g) || [final];
-    let paragraphs = [];
-    let current = [];
-    allSentences.forEach(s => {
-      current.push(s.trim());
-      if (current.length >= 4 || (current.length >= 2 && Math.random() < 0.3)) {
-        paragraphs.push(current.join(' '));
-        current = [];
-      }
-    });
-    if (current.length) paragraphs.push(current.join(' '));
-
-    final = paragraphs.join('\n\n');
-
-    return final;
-  }
-  
-  
-  
-  
-  
-  
-
   function getGradeColor(normalized10) {
     if (normalized10 >= 8.0) return '#10b981'; // green
     if (normalized10 >= 6.0) return '#f97316'; // orange
@@ -177,12 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const url = input.value.trim();
     let normalizedUrl = url;
-if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
-  normalizedUrl = 'https://' + normalizedUrl;
-}
-const urlToFetch = normalizedUrl; // use this for fetch
+    if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
+      normalizedUrl = 'https://' + normalizedUrl;
+    }
+    const urlToFetch = normalizedUrl;
     if (!url) return;
-    // Progressive module loader – exact match to other Traffic Torch tools
+
     results.innerHTML = `
       <div class="py-0 text-center">
         <div class="inline-block w-16 h-16 mb-8">
@@ -190,13 +105,12 @@ const urlToFetch = normalizedUrl; // use this for fetch
             <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
           </svg>
         </div>
-		<p id="progressText" class="text-2xl font-bold text-orange-600 dark:text-orange-400">Fetching page...</p>
+        <p id="progressText" class="text-2xl font-bold text-orange-600 dark:text-orange-400">Fetching page...</p>
         <p class="mt-4 text-sm text-gray-500 dark:text-gray-500">Analyzing content for AI patterns – please wait</p>
       </div>
     `;
     results.classList.remove('hidden');
 
-    // Progressive step messages – exact sequence as other tools
     const progressText = document.getElementById('progressText');
     const messages = [
       "Fetching page...",
@@ -216,9 +130,9 @@ const urlToFetch = normalizedUrl; // use this for fetch
       delay += 800;
     });
 
-    // Enforce minimum load time for smooth UX
     const minLoadTime = 5500;
     const startTime = Date.now();
+
     try {
       const res = await fetch(PROXY + encodeURIComponent(urlToFetch));
       if (!res.ok) throw new Error('Page not reachable');
@@ -237,14 +151,16 @@ const urlToFetch = normalizedUrl; // use this for fetch
       const mainGradeColor = getGradeColor(mainNormalized / 10);
       const verdict = yourScore >= 70 ? 'Very Likely AI' : yourScore >= 40 ? 'Moderate AI Patterns' : 'Likely Human';
       const forecast = yourScore >= 70 ? 'Page 2+' : yourScore >= 50 ? 'Page 1 Possible' : yourScore >= 30 ? 'Top 10 Possible' : 'Top 3 Potential';
+
       const elapsed = Date.now() - startTime;
       const remaining = Math.max(0, minLoadTime - elapsed);
+
       setTimeout(() => {
-        results.innerHTML =`
+        results.innerHTML = `
         <style>
           .animate-stroke { transition: stroke-dasharray 1.5s ease-out; }
         </style>
-		<div class="min-h-screen bg-gray-100 dark:bg-gray-900 py-12 px-4">
+        <div class="min-h-screen bg-gray-100 dark:bg-gray-900 py-12 px-4">
           <div class="max-w-4xl mx-auto space-y-16">
             <!-- Big Score Circle -->
             <div class="flex justify-center">
@@ -268,7 +184,7 @@ const urlToFetch = normalizedUrl; // use this for fetch
               <p class="text-3xl font-bold" style="color: ${mainGradeColor}">${verdict}</p>
             </div>
             <p class="text-center text-base text-gray-600">Scanned ${wordCount.toLocaleString()} words from main content</p>
-    <p class="text-center text-sm text-gray-500 mt-4 italic">Note: Humanized version is an AI-generated example based on detected main content. Always review and edit for accuracy and tone.</p>
+
             <!-- Small Metrics (0–10 scale with colored number + left border) -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
               ${[
@@ -324,32 +240,8 @@ const urlToFetch = normalizedUrl; // use this for fetch
               `;
               }).join('')}
             </div>
-            <!-- Humanize Text Section - Final Polish -->
-            <div class="mt-16 text-center space-y-8">
-              <button id="humanizeBtn" class="px-16 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:opacity-90 transition">
-                ⚡ Generate Humanized Example
-              </button>
-              <div id="humanizedOutput" class="hidden max-w-5xl mx-auto">
-                <div class="bg-white rounded-3xl shadow-2xl p-10 md:p-16 border border-gray-200">
-                  <p class="text-center text-base text-gray-600 mb-10 italic leading-relaxed">
-                    <strong>Note:</strong> This is an AI-generated example rewrite for inspiration only.<br>
-                    Always edit to match your brand voice, verify facts, and ensure originality before publishing.
-                  </p>
-                  <h3 class="text-4xl md:text-5xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
-                    Example Humanized Version
-                  </h3>
-                  <div id="humanizedText" class="prose prose-lg max-w-none text-gray-800 leading-relaxed text-left"></div>
-                  <div class="mt-12 text-center">
-                    <button onclick="navigator.clipboard.writeText(document.getElementById('humanizedText').innerText).then(()=>alert('Copied to clipboard!'))"
-                            class="px-12 py-5 bg-cyan-600 text-white font-bold text-xl rounded-2xl hover:bg-cyan-500 shadow-lg">
-                      📋 Copy Text
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-           
-            <!-- Prioritized AI-Style Fixes - Improved -->
+
+            <!-- Prioritized AI-Style Fixes -->
             <div class="mt-20 space-y-8">
               <h2 class="text-4xl md:text-5xl font-black text-center text-gray-900">Prioritized AI-Style Fixes</h2>
               ${yourScore >= 70 ? `
@@ -371,7 +263,8 @@ const urlToFetch = normalizedUrl; // use this for fetch
                   <p class="text-lg mt-4 text-center">Keep up the great work — this style performs best in search rankings.</p>
                 </div>`}
             </div>
-                    <!-- Predictive Rank Forecast - Improved -->
+
+            <!-- Predictive Rank Forecast -->
             <div class="mt-20 p-10 md:p-16 bg-gradient-to-r from-orange-500 to-pink-600 rounded-3xl shadow-2xl text-white text-center space-y-8">
               <h2 class="text-4xl md:text-4xl font-black">Predictive Rank Forecast</h2>
               <p class="text-4xl md:text-4xl font-black" style="color: ${mainGradeColor}">${forecast}</p>
@@ -391,15 +284,16 @@ const urlToFetch = normalizedUrl; // use this for fetch
                 </div>
               </div>
             </div>
-           
-          <div class="text-center my-16">
-            <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
-                    class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
-              📄 Save as PDF
-            </button>
+
+            <div class="text-center my-16">
+              <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
+                      class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
+                📄 Save as PDF
+              </button>
+            </div>
           </div>
         </div>
-      `;
+        `;
       }, remaining);
     } catch (err) {
       const elapsed = Date.now() - startTime;
@@ -412,20 +306,6 @@ const urlToFetch = normalizedUrl; // use this for fetch
           </div>
         `;
       }, remaining);
-    }
-  });
-
-  document.addEventListener('click', e => {
-    if (e.target.id === 'humanizeBtn') {
-      const output = document.getElementById('humanizedOutput');
-      const textDiv = document.getElementById('humanizedText');
-      output.classList.add('hidden');
-      setTimeout(() => {
-      const humanized = makeItHuman(analyzedText);
-      textDiv.innerHTML = humanized.replace(/\n\n/g, '</p><p class="mt-8">').replace(/\n/g, '<br>');
-      textDiv.innerHTML = '<p>' + textDiv.innerHTML + '</p>';
-        output.classList.remove('hidden');
-      }, 400);
     }
   });
 });
