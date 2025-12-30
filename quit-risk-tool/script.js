@@ -1,7 +1,3 @@
-// Full complete updated quit-risk-tool/script.js
-// Implements new layout: Readability full-width, Nav+Access side-by-side, Mobile+Speed side-by-side (stacks on mobile)
-// Fixes: No NaN scores (fallbacks added), all factors show per module, What/How/Why ensured, no overflow (word-break inline), day/night text visibility (Tailwind classes)
-
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
@@ -10,24 +6,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const factorDefinitions = {
     readability: [
-      { name: "Flesch Reading Ease Score", threshold: 65, howToFix: "Use shorter sentences (<20 words), active voice, common words, and subheadings.", whatFull: "Easy-to-read content for broad audiences.", howFull: "Break up walls of text, avoid jargon, aim for grade 8 level or lower.", why: "Reduces cognitive load, lowers bounce rates, improves engagement and SEO signals." }
+      { name: "Flesch Reading Ease Score", threshold: 65, 
+        what: "Measures text complexity using the Flesch formula — higher = easier to read.",
+        howToFix: "Use shorter sentences (<20 words), active voice, common words, and subheadings.", 
+        whatFull: "Easy-to-read content for broad audiences.", 
+        howFull: "Break up walls of text, avoid jargon, aim for grade 8 level or lower.", 
+        why: "Reduces cognitive load, lowers bounce rates, improves engagement and SEO signals." }
     ],
     navigation: [
-      { name: "Link Density & Overload Risk", threshold: 70, howToFix: "Limit menu items to 5-7, remove redundant links, prioritize key pages.", whatFull: "Balanced internal linking and clear menu structure.", howFull: "Use descriptive labels, hierarchy, and dropdowns sparingly.", why: "Clean navigation helps users find info fast, reduces frustration and pogo-sticking." },
-      { name: "Call-to-Action Prominence", threshold: 80, howToFix: "Place main CTAs above the fold with contrasting colors and clear text.", whatFull: "Strong, visible calls to action.", howFull: "Use size, color, whitespace to make CTAs stand out.", why: "Guides user journey, increases conversions and time on site." }
+      { name: "Link Density & Overload Risk", threshold: 70, 
+        what: "Evaluates total links vs. cognitive load — too many links confuse users.",
+        howToFix: "Limit menu items to 5-7, remove redundant links, prioritize key pages.", 
+        whatFull: "Balanced internal linking and clear menu structure.", 
+        howFull: "Use descriptive labels, hierarchy, and dropdowns sparingly.", 
+        why: "Clean navigation helps users find info fast, reduces frustration and pogo-sticking." },
+      { name: "Call-to-Action Prominence", threshold: 80, 
+        what: "Detects visible primary actions (buttons, forms).",
+        howToFix: "Place main CTAs above the fold with contrasting colors and clear text.", 
+        whatFull: "Strong, visible calls to action.", 
+        howFull: "Use size, color, whitespace to make CTAs stand out.", 
+        why: "Guides user journey, increases conversions and time on site." }
     ],
     accessibility: [
-      { name: "Image Alt Text Coverage", threshold: 75, howToFix: "Add descriptive, concise alt text to every image.", whatFull: "Proper alt attributes on images.", howFull: "Describe content and function, avoid 'image of'.", why: "Essential for screen readers, improves SEO and inclusivity." },
-      { name: "Color Contrast & Semantics", threshold: 70, howToFix: "Ensure 4.5:1 contrast, use proper heading hierarchy.", whatFull: "Sufficient contrast and semantic HTML.", howFull: "Test with tools, use landmarks and ARIA where needed.", why: "Makes site usable for all, including low vision users." }
+      { name: "Image Alt Text Coverage", threshold: 75, 
+        what: "Checks for missing alt attributes (proxy via count signals).",
+        howToFix: "Add descriptive, concise alt text to every image.", 
+        whatFull: "Proper alt attributes on images.", 
+        howFull: "Describe content and function, avoid 'image of'.", 
+        why: "Essential for screen readers, improves SEO and inclusivity." },
+      { name: "Color Contrast & Semantics", threshold: 70, 
+        what: "Proxies WCAG contrast and heading structure.",
+        howToFix: "Ensure 4.5:1 contrast, use proper heading hierarchy.", 
+        whatFull: "Sufficient contrast and semantic HTML.", 
+        howFull: "Test with tools, use landmarks and ARIA where needed.", 
+        why: "Makes site usable for all, including low vision users." }
     ],
     mobile: [
-      { name: "Viewport & Responsive Design", threshold: 90, howToFix: "Add <meta name='viewport' content='width=device-width, initial-scale=1'> and use relative units.", whatFull: "Proper viewport configuration and breakpoints.", howFull: "Test on multiple screen sizes, avoid fixed widths.", why: "Prevents zooming issues and horizontal scroll on mobile." },
-      { name: "Touch Target Size", threshold: 85, howToFix: "Make tap targets at least 44×44px with padding.", whatFull: "Adequate spacing and size for touch.", howFull: "Add padding, avoid cramped links.", why: "Reduces mis-taps and frustration on mobile devices." }
+      { name: "Viewport & Responsive Design", threshold: 90, 
+        what: "Detects viewport meta and flexible layout patterns.",
+        howToFix: "Add <meta name='viewport' content='width=device-width, initial-scale=1'> and use relative units.", 
+        whatFull: "Proper viewport configuration and breakpoints.", 
+        howFull: "Test on multiple screen sizes, avoid fixed widths.", 
+        why: "Prevents zooming issues and horizontal scroll on mobile." },
+      { name: "Touch Target Size", threshold: 85, 
+        what: "Ensures buttons/links are large enough for fingers.",
+        howToFix: "Make tap targets at least 44×44px with padding.", 
+        whatFull: "Adequate spacing and size for touch.", 
+        howFull: "Add padding, avoid cramped links.", 
+        why: "Reduces mis-taps and frustration on mobile devices." }
     ],
     performance: [
-      { name: "Image Optimization", threshold: 80, howToFix: "Compress, resize, use WebP/AVIF, add width/height attributes.", whatFull: "Efficient image formats and sizing.", howFull: "Use tools like Squoosh or ImageOptim.", why: "Largest impact on load time and data usage." },
-      { name: "Lazy Loading Media", threshold: 75, howToFix: "Add loading='lazy' to img/iframe below the fold.", whatFull: "Deferred loading of offscreen resources.", howFull: "Native lazy loading or JS fallback.", why: "Speeds up initial paint and reduces bandwidth." },
-      { name: "Script & Font Bloat", threshold: 85, howToFix: "Minify scripts, defer non-critical JS, limit font variants.", whatFull: "Minimal render-blocking resources.", howFull: "Use system fonts or subset web fonts.", why: "Faster parsing and rendering." }
+      { name: "Image Optimization", threshold: 80, 
+        what: "Flags excessive or unoptimized images.",
+        howToFix: "Compress, resize, use WebP/AVIF, add width/height attributes.", 
+        whatFull: "Efficient image formats and sizing.", 
+        howFull: "Use tools like Squoosh or ImageOptim.", 
+        why: "Largest impact on load time and data usage." },
+      { name: "Lazy Loading Media", threshold: 75, 
+        what: "Detects missing lazy loading on below-fold media.",
+        howToFix: "Add loading='lazy' to img/iframe below the fold.", 
+        whatFull: "Deferred loading of offscreen resources.", 
+        howFull: "Native lazy loading or JS fallback.", 
+        why: "Speeds up initial paint and reduces bandwidth." },
+      { name: "Script & Font Bloat", threshold: 85, 
+        what: "Proxies excessive JS or web fonts.",
+        howToFix: "Minify scripts, defer non-critical JS, limit font variants.", 
+        whatFull: "Minimal render-blocking resources.", 
+        howFull: "Use system fonts or subset web fonts.", 
+        why: "Faster parsing and rendering." }
     ]
   };
 
@@ -106,6 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function buildModuleHTML(moduleName, value, factors) {
     const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
+    const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
 
     let passFailHTML = '';
     factors.forEach(f => {
@@ -122,8 +169,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="mb-8 p-6 bg-gray-100 dark:bg-gray-800 rounded-xl">
             <h5 class="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100">${f.name}</h5>
             <p class="mb-2 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How to fix:</strong> ${f.howToFix}</p>
-            <p class="mb-2 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">What:</strong> ${f.whatFull}</p>
-            <p class="mb-2 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How:</strong> ${f.howFull}</p>
+            <p class="mb-2 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">What:</strong> ${f.whatFull || f.what}</p>
+            <p class="mb-2 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How:</strong> ${f.howFull || f.howToFix}</p>
             <p class="text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">Why it matters:</strong> ${f.why}</p>
           </div>`;
       }
@@ -133,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     return `
-      <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
+      <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
@@ -159,6 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>`;
   }
+
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
