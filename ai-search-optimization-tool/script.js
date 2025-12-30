@@ -3,7 +3,6 @@ const waitForElements = () => {
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
   const progressContainer = document.getElementById('analysis-progress');
-
   if (form && results && progressContainer) {
     initTool(form, results, progressContainer);
   } else {
@@ -13,37 +12,30 @@ const waitForElements = () => {
 
 const initTool = (form, results, progressContainer) => {
   const progressText = document.getElementById('progress-text');
-  
-  
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     let inputUrl = document.getElementById('url-input').value.trim();
-
-if (!inputUrl) {
-  alert('Please enter a URL to analyze.');
-  return;
-}
-
-// Add https:// if no protocol is provided
-if (!/^https?:\/\//i.test(inputUrl)) {
-  inputUrl = 'https://' + inputUrl;
-  document.getElementById('url-input').value = inputUrl; // Show full URL to user
-}
-
-// Validate the final URL
-try {
-  new URL(inputUrl);
-} catch (_) {
-  alert('Please enter a valid URL (e.g., example.com or https://example.com)');
-  return;
-}
-
-const url = inputUrl; // Now use this validated full URL in the fetch
+    if (!inputUrl) {
+      alert('Please enter a URL to analyze.');
+      return;
+    }
+    // Add https:// if no protocol is provided
+    if (!/^https?:\/\//i.test(inputUrl)) {
+      inputUrl = 'https://' + inputUrl;
+      document.getElementById('url-input').value = inputUrl; // Show full URL to user
+    }
+    // Validate the final URL
+    try {
+      new URL(inputUrl);
+    } catch (_) {
+      alert('Please enter a valid URL (e.g., example.com or https://example.com)');
+      return;
+    }
+    const url = inputUrl;
 
     progressContainer.classList.remove('hidden');
     results.classList.add('hidden');
-
     const progressMessages = [
       'Fetching and parsing page...',
       'Extracting main content...',
@@ -55,35 +47,28 @@ const url = inputUrl; // Now use this validated full URL in the fetch
       'Detecting unique human patterns...',
       'Calculating final AI Search Score...'
     ];
-
     let step = 0;
     progressText.textContent = progressMessages[step++];
-
     const updateProgress = () => {
       if (step < progressMessages.length) {
         progressText.textContent = progressMessages[step++];
       }
     };
-
     const interval = setInterval(updateProgress, 1500);
 
     try {
       const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable – check URL or try HTTPS');
-
       const html = await res.text();
       await new Promise(resolve => setTimeout(resolve, 1000));
       updateProgress();
-
       const doc = new DOMParser().parseFromString(html, 'text/html');
-
       let mainText = '';
       const candidates = [doc.querySelector('article'), doc.querySelector('main'), doc.querySelector('[role="main"]'), doc.body];
       const mainEl = candidates.find(el => el && el.textContent.trim().length > 1000) || doc.body;
       mainEl.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie, .sidebar').forEach(el => el.remove());
       mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
       const first300 = mainText.slice(0, 1200);
-
       await new Promise(resolve => setTimeout(resolve, 1200));
       updateProgress();
 
@@ -103,15 +88,28 @@ const url = inputUrl; // Now use this validated full URL in the fetch
       );
 
       let schemaScore = 0;
+      let hasArticle = false;
+      let hasFaqHowto = false;
+      let hasPerson = false;
       const jsonLdScripts = doc.querySelectorAll('script[type="application/ld+json"]');
-      if (jsonLdScripts.length > 0) schemaScore += 30;
+      const hasJsonLd = jsonLdScripts.length > 0;
+      if (hasJsonLd) schemaScore += 30;
       jsonLdScripts.forEach(s => {
         try {
           const data = JSON.parse(s.textContent);
           const types = Array.isArray(data) ? data.map(i => i['@type']) : [data['@type']];
-          if (types.some(t => ['Article', 'BlogPosting'].includes(t))) schemaScore += 30;
-          if (types.some(t => ['FAQPage', 'HowTo'].includes(t))) schemaScore += 25;
-          if (types.includes('Person')) schemaScore += 15;
+          if (types.some(t => ['Article', 'BlogPosting'].includes(t))) {
+            schemaScore += 30;
+            hasArticle = true;
+          }
+          if (types.some(t => ['FAQPage', 'HowTo'].includes(t))) {
+            schemaScore += 25;
+            hasFaqHowto = true;
+          }
+          if (types.includes('Person')) {
+            schemaScore += 15;
+            hasPerson = true;
+          }
         } catch {}
       });
       const structuredData = Math.min(100, schemaScore);
@@ -132,37 +130,63 @@ const url = inputUrl; // Now use this validated full URL in the fetch
       const youCount = (mainText.match(/\byou\b|\byour\b|\byours\b/gi) || []).length;
       const iWeCount = (mainText.match(/\bI\b|\bwe\b|\bmy\b|\bour\b|\bme\b|\bus\b/gi) || []).length;
       const questions = (mainText.match(/\?/g) || []).length;
-      const conversational = Math.min(100, (youCount * 4) + (iWeCount * 3) + (questions * 6));
+      const painPoints = (mainText.match(/\b(struggle|problem|issue|challenge|frustrat|hard|difficult|pain|annoy|confus|overwhelm|fail|mistake|wrong)\b/gi) || []).length;
 
       const words = mainText.split(/\s+/).filter(Boolean).length || 1;
       const sentences = (mainText.match(/[.!?]+/g) || []).length || 1;
       const syllables = mainText.split(/\s+/).reduce((a, w) => a + (w.match(/[aeiouy]+/gi) || []).length, 0);
       const flesch = 206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words);
-      const readability = flesch > 80 ? 95 : flesch > 60 ? 90 : flesch > 40 ? 70 : 40;
-
-      const hasInsights = /\b(I tested|in my experience|we found|case study|based on my|hands-on|personally observed)\b/i.test(mainText);
-      const uniqueInsights = hasInsights ? 95 : words > 2000 ? 70 : words > 1000 ? 50 : 30;
 
       const sentencesArr = mainText.split(/[.!?]+/).filter(Boolean);
       const lengths = sentencesArr.map(s => s.split(/\s+/).length);
-      let burstiness = 50;
+      let variationScore = 50;
       if (lengths.length >= 5) {
         const avg = lengths.reduce((a, b) => a + b, 0) / lengths.length;
         const variance = lengths.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / lengths.length;
-        burstiness = variance > 40 ? 95 : variance > 20 ? 80 : variance > 10 ? 60 : 40;
+        variationScore = variance > 40 ? 95 : variance > 20 ? 80 : variance > 10 ? 60 : 40;
       }
+      const passivePatterns = mainText.match(/\b(is|are|was|were|been|be|being)\b.*\b(by|using|with|through)\b/gi) || [];
+      const complexWords = mainText.split(/\s+/).filter(w => (w.match(/[aeiouy]+/gi) || []).length >= 3).length;
+      const complexRatio = words > 0 ? (complexWords / words) * 100 : 0;
+
+      const hasInsights = /\b(I tested|in my experience|we found|case study|based on my|hands-on|personally observed)\b/i.test(mainText);
+      const hasDated = /\b(in \d{4}|last year|this year|recently tested|results from)\b/i.test(mainText);
+      const hasInterviews = /\b(interview|spoke with|talked to|surveyed|asked|quoted|said ".*"|^".*"\s*-)\b/i.test(mainText);
+
+      const wordFreq = {};
+      mainText.toLowerCase().split(/\s+/).forEach(w => wordFreq[w] = (wordFreq[w] || 0) + 1);
+      const repeatedWords = Object.values(wordFreq).filter(c => c > 10).length;
+
+      const sentenceStarts = sentencesArr.map(s => s.trim().split(/\s+/)[0]?.toLowerCase() || '');
+      const startFreq = {};
+      sentenceStarts.forEach(s => startFreq[s] = (startFreq[s] || 0) + 1);
+      const hasPredictable = Object.values(startFreq).some(c => c > 3);
+
+      const conversational = Math.min(100, (youCount * 4) + (iWeCount * 3) + (questions * 6) + (painPoints * 5));
+
+      const readability = Math.round((flesch > 80 ? 95 : flesch > 60 ? 90 : flesch > 40 ? 70 : 40) * 0.4 +
+        variationScore * 0.3 +
+        (passivePatterns.length < 5 ? 95 : passivePatterns.length < 10 ? 70 : 50) * 0.15 +
+        (complexRatio < 15 ? 95 : complexRatio < 20 ? 80 : 60) * 0.15);
+
+      let uniqueInsights = words > 2000 ? 70 : words > 1000 ? 50 : 30;
+      if (hasInsights) uniqueInsights = Math.max(uniqueInsights, 80);
+      if (hasDated) uniqueInsights += 10;
+      if (hasInterviews) uniqueInsights += 10;
+      uniqueInsights = Math.min(100, uniqueInsights + (hasInsights ? 15 : 0));
+
+      const antiAiSafety = Math.round(variationScore * 0.5 + (repeatedWords <= 2 ? 95 : repeatedWords <= 5 ? 70 : 50) * 0.3 + (hasPredictable ? 50 : 95) * 0.2);
 
       const overall = Math.round(
         answerability * 0.25 +
         structuredData * 0.15 +
         eeat * 0.15 +
         scannability * 0.10 +
-        conversational * 0.10 +
+        conversational * 0.12 +
         readability * 0.10 +
         uniqueInsights * 0.08 +
-        burstiness * 0.07
+        antiAiSafety * 0.05
       );
-
       const yourScore = overall;
 
       const modules = [
@@ -170,15 +194,59 @@ const url = inputUrl; // Now use this validated full URL in the fetch
         { name: "Structured Data", score: structuredData, desc: "JSON-LD presence and relevant types" },
         { name: "EEAT Signals", score: eeat, desc: "Author, dates, trusted links, HTTPS" },
         { name: "Scannability", score: scannability, desc: "Headings, lists, tables, short paragraphs" },
-        { name: "Conversational Tone", score: conversational, desc: "Use of you/I/we, questions" },
-        { name: "Readability", score: readability, desc: "Flesch score in ideal range" },
-        { name: "Unique Insights", score: uniqueInsights, desc: "First-hand experience markers" },
-        { name: "Anti-AI Safety", score: burstiness, desc: "Sentence length variation (burstiness)" }
+        { name: "Conversational Tone", score: conversational, desc: "You/I/we, questions, pain point acknowledgment" },
+        { name: "Readability", score: readability, desc: "Flesch ease, variation, low passive/complex words" },
+        { name: "Unique Insights", score: uniqueInsights, desc: "First-hand markers, dated results, interviews" },
+        { name: "Anti-AI Safety", score: antiAiSafety, desc: "Variation, low repetition, no predictable patterns" }
+      ];
+
+      const tests = [
+        // Answerability (6)
+        { emoji: hasBoldInFirst ? '✅' : '❌', text: 'Bold/strong formatting in opening', passed: hasBoldInFirst },
+        { emoji: hasDefinition ? '✅' : '❌', text: 'Clear definition pattern in opening', passed: hasDefinition },
+        { emoji: hasFAQSchema ? '✅' : '❌', text: 'FAQPage schema detected', passed: hasFAQSchema },
+        { emoji: hasQuestionH2 ? '✅' : '❌', text: 'Question-style H2 headings', passed: hasQuestionH2 },
+        { emoji: hasSteps ? '✅' : '❌', text: 'Step-by-step language in opening', passed: hasSteps },
+        { emoji: first300.length > 600 ? '✅' : '❌', text: 'Strong opening section (>600 chars)', passed: first300.length > 600 },
+        // Structured Data (4)
+        { emoji: hasJsonLd ? '✅' : '❌', text: 'JSON-LD structured data present', passed: hasJsonLd },
+        { emoji: hasArticle ? '✅' : '❌', text: 'Article/BlogPosting schema type', passed: hasArticle },
+        { emoji: hasFaqHowto ? '✅' : '❌', text: 'FAQPage/HowTo schema type', passed: hasFaqHowto },
+        { emoji: hasPerson ? '✅' : '❌', text: 'Person schema for author', passed: hasPerson },
+        // EEAT (4)
+        { emoji: hasAuthor ? '✅' : '❌', text: 'Author byline visible', passed: hasAuthor },
+        { emoji: hasDate ? '✅' : '❌', text: 'Publish/update date shown', passed: hasDate },
+        { emoji: hasTrustedLinks ? '✅' : '❌', text: 'Trusted outbound links', passed: hasTrustedLinks },
+        { emoji: url.startsWith('https:') ? '✅' : '❌', text: 'Secure HTTPS connection', passed: url.startsWith('https:') },
+        // Scannability (5)
+        { emoji: headings > 5 ? '✅' : '❌', text: 'Sufficient headings (H1-H4)', passed: headings > 5 },
+        { emoji: lists > 2 ? '✅' : '❌', text: 'Bullet/numbered lists used', passed: lists > 2 },
+        { emoji: tables > 0 ? '✅' : '❌', text: 'Data tables present', passed: tables > 0 },
+        { emoji: shortParas > 5 ? '✅' : '❌', text: 'Short paragraphs (<35 words)', passed: shortParas > 5 },
+        { emoji: headings > 8 ? '✅' : '❌', text: 'Excellent heading density', passed: headings > 8 },
+        // Conversational Tone (4)
+        { emoji: youCount > 5 ? '✅' : '❌', text: 'Direct "you" address (>5)', passed: youCount > 5 },
+        { emoji: iWeCount > 3 ? '✅' : '❌', text: 'Personal "I/we" sharing', passed: iWeCount > 3 },
+        { emoji: questions > 2 ? '✅' : '❌', text: 'Engaging questions asked', passed: questions > 2 },
+        { emoji: painPoints > 3 ? '✅' : '❌', text: 'Reader pain points acknowledged', passed: painPoints > 3 },
+        // Readability (4)
+        { emoji: flesch > 60 ? '✅' : '❌', text: 'Good Flesch score (>60)', passed: flesch > 60 },
+        { emoji: variationScore > 70 ? '✅' : '❌', text: 'Natural sentence variation', passed: variationScore > 70 },
+        { emoji: passivePatterns.length < 5 ? '✅' : '❌', text: 'Low passive voice', passed: passivePatterns.length < 5 },
+        { emoji: complexRatio < 15 ? '✅' : '❌', text: 'Low complex words (<15%)', passed: complexRatio < 15 },
+        // Unique Insights (4)
+        { emoji: hasInsights ? '✅' : '❌', text: 'First-hand experience markers', passed: hasInsights },
+        { emoji: hasDated ? '✅' : '❌', text: 'Dated/timely results mentioned', passed: hasDated },
+        { emoji: hasInterviews ? '✅' : '❌', text: 'Interviews/quotes included', passed: hasInterviews },
+        { emoji: words > 1500 ? '✅' : '❌', text: 'Deep content (1500+ words)', passed: words > 1500 },
+        // Anti-AI Safety (3) - total 34, but close to 31+
+        { emoji: variationScore > 70 ? '✅' : '❌', text: 'High sentence burstiness', passed: variationScore > 70 },
+        { emoji: repeatedWords <= 2 ? '✅' : '❌', text: 'Low word repetition', passed: repeatedWords <= 2 },
+        { emoji: !hasPredictable ? '✅' : '❌', text: 'No predictable sentence starts', passed: !hasPredictable }
       ];
 
       const lowScoring = modules.filter(m => m.score < 70).sort((a, b) => a.score - b.score);
       const prioritisedFixes = [];
-
       if (lowScoring.some(m => m.name === "Answerability")) {
         prioritisedFixes.push({ title: "Add Direct Answer in Opening", emoji: "💡", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
           what: "A clear, bold, quotable answer AI engines can cite directly",
@@ -220,107 +288,6 @@ const url = inputUrl; // Now use this validated full URL in the fetch
       progressContainer.classList.add('hidden');
       results.classList.remove('hidden');
 
-      results.innerHTML = `
-<div class="flex justify-center my-12 px-4">
-  <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square">
-    <svg viewBox="0 0 260 260" class="w-full h-full transform -rotate-90">
-      <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
-      <circle cx="130" cy="130" r="120"
-              stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'}"
-              stroke-width="18" fill="none"
-              stroke-dasharray="${(yourScore / 100) * 754} 754"
-              stroke-linecap="round"/>
-    </svg>
-    <div class="absolute inset-0 flex items-center justify-center">
-      <div class="text-center">
-        <div class="text-5xl sm:text-6xl md:text-7xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
-          ${yourScore}
-        </div>
-        <div class="text-xl sm:text-2xl text-gray-500 dark:text-gray-400">/100</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-          <div class="grid md:grid-cols-4 gap-6 my-16">
-            ${modules.map(m => {
-              const borderColor = m.score >= 80 ? 'border-green-500' : m.score >= 60 ? 'border-orange-500' : 'border-red-500';
-              const ringColor = m.score >= 80 ? '#22c55e' : m.score >= 60 ? '#eab308' : '#ef4444';
-              return `
-                <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border ${borderColor}">
-                <div class="relative mx-auto w-32 h-32">
-                <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-                  <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-                  <circle cx="64" cy="64" r="56" 
-                          stroke="${m.score >= 80 ? '#22c55e' : m.score >= 60 ? '#f97316' : '#ef4444'}"
-                          stroke-width="12" fill="none" 
-                          stroke-dasharray="${(m.score/100)*352} 352" 
-                          stroke-linecap="round"/>
-                </svg>
-                <div class="absolute inset-0 flex items-center justify-center text-4xl font-black ${m.score >= 80 ? 'text-green-600' : m.score >= 60 ? 'text-orange-600' : 'text-red-600'}">
-                  ${m.score}
-                </div>
-              </div>
-                  <p class="mt-4 text-lg font-medium">${m.name}</p>
-                  <p class="text-sm opacity-70 mt-2">${m.desc}</p>
-                  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-                    Show Fixes
-                  </button>
-                  <div class="hidden mt-6 space-y-3 text-left text-sm">
-                    <p class="text-blue-500 font-bold">What:</p><p>${getWhat(m.name)}</p>
-                    <p class="text-green-500 font-bold">How:</p><p>${getHow(m.name)}</p>
-                    <p class="text-orange-500 font-bold">Why:</p><p>${getWhy(m.name)}</p>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-
-              ${prioritisedFixes.map(fix => `
-                <div class="p-8 bg-gradient-to-r ${fix.gradient} border-l-8 rounded-r-2xl">
-                  <div class="flex gap-6">
-                    <div class="text-5xl">${fix.emoji}</div>
-                    <div class="flex-1">
-                      <h4 class="text-2xl font-bold ${fix.color}">${fix.title}</h4>
-                      <div class="mt-4">
-                        <p class="text-blue-500 font-bold">What:</p>
-                        <p class="text-gray-500 mt-1">${fix.what}</p>
-                      </div>
-                      <div class="mt-2">
-                        <p class="text-green-500 font-bold">How:</p>
-                        <p class="text-gray-500 mt-1">${fix.how}</p>
-                      </div>
-                      <div class="mt-2">
-                        <p class="text-orange-500 font-bold">Why:</p>
-                        <p class="text-gray-500 mt-1">${fix.why}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              `).join('')}
-
-          <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
-            <h3 class="text-4xl font-black text-center">Predictive AI SERP Forecast</h3>
-            <p class="text-center text-5xl font-black">${yourScore >= 90 ? 'Top 3' : yourScore >= 80 ? 'Top 5' : yourScore >= 70 ? 'Top 10' : yourScore >= 50 ? 'Page 1 Possible' : 'Page 2+'}</p>
-            <p class="text-center text-4xl font-bold">+${Math.round((100 - yourScore) * 1.8)}% potential traffic gain if fixed</p>
-            <p class="text-center text-lg italic opacity-80">Based on trust, direct answers, structure, and human signals — here's the breakdown:</p>
-            <div class="grid md:grid-cols-3 gap-6 text-left">
-              <div class="p-6 bg-white/10 rounded-2xl"><p class="font-bold text-blue-300 text-xl mb-2">What it is</p><p class="text-sm leading-relaxed">Estimate of your page’s potential position in AI-powered search results (Perplexity, Grok, Gemini, ChatGPT Search, etc.).</p></div>
-              <div class="p-6 bg-white/10 rounded-2xl"><p class="font-bold text-green-300 text-xl mb-2">How it's calculated</p><p class="text-sm leading-relaxed">Weighted: 25% Answerability, 15% Structured Data, 15% EEAT, 10% each Scannability/Tone/Readability, 8% Unique Insights, 7% Burstiness.</p></div>
-              <div class="p-6 bg-white/10 rounded-2xl"><p class="font-bold text-orange-300 text-xl mb-2">Why it matters</p><p class="text-sm leading-relaxed">Top AI citations drive massive direct traffic. Fixing gaps can multiply visibility in days.</p></div>
-            </div>
-            <p class="text-center text-sm italic mt-6">Forecast is heuristic; actual performance varies by query and competition.</p>
-          </div>
-
-          <div class="text-center my-16">
-            <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
-                    class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
-              📄 Save as PDF
-            </button>
-          </div>
-        </div>
-      `;
-
       function getWhat(name) {
         const map = {
           "Answerability": "Direct, quotable answers AI engines can cite verbatim.",
@@ -360,6 +327,138 @@ const url = inputUrl; // Now use this validated full URL in the fetch
         };
         return map[name] || "Improves visibility and citation in AI-powered search.";
       }
+      function getFixes(name) {
+        const map = {
+          "Answerability": "<p>• Bold key answers in opening</p><p>• Add definition phrasing</p><p>• Use FAQ/HowTo schema</p><p>• Question H2s</p><p>• Step-by-step guides</p>",
+          "Structured Data": "<p>• Add JSON-LD block</p><p>• Include Article type</p><p>• Add FAQPage/HowTo</p><p>• Link Person schema</p>",
+          "EEAT Signals": "<p>• Visible author byline</p><p>• Publish date</p><p>• Trusted outbound links</p><p>• Use HTTPS</p>",
+          "Scannability": "<p>• More headings</p><p>• Bullet lists</p><p>• Tables for data</p><p>• Short paragraphs</p><p>• High heading density</p>",
+          "Conversational Tone": "<p>• Use 'you' frequently</p><p>• Share personal 'I/we'</p><p>• Ask questions</p><p>• Mention reader struggles</p>",
+          "Readability": "<p>• Aim Flesch >60</p><p>• Vary sentence length</p><p>• Reduce passive voice</p><p>• Use simpler words</p>",
+          "Unique Insights": "<p>• Add personal markers</p><p>• Mention timely results</p><p>• Include quotes/interviews</p><p>• Write in-depth content</p>",
+          "Anti-AI Safety": "<p>• High variation in sentences</p><p>• Avoid repeating words</p><p>• Vary sentence starts</p>"
+        };
+        return map[name] || "<p>Optimize based on failed checks above.</p>";
+      }
+
+      results.innerHTML = `
+<div class="flex justify-center my-12 px-4">
+  <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square">
+    <svg viewBox="0 0 260 260" class="w-full h-full transform -rotate-90">
+      <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
+      <circle cx="130" cy="130" r="120"
+              stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'}"
+              stroke-width="18" fill="none"
+              stroke-dasharray="${(yourScore / 100) * 754} 754"
+              stroke-linecap="round"/>
+    </svg>
+    <div class="absolute inset-0 flex items-center justify-center">
+      <div class="text-center">
+        <div class="text-5xl sm:text-6xl md:text-7xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
+          ${yourScore}
+        </div>
+        <div class="text-xl sm:text-2xl text-gray-500 dark:text-gray-400">/100</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-12 px-6 max-w-5xl mx-auto">
+  <h3 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-gray-200">Detailed Optimization Checks (31+ Metrics)</h3>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    ${tests.map(t => `
+      <div class="flex items-center gap-3 text-lg px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800 ${t.passed ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">
+        <span class="text-2xl">${t.emoji}</span>
+        <span class="text-base">${t.text}</span>
+      </div>
+    `).join('')}
+  </div>
+</div>
+
+<div class="grid md:grid-cols-4 gap-6 my-16">
+  ${modules.map(m => {
+    const borderColor = m.score >= 80 ? 'border-green-500' : m.score >= 60 ? 'border-orange-500' : 'border-red-500';
+    return `
+      <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border ${borderColor}">
+        <div class="relative mx-auto w-32 h-32">
+          <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+            <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+            <circle cx="64" cy="64" r="56"
+                    stroke="${m.score >= 80 ? '#22c55e' : m.score >= 60 ? '#f97316' : '#ef4444'}"
+                    stroke-width="12" fill="none"
+                    stroke-dasharray="${(m.score/100)*352} 352"
+                    stroke-linecap="round"/>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center text-4xl font-black ${m.score >= 80 ? 'text-green-600' : m.score >= 60 ? 'text-orange-600' : 'text-red-600'}">
+            ${m.score}
+          </div>
+        </div>
+        <p class="mt-4 text-lg font-medium">${m.name}</p>
+        <p class="text-sm opacity-70 mt-2">${m.desc}</p>
+        <button onclick="this.parentNode.querySelector('.collapsible').classList.toggle('hidden'); this.textContent = this.textContent.includes('Show') ? 'Hide Fixes & Details' : 'Show Fixes & Details';"
+                class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+          Show Fixes & Details
+        </button>
+        <div class="collapsible hidden mt-6 text-left text-sm space-y-6">
+          <div>
+            <p class="text-red-600 dark:text-red-400 font-bold mb-3">Recommended Fixes</p>
+            <div class="space-y-2 text-gray-700 dark:text-gray-300">${getFixes(m.name)}</div>
+          </div>
+          <div>
+            <p class="text-blue-600 dark:text-blue-400 font-bold mb-3">More Details</p>
+            <p><span class="font-bold text-blue-500">What:</span> ${getWhat(m.name)}</p>
+            <p class="mt-2"><span class="font-bold text-green-500">How:</span> ${getHow(m.name)}</p>
+            <p class="mt-2"><span class="font-bold text-orange-500">Why:</span> ${getWhy(m.name)}</p>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('')}
+</div>
+
+${prioritisedFixes.map(fix => `
+  <div class="p-8 bg-gradient-to-r ${fix.gradient} border-l-8 rounded-r-2xl">
+    <div class="flex gap-6">
+      <div class="text-5xl">${fix.emoji}</div>
+      <div class="flex-1">
+        <h4 class="text-2xl font-bold ${fix.color}">${fix.title}</h4>
+        <div class="mt-4">
+          <p class="text-blue-500 font-bold">What:</p>
+          <p class="text-gray-500 mt-1">${fix.what}</p>
+        </div>
+        <div class="mt-2">
+          <p class="text-green-500 font-bold">How:</p>
+          <p class="text-gray-500 mt-1">${fix.how}</p>
+        </div>
+        <div class="mt-2">
+          <p class="text-orange-500 font-bold">Why:</p>
+          <p class="text-gray-500 mt-1">${fix.why}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+`).join('')}
+
+<div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
+  <h3 class="text-4xl font-black text-center">Predictive AI SERP Forecast</h3>
+  <p class="text-center text-5xl font-black">${yourScore >= 90 ? 'Top 3' : yourScore >= 80 ? 'Top 5' : yourScore >= 70 ? 'Top 10' : yourScore >= 50 ? 'Page 1 Possible' : 'Page 2+'}</p>
+  <p class="text-center text-4xl font-bold">+${Math.round((100 - yourScore) * 1.8)}% potential traffic gain if fixed</p>
+  <p class="text-center text-lg italic opacity-80">Based on trust, direct answers, structure, and human signals — here's the breakdown:</p>
+  <div class="grid md:grid-cols-3 gap-6 text-left">
+    <div class="p-6 bg-white/10 rounded-2xl"><p class="font-bold text-blue-300 text-xl mb-2">What it is</p><p class="text-sm leading-relaxed">Estimate of your page’s potential position in AI-powered search results (Perplexity, Grok, Gemini, ChatGPT Search, etc.).</p></div>
+    <div class="p-6 bg-white/10 rounded-2xl"><p class="font-bold text-green-300 text-xl mb-2">How it's calculated</p><p class="text-sm leading-relaxed">Weighted: 25% Answerability, 15% Structured Data, 15% EEAT, 10% each Scannability/Tone/Readability, 8% Unique Insights, 5% Anti-AI Safety.</p></div>
+    <div class="p-6 bg-white/10 rounded-2xl"><p class="font-bold text-orange-300 text-xl mb-2">Why it matters</p><p class="text-sm leading-relaxed">Top AI citations drive massive direct traffic. Fixing gaps can multiply visibility in days.</p></div>
+  </div>
+  <p class="text-center text-sm italic mt-6">Forecast is heuristic; actual performance varies by query and competition.</p>
+</div>
+
+<div class="text-center my-16">
+  <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
+          class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
+    📄 Save as PDF
+  </button>
+</div>
+      `;
 
     } catch (err) {
       clearInterval(interval);
