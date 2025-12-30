@@ -376,89 +376,91 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 <div class="mt-20 py-12 px-8 bg-gradient-to-r from-orange-500 to-pink-600 rounded-3xl shadow-2xl text-white">
-  <h2 class="text-5xl md:text-6xl font-black text-center mb-12">Performance Forecast</h2>
+  <h2 class="text-5xl md:text-6xl font-black text-center mb-16">Performance Forecast</h2>
 
   ${(() => {
     const failingModules = [analysis.moduleScores[0], analysis.moduleScores[1], analysis.moduleScores[2], analysis.moduleScores[3], analysis.moduleScores[4]].filter(s => s < 20).length;
     const boost = failingModules * 15;
     const optimizedScore = Math.min(100, yourScore + boost);
+    const currentColor = getGradeColor(yourScore / 10);
 
     if (failingModules === 0) {
       return `
-      <div class="text-center space-y-8">
-        <div class="relative w-72 h-72 mx-auto">
-          <svg viewBox="0 0 288 288" class="absolute inset-0 -rotate-90">
-            <circle cx="144" cy="144" r="120" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="28"/>
-            <circle cx="144" cy="144" r="120" fill="none" stroke="#10b981" stroke-width="24"
-                    stroke-dasharray="754 754" stroke-linecap="round"/>
+      <div class="text-center space-y-12">
+        <div class="relative w-80 h-80 mx-auto">
+          <svg viewBox="0 0 320 320" class="absolute inset-0 -rotate-90">
+            <circle cx="160" cy="160" r="140" fill="none" stroke="rgba(16,185,129,0.4)" stroke-width="32"/>
+            <circle cx="160" cy="160" r="140" fill="none" stroke="#10b981" stroke-width="28"
+                    stroke-dasharray="880 880" stroke-linecap="round"/>
           </svg>
           <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <div class="text-9xl mb-4">🏆</div>
             <div class="text-8xl font-black">${yourScore}</div>
-            <div class="text-2xl opacity-90">Human Score</div>
-            <div class="text-xl">/100</div>
+            <div class="text-3xl opacity-90">Human Score</div>
+            <div class="text-2xl">/100</div>
           </div>
         </div>
-        <p class="text-3xl font-bold">Your content is fully optimized for strong search performance</p>
-        <p class="text-xl opacity-90">Maintain this level to maximize visibility and engagement</p>
+        <p class="text-3xl md:text-4xl font-bold max-w-3xl mx-auto">Your content demonstrates excellent human-like quality, supporting strong search visibility and user trust</p>
       </div>`;
     }
 
     return `
-    <div class="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-20">
-      <!-- Current Score -->
-      <div class="flex flex-col items-center space-y-6">
-        <div class="relative w-64 h-64">
-          <svg viewBox="0 0 256 256" class="absolute inset-0 -rotate-90">
-            <circle cx="128" cy="128" r="110" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="24"/>
-            <circle cx="128" cy="128" r="110" fill="none" stroke="#fff" stroke-width="20"
-                    stroke-dasharray="${(yourScore / 100) * 691} 691" stroke-linecap="round"/>
+    <div class="flex flex-col md:flex-row items-center justify-center gap-12 lg:gap-24">
+      <!-- Current -->
+      <div class="flex flex-col items-center space-y-8">
+        <div class="relative w-72 h-72">
+          <svg viewBox="0 0 288 288" class="absolute inset-0 -rotate-90">
+            <circle cx="144" cy="144" r="120" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="28"/>
+            <circle cx="144" cy="144" r="120" fill="none" stroke="${currentColor}" stroke-width="24"
+                    stroke-dasharray="${(yourScore / 100) * 754} 754" stroke-linecap="round"/>
           </svg>
           <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <div class="text-7xl font-black">${yourScore}</div>
-            <div class="text-xl opacity-90">Current</div>
-            <div class="text-lg">Human Score /100</div>
+            <div class="text-8xl font-black">${yourScore}</div>
+            <div class="text-2xl opacity-90">Current</div>
+            <div class="text-xl">Human Score /100</div>
           </div>
         </div>
-        <p class="text-xl text-center opacity-90">Based on current content</p>
+        <p class="text-xl text-center opacity-90 max-w-xs">Based on current content</p>
       </div>
 
       <!-- Connector -->
-      <div class="flex flex-col items-center space-y-2">
-        <div class="text-5xl font-bold">→</div>
-        <p class="text-lg font-medium text-center px-4">Apply recommended fixes</p>
+      <div class="flex flex-col items-center space-y-4">
+        <div class="text-6xl font-bold">→</div>
+        <p class="text-xl font-medium text-center">Apply recommended fixes</p>
       </div>
 
-      <!-- Optimized Score -->
-      <div class="flex flex-col items-center space-y-6">
-        <div class="relative w-64 h-64">
-          <svg viewBox="0 0 256 256" class="absolute inset-0 -rotate-90">
-            <circle cx="128" cy="128" r="110" fill="none" stroke="rgba(16,185,129,0.3)" stroke-width="28"/>
-            <circle cx="128" cy="128" r="110" fill="none" stroke="#10b981" stroke-width="24"
-                    stroke-dasharray="691 691" stroke-linecap="round"/>
+      <!-- Optimized -->
+      <div class="flex flex-col items-center space-y-8">
+        <div class="relative w-72 h-72">
+          <svg viewBox="0 0 288 288" class="absolute inset-0 -rotate-90">
+            <circle cx="144" cy="144" r="120" fill="none" stroke="rgba(16,185,129,0.4)" stroke-width="32"/>
+            <circle cx="144" cy="144" r="120" fill="none" stroke="#10b981" stroke-width="28"
+                    stroke-dasharray="754 754" stroke-linecap="round"/>
           </svg>
           <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <div class="text-7xl font-black">${optimizedScore}</div>
-            <div class="text-xl opacity-90">Optimized</div>
-            <div class="text-lg">Human Score /100</div>
+            <div class="text-7xl mb-2">🏆</div>
+            <div class="text-8xl font-black">${optimizedScore}</div>
+            <div class="text-2xl opacity-90">Optimized</div>
+            <div class="text-xl">Human Score /100</div>
           </div>
         </div>
-        <p class="text-xl text-center font-medium">+${boost} point potential</p>
-        <p class="text-lg text-center opacity-90">After applying fixes</p>
+        <p class="text-2xl font-bold text-green-200">+${boost} point potential</p>
+        <p class="text-xl text-center opacity-90 max-w-xs">After applying fixes</p>
       </div>
     </div>
 
-    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-      <div class="bg-white/15 backdrop-blur rounded-2xl p-6 text-center">
-        <p class="text-xl font-bold mb-2">Increase Search Engine Visibility</p>
-        <p class="opacity-90">Higher human-like quality signals stronger relevance and authority</p>
+    <div class="mt-20 grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl mx-auto">
+      <div class="bg-white/15 backdrop-blur-lg rounded-2xl p-8 text-center">
+        <p class="text-2xl font-bold mb-4">Increase Search Engine Visibility</p>
+        <p class="opacity-90 leading-relaxed">Higher human-like quality improves relevance signals and ranking potential</p>
       </div>
-      <div class="bg-white/15 backdrop-blur rounded-2xl p-6 text-center">
-        <p class="text-xl font-bold mb-2">Improve User Engagement</p>
-        <p class="opacity-90">Natural, varied content encourages longer visits and better experience</p>
+      <div class="bg-white/15 backdrop-blur-lg rounded-2xl p-8 text-center">
+        <p class="text-2xl font-bold mb-4">Improve User Engagement</p>
+        <p class="opacity-90 leading-relaxed">Natural, authentic content encourages longer visits and better reader experience</p>
       </div>
-      <div class="bg-white/15 backdrop-blur rounded-2xl p-6 text-center">
-        <p class="text-xl font-bold mb-2">Enhance Brand Credibility</p>
-        <p class="opacity-90">Authentic writing builds trust and positions you as an expert source</p>
+      <div class="bg-white/15 backdrop-blur-lg rounded-2xl p-8 text-center">
+        <p class="text-2xl font-bold mb-4">Enhance Brand Credibility</p>
+        <p class="opacity-90 leading-relaxed">Expert, human-written content builds trust and authority with your audience</p>
       </div>
     </div>
     `;
