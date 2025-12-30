@@ -1,19 +1,21 @@
-// Replace the entire script.js with this updated version
+// Complete fixed script.js
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const pageUrlInput = document.getElementById('page-url');
   const targetKeywordInput = document.getElementById('target-keyword');
   const results = document.getElementById('results');
   const PROXY = 'https://cors-proxy.traffictorch.workers.dev/';
-const progressModules = [
+
+  const progressModules = [
     "Fetching page...",
     "Analyzing meta & headings...",
     "Checking content density...",
     "Scanning image alts...",
     "Evaluating anchors...",
     "Checking URL & schema...",
-    "Generating report..."  
+    "Generating report..."
   ];
+
   let currentModuleIndex = 0;
   let moduleInterval;
 
@@ -70,6 +72,8 @@ const progressModules = [
 
   const getWordCount = (doc) => getCleanContent(doc).split(/\s+/).filter(w => w.length > 0).length;
 
+  const truncate = (str, len) => str.length > len ? str.slice(0, len - 3) + '...' : str;
+
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const yourUrl = pageUrlInput.value.trim();
@@ -101,14 +105,13 @@ const progressModules = [
       await new Promise(resolve => setTimeout(resolve, 800));
     };
 
-    // Enhanced data collection
+    // Step 1: Meta
     await nextStep(1);
     const titleText = yourDoc.querySelector('title')?.textContent.trim() || '';
     const descText = yourDoc.querySelector('meta[name="description"]')?.content.trim() || '';
     const titleMatch = countPhrase(titleText, phrase);
     const descMatch = countPhrase(descText, phrase);
     data.meta = { titleText, descText, titleMatch, descMatch, yourMatches: titleMatch + descMatch };
-
     yourScore += data.meta.yourMatches > 0 ? 25 : 0;
     if (data.meta.yourMatches === 0) fixes.push({
       issue: 'Add keyword to title and meta description',
@@ -117,13 +120,13 @@ const progressModules = [
       why: 'These elements are key for search engines to match queries and encourage clicks, potentially boosting CTR by 20-30% when optimized.'
     });
 
+    // Step 2: Headings
     await nextStep(2);
     const headings = Array.from(yourDoc.querySelectorAll('h1, h2, h3, h4, h5, h6')).slice(0, 5);
     const headingsData = headings.map(h => ({ tag: h.tagName, text: h.textContent.trim(), match: countPhrase(h.textContent, phrase) > 0 }));
     const yourH1 = yourDoc.querySelector('h1')?.textContent.trim() || '';
     data.h1 = { match: countPhrase(yourH1, phrase) };
     data.headingsData = headingsData;
-
     yourScore += data.h1.match > 0 ? 15 : 0;
     if (data.h1.match === 0) fixes.push({
       issue: 'Add keyword to H1',
@@ -132,13 +135,13 @@ const progressModules = [
       why: 'H1 tags help search engines grasp the page topic quickly, serving as a core on-page factor for better rankings.'
     });
 
+    // Step 3: Content
     await nextStep(3);
     const cleanContent = getCleanContent(yourDoc);
     const yourWords = getWordCount(yourDoc);
     const yourContentMatches = countPhrase(cleanContent, phrase);
     const yourDensity = yourWords ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
     data.content = { words: yourWords, matches: yourContentMatches, density: yourDensity };
-
     yourScore += yourWords > 800 ? 20 : 0;
     if (yourWords < 800) fixes.push({
       issue: `Add depth (${800 - yourWords} words recommended)`,
@@ -147,6 +150,7 @@ const progressModules = [
       why: 'Longer, in-depth content often ranks higher as it provides more value and signals expertise to search engines.'
     });
 
+    // Step 4: Images
     await nextStep(4);
     const yourImgs = yourDoc.querySelectorAll('img');
     const matchingAlts = Array.from(yourImgs)
@@ -154,7 +158,6 @@ const progressModules = [
       .slice(0, 5)
       .map(img => img.alt?.trim() || '(empty alt)');
     data.alts = { total: yourImgs.length, phrase: matchingAlts.length, matchingAlts };
-
     yourScore += matchingAlts.length > 0 ? 15 : 0;
     if (matchingAlts.length === 0 && yourImgs.length > 0) fixes.push({
       issue: 'Add keyword to key image alts',
@@ -163,13 +166,13 @@ const progressModules = [
       why: 'Alt text improves accessibility, enables image search traffic, and adds relevance signals.'
     });
 
+    // Step 5: Anchors
     await nextStep(5);
     const matchingAnchors = Array.from(yourDoc.querySelectorAll('a'))
       .filter(a => countPhrase(a.textContent || '', phrase) > 0)
       .slice(0, 5)
       .map(a => ({ text: (a.textContent || '').trim(), href: a.href }));
     data.anchors = { count: matchingAnchors.length, matchingAnchors };
-
     yourScore += matchingAnchors.length > 0 ? 10 : 0;
     if (matchingAnchors.length === 0) fixes.push({
       issue: 'Add keyword to anchor text',
@@ -178,6 +181,7 @@ const progressModules = [
       why: 'Keyword-rich anchors help distribute topical authority across your site.'
     });
 
+    // Step 6: URL & Schema
     await nextStep(6);
     const schemaScript = yourDoc.querySelector('script[type="application/ld+json"]');
     const schemaPresent = !!schemaScript;
@@ -185,7 +189,6 @@ const progressModules = [
       urlMatch: countPhrase(fullUrl, phrase),
       schema: schemaPresent ? 1 : 0
     };
-
     yourScore += data.urlSchema.urlMatch > 0 ? 10 : 0;
     if (data.urlSchema.urlMatch === 0) fixes.push({
       issue: 'Include keyword in URL',
@@ -203,8 +206,6 @@ const progressModules = [
     await nextStep(7);
     yourScore = Math.min(100, Math.round(yourScore));
     stopSpinnerLoader();
-
-    const truncate = (str, len) => str.length > len ? str.slice(0, len - 3) + '...' : str;
 
     results.innerHTML = `
 <!-- Big Score Circle -->
@@ -229,14 +230,11 @@ const progressModules = [
   </div>
 </div>
 
-
-
-
-
 <!-- Small Metric Circles -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
   ${[
-    {name: 'Meta Title & Desc', score: data.meta.yourMatches > 0 ? 100 : 0,
+    {
+      name: 'Meta Title & Desc', score: data.meta.yourMatches > 0 ? 100 : 0,
       details: `
         <div class="mt-4 text-left space-y-2 text-sm">
           ${data.meta.titleMatch > 0 ? '✅' : '❌'} <span class="font-bold">Meta Title:</span><br>
@@ -244,28 +242,40 @@ const progressModules = [
           ${data.meta.descMatch > 0 ? '✅' : '❌'} <span class="font-bold">Meta Description:</span><br>
           <span class="text-gray-800 dark:text-gray-200">${truncate(data.meta.descText || '(none)', 80)}</span>
         </div>`,
-      fixEdu: data.meta.yourMatches === 0 ? 
-        `The target keyword "${phrase}" is missing from both your title and meta description. This is a critical missed opportunity because search engines heavily weigh these elements when determining relevance. Adding the keyword naturally improves visibility and click-through rates significantly.` 
-        : data.meta.titleMatch === 0 ? 
+      fixEdu: data.meta.yourMatches === 0 ?
+        `The target keyword "${phrase}" is missing from both your title and meta description. This is a critical missed opportunity because search engines heavily weigh these elements when determining relevance. Adding the keyword naturally improves visibility and click-through rates significantly.`
+        : data.meta.titleMatch === 0 ?
         `Your meta title is missing the target keyword. The title tag is the strongest on-page ranking factor and appears prominently in search results. Including the keyword early in the title helps Google match user queries better.`
         : data.meta.descMatch === 0 ?
         `Your meta description lacks the keyword. While it doesn't directly affect rankings, it influences click-through rates from search results. A compelling description with the keyword encourages more clicks.`
         : '',
       what: 'Checks if your target keyword appears naturally in the page title and meta description. These are the first elements Google reads and displays in search results. Optimized titles and descriptions directly impact visibility and user clicks.',
       how: 'Place the keyword near the beginning of the title (keep total under 60 characters). Include it once naturally in the meta description (under 155 characters). Make both compelling and relevant to the user\'s search intent.',
-      why: 'Pages with the exact keyword in title and description often rank higher and achieve 20-30% better click-through rates. These elements signal strong relevance to search engines. They also build trust and expectation before the user even visits your page.'},
-
-    {name: 'H1 & Headings', score: data.h1.match > 0 ? 100 : 0,
-      details: `...unchanged...`,
+      why: 'Pages with the exact keyword in title and description often rank higher and achieve 20-30% better click-through rates. These elements signal strong relevance to search engines. They also build trust and expectation before the user even visits your page.'
+    },
+    {
+      name: 'H1 & Headings', score: data.h1.match > 0 ? 100 : 0,
+      details: `
+        <div class="mt-4 text-left space-y-2 text-sm">
+          ${data.headingsData.length > 0 ? data.headingsData.map(h => 
+            `${h.match ? '✅' : '❌'} <span class="font-bold">${h.tag}:</span> <span class="text-gray-800 dark:text-gray-200">${truncate(h.text, 60)}</span>`
+          ).join('<br>') : '<span class="text-gray-800 dark:text-gray-200">No headings found</span>'}
+        </div>`,
       fixEdu: data.h1.match === 0 ? 
         `Your main H1 heading does not contain the target keyword. The H1 is the most important heading and tells search engines the primary topic of the page. Without the keyword here, Google may struggle to understand your page focus clearly.`
         : '',
       what: 'Evaluates whether your main H1 heading contains the target keyword. Headings structure content and help search engines understand hierarchy and topic relevance. The H1 carries the strongest weight.',
       how: 'Rewrite your H1 to include the exact keyword or a close natural variant while keeping it engaging for readers. Avoid stuffing — only use it if it fits naturally. Support with keyword-rich H2/H3 where relevant.',
-      why: 'A keyword-optimized H1 is one of the strongest on-page signals for topical relevance. It helps both search engines and users quickly grasp what the page is about. Well-structured headings also improve readability and dwell time.'},
-
-    {name: 'Content Density', score: parseFloat(data.content.density),
-      details: `...unchanged...`,
+      why: 'A keyword-optimized H1 is one of the strongest on-page signals for topical relevance. It helps both search engines and users quickly grasp what the page is about. Well-structured headings also improve readability and dwell time.'
+    },
+    {
+      name: 'Content Density', score: parseFloat(data.content.density),
+      details: `
+        <div class="mt-4 text-center space-y-2 text-sm">
+          <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">Word count:</span> ${data.content.words}</p>
+          <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">Keyword mentions:</span> ${data.content.matches}</p>
+          <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">Density:</span> ${data.content.density}% (ideal 1-2%)</p>
+        </div>`,
       fixEdu: (() => {
         let edu = '';
         if (data.content.words < 800) edu += `Your page has only ${data.content.words} words — well below the recommended 800+ for in-depth coverage. Thin content struggles to rank against comprehensive competitors. `;
@@ -276,28 +286,44 @@ const progressModules = [
       })(),
       what: 'Measures how often the target keyword appears relative to total word count. Also evaluates overall content length. Ideal density is 1-2% with substantial depth.',
       how: 'Expand content with valuable sections like examples, FAQs, data, or comparisons to reach 800+ words. Include the keyword naturally in introduction, subheadings, body, and conclusion. Reduce repetitions if density exceeds 3%.',
-      why: 'Longer, well-optimized content consistently outranks shorter pages on the same topic. Proper density signals relevance without stuffing. Comprehensive content satisfies user intent better, leading to higher engagement and rankings.'},
-
-    {name: 'Image Alts', score: data.alts.phrase > 0 ? 100 : 0,
-      details: `...unchanged...`,
+      why: 'Longer, well-optimized content consistently outranks shorter pages on the same topic. Proper density signals relevance without stuffing. Comprehensive content satisfies user intent better, leading to higher engagement and rankings.'
+    },
+    {
+      name: 'Image Alts', score: data.alts.phrase > 0 ? 100 : 0,
+      details: `
+        <div class="mt-4 text-left space-y-2 text-sm">
+          <p class="text-gray-800 dark:text-gray-200 font-bold">Matching alts (${data.alts.phrase}/${data.alts.total} images):</p>
+          ${data.alts.matchingAlts.length > 0 ? data.alts.matchingAlts.map(alt => `✅ <span class="text-gray-800 dark:text-gray-200">${truncate(alt, 60)}</span>`).join('<br>') : '<span class="text-gray-800 dark:text-gray-200">None found</span>'}
+        </div>`,
       fixEdu: data.alts.phrase === 0 && data.alts.total > 0 ? 
         `None of your ${data.alts.total} images have the target keyword in alt text. This misses opportunities for accessibility, image search traffic, and additional relevance signals. Focus on key images like hero or product photos first.`
         : '',
       what: 'Scans image alt texts for the presence of your target keyword in relevant images. Alt text describes images for screen readers and search engines. It\'s crucial for accessibility and SEO.',
       how: 'Write descriptive alt text for important images that naturally includes the keyword where appropriate. Avoid stuffing — only use it if it accurately describes the image. Leave decorative images with empty alt="".',
-      why: 'Optimized alt text improves accessibility compliance and user experience. It enables ranking in Google Images, driving extra traffic. It also provides another contextual relevance signal to search engines.'},
-
-    {name: 'Anchor Text', score: data.anchors.count > 0 ? 100 : 0,
-      details: `...unchanged...`,
+      why: 'Optimized alt text improves accessibility compliance and user experience. It enables ranking in Google Images, driving extra traffic. It also provides another contextual relevance signal to search engines.'
+    },
+    {
+      name: 'Anchor Text', score: data.anchors.count > 0 ? 100 : 0,
+      details: `
+        <div class="mt-4 text-left space-y-2 text-sm">
+          <p class="text-gray-800 dark:text-gray-200 font-bold">Matching anchors (${data.anchors.count} found):</p>
+          ${data.anchors.matchingAnchors.length > 0 ? data.anchors.matchingAnchors.map(a => `✅ <span class="text-gray-800 dark:text-gray-200">${truncate(a.text, 50)}</span> → ${truncate(a.href, 40)}`).join('<br>') : '<span class="text-gray-800 dark:text-gray-200">None found</span>'}
+        </div>`,
       fixEdu: data.anchors.count === 0 ? 
         `No internal links use the target keyword in anchor text. This misses a chance to strengthen topical authority flow across your site. Aim for 1-3 natural keyword anchors linking to relevant internal pages.`
         : '',
       what: 'Looks for internal links using the target keyword or variations in their visible anchor text. Anchor text helps search engines understand linked page topics. It distributes authority within your site.',
       how: 'When linking to related content on your site, use the keyword naturally as part or all of the clickable text. Vary with close variants to avoid over-optimization. Link contextually from relevant sections.',
-      why: 'Keyword-rich internal anchors reinforce site structure and topical clusters. They help search engines crawl and understand relationships between pages. Natural internal linking improves user navigation and time on site.'},
-
-    {name: 'URL & Schema', score: Math.min(100, (data.urlSchema.urlMatch ? 50 : 0) + (data.urlSchema.schema ? 50 : 0)),
-      details: `...unchanged...`,
+      why: 'Keyword-rich internal anchors reinforce site structure and topical clusters. They help search engines crawl and understand relationships between pages. Natural internal linking improves user navigation and time on site.'
+    },
+    {
+      name: 'URL & Schema', score: Math.min(100, (data.urlSchema.urlMatch ? 50 : 0) + (data.urlSchema.schema ? 50 : 0)),
+      details: `
+        <div class="mt-4 text-left space-y-2 text-sm">
+          ${data.urlSchema.urlMatch > 0 ? '✅' : '❌'} <span class="font-bold">Keyword in URL</span><br>
+          <span class="text-gray-800 dark:text-gray-200">${truncate(fullUrl, 80)}</span><br>
+          ${data.urlSchema.schema ? '✅' : '❌'} <span class="font-bold">Structured Data (Schema)</span>
+        </div>`,
       fixEdu: (() => {
         let edu = '';
         if (!data.urlSchema.urlMatch) edu += `Your URL does not contain the target keyword. This is a clear missed relevance signal that both users and search engines expect. `;
@@ -306,7 +332,8 @@ const progressModules = [
       })(),
       what: 'Checks if the keyword appears in the page URL and if structured data (JSON-LD schema) is present. Both are important direct relevance and enhancement signals.',
       how: 'Create clean, descriptive URLs with hyphens including the keyword. Add JSON-LD script in the head for relevant schema types (Article, FAQ, Product, etc.). Use Google\'s structured data guidelines.',
-      why: 'Keyword in URL reinforces topic relevance and improves click rates from search results. Schema markup enables rich snippets that stand out and increase visibility. Both contribute to higher perceived authority and CTR.'}
+      why: 'Keyword in URL reinforces topic relevance and improves click rates from search results. Schema markup enables rich snippets that stand out and increase visibility. Both contribute to higher perceived authority and CTR.'
+    }
   ].map(m => {
     const borderColor = m.score >= 80 ? 'border-green-500' : m.score >= 60 ? 'border-yellow-500' : 'border-red-500';
     const textColor = m.score >= 80 ? 'text-green-600' : m.score >= 60 ? 'text-yellow-600' : 'text-red-600';
@@ -314,7 +341,12 @@ const progressModules = [
       <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderColor}">
         <h4 class="text-xl font-medium mb-4">${m.name}</h4>
         <div class="relative w-24 h-24 mx-auto">
-          <!-- circle SVG unchanged -->
+          <svg width="96" height="96" viewBox="0 0 96 96" class="transform -rotate-90">
+            <circle cx="48" cy="48" r="40" stroke="#e5e7eb" stroke-width="10" fill="none"/>
+            <circle cx="48" cy="48" r="40" stroke="${m.score >= 80 ? '#22c55e' : m.score >= 60 ? '#eab308' : '#ef4444'}"
+                    stroke-width="10" fill="none" stroke-dasharray="${(m.score / 100) * 251} 251" stroke-linecap="round"/>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center text-3xl font-black ${textColor}">${Math.round(m.score)}</div>
         </div>
         ${m.details}
         <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
@@ -330,12 +362,6 @@ const progressModules = [
     `;
   }).join('')}
 </div>
-
-
-
-
-
-
 
 <!-- Prioritized Fixes -->
 <div class="space-y-8">
