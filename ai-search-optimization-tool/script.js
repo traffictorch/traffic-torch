@@ -175,6 +175,31 @@ const initTool = (form, results, progressContainer) => {
 
       const antiAiSafety = Math.round(variationScore * 0.5 + (repeatedWords <= 2 ? 95 : repeatedWords <= 5 ? 70 : 50) * 0.3 + (hasPredictable ? 50 : 95) * 0.2);
 
+      // Adjust scores to better align with passed tests
+      const answerPassed = [hasBoldInFirst, hasDefinition, hasFAQSchema, hasQuestionH2, hasSteps, first300.length > 600].filter(Boolean).length;
+      answerability = Math.round(answerability * (answerPassed / 6));
+
+      const structuredPassed = [hasJsonLd, hasArticle, hasFaqHowto, hasPerson].filter(Boolean).length;
+      structuredData = Math.round(structuredData * (structuredPassed / 4));
+
+      const eeatPassed = [hasAuthor, hasDate, hasTrustedLinks, url.startsWith('https:')].filter(Boolean).length;
+      eeat = Math.round(eeat * (eeatPassed / 4));
+
+      const scannabilityPassed = [headings > 5, lists > 2, tables > 0, shortParas > 5, headings > 8].filter(Boolean).length;
+      scannability = Math.round(scannability * (scannabilityPassed / 5));
+
+      const conversationalPassed = [youCount > 5, iWeCount > 3, questions > 2, painPoints > 3].filter(Boolean).length;
+      conversational = Math.round(conversational * (conversationalPassed / 4));
+
+      const readabilityPassed = [flesch > 60, variationScore > 70, passivePatterns.length < 5, complexRatio < 15].filter(Boolean).length;
+      readability = Math.round(readability * (readabilityPassed / 4));
+
+      const uniquePassed = [hasInsights, hasDated, hasInterviews, words > 1500].filter(Boolean).length;
+      uniqueInsights = Math.round(uniqueInsights * (uniquePassed / 4));
+
+      const antiAiPassed = [variationScore > 70, repeatedWords <= 2, !hasPredictable].filter(Boolean).length;
+      antiAiSafety = Math.round(antiAiSafety * (antiAiPassed / 3));
+
       const overall = Math.round(
         answerability * 0.25 +
         structuredData * 0.15 +
