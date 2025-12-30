@@ -1,10 +1,6 @@
-// Full complete fixed quit-risk-tool/script.js
-// Changes applied:
-// - Emojis injected directly in HTML (✅ / ❌) – no CSS needed, works exactly like other tools
-// - No .pass or .fail classes
-// - Fixed NaN in big score circle (safe number fallback)
-// - Prevented text overflow with inline word-break
-// - Identical behavior to other working Traffic Torch tools
+// Full complete updated quit-risk-tool/script.js
+// Implements new layout: Readability full-width, Nav+Access side-by-side, Mobile+Speed side-by-side (stacks on mobile)
+// Fixes: No NaN scores (fallbacks added), all factors show per module, What/How/Why ensured, no overflow (word-break inline), day/night text visibility (Tailwind classes)
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
@@ -65,22 +61,23 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       readability = Math.round(flesch);
     }
+    readability = isNaN(readability) ? 60 : readability;
 
     const navScore = Math.max(30, Math.min(100, 100 - Math.floor(data.links / 5)));
     const accScore = data.images.length === 0 ? 70 : Math.min(95, 65 + Math.min(data.images.length, 15) * 2);
     const mobileScore = 90;
     const speedScore = data.images.length > 20 ? 70 : 85;
 
-    const scores = [readability, navScore, accScore, mobileScore, speedScore];
+    const scores = [readability, navScore, accScore, mobileScore, speedScore].map(s => isNaN(s) ? 70 : s);
     const score = Math.round(scores.reduce((a, b) => a + b, 0) / 5);
 
     return {
       score: isNaN(score) ? 60 : score,
-      readability,
-      nav: navScore,
-      accessibility: accScore,
-      mobile: mobileScore,
-      speed: speedScore
+      readability: scores[0],
+      nav: scores[1],
+      accessibility: scores[2],
+      mobile: scores[3],
+      speed: scores[4]
     };
   }
 
@@ -110,30 +107,29 @@ document.addEventListener('DOMContentLoaded', () => {
   function buildModuleHTML(moduleName, value, factors) {
     const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
 
-    // Direct emoji injection – no CSS needed
     let passFailHTML = '';
     factors.forEach(f => {
       const emoji = value >= f.threshold ? '✅' : '❌';
-      passFailHTML += `<p>${emoji} ${f.name}</p>`;
+      passFailHTML += `<p class="text-gray-700 dark:text-gray-300">${emoji} ${f.name}</p>`;
     });
 
-    let detailsHTML = '<h4 class="text-2xl font-bold mb-6">Recommendations for Improvement</h4>';
+    let detailsHTML = '<h4 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">Recommendations for Improvement</h4>';
     let hasFails = false;
     factors.forEach(f => {
       if (value < f.threshold) {
         hasFails = true;
         detailsHTML += `
           <div class="mb-8 p-6 bg-gray-100 dark:bg-gray-800 rounded-xl">
-            <h5 class="text-xl font-bold mb-3">${f.name}</h5>
-            <p class="mb-2"><strong>How to fix:</strong> ${f.howToFix}</p>
-            <p class="mb-2"><strong>What:</strong> ${f.whatFull}</p>
-            <p class="mb-2"><strong>How:</strong> ${f.howFull}</p>
-            <p><strong>Why it matters:</strong> ${f.why}</p>
+            <h5 class="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100">${f.name}</h5>
+            <p class="mb-2 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How to fix:</strong> ${f.howToFix}</p>
+            <p class="mb-2 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">What:</strong> ${f.whatFull}</p>
+            <p class="mb-2 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How:</strong> ${f.howFull}</p>
+            <p class="text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">Why it matters:</strong> ${f.why}</p>
           </div>`;
       }
     });
     if (!hasFails) {
-      detailsHTML += '<p class="text-xl font-bold">All checks passed! Excellent work on this module.</p>';
+      detailsHTML += '<p class="text-xl font-bold text-gray-700 dark:text-gray-300">All checks passed! Excellent work on this module.</p>';
     }
 
     return `
@@ -148,10 +144,9 @@ document.addEventListener('DOMContentLoaded', () => {
             ${value}
           </div>
         </div>
-        <p class="mt-4 text-lg font-medium">${moduleName}</p>
+        <p class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">${moduleName}</p>
         
-        <!-- Pass/Fail Summary - emojis direct in HTML, word-break to prevent overflow -->
-        <div class="mt-6 text-left text-sm" style="word-break: break-word;">
+        <div class="mt-6 text-left text-sm" style="overflow-wrap: break-word; word-break: break-word;">
           ${passFailHTML}
         </div>
         
@@ -159,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
           More Details
         </button>
         
-        <div class="details-panel hidden mt-8 text-left">
+        <div class="details-panel hidden mt-8 text-left" style="overflow-wrap: break-word; word-break: break-word;">
           ${detailsHTML}
         </div>
       </div>`;
@@ -221,13 +216,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const safeScore = isNaN(ux.score) ? 60 : ux.score;
         const safeDash = (safeScore / 100) * 804;
 
-        const modulesHTML = `
-          ${buildModuleHTML('Readability', ux.readability, factorDefinitions.readability)}
-          ${buildModuleHTML('Navigation', ux.nav, factorDefinitions.navigation)}
-          ${buildModuleHTML('Accessibility', ux.accessibility, factorDefinitions.accessibility)}
-          ${buildModuleHTML('Mobile', ux.mobile, factorDefinitions.mobile)}
-          ${buildModuleHTML('Speed', ux.speed, factorDefinitions.performance)}
-        `;
+        const readabilityHTML = buildModuleHTML('Readability', ux.readability, factorDefinitions.readability);
+        const navHTML = buildModuleHTML('Navigation', ux.nav, factorDefinitions.navigation);
+        const accessHTML = buildModuleHTML('Accessibility', ux.accessibility, factorDefinitions.accessibility);
+        const mobileHTML = buildModuleHTML('Mobile', ux.mobile, factorDefinitions.mobile);
+        const speedHTML = buildModuleHTML('Speed', ux.speed, factorDefinitions.performance);
 
         results.innerHTML = `
           <!-- Big Overall Score Circle -->
@@ -262,12 +255,22 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="text-xl text-gray-500">Scanned ${uxData.links} links + ${uxData.images} images</p>
           </div>
 
-          <!-- Modules Grid -->
-          <div class="grid md:grid-cols-5 gap-6 my-16">
-            ${modulesHTML}
+          <!-- Modules Groups -->
+          <div class="grid gap-6 my-16">
+            <div class="grid md:grid-cols-1">
+              ${readabilityHTML}
+            </div>
+            <div class="grid md:grid-cols-2 gap-6">
+              ${navHTML}
+              ${accessHTML}
+            </div>
+            <div class="grid md:grid-cols-2 gap-6">
+              ${mobileHTML}
+              ${speedHTML}
+            </div>
           </div>
 
-          <!-- Rest of the report (optimize button, fixes, forecast, PDF) remains exactly as before -->
+          <!-- Action Buttons Section -->
           <div class="text-center my-20 space-y-12">
             <button id="optimizeBtn" class="group relative inline-flex items-center px-16 py-8 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-3xl md:text-4xl rounded-3xl shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105">
               <span class="flex items-center gap-6">
@@ -275,7 +278,6 @@ document.addEventListener('DOMContentLoaded', () => {
               </span>
               <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
-
             <div id="optimizedOutput" class="hidden mt-12 max-w-5xl mx-auto">
               <div class="p-10 bg-gradient-to-br from-gray-900/90 to-black/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-cyan-500/40">
                 <h3 class="text-4xl md:text-5xl font-black text-center mb-12 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
@@ -290,13 +292,12 @@ document.addEventListener('DOMContentLoaded', () => {
                   `).join('') : `
                     <div class="p-12 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-3xl border border-green-500/50 text-center">
                       <p class="text-4xl font-black text-green-300 mb-6">🎉 Outstanding Performance!</p>
-                      <p class="text-2xl text-green-200">No major improvements needed.</p>
+                      <p class="text-2xl text-green-200">No major improvements needed — your page is highly optimized for user satisfaction and engagement.</p>
                     </div>
                   `}
                 </div>
               </div>
             </div>
-
             <div class="mt-20 p-10 bg-gradient-to-br from-orange-500/90 to-pink-600/90 backdrop-blur-xl rounded-3xl shadow-2xl text-white">
               <h3 class="text-4xl md:text-5xl font-black text-center mb-8">Predictive Rank Forecast</h3>
               <div class="text-center mb-12">
@@ -305,31 +306,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 </p>
                 <p class="text-2xl md:text-3xl font-bold opacity-90">Potential ranking ceiling after applying UX improvements</p>
               </div>
-              <!-- forecast cards unchanged -->
               <div class="grid md:grid-cols-3 gap-8">
                 <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
                   <div class="text-5xl mb-4">🎯</div>
                   <p class="font-bold text-xl mb-3 text-cyan-200">What it means</p>
-                  <p class="text-gray-300 opacity-90">Estimated highest achievable position based on usability signals.</p>
+                  <p class="text-gray-500 leading-relaxed opacity-90">Estimated highest achievable position based on current usability and engagement signals compared to competing pages.</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
                   <div class="text-5xl mb-4">🧮</div>
                   <p class="font-bold text-xl mb-3 text-green-200">How it's calculated</p>
-                  <p class="text-gray-300 opacity-90">Stronger UX → better behavioral signals rewarded by search engines.</p>
+                  <p class="text-gray-500 leading-relaxed opacity-90">Stronger UX → lower bounce rate → higher dwell time → better behavioral signals that modern search algorithms reward.</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center">
                   <div class="text-5xl mb-4">🚀</div>
                   <p class="font-bold text-xl mb-3 text-orange-200">Why it matters</p>
-                  <p class="text-gray-300 opacity-90">Fixing usability gaps can unlock significant traffic and conversion gains.</p>
+                  <p class="text-gray-500 leading-relaxed opacity-90">Fixing usability gaps can unlock significant traffic gains, improve conversion rates, and build long-term ranking resilience.</p>
                 </div>
               </div>
+              <div class="mt-10 text-center">
+                <p class="text-lg opacity-90 italic">Higher usability scores correlate with stronger performance in user-centric ranking factors.</p>
+              </div>
             </div>
-
             <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
                     class="group relative inline-flex items-center px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
               <span class="flex items-center gap-6">
                 📄 Save Report as PDF
               </span>
+              <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
           </div>
         `;
@@ -347,7 +350,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('click', e => {
     const btn = e.target.closest('.more-details');
-    if (btn) btn.nextElementSibling.classList.toggle('hidden');
-    if (e.target.closest('#optimizeBtn')) document.getElementById('optimizedOutput').classList.toggle('hidden');
+    if (btn) {
+      btn.nextElementSibling.classList.toggle('hidden');
+    }
+    if (e.target.closest('#optimizeBtn')) {
+      document.getElementById('optimizedOutput').classList.toggle('hidden');
+    }
   });
 });
