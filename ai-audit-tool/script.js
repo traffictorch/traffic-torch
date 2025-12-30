@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 0);
     }
 
-    // Perplexity - higher entropy = more human-like
+    // Perplexity
     const bigrams = {};
     for (let i = 0; i < words.length - 1; i++) {
       const gram = words[i] + ' ' + words[i + 1];
@@ -63,9 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const trigramEntropy = words.length > 2 ? entropy(trigrams, words.length - 2) : 6;
 
-    // Scale entropy to 0-10: ideal human ~7-9+, AI often <6
-    const perplexityScore1 = Math.min(10, Math.max(0, (trigramEntropy - 5) * 2)); // boosted scaling
-    const perplexityScore2 = Math.min(10, Math.max(0, (bigramEntropy - 5) * 2));
+    const perplexityScore1 = trigramEntropy >= 7.5 ? 10 : 0;
+    const perplexityScore2 = bigramEntropy >= 7.0 ? 10 : 0;
     const perplexityModule = perplexityScore1 + perplexityScore2;
 
     // Burstiness
@@ -79,47 +78,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const wordVariance = wordLengths.reduce((sum, len) => sum + Math.pow(len - avgWordLen, 2), 0) / wordLengths.length;
     const wordBurstiness = Math.sqrt(wordVariance);
 
-    const burstinessScore1 = Math.min(10, sentBurstiness * 1.2); // human ~5-8
-    const burstinessScore2 = Math.min(10, wordBurstiness * 2.5);
+    const burstinessScore1 = sentBurstiness >= 4.5 ? 10 : 0;
+    const burstinessScore2 = wordBurstiness >= 2.0 ? 10 : 0;
     const burstinessModule = burstinessScore1 + burstinessScore2;
 
-    // Repetition - lower = better
-    const maxBigram = Math.max(...Object.values(bigrams), 1);
-    const bigramRep = Math.min(10, (maxBigram / Math.max(wordCount / 100, 1)) * 1.2);
+    // Repetition
+    const maxBigram = Math.max(...Object.values(bigrams || {1:1}), 1);
+    const maxTrigram = Math.max(...Object.values(trigrams || {1:1}), 1);
 
-    const maxTrigram = Math.max(...Object.values(trigrams), 1);
-    const trigramRep = Math.min(10, (maxTrigram / Math.max(wordCount / 100, 1)) * 2.5);
-
-    const repetitionScore1 = 10 - bigramRep;
-    const repetitionScore2 = 10 - trigramRep;
+    const repetitionScore1 = maxBigram <= 3 ? 10 : 0;
+    const repetitionScore2 = maxTrigram <= 2 ? 10 : 0;
     const repetitionModule = repetitionScore1 + repetitionScore2;
 
     // Sentence Length
-    const sentLenDeviation = Math.abs(avgSentLen - 19);
-    const sentLenScore = Math.max(0, 10 - sentLenDeviation * 0.8);
+    const sentLenInRange = avgSentLen >= 15 && avgSentLen <= 23;
+    const sentLenScore = sentLenInRange ? 10 : 0;
 
     const commaCounts = sentences.map(s => (s.match(/,/g) || []).length);
     const avgCommas = commaCounts.reduce((a, b) => a + b, 0) / commaCounts.length || 0;
-    const complexityScore = Math.min(10, avgCommas * 3); // human often 1-3 commas
+    const complexityScore = avgCommas >= 1.0 ? 10 : 0;
 
     const sentenceLengthModule = sentLenScore + complexityScore;
 
     // Vocabulary
     const uniqueWords = new Set(words).size;
-    const vocabDiversity = (uniqueWords / wordCount) * 100;
-    const vocabScore = Math.min(10, vocabDiversity - 40); // good >60%
+    const vocabDiversity = wordCount > 0 ? (uniqueWords / wordCount) * 100 : 50;
 
     const wordFreq = {};
     words.forEach(w => wordFreq[w] = (wordFreq[w] || 0) + 1);
     const hapax = Object.values(wordFreq).filter(c => c === 1).length;
-    const rareWordRatio = (hapax / wordCount) * 100;
-    const rareScore = Math.min(10, rareWordRatio * 0.6); // good ~15-25%
+    const rareWordRatio = wordCount > 0 ? (hapax / wordCount) * 100 : 10;
 
+    const vocabScore = vocabDiversity >= 65 ? 10 : 0;
+    const rareScore = rareWordRatio >= 15 ? 10 : 0;
     const vocabularyModule = vocabScore + rareScore;
 
     const moduleScores = [perplexityModule, burstinessModule, repetitionModule, sentenceLengthModule, vocabularyModule];
-    const totalModuleSum = moduleScores.reduce((a, b) => a + b, 0);
-    const totalScore = Math.round(totalModuleSum);
+    const totalScore = moduleScores.reduce((a, b) => a + b, 0);
 
     return {
       moduleScores,
@@ -127,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
       details: {
         perplexity: { trigram: trigramEntropy.toFixed(1), bigram: bigramEntropy.toFixed(1), scores: {trigram: perplexityScore1, bigram: perplexityScore2} },
         burstiness: { sentence: sentBurstiness.toFixed(1), word: wordBurstiness.toFixed(1), scores: {sentence: burstinessScore1, word: burstinessScore2} },
-        repetition: { bigram: bigramRep.toFixed(1), trigram: trigramRep.toFixed(1), scores: {bigram: repetitionScore1, trigram: repetitionScore2} },
+        repetition: { bigram: maxBigram, trigram: maxTrigram, scores: {bigram: repetitionScore1, trigram: repetitionScore2} },
         sentenceLength: { avg: Math.round(avgSentLen), complexity: avgCommas.toFixed(1), scores: {avg: sentLenScore, complexity: complexityScore} },
         vocabulary: { diversity: vocabDiversity.toFixed(1), rare: rareWordRatio.toFixed(1), scores: {diversity: vocabScore, rare: rareScore} }
       }
@@ -135,13 +130,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getGradeColor(humanNormalized10) {
-    if (humanNormalized10 >= 8.0) return '#10b981';
-    if (humanNormalized10 >= 6.0) return '#f97316';
-    return '#ef4444';
+    if (humanNormalized10 >= 8.0) return '#10b981'; // green
+    if (humanNormalized10 >= 5.0) return '#f97316'; // orange
+    return '#ef4444'; // red
   }
 
   function getPassFail(score) {
-    return score >= 6.0 ? '✅' : '❌';
+    return score === 10 ? '✅' : '❌';
   }
 
   form.addEventListener('submit', async (e) => {
@@ -242,14 +237,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
               ${[
-                {name: 'Perplexity', score: analysis.moduleScores[0], details: analysis.details.perplexity, info: 'Measures how unpredictable your text is through bigram and trigram entropy calculations. High entropy indicates varied and surprising word sequences, which are hallmarks of human writing. AI-generated text often has lower entropy due to its reliance on common patterns.', fixes: {trigram: analysis.details.perplexity.scores.trigram < 6 ? 'To fix low trigram entropy, incorporate unexpected word combinations and personal anecdotes that break predictable flows. Vary your phrasing by drawing from diverse experiences or opinions, making the text feel more organic. Avoid formulaic structures by editing for surprise in every third sentence.' : '', bigram: analysis.details.perplexity.scores.bigram < 6 ? 'Improve bigram entropy by swapping common two-word pairs with creative alternatives, like using synonyms or rephrasing sentences. Add transitional phrases that aren’t overused, and include idiomatic expressions unique to your voice. This creates a less robotic rhythm and boosts overall unpredictability.' : ''}},
-                {name: 'Burstiness', score: analysis.moduleScores[1], details: analysis.details.burstiness, info: 'Evaluates the variation in sentence and word lengths to ensure natural rhythm in your content. Human writing typically mixes short, punchy sentences with longer, descriptive ones for engagement. Consistent lengths can signal AI generation, as it often prioritizes uniformity over dynamic flow.', fixes: {sentence: analysis.details.burstiness.scores.sentence < 6 ? 'To address low sentence burstiness, alternate between short, impactful sentences and longer, explanatory ones throughout your text. This creates a more engaging rhythm that mimics human speech patterns. Review paragraphs for uniformity and split or combine sentences to add variety.' : '', word: analysis.details.burstiness.scores.word < 6 ? 'Fix word length burstiness by mixing short, simple words with longer, more descriptive ones to avoid monotony. Incorporate varied vocabulary that includes both everyday terms and specialized jargon where appropriate. This enhances readability and makes the content feel more authentic and less machine-like.' : ''}},
-                {name: 'Repetition', score: analysis.moduleScores[2], details: analysis.details.repetition, info: 'Detects overuse of bigram and trigram phrases, which can make text feel redundant and AI-like. Human writers naturally vary expressions to maintain interest and flow. High repetition scores indicate a need for more diverse phrasing to improve originality and engagement.', fixes: {bigram: analysis.details.repetition.scores.bigram < 6 ? 'Reduce bigram repetition by identifying common two-word phrases and replacing them with synonyms or restructured sentences. Use a thesaurus to find fresh alternatives and ensure no phrase dominates. This will make your writing more dynamic and less predictable.' : '', trigram: analysis.details.repetition.scores.trigram < 6 ? 'To fix trigram repetition, scan for recurring three-word sequences and rewrite them with varied structures or vocabulary. Introduce new ideas or transitions to break patterns. Editing for diversity here will elevate the text’s natural feel and reduce AI flags.' : ''}},
-                {name: 'Sentence Length', score: analysis.moduleScores[3], details: analysis.details.sentenceLength, info: 'Combines average sentence length with complexity measures like comma usage to assess structural depth. Ideal human writing balances lengths between 15-23 words while incorporating clauses for nuance. Deviations can suggest overly simplistic or convoluted AI output, impacting readability.', fixes: {avg: analysis.details.sentenceLength.scores.avg < 6 ? 'Adjust average sentence length by breaking up long run-ons or combining short fragments to hit the 15-23 word sweet spot. This improves flow and readability for users. Regularly count words per sentence during edits to achieve balance.' : '', complexity: analysis.details.sentenceLength.scores.complexity < 6 ? 'Increase sentence complexity by adding clauses with commas, semicolons, or conjunctions to layer ideas. This adds depth without overwhelming the reader. Aim for 1-2 clauses per sentence in key sections to mimic human thought processes.' : ''}},
-                {name: 'Vocabulary', score: analysis.moduleScores[4], details: analysis.details.vocabulary, info: 'Assesses unique word diversity and the frequency of rare words to gauge lexical richness. Human content often includes a broad, context-specific vocabulary with unique terms. Low scores here point to limited word choice, common in AI for efficiency, reducing perceived expertise.', fixes: {diversity: analysis.details.vocabulary.scores.diversity < 6 ? 'Boost vocabulary diversity by incorporating synonyms and avoiding word repetition through active editing. Draw from broader themes or analogies to introduce new terms. This enriches the text and signals deeper knowledge to search engines.' : '', rare: analysis.details.vocabulary.scores.rare < 6 ? 'Enhance rare word frequency by adding unique, context-specific terms that appear only once or twice. Research niche vocabulary related to your topic and weave it in naturally. This creates a more authentic, expert tone and improves SEO signals.' : ''}}
+                {name: 'Perplexity', score: analysis.moduleScores[0], details: analysis.details.perplexity, info: 'Measures how unpredictable your text is through bigram and trigram entropy calculations. High entropy indicates varied and surprising word sequences, which are hallmarks of human writing. AI-generated text often has lower entropy due to its reliance on common patterns.', fixes: {trigram: analysis.details.perplexity.scores.trigram < 10 ? 'To fix low trigram entropy, incorporate unexpected word combinations and personal anecdotes that break predictable flows. Vary your phrasing by drawing from diverse experiences or opinions, making the text feel more organic. Avoid formulaic structures by editing for surprise in every third sentence.' : '', bigram: analysis.details.perplexity.scores.bigram < 10 ? 'Improve bigram entropy by swapping common two-word pairs with creative alternatives, like using synonyms or rephrasing sentences. Add transitional phrases that aren’t overused, and include idiomatic expressions unique to your voice. This creates a less robotic rhythm and boosts overall unpredictability.' : ''}},
+                {name: 'Burstiness', score: analysis.moduleScores[1], details: analysis.details.burstiness, info: 'Evaluates the variation in sentence and word lengths to ensure natural rhythm in your content. Human writing typically mixes short, punchy sentences with longer, descriptive ones for engagement. Consistent lengths can signal AI generation, as it often prioritizes uniformity over dynamic flow.', fixes: {sentence: analysis.details.burstiness.scores.sentence < 10 ? 'To address low sentence burstiness, alternate between short, impactful sentences and longer, explanatory ones throughout your text. This creates a more engaging rhythm that mimics human speech patterns. Review paragraphs for uniformity and split or combine sentences to add variety.' : '', word: analysis.details.burstiness.scores.word < 10 ? 'Fix word length burstiness by mixing short, simple words with longer, more descriptive ones to avoid monotony. Incorporate varied vocabulary that includes both everyday terms and specialized jargon where appropriate. This enhances readability and makes the content feel more authentic and less machine-like.' : ''}},
+                {name: 'Repetition', score: analysis.moduleScores[2], details: analysis.details.repetition, info: 'Detects overuse of bigram and trigram phrases, which can make text feel redundant and AI-like. Human writers naturally vary expressions to maintain interest and flow. High repetition scores indicate a need for more diverse phrasing to improve originality and engagement.', fixes: {bigram: analysis.details.repetition.scores.bigram < 10 ? 'Reduce bigram repetition by identifying common two-word phrases and replacing them with synonyms or restructured sentences. Use a thesaurus to find fresh alternatives and ensure no phrase dominates. This will make your writing more dynamic and less predictable.' : '', trigram: analysis.details.repetition.scores.trigram < 10 ? 'To fix trigram repetition, scan for recurring three-word sequences and rewrite them with varied structures or vocabulary. Introduce new ideas or transitions to break patterns. Editing for diversity here will elevate the text’s natural feel and reduce AI flags.' : ''}},
+                {name: 'Sentence Length', score: analysis.moduleScores[3], details: analysis.details.sentenceLength, info: 'Combines average sentence length with complexity measures like comma usage to assess structural depth. Ideal human writing balances lengths between 15-23 words while incorporating clauses for nuance. Deviations can suggest overly simplistic or convoluted AI output, impacting readability.', fixes: {avg: analysis.details.sentenceLength.scores.avg < 10 ? 'Adjust average sentence length by breaking up long run-ons or combining short fragments to hit the 15-23 word sweet spot. This improves flow and readability for users. Regularly count words per sentence during edits to achieve balance.' : '', complexity: analysis.details.sentenceLength.scores.complexity < 10 ? 'Increase sentence complexity by adding clauses with commas, semicolons, or conjunctions to layer ideas. This adds depth without overwhelming the reader. Aim for 1-2 clauses per sentence in key sections to mimic human thought processes.' : ''}},
+                {name: 'Vocabulary', score: analysis.moduleScores[4], details: analysis.details.vocabulary, info: 'Assesses unique word diversity and the frequency of rare words to gauge lexical richness. Human content often includes a broad, context-specific vocabulary with unique terms. Low scores here point to limited word choice, common in AI for efficiency, reducing perceived expertise.', fixes: {diversity: analysis.details.vocabulary.scores.diversity < 10 ? 'Boost vocabulary diversity by incorporating synonyms and avoiding word repetition through active editing. Draw from broader themes or analogies to introduce new terms. This enriches the text and signals deeper knowledge to search engines.' : '', rare: analysis.details.vocabulary.scores.rare < 10 ? 'Enhance rare word frequency by adding unique, context-specific terms that appear only once or twice. Research niche vocabulary related to your topic and weave it in naturally. This creates a more authentic, expert tone and improves SEO signals.' : ''}}
               ].map(m => {
                 const gradeColor = getGradeColor(m.score / 2);
-                const displayScore = m.score.toFixed(1);
+                const displayScore = m.score;
                 const failedFixes = Object.values(m.fixes).filter(f => f).join('<br><br>');
                 const sub1Name = m.name === 'Perplexity' ? 'Trigram Entropy' : m.name === 'Burstiness' ? 'Sentence Length Variation' : m.name === 'Repetition' ? 'Bigram Repetition' : m.name === 'Sentence Length' ? 'Average Length' : 'Diversity';
                 const sub2Name = m.name === 'Perplexity' ? 'Bigram Entropy' : m.name === 'Burstiness' ? 'Word Length Burstiness' : m.name === 'Repetition' ? 'Trigram Repetition' : m.name === 'Sentence Length' ? 'Sentence Complexity' : 'Rare Word Frequency';
