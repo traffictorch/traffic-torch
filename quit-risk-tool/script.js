@@ -161,34 +161,44 @@ document.addEventListener('DOMContentLoaded', () => {
     return { text: "High Risk", color: "from-red-500 to-pink-600" };
   }
 
-  function buildModuleHTML(moduleName, value, factors) {
+function buildModuleHTML(moduleName, value, moduleData) {
     const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
     const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
 
     let passFailHTML = '';
-    factors.forEach(f => {
-      const emoji = value >= f.threshold ? '✅' : '❌';
-      passFailHTML += `<p class="text-gray-700 dark:text-gray-300">${emoji} ${f.name}</p>`;
-    });
-
-    let detailsHTML = '<h4 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">Recommendations for Improvement</h4>';
+    let failedFixesHTML = '';
     let hasFails = false;
-    factors.forEach(f => {
-      if (value < f.threshold) {
+
+    moduleData.factors.forEach(f => {
+      const passed = value >= f.threshold;
+      const emoji = passed ? '✅' : '❌';
+      passFailHTML += `
+        <div class="mb-4">
+          <p class="font-medium text-gray-900 dark:text-gray-100">${emoji} ${f.name}</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">${f.shortDesc}</p>
+        </div>`;
+
+      if (!passed) {
         hasFails = true;
-        detailsHTML += `
-          <div class="mb-8 p-6 bg-gray-100 dark:bg-gray-800 rounded-xl">
-            <h5 class="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100">${f.name}</h5>
-            <p class="mb-2 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How to fix:</strong> ${f.howToFix}</p>
-            <p class="mb-2 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">What:</strong> ${f.whatFull || f.what}</p>
-            <p class="mb-2 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How:</strong> ${f.howFull || f.howToFix}</p>
-            <p class="text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">Why it matters:</strong> ${f.why}</p>
+        failedFixesHTML += `
+          <div class="mb-6 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+            <p class="font-medium text-gray-900 dark:text-gray-100">${f.name}</p>
+            <p class="text-gray-700 dark:text-gray-300 mt-2">${f.howToFix}</p>
           </div>`;
       }
     });
-    if (!hasFails) {
-      detailsHTML += '<p class="text-xl font-bold text-gray-700 dark:text-gray-300">All checks passed! Excellent work on this module.</p>';
-    }
+
+    const detailsHTML = `
+      <div class="text-left">
+        <h4 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">
+          ${hasFails ? 'Recommended Fixes for Failed Tests:' : 'All checks passed! Great job.'}
+        </h4>
+        ${hasFails ? failedFixesHTML : ''}
+        ${hasFails ? '<hr class="my-8 border-gray-300 dark:border-gray-700">' : ''}
+        <p class="mb-3 text-gray-700 dark:text-gray-300"><strong>What it is:</strong> ${moduleData.moduleWhat}</p>
+        <p class="mb-3 text-gray-700 dark:text-gray-300"><strong>How to Improve Overall:</strong> ${moduleData.moduleHow}</p>
+        <p class="text-gray-700 dark:text-gray-300"><strong>Why it matters:</strong> ${moduleData.moduleWhy}</p>
+      </div>`;
 
     return `
       <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
@@ -212,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
           More Details
         </button>
         
-        <div class="details-panel hidden mt-8 text-left" style="overflow-wrap: break-word; word-break: break-word;">
+        <div class="details-panel hidden mt-8" style="overflow-wrap: break-word; word-break: break-word;">
           ${detailsHTML}
         </div>
       </div>`;
