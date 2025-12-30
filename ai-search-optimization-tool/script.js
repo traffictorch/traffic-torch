@@ -20,12 +20,10 @@ const initTool = (form, results, progressContainer) => {
       alert('Please enter a URL to analyze.');
       return;
     }
-    // Add https:// if no protocol is provided
     if (!/^https?:\/\//i.test(inputUrl)) {
       inputUrl = 'https://' + inputUrl;
-      document.getElementById('url-input').value = inputUrl; // Show full URL to user
+      document.getElementById('url-input').value = inputUrl;
     }
-    // Validate the final URL
     try {
       new URL(inputUrl);
     } catch (_) {
@@ -201,45 +199,37 @@ const initTool = (form, results, progressContainer) => {
       ];
 
       const tests = [
-        // Answerability (6)
         { emoji: hasBoldInFirst ? '✅' : '❌', text: 'Bold/strong formatting in opening', passed: hasBoldInFirst },
         { emoji: hasDefinition ? '✅' : '❌', text: 'Clear definition pattern in opening', passed: hasDefinition },
         { emoji: hasFAQSchema ? '✅' : '❌', text: 'FAQPage schema detected', passed: hasFAQSchema },
         { emoji: hasQuestionH2 ? '✅' : '❌', text: 'Question-style H2 headings', passed: hasQuestionH2 },
         { emoji: hasSteps ? '✅' : '❌', text: 'Step-by-step language in opening', passed: hasSteps },
         { emoji: first300.length > 600 ? '✅' : '❌', text: 'Strong opening section (>600 chars)', passed: first300.length > 600 },
-        // Structured Data (4)
         { emoji: hasJsonLd ? '✅' : '❌', text: 'JSON-LD structured data present', passed: hasJsonLd },
         { emoji: hasArticle ? '✅' : '❌', text: 'Article/BlogPosting schema type', passed: hasArticle },
         { emoji: hasFaqHowto ? '✅' : '❌', text: 'FAQPage/HowTo schema type', passed: hasFaqHowto },
         { emoji: hasPerson ? '✅' : '❌', text: 'Person schema for author', passed: hasPerson },
-        // EEAT (4)
         { emoji: hasAuthor ? '✅' : '❌', text: 'Author byline visible', passed: hasAuthor },
         { emoji: hasDate ? '✅' : '❌', text: 'Publish/update date shown', passed: hasDate },
         { emoji: hasTrustedLinks ? '✅' : '❌', text: 'Trusted outbound links', passed: hasTrustedLinks },
         { emoji: url.startsWith('https:') ? '✅' : '❌', text: 'Secure HTTPS connection', passed: url.startsWith('https:') },
-        // Scannability (5)
         { emoji: headings > 5 ? '✅' : '❌', text: 'Sufficient headings (H1-H4)', passed: headings > 5 },
         { emoji: lists > 2 ? '✅' : '❌', text: 'Bullet/numbered lists used', passed: lists > 2 },
         { emoji: tables > 0 ? '✅' : '❌', text: 'Data tables present', passed: tables > 0 },
         { emoji: shortParas > 5 ? '✅' : '❌', text: 'Short paragraphs (<35 words)', passed: shortParas > 5 },
         { emoji: headings > 8 ? '✅' : '❌', text: 'Excellent heading density', passed: headings > 8 },
-        // Conversational Tone (4)
         { emoji: youCount > 5 ? '✅' : '❌', text: 'Direct "you" address (>5)', passed: youCount > 5 },
         { emoji: iWeCount > 3 ? '✅' : '❌', text: 'Personal "I/we" sharing', passed: iWeCount > 3 },
         { emoji: questions > 2 ? '✅' : '❌', text: 'Engaging questions asked', passed: questions > 2 },
         { emoji: painPoints > 3 ? '✅' : '❌', text: 'Reader pain points acknowledged', passed: painPoints > 3 },
-        // Readability (4)
         { emoji: flesch > 60 ? '✅' : '❌', text: 'Good Flesch score (>60)', passed: flesch > 60 },
         { emoji: variationScore > 70 ? '✅' : '❌', text: 'Natural sentence variation', passed: variationScore > 70 },
         { emoji: passivePatterns.length < 5 ? '✅' : '❌', text: 'Low passive voice', passed: passivePatterns.length < 5 },
         { emoji: complexRatio < 15 ? '✅' : '❌', text: 'Low complex words (<15%)', passed: complexRatio < 15 },
-        // Unique Insights (4)
         { emoji: hasInsights ? '✅' : '❌', text: 'First-hand experience markers', passed: hasInsights },
         { emoji: hasDated ? '✅' : '❌', text: 'Dated/timely results mentioned', passed: hasDated },
         { emoji: hasInterviews ? '✅' : '❌', text: 'Interviews/quotes included', passed: hasInterviews },
         { emoji: words > 1500 ? '✅' : '❌', text: 'Deep content (1500+ words)', passed: words > 1500 },
-        // Anti-AI Safety (3) - total 34, but close to 31+
         { emoji: variationScore > 70 ? '✅' : '❌', text: 'High sentence burstiness', passed: variationScore > 70 },
         { emoji: repeatedWords <= 2 ? '✅' : '❌', text: 'Low word repetition', passed: repeatedWords <= 2 },
         { emoji: !hasPredictable ? '✅' : '❌', text: 'No predictable sentence starts', passed: !hasPredictable }
@@ -341,6 +331,17 @@ const initTool = (form, results, progressContainer) => {
         return map[name] || "<p>Optimize based on failed checks above.</p>";
       }
 
+      const moduleKeywords = {
+        "Answerability": ["Bold/strong", "Clear definition", "FAQPage schema", "Question-style H2", "Step-by-step", "Strong opening"],
+        "Structured Data": ["JSON-LD", "Article/BlogPosting", "FAQPage/HowTo", "Person schema"],
+        "EEAT Signals": ["Author byline", "Publish/update date", "Trusted outbound", "Secure HTTPS"],
+        "Scannability": ["headings", "lists", "tables", "Short paragraphs", "heading density"],
+        "Conversational Tone": ["\"you\"", "\"I/we\"", "questions", "pain points"],
+        "Readability": ["Flesch", "variation", "passive", "complex words"],
+        "Unique Insights": ["First-hand", "Dated/timely", "Interviews/quotes", "Deep content"],
+        "Anti-AI Safety": ["burstiness", "repetition", "predictable"]
+      };
+
       results.innerHTML = `
 <div class="flex justify-center my-12 px-4">
   <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square">
@@ -363,23 +364,12 @@ const initTool = (form, results, progressContainer) => {
   </div>
 </div>
 
-<div class="mt-12 px-6 max-w-5xl mx-auto">
-  <h3 class="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-gray-200">Detailed Optimization Checks (31+ Metrics)</h3>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-    ${tests.map(t => `
-      <div class="flex items-center gap-3 text-lg px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800 ${t.passed ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">
-        <span class="text-2xl">${t.emoji}</span>
-        <span class="text-base">${t.text}</span>
-      </div>
-    `).join('')}
-  </div>
-</div>
-
-<div class="grid md:grid-cols-4 gap-6 my-16">
+<div class="grid md:grid-cols-4 gap-6 my-16 px-4">
   ${modules.map(m => {
     const borderColor = m.score >= 80 ? 'border-green-500' : m.score >= 60 ? 'border-orange-500' : 'border-red-500';
+    const moduleTests = tests.filter(t => moduleKeywords[m.name].some(kw => t.text.includes(kw)));
     return `
-      <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border ${borderColor}">
+      <div class="p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border ${borderColor}">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
@@ -393,10 +383,20 @@ const initTool = (form, results, progressContainer) => {
             ${m.score}
           </div>
         </div>
-        <p class="mt-4 text-lg font-medium">${m.name}</p>
-        <p class="text-sm opacity-70 mt-2">${m.desc}</p>
+        <p class="mt-4 text-lg font-medium text-center">${m.name}</p>
+        <p class="text-sm opacity-70 mt-2 text-center">${m.desc}</p>
+
+        <div class="mt-6 space-y-2 text-left text-sm">
+          ${moduleTests.map(t => `
+            <div class="flex items-center gap-2 ${t.passed ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">
+              <span class="text-lg">${t.emoji}</span>
+              <span>${t.text}</span>
+            </div>
+          `).join('')}
+        </div>
+
         <button onclick="this.parentNode.querySelector('.collapsible').classList.toggle('hidden'); this.textContent = this.textContent.includes('Show') ? 'Hide Fixes & Details' : 'Show Fixes & Details';"
-                class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+                class="mt-6 w-full px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
           Show Fixes & Details
         </button>
         <div class="collapsible hidden mt-6 text-left text-sm space-y-6">
@@ -417,7 +417,7 @@ const initTool = (form, results, progressContainer) => {
 </div>
 
 ${prioritisedFixes.map(fix => `
-  <div class="p-8 bg-gradient-to-r ${fix.gradient} border-l-8 rounded-r-2xl">
+  <div class="mx-4 p-8 bg-gradient-to-r ${fix.gradient} border-l-8 rounded-r-2xl">
     <div class="flex gap-6">
       <div class="text-5xl">${fix.emoji}</div>
       <div class="flex-1">
@@ -439,7 +439,7 @@ ${prioritisedFixes.map(fix => `
   </div>
 `).join('')}
 
-<div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
+<div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8 mx-4">
   <h3 class="text-4xl font-black text-center">Predictive AI SERP Forecast</h3>
   <p class="text-center text-5xl font-black">${yourScore >= 90 ? 'Top 3' : yourScore >= 80 ? 'Top 5' : yourScore >= 70 ? 'Top 10' : yourScore >= 50 ? 'Page 1 Possible' : 'Page 2+'}</p>
   <p class="text-center text-4xl font-bold">+${Math.round((100 - yourScore) * 1.8)}% potential traffic gain if fixed</p>
@@ -469,5 +469,4 @@ ${prioritisedFixes.map(fix => `
   });
 };
 
-// Start waiting on DOMContentLoaded
 document.addEventListener('DOMContentLoaded', waitForElements);
