@@ -375,88 +375,109 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-<div class="mt-20 p-10 md:p-16 bg-gradient-to-r from-orange-500 to-pink-600 rounded-3xl shadow-2xl text-white text-center space-y-12">
-  <h2 class="text-5xl md:text-6xl font-black">Predictive Rank Forecast</h2>
+<div class="mt-20 p-10 md:p-20 bg-gradient-to-r from-orange-600 via-pink-600 to-purple-700 rounded-3xl shadow-2xl text-white overflow-hidden relative">
+  <h2 class="text-5xl md:text-7xl font-black text-center mb-12 drop-shadow-lg">Ranking Transformation Forecast</h2>
 
   ${(() => {
-    // Calculate optimized score: assume each fixed failing module adds ~10-15 points
     const failingModules = [analysis.moduleScores[0], analysis.moduleScores[1], analysis.moduleScores[2], analysis.moduleScores[3], analysis.moduleScores[4]].filter(s => s < 20).length;
-    const optimizedScore = Math.min(100, yourScore + failingModules * 12);
-    const optimizedForecast = optimizedScore >= 80 ? 'Top 3 Potential' : optimizedScore >= 60 ? 'Top 10 Possible' : optimizedScore >= 40 ? 'Page 1 Possible' : 'Page 2+';
+    const boost = failingModules * 15;
+    const optimizedScore = Math.min(100, yourScore + boost);
+    const optimizedForecast = optimizedScore >= 80 ? 'Top 3 Dominance' : optimizedScore >= 70 ? 'Top 5 Lock' : optimizedScore >= 60 ? 'Top 10 Strong' : optimizedScore >= 50 ? 'Page 1 Solid' : 'Page 1 Possible';
+
+    if (failingModules === 0) {
+      return `
+      <div class="text-center py-16">
+        <div class="relative w-64 h-64 mx-auto mb-8">
+          <div class="absolute inset-0 bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-600 rounded-full animate-pulse"></div>
+          <div class="absolute inset-4 bg-gradient-to-br from-amber-300 to-yellow-500 rounded-full"></div>
+          <svg viewBox="0 0 256 256" class="absolute inset-0">
+            <circle cx="128" cy="128" r="110" fill="none" stroke="#fff" stroke-width="20" opacity="0.3"/>
+            <circle cx="128" cy="128" r="110" fill="none" stroke="#fff" stroke-width="16"
+                    stroke-dasharray="691 691" stroke-linecap="round"/>
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <div class="text-6xl mb-4">🏆</div>
+            <div class="text-4xl md:text-5xl font-black drop-shadow-2xl">Elite Status</div>
+            <div class="text-xl mt-2 opacity-90">You're already dominating</div>
+          </div>
+        </div>
+        <p class="text-3xl font-bold">Maintain this level → Own the SERPs</p>
+      </div>`;
+    }
 
     return `
-    <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
-      <!-- Current -->
-      <div class="flex flex-col items-center space-y-4">
-        <div class="relative w-48 h-48">
-          <svg viewBox="0 0 200 200" class="absolute inset-0 -rotate-90">
-            <circle cx="100" cy="100" r="90" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="20"/>
-            <circle cx="100" cy="100" r="90" fill="none" stroke="#fff" stroke-width="16"
-                    stroke-dasharray="${(yourScore / 100) * 565} 565" stroke-linecap="round"/>
-          </svg>
-          <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <div class="text-4xl md:text-5xl font-black">${forecast}</div>
-            <div class="text-lg opacity-90">Current</div>
-          </div>
-        </div>
-        <p class="text-xl font-medium">Based on today's content</p>
-      </div>
-
-      <!-- Arrow -->
-      <div class="hidden md:block text-6xl font-bold opacity-70">→</div>
-      <div class="block md:hidden text-4xl font-bold opacity-70 my-4">↓</div>
-
-      <!-- Optimized -->
-      <div class="flex flex-col items-center space-y-4">
-        <div class="relative w-48 h-48">
-          <svg viewBox="0 0 200 200" class="absolute inset-0 -rotate-90">
-            <circle cx="100" cy="100" r="90" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="20"/>
-            <circle cx="100" cy="100" r="90" fill="none" stroke="#fbbf24" stroke-width="18"
-                    stroke-dasharray="${(optimizedScore / 100) * 565} 565" stroke-linecap="round"
+    <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 lg:gap-20">
+      <!-- Current State -->
+      <div class="flex flex-col items-center">
+        <div class="relative w-56 h-56">
+          <svg viewBox="0 0 224 224" class="absolute inset-0 -rotate-90">
+            <circle cx="112" cy="112" r="100" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="24"/>
+            <circle cx="112" cy="112" r="100" fill="none" stroke="#fff" stroke-width="20"
+                    stroke-dasharray="${(yourScore / 100) * 628} 628" stroke-linecap="round"
                     class="drop-shadow-lg"/>
           </svg>
-          <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <div class="text-4xl md:text-5xl font-black text-yellow-300">${optimizedForecast}</div>
-            <div class="text-lg opacity-90">If Optimized</div>
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+            <div class="text-3xl md:text-4xl font-black leading-tight">${forecast}</div>
+            <div class="text-lg mt-2 opacity-80">Current Potential</div>
           </div>
         </div>
-        <p class="text-xl font-medium">After fixing top priorities</p>
+        <p class="mt-6 text-xl text-center">Based on today's content</p>
+      </div>
+
+      <!-- Epic Connector -->
+      <div class="flex flex-col items-center">
+        <div class="text-4xl md:text-6xl font-black animate-pulse">→</div>
+        <div class="text-xl md:text-2xl font-bold tracking-wider mt-2 bg-gradient-to-r from-yellow-300 to-amber-300 bg-clip-text text-transparent">
+          FIX → UNLOCK
+        </div>
+      </div>
+
+      <!-- Optimized Epic Badge -->
+      <div class="flex flex-col items-center">
+        <div class="relative w-64 h-64 scale-110">
+          <div class="absolute inset-0 bg-gradient-to-br from-yellow-400 via-amber-400 to-orange-500 rounded-full animate-ping opacity-30"></div>
+          <div class="absolute inset-4 bg-gradient-to-br from-amber-300 to-yellow-400 rounded-full shadow-2xl"></div>
+          <svg viewBox="0 0 256 256" class="absolute inset-0">
+            <circle cx="128" cy="128" r="110" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="24"/>
+            <circle cx="128" cy="128" r="110" fill="none" stroke="#fff" stroke-width="20"
+                    stroke-dasharray="${(optimizedScore / 100) * 691} 691" stroke-linecap="round"
+                    class="drop-shadow-2xl"/>
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-8">
+            <div class="text-5xl mb-3">🏆</div>
+            <div class="text-4xl md:text-5xl font-black leading-tight drop-shadow-2xl">${optimizedForecast}</div>
+            <div class="text-xl mt-2 opacity-90">After Optimization</div>
+          </div>
+        </div>
+        <p class="mt-8 text-2xl font-bold text-yellow-200 text-center">
+          +${boost} Human Score Potential
+        </p>
+        <p class="mt-4 text-xl text-center">By fixing your top priorities</p>
       </div>
     </div>
 
-    ${failingModules > 0 ? `
-    <p class="text-2xl md:text-3xl font-bold opacity-90 mt-8">
-      Fix your top ${failingModules > 3 ? 'priorities' : failingModules + ' priority' + (failingModules === 1 ? '' : 'ies')} → Unlock this improved ranking potential
-    </p>` : `
-    <p class="text-2xl md:text-3xl font-bold opacity-90 mt-8">
-      You're already optimized — maintain this level for strong rankings!
-    </p>`}
+    <p class="text-3xl md:text-4xl font-black text-center mt-16 drop-shadow-lg">
+      Transform your content → Dominate the rankings
+    </p>
     `;
   })()}
 
-  <div class="max-w-3xl mx-auto space-y-6 text-left mt-12">
-    <div class="bg-white/20 backdrop-blur rounded-2xl p-6 flex items-start space-x-4">
-      <div class="text-4xl">🔍</div>
-      <div>
-        <p class="text-xl font-bold mb-2">What This Forecast Means</p>
-        <p class="leading-relaxed">An estimate of where your page could rank based on how authentically human and valuable your content appears to search engines today — and what’s possible with targeted improvements.</p>
-      </div>
+  <!-- Educational Cards -->
+  <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
+    <div class="bg-white/15 backdrop-blur rounded-2xl p-8 text-center">
+      <div class="text-5xl mb-4">🔍</div>
+      <p class="text-2xl font-bold mb-3">Realistic Projection</p>
+      <p>Based on proven linguistic signals that search engines reward today</p>
     </div>
-
-    <div class="bg-white/20 backdrop-blur rounded-2xl p-6 flex items-start space-x-4">
-      <div class="text-4xl">📊</div>
-      <div>
-        <p class="text-xl font-bold mb-2">How It's Calculated</p>
-        <p class="leading-relaxed">We measure natural language patterns (variation, depth, authenticity) that align with current search engine preferences for helpful, human-written content.</p>
-      </div>
+    <div class="bg-white/15 backdrop-blur rounded-2xl p-8 text-center">
+      <div class="text-5xl mb-4">⚡</div>
+      <p class="text-2xl font-bold mb-3">Action = Results</p>
+      <p>Targeted fixes directly improve the patterns engines trust most</p>
     </div>
-
-    <div class="bg-white/20 backdrop-blur rounded-2xl p-6 flex items-start space-x-4">
-      <div class="text-4xl">🚀</div>
-      <div>
-        <p class="text-xl font-bold mb-2">Why It Matters</p>
-        <p class="leading-relaxed">Human-like content consistently earns higher rankings, better click-through rates, and stronger long-term visibility — even as search algorithms evolve.</p>
-      </div>
+    <div class="bg-white/15 backdrop-blur rounded-2xl p-8 text-center">
+      <div class="text-5xl mb-4">🚀</div>
+      <p class="text-2xl font-bold mb-3">Future-Proof Edge</p>
+      <p>Human authenticity wins now — and will keep winning</p>
     </div>
   </div>
 </div>
