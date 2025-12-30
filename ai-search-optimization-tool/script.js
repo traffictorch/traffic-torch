@@ -431,7 +431,7 @@ const initTool = (form, results, progressContainer) => {
 
         <div class="mt-6 space-y-2 text-left text-sm">
           ${moduleTests.map(t => `
-            <div class="flex items-center gap-2 ${t.passed ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">
+            <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
               <span class="text-lg">${t.emoji}</span>
               <span>${t.text}</span>
             </div>
