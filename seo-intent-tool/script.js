@@ -146,8 +146,19 @@ const hasAboutLinks = aboutLinkElements.length > 0 ||
 
       // === TRUSTWORTHINESS ===
       const isHttps = url.startsWith('https');
-      const hasContact = !!doc.querySelector('a[href*="/contact"], a[href*="mailto:"], a[href*="tel:"], footer:contains("Contact")');
-      const hasPolicies = !!doc.querySelector('a[href*="/privacy"], a[href*="/terms"], footer a:contains("Privacy")');
+// Contact detection (links + footer text check)
+const contactLinkElements = doc.querySelectorAll('a[href*="/contact" i], a[href*="mailto:" i], a[href*="tel:" i]');
+const footerContactText = Array.from(doc.querySelectorAll('footer a, footer span, footer div')).some(el => 
+  el.textContent.toLowerCase().includes('contact')
+);
+const hasContact = contactLinkElements.length > 0 || footerContactText;
+
+// Privacy/Terms detection (links + footer text check)
+const policyLinkElements = doc.querySelectorAll('a[href*="/privacy" i], a[href*="/terms" i]');
+const footerPolicyText = Array.from(doc.querySelectorAll('footer a, footer span, footer div')).some(el => 
+  /privacy|terms/i.test(el.textContent)
+);
+const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
       const hasUpdateDate = !!doc.querySelector('time[datetime], .updated, .last-modified, meta[name="date"]');
 
       const trustworthinessMetrics = {
