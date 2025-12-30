@@ -282,24 +282,52 @@ document.addEventListener('DOMContentLoaded', () => {
               }).join('')}
             </div>
 
-            <div class="mt-20 space-y-8">
-              <h2 class="text-4xl md:text-5xl font-black text-center text-gray-900 dark:text-gray-100">Prioritized AI-Style Fixes</h2>
-              ${yourScore < 50 ? `
-                <div class="bg-red-50 dark:bg-red-900/20 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-red-500">
-                  <h3 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-6">Very Likely AI Detected</h3>
-                  <p class="text-lg text-gray-800 dark:text-gray-200"><span class="font-bold text-blue-600 dark:text-blue-400">What:</span> Multiple modules show strong AI patterns</p>
-                  <p class="text-lg mt-4 text-gray-800 dark:text-gray-200"><span class="font-bold text-green-600 dark:text-green-400">How to improve:</span> Add personal anecdotes, vary rhythm dramatically, reduce repetition, deepen sentence structure</p>
-                </div>` : yourScore < 80 ? `
-                <div class="bg-orange-50 dark:bg-orange-900/20 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-orange-500">
-                  <h3 class="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-6">Moderate AI Patterns</h3>
-                  <p class="text-lg text-gray-800 dark:text-gray-200"><span class="font-bold text-blue-600 dark:text-blue-400">What:</span> Some uniformity detected across metrics</p>
-                  <p class="text-lg mt-4 text-gray-800 dark:text-gray-200"><span class="font-bold text-green-600 dark:text-green-400">How to improve:</span> Focus on weak modules shown above</p>
-                </div>` : `
-                <div class="bg-green-50 dark:bg-green-900/20 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-green-500">
-                  <h3 class="text-3xl font-bold text-green-600 dark:text-green-400 mb-6">Excellent — Highly Human-Like!</h3>
-                  <p class="text-lg text-center text-gray-800 dark:text-gray-200">Strong performance across all modules. Keep writing naturally!</p>
-                </div>`}
+<div class="mt-20 space-y-8">
+  <h2 class="text-4xl md:text-5xl font-black text-center text-gray-900 dark:text-gray-100">Top 3 Priority Fixes</h2>
+  ${(() => {
+    const modules = [
+      {name: 'Perplexity', score: analysis.moduleScores[0], details: analysis.details.perplexity, fixes: analysis.details.perplexity.scores.trigram < 10 ? 'Incorporate unexpected word combinations and personal anecdotes. Vary phrasing with unique experiences and avoid formulaic structures.' : analysis.details.perplexity.scores.bigram < 10 ? 'Swap common two-word pairs with creative alternatives and include idiomatic expressions unique to your voice.' : ''},
+      {name: 'Burstiness', score: analysis.moduleScores[1], details: analysis.details.burstiness, fixes: analysis.details.burstiness.scores.sentence < 10 ? 'Alternate short, punchy sentences with longer, detailed ones. Review paragraphs for uniform length and add variety.' : analysis.details.burstiness.scores.word < 10 ? 'Mix short everyday words with longer, descriptive ones to create natural rhythm.' : ''},
+      {name: 'Repetition', score: analysis.moduleScores[2], details: analysis.details.repetition, fixes: analysis.details.repetition.scores.bigram < 10 ? 'Replace repeated two-word phrases with synonyms or restructured sentences.' : analysis.details.repetition.scores.trigram < 10 ? 'Rewrite recurring three-word sequences with fresh vocabulary and structure.' : ''},
+      {name: 'Sentence Length', score: analysis.moduleScores[3], details: analysis.details.sentenceLength, fixes: analysis.details.sentenceLength.scores.avg < 10 ? 'Balance sentence lengths to average 15–23 words per sentence for optimal readability.' : analysis.details.sentenceLength.scores.complexity < 10 ? 'Add clauses using commas, semicolons, or conjunctions to increase depth and natural flow.' : ''},
+      {name: 'Vocabulary', score: analysis.moduleScores[4], details: analysis.details.vocabulary, fixes: analysis.details.vocabulary.scores.diversity < 10 ? 'Use synonyms and broader vocabulary to increase unique word usage above 65%.' : analysis.details.vocabulary.scores.rare < 10 ? 'Incorporate niche or context-specific words that appear only once or twice for authentic expertise.' : ''}
+    ];
+
+    const priority = modules
+      .filter(m => m.score < 20)
+      .sort((a, b) => a.score - b.score)
+      .slice(0, 3);
+
+    if (priority.length === 0) {
+      return `
+        <div class="bg-green-50 dark:bg-green-900/20 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-green-500">
+          <h3 class="text-3xl font-bold text-green-600 dark:text-green-400 mb-6 text-center">No Major Fixes Needed!</h3>
+          <p class="text-lg text-center text-gray-800 dark:text-gray-200">All modules scored 20/20. Your content is highly human-like and optimized.</p>
+        </div>`;
+    }
+
+    return priority.map((m, i) => {
+      const sub1Score = m.name === 'Perplexity' ? m.details.scores.trigram : m.name === 'Burstiness' ? m.details.scores.sentence : m.name === 'Repetition' ? m.details.scores.bigram : m.name === 'Sentence Length' ? m.details.scores.avg : m.details.scores.diversity;
+      const sub2Score = m.name === 'Perplexity' ? m.details.scores.bigram : m.name === 'Burstiness' ? m.details.scores.word : m.name === 'Repetition' ? m.details.scores.trigram : m.name === 'Sentence Length' ? m.details.scores.complexity : m.details.scores.rare;
+      const sub1Name = m.name === 'Perplexity' ? 'Trigram Entropy' : m.name === 'Burstiness' ? 'Sentence Length Variation' : m.name === 'Repetition' ? 'Bigram Repetition' : m.name === 'Sentence Length' ? 'Average Length' : 'Diversity';
+      const sub2Name = m.name === 'Perplexity' ? 'Bigram Entropy' : m.name === 'Burstiness' ? 'Word Length Burstiness' : m.name === 'Repetition' ? 'Trigram Repetition' : m.name === 'Sentence Length' ? 'Sentence Complexity' : 'Rare Word Frequency';
+      return `
+        <div class="bg-orange-50 dark:bg-orange-900/20 rounded-3xl p-8 md:p-10 shadow-lg border-l-8 border-orange-500">
+          <div class="flex items-center mb-4">
+            <div class="text-5xl font-black text-orange-600 dark:text-orange-400 mr-6">${i + 1}</div>
+            <div>
+              <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">${m.name} – ${m.score}/20</h3>
+              <div class="mt-2 space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                <p>${getPassFail(sub1Score)} ${sub1Name}</p>
+                <p>${getPassFail(sub2Score)} ${sub2Name}</p>
+              </div>
             </div>
+          </div>
+          <p class="text-lg text-gray-800 dark:text-gray-200 mt-4"><span class="font-bold text-orange-600 dark:text-orange-400">Recommended Fix:</span> ${m.fixes || 'Focus on improving variation and authenticity in this area.'}</p>
+        </div>`;
+    }).join('');
+  })()}
+</div>
 
             <div class="mt-20 p-10 md:p-16 bg-gradient-to-r from-orange-500 to-pink-600 rounded-3xl shadow-2xl text-white text-center space-y-8">
               <h2 class="text-4xl md:text-4xl font-black">Predictive Rank Forecast</h2>
