@@ -125,8 +125,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch {}
       });
       const hasAwards = !!cleanedText.match(/\b(award|winner|featured in|recognized by|endorsed by|best \d{4})\b/gi);
-      const hasAboutLinks = !!doc.querySelector('a[href*="/about"], a[href*="/team"], nav a:contains("About")');
-
+     
+     
+const aboutLinkElements = doc.querySelectorAll('a[href*="/about" i], a[href*="/team" i]');
+const hasAboutLinks = aboutLinkElements.length > 0 || 
+  Array.from(doc.querySelectorAll('nav a')).some(a => a.textContent.toLowerCase().includes('about'));
+     
+     
       const authoritativenessMetrics = {
         schema: schemaTypes.length > 1 ? 100 : schemaTypes.length > 0 ? 70 : 20,
         awards: hasAwards ? 100 : 20,
