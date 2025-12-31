@@ -13,6 +13,21 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'https://' + host + path;
   }
 
+  // Toggle helpers to avoid inline JS syntax errors in template literals
+  function toggleFixesPanel(button) {
+    const card = button.parentNode;
+    const fixesPanel = card.querySelector('.fixes-panel');
+    const fullDetails = card.querySelector('.full-details');
+    fixesPanel.classList.toggle('hidden');
+    if (fixesPanel.classList.contains('hidden')) {
+      fullDetails.classList.add('hidden');
+    }
+  }
+
+  function toggleMoreDetails(button) {
+    button.closest('.fixes-panel').nextElementSibling.classList.toggle('hidden');
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const inputValue = document.getElementById('url-input').value;
@@ -125,13 +140,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch {}
       });
       const hasAwards = !!cleanedText.match(/\b(award|winner|featured in|recognized by|endorsed by|best \d{4})\b/gi);
-     
-     
-const aboutLinkElements = doc.querySelectorAll('a[href*="/about" i], a[href*="/team" i]');
-const hasAboutLinks = aboutLinkElements.length > 0 || 
-  Array.from(doc.querySelectorAll('nav a')).some(a => a.textContent.toLowerCase().includes('about'));
-     
-     
+
+      const aboutLinkElements = doc.querySelectorAll('a[href*="/about" i], a[href*="/team" i]');
+      const hasAboutLinks = aboutLinkElements.length > 0 ||
+        Array.from(doc.querySelectorAll('nav a')).some(a => a.textContent.toLowerCase().includes('about'));
+
       const authoritativenessMetrics = {
         schema: schemaTypes.length > 1 ? 100 : schemaTypes.length > 0 ? 70 : 20,
         awards: hasAwards ? 100 : 20,
@@ -146,19 +159,19 @@ const hasAboutLinks = aboutLinkElements.length > 0 ||
 
       // === TRUSTWORTHINESS ===
       const isHttps = url.startsWith('https');
-// Contact detection (links + footer text check)
-const contactLinkElements = doc.querySelectorAll('a[href*="/contact" i], a[href*="mailto:" i], a[href*="tel:" i]');
-const footerContactText = Array.from(doc.querySelectorAll('footer a, footer span, footer div')).some(el => 
-  el.textContent.toLowerCase().includes('contact')
-);
-const hasContact = contactLinkElements.length > 0 || footerContactText;
 
-// Privacy/Terms detection (links + footer text check)
-const policyLinkElements = doc.querySelectorAll('a[href*="/privacy" i], a[href*="/terms" i]');
-const footerPolicyText = Array.from(doc.querySelectorAll('footer a, footer span, footer div')).some(el => 
-  /privacy|terms/i.test(el.textContent)
-);
-const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
+      const contactLinkElements = doc.querySelectorAll('a[href*="/contact" i], a[href*="mailto:" i], a[href*="tel:" i]');
+      const footerContactText = Array.from(doc.querySelectorAll('footer a, footer span, footer div')).some(el =>
+        el.textContent.toLowerCase().includes('contact')
+      );
+      const hasContact = contactLinkElements.length > 0 || footerContactText;
+
+      const policyLinkElements = doc.querySelectorAll('a[href*="/privacy" i], a[href*="/terms" i]');
+      const footerPolicyText = Array.from(doc.querySelectorAll('footer a, footer span, footer div')).some(el =>
+        /privacy|terms/i.test(el.textContent)
+      );
+      const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
+
       const hasUpdateDate = !!doc.querySelector('time[datetime], .updated, .last-modified, meta[name="date"]');
 
       const trustworthinessMetrics = {
@@ -190,6 +203,39 @@ const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
       const depthScore = words > 2000 ? 95 : words > 1200 ? 82 : words > 700 ? 65 : 35;
       const readScore = readability > 70 ? 90 : readability > 50 ? 75 : 45;
       const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length * 8) / 5);
+
+      // === Score Improvement & Potential Gains Calculation ===
+      const currentScore = overall;
+      let projectedScore = currentScore;
+      const totalFailed = failedExperience.length + failedExpertise.length + failedAuthoritativeness.length + failedTrustworthiness.length;
+      const hasDepthGap = words < 1500;
+      const hasSchemaGap = schemaTypes.length < 2;
+      const hasAuthorGap = !hasAuthorByline;
+
+      if (totalFailed > 0 || hasDepthGap || hasSchemaGap || hasAuthorGap) {
+        projectedScore = Math.min(100, currentScore +
+          (totalFailed * 5) +
+          (hasDepthGap ? 12 : 0) +
+          (hasSchemaGap ? 10 : 0) +
+          (hasAuthorGap ? 15 : 0)
+        );
+      }
+      const scoreDelta = Math.round(projectedScore - currentScore);
+      const isOptimal = scoreDelta <= 5;
+
+      const priorityFixes = [];
+      if (!hasAuthorByline) priorityFixes.push({text: "Add visible author byline & bio", impact: "+15–25 points"});
+      if (words < 1500) priorityFixes.push({text: "Expand content depth (>1,500 words)", impact: "+12–20 points"});
+      if (schemaTypes.length < 2) priorityFixes.push({text: "Add relevant schema markup", impact: "+10–18 points"});
+      if (totalFailed > 0) {
+        if (failedExperience.length > 0) priorityFixes.push({text: "Strengthen first-person experience signals", impact: "+8–15 points"});
+        else if (failedExpertise.length > 0) priorityFixes.push({text: "Add credentials & citations", impact: "+10–18 points"});
+      }
+      const topFixes = priorityFixes.slice(0, 3);
+
+      const trafficUplift = isOptimal ? 0 : Math.round(scoreDelta * 1.8);
+      const ctrBoost = isOptimal ? 0 : Math.min(30, Math.round(scoreDelta * 0.8));
+      const rankingLift = isOptimal ? "Already strong" : currentScore < 60 ? "Page 2+ → Page 1 potential" : "Top 20 → Top 10 possible";
 
       progressText.textContent = "Generating Report...";
       await sleep(600);
@@ -242,9 +288,6 @@ const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
     </div>
   </div>
 </div>
-
-
-
 
 <!-- E-E-A-T Breakdown with ✅/❌ signals -->
 <div class="grid md:grid-cols-4 gap-6 my-16">
@@ -301,24 +344,14 @@ const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
         `}
       </div>
 
-      <!-- Fixed toggle button: closes More details when hiding Fixes -->
-      <button onclick="
-        const card = this.parentNode;
-        const fixesPanel = card.querySelector('.fixes-panel');
-        const fullDetails = card.querySelector('.full-details');
-        fixesPanel.classList.toggle('hidden');
-        if (fixesPanel.classList.contains('hidden')) {
-          fullDetails.classList.add('hidden');
-        }
-      "
+      <button onclick="toggleFixesPanel(this)"
               class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
         ${failed.length ? 'Show Fixes (' + failed.length + ')' : 'All Clear'}
       </button>
 
       <div class="fixes-panel hidden mt-4 text-left text-sm bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
         ${fixesList}
-        <!-- More robust More details toggle -->
-        <button onclick="this.closest('.fixes-panel').nextElementSibling.classList.toggle('hidden');"
+        <button onclick="toggleMoreDetails(this)"
                 class="mt-4 text-xs text-orange-500 hover:underline block">
           More details →
         </button>
@@ -344,10 +377,6 @@ const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
     </div>`;
   }).join('')}
 </div>
-
-
-
-
 
 <!-- Content Depth + Readability + Schema Detected -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
@@ -475,50 +504,8 @@ const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
   </div>` : ''}
 </div>
 
-      // === NEW SECTION: Score Improvement & Potential Ranking Gains ===
-      // Calculate projected score and gains
-      const currentScore = overall;
-      let projectedScore = currentScore;
-      const totalFailed = failedExperience.length + failedExpertise.length + failedAuthoritativeness.length + failedTrustworthiness.length;
-      const hasDepthGap = words < 1500;
-      const hasSchemaGap = schemaTypes.length < 2;
-      const hasAuthorGap = !hasAuthorByline;
-
-      // Conservative impact estimates
-      if (totalFailed > 0 || hasDepthGap || hasSchemaGap || hasAuthorGap) {
-        projectedScore = Math.min(100, currentScore + 
-          (totalFailed * 5) + 
-          (hasDepthGap ? 12 : 0) + 
-          (hasSchemaGap ? 10 : 0) + 
-          (hasAuthorGap ? 15 : 0)
-        );
-      } else {
-        projectedScore = currentScore; // Optimal
-      }
-      const scoreDelta = Math.round(projectedScore - currentScore);
-      const isOptimal = scoreDelta <= 5;
-
-      // Top 3 priority fixes with impact
-      const priorityFixes = [];
-      if (!hasAuthorByline) priorityFixes.push({text: "Add visible author byline & bio", impact: "+15–25 points"});
-      if (words < 1500) priorityFixes.push({text: "Expand content depth (>1,500 words)", impact: "+12–20 points"});
-      if (schemaTypes.length < 2) priorityFixes.push({text: "Add relevant schema markup", impact: "+10–18 points"});
-      if (totalFailed > 0) {
-        // Add one representative E-E-A-T fix
-        if (failedExperience.length > 0) priorityFixes.push({text: "Strengthen first-person experience signals", impact: "+8–15 points"});
-        else if (failedExpertise.length > 0) priorityFixes.push({text: "Add credentials & citations", impact: "+10–18 points"});
-      }
-      const topFixes = priorityFixes.slice(0, 3);
-
-      // Traffic & ranking uplift estimates (scaled by delta)
-      const trafficUplift = isOptimal ? 0 : Math.round(scoreDelta * 1.8);
-      const ctrBoost = isOptimal ? 0 : Math.min(30, Math.round(scoreDelta * 0.8));
-      const rankingLift = isOptimal ? "Already strong" : currentScore < 60 ? "Page 2+ → Page 1 potential" : "Top 20 → Top 10 possible";
-
-      results.innerHTML += `
 <!-- Score Improvement & Potential Ranking Gains -->
 <div class="max-w-5xl mx-auto mt-20 grid md:grid-cols-2 gap-8">
-  <!-- Left: Score Improvement -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
     <h3 class="text-3xl font-bold text-center mb-8 text-orange-500">Overall Score Improvement</h3>
     <div class="flex justify-center items-baseline gap-4 mb-8">
@@ -557,7 +544,6 @@ const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
     </details>
   </div>
 
-  <!-- Right: Potential Gains -->
   <div class="p-8 bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
     <h3 class="text-3xl font-bold text-center mb-8">Potential Ranking & Traffic Gains</h3>
 
@@ -607,7 +593,7 @@ const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
   </div>
 </div>
 
-<!-- PDF Button (moved below new section) -->
+<!-- PDF Button -->
 <div class="text-center my-16">
   <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
        class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
