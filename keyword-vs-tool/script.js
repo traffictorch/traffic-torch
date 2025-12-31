@@ -150,10 +150,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const yourWords = getWordCount(yourDoc);
       const compWords = getWordCount(compDoc);
-      const yourContentMatches = countPhrase(getCleanContent(yourDoc), phrase);
-      const yourDensity = yourWords ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
-      const compDensity = compWords ? (countPhrase(getCleanContent(compDoc), phrase) / compWords * 100).toFixed(1) : 0;
-      data.content = { yourWords, yourDensity };
+const yourContentMatches = countPhrase(getCleanContent(yourDoc), phrase);
+const compContentMatches = countPhrase(getCleanContent(compDoc), phrase);
+
+const yourDensity = yourWords > 0 ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
+const compDensity = compWords > 0 ? (compContentMatches / compWords * 100).toFixed(1) : 0;
+
+data.content = {
+  yourWords,
+  compWords,
+  yourDensity: parseFloat(yourDensity),
+  compDensity: parseFloat(compDensity),
+  yourContentMatches,
+  compContentMatches
+};
 
       yourScore += yourWords > 800 ? 20 : 0;
       compScore += compWords > 800 ? 20 : 0;
