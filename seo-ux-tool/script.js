@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       
 
-      // === MODULE EXPAND: CLEAN CHECKLIST + DETAILED RECOMMENDED FIXES (2–3 SENTENCES) + MODULE EDUCATION ===
+      // === MODULE EXPAND: CHECKLIST BELOW SCORE + DETAILED FIXES (2-3 SENTENCES) + MODULE EDUCATION ===
       modules.forEach(mod => {
         const card = document.getElementById(`${mod.id}-score`);
         if (!card) return;
@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const analysisUrl = mod.id === 'security' ? originalInput : url;
         const { issues: modIssues } = mod.fn(html, doc, analysisUrl);
 
-        // Checklist definitions (accurate passed/failed)
+        // Checklist definitions
         let checks = [];
         if (mod.id === 'seo') {
           checks = [
@@ -260,18 +260,18 @@ document.addEventListener('DOMContentLoaded', () => {
           ];
         }
 
-        // Create container
-        let container = expandBtn.nextElementSibling;
-        if (!container || !container.classList.contains('module-details')) {
+        // Create container (placed directly after score circle, before button)
+        let container = card.querySelector('.module-details');
+        if (!container) {
           container = document.createElement('div');
-          container.className = 'module-details hidden mt-6 space-y-6';
-          expandBtn.after(container);
+          container.className = 'module-details hidden mt-4 space-y-6 px-4';
+          expandBtn.parentNode.insertBefore(container, expandBtn);
         }
         container.innerHTML = '';
 
-        // 1. Passed/Failed Checklist
+        // 1. ✅/❌ Checklist – always visible when expanded, below score
         const checklist = document.createElement('div');
-        checklist.className = 'space-y-2 text-left max-w-md mx-auto text-gray-800 dark:text-gray-200';
+        checklist.className = 'space-y-2 text-left text-gray-200';
         checklist.innerHTML = checks.map(c => `
           <p class="${c.passed ? 'text-green-400' : 'text-red-400'} font-medium">
             ${c.passed ? '✅' : '❌'} ${c.text}
@@ -279,16 +279,16 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
         container.appendChild(checklist);
 
-        // 2. Detailed Recommended Fixes (only failed) – now 2–3 full educational sentences
+        // 2. Detailed Recommended Fixes (only failed) – now 2–3 educational sentences each
         if (modIssues.length > 0) {
           const fixesSection = document.createElement('div');
-          fixesSection.className = 'mt-8 space-y-6';
+          fixesSection.className = 'mt-6 space-y-6';
           modIssues.forEach(iss => {
             const fixBlock = document.createElement('div');
-            fixBlock.className = 'p-6 bg-white/10 dark:bg-gray-900/30 backdrop-blur rounded-2xl border border-white/20 dark:border-gray-700';
+            fixBlock.className = 'p-5 bg-white/5 backdrop-blur rounded-xl border border-white/10';
             fixBlock.innerHTML = `
-              <strong class="text-xl block mb-4 text-orange-300 dark:text-orange-400">${iss.issue}</strong>
-              <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              <strong class="text-lg block mb-3 text-orange-300">${iss.issue}</strong>
+              <p class="text-gray-200 leading-relaxed">
                 <span class="font-bold text-blue-400">How to fix:</span><br>
                 ${iss.fix}
               </p>
@@ -296,42 +296,37 @@ document.addEventListener('DOMContentLoaded', () => {
             fixesSection.appendChild(fixBlock);
           });
           container.appendChild(fixesSection);
-        } else {
-          const success = document.createElement('div');
-          success.className = 'mt-6 p-5 text-center bg-green-900/30 dark:bg-green-900/50 rounded-2xl border border-green-500/50';
-          success.innerHTML = '<p class="text-green-400 text-lg font-semibold">✅ This module is fully optimized!</p>';
-          container.appendChild(success);
         }
 
-        // 3. Module-level education (What/How/Why – single block)
+        // 3. Module education block (single, at bottom)
         const edu = {
           seo: { what: 'On-Page SEO evaluates the core elements search engines read directly to understand your page topic and relevance.', how: 'Write a unique title (50–60 characters) with your main keyword near the start. Add a compelling meta description (120–158 characters) that encourages clicks. Use headings properly and include structured data where relevant.', whyUx: 'Users see your title and description in search results — clear, accurate ones increase clicks.', whySeo: 'These are the strongest direct ranking signals Google uses.' },
-          mobile: { what: 'Mobile & PWA checks if your site works perfectly on phones and can be installed like an app.', how: 'Add the viewport meta tag, create and link a manifest.json file, provide multiple icon sizes, and register a service worker for offline capabilities.', whyUx: 'Gives users a seamless mobile experience and the ability to add your site to their home screen.', whySeo: 'Google uses mobile-first indexing — poor mobile setup lowers rankings on all devices.' },
-          perf: { what: 'Performance measures how fast your page loads by looking at size, requests, and blocking resources.', how: 'Compress and minify HTML/CSS/JS, optimize images with WebP and lazy-loading, limit custom fonts, and defer non-critical scripts.', whyUx: 'Faster pages reduce bounces and keep visitors engaged longer.', whySeo: 'Core Web Vitals are official ranking factors.' },
-          access: { what: 'Accessibility ensures your site can be used by everyone, including people with disabilities.', how: 'Add descriptive alt text to images, use proper heading order, include landmarks like <main>, label all form fields, and declare the page language.', whyUx: 'Makes your content available to all users regardless of ability or device.', whySeo: 'Google rewards accessible sites as higher quality.' },
-          content: { what: 'Content Quality checks depth, readability, structure, and how easy it is to scan.', how: 'Write comprehensive content with short sentences and paragraphs. Use H2/H3 headings every few hundred words and incorporate bullet lists for key points.', whyUx: 'Helps users quickly find and understand the information they came for.', whySeo: 'Well-structured, in-depth content better satisfies search intent and ranks higher.' },
-          ux: { what: 'UX Design reviews clarity of user actions and navigation flow.', how: 'Highlight 1–3 primary calls-to-action, reduce excessive internal links, and add breadcrumb navigation on deeper pages.', whyUx: 'Reduces confusion and helps users complete their goals faster.', whySeo: 'Better engagement sends positive signals to Google.' },
-          security: { what: 'Security confirms your site is served securely without mixed content.', how: 'Install a valid SSL certificate (free via Let’s Encrypt) and update all resources to use HTTPS instead of HTTP.', whyUx: 'Prevents "Not Secure" warnings that scare visitors away.', whySeo: 'Google downgrades and warns against HTTP sites.' },
-          indexability: { what: 'Indexability ensures search engines are allowed to include your page in results.', how: 'Remove any noindex meta tags unless intentional and add a proper canonical link to avoid duplicate issues.', whyUx: 'No direct effect on visitors.', whySeo: 'Without indexability your page will never appear in search results.' }
+          mobile: { what: 'Mobile & PWA checks if your site works perfectly on phones and can be installed like an app.', how: 'Add the viewport meta tag, create and link a manifest.json file, provide multiple icon sizes (including 192×192), and register a service worker for offline capabilities.', whyUx: 'Gives users a seamless mobile experience and the ability to add your site to their home screen.', whySeo: 'Google uses mobile-first indexing — poor mobile setup lowers rankings on all devices.' },
+          perf: { what: 'Performance measures how fast your page loads by looking at size, requests, and blocking resources.', how: 'Compress and minify HTML/CSS/JS files. Optimize images using WebP format with proper sizing and lazy-loading. Limit custom fonts and defer non-critical scripts.', whyUx: 'Faster pages reduce bounces and keep visitors engaged longer.', whySeo: 'Core Web Vitals are official ranking factors.' },
+          access: { what: 'Accessibility ensures your site can be used by everyone, including people with disabilities.', how: 'Add descriptive alt text to all images (empty alt for decorative ones). Use proper heading order, include landmarks like <main>, label form fields correctly, and declare the page language with lang attribute.', whyUx: 'Makes your content available to all users regardless of ability or device.', whySeo: 'Google rewards accessible sites as higher quality.' },
+          content: { what: 'Content Quality checks depth, readability, structure, and how easy it is to scan.', how: 'Write comprehensive, unique content with short sentences and paragraphs. Use H2/H3 headings every few hundred words to break up text. Incorporate bullet lists and tables for key information.', whyUx: 'Helps users quickly find and understand the information they came for.', whySeo: 'Well-structured, in-depth content better satisfies search intent and ranks higher.' },
+          ux: { what: 'UX Design reviews clarity of user actions and navigation flow.', how: 'Highlight 1–3 primary calls-to-action clearly. Reduce excessive internal linking that distracts users. Add breadcrumb navigation on deeper pages to help orientation.', whyUx: 'Reduces confusion and helps users complete their goals faster.', whySeo: 'Better engagement sends positive signals to Google.' },
+          security: { what: 'Security confirms your site is served securely without mixed content.', how: 'Install a valid SSL certificate (free via Let’s Encrypt). Update all internal resource URLs to use HTTPS instead of HTTP. Regularly check for and fix any mixed content warnings.', whyUx: 'Prevents "Not Secure" warnings that scare visitors away.', whySeo: 'Google downgrades and warns against HTTP sites.' },
+          indexability: { what: 'Indexability ensures search engines are allowed to include your page in results.', how: 'Remove any noindex meta tags unless the page is intentionally hidden (e.g. staging). Add a proper canonical link tag pointing to the preferred URL version. Verify in Google Search Console.', whyUx: 'No direct effect on visitors.', whySeo: 'Without indexability your page will never appear in search results.' }
         }[mod.id];
 
         const eduBlock = document.createElement('div');
-        eduBlock.className = 'mt-8 p-6 bg-gradient-to-br from-purple-900/40 to-indigo-900/40 dark:from-purple-900/60 dark:to-indigo-900/60 rounded-2xl border border-purple-400/30 dark:border-purple-600/40';
+        eduBlock.className = 'mt-8 p-5 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 rounded-xl border border-purple-500/20';
         eduBlock.innerHTML = `
-          <h4 class="text-lg font-bold mb-4 text-purple-300">About this module</h4>
-          <p class="mb-4 text-gray-800 dark:text-gray-200"><span class="font-bold text-cyan-400">What is it?</span><br>${edu.what}</p>
-          <p class="mb-4 text-gray-800 dark:text-gray-200"><span class="font-bold text-blue-400">How to improve overall:</span><br>${edu.how}</p>
-          <p class="text-gray-800 dark:text-gray-200"><span class="font-bold text-red-400">Why it matters:</span><br>
+          <h4 class="text-lg font-bold mb-3 text-purple-300">About this module</h4>
+          <p class="mb-3 text-gray-200"><span class="font-bold text-cyan-400">What is it?</span><br>${edu.what}</p>
+          <p class="mb-3 text-gray-200"><span class="font-bold text-blue-400">How to improve overall:</span><br>${edu.how}</p>
+          <p class="text-gray-200"><span class="font-bold text-red-400">Why it matters:</span><br>
             <strong>UX:</strong> ${edu.whyUx}<br>
             <strong>SEO:</strong> ${edu.whySeo}
           </p>
         `;
         container.appendChild(eduBlock);
 
-        // Toggle
+        // Button toggle – now says "Show Fixes" / "Hide Fixes" to match screenshot
         expandBtn.onclick = () => {
           container.classList.toggle('hidden');
-          expandBtn.textContent = container.classList.contains('hidden') ? 'Show Details' : 'Hide Details';
+          expandBtn.textContent = container.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
         };
       });
       
