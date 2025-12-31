@@ -51,10 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!yourUrl || !compUrl || !phrase) return;
 
-    // === Single clean loader below form ===
+    // === Single clean loader below form (fixed insertion) ===
     let loadingDiv = document.createElement('div');
     loadingDiv.id = 'single-loader';
-    loadingDiv.className = 'mt-12 flex flex-col items-center justify-center py-16';
+    loadingDiv.className = 'mt-12 flex flex-col items-center justify-center py-16 max-w-4xl mx-auto';
     loadingDiv.innerHTML = `
       <div class="relative w-32 h-32">
         <div class="absolute inset-0 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
@@ -63,7 +63,14 @@ document.addEventListener('DOMContentLoaded', () => {
       <p class="mt-10 text-3xl font-bold text-orange-600 dark:text-orange-400">Analyzing relevance for "${phrase}"...</p>
       <p class="mt-4 text-xl text-gray-600 dark:text-gray-400">Comparing your page vs competitor securely in-browser</p>
     `;
-    form.parentNode.insertBefore(loadingDiv, results);
+
+    // Insert directly after the form (safe method)
+    if (form.nextSibling) {
+      form.parentNode.insertBefore(loadingDiv, form.nextSibling);
+    } else {
+      form.parentNode.appendChild(loadingDiv);
+    }
+
     results.classList.add('hidden');
 
     let yourDoc, compDoc;
