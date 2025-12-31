@@ -192,16 +192,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const topFixes = [];
       const worstModule = failedModules[0];
-      failedModules.forEach(mod => {
-        let text = '';
-        if (mod.id === 'meta') text = "Add phrase to title and meta description.";
-        else if (mod.id === 'headings') text = "Include phrase in H1 heading.";
-        else if (mod.id === 'content') text = yourWords < 800 ? `Expand content depth — aim for at least 800 words (currently ${yourWords}).` : "Improve content density.";
-        else if (mod.id === 'alts') text = "Include phrase in key image alt text.";
-        else if (mod.id === 'anchors') text = "Use phrase in internal anchor text.";
-        else if (mod.id === 'urlSchema') text = data.urlSchema.yourUrlMatch === 0 ? "Include phrase in URL slug if possible." : "Add structured data (JSON-LD schema markup).";
-        topFixes.push({ module: mod.name, text, isWorst: mod.id === worstModule?.id });
-      });
+      
+      
+      
+    failedModules.forEach(mod => {
+      let text = '';
+
+      if (mod.id === 'meta') {
+        text = `The target phrase is missing from your title or meta description — one of Google's strongest relevance signals.\n` +
+               `Add it naturally near the beginning of the title (keep under 60 characters) and once in the description (under 155 characters).\n` +
+               `This simple change can improve rankings and boost click-through rates by 20–30%.`;
+      }
+      else if (mod.id === 'headings') {
+        text = `Your main H1 heading does not include the target phrase.\n` +
+               `Rewrite the H1 to feature the exact or close variant while keeping it compelling and reader-focused.\n` +
+               `The H1 is a critical on-page signal that helps search engines understand your page topic at a glance.`;
+      }
+      else if (mod.id === 'content') {
+        if (yourWords < 800) {
+          text = `Your content has only ${yourWords} words — top-ranking pages typically exceed 1200+ words.\n` +
+                 `Expand with valuable sections like FAQs, examples, step-by-step guides, data, or comparisons.\n` +
+                 `Aim for 800–1500+ words of in-depth, original content to build topical authority and better satisfy user intent.`;
+        } else {
+          text = `The target phrase appears only ${yourContentMatches} times (${data.content.yourDensity}% density).\n` +
+                 `Incorporate it naturally in the intro, subheadings, body, and conclusion to reach 1–2% density.\n` +
+                 `Balanced usage reinforces relevance without risking over-optimization penalties.`;
+        }
+      }
+      else if (mod.id === 'alts') {
+        text = `No image alt text contains the target phrase.\n` +
+               `Update key images (hero, featured) with descriptive alt text that naturally includes the phrase.\n` +
+               `This improves accessibility, enables image search traffic, and adds valuable relevance signals.`;
+      }
+      else if (mod.id === 'anchors') {
+        text = `No internal links use the target phrase as anchor text.\n` +
+               `Add 2–4 relevant internal links using the phrase or natural variations.\n` +
+               `This strengthens site-wide topical relevance and improves internal authority flow.`;
+      }
+      else if (mod.id === 'urlSchema') {
+        if (data.urlSchema.yourUrlMatch === 0) {
+          text = `Your URL slug does not include the target phrase.\n` +
+                 `If possible, restructure it to include the main keywords (e.g., /${phrase.toLowerCase().replace(/\s+/g, '-')}).\n` +
+                 `Keyword-rich URLs provide clear relevance signals and often earn higher click-through rates.`;
+        } else {
+          text = `No structured data (JSON-LD schema) detected on your page.\n` +
+                 `Add appropriate schema markup (Article, FAQPage, HowTo, etc.) in a <script type="application/ld+json"> block.\n` +
+                 `Schema enables rich snippets, improves SERP visibility, and helps Google better understand your content.`;
+        }
+      }
+
+      topFixes.push({ module: mod.name, text, isWorst: mod.id === worstModule?.id });
+    });
+      
+      
       if (topFixes.length < 3 && worstModule && worstModule.id === 'content' && yourWords < compWords) {
         topFixes.push({ module: worstModule.name, text: "Cover competitor subtopics and improve natural phrase usage.", isWorst: true });
       }
@@ -312,7 +355,9 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="text-6xl font-black text-orange-500">${i + 1}</div>
       <div class="flex-1">
         <p class="text-2xl font-bold mb-3 text-gray-900 dark:text-gray-100">${fix.module}</p>
-        <p class="text-xl text-gray-700 dark:text-gray-300">${fix.text}</p>
+<div class="text-xl text-gray-700 dark:text-gray-300 space-y-2">
+  ${fix.text.split('\n').map(line => `<p>${line}</p>`).join('')}
+</div>
         ${fix.isWorst && finalFixes.filter(f => f.isWorst).length > 1 ? '<p class="mt-4 text-sm italic text-red-600 dark:text-red-400">(Critical module — multiple gaps detected)</p>' : ''}
       </div>
     </div>
