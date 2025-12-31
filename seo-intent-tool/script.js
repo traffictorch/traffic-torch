@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Toggle helpers to avoid inline JS syntax errors in template literals
   function toggleFixesPanel(button) {
-    const card = button.parentNode;
+    const card = button.closest('.score-card');
     const fixesPanel = card.querySelector('.fixes-panel');
     const fullDetails = card.querySelector('.full-details');
     fixesPanel.classList.toggle('hidden');
