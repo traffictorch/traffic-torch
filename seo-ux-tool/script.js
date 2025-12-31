@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
         expandBtn.onclick = () => {
           detailsContainer.classList.toggle('hidden');
         };
-      });
+      }); 
       
       
       
