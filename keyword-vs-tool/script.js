@@ -369,11 +369,12 @@ document.addEventListener('DOMContentLoaded', () => {
   `}
 </div>
 
-<!-- Relevance Improvement & Potential Ranking Gains -->
+<!-- Closing the Relevance Gap & Projected Gains -->
 <div class="grid md:grid-cols-2 gap-12 my-20 max-w-6xl mx-auto">
+  <!-- Left: Relevance Improvement -->
   <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 border-l-8 border-orange-500">
-    <h3 class="text-3xl font-black mb-8 text-center">Relevance Improvement</h3>
-    <div class="flex justify-center items-center gap-12 mb-10">
+    <h3 class="text-3xl font-black mb-8 text-center">Relevance Score Improvement</h3>
+    <div class="flex justify-center items-center gap-12 mb-12">
       <div class="text-center">
         <span class="text-6xl font-black ${getTextColorClass(yourScore)}">${yourScore}</span>
         <p class="text-xl mt-3 opacity-80">Current</p>
@@ -384,47 +385,114 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="text-xl mt-3 text-green-500">Projected</p>
       </div>
     </div>
-    <details class="mt-6 bg-gray-100 dark:bg-gray-800 rounded-2xl p-4">
-      <summary class="cursor-pointer font-bold text-orange-600 dark:text-orange-400">How We Calculated This</summary>
-      <p class="mt-4 text-gray-700 dark:text-gray-300">Each implemented fix typically adds 10–20 points based on signal weight. Conservative estimate assumes realistic partial implementation.</p>
+
+    ${finalFixes.length > 0 ? `
+      <div class="space-y-6">
+        <p class="text-lg font-semibold text-center mb-6">Potential uplift from fixing these gaps:</p>
+        ${finalFixes.map(fix => {
+          let points = '';
+          if (fix.module.includes('Meta')) points = '+20–25 points';
+          else if (fix.module.includes('H1')) points = '+12–18 points';
+          else if (fix.module.includes('Content')) points = '+15–30 points';
+          else if (fix.module.includes('Image')) points = '+10–15 points';
+          else if (fix.module.includes('Anchor')) points = '+8–12 points';
+          else points = '+8–15 points';
+          return `<div class="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-800 rounded-xl">
+            <span class="text-gray-700 dark:text-gray-300">${fix.module}</span>
+            <span class="font-bold text-orange-600 dark:text-orange-400">${points}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    ` : `
+      <div class="text-center py-8">
+        <p class="text-3xl font-black text-green-600 dark:text-green-400 mb-4">🎉 Optimal Relevance Achieved!</p>
+        <p class="text-xl text-gray-600 dark:text-gray-400">Your page already shows strong on-page relevance for "${phrase}".</p>
+      </div>
+    `}
+
+    <details class="mt-10 bg-gray-100 dark:bg-gray-800 rounded-2xl p-6">
+      <summary class="cursor-pointer font-bold text-orange-600 dark:text-orange-400 text-lg">How We Calculated This</summary>
+      <div class="mt-4 space-y-3 text-gray-700 dark:text-gray-300">
+        <p>Score based on 8 proven on-page relevance signals:</p>
+        <ul class="list-disc pl-6 space-y-1">
+          <li>Title & Meta (25pts) • H1 (15pts) • Content Depth (20pts)</li>
+          <li>Image Alts (15pts) • Anchors (10pts) • URL & Schema (15pts)</li>
+        </ul>
+        <p class="mt-4 font-medium">Top 10 SERP pages typically score 85+ for competitive phrases.</p>
+      </div>
     </details>
   </div>
 
+  <!-- Right: Real-World Impact -->
   <div class="bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-3xl shadow-2xl p-10">
     <h3 class="text-3xl font-black mb-8 text-center">Potential Ranking Gains</h3>
-    <div class="space-y-10">
-      <div>
-        <div class="flex justify-between items-center mb-3">
-          <span class="text-xl">Ranking Position Lift</span>
-          <span class="text-3xl font-black">+${2 + finalFixes.length * 2}–${7 + finalFixes.length * 3}</span>
+    
+    ${finalFixes.length === 0 ? `
+      <div class="text-center py-12">
+        <p class="text-2xl font-bold mb-4">You're in a strong position!</p>
+        <p class="text-lg opacity-90">Focus next on building authority through backlinks and fresh content.</p>
+      </div>
+    ` : `
+      <div class="space-y-10">
+        <div>
+          <div class="flex items-center gap-4 mb-3">
+            <span class="text-3xl">📈</span>
+            <div class="flex-1 flex justify-between">
+              <span class="text-xl">Ranking Position Lift</span>
+              <span class="text-2xl font-black">+${2 + finalFixes.length * 2}–${7 + finalFixes.length * 3}</span>
+            </div>
+          </div>
+          <div class="w-full bg-white/20 rounded-full h-10">
+            <div class="bg-white h-10 rounded-full transition-all duration-1000" style="width: ${finalFixes.length === 1 ? 45 : finalFixes.length === 2 ? 70 : 90}%"></div>
+          </div>
         </div>
-        <div class="w-full bg-white/20 rounded-full h-10">
-          <div class="bg-white h-10 rounded-full transition-all duration-1000" style="width: ${finalFixes.length === 0 ? 20 : finalFixes.length === 1 ? 45 : finalFixes.length === 2 ? 70 : 100}%"></div>
+
+        <div>
+          <div class="flex items-center gap-4 mb-3">
+            <span class="text-3xl">🚀</span>
+            <div class="flex-1 flex justify-between">
+              <span class="text-xl">Organic Traffic Increase</span>
+              <span class="text-2xl font-black">+${15 + finalFixes.length * 10}%–${40 + finalFixes.length * 15}%</span>
+            </div>
+          </div>
+          <div class="w-full bg-white/20 rounded-full h-10">
+            <div class="bg-white h-10 rounded-full transition-all duration-1000" style="width: ${finalFixes.length === 1 ? 40 : finalFixes.length === 2 ? 65 : 85}%"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-4 mb-3">
+            <span class="text-3xl">👆</span>
+            <div class="flex-1 flex justify-between">
+              <span class="text-xl">CTR Improvement</span>
+              <span class="text-2xl font-black">+${10 + finalFixes.length * 5}%–${25 + finalFixes.length * 8}%</span>
+            </div>
+          </div>
+          <div class="w-full bg-white/20 rounded-full h-10">
+            <div class="bg-white h-10 rounded-full transition-all duration-1000" style="width: ${finalFixes.length === 1 ? 50 : finalFixes.length === 2 ? 75 : 95}%"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-4 mb-3">
+            <span class="text-3xl">🗝️</span>
+            <div class="flex-1 flex justify-between">
+              <span class="text-xl">Keyword Coverage Completion</span>
+              <span class="text-2xl font-black">+${30 + finalFixes.length * 20}%–${70 + finalFixes.length * 10}%</span>
+            </div>
+          </div>
+          <div class="w-full bg-white/20 rounded-full h-10">
+            <div class="bg-white h-10 rounded-full transition-all duration-1000" style="width: ${finalFixes.length === 1 ? 60 : finalFixes.length === 2 ? 80 : 95}%"></div>
+          </div>
         </div>
       </div>
-      <div>
-        <div class="flex justify-between items-center mb-3">
-          <span class="text-xl">Organic Traffic Increase</span>
-          <span class="text-3xl font-black">+${15 + finalFixes.length * 10}%–${40 + finalFixes.length * 15}%</span>
-        </div>
-        <div class="w-full bg-white/20 rounded-full h-10">
-          <div class="bg-white h-10 rounded-full transition-all duration-1000" style="width: ${finalFixes.length === 0 ? 15 : finalFixes.length === 1 ? 40 : finalFixes.length === 2 ? 65 : 90}%"></div>
-        </div>
-      </div>
-      <div>
-        <div class="flex justify-between items-center mb-3">
-          <span class="text-xl">CTR Improvement</span>
-          <span class="text-3xl font-black">+${10 + finalFixes.length * 5}%–${25 + finalFixes.length * 8}%</span>
-        </div>
-        <div class="w-full bg-white/20 rounded-full h-10">
-          <div class="bg-white h-10 rounded-full transition-all duration-1000" style="width: ${finalFixes.length === 0 ? 25 : finalFixes.length === 1 ? 50 : finalFixes.length === 2 ? 75 : 100}%"></div>
-        </div>
-      </div>
-    </div>
-    <p class="mt-12 text-center text-sm opacity-90 leading-relaxed">
-      Conservative estimates based on on-page optimization benchmarks.<br>
-      Actual results depend on competition, authority, and off-page factors.
-    </p>
+
+      <p class="mt-12 text-center text-sm opacity-90 leading-relaxed">
+        Conservative estimates based on on-page optimization benchmarks.<br>
+        On-page improvements often reflect in rankings within 1–4 weeks.<br>
+        Actual results depend on competition, backlinks, and domain authority.
+      </p>
+    `}
   </div>
 </div>
 
