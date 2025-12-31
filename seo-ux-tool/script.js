@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       
 
-      // === MATCH OTHER TOOLS STYLE: CHECKLIST ALWAYS VISIBLE + EXPAND FOR DETAILED FIXES & MODULE EDUCATION ===
+      // FINAL: MATCH OTHER TOOLS – ALWAYS-VISIBLE CHECKLIST + RECOMMENDED FIXES BUTTON (STATIC TEXT) + DETAILED FAILED FIXES + MODULE EDUCATION
       modules.forEach(mod => {
         const card = document.getElementById(`${mod.id}-score`);
         if (!card) return;
@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const analysisUrl = mod.id === 'security' ? originalInput : url;
         const { issues: modIssues } = mod.fn(html, doc, analysisUrl);
 
-        // Checklist definitions (same accurate checks as before)
+        // Checklist definitions (keep all as before – accurate passed/failed)
         let checks = [];
         if (mod.id === 'seo') {
           checks = [
@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ];
         }
 
-        // 1. Always-visible checklist below score circle
+        // Always-visible checklist below score
         let checklistContainer = card.querySelector('.always-checklist');
         if (!checklistContainer) {
           checklistContainer = document.createElement('div');
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </p>
         `).join('');
 
-        // 2. Expandable details (detailed fixes + module education)
+        // Expandable container
         let detailsContainer = card.querySelector('.expand-details');
         if (!detailsContainer) {
           detailsContainer = document.createElement('div');
@@ -282,30 +282,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         detailsContainer.innerHTML = '';
 
-        // Detailed recommended fixes (only failed, each with title + detailed How to fix)
-        modIssues.forEach(iss => {
-          const fixBlock = document.createElement('div');
-          fixBlock.className = 'p-5 bg-white/5 backdrop-blur rounded-xl border border-white/10';
-          fixBlock.innerHTML = `
-            <strong class="text-xl block mb-4 text-orange-300">${iss.issue}</strong>
-            <p class="text-gray-200 leading-relaxed">
-              <span class="font-bold text-blue-400">How to fix:</span><br>
-              ${iss.fix}
-            </p>
-          `;
-          detailsContainer.appendChild(fixBlock);
-        });
+        // ONLY FAILED ISSUES – detailed 2–3 sentence "How to fix:" (no What/Why per issue)
+        if (modIssues.length > 0) {
+          modIssues.forEach(iss => {
+            const fixBlock = document.createElement('div');
+            fixBlock.className = 'p-6 bg-white/5 backdrop-blur rounded-xl border border-white/10';
+            fixBlock.innerHTML = `
+              <strong class="text-xl block mb-4 text-orange-300">${iss.issue}</strong>
+              <p class="text-gray-200 leading-relaxed">
+                <span class="font-bold text-blue-400">How to fix:</span><br>
+                ${iss.fix}
+              </p>
+            `;
+            detailsContainer.appendChild(fixBlock);
+          });
+        }
 
-        // Module-level education (matches other tools – single block at bottom)
+        // Module-level education (What/How/Why for the entire module – at bottom)
         const moduleEdu = {
-          seo: { what: 'On-Page SEO evaluates core elements like titles, meta descriptions, headings, schema, and keyword usage.', how: 'Optimize your title and meta description for length and relevance. Include your primary keyword naturally in the main heading and early content. Add JSON-LD structured data for rich results.', whyUx: 'Clear titles and descriptions set accurate user expectations in search results.', whySeo: 'These are the most important direct ranking factors Google uses to understand page relevance.' },
-          mobile: { what: 'Mobile & PWA checks viewport setup, manifest, icons, and service worker for full mobile compatibility.', how: 'Add the correct viewport meta tag. Create and link a web app manifest.json. Provide multiple icon sizes including 192x192. Register a service worker for faster loads.', whyUx: 'Ensures smooth experience on phones and allows "Add to Home Screen".', whySeo: 'Google uses mobile-first indexing – mobile issues hurt rankings on all devices.' },
-          perf: { what: 'Performance analyzes page weight, HTTP requests, fonts, and render-blocking resources.', how: 'Minify code and compress images to WebP format. Lazy-load offscreen assets. Limit custom fonts to 2-3 families. Defer or async non-critical scripts.', whyUx: 'Fast loading reduces user frustration and bounce rates.', whySeo: 'Core Web Vitals directly impact search rankings.' },
-          access: { what: 'Accessibility checks alt text, landmarks, headings, labels, and language declaration.', how: 'Add descriptive alt text to every image. Use proper heading hierarchy and landmarks like <main>. Label all form fields with for/id. Declare lang attribute on <html>.', whyUx: 'Makes your site usable for people with disabilities.', whySeo: 'Google views accessibility as a quality signal.' },
-          content: { what: 'Content Quality evaluates depth, readability, structure, and scannability.', how: 'Create comprehensive, unique content over 600 words where appropriate. Use short sentences and paragraphs. Add H2/H3 headings frequently. Incorporate bullet lists and tables.', whyUx: 'Easy-to-scan content keeps users engaged longer.', whySeo: 'In-depth, structured content better matches search intent and ranks higher.' },
-          ux: { what: 'UX Design reviews calls-to-action clarity and navigation aids.', how: 'Highlight 1-3 primary actions with contrasting buttons. Reduce overwhelming internal links. Add breadcrumbs on category or deep pages.', whyUx: 'Helps users achieve goals quickly without confusion.', whySeo: 'Strong engagement metrics signal quality to search engines.' },
-          security: { what: 'Security verifies HTTPS usage and absence of mixed content.', how: 'Install a free SSL certificate from Let’s Encrypt. Update all resource URLs to HTTPS. Scan regularly for insecure links.', whyUx: 'Avoids scary browser warnings that drive users away.', whySeo: 'Google penalizes and marks HTTP sites as not secure.' },
-          indexability: { what: 'Indexability confirms search engines can crawl and include your page.', how: 'Remove noindex tags unless the page is staging. Add a canonical link to the preferred URL version. Verify settings in robots.txt and Search Console.', whyUx: 'No direct user impact.', whySeo: 'Pages that can’t be indexed never appear in search results.' }
+          seo: { what: 'On-Page SEO evaluates the core elements search engines read directly to understand your page topic and relevance.', how: 'Write a compelling title (50–60 characters) with your primary keyword near the start. Add a detailed meta description (120–158 characters) that encourages clicks. Use proper heading hierarchy and include JSON-LD structured data where applicable.', whyUx: 'Clear titles and descriptions help users instantly know if your page matches their search intent.', whySeo: 'These are the strongest direct ranking signals Google uses to evaluate relevance.' },
+          mobile: { what: 'Mobile & PWA checks if your site is fully mobile-friendly and ready to be installed as an app.', how: 'Add the correct viewport meta tag for responsive scaling. Create and link a web app manifest.json file. Provide multiple icon sizes (including 192×192) and register a service worker.', whyUx: 'Gives users a flawless experience on phones and the option to add your site to their home screen.', whySeo: 'Google uses mobile-first indexing — poor mobile setup hurts rankings on all devices.' },
+          perf: { what: 'Performance measures how fast your page loads by analyzing size, requests, fonts, and blocking resources.', how: 'Compress images to WebP and use appropriate sizes with lazy-loading. Minify CSS/JS/HTML and limit custom fonts to 2–3 families. Defer non-critical scripts and inline critical CSS.', whyUx: 'Fast loading keeps users engaged and reduces bounce rates.', whySeo: 'Core Web Vitals (LCP, FID, CLS) are official ranking factors.' },
+          access: { what: 'Accessibility ensures your site is usable by everyone, including people with disabilities.', how: 'Add meaningful alt text to all images (empty for decorative). Use proper heading order and landmarks like <main>. Connect form labels with for/id attributes and declare the page language.', whyUx: 'Makes your content accessible to screen readers and keyboard navigation.', whySeo: 'Google treats accessibility as a quality signal for better rankings.' },
+          content: { what: 'Content Quality assesses depth, readability, structure, and scannability of your text.', how: 'Create comprehensive, unique content with short sentences and paragraphs. Break up text with H2/H3 headings every 300–400 words. Use bullet lists, numbered steps, and tables for key information.', whyUx: 'Helps users quickly scan and absorb the information they need.', whySeo: 'Well-structured, in-depth content better satisfies search intent and earns higher rankings.' },
+          ux: { what: 'UX Design reviews clarity of actions, navigation, and overall user flow.', how: 'Highlight 1–3 primary calls-to-action with clear, contrasting buttons. Reduce excessive internal linking that distracts users. Add breadcrumb navigation on deeper pages for better orientation.', whyUx: 'Reduces confusion and helps users complete their goals faster.', whySeo: 'Strong engagement metrics (time on page, low bounce) signal quality to Google.' },
+          security: { what: 'Security confirms your site uses HTTPS and has no insecure mixed content.', how: 'Install a valid SSL certificate (free via Let’s Encrypt). Update all resource URLs to HTTPS (images, scripts, styles). Regularly scan for and fix any HTTP links.', whyUx: 'Prevents browser "Not Secure" warnings that scare visitors away.', whySeo: 'Google marks HTTP sites as insecure and downgrades their rankings.' },
+          indexability: { what: 'Indexability ensures search engines are allowed to crawl and index your page.', how: 'Remove any noindex meta tags unless the page is intentionally hidden. Add a proper canonical link tag pointing to the preferred URL. Verify settings in Google Search Console.', whyUx: 'No direct user impact.', whySeo: 'Without proper indexability, your page will never appear in search results.' }
         };
 
         const edu = moduleEdu[mod.id];
@@ -322,13 +324,13 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         detailsContainer.appendChild(eduBlock);
 
-        // Button toggle – matches other tools ("Recommended Fixes" orange button)
+        // Button – static "Recommended Fixes" text, orange styling
         expandBtn.className = 'expand mt-4 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full transition';
         expandBtn.textContent = 'Recommended Fixes';
         expandBtn.onclick = () => {
           detailsContainer.classList.toggle('hidden');
         };
-      }); 
+      });
       
       
       
