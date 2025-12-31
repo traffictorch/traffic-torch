@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <p class="text-xl text-gray-500">Target phrase: "${phrase}"</p>
 </div>
 
-<!-- Small Module Cards -->
+<!-- Small Module Cards - FIXED with breathing room for rounded arc caps -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
   ${[
     { name: 'Meta Title & Desc', you: data.meta.yourMatches > 0 ? 100 : 0, comp: data.meta.compMatches > 0 ? 100 : 0, border: data.meta.yourMatches > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Checks if your target phrase appears naturally in the page title and meta description.", how: "Add the keyword near the start of the title (keep under 60 chars) and include it once in the meta description (under 155 chars).", why: "Google uses title and description for rankings and click-through rates — pages with keyword in both see 20-30% higher CTR." } },
@@ -259,36 +259,38 @@ document.addEventListener('DOMContentLoaded', () => {
     { name: 'Anchor Text', you: data.anchors.your > 0 ? 100 : 0, comp: data.anchors.comp > 0 ? 100 : 0, border: data.anchors.your > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Looks for internal links using the target phrase as anchor text.", how: "Add or edit internal links to use the phrase naturally where relevant.", why: "Strengthens site-wide relevance and improves internal PageRank flow." } },
     { name: 'URL & Schema', you: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)), comp: Math.min(100, (data.urlSchema.compUrlMatch > 0 ? 50 : 0) + (data.urlSchema.compSchema ? 50 : 0)), border: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)) >= 50 ? 'border-green-500' : 'border-red-500', educ: { what: "Combines URL keyword inclusion and structured data presence.", how: "Include phrase in URL slug if possible; add JSON-LD schema (FAQ, Article, etc.).", why: "Descriptive URLs aid crawling; schema unlocks rich snippets and better SERP visibility." } }
   ].map((m) => `
-    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 border-l-8 ${m.border} flex flex-col">
-      <h4 class="text-xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100">${m.name}</h4>
-      <div class="grid grid-cols-2 gap-6 mb-8 flex-grow">
-        <div class="text-center">
-          <div class="relative w-32 h-32 mx-auto">
-            <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-              <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="14" fill="none"/>
-              <circle cx="64" cy="64" r="56" stroke="${getCircleColor(m.you)}" stroke-width="14" fill="none" stroke-dasharray="${(m.you / 100) * 352} 352" stroke-linecap="round"/>
-            </svg>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <span class="text-4xl font-black ${getTextColorClass(m.you)}">${Math.round(m.you)}</span>
+    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 pt-12 pb-10 border-l-8 ${m.border} flex flex-col">
+      <h4 class="text-xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">${m.name}</h4>
+      <div class="flex-grow flex flex-col justify-center mt-6 mb-10">
+        <div class="grid grid-cols-2 gap-8">
+          <div class="flex flex-col items-center">
+            <div class="relative w-32 h-32">
+              <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+                <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="14" fill="none"/>
+                <circle cx="64" cy="64" r="56" stroke="${getCircleColor(m.you)}" stroke-width="14" fill="none" stroke-dasharray="${(m.you / 100) * 352} 352" stroke-linecap="round"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-4xl font-black ${getTextColorClass(m.you)}">${Math.round(m.you)}</span>
+              </div>
             </div>
+            <p class="mt-6 text-lg font-medium">You</p>
           </div>
-          <p class="mt-4 text-lg font-medium">You</p>
-        </div>
-        <div class="text-center">
-          <div class="relative w-32 h-32 mx-auto">
-            <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-              <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="14" fill="none"/>
-              <circle cx="64" cy="64" r="56" stroke="${getCircleColor(m.comp)}" stroke-width="14" fill="none" stroke-dasharray="${(m.comp / 100) * 352} 352" stroke-linecap="round"/>
-            </svg>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <span class="text-4xl font-black ${getTextColorClass(m.comp)}">${Math.round(m.comp)}</span>
+          <div class="flex flex-col items-center">
+            <div class="relative w-32 h-32">
+              <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+                <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="14" fill="none"/>
+                <circle cx="64" cy="64" r="56" stroke="${getCircleColor(m.comp)}" stroke-width="14" fill="none" stroke-dasharray="${(m.comp / 100) * 352} 352" stroke-linecap="round"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-4xl font-black ${getTextColorClass(m.comp)}">${Math.round(m.comp)}</span>
+              </div>
             </div>
+            <p class="mt-6 text-lg font-medium">Comp</p>
           </div>
-          <p class="mt-4 text-lg font-medium">Comp</p>
         </div>
       </div>
       <button onclick="const details=this.closest('div').querySelector('.educ-details');details.classList.toggle('hidden');this.textContent=details.classList.contains('hidden')?'Show Details':'Hide Details';"
-              class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow">
+              class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow mt-auto">
         Show Details
       </button>
       <div class="educ-details mt-8 space-y-6 hidden">

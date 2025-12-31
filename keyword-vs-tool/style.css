@@ -7,31 +7,31 @@
 }
 .radar { width: 180px; height: 180px; margin: 1.5rem auto; display: block; }
 
-/* === PROPER FINAL SMALL GAUGE FIX - NO CROPPING === */
-/* Slightly smaller gauges for perfect fit + breathing room */
-.grid.md\\:grid-cols-3 .relative.w-32.h-32 {
-  width: 110px !important;
-  height: 110px !important;
-  margin: 2.5rem auto 1.5rem auto !important;
+/* === FINAL SMALL GAUGE NO-CROPPING FIX - EXTRA BREATHING ROOM === */
+@media (min-width: 768px) {
+  /* Generous margin around gauges for protruding rounded caps */
+  .grid.md\\:grid-cols-3 .relative.w-32.h-32 {
+    width: 128px !important;
+    height: 128px !important;
+    margin: 4rem auto 3rem auto !important; /* top 4rem, bottom 3rem for balance */
+  }
+
+  /* Extra top/bottom padding on cards to center everything */
+  .grid.md\\:grid-cols-3 > div {
+    padding-top: 4rem !important;
+    padding-bottom: 4rem !important;
+  }
 }
 
-/* Balance card padding — more top space to center gauges visually */
-.grid.md\\:grid-cols-3 > div {
-  padding-top: 3rem !important;
-  padding-bottom: 2.5rem !important;
-}
-
-/* Ensure SVG never clips (red dot safety) */
+/* SVG safety */
 svg {
   overflow: visible !important;
   display: block !important;
 }
 
-/* Mobile: keep original sizing */
+/* Mobile: original tight fit (no issue there) */
 @media (max-width: 767px) {
   .grid.md\\:grid-cols-3 .relative.w-32.h-32 {
-    width: 128px !important;
-    height: 128px !important;
     margin: 1.5rem auto !important;
   }
   .grid.md\\:grid-cols-3 > div {
@@ -40,7 +40,7 @@ svg {
   }
 }
 
-/* === ALL YOUR ORIGINAL RULES BELOW (unchanged) === */
+/* === ALL YOUR ORIGINAL RULES BELOW (preserved) === */
 body { transition: background-color 0.3s ease; }
 .health-score polygon { fill: rgba(16, 185, 129, 0.3); }
 .health-score h2 { margin-bottom: 0.5rem; }
