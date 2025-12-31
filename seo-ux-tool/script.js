@@ -257,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ux: { what: 'UX Design reviews clarity of actions and navigation flow.', how: 'Highlight 1–3 primary CTAs with contrasting buttons. Reduce excessive links. Add breadcrumbs on deep pages.', whyUx: 'Reduces confusion and helps users complete goals faster.', whySeo: 'Better engagement signals improve rankings.' },
           security: { what: 'Security confirms HTTPS and no mixed content.', how: 'Install a valid SSL certificate. Update all resources to HTTPS. Regularly scan for insecure links.', whyUx: 'Prevents browser warnings that scare users away.', whySeo: 'Google marks HTTP sites as Not Secure and downgrades them.' },
           indexability: { what: 'Indexability ensures the page can appear in search results.', how: 'Remove noindex tags unless intentional. Add a canonical link to the preferred URL.', whyUx: 'No direct user impact.', whySeo: 'Without indexability the page is invisible in search.' }
-        };
+        }; 
 
         const info = moduleInfo[mod.id];
         const moduleBlock = document.createElement('div');
