@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       
 
-       // === MODULE EXPAND: ✅/❌ CHECKLIST + RECOMMENDED FIXES (ONLY TITLES & HOW TO FIX) + MODULE-LEVEL WHAT/HOW/WHY ===
+      // === MODULE EXPAND: CLEAN CHECKLIST + DETAILED RECOMMENDED FIXES (2–3 SENTENCES) + MODULE EDUCATION ===
       modules.forEach(mod => {
         const card = document.getElementById(`${mod.id}-score`);
         if (!card) return;
@@ -203,50 +203,50 @@ document.addEventListener('DOMContentLoaded', () => {
         const analysisUrl = mod.id === 'security' ? originalInput : url;
         const { issues: modIssues } = mod.fn(html, doc, analysisUrl);
 
-        // Checklist definitions (same as before for accurate passed/failed)
+        // Checklist definitions (accurate passed/failed)
         let checks = [];
         if (mod.id === 'seo') {
           checks = [
-            { text: 'Title optimized (30–65 chars, keyword)', passed: !modIssues.some(i => i.issue.toLowerCase().includes('title')) },
+            { text: 'Title optimized (30–65 chars, keyword early)', passed: !modIssues.some(i => i.issue.toLowerCase().includes('title')) },
             { text: 'Meta description present & optimal', passed: !modIssues.some(i => i.issue.toLowerCase().includes('meta description')) },
-            { text: 'Main heading with keyword', passed: !modIssues.some(i => i.issue.toLowerCase().includes('main heading') || i.issue.toLowerCase().includes('keyword')) },
+            { text: 'Main heading includes keyword', passed: !modIssues.some(i => i.issue.toLowerCase().includes('main heading') || i.issue.toLowerCase().includes('keyword')) },
             { text: 'Structured data (schema) detected', passed: !modIssues.some(i => i.issue.toLowerCase().includes('schema') || i.issue.toLowerCase().includes('structured data')) },
             { text: 'Canonical tag present', passed: !modIssues.some(i => i.issue.toLowerCase().includes('canonical')) },
-            { text: 'All images have alt text', passed: !modIssues.some(i => i.issue.toLowerCase().includes('alt text')) }
+            { text: 'All images have meaningful alt text', passed: !modIssues.some(i => i.issue.toLowerCase().includes('alt text')) }
           ];
         } else if (mod.id === 'mobile') {
           checks = [
             { text: 'Viewport meta tag correct', passed: !modIssues.some(i => i.issue.includes('Viewport')) },
             { text: 'Web app manifest linked', passed: !modIssues.some(i => i.issue.includes('manifest')) },
-            { text: 'Homescreen icons provided', passed: !modIssues.some(i => i.issue.includes('homescreen') || i.issue.includes('icon')) },
+            { text: 'Homescreen icons (192px+) provided', passed: !modIssues.some(i => i.issue.includes('homescreen') || i.issue.includes('icon')) },
             { text: 'Service worker detected', passed: !modIssues.some(i => i.issue.includes('service worker')) }
           ];
         } else if (mod.id === 'perf') {
           checks = [
-            { text: 'Page weight under control', passed: !modIssues.some(i => i.issue.includes('Page weight')) },
-            { text: 'Reasonable HTTP requests', passed: !modIssues.some(i => i.issue.includes('HTTP requests')) },
-            { text: 'No excessive render-blocking', passed: !modIssues.some(i => i.issue.includes('render-blocking')) },
-            { text: 'Optimized web fonts', passed: !modIssues.some(i => i.issue.includes('web font') || i.issue.includes('font')) }
+            { text: 'Page weight reasonable (<300KB HTML)', passed: !modIssues.some(i => i.issue.includes('Page weight')) },
+            { text: 'Low number of HTTP requests', passed: !modIssues.some(i => i.issue.includes('HTTP requests')) },
+            { text: 'No excessive render-blocking resources', passed: !modIssues.some(i => i.issue.includes('render-blocking')) },
+            { text: 'Web fonts optimized', passed: !modIssues.some(i => i.issue.includes('web font') || i.issue.includes('font')) }
           ];
         } else if (mod.id === 'access') {
           checks = [
             { text: 'All images have alt text', passed: !modIssues.some(i => i.issue.includes('alt text')) },
             { text: 'Lang attribute on <html>', passed: !modIssues.some(i => i.issue.includes('lang attribute')) },
             { text: 'Main landmark present', passed: !modIssues.some(i => i.issue.includes('main landmark')) },
-            { text: 'Proper heading order', passed: !modIssues.some(i => i.issue.includes('Heading order')) },
-            { text: 'Form fields labeled', passed: !modIssues.some(i => i.issue.includes('form fields') || i.issue.includes('labels')) }
+            { text: 'Proper heading hierarchy', passed: !modIssues.some(i => i.issue.includes('Heading order')) },
+            { text: 'Form fields properly labeled', passed: !modIssues.some(i => i.issue.includes('form fields') || i.issue.includes('labels')) }
           ];
         } else if (mod.id === 'content') {
           checks = [
-            { text: 'Sufficient content depth', passed: !modIssues.some(i => i.issue.includes('Thin content')) },
-            { text: 'Good readability score', passed: !modIssues.some(i => i.issue.includes('Readability')) },
+            { text: 'Sufficient unique content depth', passed: !modIssues.some(i => i.issue.includes('Thin content')) },
+            { text: 'Good readability (short sentences)', passed: !modIssues.some(i => i.issue.includes('Readability')) },
             { text: 'Strong heading structure', passed: !modIssues.some(i => i.issue.includes('heading structure')) },
-            { text: 'Uses lists for scannability', passed: !modIssues.some(i => i.issue.includes('lists')) }
+            { text: 'Uses lists for better scannability', passed: !modIssues.some(i => i.issue.includes('lists')) }
           ];
         } else if (mod.id === 'ux') {
           checks = [
-            { text: 'Clear calls-to-action', passed: !modIssues.some(i => i.issue.includes('calls-to-action')) },
-            { text: 'Breadcrumb navigation (if needed)', passed: !modIssues.some(i => i.issue.includes('breadcrumb')) }
+            { text: 'Clear primary calls-to-action', passed: !modIssues.some(i => i.issue.includes('calls-to-action')) },
+            { text: 'Breadcrumb navigation (on deep pages)', passed: !modIssues.some(i => i.issue.includes('breadcrumb')) }
           ];
         } else if (mod.id === 'security') {
           checks = [
@@ -260,62 +260,64 @@ document.addEventListener('DOMContentLoaded', () => {
           ];
         }
 
-        // Create/reuse container
-        let fixesContainer = expandBtn.nextElementSibling;
-        if (!fixesContainer || !fixesContainer.classList.contains('module-fixes-container')) {
-          fixesContainer = document.createElement('div');
-          fixesContainer.className = 'module-fixes-container hidden mt-6 space-y-6';
-          expandBtn.after(fixesContainer);
+        // Create container
+        let container = expandBtn.nextElementSibling;
+        if (!container || !container.classList.contains('module-details')) {
+          container = document.createElement('div');
+          container.className = 'module-details hidden mt-6 space-y-6';
+          expandBtn.after(container);
         }
-        fixesContainer.innerHTML = '';
+        container.innerHTML = '';
 
-        // 1. ✅/❌ Checklist (passed/failed tests)
-        const checklistDiv = document.createElement('div');
-        checklistDiv.className = 'space-y-2 text-left mx-auto max-w-md text-gray-800 dark:text-gray-200';
-        checklistDiv.innerHTML = checks.map(check => `
-          <p class="${check.passed ? 'text-green-400' : 'text-red-400'} font-medium">
-            ${check.passed ? '✅' : '❌'} ${check.text}
+        // 1. Passed/Failed Checklist
+        const checklist = document.createElement('div');
+        checklist.className = 'space-y-2 text-left max-w-md mx-auto text-gray-800 dark:text-gray-200';
+        checklist.innerHTML = checks.map(c => `
+          <p class="${c.passed ? 'text-green-400' : 'text-red-400'} font-medium">
+            ${c.passed ? '✅' : '❌'} ${c.text}
           </p>
         `).join('');
-        fixesContainer.appendChild(checklistDiv);
+        container.appendChild(checklist);
 
-        // 2. Recommended fixes for failed tests ONLY (title + How to fix)
+        // 2. Detailed Recommended Fixes (only failed) – now 2–3 full educational sentences
         if (modIssues.length > 0) {
-          const fixesDiv = document.createElement('div');
-          fixesDiv.className = 'mt-6 space-y-6';
+          const fixesSection = document.createElement('div');
+          fixesSection.className = 'mt-8 space-y-6';
           modIssues.forEach(iss => {
-            const item = document.createElement('div');
-            item.className = 'p-5 bg-white/10 dark:bg-black/20 backdrop-blur rounded-2xl border border-white/20 dark:border-gray-700';
-            item.innerHTML = `
-              <strong class="text-xl block mb-3 text-orange-300 dark:text-orange-400">${iss.issue}</strong>
-              <p class="text-gray-800 dark:text-gray-200"><span class="font-bold text-blue-400">How to fix:</span><br>${iss.fix}</p>
+            const fixBlock = document.createElement('div');
+            fixBlock.className = 'p-6 bg-white/10 dark:bg-gray-900/30 backdrop-blur rounded-2xl border border-white/20 dark:border-gray-700';
+            fixBlock.innerHTML = `
+              <strong class="text-xl block mb-4 text-orange-300 dark:text-orange-400">${iss.issue}</strong>
+              <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                <span class="font-bold text-blue-400">How to fix:</span><br>
+                ${iss.fix}
+              </p>
             `;
-            fixesDiv.appendChild(item);
+            fixesSection.appendChild(fixBlock);
           });
-          fixesContainer.appendChild(fixesDiv);
+          container.appendChild(fixesSection);
         } else {
-          const allGood = document.createElement('div');
-          allGood.className = 'mt-6 text-center p-5 bg-green-900/30 dark:bg-green-900/50 rounded-2xl border border-green-500/50';
-          allGood.innerHTML = '<p class="text-green-400 text-lg font-semibold">✅ All tests passed – this module is optimized!</p>';
-          fixesContainer.appendChild(allGood);
+          const success = document.createElement('div');
+          success.className = 'mt-6 p-5 text-center bg-green-900/30 dark:bg-green-900/50 rounded-2xl border border-green-500/50';
+          success.innerHTML = '<p class="text-green-400 text-lg font-semibold">✅ This module is fully optimized!</p>';
+          container.appendChild(success);
         }
 
-        // 3. Module-level What is it? / How to improve overall? / Why it matters? (single block at bottom)
-        const moduleEdu = {
-          seo: { what: 'On-Page SEO evaluates critical elements like title tags, meta descriptions, headings, structured data, and keyword placement that search engines read directly.', how: 'Optimize titles (50–60 chars with keyword early), add compelling meta descriptions (120–158 chars), include schema markup, and ensure headings reflect your main topic.', whyUx: 'Clear, accurate titles and descriptions help users quickly understand if your page matches their search.', whySeo: 'These are the strongest direct ranking factors Google uses to understand and rank your content.' },
-          mobile: { what: 'Mobile & PWA checks if your site is fully mobile-friendly and ready to be installed as a progressive web app.', how: 'Add proper viewport meta, link a manifest.json, provide icons, and register a service worker.', whyUx: 'Ensures seamless experience on phones and allows users to add your site to their home screen.', whySeo: 'Google uses mobile-first indexing – poor mobile setup hurts rankings across all devices.' },
-          perf: { what: 'Performance measures page load speed factors like HTML weight, number of requests, fonts, and render-blocking resources.', how: 'Minify code, compress images, lazy-load assets, limit fonts, and defer non-critical scripts/CSS.', whyUx: 'Faster pages keep users engaged and reduce bounce rates.', whySeo: 'Core Web Vitals (LCP, FID, CLS) are direct ranking factors.' },
-          access: { what: 'Accessibility verifies if your site is usable by everyone, including people with disabilities (screen readers, keyboard navigation).', how: 'Add meaningful alt text, proper landmarks, sequential headings, labeled forms, and lang attribute.', whyUx: 'Makes content available to all users, regardless of ability.', whySeo: 'Google rewards accessible sites as higher quality.' },
-          content: { what: 'Content Quality assesses depth, readability, structure, and scannability of your text.', how: 'Aim for comprehensive coverage with short sentences, subheadings every 300–400 words, and bullet lists.', whyUx: 'Users can quickly find and understand the information they need.', whySeo: 'In-depth, well-structured content satisfies user intent better and ranks higher.' },
-          ux: { what: 'UX Design reviews overall user flow, clarity of actions, and navigation aids.', how: 'Prioritize key CTAs, reduce link overload, and add breadcrumbs on deep pages.', whyUx: 'Reduces confusion and helps users achieve their goals faster.', whySeo: 'Better engagement metrics signal quality to Google.' },
-          security: { what: 'Security confirms your site uses HTTPS and has no insecure mixed content.', how: 'Install a valid SSL certificate and update all resources to HTTPS.', whyUx: 'Prevents browser warnings that scare users away.', whySeo: 'Google downgrades HTTP sites and marks them "Not Secure".' },
-          indexability: { what: 'Indexability ensures search engines are allowed to crawl and index your page.', how: 'Remove any noindex tags (unless intentional) and add a canonical URL.', whyUx: 'No direct user impact.', whySeo: 'Without indexability, your page won\'t appear in search results at all.' }
-        };
+        // 3. Module-level education (What/How/Why – single block)
+        const edu = {
+          seo: { what: 'On-Page SEO evaluates the core elements search engines read directly to understand your page topic and relevance.', how: 'Write a unique title (50–60 characters) with your main keyword near the start. Add a compelling meta description (120–158 characters) that encourages clicks. Use headings properly and include structured data where relevant.', whyUx: 'Users see your title and description in search results — clear, accurate ones increase clicks.', whySeo: 'These are the strongest direct ranking signals Google uses.' },
+          mobile: { what: 'Mobile & PWA checks if your site works perfectly on phones and can be installed like an app.', how: 'Add the viewport meta tag, create and link a manifest.json file, provide multiple icon sizes, and register a service worker for offline capabilities.', whyUx: 'Gives users a seamless mobile experience and the ability to add your site to their home screen.', whySeo: 'Google uses mobile-first indexing — poor mobile setup lowers rankings on all devices.' },
+          perf: { what: 'Performance measures how fast your page loads by looking at size, requests, and blocking resources.', how: 'Compress and minify HTML/CSS/JS, optimize images with WebP and lazy-loading, limit custom fonts, and defer non-critical scripts.', whyUx: 'Faster pages reduce bounces and keep visitors engaged longer.', whySeo: 'Core Web Vitals are official ranking factors.' },
+          access: { what: 'Accessibility ensures your site can be used by everyone, including people with disabilities.', how: 'Add descriptive alt text to images, use proper heading order, include landmarks like <main>, label all form fields, and declare the page language.', whyUx: 'Makes your content available to all users regardless of ability or device.', whySeo: 'Google rewards accessible sites as higher quality.' },
+          content: { what: 'Content Quality checks depth, readability, structure, and how easy it is to scan.', how: 'Write comprehensive content with short sentences and paragraphs. Use H2/H3 headings every few hundred words and incorporate bullet lists for key points.', whyUx: 'Helps users quickly find and understand the information they came for.', whySeo: 'Well-structured, in-depth content better satisfies search intent and ranks higher.' },
+          ux: { what: 'UX Design reviews clarity of user actions and navigation flow.', how: 'Highlight 1–3 primary calls-to-action, reduce excessive internal links, and add breadcrumb navigation on deeper pages.', whyUx: 'Reduces confusion and helps users complete their goals faster.', whySeo: 'Better engagement sends positive signals to Google.' },
+          security: { what: 'Security confirms your site is served securely without mixed content.', how: 'Install a valid SSL certificate (free via Let’s Encrypt) and update all resources to use HTTPS instead of HTTP.', whyUx: 'Prevents "Not Secure" warnings that scare visitors away.', whySeo: 'Google downgrades and warns against HTTP sites.' },
+          indexability: { what: 'Indexability ensures search engines are allowed to include your page in results.', how: 'Remove any noindex meta tags unless intentional and add a proper canonical link to avoid duplicate issues.', whyUx: 'No direct effect on visitors.', whySeo: 'Without indexability your page will never appear in search results.' }
+        }[mod.id];
 
-        const edu = moduleEdu[mod.id];
-        const eduDiv = document.createElement('div');
-        eduDiv.className = 'mt-8 p-6 bg-gradient-to-br from-purple-900/40 to-indigo-900/40 dark:from-purple-900/60 dark:to-indigo-900/60 rounded-2xl border border-purple-400/30 dark:border-purple-600/40';
-        eduDiv.innerHTML = `
+        const eduBlock = document.createElement('div');
+        eduBlock.className = 'mt-8 p-6 bg-gradient-to-br from-purple-900/40 to-indigo-900/40 dark:from-purple-900/60 dark:to-indigo-900/60 rounded-2xl border border-purple-400/30 dark:border-purple-600/40';
+        eduBlock.innerHTML = `
           <h4 class="text-lg font-bold mb-4 text-purple-300">About this module</h4>
           <p class="mb-4 text-gray-800 dark:text-gray-200"><span class="font-bold text-cyan-400">What is it?</span><br>${edu.what}</p>
           <p class="mb-4 text-gray-800 dark:text-gray-200"><span class="font-bold text-blue-400">How to improve overall:</span><br>${edu.how}</p>
@@ -324,12 +326,12 @@ document.addEventListener('DOMContentLoaded', () => {
             <strong>SEO:</strong> ${edu.whySeo}
           </p>
         `;
-        fixesContainer.appendChild(eduDiv);
+        container.appendChild(eduBlock);
 
         // Toggle
         expandBtn.onclick = () => {
-          fixesContainer.classList.toggle('hidden');
-          expandBtn.textContent = fixesContainer.classList.contains('hidden') ? 'Show Details' : 'Hide Details';
+          container.classList.toggle('hidden');
+          expandBtn.textContent = container.classList.contains('hidden') ? 'Show Details' : 'Hide Details';
         };
       });
       
