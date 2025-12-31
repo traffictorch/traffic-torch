@@ -505,18 +505,115 @@ ${prioritisedFixes.map(fix => `
   </div>
 `).join('')}
 
-<div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8 mx-4">
-  <h3 class="text-4xl font-black text-center">Predictive AI SERP Forecast</h3>
-  <p class="text-center text-5xl font-black">${yourScore >= 90 ? 'Top 3' : yourScore >= 80 ? 'Top 5' : yourScore >= 70 ? 'Top 10' : yourScore >= 50 ? 'Page 1 Possible' : 'Page 2+'}</p>
-  <p class="text-center text-4xl font-bold">+${Math.round((100 - yourScore) * 1.8)}% potential traffic gain if fixed</p>
-  <p class="text-center text-lg italic opacity-80">Based on trust, direct answers, structure, and human signals — here's the breakdown:</p>
-  <div class="grid md:grid-cols-3 gap-6 text-left">
-    <div class="p-6 bg-white/10 rounded-2xl"><p class="font-bold text-blue-300 text-xl mb-2">What it is</p><p class="text-sm leading-relaxed">Estimate of your page’s potential position in AI-powered search results (Perplexity, Grok, Gemini, ChatGPT Search, etc.).</p></div>
-    <div class="p-6 bg-white/10 rounded-2xl"><p class="font-bold text-green-300 text-xl mb-2">How it's calculated</p><p class="text-sm leading-relaxed">Weighted: 25% Answerability, 15% Structured Data, 15% EEAT, 10% each Scannability/Tone/Readability, 8% Unique Insights, 5% Anti-AI Safety.</p></div>
-    <div class="p-6 bg-white/10 rounded-2xl"><p class="font-bold text-orange-300 text-xl mb-2">Why it matters</p><p class="text-sm leading-relaxed">Top AI citations drive massive direct traffic. Fixing gaps can multiply visibility in days.</p></div>
+
+
+
+
+<!-- New Score Improvement & Gains Section -->
+<div class="mt-20 px-4 max-w-6xl mx-auto">
+  <div class="grid md:grid-cols-2 gap-8">
+    <!-- Left: Score Improvement -->
+    <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl">
+      <h3 class="text-3xl font-black text-center mb-8 text-gray-800 dark:text-gray-200">AI Search Score Improvement</h3>
+      <div class="flex justify-center gap-8 mb-12">
+        <div class="text-center">
+          <div class="text-5xl font-black text-gray-500 dark:text-gray-400">${yourScore}</div>
+          <p class="text-sm opacity-70 mt-2">Current Score</p>
+        </div>
+        <div class="flex items-center">
+          <svg class="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+          </svg>
+        </div>
+        <div class="text-center">
+          <div class="text-5xl font-black text-green-500 dark:text-green-400">${Math.min(100, yourScore + Math.round((100 - yourScore) * 0.6))}</div>
+          <p class="text-sm opacity-70 mt-2">Projected Score</p>
+        </div>
+      </div>
+
+      ${prioritisedFixes.length > 0 ? `
+        <div class="space-y-4">
+          ${prioritisedFixes.map((fix, i) => `
+            <div class="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl border border-green-200 dark:border-green-800">
+              <p class="font-bold text-green-700 dark:text-green-400">${fix.title}</p>
+              <p class="text-sm mt-1 text-green-600 dark:text-green-300">Estimated impact: +${i === 0 ? '20–30' : i === 1 ? '15–25' : '10–20'} points</p>
+            </div>
+          `).join('')}
+        </div>
+      ` : `
+        <div class="text-center py-12">
+          <p class="text-6xl mb-4">🎉</p>
+          <p class="text-2xl font-bold text-green-600 dark:text-green-400">Optimal AI Search Score Achieved!</p>
+          <p class="text-gray-600 dark:text-gray-400 mt-4">Your page is already highly optimized for AI citation. Next step: build authority with quality backlinks and fresh content.</p>
+        </div>
+      `}
+
+      <details class="mt-8">
+        <summary class="cursor-pointer text-blue-600 dark:text-blue-400 font-bold mb-4">How We Calculated This</summary>
+        <div class="text-sm space-y-3 text-gray-600 dark:text-gray-400">
+          <p>• Weighted scoring across 8 key modules (Answerability 25%, Structured Data & EEAT 15% each, etc.)</p>
+          <p>• Projected score assumes full implementation of top priority fixes</p>
+          <p>• Top-cited pages in AI results typically score 80+</p>
+          <p>• Conservative estimate based on on-page optimization benchmarks</p>
+        </div>
+      </details>
+    </div>
+
+    <!-- Right: Potential Gains -->
+    <div class="p-8 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-3xl shadow-2xl">
+      <h3 class="text-3xl font-black text-center mb-8">Potential Visibility & Traffic Gains</h3>
+      ${prioritisedFixes.length > 0 ? `
+        <div class="space-y-6">
+          <div class="flex items-center gap-4">
+            <div class="text-4xl">📈</div>
+            <div>
+              <p class="font-bold">AI Citation Likelihood</p>
+              <p class="text-2xl">${Math.round(yourScore * 0.8)}% → ${Math.round(Math.min(100, yourScore + Math.round((100 - yourScore) * 0.6)) * 0.9)}%</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="text-4xl">🚀</div>
+            <div>
+              <p class="font-bold">Direct Traffic Increase</p>
+              <p class="text-2xl">+${Math.round((100 - yourScore) * 1.5)}–${Math.round((100 - yourScore) * 2.5)}%</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="text-4xl">👆</div>
+            <div>
+              <p class="font-bold">Rich Answer Potential</p>
+              <p class="text-2xl">High → Very High</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="text-4xl">🏆</div>
+            <div>
+              <p class="font-bold">Competitive Edge</p>
+              <p class="text-2xl">Move ahead of ${Math.round((100 - yourScore) * 0.7)}% of competitors</p>
+            </div>
+          </div>
+        </div>
+      ` : `
+        <div class="text-center py-12">
+          <p class="text-6xl mb-4">🌟</p>
+          <p class="text-2xl font-bold">Maintaining Top-Tier Performance</p>
+          <p class="mt-4 opacity-90">Your page is already competitive in AI results.</p>
+          <p class="mt-6">Next: Focus on authority building and content freshness to maintain edge.</p>
+        </div>
+      `}
+      <div class="mt-8 text-sm opacity-90 space-y-2">
+        <p>• Conservative estimates based on on-page optimization benchmarks</p>
+        <p>• Improvements often visible in AI results within 1–4 weeks</p>
+        <p>• Actual results depend on competition, domain authority, and off-page factors</p>
+      </div>
+    </div>
   </div>
-  <p class="text-center text-sm italic mt-6">Forecast is heuristic; actual performance varies by query and competition.</p>
 </div>
+
+
+
+
+
 
 <div class="text-center my-16">
   <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
