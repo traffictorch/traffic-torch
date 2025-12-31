@@ -209,7 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       results.classList.remove('hidden');
       results.innerHTML = `
- 
 <!-- Big Score Circles -->
 <div class="grid md:grid-cols-2 gap-8 lg:gap-12 my-12 px-4">
   <div class="text-center">
@@ -288,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="mt-4 text-lg font-medium">Comp</p>
         </div>
       </div>
-      <button onclick="const details = this.closest('div').querySelector('.educ-details'); details.classList.toggle('hidden'); this.textContent = details.classList.contains('hidden') ? 'Show Details' : 'Hide Details';"
+      <button onclick="const details=this.closest('div').querySelector('.educ-details');details.classList.toggle('hidden');this.textContent=details.classList.contains('hidden')?'Show Details':'Hide Details';"
               class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow">
         Show Details
       </button>
@@ -301,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
   `).join('')}
 </div>
 
-<!-- New Top Priority Fixes -->
+<!-- Top Priority Fixes -->
 <div class="my-20 max-w-5xl mx-auto">
   <h3 class="text-4xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
     Top Priority Fixes
@@ -317,15 +316,14 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   `).join('') : `
     <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-3xl shadow-2xl p-16 text-center">
-      <p class="text-4xl font-black mb-6">🎉 Excellent Optimization!</p>
+      <p class="text-4xl font-black mb-6">Excellent Optimization!</p>
       <p class="text-2xl">Your page shows strong relevance for "${phrase}" — no major gaps vs competitor.</p>
     </div>
   `}
 </div>
 
-<!-- New Relevance Improvement & Potential Ranking Gains -->
+<!-- Relevance Improvement & Potential Ranking Gains -->
 <div class="grid md:grid-cols-2 gap-12 my-20 max-w-6xl mx-auto">
-  <!-- Left: Relevance Improvement -->
   <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 border-l-8 border-orange-500">
     <h3 class="text-3xl font-black mb-8 text-center">Relevance Improvement</h3>
     <div class="flex justify-center items-center gap-12 mb-10">
@@ -345,7 +343,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </details>
   </div>
 
-  <!-- Right: Potential Ranking Gains -->
   <div class="bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-3xl shadow-2xl p-10">
     <h3 class="text-3xl font-black mb-8 text-center">Potential Ranking Gains</h3>
     <div class="space-y-10">
@@ -384,15 +381,15 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-<!-- PDF Button -->
+<!-- PDF Button - FIXED onclick with single quotes -->
 <div class="text-center my-20">
-  <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
+  <button onclick='document.querySelectorAll(".hidden").forEach(el => el.classList.remove("hidden")); window.print();'
           class="group relative inline-flex items-center px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
-    <span class="flex items-center gap-6">📄 Save Report as PDF</span>
+    <span class="flex items-center gap-6">Save Report as PDF</span>
     <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
   </button>
 </div>
-    `;
+      `;
     };
   });
-}); `
+});
