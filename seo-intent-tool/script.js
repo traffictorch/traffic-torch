@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -12,21 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const path = trimmed.slice(host.length);
     return 'https://' + host + path;
   }
-
-  // Toggle helpers to avoid inline JS syntax errors in template literals
-function toggleFixesPanel(button) {
-  const card = button.closest('.score-card');
-  const fixesPanel = card.querySelector('.fixes-panel');
-  const fullDetails = card.querySelector('.full-details');
-  fixesPanel.classList.toggle('hidden');
-  if (fixesPanel.classList.contains('hidden')) {
-    fullDetails.classList.add('hidden');
-  }
-}
-
-function toggleMoreDetails(button) {
-  button.closest('.fixes-panel').nextElementSibling.classList.toggle('hidden');
-}
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -140,7 +126,6 @@ function toggleMoreDetails(button) {
         } catch {}
       });
       const hasAwards = !!cleanedText.match(/\b(award|winner|featured in|recognized by|endorsed by|best \d{4})\b/gi);
-
       const aboutLinkElements = doc.querySelectorAll('a[href*="/about" i], a[href*="/team" i]');
       const hasAboutLinks = aboutLinkElements.length > 0 ||
         Array.from(doc.querySelectorAll('nav a')).some(a => a.textContent.toLowerCase().includes('about'));
@@ -159,19 +144,16 @@ function toggleMoreDetails(button) {
 
       // === TRUSTWORTHINESS ===
       const isHttps = url.startsWith('https');
-
       const contactLinkElements = doc.querySelectorAll('a[href*="/contact" i], a[href*="mailto:" i], a[href*="tel:" i]');
       const footerContactText = Array.from(doc.querySelectorAll('footer a, footer span, footer div')).some(el =>
         el.textContent.toLowerCase().includes('contact')
       );
       const hasContact = contactLinkElements.length > 0 || footerContactText;
-
       const policyLinkElements = doc.querySelectorAll('a[href*="/privacy" i], a[href*="/terms" i]');
       const footerPolicyText = Array.from(doc.querySelectorAll('footer a, footer span, footer div')).some(el =>
         /privacy|terms/i.test(el.textContent)
       );
       const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
-
       const hasUpdateDate = !!doc.querySelector('time[datetime], .updated, .last-modified, meta[name="date"]');
 
       const trustworthinessMetrics = {
@@ -211,7 +193,6 @@ function toggleMoreDetails(button) {
       const hasDepthGap = words < 1500;
       const hasSchemaGap = schemaTypes.length < 2;
       const hasAuthorGap = !hasAuthorByline;
-
       if (totalFailed > 0 || hasDepthGap || hasSchemaGap || hasAuthorGap) {
         projectedScore = Math.min(100, currentScore +
           (totalFailed * 5) +
@@ -222,7 +203,6 @@ function toggleMoreDetails(button) {
       }
       const scoreDelta = Math.round(projectedScore - currentScore);
       const isOptimal = scoreDelta <= 5;
-
       const priorityFixes = [];
       if (!hasAuthorByline) priorityFixes.push({text: "Add visible author byline & bio", impact: "+15–25 points"});
       if (words < 1500) priorityFixes.push({text: "Expand content depth (>1,500 words)", impact: "+12–20 points"});
@@ -232,7 +212,6 @@ function toggleMoreDetails(button) {
         else if (failedExpertise.length > 0) priorityFixes.push({text: "Add credentials & citations", impact: "+10–18 points"});
       }
       const topFixes = priorityFixes.slice(0, 3);
-
       const trafficUplift = isOptimal ? 0 : Math.round(scoreDelta * 1.8);
       const ctrBoost = isOptimal ? 0 : Math.min(30, Math.round(scoreDelta * 0.8));
       const rankingLift = isOptimal ? "Already strong" : currentScore < 60 ? "Page 2+ → Page 1 potential" : "Top 20 → Top 10 possible";
@@ -266,7 +245,6 @@ function toggleMoreDetails(button) {
     </div>
   </div>
 </div>
-
 <!-- Intent -->
 <div class="text-center mb-12">
   <p class="text-4xl font-bold text-gray-500 mb-8">
@@ -288,7 +266,6 @@ function toggleMoreDetails(button) {
     </div>
   </div>
 </div>
-
 <!-- E-E-A-T Breakdown with ✅/❌ signals -->
 <div class="grid md:grid-cols-4 gap-6 my-16">
   ${[
@@ -302,7 +279,6 @@ function toggleMoreDetails(button) {
     const fixesList = failed.length ?
       `<p class="font-medium mb-2 text-orange-600">How to fix the failed signals:</p><ul class="list-disc pl-5 space-y-2">${failed.map(f => `<li>${f}</li>`).join('')}</ul>` :
       '<p class="text-green-600 font-medium">All signals strong — no fixes needed!</p>';
-
     return `
     <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${border}">
       <div class="relative mx-auto w-32 h-32">
@@ -319,7 +295,6 @@ function toggleMoreDetails(button) {
         </div>
       </div>
       <p class="mt-4 text-lg font-medium">${key}</p>
-
       <!-- ✅/❌ Signal List -->
       <div class="mt-3 space-y-1 text-sm text-left max-w-xs mx-auto">
         ${key === 'Experience' ? `
@@ -343,20 +318,15 @@ function toggleMoreDetails(button) {
           ${metrics.updateDate >= 80 ? '<p>✅ Update date shown</p>' : '<p>❌ No update date</p>'}
         `}
       </div>
-
-      <button onclick="toggleFixesPanel(this)"
-              class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+      <button class="fixes-toggle mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
         ${failed.length ? 'Show Fixes (' + failed.length + ')' : 'All Clear'}
       </button>
-
       <div class="fixes-panel hidden mt-4 text-left text-sm bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
         ${fixesList}
-        <button onclick="toggleMoreDetails(this)"
-                class="mt-4 text-xs text-orange-500 hover:underline block">
+        <button class="more-details-toggle mt-4 text-xs text-orange-500 hover:underline block">
           More details →
         </button>
       </div>
-
       <div class="full-details hidden mt-6 space-y-3 text-left text-sm">
         <p class="text-blue-500 font-bold">What it is?</p>
         <p>${key === 'Experience' ? 'Proof that the content creator has first-hand involvement in the topic, such as personal anecdotes, real-world applications, or direct participation, making the advice more relatable and credible.'
@@ -377,7 +347,6 @@ function toggleMoreDetails(button) {
     </div>`;
   }).join('')}
 </div>
-
 <!-- Content Depth + Readability + Schema Detected -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
@@ -427,7 +396,6 @@ function toggleMoreDetails(button) {
     </div>
   </div>
 </div>
-
 <!-- Competitive Gap Table -->
 <div class="overflow-x-auto my-12">
   <table class="w-full border-collapse border border-gray-300 dark:border-gray-600 text-left">
@@ -447,7 +415,6 @@ function toggleMoreDetails(button) {
     </tbody>
   </table>
 </div>
-
 <!-- Prioritised AI-Style Fixes -->
 <div class="space-y-8">
   <h3 class="text-4xl font-bold text-green-400 text-center mb-8">Prioritised AI-Style Fixes</h3>
@@ -503,7 +470,6 @@ function toggleMoreDetails(button) {
     </div>
   </div>` : ''}
 </div>
-
 <!-- Score Improvement & Potential Ranking Gains -->
 <div class="max-w-5xl mx-auto mt-20 grid md:grid-cols-2 gap-8">
   <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
@@ -514,7 +480,6 @@ function toggleMoreDetails(button) {
       <div class="text-6xl font-black text-green-500">${Math.round(projectedScore)}</div>
       <div class="text-2xl text-green-600 font-medium">(${scoreDelta > 0 ? '+' + scoreDelta : 'Optimal'})</div>
     </div>
-
     ${isOptimal ? `
       <div class="text-center py-8">
         <p class="text-4xl mb-4">🎉 Near-Optimal Score Achieved!</p>
@@ -531,7 +496,6 @@ function toggleMoreDetails(button) {
         `).join('')}
       </div>
     `}
-
     <details class="mt-8 text-sm text-gray-600 dark:text-gray-400">
       <summary class="cursor-pointer font-medium text-orange-500 hover:underline">How We Calculated This</summary>
       <div class="mt-4 space-y-2">
@@ -543,10 +507,8 @@ function toggleMoreDetails(button) {
       </div>
     </details>
   </div>
-
   <div class="p-8 bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
     <h3 class="text-3xl font-bold text-center mb-8">Potential Ranking & Traffic Gains</h3>
-
     ${isOptimal ? `
       <div class="text-center py-12">
         <p class="text-4xl mb-4">🌟 Elite On-Page Performance</p>
@@ -584,7 +546,6 @@ function toggleMoreDetails(button) {
         </div>
       </div>
     `}
-
     <div class="mt-10 text-sm space-y-2 opacity-90">
       <p>Conservative estimates based on on-page SEO & intent alignment benchmarks.</p>
       <p>Improvements typically visible in Search Console within 1–4 weeks after indexing.</p>
@@ -592,7 +553,6 @@ function toggleMoreDetails(button) {
     </div>
   </div>
 </div>
-
 <!-- PDF Button -->
 <div class="text-center my-16">
   <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
@@ -601,6 +561,22 @@ function toggleMoreDetails(button) {
   </button>
 </div>
       `;
+
+      // Event delegation for fixes toggles (fixes the ReferenceError)
+      results.addEventListener('click', (e) => {
+        if (e.target.matches('.fixes-toggle')) {
+          const card = e.target.closest('.score-card');
+          const fixesPanel = card.querySelector('.fixes-panel');
+          const fullDetails = card.querySelector('.full-details');
+          fixesPanel.classList.toggle('hidden');
+          if (fixesPanel.classList.contains('hidden')) {
+            fullDetails.classList.add('hidden');
+          }
+        }
+        if (e.target.matches('.more-details-toggle')) {
+          e.target.closest('.score-card').querySelector('.full-details').classList.toggle('hidden');
+        }
+      });
 
     } catch (err) {
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
