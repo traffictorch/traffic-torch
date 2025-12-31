@@ -205,14 +205,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       updateScore('overall-score', overallScore);
 
-      // === DYNAMICALLY REPLACE STATIC MODULE CARDS WITH NEW DESIGN ===
+      // === DYNAMICALLY REPLACE MODULE CARDS WITH FIXED DESIGN ===
       const resultsGrid = document.getElementById('results');
       if (resultsGrid) {
         resultsGrid.innerHTML = moduleResults.map(({mod, result}) => {
-          const color = result.score >= 80 ? '#22c55e' : result.score >= 60 ? '#f97316' : '#ef4444';
+          const gradeClass = result.score >= 80 ? 'green' : result.score >= 60 ? 'orange' : 'red';
           const fixesCount = result.issues.length;
 
-          // Define ✅/❌ checks per module
+          // Define ✅/❌ checks
           let checks = [];
           if (mod.id === 'seo') {
             checks = [
@@ -270,58 +270,45 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           return `
-          <section id="${mod.id}-score" class="score-card p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border-4" style="border-color: ${color}">
-            <div class="relative mx-auto w-32 h-32">
-              <svg viewBox="0 0 128 128" class="transform -rotate-90 w-full h-full">
-                <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-                <circle cx="64" cy="64" r="56"
-                        stroke="${color}"
-                        stroke-width="12" fill="none"
-                        stroke-dasharray="${(result.score/100)*352} 352"
-                        stroke-linecap="round"
-                        class="progress"/>
+          <section id="${mod.id}-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card ${gradeClass}">
+            <div class="score-circle" data-score="${result.score}">
+              <svg viewBox="0 0 120 120">
+                <circle class="bg" cx="60" cy="60" r="54"/>
+                <circle class="progress" cx="60" cy="60" r="54"/>
+                <text x="60" y="72" class="number">${result.score}</text>
               </svg>
-              <div class="absolute inset-0 flex items-center justify-center">
-                <span class="number text-4xl font-black" style="color: ${color};">${result.score}</span>
-              </div>
+              <div class="label text-xl font-bold mt-4">${mod.name}</div>
             </div>
-            <h3 class="mt-6 text-xl font-bold text-center">${mod.name}</h3>
 
             <!-- ✅/❌ Checklist -->
             <div class="mt-4 space-y-1 text-sm text-left max-w-xs mx-auto">
               ${checks.map(check => `
-                <p class="${check.passed ? 'text-green-600' : 'text-red-600'}">
+                <p class="${check.passed ? 'text-green-400' : 'text-red-400'}">
                   ${check.passed ? '✅' : '❌'} ${check.text}
                 </p>
               `).join('')}
             </div>
 
             <button onclick="toggleFixesPanel(this)"
-                    class="mt-6 w-full px-6 py-3 bg-orange-500 text-white rounded-full hover:bg-orange-600 font-medium">
+                    class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">
               ${fixesCount ? 'Show Fixes (' + fixesCount + ')' : 'All Clear'}
             </button>
 
-            <div class="fixes-panel hidden mt-6 space-y-6">
-              ${fixesCount ? result.issues.map(iss => `
-                <div class="p-5 bg-gray-100 dark:bg-gray-800 rounded-xl">
-                  <strong class="block mb-2 text-lg">${iss.issue}</strong>
-                  <p class="mb-3"><span class="font-bold text-blue-500">How to fix:</span><br>${iss.fix}</p>
-                  <p><span class="font-bold text-orange-500">Why it matters:</span><br>UX: ${iss.uxWhy || 'Improves user experience'} | SEO: ${iss.seoWhy || 'Boosts ranking signals'}</p>
-                </div>
-              `).join('') : '<p class="text-green-600 font-medium text-center py-4">All signals strong — excellent performance!</p>'}
-
-              <button onclick="toggleMoreDetails(this)"
-                      class="mt-4 text-sm text-orange-500 hover:underline block text-center w-full">
-                More details →
-              </button>
-            </div>
-
-            <div class="full-details hidden mt-6 text-sm space-y-4 text-gray-600 dark:text-gray-400">
-              <p>No additional educational content available at this time.</p>
+            <div class="details hidden mt-6 text-left">
+              <ul id="${mod.id}-issues" class="space-y-4"></ul>
             </div>
           </section>`;
         }).join('');
       }
+
+      // Re-attach expand buttons after dynamic generation
+      document.querySelectorAll('.expand').forEach(b => {
+        b.onclick = () => {
+          b.nextElementSibling.classList.toggle('hidden');
+          b.textContent = b.nextElementSibling.classList.contains('hidden') ? 
+            (b.textContent.includes('(') ? b.textContent : 'Show Fixes') : 'Hide Fixes';
+        };
+      });
 
 
 
