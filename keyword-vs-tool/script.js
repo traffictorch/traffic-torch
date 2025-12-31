@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <!-- Small Module Cards - FIXED with breathing room for rounded arc caps -->
-<div class="grid md:grid-cols-3 gap-8 my-16">
+<div class="grid md:grid-cols-3 gap-1 my-16">
   ${[
     { name: 'Meta Title & Desc', you: data.meta.yourMatches > 0 ? 100 : 0, comp: data.meta.compMatches > 0 ? 100 : 0, border: data.meta.yourMatches > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Checks if your target phrase appears naturally in the page title and meta description.", how: "Add the keyword near the start of the title (keep under 60 chars) and include it once in the meta description (under 155 chars).", why: "Google uses title and description for rankings and click-through rates — pages with keyword in both see 20-30% higher CTR." } },
     { name: 'H1 & Headings', you: data.headings.yourH1Match > 0 ? 100 : 0, comp: data.headings.compH1Match > 0 ? 100 : 0, border: data.headings.yourH1Match > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Evaluates whether your main H1 heading contains the target phrase.", how: "Rewrite the H1 to include the exact or close-variant phrase while keeping it compelling and reader-focused.", why: "H1 is the strongest on-page signal for topic relevance and helps Google understand what the page is about." } },
