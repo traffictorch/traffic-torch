@@ -1,4 +1,4 @@
-/* Only needed for the radar chart – everything else is Tailwind */
+/* Radar chart rules */
 .radar {
   width: 200px;
   height: 200px;
@@ -7,45 +7,48 @@
 }
 .radar { width: 180px; height: 180px; margin: 1.5rem auto; display: block; }
 
-/* === ULTIMATE SMALL GAUGE CROPPING FIX - DESKTOP === */
-@media (min-width: 768px) {
-  /* Force enough height and proper vertical layout */
-  .grid.md\\:grid-cols-3 > div {
-    min-height: 620px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
-    padding-bottom: 4rem !important;
-  }
-
-  /* Perfectly center the gauge circles */
-  .grid.md\\:grid-cols-3 .relative.w-32.h-32 {
-    margin: 2rem auto 1rem !important;
-    flex-shrink: 0;
-  }
-
-  /* Push button to bottom */
-  .grid.md\\:grid-cols-3 button {
-    margin-top: auto !important;
-  }
+/* === FINAL PROPER SMALL GAUGE CROPPING FIX === */
+/* Prevent gauge containers from shrinking/compressing */
+.grid.md\\:grid-cols-3 .relative.w-32.h-32 {
+  flex-shrink: 0 !important;
+  width: 128px !important;
+  height: 128px !important;
+  margin: 2rem auto 1rem auto !important;
 }
 
-/* Absolute SVG safety - never clip circles */
+/* Give cards consistent internal spacing and growth */
+.grid.md\\:grid-cols-3 > div {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  padding: 2rem 1.5rem !important;
+}
+
+/* Push button to bottom with flex grow on middle section */
+.grid.md\\:grid-cols-3 .grid.grid-cols-2.gap-6.mb-8 {
+  flex-grow: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+/* Absolute SVG no-clip guarantee */
 svg {
   overflow: visible !important;
   display: block !important;
-  max-width: 100% !important;
 }
 
-/* Mobile: remove forced height */
+/* Mobile: relax everything */
 @media (max-width: 767px) {
+  .grid.md\\:grid-cols-3 .relative.w-32.h-32 {
+    margin: 1.5rem auto !important;
+  }
   .grid.md\\:grid-cols-3 > div {
-    min-height: auto !important;
-    padding-bottom: 2rem !important;
+    padding: 1.5rem !important;
   }
 }
 
-/* === ALL YOUR ORIGINAL RULES BELOW (preserved exactly) === */
+/* === ALL YOUR ORIGINAL RULES (unchanged) === */
 body { transition: background-color 0.3s ease; }
 .health-score polygon { fill: rgba(16, 185, 129, 0.3); }
 .health-score h2 { margin-bottom: 0.5rem; }
@@ -53,7 +56,7 @@ body { transition: background-color 0.3s ease; }
 .animate-spin { animation: spin 1s linear infinite; }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-/* Big Score Number Colors */
+/* Score colors */
 .score-low { color: #ef4444 !important; }
 .score-mid { color: #fb923c !important; }
 .score-high { color: #22c55e !important; }
@@ -77,14 +80,14 @@ h2 + p { color: #6b7280; }
 .dark .text-sm { color: #939699 !important; }
 .dark .text-sm.italic { color: #939699 !important; }
 
-/* Animate-fade-in */
+/* Fade-in animation */
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-fade-in { animation: fade-in 0.5s ease-out forwards; }
 
-/* Mobile-friendly adjustments */
+/* Mobile adjustments */
 @media (max-width: 1024px) {
   .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
     max-width: 100% !important;
@@ -123,7 +126,7 @@ h2 + p { color: #6b7280; }
   .max-w-5xl { max-width: none !important; }
 }
 
-/* Prevent horizontal bounce & table overflow */
+/* Misc */
 html, body { overscroll-behavior-x: none; }
 #results .max-w-5xl { max-width: 100% !important; padding-left: 1rem !important; padding-right: 1rem !important; }
 #results .overflow-x-auto, #results table { width: 100% !important; max-width: 100% !important; table-layout: fixed; overflow-wrap: break-word; }
