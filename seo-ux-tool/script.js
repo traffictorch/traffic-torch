@@ -77,21 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Toggle helpers - moved outside template literals to avoid syntax errors
-  function toggleFixesPanel(button) {
-    const card = button.closest('.score-card');
-    const fixesPanel = card.querySelector('.fixes-panel');
-    const fullDetails = card.querySelector('.full-details');
-    fixesPanel.classList.toggle('hidden');
-    if (fixesPanel.classList.contains('hidden')) {
-      fullDetails.classList.add('hidden');
-    }
-  }
-
-  function toggleMoreDetails(button) {
-    button.closest('.fixes-panel').nextElementSibling.classList.toggle('hidden');
-  }
-
   // Save as PDF
   if (savePdfBtn) {
     savePdfBtn.addEventListener('click', () => {
@@ -161,126 +146,116 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) throw new Error('Network response was not ok');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
-      
-      
-      
-      
-      
-      
 
-      // === DYNAMICALLY REPLACE MODULE CARDS - FIXED TO MATCH ORIGINAL STRUCTURE ===
-      const resultsGrid = document.getElementById('results');
-      if (resultsGrid) {
-        resultsGrid.innerHTML = moduleResults.map(({mod, result}) => {
-          const fixesCount = result.issues.length;
+      const resultsWrapper = document.getElementById('results-wrapper');
+      const modules = [
+        { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
+        { id: 'mobile', name: 'Mobile & PWA', fn: analyzeMobile },
+        { id: 'perf', name: 'Performance', fn: analyzePerf },
+        { id: 'access', name: 'Accessibility', fn: analyzeAccess },
+        { id: 'content', name: 'Content Quality', fn: analyzeContentQuality },
+        { id: 'ux', name: 'UX Design', fn: analyzeUXDesign },
+        { id: 'security', name: 'Security', fn: analyzeSecurity },
+        { id: 'indexability', name: 'Indexability', fn: analyzeIndexability }
+      ];
 
-          // Define ✅/❌ checks (same as before)
-          let checks = [];
-          if (mod.id === 'seo') {
-            checks = [
-              { text: 'Title optimized', passed: !result.issues.some(i => i.issue.toLowerCase().includes('title')) },
-              { text: 'Meta description', passed: !result.issues.some(i => i.issue.toLowerCase().includes('meta description')) },
-              { text: 'Main heading', passed: !result.issues.some(i => i.issue.toLowerCase().includes('main heading') || i.issue.toLowerCase().includes('heading')) },
-              { text: 'Schema detected', passed: !result.issues.some(i => i.issue.toLowerCase().includes('schema') || i.issue.toLowerCase().includes('structured data')) },
-              { text: 'Canonical tag', passed: !result.issues.some(i => i.issue.toLowerCase().includes('canonical')) },
-              { text: 'Image alt text', passed: !result.issues.some(i => i.issue.toLowerCase().includes('alt text')) }
-            ];
-          } else if (mod.id === 'mobile') {
-            checks = [
-              { text: 'Viewport set', passed: !result.issues.some(i => i.issue.includes('Viewport')) },
-              { text: 'Manifest linked', passed: !result.issues.some(i => i.issue.includes('manifest')) },
-              { text: 'Homescreen icon', passed: !result.issues.some(i => i.issue.includes('homescreen') || i.issue.includes('icon')) },
-              { text: 'Service worker', passed: !result.issues.some(i => i.issue.includes('service worker')) }
-            ];
-          } else if (mod.id === 'perf') {
-            checks = [
-              { text: 'Low page weight', passed: !result.issues.some(i => i.issue.includes('Page weight')) },
-              { text: 'Few requests', passed: !result.issues.some(i => i.issue.includes('HTTP requests')) },
-              { text: 'No render-blocking', passed: !result.issues.some(i => i.issue.includes('render-blocking')) },
-              { text: 'Optimized fonts', passed: !result.issues.some(i => i.issue.includes('web font') || i.issue.includes('font')) }
-            ];
-          } else if (mod.id === 'access') {
-            checks = [
-              { text: 'Alt text complete', passed: !result.issues.some(i => i.issue.includes('alt text')) },
-              { text: 'Lang attribute', passed: !result.issues.some(i => i.issue.includes('lang attribute')) },
-              { text: 'Main landmark', passed: !result.issues.some(i => i.issue.includes('main landmark')) },
-              { text: 'Heading order', passed: !result.issues.some(i => i.issue.includes('Heading order')) },
-              { text: 'Form labels', passed: !result.issues.some(i => i.issue.includes('form fields') || i.issue.includes('labels')) }
-            ];
-          } else if (mod.id === 'content') {
-            checks = [
-              { text: 'Sufficient depth', passed: !result.issues.some(i => i.issue.includes('Thin content')) },
-              { text: 'Good readability', passed: !result.issues.some(i => i.issue.includes('Readability')) },
-              { text: 'Heading structure', passed: !result.issues.some(i => i.issue.includes('heading structure')) },
-              { text: 'Uses lists', passed: !result.issues.some(i => i.issue.includes('lists')) }
-            ];
-          } else if (mod.id === 'ux') {
-            checks = [
-              { text: 'Clear CTAs', passed: !result.issues.some(i => i.issue.includes('calls-to-action')) },
-              { text: 'Breadcrumb nav', passed: !result.issues.some(i => i.issue.includes('breadcrumb')) }
-            ];
-          } else if (mod.id === 'security') {
-            checks = [
-              { text: 'HTTPS secure', passed: !result.issues.some(i => i.issue.includes('HTTPS')) },
-              { text: 'No mixed content', passed: !result.issues.some(i => i.issue.includes('mixed content')) }
-            ];
-          } else if (mod.id === 'indexability') {
-            checks = [
-              { text: 'No noindex', passed: !result.issues.some(i => i.issue.includes('noindex')) },
-              { text: 'Canonical present', passed: !result.issues.some(i => i.issue.includes('canonical')) }
-            ];
-          }
+      const scores = [];
+      const allIssues = [];
 
-          return `
-          <section id="${mod.id}-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
-            <div class="score-circle" data-score="${result.score}">
-              <svg viewBox="0 0 120 120">
-                <circle class="bg" cx="60" cy="60" r="54"/>
-                <circle class="progress" cx="60" cy="60" r="54"/>
-                <text x="60" y="72" class="number">0</text>
-              </svg>
-              <div class="label text-xl font-bold mt-4">${mod.name}</div>
-            </div>
-
-            <!-- ✅/❌ Checklist -->
-            <div class="mt-4 space-y-1 text-sm text-left max-w-xs mx-auto">
-              ${checks.map(check => `
-                <p class="${check.passed ? 'text-green-400' : 'text-red-400'}">
-                  ${check.passed ? '✅' : '❌'} ${check.text}
-                </p>
-              `).join('')}
-            </div>
-
-            <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">
-              ${fixesCount ? 'Show Fixes (' + fixesCount + ')' : 'All Clear'}
-            </button>
-
-            <div class="details hidden mt-6 text-left">
-              <ul id="${mod.id}-issues" class="space-y-4"></ul>
-            </div>
-          </section>`;
-        }).join('');
-
-        // Re-apply updateScore to all modules now that DOM is ready
-        moduleResults.forEach(({mod, result}) => {
-          updateScore(`${mod.id}-score`, result.score);
+      for (const mod of modules) {
+        progressText.textContent = `Analyzing ${mod.name}...`;
+        const analysisUrl = mod.id === 'security' ? originalInput : url;
+        const result = mod.fn(html, doc, analysisUrl);
+        scores.push(result.score);
+        updateScore(`${mod.id}-score`, result.score);
+        populateIssues(`${mod.id}-issues`, result.issues);
+        result.issues.forEach(iss => {
+          allIssues.push({
+            ...iss,
+            module: mod.name,
+            impact: 100 - result.score
+          });
         });
-
-        // Re-attach expand button listeners
-        document.querySelectorAll('.expand').forEach(b => {
-          b.onclick = () => {
-            const details = b.nextElementSibling;
-            details.classList.toggle('hidden');
-            b.textContent = details.classList.contains('hidden') 
-              ? (b.textContent.includes('(') ? b.textContent.split(' (')[0] + ` (${result.issues.length})` : 'Show Fixes')
-              : 'Hide Fixes';
-          };
-        });
+        await new Promise(r => setTimeout(r, 300));
       }
 
+      const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+      updateScore('overall-score', overallScore);
 
+      // Add ✅/❌ checklist to each module
+      modules.forEach(mod => {
+        const result = mod.fn(html, doc, url); // re-run for checks
+        let checks = [];
+        if (mod.id === 'seo') {
+          checks = [
+            { text: 'Title optimized', passed: !result.issues.some(i => i.issue.toLowerCase().includes('title')) },
+            { text: 'Meta description', passed: !result.issues.some(i => i.issue.toLowerCase().includes('meta description')) },
+            { text: 'Main heading', passed: !result.issues.some(i => i.issue.toLowerCase().includes('main heading') || i.issue.toLowerCase().includes('heading')) },
+            { text: 'Schema detected', passed: !result.issues.some(i => i.issue.toLowerCase().includes('schema') || i.issue.toLowerCase().includes('structured data')) },
+            { text: 'Canonical tag', passed: !result.issues.some(i => i.issue.toLowerCase().includes('canonical')) },
+            { text: 'Image alt text', passed: !result.issues.some(i => i.issue.toLowerCase().includes('alt text')) }
+          ];
+        } else if (mod.id === 'mobile') {
+          checks = [
+            { text: 'Viewport set', passed: !result.issues.some(i => i.issue.includes('Viewport')) },
+            { text: 'Manifest linked', passed: !result.issues.some(i => i.issue.includes('manifest')) },
+            { text: 'Homescreen icon', passed: !result.issues.some(i => i.issue.includes('homescreen') || i.issue.includes('icon')) },
+            { text: 'Service worker', passed: !result.issues.some(i => i.issue.includes('service worker')) }
+          ];
+        } else if (mod.id === 'perf') {
+          checks = [
+            { text: 'Low page weight', passed: !result.issues.some(i => i.issue.includes('Page weight')) },
+            { text: 'Few requests', passed: !result.issues.some(i => i.issue.includes('HTTP requests')) },
+            { text: 'No render-blocking', passed: !result.issues.some(i => i.issue.includes('render-blocking')) },
+            { text: 'Optimized fonts', passed: !result.issues.some(i => i.issue.includes('web font') || i.issue.includes('font')) }
+          ];
+        } else if (mod.id === 'access') {
+          checks = [
+            { text: 'Alt text complete', passed: !result.issues.some(i => i.issue.includes('alt text')) },
+            { text: 'Lang attribute', passed: !result.issues.some(i => i.issue.includes('lang attribute')) },
+            { text: 'Main landmark', passed: !result.issues.some(i => i.issue.includes('main landmark')) },
+            { text: 'Heading order', passed: !result.issues.some(i => i.issue.includes('Heading order')) },
+            { text: 'Form labels', passed: !result.issues.some(i => i.issue.includes('form fields') || i.issue.includes('labels')) }
+          ];
+        } else if (mod.id === 'content') {
+          checks = [
+            { text: 'Sufficient depth', passed: !result.issues.some(i => i.issue.includes('Thin content')) },
+            { text: 'Good readability', passed: !result.issues.some(i => i.issue.includes('Readability')) },
+            { text: 'Heading structure', passed: !result.issues.some(i => i.issue.includes('heading structure')) },
+            { text: 'Uses lists', passed: !result.issues.some(i => i.issue.includes('lists')) }
+          ];
+        } else if (mod.id === 'ux') {
+          checks = [
+            { text: 'Clear CTAs', passed: !result.issues.some(i => i.issue.includes('calls-to-action')) },
+            { text: 'Breadcrumb nav', passed: !result.issues.some(i => i.issue.includes('breadcrumb')) }
+          ];
+        } else if (mod.id === 'security') {
+          checks = [
+            { text: 'HTTPS secure', passed: !result.issues.some(i => i.issue.includes('HTTPS')) },
+            { text: 'No mixed content', passed: !result.issues.some(i => i.issue.includes('mixed content')) }
+          ];
+        } else if (mod.id === 'indexability') {
+          checks = [
+            { text: 'No noindex', passed: !result.issues.some(i => i.issue.includes('noindex')) },
+            { text: 'Canonical present', passed: !result.issues.some(i => i.issue.includes('canonical')) }
+          ];
+        }
 
-
+        const card = document.getElementById(`${mod.id}-score`);
+        if (card) {
+          const expandBtn = card.querySelector('.expand');
+          if (expandBtn) {
+            const checklistDiv = document.createElement('div');
+            checklistDiv.className = 'mt-4 space-y-1 text-sm text-left max-w-xs mx-auto';
+            checklistDiv.innerHTML = checks.map(check => `
+              <p class="${check.passed ? 'text-green-400' : 'text-red-400'}">
+                ${check.passed ? '✅' : '❌'} ${check.text}
+              </p>
+            `).join('');
+            expandBtn.parentNode.insertBefore(checklistDiv, expandBtn);
+          }
+        }
+      });
 
       // Top 3 Priority Fixes
       allIssues.sort((a, b) => b.impact - a.impact);
@@ -301,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      // Predictive Rank Forecast (unchanged)
+      // Predictive Rank Forecast
       const forecastTitle = document.getElementById('forecast-title');
       const forecastGain = document.getElementById('forecast-gain');
       const forecastWhat = document.getElementById('forecast-what');
@@ -349,124 +324,6 @@ document.addEventListener('DOMContentLoaded', () => {
       forecastHow.textContent = how;
       forecastWhy.textContent = why;
 
-      // Generate new module cards with ✅/❌ checklist
-      const modulesGrid = document.querySelector('.grid.grid-cols-1');
-      if (modulesGrid) {
-        modulesGrid.innerHTML = moduleResults.map(({mod, result}) => {
-          const color = result.score >= 80 ? '#22c55e' : result.score >= 60 ? '#f97316' : '#ef4444';
-          const fixesCount = result.issues.length;
-
-          // Define checks per module
-          let checks = [];
-          if (mod.id === 'seo') {
-            checks = [
-              { text: 'Title optimized', passed: !result.issues.some(i => i.issue.includes('Title')) },
-              { text: 'Meta description', passed: !result.issues.some(i => i.issue.includes('meta description')) },
-              { text: 'Main heading', passed: !result.issues.some(i => i.issue.includes('main heading')) },
-              { text: 'Schema detected', passed: !result.issues.some(i => i.issue.includes('structured data') || i.issue.includes('schema')) },
-              { text: 'Canonical tag', passed: !result.issues.some(i => i.issue.includes('canonical')) },
-              { text: 'Image alt text', passed: !result.issues.some(i => i.issue.includes('alt text')) }
-            ];
-          } else if (mod.id === 'mobile') {
-            checks = [
-              { text: 'Viewport set', passed: !result.issues.some(i => i.issue.includes('Viewport')) },
-              { text: 'Manifest linked', passed: !result.issues.some(i => i.issue.includes('manifest')) },
-              { text: 'Homescreen icon', passed: !result.issues.some(i => i.issue.includes('homescreen icon')) },
-              { text: 'Service worker', passed: !result.issues.some(i => i.issue.includes('service worker')) }
-            ];
-          } else if (mod.id === 'perf') {
-            checks = [
-              { text: 'Low page weight', passed: !result.issues.some(i => i.issue.includes('Page weight')) },
-              { text: 'Few requests', passed: !result.issues.some(i => i.issue.includes('HTTP requests')) },
-              { text: 'No render-blocking', passed: !result.issues.some(i => i.issue.includes('render-blocking')) },
-              { text: 'Optimized fonts', passed: !result.issues.some(i => i.issue.includes('web font')) }
-            ];
-          } else if (mod.id === 'access') {
-            checks = [
-              { text: 'Alt text complete', passed: !result.issues.some(i => i.issue.includes('alt text')) },
-              { text: 'Lang attribute', passed: !result.issues.some(i => i.issue.includes('lang attribute')) },
-              { text: 'Main landmark', passed: !result.issues.some(i => i.issue.includes('main landmark')) },
-              { text: 'Heading order', passed: !result.issues.some(i => i.issue.includes('Heading order')) },
-              { text: 'Form labels', passed: !result.issues.some(i => i.issue.includes('form fields')) }
-            ];
-          } else if (mod.id === 'content') {
-            checks = [
-              { text: 'Sufficient depth', passed: !result.issues.some(i => i.issue.includes('Thin content')) },
-              { text: 'Good readability', passed: !result.issues.some(i => i.issue.includes('Readability')) },
-              { text: 'Heading structure', passed: !result.issues.some(i => i.issue.includes('heading structure')) },
-              { text: 'Uses lists', passed: !result.issues.some(i => i.issue.includes('lists')) }
-            ];
-          } else if (mod.id === 'ux') {
-            checks = [
-              { text: 'Clear CTAs', passed: !result.issues.some(i => i.issue.includes('calls-to-action')) },
-              { text: 'Breadcrumb nav', passed: !result.issues.some(i => i.issue.includes('breadcrumb')) }
-            ];
-          } else if (mod.id === 'security') {
-            checks = [
-              { text: 'HTTPS secure', passed: !result.issues.some(i => i.issue.includes('HTTPS')) },
-              { text: 'No mixed content', passed: !result.issues.some(i => i.issue.includes('mixed content')) }
-            ];
-          } else if (mod.id === 'indexability') {
-            checks = [
-              { text: 'No noindex', passed: !result.issues.some(i => i.issue.includes('noindex')) },
-              { text: 'Canonical present', passed: !result.issues.some(i => i.issue.includes('canonical')) }
-            ];
-          }
-
-          return `
-          <div class="score-card p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border-4" style="border-color: ${color}">
-            <div class="relative mx-auto w-40 h-40">
-              <svg viewBox="0 0 160 160" class="transform -rotate-90 w-full h-full">
-                <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="14" fill="none"/>
-                <circle cx="80" cy="80" r="70"
-                        stroke="${color}"
-                        stroke-width="14" fill="none"
-                        stroke-dasharray="${(result.score/100)*440} 440"
-                        stroke-linecap="round"
-                        class="progress"/>
-              </svg>
-              <div class="absolute inset-0 flex items-center justify-center">
-                <span class="number text-5xl font-black" style="color: ${color};">${result.score}</span>
-              </div>
-            </div>
-            <h3 class="mt-6 text-2xl font-bold text-center">${mod.name}</h3>
-
-            <!-- ✅/❌ Checklist -->
-            <div class="mt-6 space-y-2 text-sm text-left max-w-xs mx-auto">
-              ${checks.map(check => `
-                <p class="${check.passed ? 'text-green-600' : 'text-red-600'}">
-                  ${check.passed ? '✅' : '❌'} ${check.text}
-                </p>
-              `).join('')}
-            </div>
-
-            <button onclick="toggleFixesPanel(this)"
-                    class="mt-6 w-full px-6 py-3 bg-orange-500 text-white rounded-full hover:bg-orange-600 font-medium">
-              ${fixesCount ? 'Show Fixes (' + fixesCount + ')' : 'All Clear'}
-            </button>
-
-            <div class="fixes-panel hidden mt-6 space-y-6">
-              ${fixesCount ? result.issues.map(iss => `
-                <div class="p-5 bg-gray-100 dark:bg-gray-800 rounded-xl">
-                  <strong class="block mb-2 text-lg">${iss.issue}</strong>
-                  <p class="mb-3"><span class="font-bold text-blue-500">How to fix:</span><br>${iss.fix}</p>
-                  <p><span class="font-bold text-orange-500">Why it matters:</span><br>UX: ${iss.uxWhy || 'Improves user experience'} | SEO: ${iss.seoWhy || 'Boosts ranking signals'}</p>
-                </div>
-              `).join('') : '<p class="text-green-600 font-medium text-center py-4">All signals strong — excellent performance!</p>'}
-
-              <button onclick="toggleMoreDetails(this)"
-                      class="mt-4 text-sm text-orange-500 hover:underline block text-center w-full">
-                More details →
-              </button>
-            </div>
-
-            <div class="full-details hidden mt-6 text-sm space-y-4 text-gray-600 dark:text-gray-400">
-              <p>No additional educational content available at this time.</p>
-            </div>
-          </div>`;
-        }).join('');
-      }
-
       // Reveal results
       progressContainer.classList.add('hidden');
       resultsWrapper.classList.remove('hidden');
@@ -483,179 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       resultsWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  
-  
-      
-      
-
-      // 360° Health Radar Chart (desktop only) - FIXED label order
-      try {
-        if (window.innerWidth >= 768) {
-          const radarCtx = document.getElementById('health-radar').getContext('2d');
-          const isDark = document.documentElement.classList.contains('dark');
-          const gridColor = isDark ? 'rgba(156, 163, 175, 0.5)' : 'rgba(0, 0, 0, 0.2)';
-          const labelColor = '#9ca3af';
-          const lineColor = '#9ca3af';
-          const fillColor = isDark ? 'rgba(156, 163, 175, 0.25)' : 'rgba(156, 163, 175, 0.1)';
-
-          // FIXED: Labels now dynamically match modules order exactly
-          const radarLabels = modules.map(m => m.name);
-
-          const chart = new Chart(radarCtx, {
-            type: 'radar',
-            data: {
-              labels: radarLabels,
-              datasets: [{
-                label: 'Health Score',
-                data: scores,
-                backgroundColor: fillColor,
-                borderColor: lineColor,
-                borderWidth: 4,
-                pointRadius: 9,
-                pointHoverRadius: 14,
-                pointBackgroundColor: (ctx) => {
-                  const v = ctx.parsed?.r ?? 0;
-                  if (v < 60) return '#f87171';
-                  if (v < 80) return '#fb923c';
-                  return '#34d399';
-                },
-                pointHoverBackgroundColor: (ctx) => {
-                  const v = ctx.parsed?.r ?? 0;
-                  if (v < 60) return '#ef4444';
-                  if (v < 80) return '#f97316';
-                  return '#10b981';
-                }
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              interaction: {
-                intersect: true,
-                mode: 'point'
-              },
-              scales: {
-                r: {
-                  beginAtZero: true,
-                  min: 0,
-                  max: 100,
-                  ticks: {
-                    stepSize: 20,
-                    color: labelColor,
-                    backdropColor: 'transparent',
-                    callback: (value) => value
-                  },
-                  grid: { color: 'rgb(156, 163, 175)' },
-                  angleLines: { color: 'rgb(156, 163, 175)' },
-                  pointLabels: {
-                    color: labelColor,
-                    font: { size: 14, weight: 'bold' }
-                  }
-                }
-              },
-              plugins: {
-                legend: { display: false },
-                tooltip: {
-                  callbacks: {
-                    title: (ctx) => ctx[0].label,
-                    label: (ctx) => {
-                      const value = Math.round(ctx.parsed.r);
-                      let grade = '';
-                      if (value < 20) grade = 'Very Poor';
-                      else if (value < 40) grade = 'Poor';
-                      else if (value < 60) grade = 'Fair (major issues)';
-                      else if (value < 80) grade = 'Good (room for improvement)';
-                      else grade = 'Excellent';
-                      const metricKey = ctx.label;
-                      const fixes = (typeof modules !== 'undefined' && modules[metricKey]?.fixSummary)
-                        ? modules[metricKey].fixSummary.split('\n')
-                        : ['Click "Show Fixes" in the module below for detailed recommendations'];
-                      const lines = [
-                        `Score: ${value}/100`,
-                        `Grade: ${grade}`,
-                        ''
-                      ];
-                      if (value < 100) {
-                        lines.push('How to Improve:');
-                        lines.push(...fixes);
-                      } else {
-                        lines.push('Strong performance – keep it up!');
-                      }
-                      return lines;
-                    }
-                  }
-                }
-              }
-            }
-          });
-        }
-      } catch (chartErr) {
-        console.warn('Radar chart failed (non-critical)', chartErr);
-      }
-
-      // Mobile Preview - safe
-      try {
-        const previewIframe = document.getElementById('preview-iframe');
-        const phoneFrame = document.getElementById('phone-frame');
-        const viewToggle = document.getElementById('view-toggle');
-        const deviceToggle = document.getElementById('device-toggle');
-        const highlightOverlays = document.getElementById('highlight-overlays');
-        previewIframe.src = url;
-        let isMobile = true;
-        let isIphone = true;
-        viewToggle.addEventListener('click', () => {
-          isMobile = !isMobile;
-          phoneFrame.style.width = isMobile ? '375px' : '100%';
-          phoneFrame.style.height = isMobile ? '812px' : '800px';
-          viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
-        });
-        deviceToggle.addEventListener('click', () => {
-          isIphone = !isIphone;
-          phoneFrame.classList.toggle('iphone-frame', isIphone);
-          phoneFrame.classList.toggle('android-frame', !isIphone);
-          deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
-        });
-        const mobileIssues = allIssues.filter(i => ['Mobile & PWA', 'Performance', 'Accessibility'].includes(i.module));
-        mobileIssues.slice(0, 3).forEach((issue, idx) => {
-          const hl = document.createElement('div');
-          hl.classList.add('issue-highlight');
-          hl.style.top = `${20 + idx * 25}%`;
-          hl.style.left = '5%';
-          hl.style.width = '90%';
-          hl.style.height = '20%';
-          hl.addEventListener('click', () => {
-            showPopup(issue);
-          });
-          highlightOverlays.appendChild(hl);
-        });
-        function showPopup(issue) {
-          let popup = document.getElementById('highlight-popup');
-          if (!popup) {
-            popup = document.createElement('div');
-            popup.id = 'highlight-popup';
-            popup.innerHTML = `
-              <div class="popup-content relative">
-                <span class="close">&times;</span>
-                <h3 class="text-2xl font-bold mb-4">${issue.issue}</h3>
-                <p class="mb-4"><span class="font-bold text-blue-300">What is it?</span><br>${issue.what}</p>
-                <p class="mb-4"><span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}</p>
-                <p><span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}</p>
-              </div>
-            `;
-            document.body.appendChild(popup);
-            popup.querySelector('.close').addEventListener('click', () => popup.style.display = 'none');
-          }
-          popup.querySelector('h3').textContent = issue.issue;
-          popup.querySelectorAll('p')[0].innerHTML = `<span class="font-bold text-blue-300">What is it?</span><br>${issue.what}`;
-          popup.querySelectorAll('p')[1].innerHTML = `<span class="font-bold text-green-300">How to fix?</span><br>${issue.fix}`;
-          popup.querySelectorAll('p')[2].innerHTML = `<span class="font-bold text-red-300">Why it matters?</span><br>UX: ${issue.uxWhy} | SEO: ${issue.seoWhy}`;
-          popup.style.display = 'flex';
-        }
-      } catch (previewErr) {
-        console.warn('Mobile preview failed (non-critical)', previewErr);
-      }
-
-      // Show Fixes buttons
+      // Re-attach expand buttons
       document.querySelectorAll('.expand').forEach(b => {
         b.onclick = () => {
           b.nextElementSibling.classList.toggle('hidden');
@@ -671,223 +356,198 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-
-
-
   // ================== ANALYSIS FUNCTIONS ==================
-
-function analyzeSEO(html, doc) {
-  let score = 100;
-  const issues = [];
-
-  const title = doc.querySelector('title')?.textContent.trim() || '';
-  
-  let primaryKeywordRaw = '';
-  if (title) {
-    const sections = title.split(/[\|\–\-]/);
-    primaryKeywordRaw = sections[0].trim();
-  }
-  const cleaned = primaryKeywordRaw.toLowerCase().replace(/\b(the|a|an|and|or|luxury|resorts?|hotels?|best|top|official)\b/g, '').trim();
-  const keywordParts = cleaned.split(/\s+/).filter(p => p.length >= 3);
-
-  if (primaryKeywordRaw) {
-    issues.push({
-      issue: 'Primary Keyword',
-      what: `We detect "${primaryKeywordRaw}" as your page's primary keyword/phrase (main title section). This guides recommendations.`,
-      fix: 'Ensure it\'s prominent in headings and early content.',
-      uxWhy: 'Quickly confirms relevance for users.',
-      seoWhy: 'Strong on-page alignment boosts ranking signals.'
-    });
-  }
-
-  if (!title) {
-    score -= 25;
-    issues.push({
-      issue: 'Missing <title> tag',
-      what: 'No title appears in Google search results or browser tabs.',
-      fix: '<title>Your Primary Keyword – Brand Name (50–60 characters)</title>',
-      uxWhy: 'Users see "Untitled" or blank tab — looks broken and unprofessional.',
-      seoWhy: 'Zero chance of ranking or getting clicks — Google shows nothing.'
-    });
-  } else {
-    if (title.length < 30) {
-      score -= 18;
+  function analyzeSEO(html, doc) {
+    let score = 100;
+    const issues = [];
+    const title = doc.querySelector('title')?.textContent.trim() || '';
+    let primaryKeywordRaw = '';
+    if (title) {
+      const sections = title.split(/[\|\–\-]/);
+      primaryKeywordRaw = sections[0].trim();
+    }
+    const cleaned = primaryKeywordRaw.toLowerCase().replace(/\b(the|a|an|and|or|luxury|resorts?|hotels?|best|top|official)\b/g, '').trim();
+    const keywordParts = cleaned.split(/\s+/).filter(p => p.length >= 3);
+    if (primaryKeywordRaw) {
       issues.push({
-        issue: `Title too short (${title.length} characters)`,
-        what: `Your page title is significantly below the recommended length.\nCurrent title: "${title}"`,
-        fix: 'Aim for 50–60 characters with descriptive keywords.',
-        uxWhy: 'Short titles look incomplete in search results and browser tabs.',
-        seoWhy: 'Wastes valuable SERP space and reduces click-through rate.'
+        issue: 'Primary Keyword',
+        what: `We detect "${primaryKeywordRaw}" as your page's primary keyword/phrase (main title section). This guides recommendations.`,
+        fix: 'Ensure it\'s prominent in headings and early content.',
+        uxWhy: 'Quickly confirms relevance for users.',
+        seoWhy: 'Strong on-page alignment boosts ranking signals.'
       });
     }
-    if (title.length > 65) {
-      score -= 18;
+    if (!title) {
+      score -= 25;
       issues.push({
-        issue: `Title too long (${title.length} characters)`,
-        what: `Your page title will be truncated in Google search results.\nCurrent title: "${title}"`,
-        fix: 'Keep it under 65 characters while keeping the primary keyword early.',
-        uxWhy: 'Users see a cut-off title and may miss important information.',
-        seoWhy: 'Google truncates long titles → lower visibility and CTR.'
+        issue: 'Missing <title> tag',
+        what: 'No title appears in Google search results or browser tabs.',
+        fix: '<title>Your Primary Keyword – Brand Name (50–60 characters)</title>',
+        uxWhy: 'Users see "Untitled" or blank tab — looks broken and unprofessional.',
+        seoWhy: 'Zero chance of ranking or getting clicks — Google shows nothing.'
+      });
+    } else {
+      if (title.length < 30) {
+        score -= 18;
+        issues.push({
+          issue: `Title too short (${title.length} characters)`,
+          what: `Your page title is significantly below the recommended length.\nCurrent title: "${title}"`,
+          fix: 'Aim for 50–60 characters with descriptive keywords.',
+          uxWhy: 'Short titles look incomplete in search results and browser tabs.',
+          seoWhy: 'Wastes valuable SERP space and reduces click-through rate.'
+        });
+      }
+      if (title.length > 65) {
+        score -= 18;
+        issues.push({
+          issue: `Title too long (${title.length} characters)`,
+          what: `Your page title will be truncated in Google search results.\nCurrent title: "${title}"`,
+          fix: 'Keep it under 65 characters while keeping the primary keyword early.',
+          uxWhy: 'Users see a cut-off title and may miss important information.',
+          seoWhy: 'Google truncates long titles → lower visibility and CTR.'
+        });
+      }
+    }
+    const desc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
+    if (!desc) {
+      score -= 20;
+      issues.push({
+        issue: 'Missing meta description',
+        what: 'No snippet text shows under your link in Google search results.',
+        fix: '<meta name="description" content="Compelling 120–158 character summary with primary keyword">',
+        uxWhy: 'Users have no idea what the page is about before clicking.',
+        seoWhy: 'Google generates a poor snippet → massive drop in click-through rate.'
+      });
+    } else {
+      if (desc.length < 100) {
+        score -= 12;
+        issues.push({
+          issue: `Meta description too short (${desc.length} characters)`,
+          what: `Your meta description is too brief.\nCurrent description: "${desc}"`,
+          fix: 'Expand to 120–158 characters with compelling details.',
+          uxWhy: 'Users see very little context in search results.',
+          seoWhy: 'Google may replace it → lower click-through rate.'
+        });
+      }
+      if (desc.length > 160) {
+        score -= 12;
+        issues.push({
+          issue: `Meta description too long (${desc.length} characters)`,
+          what: `Your meta description will be truncated.\nCurrent description: "${desc}"`,
+          fix: 'Keep between 120–158 characters.',
+          uxWhy: 'Important parts get cut off.',
+          seoWhy: 'Reduces effectiveness.'
+        });
+      }
+    }
+    const mainHeadingElement = doc.querySelector('h1') || doc.querySelector('h2') || doc.querySelector('h3');
+    const mainHeadingText = mainHeadingElement?.textContent.trim() || '';
+    if (!mainHeadingElement) {
+      score -= 8;
+      issues.push({
+        issue: 'No main heading (<h1>, <h2>, or <h3>)',
+        what: 'Page lacks a clear primary heading for topic and hierarchy.',
+        fix: 'Add a prominent heading with your primary keyword.',
+        uxWhy: 'Users rely on headings to quickly understand the page.',
+        seoWhy: 'Headings are key for structure and relevance signals.'
       });
     }
-  }
-
-  const desc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
-  if (!desc) {
-    score -= 20;
-    issues.push({
-      issue: 'Missing meta description',
-      what: 'No snippet text shows under your link in Google search results.',
-      fix: '<meta name="description" content="Compelling 120–158 character summary with primary keyword">',
-      uxWhy: 'Users have no idea what the page is about before clicking.',
-      seoWhy: 'Google generates a poor snippet → massive drop in click-through rate.'
-    });
-  } else {
-    if (desc.length < 100) {
-      score -= 12;
+    function flexibleMatch(textLower) {
+      if (keywordParts.length === 0) return true;
+      const matches = keywordParts.filter(part => textLower.includes(part));
+      return matches.length >= Math.max(1, Math.ceil(keywordParts.length * 0.6));
+    }
+    if (primaryKeywordRaw && doc.body) {
+      const first500Lower = doc.body.textContent.toLowerCase().slice(0, 500);
+      if (!flexibleMatch(first500Lower)) {
+        score -= 10;
+        issues.push({
+          issue: `Primary keyword "${primaryKeywordRaw}" missing from opening content`,
+          what: 'The main phrase does not appear early in visible text.',
+          fix: 'Include it naturally in the first paragraph.',
+          uxWhy: 'Users expect immediate relevance.',
+          seoWhy: 'Google prioritizes early topic signals.'
+        });
+      }
+    }
+    if (primaryKeywordRaw && mainHeadingText) {
+      const headingLower = mainHeadingText.toLowerCase();
+      if (!flexibleMatch(headingLower)) {
+        score -= 10;
+        issues.push({
+          issue: `Primary keyword "${primaryKeywordRaw}" missing from main heading`,
+          what: `Main heading lacks the primary keyword.\nCurrent heading: "${mainHeadingText}"`,
+          fix: 'Incorporate naturally.',
+          uxWhy: 'Users expect heading to match intent.',
+          seoWhy: 'Strongest relevance signal.'
+        });
+      }
+    }
+    if (doc.querySelector('meta[name="keywords"]')) {
+      score -= 8;
       issues.push({
-        issue: `Meta description too short (${desc.length} characters)`,
-        what: `Your meta description is too brief.\nCurrent description: "${desc}"`,
-        fix: 'Expand to 120–158 characters with compelling details.',
-        uxWhy: 'Users see very little context in search results.',
-        seoWhy: 'Google may replace it → lower click-through rate.'
+        issue: 'Meta keywords tag found',
+        what: 'Obsolete tag still present on page.',
+        fix: 'Remove <meta name="keywords"> completely',
+        uxWhy: 'No user impact.',
+        seoWhy: 'Google ignores it — can hurt trust with some engines.'
       });
     }
-    if (desc.length > 160) {
-      score -= 12;
+    if (!doc.querySelector('meta[property="og:title"], meta[name="twitter:card"]')) {
+      score -= 15;
       issues.push({
-        issue: `Meta description too long (${desc.length} characters)`,
-        what: `Your meta description will be truncated.\nCurrent description: "${desc}"`,
-        fix: 'Keep between 120–158 characters.',
-        uxWhy: 'Important parts get cut off.',
-        seoWhy: 'Reduces effectiveness.'
+        issue: 'Missing Open Graph / Twitter cards',
+        what: 'No rich preview when shared on social media.',
+        fix: 'Add og:title, og:image, twitter:card tags',
+        uxWhy: 'Shared links look broken or generic.',
+        seoWhy: 'Social traffic drops dramatically without rich previews.'
       });
     }
-  }
-
-  const mainHeadingElement = doc.querySelector('h1') || doc.querySelector('h2') || doc.querySelector('h3');
-  const mainHeadingText = mainHeadingElement?.textContent.trim() || '';
-  if (!mainHeadingElement) {
-    score -= 8;
-    issues.push({
-      issue: 'No main heading (<h1>, <h2>, or <h3>)',
-      what: 'Page lacks a clear primary heading for topic and hierarchy.',
-      fix: 'Add a prominent heading with your primary keyword.',
-      uxWhy: 'Users rely on headings to quickly understand the page.',
-      seoWhy: 'Headings are key for structure and relevance signals.'
-    });
-  }
-
-  function flexibleMatch(textLower) {
-    if (keywordParts.length === 0) return true;
-    const matches = keywordParts.filter(part => textLower.includes(part));
-    return matches.length >= Math.max(1, Math.ceil(keywordParts.length * 0.6));
-  }
-
-  if (primaryKeywordRaw && doc.body) {
-    const first500Lower = doc.body.textContent.toLowerCase().slice(0, 500);
-    if (!flexibleMatch(first500Lower)) {
+    const robots = doc.querySelector('meta[name="robots"]');
+    if (robots && /noindex/i.test(robots.content)) {
+      score -= 30;
+      issues.push({
+        issue: 'Page blocked from Google (noindex)',
+        what: 'Robots meta tells search engines not to index this page.',
+        fix: 'Remove noindex or change to index,follow',
+        uxWhy: 'No impact on users.',
+        seoWhy: 'You are completely invisible in search results.'
+      });
+    }
+    if (!doc.querySelector('link[rel="canonical"]')) {
+      score -= 8;
+      issues.push({
+        issue: 'Missing canonical tag',
+        what: 'No preferred version of the page defined.',
+        fix: '<link rel="canonical" href="https://yoursite.com/page">',
+        uxWhy: 'No direct impact.',
+        seoWhy: 'Risk of duplicate content penalties.'
+      });
+    }
+    if (!doc.querySelector('script[type="application/ld+json"], [itemscope]')) {
       score -= 10;
       issues.push({
-        issue: `Primary keyword "${primaryKeywordRaw}" missing from opening content`,
-        what: 'The main phrase does not appear early in visible text.',
-        fix: 'Include it naturally in the first paragraph.',
-        uxWhy: 'Users expect immediate relevance.',
-        seoWhy: 'Google prioritizes early topic signals.'
+        issue: 'No structured data (schema)',
+        what: 'No machine-readable data for rich results.',
+        fix: 'Add JSON-LD schema (Article, FAQ, Organization, etc)',
+        uxWhy: 'No rich snippets in search.',
+        seoWhy: 'Missing featured snippets, knowledge panels, rich cards.'
       });
     }
-  }
-
-  if (primaryKeywordRaw && mainHeadingText) {
-    const headingLower = mainHeadingText.toLowerCase();
-    if (!flexibleMatch(headingLower)) {
-      score -= 10;
+    const imgs = doc.querySelectorAll('img');
+    const noAlt = Array.from(imgs).filter(i => !i.alt || i.alt.trim() === '');
+    if (noAlt.length) {
+      score -= Math.min(20, noAlt.length * 5);
       issues.push({
-        issue: `Primary keyword "${primaryKeywordRaw}" missing from main heading`,
-        what: `Main heading lacks the primary keyword.\nCurrent heading: "${mainHeadingText}"`,
-        fix: 'Incorporate naturally.',
-        uxWhy: 'Users expect heading to match intent.',
-        seoWhy: 'Strongest relevance signal.'
+        issue: `${noAlt.length} images missing alt text`,
+        what: 'Images have no description for screen readers or Google Images.',
+        fix: 'Add descriptive alt="…" (or alt="" if decorative)',
+        uxWhy: 'Blind users can’t understand images.',
+        seoWhy: 'No ranking in Google Images search.'
       });
     }
+    return { score: Math.max(0, Math.round(score)), issues };
   }
-
-  if (doc.querySelector('meta[name="keywords"]')) {
-    score -= 8;
-    issues.push({
-      issue: 'Meta keywords tag found',
-      what: 'Obsolete tag still present on page.',
-      fix: 'Remove <meta name="keywords"> completely',
-      uxWhy: 'No user impact.',
-      seoWhy: 'Google ignores it — can hurt trust with some engines.'
-    });
-  }
-
-  if (!doc.querySelector('meta[property="og:title"], meta[name="twitter:card"]')) {
-    score -= 15;
-    issues.push({
-      issue: 'Missing Open Graph / Twitter cards',
-      what: 'No rich preview when shared on social media.',
-      fix: 'Add og:title, og:image, twitter:card tags',
-      uxWhy: 'Shared links look broken or generic.',
-      seoWhy: 'Social traffic drops dramatically without rich previews.'
-    });
-  }
-
-  const robots = doc.querySelector('meta[name="robots"]');
-  if (robots && /noindex/i.test(robots.content)) {
-    score -= 30;
-    issues.push({
-      issue: 'Page blocked from Google (noindex)',
-      what: 'Robots meta tells search engines not to index this page.',
-      fix: 'Remove noindex or change to index,follow',
-      uxWhy: 'No impact on users.',
-      seoWhy: 'You are completely invisible in search results.'
-    });
-  }
-
-  if (!doc.querySelector('link[rel="canonical"]')) {
-    score -= 8;
-    issues.push({
-      issue: 'Missing canonical tag',
-      what: 'No preferred URL defined for this page.',
-      fix: '<link rel="canonical" href="https://yoursite.com/page">',
-      uxWhy: 'No direct impact.',
-      seoWhy: 'Risk of duplicate content penalties.'
-    });
-  }
-
-  if (!doc.querySelector('script[type="application/ld+json"], [itemscope]')) {
-    score -= 10;
-    issues.push({
-      issue: 'No structured data (schema)',
-      what: 'No machine-readable data for rich results.',
-      fix: 'Add JSON-LD schema (Article, FAQ, Organization, etc)',
-      uxWhy: 'No rich snippets in search.',
-      seoWhy: 'Missing featured snippets, knowledge panels, rich cards.'
-    });
-  }
-
-  const imgs = doc.querySelectorAll('img');
-  const noAlt = Array.from(imgs).filter(i => !i.alt || i.alt.trim() === '');
-  if (noAlt.length) {
-    score -= Math.min(20, noAlt.length * 5);
-    issues.push({
-      issue: `${noAlt.length} images missing alt text`,
-      what: 'Images have no description for screen readers or Google Images.',
-      fix: 'Add descriptive alt="…" (or alt="" if decorative)',
-      uxWhy: 'Blind users can’t understand images.',
-      seoWhy: 'No ranking in Google Images search.'
-    });
-  }
-
-  return { score: Math.max(0, Math.round(score)), issues };
-}
-
-
-
-
-
 
   function analyzeMobile(html, doc) {
     let score = 100;
@@ -1053,122 +713,87 @@ function analyzeSEO(html, doc) {
     }
     return { score: Math.max(0, Math.round(score)), issues };
   }
-  
-  
-  
-  
-  
 
-function analyzeContentQuality(html, doc) {
-  let score = 100;
-  const issues = [];
-
-  // Get clean body text
-  const bodyText = doc.body ? doc.body.textContent.replace(/\s+/g, ' ').trim() : '';
-  const words = bodyText.split(/\s+/).filter(w => w.length > 0);
-  const wordCount = words.length;
-
-  // 1. Thin Content Check
-  if (wordCount < 300) {
-    const severity = wordCount < 100 ? 40 : 30;
-    score -= severity;
-    issues.push({
-      issue: `Thin content detected (${wordCount} words)`,
-      what: 'The page contains limited unique, valuable text content.',
-      fix: 'Expand with helpful sections: detailed descriptions, benefits, FAQs, guides, or testimonials. Aim for 600+ words where appropriate for the topic.',
-      uxWhy: 'Users expect substance; thin pages feel incomplete and cause quick exits.',
-      seoWhy: 'Google rewards comprehensive pages that fully answer user intent.'
-    });
-  } else if (wordCount > 3000) {
-    score -= 10;
-    issues.push({
-      issue: `Very long content (${wordCount} words)`,
-      what: 'Extensive text without sufficient structure can overwhelm readers.',
-      fix: 'Add clear H2/H3 headings every 300–400 words, use bullet points, and consider a table of contents.',
-      uxWhy: 'Improves scannability, especially on mobile devices.',
-      seoWhy: 'Better structure increases engagement metrics like time-on-page and scroll depth.'
-    });
-  }
-
-  // 2. Improved Readability (Flesch Reading Ease) – only if enough content
-  if (wordCount >= 50) {
-    const sentences = Math.max(1, bodyText.split(/[.!?]+/).filter(s => s.trim()).length);
-
-    // Better syllable approximation
-    let syllableCount = 0;
-    words.forEach(word => {
-      let clean = word.toLowerCase().replace(/[^a-z]/g, '');
-      if (clean.length === 0) return;
-      if (clean.length <= 3) {
-        syllableCount += 1;
-        return;
-      }
-      let matches = clean.match(/[aeiouy]+/g);
-      syllableCount += matches ? matches.length : 1;
-      // Adjust for common silent endings
-      if (clean.endsWith('es') || clean.endsWith('ed')) {
-        syllableCount = Math.max(1, syllableCount - 1);
-      }
-    });
-
-    const avgSentenceLength = wordCount / sentences;
-    const avgSyllables = syllableCount / wordCount;
-    const fleschScore = Math.round(206.835 - 1.015 * avgSentenceLength - 84.6 * avgSyllables);
-
-    let grade = '';
-    if (fleschScore >= 90) grade = 'Very Easy (grade 5)';
-    else if (fleschScore >= 80) grade = 'Easy (grade 6–7)';
-    else if (fleschScore >= 70) grade = 'Fairly Easy (grade 8)';
-    else if (fleschScore >= 60) grade = 'Standard (grade 9–10)';
-    else if (fleschScore >= 50) grade = 'Fairly Difficult (college)';
-    else grade = 'Difficult (college graduate)';
-
-    // Only penalize if truly hard to read (below 60 = standard web target)
-    if (fleschScore < 60) {
-      score -= 20;
+  function analyzeContentQuality(html, doc) {
+    let score = 100;
+    const issues = [];
+    const bodyText = doc.body ? doc.body.textContent.replace(/\s+/g, ' ').trim() : '';
+    const words = bodyText.split(/\s+/).filter(w => w.length > 0);
+    const wordCount = words.length;
+    if (wordCount < 300) {
+      const severity = wordCount < 100 ? 40 : 30;
+      score -= severity;
       issues.push({
-        issue: `Readability needs improvement (Flesch score: ${fleschScore} – ${grade})`,
-        what: 'The text uses longer sentences and/or more complex vocabulary than ideal for most web users.',
-        fix: 'Aim for 15–20 words per sentence on average. Use common words, active voice, short paragraphs (≤4 lines), and bullet points where possible.',
-        uxWhy: 'Easier reading keeps visitors engaged longer and reduces cognitive strain, especially on mobile.',
-        seoWhy: 'Improved readability boosts dwell time, lowers bounce rate, and sends positive user experience signals to Google.'
+        issue: `Thin content detected (${wordCount} words)`,
+        what: 'The page contains limited unique, valuable text content.',
+        fix: 'Expand with helpful sections: detailed descriptions, benefits, FAQs, guides, or testimonials. Aim for 600+ words where appropriate for the topic.',
+        uxWhy: 'Users expect substance; thin pages feel incomplete and cause quick exits.',
+        seoWhy: 'Google rewards comprehensive pages that fully answer user intent.'
+      });
+    } else if (wordCount > 3000) {
+      score -= 10;
+      issues.push({
+        issue: `Very long content (${wordCount} words)`,
+        what: 'Extensive text without sufficient structure can overwhelm readers.',
+        fix: 'Add clear H2/H3 headings every 300–400 words, use bullet points, and consider a table of contents.',
+        uxWhy: 'Improves scannability, especially on mobile devices.',
+        seoWhy: 'Better structure increases engagement metrics like time-on-page and scroll depth.'
       });
     }
+    if (wordCount >= 50) {
+      const sentences = Math.max(1, bodyText.split(/[.!?]+/).filter(s => s.trim()).length);
+      let syllableCount = 0;
+      words.forEach(word => {
+        let clean = word.toLowerCase().replace(/[^a-z]/g, '');
+        if (clean.length === 0) return;
+        if (clean.length <= 3) {
+          syllableCount += 1;
+          return;
+        }
+        let matches = clean.match(/[aeiouy]+/g);
+        syllableCount += matches ? matches.length : 1;
+        if (clean.endsWith('es') || clean.endsWith('ed')) {
+          syllableCount = Math.max(1, syllableCount - 1);
+        }
+      });
+      const avgSentenceLength = wordCount / sentences;
+      const avgSyllables = syllableCount / wordCount;
+      const fleschScore = Math.round(206.835 - 1.015 * avgSentenceLength - 84.6 * avgSyllables);
+      if (fleschScore < 60) {
+        score -= 20;
+        issues.push({
+          issue: `Readability needs improvement (Flesch score: ${fleschScore})`,
+          what: 'The text uses longer sentences and/or more complex vocabulary than ideal for most web users.',
+          fix: 'Aim for 15–20 words per sentence on average. Use common words, active voice, short paragraphs (≤4 lines), and bullet points where possible.',
+          uxWhy: 'Easier reading keeps visitors engaged longer and reduces cognitive strain, especially on mobile.',
+          seoWhy: 'Improved readability boosts dwell time, lowers bounce rate, and sends positive user experience signals to Google.'
+        });
+      }
+    }
+    const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    if (headings.length < 3 && wordCount > 400) {
+      score -= 15;
+      issues.push({
+        issue: 'Insufficient heading structure',
+        what: 'Content has few or no subheadings to guide readers.',
+        fix: 'Add descriptive H2 and H3 headings every 300–400 words to create clear sections.',
+        uxWhy: 'Headings help users scan and find relevant information quickly.',
+        seoWhy: 'Proper hierarchy improves crawlability and increases chances of featured snippets.'
+      });
+    }
+    const lists = doc.querySelectorAll('ul, ol').length;
+    if (lists === 0 && wordCount > 500) {
+      score -= 10;
+      issues.push({
+        issue: 'No bullet or numbered lists used',
+        what: 'Key information is presented in dense paragraphs instead of scannable lists.',
+        fix: 'Convert features, benefits, steps, or options into bulleted or numbered lists.',
+        uxWhy: 'Lists dramatically improve skimmability and comprehension.',
+        seoWhy: 'Encourages deeper engagement and can trigger rich list results in search.'
+      });
+    }
+    return { score: Math.max(0, Math.round(score)), issues };
   }
-
-  // 3. Heading Structure
-  const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
-  if (headings.length < 3 && wordCount > 400) {
-    score -= 15;
-    issues.push({
-      issue: 'Insufficient heading structure',
-      what: 'Content has few or no subheadings to guide readers.',
-      fix: 'Add descriptive H2 and H3 headings every 300–400 words to create clear sections.',
-      uxWhy: 'Headings help users scan and find relevant information quickly.',
-      seoWhy: 'Proper hierarchy improves crawlability and increases chances of featured snippets.'
-    });
-  }
-
-  // 4. Lack of Lists (educational best practice)
-  const lists = doc.querySelectorAll('ul, ol').length;
-  if (lists === 0 && wordCount > 500) {
-    score -= 10;
-    issues.push({
-      issue: 'No bullet or numbered lists used',
-      what: 'Key information is presented in dense paragraphs instead of scannable lists.',
-      fix: 'Convert features, benefits, steps, or options into bulleted or numbered lists.',
-      uxWhy: 'Lists dramatically improve skimmability and comprehension.',
-      seoWhy: 'Encourages deeper engagement and can trigger rich list results in search.'
-    });
-  }
-
-  return { score: Math.max(0, Math.round(score)), issues };
-}
-
-
-
-
-
 
   function analyzeUXDesign(html, doc) {
     let score = 100;
@@ -1245,11 +870,12 @@ function analyzeContentQuality(html, doc) {
       issues.push({
         issue: 'Missing canonical tag',
         what: 'No preferred version of the page defined.',
-        fix: 'Add <link rel="canonical" href="preferred-url">',
+        fix: '<link rel="canonical" href="preferred-url">',
         uxWhy: 'No user impact.',
         seoWhy: 'Prevents duplicate content issues and consolidates ranking signals.'
       });
     }
     return { score: Math.max(0, Math.round(score)), issues };
   }
+
 });
