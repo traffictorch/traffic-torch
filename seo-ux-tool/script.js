@@ -2,12 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
   const form = document.getElementById('url-form');
   const input = document.getElementById('url-input');
-  const results = document.getElementById('results');
-  const overallContainer = document.getElementById('overall-container');
+  const resultsWrapper = document.getElementById('results-wrapper');
   const progressContainer = document.getElementById('progress-container');
   const progressText = document.getElementById('progress-text');
-  const priorityFixes = document.getElementById('priority-fixes');
-  const forecastModule = document.getElementById('forecast-module');
   const savePdfBtn = document.getElementById('save-pdf');
   const copyBadgeBtn = document.getElementById('copy-badge');
 
@@ -49,46 +46,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function populateIssues(id, issues) {
-    const ul = document.getElementById(id);
-    if (!ul) return;
-    ul.innerHTML = '';
-    issues.forEach(i => {
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <div class="p-5 bg-white/10 backdrop-blur rounded-2xl mb-4 border border-white/20">
-          <strong class="text-xl block mb-3">${i.issue}</strong>
-          <p class="mb-3">
-            <span style="color:#60a5fa;font-weight:700">What it is?</span><br>
-            ${i.what || 'A common SEO or UX issue that affects how users and search engines see your page.'}
-          </p>
-          <p class="mb-3">
-            <span style="color:#34d399;font-weight:700">How to Fix:</span><br>
-            ${i.fix}
-          </p>
-          <p>
-            <span style="color:#f87171;font-weight:700">Why it Matters?</span><br>
-            <strong>UX:</strong> ${i.uxWhy || 'Improves user experience, navigation, and accessibility'}<br>
-            <strong>SEO:</strong> ${i.seoWhy || 'Helps Google understand and rank your page better'}
-          </p>
-        </div>
-      `;
-      ul.appendChild(li);
-    });
-  }
-
   // Save as PDF
   if (savePdfBtn) {
     savePdfBtn.addEventListener('click', () => {
-      document.querySelectorAll('#url-form, #save-pdf, #mobile-preview, .expand').forEach(el => {
-        el.style.display = 'none';
-      });
+      document.querySelectorAll('#url-form, #save-pdf, #mobile-preview, .expand').forEach(el => el.style.display = 'none');
       const printStyle = document.createElement('style');
       printStyle.innerHTML = `
         @media print {
           body { background: white !important; color: black !important; }
           .score-card { background: white !important; border: 2px solid #333 !important; box-shadow: none !important; }
-          .bg-clip-text { -webkit-background-clip: text; background-clip: text; color: #e53e3e !important; }
           .hidden { display: block !important; }
           #mobile-preview, #url-form, #save-pdf { display: none !important; }
         }
@@ -96,9 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.head.appendChild(printStyle);
       window.print();
       window.onafterprint = () => {
-        document.querySelectorAll('#url-form, #save-pdf, #mobile-preview, .expand').forEach(el => {
-          el.style.display = '';
-        });
+        document.querySelectorAll('#url-form, #save-pdf, #mobile-preview, .expand').forEach(el => el.style.display = '');
         document.head.removeChild(printStyle);
       };
     });
@@ -146,12 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) throw new Error('Network response was not ok');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
-      
-      
-      
-      
 
-      const resultsWrapper = document.getElementById('results-wrapper');
       const modules = [
         { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
         { id: 'mobile', name: 'Mobile & PWA', fn: analyzeMobile },
@@ -165,14 +124,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const scores = [];
       const allIssues = [];
-
       for (const mod of modules) {
         progressText.textContent = `Analyzing ${mod.name}...`;
         const analysisUrl = mod.id === 'security' ? originalInput : url;
         const result = mod.fn(html, doc, analysisUrl);
         scores.push(result.score);
         updateScore(`${mod.id}-score`, result.score);
-        populateIssues(`${mod.id}-issues`, result.issues);
         result.issues.forEach(iss => {
           allIssues.push({
             ...iss,
@@ -185,13 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       updateScore('overall-score', overallScore);
-      
-      
-      
-      
-      
 
-      // ALWAYS-VISIBLE CHECKLIST + SHOW/HIDE FIXES TOGGLE + DETAILED FAILED FIXES + MODULE EDUCATION
+      // ALWAYS-VISIBLE CHECKLIST + SHOW/HIDE FIXES + DETAILED FAILED FIXES + MODULE EDUCATION
       modules.forEach(mod => {
         const card = document.getElementById(`${mod.id}-score`);
         if (!card) return;
@@ -321,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         expand.appendChild(moduleBlock);
 
-        // Button toggle
+        // Toggle button
         expandBtn.className = 'expand mt-4 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full transition';
         expandBtn.textContent = 'Show Fixes';
         expandBtn.onclick = () => {
@@ -329,11 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
           expandBtn.textContent = expand.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
         };
       });
-      
-      
-      
-      
-      
 
       // Top 3 Priority Fixes
       allIssues.sort((a, b) => b.impact - a.impact);
@@ -343,9 +290,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const prefix = `priority${num}`;
         if (issue) {
           document.getElementById(`${prefix}-issue`).textContent = issue.issue;
-          document.getElementById(`${prefix}-what`).textContent = issue.what;
+          document.getElementById(`${prefix}-what`).textContent = issue.what || '';
           document.getElementById(`${prefix}-fix`).textContent = issue.fix;
-          document.getElementById(`${prefix}-why`).textContent = `UX: ${issue.uxWhy || 'Improves usability'} | SEO: ${issue.seoWhy || 'Boosts ranking'}`;
+          document.getElementById(`${prefix}-why`).textContent = `UX: ${issue.uxWhy || ''} | SEO: ${issue.seoWhy || ''}`;
         } else {
           document.getElementById(`${prefix}-issue`).textContent = 'No major issues';
           document.getElementById(`${prefix}-what`).textContent = 'This area is performing well.';
@@ -408,7 +355,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('radar-title').classList.remove('hidden');
       if (savePdfBtn) savePdfBtn.classList.remove('hidden');
       document.getElementById('copy-badge').classList.remove('hidden');
-
       resultsWrapper.style.opacity = '0';
       resultsWrapper.style.transform = 'translateY(40px)';
       resultsWrapper.style.transition = 'opacity 1.2s ease, transform 1.2s ease';
@@ -417,10 +363,6 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsWrapper.style.transform = 'translateY(0)';
       });
       resultsWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-
-
-
 
       // 360° Health Radar Chart (desktop only)
       try {
@@ -581,7 +523,6 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (previewErr) {
         console.warn('Mobile preview failed (non-critical)', previewErr);
       }
-
     } catch (err) {
       alert('Failed to analyze — try another site or check the URL');
       console.error(err);
@@ -590,11 +531,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-
-
-
-
-  // ================== ANALYSIS FUNCTIONS ==================
+  // ================== ANALYSIS FUNCTIONS WITH DETAILED 2–3 SENTENCE FIXES ==================
   function analyzeSEO(html, doc) {
     let score = 100;
     const issues = [];
@@ -609,40 +546,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if (primaryKeywordRaw) {
       issues.push({
         issue: 'Primary Keyword',
-        what: `We detect "${primaryKeywordRaw}" as your page's primary keyword/phrase (main title section). This guides recommendations.`,
-        fix: 'Ensure it\'s prominent in headings and early content.',
-        uxWhy: 'Quickly confirms relevance for users.',
-        seoWhy: 'Strong on-page alignment boosts ranking signals.'
+        fix: 'Identify your main target keyword from the title and make it prominent in the H1 heading. Include it naturally in the first paragraph of visible content without stuffing. This confirms relevance for users immediately and sends strong topic signals to search engines.',
       });
     }
     if (!title) {
       score -= 25;
       issues.push({
         issue: 'Missing <title> tag',
-        what: 'No title appears in Google search results or browser tabs.',
-        fix: '<title>Your Primary Keyword – Brand Name (50–60 characters)</title>',
-        uxWhy: 'Users see "Untitled" or blank tab — looks broken and unprofessional.',
-        seoWhy: 'Zero chance of ranking or getting clicks — Google shows nothing.'
+        fix: 'Add a unique title tag in the head section containing your primary keyword near the beginning. Keep it 50–60 characters for optimal display in search results. This is the first thing users see in Google and directly impacts click-through rates.',
       });
     } else {
       if (title.length < 30) {
         score -= 18;
         issues.push({
           issue: `Title too short (${title.length} characters)`,
-          what: `Your page title is significantly below the recommended length.\nCurrent title: "${title}"`,
-          fix: 'Aim for 50–60 characters with descriptive keywords.',
-          uxWhy: 'Short titles look incomplete in search results and browser tabs.',
-          seoWhy: 'Wastes valuable SERP space and reduces click-through rate.'
+          fix: 'Expand the title to 50–60 characters while placing the primary keyword early. Include compelling words or benefits to encourage clicks. Short titles waste valuable space in search results and look incomplete to users.',
         });
       }
       if (title.length > 65) {
         score -= 18;
         issues.push({
           issue: `Title too long (${title.length} characters)`,
-          what: `Your page title will be truncated in Google search results.\nCurrent title: "${title}"`,
-          fix: 'Keep it under 65 characters while keeping the primary keyword early.',
-          uxWhy: 'Users see a cut-off title and may miss important information.',
-          seoWhy: 'Google truncates long titles → lower visibility and CTR.'
+          fix: 'Shorten the title to under 65 characters while keeping the most important keyword at the start. Move brand name or secondary info to the end if needed. This prevents truncation in Google results and improves visibility.',
         });
       }
     }
@@ -651,43 +576,30 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 20;
       issues.push({
         issue: 'Missing meta description',
-        what: 'No snippet text shows under your link in Google search results.',
-        fix: '<meta name="description" content="Compelling 120–158 character summary with primary keyword">',
-        uxWhy: 'Users have no idea what the page is about before clicking.',
-        seoWhy: 'Google generates a poor snippet → massive drop in click-through rate.'
+        fix: 'Add a unique meta description tag 120–158 characters long with natural keyword placement. Make it compelling with benefits or a call to action. This text appears below your link in search results and directly affects click-through rates.',
       });
     } else {
       if (desc.length < 100) {
         score -= 12;
         issues.push({
           issue: `Meta description too short (${desc.length} characters)`,
-          what: `Your meta description is too brief.\nCurrent description: "${desc}"`,
-          fix: 'Expand to 120–158 characters with compelling details.',
-          uxWhy: 'Users see very little context in search results.',
-          seoWhy: 'Google may replace it → lower click-through rate.'
+          fix: 'Expand the meta description to 120–158 characters with additional details or benefits. Include the primary keyword naturally early on. Short descriptions give users little context and may be replaced by Google with less relevant text.',
         });
       }
       if (desc.length > 160) {
         score -= 12;
         issues.push({
           issue: `Meta description too long (${desc.length} characters)`,
-          what: `Your meta description will be truncated.\nCurrent description: "${desc}"`,
-          fix: 'Keep between 120–158 characters.',
-          uxWhy: 'Important parts get cut off.',
-          seoWhy: 'Reduces effectiveness.'
+          fix: 'Trim the meta description to 120–158 characters while keeping the most compelling part at the beginning. Focus on user benefits and keyword placement. Long descriptions get cut off in search results, reducing their effectiveness.',
         });
       }
     }
     const mainHeadingElement = doc.querySelector('h1') || doc.querySelector('h2') || doc.querySelector('h3');
-    const mainHeadingText = mainHeadingElement?.textContent.trim() || '';
     if (!mainHeadingElement) {
       score -= 8;
       issues.push({
-        issue: 'No main heading (<h1>, <h2>, or <h3>)',
-        what: 'Page lacks a clear primary heading for topic and hierarchy.',
-        fix: 'Add a prominent heading with your primary keyword.',
-        uxWhy: 'Users rely on headings to quickly understand the page.',
-        seoWhy: 'Headings are key for structure and relevance signals.'
+        issue: 'No main heading',
+        fix: 'Add a clear H1 heading that includes your primary keyword and describes the page topic. Make it prominent and user-friendly. The main heading is one of the strongest on-page signals for both users and search engines.',
       });
     }
     function flexibleMatch(textLower) {
@@ -700,24 +612,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!flexibleMatch(first500Lower)) {
         score -= 10;
         issues.push({
-          issue: `Primary keyword "${primaryKeywordRaw}" missing from opening content`,
-          what: 'The main phrase does not appear early in visible text.',
-          fix: 'Include it naturally in the first paragraph.',
-          uxWhy: 'Users expect immediate relevance.',
-          seoWhy: 'Google prioritizes early topic signals.'
+          issue: `Primary keyword missing from opening content`,
+          fix: 'Include your primary keyword naturally in the first paragraph of visible text. Write for users first while avoiding stuffing. This gives strong relevance signals to Google and confirms topic match for visitors right away.',
         });
       }
     }
-    if (primaryKeywordRaw && mainHeadingText) {
-      const headingLower = mainHeadingText.toLowerCase();
+    if (primaryKeywordRaw && mainHeadingElement) {
+      const headingLower = mainHeadingElement.textContent.toLowerCase();
       if (!flexibleMatch(headingLower)) {
         score -= 10;
         issues.push({
-          issue: `Primary keyword "${primaryKeywordRaw}" missing from main heading`,
-          what: `Main heading lacks the primary keyword.\nCurrent heading: "${mainHeadingText}"`,
-          fix: 'Incorporate naturally.',
-          uxWhy: 'Users expect heading to match intent.',
-          seoWhy: 'Strongest relevance signal.'
+          issue: `Primary keyword missing from main heading`,
+          fix: 'Incorporate your primary keyword naturally into the H1 heading. Keep it readable and compelling for users. The main heading carries the strongest weight for on-page relevance signals.',
         });
       }
     }
@@ -725,20 +631,14 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 8;
       issues.push({
         issue: 'Meta keywords tag found',
-        what: 'Obsolete tag still present on page.',
-        fix: 'Remove <meta name="keywords"> completely',
-        uxWhy: 'No user impact.',
-        seoWhy: 'Google ignores it — can hurt trust with some engines.'
+        fix: 'Remove the obsolete meta keywords tag completely from your HTML head. Search engines have ignored it for years and it adds unnecessary code. Keeping it can make your site appear outdated to crawlers.',
       });
     }
     if (!doc.querySelector('meta[property="og:title"], meta[name="twitter:card"]')) {
       score -= 15;
       issues.push({
         issue: 'Missing Open Graph / Twitter cards',
-        what: 'No rich preview when shared on social media.',
-        fix: 'Add og:title, og:image, twitter:card tags',
-        uxWhy: 'Shared links look broken or generic.',
-        seoWhy: 'Social traffic drops dramatically without rich previews.'
+        fix: 'Add og:title, og:description, og:image, and twitter:card meta tags with high-quality content. Use an image at least 1200×630 pixels for best display. This ensures attractive rich previews when your page is shared on social media.',
       });
     }
     const robots = doc.querySelector('meta[name="robots"]');
@@ -746,30 +646,21 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 30;
       issues.push({
         issue: 'Page blocked from Google (noindex)',
-        what: 'Robots meta tells search engines not to index this page.',
-        fix: 'Remove noindex or change to index,follow',
-        uxWhy: 'No impact on users.',
-        seoWhy: 'You are completely invisible in search results.'
+        fix: 'Remove the noindex directive from the robots meta tag unless this page is intentionally hidden. Change it to index,follow if you want visibility. Noindex completely prevents the page from appearing in search results.',
       });
     }
     if (!doc.querySelector('link[rel="canonical"]')) {
       score -= 8;
       issues.push({
         issue: 'Missing canonical tag',
-        what: 'No preferred version of the page defined.',
-        fix: '<link rel="canonical" href="https://yoursite.com/page">',
-        uxWhy: 'No direct impact.',
-        seoWhy: 'Risk of duplicate content penalties.'
+        fix: 'Add a canonical link tag pointing to the preferred URL version of this page. This prevents duplicate content issues across variations like www/non-www or trailing slash. It consolidates all ranking signals to one URL.',
       });
     }
     if (!doc.querySelector('script[type="application/ld+json"], [itemscope]')) {
       score -= 10;
       issues.push({
         issue: 'No structured data (schema)',
-        what: 'No machine-readable data for rich results.',
-        fix: 'Add JSON-LD schema (Article, FAQ, Organization, etc)',
-        uxWhy: 'No rich snippets in search.',
-        seoWhy: 'Missing featured snippets, knowledge panels, rich cards.'
+        fix: 'Add JSON-LD structured data markup appropriate for your page type (Article, FAQ, Product, etc). Use Google's testing tool to validate it. This enables rich results like stars, FAQs, and knowledge panels in search.',
       });
     }
     const imgs = doc.querySelectorAll('img');
@@ -778,10 +669,7 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= Math.min(20, noAlt.length * 5);
       issues.push({
         issue: `${noAlt.length} images missing alt text`,
-        what: 'Images have no description for screen readers or Google Images.',
-        fix: 'Add descriptive alt="…" (or alt="" if decorative)',
-        uxWhy: 'Blind users can’t understand images.',
-        seoWhy: 'No ranking in Google Images search.'
+        fix: 'Add descriptive alt text to every image describing what it shows. Use empty alt="" only for purely decorative images. This improves accessibility for screen readers and enables ranking in Google Images search.',
       });
     }
     return { score: Math.max(0, Math.round(score)), issues };
@@ -795,20 +683,14 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 35;
       issues.push({
         issue: 'Viewport missing or incorrect',
-        what: 'Site doesn’t scale properly on mobile.',
-        fix: '<meta name="viewport" content="width=device-width, initial-scale=1">',
-        uxWhy: 'Users must pinch-zoom — terrible mobile experience.',
-        seoWhy: 'Google downgrades non-mobile-friendly sites in mobile search.'
+        fix: 'Add the viewport meta tag with content="width=device-width, initial-scale=1" in the head section. This enables proper scaling on mobile devices. Without it, users must pinch-zoom and Google penalizes non-mobile-friendly sites.',
       });
     }
     if (!doc.querySelector('link[rel="manifest"]')) {
       score -= 25;
       issues.push({
         issue: 'Missing web app manifest',
-        what: 'No manifest.json for PWA/Add to Home Screen.',
-        fix: 'Create manifest.json and link it',
-        uxWhy: 'Users can’t save site to home screen.',
-        seoWhy: 'Missing PWA status and discoverability.'
+        fix: 'Create a manifest.json file with name, icons, start_url, and display: standalone properties. Link it in the head with rel="manifest". This enables "Add to Home Screen" functionality and PWA features for better user engagement.',
       });
     }
     const has192 = doc.querySelector('link[sizes*="192"], link[rel="apple-touch-icon"]');
@@ -816,10 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 15;
       issues.push({
         issue: 'Missing large homescreen icon',
-        what: 'No 192×192 or Apple touch icon.',
-        fix: 'Add 192×192+ PNG icons',
-        uxWhy: 'Icon looks blurry or default when saved to phone.',
-        seoWhy: 'Poor PWA branding.'
+        fix: 'Provide PNG icons in multiple sizes including 192x192 and 512x512 pixels. Add them with sizes attribute or apple-touch-icon links. This ensures crisp, high-quality icons when users save your site to their phone home screen.',
       });
     }
     const hasSW = Array.from(doc.querySelectorAll('script')).some(s => s.textContent.includes('serviceWorker'));
@@ -827,10 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 10;
       issues.push({
         issue: 'No service worker detected',
-        what: 'Site can’t work offline or load instantly.',
-        fix: 'Add service worker registration',
-        uxWhy: 'Slow repeat visits, no offline access.',
-        seoWhy: 'Google favors fast, reliable sites.'
+        fix: 'Register a service worker script to enable offline capability and faster repeat loads. Use libraries like Workbox for easier implementation. This improves reliability on poor connections and is favored by Google for performance scoring.',
       });
     }
     return { score: Math.max(0, Math.round(score)), issues };
@@ -844,10 +720,7 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= sizeKB > 300 ? 30 : 15;
       issues.push({
         issue: `Page weight: ${sizeKB} KB ${sizeKB > 300 ? '(Very heavy)' : '(Heavy)'}`,
-        what: 'Total HTML size before images/CSS/JS.',
-        fix: sizeKB > 200 ? 'Minify HTML + compress images + lazy-load' : 'Consider minification',
-        uxWhy: 'Slow first load → users bounce.',
-        seoWhy: 'Directly impacts Core Web Vitals and ranking.'
+        fix: 'Minify HTML, CSS, and JS to remove unnecessary whitespace and comments. Compress images to WebP format with proper dimensions and lazy-loading. These steps reduce total payload size, speed up load times, and improve Core Web Vitals scores.',
       });
     }
     const requests = doc.querySelectorAll('link[rel="stylesheet"], script[src], img[src], iframe[src]').length + 1;
@@ -855,10 +728,7 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= requests > 50 ? 25 : 15;
       issues.push({
         issue: `${requests} HTTP requests`,
-        what: 'Too many files being loaded.',
-        fix: 'Bundle CSS/JS, lazy-load images, use WebP',
-        uxWhy: 'Each request adds delay on mobile.',
-        seoWhy: 'Google penalizes high request count.'
+        fix: 'Bundle multiple CSS and JS files into fewer requests. Lazy-load images and iframes below the fold. Use modern formats like WebP and srcset for responsive images to lower the number of requests.',
       });
     }
     const fonts = doc.querySelectorAll('link[href*="font"], link[href*="googleapis"]').length;
@@ -866,10 +736,7 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 12;
       issues.push({
         issue: `${fonts} web font requests`,
-        what: 'Too many custom fonts loading.',
-        fix: 'Limit to 2–3 fonts max',
-        uxWhy: 'Fonts delay text rendering (FOUT/FOIT).',
-        seoWhy: 'Render-blocking = worse Core Web Vitals.'
+        fix: 'Limit custom fonts to 2–3 families maximum and use system fonts where possible. Preload key fonts and use font-display: swap to avoid invisible text. Host fonts locally or use variable fonts to reduce file size and requests.',
       });
     }
     const blocking = doc.querySelectorAll('link[rel="stylesheet"]:not([media]), script:not([async]):not([defer])').length;
@@ -877,10 +744,7 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 15;
       issues.push({
         issue: `${blocking} render-blocking resources`,
-        what: 'CSS/JS blocking page render.',
-        fix: 'Add async/defer, inline critical CSS',
-        uxWhy: 'Blank screen until files load.',
-        seoWhy: 'Delays First Contentful Paint — ranking penalty.'
+        fix: 'Add async or defer to non-critical JavaScript files. Inline critical CSS for above-the-fold content and defer the rest. Use preload for key resources to prevent render-blocking delays.',
       });
     }
     return { score: Math.max(0, Math.round(score)), issues };
@@ -894,30 +758,21 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= Math.min(35, missingAlts.length * 8);
       issues.push({
         issue: `${missingAlts.length} images missing alt text`,
-        what: 'Images have no description for screen readers.',
-        fix: 'Add descriptive alt (or alt="" if decorative)',
-        uxWhy: 'Blind users can’t understand what the image shows.',
-        seoWhy: 'No ranking in Google Images + accessibility complaints.'
+        fix: 'Add descriptive alt text to every image describing what it shows. Use empty alt="" only for purely decorative images. This improves accessibility for screen readers and enables ranking in Google Images search.',
       });
     }
     if (!doc.documentElement.lang) {
       score -= 12;
       issues.push({
         issue: 'Missing lang attribute on <html>',
-        what: 'No language declared for the document.',
-        fix: 'Add lang="en" (or your language) to <html>',
-        uxWhy: 'Screen readers may pronounce text wrong.',
-        seoWhy: 'Google uses lang for regional targeting.'
+        fix: 'Add the lang attribute to the <html> tag with your primary language code (e.g. lang="en"). This helps screen readers pronounce content correctly. It also signals to search engines the language for regional targeting.',
       });
     }
     if (!doc.querySelector('main, [role="main"]')) {
       score -= 15;
       issues.push({
         issue: 'Missing main landmark',
-        what: 'No <main> region defined.',
-        fix: 'Add <main> tag or role="main"',
-        uxWhy: 'Screen reader users can’t jump to main content.',
-        seoWhy: 'Minor ranking factor + accessibility compliance.'
+        fix: 'Wrap your primary content in a <main> tag or add role="main" to the container. This defines the main content area clearly. It allows screen reader users to skip navigation and jump directly to the important part.',
       });
     }
     const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
@@ -931,10 +786,7 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 12;
       issues.push({
         issue: 'Heading order skipped (e.g. H1 → H3)',
-        what: 'Headings jump levels without proper hierarchy.',
-        fix: 'Use sequential order: H1 → H2 → H3',
-        uxWhy: 'Confuses screen reader users navigating by headings.',
-        seoWhy: 'Poor content structure hurts crawlability.'
+        fix: 'Use headings in sequential order (H1 → H2 → H3) without skipping levels. This creates a logical content hierarchy. It helps screen reader users navigate and improves crawlability for search engines.',
       });
     }
     const unlabeled = Array.from(doc.querySelectorAll('input, textarea, select'))
@@ -943,10 +795,7 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 15;
       issues.push({
         issue: `${unlabeled.length} form fields without labels`,
-        what: 'Form inputs not connected to visible labels.',
-        fix: 'Link labels using for/id attributes',
-        uxWhy: 'Screen readers say "edit text" with no context.',
-        seoWhy: 'Accessibility = trust signal to Google.'
+        fix: 'Connect every form input to a visible label using for/id attributes. Add aria-label if no visible label is possible. This gives screen readers context for form fields and improves accessibility compliance.',
       });
     }
     return { score: Math.max(0, Math.round(score)), issues };
@@ -963,19 +812,13 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= severity;
       issues.push({
         issue: `Thin content detected (${wordCount} words)`,
-        what: 'The page contains limited unique, valuable text content.',
-        fix: 'Expand with helpful sections: detailed descriptions, benefits, FAQs, guides, or testimonials. Aim for 600+ words where appropriate for the topic.',
-        uxWhy: 'Users expect substance; thin pages feel incomplete and cause quick exits.',
-        seoWhy: 'Google rewards comprehensive pages that fully answer user intent.'
+        fix: 'Expand the page with unique, valuable content covering the topic in depth. Add helpful sections like descriptions, benefits, FAQs, or guides. Aim for 600+ words where appropriate to fully satisfy user intent and search engines.',
       });
     } else if (wordCount > 3000) {
       score -= 10;
       issues.push({
         issue: `Very long content (${wordCount} words)`,
-        what: 'Extensive text without sufficient structure can overwhelm readers.',
-        fix: 'Add clear H2/H3 headings every 300–400 words, use bullet points, and consider a table of contents.',
-        uxWhy: 'Improves scannability, especially on mobile devices.',
-        seoWhy: 'Better structure increases engagement metrics like time-on-page and scroll depth.'
+        fix: 'Break up long text with clear H2/H3 headings every 300–400 words. Use bullet points, numbered lists, and short paragraphs. This improves scannability on mobile and increases engagement metrics like time-on-page.',
       });
     }
     if (wordCount >= 50) {
@@ -1001,10 +844,7 @@ document.addEventListener('DOMContentLoaded', () => {
         score -= 20;
         issues.push({
           issue: `Readability needs improvement (Flesch score: ${fleschScore})`,
-          what: 'The text uses longer sentences and/or more complex vocabulary than ideal for most web users.',
-          fix: 'Aim for 15–20 words per sentence on average. Use common words, active voice, short paragraphs (≤4 lines), and bullet points where possible.',
-          uxWhy: 'Easier reading keeps visitors engaged longer and reduces cognitive strain, especially on mobile.',
-          seoWhy: 'Improved readability boosts dwell time, lowers bounce rate, and sends positive user experience signals to Google.'
+          fix: 'Use shorter sentences (15–20 words average) and common words in active voice. Break paragraphs into 3–4 lines max and add bullet points where possible. Easier reading keeps visitors engaged longer and sends positive signals to Google.',
         });
       }
     }
@@ -1013,10 +853,7 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 15;
       issues.push({
         issue: 'Insufficient heading structure',
-        what: 'Content has few or no subheadings to guide readers.',
-        fix: 'Add descriptive H2 and H3 headings every 300–400 words to create clear sections.',
-        uxWhy: 'Headings help users scan and find relevant information quickly.',
-        seoWhy: 'Proper hierarchy improves crawlability and increases chances of featured snippets.'
+        fix: 'Add descriptive H2 and H3 headings every 300–400 words to create clear sections. This guides readers through the content. Proper hierarchy improves crawlability and increases chances of featured snippets.',
       });
     }
     const lists = doc.querySelectorAll('ul, ol').length;
@@ -1024,10 +861,7 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 10;
       issues.push({
         issue: 'No bullet or numbered lists used',
-        what: 'Key information is presented in dense paragraphs instead of scannable lists.',
-        fix: 'Convert features, benefits, steps, or options into bulleted or numbered lists.',
-        uxWhy: 'Lists dramatically improve skimmability and comprehension.',
-        seoWhy: 'Encourages deeper engagement and can trigger rich list results in search.'
+        fix: 'Convert features, benefits, steps, or options into bulleted or numbered lists. This makes key information scannable at a glance. Lists improve comprehension and can trigger rich list results in search.',
       });
     }
     return { score: Math.max(0, Math.round(score)), issues };
@@ -1041,10 +875,7 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 25;
       issues.push({
         issue: 'Too many calls-to-action / links',
-        what: 'Page overwhelms users with excessive navigation or buttons.',
-        fix: 'Prioritize 1–3 primary actions; move others to secondary menus.',
-        uxWhy: 'Causes choice paralysis and frustration.',
-        seoWhy: 'High bounce rate and low engagement.'
+        fix: 'Prioritize 1–3 primary calls-to-action with clear, contrasting buttons. Move secondary links to menus or footers. This reduces choice paralysis, improves conversion rates, and lowers bounce rates.',
       });
     }
     const hasBreadcrumb = doc.querySelector('[aria-label="breadcrumb"], .breadcrumb, nav[aria-label="breadcrumb"]');
@@ -1052,10 +883,7 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 10;
       issues.push({
         issue: 'Missing breadcrumb navigation',
-        what: 'Users have no clear path back to higher-level pages.',
-        fix: 'Add breadcrumb trail showing page hierarchy.',
-        uxWhy: 'Improves orientation and reduces disorientation.',
-        seoWhy: 'Helps Google understand site structure.'
+        fix: 'Add a breadcrumb trail showing the page hierarchy (Home > Category > Page). Use schema markup for rich results. This helps users orient themselves and navigate back, improving overall site experience.',
       });
     }
     return { score: Math.max(0, Math.round(score)), issues };
@@ -1069,10 +897,7 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 50;
       issues.push({
         issue: 'Not served over HTTPS',
-        what: 'Site uses insecure HTTP connection.',
-        fix: 'Obtain and install a valid SSL/TLS certificate (free via Let’s Encrypt).',
-        uxWhy: 'Browser shows "Not secure" warning — users leave immediately.',
-        seoWhy: 'Google marks HTTP sites as insecure and downgrades rankings.'
+        fix: 'Install a valid SSL/TLS certificate (free via Let’s Encrypt). Force HTTPS site-wide with redirects from HTTP. This secures data in transit, prevents browser warnings, and is a direct ranking factor.',
       });
     }
     const mixedContent = doc.querySelector('img[src^="http://"], script[src^="http://"], link[href^="http://"]');
@@ -1080,10 +905,7 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 20;
       issues.push({
         issue: 'Mixed content (insecure resources on HTTPS page)',
-        what: 'Page loads HTTP resources which are blocked or warned against.',
-        fix: 'Update all resource URLs to HTTPS or relative protocol.',
-        uxWhy: 'Browser may block content or show warnings.',
-        seoWhy: 'Can trigger security flags affecting trust.'
+        fix: 'Update all resource URLs (images, scripts, styles) to use HTTPS or relative protocol. Scan the page for any HTTP links. This prevents content blocking and security warnings on HTTPS pages.',
       });
     }
     return { score: Math.max(0, Math.round(score)), issues };
@@ -1097,20 +919,14 @@ document.addEventListener('DOMContentLoaded', () => {
       score -= 60;
       issues.push({
         issue: 'noindex meta tag present',
-        what: 'Page explicitly tells search engines not to index it.',
-        fix: 'Remove "noindex" directive unless intentional (e.g., staging page).',
-        uxWhy: 'No direct user impact.',
-        seoWhy: 'Page will never appear in search results.'
+        fix: 'Remove the noindex directive unless this page is intentionally hidden (e.g. staging). Change to index,follow if you want visibility. Noindex completely blocks the page from search results.',
       });
     }
     if (!doc.querySelector('link[rel="canonical"]')) {
       score -= 15;
       issues.push({
         issue: 'Missing canonical tag',
-        what: 'No preferred version of the page defined.',
-        fix: '<link rel="canonical" href="preferred-url">',
-        uxWhy: 'No user impact.',
-        seoWhy: 'Prevents duplicate content issues and consolidates ranking signals.'
+        fix: 'Add a canonical link tag pointing to the preferred URL version. This prevents duplicate content issues. It consolidates all ranking signals to one URL and avoids penalties.',
       });
     }
     return { score: Math.max(0, Math.round(score)), issues };
