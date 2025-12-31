@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       updateScore('overall-score', overallScore);
 
-      // Add ✅/❌ checklist to each module
+      // Add ✅/❌ checklist to each module using original static cards
       modules.forEach(mod => {
         const result = mod.fn(html, doc, url); // re-run for checks
         let checks = [];
@@ -877,5 +877,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     return { score: Math.max(0, Math.round(score)), issues };
   }
-
 });
