@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `<p class="font-medium mb-2 text-orange-600">How to fix the failed signals:</p><ul class="list-disc pl-5 space-y-2">${failed.map(f => `<li>${f}</li>`).join('')}</ul>` :
       '<p class="text-green-600 font-medium">All signals strong — no fixes needed!</p>';
     return `
-    <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${border}">
+    <div class="score-card text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${border}">
       <div class="relative mx-auto w-32 h-32">
         <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
           <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
