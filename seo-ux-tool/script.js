@@ -161,6 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) throw new Error('Network response was not ok');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
+      
+      
+      
+      
+      
+      
 
       const resultsWrapper = document.getElementById('results-wrapper');
       const modules = [
@@ -198,6 +204,128 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       updateScore('overall-score', overallScore);
+
+      // === DYNAMICALLY REPLACE STATIC MODULE CARDS WITH NEW DESIGN ===
+      const resultsGrid = document.getElementById('results');
+      if (resultsGrid) {
+        resultsGrid.innerHTML = moduleResults.map(({mod, result}) => {
+          const color = result.score >= 80 ? '#22c55e' : result.score >= 60 ? '#f97316' : '#ef4444';
+          const fixesCount = result.issues.length;
+
+          // Define ✅/❌ checks per module
+          let checks = [];
+          if (mod.id === 'seo') {
+            checks = [
+              { text: 'Title optimized', passed: !result.issues.some(i => i.issue.toLowerCase().includes('title')) },
+              { text: 'Meta description', passed: !result.issues.some(i => i.issue.toLowerCase().includes('meta description')) },
+              { text: 'Main heading', passed: !result.issues.some(i => i.issue.toLowerCase().includes('main heading') || i.issue.toLowerCase().includes('heading')) },
+              { text: 'Schema detected', passed: !result.issues.some(i => i.issue.toLowerCase().includes('schema') || i.issue.toLowerCase().includes('structured data')) },
+              { text: 'Canonical tag', passed: !result.issues.some(i => i.issue.toLowerCase().includes('canonical')) },
+              { text: 'Image alt text', passed: !result.issues.some(i => i.issue.toLowerCase().includes('alt text')) }
+            ];
+          } else if (mod.id === 'mobile') {
+            checks = [
+              { text: 'Viewport set', passed: !result.issues.some(i => i.issue.includes('Viewport')) },
+              { text: 'Manifest linked', passed: !result.issues.some(i => i.issue.includes('manifest')) },
+              { text: 'Homescreen icon', passed: !result.issues.some(i => i.issue.includes('homescreen') || i.issue.includes('icon')) },
+              { text: 'Service worker', passed: !result.issues.some(i => i.issue.includes('service worker')) }
+            ];
+          } else if (mod.id === 'perf') {
+            checks = [
+              { text: 'Low page weight', passed: !result.issues.some(i => i.issue.includes('Page weight')) },
+              { text: 'Few requests', passed: !result.issues.some(i => i.issue.includes('HTTP requests')) },
+              { text: 'No render-blocking', passed: !result.issues.some(i => i.issue.includes('render-blocking')) },
+              { text: 'Optimized fonts', passed: !result.issues.some(i => i.issue.includes('web font') || i.issue.includes('font')) }
+            ];
+          } else if (mod.id === 'access') {
+            checks = [
+              { text: 'Alt text complete', passed: !result.issues.some(i => i.issue.includes('alt text')) },
+              { text: 'Lang attribute', passed: !result.issues.some(i => i.issue.includes('lang attribute')) },
+              { text: 'Main landmark', passed: !result.issues.some(i => i.issue.includes('main landmark')) },
+              { text: 'Heading order', passed: !result.issues.some(i => i.issue.includes('Heading order')) },
+              { text: 'Form labels', passed: !result.issues.some(i => i.issue.includes('form fields') || i.issue.includes('labels')) }
+            ];
+          } else if (mod.id === 'content') {
+            checks = [
+              { text: 'Sufficient depth', passed: !result.issues.some(i => i.issue.includes('Thin content')) },
+              { text: 'Good readability', passed: !result.issues.some(i => i.issue.includes('Readability')) },
+              { text: 'Heading structure', passed: !result.issues.some(i => i.issue.includes('heading structure')) },
+              { text: 'Uses lists', passed: !result.issues.some(i => i.issue.includes('lists')) }
+            ];
+          } else if (mod.id === 'ux') {
+            checks = [
+              { text: 'Clear CTAs', passed: !result.issues.some(i => i.issue.includes('calls-to-action')) },
+              { text: 'Breadcrumb nav', passed: !result.issues.some(i => i.issue.includes('breadcrumb')) }
+            ];
+          } else if (mod.id === 'security') {
+            checks = [
+              { text: 'HTTPS secure', passed: !result.issues.some(i => i.issue.includes('HTTPS')) },
+              { text: 'No mixed content', passed: !result.issues.some(i => i.issue.includes('mixed content')) }
+            ];
+          } else if (mod.id === 'indexability') {
+            checks = [
+              { text: 'No noindex', passed: !result.issues.some(i => i.issue.includes('noindex')) },
+              { text: 'Canonical present', passed: !result.issues.some(i => i.issue.includes('canonical')) }
+            ];
+          }
+
+          return `
+          <section id="${mod.id}-score" class="score-card p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border-4" style="border-color: ${color}">
+            <div class="relative mx-auto w-32 h-32">
+              <svg viewBox="0 0 128 128" class="transform -rotate-90 w-full h-full">
+                <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+                <circle cx="64" cy="64" r="56"
+                        stroke="${color}"
+                        stroke-width="12" fill="none"
+                        stroke-dasharray="${(result.score/100)*352} 352"
+                        stroke-linecap="round"
+                        class="progress"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="number text-4xl font-black" style="color: ${color};">${result.score}</span>
+              </div>
+            </div>
+            <h3 class="mt-6 text-xl font-bold text-center">${mod.name}</h3>
+
+            <!-- ✅/❌ Checklist -->
+            <div class="mt-4 space-y-1 text-sm text-left max-w-xs mx-auto">
+              ${checks.map(check => `
+                <p class="${check.passed ? 'text-green-600' : 'text-red-600'}">
+                  ${check.passed ? '✅' : '❌'} ${check.text}
+                </p>
+              `).join('')}
+            </div>
+
+            <button onclick="toggleFixesPanel(this)"
+                    class="mt-6 w-full px-6 py-3 bg-orange-500 text-white rounded-full hover:bg-orange-600 font-medium">
+              ${fixesCount ? 'Show Fixes (' + fixesCount + ')' : 'All Clear'}
+            </button>
+
+            <div class="fixes-panel hidden mt-6 space-y-6">
+              ${fixesCount ? result.issues.map(iss => `
+                <div class="p-5 bg-gray-100 dark:bg-gray-800 rounded-xl">
+                  <strong class="block mb-2 text-lg">${iss.issue}</strong>
+                  <p class="mb-3"><span class="font-bold text-blue-500">How to fix:</span><br>${iss.fix}</p>
+                  <p><span class="font-bold text-orange-500">Why it matters:</span><br>UX: ${iss.uxWhy || 'Improves user experience'} | SEO: ${iss.seoWhy || 'Boosts ranking signals'}</p>
+                </div>
+              `).join('') : '<p class="text-green-600 font-medium text-center py-4">All signals strong — excellent performance!</p>'}
+
+              <button onclick="toggleMoreDetails(this)"
+                      class="mt-4 text-sm text-orange-500 hover:underline block text-center w-full">
+                More details →
+              </button>
+            </div>
+
+            <div class="full-details hidden mt-6 text-sm space-y-4 text-gray-600 dark:text-gray-400">
+              <p>No additional educational content available at this time.</p>
+            </div>
+          </section>`;
+        }).join('');
+      }
+
+
+
+
 
       // Top 3 Priority Fixes
       allIssues.sort((a, b) => b.impact - a.impact);
