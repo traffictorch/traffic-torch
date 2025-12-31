@@ -191,83 +191,145 @@ document.addEventListener('DOMContentLoaded', () => {
       
       
 
-      // === SHOW FIXES BUTTONS – NOW SHOWS RECOMMENDED FIXES FOR FAILED CHECKS ===
+       // === MODULE EXPAND: ✅/❌ CHECKLIST + RECOMMENDED FIXES (ONLY TITLES & HOW TO FIX) + MODULE-LEVEL WHAT/HOW/WHY ===
       modules.forEach(mod => {
         const card = document.getElementById(`${mod.id}-score`);
         if (!card) return;
+
         const expandBtn = card.querySelector('.expand');
         if (!expandBtn) return;
 
-        // Run analysis once for this module to get fresh issues
-        const { issues: modIssues } = mod.fn(html, doc, url);
+        // Fresh analysis
+        const analysisUrl = mod.id === 'security' ? originalInput : url;
+        const { issues: modIssues } = mod.fn(html, doc, analysisUrl);
 
-        // Build failed-checks-only fixes list
-        const failedFixes = modIssues.map(iss => ({
-          title: iss.issue,
-          fix: iss.fix,
-          what: iss.what || 'A common SEO/UX issue affecting this module.',
-          uxWhy: iss.uxWhy || 'Improves user experience and accessibility.',
-          seoWhy: iss.seoWhy || 'Helps search engines understand and rank the page better.'
-        }));
+        // Checklist definitions (same as before for accurate passed/failed)
+        let checks = [];
+        if (mod.id === 'seo') {
+          checks = [
+            { text: 'Title optimized (30–65 chars, keyword)', passed: !modIssues.some(i => i.issue.toLowerCase().includes('title')) },
+            { text: 'Meta description present & optimal', passed: !modIssues.some(i => i.issue.toLowerCase().includes('meta description')) },
+            { text: 'Main heading with keyword', passed: !modIssues.some(i => i.issue.toLowerCase().includes('main heading') || i.issue.toLowerCase().includes('keyword')) },
+            { text: 'Structured data (schema) detected', passed: !modIssues.some(i => i.issue.toLowerCase().includes('schema') || i.issue.toLowerCase().includes('structured data')) },
+            { text: 'Canonical tag present', passed: !modIssues.some(i => i.issue.toLowerCase().includes('canonical')) },
+            { text: 'All images have alt text', passed: !modIssues.some(i => i.issue.toLowerCase().includes('alt text')) }
+          ];
+        } else if (mod.id === 'mobile') {
+          checks = [
+            { text: 'Viewport meta tag correct', passed: !modIssues.some(i => i.issue.includes('Viewport')) },
+            { text: 'Web app manifest linked', passed: !modIssues.some(i => i.issue.includes('manifest')) },
+            { text: 'Homescreen icons provided', passed: !modIssues.some(i => i.issue.includes('homescreen') || i.issue.includes('icon')) },
+            { text: 'Service worker detected', passed: !modIssues.some(i => i.issue.includes('service worker')) }
+          ];
+        } else if (mod.id === 'perf') {
+          checks = [
+            { text: 'Page weight under control', passed: !modIssues.some(i => i.issue.includes('Page weight')) },
+            { text: 'Reasonable HTTP requests', passed: !modIssues.some(i => i.issue.includes('HTTP requests')) },
+            { text: 'No excessive render-blocking', passed: !modIssues.some(i => i.issue.includes('render-blocking')) },
+            { text: 'Optimized web fonts', passed: !modIssues.some(i => i.issue.includes('web font') || i.issue.includes('font')) }
+          ];
+        } else if (mod.id === 'access') {
+          checks = [
+            { text: 'All images have alt text', passed: !modIssues.some(i => i.issue.includes('alt text')) },
+            { text: 'Lang attribute on <html>', passed: !modIssues.some(i => i.issue.includes('lang attribute')) },
+            { text: 'Main landmark present', passed: !modIssues.some(i => i.issue.includes('main landmark')) },
+            { text: 'Proper heading order', passed: !modIssues.some(i => i.issue.includes('Heading order')) },
+            { text: 'Form fields labeled', passed: !modIssues.some(i => i.issue.includes('form fields') || i.issue.includes('labels')) }
+          ];
+        } else if (mod.id === 'content') {
+          checks = [
+            { text: 'Sufficient content depth', passed: !modIssues.some(i => i.issue.includes('Thin content')) },
+            { text: 'Good readability score', passed: !modIssues.some(i => i.issue.includes('Readability')) },
+            { text: 'Strong heading structure', passed: !modIssues.some(i => i.issue.includes('heading structure')) },
+            { text: 'Uses lists for scannability', passed: !modIssues.some(i => i.issue.includes('lists')) }
+          ];
+        } else if (mod.id === 'ux') {
+          checks = [
+            { text: 'Clear calls-to-action', passed: !modIssues.some(i => i.issue.includes('calls-to-action')) },
+            { text: 'Breadcrumb navigation (if needed)', passed: !modIssues.some(i => i.issue.includes('breadcrumb')) }
+          ];
+        } else if (mod.id === 'security') {
+          checks = [
+            { text: 'Served over HTTPS', passed: !modIssues.some(i => i.issue.includes('HTTPS')) },
+            { text: 'No mixed content', passed: !modIssues.some(i => i.issue.includes('mixed content')) }
+          ];
+        } else if (mod.id === 'indexability') {
+          checks = [
+            { text: 'No noindex tag', passed: !modIssues.some(i => i.issue.includes('noindex')) },
+            { text: 'Canonical tag present', passed: !modIssues.some(i => i.issue.includes('canonical')) }
+          ];
+        }
 
-        // Create container once
+        // Create/reuse container
         let fixesContainer = expandBtn.nextElementSibling;
-        if (!fixesContainer || !fixesContainer.classList.contains('module-fixes')) {
+        if (!fixesContainer || !fixesContainer.classList.contains('module-fixes-container')) {
           fixesContainer = document.createElement('div');
-          fixesContainer.className = 'module-fixes hidden mt-6 space-y-6 text-left';
+          fixesContainer.className = 'module-fixes-container hidden mt-6 space-y-6';
           expandBtn.after(fixesContainer);
         }
         fixesContainer.innerHTML = '';
 
-        if (failedFixes.length === 0) {
-          fixesContainer.innerHTML = `<p class="text-green-400 text-center font-semibold">✅ All checks passed – excellent work!</p>`;
-        } else {
-          // Individual failed fixes
-          failedFixes.forEach(f => {
-            const div = document.createElement('div');
-            div.className = 'p-5 bg-white/10 backdrop-blur rounded-2xl border border-white/20';
-            div.innerHTML = `
-              <strong class="text-xl block mb-3 text-orange-400">${f.title}</strong>
-              <p class="mb-3"><span class="text-blue-400 font-bold">How to fix:</span><br>${f.fix}</p>
-              <p class="mb-3"><span class="text-cyan-400 font-bold">What is it?</span><br>${f.what}</p>
-              <p><span class="text-red-400 font-bold">Why it matters:</span><br>
-                <strong>UX:</strong> ${f.uxWhy}<br>
-                <strong>SEO:</strong> ${f.seoWhy}
-              </p>
+        // 1. ✅/❌ Checklist (passed/failed tests)
+        const checklistDiv = document.createElement('div');
+        checklistDiv.className = 'space-y-2 text-left mx-auto max-w-md text-gray-800 dark:text-gray-200';
+        checklistDiv.innerHTML = checks.map(check => `
+          <p class="${check.passed ? 'text-green-400' : 'text-red-400'} font-medium">
+            ${check.passed ? '✅' : '❌'} ${check.text}
+          </p>
+        `).join('');
+        fixesContainer.appendChild(checklistDiv);
+
+        // 2. Recommended fixes for failed tests ONLY (title + How to fix)
+        if (modIssues.length > 0) {
+          const fixesDiv = document.createElement('div');
+          fixesDiv.className = 'mt-6 space-y-6';
+          modIssues.forEach(iss => {
+            const item = document.createElement('div');
+            item.className = 'p-5 bg-white/10 dark:bg-black/20 backdrop-blur rounded-2xl border border-white/20 dark:border-gray-700';
+            item.innerHTML = `
+              <strong class="text-xl block mb-3 text-orange-300 dark:text-orange-400">${iss.issue}</strong>
+              <p class="text-gray-800 dark:text-gray-200"><span class="font-bold text-blue-400">How to fix:</span><br>${iss.fix}</p>
             `;
-            fixesContainer.appendChild(div);
+            fixesDiv.appendChild(item);
           });
-
-          // Module-level summary (always shown when expanded)
-          const moduleSummary = {
-            seo: { what: 'On-Page SEO covers title, meta tags, headings, schema, and keyword usage.', uxWhy: 'Clear titles and descriptions set user expectations instantly.', seoWhy: 'Strongest ranking signals come from properly optimized on-page elements.' },
-            mobile: { what: 'Mobile & PWA checks viewport, manifest, icons, and service worker.', uxWhy: 'Ensures flawless experience on phones and installability.', seoWhy: 'Google uses mobile-first indexing – non-mobile-friendly = ranking penalty.' },
-            perf: { what: 'Performance analyzes page weight, requests, fonts, and render-blocking resources.', uxWhy: 'Fast load = happy users who stay and convert.', seoWhy: 'Core Web Vitals directly affect rankings.' },
-            access: { what: 'Accessibility checks alt text, landmarks, headings, labels, and language.', uxWhy: 'Makes site usable for everyone, including disabled users.', seoWhy: 'Google treats accessibility as a quality signal.' },
-            content: { what: 'Content Quality evaluates depth, readability, structure, and scannability.', uxWhy: 'Users want valuable, easy-to-read content.', seoWhy: 'Comprehensive, well-structured content ranks higher.' },
-            ux: { what: 'UX Design looks at clarity of actions and navigation flow.', uxWhy: 'Reduces confusion and friction.', seoWhy: 'Better UX = lower bounce, higher engagement signals.' },
-            security: { what: 'Security confirms HTTPS and no mixed content.', uxWhy: 'Users trust secure sites and won’t see warnings.', seoWhy: 'Google marks HTTP sites as Not Secure and downgrades them.' },
-            indexability: { what: 'Indexability ensures the page can actually appear in Google.', uxWhy: 'No direct user impact.', seoWhy: 'noindex or missing canonical = invisible in search.' }
-          };
-
-          const summary = moduleSummary[mod.id];
-          const summaryDiv = document.createElement('div');
-          summaryDiv.className = 'mt-8 p-5 bg-gradient-to-r from-purple-900/50 to-blue-900/50 rounded-2xl border border-purple-500/30';
-          summaryDiv.innerHTML = `
-            <h4 class="text-lg font-bold mb-3 text-purple-300">About this module</h4>
-            <p class="mb-2"><span class="text-cyan-300 font-bold">What it covers:</span><br>${summary.what}</p>
-            <p><span class="text-purple-300 font-bold">Why it matters overall:</span><br>
-              <strong>UX:</strong> ${summary.uxWhy}<br>
-              <strong>SEO:</strong> ${summary.seoWhy}
-            </p>
-          `;
-          fixesContainer.appendChild(summaryDiv);
+          fixesContainer.appendChild(fixesDiv);
+        } else {
+          const allGood = document.createElement('div');
+          allGood.className = 'mt-6 text-center p-5 bg-green-900/30 dark:bg-green-900/50 rounded-2xl border border-green-500/50';
+          allGood.innerHTML = '<p class="text-green-400 text-lg font-semibold">✅ All tests passed – this module is optimized!</p>';
+          fixesContainer.appendChild(allGood);
         }
 
-        // Button text toggle
+        // 3. Module-level What is it? / How to improve overall? / Why it matters? (single block at bottom)
+        const moduleEdu = {
+          seo: { what: 'On-Page SEO evaluates critical elements like title tags, meta descriptions, headings, structured data, and keyword placement that search engines read directly.', how: 'Optimize titles (50–60 chars with keyword early), add compelling meta descriptions (120–158 chars), include schema markup, and ensure headings reflect your main topic.', whyUx: 'Clear, accurate titles and descriptions help users quickly understand if your page matches their search.', whySeo: 'These are the strongest direct ranking factors Google uses to understand and rank your content.' },
+          mobile: { what: 'Mobile & PWA checks if your site is fully mobile-friendly and ready to be installed as a progressive web app.', how: 'Add proper viewport meta, link a manifest.json, provide icons, and register a service worker.', whyUx: 'Ensures seamless experience on phones and allows users to add your site to their home screen.', whySeo: 'Google uses mobile-first indexing – poor mobile setup hurts rankings across all devices.' },
+          perf: { what: 'Performance measures page load speed factors like HTML weight, number of requests, fonts, and render-blocking resources.', how: 'Minify code, compress images, lazy-load assets, limit fonts, and defer non-critical scripts/CSS.', whyUx: 'Faster pages keep users engaged and reduce bounce rates.', whySeo: 'Core Web Vitals (LCP, FID, CLS) are direct ranking factors.' },
+          access: { what: 'Accessibility verifies if your site is usable by everyone, including people with disabilities (screen readers, keyboard navigation).', how: 'Add meaningful alt text, proper landmarks, sequential headings, labeled forms, and lang attribute.', whyUx: 'Makes content available to all users, regardless of ability.', whySeo: 'Google rewards accessible sites as higher quality.' },
+          content: { what: 'Content Quality assesses depth, readability, structure, and scannability of your text.', how: 'Aim for comprehensive coverage with short sentences, subheadings every 300–400 words, and bullet lists.', whyUx: 'Users can quickly find and understand the information they need.', whySeo: 'In-depth, well-structured content satisfies user intent better and ranks higher.' },
+          ux: { what: 'UX Design reviews overall user flow, clarity of actions, and navigation aids.', how: 'Prioritize key CTAs, reduce link overload, and add breadcrumbs on deep pages.', whyUx: 'Reduces confusion and helps users achieve their goals faster.', whySeo: 'Better engagement metrics signal quality to Google.' },
+          security: { what: 'Security confirms your site uses HTTPS and has no insecure mixed content.', how: 'Install a valid SSL certificate and update all resources to HTTPS.', whyUx: 'Prevents browser warnings that scare users away.', whySeo: 'Google downgrades HTTP sites and marks them "Not Secure".' },
+          indexability: { what: 'Indexability ensures search engines are allowed to crawl and index your page.', how: 'Remove any noindex tags (unless intentional) and add a canonical URL.', whyUx: 'No direct user impact.', whySeo: 'Without indexability, your page won\'t appear in search results at all.' }
+        };
+
+        const edu = moduleEdu[mod.id];
+        const eduDiv = document.createElement('div');
+        eduDiv.className = 'mt-8 p-6 bg-gradient-to-br from-purple-900/40 to-indigo-900/40 dark:from-purple-900/60 dark:to-indigo-900/60 rounded-2xl border border-purple-400/30 dark:border-purple-600/40';
+        eduDiv.innerHTML = `
+          <h4 class="text-lg font-bold mb-4 text-purple-300">About this module</h4>
+          <p class="mb-4 text-gray-800 dark:text-gray-200"><span class="font-bold text-cyan-400">What is it?</span><br>${edu.what}</p>
+          <p class="mb-4 text-gray-800 dark:text-gray-200"><span class="font-bold text-blue-400">How to improve overall:</span><br>${edu.how}</p>
+          <p class="text-gray-800 dark:text-gray-200"><span class="font-bold text-red-400">Why it matters:</span><br>
+            <strong>UX:</strong> ${edu.whyUx}<br>
+            <strong>SEO:</strong> ${edu.whySeo}
+          </p>
+        `;
+        fixesContainer.appendChild(eduDiv);
+
+        // Toggle
         expandBtn.onclick = () => {
           fixesContainer.classList.toggle('hidden');
-          expandBtn.textContent = fixesContainer.classList.contains('hidden') ? 'Show Recommended Fixes' : 'Hide Fixes';
+          expandBtn.textContent = fixesContainer.classList.contains('hidden') ? 'Show Details' : 'Hide Details';
         };
       });
       
