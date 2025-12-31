@@ -146,6 +146,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) throw new Error('Network response was not ok');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
+      
+      
+      
+      
 
       const resultsWrapper = document.getElementById('results-wrapper');
       const modules = [
@@ -181,81 +185,96 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       updateScore('overall-score', overallScore);
+      
+      
+      
+      
+      
 
-      // === ADD ✅/❌ CHECKLIST TO EACH MODULE ===
+      // === SHOW FIXES BUTTONS – NOW SHOWS RECOMMENDED FIXES FOR FAILED CHECKS ===
       modules.forEach(mod => {
-        const result = mod.fn(html, doc, url); // re-run for fresh checks
-        let checks = [];
-        if (mod.id === 'seo') {
-          checks = [
-            { text: 'Title optimized', passed: !result.issues.some(i => i.issue.toLowerCase().includes('title')) },
-            { text: 'Meta description', passed: !result.issues.some(i => i.issue.toLowerCase().includes('meta description')) },
-            { text: 'Main heading', passed: !result.issues.some(i => i.issue.toLowerCase().includes('main heading') || i.issue.toLowerCase().includes('heading')) },
-            { text: 'Schema detected', passed: !result.issues.some(i => i.issue.toLowerCase().includes('schema') || i.issue.toLowerCase().includes('structured data')) },
-            { text: 'Canonical tag', passed: !result.issues.some(i => i.issue.toLowerCase().includes('canonical')) },
-            { text: 'Image alt text', passed: !result.issues.some(i => i.issue.toLowerCase().includes('alt text')) }
-          ];
-        } else if (mod.id === 'mobile') {
-          checks = [
-            { text: 'Viewport set', passed: !result.issues.some(i => i.issue.includes('Viewport')) },
-            { text: 'Manifest linked', passed: !result.issues.some(i => i.issue.includes('manifest')) },
-            { text: 'Homescreen icon', passed: !result.issues.some(i => i.issue.includes('homescreen') || i.issue.includes('icon')) },
-            { text: 'Service worker', passed: !result.issues.some(i => i.issue.includes('service worker')) }
-          ];
-        } else if (mod.id === 'perf') {
-          checks = [
-            { text: 'Low page weight', passed: !result.issues.some(i => i.issue.includes('Page weight')) },
-            { text: 'Few requests', passed: !result.issues.some(i => i.issue.includes('HTTP requests')) },
-            { text: 'No render-blocking', passed: !result.issues.some(i => i.issue.includes('render-blocking')) },
-            { text: 'Optimized fonts', passed: !result.issues.some(i => i.issue.includes('web font') || i.issue.includes('font')) }
-          ];
-        } else if (mod.id === 'access') {
-          checks = [
-            { text: 'Alt text complete', passed: !result.issues.some(i => i.issue.includes('alt text')) },
-            { text: 'Lang attribute', passed: !result.issues.some(i => i.issue.includes('lang attribute')) },
-            { text: 'Main landmark', passed: !result.issues.some(i => i.issue.includes('main landmark')) },
-            { text: 'Heading order', passed: !result.issues.some(i => i.issue.includes('Heading order')) },
-            { text: 'Form labels', passed: !result.issues.some(i => i.issue.includes('form fields') || i.issue.includes('labels')) }
-          ];
-        } else if (mod.id === 'content') {
-          checks = [
-            { text: 'Sufficient depth', passed: !result.issues.some(i => i.issue.includes('Thin content')) },
-            { text: 'Good readability', passed: !result.issues.some(i => i.issue.includes('Readability')) },
-            { text: 'Heading structure', passed: !result.issues.some(i => i.issue.includes('heading structure')) },
-            { text: 'Uses lists', passed: !result.issues.some(i => i.issue.includes('lists')) }
-          ];
-        } else if (mod.id === 'ux') {
-          checks = [
-            { text: 'Clear CTAs', passed: !result.issues.some(i => i.issue.includes('calls-to-action')) },
-            { text: 'Breadcrumb nav', passed: !result.issues.some(i => i.issue.includes('breadcrumb')) }
-          ];
-        } else if (mod.id === 'security') {
-          checks = [
-            { text: 'HTTPS secure', passed: !result.issues.some(i => i.issue.includes('HTTPS')) },
-            { text: 'No mixed content', passed: !result.issues.some(i => i.issue.includes('mixed content')) }
-          ];
-        } else if (mod.id === 'indexability') {
-          checks = [
-            { text: 'No noindex', passed: !result.issues.some(i => i.issue.includes('noindex')) },
-            { text: 'Canonical present', passed: !result.issues.some(i => i.issue.includes('canonical')) }
-          ];
+        const card = document.getElementById(`${mod.id}-score`);
+        if (!card) return;
+        const expandBtn = card.querySelector('.expand');
+        if (!expandBtn) return;
+
+        // Run analysis once for this module to get fresh issues
+        const { issues: modIssues } = mod.fn(html, doc, url);
+
+        // Build failed-checks-only fixes list
+        const failedFixes = modIssues.map(iss => ({
+          title: iss.issue,
+          fix: iss.fix,
+          what: iss.what || 'A common SEO/UX issue affecting this module.',
+          uxWhy: iss.uxWhy || 'Improves user experience and accessibility.',
+          seoWhy: iss.seoWhy || 'Helps search engines understand and rank the page better.'
+        }));
+
+        // Create container once
+        let fixesContainer = expandBtn.nextElementSibling;
+        if (!fixesContainer || !fixesContainer.classList.contains('module-fixes')) {
+          fixesContainer = document.createElement('div');
+          fixesContainer.className = 'module-fixes hidden mt-6 space-y-6 text-left';
+          expandBtn.after(fixesContainer);
+        }
+        fixesContainer.innerHTML = '';
+
+        if (failedFixes.length === 0) {
+          fixesContainer.innerHTML = `<p class="text-green-400 text-center font-semibold">✅ All checks passed – excellent work!</p>`;
+        } else {
+          // Individual failed fixes
+          failedFixes.forEach(f => {
+            const div = document.createElement('div');
+            div.className = 'p-5 bg-white/10 backdrop-blur rounded-2xl border border-white/20';
+            div.innerHTML = `
+              <strong class="text-xl block mb-3 text-orange-400">${f.title}</strong>
+              <p class="mb-3"><span class="text-blue-400 font-bold">How to fix:</span><br>${f.fix}</p>
+              <p class="mb-3"><span class="text-cyan-400 font-bold">What is it?</span><br>${f.what}</p>
+              <p><span class="text-red-400 font-bold">Why it matters:</span><br>
+                <strong>UX:</strong> ${f.uxWhy}<br>
+                <strong>SEO:</strong> ${f.seoWhy}
+              </p>
+            `;
+            fixesContainer.appendChild(div);
+          });
+
+          // Module-level summary (always shown when expanded)
+          const moduleSummary = {
+            seo: { what: 'On-Page SEO covers title, meta tags, headings, schema, and keyword usage.', uxWhy: 'Clear titles and descriptions set user expectations instantly.', seoWhy: 'Strongest ranking signals come from properly optimized on-page elements.' },
+            mobile: { what: 'Mobile & PWA checks viewport, manifest, icons, and service worker.', uxWhy: 'Ensures flawless experience on phones and installability.', seoWhy: 'Google uses mobile-first indexing – non-mobile-friendly = ranking penalty.' },
+            perf: { what: 'Performance analyzes page weight, requests, fonts, and render-blocking resources.', uxWhy: 'Fast load = happy users who stay and convert.', seoWhy: 'Core Web Vitals directly affect rankings.' },
+            access: { what: 'Accessibility checks alt text, landmarks, headings, labels, and language.', uxWhy: 'Makes site usable for everyone, including disabled users.', seoWhy: 'Google treats accessibility as a quality signal.' },
+            content: { what: 'Content Quality evaluates depth, readability, structure, and scannability.', uxWhy: 'Users want valuable, easy-to-read content.', seoWhy: 'Comprehensive, well-structured content ranks higher.' },
+            ux: { what: 'UX Design looks at clarity of actions and navigation flow.', uxWhy: 'Reduces confusion and friction.', seoWhy: 'Better UX = lower bounce, higher engagement signals.' },
+            security: { what: 'Security confirms HTTPS and no mixed content.', uxWhy: 'Users trust secure sites and won’t see warnings.', seoWhy: 'Google marks HTTP sites as Not Secure and downgrades them.' },
+            indexability: { what: 'Indexability ensures the page can actually appear in Google.', uxWhy: 'No direct user impact.', seoWhy: 'noindex or missing canonical = invisible in search.' }
+          };
+
+          const summary = moduleSummary[mod.id];
+          const summaryDiv = document.createElement('div');
+          summaryDiv.className = 'mt-8 p-5 bg-gradient-to-r from-purple-900/50 to-blue-900/50 rounded-2xl border border-purple-500/30';
+          summaryDiv.innerHTML = `
+            <h4 class="text-lg font-bold mb-3 text-purple-300">About this module</h4>
+            <p class="mb-2"><span class="text-cyan-300 font-bold">What it covers:</span><br>${summary.what}</p>
+            <p><span class="text-purple-300 font-bold">Why it matters overall:</span><br>
+              <strong>UX:</strong> ${summary.uxWhy}<br>
+              <strong>SEO:</strong> ${summary.seoWhy}
+            </p>
+          `;
+          fixesContainer.appendChild(summaryDiv);
         }
 
-        const card = document.getElementById(`${mod.id}-score`);
-        if (card) {
-          const expandBtn = card.querySelector('.expand');
-          if (expandBtn) {
-            const checklistDiv = document.createElement('div');
-            checklistDiv.className = 'mt-4 space-y-1 text-sm text-left max-w-xs mx-auto';
-            checklistDiv.innerHTML = checks.map(check => `
-              <p class="${check.passed ? 'text-green-400' : 'text-red-400'}">
-                ${check.passed ? '✅' : '❌'} ${check.text}
-              </p>
-            `).join('');
-            expandBtn.parentNode.insertBefore(checklistDiv, expandBtn);
-          }
-        }
+        // Button text toggle
+        expandBtn.onclick = () => {
+          fixesContainer.classList.toggle('hidden');
+          expandBtn.textContent = fixesContainer.classList.contains('hidden') ? 'Show Recommended Fixes' : 'Hide Fixes';
+        };
       });
+      
+      
+      
+      
+      
 
       // Top 3 Priority Fixes
       allIssues.sort((a, b) => b.impact - a.impact);
