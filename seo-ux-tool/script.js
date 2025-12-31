@@ -187,13 +187,13 @@ document.addEventListener('DOMContentLoaded', () => {
             { text: 'Viewport meta tag correct', passed: !modIssues.some(i => i.issue.includes('Viewport')) },
             { text: 'Web app manifest linked', passed: !modIssues.some(i => i.issue.includes('manifest')) },
             { text: 'Homescreen icons (192px+) provided', passed: !modIssues.some(i => i.issue.includes('homescreen') || i.issue.includes('icon')) },
-            { text: 'Service worker detected', passed: !modIssues.some(i => i.issue.includes('service worker')) }
+            { text: 'Service worker', passed: !modIssues.some(i => i.issue.includes('service worker')) }
           ];
         } else if (mod.id === 'perf') {
           checks = [
             { text: 'Page weight reasonable (<300KB HTML)', passed: !modIssues.some(i => i.issue.includes('Page weight')) },
-            { text: 'Low number of HTTP requests', passed: !modIssues.some(i => i.issue.includes('HTTP requests')) },
-            { text: 'No excessive render-blocking resources', passed: !modIssues.some(i => i.issue.includes('render-blocking')) },
+            { text: 'Number of HTTP requests', passed: !modIssues.some(i => i.issue.includes('HTTP requests')) },
+            { text: 'Render-blocking resources', passed: !modIssues.some(i => i.issue.includes('render-blocking')) },
             { text: 'Web fonts optimized', passed: !modIssues.some(i => i.issue.includes('web font') || i.issue.includes('font')) }
           ];
         } else if (mod.id === 'access') {
