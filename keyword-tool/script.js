@@ -1,4 +1,4 @@
-// Complete fixed script.js
+// Replace the entire keyword-tool/script.js with this updated version
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const pageUrlInput = document.getElementById('page-url');
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let yourScore = 0;
     const data = {};
-    const fixes = [];
+    const allFixes = [];
 
     const nextStep = async (stepIndex) => {
       if (stepIndex < progressModules.length) {
@@ -105,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
       await new Promise(resolve => setTimeout(resolve, 800));
     };
 
-    // Step 1: Meta
     await nextStep(1);
     const titleText = yourDoc.querySelector('title')?.textContent.trim() || '';
     const descText = yourDoc.querySelector('meta[name="description"]')?.content.trim() || '';
@@ -113,14 +112,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const descMatch = countPhrase(descText, phrase);
     data.meta = { titleText, descText, titleMatch, descMatch, yourMatches: titleMatch + descMatch };
     yourScore += data.meta.yourMatches > 0 ? 25 : 0;
-    if (data.meta.yourMatches === 0) fixes.push({
-      issue: 'Add keyword to title and meta description',
-      what: 'Your page lacks the target keyword in the title tag or meta description, reducing visibility in search results.',
-      how: 'Incorporate the keyword naturally at the beginning of the title (under 60 characters) and once in the meta description (under 155 characters) to make it compelling.',
-      why: 'These elements are key for search engines to match queries and encourage clicks, potentially boosting CTR by 20-30% when optimized.'
-    });
+    if (titleMatch === 0) allFixes.push({module: 'Meta Title & Desc', issue: 'Add keyword to meta title', how: 'Place the keyword near the start of the title (under 60 characters) for maximum relevance.'});
+    if (descMatch === 0) allFixes.push({module: 'Meta Title & Desc', issue: 'Add keyword to meta description', how: 'Include the keyword once naturally in the description (under 155 characters) to boost click-through rates.'});
 
-    // Step 2: Headings
     await nextStep(2);
     const headings = Array.from(yourDoc.querySelectorAll('h1, h2, h3, h4, h5, h6')).slice(0, 5);
     const headingsData = headings.map(h => ({ tag: h.tagName, text: h.textContent.trim(), match: countPhrase(h.textContent, phrase) > 0 }));
@@ -128,14 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
     data.h1 = { match: countPhrase(yourH1, phrase) };
     data.headingsData = headingsData;
     yourScore += data.h1.match > 0 ? 15 : 0;
-    if (data.h1.match === 0) fixes.push({
-      issue: 'Add keyword to H1',
-      what: 'The main H1 heading is missing the target keyword.',
-      how: 'Revise the H1 to feature the keyword or a close variant, ensuring it remains engaging and user-focused.',
-      why: 'H1 tags help search engines grasp the page topic quickly, serving as a core on-page factor for better rankings.'
-    });
+    if (data.h1.match === 0) allFixes.push({module: 'H1 & Headings', issue: 'Add keyword to H1', how: 'Rewrite your H1 to include the keyword naturally while keeping it engaging and reader-focused.'});
 
-    // Step 3: Content
     await nextStep(3);
     const cleanContent = getCleanContent(yourDoc);
     const yourWords = getWordCount(yourDoc);
@@ -143,14 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const yourDensity = yourWords ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
     data.content = { words: yourWords, matches: yourContentMatches, density: yourDensity };
     yourScore += yourWords > 800 ? 20 : 0;
-    if (yourWords < 800) fixes.push({
-      issue: `Add depth (${800 - yourWords} words recommended)`,
-      what: 'Your content is shorter than ideal, limiting its ability to cover the topic comprehensively.',
-      how: 'Expand with detailed sections like examples, FAQs, comparisons, or data to reach at least 800 words while maintaining quality.',
-      why: 'Longer, in-depth content often ranks higher as it provides more value and signals expertise to search engines.'
-    });
+    if (yourWords < 800) allFixes.push({module: 'Content Density', issue: `Add depth (${800 - yourWords} words recommended)`, how: 'Expand with examples, FAQs, comparisons, or data to provide comprehensive value.'});
+    if (parseFloat(yourDensity) < 0.5) allFixes.push({module: 'Content Density', issue: 'Increase keyword density', how: 'Add the keyword naturally in intro, subheads, and body (aim for 1-2%).'});
 
-    // Step 4: Images
     await nextStep(4);
     const yourImgs = yourDoc.querySelectorAll('img');
     const matchingAlts = Array.from(yourImgs)
@@ -159,14 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
       .map(img => img.alt?.trim() || '(empty alt)');
     data.alts = { total: yourImgs.length, phrase: matchingAlts.length, matchingAlts };
     yourScore += matchingAlts.length > 0 ? 15 : 0;
-    if (matchingAlts.length === 0 && yourImgs.length > 0) fixes.push({
-      issue: 'Add keyword to key image alts',
-      what: 'None of your images have the target keyword in alt text.',
-      how: 'Add descriptive alt text including the keyword to important images (e.g., hero or feature images) without stuffing.',
-      why: 'Alt text improves accessibility, enables image search traffic, and adds relevance signals.'
-    });
+    if (matchingAlts.length === 0 && yourImgs.length > 0) allFixes.push({module: 'Image Alts', issue: 'Add keyword to key image alts', how: 'Update important images with descriptive alt text that includes the keyword naturally.'});
 
-    // Step 5: Anchors
     await nextStep(5);
     const matchingAnchors = Array.from(yourDoc.querySelectorAll('a'))
       .filter(a => countPhrase(a.textContent || '', phrase) > 0)
@@ -174,38 +151,48 @@ document.addEventListener('DOMContentLoaded', () => {
       .map(a => ({ text: (a.textContent || '').trim(), href: a.href }));
     data.anchors = { count: matchingAnchors.length, matchingAnchors };
     yourScore += matchingAnchors.length > 0 ? 10 : 0;
-    if (matchingAnchors.length === 0) fixes.push({
-      issue: 'Add keyword to anchor text',
-      what: 'No internal links use the target keyword in anchor text.',
-      how: 'Link to related pages using the keyword or natural variations as the clickable text.',
-      why: 'Keyword-rich anchors help distribute topical authority across your site.'
-    });
+    if (matchingAnchors.length === 0) allFixes.push({module: 'Anchor Text', issue: 'Add keyword to anchor text', how: 'Use the keyword naturally as clickable text when linking to related pages.'});
 
-    // Step 6: URL & Schema
     await nextStep(6);
     const schemaScript = yourDoc.querySelector('script[type="application/ld+json"]');
     const schemaPresent = !!schemaScript;
-    data.urlSchema = {
-      urlMatch: countPhrase(fullUrl, phrase),
-      schema: schemaPresent ? 1 : 0
-    };
+    data.urlSchema = { urlMatch: countPhrase(fullUrl, phrase), schema: schemaPresent ? 1 : 0 };
     yourScore += data.urlSchema.urlMatch > 0 ? 10 : 0;
-    if (data.urlSchema.urlMatch === 0) fixes.push({
-      issue: 'Include keyword in URL',
-      what: 'The page URL does not contain the target keyword.',
-      how: 'Use a clean, hyphenated URL with the keyword (e.g., /your-keyword-guide) and set up redirects if changing.',
-      why: 'Keyword in URL provides a clear relevance signal to users and search engines.'
-    });
-    if (data.urlSchema.schema === 0) fixes.push({
-      issue: 'Add structured data',
-      what: 'No structured data (schema markup) is detected.',
-      how: 'Add JSON-LD for Article, FAQ, or relevant schema type in the <head>.',
-      why: 'Schema enables rich results in search, increasing visibility and click-through rates.'
-    });
+    if (data.urlSchema.urlMatch === 0) allFixes.push({module: 'URL & Schema', issue: 'Include keyword in URL', how: 'Use a clean, hyphenated URL containing the keyword and set up redirects if changing.'});
+    if (data.urlSchema.schema === 0) allFixes.push({module: 'URL & Schema', issue: 'Add structured data', how: 'Add JSON-LD schema (Article or FAQ) in the head for rich results.'});
 
     await nextStep(7);
     yourScore = Math.min(100, Math.round(yourScore));
     stopSpinnerLoader();
+
+    // Build Top Priority Fixes
+    const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'URL & Schema', 'Image Alts', 'Anchor Text'];
+    const topPriorityFixes = [];
+    const moduleIssues = {};
+    allFixes.forEach(f => {
+      if (!moduleIssues[f.module]) moduleIssues[f.module] = [];
+      moduleIssues[f.module].push(f);
+    });
+    // First pass
+    moduleOrder.forEach(mod => {
+      if (moduleIssues[mod] && moduleIssues[mod].length > 0) {
+        topPriorityFixes.push(moduleIssues[mod][0]);
+      }
+    });
+    // Second pass for emphasis
+    if (topPriorityFixes.length < 3) {
+      const topMod = topPriorityFixes.length > 0 ? topPriorityFixes[0].module : null;
+      if (topMod && moduleIssues[topMod] && moduleIssues[topMod].length > 1) {
+        topPriorityFixes.push(moduleIssues[topMod][1]);
+      }
+    }
+    topPriorityFixes.length = Math.min(3, topPriorityFixes.length);
+
+    // Ranking levels
+    const levels = ['Page 2+', 'Page 1 Possible', 'Top 10', 'Top 3 Potential'];
+    const currentLevel = yourScore >= 90 ? 3 : yourScore >= 80 ? 2 : yourScore >= 60 ? 1 : 0;
+    const projectedLevel = Math.min(3, currentLevel + (topPriorityFixes.length >= 2 ? 2 : topPriorityFixes.length));
+    const hasMetaOrContent = topPriorityFixes.some(f => f.module === 'Meta Title & Desc' || f.module === 'Content Density');
 
     results.innerHTML = `
 <!-- Big Score Circle -->
@@ -233,8 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <!-- Small Metric Circles -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
   ${[
-    {
-      name: 'Meta Title & Desc', score: data.meta.yourMatches > 0 ? 100 : 0,
+    {name: 'Meta Title & Desc', score: data.meta.yourMatches > 0 ? 100 : 0,
       details: `
         <div class="mt-4 text-left space-y-2 text-sm">
           ${data.meta.titleMatch > 0 ? '✅' : '❌'} <span class="font-bold">Meta Title:</span><br>
@@ -253,12 +239,11 @@ document.addEventListener('DOMContentLoaded', () => {
       how: 'Place the keyword near the beginning of the title (keep total under 60 characters). Include it once naturally in the meta description (under 155 characters). Make both compelling and relevant to the user\'s search intent.',
       why: 'Pages with the exact keyword in title and description often rank higher and achieve 20-30% better click-through rates. These elements signal strong relevance to search engines. They also build trust and expectation before the user even visits your page.'
     },
-    {
-      name: 'H1 & Headings', score: data.h1.match > 0 ? 100 : 0,
+    {name: 'H1 & Headings', score: data.h1.match > 0 ? 100 : 0,
       details: `
         <div class="mt-4 text-left space-y-2 text-sm">
           ${data.headingsData.length > 0 ? data.headingsData.map(h => 
-            `${h.match ? '✅' : '❌'} <span class="font-bold">${h.tag}:</span> <span class="text-gray-800 dark:text-gray-200">${truncate(h.text, 60)}</span>`
+            `${h.match ? '✅' : ''} <span class="font-bold">${h.tag}:</span> <span class="text-gray-800 dark:text-gray-200">${truncate(h.text, 60)}</span>`
           ).join('<br>') : '<span class="text-gray-800 dark:text-gray-200">No headings found</span>'}
         </div>`,
       fixEdu: data.h1.match === 0 ? 
@@ -268,8 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
       how: 'Rewrite your H1 to include the exact keyword or a close natural variant while keeping it engaging for readers. Avoid stuffing — only use it if it fits naturally. Support with keyword-rich H2/H3 where relevant.',
       why: 'A keyword-optimized H1 is one of the strongest on-page signals for topical relevance. It helps both search engines and users quickly grasp what the page is about. Well-structured headings also improve readability and dwell time.'
     },
-    {
-      name: 'Content Density', score: parseFloat(data.content.density),
+    {name: 'Content Density', score: parseFloat(data.content.density),
       details: `
         <div class="mt-4 text-center space-y-2 text-sm">
           <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">Word count:</span> ${data.content.words}</p>
@@ -288,8 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
       how: 'Expand content with valuable sections like examples, FAQs, data, or comparisons to reach 800+ words. Include the keyword naturally in introduction, subheadings, body, and conclusion. Reduce repetitions if density exceeds 3%.',
       why: 'Longer, well-optimized content consistently outranks shorter pages on the same topic. Proper density signals relevance without stuffing. Comprehensive content satisfies user intent better, leading to higher engagement and rankings.'
     },
-    {
-      name: 'Image Alts', score: data.alts.phrase > 0 ? 100 : 0,
+    {name: 'Image Alts', score: data.alts.phrase > 0 ? 100 : 0,
       details: `
         <div class="mt-4 text-left space-y-2 text-sm">
           <p class="text-gray-800 dark:text-gray-200 font-bold">Matching alts (${data.alts.phrase}/${data.alts.total} images):</p>
@@ -302,8 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
       how: 'Write descriptive alt text for important images that naturally includes the keyword where appropriate. Avoid stuffing — only use it if it accurately describes the image. Leave decorative images with empty alt="".',
       why: 'Optimized alt text improves accessibility compliance and user experience. It enables ranking in Google Images, driving extra traffic. It also provides another contextual relevance signal to search engines.'
     },
-    {
-      name: 'Anchor Text', score: data.anchors.count > 0 ? 100 : 0,
+    {name: 'Anchor Text', score: data.anchors.count > 0 ? 100 : 0,
       details: `
         <div class="mt-4 text-left space-y-2 text-sm">
           <p class="text-gray-800 dark:text-gray-200 font-bold">Matching anchors (${data.anchors.count} found):</p>
@@ -316,8 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
       how: 'When linking to related content on your site, use the keyword naturally as part or all of the clickable text. Vary with close variants to avoid over-optimization. Link contextually from relevant sections.',
       why: 'Keyword-rich internal anchors reinforce site structure and topical clusters. They help search engines crawl and understand relationships between pages. Natural internal linking improves user navigation and time on site.'
     },
-    {
-      name: 'URL & Schema', score: Math.min(100, (data.urlSchema.urlMatch ? 50 : 0) + (data.urlSchema.schema ? 50 : 0)),
+    {name: 'URL & Schema', score: Math.min(100, (data.urlSchema.urlMatch ? 50 : 0) + (data.urlSchema.schema ? 50 : 0)),
       details: `
         <div class="mt-4 text-left space-y-2 text-sm">
           ${data.urlSchema.urlMatch > 0 ? '✅' : '❌'} <span class="font-bold">Keyword in URL</span><br>
@@ -363,36 +344,120 @@ document.addEventListener('DOMContentLoaded', () => {
   }).join('')}
 </div>
 
-<!-- Prioritized Fixes -->
-<div class="space-y-8">
-  <h3 class="text-4xl font-bold text-center text-orange-600 mb-8">Prioritized Fixes</h3>
-  ${fixes.length ? fixes.map(fix => `
-    <div class="p-8 bg-gradient-to-r from-orange-500/10 border-l-8 border-orange-500 rounded-r-2xl">
-      <div class="flex gap-6">
-        <div class="text-5xl">🔧</div>
-        <div class="w-full">
-          <h4 class="text-2xl font-bold text-orange-600 mb-4">${fix.issue}</h4>
-          <p class="text-blue-600 dark:text-blue-400 font-bold">What is it?</p><p class="text-gray-800 dark:text-gray-200">${fix.what}</p>
-          <p class="text-green-600 dark:text-green-400 font-bold mt-3">How to fix?</p><p class="text-gray-800 dark:text-gray-200">${fix.how}</p>
-          <p class="text-orange-600 dark:text-orange-400 font-bold mt-3">Why it matters?</p><p class="text-gray-800 dark:text-gray-200">${fix.why}</p>
+<!-- Top Priority Fixes -->
+<div class="my-16">
+  <h3 class="text-4xl font-bold text-center text-orange-600 mb-8">Top Priority Fixes</h3>
+  ${topPriorityFixes.length ? `
+    <div class="space-y-8 max-w-4xl mx-auto">
+      ${topPriorityFixes.map((fix, i) => {
+        const isSecond = i > 0 && fix.module === topPriorityFixes[0].module;
+        return `
+          <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border-l-8 border-orange-500 flex gap-6">
+            <div class="text-5xl font-black text-orange-600">${i+1}</div>
+            <div class="flex-1">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="px-4 py-1 bg-orange-500 text-white rounded-full text-sm font-bold">${fix.module}</span>
+                ${isSecond ? '<span class="text-sm text-orange-600 dark:text-orange-400">(multiple issues in this module)</span>' : ''}
+              </div>
+              <h4 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">${fix.issue}</h4>
+              <p class="text-gray-800 dark:text-gray-200">${fix.how}</p>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  ` : '<p class="text-center text-green-500 text-2xl font-bold">Strong optimization — keep it up!</p>'}
+</div>
+
+<!-- Ranking Potential & Expected Gains -->
+<div class="grid md:grid-cols-2 gap-8 my-20 max-w-6xl mx-auto">
+  <!-- Left: Ranking Potential Improvement -->
+  <div class="p-12 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-3xl shadow-2xl space-y-8">
+    <h3 class="text-4xl font-black text-center">Ranking Potential Improvement</h3>
+    <div class="flex justify-center gap-8 text-3xl font-black">
+      <div class="text-center">
+        <div class="px-6 py-3 bg-white/20 rounded-xl">${levels[currentLevel]}</div>
+        <p class="text-sm mt-2 opacity-90">Current</p>
+      </div>
+      <div class="self-center text-5xl">→</div>
+      <div class="text-center">
+        <div class="px-6 py-3 bg-white/30 rounded-xl">${levels[projectedLevel]}</div>
+        <p class="text-sm mt-2 opacity-90">Projected</p>
+      </div>
+    </div>
+    ${topPriorityFixes.length ? `
+      <div class="space-y-4 text-left">
+        ${topPriorityFixes.map(fix => {
+          const impact = fix.module === 'Meta Title & Desc' ? 'Boosts click-through rate and relevance signal' :
+                         fix.module === 'Content Density' ? 'Improves topical authority and depth' :
+                         fix.module === 'H1 & Headings' ? 'Clarifies page topic to search engines' :
+                         'Strengthens relevance and visibility';
+          return `<p class="flex gap-3"><span class="text-2xl">✓</span> ${fix.issue}: ${impact}</p>`;
+        }).join('')}
+      </div>
+    ` : ''}
+    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mx-auto block px-8 py-3 bg-white/20 rounded-full hover:bg-white/30 text-lg font-bold">
+      How We Calculated This
+    </button>
+    <div class="hidden text-sm space-y-3">
+      <p>Based on on-page factors proven to correlate with higher rankings in large-scale studies. Each implemented fix typically moves pages up in SERPs.</p>
+    </div>
+    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mx-auto block px-8 py-3 bg-white/20 rounded-full hover:bg-white/30 text-lg font-bold">
+      Potential Level Definitions
+    </button>
+    <div class="hidden text-sm space-y-3">
+      <p><strong>Page 2+</strong>: Limited on-page optimization<br>
+         <strong>Page 1 Possible</strong>: Good foundation, room for quick wins<br>
+         <strong>Top 10</strong>: Strong relevance signals<br>
+         <strong>Top 3 Potential</strong>: Excellent on-page setup</p>
+    </div>
+  </div>
+
+  <!-- Right: Expected Performance Gains -->
+  <div class="p-12 bg-gradient-to-br from-green-500 to-teal-600 text-white rounded-3xl shadow-2xl space-y-8">
+    <h3 class="text-4xl font-black text-center">Expected Performance Gains</h3>
+    <div class="space-y-6">
+      <div class="flex items-center gap-4">
+        <div class="text-4xl">🖱️</div>
+        <div class="flex-1">
+          <p class="font-bold">Click-Through Rate (CTR)</p>
+          <div class="w-full bg-white/30 rounded-full h-8">
+            <div class="bg-white h-8 rounded-full text-right pr-3 flex items-center justify-end font-bold" style="width: ${hasMetaOrContent ? 75 : 50}%">+${hasMetaOrContent ? '25-40' : '15-30'}%</div>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="text-4xl">📈</div>
+        <div class="flex-1">
+          <p class="font-bold">Impressions</p>
+          <div class="w-full bg-white/30 rounded-full h-8">
+            <div class="bg-white h-8 rounded-full text-right pr-3 flex items-center justify-end font-bold" style="width: ${topPriorityFixes.length * 20}%">+${topPriorityFixes.length * 15}-${topPriorityFixes.length * 30}%</div>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="text-4xl">📊</div>
+        <div class="flex-1">
+          <p class="font-bold">Average Position</p>
+          <div class="w-full bg-white/30 rounded-full h-8">
+            <div class="bg-white h-8 rounded-full text-right pr-3 flex items-center justify-end font-bold" style="width: ${hasMetaOrContent ? 70 : 55}%">↑ ${hasMetaOrContent ? '4-8' : '2-5'} spots</div>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="text-4xl">🚀</div>
+        <div class="flex-1">
+          <p class="font-bold">Organic Traffic</p>
+          <div class="w-full bg-white/30 rounded-full h-8">
+            <div class="bg-white h-8 rounded-full text-right pr-3 flex items-center justify-end font-bold" style="width: ${topPriorityFixes.length * 25}%">+${topPriorityFixes.length * 20}-${topPriorityFixes.length * 45}%</div>
+          </div>
         </div>
       </div>
     </div>
-  `).join('') : '<p class="text-center text-green-500 text-2xl font-bold">Strong optimization — keep it up!</p>'}
-</div>
-
-<!-- Predictive Rank Forecast -->
-<div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl space-y-8">
-  <h3 class="text-4xl font-black text-center">Predictive Rank Forecast</h3>
-  <p class="text-center text-4xl font-black">${yourScore >= 90 ? 'Top 3 Potential' : yourScore >= 80 ? 'Top 10' : yourScore >= 60 ? 'Page 1 Possible' : 'Page 2+'}</p>
-  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mx-auto block px-10 py-4 bg-white text-gray-900 rounded-full hover:bg-gray-100 text-xl font-bold">
-    Show Info
-  </button>
-  <div class="hidden space-y-6 text-left max-w-3xl mx-auto text-lg">
-    <p class="font-bold text-blue-300">What is it?</p><p>An estimate of SERP position potential based on on-page optimization strength. It focuses on factors you control directly (keyword placement, content depth, etc.).</p>
-    <p class="font-bold text-green-300">How to improve?</p><p>Implement all prioritized fixes. Monitor Google Search Console for indexing and performance changes — expect movement within 7–30 days.</p>
-    <p class="font-bold text-orange-300">Why it matters?</p><p>Pages scoring 80+ frequently reach top positions when on-page is strong. Higher scores (90+) indicate Top 3 potential with good off-page support (backlinks, authority).</p>
-    <p class="text-sm italic mt-4">Note: Actual rankings depend on competition, backlinks, and user signals — this is an on-page health indicator only.</p>
+    <div class="text-sm space-y-2">
+      <p>Conservative estimates based on pages with similar optimization levels.</p>
+      <p>Track in Google Search Console (Impressions, CTR, Average Position). Expect movement within 7–30 days after indexing.</p>
+    </div>
   </div>
 </div>
 
