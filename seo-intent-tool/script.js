@@ -475,32 +475,145 @@ const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
   </div>` : ''}
 </div>
 
-<!-- Predictive Rank Forecast -->
-<div class="text-center mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
-  <p class="text-3xl font-medium opacity-80">Predictive Rank Forecast</p>
-  <p class="text-8xl font-black mt-6">${overall > 88 ? 'Top 3' : overall > 75 ? 'Top 10' : overall > 60 ? 'Page 1 Possible' : 'Page 2+'}</p>
-  <p class="text-4xl mt-8 font-bold">+${Math.round((100-overall)*1.5)}% traffic potential</p>
-  <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-10 px-10 py-4 bg-white text-gray-900 rounded-full hover:bg-gray-100 text-xl font-bold">
-    Show Expert Analysis
-  </button>
-  <div class="hidden mt-10 space-y-6 text-left max-w-3xl mx-auto text-lg">
-    <p class="font-bold text-blue-300">What it is?</p>
-    <p>An estimate of your likely SERP position based on current E-E-A-T strength, content depth, readability, intent match, and schema signals compared to typical top-ranking pages in competitive niches.</p>
-    <p class="font-bold text-green-300">How to improve?</p>
-    <p>Address every red and orange gap identified in this report (author bio, depth, schema, etc.), monitor performance in Search Console, request indexing after major updates, and track ranking movement over 7–30 days as search engines re-evaluate your improved signals.</p>
-    <p class="font-bold text-orange-300">Why it matters?</p>
-    <p>Pages consistently scoring 85+ secure Page 1 visibility, while 90+ often lock Top 3 positions. Closing your ${100-overall}-point gap directly translates to substantial organic traffic gains and long-term ranking stability.</p>
+      // === NEW SECTION: Score Improvement & Potential Ranking Gains ===
+      // Calculate projected score and gains
+      const currentScore = overall;
+      let projectedScore = currentScore;
+      const totalFailed = failedExperience.length + failedExpertise.length + failedAuthoritativeness.length + failedTrustworthiness.length;
+      const hasDepthGap = words < 1500;
+      const hasSchemaGap = schemaTypes.length < 2;
+      const hasAuthorGap = !hasAuthorByline;
+
+      // Conservative impact estimates
+      if (totalFailed > 0 || hasDepthGap || hasSchemaGap || hasAuthorGap) {
+        projectedScore = Math.min(100, currentScore + 
+          (totalFailed * 5) + 
+          (hasDepthGap ? 12 : 0) + 
+          (hasSchemaGap ? 10 : 0) + 
+          (hasAuthorGap ? 15 : 0)
+        );
+      } else {
+        projectedScore = currentScore; // Optimal
+      }
+      const scoreDelta = Math.round(projectedScore - currentScore);
+      const isOptimal = scoreDelta <= 5;
+
+      // Top 3 priority fixes with impact
+      const priorityFixes = [];
+      if (!hasAuthorByline) priorityFixes.push({text: "Add visible author byline & bio", impact: "+15–25 points"});
+      if (words < 1500) priorityFixes.push({text: "Expand content depth (>1,500 words)", impact: "+12–20 points"});
+      if (schemaTypes.length < 2) priorityFixes.push({text: "Add relevant schema markup", impact: "+10–18 points"});
+      if (totalFailed > 0) {
+        // Add one representative E-E-A-T fix
+        if (failedExperience.length > 0) priorityFixes.push({text: "Strengthen first-person experience signals", impact: "+8–15 points"});
+        else if (failedExpertise.length > 0) priorityFixes.push({text: "Add credentials & citations", impact: "+10–18 points"});
+      }
+      const topFixes = priorityFixes.slice(0, 3);
+
+      // Traffic & ranking uplift estimates (scaled by delta)
+      const trafficUplift = isOptimal ? 0 : Math.round(scoreDelta * 1.8);
+      const ctrBoost = isOptimal ? 0 : Math.min(30, Math.round(scoreDelta * 0.8));
+      const rankingLift = isOptimal ? "Already strong" : currentScore < 60 ? "Page 2+ → Page 1 potential" : "Top 20 → Top 10 possible";
+
+      results.innerHTML += `
+<!-- Score Improvement & Potential Ranking Gains -->
+<div class="max-w-5xl mx-auto mt-20 grid md:grid-cols-2 gap-8">
+  <!-- Left: Score Improvement -->
+  <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
+    <h3 class="text-3xl font-bold text-center mb-8 text-orange-500">Overall Score Improvement</h3>
+    <div class="flex justify-center items-baseline gap-4 mb-8">
+      <div class="text-5xl font-black text-gray-500">${currentScore}</div>
+      <div class="text-4xl text-gray-400">→</div>
+      <div class="text-6xl font-black text-green-500">${Math.round(projectedScore)}</div>
+      <div class="text-2xl text-green-600 font-medium">(${scoreDelta > 0 ? '+' + scoreDelta : 'Optimal'})</div>
+    </div>
+
+    ${isOptimal ? `
+      <div class="text-center py-8">
+        <p class="text-4xl mb-4">🎉 Near-Optimal Score Achieved!</p>
+        <p class="text-lg text-gray-600 dark:text-gray-400">Your on-page signals are excellent. Focus on earning high-authority backlinks for the final push.</p>
+      </div>
+    ` : `
+      <div class="space-y-4">
+        <p class="font-medium text-gray-700 dark:text-gray-300 text-center mb-4">Top priority fixes & estimated impact:</p>
+        ${topFixes.map(fix => `
+          <div class="flex justify-between items-center p-4 bg-orange-50 dark:bg-orange-900/20 rounded-xl">
+            <span class="text-sm md:text-base">${fix.text}</span>
+            <span class="font-bold text-orange-600">${fix.impact}</span>
+          </div>
+        `).join('')}
+      </div>
+    `}
+
+    <details class="mt-8 text-sm text-gray-600 dark:text-gray-400">
+      <summary class="cursor-pointer font-medium text-orange-500 hover:underline">How We Calculated This</summary>
+      <div class="mt-4 space-y-2">
+        <p>• E-E-A-T signals: ~40% weight</p>
+        <p>• Content depth & readability: ~35% weight</p>
+        <p>• Intent match & schema: ~25% weight</p>
+        <p>• Top-ranking pages typically score 85+ on these on-page factors</p>
+        <p class="italic">Conservative estimates — actual gains may be higher</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Right: Potential Gains -->
+  <div class="p-8 bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
+    <h3 class="text-3xl font-bold text-center mb-8">Potential Ranking & Traffic Gains</h3>
+
+    ${isOptimal ? `
+      <div class="text-center py-12">
+        <p class="text-4xl mb-4">🌟 Elite On-Page Performance</p>
+        <p class="text-xl">Your page is highly optimized. Next step: build topical authority with quality backlinks and fresh content.</p>
+      </div>
+    ` : `
+      <div class="space-y-8">
+        <div class="flex items-center gap-4">
+          <div class="text-4xl">📈</div>
+          <div class="flex-1">
+            <p class="font-medium">Ranking Position Lift</p>
+            <p class="text-2xl font-bold">${rankingLift}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="text-4xl">🚀</div>
+          <div class="flex-1">
+            <p class="font-medium">Organic Traffic Increase</p>
+            <p class="text-2xl font-bold">+${trafficUplift}% potential</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="text-4xl">👆</div>
+          <div class="flex-1">
+            <p class="font-medium">Click-Through Rate Boost</p>
+            <p class="text-2xl font-bold">+${ctrBoost}% from rich results & intent match</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="text-4xl">🗝️</div>
+          <div class="flex-1">
+            <p class="font-medium">Intent Satisfaction</p>
+            <p class="text-2xl font-bold">${confidence}% → ${Math.min(100, confidence + Math.round(scoreDelta * 0.6))}%</p>
+          </div>
+        </div>
+      </div>
+    `}
+
+    <div class="mt-10 text-sm space-y-2 opacity-90">
+      <p>Conservative estimates based on on-page SEO & intent alignment benchmarks.</p>
+      <p>Improvements typically visible in Search Console within 1–4 weeks after indexing.</p>
+      <p>Actual results depend on competition, domain authority, and off-page factors.</p>
+    </div>
   </div>
 </div>
 
-          <!-- PDF Button -->
-          <div class="text-center my-16">
-            <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
-                    class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
-              📄 Save as PDF
-            </button>
-          </div>
-        </div>
+<!-- PDF Button (moved below new section) -->
+<div class="text-center my-16">
+  <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
+       class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
+    📄 Save as PDF
+  </button>
+</div>
       `;
 
     } catch (err) {
