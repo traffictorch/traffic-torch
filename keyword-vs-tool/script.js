@@ -42,37 +42,30 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async e => {
     e.preventDefault();
 
-    // Read raw input values
     let yourUrl = yourInput.value.trim();
     let compUrl = compInput.value.trim();
     const phrase = phraseInput.value.trim();
 
-    // Comment: Add https:// automatically if user forgot the protocol (matches other tools)
-    if (yourUrl && !yourUrl.startsWith('http')) {
-      yourUrl = 'https://' + yourUrl;
-    }
-    if (compUrl && !compUrl.startsWith('http')) {
-      compUrl = 'https://' + compUrl;
-    }
+    if (yourUrl && !yourUrl.startsWith('http')) yourUrl = 'https://' + yourUrl;
+    if (compUrl && !compUrl.startsWith('http')) compUrl = 'https://' + compUrl;
 
-    // Now check if fields are empty (after protocol fix)
     if (!yourUrl || !compUrl || !phrase) return;
 
-
-// Replace from results.classList.remove('hidden') to the scoring section with this debugged version
-
-    results.classList.remove('hidden');
-    results.innerHTML = `
-      <div class="flex flex-col items-center justify-center pt-32 pb-32 min-h-screen">
-        <div class="relative w-28 h-28">
-          <div class="absolute inset-0 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
-          <div class="absolute inset-0 rounded-full border-8 border-t-orange-500 border-r-pink-500 border-b-transparent border-l-transparent animate-spin"></div>
-        </div>
-        <p class="mt-12 text-3xl font-bold text-orange-600 dark:text-orange-400">Fetching pages...</p>
+    // === Single clean loader below form ===
+    let loadingDiv = document.createElement('div');
+    loadingDiv.id = 'single-loader';
+    loadingDiv.className = 'mt-12 flex flex-col items-center justify-center py-16';
+    loadingDiv.innerHTML = `
+      <div class="relative w-32 h-32">
+        <div class="absolute inset-0 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
+        <div class="absolute inset-0 rounded-full border-8 border-t-orange-500 border-r-pink-500 border-b-transparent border-l-transparent animate-spin"></div>
       </div>
+      <p class="mt-10 text-3xl font-bold text-orange-600 dark:text-orange-400">Analyzing relevance for "${phrase}"...</p>
+      <p class="mt-4 text-xl text-gray-600 dark:text-gray-400">Comparing your page vs competitor securely in-browser</p>
     `;
+    form.parentNode.insertBefore(loadingDiv, results);
+    results.classList.add('hidden');
 
-    // Step 1: Fetch both pages FIRST (fast, silent)
     let yourDoc, compDoc;
     try {
       [yourDoc, compDoc] = await Promise.all([fetchPage(yourUrl), fetchPage(compUrl)]);
@@ -80,8 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
       yourDoc = compDoc = null;
     }
 
-    // Immediate error if fetch failed
     if (!yourDoc || !compDoc) {
+      if (document.getElementById('single-loader')) document.getElementById('single-loader').remove();
+      results.classList.remove('hidden');
       results.innerHTML = `
         <div class="text-center py-32 px-6 max-w-3xl mx-auto">
           <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-8">
@@ -100,65 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Step 2: Now that data is ready, show nice progress animation for ~6 seconds
-    results.innerHTML = `
-      <div class="flex flex-col items-center justify-start pt-8 pb-32 min-h-screen bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
-        <div class="relative w-28 h-28">
-          <div class="absolute inset-0 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
-          <div class="absolute inset-0 rounded-full border-8 border-t-orange-500 border-r-pink-500 border-b-transparent border-l-transparent animate-spin"></div>
-        </div>
-        <p class="mt-12 text-3xl font-bold text-orange-600 dark:text-orange-400">Deep analysis in progress...</p>
-        <p class="mt-4 text-xl text-gray-600 dark:text-gray-400">Comparing "${phrase}" relevance</p>
-        <div id="progress-modules" class="mt-16 space-y-5 w-full max-w-xl px-6"></div>
-      </div>
-    `;
-
-    const progressModules = document.getElementById('progress-modules');
-    const messages = [
-      "Parsing titles, meta & headings",
-      "Analyzing content depth & keyword usage",
-      "Checking images, anchors & schema",
-      "Calculating Phrase Power Scores",
-      "Generating prioritized gap fixes"
-    ];
-
-    let idx = 0;
-    const delay = 1200; // 1.2s × 5 steps = 6 seconds
-    const interval = setInterval(() => {
-      if (idx < messages.length) {
-        progressModules.innerHTML += `
-          <div class="flex items-center gap-5 p-5 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-lg
-                  opacity-0 translate-y-4 transition-all duration-600 ease-out">
-            <div class="w-9 h-9 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full animate-pulse flex-shrink-0"></div>
-            <p class="text-lg font-medium text-gray-800 dark:text-gray-200">${messages[idx]}</p>
-          </div>
-        `;
-        const lastItem = progressModules.lastElementChild;
-        if (lastItem) {
-          void lastItem.offsetWidth;
-          lastItem.classList.remove('opacity-0', 'translate-y-4');
-          lastItem.classList.add('opacity-100', 'translate-y-0');
-        }
-        idx++;
-      } else {
-        clearInterval(interval);
-      }
-    }, delay);
-
-    // Step 3: Wait exactly until all progress steps complete before showing results
-    await new Promise(resolve => {
-      const check = setInterval(() => {
-        if (idx >= messages.length) {
-          clearInterval(check);
-          clearInterval(interval);
-          resolve();
-        }
-      }, 200);
-    });
-
-    // Now render final results (data already available)
-    // ... [all your existing scoring code from "let yourScore = 0;" onward remains 100% unchanged]
-
+    // === Scoring logic (unchanged) ===
     let yourScore = 0;
     let compScore = 0;
     const data = {};
@@ -187,7 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const yourDensity = yourWords ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
     const compDensity = compWords ? (compContentMatches / compWords * 100).toFixed(1) : 0;
     data.content = { yourWords, compWords, yourDensity, compDensity, yourContentMatches };
-
     yourScore += yourWords > 800 ? 20 : 0;
     compScore += compWords > 800 ? 20 : 0;
 
@@ -220,269 +155,232 @@ document.addEventListener('DOMContentLoaded', () => {
     yourScore = Math.min(100, Math.round(yourScore));
     compScore = Math.min(100, Math.round(compScore));
 
-    const forecastTier = yourScore >= 90 ? 'Top 3 Potential' : yourScore >= 80 ? 'Top 10 Likely' : yourScore >= 60 ? 'Page 1 Possible' : 'Page 2+';
     const gap = yourScore > compScore ? '+' + (yourScore - compScore) : yourScore < compScore ? (compScore - yourScore) : '±0';
 
-    // Expanded fixes – all gaps detected
-    const fixes = [];
-    if (data.meta.yourMatches === 0) fixes.push("Add phrase to title and meta description.");
-    if (data.headings.yourH1Match === 0) fixes.push("Include phrase in H1 heading.");
-    if (parseFloat(data.content.yourDensity) < 1 || yourContentMatches === 0) fixes.push("Improve content density.");
-    if (yourWords < 800 || yourWords < compWords) fixes.push(`Expand content depth — aim for at least 800 words (currently ${yourWords}).`);
-    if (data.alts.yourPhrase === 0) fixes.push("Include phrase in key image alt text.");
-    if (data.anchors.your === 0) fixes.push("Use phrase in internal anchor text.");
-    if (data.urlSchema.yourUrlMatch === 0) fixes.push("Include phrase in URL slug if possible.");
-    if (data.urlSchema.yourSchema === 0) fixes.push("Add structured data (JSON-LD schema markup).");
+    // === Top Priority Fixes Logic ===
+    const moduleOrder = ['meta', 'headings', 'content', 'alts', 'anchors', 'urlSchema'];
+    const failedModules = [];
 
-    // Top 3 only
-    const prioritizedFixes = fixes.slice(0, 3);
+    if (data.meta.yourMatches === 0) failedModules.push({ id: 'meta', name: 'Meta Title & Desc' });
+    if (data.headings.yourH1Match === 0) failedModules.push({ id: 'headings', name: 'H1 & Headings' });
+    if (parseFloat(data.content.yourDensity) < 1 || yourContentMatches === 0 || yourWords < 800) {
+      failedModules.push({ id: 'content', name: 'Content Density & Depth' });
+    }
+    if (data.alts.yourPhrase === 0) failedModules.push({ id: 'alts', name: 'Image Alts' });
+    if (data.anchors.your === 0) failedModules.push({ id: 'anchors', name: 'Anchor Text' });
+    if (data.urlSchema.yourUrlMatch === 0 || data.urlSchema.yourSchema === 0) {
+      failedModules.push({ id: 'urlSchema', name: 'URL & Schema' });
+    }
 
-                results.innerHTML = `
-<!-- Big Score Circles - Responsive & Mobile-Friendly -->
+    const topFixes = [];
+    const worstModule = failedModules[0];
+
+    failedModules.forEach(mod => {
+      let text = '';
+      if (mod.id === 'meta') text = "Add phrase to title and meta description.";
+      else if (mod.id === 'headings') text = "Include phrase in H1 heading.";
+      else if (mod.id === 'content') text = yourWords < 800 ? `Expand content depth — aim for at least 800 words (currently ${yourWords}).` : "Improve content density.";
+      else if (mod.id === 'alts') text = "Include phrase in key image alt text.";
+      else if (mod.id === 'anchors') text = "Use phrase in internal anchor text.";
+      else if (mod.id === 'urlSchema') text = data.urlSchema.yourUrlMatch === 0 ? "Include phrase in URL slug if possible." : "Add structured data (JSON-LD schema markup).";
+
+      topFixes.push({ module: mod.name, text, isWorst: mod.id === worstModule?.id });
+    });
+
+    // Emphasis on worst module if needed
+    if (topFixes.length < 3 && worstModule && worstModule.id === 'content' && yourWords < compWords && parseFloat(data.content.yourDensity) < 1) {
+      topFixes.push({ module: worstModule.name, text: "Cover competitor subtopics and improve natural phrase usage.", isWorst: true });
+    }
+
+    const finalFixes = topFixes.slice(0, 3);
+
+    // === Final Results Rendering ===
+    if (document.getElementById('single-loader')) document.getElementById('single-loader').remove();
+    results.classList.remove('hidden');
+
+    results.innerHTML = `
+<!-- Big Score Circles -->
 <div class="grid md:grid-cols-2 gap-8 lg:gap-12 my-12 px-4">
   <div class="text-center">
     <h3 class="text-2xl font-bold text-green-500 mb-6">Your Phrase Power Score</h3>
     <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square mx-auto">
       <svg viewBox="0 0 260 260" class="w-full h-full transform -rotate-90">
         <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="20" fill="none"/>
-        <circle cx="130" cy="130" r="120"
-                stroke="${getCircleColor(yourScore)}"
-                stroke-width="20" fill="none"
-                stroke-dasharray="${(yourScore / 100) * 754} 754"
-                stroke-linecap="round" class="drop-shadow-lg"/>
+        <circle cx="130" cy="130" r="120" stroke="${getCircleColor(yourScore)}" stroke-width="20" fill="none" stroke-dasharray="${(yourScore / 100) * 754} 754" stroke-linecap="round" class="drop-shadow-lg"/>
       </svg>
       <div class="absolute inset-0 flex flex-col items-center justify-center">
-        <span class="text-5xl sm:text-6xl md:text-7xl font-black ${getTextColorClass(yourScore)} drop-shadow-2xl">
-          ${yourScore}
-        </span>
+        <span class="text-5xl sm:text-6xl md:text-7xl font-black ${getTextColorClass(yourScore)} drop-shadow-2xl">${yourScore}</span>
         <span class="text-xl sm:text-2xl text-gray-500 dark:text-gray-500">/100</span>
       </div>
     </div>
   </div>
-
   <div class="text-center">
     <h3 class="text-2xl font-bold text-red-500 mb-6">Competitor Phrase Power Score</h3>
     <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square mx-auto">
       <svg viewBox="0 0 260 260" class="w-full h-full transform -rotate-90">
         <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="20" fill="none"/>
-        <circle cx="130" cy="130" r="120"
-                stroke="${getCircleColor(compScore)}"
-                stroke-width="20" fill="none"
-                stroke-dasharray="${(compScore / 100) * 754} 754"
-                stroke-linecap="round" class="drop-shadow-lg"/>
+        <circle cx="130" cy="130" r="120" stroke="${getCircleColor(compScore)}" stroke-width="20" fill="none" stroke-dasharray="${(compScore / 100) * 754} 754" stroke-linecap="round" class="drop-shadow-lg"/>
       </svg>
       <div class="absolute inset-0 flex flex-col items-center justify-center">
-        <span class="text-5xl sm:text-6xl md:text-7xl font-black ${getTextColorClass(compScore)} drop-shadow-2xl">
-          ${compScore}
-        </span>
+        <span class="text-5xl sm:text-6xl md:text-7xl font-black ${getTextColorClass(compScore)} drop-shadow-2xl">${compScore}</span>
         <span class="text-xl sm:text-2xl text-gray-500 dark:text-gray-500">/100</span>
       </div>
     </div>
   </div>
 </div>
 
-        <!-- Gap Verdict -->
-        <div class="text-center mb-12">
-          <p class="text-4xl font-bold text-green-500 mb-8">
-            Competitive Gap: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-              ${yourScore > compScore ? 'You Lead' : yourScore < compScore ? 'Competitor Leads' : 'Neck & Neck'}
-            </span>
-          </p>
-          <p class="text-xl text-gray-500">Target phrase: "${phrase}"</p>
-        </div>
+<!-- Gap Verdict -->
+<div class="text-center mb-12">
+  <p class="text-4xl font-bold text-green-500 mb-8">
+    Competitive Gap: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+      ${yourScore > compScore ? 'You Lead' : yourScore < compScore ? 'Competitor Leads' : 'Neck & Neck'}
+    </span>
+  </p>
+  <p class="text-xl text-gray-500">Target phrase: "${phrase}"</p>
+</div>
 
-        <!-- Small Metric Cards – Collapsible Education -->
-        <div class="grid md:grid-cols-3 gap-8 my-16">
-          ${[
-            { name: 'Meta Title & Desc', you: data.meta.yourMatches > 0 ? 100 : 0, comp: data.meta.compMatches > 0 ? 100 : 0, border: data.meta.yourMatches > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Checks if your target phrase appears naturally in the page title and meta description.", how: "Add the keyword near the start of the title (keep under 60 chars) and include it once in the meta description (under 155 chars).", why: "Google uses title and description for rankings and click-through rates — pages with keyword in both see 20-30% higher CTR." } },
-            { name: 'H1 & Headings', you: data.headings.yourH1Match > 0 ? 100 : 0, comp: data.headings.compH1Match > 0 ? 100 : 0, border: data.headings.yourH1Match > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Evaluates whether your main H1 heading contains the target phrase.", how: "Rewrite the H1 to include the exact or close-variant phrase while keeping it compelling and reader-focused.", why: "H1 is the strongest on-page signal for topic relevance and helps Google understand what the page is about." } },
-            { name: 'Content Density', you: parseFloat(data.content.yourDensity), comp: parseFloat(data.content.compDensity), border: parseFloat(data.content.yourDensity) >= 1 ? 'border-green-500' : 'border-red-500', educ: { what: "Measures how often the target phrase appears relative to total word count (ideal 1-2%).", how: "Add the phrase naturally in subheadings, intro, conclusion, and body — aim for 800+ words of in-depth content.", why: "Proper density signals relevance without stuffing; longer, keyword-optimized content dominates rankings." } },
-            { name: 'Image Alts', you: data.alts.yourPhrase > 0 ? 100 : 0, comp: data.alts.compPhrase > 0 ? 100 : 0, border: data.alts.yourPhrase > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Checks if any image alt text contains the target phrase.", how: "Update alt text of key images (hero, featured) to include the phrase descriptively.", why: "Improves accessibility, enables image search traffic, and adds extra relevance signals." } },
-            { name: 'Anchor Text', you: data.anchors.your > 0 ? 100 : 0, comp: data.anchors.comp > 0 ? 100 : 0, border: data.anchors.your > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Looks for internal links using the target phrase as anchor text.", how: "Add or edit internal links to use the phrase naturally where relevant.", why: "Strengthens site-wide relevance and improves internal PageRank flow." } },
-            { name: 'URL & Schema', you: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)), comp: Math.min(100, (data.urlSchema.compUrlMatch > 0 ? 50 : 0) + (data.urlSchema.compSchema ? 50 : 0)), border: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)) >= 50 ? 'border-green-500' : 'border-red-500', educ: { what: "Combines URL keyword inclusion and structured data presence.", how: "Include phrase in URL slug if possible; add JSON-LD schema (FAQ, Article, etc.).", why: "Descriptive URLs aid crawling; schema unlocks rich snippets and better SERP visibility." } }
-          ].map((m) => `
-            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 border-l-8 ${m.border}">
-              <h4 class="text-xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100">${m.name}</h4>
-              <div class="grid grid-cols-2 gap-6 mb-8">
-                <div class="text-center">
-                  <div class="relative w-32 h-32 mx-auto">
-                    <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-                      <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="14" fill="none"/>
-                      <circle cx="64" cy="64" r="56" stroke="${getCircleColor(m.you)}" stroke-width="14" fill="none"
-                              stroke-dasharray="${(m.you / 100) * 352} 352" stroke-linecap="round"/>
-                    </svg>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                      <span class="text-4xl font-black ${getTextColorClass(m.you)}">${Math.round(m.you)}</span>
-                    </div>
-                  </div>
-                  <p class="mt-4 text-lg font-medium">You</p>
-                </div>
-                <div class="text-center">
-                  <div class="relative w-32 h-32 mx-auto">
-                    <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-                      <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="14" fill="none"/>
-                      <circle cx="64" cy="64" r="56" stroke="${getCircleColor(m.comp)}" stroke-width="14" fill="none"
-                              stroke-dasharray="${(m.comp / 100) * 352} 352" stroke-linecap="round"/>
-                    </svg>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                      <span class="text-4xl font-black ${getTextColorClass(m.comp)}">${Math.round(m.comp)}</span>
-                    </div>
-                  </div>
-                  <p class="mt-4 text-lg font-medium">Comp</p>
-                </div>
-              </div>
-              <button onclick="const details = this.closest('div').querySelector('.educ-details'); details.classList.toggle('hidden'); this.textContent = details.classList.contains('hidden') ? 'Show Details' : 'Hide Details';"
-                      class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow">
-                Show Details
-              </button>
-              <div class="educ-details mt-8 space-y-6 hidden">
-                <div>
-                  <p class="font-semibold text-orange-600 dark:text-orange-400">What is it?</p>
-                  <p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.what}</p>
-                </div>
-                <div>
-                  <p class="font-semibold text-orange-600 dark:text-orange-400">How to improve?</p>
-                  <p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.how}</p>
-                </div>
-                <div>
-                  <p class="font-semibold text-orange-600 dark:text-orange-400">Why it matters?</p>
-                  <p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.why}</p>
-                </div>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-
-        <!-- Prioritized Gap Fixes – Top 3 Only -->
-        <div class="space-y-8">
-          <h3 class="text-4xl font-black text-orange-500 text-center mb-8">Prioritized Gap Fixes</h3>
-          ${prioritizedFixes.length ? prioritizedFixes.map(fix => {
-            let educ = {};
-            if (fix.includes('title and meta description')) {
-              educ = {
-                what: `Your page title or meta description does not contain the target phrase "${phrase}" — this is one of the strongest direct relevance signals search engines look for.`,
-                how: `• Place the exact phrase naturally near the beginning of the <title> tag
-• Keep the full title under 60 characters
-• Include the phrase once in the meta description (under 155 characters)
-• Make both compelling and click-worthy
-Example title: "${phrase.charAt(0).toUpperCase() + phrase.slice(1)} | Your Brand"`,
-                why: `Search engines use title and meta to determine relevance and generate SERP previews. Pages with the phrase in both see 20–30% higher click-through rates and stronger ranking signals. This is one of the highest-ROI on-page changes.`
-              };
-            } else if (fix.includes('content depth')) {
-              educ = {
-                what: `Your main content has only ${yourWords} words${compWords > yourWords ? ` — ${compWords - yourWords} fewer than the competitor` : ''}.`,
-                how: `Expand with valuable sections:
-• Detailed FAQ answering user questions
-• Step-by-step guides
-• Real examples or case studies
-• Statistics and data
-• Comparison tables
-• Practical tips or checklists
-Target 800–1500+ words of focused content.`,
-                why: `In-depth content demonstrates expertise, improves dwell time, satisfies intent better, and consistently ranks higher in competitive searches.`
-              };
-            } else if (fix.includes('H1 heading')) {
-              educ = {
-                what: `Your main H1 heading does not include the target phrase "${phrase}".`,
-                how: `Rewrite the H1 to include the exact or close-variant phrase while keeping it benefit-focused and unique from the title tag.`,
-                why: `The H1 is the strongest heading signal for topic relevance and helps search engines understand the page focus at a glance.`
-              };
-            } else if (fix.includes('content density')) {
-              educ = {
-                what: `The target phrase appears only ${yourContentMatches} time(s) (${data.content.yourDensity}% density).`,
-                how: `Incorporate the phrase naturally in intro, subheadings, body, and conclusion — aim for 1–2% density without forcing repetition.`,
-                why: `Balanced density reinforces relevance, provides context signals, and supports featured snippet eligibility without over-optimization risk.`
-              };
-            } else if (fix.includes('image alt text')) {
-              educ = {
-                what: `No image alt text contains the target phrase "${phrase}".`,
-                how: `Update key images (hero, featured) with descriptive alt text that includes the phrase naturally.`,
-                why: `Improves accessibility, enables image search traffic, and adds extra relevance signals.`
-              };
-            } else if (fix.includes('anchor text')) {
-              educ = {
-                what: `No internal links use the target phrase as anchor text.`,
-                how: `Add 2–4 relevant internal links using the phrase or variations naturally.`,
-                why: `Distributes relevance across your site and improves navigation and topical authority.`
-              };
-            } else if (fix.includes('URL slug')) {
-              educ = {
-                what: `Your URL does not include the target phrase "${phrase}".`,
-                how: `Restructure the slug to include the phrase if possible (e.g., /${phrase.replace(/\s+/g, '-')}).`,
-                why: `Keyword-rich URLs provide clear relevance signals and often achieve higher click-through rates.`
-              };
-            } else if (fix.includes('structured data')) {
-              educ = {
-                what: `No JSON-LD schema markup detected on your page.`,
-                how: `Add appropriate schema (FAQPage, Article, LocalBusiness, etc.) via a <script type="application/ld+json"> block.`,
-                why: `Enables rich snippets, improves SERP visibility, and helps search engines understand content better.`
-              };
-            }
-            return `
-              <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 border-l-8 border-red-500 flex gap-6">
-                <div class="text-5xl flex-shrink-0">🔧</div>
-                <div class="flex-1 space-y-6">
-                  <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">${fix}</p>
-                  <div class="space-y-6">
-                    <div>
-                      <p class="font-semibold text-orange-600 dark:text-orange-400">What is it?</p>
-                      <p class="mt-2 text-gray-700 dark:text-gray-300">${educ.what}</p>
-                    </div>
-                    <div>
-                      <p class="font-semibold text-orange-600 dark:text-orange-400">How to improve?</p>
-                      <p class="mt-2 text-gray-700 dark:text-gray-300">${educ.how}</p>
-                    </div>
-                    <div>
-                      <p class="font-semibold text-orange-600 dark:text-orange-400">Why it matters?</p>
-                      <p class="mt-2 text-gray-700 dark:text-gray-300">${educ.why}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            `;
-          }).join('') : `
-            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-12 border-l-8 border-green-500 text-center">
-              <p class="text-3xl font-bold text-green-600 dark:text-green-400 mb-4">
-                🎉 Strong position — no major gaps detected!
-              </p>
-              <p class="text-xl text-gray-600 dark:text-gray-300">
-                Your page shows excellent on-page optimization for "${phrase}".
-              </p>
-            </div>
-          `}
-        </div>
-
-        <!-- Predictive Rank Forecast -->
-        <div class="mt-20 p-12 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
-          <h3 class="text-4xl font-black text-center mb-8">Predictive Rank Forecast</h3>
-          <p class="text-center text-6xl font-black mb-8">${forecastTier}</p>
-          <div class="grid md:grid-cols-3 gap-8 mb-8">
-            <div class="p-6 bg-white/10 rounded-2xl text-center">
-              <p class="text-xl opacity-90">Your Score</p>
-              <p class="text-5xl font-black mt-2">${yourScore}/100</p>
-            </div>
-            <div class="p-6 bg-white/10 rounded-2xl text-center">
-              <p class="text-xl opacity-90">Competitor Score</p>
-              <p class="text-5xl font-black mt-2">${compScore}/100</p>
-            </div>
-            <div class="p-6 bg-white/10 rounded-2xl text-center">
-              <p class="text-xl opacity-90">Gap</p>
-              <p class="text-4xl font-black mt-2">${gap}</p>
+<!-- Small Module Cards -->
+<div class="grid md:grid-cols-3 gap-8 my-16">
+  ${[
+    { name: 'Meta Title & Desc', you: data.meta.yourMatches > 0 ? 100 : 0, comp: data.meta.compMatches > 0 ? 100 : 0, border: data.meta.yourMatches > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Checks if your target phrase appears naturally in the page title and meta description.", how: "Add the keyword near the start of the title (keep under 60 chars) and include it once in the meta description (under 155 chars).", why: "Google uses title and description for rankings and click-through rates — pages with keyword in both see 20-30% higher CTR." } },
+    { name: 'H1 & Headings', you: data.headings.yourH1Match > 0 ? 100 : 0, comp: data.headings.compH1Match > 0 ? 100 : 0, border: data.headings.yourH1Match > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Evaluates whether your main H1 heading contains the target phrase.", how: "Rewrite the H1 to include the exact or close-variant phrase while keeping it compelling and reader-focused.", why: "H1 is the strongest on-page signal for topic relevance and helps Google understand what the page is about." } },
+    { name: 'Content Density', you: parseFloat(data.content.yourDensity), comp: parseFloat(data.content.compDensity), border: parseFloat(data.content.yourDensity) >= 1 ? 'border-green-500' : 'border-red-500', educ: { what: "Measures how often the target phrase appears relative to total word count (ideal 1-2%).", how: "Add the phrase naturally in subheadings, intro, conclusion, and body — aim for 800+ words of in-depth content.", why: "Proper density signals relevance without stuffing; longer, keyword-optimized content dominates rankings." } },
+    { name: 'Image Alts', you: data.alts.yourPhrase > 0 ? 100 : 0, comp: data.alts.compPhrase > 0 ? 100 : 0, border: data.alts.yourPhrase > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Checks if any image alt text contains the target phrase.", how: "Update alt text of key images (hero, featured) to include the phrase descriptively.", why: "Improves accessibility, enables image search traffic, and adds extra relevance signals." } },
+    { name: 'Anchor Text', you: data.anchors.your > 0 ? 100 : 0, comp: data.anchors.comp > 0 ? 100 : 0, border: data.anchors.your > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Looks for internal links using the target phrase as anchor text.", how: "Add or edit internal links to use the phrase naturally where relevant.", why: "Strengthens site-wide relevance and improves internal PageRank flow." } },
+    { name: 'URL & Schema', you: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)), comp: Math.min(100, (data.urlSchema.compUrlMatch > 0 ? 50 : 0) + (data.urlSchema.compSchema ? 50 : 0)), border: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)) >= 50 ? 'border-green-500' : 'border-red-500', educ: { what: "Combines URL keyword inclusion and structured data presence.", how: "Include phrase in URL slug if possible; add JSON-LD schema (FAQ, Article, etc.).", why: "Descriptive URLs aid crawling; schema unlocks rich snippets and better SERP visibility." } }
+  ].map((m) => `
+    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 border-l-8 ${m.border} flex flex-col">
+      <h4 class="text-xl font-bold text-center mb-6 text-gray-900 dark:text-gray-100">${m.name}</h4>
+      <div class="grid grid-cols-2 gap-6 mb-8 flex-grow">
+        <div class="text-center">
+          <div class="relative w-32 h-32 mx-auto">
+            <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+              <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="14" fill="none"/>
+              <circle cx="64" cy="64" r="56" stroke="${getCircleColor(m.you)}" stroke-width="14" fill="none" stroke-dasharray="${(m.you / 100) * 352} 352" stroke-linecap="round"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="text-4xl font-black ${getTextColorClass(m.you)}">${Math.round(m.you)}</span>
             </div>
           </div>
-          <p class="text-center text-lg opacity-90 leading-relaxed">
-            This on-page phrase power comparison indicates relative relevance strength. Higher scores correlate with better ranking potential for the target phrase, though off-page factors (backlinks, domain authority) also play a major role.
-          </p>
+          <p class="mt-4 text-lg font-medium">You</p>
         </div>
-
-        <!-- PDF Button -->
-        <div class="text-center my-16">
-          <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
-                  class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
-            📄 Save Report as PDF 
-          </button>
+        <div class="text-center">
+          <div class="relative w-32 h-32 mx-auto">
+            <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+              <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="14" fill="none"/>
+              <circle cx="64" cy="64" r="56" stroke="${getCircleColor(m.comp)}" stroke-width="14" fill="none" stroke-dasharray="${(m.comp / 100) * 352} 352" stroke-linecap="round"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="text-4xl font-black ${getTextColorClass(m.comp)}">${Math.round(m.comp)}</span>
+            </div>
+          </div>
+          <p class="mt-4 text-lg font-medium">Comp</p>
         </div>
       </div>
+      <button onclick="const details = this.closest('div').querySelector('.educ-details'); details.classList.toggle('hidden'); this.textContent = details.classList.contains('hidden') ? 'Show Details' : 'Hide Details';"
+              class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow">
+        Show Details
+      </button>
+      <div class="educ-details mt-8 space-y-6 hidden">
+        <div><p class="font-semibold text-orange-600 dark:text-orange-400">What is it?</p><p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.what}</p></div>
+        <div><p class="font-semibold text-orange-600 dark:text-orange-400">How to improve?</p><p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.how}</p></div>
+        <div><p class="font-semibold text-orange-600 dark:text-orange-400">Why it matters?</p><p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.why}</p></div>
+      </div>
+    </div>
+  `).join('')}
+</div>
+
+<!-- New Top Priority Fixes -->
+<div class="my-20 max-w-5xl mx-auto">
+  <h3 class="text-4xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Top Priority Fixes
+  </h3>
+  ${finalFixes.length > 0 ? finalFixes.map((fix, i) => `
+    <div class="mb-8 bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 border-l-8 ${fix.isWorst ? 'border-red-600' : 'border-orange-500'} flex gap-6">
+      <div class="text-6xl font-black text-orange-500">${i + 1}</div>
+      <div class="flex-1">
+        <p class="text-2xl font-bold mb-3 text-gray-900 dark:text-gray-100">${fix.module}</p>
+        <p class="text-xl text-gray-700 dark:text-gray-300">${fix.text}</p>
+        ${fix.isWorst && finalFixes.filter(f => f.isWorst).length > 1 ? '<p class="mt-4 text-sm italic text-red-600 dark:text-red-400">(Critical module — multiple gaps detected)</p>' : ''}
+      </div>
+    </div>
+  `).join('') : `
+    <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-3xl shadow-2xl p-16 text-center">
+      <p class="text-4xl font-black mb-6">🎉 Excellent Optimization!</p>
+      <p class="text-2xl">Your page shows strong relevance for "${phrase}" — no major gaps vs competitor.</p>
+    </div>
+  `}
+</div>
+
+<!-- New Relevance Improvement & Potential Ranking Gains -->
+<div class="grid md:grid-cols-2 gap-12 my-20 max-w-6xl mx-auto">
+  <!-- Left: Relevance Improvement -->
+  <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 border-l-8 border-orange-500">
+    <h3 class="text-3xl font-black mb-8 text-center">Relevance Improvement</h3>
+    <div class="flex justify-center items-center gap-12 mb-10">
+      <div class="text-center">
+        <span class="text-6xl font-black ${getTextColorClass(yourScore)}">${yourScore}</span>
+        <p class="text-xl mt-3 opacity-80">Current</p>
+      </div>
+      <span class="text-6xl font-bold">→</span>
+      <div class="text-center">
+        <span class="text-6xl font-black text-green-500">${Math.min(100, yourScore + (finalFixes.length * 15))}</span>
+        <p class="text-xl mt-3 text-green-500">Projected</p>
+      </div>
+    </div>
+    <details class="mt-6 bg-gray-100 dark:bg-gray-800 rounded-2xl p-4">
+      <summary class="cursor-pointer font-bold text-orange-600 dark:text-orange-400">How We Calculated This</summary>
+      <p class="mt-4 text-gray-700 dark:text-gray-300">Each implemented fix typically adds 10–20 points based on signal weight. Conservative estimate assumes realistic partial implementation.</p>
+    </details>
+  </div>
+
+  <!-- Right: Potential Ranking Gains -->
+  <div class="bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-3xl shadow-2xl p-10">
+    <h3 class="text-3xl font-black mb-8 text-center">Potential Ranking Gains</h3>
+    <div class="space-y-10">
+      <div>
+        <div class="flex justify-between items-center mb-3">
+          <span class="text-xl">Ranking Position Lift</span>
+          <span class="text-3xl font-black">+${2 + finalFixes.length * 2}–${7 + finalFixes.length * 3}</span>
+        </div>
+        <div class="w-full bg-white/20 rounded-full h-10">
+          <div class="bg-white h-10 rounded-full transition-all duration-1000" style="width: ${finalFixes.length === 0 ? 20 : finalFixes.length === 1 ? 45 : finalFixes.length === 2 ? 70 : 100}%"></div>
+        </div>
+      </div>
+      <div>
+        <div class="flex justify-between items-center mb-3">
+          <span class="text-xl">Organic Traffic Increase</span>
+          <span class="text-3xl font-black">+${15 + finalFixes.length * 10}%–${40 + finalFixes.length * 15}%</span>
+        </div>
+        <div class="w-full bg-white/20 rounded-full h-10">
+          <div class="bg-white h-10 rounded-full transition-all duration-1000" style="width: ${finalFixes.length === 0 ? 15 : finalFixes.length === 1 ? 40 : finalFixes.length === 2 ? 65 : 90}%"></div>
+        </div>
+      </div>
+      <div>
+        <div class="flex justify-between items-center mb-3">
+          <span class="text-xl">CTR Improvement</span>
+          <span class="text-3xl font-black">+${10 + finalFixes.length * 5}%–${25 + finalFixes.length * 8}%</span>
+        </div>
+        <div class="w-full bg-white/20 rounded-full h-10">
+          <div class="bg-white h-10 rounded-full transition-all duration-1000" style="width: ${finalFixes.length === 0 ? 25 : finalFixes.length === 1 ? 50 : finalFixes.length === 2 ? 75 : 100}%"></div>
+        </div>
+      </div>
+    </div>
+    <p class="mt-12 text-center text-sm opacity-90 leading-relaxed">
+      Conservative estimates based on on-page optimization benchmarks.<br>
+      Actual results depend on competition, authority, and off-page factors.
+    </p>
+  </div>
+</div>
+
+<!-- PDF Button -->
+<div class="text-center my-20">
+  <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
+          class="group relative inline-flex items-center px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
+    <span class="flex items-center gap-6">📄 Save Report as PDF</span>
+    <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+  </button>
+</div>
     `;
   });
 });

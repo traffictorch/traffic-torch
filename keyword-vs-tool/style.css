@@ -298,3 +298,21 @@ html, body {
   -webkit-overflow-scrolling: touch;
 }
 
+
+
+/* Ensure small gauge cards don't crop circles on desktop */
+@media (min-width: 768px) {
+  .grid.md\\:grid-cols-3 > div {
+    min-height: 480px; /* prevents height collapse */
+    display: flex;
+    flex-direction: column;
+  }
+  .grid.md\\:grid-cols-3 .relative.w-32.h-32 {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+/* Extra safety - force SVG containment */
+svg {
+  overflow: visible !important;
+}
