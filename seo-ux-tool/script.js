@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
-
   const form = document.getElementById('url-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
@@ -23,25 +22,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const circle = document.querySelector('#' + id + ' .score-circle');
     const card = circle?.closest('.score-card');
     if (!circle) return;
-
     score = Math.round(score);
     const radius = id === 'overall-score' || id === 'forecast-circle' ? 90 : 54;
     const circumference = 2 * Math.PI * radius;
     const dash = (score / 100) * circumference;
-
     const progress = circle.querySelector('.progress');
     progress.style.strokeDasharray = `${dash} ${circumference}`;
-
     const num = circle.querySelector('.number');
     num.textContent = score;
     num.style.opacity = '1';
-
-    // Clean classes
     progress.classList.remove('stroke-red-400', 'stroke-orange-400', 'stroke-green-400');
     num.classList.remove('text-red-400', 'text-orange-400', 'text-green-400');
     if (card) card.classList.remove('red', 'orange', 'green');
-
-    // Apply grade
     if (score < 60) {
       progress.classList.add('stroke-red-400');
       num.classList.add('text-red-400');
@@ -85,25 +77,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  document.querySelectorAll('.expand').forEach(b => {
-    b.onclick = () => {
-      b.nextElementSibling.classList.toggle('hidden');
-      b.textContent = b.nextElementSibling.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
-    };
-  });
-  
-  
-  
-  
-    // Save as PDF - single listener (added once on page load)
+  // Toggle helpers - moved outside template literals to avoid syntax errors
+  function toggleFixesPanel(button) {
+    const card = button.closest('.score-card');
+    const fixesPanel = card.querySelector('.fixes-panel');
+    const fullDetails = card.querySelector('.full-details');
+    fixesPanel.classList.toggle('hidden');
+    if (fixesPanel.classList.contains('hidden')) {
+      fullDetails.classList.add('hidden');
+    }
+  }
+
+  function toggleMoreDetails(button) {
+    button.closest('.fixes-panel').nextElementSibling.classList.toggle('hidden');
+  }
+
+  // Save as PDF
   if (savePdfBtn) {
     savePdfBtn.addEventListener('click', () => {
-      // Hide non-print elements
       document.querySelectorAll('#url-form, #save-pdf, #mobile-preview, .expand').forEach(el => {
         el.style.display = 'none';
       });
-
-      // Add print styles
       const printStyle = document.createElement('style');
       printStyle.innerHTML = `
         @media print {
@@ -115,10 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       `;
       document.head.appendChild(printStyle);
-
       window.print();
-
-      // Restore after print/cancel
       window.onafterprint = () => {
         document.querySelectorAll('#url-form, #save-pdf, #mobile-preview, .expand').forEach(el => {
           el.style.display = '';
@@ -127,11 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
   }
-  
-  
-  
-  
-    // Copy Badge HTML button
+
+  // Copy Badge HTML
   if (copyBadgeBtn) {
     copyBadgeBtn.addEventListener('click', () => {
       const badgeHtml = `
@@ -147,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
   a:hover > span { opacity: 1 !important; }
 </style>
       `.trim();
-
       navigator.clipboard.writeText(badgeHtml).then(() => {
         alert('Badge code copied! Paste anywhere on your site — fully inline, works everywhere.');
       }).catch(() => {
@@ -155,12 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
-  
-  
 
-
-
-  
   form.addEventListener('submit', async e => {
     e.preventDefault();
     if (savePdfBtn) savePdfBtn.classList.add('hidden');
@@ -174,7 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
     progressContainer.classList.remove('hidden');
     progressText.textContent = 'Fetching page...';
     const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
-
     try {
       const res = await fetch(proxyUrl);
       if (!res.ok) throw new Error('Network response was not ok');
@@ -182,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
       const resultsWrapper = document.getElementById('results-wrapper');
-
       const modules = [
         { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
         { id: 'mobile', name: 'Mobile & PWA', fn: analyzeMobile },
@@ -193,12 +173,16 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'security', name: 'Security', fn: analyzeSecurity },
         { id: 'indexability', name: 'Indexability', fn: analyzeIndexability }
       ];
+
       const scores = [];
       const allIssues = [];
+      const moduleResults = [];
+
       for (const mod of modules) {
         progressText.textContent = `Analyzing ${mod.name}...`;
         const analysisUrl = mod.id === 'security' ? originalInput : url;
         const result = mod.fn(html, doc, analysisUrl);
+        moduleResults.push({ mod, result });
         scores.push(result.score);
         updateScore(`${mod.id}-score`, result.score);
         populateIssues(`${mod.id}-issues`, result.issues);
@@ -211,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         await new Promise(r => setTimeout(r, 300));
       }
+
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       updateScore('overall-score', overallScore);
 
@@ -233,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      // Predictive Rank Forecast
+      // Predictive Rank Forecast (unchanged)
       const forecastTitle = document.getElementById('forecast-title');
       const forecastGain = document.getElementById('forecast-gain');
       const forecastWhat = document.getElementById('forecast-what');
@@ -281,14 +266,131 @@ document.addEventListener('DOMContentLoaded', () => {
       forecastHow.textContent = how;
       forecastWhy.textContent = why;
 
-      // Smooth reveal of all results
+      // Generate new module cards with ✅/❌ checklist
+      const modulesGrid = document.querySelector('.grid.grid-cols-1');
+      if (modulesGrid) {
+        modulesGrid.innerHTML = moduleResults.map(({mod, result}) => {
+          const color = result.score >= 80 ? '#22c55e' : result.score >= 60 ? '#f97316' : '#ef4444';
+          const fixesCount = result.issues.length;
+
+          // Define checks per module
+          let checks = [];
+          if (mod.id === 'seo') {
+            checks = [
+              { text: 'Title optimized', passed: !result.issues.some(i => i.issue.includes('Title')) },
+              { text: 'Meta description', passed: !result.issues.some(i => i.issue.includes('meta description')) },
+              { text: 'Main heading', passed: !result.issues.some(i => i.issue.includes('main heading')) },
+              { text: 'Schema detected', passed: !result.issues.some(i => i.issue.includes('structured data') || i.issue.includes('schema')) },
+              { text: 'Canonical tag', passed: !result.issues.some(i => i.issue.includes('canonical')) },
+              { text: 'Image alt text', passed: !result.issues.some(i => i.issue.includes('alt text')) }
+            ];
+          } else if (mod.id === 'mobile') {
+            checks = [
+              { text: 'Viewport set', passed: !result.issues.some(i => i.issue.includes('Viewport')) },
+              { text: 'Manifest linked', passed: !result.issues.some(i => i.issue.includes('manifest')) },
+              { text: 'Homescreen icon', passed: !result.issues.some(i => i.issue.includes('homescreen icon')) },
+              { text: 'Service worker', passed: !result.issues.some(i => i.issue.includes('service worker')) }
+            ];
+          } else if (mod.id === 'perf') {
+            checks = [
+              { text: 'Low page weight', passed: !result.issues.some(i => i.issue.includes('Page weight')) },
+              { text: 'Few requests', passed: !result.issues.some(i => i.issue.includes('HTTP requests')) },
+              { text: 'No render-blocking', passed: !result.issues.some(i => i.issue.includes('render-blocking')) },
+              { text: 'Optimized fonts', passed: !result.issues.some(i => i.issue.includes('web font')) }
+            ];
+          } else if (mod.id === 'access') {
+            checks = [
+              { text: 'Alt text complete', passed: !result.issues.some(i => i.issue.includes('alt text')) },
+              { text: 'Lang attribute', passed: !result.issues.some(i => i.issue.includes('lang attribute')) },
+              { text: 'Main landmark', passed: !result.issues.some(i => i.issue.includes('main landmark')) },
+              { text: 'Heading order', passed: !result.issues.some(i => i.issue.includes('Heading order')) },
+              { text: 'Form labels', passed: !result.issues.some(i => i.issue.includes('form fields')) }
+            ];
+          } else if (mod.id === 'content') {
+            checks = [
+              { text: 'Sufficient depth', passed: !result.issues.some(i => i.issue.includes('Thin content')) },
+              { text: 'Good readability', passed: !result.issues.some(i => i.issue.includes('Readability')) },
+              { text: 'Heading structure', passed: !result.issues.some(i => i.issue.includes('heading structure')) },
+              { text: 'Uses lists', passed: !result.issues.some(i => i.issue.includes('lists')) }
+            ];
+          } else if (mod.id === 'ux') {
+            checks = [
+              { text: 'Clear CTAs', passed: !result.issues.some(i => i.issue.includes('calls-to-action')) },
+              { text: 'Breadcrumb nav', passed: !result.issues.some(i => i.issue.includes('breadcrumb')) }
+            ];
+          } else if (mod.id === 'security') {
+            checks = [
+              { text: 'HTTPS secure', passed: !result.issues.some(i => i.issue.includes('HTTPS')) },
+              { text: 'No mixed content', passed: !result.issues.some(i => i.issue.includes('mixed content')) }
+            ];
+          } else if (mod.id === 'indexability') {
+            checks = [
+              { text: 'No noindex', passed: !result.issues.some(i => i.issue.includes('noindex')) },
+              { text: 'Canonical present', passed: !result.issues.some(i => i.issue.includes('canonical')) }
+            ];
+          }
+
+          return `
+          <div class="score-card p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border-4" style="border-color: ${color}">
+            <div class="relative mx-auto w-40 h-40">
+              <svg viewBox="0 0 160 160" class="transform -rotate-90 w-full h-full">
+                <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="14" fill="none"/>
+                <circle cx="80" cy="80" r="70"
+                        stroke="${color}"
+                        stroke-width="14" fill="none"
+                        stroke-dasharray="${(result.score/100)*440} 440"
+                        stroke-linecap="round"
+                        class="progress"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="number text-5xl font-black" style="color: ${color};">${result.score}</span>
+              </div>
+            </div>
+            <h3 class="mt-6 text-2xl font-bold text-center">${mod.name}</h3>
+
+            <!-- ✅/❌ Checklist -->
+            <div class="mt-6 space-y-2 text-sm text-left max-w-xs mx-auto">
+              ${checks.map(check => `
+                <p class="${check.passed ? 'text-green-600' : 'text-red-600'}">
+                  ${check.passed ? '✅' : '❌'} ${check.text}
+                </p>
+              `).join('')}
+            </div>
+
+            <button onclick="toggleFixesPanel(this)"
+                    class="mt-6 w-full px-6 py-3 bg-orange-500 text-white rounded-full hover:bg-orange-600 font-medium">
+              ${fixesCount ? 'Show Fixes (' + fixesCount + ')' : 'All Clear'}
+            </button>
+
+            <div class="fixes-panel hidden mt-6 space-y-6">
+              ${fixesCount ? result.issues.map(iss => `
+                <div class="p-5 bg-gray-100 dark:bg-gray-800 rounded-xl">
+                  <strong class="block mb-2 text-lg">${iss.issue}</strong>
+                  <p class="mb-3"><span class="font-bold text-blue-500">How to fix:</span><br>${iss.fix}</p>
+                  <p><span class="font-bold text-orange-500">Why it matters:</span><br>UX: ${iss.uxWhy || 'Improves user experience'} | SEO: ${iss.seoWhy || 'Boosts ranking signals'}</p>
+                </div>
+              `).join('') : '<p class="text-green-600 font-medium text-center py-4">All signals strong — excellent performance!</p>'}
+
+              <button onclick="toggleMoreDetails(this)"
+                      class="mt-4 text-sm text-orange-500 hover:underline block text-center w-full">
+                More details →
+              </button>
+            </div>
+
+            <div class="full-details hidden mt-6 text-sm space-y-4 text-gray-600 dark:text-gray-400">
+              <p>No additional educational content available at this time.</p>
+            </div>
+          </div>`;
+        }).join('');
+      }
+
+      // Reveal results
       progressContainer.classList.add('hidden');
       resultsWrapper.classList.remove('hidden');
       document.getElementById('radar-title').classList.remove('hidden');
       if (savePdfBtn) savePdfBtn.classList.remove('hidden');
       document.getElementById('copy-badge').classList.remove('hidden');
 
-      // Animation
       resultsWrapper.style.opacity = '0';
       resultsWrapper.style.transform = 'translateY(40px)';
       resultsWrapper.style.transition = 'opacity 1.2s ease, transform 1.2s ease';
@@ -297,6 +399,11 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsWrapper.style.transform = 'translateY(0)';
       });
       resultsWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  
+  
+      
+      
 
       // 360° Health Radar Chart (desktop only) - FIXED label order
       try {
