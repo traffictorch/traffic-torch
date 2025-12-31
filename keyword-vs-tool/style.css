@@ -316,3 +316,28 @@ html, body {
 svg {
   overflow: visible !important;
 }
+
+
+
+/* Fix small gauge circle cropping on desktop — force space and containment */
+.grid.md\:grid-cols-3 > div {
+  min-height: 540px !important;
+  padding-bottom: 2rem;
+}
+
+.grid.md\:grid-cols-3 .relative.w-32.h-32 {
+  margin: 0 auto;
+}
+
+/* Ensure SVG circles never get clipped */
+svg {
+  overflow: visible !important;
+  display: block;
+}
+
+/* Extra safety for mobile stacking */
+@media (max-width: 767px) {
+  .grid.md\:grid-cols-3 > div {
+    min-height: auto !important;
+  }
+}

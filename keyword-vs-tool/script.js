@@ -51,161 +51,165 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!yourUrl || !compUrl || !phrase) return;
 
-    // === Single clean loader below form (fixed insertion) ===
-    let loadingDiv = document.createElement('div');
-    loadingDiv.id = 'single-loader';
-    loadingDiv.className = 'mt-12 flex flex-col items-center justify-center py-16 max-w-4xl mx-auto';
-    loadingDiv.innerHTML = `
-      <div class="relative w-32 h-32">
-        <div class="absolute inset-0 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
-        <div class="absolute inset-0 rounded-full border-8 border-t-orange-500 border-r-pink-500 border-b-transparent border-l-transparent animate-spin"></div>
+    // === Clean single progress container below form ===
+    const progressContainer = document.createElement('div');
+    progressContainer.id = 'analysis-progress';
+    progressContainer.className = 'mt-12 max-w-4xl mx-auto px-6';
+    progressContainer.innerHTML = `
+      <div class="flex flex-col items-center justify-center py-16">
+        <div class="relative w-32 h-32">
+          <div class="absolute inset-0 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
+          <div class="absolute inset-0 rounded-full border-8 border-t-orange-500 border-r-pink-500 border-b-transparent border-l-transparent animate-spin"></div>
+        </div>
+        <p class="mt-10 text-3xl font-bold text-orange-600 dark:text-orange-400">Analyzing relevance for "${phrase}"...</p>
+        <p class="mt-4 text-xl text-gray-600 dark:text-gray-400">Comparing your page vs competitor securely in-browser</p>
+        <div id="progress-steps" class="mt-16 space-y-6 w-full text-left"></div>
       </div>
-      <p class="mt-10 text-3xl font-bold text-orange-600 dark:text-orange-400">Analyzing relevance for "${phrase}"...</p>
-      <p class="mt-4 text-xl text-gray-600 dark:text-gray-400">Comparing your page vs competitor securely in-browser</p>
     `;
 
-    // Insert directly after the form (safe method)
+    // Insert safely after form
     if (form.nextSibling) {
-      form.parentNode.insertBefore(loadingDiv, form.nextSibling);
+      form.parentNode.insertBefore(progressContainer, form.nextSibling);
     } else {
-      form.parentNode.appendChild(loadingDiv);
+      form.parentNode.appendChild(progressContainer);
     }
-
     results.classList.add('hidden');
 
+    // Fetch pages immediately (background)
     let yourDoc, compDoc;
     try {
       [yourDoc, compDoc] = await Promise.all([fetchPage(yourUrl), fetchPage(compUrl)]);
-    } catch (err) {
+    } catch {
       yourDoc = compDoc = null;
     }
 
     if (!yourDoc || !compDoc) {
-      if (document.getElementById('single-loader')) document.getElementById('single-loader').remove();
+      progressContainer.remove();
       results.classList.remove('hidden');
       results.innerHTML = `
         <div class="text-center py-32 px-6 max-w-3xl mx-auto">
-          <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-8">
-            Error: Could not load one or both pages
-          </p>
+          <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-8">Error: Could not load one or both pages</p>
           <p class="text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
-            Please check:
-            <ul class="mt-4 space-y-2 text-left list-disc pl-8">
-              <li>URLs are correct and publicly accessible</li>
-              <li>Pages are not behind login or blocked by robots.txt</li>
-              <li>No ad-blocker or firewall blocking the request</li>
-            </ul>
+            Please check URLs, accessibility, and try again.
           </p>
         </div>
       `;
       return;
     }
 
-    // === Scoring logic (unchanged) ===
-    let yourScore = 0;
-    let compScore = 0;
-    const data = {};
+    // === Staged progress steps (5.5 seconds total) ===
+    const steps = [
+      "Parsing titles, meta descriptions & headings",
+      "Analyzing content depth and keyword placement",
+      "Checking images, internal anchors & schema",
+      "Calculating Phrase Power Scores",
+      "Identifying competitive gaps & fixes"
+    ];
 
-    // Meta Title & Description
-    data.meta = {
-      yourMatches: countPhrase(yourDoc.querySelector('title')?.textContent + yourDoc.querySelector('meta[name="description"]')?.content, phrase),
-      compMatches: countPhrase(compDoc.querySelector('title')?.textContent + compDoc.querySelector('meta[name="description"]')?.content, phrase)
+    const progressSteps = document.getElementById('progress-steps');
+
+    let stepIndex = 0;
+    const addStep = () => {
+      if (stepIndex < steps.length) {
+        const stepEl = document.createElement('div');
+        stepEl.className = 'flex items-center gap-5 p-5 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-lg opacity-0 translate-y-4 transition-all duration-700';
+        stepEl.innerHTML = `
+          <div class="w-10 h-10 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full animate-pulse"></div>
+          <p class="text-lg font-medium text-gray-800 dark:text-gray-200">${steps[stepIndex]}</p>
+        `;
+        progressSteps.appendChild(stepEl);
+        void stepEl.offsetWidth; // trigger reflow
+        stepEl.classList.remove('opacity-0', 'translate-y-4');
+        stepEl.classList.add('opacity-100', 'translate-y-0');
+        stepIndex++;
+        setTimeout(addStep, 1100); // ~5.5s total
+      } else {
+        // Final delay before results
+        setTimeout(() => {
+          progressContainer.remove();
+          renderResults();
+        }, 800);
+      }
     };
-    yourScore += data.meta.yourMatches > 0 ? 25 : 0;
-    compScore += data.meta.compMatches > 0 ? 25 : 0;
 
-    // H1 & Headings
-    data.headings = {
-      yourH1Match: countPhrase(yourDoc.querySelector('h1')?.textContent.trim() || '', phrase),
-      compH1Match: countPhrase(compDoc.querySelector('h1')?.textContent.trim() || '', phrase)
-    };
-    yourScore += data.headings.yourH1Match > 0 ? 15 : 0;
-    compScore += data.headings.compH1Match > 0 ? 15 : 0;
+    addStep();
 
-    // Content Density & Depth
-    const yourWords = getWordCount(yourDoc);
-    const compWords = getWordCount(compDoc);
-    const yourContentMatches = countPhrase(getCleanContent(yourDoc), phrase);
-    const compContentMatches = countPhrase(getCleanContent(compDoc), phrase);
-    const yourDensity = yourWords ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
-    const compDensity = compWords ? (compContentMatches / compWords * 100).toFixed(1) : 0;
-    data.content = { yourWords, compWords, yourDensity, compDensity, yourContentMatches };
-    yourScore += yourWords > 800 ? 20 : 0;
-    compScore += compWords > 800 ? 20 : 0;
+    // === All scoring & rendering (moved to function for delay) ===
+    const renderResults = () => {
+      let yourScore = 0;
+      let compScore = 0;
+      const data = {};
 
-    // Image Alts
-    const yourImgs = yourDoc.querySelectorAll('img');
-    const compImgs = compDoc.querySelectorAll('img');
-    const yourAltPhrase = Array.from(yourImgs).filter(img => countPhrase(img.alt || '', phrase) > 0).length;
-    const compAltPhrase = Array.from(compImgs).filter(img => countPhrase(img.alt || '', phrase) > 0).length;
-    data.alts = { yourPhrase: yourAltPhrase, compPhrase: compAltPhrase };
-    yourScore += yourAltPhrase > 0 ? 15 : 0;
-    compScore += compAltPhrase > 0 ? 15 : 0;
+      data.meta = { yourMatches: countPhrase(yourDoc.querySelector('title')?.textContent + yourDoc.querySelector('meta[name="description"]')?.content, phrase), compMatches: countPhrase(compDoc.querySelector('title')?.textContent + compDoc.querySelector('meta[name="description"]')?.content, phrase) };
+      yourScore += data.meta.yourMatches > 0 ? 25 : 0;
+      compScore += data.meta.compMatches > 0 ? 25 : 0;
 
-    // Anchors
-    const yourAnchors = Array.from(yourDoc.querySelectorAll('a')).filter(a => countPhrase(a.textContent || '', phrase) > 0).length;
-    const compAnchors = Array.from(compDoc.querySelectorAll('a')).filter(a => countPhrase(a.textContent || '', phrase) > 0).length;
-    data.anchors = { your: yourAnchors, comp: compAnchors };
-    yourScore += yourAnchors > 0 ? 10 : 0;
-    compScore += compAnchors > 0 ? 10 : 0;
+      data.headings = { yourH1Match: countPhrase(yourDoc.querySelector('h1')?.textContent.trim() || '', phrase), compH1Match: countPhrase(compDoc.querySelector('h1')?.textContent.trim() || '', phrase) };
+      yourScore += data.headings.yourH1Match > 0 ? 15 : 0;
+      compScore += data.headings.compH1Match > 0 ? 15 : 0;
 
-    // URL & Schema
-    data.urlSchema = {
-      yourUrlMatch: countPhrase(yourUrl, phrase),
-      compUrlMatch: countPhrase(compUrl, phrase),
-      yourSchema: yourDoc.querySelector('script[type="application/ld+json"]') ? 1 : 0,
-      compSchema: compDoc.querySelector('script[type="application/ld+json"]') ? 1 : 0
-    };
-    yourScore += data.urlSchema.yourUrlMatch > 0 ? 10 : 0;
-    compScore += data.urlSchema.compUrlMatch > 0 ? 10 : 0;
+      const yourWords = getWordCount(yourDoc);
+      const compWords = getWordCount(compDoc);
+      const yourContentMatches = countPhrase(getCleanContent(yourDoc), phrase);
+      const yourDensity = yourWords ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
+      const compDensity = compWords ? (countPhrase(getCleanContent(compDoc), phrase) / compWords * 100).toFixed(1) : 0;
+      data.content = { yourWords, yourDensity };
 
-    yourScore = Math.min(100, Math.round(yourScore));
-    compScore = Math.min(100, Math.round(compScore));
+      yourScore += yourWords > 800 ? 20 : 0;
+      compScore += compWords > 800 ? 20 : 0;
 
-    const gap = yourScore > compScore ? '+' + (yourScore - compScore) : yourScore < compScore ? (compScore - yourScore) : '±0';
+      const yourAltPhrase = Array.from(yourDoc.querySelectorAll('img')).filter(img => countPhrase(img.alt || '', phrase) > 0).length;
+      const compAltPhrase = Array.from(compDoc.querySelectorAll('img')).filter(img => countPhrase(img.alt || '', phrase) > 0).length;
+      data.alts = { yourPhrase: yourAltPhrase, compPhrase: compAltPhrase };
+      yourScore += yourAltPhrase > 0 ? 15 : 0;
+      compScore += compAltPhrase > 0 ? 15 : 0;
 
-    // === Top Priority Fixes Logic ===
-    const moduleOrder = ['meta', 'headings', 'content', 'alts', 'anchors', 'urlSchema'];
-    const failedModules = [];
+      const yourAnchors = Array.from(yourDoc.querySelectorAll('a')).filter(a => countPhrase(a.textContent || '', phrase) > 0).length;
+      data.anchors = { your: yourAnchors };
+      yourScore += yourAnchors > 0 ? 10 : 0;
+      compScore += Array.from(compDoc.querySelectorAll('a')).filter(a => countPhrase(a.textContent || '', phrase) > 0).length > 0 ? 10 : 0;
 
-    if (data.meta.yourMatches === 0) failedModules.push({ id: 'meta', name: 'Meta Title & Desc' });
-    if (data.headings.yourH1Match === 0) failedModules.push({ id: 'headings', name: 'H1 & Headings' });
-    if (parseFloat(data.content.yourDensity) < 1 || yourContentMatches === 0 || yourWords < 800) {
-      failedModules.push({ id: 'content', name: 'Content Density & Depth' });
-    }
-    if (data.alts.yourPhrase === 0) failedModules.push({ id: 'alts', name: 'Image Alts' });
-    if (data.anchors.your === 0) failedModules.push({ id: 'anchors', name: 'Anchor Text' });
-    if (data.urlSchema.yourUrlMatch === 0 || data.urlSchema.yourSchema === 0) {
-      failedModules.push({ id: 'urlSchema', name: 'URL & Schema' });
-    }
+      data.urlSchema = {
+        yourUrlMatch: countPhrase(yourUrl, phrase),
+        compUrlMatch: countPhrase(compUrl, phrase),
+        yourSchema: yourDoc.querySelector('script[type="application/ld+json"]') ? 1 : 0
+      };
+      yourScore += data.urlSchema.yourUrlMatch > 0 ? 10 : 0;
+      compScore += data.urlSchema.compUrlMatch > 0 ? 10 : 0;
 
-    const topFixes = [];
-    const worstModule = failedModules[0];
+      yourScore = Math.min(100, Math.round(yourScore));
+      compScore = Math.min(100, Math.round(compScore));
 
-    failedModules.forEach(mod => {
-      let text = '';
-      if (mod.id === 'meta') text = "Add phrase to title and meta description.";
-      else if (mod.id === 'headings') text = "Include phrase in H1 heading.";
-      else if (mod.id === 'content') text = yourWords < 800 ? `Expand content depth — aim for at least 800 words (currently ${yourWords}).` : "Improve content density.";
-      else if (mod.id === 'alts') text = "Include phrase in key image alt text.";
-      else if (mod.id === 'anchors') text = "Use phrase in internal anchor text.";
-      else if (mod.id === 'urlSchema') text = data.urlSchema.yourUrlMatch === 0 ? "Include phrase in URL slug if possible." : "Add structured data (JSON-LD schema markup).";
+      // === Top Priority Fixes & Final Render (same as previous epic version) ===
+      const moduleOrder = ['meta', 'headings', 'content', 'alts', 'anchors', 'urlSchema'];
+      const failedModules = [];
+      if (data.meta.yourMatches === 0) failedModules.push({ id: 'meta', name: 'Meta Title & Desc' });
+      if (data.headings.yourH1Match === 0) failedModules.push({ id: 'headings', name: 'H1 & Headings' });
+      if (parseFloat(yourDensity) < 1 || yourContentMatches === 0 || yourWords < 800) failedModules.push({ id: 'content', name: 'Content Density & Depth' });
+      if (yourAltPhrase === 0) failedModules.push({ id: 'alts', name: 'Image Alts' });
+      if (yourAnchors === 0) failedModules.push({ id: 'anchors', name: 'Anchor Text' });
+      if (data.urlSchema.yourUrlMatch === 0 || data.urlSchema.yourSchema === 0) failedModules.push({ id: 'urlSchema', name: 'URL & Schema' });
 
-      topFixes.push({ module: mod.name, text, isWorst: mod.id === worstModule?.id });
-    });
+      const topFixes = [];
+      const worstModule = failedModules[0];
+      failedModules.forEach(mod => {
+        let text = '';
+        if (mod.id === 'meta') text = "Add phrase to title and meta description.";
+        else if (mod.id === 'headings') text = "Include phrase in H1 heading.";
+        else if (mod.id === 'content') text = yourWords < 800 ? `Expand content depth — aim for at least 800 words (currently ${yourWords}).` : "Improve content density.";
+        else if (mod.id === 'alts') text = "Include phrase in key image alt text.";
+        else if (mod.id === 'anchors') text = "Use phrase in internal anchor text.";
+        else if (mod.id === 'urlSchema') text = data.urlSchema.yourUrlMatch === 0 ? "Include phrase in URL slug if possible." : "Add structured data (JSON-LD schema markup).";
+        topFixes.push({ module: mod.name, text, isWorst: mod.id === worstModule?.id });
+      });
+      if (topFixes.length < 3 && worstModule && worstModule.id === 'content' && yourWords < compWords) {
+        topFixes.push({ module: worstModule.name, text: "Cover competitor subtopics and improve natural phrase usage.", isWorst: true });
+      }
+      const finalFixes = topFixes.slice(0, 3);
 
-    // Emphasis on worst module if needed
-    if (topFixes.length < 3 && worstModule && worstModule.id === 'content' && yourWords < compWords && parseFloat(data.content.yourDensity) < 1) {
-      topFixes.push({ module: worstModule.name, text: "Cover competitor subtopics and improve natural phrase usage.", isWorst: true });
-    }
-
-    const finalFixes = topFixes.slice(0, 3);
-
-    // === Final Results Rendering ===
-    if (document.getElementById('single-loader')) document.getElementById('single-loader').remove();
-    results.classList.remove('hidden');
-
-    results.innerHTML = `
+      results.classList.remove('hidden');
+      results.innerHTML = `
+`
 <!-- Big Score Circles -->
 <div class="grid md:grid-cols-2 gap-8 lg:gap-12 my-12 px-4">
   <div class="text-center">
