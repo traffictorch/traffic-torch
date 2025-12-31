@@ -168,51 +168,13 @@ document.addEventListener('DOMContentLoaded', () => {
       
       
 
-      const resultsWrapper = document.getElementById('results-wrapper');
-      const modules = [
-        { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
-        { id: 'mobile', name: 'Mobile & PWA', fn: analyzeMobile },
-        { id: 'perf', name: 'Performance', fn: analyzePerf },
-        { id: 'access', name: 'Accessibility', fn: analyzeAccess },
-        { id: 'content', name: 'Content Quality', fn: analyzeContentQuality },
-        { id: 'ux', name: 'UX Design', fn: analyzeUXDesign },
-        { id: 'security', name: 'Security', fn: analyzeSecurity },
-        { id: 'indexability', name: 'Indexability', fn: analyzeIndexability }
-      ];
-
-      const scores = [];
-      const allIssues = [];
-      const moduleResults = [];
-
-      for (const mod of modules) {
-        progressText.textContent = `Analyzing ${mod.name}...`;
-        const analysisUrl = mod.id === 'security' ? originalInput : url;
-        const result = mod.fn(html, doc, analysisUrl);
-        moduleResults.push({ mod, result });
-        scores.push(result.score);
-        updateScore(`${mod.id}-score`, result.score);
-        populateIssues(`${mod.id}-issues`, result.issues);
-        result.issues.forEach(iss => {
-          allIssues.push({
-            ...iss,
-            module: mod.name,
-            impact: 100 - result.score
-          });
-        });
-        await new Promise(r => setTimeout(r, 300));
-      }
-
-      const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
-      updateScore('overall-score', overallScore);
-
-      // === DYNAMICALLY REPLACE MODULE CARDS WITH FIXED DESIGN ===
+      // === DYNAMICALLY REPLACE MODULE CARDS - FIXED TO MATCH ORIGINAL STRUCTURE ===
       const resultsGrid = document.getElementById('results');
       if (resultsGrid) {
         resultsGrid.innerHTML = moduleResults.map(({mod, result}) => {
-          const gradeClass = result.score >= 80 ? 'green' : result.score >= 60 ? 'orange' : 'red';
           const fixesCount = result.issues.length;
 
-          // Define ✅/❌ checks
+          // Define ✅/❌ checks (same as before)
           let checks = [];
           if (mod.id === 'seo') {
             checks = [
@@ -270,12 +232,12 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           return `
-          <section id="${mod.id}-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card ${gradeClass}">
+          <section id="${mod.id}-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
             <div class="score-circle" data-score="${result.score}">
               <svg viewBox="0 0 120 120">
                 <circle class="bg" cx="60" cy="60" r="54"/>
                 <circle class="progress" cx="60" cy="60" r="54"/>
-                <text x="60" y="72" class="number">${result.score}</text>
+                <text x="60" y="72" class="number">0</text>
               </svg>
               <div class="label text-xl font-bold mt-4">${mod.name}</div>
             </div>
@@ -289,8 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
               `).join('')}
             </div>
 
-            <button onclick="toggleFixesPanel(this)"
-                    class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">
+            <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">
               ${fixesCount ? 'Show Fixes (' + fixesCount + ')' : 'All Clear'}
             </button>
 
@@ -299,16 +260,23 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </section>`;
         }).join('');
-      }
 
-      // Re-attach expand buttons after dynamic generation
-      document.querySelectorAll('.expand').forEach(b => {
-        b.onclick = () => {
-          b.nextElementSibling.classList.toggle('hidden');
-          b.textContent = b.nextElementSibling.classList.contains('hidden') ? 
-            (b.textContent.includes('(') ? b.textContent : 'Show Fixes') : 'Hide Fixes';
-        };
-      });
+        // Re-apply updateScore to all modules now that DOM is ready
+        moduleResults.forEach(({mod, result}) => {
+          updateScore(`${mod.id}-score`, result.score);
+        });
+
+        // Re-attach expand button listeners
+        document.querySelectorAll('.expand').forEach(b => {
+          b.onclick = () => {
+            const details = b.nextElementSibling;
+            details.classList.toggle('hidden');
+            b.textContent = details.classList.contains('hidden') 
+              ? (b.textContent.includes('(') ? b.textContent.split(' (')[0] + ` (${result.issues.length})` : 'Show Fixes')
+              : 'Hide Fixes';
+          };
+        });
+      }
 
 
 
