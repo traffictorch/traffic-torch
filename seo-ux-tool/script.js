@@ -419,13 +419,9 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       resultsWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-      // Re-attach expand buttons
-      document.querySelectorAll('.expand').forEach(b => {
-        b.onclick = () => {
-          b.nextElementSibling.classList.toggle('hidden');
-          b.textContent = b.nextElementSibling.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
-        };
-      });
+
+
+
 
       // 360° Health Radar Chart (desktop only)
       try {
