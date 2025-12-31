@@ -14,19 +14,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Toggle helpers to avoid inline JS syntax errors in template literals
-  function toggleFixesPanel(button) {
-    const card = button.closest('.score-card');
-    const fixesPanel = card.querySelector('.fixes-panel');
-    const fullDetails = card.querySelector('.full-details');
-    fixesPanel.classList.toggle('hidden');
-    if (fixesPanel.classList.contains('hidden')) {
-      fullDetails.classList.add('hidden');
-    }
+function toggleFixesPanel(button) {
+  const card = button.closest('.score-card');
+  const fixesPanel = card.querySelector('.fixes-panel');
+  const fullDetails = card.querySelector('.full-details');
+  fixesPanel.classList.toggle('hidden');
+  if (fixesPanel.classList.contains('hidden')) {
+    fullDetails.classList.add('hidden');
   }
+}
 
-  function toggleMoreDetails(button) {
-    button.closest('.fixes-panel').nextElementSibling.classList.toggle('hidden');
-  }
+function toggleMoreDetails(button) {
+  button.closest('.fixes-panel').nextElementSibling.classList.toggle('hidden');
+}
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
