@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       results.classList.remove('hidden');
       results.innerHTML = `
-      
+ 
 <!-- Big Score Circles -->
 <div class="grid md:grid-cols-2 gap-8 lg:gap-12 my-12 px-4">
   <div class="text-center">
@@ -393,5 +393,6 @@ document.addEventListener('DOMContentLoaded', () => {
   </button>
 </div>
     `;
+    };
   });
-});
+}); `
