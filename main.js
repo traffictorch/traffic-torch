@@ -26,7 +26,20 @@ window.addEventListener('beforeinstallprompt', e => {
   document.body.appendChild(btn);
 });
 
-// 3. Mobile menu (unchanged – preserved exactly)
+// 3. Register minimal service worker for PWA readiness (detectable by audits, no caching)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('Service Worker registered with scope:', registration.scope);
+      })
+      .catch(error => {
+        console.log('Service Worker registration failed:', error);
+      });
+  });
+}
+
+// 4. Mobile menu (unchanged – preserved exactly)
 document.addEventListener('DOMContentLoaded', () => {
   const button = document.getElementById('menuToggle');
   const menu = document.getElementById('mobileMenu');
@@ -45,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text)
+// 5. Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text)
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
 const desktopMenuToggle = document.getElementById('desktopMenuToggle');
