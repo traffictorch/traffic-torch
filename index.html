@@ -82,12 +82,7 @@
   <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/seo-ux-tool/style.css">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-  tailwind.config = {
-    darkMode: 'class',
-  }
-</script>
+
 <script>
   (function() {
     const saved = localStorage.getItem('theme');
@@ -99,7 +94,7 @@
     }
   })();
 </script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
   <!-- Main Layout Container - Desktop flex with sidebar -->
@@ -171,7 +166,7 @@
             🌙
           </button>
         </div>
-        <!-- Mobile Menu Dropdown (unchanged) -->
+        <!-- Mobile Menu Dropdown -->
         <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
           <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
             <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🛡️</a>
@@ -189,10 +184,6 @@
         </div>
       </header>
       
-
-
-
-    
   <!-- SEO UX TOOL -->
 <main class="container mx-auto px-6 py-4 max-w-5xl">
         <div class="text-center mb-12">
@@ -201,7 +192,6 @@
           </h1>
           <p class="text-xl text-gray-500">SEO Health Check • Improve Rankings • Learn Best Practices</p>
         </div>
-    
     
 <form id="url-form" class="flex flex-col md:flex-row gap-4 max-w-3xl mx-auto mb-12">
   <label for="url-input" class="sr-only">Enter website URL to analyze</label>
@@ -226,10 +216,6 @@
       <div class="spinner mx-auto mb-4"></div>
       <p id="progress-text" class="text-xl text-orange-500 font-medium">Initializing analysis...</p>
     </div>
-    
-    
-    
-    
     
  <div id="results-wrapper" class="hidden">
    <div id="radar-container" class="hidden md:block my-24">
@@ -357,12 +343,6 @@
   </section>
 </div>
 
-
-
-
-
-
-
   <div id="priority-fixes" class="max-w-6xl mx-auto my-24">
     <h2 class="text-5xl font-black text-center mb-16 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
       Top 3 Priority Fixes
@@ -410,10 +390,6 @@
     </div>
   </div>
   
-  
-  
-  
-
   <div id="mobile-preview" class="max-w-5xl mx-auto my-24">
     <h2 class="text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
       Mobile UX Preview
@@ -455,9 +431,6 @@
   </div>
 </div>
 
-
-
-	
 	<!-- How Traffic Torch Works Accordion -->
 <div class="max-w-4xl mx-auto my-20">
   <details>
@@ -527,8 +500,6 @@
   </details>
 </div>
 
-
-
             	<!-- AddToAny BEGIN -->
   <div style="display: flex; justify-content: center; margin: 30px 0;">
   <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
@@ -545,9 +516,6 @@
 </div>
 	<!-- AddToAny END --> 
 	
-	
-
-
 <!-- Tool SEO Checklist -->
 <section id="seo-ux-checklist" class="py-16 px-1 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
   <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
@@ -810,9 +778,6 @@
   </details>
 </section>
     
-    
-
-
 <!-- Why Traffic Torch Matters Accordion -->
 <div class="max-w-4xl mx-auto my-20">
   <details>
@@ -889,7 +854,6 @@
   </details>
 </div>
 
-
 <!-- Tools Grid (Creative: Hover glow/scale, colorful borders, emojis) -->
 <div class="tools-grid max-w-7xl mx-auto px-6">
   <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -943,8 +907,7 @@
     </a>
   </div>
 </div>
-    
-    
+      
   </main>
   
       	<!-- AddToAny BEGIN -->
@@ -1005,11 +968,15 @@
     </div>
   </footer>
 
-  <!-- Load JS last for speed -->
+<!-- Load JS last and defer for speed -->
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
   <script src="/main.js" type="module"></script>
   <script src="/seo-ux-tool/script.js" defer></script>
 
-
-  
 </body>
 </html>
