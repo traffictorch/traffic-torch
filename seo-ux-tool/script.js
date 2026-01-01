@@ -291,11 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
           expandBtn.textContent = expand.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
         };
       });
-      
-      
-      
-      
-      
+          
 
       allIssues.sort((a, b) => b.impact - a.impact);
       const top3 = allIssues.slice(0, 3);
@@ -368,10 +364,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
       
-      
-      
-      
-
 
       resultsWrapper.classList.remove('hidden');
       document.getElementById('radar-title').classList.remove('hidden');
@@ -558,8 +550,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainHeadingText = mainHeadingElement?.textContent.trim() || '';
     let primaryKeywordRaw = '';
     if (title) {
-      const sections = title.split(/[\|\–\-]/);
+      const sections = title.split(/[\|\–\-\—]/);
       primaryKeywordRaw = sections[0].trim();
+    }
+
+    // Much fuzzier keyword extraction and matching
+    const cleanedKeyword = primaryKeywordRaw
+      .toLowerCase()
+      .replace(/\b(the|a|an|and|or|best|top|official|tool|analyzer|analysis|vs|comparison|torch|traffic)\b/g, '')
+      .replace(/[^\w\s]/g, '')
+      .trim();
+
+    const keywordParts = cleanedKeyword.split(/\s+/).filter(part => part.length >= 3);
+
+    function fuzzyMatch(headingLower) {
+      if (keywordParts.length === 0) return true;
+
+      // Count how many keyword parts (or close variants) appear in heading
+      let matches = 0;
+      keywordParts.forEach(part => {
+        // Direct match
+        if (headingLower.includes(part)) matches++;
+        // Partial match (e.g., "analysis" in "analyzer")
+        else if (keywordParts.some(p => p.includes(part) || part.includes(p))) matches += 0.5;
+      });
+
+      // Very fuzzy threshold: ~40% match or at least 2 significant words
+      const ratio = matches / keywordParts.length;
+      return ratio >= 0.4 || matches >= 2;
+    }
+
+    if (primaryKeywordRaw && mainHeadingText) {
+      const headingLower = mainHeadingText.toLowerCase();
+      if (!fuzzyMatch(headingLower)) {
+        score -= 10;
+        issues.push({
+          issue: `Main heading could better align with page focus (“${primaryKeywordRaw}”)`,
+          fix: 'Include key terms from your title naturally in the H1/H2. This helps search engines and users immediately understand the page topic. Exact match isn’t needed — close variants work well.'
+        });
+      }
     }
     const imgs = doc.querySelectorAll('img');
     const noAlt = Array.from(imgs).filter(i => !i.alt || i.alt.trim() === '');
