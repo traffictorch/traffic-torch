@@ -540,21 +540,23 @@
 </div>
 	<!-- AddToAny END --> 
 	
-<!-- Breadcrumbs - centered, appears only on tool pages -->
-<div class="max-w-5xl mx-auto px-6 py-8 text-center">
-  <nav aria-label="Breadcrumb" class="text-sm text-gray-500 dark:text-gray-400">
-    <ol class="inline-flex items-center space-x-3">
+<!-- Breadcrumbs - centered, with clickable links -->
+<div class="max-w-5xl mx-auto px-6 py-8">
+  <nav aria-label="breadcrumb" class="text-center">
+    <ol class="inline-flex items-center space-x-3 text-sm text-gray-500 dark:text-gray-400">
       <li>
         <a href="/" class="hover:text-orange-500 transition">Home</a>
       </li>
-      <li aria-current="page">
+      <li>
         <span class="mx-2">/</span>
         <span class="text-orange-500 font-medium">
-          <!-- Dynamic tool name - fallback to page title -->
           <script>
             document.write(
-              document.title.replace('Traffic Torch – ', '').replace(' Tool', '').trim() || 
-              window.location.pathname.split('/')[1].replace(/-/g, ' ').replace(' tool', '').trim()
+              document.title
+                .replace('Traffic Torch – ', '')
+                .replace(' | Traffic Torch', '')
+                .replace(' Tool', '')
+                .trim()
             );
           </script>
         </span>
