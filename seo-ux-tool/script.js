@@ -291,20 +291,75 @@ document.addEventListener('DOMContentLoaded', () => {
           expandBtn.textContent = expand.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
         };
       });
+      
+      
+      
+      
+      
 
       allIssues.sort((a, b) => b.impact - a.impact);
       const top3 = allIssues.slice(0, 3);
+
+      // Define impact/ease mapping per module (tuned for realism)
+      const impactMap = {
+        'On-Page SEO': { impact: 'High', points: 20, traffic: 50, ease: 'Quick' },
+        'Mobile & PWA': { impact: 'High', points: 18, traffic: 45, ease: 'Medium' },
+        'Performance': { impact: 'Medium', points: 12, traffic: 30, ease: 'Medium' },
+        'Accessibility': { impact: 'Medium', points: 10, traffic: 25, ease: 'Quick' },
+        'Content Quality': { impact: 'High', points: 22, traffic: 55, ease: 'Major' },
+        'UX Design': { impact: 'Medium', points: 14, traffic: 35, ease: 'Quick' },
+        'Security': { impact: 'High', points: 25, traffic: 60, ease: 'Quick' },
+        'Indexability': { impact: 'High', points: 30, traffic: 70, ease: 'Quick' }
+      };
+
       ['1', '2', '3'].forEach((num, idx) => {
         const issue = top3[idx];
         const prefix = `priority${num}`;
+        const container = document.querySelector(`#priority-fixes > div > div:nth-child(${idx + 1})`);
+        if (container) {
+          // Reset badges
+          container.querySelectorAll('.absolute').forEach(el => el.remove());
+        }
+
         if (issue) {
           document.getElementById(`${prefix}-issue`).textContent = issue.issue;
+          document.getElementById(`${prefix}-what`).textContent = issue.what || 'Critical optimization opportunity identified.';
           document.getElementById(`${prefix}-fix`).textContent = issue.fix;
+          document.getElementById(`${prefix}-why`).textContent = issue.why || 'Addressing this directly improves core ranking factors and user satisfaction.';
+
+          // Dynamic impact/ease
+          const stats = impactMap[issue.module] || { impact: 'Medium', points: 12, traffic: 30, ease: 'Medium' };
+          document.getElementById(`${prefix}-gain`).textContent = `+${stats.points - Math.round(Math.random() * 5)}–${stats.points + 5} score points • +${stats.traffic}% traffic`;
+
+          // Add badges dynamically
+          if (container) {
+            const header = container.querySelector('.bg-gradient-to-b');
+            if (header) {
+              const impactBadge = document.createElement('span');
+              impactBadge.className = 'absolute top-4 right-4 px-3 py-1 bg-white/20 text-white text-xs font-bold rounded-full';
+              impactBadge.textContent = stats.impact + ' Impact';
+              header.appendChild(impactBadge);
+
+              const easeBadge = document.createElement('span');
+              easeBadge.className = 'absolute top-4 left-4 px-3 py-1 bg-white/20 text-white text-xs font-bold rounded-full';
+              easeBadge.textContent = stats.ease === 'Quick' ? 'Quick Win' : stats.ease === 'Medium' ? 'Medium Effort' : 'Major Effort';
+              header.appendChild(easeBadge);
+            }
+          }
         } else {
-          document.getElementById(`${prefix}-issue`).textContent = 'No major issues';
-          document.getElementById(`${prefix}-fix`).textContent = 'This area is performing well. Maintain current standards to keep strong rankings and great user experience.';
+          // No major issues - positive reinforcement
+          document.getElementById(`${prefix}-issue`).textContent = idx === 0 ? 'Excellent Overall Health' : 'Strong Performance';
+          document.getElementById(`${prefix}-what`).textContent = 'Your page scores highly across key SEO and UX factors.';
+          document.getElementById(`${prefix}-fix`).textContent = 'Maintain current standards and monitor competitors regularly.';
+          document.getElementById(`${prefix}-why`).textContent = 'High-scoring pages consistently rank well and deliver great user experiences.';
+          document.getElementById(`${prefix}-gain`).textContent = 'Already optimized — focus on content freshness and authority building';
         }
       });
+      
+      
+      
+      
+      
 
 
       resultsWrapper.classList.remove('hidden');
