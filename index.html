@@ -83,7 +83,7 @@
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/seo-ux-tool/style.css">
 
-<script>
+  <script>
   (function() {
     const saved = localStorage.getItem('theme');
     const preferDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -93,7 +93,14 @@
       document.documentElement.classList.remove('dark');
     }
   })();
-</script>
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
 
 </head>
 
@@ -970,12 +977,6 @@
   </footer>
 
 <!-- Load JS last and defer for speed -->
-  <script src="https://cdn.tailwindcss.com" defer></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-    }
-  </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   <script src="/main.js" type="module"></script>
   <script src="/seo-ux-tool/script.js" defer></script> 
