@@ -563,23 +563,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const keywordParts = cleanedKeyword.split(/\s+/).filter(part => part.length >= 3);
 
-    function fuzzyMatch(headingLower) {
+        function fuzzyMatch(headingLower) {
       if (keywordParts.length === 0) return true;
 
-      // Count how many keyword parts (or close variants) appear in heading
       let matches = 0;
       keywordParts.forEach(part => {
-        // Direct match
-        if (headingLower.includes(part)) matches++;
-        // Partial match (e.g., "analysis" in "analyzer")
-        else if (keywordParts.some(p => p.includes(part) || part.includes(p))) matches += 0.5;
+        // Direct full match
+        if (headingLower.includes(part)) {
+          matches++;
+        } 
+        // Partial/substring match (e.g., "analysis" in "analyzer" or vice versa)
+        else if (headingLower.includes(part.substring(0, part.length - 1)) || 
+                 headingLower.includes(part.substring(1))) {
+          matches += 0.7;  // partial credit
+        }
+        // Looser containment (any overlapping 4+ chars)
+        else if (headingLower.split(' ').some(word => 
+                 word.length >= 4 && (word.includes(part) || part.includes(word)))) {
+          matches += 0.5;
+        }
       });
 
-      // Very fuzzy threshold: ~40% match or at least 2 significant words
       const ratio = matches / keywordParts.length;
+      // Very permissive: 40% or at least 2 matches
       return ratio >= 0.4 || matches >= 2;
     }
-
+    
     if (primaryKeywordRaw && mainHeadingText) {
       const headingLower = mainHeadingText.toLowerCase();
       if (!fuzzyMatch(headingLower)) {
