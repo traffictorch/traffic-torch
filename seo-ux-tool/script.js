@@ -638,10 +638,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const issues = [];
     const viewport = doc.querySelector('meta[name="viewport"]')?.content || '';
     const has192 = doc.querySelector('link[sizes*="192"], link[rel="apple-touch-icon"]');
-    // Reliable detection: check if a service worker is actively controlling the page
-    const hasServiceWorker = typeof navigator !== 'undefined' && 
-                             'serviceWorker' in navigator && 
-                             !!navigator.serviceWorker.controller;
+    // Reliable HTML-based detection: look for service worker registration code in scripts
+    const scripts = doc.querySelectorAll('script');
+    const hasServiceWorker = Array.from(scripts).some(script => {
+      const content = script.textContent || script.src || '';
+      return /serviceWorker/.test(content) && /register/.test(content);
+    });
 
     if (!viewport.includes('width=device-width')) {
       score -= 35;
