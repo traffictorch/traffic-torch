@@ -196,7 +196,7 @@
 <main class="container mx-auto px-6 py-4 max-w-5xl">
         <div class="text-center mb-12">
           <h1 class="text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4">
-            SEO & UX Audit Tool ⚖️ Traffic Torch 
+            SEO & UX Audit Tool ⚖️ 
           </h1>
           <p class="text-xl text-gray-500">SEO Health Check • Improve Rankings • Learn Best Practices</p>
         </div>
@@ -351,52 +351,71 @@
   </section>
 </div>
 
+
+
+
+
   <div id="priority-fixes" class="max-w-6xl mx-auto my-24">
-    <h2 class="text-5xl font-black text-center mb-16 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-      Top 3 Priority Fixes
+    <h2 class="text-5xl font-black text-center mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+      Top Priority Fixes
     </h2>
+    <p class="text-center text-lg text-gray-500 dark:text-gray-400 max-w-4xl mx-auto mb-16 leading-relaxed">
+      These fixes are AI-ranked by estimated ranking uplift, traffic potential, and implementation ease — helping you achieve the fastest, most meaningful improvements first.
+    </p>
     <div class="grid md:grid-cols-3 gap-12">
       <div class="rounded-3xl overflow-hidden shadow-2xl bg-white/10 backdrop-blur-xl border border-red-500/50">
-        <div class="bg-gradient-to-b from-red-600/40 to-transparent py-10 text-center">
+        <div class="bg-gradient-to-b from-red-600/40 to-transparent py-10 text-center relative">
           <div class="text-6xl font-black text-red-400">1</div>
+          <span class="absolute top-4 right-4 px-3 py-1 bg-red-500/20 text-red-300 text-xs font-bold rounded-full">High Impact</span>
+          <span class="absolute top-4 left-4 px-3 py-1 bg-white/20 text-white text-xs font-bold rounded-full">Quick Win</span>
         </div>
-        <div class="p-5">
-          <strong id="priority1-issue" class="text-2xl font-bold block mb-8 text-gray-500"></strong>
+        <div class="p-8">
+          <strong id="priority1-issue" class="text-2xl font-bold block mb-6 text-gray-300"></strong>
+          <p class="text-gray-400 text-sm mb-4"><span class="font-bold text-orange-400">Potential Gain:</span> <span id="priority1-gain">+15–25 score points • +40% traffic</span></p>
           <div class="space-y-6">
-            <p class="text-gray-500"><span class="font-bold text-blue-400">What is it?</span><br><span id="priority1-what" class="text-lg leading-relaxed"></span></p>
-            <p class="text-gray-500"><span class="font-bold text-green-400">How to improve?</span><br><span id="priority1-fix" class="text-lg leading-relaxed"></span></p>
-            <p class="text-gray-500"><span class="font-bold text-red-400">Why it matters?</span><br><span id="priority1-why" class="text-lg leading-relaxed"></span></p>
+            <p class="text-gray-400"><span class="font-bold text-blue-400">What is it?</span><br><span id="priority1-what" class="text-lg leading-relaxed"></span></p>
+            <p class="text-gray-400"><span class="font-bold text-green-400">How to improve?</span><br><span id="priority1-fix" class="text-lg leading-relaxed"></span></p>
+            <p class="text-gray-400"><span class="font-bold text-red-400">Why it matters?</span><br><span id="priority1-why" class="text-lg leading-relaxed"></span></p>
           </div>
         </div>
       </div>
       <div class="rounded-3xl overflow-hidden shadow-2xl bg-white/10 backdrop-blur-xl border border-orange-500/50">
-        <div class="bg-gradient-to-b from-orange-600/40 to-transparent py-10 text-center">
+        <div class="bg-gradient-to-b from-orange-600/40 to-transparent py-10 text-center relative">
           <div class="text-6xl font-black text-orange-400">2</div>
+          <span class="absolute top-4 right-4 px-3 py-1 bg-orange-500/20 text-orange-300 text-xs font-bold rounded-full">Medium Impact</span>
+          <span class="absolute top-4 left-4 px-3 py-1 bg-white/20 text-white text-xs font-bold rounded-full">Medium Effort</span>
         </div>
-        <div class="p-5">
-          <strong id="priority2-issue" class="text-2xl font-bold block mb-8 text-gray-500"></strong>
+        <div class="p-8">
+          <strong id="priority2-issue" class="text-2xl font-bold block mb-6 text-gray-300"></strong>
+          <p class="text-gray-400 text-sm mb-4"><span class="font-bold text-orange-400">Potential Gain:</span> <span id="priority2-gain">+10–20 score points • +30% traffic</span></p>
           <div class="space-y-6">
-            <p class="text-gray-500"><span class="font-bold text-blue-400">What is it?</span><br><span id="priority2-what" class="text-lg leading-relaxed"></span></p>
-            <p class="text-gray-500"><span class="font-bold text-green-400">How to improve?</span><br><span id="priority2-fix" class="text-lg leading-relaxed"></span></p>
-            <p class="text-gray-500"><span class="font-bold text-red-400">Why it matters?</span><br><span id="priority2-why" class="text-lg leading-relaxed"></span></p>
+            <p class="text-gray-400"><span class="font-bold text-blue-400">What is it?</span><br><span id="priority2-what" class="text-lg leading-relaxed"></span></p>
+            <p class="text-gray-400"><span class="font-bold text-green-400">How to improve?</span><br><span id="priority2-fix" class="text-lg leading-relaxed"></span></p>
+            <p class="text-gray-400"><span class="font-bold text-red-400">Why it matters?</span><br><span id="priority2-why" class="text-lg leading-relaxed"></span></p>
           </div>
         </div>
       </div>
       <div class="rounded-3xl overflow-hidden shadow-2xl bg-white/10 backdrop-blur-xl border border-green-500/50">
-        <div class="bg-gradient-to-b from-green-600/40 to-transparent py-10 text-center">
+        <div class="bg-gradient-to-b from-green-600/40 to-transparent py-10 text-center relative">
           <div class="text-6xl font-black text-green-400">3</div>
+          <span class="absolute top-4 right-4 px-3 py-1 bg-green-500/20 text-green-300 text-xs font-bold rounded-full">Solid Impact</span>
+          <span class="absolute top-4 left-4 px-3 py-1 bg-white/20 text-white text-xs font-bold rounded-full">Major Effort</span>
         </div>
-        <div class="p-5">
-          <strong id="priority3-issue" class="text-2xl font-bold block mb-8 text-gray-500"></strong>
+        <div class="p-8">
+          <strong id="priority3-issue" class="text-2xl font-bold block mb-6 text-gray-300"></strong>
+          <p class="text-gray-400 text-sm mb-4"><span class="font-bold text-orange-400">Potential Gain:</span> <span id="priority3-gain">+8–15 score points • +25% traffic</span></p>
           <div class="space-y-6">
-            <p class="text-gray-500"><span class="font-bold text-blue-400">What is it?</span><br><span id="priority3-what" class="text-lg leading-relaxed"></span></p>
-            <p class="text-gray-500"><span class="font-bold text-green-400">How to improve?</span><br><span id="priority3-fix" class="text-lg leading-relaxed"></span></p>
-            <p class="text-gray-500"><span class="font-bold text-red-400">Why it matters?</span><br><span id="priority3-why" class="text-lg leading-relaxed"></span></p>
+            <p class="text-gray-400"><span class="font-bold text-blue-400">What is it?</span><br><span id="priority3-what" class="text-lg leading-relaxed"></span></p>
+            <p class="text-gray-400"><span class="font-bold text-green-400">How to improve?</span><br><span id="priority3-fix" class="text-lg leading-relaxed"></span></p>
+            <p class="text-gray-400"><span class="font-bold text-red-400">Why it matters?</span><br><span id="priority3-why" class="text-lg leading-relaxed"></span></p>
           </div>
         </div>
       </div>
     </div>
   </div>
+  
+  
+  
   
   <div id="mobile-preview" class="max-w-5xl mx-auto my-24">
     <h2 class="text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
@@ -443,7 +462,7 @@
 <div class="max-w-4xl mx-auto my-20">
   <details>
     <summary class="px-3 py-4 text-1xl text-center font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
-      How Traffic Torch Works?
+      How it Works?
       <span class="text-3xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
     </summary>
     <div class="mt-6 px-8 py-10 bg-white dark:bg-gray-800 rounded-3xl shadow-inner space-y-10 text-gray-700 dark:text-gray-300">
