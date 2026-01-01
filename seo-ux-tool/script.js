@@ -540,22 +540,26 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ================== ANALYSIS FUNCTIONS ==================
+  
+  
+  
+  
 
-  function analyzeSEO(html, doc) {
+   function analyzeSEO(html, doc) {
     let score = 100;
     const issues = [];
     const title = doc.querySelector('title')?.textContent.trim() || '';
     const desc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
     const mainHeadingElement = doc.querySelector('h1') || doc.querySelector('h2') || doc.querySelector('h3');
     const mainHeadingText = mainHeadingElement?.textContent.trim() || '';
-    
+
     let primaryKeywordRaw = '';
     if (title) {
       const sections = title.split(/[\|\–\-\—]/);
       primaryKeywordRaw = sections[0].trim();
     }
 
-    // Much fuzzier keyword extraction and matching (single declaration)
+    // Much fuzzier keyword extraction and matching
     const cleanedKeyword = primaryKeywordRaw
       .toLowerCase()
       .replace(/\b(the|a|an|and|or|best|top|official|tool|analyzer|analysis|vs|comparison|torch|traffic)\b/g, '')
@@ -571,10 +575,10 @@ document.addEventListener('DOMContentLoaded', () => {
       keywordParts.forEach(part => {
         if (headingLower.includes(part)) {
           matches++;
-        } else if (headingLower.includes(part.substring(0, part.length - 1)) || 
+        } else if (headingLower.includes(part.substring(0, part.length - 1)) ||
                    headingLower.includes(part.substring(1))) {
           matches += 0.7;
-        } else if (headingLower.split(' ').some(word => 
+        } else if (headingLower.split(' ').some(word =>
                    word.length >= 4 && (word.includes(part) || part.includes(word)))) {
           matches += 0.5;
         }
@@ -594,7 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
     }
-    
+
     const imgs = doc.querySelectorAll('img');
     const noAlt = Array.from(imgs).filter(i => !i.alt || i.alt.trim() === '');
     const robots = doc.querySelector('meta[name="robots"]');
@@ -653,35 +657,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    const keywordParts = primaryKeywordRaw.toLowerCase().replace(/\b(the|a|an|and|or|luxury|resorts?|hotels?|best|top|official)\b/g, '').trim().split(/\s+/).filter(p => p.length >= 3);
-    function flexibleMatch(textLower) {
-      if (keywordParts.length === 0) return true;
-      const matches = keywordParts.filter(part => textLower.includes(part));
-      return matches.length >= Math.max(1, Math.ceil(keywordParts.length * 0.6));
-    }
-
-    if (primaryKeywordRaw && doc.body) {
-      const first500Lower = doc.body.textContent.toLowerCase().slice(0, 500);
-      if (!flexibleMatch(first500Lower)) {
-        score -= 10;
-        issues.push({
-          issue: `Primary keyword "${primaryKeywordRaw}" missing from opening content`,
-          fix: 'Including the primary keyword early in the content confirms relevance right away for both users and search engines. Place it naturally in the first paragraph or introductory section. This strengthens topical authority and improves user satisfaction from the start.'
-        });
-      }
-    }
-
-    if (primaryKeywordRaw && mainHeadingText) {
-      const headingLower = mainHeadingText.toLowerCase();
-      if (!flexibleMatch(headingLower)) {
-        score -= 10;
-        issues.push({
-          issue: `Primary keyword "${primaryKeywordRaw}" missing from main heading`,
-          fix: 'The main heading should incorporate the primary keyword to clearly signal the page topic. Do this naturally without forcing it, ensuring it reads well for users. This is one of the strongest ways to align content with search intent.'
-        });
-      }
-    }
-
     if (doc.querySelector('meta[name="keywords"]')) {
       score -= 8;
       issues.push({
@@ -732,6 +707,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     return { score: Math.max(0, Math.round(score)), issues };
   }
+  
+  
+  
+  
 
   function analyzeMobile(html, doc) {
     let score = 100;
