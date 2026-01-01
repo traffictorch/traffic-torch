@@ -548,13 +548,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const desc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
     const mainHeadingElement = doc.querySelector('h1') || doc.querySelector('h2') || doc.querySelector('h3');
     const mainHeadingText = mainHeadingElement?.textContent.trim() || '';
+    
     let primaryKeywordRaw = '';
     if (title) {
       const sections = title.split(/[\|\–\-\—]/);
       primaryKeywordRaw = sections[0].trim();
     }
 
-    // Much fuzzier keyword extraction and matching
+    // Much fuzzier keyword extraction and matching (single declaration)
     const cleanedKeyword = primaryKeywordRaw
       .toLowerCase()
       .replace(/\b(the|a|an|and|or|best|top|official|tool|analyzer|analysis|vs|comparison|torch|traffic)\b/g, '')
@@ -563,32 +564,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const keywordParts = cleanedKeyword.split(/\s+/).filter(part => part.length >= 3);
 
-        function fuzzyMatch(headingLower) {
+    function fuzzyMatch(headingLower) {
       if (keywordParts.length === 0) return true;
 
       let matches = 0;
       keywordParts.forEach(part => {
-        // Direct full match
         if (headingLower.includes(part)) {
           matches++;
-        } 
-        // Partial/substring match (e.g., "analysis" in "analyzer" or vice versa)
-        else if (headingLower.includes(part.substring(0, part.length - 1)) || 
-                 headingLower.includes(part.substring(1))) {
-          matches += 0.7;  // partial credit
-        }
-        // Looser containment (any overlapping 4+ chars)
-        else if (headingLower.split(' ').some(word => 
-                 word.length >= 4 && (word.includes(part) || part.includes(word)))) {
+        } else if (headingLower.includes(part.substring(0, part.length - 1)) || 
+                   headingLower.includes(part.substring(1))) {
+          matches += 0.7;
+        } else if (headingLower.split(' ').some(word => 
+                   word.length >= 4 && (word.includes(part) || part.includes(word)))) {
           matches += 0.5;
         }
       });
 
       const ratio = matches / keywordParts.length;
-      // Very permissive: 40% or at least 2 matches
       return ratio >= 0.4 || matches >= 2;
     }
-    
+
     if (primaryKeywordRaw && mainHeadingText) {
       const headingLower = mainHeadingText.toLowerCase();
       if (!fuzzyMatch(headingLower)) {
@@ -599,6 +594,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
     }
+    
     const imgs = doc.querySelectorAll('img');
     const noAlt = Array.from(imgs).filter(i => !i.alt || i.alt.trim() === '');
     const robots = doc.querySelector('meta[name="robots"]');
