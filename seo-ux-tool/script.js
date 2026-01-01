@@ -300,62 +300,73 @@ document.addEventListener('DOMContentLoaded', () => {
       allIssues.sort((a, b) => b.impact - a.impact);
       const top3 = allIssues.slice(0, 3);
 
-      // Define impact/ease mapping per module (tuned for realism)
-      const impactMap = {
-        'On-Page SEO': { impact: 'High', points: 20, traffic: 50, ease: 'Quick' },
-        'Mobile & PWA': { impact: 'High', points: 18, traffic: 45, ease: 'Medium' },
-        'Performance': { impact: 'Medium', points: 12, traffic: 30, ease: 'Medium' },
-        'Accessibility': { impact: 'Medium', points: 10, traffic: 25, ease: 'Quick' },
-        'Content Quality': { impact: 'High', points: 22, traffic: 55, ease: 'Major' },
-        'UX Design': { impact: 'Medium', points: 14, traffic: 35, ease: 'Quick' },
-        'Security': { impact: 'High', points: 25, traffic: 60, ease: 'Quick' },
-        'Indexability': { impact: 'High', points: 30, traffic: 70, ease: 'Quick' }
+      // Richer educational explanations per module (2-3 high-quality sentences)
+      const explanations = {
+        'On-Page SEO': {
+          what: 'On-page SEO checks how well your page is optimized for search engines using the content and code they can read.',
+          how: 'Write a clear title with your main keyword near the start, keep it 50-60 characters. Add a compelling meta description of 150-160 characters that invites clicks. Use proper headings and include relevant schema markup.',
+          why: 'These elements tell search engines exactly what your page is about and help users decide to click from search results. Strong on-page SEO is one of the biggest factors for better rankings and more traffic.'
+        },
+        'Mobile & PWA': {
+          what: 'Mobile & PWA checks if your site works perfectly on phones and can be added to home screens like an app.',
+          how: 'Add the viewport meta tag for proper scaling. Create and link a manifest.json with app icons. Register a service worker for faster loading and offline readiness.',
+          why: 'Google uses mobile-first indexing — non-mobile-friendly sites rank lower. Good mobile experience keeps users on your page longer and improves overall trust signals.'
+        },
+        'Performance': {
+          what: 'Performance looks at how fast your page loads and feels to users, especially on mobile.',
+          how: 'Compress images to WebP format and lazy-load them. Minify CSS, JS, and HTML. Limit render-blocking resources by deferring non-critical scripts.',
+          why: 'Fast pages reduce bounce rates and improve user satisfaction. Core Web Vitals (speed metrics) are direct ranking factors — faster sites rank higher.'
+        },
+        'Accessibility': {
+          what: 'Accessibility ensures everyone, including people with disabilities, can use your site easily.',
+          how: 'Add meaningful alt text to all images. Use proper heading order and landmarks. Label form fields and declare the page language.',
+          why: 'Good accessibility helps screen readers and keyboard users. Search engines treat it as a quality signal, and it expands your audience while reducing legal risks.'
+        },
+        'Content Quality': {
+          what: 'Content Quality evaluates how deep, readable, and valuable your writing is.',
+          how: 'Write clear, concise sentences with short paragraphs. Use headings every 300-400 words. Add bullet lists, tables, or examples to break up text.',
+          why: 'High-quality content keeps users engaged longer and matches search intent better. Deep, scannable content ranks higher and builds authority.'
+        },
+        'UX Design': {
+          what: 'UX Design checks how easy and intuitive it is for visitors to use your page.',
+          how: 'Highlight 1-3 main calls-to-action with big, contrasting buttons. Reduce clutter and add clear navigation. Test on mobile for tap-friendly elements.',
+          why: 'Great UX lowers bounce rates and increases time on site. Positive user signals tell search engines your page is valuable and trustworthy.'
+        },
+        'Security': {
+          what: 'Security confirms your site is safe and uses HTTPS for encrypted connections.',
+          how: 'Switch to HTTPS with a valid SSL certificate. Update all resources (images, scripts) to HTTPS. Regularly scan for mixed content.',
+          why: 'HTTPS is now a ranking factor and builds user trust. Insecure sites trigger browser warnings, causing visitors to leave immediately.'
+        },
+        'Indexability': {
+          what: 'Indexability ensures search engines can find and include your page in results.',
+          how: 'Remove any noindex meta tags. Add a canonical link to the preferred URL. Use robots.txt carefully.',
+          why: 'If a page can’t be indexed, it’s invisible to search traffic. Proper indexability consolidates authority and prevents duplicate content penalties.'
+        }
       };
 
       ['1', '2', '3'].forEach((num, idx) => {
         const issue = top3[idx];
         const prefix = `priority${num}`;
-        const container = document.querySelector(`#priority-fixes > div > div:nth-child(${idx + 1})`);
-        if (container) {
-          // Reset badges
-          container.querySelectorAll('.absolute').forEach(el => el.remove());
-        }
 
         if (issue) {
           document.getElementById(`${prefix}-issue`).textContent = issue.issue;
-          document.getElementById(`${prefix}-what`).textContent = issue.what || 'Critical optimization opportunity identified.';
-          document.getElementById(`${prefix}-fix`).textContent = issue.fix;
-          document.getElementById(`${prefix}-why`).textContent = issue.why || 'Addressing this directly improves core ranking factors and user satisfaction.';
+          const exp = explanations[issue.module] || {
+            what: 'This is a critical area needing optimization.',
+            how: 'Follow best practices for this module to resolve the issue quickly.',
+            why: 'Fixing this improves both search visibility and user satisfaction.'
+          };
 
-          // Dynamic impact/ease
-          const stats = impactMap[issue.module] || { impact: 'Medium', points: 12, traffic: 30, ease: 'Medium' };
-          document.getElementById(`${prefix}-gain`).textContent = `+${stats.points - Math.round(Math.random() * 5)}–${stats.points + 5} score points • +${stats.traffic}% traffic`;
-
-          // Add badges dynamically
-          if (container) {
-            const header = container.querySelector('.bg-gradient-to-b');
-            if (header) {
-              const impactBadge = document.createElement('span');
-              impactBadge.className = 'absolute top-4 right-4 px-3 py-1 bg-white/20 text-white text-xs font-bold rounded-full';
-              impactBadge.textContent = stats.impact + ' Impact';
-              header.appendChild(impactBadge);
-
-              const easeBadge = document.createElement('span');
-              easeBadge.className = 'absolute top-4 left-4 px-3 py-1 bg-white/20 text-white text-xs font-bold rounded-full';
-              easeBadge.textContent = stats.ease === 'Quick' ? 'Quick Win' : stats.ease === 'Medium' ? 'Medium Effort' : 'Major Effort';
-              header.appendChild(easeBadge);
-            }
-          }
+          document.getElementById(`${prefix}-what`).textContent = exp.what;
+          document.getElementById(`${prefix}-fix`).textContent = exp.how;
+          document.getElementById(`${prefix}-why`).textContent = exp.why;
         } else {
-          // No major issues - positive reinforcement
+          // Positive reinforcement when strong
           document.getElementById(`${prefix}-issue`).textContent = idx === 0 ? 'Excellent Overall Health' : 'Strong Performance';
-          document.getElementById(`${prefix}-what`).textContent = 'Your page scores highly across key SEO and UX factors.';
-          document.getElementById(`${prefix}-fix`).textContent = 'Maintain current standards and monitor competitors regularly.';
-          document.getElementById(`${prefix}-why`).textContent = 'High-scoring pages consistently rank well and deliver great user experiences.';
-          document.getElementById(`${prefix}-gain`).textContent = 'Already optimized — focus on content freshness and authority building';
+          document.getElementById(`${prefix}-what`).textContent = 'Your page scores highly across key SEO and UX factors — great job!';
+          document.getElementById(`${prefix}-fix`).textContent = 'Keep monitoring and refreshing content regularly to stay ahead.';
+          document.getElementById(`${prefix}-why`).textContent = 'High-scoring pages consistently rank well and deliver outstanding user experiences.';
         }
       });
-      
       
       
       
