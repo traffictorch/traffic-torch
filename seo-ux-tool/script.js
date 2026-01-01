@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (mod.id === 'content') {
           checks = [
             { text: 'Sufficient unique content depth', passed: !modIssues.some(i => i.issue.includes('Thin content')) },
-            { text: 'Good readability (short sentences)', passed: !modIssues.some(i => i.issue.includes('Readability')) },
+            { text: 'Readability (short sentences)', passed: !modIssues.some(i => i.issue.includes('Readability')) },
             { text: 'Strong heading structure', passed: !modIssues.some(i => i.issue.includes('heading structure')) },
             { text: 'Uses lists for better scannability', passed: !modIssues.some(i => i.issue.includes('lists')) }
           ];
