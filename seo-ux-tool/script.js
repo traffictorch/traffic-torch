@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressContainer = document.getElementById('progress-container');
   const progressText = document.getElementById('progress-text');
   const priorityFixes = document.getElementById('priority-fixes');
-  const forecastModule = document.getElementById('forecast-module');
   const savePdfBtn = document.getElementById('save-pdf');
   const copyBadgeBtn = document.getElementById('copy-badge');
 
@@ -307,54 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      const forecastTitle = document.getElementById('forecast-title');
-      const forecastGain = document.getElementById('forecast-gain');
-      const forecastWhat = document.getElementById('forecast-what');
-      const forecastHow = document.getElementById('forecast-how');
-      const forecastWhy = document.getElementById('forecast-why');
-      let title = '';
-      let gain = '';
-      let what = '';
-      let how = '';
-      let why = '';
-      if (overallScore >= 90) {
-        title = 'Dominant Top 3 Position';
-        gain = '+0–10% potential traffic gain';
-        what = 'Your page is already in elite territory — highly optimized and authoritative.';
-        how = 'Maintain excellence and monitor competitors.';
-        why = 'Top 3 positions capture the majority of clicks. You are already winning.';
-      } else if (overallScore >= 80) {
-        title = 'Strong Top 5 Potential';
-        gain = '+50–85% potential traffic gain if fixed';
-        what = 'With minor refinements, this page can compete for featured positions.';
-        how = 'Implement the top priority fixes to push into the 90+ club.';
-        why = 'Top 5 results get premium visibility and rich snippet opportunities.';
-      } else if (overallScore >= 70) {
-        title = 'Realistic Top 10 Opportunity';
-        gain = '+100–200% potential traffic gain if fixed';
-        what = 'Solid foundation — fixing key issues can deliver major ranking gains.';
-        how = 'Focus on the Top 3 fixes; expect significant movement within weeks.';
-        why = 'Breaking into page 1 can increase traffic by 5–10x for competitive terms.';
-      } else if (overallScore >= 60) {
-        title = 'Page 1 Possible with Focused Effort';
-        gain = '+200–400% potential traffic gain if fixed';
-        what = 'Moderate issues are holding you back from high visibility.';
-        how = 'Address critical on-page and technical problems first.';
-        why = 'Page 1 vs page 2 is the difference between traffic and obscurity.';
-      } else {
-        title = 'Major Upside Potential';
-        gain = '+400%+ potential traffic gain if fixed';
-        what = 'Significant opportunities exist — this page has strong recovery potential.';
-        how = 'Start with the highest-impact fixes shown above.';
-        why = 'Turning around low-scoring pages often yields the biggest traffic gains.';
-      }
-      forecastTitle.textContent = title;
-      forecastGain.textContent = gain;
-      forecastWhat.textContent = what;
-      forecastHow.textContent = how;
-      forecastWhy.textContent = why;
 
-      progressContainer.classList.add('hidden');
       resultsWrapper.classList.remove('hidden');
       document.getElementById('radar-title').classList.remove('hidden');
       if (savePdfBtn) savePdfBtn.classList.remove('hidden');
