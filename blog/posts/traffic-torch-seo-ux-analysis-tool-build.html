@@ -502,14 +502,18 @@
 </div>
 <!-- AddToAny END -->
 
-		<!-- Breadcrumbs - centered, with clickable links -->
-<div class="max-w-5xl mx-auto px-6 py-8">
-  <nav aria-label="Breadcrumb" class="text-center">
-    <ol class="inline-flex items-center space-x-3 text-sm text-gray-500 dark:text-gray-400">
+<!-- Breadcrumbs - centered -->
+<div class="max-w-5xl mx-auto px-6 py-8 text-center">
+  <nav aria-label="Breadcrumb" class="text-sm text-gray-500 dark:text-gray-400">
+    <ol class="inline-flex items-center space-x-3">
       <li>
         <a href="/" class="hover:text-orange-500 transition">Home</a>
       </li>
       <li>
+        <span class="mx-2">/</span>
+        <a href="/news.html" class="hover:text-orange-500 transition">News</a>
+      </li>
+      <li aria-current="page">
         <span class="mx-2">/</span>
         <span class="text-orange-500 font-medium">
           <script>
@@ -517,7 +521,6 @@
               document.title
                 .replace('Traffic Torch – ', '')
                 .replace(' | Traffic Torch', '')
-                .replace(' Tool', '')
                 .trim()
             );
           </script>
@@ -539,7 +542,7 @@
           <a href="/">
             <img src="/logo.webp" alt="Traffic Torch" class="w-20 mx-auto md:mx-0 rounded-2xl shadow-2xl mb-6">
           </a>
-          <p class="text-gray-500 text-sm">Ai + SEO + UX Audit Tools<br>Optimizing User Experience</p>
+          <p class="text-gray-500 text-sm">Traffic Torch 🛡️<br>Ai + SEO + UX Audit Tools<br>Optimizing User Experience</p>
         </div>
         <div>
           <h3 class="text-xl font-bold mb-6 text-orange-400">Tools</h3>
