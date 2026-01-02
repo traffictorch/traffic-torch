@@ -1,37 +1,53 @@
 @media print {
-  /* Simple PDF cover - full first page, hides all normal content on page 1 */
+  /* Epic PDF Cover Page - Full first page */
   body::before {
-    content: "Traffic Torch 🛡️\A\A SEO & UX Audit Tool ⚖️\A\A Report: " attr(data-url);
+    content: "Traffic Torch 🛡️\A\A SEO & UX Audit Tool ⚖️\A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
     page-break-after: always;
-    font-size: 3rem;
-    font-weight: 900;
-    text-align: center;
-    padding-top: 25vh;
     background: linear-gradient(135deg, #10b981, #059669);
     color: white;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 3.8rem;
+    font-weight: 900;
+    text-align: center;
+    padding-top: 22vh;
+    line-height: 1.5;
     white-space: pre;
-    line-height: 1.6;
+    text-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    letter-spacing: -1px;
   }
 
-  /* Hide ALL normal page content on the first page */
-  body > *:not(script):not(style) {
+  /* Hide everything on first page except cover */
+  body > * {
     visibility: hidden;
-    height: 0;
-    margin: 0;
-    padding: 0;
   }
 
-  /* Show the actual report starting cleanly on page 2 */
+  /* Force report to start fresh on page 2 with white background and black text */
   #results-wrapper {
     visibility: visible !important;
     page-break-before: always;
+    background: white !important;
+    color: black !important;
   }
 
-  /* Ensure results wrapper children are visible */
   #results-wrapper * {
-    visibility: visible;
+    visibility: visible !important;
+    background: transparent !important;
+    color: black !important;
+  }
+
+  /* Ensure no dark mode bleed */
+  .dark\\:bg-gray-900,
+  .dark\\:text-gray-100 {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Fix URL wrapping on cover if very long */
+  body::before {
+    word-break: break-word;
+    hyphens: auto;
   }
 }
 
