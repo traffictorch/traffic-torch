@@ -1,6 +1,4 @@
-@media print {
-  /* Epic PDF Cover Page - Full first page only */
-  body::before {
+body::before {
     content: "Traffic Torch 🛡️\A\A SEO Intent Tool 🔍\A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
@@ -15,6 +13,9 @@
     white-space: pre;
     text-shadow: 0 10px 30px rgba(0,0,0,0.5);
     font-size: 3rem;
+    -webkit-text-stroke: 2px #fb923c; /* Orange outline */
+    text-stroke: 2px #fb923c; /* Standard property */
+    paint-order: stroke fill; /* Outline behind fill for crisp look */
   }
 
   /* Hide form/progress/non-report elements */
@@ -50,6 +51,9 @@
     page-break-before: always;
   }
 }
+
+
+
 
 /* Save as PDF */
  @media print {
