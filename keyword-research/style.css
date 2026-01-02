@@ -230,3 +230,26 @@ h2 + p {
 .dark #progress-tip {
     color: #9ca3af; /* gray-400 night */
 }
+
+
+
+
+#suggestionsGrid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+    #suggestionsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+#suggestionsGrid > div {
+    color: #1f2937; /* gray-800 day */
+}
+.dark #suggestionsGrid > div {
+    color: #e5e7eb; /* dark-gray-200 night */
+}
+#suggestionsGrid > div[title]:hover {
+    cursor: help;
+}
