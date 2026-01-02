@@ -203,6 +203,28 @@ h2 + p {
 }
 
 
+/* Emoji alignment fix – center vertically, prevent clipping */
+.challenge-card .flex.items-center {
+    align-items: center;
+}
+.challenge-card span.text-5xl {
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+/* Text colors day/night */
+.challenge-card p,
+.challenge-card .text-xl,
+.challenge-card .text-lg {
+    color: #1f2937; /* gray-800 day */
+}
+.dark .challenge-card p,
+.dark .challenge-card .text-xl,
+.dark .challenge-card .text-lg {
+    color: #e5e7eb; /* dark-gray-200 night */
+}
+
+
 
 
 /* Suggestions cards */
