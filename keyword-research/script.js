@@ -73,11 +73,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const q = `${prefix}${seed}`.trim();
 
             try {
-                // Fixed: client=chrome-psy for reliable JSON in current year
-                const suggestUrl = `https://suggestqueries.google.com/complete/search?client=chrome-psy&gl=${country}&hl=${lang}&q=${encodeURIComponent(q)}`;
+                // Fixed: client=chrome &cp=0 for reliable JSON in current setup
+                const suggestUrl = `https://suggestqueries.google.com/complete/search?client=chrome&cp=0&gl=${country}&hl=${lang}&q=${encodeURIComponent(q)}`;
                 const suggestProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(suggestUrl)}`;
                 const suggestRes = await fetch(suggestProxy);
-                if (!suggestRes.ok) continue;
+
+                if (!suggestRes.ok) {
+                    console.error(`Suggest error ${suggestRes.status} for ${q}`);
+                    continue;
+                }
 
                 const suggestData = await suggestRes.json();
                 const suggestions = suggestData[1]?.slice(0, 3) || [];
@@ -85,18 +89,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (suggestions.length > 0) {
                     output += `<h3 class="text-2xl font-bold mt-8 mb-4 text-gray-800 dark:text-gray-200">${intent} Intent</h3>`;
                     output += suggestions.map(query => `
-                        <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 shadow-md hover:shadow-lg transition" title="Pure unmodified Google autocomplete – real searches in your region">
+                        <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 shadow-md hover:shadow-lg transition" title="Pure unmodified Google autocomplete – real popular searches in your region">
                             <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200">${query}</h4>
                         </div>
                     `).join('');
                 }
             } catch (err) {
-                console.error('Suggest fetch error for', q, err);
+                console.error('Suggest fetch exception for', q, err);
             }
         }
 
         if (!output) {
-            suggestionsGrid.innerHTML = '<p class="text-center text-gray-600 dark:text-gray-400">No suggestions returned – endpoint may be rate-limited or blocked temporarily. Try again later or different keyword.</p>';
+            suggestionsGrid.innerHTML = '<p class="text-center text-gray-600 dark:text-gray-400">No suggestions returned – endpoint may be temporarily rate-limited/blocked or query too specific. Try a broader keyword or later.</p>';
         } else {
             suggestionsGrid.innerHTML = output;
         }
