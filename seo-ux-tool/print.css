@@ -1,7 +1,5 @@
-@media print {
-  /* Epic PDF Cover Page - Full first page only */
   body::before {
-    content: "Traffic Torch 🛡️\A\A SEO & UX Audit Tool ⚖️\A\A Report:\A " attr(data-url);
+    content: "Traffic Torch 🛡️\A\A SEO Intent Tool 🔍\A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
     page-break-after: always;
@@ -13,8 +11,28 @@
     padding-top: 20vh;
     line-height: 1.4;
     white-space: pre;
-    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    font-size: 3rem; /* balanced size - main titles readable, URL smaller naturally on last line */
+    font-size: 3rem;
+    /* Orange outline using 8-directional text-shadow (reliable cross-browser in print) */
+    text-shadow:
+      -2px -2px 0 #fb923c,
+      2px -2px 0 #fb923c,
+      -2px 2px 0 #fb923c,
+      2px 2px 0 #fb923c,
+      -2px 0 0 #fb923c,
+      2px 0 0 #fb923c,
+      0 -2px 0 #fb923c,
+      0 2px 0 #fb923c;
+    /* Existing black drop shadow for depth */
+    text-shadow: /* combine with existing */
+      -2px -2px 0 #fb923c,
+      2px -2px 0 #fb923c,
+      -2px 2px 0 #fb923c,
+      2px 2px 0 #fb923c,
+      -2px 0 0 #fb923c,
+      2px 0 0 #fb923c,
+      0 -2px 0 #fb923c,
+      0 2px 0 #fb923c,
+      0 10px 30px rgba(0,0,0,0.5);
   }
 
   /* Hide only the form/progress parts on ALL pages */
