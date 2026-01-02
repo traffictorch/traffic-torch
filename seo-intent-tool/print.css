@@ -1,0 +1,52 @@
+@media print {
+  /* Epic PDF Cover Page - Full first page only */
+  body::before {
+    content: "Traffic Torch 🛡️\A\A SEO Intent Tool 🔍\A\A Report:\A " attr(data-url);
+    display: block;
+    height: 100vh;
+    page-break-after: always;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #4b5563; /* gray-600 */
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 900;
+    text-align: center;
+    padding-top: 20vh;
+    line-height: 1.4;
+    white-space: pre;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    font-size: 3rem;
+  }
+
+  /* Hide form/progress/non-report elements */
+  #keyword-form,
+  #analysis-progress,
+  header,
+  footer,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Force white background + black text on report pages */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .bg-gray-900,
+  .dark\\:bg-gray-900,
+  .bg-white/10 {
+    background: white !important;
+  }
+
+  .text-gray-100,
+  .dark\\:text-gray-100,
+  .text-gray-200 {
+    color: black !important;
+  }
+
+  /* Start report on page 2 */
+  #results-wrapper {
+    page-break-before: always;
+  }
+}
