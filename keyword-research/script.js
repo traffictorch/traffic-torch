@@ -30,16 +30,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2500);
 
         try {
-            // Fixed: Use ?url= format for the worker
             const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(url)}`;
             const response = await fetch(proxyUrl);
             if (!response.ok) throw new Error('Proxy fetch failed');
             const text = await response.text();
 
-            const seed = extractTopics(text);
+            let seed = extractTopics(text).trim();
+            if (!seed) {
+                // Fallback to domain if no title/meta
+                seed = new URL(url).hostname.replace('www.', '');
+            }
             const intent = detectIntent(text);
 
-            // Fixed suggest URLs similarly
             const suggestProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(seed)}`)}`;
             const suggestRes = await fetch(suggestProxy);
             if (!suggestRes.ok) throw new Error('Suggestions fetch failed');
@@ -80,9 +82,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function extractTopics(text) {
-        const titleMatch = text.match(/<title>(.*?)<\/title>/i);
-        const metaDesc = text.match(/<meta name="description" content="(.*?)"/i);
-        return (titleMatch ? titleMatch[1] : '') + ' ' + (metaDesc ? metaDesc[1] : '');
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/html');
+        const title = doc.title || '';
+        const metaDesc = doc.querySelector('meta[name="description"]')?.content || '';
+        return title + ' ' + metaDesc;
     }
 
     function detectIntent(text) {
