@@ -128,3 +128,11 @@
   .score-card {
     page-break-inside: avoid;
   }
+  
+  /* Hide the entire SEO Intent Checklist section and its expandable in PDF */
+  #seo-ux-checklist,
+  #seo-ux-checklist details,
+  #seo-ux-checklist summary,
+  .max-w-6xl details {  /* fallback for the checklist accordion */
+    display: none !important;
+  }
