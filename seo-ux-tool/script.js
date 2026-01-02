@@ -101,14 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
-    if (savePdfBtn) savePdfBtn.classList.add('hidden');
-    document.getElementById('copy-badge').classList.add('hidden');
-    const originalInput = input.value.trim();
-    const url = cleanUrl(originalInput);
-    if (!url) {
-      alert('Please enter a URL');
-      return;
-    }
+
     progressContainer.classList.remove('hidden');
     progressText.textContent = 'Fetching page...';
     const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
