@@ -201,3 +201,32 @@ h2 + p {
     r: 60;
   }
 }
+
+
+
+
+/* Suggestions cards */
+#suggestionsGrid > div {
+    color: #1f2937; /* gray-800 day */
+}
+.dark #suggestionsGrid > div {
+    color: #e5e7eb; /* dark-gray-200 night */
+}
+#suggestionsGrid > div:hover {
+    cursor: help; /* Tooltip trigger */
+}
+
+/* Mobile grid */
+@media (max-width: 768px) {
+    #suggestionsGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Loader tips */
+#progress-tip {
+    color: #4b5563; /* gray-600 day */
+}
+.dark #progress-tip {
+    color: #9ca3af; /* gray-400 night */
+}

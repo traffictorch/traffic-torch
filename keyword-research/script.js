@@ -1,158 +1,91 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('keywordForm');
-  const loader = document.getElementById('loader');
-  const progressText = document.getElementById('progress-text');
-  const results = document.getElementById('results');
-  const detectedIntent = document.getElementById('detectedIntent');
-  const suggestionsGrid = document.getElementById('suggestionsGrid');
+    const form = document.getElementById('keywordForm');
+    const loader = document.getElementById('loader');
+    const progressText = document.getElementById('progress-text');
+    const progressTip = document.getElementById('progress-tip');
+    const results = document.getElementById('results');
+    const detectedIntent = document.getElementById('detectedIntent');
+    const suggestionsGrid = document.getElementById('suggestionsGrid');
 
-  const progressMessages = [
-    "Fetching page...",
-    "Scanning content...",
-    "Detecting intent...",
-    "Generating suggestions..."
-  ];
+    const tips = [
+        'Fetching page content securely via our CORS proxy...',
+        'Analyzing main topics and search intent...',
+        'Generating related queries from real search data...',
+        'Adding semantic expansions for broader coverage...',
+        'Filtering for unique, high-potential suggestions...'
+    ];
+    let tipIndex = 0;
 
-  let messageIndex = 0;
-  let interval;
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const url = document.getElementById('url').value.trim();
+        if (!url) return;
 
-  function startLoader() {
-    loader.classList.remove('hidden');
-    messageIndex = 0;
-    progressText.textContent = progressMessages[messageIndex++];
-    interval = setInterval(() => {
-      if (messageIndex < progressMessages.length) {
-        progressText.textContent = progressMessages[messageIndex++];
-      }
-    }, 3000);
-  }
+        // Show loader with animated tips
+        form.classList.add('hidden');
+        loader.classList.remove('hidden');
+        progressText.textContent = 'Analyzing...';
+        const tipInterval = setInterval(() => {
+            tipIndex = (tipIndex + 1) % tips.length;
+            progressTip.textContent = tips[tipIndex];
+        }, 2500);
 
-  function stopLoader() {
-    clearInterval(interval);
-    loader.classList.add('hidden');
-  }
+        try {
+            // Proxy fetch URL content
+            const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`;
+            const response = await fetch(proxyUrl);
+            const text = await response.text();
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const url = document.getElementById('url').value.trim();
-  if (!url) return;
+            // Extract seed/topics and detect intent
+            const seed = extractTopics(text);
+            const intent = detectIntent(text); // New: simple intent detection
 
-  results.classList.add('hidden');
-  suggestionsGrid.innerHTML = '';
+            // Proxy Google Suggest for autocomplete
+            const suggestUrl = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(`https://suggestqueries.google.com/complete/search?client=firefox&q=${seed}`)}`;
+            const suggestRes = await fetch(suggestUrl);
+            const suggestData = await suggestRes.json();
+            const suggestions = suggestData[1].slice(0, 5);
 
-  // Start loader with timing
-  const startTime = Date.now();
-  const minDisplayTime = 3000; // Minimum 3 seconds
-  let messageIndex = 0;
+            // Proxy Datamuse for semantic associations
+            const assocUrl = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(`https://api.datamuse.com/words?ml=${seed}&max=5`)}`;
+            const assocRes = await fetch(assocUrl);
+            const assocData = await assocRes.json();
+            const associations = assocData.map(word => word.word);
 
-  loader.classList.remove('hidden');
-  progressText.textContent = progressMessages[messageIndex++];
+            // Combine unique 5-10, aim for 8
+            const combined = [...new Set([...suggestions, ...associations])].slice(0, 8);
 
-  // Controlled step updates every 3 seconds (educational pacing)
-  const stepInterval = setInterval(() => {
-    if (messageIndex < progressMessages.length) {
-      progressText.textContent = progressMessages[messageIndex++];
-    }
-  }, 3000);
+            // Display
+            detectedIntent.textContent = intent;
+            suggestionsGrid.innerHTML = combined.map((query, i) => {
+                const opportunity = query.split(' ').length > 3 ? 'Low competition long-tail' : 'Higher volume potential';
+                return `
+                    <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 shadow-md" title="${opportunity} – Use in content for better SEO match.">
+                        <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">${query}</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Intent match: ${intent.toLowerCase()}</p>
+                    </div>
+                `;
+            }).join('');
 
-  try {
-    const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(url)}`;
-    const response = await fetch(proxyUrl);
-    if (!response.ok) throw new Error('Failed to fetch page');
-    const html = await response.text();
-
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-
-    const title = doc.querySelector('title')?.textContent?.trim() || '';
-    const h1 = doc.querySelector('h1')?.textContent?.trim() || '';
-    const bodyText = doc.body?.textContent?.trim() || '';
-    const pageText = `${title} ${h1} ${bodyText}`.toLowerCase();
-
-    // Intent detection
-    let intent = 'Informational';
-    if (pageText.includes('buy') || pageText.includes('price') || pageText.includes('shop') || pageText.includes('book') || pageText.includes('reserve')) intent = 'Transactional';
-    else if (pageText.includes('best') || pageText.includes('review') || pageText.includes('vs') || pageText.includes('comparison')) intent = 'Commercial Investigation';
-
-    detectedIntent.textContent = intent;
-
-    // Core topic from title/H1
-    const coreMatch = title.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+){0,4})/) || h1.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+){0,4})/);
-    const coreTopic = coreMatch ? coreMatch[0].trim().toLowerCase() : 'experience';
-
-    // Location detection
-    const locationMatch = title.match(/(?:in|at|near)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)/i);
-    const location = locationMatch ? locationMatch[1].trim() : '';
-
-    // Generate suggestions
-    const suggestions = generateUniversalSuggestions(coreTopic, location, intent);
-
-    // Render suggestions
-    suggestions.forEach(sugg => {
-      const card = document.createElement('div');
-      card.className = 'bg-gray-50 dark:bg-gray-700 rounded-xl p-5 space-y-3';
-      card.innerHTML = `
-        <div class="font-bold text-lg text-gray-900 dark:text-white">${sugg.phrase}</div>
-        <div class="text-sm text-gray-600 dark:text-gray-500">
-          <span class="font-medium">Best placement:</span> ${sugg.placement}
-        </div>
-        <div class="text-sm text-gray-600 dark:text-gray-500">
-          <span class="font-medium">Why it helps:</span> ${sugg.why}
-        </div>
-      `;
-      suggestionsGrid.appendChild(card);
+            clearInterval(tipInterval);
+            loader.classList.add('hidden');
+            results.classList.remove('hidden');
+        } catch (error) {
+            progressText.textContent = 'Error';
+            progressTip.textContent = 'Try another URL.';
+        }
     });
 
-    // Enforce minimum display time
-    const elapsed = Date.now() - startTime;
-    const delay = Math.max(0, minDisplayTime - elapsed);
-
-    setTimeout(() => {
-      clearInterval(stepInterval);
-      loader.classList.add('hidden');
-      results.classList.remove('hidden');
-      results.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, delay);
-
-  } catch (err) {
-    clearInterval(stepInterval);
-    loader.classList.add('hidden');
-    alert('Sorry, something went wrong fetching the page. Try another URL or check later.');
-    console.error(err);
-  }
-});
-
-  function generateUniversalSuggestions(coreTopic, location, intent) {
-    const placements = ['H1 or page title', 'Intro paragraph', 'Subheadings (H2/H3)', 'Image alt text', 'Meta description', 'Body content naturally', 'CTA buttons', 'FAQ section'];
-    const whyBase = intent === 'Transactional' ? 'Drives buying intent and conversions' :
-                    intent === 'Commercial Investigation' ? 'Matches comparison shoppers' :
-                    'Improves relevance for searchers seeking info';
-
-    const phrases = [];
-
-    phrases.push(`best ${coreTopic}`);
-    phrases.push(`how to ${coreTopic}`);
-    phrases.push(`${coreTopic} near me`);
-    phrases.push(`top ${coreTopic} 2025`);
-    phrases.push(`${coreTopic} reviews`);
-    phrases.push(`ultimate guide to ${coreTopic}`);
-
-    if (location) {
-      phrases.push(`best ${coreTopic} in ${location}`);
-      phrases.push(`${location} ${coreTopic}`);
+    function extractTopics(text) {
+        const titleMatch = text.match(/<title>(.*?)<\/title>/i);
+        const metaDesc = text.match(/<meta name="description" content="(.*?)"/i);
+        return (titleMatch ? titleMatch[1] : '') + ' ' + (metaDesc ? metaDesc[1] : '');
     }
 
-    if (intent === 'Transactional') {
-      phrases.push(`buy ${coreTopic}`);
-      phrases.push(`best deals on ${coreTopic}`);
+    function detectIntent(text) {
+        if (text.toLowerCase().includes('buy') || text.includes('price')) return 'Commercial';
+        if (text.includes('how to') || text.includes('what is')) return 'Informational';
+        if (text.includes('best') || text.includes('review')) return 'Transactional';
+        return 'Navigational';
     }
-
-    const unique = [...new Set(phrases)].slice(0, 8);
-
-    return unique.map((phrase, i) => ({
-      phrase,
-      placement: placements[i % placements.length],
-      why: `${whyBase}. Boosts topical authority and findability.`
-    }));
-  }
 });
