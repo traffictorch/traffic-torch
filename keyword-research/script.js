@@ -7,12 +7,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const detectedIntent = document.getElementById('detectedIntent');
     const suggestionsGrid = document.getElementById('suggestionsGrid');
 
+    // Detect user country/language dynamically (works on any site)
+    const locale = navigator.languages?.[0] || navigator.language || 'en-US';
+    const country = new Intl.DateTimeFormat(locale).resolvedOptions().timeZone.split('/')[0] === 'America' ? 'us' : // Basic fallback example
+                   locale.split('-')[1]?.toLowerCase() || 'us';
+    const lang = locale.split('-')[0];
+
     const tips = [
         'Fetching page content securely via our CORS proxy...',
         'Analyzing main topics and search intent...',
-        'Generating related queries from real search data...',
-        'Adding semantic expansions for broader coverage...',
-        'Filtering for unique, high-potential suggestions...'
+        `Generating localized suggestions for ${country.toUpperCase()}...`,
+        'Expanding with synonyms and triggered terms...',
+        'Curating 8 diverse, high-relevance suggestions...'
     ];
     let tipIndex = 0;
 
@@ -36,45 +42,55 @@ document.addEventListener('DOMContentLoaded', () => {
             const text = await response.text();
 
             let seed = extractTopics(text).trim();
-            if (!seed || seed.length > 100) {
-                // Shorten to key phrase if too long
-                seed = seed.split(' | ')[0].split(' - ')[0].substring(0, 80);
-            }
+            seed = seed.split(' | ')[0].split(' - ')[0].split(':')[0].substring(0, 80).trim();
             if (!seed) {
-                seed = new URL(url).hostname.replace('www.', '').replace('.com.au', '').replace('.com', '');
+                seed = new URL(url).hostname.replace('www.', '');
             }
             const intent = detectIntent(text);
 
             let suggestions = [];
-            let associations = [];
+            let synonyms = [];
+            let triggers = [];
 
-            // Try Google Suggest first
+            // Dynamic localized Google Suggest
             try {
-                const suggestProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(seed)}`)}`;
+                const suggestProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://suggestqueries.google.com/complete/search?client=firefox&gl=${country}&hl=${lang}&q=${encodeURIComponent(seed)}`)}`;
                 const suggestRes = await fetch(suggestProxy);
                 if (suggestRes.ok) {
                     const suggestData = await suggestRes.json();
-                    suggestions = suggestData[1]?.slice(0, 5) || [];
+                    suggestions = suggestData[1]?.slice(0, 6) || [];
                 }
             } catch (err) {
-                console.warn('Google Suggest failed, using Datamuse only');
+                console.warn('Google Suggest failed');
             }
 
-            // Datamuse as reliable backup/expansion
-            const assocProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://api.datamuse.com/words?ml=${encodeURIComponent(seed)}&max=8`)}`;
-            const assocRes = await fetch(assocProxy);
-            if (assocRes.ok) {
-                const assocData = await assocRes.json();
-                associations = assocData.map(word => word.word);
+            // Datamuse: synonyms + triggered words for better relevance/variety
+            try {
+                const synProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://api.datamuse.com/words?rel_syn=${encodeURIComponent(seed)}&max=5`)}`;
+                const synRes = await fetch(synProxy);
+                if (synRes.ok) {
+                    const synData = await synRes.json();
+                    synonyms = synData.map(item => item.word);
+                }
+
+                const trgProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://api.datamuse.com/words?rel_trg=${encodeURIComponent(seed)}&max=5`)}`;
+                const trgRes = await fetch(trgProxy);
+                if (trgRes.ok) {
+                    const trgData = await trgRes.json();
+                    triggers = trgData.map(item => item.word);
+                }
+            } catch (err) {
+                console.warn('Datamuse expansion failed');
             }
 
-            const combined = [...new Set([...suggestions, ...associations])].slice(0, 8);
+            // Combine for max diversity/relevance
+            const combined = [...new Set([...suggestions, ...synonyms, ...triggers.map(t => `${t} ${seed.split(' ').pop()}`)])].slice(0, 8);
 
             detectedIntent.textContent = intent;
             suggestionsGrid.innerHTML = combined.map((query, i) => {
-                const opportunity = query.split(' ').length > 3 ? 'Low competition long-tail' : 'Higher volume potential';
+                const type = suggestions.includes(query) ? 'Autocomplete query' : synonyms.includes(query) ? 'Synonym variation' : 'Triggered related term';
                 return `
-                    <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 shadow-md" title="${opportunity} – Use in content for better SEO match.">
+                    <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 shadow-md" title="${type} – Localized for better relevance; potential for targeted traffic.">
                         <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">${query}</h3>
                         <p class="text-sm text-gray-600 dark:text-gray-400">Intent match: ${intent.toLowerCase()}</p>
                     </div>
@@ -103,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function detectIntent(text) {
         const lower = text.toLowerCase();
-        if (lower.includes('buy') || lower.includes('price') || lower.includes('shop') || lower.includes('sale')) return 'Commercial';
+        if (lower.includes('book') || lower.includes('stay') || lower.includes('buy') || lower.includes('price')) return 'Commercial';
         if (lower.includes('how to') || lower.includes('what is') || lower.includes('guide')) return 'Informational';
         if (lower.includes('best') || lower.includes('review') || lower.includes('vs')) return 'Transactional';
         return 'Navigational';
