@@ -26,39 +26,19 @@
 
 
 /* Fix module output overlapping on home page embed */
-@media print {
-  /* No changes needed for print */
-}
-
-@media screen {
-  .container,
-  .max-w-5xl,
-  .max-w-3xl,
-  .max-w-4xl,
-  .max-w-7xl {
-    max-width: 100% !important;
-    width: 100% !important;
-    padding-left: 1.5rem !important;
-    padding-right: 1.5rem !important;
-    box-sizing: border-box;
-  }
-
-  section,
-  .health-score,
-  #overall-score,
-  #results-container,
-  .score-card,
-  .grid {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
   .score-card {
-    margin-bottom: 2rem;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    margin-bottom: 2rem !important;
+    overflow: visible !important;
   }
 
-  /* Prevent layout shift and overflow in embedded context */
-  body {
-    overflow-x: hidden;
+  #results-container,
+  .grid,
+  .modules-container /* use actual container class if different */ {
+    display: block !important;
   }
-}
+
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
