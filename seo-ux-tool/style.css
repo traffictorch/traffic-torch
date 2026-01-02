@@ -396,3 +396,27 @@ body { transition: background-color 0.3s ease; }
 }
 
 
+
+
+/* Fix text cutoff in module cards on narrow home embed */
+.score-card .details,
+.score-card p,
+.score-card div[class*="text"] {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  line-height: 1.6;
+}
+
+/* Give more text space on medium/narrow screens */
+@media (max-width: 1280px) {
+  .score-card {
+    padding: 1.5rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .score-card {
+    padding: 1rem !important;
+  }
+}
