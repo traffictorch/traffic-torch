@@ -13,9 +13,9 @@ body::before {
     white-space: pre;
     text-shadow: 0 10px 30px rgba(0,0,0,0.5);
     font-size: 3rem;
-    -webkit-text-stroke: 2px #fb923c; /* Orange outline */
-    text-stroke: 2px #fb923c; /* Standard property */
-    paint-order: stroke fill; /* Outline behind fill for crisp look */
+    -webkit-text-stroke: 2px #fb923c; /* Orange outline around text */
+    text-stroke: 2px #fb923c;
+    paint-order: stroke fill; /* Draw outline behind fill for clean edges */
   }
 
   /* Hide form/progress/non-report elements */
