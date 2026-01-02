@@ -97,3 +97,20 @@
     max-width: none !important;
   }
 } 
+
+
+/* Hide expanding accordions/details in PDF */
+  details,
+  details > div,
+  .fixes-panel,
+  .full-details,
+  .expand-content,
+  [class*="accordion"],
+  [class*="details"] {
+    display: none !important;
+  }
+
+  /* Optionally show summary if you want titles but no expanded content */
+  details > summary {
+    display: block !important;
+  }
