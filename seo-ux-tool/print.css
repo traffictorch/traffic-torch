@@ -1,7 +1,7 @@
 @media print {
   /* Epic PDF Cover Page - Full first page only */
   body::before {
-    content: "Traffic Torch 🛡️\A\A SEO & UX Audit Tool ⚖️\A\A Report:";
+    content: "Traffic Torch 🛡️\A\A SEO & UX Audit Tool ⚖️\A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
     page-break-after: always;
@@ -14,18 +14,7 @@
     line-height: 1.4;
     white-space: pre;
     text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    font-size: 3.2rem; /* smaller overall for better balance */
-  }
-
-  /* Much smaller URL below "Report:" */
-  body::after {
-    content: attr(data-url);
-    display: block;
-    color: #4b5563; /* gray-600 */
-    font-size: 2rem; /* much smaller to always fit */
-    font-weight: 900;
-    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    margin-top: 1.5rem;
+    font-size: 3rem; /* balanced size - main titles readable, URL smaller naturally on last line */
   }
 
   /* Hide only the form/progress parts on ALL pages */
