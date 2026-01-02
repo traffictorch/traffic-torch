@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const lang = locale.split('-')[0];
 
     const tips = [
-        'Analyzing your keyword/topic...',
-        `Fetching localized Google suggestions for ${country.toUpperCase()}...`,
-        'Grouping pure real-user autocompletes by intent...'
+        'Analyzing input...',
+        `Fetching localized suggestions for ${country.toUpperCase()}...`,
+        'Retrieving pure Google autocompletes...'
     ];
     let tipIndex = 0;
 
@@ -39,9 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2000);
 
         let seed = seedInput;
-        let pageText = seedInput || ''; // Always include seed for intent detection
+        let pageText = seedInput || '';
 
-        // URL-only mode: extract seed from title
         if (!seed && urlInput) {
             try {
                 const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(urlInput)}`;
@@ -57,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Fetch page for extra intent clues if URL provided
         if (urlInput) {
             try {
                 const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(urlInput)}`;
@@ -75,7 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const q = `${prefix}${seed}`.trim();
 
             try {
-                const suggestUrl = `https://suggestqueries.google.com/complete/search?client=firefox&gl=${country}&hl=${lang}&q=${encodeURIComponent(q)}`;
+                // Fixed: client=chrome-psy for reliable JSON in current year
+                const suggestUrl = `https://suggestqueries.google.com/complete/search?client=chrome-psy&gl=${country}&hl=${lang}&q=${encodeURIComponent(q)}`;
                 const suggestProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(suggestUrl)}`;
                 const suggestRes = await fetch(suggestProxy);
                 if (!suggestRes.ok) continue;
@@ -86,15 +85,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (suggestions.length > 0) {
                     output += `<h3 class="text-2xl font-bold mt-8 mb-4 text-gray-800 dark:text-gray-200">${intent} Intent</h3>`;
                     output += suggestions.map(query => `
-                        <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 shadow-md hover:shadow-lg transition" title="Pure unmodified Google autocomplete – real popular searches in your region">
+                        <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 shadow-md hover:shadow-lg transition" title="Pure unmodified Google autocomplete – real searches in your region">
                             <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200">${query}</h4>
                         </div>
                     `).join('');
                 }
-            } catch (err) {}
+            } catch (err) {
+                console.error('Suggest fetch error for', q, err);
+            }
         }
 
-        suggestionsGrid.innerHTML = output || '<p class="text-center text-gray-600 dark:text-gray-400">No suggestions found – try a different keyword or add a URL for more context.</p>';
+        if (!output) {
+            suggestionsGrid.innerHTML = '<p class="text-center text-gray-600 dark:text-gray-400">No suggestions returned – endpoint may be rate-limited or blocked temporarily. Try again later or different keyword.</p>';
+        } else {
+            suggestionsGrid.innerHTML = output;
+        }
 
         clearInterval(tipInterval);
         loader.classList.add('hidden');
