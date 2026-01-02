@@ -99,18 +99,21 @@
 } 
 
 
-/* Hide expanding accordions/details in PDF */
-  details,
-  details > div,
+  /* Hide only the expanding/expanded content in PDF (keep toggle buttons visible) */
+  details > div,                     /* generic details content */
   .fixes-panel,
   .full-details,
   .expand-content,
-  [class*="accordion"],
-  [class*="details"] {
+  .hidden.mt-6,                      /* common hidden expanded sections */
+  .group-open > div:not(summary),    /* for <details> with group class */
+  details[open] > div:not(summary) { /* for open <details> */
     display: none !important;
   }
 
-  /* Optionally show summary if you want titles but no expanded content */
-  details > summary {
+  /* Ensure toggle buttons/summaries stay visible */
+  details > summary,
+  .fixes-toggle,
+  .more-details-toggle,
+  button[class*="toggle"] {
     display: block !important;
   }
