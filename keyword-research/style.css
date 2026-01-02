@@ -253,3 +253,21 @@ h2 + p {
 #suggestionsGrid > div[title]:hover {
     cursor: help;
 }
+
+
+
+
+#suggestionsGrid h3 {
+    color: #1f2937; /* gray-800 day */
+}
+.dark #suggestionsGrid h3 {
+    color: #e5e7eb; /* dark-gray-200 night */
+}
+@media (min-width: 768px) {
+    #suggestionsGrid > div {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+#suggestionsGrid > div[title]:hover {
+    cursor: help;
+}
