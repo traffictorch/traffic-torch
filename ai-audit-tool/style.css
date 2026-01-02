@@ -180,36 +180,6 @@ h2 + p {
       grid-template-columns: 1fr;
     }
     
-  
-  
-       /* Save as PDF */
- @media print {
-  #audit-form, #analysis-progress, header, footer, nav, aside, .no-print {
-    display: none !important;
-  }
-  body {
-    background: white !important;
-    color: black !important;
-  }
-  .hidden {
-    display: block !important;
-  }
-  .bg-white, .dark\\:bg-gray-900 {
-    background: white !important;
-  }
-  .text-gray-900, .dark\\:text-gray-100 {
-    color: black !important;
-  }
-  .shadow-lg {
-    box-shadow: none !important;
-  }
-  .max-w-5xl {
-    max-width: none !important;
-  }
-} 
-
-
-
 
 /* Mobile-friendly report - force full width and reduce padding on small screens */
 @media (max-width: 768px) {

@@ -52,27 +52,14 @@
 }
 
 /* Save as PDF */
- @media print {
+@media print {
   #audit-form, #analysis-progress, header, footer, nav, aside, .no-print {
     display: none !important;
   }
-  body {
-    background: white !important;
-    color: black !important;
-  }
-  .hidden {
-    display: block !important;
-  }
-  .bg-white, .dark\\:bg-gray-900 {
-    background: white !important;
-  }
-  .text-gray-900, .dark\\:text-gray-100 {
-    color: black !important;
-  }
-  .shadow-lg {
-    box-shadow: none !important;
-  }
-  .max-w-5xl {
-    max-width: none !important;
-  }
-} 
+  body { background: white !important; color: black !important; }
+  .hidden { display: block !important; }
+  .bg-white, .dark\\:bg-gray-900 { background: white !important; }
+  .text-gray-900, .dark\\:text-gray-100 { color: black !important; }
+  .shadow-lg { box-shadow: none !important; }
+  .max-w-5xl { max-width: none !important; }
+}

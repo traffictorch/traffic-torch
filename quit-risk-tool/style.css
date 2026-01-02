@@ -177,36 +177,6 @@ h2 + p {
       grid-template-columns: 1fr;
     }
     
-    
-    
-         /* Save as PDF */
- @media print {
-  #audit-form, #analysis-progress, header, footer, nav, aside, .no-print {
-    display: none !important;
-  }
-  body {
-    background: white !important;
-    color: black !important;
-  }
-  .hidden {
-    display: block !important;
-  }
-  .bg-white, .dark\\:bg-gray-900 {
-    background: white !important;
-  }
-  .text-gray-900, .dark\\:text-gray-100 {
-    color: black !important;
-  }
-  .shadow-lg {
-    box-shadow: none !important;
-  }
-  .max-w-5xl {
-    max-width: none !important;
-  }
-} 
-
-
-
 
 /* Mobile-friendly report - force full width and reduce padding on small screens */
 @media (max-width: 768px) {
@@ -289,45 +259,3 @@ html, body {
 
 
 
-/* Remove colored text for pass/fail - use neutral colors that work perfectly in both day and night modes */
-.pass-fail-summary {
-  margin: 15px 0;
-  font-size: 0.95em;
-  line-height: 1.6;
-  color: #374151; /* gray-700 light */
-}
-.dark .pass-fail-summary {
-  color: #d1d5db; /* gray-300 dark */
-}
-
-.pass-fail-summary p {
-  margin: 6px 0;
-}
-
-/* Keep only the emoji indicators, no colored text */
-.pass-fail-summary .pass::before {
-  content: "✅ ";
-}
-.pass-fail-summary .fail::before {
-  content: "❌ ";
-}
-
-/* Ensure details panel text remains readable */
-.details-panel {
-  color: #374151;
-}
-.dark .details-panel {
-  color: #d1d5db;
-}
-.details-panel h5 {
-  color: #111827;
-}
-.dark .details-panel h5 {
-  color: #f3f4f6;
-}
-.details-panel strong {
-  color: #1f2937;
-}
-.dark .details-panel strong {
-  color: #e5e7eb;
-}
