@@ -1,5 +1,5 @@
 @media print {
-  /* Epic PDF Cover Page - Full first page */
+  /* Epic PDF Cover Page - Full first page only */
   body::before {
     content: "Traffic Torch 🛡️\A\A SEO & UX Audit Tool ⚖️\A\A Report:\A " attr(data-url);
     display: block;
@@ -8,46 +8,57 @@
     background: linear-gradient(135deg, #10b981, #059669);
     color: white;
     font-family: system-ui, -apple-system, sans-serif;
-    font-size: 3.8rem;
     font-weight: 900;
     text-align: center;
-    padding-top: 22vh;
-    line-height: 1.5;
+    padding-top: 20vh;
+    line-height: 1.4;
     white-space: pre;
-    text-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    letter-spacing: -1px;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
   }
 
-  /* Hide everything on first page except cover */
-  body > * {
-    visibility: hidden;
-  }
-
-  /* Force report to start fresh on page 2 with white background and black text */
-  #results-wrapper {
-    visibility: visible !important;
-    page-break-before: always;
-    background: white !important;
-    color: black !important;
-  }
-
-  #results-wrapper * {
-    visibility: visible !important;
-    background: transparent !important;
-    color: black !important;
-  }
-
-  /* Ensure no dark mode bleed */
-  .dark\\:bg-gray-900,
-  .dark\\:text-gray-100 {
-    background: white !important;
-    color: black !important;
-  }
-
-  /* Fix URL wrapping on cover if very long */
+  /* Title - biggest and epic */
   body::before {
-    word-break: break-word;
-    hyphens: auto;
+    font-size: 4.5rem;
+  }
+
+  /* "Report:" line - slightly smaller */
+  body::before {
+    font-size: 3.2rem; /* overrides for the Report line */
+    /* We can't target specific lines directly, so we'll use a trick below */
+  }
+
+  /* Hide only the form/progress parts on ALL pages */
+  #audit-form,
+  #analysis-progress,
+  header,
+  footer,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Force white background + black text on report pages */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .bg-gray-900,
+  .dark\\:bg-gray-900,
+  .bg-white/10 {
+    background: white !important;
+  }
+
+  .text-gray-100,
+  .dark\\:text-gray-100,
+  .text-gray-200 {
+    color: black !important;
+  }
+
+  /* Make the URL on cover look epic - larger, bold, with glow */
+  body::before {
+    /* No direct line targeting, so keep overall balanced */
+    font-size: 3.8rem;
   }
 }
 
