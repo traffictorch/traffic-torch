@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const url = document.getElementById('url').value.trim();
         if (!url) return;
 
-        // Show loader with animated tips
         form.classList.add('hidden');
         loader.classList.remove('hidden');
         progressText.textContent = 'Analyzing...';
@@ -31,31 +30,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2500);
 
         try {
-            // Proxy fetch URL content
-            const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(url)}`;
+            // Fixed: Use ?url= format for the worker
+            const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(url)}`;
             const response = await fetch(proxyUrl);
+            if (!response.ok) throw new Error('Proxy fetch failed');
             const text = await response.text();
 
-            // Extract seed/topics and detect intent
             const seed = extractTopics(text);
-            const intent = detectIntent(text); // New: simple intent detection
+            const intent = detectIntent(text);
 
-            // Proxy Google Suggest for autocomplete
-            const suggestUrl = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(`https://suggestqueries.google.com/complete/search?client=firefox&q=${seed}`)}`;
-            const suggestRes = await fetch(suggestUrl);
+            // Fixed suggest URLs similarly
+            const suggestProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(seed)}`)}`;
+            const suggestRes = await fetch(suggestProxy);
+            if (!suggestRes.ok) throw new Error('Suggestions fetch failed');
             const suggestData = await suggestRes.json();
-            const suggestions = suggestData[1].slice(0, 5);
+            const suggestions = suggestData[1]?.slice(0, 5) || [];
 
-            // Proxy Datamuse for semantic associations
-            const assocUrl = `https://cors-proxy.traffictorch.workers.dev/?${encodeURIComponent(`https://api.datamuse.com/words?ml=${seed}&max=5`)}`;
-            const assocRes = await fetch(assocUrl);
+            const assocProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://api.datamuse.com/words?ml=${encodeURIComponent(seed)}&max=5`)}`;
+            const assocRes = await fetch(assocProxy);
+            if (!assocRes.ok) throw new Error('Associations fetch failed');
             const assocData = await assocRes.json();
             const associations = assocData.map(word => word.word);
 
-            // Combine unique 5-10, aim for 8
             const combined = [...new Set([...suggestions, ...associations])].slice(0, 8);
 
-            // Display
             detectedIntent.textContent = intent;
             suggestionsGrid.innerHTML = combined.map((query, i) => {
                 const opportunity = query.split(' ').length > 3 ? 'Low competition long-tail' : 'Higher volume potential';
@@ -71,8 +69,13 @@ document.addEventListener('DOMContentLoaded', () => {
             loader.classList.add('hidden');
             results.classList.remove('hidden');
         } catch (error) {
+            clearInterval(tipInterval);
+            loader.classList.add('hidden');
+            form.classList.remove('hidden');
             progressText.textContent = 'Error';
-            progressTip.textContent = 'Try another URL.';
+            progressTip.textContent = 'Unable to fetch page – check URL or try again later. Proxy may need update.';
+            results.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">Fetch failed. Please ensure the URL is valid and publicly accessible.</p>';
+            results.classList.remove('hidden');
         }
     });
 
@@ -83,9 +86,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function detectIntent(text) {
-        if (text.toLowerCase().includes('buy') || text.includes('price')) return 'Commercial';
-        if (text.includes('how to') || text.includes('what is')) return 'Informational';
-        if (text.includes('best') || text.includes('review')) return 'Transactional';
+        const lower = text.toLowerCase();
+        if (lower.includes('buy') || lower.includes('price') || lower.includes('shop')) return 'Commercial';
+        if (lower.includes('how to') || lower.includes('what is') || lower.includes('guide')) return 'Informational';
+        if (lower.includes('best') || lower.includes('review') || lower.includes('vs')) return 'Transactional';
         return 'Navigational';
     }
 });
