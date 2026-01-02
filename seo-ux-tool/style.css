@@ -4,24 +4,31 @@ body { transition: background-color 0.3s ease; }
 .health-score h2 { margin-bottom: 0.5rem; }
 
 /* Mobile Responsiveness (your original) */
-@media (max-width: 1024px) {
-  .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
+/* Container and max-width adjustments - improved for embedded home page */
+@media (max-width: 1280px) {
+  .container,
+  .max-w-5xl,
+  .max-w-3xl,
+  .max-w-4xl,
+  .max-w-7xl {
     max-width: 100% !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .container,
+  .max-w-5xl,
+  .max-w-3xl,
+  .max-w-4xl,
+  .max-w-7xl {
     padding-left: 1rem !important;
     padding-right: 1rem !important;
   }
-  .p-12, .p-10, .p-8 {
-    padding: 1.5rem !important;
-  }
-  .text-5xl {
-    font-size: 2rem !important;
-    line-height: 1.1 !important;
-  }
-  .text-9xl {
-    font-size: 6rem !important;
-    line-height: 1 !important;
-  }
 }
+
+
 @media (max-width: 480px) {
   .p-12, .p-10 { padding: 1.25rem !important; }
   .text-5xl { font-size: 1.875rem !important; }
