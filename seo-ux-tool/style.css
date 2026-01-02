@@ -43,9 +43,7 @@ body { transition: background-color 0.3s ease; }
   100% { transform: rotate(360deg); }
 }
 
-
-
-  /* LOCAL TOOL FIX – MOBILE-FRIENDLY REPORT (WORKS 100% – Dec 2025) */
+/* LOCAL TOOL FIX – MOBILE-FRIENDLY REPORT (WORKS 100% – Dec 2025) */
   @media (max-width: 1024px) {
     /* Kill narrow containers */
     .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
@@ -79,14 +77,10 @@ body { transition: background-color 0.3s ease; }
     .text-9xl { font-size: 5.5rem !important; }
   }
   
-  
-  
 /* What How Why Padding */  
   .p-8 {
   padding: 0.5rem !important;
 }
-
-
 
 /* Score Circles - Perfect Centering */
 .score-circle {
@@ -181,12 +175,6 @@ body { transition: background-color 0.3s ease; }
   }
 }
 
-
-
-
-
-
-
 /* Mobile Preview Frame Base */
 #phone-frame {
   width: min(100%, 375px);
@@ -228,7 +216,6 @@ body { transition: background-color 0.3s ease; }
   height: 24px;
   background: #111;
 }
-
 
 /* Iframe */
 #preview-iframe {
@@ -277,9 +264,6 @@ body { transition: background-color 0.3s ease; }
   cursor: pointer;
 }
 
-
-
-
 /* Copy Code Badge */
 #score-badge a:hover {
   color: #fb923c !important;
@@ -287,8 +271,6 @@ body { transition: background-color 0.3s ease; }
 #score-badge a:hover > span {
   opacity: 1 !important;
 }
-
-
 
 /* 360 Health Radar */
 #radar-container canvas#health-radar {
@@ -302,11 +284,7 @@ body { transition: background-color 0.3s ease; }
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
 }
 
-
-
-
-
-  /* Refined Glowing Black Module Cards */
+/* Refined Glowing Black Module Cards */
   @keyframes subtle-glow {
     0%, 100% { opacity: 0.4; }
     50% { opacity: 0.6; }
@@ -365,10 +343,7 @@ body { transition: background-color 0.3s ease; }
     color: #d1d5db !important;
   }
   
-  
-  
-  
-    /* Thin black outline around score numbers for better contrast on colored rings */
+/* Thin black outline around score numbers for better contrast on colored rings */
   .score-card .number {
     paint-order: stroke fill;
     stroke: #ffffff;
@@ -378,9 +353,7 @@ body { transition: background-color 0.3s ease; }
     text-shadow: none !important; /* removes any conflicting shadow */
   }
   
-  
-  
-    /* Thin black outline around score progress circles for better contrast and definition */
+/* Thin black outline around score progress circles for better contrast and definition */
   .score-card .progress {
     paint-order: stroke fill;
     stroke: #000000;
@@ -389,15 +362,13 @@ body { transition: background-color 0.3s ease; }
     stroke-linejoin: round;
   }
 
-  /* Optional: Also apply to background circle if you want subtle separation */
+/* Optional: Also apply to background circle if you want subtle separation */
   .score-card .bg {
     stroke: #ffffff;
     stroke-width: 12px;
   }
   
-  
-  
-  /* Mobile preview popup - black background in dark mode */
+/* Mobile preview popup - black background in dark mode */
 #highlight-popup {
   background: rgba(0, 0, 0, 0.9) !important;
 }
@@ -423,3 +394,29 @@ body { transition: background-color 0.3s ease; }
 #highlight-popup .close:hover {
   color: #fb923c !important;
 }
+
+/* Save as PDF */
+ @media print {
+  #audit-form, #analysis-progress, header, footer, nav, aside, .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .hidden {
+    display: block !important;
+  }
+  .bg-white, .dark\\:bg-gray-900 {
+    background: white !important;
+  }
+  .text-gray-900, .dark\\:text-gray-100 {
+    color: black !important;
+  }
+  .shadow-lg {
+    box-shadow: none !important;
+  }
+  .max-w-5xl {
+    max-width: none !important;
+  }
+} 
