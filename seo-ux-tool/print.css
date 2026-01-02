@@ -1,85 +1,64 @@
 @media print {
-  /* Hide form and progress - keep report visible */
+  /* Hide form, progress, preview, and non-report elements */
   #audit-form,
   #analysis-progress,
-  header,
-  footer,
-  nav,
-  .no-print,
   #preview-iframe,
   #phone-frame,
   #view-toggle,
   #device-toggle,
-  #highlight-overlays {
+  #highlight-overlays,
+  header,
+  footer,
+  nav,
+  .no-print {
     display: none !important;
   }
 
-  /* Force clean white background and black text for report */
+  /* Force white background and black text for entire report */
   body {
     background: white !important;
     color: black !important;
     -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    color-adjust: exact;
   }
 
-  .bg-gray-900,
-  .dark\\:bg-gray-900,
-  .bg-white/10,
-  .bg-gradient-to-br {
+  * {
     background: white !important;
-  }
-
-  .text-gray-100,
-  .dark\\:text-gray-100,
-  .text-gray-200,
-  .text-orange-300,
-  .text-purple-300,
-  .text-cyan-400,
-  .text-blue-400,
-  .text-green-400 {
     color: black !important;
+    border-color: #d1d5db !important;
   }
 
-  .border-white/20,
-  .border-purple-500/20 {
-    border-color: #e5e7eb !important;
-  }
-
-  /* Epic Cover Page */
+  /* Epic white cover page */
   body::before {
     content: "Traffic Torch 🛡️\A\A SEO & UX Audit Tool ⚖️\A\A Report:\A " attr(data-url);
     display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
+    height: 100vh;
+    page-break-after: always;
+    background: white;
+    color: #fb923c; /* orange */
     font-family: system-ui, -apple-system, sans-serif;
     font-weight: 900;
     text-align: center;
-    padding-top: 18vh;
-    font-size: 3.6rem;
-    line-height: 1.4;
+    padding-top: 20vh;
+    line-height: 1.5;
     white-space: pre;
-    text-shadow: 0 10px 40px rgba(0,0,0,0.6);
-    page-break-after: always;
-    z-index: 9999;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    font-size: 3.2rem; /* main titles */
+    text-shadow: 0 4px 20px rgba(156, 163, 175, 0.6), /* grey glow */
+                 0 8px 20px rgba(0, 0, 0, 0.4); /* black shadow */
   }
 
-  /* Make URL slightly larger and more epic */
+  /* Make URL smaller to fit perfectly */
   body::after {
     content: attr(data-url);
     display: block;
-    font-size: 4.2rem;
-    margin-top: 2rem;
-    text-shadow: 0 12px 50px rgba(0,0,0,0.7);
+    font-size: 2.4rem;
+    margin-top: 1.5rem;
+    color: #fb923c;
+    text-shadow: 0 4px 20px rgba(156, 163, 175, 0.6),
+                 0 8px 20px rgba(0, 0, 0, 0.4);
   }
 
-  /* Force report to start on page 2 */
+  /* Start report on page 2 */
   #results-wrapper {
     page-break-before: always;
   }
