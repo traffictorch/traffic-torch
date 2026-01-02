@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'Fetching page content securely via our CORS proxy...',
         'Analyzing main topics and search intent...',
         `Generating localized suggestions for ${country.toUpperCase()}...`,
-        'Expanding with specific terms and how-to variations...',
+        'Expanding with real-user queries and related terms...',
         'Curating 8 diverse, high-relevance suggestions...'
     ];
     let tipIndex = 0;
@@ -49,56 +49,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let suggestions = [];
             let synonyms = [];
-            let specifics = [];
-            let parts = [];
+            let adjectives = [];
+            let triggers = [];
 
-            // Localized Google Suggest
+            // Localized Google Suggest - primary source for real queries
             try {
                 const suggestProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://suggestqueries.google.com/complete/search?client=firefox&gl=${country}&hl=${lang}&q=${encodeURIComponent(seed)}`)}`;
                 const suggestRes = await fetch(suggestProxy);
                 if (suggestRes.ok) {
                     const suggestData = await suggestRes.json();
-                    suggestions = suggestData[1]?.slice(0, 5) || [];
+                    suggestions = suggestData[1]?.slice(0, 7) || [];
                 }
             } catch (err) {}
 
-            // Datamuse expansions for relevance
+            // Datamuse expansions for topical depth
             try {
                 const synProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://api.datamuse.com/words?rel_syn=${encodeURIComponent(seed)}&max=4`)}`;
                 const synRes = await fetch(synProxy);
                 if (synRes.ok) synonyms = (await synRes.json()).map(item => item.word);
 
-                const spcProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://api.datamuse.com/words?rel_spc=${encodeURIComponent(seed)}&max=4`)}`;
-                const spcRes = await fetch(spcProxy);
-                if (spcRes.ok) specifics = (await spcRes.json()).map(item => item.word);
+                const adjProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://api.datamuse.com/words?rel_jja=${encodeURIComponent(seed)}&max=4`)}`;
+                const adjRes = await fetch(adjProxy);
+                if (adjRes.ok) adjectives = (await adjRes.json()).map(item => item.word);
 
-                const parProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://api.datamuse.com/words?rel_par=${encodeURIComponent(seed)}&max=4`)}`;
-                const parRes = await fetch(parProxy);
-                if (parRes.ok) parts = (await parRes.json()).map(item => item.word);
+                const trgProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://api.datamuse.com/words?rel_trg=${encodeURIComponent(seed)}&max=4`)}`;
+                const trgRes = await fetch(trgProxy);
+                if (trgRes.ok) triggers = (await trgRes.json()).map(item => item.word);
             } catch (err) {}
 
-            // Add educational how-to questions
-            const howTos = [
-                `how to use ${seed.toLowerCase()}`,
-                `how to remove background in ${seed.toLowerCase()}`,
-                `${seed.toLowerCase()} tutorial`,
-                `${seed.toLowerCase()} vs photoshop`
-            ];
+            // Dynamic intent-based variations (universal patterns)
+            const dynamicVariations = [];
+            const lowerSeed = seed.toLowerCase();
+            if (intent === 'Commercial' || lowerSeed.includes('hotel') || lowerSeed.includes('stay') || lowerSeed.includes('activity')) {
+                dynamicVariations.push(`best ${lowerSeed}`, `things to do in ${lowerSeed}`, `${lowerSeed} for adults`, `${lowerSeed} reviews`);
+            }
+            if (lowerSeed.includes('how') || intent === 'Informational') {
+                dynamicVariations.push(`how to ${lowerSeed}`, `${lowerSeed} guide`, `${lowerSeed} tips`);
+            }
 
-            // Combine with priority for diversity
+            // Combine with strong diversity
             const combined = [...new Set([
                 ...suggestions,
-                ...howTos,
+                ...dynamicVariations,
+                ...adjectives.map(a => `${a} ${seed.split(' ').slice(-2).join(' ')}`),
                 ...synonyms,
-                ...specifics.map(s => `${s} ${seed.split(' ').pop()}`),
-                ...parts
+                ...triggers
             ])].slice(0, 8);
 
             detectedIntent.textContent = intent;
             suggestionsGrid.innerHTML = combined.map((query, i) => {
-                const type = suggestions.includes(query) ? 'Popular autocomplete' : howTos.some(h => query.includes(h)) ? 'How-to tutorial query' : 'Related term variation';
+                const source = suggestions.includes(query) ? 'Real user autocomplete' : dynamicVariations.some(v => query.includes(v)) ? 'Common intent pattern' : 'Topical expansion';
                 return `
-                    <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 shadow-md" title="${type} – Targets user education or common tasks; great for content ideas.">
+                    <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 shadow-md" title="${source} – Reflects actual search behavior; ideal for content targeting.">
                         <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">${query}</h3>
                         <p class="text-sm text-gray-600 dark:text-gray-400">Intent match: ${intent.toLowerCase()}</p>
                     </div>
@@ -127,8 +129,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function detectIntent(text) {
         const lower = text.toLowerCase();
-        if (lower.includes('download') || lower.includes('app') || lower.includes('free')) return 'Commercial';
-        if (lower.includes('how') || lower.includes('tutorial') || lower.includes('review')) return 'Informational';
-        return 'Commercial';
+        if (lower.includes('book') || lower.includes('stay') || lower.includes('buy') || lower.includes('price') || lower.includes('activities')) return 'Commercial';
+        if (lower.includes('how to') || lower.includes('guide') || lower.includes('best') || lower.includes('things to do')) return 'Informational';
+        if (lower.includes('review') || lower.includes('vs')) return 'Transactional';
+        return 'Navigational';
     }
 });
