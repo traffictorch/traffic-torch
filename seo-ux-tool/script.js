@@ -511,8 +511,7 @@ const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURI
       console.error(err);
     } finally {
       progressContainer.classList.add('hidden');
-    }
-  });
+
   
   document.body.setAttribute('data-url', originalInput || 'traffictorch.net');
     }
