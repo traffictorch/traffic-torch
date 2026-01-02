@@ -1,52 +1,25 @@
-@media print {
-  @page {
-    margin: 1cm;
+       /* Save as PDF */
+ @media print {
+  #audit-form, #analysis-progress, header, footer, nav, aside, .no-print {
+    display: none !important;
   }
-
   body {
     background: white !important;
     color: black !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
   }
-
-  /* Hide all UI */
-  #url-form, header, footer, nav, .no-print, button, .expand, #analysis-progress {
-    display: none !important;
-  }
-
-  /* Show hidden content */
-  .hidden, .expand-content {
+  .hidden {
     display: block !important;
   }
-
-  /* Prevent module overlapping/cutting */
-  .score-card,
-  .p-6,
-  .p-5,
-  .rounded-xl,
-  .rounded-2xl,
-  .bg-white\\/10,
-  .bg-white\\/5,
-  .backdrop-blur {
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
-    margin-bottom: 2rem !important;
-    padding: 1.5rem !important;
+  .bg-white, .dark\\:bg-gray-900 {
     background: white !important;
-    border: 1px solid #ccc !important;
+  }
+  .text-gray-900, .dark\\:text-gray-100 {
+    color: black !important;
+  }
+  .shadow-lg {
     box-shadow: none !important;
   }
-
-  /* Radar chart */
-  #health-radar {
-    break-inside: avoid !important;
-    margin: 2rem 0 !important;
-  }
-
-  /* Container reset */
-  .container, .max-w-5xl, #results-wrapper {
+  .max-w-5xl {
     max-width: none !important;
-    padding: 0 !important;
   }
-}
+} 
