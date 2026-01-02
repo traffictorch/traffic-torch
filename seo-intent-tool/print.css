@@ -99,21 +99,32 @@
 } 
 
 
-  /* Hide only the expanding/expanded content in PDF (keep toggle buttons visible) */
-  details > div,                     /* generic details content */
-  .fixes-panel,
-  .full-details,
-  .expand-content,
-  .hidden.mt-6,                      /* common hidden expanded sections */
-  .group-open > div:not(summary),    /* for <details> with group class */
-  details[open] > div:not(summary) { /* for open <details> */
+
+  /* Hide general expanding accordions (e.g., "How SEO Intent Analyzer Works?") and checklists */
+  .max-w-4xl details,               /* the main "How it works" accordion */
+  .max-w-4xl .group,                /* any group accordions */
+  .checklist {                      /* all ✅/❌ checklists in modules */
     display: none !important;
   }
 
-  /* Ensure toggle buttons/summaries stay visible */
-  details > summary,
+  /* Force module-specific expanded panels to show in PDF (expanded by default for print) */
+  .fixes-panel,
+  .full-details,
+  .expand-content,
+  .hidden.mt-4,
+  .hidden.mt-6,
+  .hidden.mt-8 {
+    display: block !important;      /* show the long fix text */
+    visibility: visible !important;
+  }
+
+  /* Hide the "Show Fixes" / toggle buttons in modules (no need in PDF since content is forced open) */
   .fixes-toggle,
-  .more-details-toggle,
-  button[class*="toggle"] {
-    display: block !important;
+  .more-details-toggle {
+    display: none !important;
+  }
+
+  /* Ensure module cards stay clean */
+  .score-card {
+    page-break-inside: avoid;
   }
