@@ -7,17 +7,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const detectedIntent = document.getElementById('detectedIntent');
     const suggestionsGrid = document.getElementById('suggestionsGrid');
 
-    // Detect user country/language dynamically (works on any site)
+    // Dynamic localization
     const locale = navigator.languages?.[0] || navigator.language || 'en-US';
-    const country = new Intl.DateTimeFormat(locale).resolvedOptions().timeZone.split('/')[0] === 'America' ? 'us' : // Basic fallback example
-                   locale.split('-')[1]?.toLowerCase() || 'us';
+    const country = locale.split('-')[1]?.toLowerCase() || 'us';
     const lang = locale.split('-')[0];
 
     const tips = [
         'Fetching page content securely via our CORS proxy...',
         'Analyzing main topics and search intent...',
         `Generating localized suggestions for ${country.toUpperCase()}...`,
-        'Expanding with synonyms and triggered terms...',
+        'Expanding with specific terms and how-to variations...',
         'Curating 8 diverse, high-relevance suggestions...'
     ];
     let tipIndex = 0;
@@ -50,47 +49,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let suggestions = [];
             let synonyms = [];
-            let triggers = [];
+            let specifics = [];
+            let parts = [];
 
-            // Dynamic localized Google Suggest
+            // Localized Google Suggest
             try {
                 const suggestProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://suggestqueries.google.com/complete/search?client=firefox&gl=${country}&hl=${lang}&q=${encodeURIComponent(seed)}`)}`;
                 const suggestRes = await fetch(suggestProxy);
                 if (suggestRes.ok) {
                     const suggestData = await suggestRes.json();
-                    suggestions = suggestData[1]?.slice(0, 6) || [];
+                    suggestions = suggestData[1]?.slice(0, 5) || [];
                 }
-            } catch (err) {
-                console.warn('Google Suggest failed');
-            }
+            } catch (err) {}
 
-            // Datamuse: synonyms + triggered words for better relevance/variety
+            // Datamuse expansions for relevance
             try {
-                const synProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://api.datamuse.com/words?rel_syn=${encodeURIComponent(seed)}&max=5`)}`;
+                const synProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://api.datamuse.com/words?rel_syn=${encodeURIComponent(seed)}&max=4`)}`;
                 const synRes = await fetch(synProxy);
-                if (synRes.ok) {
-                    const synData = await synRes.json();
-                    synonyms = synData.map(item => item.word);
-                }
+                if (synRes.ok) synonyms = (await synRes.json()).map(item => item.word);
 
-                const trgProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://api.datamuse.com/words?rel_trg=${encodeURIComponent(seed)}&max=5`)}`;
-                const trgRes = await fetch(trgProxy);
-                if (trgRes.ok) {
-                    const trgData = await trgRes.json();
-                    triggers = trgData.map(item => item.word);
-                }
-            } catch (err) {
-                console.warn('Datamuse expansion failed');
-            }
+                const spcProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://api.datamuse.com/words?rel_spc=${encodeURIComponent(seed)}&max=4`)}`;
+                const spcRes = await fetch(spcProxy);
+                if (spcRes.ok) specifics = (await spcRes.json()).map(item => item.word);
 
-            // Combine for max diversity/relevance
-            const combined = [...new Set([...suggestions, ...synonyms, ...triggers.map(t => `${t} ${seed.split(' ').pop()}`)])].slice(0, 8);
+                const parProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://api.datamuse.com/words?rel_par=${encodeURIComponent(seed)}&max=4`)}`;
+                const parRes = await fetch(parProxy);
+                if (parRes.ok) parts = (await parRes.json()).map(item => item.word);
+            } catch (err) {}
+
+            // Add educational how-to questions
+            const howTos = [
+                `how to use ${seed.toLowerCase()}`,
+                `how to remove background in ${seed.toLowerCase()}`,
+                `${seed.toLowerCase()} tutorial`,
+                `${seed.toLowerCase()} vs photoshop`
+            ];
+
+            // Combine with priority for diversity
+            const combined = [...new Set([
+                ...suggestions,
+                ...howTos,
+                ...synonyms,
+                ...specifics.map(s => `${s} ${seed.split(' ').pop()}`),
+                ...parts
+            ])].slice(0, 8);
 
             detectedIntent.textContent = intent;
             suggestionsGrid.innerHTML = combined.map((query, i) => {
-                const type = suggestions.includes(query) ? 'Autocomplete query' : synonyms.includes(query) ? 'Synonym variation' : 'Triggered related term';
+                const type = suggestions.includes(query) ? 'Popular autocomplete' : howTos.some(h => query.includes(h)) ? 'How-to tutorial query' : 'Related term variation';
                 return `
-                    <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 shadow-md" title="${type} – Localized for better relevance; potential for targeted traffic.">
+                    <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 shadow-md" title="${type} – Targets user education or common tasks; great for content ideas.">
                         <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">${query}</h3>
                         <p class="text-sm text-gray-600 dark:text-gray-400">Intent match: ${intent.toLowerCase()}</p>
                     </div>
@@ -119,9 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function detectIntent(text) {
         const lower = text.toLowerCase();
-        if (lower.includes('book') || lower.includes('stay') || lower.includes('buy') || lower.includes('price')) return 'Commercial';
-        if (lower.includes('how to') || lower.includes('what is') || lower.includes('guide')) return 'Informational';
-        if (lower.includes('best') || lower.includes('review') || lower.includes('vs')) return 'Transactional';
-        return 'Navigational';
+        if (lower.includes('download') || lower.includes('app') || lower.includes('free')) return 'Commercial';
+        if (lower.includes('how') || lower.includes('tutorial') || lower.includes('review')) return 'Informational';
+        return 'Commercial';
     }
 });
