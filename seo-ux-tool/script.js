@@ -92,9 +92,19 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async e => {
     e.preventDefault();
 
-    progressContainer.classList.remove('hidden');
-    progressText.textContent = 'Fetching page...';
-    const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
+progressContainer.classList.remove('hidden');
+progressText.textContent = 'Fetching page...';
+
+const originalInput = input.value.trim();  // Add this line
+const url = cleanUrl(originalInput);       // Add this line - defines 'url' properly
+
+if (!url) {
+  alert('Please enter a valid URL');
+  progressContainer.classList.add('hidden');
+  return;
+}
+
+const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
     try {
       const res = await fetch(proxyUrl);
       if (!res.ok) throw new Error('Network response was not ok');
