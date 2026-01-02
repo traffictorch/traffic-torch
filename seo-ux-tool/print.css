@@ -1,12 +1,12 @@
 @media print {
   /* Epic PDF Cover Page - Full first page only */
   body::before {
-    content: "Traffic Torch 🛡️\A\A SEO & UX Audit Tool ⚖️\A\A Report:\A " attr(data-url);
+    content: "Traffic Torch 🛡️\A\A SEO & UX Audit Tool ⚖️\A\A Report:";
     display: block;
     height: 100vh;
     page-break-after: always;
     background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
+    color: #4b5563; /* gray-600 */
     font-family: system-ui, -apple-system, sans-serif;
     font-weight: 900;
     text-align: center;
@@ -14,17 +14,18 @@
     line-height: 1.4;
     white-space: pre;
     text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    font-size: 3.2rem; /* smaller overall for better balance */
   }
 
-  /* Title - biggest and epic */
-  body::before {
-    font-size: 4.5rem;
-  }
-
-  /* "Report:" line - slightly smaller */
-  body::before {
-    font-size: 3.2rem; /* overrides for the Report line */
-    /* We can't target specific lines directly, so we'll use a trick below */
+  /* Much smaller URL below "Report:" */
+  body::after {
+    content: attr(data-url);
+    display: block;
+    color: #4b5563; /* gray-600 */
+    font-size: 2rem; /* much smaller to always fit */
+    font-weight: 900;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    margin-top: 1.5rem;
   }
 
   /* Hide only the form/progress parts on ALL pages */
@@ -53,12 +54,6 @@
   .dark\\:text-gray-100,
   .text-gray-200 {
     color: black !important;
-  }
-
-  /* Make the URL on cover look epic - larger, bold, with glow */
-  body::before {
-    /* No direct line targeting, so keep overall balanced */
-    font-size: 3.8rem;
   }
 }
 
