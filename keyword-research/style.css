@@ -271,3 +271,18 @@ h2 + p {
 #suggestionsGrid > div[title]:hover {
     cursor: help;
 }
+
+
+/* Two-input form responsive */
+@media (min-width: 768px) {
+    #keywordForm > div:first-child {
+        margin-bottom: 1.5rem;
+    }
+}
+/* Existing grid rules preserved */
+#suggestionsGrid h3 {
+    color: #1f2937; /* gray-800 day */
+}
+.dark #suggestionsGrid h3 {
+    color: #e5e7eb; /* dark-gray-200 night */
+}

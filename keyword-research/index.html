@@ -192,29 +192,43 @@
       </p>
     </div>
 
-    <!-- URL Input Form -->
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8">
-      <form id="keywordForm" class="space-y-6">
-        <div>
-          <label for="url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Website URL to analyze
-          </label>
-          <input
-            type="url"
-            id="url"
-            required
-            placeholder="https://example.com/blog/best-coffee"
-            class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition"
-          >
-        </div>
-
-        <button
-          type="submit"
-          class="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:from-blue-700 hover:to-purple-700 transition shadow-lg"
-        >
-          Analyze Page & Suggest Keywords
-        </button>
-      </form>
+<!-- URL Input Form - replaced with keyword + optional URL -->
+<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8">
+  <form id="keywordForm" class="space-y-6">
+    <div>
+      <label for="seed" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        Main keyword or topic <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="text"
+        id="seed"
+        required
+        placeholder="e.g., yamba accommodation, photopea remove background"
+        class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition"
+      >
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">This is the core phrase we'll generate real Google suggestions for.</p>
+    </div>
+    <div>
+      <label for="url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        Website URL (optional – for better intent detection)
+      </label>
+      <input
+        type="url"
+        id="url"
+        placeholder="https://example.com/page"
+        class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition"
+      >
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Leave blank if just researching a keyword.</p>
+    </div>
+    <button
+      type="submit"
+      class="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:from-blue-700 hover:to-purple-700 transition shadow-lg"
+    >
+      Generate Keywords
+    </button>
+  </form>
+  <!-- Loader and results unchanged -->
+</div>
 
 <!-- In-place Epic Laser Spinner (hidden until submit) -->
 <div id="loader" class="hidden mt-10 flex flex-col items-center py-8">
