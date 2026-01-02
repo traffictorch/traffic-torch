@@ -513,12 +513,12 @@ const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURI
       progressContainer.classList.add('hidden');
     }
   });
+  
+  document.body.setAttribute('data-url', originalInput || 'traffictorch.net');
+    }
+  });
 
   // ================== ANALYSIS FUNCTIONS ==================
-  
-  
-  
-  
 
    function analyzeSEO(html, doc) {
     let score = 100;
@@ -686,7 +686,6 @@ const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURI
   
   
   
-
   function analyzeMobile(html, doc) {
     let score = 100;
     const issues = [];

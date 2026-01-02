@@ -1,3 +1,51 @@
+ /* PDF Cover Page - Hidden on screen, visible only in print */
+@media print {
+  body::before {
+    content: "";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    z-index: 9999;
+    page-break-after: always;
+  }
+
+  body::after {
+    content: "Traffic Torch 🛡️\A \A SEO & UX Audit Tool ⚖️\A \A Report: " attr(data-url);
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: white;
+    text-align: center;
+    white-space: pre;
+    line-height: 1.4;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    z-index: 99999;
+    width: 90%;
+    max-width: 800px;
+    pointer-events: none;
+  }
+
+  /* Ensure cover is first page and content starts on page 2 */
+  #audit-form, #analysis-progress, header, footer, nav, .no-print {
+    page-break-before: avoid;
+  }
+
+  body > *:not(script):not(style) {
+    page-break-before: always;
+  }
+}
+
+
+ 
+ 
        /* Save as PDF */
  @media print {
   #audit-form, #analysis-progress, header, footer, nav, aside, .no-print {
