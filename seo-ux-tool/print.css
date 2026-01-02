@@ -1,0 +1,52 @@
+@media print {
+  @page {
+    margin: 1cm;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Hide all UI */
+  #url-form, header, footer, nav, .no-print, button, .expand, #analysis-progress {
+    display: none !important;
+  }
+
+  /* Show hidden content */
+  .hidden, .expand-content {
+    display: block !important;
+  }
+
+  /* Prevent module overlapping/cutting */
+  .score-card,
+  .p-6,
+  .p-5,
+  .rounded-xl,
+  .rounded-2xl,
+  .bg-white\\/10,
+  .bg-white\\/5,
+  .backdrop-blur {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    margin-bottom: 2rem !important;
+    padding: 1.5rem !important;
+    background: white !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+  }
+
+  /* Radar chart */
+  #health-radar {
+    break-inside: avoid !important;
+    margin: 2rem 0 !important;
+  }
+
+  /* Container reset */
+  .container, .max-w-5xl, #results-wrapper {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+}
