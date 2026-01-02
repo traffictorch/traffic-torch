@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressContainer = document.getElementById('progress-container');
   const progressText = document.getElementById('progress-text');
   const priorityFixes = document.getElementById('priority-fixes');
-  const savePdfBtn = document.getElementById('save-pdf');
   const copyBadgeBtn = document.getElementById('copy-badge');
 
   function cleanUrl(u) {
@@ -67,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-<!-- PDF Button - Lightweight browser print method -->
+<!-- PDF Button - Simple browser print, exact match to other tools -->
 <div class="text-center my-20">
   <button onclick='document.querySelectorAll(".hidden").forEach(el => el.classList.remove("hidden")); window.print();'
           class="group relative inline-flex items-center px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
@@ -343,7 +342,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       resultsWrapper.classList.remove('hidden');
       document.getElementById('radar-title').classList.remove('hidden');
-      if (savePdfBtn) savePdfBtn.classList.remove('hidden');
       document.getElementById('copy-badge').classList.remove('hidden');
       resultsWrapper.style.opacity = '0';
       resultsWrapper.style.transform = 'translateY(40px)';
