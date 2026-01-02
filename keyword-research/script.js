@@ -36,23 +36,37 @@ document.addEventListener('DOMContentLoaded', () => {
             const text = await response.text();
 
             let seed = extractTopics(text).trim();
+            if (!seed || seed.length > 100) {
+                // Shorten to key phrase if too long
+                seed = seed.split(' | ')[0].split(' - ')[0].substring(0, 80);
+            }
             if (!seed) {
-                // Fallback to domain if no title/meta
-                seed = new URL(url).hostname.replace('www.', '');
+                seed = new URL(url).hostname.replace('www.', '').replace('.com.au', '').replace('.com', '');
             }
             const intent = detectIntent(text);
 
-            const suggestProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(seed)}`)}`;
-            const suggestRes = await fetch(suggestProxy);
-            if (!suggestRes.ok) throw new Error('Suggestions fetch failed');
-            const suggestData = await suggestRes.json();
-            const suggestions = suggestData[1]?.slice(0, 5) || [];
+            let suggestions = [];
+            let associations = [];
 
-            const assocProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://api.datamuse.com/words?ml=${encodeURIComponent(seed)}&max=5`)}`;
+            // Try Google Suggest first
+            try {
+                const suggestProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(seed)}`)}`;
+                const suggestRes = await fetch(suggestProxy);
+                if (suggestRes.ok) {
+                    const suggestData = await suggestRes.json();
+                    suggestions = suggestData[1]?.slice(0, 5) || [];
+                }
+            } catch (err) {
+                console.warn('Google Suggest failed, using Datamuse only');
+            }
+
+            // Datamuse as reliable backup/expansion
+            const assocProxy = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(`https://api.datamuse.com/words?ml=${encodeURIComponent(seed)}&max=8`)}`;
             const assocRes = await fetch(assocProxy);
-            if (!assocRes.ok) throw new Error('Associations fetch failed');
-            const assocData = await assocRes.json();
-            const associations = assocData.map(word => word.word);
+            if (assocRes.ok) {
+                const assocData = await assocRes.json();
+                associations = assocData.map(word => word.word);
+            }
 
             const combined = [...new Set([...suggestions, ...associations])].slice(0, 8);
 
@@ -75,8 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
             loader.classList.add('hidden');
             form.classList.remove('hidden');
             progressText.textContent = 'Error';
-            progressTip.textContent = 'Unable to fetch page – check URL or try again later. Proxy may need update.';
-            results.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">Fetch failed. Please ensure the URL is valid and publicly accessible.</p>';
+            progressTip.textContent = 'Unable to process – try a different URL.';
+            results.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">Analysis failed. Ensure URL is valid and accessible.</p>';
             results.classList.remove('hidden');
         }
     });
@@ -84,14 +98,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function extractTopics(text) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(text, 'text/html');
-        const title = doc.title || '';
-        const metaDesc = doc.querySelector('meta[name="description"]')?.content || '';
-        return title + ' ' + metaDesc;
+        return doc.title || '';
     }
 
     function detectIntent(text) {
         const lower = text.toLowerCase();
-        if (lower.includes('buy') || lower.includes('price') || lower.includes('shop')) return 'Commercial';
+        if (lower.includes('buy') || lower.includes('price') || lower.includes('shop') || lower.includes('sale')) return 'Commercial';
         if (lower.includes('how to') || lower.includes('what is') || lower.includes('guide')) return 'Informational';
         if (lower.includes('best') || lower.includes('review') || lower.includes('vs')) return 'Transactional';
         return 'Navigational';
