@@ -470,5 +470,18 @@ document.addEventListener('DOMContentLoaded', () => {
   </button>
 </div>
     `;
+    
+    // Clean URL for PDF cover: remove http/https and www.
+      let displayUrl = document.getElementById('url-input').value.trim();
+      if (displayUrl) {
+        displayUrl = displayUrl
+          .replace(/^https?:\/\//i, '')
+          .replace(/^www\./i, '');
+      } else {
+        displayUrl = 'traffictorch.net';
+      }
+      document.body.setAttribute('data-url', displayUrl);
+      
+      
   });
 });
