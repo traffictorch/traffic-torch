@@ -247,15 +247,24 @@ html, body {
   -webkit-overflow-scrolling: touch;
 }
 
+/* Module titles (h4) - force gray-800 light / gray-200 dark, override any conflicts */
+.bg-white h4,
+.bg-gray-900 h4 {
+  color: #1f2937 !important; /* gray-800 light mode */
+}
 
+.dark .bg-white h4,
+.dark .bg-gray-900 h4 {
+  color: #e5e7eb !important; /* gray-200 dark mode */
+}
 
-/* Module titles (h4) - consistent day/night mode */
+/* Fallback global for any h4 */
 h4 {
-  color: #1f2937; /* gray-800 */
+  color: #1f2937 !important;
 }
 
 .dark h4 {
-  color: #e5e7eb; /* gray-200 */
+  color: #e5e7eb !important;
 }
 
 
