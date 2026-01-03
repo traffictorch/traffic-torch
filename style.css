@@ -116,3 +116,44 @@ details > div,
 .container {
   contain: layout paint;
 }
+
+
+<!-- Bottom Page Banner -->
+.bottom-banner {
+  width: 100%;
+  margin: 3rem auto 0;
+  padding: 0;
+  text-align: center;
+  overflow: hidden;
+  border-radius: 12px; /* Optional subtle rounding for bottom placement */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Optional subtle elevation */
+}
+
+.bottom-banner picture {
+  display: block;
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.bottom-banner img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  border-radius: 12px;
+}
+
+/* Mobile aspect ratio box */
+@media (max-width: 767px) {
+  .bottom-banner picture {
+    padding-top: 31.25%; /* Default safe ratio */
+  }
+  .bottom-banner img {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
