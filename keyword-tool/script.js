@@ -1,11 +1,9 @@
-// Replace the entire keyword-tool/script.js with this updated version
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const pageUrlInput = document.getElementById('page-url');
   const targetKeywordInput = document.getElementById('target-keyword');
   const results = document.getElementById('results');
   const PROXY = 'https://cors-proxy.traffictorch.workers.dev/';
-
   const progressModules = [
     "Fetching page...",
     "Analyzing meta & headings...",
@@ -15,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     "Checking URL & schema...",
     "Generating report..."
   ];
-
   let currentModuleIndex = 0;
   let moduleInterval;
 
@@ -80,6 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const phrase = targetKeywordInput.value.trim();
     if (!yourUrl || !phrase) return;
 
+    let fullUrl = yourUrl;
+    if (!/^https?:\/\//i.test(yourUrl)) {
+      fullUrl = 'https://' + yourUrl;
+      pageUrlInput.value = fullUrl;
+    }
 
     startSpinnerLoader();
     const yourDoc = await fetchPage(fullUrl);
@@ -101,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     await nextStep(1);
+
     const titleText = yourDoc.querySelector('title')?.textContent.trim() || '';
     const descText = yourDoc.querySelector('meta[name="description"]')?.content.trim() || '';
     const titleMatch = countPhrase(titleText, phrase);
@@ -111,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (descMatch === 0) allFixes.push({module: 'Meta Title & Desc', issue: 'Add keyword to meta description', how: 'Include the keyword once naturally in the description (under 155 characters) to boost click-through rates.'});
 
     await nextStep(2);
+
     const headings = Array.from(yourDoc.querySelectorAll('h1, h2, h3, h4, h5, h6')).slice(0, 5);
     const headingsData = headings.map(h => ({ tag: h.tagName, text: h.textContent.trim(), match: countPhrase(h.textContent, phrase) > 0 }));
     const yourH1 = yourDoc.querySelector('h1')?.textContent.trim() || '';
@@ -120,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (data.h1.match === 0) allFixes.push({module: 'H1 & Headings', issue: 'Add keyword to H1', how: 'Rewrite your H1 to include the keyword naturally while keeping it engaging and reader-focused.'});
 
     await nextStep(3);
+
     const cleanContent = getCleanContent(yourDoc);
     const yourWords = getWordCount(yourDoc);
     const yourContentMatches = countPhrase(cleanContent, phrase);
@@ -130,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (parseFloat(yourDensity) < 0.5) allFixes.push({module: 'Content Density', issue: 'Increase keyword density', how: 'Add the keyword naturally in intro, subheads, and body (aim for 1-2%).'});
 
     await nextStep(4);
+
     const yourImgs = yourDoc.querySelectorAll('img');
     const matchingAlts = Array.from(yourImgs)
       .filter(img => countPhrase(img.alt || '', phrase) > 0)
@@ -140,6 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (matchingAlts.length === 0 && yourImgs.length > 0) allFixes.push({module: 'Image Alts', issue: 'Add keyword to key image alts', how: 'Update important images with descriptive alt text that includes the keyword naturally.'});
 
     await nextStep(5);
+
     const matchingAnchors = Array.from(yourDoc.querySelectorAll('a'))
       .filter(a => countPhrase(a.textContent || '', phrase) > 0)
       .slice(0, 5)
@@ -149,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (matchingAnchors.length === 0) allFixes.push({module: 'Anchor Text', issue: 'Add keyword to anchor text', how: 'Use the keyword naturally as clickable text when linking to related pages.'});
 
     await nextStep(6);
+
     const schemaScript = yourDoc.querySelector('script[type="application/ld+json"]');
     const schemaPresent = !!schemaScript;
     data.urlSchema = { urlMatch: countPhrase(fullUrl, phrase), schema: schemaPresent ? 1 : 0 };
@@ -157,10 +165,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (data.urlSchema.schema === 0) allFixes.push({module: 'URL & Schema', issue: 'Add structured data', how: 'Add JSON-LD schema (Article or FAQ) in the head for rich results.'});
 
     await nextStep(7);
+
     yourScore = Math.min(100, Math.round(yourScore));
     stopSpinnerLoader();
 
-    // Build Top Priority Fixes
     const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'URL & Schema', 'Image Alts', 'Anchor Text'];
     const topPriorityFixes = [];
     const moduleIssues = {};
@@ -168,13 +176,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!moduleIssues[f.module]) moduleIssues[f.module] = [];
       moduleIssues[f.module].push(f);
     });
-    // First pass
     moduleOrder.forEach(mod => {
       if (moduleIssues[mod] && moduleIssues[mod].length > 0) {
         topPriorityFixes.push(moduleIssues[mod][0]);
       }
     });
-    // Second pass for emphasis
     if (topPriorityFixes.length < 3) {
       const topMod = topPriorityFixes.length > 0 ? topPriorityFixes[0].module : null;
       if (topMod && moduleIssues[topMod] && moduleIssues[topMod].length > 1) {
@@ -183,7 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     topPriorityFixes.length = Math.min(3, topPriorityFixes.length);
 
-    // Ranking levels
     const levels = ['Page 2+', 'Page 1 Possible', 'Top 10', 'Top 3 Potential'];
     const currentLevel = yourScore >= 90 ? 3 : yourScore >= 80 ? 2 : yourScore >= 60 ? 1 : 0;
     const projectedLevel = Math.min(3, currentLevel + (topPriorityFixes.length >= 2 ? 2 : topPriorityFixes.length));
@@ -211,7 +216,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
-
 <!-- Small Metric Circles -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
   ${[
@@ -224,12 +228,11 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="text-gray-800 dark:text-gray-200">${truncate(data.meta.descText || '(none)', 80)}</span>
         </div>`,
       fixEdu: data.meta.yourMatches === 0 ?
-        `The target keyword "${phrase}" is missing from both your title and meta description. This is a critical missed opportunity because search engines heavily weigh these elements when determining relevance. Adding the keyword naturally improves visibility and click-through rates significantly.`
-        : data.meta.titleMatch === 0 ?
-        `Your meta title is missing the target keyword. The title tag is the strongest on-page ranking factor and appears prominently in search results. Including the keyword early in the title helps Google match user queries better.`
-        : data.meta.descMatch === 0 ?
-        `Your meta description lacks the keyword. While it doesn't directly affect rankings, it influences click-through rates from search results. A compelling description with the keyword encourages more clicks.`
-        : '',
+        `The target keyword "${phrase}" is missing from both your title and meta description. This is a critical missed opportunity because search engines heavily weigh these elements when determining relevance. Adding the keyword naturally improves visibility and click-through rates significantly.` :
+        data.meta.titleMatch === 0 ?
+        `Your meta title is missing the target keyword. The title tag is the strongest on-page ranking factor and appears prominently in search results. Including the keyword early in the title helps Google match user queries better.` :
+        data.meta.descMatch === 0 ?
+        `Your meta description lacks the keyword. While it doesn't directly affect rankings, it influences click-through rates from search results. A compelling description with the keyword encourages more clicks.` : '',
       what: 'Checks if your target keyword appears naturally in the page title and meta description. These are the first elements Google reads and displays in search results. Optimized titles and descriptions directly impact visibility and user clicks.',
       how: 'Place the keyword near the beginning of the title (keep total under 60 characters). Include it once naturally in the meta description (under 155 characters). Make both compelling and relevant to the user\'s search intent.',
       why: 'Pages with the exact keyword in title and description often rank higher and achieve 20-30% better click-through rates. These elements signal strong relevance to search engines. They also build trust and expectation before the user even visits your page.'
@@ -237,13 +240,12 @@ document.addEventListener('DOMContentLoaded', () => {
     {name: 'H1 & Headings', score: data.h1.match > 0 ? 100 : 0,
       details: `
         <div class="mt-4 text-left space-y-2 text-sm">
-          ${data.headingsData.length > 0 ? data.headingsData.map(h => 
+          ${data.headingsData.length > 0 ? data.headingsData.map(h =>
             `${h.match ? '✅' : ''} <span class="font-bold">${h.tag}:</span> <span class="text-gray-800 dark:text-gray-200">${truncate(h.text, 60)}</span>`
           ).join('<br>') : '<span class="text-gray-800 dark:text-gray-200">No headings found</span>'}
         </div>`,
-      fixEdu: data.h1.match === 0 ? 
-        `Your main H1 heading does not contain the target keyword. The H1 is the most important heading and tells search engines the primary topic of the page. Without the keyword here, Google may struggle to understand your page focus clearly.`
-        : '',
+      fixEdu: data.h1.match === 0 ?
+        `Your main H1 heading does not contain the target keyword. The H1 is the most important heading and tells search engines the primary topic of the page. Without the keyword here, Google may struggle to understand your page focus clearly.` : '',
       what: 'Evaluates whether your main H1 heading contains the target keyword. Headings structure content and help search engines understand hierarchy and topic relevance. The H1 carries the strongest weight.',
       how: 'Rewrite your H1 to include the exact keyword or a close natural variant while keeping it engaging for readers. Avoid stuffing — only use it if it fits naturally. Support with keyword-rich H2/H3 where relevant.',
       why: 'A keyword-optimized H1 is one of the strongest on-page signals for topical relevance. It helps both search engines and users quickly grasp what the page is about. Well-structured headings also improve readability and dwell time.'
@@ -273,9 +275,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="text-gray-800 dark:text-gray-200 font-bold">Matching alts (${data.alts.phrase}/${data.alts.total} images):</p>
           ${data.alts.matchingAlts.length > 0 ? data.alts.matchingAlts.map(alt => `✅ <span class="text-gray-800 dark:text-gray-200">${truncate(alt, 60)}</span>`).join('<br>') : '<span class="text-gray-800 dark:text-gray-200">None found</span>'}
         </div>`,
-      fixEdu: data.alts.phrase === 0 && data.alts.total > 0 ? 
-        `None of your ${data.alts.total} images have the target keyword in alt text. This misses opportunities for accessibility, image search traffic, and additional relevance signals. Focus on key images like hero or product photos first.`
-        : '',
+      fixEdu: data.alts.phrase === 0 && data.alts.total > 0 ?
+        `None of your ${data.alts.total} images have the target keyword in alt text. This misses opportunities for accessibility, image search traffic, and additional relevance signals. Focus on key images like hero or product photos first.` : '',
       what: 'Scans image alt texts for the presence of your target keyword in relevant images. Alt text describes images for screen readers and search engines. It\'s crucial for accessibility and SEO.',
       how: 'Write descriptive alt text for important images that naturally includes the keyword where appropriate. Avoid stuffing — only use it if it accurately describes the image. Leave decorative images with empty alt="".',
       why: 'Optimized alt text improves accessibility compliance and user experience. It enables ranking in Google Images, driving extra traffic. It also provides another contextual relevance signal to search engines.'
@@ -286,9 +287,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="text-gray-800 dark:text-gray-200 font-bold">Matching anchors (${data.anchors.count} found):</p>
           ${data.anchors.matchingAnchors.length > 0 ? data.anchors.matchingAnchors.map(a => `✅ <span class="text-gray-800 dark:text-gray-200">${truncate(a.text, 50)}</span> → ${truncate(a.href, 40)}`).join('<br>') : '<span class="text-gray-800 dark:text-gray-200">None found</span>'}
         </div>`,
-      fixEdu: data.anchors.count === 0 ? 
-        `No internal links use the target keyword in anchor text. This misses a chance to strengthen topical authority flow across your site. Aim for 1-3 natural keyword anchors linking to relevant internal pages.`
-        : '',
+      fixEdu: data.anchors.count === 0 ?
+        `No internal links use the target keyword in anchor text. This misses a chance to strengthen topical authority flow across your site. Aim for 1-3 natural keyword anchors linking to relevant internal pages.` : '',
       what: 'Looks for internal links using the target keyword or variations in their visible anchor text. Anchor text helps search engines understand linked page topics. It distributes authority within your site.',
       how: 'When linking to related content on your site, use the keyword naturally as part or all of the clickable text. Vary with close variants to avoid over-optimization. Link contextually from relevant sections.',
       why: 'Keyword-rich internal anchors reinforce site structure and topical clusters. They help search engines crawl and understand relationships between pages. Natural internal linking improves user navigation and time on site.'
@@ -338,7 +338,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }).join('')}
 </div>
-
 <!-- Top Priority Fixes -->
 <div class="my-16">
   <h3 class="text-4xl font-bold text-center text-orange-600 mb-8">Top Priority Fixes</h3>
@@ -363,10 +362,8 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   ` : '<p class="text-center text-green-500 text-2xl font-bold">Strong optimization — keep it up!</p>'}
 </div>
-
 <!-- Ranking Potential & Expected Gains -->
 <div class="grid md:grid-cols-2 gap-8 my-20 max-w-6xl mx-auto">
-  <!-- Left: Ranking Potential Improvement -->
   <div class="p-12 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-3xl shadow-2xl space-y-8">
     <h3 class="text-4xl font-black text-center">Ranking Potential Improvement</h3>
     <div class="flex justify-center gap-8 text-3xl font-black">
@@ -407,8 +404,6 @@ document.addEventListener('DOMContentLoaded', () => {
          <strong>Top 3 Potential</strong>: Excellent on-page setup</p>
     </div>
   </div>
-
-  <!-- Right: Expected Performance Gains -->
   <div class="p-12 bg-gradient-to-br from-green-500 to-teal-600 text-white rounded-3xl shadow-2xl space-y-8">
     <h3 class="text-4xl font-black text-center">Expected Performance Gains</h3>
     <div class="space-y-6">
@@ -455,7 +450,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
-
 <!-- PDF Button -->
 <div class="text-center my-16">
   <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
@@ -465,28 +459,5 @@ document.addEventListener('DOMContentLoaded', () => {
   </button>
 </div>
     `;
-    
-      // Clean URL for PDF cover: domain on first line, path on second
-      let fullUrl = document.getElementById('url-input').value.trim();
-      let displayUrl = 'traffictorch.net'; // fallback
-
-      if (fullUrl) {
-        // Remove protocol and www
-        let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
-
-        // Split into domain and path
-        const firstSlash = cleaned.indexOf('/');
-        if (firstSlash !== -1) {
-          const domain = cleaned.slice(0, firstSlash);
-          const path = cleaned.slice(firstSlash);
-          displayUrl = domain + '\n' + path;
-        } else {
-          displayUrl = cleaned;
-        }
-      }
-
-      document.body.setAttribute('data-url', displayUrl);
-      
-      
   });
 });
