@@ -355,7 +355,7 @@
       if (path.endsWith('/')) path += 'index.html';
       path = path.slice(1); // Remove leading '/'
 
-      const apiUrl = `https://api.github.com/repos/traffictorch/traffic-torch.github.io/commits?path=${encodeURIComponent(path)}&per_page=1`;
+      const apiUrl = `https://api.github.com/repos/traffictorch/traffic-torch/commits?path=${encodeURIComponent(path)}&per_page=1`;
       const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(apiUrl);
 
       const response = await fetch(proxyUrl);
@@ -405,7 +405,6 @@
           Author
         </h3>
         <p class="font-bold text-gray-800 dark:text-gray-200">Ylia Callan</p>
-        <p class="text-sm text-gray-800 dark:text-gray-200">Founder & Developer</p>
         <p class="text-sm text-gray-800 dark:text-gray-200 mt-2 max-w-xs">
           Musician • Author • Web Design (Cert IV) at TAFE NSW, building privacy-first AI SEO/UX tools.
         </p>
