@@ -1,5 +1,5 @@
   body::before {
-    content: "Traffic Torch 🛡️\A\A SEO Intent Tool 🔍\A\A Report:\A " attr(data-url);
+    content: "Traffic Torch 🛡️\A\A Ai Optimization Tool 🔍\A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
     page-break-after: always;
