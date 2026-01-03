@@ -128,15 +128,6 @@ h2 + p {
   color: #f3f4f6; /* gray-100 dark mode */
 }
 
-/* Small metric card titles (h4) - dark in light mode, light in dark mode */
-.bg-white h4, .dark .bg-gray-900 h4 {
-  color: #1f2937; /* gray-800 light mode */
-}
-.dark .bg-gray-900 h4 {
-  color: #f3f4f6; /* gray-100 dark mode */
-}
-
-
 
 
 /* Detail paragraphs under labels - readable gray */
