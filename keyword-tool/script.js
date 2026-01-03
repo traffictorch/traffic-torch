@@ -471,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>
 
-    <div class="mt-10 space-y-3 text-sm leading-relaxed">
+    <div class="mt-10 space-y-3 text-sm leading-relaxed text-white dark:text-gray-200">
       <p>Conservative estimates based on pages with similar optimization levels.</p>
       <p>Track changes in Google Search Console (Impressions, CTR, Average Position).</p>
       <p>Expect movement within 7–30 days after indexing.</p>
