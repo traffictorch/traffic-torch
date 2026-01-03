@@ -90,28 +90,10 @@
   .shadow-lg {
     box-shadow: none !important;
   }
-  /* Full-width PDF report — override grid centering and mx-auto */
-  .grid.md\\:grid-cols-2,
-  .max-w-6xl.mx-auto,
-  .max-w-6xl,
-  .max-w-5xl,
-  .max-w-4xl,
-  .mx-auto {
-    display: block !important;
-    max-width: none !important;
-    width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-left: 3rem !important;
-    padding-right: 3rem !important;
-    box-sizing: border-box !important;
-  }
-
-  /* Ensure child grid items stretch full width */
-  .grid > div {
-    width: 100% !important;
+  .max-w-5xl {
     max-width: none !important;
   }
+} 
 
 
   /* Hide general expanding accordions (e.g., "How SEO Intent Analyzer Works?") and checklists */
