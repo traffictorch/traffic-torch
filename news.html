@@ -158,76 +158,50 @@
     <p class="text-center text-xl text-gray-600 dark:text-gray-500 mb-16 max-w-3xl mx-auto">
       Latest updates on SEO, UX, AI tools, and behind-the-scenes development.
     </p>
-
-    <div id="feed" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <!-- Loading state -->
-      <div class="col-span-full text-center text-gray-500 dark:text-gray-500 py-12">
-        Loading latest posts...
-      </div>
-    </div>
-  </div>
-</section>
-
-<script>
-  async function loadBlogFeed() {
-    try {
-      const response = await fetch('/blog/blog-index.json');
-      if (!response.ok) throw new Error('Failed to fetch');
-      const posts = await response.json();
-
-      const feedContainer = document.getElementById('feed');
-      feedContainer.innerHTML = ''; // Clear loading
-
-      if (posts.length === 0) {
-        feedContainer.innerHTML = '<p class="col-span-full text-center text-gray-500 dark:text-gray-500">No posts yet — check back soon!</p>';
-        return;
-      }
-
-      posts.forEach(post => {
-        const card = document.createElement('div');
-        card.className = 'bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/10 dark:border-white/5 hover:shadow-orange-500/20 transition-all duration-300';
-
-        card.innerHTML = `
-          ${post.featuredImage ? `
-            <a href="/blog/posts/${post.slug}.html">
-              <img src="${post.featuredImage}" alt="${post.title}" class="w-full h-48 object-cover">
-            </a>
-          ` : ''}
-          <div class="p-8">
-            <p class="text-sm text-gray-500 dark:text-gray-500 mb-2">${post.date}</p>
-            <h2 class="text-2xl font-bold mb-4">
-              <a href="/blog/posts/${post.slug}.html" class="text-gray-900 dark:text-gray-100 hover:text-orange-500 dark:hover:text-orange-400 transition">
-                ${post.title}
-              </a>
+    
+        <div class="grid gap-12">
+      <!-- Newest Post - Example Second Post (add your real one here) -->
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="/blog/posts/your-second-post-slug.html" class="block">
+          <img 
+            src="/blog/images/your-second-post-folder/your-second-post-hero.webp" 
+            alt="Your Second Post Title – AI-powered SEO and UX insights" 
+            class="w-full h-64 md:h-96 object-cover object-center"
+            loading="lazy">
+          <div class="p-8 md:p-12">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Your Second Blog Post Title Here
             </h2>
-            <p class="text-gray-700 dark:text-gray-300 mb-6 line-clamp-3">
-              ${post.excerpt}
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              Brief educational description of your second post: how Traffic Torch's AI tools help with competitive analysis, predictive fixes, mobile optimization, or any new feature/update.
             </p>
-            <a href="/blog/posts/${post.slug}.html" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">
-              Read more →
-            </a>
           </div>
-        `;
+        </a>
+      </article>
 
-        feedContainer.appendChild(card);
-      });
-    } catch (error) {
-      document.getElementById('feed').innerHTML = `
-        <p class="col-span-full text-center text-red-600 dark:text-red-400">
-          Error loading posts. Please try again later.
-        </p>
-      `;
-      console.error('Feed error:', error);
-    }
-  }
+      <!-- Existing Post -->
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="/blog/posts/developing-traffic-torch-tools.html" class="block">
+          <img 
+            src="/blog/images/developing-traffic-torch-tools/traffic-torch-illuminating-seo-dashboard.webp" 
+            alt="Traffic Torch illuminating SEO dashboard – Instant AI-powered 360° SEO and UX analysis" 
+            class="w-full h-64 md:h-96 object-cover object-center"
+            loading="lazy">
+          <div class="p-8 md:p-12">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Behind the Scenes: Developing Traffic Torch's AI SEO and UX Tools
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              Explore the recent platform enhancements, including educational infographic banners across all tools. Discover how AI-powered deep-dive modules deliver instant health scores, competitive gap analysis, predictive fixes, and mobile-optimized insights.
+            </p>
+          </div>
+        </a>
+      </article>
 
-  // Load on ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadBlogFeed);
-  } else {
-    loadBlogFeed();
-  }
-</script>
+      <!-- Add future posts above this line (newest on top) -->
+    </div>
+
+
 
 <!-- AddToAny BEGIN -->
 <div style="display: flex; justify-content: center; margin: 30px 0;">
@@ -273,6 +247,17 @@
   </nav>
 </div>
 
+<section class="bottom-banner" aria-label="Traffic Torch visual summary">
+  <picture style="--banner-ratio: 22.36%;"> <!-- 275 / 1230 ≈ 22.36% -->
+    <img
+      src="/images/tool-banners/seo-ux-tool-infographic.webp"
+      alt="Traffic Torch Homepage - Instant 360° SEO and UX health score analysis with AI-powered insights, competitive gaps, and fixes"
+      width="1230"
+      height="275"
+      loading="lazy"
+      decoding="async">
+  </picture>
+</section>
 
     </main>
 
