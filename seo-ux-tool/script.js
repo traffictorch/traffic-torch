@@ -513,16 +513,29 @@ const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURI
       progressContainer.classList.add('hidden');
 
   
-// Clean URL for PDF cover: remove protocol (http/https) and www.
-      let displayUrl = input.value.trim();
-      if (displayUrl) {
-        displayUrl = displayUrl
-          .replace(/^https?:\/\//i, '')   // remove http:// or https://
-          .replace(/^www\./i, '');        // remove www.
-      } else {
-        displayUrl = 'traffictorch.net';
+      // Clean URL for PDF cover: domain on first line, path on second
+      let fullUrl = document.getElementById('url-input').value.trim();
+      let displayUrl = 'traffictorch.net'; // fallback
+
+      if (fullUrl) {
+        // Remove protocol and www
+        let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
+
+        // Split into domain and path
+        const firstSlash = cleaned.indexOf('/');
+        if (firstSlash !== -1) {
+          const domain = cleaned.slice(0, firstSlash);
+          const path = cleaned.slice(firstSlash);
+          displayUrl = domain + '\n' + path;
+        } else {
+          displayUrl = cleaned;
+        }
       }
+
       document.body.setAttribute('data-url', displayUrl);
+      
+      
+      
     }
   });
 

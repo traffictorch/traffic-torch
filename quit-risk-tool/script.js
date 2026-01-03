@@ -487,15 +487,25 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         
         
-// Clean URL for PDF cover: remove http/https and www.
-      let displayUrl = document.getElementById('url-input').value.trim();
-      if (displayUrl) {
-        displayUrl = displayUrl
-          .replace(/^https?:\/\//i, '')
-          .replace(/^www\./i, '');
-      } else {
-        displayUrl = 'traffictorch.net';
+      // Clean URL for PDF cover: domain on first line, path on second
+      let fullUrl = document.getElementById('url-input').value.trim();
+      let displayUrl = 'traffictorch.net'; // fallback
+
+      if (fullUrl) {
+        // Remove protocol and www
+        let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
+
+        // Split into domain and path
+        const firstSlash = cleaned.indexOf('/');
+        if (firstSlash !== -1) {
+          const domain = cleaned.slice(0, firstSlash);
+          const path = cleaned.slice(firstSlash);
+          displayUrl = domain + '\n' + path;
+        } else {
+          displayUrl = cleaned;
+        }
       }
+
       document.body.setAttribute('data-url', displayUrl);
       
       
