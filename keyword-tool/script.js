@@ -80,11 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const phrase = targetKeywordInput.value.trim();
     if (!yourUrl || !phrase) return;
 
-    let fullUrl = yourUrl;
-    if (!/^https?:\/\//i.test(yourUrl)) {
-      fullUrl = 'https://' + yourUrl;
-      pageUrlInput.value = fullUrl;
-    }
 
     startSpinnerLoader();
     const yourDoc = await fetchPage(fullUrl);
