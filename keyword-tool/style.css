@@ -274,21 +274,22 @@ h4 {
 
 
 
-/* Fix text wrapping in Ranking Potential Improvement priority fixes on small screens */
+/* Fix priority fixes text wrapping on small screens - tested selector */
 @media (max-width: 768px) {
-  /* Target the fix boxes in the left card */
-  .bg-white.dark\\:bg-gray-900 .p-12 > div > .flex > .flex-1 > div {
+  /* Target the fix boxes in Ranking Potential Improvement card */
+  .bg-white.dark\\:bg-gray-900 > .space-y-8 > div > .flex > .flex-1 > div {
     padding-left: 1.5rem !important;
     padding-right: 1.5rem !important;
   }
 
-  .bg-white.dark\\:bg-gray-900 .p-12 > div > .flex > .flex-1 > div > h4 {
-    font-size: 1.25rem !important; /* text-xl */
-    line-height: 1.4 !important;
+  .bg-white.dark\\:bg-gray-900 > .space-y-8 > div > .flex > .flex-1 > div > h4 {
+    font-size: 1.125rem !important;
+    line-height: 1.5 !important;
     word-break: break-word;
+    hyphens: auto;
   }
 
-  .bg-white.dark\\:bg-gray-900 .p-12 > div > .flex > .flex-1 > div > p {
+  .bg-white.dark\\:bg-gray-900 > .space-y-8 > div > .flex > .flex-1 > div > p {
     line-height: 1.6 !important;
     word-break: break-word;
   }
