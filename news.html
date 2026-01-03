@@ -246,16 +246,18 @@
 <!-- AddToAny END -->
 
 
-<!-- Breadcrumbs - centered, with clickable links -->
+<!-- Breadcrumbs - responsive, centered, with proper mobile behavior -->
 <div class="max-w-5xl mx-auto px-6 py-8">
   <nav aria-label="breadcrumb" class="text-center">
-    <ol class="inline-flex items-center space-x-3 text-sm text-gray-500 dark:text-gray-400">
-      <li>
-        <a href="/" class="hover:text-orange-500 transition">Home</a>
+    <ol class="inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
+      <li class="flex items-center">
+        <a href="/" class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition">
+          Traffic Torch
+        </a>
       </li>
-      <li>
-        <span class="mx-2">/</span>
-        <span class="text-orange-500 font-medium">
+      <li class="flex items-center">
+        <span class="mx-2 text-gray-400 dark:text-gray-500">/</span>
+        <span class="font-medium text-gray-600 dark:text-gray-300">
           <script>
             document.write(
               document.title
