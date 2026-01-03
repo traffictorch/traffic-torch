@@ -99,6 +99,7 @@
   })();
 </script>
 </head>
+
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
   <!-- Main Layout Container - Desktop flex with sidebar -->
   <div class="flex flex-1 min-h-screen">
@@ -157,44 +158,35 @@
           </a>
           <!-- Empty spacer on mobile to balance -->
           <div class="w-10 md:hidden"></div>
-          <!-- Hamburger Menu for Mobile Sidebar -->
-          <button id="mobileMenuBtn" class="md:hidden text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+          
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
             ☰
           </button>
-          <!-- Desktop Menu (hidden on mobile) -->
-          <nav class="hidden md:flex space-x-8 text-lg">
-            <a href="/seo-intent-tool/" class="text-gray-500 dark:text-white/90 hover:text-orange-400 transition">SEO Intent</a>
-            <a href="/ai-search-optimization-tool/" class="text-gray-500 dark:text-white/90 hover:text-orange-400 transition">Ai Search</a>
-            <a href="/ai-audit-tool/" class="text-gray-500 dark:text-white/90 hover:text-orange-400 transition">Ai Content</a>
-            <a href="/quit-risk-tool/" class="text-gray-500 dark:text-white/90 hover:text-orange-400 transition">Quit Risk</a>
-            <a href="/keyword-tool/" class="text-gray-500 dark:text-white/90 hover:text-orange-400 transition">Keywords</a>
-            <a href="/keyword-vs-tool/" class="text-gray-500 dark:text-white/90 hover:text-orange-400 transition">VS</a>
-            <a href="/news.html" class="text-gray-500 dark:text-white/90 hover:text-orange-400 transition">News</a>
-          </nav>
-          <!-- Day/Night Toggle -->
-          <button id="themeToggle" class="text-2xl hover:text-orange-400 transition">
+          
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
             🌙
           </button>
         </div>
-      </header>
-
-      <!-- Mobile Sidebar (hidden by default) -->
-      <aside id="mobileSidebar" class="md:hidden fixed inset-0 bg-black/80 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out">
-        <div class="w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl h-full overflow-y-auto">
-          <!-- Close Button -->
-          <button id="closeMobileMenu" class="absolute top-4 right-4 text-3xl text-white">×</button>
-          <!-- Menu Items -->
-          <nav class="p-6 space-y-6 mt-16">
-            <a href="/seo-intent-tool/" class="block text-xl text-white hover:text-orange-400 transition">SEO Intent</a>
-            <a href="/ai-search-optimization-tool/" class="block text-xl text-white hover:text-orange-400 transition">Ai Search</a>
-            <a href="/ai-audit-tool/" class="block text-xl text-white hover:text-orange-400 transition">Ai Content</a>
-            <a href="/quit-risk-tool/" class="block text-xl text-white hover:text-orange-400 transition">Quit Risk</a>
-            <a href="/keyword-tool/" class="block text-xl text-white hover:text-orange-400 transition">Keywords</a>
-            <a href="/keyword-vs-tool/" class="block text-xl text-white hover:text-orange-400 transition">VS</a>
-            <a href="/news.html" class="block text-xl text-white hover:text-orange-400 transition">News</a>
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🛡️</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">SEO Intent 🎯</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Search 🔍</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Content 🤖</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">Quit Risk ⚡</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">Keywords 📝</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">Competition 🆚</a>
+            </div>
+            <a href="/about/" class="text-gray-100 hover:text-orange-400 transition">About</a>
+            <a href="/news.html" class="text-gray-100 hover:text-orange-400 transition">News</a>
           </nav>
         </div>
-      </aside>
+      </header>
       
               <!-- Blog Post Hero Image -->
         <div class="relative w-full max-w-5xl mx-auto mb-12 overflow-hidden rounded-3xl shadow-2xl">
@@ -459,32 +451,34 @@
         </div>
         <!-- AddToAny END -->
 
-        <!-- Breadcrumbs - responsive, centered, with proper mobile behavior -->
-        <div class="max-w-5xl mx-auto px-6 py-8">
-          <nav aria-label="breadcrumb" class="text-center">
-            <ol class="inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
-              <li class="flex items-center">
-                <a href="/" class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition">
-                  Traffic Torch
-                </a>
-              </li>
-              <li class="flex items-center">
-                <span class="mx-2 text-gray-400 dark:text-gray-500">/</span>
-                <span class="font-medium text-gray-600 dark:text-gray-300">
-                  <script>
-                    document.write(
-                      document.title
-                        .replace('Traffic Torch – ', '')
-                        .replace(' | Traffic Torch', '')
-                        .replace(' Tool', '')
-                        .trim()
-                    );
-                  </script>
-                </span>
-              </li>
-            </ol>
-          </nav>
-        </div>
+<!-- Breadcrumbs - responsive, centered, with proper mobile behavior -->
+<div class="max-w-5xl mx-auto px-6 py-8">
+  <nav aria-label="breadcrumb" class="text-center">
+    <ol class="inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
+      <li class="flex items-center">
+        <a href="/" class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition">
+          Traffic Torch
+        </a>
+      </li>
+      <li class="flex items-center">
+        <span class="mx-2 text-gray-400 dark:text-gray-500">/</span>
+        <span class="font-medium text-gray-600 dark:text-gray-300">
+          <script>
+            document.write(
+              document.title
+                .replace('Traffic Torch – ', '')
+                .replace(' | Traffic Torch', '')
+                .replace(' Tool', '')
+                .trim()
+            );
+          </script>
+        </span>
+      </li>
+    </ol>
+  </nav>
+</div>
+        
+        
       </main>
 
       <!-- Footer -->
