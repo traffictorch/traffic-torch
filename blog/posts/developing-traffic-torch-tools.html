@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ 
+  <!-- Post-specific SEO Title & Description -->
+  <title>Behind the Scenes: Developing Traffic Torch's AI SEO and UX Tools – Traffic Torch Insights</title>
+  <meta name="description" content="Explore the development journey of Traffic Torch's AI-powered SEO and UX tools, including instant health scores, competitive analysis, and optimization insights for better rankings and user experience." />
+ 
+  <!-- Robots & Canonical -->
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://traffictorch.net/blog/posts/developing-traffic-torch-tools.html" />
+ 
+  <!-- Open Graph Tags -->
+  <meta property="og:title" content="Behind the Scenes: Developing Traffic Torch's AI SEO and UX Tools – Traffic Torch Insights" />
+  <meta property="og:description" content="Explore the development journey of Traffic Torch's AI-powered SEO and UX tools, including instant health scores, competitive analysis, and optimization insights for better rankings and user experience." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://traffictorch.net/blog/posts/developing-traffic-torch-tools.html" />
+  <meta property="og:image" content="https://traffictorch.net/images/tool-banners/homepage-infographic.webp" />
+  <meta property="og:image:width" content="1280" />
+  <meta property="og:image:height" content="400" />
+  <meta property="og:site_name" content="Traffic Torch" />
+ 
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Behind the Scenes: Developing Traffic Torch's AI SEO and UX Tools – Traffic Torch Insights" />
+  <meta name="twitter:description" content="Explore the development journey of Traffic Torch's AI-powered SEO and UX tools, including instant health scores, competitive analysis, and optimization insights for better rankings and user experience." />
+  <meta name="twitter:image" content="https://traffictorch.net/images/tool-banners/homepage-infographic.webp" />
+  <meta name="twitter:site" content="@TrafficTorch" />
+ 
+  <!-- Structured Data: BlogPosting -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Behind the Scenes: Developing Traffic Torch's AI SEO and UX Tools – Traffic Torch Insights",
+    "description": "Explore the development journey of Traffic Torch's AI-powered SEO and UX tools, including instant health scores, competitive analysis, and optimization insights for better rankings and user experience.",
+    "image": "https://traffictorch.net/images/tool-banners/homepage-infographic.webp",
+    "datePublished": "2026-01-03",
+    "dateModified": "2026-01-03",
+    "author": {
+      "@type": "Organization",
+      "name": "Traffic Torch"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Traffic Torch",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://traffictorch.net/logo.webp"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://traffictorch.net/blog/posts/developing-traffic-torch-tools.html"
+    }
+  }
+  </script>
+ 
+  <!-- Keep the shared Organization schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "url": "https://traffictorch.net/",
+    "logo": "https://traffictorch.net/favicon.ico",
+    "description": "AI-powered instant SEO and UX health analysis tools – mobile-friendly."
+  }
+  </script>
+ 
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/blog/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+  tailwind.config = {
+    darkMode: 'class',
+  }
+</script>
+<script>
+  (function() {
+    const saved = localStorage.getItem('theme');
+    const preferDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (preferDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  })();
+</script>
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      <!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+          <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+      <!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚡</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📝</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Comp</span>
+        </a>
+        <a href="/news.html" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📰</span> <span class="sidebar-text hidden">News</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+            <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <!-- Hamburger Menu for Mobile Sidebar -->
+          <button id="mobileMenuBtn" class="md:hidden text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+            ☰
+          </button>
+          <!-- Desktop Menu (hidden on mobile) -->
+          <nav class="hidden md:flex space-x-8 text-lg">
+            <a href="/seo-intent-tool/" class="text-gray-500 dark:text-white/90 hover:text-orange-400 transition">SEO Intent</a>
+            <a href="/ai-search-optimization-tool/" class="text-gray-500 dark:text-white/90 hover:text-orange-400 transition">Ai Search</a>
+            <a href="/ai-audit-tool/" class="text-gray-500 dark:text-white/90 hover:text-orange-400 transition">Ai Content</a>
+            <a href="/quit-risk-tool/" class="text-gray-500 dark:text-white/90 hover:text-orange-400 transition">Quit Risk</a>
+            <a href="/keyword-tool/" class="text-gray-500 dark:text-white/90 hover:text-orange-400 transition">Keywords</a>
+            <a href="/keyword-vs-tool/" class="text-gray-500 dark:text-white/90 hover:text-orange-400 transition">VS</a>
+            <a href="/news.html" class="text-gray-500 dark:text-white/90 hover:text-orange-400 transition">News</a>
+          </nav>
+          <!-- Day/Night Toggle -->
+          <button id="themeToggle" class="text-2xl hover:text-orange-400 transition">
+            🌙
+          </button>
+        </div>
+      </header>
+
+      <!-- Mobile Sidebar (hidden by default) -->
+      <aside id="mobileSidebar" class="md:hidden fixed inset-0 bg-black/80 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl h-full overflow-y-auto">
+          <!-- Close Button -->
+          <button id="closeMobileMenu" class="absolute top-4 right-4 text-3xl text-white">×</button>
+          <!-- Menu Items -->
+          <nav class="p-6 space-y-6 mt-16">
+            <a href="/seo-intent-tool/" class="block text-xl text-white hover:text-orange-400 transition">SEO Intent</a>
+            <a href="/ai-search-optimization-tool/" class="block text-xl text-white hover:text-orange-400 transition">Ai Search</a>
+            <a href="/ai-audit-tool/" class="block text-xl text-white hover:text-orange-400 transition">Ai Content</a>
+            <a href="/quit-risk-tool/" class="block text-xl text-white hover:text-orange-400 transition">Quit Risk</a>
+            <a href="/keyword-tool/" class="block text-xl text-white hover:text-orange-400 transition">Keywords</a>
+            <a href="/keyword-vs-tool/" class="block text-xl text-white hover:text-orange-400 transition">VS</a>
+            <a href="/news.html" class="block text-xl text-white hover:text-orange-400 transition">News</a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1">
+        <article class="max-w-5xl mx-auto px-6 py-16">
+          <div class="prose prose-invert prose-headings:text-gray-900 dark:prose-headings:text-gray-100 prose-a:text-orange-500 prose-code:text-pink-500 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-900 prose-pre:text-gray-900 dark:prose-pre:text-gray-100 max-w-none">
+            <h1 class="text-4xl md:text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Behind the Scenes: Developing Traffic Torch's AI SEO and UX Tools
+            </h1>
+            <p class="text-center text-gray-500 dark:text-gray-400 mb-16">Dive into the recent enhancements to Traffic Torch, where we've focused on integrating visual infographics to educate users on AI-powered SEO tools, UX health analysis, and competitive optimization strategies.</p>
+
+            <!-- Introduction Section -->
+            <section>
+              <h2 class="text-3xl font-bold mb-6">Introduction to Recent Developments</h2>
+              <p class="mb-6">At Traffic Torch, we're committed to providing instant 360° SEO and UX health score analysis with AI-generated insights and fixes. Recently, we've enhanced our platform by adding epic infographic banners to the homepage and each tool page. These visuals not only make the site more engaging but also help users quickly grasp key concepts in SEO optimization, user experience audits, and competitive gap analysis. Built with modern web standards, these updates ensure mobile-friendliness, fast loading, and compatibility with day/night modes.</p>
+              <p class="mb-6">In this post, we'll walk through each section, highlighting how these AI SEO tools empower website owners to improve rankings and reduce bounce rates.</p>
+            </section>
+
+            <!-- Homepage Section -->
+            <section class="mt-12">
+              <h2 class="text-3xl font-bold mb-6">Homepage: Your Gateway to AI-Powered SEO and UX Insights</h2>
+              <p class="mb-6">The Traffic Torch homepage serves as the central hub for instant SEO health scores and UX analysis. With AI-driven competitive gaps and predictive fixes, it's designed to give users a comprehensive overview at a glance. The new infographic banner visually represents this 360° approach, making it easier to understand how our tools integrate for optimal results.</p>
+              <div class="bottom-banner" aria-label="Homepage infographic">
+                <picture>
+                  <img src="/images/tool-banners/homepage-infographic.webp" alt="Traffic Torch Homepage - AI-powered instant 360° SEO and UX health score analysis with competitive gaps and optimization insights" width="1280" height="400" loading="lazy" decoding="async">
+                </picture>
+              </div>
+            </section>
+
+            <!-- Quit Risk Tool Section -->
+            <section class="mt-12">
+              <h2 class="text-3xl font-bold mb-6">Quit Risk Tool: Reducing Bounce Rates with UX Friction Audits</h2>
+              <p class="mb-6">Our Quit Risk Tool analyzes user quit signals and bounce risks using AI-driven insights. It provides optimization recommendations to enhance user retention, making it a must-have for UX health analysis. The infographic banner illustrates key metrics and fixes for better engagement.</p>
+              <div class="bottom-banner" aria-label="Quit Risk Tool infographic">
+                <picture>
+                  <img src="/images/tool-banners/quit-risk-tool-infographic.webp" alt="Traffic Torch Quit Risk Tool - AI-powered bounce rate risk analysis with user quit signals and UX optimization recommendations" width="1200" height="400" loading="lazy" decoding="async">
+                </picture>
+              </div>
+            </section>
+
+            <!-- AI Audit Tool Section -->
+            <section class="mt-12">
+              <h2 class="text-3xl font-bold mb-6">AI Audit Tool: Comprehensive Content and SEO Audits</h2>
+              <p class="mb-6">The AI Audit Tool delivers a full SEO and content audit with health scores and AI-generated improvement suggestions. Ideal for detecting patterns in AI-written content and humanizing it for better search rankings. The banner showcases the audit process visually.</p>
+              <div class="bottom-banner" aria-label="AI Audit Tool infographic">
+                <picture>
+                  <img src="/images/tool-banners/ai-audit-tool-infographic.webp" alt="Traffic Torch AI Audit Tool - Comprehensive AI-powered SEO content audit with health scores and optimization suggestions" width="1280" height="370" loading="lazy" decoding="async">
+                </picture>
+              </div>
+            </section>
+
+            <!-- Keyword Tool Section -->
+            <section class="mt-12">
+              <h2 class="text-3xl font-bold mb-6">Keyword Tool: High-Impact Keyword Discovery</h2>
+              <p class="mb-6">Discover high-opportunity keywords with search volume, difficulty, and intent insights. This tool helps optimize on-page keyword placement for improved SEO performance. The infographic banner highlights density scoring and fixes.</p>
+              <div class="bottom-banner" aria-label="Keyword Tool infographic">
+                <picture>
+                  <img src="/images/tool-banners/keyword-tool-infographic.webp" alt="Traffic Torch Keyword Tool - AI-powered keyword discovery with volume, difficulty, and SEO optimization insights" width="1600" height="500" loading="lazy" decoding="async">
+                </picture>
+              </div>
+            </section>
+
+            <!-- Keyword VS Tool Section -->
+            <section class="mt-12">
+              <h2 class="text-3xl font-bold mb-6">Keyword VS Tool: Competitive Gap Analysis</h2>
+              <p class="mb-6">Perform head-to-head keyword comparisons and uncover competitive gaps with beat strategies. Essential for SEO competitive analysis and ranking improvements. The banner visually compares metrics for easy understanding.</p>
+              <div class="bottom-banner" aria-label="Keyword VS Tool infographic">
+                <picture>
+                  <img src="/images/tool-banners/keyword-vs-tool-infographic.webp" alt="Traffic Torch Keyword VS Tool - AI-powered competitive keyword gap analysis and optimization strategies" width="1280" height="400" loading="lazy" decoding="async">
+                </picture>
+              </div>
+            </section>
+
+            <!-- SEO Intent Tool Section -->
+            <section class="mt-12">
+              <h2 class="text-3xl font-bold mb-6">SEO Intent Tool: Aligning Content with Search Intent</h2>
+              <p class="mb-6">Analyze search intent clusters and optimize content alignment for E-E-A-T compliance. This AI SEO tool ensures your content matches user queries for higher rankings. The infographic banner maps out intent types effectively.</p>
+              <div class="bottom-banner" aria-label="SEO Intent Tool infographic">
+                <picture>
+                  <img src="/images/tool-banners/seo-intent-tool-infographic.webp" alt="Traffic Torch SEO Intent Tool - AI-powered search intent analysis with content alignment and E-E-A-T optimization" width="1160" height="350" loading="lazy" decoding="async">
+                </picture>
+              </div>
+            </section>
+
+            <!-- SEO + UX Tool Section -->
+            <section class="mt-12">
+              <h2 class="text-3xl font-bold mb-6">SEO + UX Tool: Integrated Health Scoring</h2>
+              <p class="mb-6">Combine SEO and user experience audits with mobile-friendly insights and health scores. Perfect for holistic website optimization to boost both rankings and user satisfaction. The banner integrates SEO and UX elements visually.</p>
+              <div class="bottom-banner" aria-label="SEO + UX Tool infographic">
+                <picture>
+                  <img src="/images/tool-banners/seo-ux-tool-infographic.webp" alt="Traffic Torch SEO + UX Tool - AI-powered combined SEO and UX health score analysis with mobile optimization insights" width="1230" height="275" loading="lazy" decoding="async">
+                </picture>
+              </div>
+            </section>
+
+            <!-- AI Search Optimization Tool Section -->
+            <section class="mt-12">
+              <h2 class="text-3xl font-bold mb-6">AI Search Optimization Tool: Future-Proofing for AI Engines</h2>
+              <p class="mb-6">Optimize content for AI-driven search engines like Perplexity, Grok, and generative results. This tool provides insights for adapting to evolving search landscapes. The infographic banner demonstrates optimization flows.</p>
+              <div class="bottom-banner" aria-label="AI Search Optimization Tool infographic">
+                <picture>
+                  <img src="/images/tool-banners/ai-search-optimization-infographic.webp" alt="Traffic Torch AI Search Optimization Tool - AI-powered optimization for generative search engines and content visibility" width="1280" height="360" loading="lazy" decoding="async">
+                </picture>
+              </div>
+            </section>
+
+            <!-- Conclusion Section -->
+            <section class="mt-12">
+              <h2 class="text-3xl font-bold mb-6">Conclusion: Empowering Users with Visual Education</h2>
+              <p class="mb-6">These enhancements, including the integration of infographic banners, make Traffic Torch more educational and user-friendly. By focusing on AI-powered SEO tools and UX analysis, we're helping website owners achieve better rankings and engagement. Try the tools today and see the difference!</p>
+            </section>
+          </div>
+        </article>
+  
+        <!-- Tools Grid (kept on every post for education & navigation) -->
+        <div class="tools-grid max-w-7xl mx-auto px-6 py-16">
+          <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+            <!-- SEO Intent -->
+            <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+                <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+                <h3 class="text-2xl font-bold mb-3">SEO Intent Tool</h3>
+                <p class="text-gray-500">Instant intent matching + E-E-A-T audit + fixes</p>
+              </div>
+            </a>
+            <!-- Ai Search -->
+            <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all">
+                <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+                <h3 class="text-2xl font-bold mb-3">Ai Search Tool</h3>
+                <p class="text-gray-500">Optimize for Perplexity, Grok, Gemini, ChatGPT Search</p>
+              </div>
+            </a>
+            <!-- AI Content -->
+            <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all">
+                <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+                <h3 class="text-2xl font-bold mb-3">AI Content Tool</h3>
+                <p class="text-gray-500">Detect AI patterns + humanize content + forecasts</p>
+              </div>
+            </a>
+            <!-- Quit Risk -->
+            <a href="/quit-risk-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all">
+                <div class="text-emerald-400 text-7xl mb-6 group-hover:animate-bounce">⚡</div>
+                <h3 class="text-2xl font-bold mb-3">Quit Risk Tool</h3>
+                <p class="text-gray-500">UX friction audit + bounce prediction + optimizations</p>
+              </div>
+            </a>
+            <!-- Keywords -->
+            <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+                <div class="text-purple-400 text-7xl mb-6 group-hover:animate-bounce">📝</div>
+                <h3 class="text-2xl font-bold mb-3">Keyword Tool</h3>
+                <p class="text-gray-500">On-page keyword placement score + density fixes</p>
+              </div>
+            </a>
+            <!-- VS -->
+            <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+                <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+                <h3 class="text-2xl font-bold mb-3">VS Tool</h3>
+                <p class="text-gray-500">Competitive keyword gap analysis + beat strategies</p>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- AddToAny BEGIN -->
+        <div style="display: flex; justify-content: center; margin: 30px 0;">
+          <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+            <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+              <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+              <a class="a2a_button_pinterest"></a>
+              <a class="a2a_button_x"></a>
+              <a class="a2a_button_reddit"></a>
+              <a class="a2a_button_facebook"></a>
+              <a class="a2a_button_copy_link"></a>
+            </div>
+            <script defer src="https://static.addtoany.com/menu/page.js"></script>
+          </div>
+        </div>
+        <!-- AddToAny END -->
+
+        <!-- Breadcrumbs - responsive, centered, with proper mobile behavior -->
+        <div class="max-w-5xl mx-auto px-6 py-8">
+          <nav aria-label="breadcrumb" class="text-center">
+            <ol class="inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
+              <li class="flex items-center">
+                <a href="/" class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition">
+                  Traffic Torch
+                </a>
+              </li>
+              <li class="flex items-center">
+                <span class="mx-2 text-gray-400 dark:text-gray-500">/</span>
+                <span class="font-medium text-gray-600 dark:text-gray-300">
+                  <script>
+                    document.write(
+                      document.title
+                        .replace('Traffic Torch – ', '')
+                        .replace(' | Traffic Torch', '')
+                        .replace(' Tool', '')
+                        .trim()
+                    );
+                  </script>
+                </span>
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="border-t border-white/10 mt-1 py-16 bg-white/5 backdrop-blur-xl">
+        <div class="container mx-auto px-6 max-w-6xl">
+          <div class="grid md:grid-cols-4 gap-12 text-center md:text-left">
+            <div>
+              <a href="/" class="block mb-6">
+                <img src="/logo.webp" alt="Traffic Torch" class="w-20 mx-auto md:mx-0 rounded-2xl shadow-2xl">
+              </a>
+              <a href="/" class="block">
+                <h3 class="text-2xl font-black text-orange-500 hover:text-orange-600 transition-all duration-300 inline-flex items-baseline gap-3">
+                  Traffic Torch 🛡️
+                </h3>
+              </a>
+              <p class="text-gray-500 text-sm mt-3 leading-relaxed text-center md:text-left">
+                Ai-Powered SEO & UX Audits<br>
+                Optimize Usability &  Rankings
+              </p>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold mb-6 text-orange-400">Tools</h3>
+              <ul class="space-y-3 text-gray-500">
+                <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+                <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
+                <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a></li>
+                <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
+                <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a></li>
+                <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a></li>
+              </ul>
+            </div>
+             <div>
+              <h3 class="text-xl font-bold mb-6 text-orange-400">Company</h3>
+              <ul class="space-y-3 text-gray-500">
+                <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
+                <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                <li><a href="https://x.com/guitaralize" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">Ylia@X</a></li>
+                <li><a href="https://grok.com/" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">Grok</a></li>
+                <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
+                <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
+              </ul>
+            </div>
+            <div>
+            <h3 class="text-xl font-bold mb-6 text-orange-400 hover:text-orange-300 transition">Traffic Torch</h3>
+            <p class="text-gray-500 text-sm mb-4"><a href="/ai-seo-ux-tools/#seo-tools" class="hover:text-orange-400 transition">SEO Tools 🎯</a></p>
+            <p class="text-gray-500 text-sm mb-4"><a href="/ai-seo-ux-tools/#ux-tools" class="hover:text-orange-400 transition">UX Tools ⚡</a></p>
+            <p class="text-gray-500 text-sm mb-4"><a href="/ai-seo-ux-tools/#ai-tools" class="hover:text-orange-400 transition">Ai Tools 🔍</a></p>
+            <p class="text-gray-500 text-sm mb-4">Built with 🔥</p>
+              <p class="text-gray-500 text-xs mt-4">© Traffic Torch</p>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      <!-- Load JS last for speed -->
+      <script src="/main.js" type="module"></script>
+</body>
+</html>
