@@ -424,143 +424,86 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-<div class="mt-20 py-12 px-6 md:px-12 bg-gradient-to-r from-orange-500 to-pink-600 rounded-3xl shadow-2xl text-white">
-  <div class="max-w-6xl mx-auto">
-    <h2 class="text-5xl md:text-6xl font-black text-center mb-16">Human Score Improvement and Potential Ranking Gains</h2>
-
-    ${(() => {
-      const failingModules = [analysis.moduleScores[0], analysis.moduleScores[1], analysis.moduleScores[2], analysis.moduleScores[3], analysis.moduleScores[4]].filter(s => s < 20).length;
-      const boost = failingModules * 15;
-      const optimizedScore = Math.min(100, yourScore + boost);
-
-      if (failingModules === 0) {
-        return `
-        <div class="text-center space-y-12">
-          <div class="relative w-80 h-80 mx-auto">
-            <svg viewBox="0 0 320 320" class="absolute inset-0 -rotate-90">
-              <circle cx="160" cy="160" r="140" fill="none" stroke="rgba(16,185,129,0.4)" stroke-width="32"/>
-              <circle cx="160" cy="160" r="140" fill="none" stroke="#10b981" stroke-width="28"
-                      stroke-dasharray="880 880" stroke-linecap="round"/>
-            </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <div class="text-9xl mb-4">🎉</div>
-              <div class="text-8xl font-black">${yourScore}</div>
-              <div class="text-3xl opacity-90">Optimal Human Score Achieved</div>
-            </div>
+<div class="max-w-5xl mx-auto mt-20 grid md:grid-cols-2 gap-8">
+  <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
+    <h3 class="text-3xl font-bold text-center mb-8 text-orange-500">Human Score Improvement</h3>
+    <div class="flex justify-center items-baseline gap-4 mb-8">
+      <div class="text-5xl font-black text-gray-500">${yourScore}</div>
+      <div class="text-4xl text-gray-400">→</div>
+      <div class="text-6xl font-black text-green-500">${optimizedScore}</div>
+      <div class="text-2xl text-green-600 font-medium">(${boost > 0 ? '+' + boost : 'Optimal'})</div>
+    </div>
+    ${failingModules === 0 ? `
+      <div class="text-center py-8">
+        <p class="text-4xl mb-4">🎉 Optimal Human Score Achieved!</p>
+        <p class="text-lg text-gray-600 dark:text-gray-400">Your content shows excellent human-like patterns. Focus on building authority with quality backlinks.</p>
+      </div>
+    ` : `
+      <div class="space-y-4">
+        <p class="font-medium text-gray-700 dark:text-gray-300 text-center mb-4">Top priority fixes & estimated impact:</p>
+        ${priorityModules.map(m => `
+          <div class="flex justify-between items-center p-4 bg-orange-50 dark:bg-orange-900/20 rounded-xl">
+            <span class="text-sm md:text-base">${m.name}</span>
+            <span class="font-bold text-orange-600">${m.impact}</span>
           </div>
-          <p class="text-3xl md:text-4xl font-bold max-w-4xl mx-auto">Your content demonstrates excellent human-like quality and is well-positioned for strong search performance</p>
-          <p class="text-xl opacity-90">Consider focusing on off-page factors such as quality backlinks to further enhance authority</p>
-        </div>`;
-      }
-
-      const priorityModules = [
-        {name: 'Perplexity', score: analysis.moduleScores[0], impact: '15–25 points'},
-        {name: 'Burstiness', score: analysis.moduleScores[1], impact: '10–20 points'},
-        {name: 'Repetition', score: analysis.moduleScores[2], impact: '10–20 points'},
-        {name: 'Sentence Length', score: analysis.moduleScores[3], impact: '10–20 points'},
-        {name: 'Vocabulary', score: analysis.moduleScores[4], impact: '15–25 points'}
-      ].filter(m => m.score < 20)
-       .sort((a, b) => a.score - b.score)
-       .slice(0, 3);
-
-      return `
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-        <!-- Left: Score Improvement -->
-        <div class="space-y-8">
-          <h3 class="text-4xl font-black text-center">Human Score Improvement</h3>
-          
-          <div class="flex items-center justify-center gap-8">
-            <div class="text-center">
-              <div class="text-7xl font-black">${yourScore}</div>
-              <p class="text-xl opacity-90">Current Score</p>
-            </div>
-            <div class="text-5xl font-bold">→</div>
-            <div class="text-center">
-              <div class="text-7xl font-black text-green-300">${optimizedScore}</div>
-              <p class="text-xl opacity-90">Projected Score</p>
-            </div>
+        `).join('')}
+      </div>
+    `}
+    <details class="mt-8 text-sm text-gray-600 dark:text-gray-400">
+      <summary class="cursor-pointer font-medium text-orange-500 hover:underline">How We Calculated This</summary>
+      <div class="mt-4 space-y-2">
+        <p>• Perplexity & Vocabulary: High weight (up to 25 points each) – critical for authenticity</p>
+        <p>• Burstiness & Sentence Length: Medium weight (up to 20 points) – improves natural rhythm</p>
+        <p>• Repetition: Medium weight (up to 20 points) – reduces pattern detection</p>
+        <p>• Top-ranking pages typically achieve 85+ human scores</p>
+        <p class="italic">Conservative estimates — actual gains may vary</p>
+      </div>
+    </details>
+  </div>
+  <div class="p-8 bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
+    <h3 class="text-3xl font-bold text-center mb-8">Potential Ranking & Traffic Gains</h3>
+    ${failingModules === 0 ? `
+      <div class="text-center py-12">
+        <p class="text-4xl mb-4">🌟 Elite Human-Like Performance</p>
+        <p class="text-xl">Your page demonstrates strong human patterns. Next step: build topical authority with backlinks and fresh content.</p>
+      </div>
+    ` : `
+      <div class="space-y-8">
+        <div class="flex items-center gap-4">
+          <div class="text-4xl">📈</div>
+          <div class="flex-1">
+            <p class="font-medium">Ranking Position Lift</p>
+            <p class="text-2xl font-bold">5–20 positions potential</p>
           </div>
-
-          <div class="space-y-4">
-            <p class="text-xl font-medium text-center">Top priority fixes and estimated impact:</p>
-            ${priorityModules.map(m => `
-            <div class="bg-white/15 backdrop-blur rounded-xl p-4 text-center">
-              <p class="font-bold">${m.name}</p>
-              <p class="text-lg opacity-90">Potential gain: ${m.impact}</p>
-            </div>`).join('')}
-          </div>
-
-          <details class="bg-white/10 backdrop-blur rounded-xl p-6 cursor-pointer">
-            <summary class="text-xl font-bold mb-4">How We Calculated This</summary>
-            <ul class="space-y-3 text-lg opacity-90 leading-relaxed">
-              <li>• Perplexity & Vocabulary: High weight (up to 25 points each) – critical for authenticity signals</li>
-              <li>• Burstiness & Sentence Length: Medium weight (up to 20 points) – improves readability and flow</li>
-              <li>• Repetition: Medium weight (up to 20 points) – reduces pattern detection risk</li>
-              <li>• Top-ranking pages typically achieve 85+ human scores</li>
-            </ul>
-            <p class="mt-6 text-sm opacity-80">Conservative estimates based on on-page optimization benchmarks. Actual results vary by competition and authority.</p>
-          </details>
         </div>
-
-        <!-- Right: Potential Ranking Gains -->
-        <div class="space-y-8">
-          <h3 class="text-4xl font-black text-center">Potential Ranking Gains</h3>
-          
-          <div class="space-y-8">
-            <div class="flex items-center space-x-6">
-              <div class="text-5xl">📈</div>
-              <div class="flex-1">
-                <p class="text-xl font-bold">Ranking Position Lift</p>
-                <div class="w-full bg-white/20 rounded-full h-8 mt-2">
-                  <div class="bg-green-400 h-8 rounded-full" style="width: ${Math.min(100, (boost / 60) * 100)}%"></div>
-                </div>
-                <p class="text-sm mt-1 opacity-90">Potential improvement of 5–20 positions</p>
-              </div>
-            </div>
-
-            <div class="flex items-center space-x-6">
-              <div class="text-5xl">🚀</div>
-              <div class="flex-1">
-                <p class="text-xl font-bold">Organic Traffic Increase</p>
-                <div class="w-full bg-white/20 rounded-full h-8 mt-2">
-                  <div class="bg-green-400 h-8 rounded-full" style="width: ${Math.min(100, (boost / 60) * 100)}%"></div>
-                </div>
-                <p class="text-sm mt-1 opacity-90">Estimated +15–40% from higher rankings</p>
-              </div>
-            </div>
-
-            <div class="flex items-center space-x-6">
-              <div class="text-5xl">👥</div>
-              <div class="flex-1">
-                <p class="text-xl font-bold">User Engagement Boost</p>
-                <div class="w-full bg-white/20 rounded-full h-8 mt-2">
-                  <div class="bg-green-400 h-8 rounded-full" style="width: ${Math.min(100, (boost / 60) * 100)}%"></div>
-                </div>
-                <p class="text-sm mt-1 opacity-90">Better dwell time and lower bounce rates</p>
-              </div>
-            </div>
-
-            <div class="flex items-center space-x-6">
-              <div class="text-5xl">🔍</div>
-              <div class="flex-1">
-                <p class="text-xl font-bold">Search Visibility Enhancement</p>
-                <div class="w-full bg-white/20 rounded-full h-8 mt-2">
-                  <div class="bg-green-400 h-8 rounded-full" style="width: ${Math.min(100, (boost / 60) * 100)}%"></div>
-                </div>
-                <p class="text-sm mt-1 opacity-90">Stronger presence in competitive queries</p>
-              </div>
-            </div>
+        <div class="flex items-center gap-4">
+          <div class="text-4xl">🚀</div>
+          <div class="flex-1">
+            <p class="font-medium">Organic Traffic Increase</p>
+            <p class="text-2xl font-bold">+15–40% potential</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="text-4xl">👥</div>
+          <div class="flex-1">
+            <p class="font-medium">User Engagement Boost</p>
+            <p class="text-2xl font-bold">Higher dwell time & lower bounce</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="text-4xl">🔍</div>
+          <div class="flex-1">
+            <p class="font-medium">Search Visibility Enhancement</p>
+            <p class="text-2xl font-bold">Stronger presence in queries</p>
           </div>
         </div>
       </div>
-
-      <div class="mt-12 text-center space-y-4 text-lg opacity-90">
-        <p>Conservative estimates based on on-page optimization benchmarks</p>
-        <p>Changes typically visible within 1–4 weeks after re-crawl</p>
-        <p>Actual results depend on competition, domain authority, and off-page factors</p>
-      </div>
-      `;
-    })()}
+    `}
+    <div class="mt-10 text-sm space-y-2 opacity-90">
+      <p>Conservative estimates based on on-page human pattern benchmarks.</p>
+      <p>Improvements typically visible within 1–4 weeks after re-crawl.</p>
+      <p>Actual results depend on competition, domain authority, and off-page factors.</p>
+    </div>
   </div>
 </div>
             
