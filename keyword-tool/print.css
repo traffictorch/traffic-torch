@@ -93,7 +93,19 @@
   .max-w-5xl {
     max-width: none !important;
   }
-} 
+
+  /* Full-width report in PDF */
+  .max-w-6xl,
+  .max-w-5xl,
+  .max-w-4xl,
+  .container,
+  .mx-auto {
+    max-width: none !important;
+    width: 100% !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    box-sizing: border-box;
+  }
 
 
   /* Hide general expanding accordions (e.g., "How SEO Intent Analyzer Works?") and checklists */

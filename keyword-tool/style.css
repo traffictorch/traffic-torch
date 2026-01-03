@@ -274,19 +274,21 @@ h4 {
 
 
 
-/* Fix long text wrapping in top priority fixes on small screens */
-@media (max-width: 640px) {
-  .p-8.bg-white.dark\\:bg-gray-900 > div > .flex-1 > div > h4 {
-    font-size: 1.125rem; /* slightly smaller title */
-    line-height: 1.4;
+/* Fix text wrapping in Ranking Potential Improvement fix boxes on small screens */
+@media (max-width: 768px) {
+  .bg-white.dark\\:bg-gray-900 .border-l-8 > .flex > .flex-1 > div > h4,
+  .bg-white.dark\\:bg-gray-900 .border-l-8 > .flex > .flex-1 > div > p {
     word-break: break-word;
+    hyphens: auto;
+    line-height: 1.6;
   }
-  .p-8.bg-white.dark\\:bg-gray-900 > div > .flex-1 > div > p {
-    line-height: 1.5;
-    word-break: break-word;
+
+  .bg-white.dark\\:bg-gray-900 .border-l-8 > .flex > .flex-1 > div > h4 {
+    font-size: 1.125rem; /* text-lg */
   }
-  .p-8.bg-white.dark\\:bg-gray-900 > div {
-    padding-top: 1.25rem;
-    padding-bottom: 1.25rem;
+
+  .bg-white.dark\\:bg-gray-900 .border-l-8 > .flex > .flex-1 > div {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
