@@ -202,7 +202,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const mainGradeColor = getGradeColor(yourScore / 10);
       const verdict = yourScore >= 80 ? 'Likely Human' : yourScore >= 50 ? 'Moderate AI Patterns' : 'Very Likely AI';
       const forecast = yourScore >= 80 ? 'Top 3 Potential' : yourScore >= 60 ? 'Top 10 Possible' : yourScore >= 40 ? 'Page 1 Possible' : 'Page 2+';
-
+      const failingModules = [analysis.moduleScores[0], analysis.moduleScores[1], analysis.moduleScores[2], analysis.moduleScores[3], analysis.moduleScores[4]].filter(s => s < 20).length;
+      const boost = failingModules * 15;
+      const optimizedScore = Math.min(100, yourScore + boost);
       const elapsed = Date.now() - startTime;
       const remaining = Math.max(0, minLoadTime - elapsed);
 
