@@ -31,4 +31,4 @@ If the report is valid, we will work to fix it quickly, coordinate disclosure if
 
 We follow responsible disclosure practices and appreciate your patience during investigation and remediation.
 
-Thank you again for contributing to the security of Traffic Torch!
+
