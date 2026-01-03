@@ -269,7 +269,7 @@ h4 {
 .dark .text-left p,
 .dark .text-left span,
 .dark .text-sm {
-  color: #e5e7eb; /* gray-200 dark mode */
+  color: #d9dcdf; /* gray-200 dark mode */
 }
 
 /* Bold labels inside details (e.g., "Matching alts") */
