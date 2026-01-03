@@ -430,7 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="flex justify-center items-baseline gap-4 mb-8">
       <div class="text-5xl font-black text-gray-500">${yourScore}</div>
       <div class="text-4xl text-gray-400">→</div>
-      <div class="text-6xl font-black text-green-500">${optimizedScore}</div>
+      <div class="text-6xl font-black text-green-500">${Math.min(100, yourScore + boost)}</div>
       <div class="text-2xl text-green-600 font-medium">(${boost > 0 ? '+' + boost : 'Optimal'})</div>
     </div>
     ${failingModules === 0 ? `
@@ -441,7 +441,16 @@ document.addEventListener('DOMContentLoaded', () => {
     ` : `
       <div class="space-y-4">
         <p class="font-medium text-gray-700 dark:text-gray-300 text-center mb-4">Top priority fixes & estimated impact:</p>
-        ${priorityModules.map(m => `
+        ${[
+          {name: 'Perplexity', score: analysis.moduleScores[0], impact: '15–25 points'},
+          {name: 'Burstiness', score: analysis.moduleScores[1], impact: '10–20 points'},
+          {name: 'Repetition', score: analysis.moduleScores[2], impact: '10–20 points'},
+          {name: 'Sentence Length', score: analysis.moduleScores[3], impact: '10–20 points'},
+          {name: 'Vocabulary', score: analysis.moduleScores[4], impact: '15–25 points'}
+        ].filter(m => m.score < 20)
+         .sort((a, b) => a.score - b.score)
+         .slice(0, 3)
+         .map(m => `
           <div class="flex justify-between items-center p-4 bg-orange-50 dark:bg-orange-900/20 rounded-xl">
             <span class="text-sm md:text-base">${m.name}</span>
             <span class="font-bold text-orange-600">${m.impact}</span>
