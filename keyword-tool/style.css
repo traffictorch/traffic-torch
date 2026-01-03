@@ -282,3 +282,36 @@ h4 {
 .dark .text-left span.font-bold {
   color: #e5e7eb; /* gray-200 dark */
 }
+
+
+
+/* Fix overlapping text in top priority fixes on mobile */
+@media (max-width: 640px) {
+  .border-l-8.pl-6 .flex-1 > div > h4,
+  .border-l-8.pl-6 .flex-1 > div > p {
+    word-break: break-word;
+    hyphens: auto;
+    line-height: 1.5;
+  }
+
+  .border-l-8.pl-6 .flex-1 > div > h4 {
+    font-size: 1.125rem; /* text-lg instead of text-2xl on mobile */
+    margin-bottom: 0.5rem;
+  }
+
+  .border-l-8.pl-6 .flex-1 > div > p {
+    font-size: 0.875rem; /* text-sm */
+  }
+
+  /* Add a bit more vertical space inside each fix box */
+  .p-8.space-y-8 > div {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .border-l-8.pl-6 .flex-1 > div > h4 {
+    font-size: 1rem;
+  }
+}
