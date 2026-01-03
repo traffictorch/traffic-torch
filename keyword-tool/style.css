@@ -107,14 +107,7 @@ body { transition: background-color 0.3s ease; }
 .dark .text-orange-300 {
   color: #fbbf24 !important;
 }
-.dark .text-sm.italic {
-  color: #939699 !important; /* Softer gray for note */
-}
 
-/* Small metric details toggle text */
-.dark .text-sm {
-  color: #939699 !important;
-}
 
 
 
@@ -266,11 +259,7 @@ h4 {
   color: #1f2937; /* gray-800 light mode */
 }
 
-.dark .text-left p,
-.dark .text-left span,
-.dark .text-sm {
-  color: #d9dcdf; /* gray-200 dark mode */
-}
+
 
 /* Bold labels inside details (e.g., "Matching alts") */
 .text-left p strong,
