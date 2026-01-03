@@ -256,3 +256,14 @@ html, body {
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
 }
+
+
+
+/* Module titles (h4) - consistent day/night mode */
+h4 {
+  color: #1f2937; /* gray-800 */
+}
+
+.dark h4 {
+  color: #e5e7eb; /* gray-200 */
+}
