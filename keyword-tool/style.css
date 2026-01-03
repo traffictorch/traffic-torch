@@ -97,13 +97,6 @@ body { transition: background-color 0.3s ease; }
 
 
 
-
-
-/* Ensure detail paragraphs are readable in dark mode */
-.dark .text-left p {
-  color: #e5e7eb !important; /* Light gray text for content */
-}
-
 /* Predictive Rank Forecast info text in dark mode */
 .dark .text-blue-300 {
   color: #93c5fd !important;
@@ -149,9 +142,6 @@ h2 + p {
 /* Detail paragraphs under labels - readable gray */
 .text-left p {
   color: #4b5563; /* gray-600 light mode */
-}
-.dark .text-left p {
-  color: #1e1f20 !important; /* gray-300 dark mode */
 }
 
 /* Predictive Rank Forecast info text */
@@ -266,4 +256,29 @@ h4 {
 
 .dark h4 {
   color: #e5e7eb; /* gray-200 */
+}
+
+
+/* Module details text - consistent day/night mode (gray-800 light / gray-200 dark) */
+.text-left p,
+.text-left span,
+.text-sm {
+  color: #1f2937; /* gray-800 light mode */
+}
+
+.dark .text-left p,
+.dark .text-left span,
+.dark .text-sm {
+  color: #e5e7eb; /* gray-200 dark mode */
+}
+
+/* Bold labels inside details (e.g., "Matching alts") */
+.text-left p strong,
+.text-left span.font-bold {
+  color: #1f2937; /* gray-800 light */
+}
+
+.dark .text-left p strong,
+.dark .text-left span.font-bold {
+  color: #e5e7eb; /* gray-200 dark */
 }
