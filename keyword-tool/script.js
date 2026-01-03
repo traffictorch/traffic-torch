@@ -365,38 +365,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 <!-- Ranking Potential & Expected Gains -->
-  <!-- Left: Ranking Potential Improvement -->
-  <div class="p-8 sm:p-12 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-3xl shadow-2xl space-y-8 flex flex-col">
-    <h3 class="text-3xl sm:text-4xl font-black text-center">Ranking Potential Improvement</h3>
-    <div class="flex flex-wrap justify-center gap-6 sm:gap-8 text-2xl sm:text-3xl font-black items-end">
+<div class="grid md:grid-cols-2 gap-8 my-20 max-w-6xl mx-auto">
+  <div class="p-12 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-3xl shadow-2xl space-y-8">
+    <h3 class="text-4xl font-black text-center">Ranking Potential Improvement</h3>
+    <div class="flex justify-center gap-8 text-3xl font-black">
       <div class="text-center">
-        <div class="px-5 py-3 bg-white/20 rounded-xl text-base sm:text-2xl break-words">${levels[currentLevel]}</div>
-        <p class="text-sm mt-2">Current</p>
+        <div class="px-6 py-3 bg-white/20 rounded-xl">${levels[currentLevel]}</div>
+        <p class="text-sm mt-2 opacity-90">Current</p>
       </div>
-      <div class="text-4xl sm:text-5xl">→</div>
+      <div class="self-center text-5xl">→</div>
       <div class="text-center">
-        <div class="px-5 py-3 bg-white/30 rounded-xl text-base sm:text-2xl break-words">${levels[projectedLevel]}</div>
-        <p class="text-sm mt-2">Projected</p>
+        <div class="px-6 py-3 bg-white/30 rounded-xl">${levels[projectedLevel]}</div>
+        <p class="text-sm mt-2 opacity-90">Projected</p>
       </div>
     </div>
     ${topPriorityFixes.length ? `
-      <div class="space-y-4 text-left text-sm sm:text-base">
+      <div class="space-y-4 text-left">
         ${topPriorityFixes.map(fix => {
           const impact = fix.module === 'Meta Title & Desc' ? 'Boosts click-through rate and relevance signal' :
                          fix.module === 'Content Density' ? 'Improves topical authority and depth' :
                          fix.module === 'H1 & Headings' ? 'Clarifies page topic to search engines' :
                          'Strengthens relevance and visibility';
-          return `<p class="flex gap-3"><span class="text-xl sm:text-2xl">✓</span> ${fix.issue}: ${impact}</p>`;
+          return `<p class="flex gap-3"><span class="text-2xl">✓</span> ${fix.issue}: ${impact}</p>`;
         }).join('')}
       </div>
     ` : ''}
-    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mx-auto block px-6 sm:px-8 py-3 bg-white/20 rounded-full hover:bg-white/30 text-base sm:text-lg font-bold">
+    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mx-auto block px-8 py-3 bg-white/20 rounded-full hover:bg-white/30 text-lg font-bold">
       How We Calculated This
     </button>
     <div class="hidden text-sm space-y-3">
       <p>Based on on-page factors proven to correlate with higher rankings in large-scale studies. Each implemented fix typically moves pages up in SERPs.</p>
     </div>
-    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mx-auto block px-6 sm:px-8 py-3 bg-white/20 rounded-full hover:bg-white/30 text-base sm:text-lg font-bold">
+    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mx-auto block px-8 py-3 bg-white/20 rounded-full hover:bg-white/30 text-lg font-bold">
       Potential Level Definitions
     </button>
     <div class="hidden text-sm space-y-3">
@@ -406,20 +406,15 @@ document.addEventListener('DOMContentLoaded', () => {
          <strong>Top 3 Potential</strong>: Excellent on-page setup</p>
     </div>
   </div>
-
-  <!-- Right: Expected Performance Gains -->
-  <div class="p-8 sm:p-12 bg-gradient-to-br from-green-500 to-teal-600 text-white rounded-3xl shadow-2xl space-y-8">
-    <h3 class="text-3xl sm:text-4xl font-black text-center">Expected Performance Gains</h3>
+  <div class="p-12 bg-gradient-to-br from-green-500 to-teal-600 text-white rounded-3xl shadow-2xl space-y-8">
+    <h3 class="text-4xl font-black text-center">Expected Performance Gains</h3>
     <div class="space-y-6">
       <div class="flex items-center gap-4">
         <div class="text-4xl">🖱️</div>
         <div class="flex-1">
           <p class="font-bold">Click-Through Rate (CTR)</p>
-          <div class="w-full bg-white/30 rounded-full h-8 overflow-hidden">
-            <div class="h-full rounded-full text-right pr-3 flex items-center justify-end font-bold transition-all duration-700"
-                 style="width: ${hasMetaOrContent ? 75 : 50}%; background-color: ${hasMetaOrContent ? '#86efac' : '#fca5a5'};">
-              +${hasMetaOrContent ? '25-40' : '15-30'}%
-            </div>
+          <div class="w-full bg-white/30 rounded-full h-8">
+            <div class="bg-white h-8 rounded-full text-right pr-3 flex items-center justify-end font-bold" style="width: ${hasMetaOrContent ? 75 : 50}%">+${hasMetaOrContent ? '25-40' : '15-30'}%</div>
           </div>
         </div>
       </div>
@@ -427,11 +422,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="text-4xl">📈</div>
         <div class="flex-1">
           <p class="font-bold">Impressions</p>
-          <div class="w-full bg-white/30 rounded-full h-8 overflow-hidden">
-            <div class="h-full rounded-full text-right pr-3 flex items-center justify-end font-bold transition-all duration-700"
-                 style="width: ${topPriorityFixes.length * 20}%; background-color: ${topPriorityFixes.length >= 2 ? '#86efac' : topPriorityFixes.length === 1 ? '#fdba74' : '#fca5a5'};">
-              +${topPriorityFixes.length * 15}-${topPriorityFixes.length * 30}%
-            </div>
+          <div class="w-full bg-white/30 rounded-full h-8">
+            <div class="bg-white h-8 rounded-full text-right pr-3 flex items-center justify-end font-bold" style="width: ${topPriorityFixes.length * 20}%">+${topPriorityFixes.length * 15}-${topPriorityFixes.length * 30}%</div>
           </div>
         </div>
       </div>
@@ -439,11 +431,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="text-4xl">📊</div>
         <div class="flex-1">
           <p class="font-bold">Average Position</p>
-          <div class="w-full bg-white/30 rounded-full h-8 overflow-hidden">
-            <div class="h-full rounded-full text-right pr-3 flex items-center justify-end font-bold transition-all duration-700"
-                 style="width: ${hasMetaOrContent ? 70 : 55}%; background-color: ${hasMetaOrContent ? '#86efac' : '#fca5a5'};">
-              ↑ ${hasMetaOrContent ? '4-8' : '2-5'} spots
-            </div>
+          <div class="w-full bg-white/30 rounded-full h-8">
+            <div class="bg-white h-8 rounded-full text-right pr-3 flex items-center justify-end font-bold" style="width: ${hasMetaOrContent ? 70 : 55}%">↑ ${hasMetaOrContent ? '4-8' : '2-5'} spots</div>
           </div>
         </div>
       </div>
@@ -451,11 +440,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="text-4xl">🚀</div>
         <div class="flex-1">
           <p class="font-bold">Organic Traffic</p>
-          <div class="w-full bg-white/30 rounded-full h-8 overflow-hidden">
-            <div class="h-full rounded-full text-right pr-3 flex items-center justify-end font-bold transition-all duration-700"
-                 style="width: ${topPriorityFixes.length * 25}%; background-color: ${topPriorityFixes.length >= 2 ? '#86efac' : topPriorityFixes.length === 1 ? '#fdba74' : '#fca5a5'};">
-              +${topPriorityFixes.length * 20}-${topPriorityFixes.length * 45}%
-            </div>
+          <div class="w-full bg-white/30 rounded-full h-8">
+            <div class="bg-white h-8 rounded-full text-right pr-3 flex items-center justify-end font-bold" style="width: ${topPriorityFixes.length * 25}%">+${topPriorityFixes.length * 20}-${topPriorityFixes.length * 45}%</div>
           </div>
         </div>
       </div>
@@ -465,6 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <p>Track in Google Search Console (Impressions, CTR, Average Position). Expect movement within 7–30 days after indexing.</p>
     </div>
   </div>
+</div>
 
 
 
