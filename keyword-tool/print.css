@@ -134,16 +134,3 @@
   }
   
   
-  @media print {
-  /* Full page width for report - ONLY change */
-  .max-w-6xl,
-  .max-w-5xl,
-  .max-w-4xl,
-  .container {
-    max-width: none !important;
-    width: 100% !important;
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
-    box-sizing: border-box;
-  }
-}
