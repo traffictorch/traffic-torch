@@ -118,42 +118,50 @@ details > div,
 }
 
 
-<!-- Bottom Page Banner -->
+/* Bottom Banner – Mobile-friendly, 2rem top/bottom padding, no CLS */
 .bottom-banner {
   width: 100%;
-  margin: 3rem auto 0;
+  margin: 2rem auto 2rem;          /* 2rem top + 2rem bottom */
   padding: 0;
   text-align: center;
   overflow: hidden;
-  border-radius: 12px; /* Optional subtle rounding for bottom placement */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Optional subtle elevation */
+  max-width: 1200px;               /* Keeps it from stretching too wide on desktop */
 }
 
 .bottom-banner picture {
   display: block;
-  position: relative;
   width: 100%;
-  max-width: 1200px;
+  position: relative;
   margin: 0 auto;
 }
 
 .bottom-banner img {
   width: 100%;
   height: auto;
+  display: block;
   object-fit: cover;
   object-position: center;
-  display: block;
-  border-radius: 12px;
+  border-radius: 12px;             /* Optional subtle rounding */
 }
 
-/* Mobile aspect ratio box */
+/* Mobile: use aspect-ratio padding to prevent layout shift */
 @media (max-width: 767px) {
   .bottom-banner picture {
-    padding-top: 31.25%; /* Default safe ratio */
+    padding-top: var(--banner-ratio, 31.25%); /* fallback 1280×400 */
   }
   .bottom-banner img {
     position: absolute;
     top: 0;
     left: 0;
+  }
+}
+
+/* Desktop: no padding-top needed */
+@media (min-width: 768px) {
+  .bottom-banner picture {
+    padding-top: 0;
+  }
+  .bottom-banner img {
+    position: static;
   }
 }
