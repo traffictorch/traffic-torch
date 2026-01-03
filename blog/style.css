@@ -19,3 +19,9 @@ main {
 @media (max-width: 768px) {
     main { padding-top: 2rem; padding-bottom: 2rem; }
 }
+
+
+article img[alt*="illuminating SEO dashboard"] {
+  max-height: 80vh;
+  border-radius: 24px;
+}
