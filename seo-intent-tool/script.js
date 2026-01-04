@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
   function cleanUrl(u) {
     const trimmed = u.trim();
     if (!trimmed) return '';
@@ -13,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const path = trimmed.slice(host.length);
     return 'https://' + host + path;
   }
-
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const inputValue = document.getElementById('url-input').value;
@@ -21,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Input:', inputValue);
     console.log('Cleaned URL sent to proxy:', url);
     if (!url) return;
-
     results.innerHTML = `
       <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 mt-2">
         <div class="relative w-20 h-20">
@@ -36,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     results.classList.remove('hidden');
     const progressText = document.getElementById('progress-text');
-
     try {
       progressText.textContent = "Analyzing Content Depth...";
       await sleep(800);
@@ -44,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) throw new Error('Page not reachable – check URL');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
-
       function getVisibleText(root) {
         let text = '';
         const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
@@ -62,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return text.trim();
       }
-
       const text = getVisibleText(doc.body) || '';
       const cleanedText = text.replace(/\s+/g, ' ').trim();
       const words = cleanedText ? cleanedText.split(' ').filter(w => w.length > 0).length : 0;
@@ -72,16 +66,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return acc + Math.max(vowelGroups, 1);
       }, 0) : 0;
       const readability = Math.round(206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words));
-
       progressText.textContent = "Analyzing E-E-A-T Signals...";
       await sleep(800);
-
       // === EXPERIENCE ===
       const firstPersonCount = (cleanedText.match(/\b(I|we|my|our|I've|we've|me|us|myself|ourselves)\b/gi) || []).length;
-      const anecdotePhrases = (cleanedText.match(/\b(in my experience|I tested|we found that|from my trials|I tried|we tried|my results|our case study)\b/gi) || []).length;
-      const timelineMentions = (cleanedText.match(/\b(last year|in 20\d{2}|this year|over the past \d+|since \d{4})\b.*\b(I|we)\b/gi) || []).length;
+      const anecdotePhrases = (cleanedText.match(/\b(in my experience|I tested|we found that|from my trials|I tried|we tried|my results|our case study|in practice|hands-on|real-world|based on my|after testing|client case|personal review)\b/gi) || []).length;
+      const timelineMentions = (cleanedText.match(/\b(last year|in 20\d{2}|this year|over the past \d+|since \d{4}|in \d{4}|during \d{4}|recently|within the last|for \d+ years?|after \d+ months?)\b.*\b(I|we|my|our)\b/gi) || []).length;
       const personalMedia = !!doc.querySelector('img[alt*="my" i], img[alt*="our" i], video caption, figure figcaption');
-
       const experienceMetrics = {
         firstPerson: firstPersonCount > 15 ? 100 : firstPersonCount > 5 ? 60 : 20,
         anecdotes: anecdotePhrases > 2 ? 100 : anecdotePhrases > 0 ? 60 : 20,
@@ -89,19 +80,16 @@ document.addEventListener('DOMContentLoaded', () => {
         personalMedia: personalMedia ? 100 : 20
       };
       const experienceScore = Math.round(Object.values(experienceMetrics).reduce((a, b) => a + b) / 4);
-
       const failedExperience = [];
       if (experienceMetrics.firstPerson < 80) failedExperience.push("Add more first-person language (“I/we/my/our”) throughout the content");
       if (experienceMetrics.anecdotes < 80) failedExperience.push("Include personal anecdotes or real-world examples");
       if (experienceMetrics.timelines < 80) failedExperience.push("Mention specific timelines or dates from your experience");
       if (experienceMetrics.personalMedia < 80) failedExperience.push("Add original photos/videos with personal captions");
-
       // === EXPERTISE ===
-      const hasAuthorByline = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
-      const hasAuthorBio = !!doc.querySelector('.author-bio, .bio, [class*="bio" i], .about-author, .author-description, .author-box');
-      const credentialKeywords = (cleanedText.match(/\b(PhD|MD|doctor|certified|licensed|years? of experience|expert in|specialist|award-winning|published in|fellow|board-certified)\b/gi) || []).length;
+      const hasAuthorByline = !!doc.querySelector('meta[name="author" i], meta[property="article:author"], [rel="author"], .author, .byline, .written-by, [class*="author" i], [itemprop="author"], [class*="byline" i], .post-author, .entry-author');
+      const hasAuthorBio = !!doc.querySelector('.author-bio, .bio, [class*="bio" i], .about-author, .author-description, .author-box, .author-info, .author-details, .writer-bio, .contributor-bio');
+      const credentialKeywords = (cleanedText.match(/\b(PhD|MD|doctor|certified|licensed|years? of experience|expert in|specialist|award-winning|published in|fellow|board-certified|certificate|diploma|qualification|accredited|professional membership|industry leader|renowned|distinguished|master's degree|bachelor's degree)\b/gi) || []).length;
       const hasCitations = !!doc.querySelector('cite, .references, .sources, a[href*="doi.org"], a[href*="pubmed"], a[href*="researchgate"], footer a[href*="/references"]');
-
       const expertiseMetrics = {
         byline: hasAuthorByline ? 100 : 20,
         bio: hasAuthorBio ? 100 : 20,
@@ -109,13 +97,11 @@ document.addEventListener('DOMContentLoaded', () => {
         citations: hasCitations ? 100 : 20
       };
       const expertiseScore = Math.round(Object.values(expertiseMetrics).reduce((a, b) => a + b) / 4);
-
       const failedExpertise = [];
       if (!hasAuthorByline) failedExpertise.push("Add a visible author byline/name");
       if (!hasAuthorBio) failedExpertise.push("Create an author bio section with photo and background");
       if (credentialKeywords <= 2) failedExpertise.push("Mention relevant qualifications, certifications, or years of experience");
       if (!hasCitations) failedExpertise.push("Include citations or links to supporting sources");
-
       // === AUTHORITATIVENESS ===
       const schemaTypes = [];
       doc.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
@@ -125,23 +111,20 @@ document.addEventListener('DOMContentLoaded', () => {
           schemaTypes.push(...types.filter(Boolean));
         } catch {}
       });
-      const hasAwards = !!cleanedText.match(/\b(award|winner|featured in|recognized by|endorsed by|best \d{4})\b/gi);
+      const hasAwards = !!cleanedText.match(/\b(award|winner|featured in|recognized by|endorsed by|best \d{4}|honored|accolade|prize|nominee|finalist|top \d+|ranked|certified by|accredited by)\b/gi);
       const aboutLinkElements = doc.querySelectorAll('a[href*="/about" i], a[href*="/team" i]');
       const hasAboutLinks = aboutLinkElements.length > 0 ||
         Array.from(doc.querySelectorAll('nav a')).some(a => a.textContent.toLowerCase().includes('about'));
-
       const authoritativenessMetrics = {
         schema: schemaTypes.length > 1 ? 100 : schemaTypes.length > 0 ? 70 : 20,
         awards: hasAwards ? 100 : 20,
         aboutLinks: hasAboutLinks ? 100 : 20
       };
       const authoritativenessScore = Math.round(Object.values(authoritativenessMetrics).reduce((a, b) => a + b) / 3);
-
       const failedAuthoritativeness = [];
       if (schemaTypes.length < 2) failedAuthoritativeness.push("Implement relevant JSON-LD schema (Article, Person, Organization)");
       if (!hasAwards) failedAuthoritativeness.push("Mention any awards, endorsements, or media features");
       if (!hasAboutLinks) failedAuthoritativeness.push("Add links to an About or Team page");
-
       // === TRUSTWORTHINESS ===
       const isHttps = url.startsWith('https');
       const contactLinkElements = doc.querySelectorAll('a[href*="/contact" i], a[href*="mailto:" i], a[href*="tel:" i]');
@@ -154,8 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
         /privacy|terms/i.test(el.textContent)
       );
       const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
-      const hasUpdateDate = !!doc.querySelector('time[datetime], .updated, .last-modified, meta[name="date"]');
-
+      const hasUpdateDate = !!doc.querySelector('time[datetime], .updated, .last-modified, .date-updated, meta[name="date" i], meta[name="last-modified" i], meta[property="article:modified_time"], meta[property="og:updated_time"], meta[name="revised"]');
       const trustworthinessMetrics = {
         https: isHttps ? 100 : 20,
         contact: hasContact ? 100 : 20,
@@ -163,13 +145,11 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDate: hasUpdateDate ? 100 : 20
       };
       const trustworthinessScore = Math.round(Object.values(trustworthinessMetrics).reduce((a, b) => a + b) / 4);
-
       const failedTrustworthiness = [];
       if (!isHttps) failedTrustworthiness.push("Switch to HTTPS");
       if (!hasContact) failedTrustworthiness.push("Add a visible Contact page or contact details");
       if (!hasPolicies) failedTrustworthiness.push("Include links to Privacy Policy and/or Terms");
       if (!hasUpdateDate) failedTrustworthiness.push("Display a last updated date");
-
       // Intent Analysis
       progressText.textContent = "Analyzing Search Intent...";
       await sleep(800);
@@ -180,12 +160,10 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (/how|what|why|guide|tutorial|step|learn|explain|best way/i.test(titleLower)) { intent = 'Informational'; confidence = 94; }
       else if (/near me|location|store|city|local|hours|map|address/i.test(titleLower)) { intent = 'Local'; confidence = 87; }
       else if (/sign up|login|purchase|buy now|order|checkout|book/i.test(titleLower)) { intent = 'Transactional'; confidence = 91; }
-
       const eeatAvg = Math.round((experienceScore + expertiseScore + authoritativenessScore + trustworthinessScore) / 4);
       const depthScore = words > 2000 ? 95 : words > 1200 ? 82 : words > 700 ? 65 : 35;
       const readScore = readability > 70 ? 90 : readability > 50 ? 75 : 45;
       const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length * 8) / 5);
-
       // === Score Improvement & Potential Gains Calculation ===
       const currentScore = overall;
       let projectedScore = currentScore;
@@ -215,10 +193,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const trafficUplift = isOptimal ? 0 : Math.round(scoreDelta * 1.8);
       const ctrBoost = isOptimal ? 0 : Math.min(30, Math.round(scoreDelta * 0.8));
       const rankingLift = isOptimal ? "Already strong" : currentScore < 60 ? "Page 2+ → Page 1 potential" : "Top 20 → Top 10 possible";
-
       progressText.textContent = "Generating Report...";
       await sleep(600);
-
       results.innerHTML = `
 <!-- Big Score Circle -->
 <div class="flex justify-center my-12 px-4">
@@ -470,7 +446,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>` : ''}
 </div>
-
 <!-- Score Improvement & Potential Ranking Gains -->
 <div class="max-w-5xl mx-auto mt-20 grid md:grid-cols-2 gap-8">
   <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
@@ -554,9 +529,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
-
-
-
 <!-- PDF Button -->
 <div class="text-center my-16">
   <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
@@ -565,7 +537,6 @@ document.addEventListener('DOMContentLoaded', () => {
   </button>
 </div>
       `;
-
       // Event delegation for fixes toggles (fixes the ReferenceError)
       results.addEventListener('click', (e) => {
         if (e.target.matches('.fixes-toggle')) {
@@ -581,21 +552,18 @@ document.addEventListener('DOMContentLoaded', () => {
           e.target.closest('.score-card').querySelector('.full-details').classList.toggle('hidden');
         }
       });
-
     } catch (err) {
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
     }
-    
-    
-    
+   
+   
+   
       // Clean URL for PDF cover: domain on first line, path on second
       let fullUrl = document.getElementById('url-input').value.trim();
       let displayUrl = 'traffictorch.net'; // fallback
-
       if (fullUrl) {
         // Remove protocol and www
         let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
-
         // Split into domain and path
         const firstSlash = cleaned.indexOf('/');
         if (firstSlash !== -1) {
@@ -606,10 +574,8 @@ document.addEventListener('DOMContentLoaded', () => {
           displayUrl = cleaned;
         }
       }
-
       document.body.setAttribute('data-url', displayUrl);
- 
-    
-    
+   
+   
   });
 });
