@@ -467,6 +467,7 @@ const initTool = (form, results, progressContainer) => {
     <div class="text-2xl font-bold $$ {grade.textColor}"> $${m.score}</div>
   </div>
 </div>
+        </div>
         <p class="mt-4 text-lg font-medium text-center text-gray-800 dark:text-gray-200">${m.name}</p>
         <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200">${m.desc}</p>
         <div class="mt-4 space-y-2 text-left text-sm">
