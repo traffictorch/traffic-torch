@@ -322,27 +322,30 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 <!-- Intent -->
 <div class="text-center mb-12">
-  <p class="text-4xl font-bold text-gray-500 mb-8">
+  <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">
     Intent: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${intent}</span>
-    <span class="text-2xl text-gray-500">— ${confidence}% match</span>
+    <span class="text-2xl text-gray-800 dark:text-gray-200">— ${confidence}% match</span>
   </p>
   <div class="max-w-3xl mx-auto grid md:grid-cols-3 gap-6 text-left">
     <div class="p-6 bg-blue-500/10 border-l-4 border-blue-500 rounded-r-xl">
       <p class="font-bold text-blue-500">What it is</p>
-      <p class="mt-2 text-sm text-gray-500 leading-relaxed">The core motivation driving a user's search query — whether they're seeking information, researching options, ready to purchase, or looking for a local service. Understanding this ensures your content delivers exactly what searchers expect.</p>
+      <p class="mt-2 text-sm text-gray-800 dark:text-gray-200 leading-relaxed">The core motivation driving a user's search query — whether they're seeking information, researching options, ready to purchase, or looking for a local service. Understanding this ensures your content delivers exactly what searchers expect.</p>
     </div>
     <div class="p-6 bg-green-500/10 border-l-4 border-green-500 rounded-r-xl">
       <p class="font-bold text-green-500">How to satisfy it</p>
-      <p class="mt-2 text-sm text-gray-500 leading-relaxed">Craft your title, H1, meta description, and body content to directly address the user's specific need. Use matching language, structure (e.g., lists for comparisons, steps for how-tos), and calls-to-action — eliminate fluff, assumptions, or mismatched elements to create a seamless experience.</p>
+      <p class="mt-2 text-sm text-gray-800 dark:text-gray-200 leading-relaxed">Craft your title, H1, meta description, and body content to directly address the user's specific need. Use matching language, structure (e.g., lists for comparisons, steps for how-tos), and calls-to-action — eliminate fluff, assumptions, or mismatched elements to create a seamless experience.</p>
     </div>
     <div class="p-6 bg-orange-500/10 border-l-4 border-orange-500 rounded-r-xl">
       <p class="font-bold text-orange-500">Why it matters</p>
-      <p class="mt-2 text-sm text-gray-500 leading-relaxed">Search engines prioritize pages that best align with user intent, as it leads to higher satisfaction, longer engagement, and lower bounces. Mismatched intent results in quick exits, poor signals, and lost rankings — while strong alignment drives traffic and conversions.</p>
+      <p class="mt-2 text-sm text-gray-800 dark:text-gray-200 leading-relaxed">Search engines prioritize pages that best align with user intent, as it leads to higher satisfaction, longer engagement, and lower bounces. Mismatched intent results in quick exits, poor signals, and lost rankings — while strong alignment drives traffic and conversions.</p>
     </div>
   </div>
 </div>
 <!-- E-E-A-T Breakdown with ✅/❌ signals -->
 <div class="grid md:grid-cols-4 gap-6 my-16">
+ 
+ 
+ 
   ${[
     { key: 'Experience', score: experienceScore, metrics: experienceMetrics, failed: failedExperience },
     { key: 'Expertise', score: expertiseScore, metrics: expertiseMetrics, failed: failedExpertise },
@@ -351,11 +354,33 @@ document.addEventListener('DOMContentLoaded', () => {
   ].map(({key, score, metrics, failed}) => {
     const color = score >= 80 ? '#22c55e' : score >= 60 ? '#f97316' : '#ef4444';
     const border = score >= 80 ? 'border-green-500' : score >= 60 ? 'border-orange-500' : 'border-red-500';
-    const fixesList = failed.length ?
-      `<p class="font-medium mb-2 text-orange-600">How to fix the failed signals:</p><ul class="list-disc pl-5 space-y-2">${failed.map(f => `<li>${f}</li>`).join('')}</ul>` :
-      '<p class="text-green-600 font-medium">All signals strong — no fixes needed!</p>';
+
+    // Signal definitions with education
+    const signals = key === 'Experience' ? [
+      { name: 'Strong first-person language', pass: metrics.firstPerson >= 80, fix: 'Add more first-person language (“I/we/my/our”) throughout the content', how: 'The tool counts occurrences of first-person pronouns and phrases. Strong = 15+ mentions across the page. This signals genuine hands-on involvement, a key Google E-E-A-T factor for Experience.' },
+      { name: 'Personal anecdotes included', pass: metrics.anecdotes >= 80, fix: 'Include personal anecdotes or real-world examples', how: 'Scans for phrases like “I tested”, “in my experience”, “we found that”, “hands-on”. Strong = 3+ detections. Personal stories build credibility and user trust.' },
+      { name: 'Timeline/date mentions', pass: metrics.timelines >= 80, fix: 'Mention specific timelines or dates from your experience', how: 'Looks for personal context around dates (“last year I tried...”, “since 2020 we’ve...”). Strong = 2+ tied to first-person. Shows depth and recency of experience.' },
+      { name: 'Personal media/captions', pass: metrics.personalMedia >= 80, fix: 'Add original photos/videos with personal captions', how: 'Checks image alt text and captions for “my”, “our”, or personal context. Strong = at least one detected. Original media proves real-world involvement.' }
+    ] : key === 'Expertise' ? [
+      { name: 'Author byline present', pass: metrics.byline >= 80, fix: 'Add a visible author byline/name', how: 'Searches common byline selectors and meta tags. Strong = clear author name visible. Links content to a real expert.' },
+      { name: 'Author bio section', pass: metrics.bio >= 80, fix: 'Create an author bio section with photo and background', how: 'Looks for bio containers across platforms. Strong = dedicated bio found. Provides proof of qualifications.' },
+      { name: 'Credentials mentioned', pass: metrics.credentials >= 80, fix: 'Mention relevant qualifications, certifications, or years of experience', how: 'Counts credential keywords (PhD, certified, years of experience, etc.). Strong = 3+ mentions. Demonstrates specialized knowledge.' },
+      { name: 'Citations/references', pass: metrics.citations >= 80, fix: 'Include citations or links to supporting sources', how: 'Detects reference sections and citation links. Strong = references found. Shows research depth and reliability.' }
+    ] : key === 'Authoritativeness' ? [
+      { name: 'Strong schema markup', pass: metrics.schema >= 80, fix: 'Implement relevant JSON-LD schema (Article, Person, Organization)', how: 'Counts valid schema types in script tags. Strong = 2+ relevant types. Helps search engines understand authority.' },
+      { name: 'Awards/endorsements mentioned', pass: metrics.awards >= 80, fix: 'Mention any awards, endorsements, or media features', how: 'Scans text for award-related keywords. Strong = mentions detected. Signals industry recognition.' },
+      { name: 'About/Team links', pass: metrics.aboutLinks >= 80, fix: 'Add links to an About or Team page', how: 'Checks navigation/footer for About links. Strong = link found. Shows established entity behind content.' }
+    ] : [
+      { name: 'Secure HTTPS', pass: metrics.https >= 80, fix: 'Switch to HTTPS', how: 'Checks page URL protocol. Strong = https://. Basic security signal trusted by Google.' },
+      { name: 'Contact info present', pass: metrics.contact >= 80, fix: 'Add a visible Contact page or contact details', how: 'Scans for contact links and footer text. Strong = contact method found. Builds user trust.' },
+      { name: 'Privacy/Terms links', pass: metrics.policies >= 80, fix: 'Include links to Privacy Policy and/or Terms', how: 'Looks for policy links across common locations. Strong = at least one found. Shows transparency.' },
+      { name: 'Update date shown', pass: metrics.updateDate >= 80, fix: 'Display a last updated date', how: 'Searches date selectors and visible text. Strong = date detected. Indicates content freshness.' }
+    ];
+
+    const failedSignals = signals.filter(s => !s.pass);
+
     return `
-    <div class="score-card text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${border}">
+    <div class="score-card text-center p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${border}">
       <div class="relative mx-auto w-32 h-32">
         <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
           <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
@@ -369,40 +394,35 @@ document.addEventListener('DOMContentLoaded', () => {
           ${score}
         </div>
       </div>
-      <p class="mt-4 text-lg font-medium">${key}</p>
-      <!-- ✅/❌ Signal List -->
-      <div class="mt-3 space-y-1 text-sm text-left max-w-xs mx-auto">
-        ${key === 'Experience' ? `
-          ${metrics.firstPerson >= 80 ? '<p>✅ Strong first-person language</p>' : '<p>❌ Limited first-person language</p>'}
-          ${metrics.anecdotes >= 80 ? '<p>✅ Personal anecdotes included</p>' : '<p>❌ Missing personal anecdotes</p>'}
-          ${metrics.timelines >= 80 ? '<p>✅ Timeline/date mentions</p>' : '<p>❌ No timeline/date mentions</p>'}
-          ${metrics.personalMedia >= 80 ? '<p>✅ Personal media/captions</p>' : '<p>❌ No personal media detected</p>'}
-        ` : key === 'Expertise' ? `
-          ${metrics.byline >= 80 ? '<p>✅ Author byline present</p>' : '<p>❌ No author byline</p>'}
-          ${metrics.bio >= 80 ? '<p>✅ Author bio section</p>' : '<p>❌ Missing author bio</p>'}
-          ${metrics.credentials >= 80 ? '<p>✅ Credentials mentioned</p>' : '<p>❌ Few/no credentials</p>'}
-          ${metrics.citations >= 80 ? '<p>✅ Citations/references</p>' : '<p>❌ No citations found</p>'}
-        ` : key === 'Authoritativeness' ? `
-          ${metrics.schema >= 80 ? '<p>✅ Strong schema markup</p>' : '<p>❌ Limited/no schema</p>'}
-          ${metrics.awards >= 80 ? '<p>✅ Awards/endorsements mentioned</p>' : '<p>❌ No awards mentioned</p>'}
-          ${metrics.aboutLinks >= 80 ? '<p>✅ About/Team links</p>' : '<p>❌ Missing About links</p>'}
-        ` : `
-          ${metrics.https >= 80 ? '<p>✅ Secure HTTPS</p>' : '<p>❌ HTTP (insecure)</p>'}
-          ${metrics.contact >= 80 ? '<p>✅ Contact info present</p>' : '<p>❌ No contact details</p>'}
-          ${metrics.policies >= 80 ? '<p>✅ Privacy/Terms links</p>' : '<p>❌ Missing policy links</p>'}
-          ${metrics.updateDate >= 80 ? '<p>✅ Update date shown</p>' : '<p>❌ No update date</p>'}
-        `}
+      <p class="mt-3 text-lg font-medium text-gray-800 dark:text-gray-200">${key}</p>
+      <!-- Signal List -->
+      <div class="mt-3 space-y-2 text-sm text-left max-w-xs mx-auto">
+        ${signals.map(s => `<p class="${s.pass ? 'text-green-600' : 'text-red-600'}">${s.pass ? '✅' : '❌'} ${s.name}</p>`).join('')}
       </div>
       <button class="fixes-toggle mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-        ${failed.length ? 'Show Fixes (' + failed.length + ')' : 'All Clear'}
+        ${failedSignals.length ? 'Show Fixes (' + failedSignals.length + ')' : 'All Clear'}
       </button>
-      <div class="fixes-panel hidden mt-4 text-left text-sm bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-        ${fixesList}
+      <div class="fixes-panel hidden mt-4 text-left text-xs bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-4">
+        ${failedSignals.length ? failedSignals.map(s => `
+          <div>
+            <p class="font-bold text-gray-800 dark:text-gray-200">${s.name}</p>
+            <ul class="list-disc pl-5 mt-2 space-y-1">
+              <li class="text-gray-800 dark:text-gray-200">${s.fix}</li>
+            </ul>
+            <p class="mt-3 text-gray-700 dark:text-gray-300 text-xs italic">How the metric works: ${s.how}</p>
+          </div>
+        `).join('') : '<p class="text-green-600 font-medium">All signals strong!</p><div class="space-y-3 mt-3">' + signals.map(s => `
+          <div>
+            <p class="font-bold text-green-600">${s.name} ✅</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-300 text-xs italic">How the metric works: ${s.how}</p>
+          </div>
+        `).join('') + '</div>'}
         <button class="more-details-toggle mt-4 text-xs text-orange-500 hover:underline block">
           More details →
         </button>
       </div>
       <div class="full-details hidden mt-6 space-y-3 text-left text-sm">
+        <!-- existing full details unchanged -->
         <p class="text-blue-500 font-bold">What it is?</p>
         <p>${key === 'Experience' ? 'Proof that the content creator has first-hand involvement in the topic, such as personal anecdotes, real-world applications, or direct participation, making the advice more relatable and credible.'
           : key === 'Expertise' ? 'Demonstrated deep knowledge and skill in the subject area, backed by qualifications, achievements, or specialized training, showing the author is a reliable source.'
@@ -421,13 +441,19 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>`;
   }).join('')}
+  
+  
+  
 </div>
+
+
+
 <!-- Content Depth + Readability + Schema Detected -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
     <h3 class="text-2xl font-bold mb-4">Content Depth</h3>
     <p class="text-5xl font-black mb-2">${words.toLocaleString()}</p>
-    <p class="text-gray-500 mb-4">words</p>
+    <p class="text-gray-800 dark:text-gray-200 mb-4">words</p>
     <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Fixes</button>
     <div class="hidden mt-6 space-y-3 text-left text-sm">
       <p class="text-blue-500 font-bold">What it is?</p>
@@ -441,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
     <h3 class="text-2xl font-bold mb-4">Readability</h3>
     <p class="text-5xl font-black mb-2">${readability}</p>
-    <p class="text-gray-500 mb-4">Flesch score</p>
+    <p class="text-gray-800 dark:text-gray-200 mb-4">Flesch score</p>
     <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Fixes</button>
     <div class="hidden mt-6 space-y-3 text-left text-sm">
       <p class="text-blue-500 font-bold">What it is?</p>
@@ -483,10 +509,10 @@ document.addEventListener('DOMContentLoaded', () => {
       </tr>
     </thead>
     <tbody>
-      <tr class="border-b"><td class="p-4 text-gray-500">Word Count</td><td class="p-4 text-gray-500">${words}</td><td class="p-4 text-gray-500">>1,500</td><td class="p-4 ${words<1500?'text-red-500':'text-green-500'}">${words<1500?'Add '+(1500-words)+' words':'Good'}</td></tr>
-      <tr class="border-b"><td class="p-4 text-gray-500">Readability</td><td class="p-4 text-gray-500">${readability}</td><td class="p-4 text-gray-500">60-70</td><td class="p-4 ${readability<60||readability>70?'text-orange-500':'text-green-500'}">${readability<60||readability>70?'Adjust':'Good'}</td></tr>
-      <tr class="border-b"><td class="p-4 text-gray-500">Schema Types</td><td class="p-4 text-gray-500">${schemaTypes.length}</td><td class="p-4 text-gray-500">≥2</td><td class="p-4 ${schemaTypes.length<2?'text-red-500':'text-green-500'}">${schemaTypes.length<2?'Add':'Good'}</td></tr>
-      <tr><td class="p-4 text-gray-500">Author Bio</td><td class="p-4 text-gray-500">${hasAuthorByline?'Yes':'No'}</td><td class="p-4 text-gray-500">Yes</td><td class="p-4 ${!hasAuthorByline?'text-red-500':'text-green-500'}">${!hasAuthorByline?'Add':'Good'}</td></tr>
+      <tr class="border-b"><td class="p-4 text-gray-800 dark:text-gray-200">Word Count</td><td class="p-4 text-gray-800 dark:text-gray-200">${words}</td><td class="p-4 text-gray-800 dark:text-gray-200">>1,500</td><td class="p-4 ${words<1500?'text-red-500':'text-green-500'}">${words<1500?'Add '+(1500-words)+' words':'Good'}</td></tr>
+      <tr class="border-b"><td class="p-4 text-gray-800 dark:text-gray-200">Readability</td><td class="p-4 text-gray-800 dark:text-gray-200">${readability}</td><td class="p-4 text-gray-800 dark:text-gray-200">60-70</td><td class="p-4 ${readability<60||readability>70?'text-orange-500':'text-green-500'}">${readability<60||readability>70?'Adjust':'Good'}</td></tr>
+      <tr class="border-b"><td class="p-4 text-gray-800 dark:text-gray-200">Schema Types</td><td class="p-4 text-gray-800 dark:text-gray-200">${schemaTypes.length}</td><td class="p-4 text-gray-800 dark:text-gray-200">≥2</td><td class="p-4 ${schemaTypes.length<2?'text-red-500':'text-green-500'}">${schemaTypes.length<2?'Add':'Good'}</td></tr>
+      <tr><td class="p-4 text-gray-800 dark:text-gray-200">Author Bio</td><td class="p-4 text-gray-800 dark:text-gray-200">${hasAuthorByline?'Yes':'No'}</td><td class="p-4 text-gray-800 dark:text-gray-200">Yes</td><td class="p-4 ${!hasAuthorByline?'text-red-500':'text-green-500'}">${!hasAuthorByline?'Add':'Good'}</td></tr>
     </tbody>
   </table>
 </div>
@@ -501,11 +527,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <h4 class="text-2xl font-bold text-red-600">Add Author Bio & Photo</h4>
         <div class="mt-4 space-y-3 text-sm">
           <p class="text-blue-500 font-bold">What it is?</p>
-          <p class="text-gray-500 dark:text-gray-500">A visible author byline with name, photo, and credentials that proves a real expert created the content.</p>
+          <p class="text-gray-800 dark:text-gray-200">A visible author byline with name, photo, and credentials that proves a real expert created the content.</p>
           <p class="text-green-500 font-bold">How to improve?</p>
-          <p class="text-gray-500 dark:text-gray-500">Add a detailed author box with professional headshot, full bio highlighting relevant experience/qualifications, links to social profiles or other work, and clear connection to the topic.</p>
+          <p class="text-gray-800 dark:text-gray-200">Add a detailed author box with professional headshot, full bio highlighting relevant experience/qualifications, links to social profiles or other work, and clear connection to the topic.</p>
           <p class="text-orange-500 font-bold">Why it matters?</p>
-          <p class="text-gray-500 dark:text-gray-500">Search engines heavily weigh proven authorship for E-E-A-T — pages with strong author signals rank higher, build trust faster, and reduce bounce rates significantly.</p>
+          <p class="text-gray-800 dark:text-gray-200">Search engines heavily weigh proven authorship for E-E-A-T — pages with strong author signals rank higher, build trust faster, and reduce bounce rates significantly.</p>
         </div>
       </div>
     </div>
@@ -518,11 +544,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <h4 class="text-2xl font-bold text-orange-600">Expand Content Depth</h4>
         <div class="mt-4 space-y-3 text-sm">
           <p class="text-blue-500 font-bold">What it is?</p>
-          <p class="text-gray-500 dark:text-gray-500">Thorough, comprehensive coverage that fully answers the main query plus all related follow-up questions users typically have.</p>
+          <p class="text-gray-800 dark:text-gray-200">Thorough, comprehensive coverage that fully answers the main query plus all related follow-up questions users typically have.</p>
           <p class="text-green-500 font-bold">How to improve?</p>
-          <p class="text-gray-500 dark:text-gray-500">Add in-depth examples, data-backed statistics, step-by-step breakdowns, comparisons, visuals/screenshots, templates or tools, expert quotes, case studies, and expanded FAQs — aim for the most complete resource on the topic.</p>
+          <p class="text-gray-800 dark:text-gray-200">Add in-depth examples, data-backed statistics, step-by-step breakdowns, comparisons, visuals/screenshots, templates or tools, expert quotes, case studies, and expanded FAQs — aim for the most complete resource on the topic.</p>
           <p class="text-orange-500 font-bold">Why it matters?</p>
-          <p class="text-gray-500 dark:text-gray-500">Depth remains the strongest on-page ranking factor — search engines consistently reward the most helpful, exhaustive pages with top positions and sustained traffic growth.</p>
+          <p class="text-gray-800 dark:text-gray-200">Depth remains the strongest on-page ranking factor — search engines consistently reward the most helpful, exhaustive pages with top positions and sustained traffic growth.</p>
         </div>
       </div>
     </div>
@@ -535,11 +561,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <h4 class="text-2xl font-bold text-purple-600">Add Relevant Schema Markup</h4>
         <div class="mt-4 space-y-3 text-sm">
           <p class="text-blue-500 font-bold">What it is?</p>
-          <p class="text-gray-500 dark:text-gray-500">Structured data (JSON-LD) that explicitly defines your page type and key entities to search engines.</p>
+          <p class="text-gray-800 dark:text-gray-200">Structured data (JSON-LD) that explicitly defines your page type and key entities to search engines.</p>
           <p class="text-green-500 font-bold">How to improve?</p>
-          <p class="text-gray-500 dark:text-gray-500">Implement at least two relevant types: Article (with author Person link), plus FAQPage, HowTo, Product, or BreadcrumbList as appropriate. Validate with official testing tools before publishing.</p>
+          <p class="text-gray-800 dark:text-gray-200">Implement at least two relevant types: Article (with author Person link), plus FAQPage, HowTo, Product, or BreadcrumbList as appropriate. Validate with official testing tools before publishing.</p>
           <p class="text-orange-500 font-bold">Why it matters?</p>
-          <p class="text-gray-500 dark:text-gray-500">Proper schema unlocks rich results, boosts click-through rates dramatically, strengthens E-E-A-T signals, and helps search engines feature your content more prominently.</p>
+          <p class="text-gray-800 dark:text-gray-200">Proper schema unlocks rich results, boosts click-through rates dramatically, strengthens E-E-A-T signals, and helps search engines feature your content more prominently.</p>
         </div>
       </div>
     </div>
@@ -550,7 +576,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
     <h3 class="text-3xl font-bold text-center mb-8 text-orange-500">Overall Score Improvement</h3>
     <div class="flex justify-center items-baseline gap-4 mb-8">
-      <div class="text-5xl font-black text-gray-500">${currentScore}</div>
+      <div class="text-5xl font-black text-gray-800 dark:text-gray-200">${currentScore}</div>
       <div class="text-4xl text-gray-400">→</div>
       <div class="text-6xl font-black text-green-500">${Math.round(projectedScore)}</div>
       <div class="text-2xl text-green-600 font-medium">(${scoreDelta > 0 ? '+' + scoreDelta : 'Optimal'})</div>
