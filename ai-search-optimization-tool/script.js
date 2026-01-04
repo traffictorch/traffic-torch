@@ -354,6 +354,55 @@ const initTool = (form, results, progressContainer) => {
         };
         return map[name] || "This factor significantly impacts AI search performance and citation likelihood.";
       }
+      
+      
+      
+      function getPerCheckFix(module, checkText) {
+  // Return specific fix for the check - extend as needed from existing getFixes logic
+  const fixes = {
+    "Answerability": {
+      "Bold/strong formatting in opening": "Place the main answer in bold text within the first paragraph so AI can easily quote it.",
+      "Clear definition pattern in opening": "Start with clear phrases like “X means…” or “X is defined as…” to directly satisfy definitional queries.",
+      "FAQPage schema detected": "Add structured data markup that tells search engines this page answers common questions or provides steps.",
+      "Question-style H2 headings": "Use heading tags formatted as questions (e.g., “How do I fix X?”) to match real user searches.",
+      "Step-by-step language in opening": "Include numbered lists with clear actions — AI engines love extractable instructions.",
+      "Strong opening section (>600 chars)": "Expand the first section to over 600 characters with valuable content so AI has more to summarize and cite."
+    },
+    // Add similar objects for other modules using existing getFixes bullets
+  };
+  return fixes[module]?.[checkText] || "Improve this signal to boost AI visibility.";
+}
+
+function getPerCheckMetric(module, checkText) {
+  // Custom detection + thresholds per check
+  const metrics = {
+    "Answerability": {
+      "Bold/strong formatting in opening": "Scans first 1200 characters for <strong>, <b>, or <em> tags.",
+      "Clear definition pattern in opening": "Looks for phrases like 'is', 'means', 'refers to', 'defined as' in opening.",
+      "FAQPage schema detected": "Checks JSON-LD for FAQPage type.",
+      "Question-style H2 headings": "Searches H2 tags for question marks or ending ?!",
+      "Step-by-step language in opening": "Detects step/guide/how-to language in opening.",
+      "Strong opening section (>600 chars)": "Measures character count of extracted opening content."
+    },
+    // Extend for other modules
+  };
+  return metrics[module]?.[checkText] || "The tool checks for presence and quality of this signal.";
+}
+
+function getPerCheckWhy(module, checkText) {
+  // AI-specific impact explanation
+  const why = {
+    "Answerability": {
+      "Bold/strong formatting in opening": "Bold text is easily extractable and often quoted directly in AI overviews.",
+      "Clear definition pattern in opening": "Definitional phrasing matches common user queries and improves source selection.",
+      // etc.
+    },
+    // Extend for other modules
+  };
+  return why[module]?.[checkText] || "This signal significantly affects how AI engines trust and cite your content.";
+}
+
+
 
       function getFixes(name) {
         let fixes = '';
@@ -487,13 +536,35 @@ const initTool = (form, results, progressContainer) => {
                 onclick="const panel = this.nextElementSibling; panel.classList.toggle('hidden'); this.textContent = panel.classList.contains('hidden') ? '${grade.button}' : 'Hide Details';">
           ${grade.button}
         </button>
+        
+        
         <div class="hidden mt-6 text-left text-sm space-y-8 text-gray-800 dark:text-gray-200">
-          <p class="font-bold text-lg ${grade.textColor}">${grade.emoji} ${m.name}</p>
-          ${allClear ? '<p class="text-green-600 dark:text-green-400 text-lg font-medium">All signals strong — excellent work!</p>' : getFixes(m.name)}
+          <p class="font-bold text-xl ${grade.textColor}">${grade.emoji} ${m.name}</p>
+          ${allClear ? 
+            '<p class="text-green-600 dark:text-green-400 text-lg font-medium">All signals strong — excellent work!</p>' :
+            moduleTests.filter(t => !t.passed).map(t => `
+              <div class="p-5 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-300 dark:border-red-700">
+                <p class="font-bold text-red-600 dark:text-red-400 text-lg mb-4">${t.emoji} ${t.text}</p>
+                <div class="space-y-4">
+                  <div>
+                    <p class="font-semibold text-red-700 dark:text-red-300">How to fix?</p>
+                    <p class="mt-2">${getPerCheckFix(m.name, t.text)}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-red-700 dark:text-red-300">How the metric works:</p>
+                    <p class="mt-2">${getPerCheckMetric(m.name, t.text)}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-red-700 dark:text-red-300">Why it matters:</p>
+                    <p class="mt-2">${getPerCheckWhy(m.name, t.text)}</p>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
           ${!allClear ? `
-            <details class="mt-6">
-              <summary class="cursor-pointer text-blue-600 dark:text-blue-400 font-medium hover:underline">More details →</summary>
-              <div class="mt-4 space-y-4 pl-4 border-l-4 border-blue-400">
+            <details class="mt-8">
+              <summary class="cursor-pointer text-blue-600 dark:text-blue-400 font-semibold hover:underline">More details →</summary>
+              <div class="mt-4 space-y-4 pl-6 border-l-4 border-blue-400">
                 <div>
                   <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
                   <p>${getWhat(m.name)}</p>
@@ -510,6 +581,8 @@ const initTool = (form, results, progressContainer) => {
             </details>
           ` : ''}
         </div>
+        
+        
       </div>
     `;
   }).join('')}
