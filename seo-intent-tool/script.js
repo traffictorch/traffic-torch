@@ -127,8 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
     results.classList.remove('hidden');
     const progressText = document.getElementById('progress-text');
     try {
-      progressText.textContent = "Analyzing Content Depth...";
-      await sleep(800);
+	  progressText.textContent = "Fetching and rendering page...";
+
       const res = await fetch("https://rendered-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable – check URL');
       const html = await res.text();
@@ -160,6 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 0) : 0;
       const readability = Math.round(206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words));
       progressText.textContent = "Analyzing E-E-A-T Signals...";
+      await sleep(2000);
       // === EXPERIENCE ===
       const firstPersonCount = (cleanedText.match(/\b(I|we|my|our|I've|we've|me|us|myself|ourselves)\b/gi) || []).length;
       const anecdotePhrases = (cleanedText.match(/\b(in my experience|I tested|we found that|from my trials|I tried|we tried|my results|our case study|in practice|hands-on|real-world|based on my|after testing|client case|personal review)\b/gi) || []).length;
@@ -250,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!hasUpdateDate) failedTrustworthiness.push("Display a last updated date");
       // Intent Analysis
       progressText.textContent = "Analyzing Search Intent...";
-      await sleep(300);
+      await sleep(2000);
       const titleLower = (doc.title || '').toLowerCase();
       let intent = 'Informational';
       let confidence = 60;
@@ -292,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const ctrBoost = isOptimal ? 0 : Math.min(30, Math.round(scoreDelta * 0.8));
       const rankingLift = isOptimal ? "Already strong" : currentScore < 60 ? "Page 2+ → Page 1 potential" : "Top 20 → Top 10 possible";
       progressText.textContent = "Generating Report...";
-      await sleep(400);
+      await sleep(600);
       results.innerHTML = `
 <!-- Big Score Circle -->
 <div class="flex justify-center my-12 px-4">
