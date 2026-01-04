@@ -463,7 +463,7 @@ const initTool = (form, results, progressContainer) => {
           </svg>
 <div class="absolute inset-0 flex items-center justify-center">
   <div class="text-center">
-    <div class="text-4xl font-black $$ {grade.textColor}"> $${m.score}</div>
+    <div class="text-4xl font-black $$ {grade.textColor}"> ${m.score}</div>
   </div>
 </div>
         </div>
