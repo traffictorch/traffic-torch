@@ -238,86 +238,129 @@
 </div>
 <!-- AddToAny END -->
 
-<!-- Breadcrumbs - responsive, centered, with proper mobile behavior -->
-<div class="max-w-5xl mx-auto px-6 py-8">
-  <nav aria-label="breadcrumb" class="text-center">
-    <ol class="inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
-      <li class="flex items-center">
-        <a href="/" class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition">
-          Traffic Torch
-        </a>
-      </li>
-      <li class="flex items-center">
-        <span class="mx-2 text-gray-400 dark:text-gray-500">/</span>
-        <span class="font-medium text-gray-600 dark:text-gray-300">
-          <script>
-            document.write(
-              document.title
-                .replace('Traffic Torch – ', '')
-                .replace(' | Traffic Torch', '')
-                .replace(' Tool', '')
-                .trim()
-            );
-          </script>
-        </span>
-      </li>
-    </ol>
-  </nav>
+<!-- Breadcrumbs + Last Updated: responsive, centered, with date from GitHub commit -->
+<div class="max-w-5xl mx-auto px-6 py-8 text-center">
+  <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+    <a href="/">Traffic Torch</a>
+  </p>
+  <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+    <span id="page-name"></span>
+  </p>
+  <p id="last-updated" class="text-sm text-gray-500 dark:text-gray-400 mt-4">
+    Last updated: <span id="update-date">Loading...</span>
+  </p>
 </div>
+
+<script>
+  // Set page name (same as before, trimmed)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+
+  // Fetch last commit date from GitHub API via CORS proxy
+  (async function() {
+    try {
+      // Get current page path (e.g., '/contact/' → 'contact/index.html')
+      let path = window.location.pathname;
+      if (path.endsWith('/')) path += 'index.html';
+      path = path.slice(1); // Remove leading '/'
+
+      const apiUrl = `https://api.github.com/repos/traffictorch/traffic-torch/commits?path=${encodeURIComponent(path)}&per_page=1`;
+      const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(apiUrl);
+
+      const response = await fetch(proxyUrl);
+      const data = await response.json();
+
+      if (data && data.length > 0) {
+        const commitDate = new Date(data[0].commit.author.date);
+        const formattedDate = commitDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('update-date').textContent = formattedDate;
+      } else {
+        document.getElementById('update-date').textContent = 'Date not available';
+      }
+    } catch (error) {
+      document.getElementById('update-date').textContent = 'Date not available';
+    }
+  })();
+</script>
     
   </main>
 
-  <!-- Footer -->
-  <footer class="border-t border-white/10 mt-1 py-16 bg-white/5 backdrop-blur-xl">
-    <div class="container mx-auto px-6 max-w-6xl">
-      <div class="grid md:grid-cols-4 gap-12 text-center md:text-left">
-        <div>
-          <a href="/" class="block mb-6">
-            <img src="/logo.webp" alt="Traffic Torch" class="w-20 mx-auto md:mx-0 rounded-2xl shadow-2xl">
-          </a>
-          <a href="/" class="block">
-            <h3 class="text-2xl font-black text-orange-500 hover:text-orange-600 transition-all duration-300 inline-flex items-baseline gap-3">
-              Traffic Torch 🛡️
-            </h3>
-          </a>
-          <p class="text-gray-500 text-sm mt-3 leading-relaxed text-center md:text-left">
-            Ai-Powered SEO & UX Audits<br>
-            Optimize Usability &  Rankings
-          </p>
-        </div>
-        <div>
-          <h3 class="text-xl font-bold mb-6 text-orange-400">Tools</h3>
-          <ul class="space-y-3 text-gray-500">
-            <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
-            <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
-            <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a></li>
-            <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
-            <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a></li>
-            <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a></li>
-          </ul>
-        </div>
-         <div>
-          <h3 class="text-xl font-bold mb-6 text-orange-400">Company</h3>
-          <ul class="space-y-3 text-gray-500">
-            <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
-            <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-            <li><a href="https://x.com/guitaralize" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">Ylia@X</a></li>
-            <li><a href="https://grok.com/" class="hover:text-orange-400 transition" target="_blank" rel="noopener noreferrer">Grok</a></li>
-            <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
-            <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
-          </ul>
-        </div>
-		<div>
-		<h3 class="text-xl font-bold mb-6 text-orange-400 hover:text-orange-300 transition">Traffic Torch</h3>
-		<p class="text-gray-500 text-sm mb-4"><a href="/ai-seo-ux-tools/#seo-tools" class="hover:text-orange-400 transition">SEO Tools 🎯</a></p>
-		<p class="text-gray-500 text-sm mb-4"><a href="/ai-seo-ux-tools/#ux-tools" class="hover:text-orange-400 transition">UX Tools ⚡</a></p>
-        <p class="text-gray-500 text-sm mb-4"><a href="/ai-seo-ux-tools/#ai-tools" class="hover:text-orange-400 transition">Ai Tools 🔍</a></p>
-		<p class="text-gray-500 text-sm mb-4">Built with 🔥</p>
-          <p class="text-gray-500 text-xs mt-4">© Traffic Torch</p>
-        </div>
+ <!-- Footer -->
+    <footer class="border-t border-white/10 dark:border-white/5 py-12 bg-white/5 dark:bg-black/20 backdrop-blur-xl">
+  <div class="container mx-auto px-6 max-w-7xl">
+    <!-- Top Row: Traffic Torch + Author (2 columns, fully centered on mobile) -->
+    <div class="grid md:grid-cols-2 gap-12 mb-12">
+      <!-- Traffic Torch Section (centered) -->
+      <div class="flex flex-col items-center text-center">
+        <a href="/" class="mb-6">
+          <img src="/logo.webp" alt="Traffic Torch" class="w-20 h-20 rounded-full shadow-2xl object-cover">
+        </a>
+        <h3 class="text-2xl font-black text-orange-500 hover:text-orange-600 transition mb-3">
+          Traffic Torch 🛡️
+        </h3>
+        <p class="text-gray-800 dark:text-gray-200 text-sm leading-relaxed max-w-md">
+          Instant 360° AI-powered SEO and UX health analysis. Get deep-dive audits, competitive gap insights, AI-generated fixes, predictive forecasting, and educational reports. All privacy-first, mobile-optimized and client-side.
+        </p>
+      </div>
+      <!-- Author Section (centered) -->
+      <div class="flex flex-col items-center text-center">
+        <img src="/images/ylia-callan.webp" alt="Ylia Callan, Founder of Traffic Torch" class="w-20 h-20 rounded-full shadow-lg mb-6 object-cover">
+        <h3 class="text-2xl font-black text-orange-500 hover:text-orange-600 transition mb-3">
+          Author
+        </h3>
+        <p class="font-bold text-gray-800 dark:text-gray-200">Ylia Callan</p>
+        <p class="text-sm text-gray-800 dark:text-gray-200 mt-2 max-w-xs">
+          Musician • Author • Web Design (Cert IV) at TAFE NSW, building privacy-first AI SEO/UX tools.
+        </p>
+        <ul class="flex gap-6 mt-4">
+          <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">LinkedIn</a></li>
+          <li><a href="https://x.com/guitaralize" target="_blank" rel="noopener noreferrer" class="text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">X</a></li>
+        </ul>
       </div>
     </div>
-  </footer>
+
+    <!-- Bottom Row: Tools | Company | Traffic Torch (3 columns, centered) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center border-t border-white/10 dark:border-white/5 pt-10">
+      <!-- Tools -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Tools</h3>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+          <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
+          <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a></li>
+          <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
+          <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a></li>
+          <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a></li>
+        </ul>
+      </div>
+      <!-- Company -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Company</h3>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
+          <li><a href="/contact/" class="hover:text-orange-400 transition">Contact</a></li>
+          <li><a href="/news.html" class="hover:text-orange-400 transition">News</a></li>
+          <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
+          <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
+        </ul>
+      </div>
+      <!-- Traffic Torch Quick Links -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Traffic Torch</h3>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/ai-seo-ux-tools/#seo-tools" class="hover:text-orange-400 transition">SEO Tools 🎯</a></li>
+          <li><a href="/ai-seo-ux-tools/#ux-tools" class="hover:text-orange-400 transition">UX Tools ⚡</a></li>
+          <li><a href="/ai-seo-ux-tools/#ai-tools" class="hover:text-orange-400 transition">Ai Tools 🔍</a></li>
+          <li class="mt-6 text-sm">Built with 🔥</li>
+          <li class="text-xs mt-6">© Traffic Torch</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
   
   <script src="/main.js" type="module"></script>
 </body>
