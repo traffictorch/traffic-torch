@@ -516,20 +516,22 @@ document.addEventListener('DOMContentLoaded', () => {
 <!-- Content Depth + Readability + Schema Detected -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
   <!-- Content Depth Card -->
-  <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
+  <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${words >= 1500 && words <= 2000 ? 'border-green-500' : words >= 800 ? 'border-orange-400' : 'border-red-500'}">
     <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Content Depth</h3>
     <p class="text-5xl font-black mb-2 text-gray-800 dark:text-gray-200">${words.toLocaleString()}</p>
     <p class="text-gray-800 dark:text-gray-200 mb-4">words</p>
     ${(() => {
-      const grade = words > 2000 ? 'pass' : words >= 1200 ? 'average' : 'fail';
+      const grade = words >= 1500 && words <= 2000 ? 'pass' : words >= 800 ? 'average' : 'fail';
       const emoji = grade === 'pass' ? '✅' : grade === 'average' ? '🆗' : '❌';
       const color = grade === 'pass' ? 'text-green-600' : grade === 'average' ? 'text-orange-400' : 'text-red-600';
       return `<p class="${color} text-3xl font-bold mb-4">${emoji} ${grade === 'pass' ? 'Strong' : grade === 'average' ? 'Average' : 'Needs work'}</p>`;
     })()}
-    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Details</button>
+    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+      ${words >= 1500 && words <= 2000 ? 'All Clear' : 'Show Fixes'}
+    </button>
     <div class="hidden mt-6 text-left text-xs space-y-6">
       ${(() => {
-        const grade = words > 2000 ? 'pass' : words >= 1200 ? 'average' : 'fail';
+        const grade = words >= 1500 && words <= 2000 ? 'pass' : words >= 800 ? 'average' : 'fail';
         const emoji = grade === 'pass' ? '✅' : grade === 'average' ? '🆗' : '❌';
         const titleColor = grade === 'pass' ? 'text-green-600' : grade === 'average' ? 'text-orange-400' : 'text-red-600';
         return `
@@ -539,16 +541,17 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="mt-2 font-semibold text-gray-800 dark:text-gray-200">How to fix?</p>
           <p class="mt-1 text-gray-800 dark:text-gray-200">Expand with real-world examples, statistics, screenshots, step-by-step breakdowns, comparisons, templates, expert quotes, case studies, and deeper FAQs. Aim for the most comprehensive resource on the topic without fluff.</p>` : ''}
           <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
-          <p class="mt-1 text-gray-700 dark:text-gray-300">Counts visible words in the rendered page body (excluding navigation, footers, scripts). Strong = >2,000 words, Average = 1,200–2,000, Needs work = <1,200.</p>
+          <p class="mt-1 text-gray-700 dark:text-gray-300">Counts visible words in the rendered page body. Strong = 1,500–2,000 words, Average = 800–1,499 words, Needs work = <800 words.</p>
           <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
           <p class="mt-1 text-gray-700 dark:text-gray-300">Depth is the strongest on-page ranking factor. Search engines reward the most thorough, helpful answer with top positions. Comprehensive content satisfies user intent fully, reduces bounces, and drives longer dwell time and higher traffic.</p>
+          ${grade === 'pass' ? '<p class="text-green-600 font-medium text-base mt-6">All signals strong — excellent work!</p>' : ''}
         </div>`;
       })()}
     </div>
   </div>
 
   <!-- Readability Card -->
-  <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
+  <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${readability >= 60 && readability <= 70 ? 'border-green-500' : (readability >= 50 && readability <= 80) ? 'border-orange-400' : 'border-red-500'}">
     <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Readability</h3>
     <p class="text-5xl font-black mb-2 text-gray-800 dark:text-gray-200">${readability}</p>
     <p class="text-gray-800 dark:text-gray-200 mb-4">Flesch score</p>
@@ -558,7 +561,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const color = grade === 'pass' ? 'text-green-600' : grade === 'average' ? 'text-orange-400' : 'text-red-600';
       return `<p class="${color} text-3xl font-bold mb-4">${emoji} ${grade === 'pass' ? 'Ideal' : grade === 'average' ? 'Acceptable' : 'Difficult'}</p>`;
     })()}
-    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Details</button>
+    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+      ${readability >= 60 && readability <= 70 ? 'All Clear' : 'Show Fixes'}
+    </button>
     <div class="hidden mt-6 text-left text-xs space-y-6">
       ${(() => {
         const grade = readability >= 60 && readability <= 70 ? 'pass' : (readability >= 50 && readability <= 80) ? 'average' : 'fail';
@@ -574,19 +579,20 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="mt-1 text-gray-700 dark:text-gray-300">Flesch Reading Ease score (higher = easier). Ideal = 60–70 (plain English). Acceptable = 50–80. Difficult = outside this range.</p>
           <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
           <p class="mt-1 text-gray-700 dark:text-gray-300">Readable content reduces bounce rates and increases time on page. Search engines track user satisfaction signals. Easy-to-read pages engage more visitors, improve conversions, and rank higher.</p>
+          ${grade === 'pass' ? '<p class="text-green-600 font-medium text-base mt-6">All signals strong — excellent work!</p>' : ''}
         </div>`;
       })()}
     </div>
   </div>
 
   <!-- Schema Detected Card -->
-  <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
+  <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${schemaTypes.length >= 2 ? 'border-green-500' : schemaTypes.length === 1 ? 'border-orange-400' : 'border-red-500'}">
     <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Schema Detected</h3>
     ${schemaTypes.length ? `
       <select class="px-6 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-black dark:text-white mb-4">
         ${schemaTypes.map(t => `<option>${t}</option>`).join('')}
       </select>
-      <p class="text-green-600 font-bold mb-4">${schemaTypes.length} type${schemaTypes.length > 1 ? 's' : ''} found</p>
+      <p class="text-gray-800 dark:text-gray-200 mb-4">${schemaTypes.length} type${schemaTypes.length > 1 ? 's' : ''} found</p>
     ` : '<p class="text-2xl text-red-600 mb-4">No schema detected</p>'}
     ${(() => {
       const grade = schemaTypes.length >= 2 ? 'pass' : schemaTypes.length === 1 ? 'average' : 'fail';
@@ -594,7 +600,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const color = grade === 'pass' ? 'text-green-600' : grade === 'average' ? 'text-orange-400' : 'text-red-600';
       return `<p class="${color} text-3xl font-bold mb-4">${emoji} ${grade === 'pass' ? 'Strong' : grade === 'average' ? 'Basic' : 'Missing'}</p>`;
     })()}
-    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Details</button>
+    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+      ${schemaTypes.length >= 2 ? 'All Clear' : 'Show Fixes'}
+    </button>
     <div class="hidden mt-6 text-left text-xs space-y-6">
       ${(() => {
         const grade = schemaTypes.length >= 2 ? 'pass' : schemaTypes.length === 1 ? 'average' : 'fail';
@@ -610,6 +618,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="mt-1 text-gray-700 dark:text-gray-300">Detects valid schema types in script[type="application/ld+json"]. Strong = 2+ relevant types, Basic = 1 type, Missing = none found.</p>
           <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
           <p class="mt-1 text-gray-700 dark:text-gray-300">Schema unlocks rich snippets (stars, FAQs, carousels), dramatically increases click-through rates, strengthens E-E-A-T signals, and helps search engines feature your content prominently in results.</p>
+          ${grade === 'pass' ? '<p class="text-green-600 font-medium text-base mt-6">All signals strong — excellent work!</p>' : ''}
         </div>`;
       })()}
     </div>
