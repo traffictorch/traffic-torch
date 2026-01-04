@@ -563,7 +563,7 @@
     .replace(' Tool', '')
     .trim();
 
-  // Fetch last commit date from GitHub API via rendered proxy (for future-proofing)
+  // Fetch last commit date from GitHub API via rendered proxy
   (async function() {
     try {
       let path = window.location.pathname;
@@ -572,6 +572,7 @@
       const apiUrl = `https://api.github.com/repos/traffictorch/traffic-torch/commits?path=${encodeURIComponent(path)}&per_page=1`;
       const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(apiUrl);
       const response = await fetch(proxyUrl);
+      if (!response.ok) throw new Error('Network error');
       const data = await response.json();
       if (data && data.length > 0) {
         const commitDate = new Date(data[0].commit.author.date);
