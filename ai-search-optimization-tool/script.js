@@ -82,6 +82,7 @@ const initTool = (form, results, progressContainer) => {
       const hasQuestionH2 = Array.from(doc.querySelectorAll('h2')).some(h => /[?!]/.test(h.textContent));
       const hasSteps = /\b(step|guide|how to|instructions|follow these)\b/i.test(first300.toLowerCase());
 
+      // Answerability
       let answerability = 0;
       if (hasBoldInFirst || hasDefinition) answerability += 30;
       if (hasFAQSchema) answerability += 25;
@@ -89,6 +90,7 @@ const initTool = (form, results, progressContainer) => {
       if (hasSteps) answerability += 20;
       if (first300.length > 600) answerability += 10;
 
+      // Structured Data
       let hasArticle = false;
       let hasFaqHowto = false;
       let hasPerson = false;
@@ -115,6 +117,7 @@ const initTool = (form, results, progressContainer) => {
         } catch {}
       });
 
+      // EEAT Signals
       const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
       const hasDate = !!doc.querySelector('time[datetime], meta[name="date"], .published, .updated, .date');
       const hasTrustedLinks = Array.from(doc.querySelectorAll('a[href^="https"]'))
@@ -125,6 +128,7 @@ const initTool = (form, results, progressContainer) => {
       if (hasTrustedLinks) eeat += 20;
       if (url.startsWith('https:')) eeat += 15;
 
+      // Scannability
       const headings = doc.querySelectorAll('h1,h2,h3,h4').length;
       const lists = doc.querySelectorAll('ul,ol').length;
       const tables = doc.querySelectorAll('table').length;
@@ -137,6 +141,7 @@ const initTool = (form, results, progressContainer) => {
       if (tables > 0) scannability += 15;
       if (shortParas > 5) scannability += 15;
 
+      // Conversational Tone
       const youCount = (mainText.match(/\byou\b|\byour\b|\byours\b/gi) || []).length;
       const iWeCount = (mainText.match(/\bI\b|\bwe\b|\bmy\b|\bour\b|\bme\b|\bus\b/gi) || []).length;
       const questions = (mainText.match(/\?/g) || []).length;
@@ -147,6 +152,7 @@ const initTool = (form, results, progressContainer) => {
       if (questions > 2) conversational += 20;
       if (painPoints > 3) conversational += 25;
 
+      // Readability
       const words = mainText.split(/\s+/).filter(Boolean).length || 1;
       const sentences = (mainText.match(/[.!?]+/g) || []).length || 1;
       const syllables = mainText.split(/\s+/).reduce((a, w) => a + (w.match(/[aeiouy]+/gi) || []).length, 0);
@@ -168,6 +174,7 @@ const initTool = (form, results, progressContainer) => {
       if (passivePatterns.length < 5) readability += 20;
       if (complexRatio < 15) readability += 15;
 
+      // Unique Insights
       const hasInsights = /\b(I tested|in my experience|we found|case study|based on my|hands-on|personally observed)\b/i.test(mainText);
       const hasDated = /\b(in last year|in this year|recently tested|results from)\b/i.test(mainText);
       const hasInterviews = /\b(interview|spoke with|talked to|surveyed|asked|quoted|said ".*"|^".*"\s*-)\b/i.test(mainText);
@@ -177,6 +184,7 @@ const initTool = (form, results, progressContainer) => {
       if (hasDated) uniqueInsights += 20;
       if (hasInterviews) uniqueInsights += 15;
 
+      // Anti-AI Safety
       const wordFreq = {};
       mainText.toLowerCase().split(/\s+/).forEach(w => wordFreq[w] = (wordFreq[w] || 0) + 1);
       const repeatedWords = Object.values(wordFreq).filter(c => c > 10).length;
@@ -214,10 +222,16 @@ const initTool = (form, results, progressContainer) => {
       ];
 
       function getGradeInfo(score) {
-        if (score >= 80) return { emoji: '✅', color: 'green-500', stroke: '22c55e', textColor: 'text-green-600', button: 'All Clear', bg: 'bg-green-500 hover:bg-green-600' };
-        if (score >= 60) return { emoji: '🆗', color: 'orange-500', stroke: 'f97316', textColor: 'text-orange-600', button: 'Show Fixes', bg: 'bg-orange-500 hover:bg-orange-600' };
-        return { emoji: '❌', color: 'red-500', stroke: 'ef4444', textColor: 'text-red-600', button: 'Show Fixes', bg: 'bg-orange-500 hover:bg-orange-600' };
+        if (score >= 80) {
+          return { emoji: '✅', color: 'green-500', stroke: '22c55e', textColor: 'text-green-600', button: 'All Clear', bg: 'bg-green-500 hover:bg-green-600' };
+        } else if (score >= 60) {
+          return { emoji: '🆗', color: 'orange-500', stroke: 'f97316', textColor: 'text-orange-600', button: 'Show Fixes', bg: 'bg-orange-500 hover:bg-orange-600' };
+        } else {
+          return { emoji: '❌', color: 'red-500', stroke: 'ef4444', textColor: 'text-red-600', button: 'Show Fixes', bg: 'bg-orange-500 hover:bg-orange-600' };
+        }
       }
+
+      const lowScoring = modules.filter(m => m.score < 70).sort((a, b) => a.score - b.score);
 
       const tests = [
         { emoji: hasBoldInFirst ? '✅' : '❌', text: 'Bold/strong formatting in opening', passed: hasBoldInFirst },
@@ -256,6 +270,146 @@ const initTool = (form, results, progressContainer) => {
         { emoji: !hasPredictable ? '✅' : '❌', text: 'No predictable sentence starts', passed: !hasPredictable }
       ];
 
+      const topLowScoring = lowScoring.slice(0, 3);
+      const prioritisedFixes = [];
+      if (topLowScoring.some(m => m.name === "Answerability")) {
+        prioritisedFixes.push({ title: "Add Direct Answer in Opening", emoji: "💡", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
+          what: "A clear, bold, quotable answer AI engines can cite directly",
+          how: "Add a bold definition or summary in first 150–250 words. Use H2 questions and numbered steps.",
+          why: "Answerability is the #1 factor for AI citation and source selection"
+        });
+      }
+      if (topLowScoring.some(m => m.name === "EEAT Signals")) {
+        prioritisedFixes.push({ title: "Add Author Bio & Photo", emoji: "👤", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
+          what: "Visible byline proving who wrote this",
+          how: "Headshot + name + bio + credentials + social links",
+          why: "Boosts Expertise & Trust by 30–40 points — Google's #1 E-E-A-T signal"
+        });
+      }
+      if (topLowScoring.some(m => m.name === "Structured Data")) {
+        prioritisedFixes.push({ title: "Add Article + Person Schema", emoji: "✨", gradient: "from-purple-500/10 border-purple-500", color: "text-purple-600",
+          what: "Structured data that AI engines read directly",
+          how: "JSON-LD with @type Article + Person + author link. Add FAQPage if relevant.",
+          why: "Triggers rich answers and massive citation boost"
+        });
+      }
+      if (topLowScoring.some(m => m.name === "Scannability")) {
+        prioritisedFixes.push({ title: "Boost Scannability with Lists & Tables", emoji: "📋", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
+          what: "Easy-to-extract facts via structured formatting",
+          how: "Add bullet/numbered lists, data tables, H2/H3 headings, short paragraphs",
+          why: "AI prioritizes instantly extractable content"
+        });
+      }
+      if (topLowScoring.some(m => m.name === "Unique Insights")) {
+        prioritisedFixes.push({ title: "Add First-Hand Experience", emoji: "🧠", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
+          what: "Original insights that stand out from generic content",
+          how: "Include “I tested”, case studies, personal results, dated experiences",
+          why: "Prevents de-duplication and boosts originality"
+        });
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      clearInterval(interval);
+      progressContainer.classList.add('hidden');
+      results.classList.remove('hidden');
+
+      function getWhat(name) {
+        const map = {
+          "Answerability": "The degree to which your page provides direct, concise, and quotable answers right at the beginning. AI engines prioritize pages that immediately satisfy user intent with clear summaries they can cite verbatim in search results.",
+          "Structured Data": "Machine-readable markup (JSON-LD) that explicitly tells search engines what type of content your page contains. This helps trigger rich results, better understanding, and higher likelihood of being selected as a source.",
+          "EEAT Signals": "Visible indicators of Expertise, Experience, Authoritativeness, and Trustworthiness. These include author information, dates, secure connection, and links to reputable sources — critical for AI trust evaluation.",
+          "Scannability": "How easily both humans and AI can quickly extract key facts from your page. Well-structured content with headings, lists, tables, and short paragraphs is far more likely to be parsed and cited.",
+          "Conversational Tone": "Writing that feels natural and human by directly addressing the reader, using personal pronouns, asking questions, and acknowledging pain points. This matches how real people search and communicate.",
+          "Readability": "How simple and clear your writing is to understand and summarize. High readability (good Flesch score, varied sentences, active voice, simple words) makes content easier for AI to process accurately.",
+          "Unique Insights": "Original, first-hand information that can't be found elsewhere — personal testing, case studies, interviews, or timely observations. This prevents de-duplication and boosts perceived value.",
+          "Anti-AI Safety": "Subtle human writing patterns like natural sentence variation, low repetition, and unpredictable structure. These help avoid being mistakenly flagged as low-quality AI-generated content."
+        };
+        return map[name] || "An important factor for AI search visibility and citation.";
+      }
+
+      function getHow(name) {
+        const map = {
+          "Answerability": "Place a bold, complete answer in the first 150–300 words. Use definition-style phrasing, question-based H2 headings, FAQ or HowTo structured data, and numbered step-by-step instructions where relevant.",
+          "Structured Data": "Add a JSON-LD script tag containing Article/BlogPosting type. Include FAQPage or HowTo schema if applicable, and connect authorship with Person markup for maximum signal strength.",
+          "EEAT Signals": "Display a clear author byline with photo and bio. Show publish and update dates prominently. Link out to trusted authority sites and ensure your page uses HTTPS.",
+          "Scannability": "Break content with frequent H2/H3 headings. Use bullet points, numbered lists, and data tables liberally. Keep paragraphs short (2–4 lines) and include visual separators when helpful.",
+          "Conversational Tone": "Address the reader directly with “you”. Share personal insights using “I” or “we”. Include rhetorical questions and acknowledge common reader frustrations or challenges.",
+          "Readability": "Target a Flesch Reading Ease score above 60. Mix short and medium sentences. Prefer active voice and replace complex words with simpler alternatives when meaning allows.",
+          "Unique Insights": "Include personal testing results, case studies, or observations. Reference recent experiments or findings. Add direct quotes from interviews or surveys for exclusive value.",
+          "Anti-AI Safety": "Deliberately vary sentence length and structure throughout. Use synonyms instead of repeating words. Avoid starting multiple sentences the same way."
+        };
+        return map[name] || "Follow established best practices for this optimization area.";
+      }
+
+      function getWhy(name) {
+        const map = {
+          "Answerability": "AI-powered search engines heavily favor pages that provide immediate, quotable answers. Direct answers are the #1 factor for being cited in overviews and generative results.",
+          "Structured Data": "Proper markup gives explicit signals that improve understanding and trigger rich features. Pages with relevant schema are significantly more likely to be selected as authoritative sources.",
+          "EEAT Signals": "Trust is the primary deciding factor for AI citation. Clear authorship, dates, and credible references prove the content comes from a reliable, experienced source.",
+          "Scannability": "AI engines prioritize content that can be quickly and accurately extracted. Well-formatted elements like lists and tables are easiest to parse and reuse in answers.",
+          "Conversational Tone": "Natural human language closely matches real user queries. Conversational writing feels authentic and builds reader connection — both valued by modern search systems.",
+          "Readability": "Clear, simple writing is easier for AI to accurately summarize and cite. High readability reduces misinterpretation and improves overall content quality perception.",
+          "Unique Insights": "Original first-hand information stands out from generic content. Unique value prevents de-duplication and positions your page as an authoritative primary source.",
+          "Anti-AI Safety": "Human-like variation helps avoid accidental filtering as low-quality generated text. Natural patterns maintain visibility while preserving authentic voice."
+        };
+        return map[name] || "This factor significantly impacts AI search performance and citation likelihood.";
+      }
+
+      function getFixes(name) {
+        let fixes = '';
+        if (name === "Answerability") {
+          if (!hasBoldInFirst) fixes += '<p>• <strong>Bold key answers in opening:</strong> Place the main answer in bold text within the first paragraph so AI can easily quote it.</p>';
+          if (!hasDefinition) fixes += '<p>• <strong>Add definition phrasing:</strong> Start with clear phrases like “X means…” or “X is defined as…” to directly satisfy definitional queries.</p>';
+          if (!hasFAQSchema) fixes += '<p>• <strong>Use FAQ/HowTo schema:</strong> Add structured data markup that tells search engines this page answers common questions or provides steps.</p>';
+          if (!hasQuestionH2) fixes += '<p>• <strong>Question H2s:</strong> Use heading tags formatted as questions (e.g., “How do I fix X?”) to match real user searches.</p>';
+          if (!hasSteps) fixes += '<p>• <strong>Step-by-step guides:</strong> Include numbered lists with clear actions — AI engines love extractable instructions.</p>';
+          if (first300.length <= 600) fixes += '<p>• <strong>Strengthen opening section:</strong> Expand the first section to over 600 characters with valuable content so AI has more to summarize and cite.</p>';
+        }
+        if (name === "Structured Data") {
+          if (!hasJsonLd) fixes += '<p>• <strong>Add JSON-LD block:</strong> Include a script tag with structured data that search engines can read directly.</p>';
+          if (!hasArticle) fixes += '<p>• <strong>Include Article type:</strong> Mark the page as an Article or BlogPosting so AI knows it\'s authoritative content.</p>';
+          if (!hasFaqHowto) fixes += '<p>• <strong>Add FAQPage/HowTo:</strong> If the page answers questions or teaches a process, add the matching schema type.</p>';
+          if (!hasPerson) fixes += '<p>• <strong>Link Person schema:</strong> Connect the content to an author profile using Person markup for better trust signals.</p>';
+        }
+        if (name === "EEAT Signals") {
+          if (!hasAuthor) fixes += '<p>• <strong>Visible author byline:</strong> Show the writer\'s name, photo, and short bio near the top or bottom of the article.</p>';
+          if (!hasDate) fixes += '<p>• <strong>Publish date:</strong> Clearly display when the article was published and last updated.</p>';
+          if (!hasTrustedLinks) fixes += '<p>• <strong>Trusted outbound links:</strong> Link to reputable sources (universities, government sites, known authorities) to build credibility.</p>';
+          if (!url.startsWith('https:')) fixes += '<p>• <strong>Use HTTPS:</strong> Ensure your site uses a secure connection — basic but essential for trust.</p>';
+        }
+        if (name === "Scannability") {
+          if (headings <= 5) fixes += '<p>• <strong>More headings:</strong> Break content into logical sections with H2 and H3 tags every 300–400 words.</p>';
+          if (lists <= 2) fixes += '<p>• <strong>Bullet lists:</strong> Turn long paragraphs into scannable bullet or numbered lists.</p>';
+          if (tables === 0) fixes += '<p>• <strong>Tables for data:</strong> Present comparisons, specs, or stats in clean tables instead of paragraphs.</p>';
+          if (shortParas <= 5) fixes += '<p>• <strong>Short paragraphs:</strong> Keep most paragraphs under 4 lines for faster reading and easier AI extraction.</p>';
+          if (headings <= 8) fixes += '<p>• <strong>High heading density:</strong> Aim for a heading every few hundred words to guide both users and AI.</p>';
+        }
+        if (name === "Conversational Tone") {
+          if (youCount <= 5) fixes += '<p>• <strong>Use \'you\' frequently:</strong> Address the reader directly (“you can”, “your results”) to create connection.</p>';
+          if (iWeCount <= 3) fixes += '<p>• <strong>Share personal \'I/we\':</strong> Include phrases like “I tested this” or “we found that” to sound human.</p>';
+          if (questions <= 2) fixes += '<p>• <strong>Ask questions:</strong> Pose rhetorical questions that mirror what readers are thinking.</p>';
+          if (painPoints <= 3) fixes += '<p>• <strong>Mention reader struggles:</strong> Acknowledge pain points (“tired of slow results?”, “frustrated with…”) to build empathy.</p>';
+        }
+        if (name === "Readability") {
+          if (flesch <= 60) fixes += '<p>• <strong>Aim Flesch >60:</strong> Target a reading ease score above 60 by using shorter sentences and common words.</p>';
+          if (variationScore <= 70) fixes += '<p>• <strong>Vary sentence length:</strong> Mix short punchy sentences with medium ones for natural rhythm.</p>';
+          if (passivePatterns.length >= 5) fixes += '<p>• <strong>Reduce passive voice:</strong> Prefer active voice (“We tested X” instead of “X was tested by us”).</p>';
+          if (complexRatio >= 15) fixes += '<p>• <strong>Use simpler words:</strong> Replace complex jargon with everyday alternatives where possible.</p>';
+        }
+        if (name === "Unique Insights") {
+          if (!hasInsights) fixes += '<p>• <strong>Add personal markers:</strong> Include phrases like “In my experience”, “I tested”, or “we observed” to show original research.</p>';
+          if (!hasDated) fixes += '<p>• <strong>Mention timely results:</strong> Reference recent tests or current findings to prove freshness.</p>';
+          if (!hasInterviews) fixes += '<p>• <strong>Include quotes/interviews:</strong> Add direct quotes from experts or survey respondents for exclusive value.</p>';
+          if (words <= 1500) fixes += '<p>• <strong>Write in-depth content:</strong> Go beyond surface-level advice with detailed analysis and original data.</p>';
+        }
+        if (name === "Anti-AI Safety") {
+          if (variationScore <= 70) fixes += '<p>• <strong>High variation in sentences:</strong> Deliberately mix very short and longer sentences for human-like flow.</p>';
+          if (repeatedWords > 2) fixes += '<p>• <strong>Avoid repeating words:</strong> Use synonyms and varied phrasing instead of repeating the same terms.</p>';
+          if (hasPredictable) fixes += '<p>• <strong>Vary sentence starts:</strong> Don’t begin every sentence with the same structure or subject.</p>';
+        }
+        return fixes || '<p class="text-green-600 dark:text-green-400">All signals strong — excellent work!</p>';
+      }
+
       const moduleKeywords = {
         "Answerability": ["Bold/strong formatting in opening", "Clear definition pattern in opening", "FAQPage schema detected", "Question-style H2 headings", "Step-by-step language in opening", "Strong opening section (>600 chars)"],
         "Structured Data": ["JSON-LD structured data present", "Article/BlogPosting schema type", "FAQPage/HowTo schema type", "Person schema for author"],
@@ -266,15 +420,6 @@ const initTool = (form, results, progressContainer) => {
         "Unique Insights": ["First-hand experience markers", "Dated/timely results mentioned", "Interviews/quotes included", "Deep content (1500+ words)"],
         "Anti-AI Safety": ["High sentence burstiness", "Low word repetition", "No predictable sentence starts"]
       };
-
-      function getWhat(name) { /* keep your original getWhat function */ }
-      function getHow(name) { /* keep your original getHow function */ }
-      function getWhy(name) { /* keep your original getWhy function */ }
-      function getFixes(name) { /* keep your original full getFixes function with all cases */ return ''; } // placeholder - use original
-
-      clearInterval(interval);
-      progressContainer.classList.add('hidden');
-      results.classList.remove('hidden');
 
       results.innerHTML = `
 <div class="flex justify-center my-12 px-4">
@@ -307,8 +452,8 @@ const initTool = (form, results, progressContainer) => {
   ${modules.map(m => {
     const grade = getGradeInfo(m.score);
     const moduleTests = tests.filter(t => moduleKeywords[m.name].some(kw => t.text.includes(kw)));
-    const failedOrAverage = moduleTests.filter(t => !t.passed);
-    const allClear = failedOrAverage.length === 0;
+    const hasIssues = moduleTests.some(t => !t.passed);
+    const allClear = !hasIssues;
     return `
       <div class="p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color}">
         <div class="relative mx-auto w-32 h-32">
@@ -324,35 +469,36 @@ const initTool = (form, results, progressContainer) => {
         <p class="mt-4 text-lg font-medium text-center text-gray-800 dark:text-gray-200">${m.name}</p>
         <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200">${m.desc}</p>
         <div class="mt-4 space-y-2 text-left text-sm">
-          ${moduleTests.map(t => `<div class="flex items-center gap-2 text-gray-700 dark:text-gray-300"><span class="text-lg">${t.emoji}</span><span>${t.text}</span></div>`).join('')}
+          ${moduleTests.map(t => `
+            <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+              <span class="text-lg">${t.emoji}</span>
+              <span>${t.text}</span>
+            </div>
+          `).join('')}
         </div>
-        <button type="button" class="mt-4 w-full px-6 py-3 rounded-full text-white font-medium text-sm ${grade.bg}" onclick="const panel = this.nextElementSibling; panel.classList.toggle('hidden'); this.textContent = panel.classList.contains('hidden') ? '${grade.button}' : 'Hide Details';">
+        <button type="button" class="mt-4 w-full px-6 py-3 rounded-full text-white font-medium text-sm ${grade.bg}"
+                onclick="const panel = this.nextElementSibling; panel.classList.toggle('hidden'); this.textContent = panel.classList.contains('hidden') ? '${grade.button}' : 'Hide Details';">
           ${grade.button}
         </button>
         <div class="hidden mt-6 text-left text-sm space-y-8 text-gray-800 dark:text-gray-200">
           <p class="font-bold text-lg ${grade.textColor}">${grade.emoji} ${m.name}</p>
-          ${allClear ? '<p class="text-green-600 dark:text-green-400 text-lg">All signals strong — excellent work!</p>' : ''}
-          ${failedOrAverage.map(t => `
-            <div class="p-4 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
-              <p class="font-bold text-red-600 dark:text-red-400 mb-2">${t.emoji} ${t.text}</p>
-              <p class="font-semibold text-red-700 dark:text-red-300">How to fix?</p>
-              <p>${getFixes(m.name)}</p> <!-- Use specific per-check if expanded later -->
-              <p class="font-semibold text-red-700 dark:text-red-300 mt-3">How the metric works:</p>
-              <p>Detection logic and thresholds for this check.</p>
-              <p class="font-semibold text-red-700 dark:text-red-300 mt-3">Why it matters:</p>
-              <p>Impact on AI citation and visibility.</p>
-            </div>
-          `).join('')}
+          ${allClear ? '<p class="text-green-600 dark:text-green-400 text-lg font-medium">All signals strong — excellent work!</p>' : getFixes(m.name)}
           ${!allClear ? `
             <details class="mt-6">
               <summary class="cursor-pointer text-blue-600 dark:text-blue-400 font-medium hover:underline">More details →</summary>
-              <div class="mt-4 space-y-3 pl-4 border-l-4 border-blue-400 text-gray-800 dark:text-gray-200">
-                <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
-                <p>${getWhat(m.name)}</p>
-                <p class="font-bold text-green-600 dark:text-green-400">How:</p>
-                <p>${getHow(m.name)}</p>
-                <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
-                <p>${getWhy(m.name)}</p>
+              <div class="mt-4 space-y-4 pl-4 border-l-4 border-blue-400">
+                <div>
+                  <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
+                  <p>${getWhat(m.name)}</p>
+                </div>
+                <div>
+                  <p class="font-bold text-green-600 dark:text-green-400">How:</p>
+                  <p>${getHow(m.name)}</p>
+                </div>
+                <div>
+                  <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
+                  <p>${getWhy(m.name)}</p>
+                </div>
               </div>
             </details>
           ` : ''}
@@ -361,10 +507,6 @@ const initTool = (form, results, progressContainer) => {
     `;
   }).join('')}
 </div>
-
-
-
-
 ${prioritisedFixes.length > 0 ? `
   <div class="mt-16 px-4">
     <h3 class="text-3xl font-black text-center mb-8 text-blue-800 dark:text-blue-200">Top Priority Fixes (Highest Impact First)</h3>
@@ -392,7 +534,6 @@ ${prioritisedFixes.map(fix => `
     </div>
   </div>
 `).join('')}
-<!-- Score Improvement & Gains Section remains unchanged -->
 <div class="mt-20 px-4 max-w-6xl mx-auto">
   <div class="grid md:grid-cols-2 gap-8">
     <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl">
@@ -431,7 +572,7 @@ ${prioritisedFixes.map(fix => `
       <details class="mt-8">
         <summary class="cursor-pointer text-blue-600 dark:text-blue-400 font-bold mb-4">How We Calculated This</summary>
         <div class="text-sm space-y-3 text-gray-600 dark:text-gray-400">
-          <p>• Weighted scoring across 8 key modules</p>
+          <p>• Weighted scoring across 8 key modules (Answerability 25%, Structured Data & EEAT 15% each, etc.)</p>
           <p>• Projected score assumes full implementation of top priority fixes</p>
           <p>• Top-cited pages in AI results typically score 80+</p>
           <p>• Conservative estimate based on on-page optimization benchmarks</p>
@@ -503,7 +644,7 @@ ${prioritisedFixes.map(fix => `
         if (firstSlash !== -1) {
           const domain = cleaned.slice(0, firstSlash);
           const path = cleaned.slice(firstSlash);
-          displayUrl = domain + '\n' + path;
+          displayUrl = domain + '\\n' + path;
         } else {
           displayUrl = cleaned;
         }
