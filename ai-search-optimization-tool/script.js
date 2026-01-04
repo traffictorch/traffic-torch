@@ -354,55 +354,48 @@ const initTool = (form, results, progressContainer) => {
         };
         return map[name] || "This factor significantly impacts AI search performance and citation likelihood.";
       }
-      
-      
-      
+
       function getPerCheckFix(module, checkText) {
-  // Return specific fix for the check - extend as needed from existing getFixes logic
-  const fixes = {
-    "Answerability": {
-      "Bold/strong formatting in opening": "Place the main answer in bold text within the first paragraph so AI can easily quote it.",
-      "Clear definition pattern in opening": "Start with clear phrases like “X means…” or “X is defined as…” to directly satisfy definitional queries.",
-      "FAQPage schema detected": "Add structured data markup that tells search engines this page answers common questions or provides steps.",
-      "Question-style H2 headings": "Use heading tags formatted as questions (e.g., “How do I fix X?”) to match real user searches.",
-      "Step-by-step language in opening": "Include numbered lists with clear actions — AI engines love extractable instructions.",
-      "Strong opening section (>600 chars)": "Expand the first section to over 600 characters with valuable content so AI has more to summarize and cite."
-    },
-    // Add similar objects for other modules using existing getFixes bullets
-  };
-  return fixes[module]?.[checkText] || "Improve this signal to boost AI visibility.";
-}
+        const fixes = {
+          "Answerability": {
+            "Bold/strong formatting in opening": "Place the main answer in bold text within the first paragraph so AI can easily quote it.",
+            "Clear definition pattern in opening": "Start with clear phrases like “X means…” or “X is defined as…” to directly satisfy definitional queries.",
+            "FAQPage schema detected": "Add structured data markup that tells search engines this page answers common questions or provides steps.",
+            "Question-style H2 headings": "Use heading tags formatted as questions (e.g., “How do I fix X?”) to match real user searches.",
+            "Step-by-step language in opening": "Include numbered lists with clear actions — AI engines love extractable instructions.",
+            "Strong opening section (>600 chars)": "Expand the first section to over 600 characters with valuable content so AI has more to summarize and cite."
+          },
+          // Add for other modules as needed
+        };
+        return fixes[module]?.[checkText] || "Improve this signal to boost AI visibility.";
+      }
 
-function getPerCheckMetric(module, checkText) {
-  // Custom detection + thresholds per check
-  const metrics = {
-    "Answerability": {
-      "Bold/strong formatting in opening": "Scans first 1200 characters for <strong>, <b>, or <em> tags.",
-      "Clear definition pattern in opening": "Looks for phrases like 'is', 'means', 'refers to', 'defined as' in opening.",
-      "FAQPage schema detected": "Checks JSON-LD for FAQPage type.",
-      "Question-style H2 headings": "Searches H2 tags for question marks or ending ?!",
-      "Step-by-step language in opening": "Detects step/guide/how-to language in opening.",
-      "Strong opening section (>600 chars)": "Measures character count of extracted opening content."
-    },
-    // Extend for other modules
-  };
-  return metrics[module]?.[checkText] || "The tool checks for presence and quality of this signal.";
-}
+      function getPerCheckMetric(module, checkText) {
+        const metrics = {
+          "Answerability": {
+            "Bold/strong formatting in opening": "Scans first 1200 characters for <strong>, <b>, or <em> tags.",
+            "Clear definition pattern in opening": "Looks for phrases like 'is', 'means', 'refers to', 'defined as' in opening.",
+            "FAQPage schema detected": "Checks JSON-LD for FAQPage type.",
+            "Question-style H2 headings": "Searches H2 tags for question marks or ending ?!",
+            "Step-by-step language in opening": "Detects step/guide/how-to language in opening.",
+            "Strong opening section (>600 chars)": "Measures character count of extracted opening content."
+          },
+          // Add for other modules as needed
+        };
+        return metrics[module]?.[checkText] || "The tool checks for presence and quality of this signal.";
+      }
 
-function getPerCheckWhy(module, checkText) {
-  // AI-specific impact explanation
-  const why = {
-    "Answerability": {
-      "Bold/strong formatting in opening": "Bold text is easily extractable and often quoted directly in AI overviews.",
-      "Clear definition pattern in opening": "Definitional phrasing matches common user queries and improves source selection.",
-      // etc.
-    },
-    // Extend for other modules
-  };
-  return why[module]?.[checkText] || "This signal significantly affects how AI engines trust and cite your content.";
-}
-
-
+      function getPerCheckWhy(module, checkText) {
+        const why = {
+          "Answerability": {
+            "Bold/strong formatting in opening": "Bold text is easily extractable and often quoted directly in AI overviews.",
+            "Clear definition pattern in opening": "Definitional phrasing matches common user queries and improves source selection.",
+            // etc.
+          },
+          // Add for other modules as needed
+        };
+        return why[module]?.[checkText] || "This signal significantly affects how AI engines trust and cite your content.";
+      }
 
       function getFixes(name) {
         let fixes = '';
@@ -486,7 +479,7 @@ function getPerCheckWhy(module, checkText) {
         <div class="text-5xl font-black ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
           ${yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗' : '❌'}
         </div>
-        <div class="text-6xl sm:text-7xl md:text-8xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
+        <div class="text-7xl sm:text-8xl md:text-9xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
           ${yourScore}
         </div>
         <div class="text-xl sm:text-2xl font-medium mt-2 ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
@@ -497,32 +490,32 @@ function getPerCheckWhy(module, checkText) {
     </div>
   </div>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 my-16 px-4">>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 my-16 px-4">
   ${modules.map(m => {
     const grade = getGradeInfo(m.score);
     const moduleTests = tests.filter(t => moduleKeywords[m.name].some(kw => t.text.includes(kw)));
     const hasIssues = moduleTests.some(t => !t.passed);
     const allClear = !hasIssues;
     return `
-      <div class="p-2 min-h-96 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color} flex flex-col">
+      <div class="p-2 min-h-[400px] bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color} flex flex-col">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="16" fill="none"/>
             <circle cx="64" cy="64" r="56" stroke="#${grade.stroke}" stroke-width="16" fill="none" stroke-dasharray="${(m.score/100)*352} 352" stroke-linecap="round"/>
           </svg>
-<div class="absolute inset-0 flex items-center justify-center">
-  <div class="text-center">
-    <div class="text-4xl font-black $$ {grade.textColor}"> ${m.score}</div>
-  </div>
-</div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-center">
+              <div class="text-5xl font-black ${grade.textColor}">${m.score}</div>
+            </div>
+          </div>
         </div>
         <p class="mt-6 text-xl font-bold text-center text-gray-800 dark:text-gray-200">${m.name}</p>
-<div class="flex justify-center items-center gap-2 mt-2">
-  <span class="text-2xl">${grade.emoji}</span>
-  <span class="text-base font-medium ${grade.textColor}">
-    ${m.score >= 80 ? 'Excellent' : m.score >= 60 ? 'Needs Improvement' : 'Needs Work'}
-  </span>
-</div>
+        <div class="flex justify-center items-center gap-2 mt-2">
+          <span class="text-2xl">${grade.emoji}</span>
+          <span class="text-base font-medium ${grade.textColor}">
+            ${m.score >= 80 ? 'Excellent' : m.score >= 60 ? 'Needs Improvement' : 'Needs Work'}
+          </span>
+        </div>
         <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200">${m.desc}</p>
         <div class="mt-4 space-y-3 text-left text-sm flex-1">
           ${moduleTests.map(t => `
@@ -536,31 +529,9 @@ function getPerCheckWhy(module, checkText) {
                 onclick="const panel = this.nextElementSibling; panel.classList.toggle('hidden'); this.textContent = panel.classList.contains('hidden') ? '${grade.button}' : 'Hide Details';">
           ${grade.button}
         </button>
-        
-        
         <div class="hidden mt-6 text-left text-sm space-y-8 text-gray-800 dark:text-gray-200">
           <p class="font-bold text-xl ${grade.textColor}">${grade.emoji} ${m.name}</p>
-          ${allClear ? 
-            '<p class="text-green-600 dark:text-green-400 text-lg font-medium">All signals strong — excellent work!</p>' :
-            moduleTests.filter(t => !t.passed).map(t => `
-              <div class="p-5 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-300 dark:border-red-700">
-                <p class="font-bold text-red-600 dark:text-red-400 text-lg mb-4">${t.emoji} ${t.text}</p>
-                <div class="space-y-4">
-                  <div>
-                    <p class="font-semibold text-red-700 dark:text-red-300">How to fix?</p>
-                    <p class="mt-2">${getPerCheckFix(m.name, t.text)}</p>
-                  </div>
-                  <div>
-                    <p class="font-semibold text-red-700 dark:text-red-300">How the metric works:</p>
-                    <p class="mt-2">${getPerCheckMetric(m.name, t.text)}</p>
-                  </div>
-                  <div>
-                    <p class="font-semibold text-red-700 dark:text-red-300">Why it matters:</p>
-                    <p class="mt-2">${getPerCheckWhy(m.name, t.text)}</p>
-                  </div>
-                </div>
-              </div>
-            `).join('')}
+          ${allClear ? '<p class="text-green-600 dark:text-green-400 text-lg font-medium">All signals strong — excellent work!</p>' : getFixes(m.name)}
           ${!allClear ? `
             <details class="mt-8">
               <summary class="cursor-pointer text-blue-600 dark:text-blue-400 font-semibold hover:underline">More details →</summary>
@@ -581,8 +552,6 @@ function getPerCheckWhy(module, checkText) {
             </details>
           ` : ''}
         </div>
-        
-        
       </div>
     `;
   }).join('')}
