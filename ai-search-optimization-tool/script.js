@@ -463,12 +463,17 @@ const initTool = (form, results, progressContainer) => {
           </svg>
 <div class="absolute inset-0 flex items-center justify-center">
   <div class="text-center">
-    <div class="text-4xl font-black $$ {grade.textColor}"> $${grade.emoji}</div>
-    <div class="text-2xl font-bold $$ {grade.textColor} mt-1"> $${m.score}</div>
+    <div class="text-4xl font-black $$ {grade.textColor}"> $${m.score}</div>
   </div>
 </div>
         </div>
-        <p class="mt-6 text-lg font-medium text-center text-gray-800 dark:text-gray-200">${m.name}</p>
+        <p class="mt-6 text-xl font-bold text-center text-gray-800 dark:text-gray-200">${m.name}</p>
+<div class="flex justify-center items-center gap-2 mt-2">
+  <span class="text-2xl">${grade.emoji}</span>
+  <span class="text-base font-medium ${grade.textColor}">
+    ${m.score >= 80 ? 'Excellent' : m.score >= 60 ? 'Needs Improvement' : 'Needs Work'}
+  </span>
+</div>
         <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200">${m.desc}</p>
         <div class="mt-4 space-y-2 text-left text-sm">
           ${moduleTests.map(t => `
