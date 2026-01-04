@@ -494,7 +494,6 @@ ${modules.map(m => {
       </div>
     </div>
   `;
-}).join('')}
           
           
           
