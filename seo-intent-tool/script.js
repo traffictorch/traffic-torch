@@ -1,4 +1,97 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+
+  // === STEP 1: CENTRAL CONFIG OBJECT + PARSING VARIABLES ===
+  const defaultConfig = {
+    parsing: {
+      authorBylineSelectors: [
+        'meta[name="author" i]',
+        'meta[property="article:author"]',
+        '[rel="author"]',
+        '.author',
+        '.byline',
+        '.written-by',
+        '[class*="author" i]',
+        '[itemprop="author"]',
+        '[class*="byline" i]',
+        '.post-author',
+        '.entry-author',
+        '.writer-name',
+        '.blog-author',
+        '.h-card .p-name',
+        '.author-name'
+      ],
+      authorBioSelectors: [
+        '.author-bio',
+        '.bio',
+        '[class*="bio" i]',
+        '.about-author',
+        '.author-description',
+        '.author-box',
+        '.author-info',
+        '.author-details',
+        '.writer-bio',
+        '.contributor-bio',
+        '.author-profile',
+        '.about-the-author'
+      ],
+      contactLinkSelectors: [
+        'a[href*="/contact" i]',
+        'a[href*="mailto:" i]',
+        'a[href*="tel:" i]'
+      ],
+      policyLinkSelectors: [
+        'a[href*="/privacy" i]',
+        'a[href*="/terms" i]',
+        'a[href*="/legal" i]'
+      ],
+      updateDateSelectors: [
+        'time[datetime]',
+        '.updated',
+        '.last-modified',
+        '.date-updated',
+        '.published',
+        '.post-date',
+        '.entry-date',
+        'meta[name="date" i]',
+        'meta[name="last-modified" i]',
+        'meta[property="article:modified_time"]',
+        'meta[property="og:updated_time"]',
+        'meta[name="revised"]',
+        '[class*="update" i]',
+        '[class*="date" i]',
+        '.modified-date',
+        '.publish-date'
+      ]
+    }
+  };
+
+  let config = { ...defaultConfig };
+  const urlParams = new URLSearchParams(window.location.search);
+  const configParam = urlParams.get('config');
+  if (configParam) {
+    try {
+      const override = JSON.parse(decodeURIComponent(configParam));
+      config = deepMerge(config, override);
+    } catch (e) {
+      console.warn('Invalid config URL parameter');
+    }
+  }
+
+  function deepMerge(target, source) {
+    for (const key in source) {
+      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+        if (!target[key]) target[key] = {};
+        deepMerge(target[key], source[key]);
+      } else {
+        target[key] = source[key];
+      }
+    }
+    return target;
+  }
+  
+  
+  
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
@@ -86,8 +179,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (experienceMetrics.timelines < 80) failedExperience.push("Mention specific timelines or dates from your experience");
       if (experienceMetrics.personalMedia < 80) failedExperience.push("Add original photos/videos with personal captions");
       // === EXPERTISE ===
-      const hasAuthorByline = !!doc.querySelector('meta[name="author" i], meta[property="article:author"], [rel="author"], .author, .byline, .written-by, [class*="author" i], [itemprop="author"], [class*="byline" i], .post-author, .entry-author');
-      const hasAuthorBio = !!doc.querySelector('.author-bio, .bio, [class*="bio" i], .about-author, .author-description, .author-box, .author-info, .author-details, .writer-bio, .contributor-bio');
+      const hasAuthorByline = !!doc.querySelector(config.parsing.authorBylineSelectors.join(', '));
+      const hasAuthorBio = !!doc.querySelector(config.parsing.authorBioSelectors.join(', '));
       const credentialKeywords = (cleanedText.match(/\b(PhD|MD|doctor|certified|licensed|years? of experience|expert in|specialist|award-winning|published in|fellow|board-certified|certificate|diploma|qualification|accredited|professional membership|industry leader|renowned|distinguished|master's degree|bachelor's degree)\b/gi) || []).length;
       const hasCitations = !!doc.querySelector('cite, .references, .sources, a[href*="doi.org"], a[href*="pubmed"], a[href*="researchgate"], footer a[href*="/references"]');
       const expertiseMetrics = {
@@ -127,18 +220,23 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!hasAboutLinks) failedAuthoritativeness.push("Add links to an About or Team page");
       // === TRUSTWORTHINESS ===
       const isHttps = url.startsWith('https');
-      const contactLinkElements = doc.querySelectorAll('a[href*="/contact" i], a[href*="mailto:" i], a[href*="tel:" i]');
+      
+      
+      const contactLinkElements = doc.querySelectorAll(config.parsing.contactLinkSelectors.join(', '));
       const footerContactText = Array.from(doc.querySelectorAll('footer a, footer span, footer div')).some(el =>
         el.textContent.toLowerCase().includes('contact')
       );
       const hasContact = contactLinkElements.length > 0 || footerContactText;
-      const policyLinkElements = doc.querySelectorAll('a[href*="/privacy" i], a[href*="/terms" i]');
+      const policyLinkElements = doc.querySelectorAll(config.parsing.policyLinkSelectors.join(', '));
       const footerPolicyText = Array.from(doc.querySelectorAll('footer a, footer span, footer div')).some(el =>
         /privacy|terms/i.test(el.textContent)
       );
       const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
-      const hasUpdateDate = !!doc.querySelector('time[datetime], .updated, .last-modified, .date-updated, .published, .post-date, .entry-date, meta[name="date" i], meta[name="last-modified" i], meta[property="article:modified_time"], meta[property="og:updated_time"], meta[name="revised"], [class*="update" i], [class*="date" i]') ||
-  cleanedText.match(/\b(Updated|Last updated|Published|Modified on)[\s:]*\w+/gi);
+      const updateDateElement = doc.querySelector(config.parsing.updateDateSelectors.join(', '));
+      const hasUpdateDate = !!updateDateElement ||
+        cleanedText.match(/\b(Updated|Last updated|Published|Modified on)[\s:]*\w+/gi);
+      
+      
       const trustworthinessMetrics = {
         https: isHttps ? 100 : 20,
         contact: hasContact ? 100 : 20,
