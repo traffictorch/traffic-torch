@@ -490,7 +490,7 @@ const initTool = (form, results, progressContainer) => {
     </div>
   </div>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 my-16 px-4">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 my-16 px-4">
   ${modules.map(m => {
     const grade = getGradeInfo(m.score);
     const moduleTests = tests.filter(t => moduleKeywords[m.name].some(kw => t.text.includes(kw)));
@@ -529,31 +529,9 @@ const initTool = (form, results, progressContainer) => {
                 onclick="const panel = this.nextElementSibling; panel.classList.toggle('hidden'); this.textContent = panel.classList.contains('hidden') ? '${grade.button}' : 'Hide Details';">
           ${grade.button}
         </button>
-        
-        
         <div class="hidden mt-6 text-left text-sm space-y-8 text-gray-800 dark:text-gray-200">
           <p class="font-bold text-xl ${grade.textColor}">${grade.emoji} ${m.name}</p>
-          ${allClear ? 
-            '<p class="text-green-600 dark:text-green-400 text-lg font-medium">All signals strong — excellent work!</p>' :
-            moduleTests.filter(t => !t.passed).map(t => `
-              <div class="p-5 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-300 dark:border-red-700">
-                <p class="font-bold text-red-600 dark:text-red-400 text-lg mb-4">${t.emoji} ${t.text}</p>
-                <div class="space-y-4">
-                  <div>
-                    <p class="font-semibold text-red-700 dark:text-red-300">How to fix?</p>
-                    <p class="mt-2">${getPerCheckFix(m.name, t.text)}</p>
-                  </div>
-                  <div>
-                    <p class="font-semibold text-red-700 dark:text-red-300">How the metric works:</p>
-                    <p class="mt-2">${getPerCheckMetric(m.name, t.text)}</p>
-                  </div>
-                  <div>
-                    <p class="font-semibold text-red-700 dark:text-red-300">Why it matters:</p>
-                    <p class="mt-2">${getPerCheckWhy(m.name, t.text)}</p>
-                  </div>
-                </div>
-              </div>
-            `).join('')}
+          ${allClear ? '<p class="text-green-600 dark:text-green-400 text-lg font-medium">All signals strong — excellent work!</p>' : getFixes(m.name)}
           ${!allClear ? `
             <details class="mt-8">
               <summary class="cursor-pointer text-blue-600 dark:text-blue-400 font-semibold hover:underline">More details →</summary>
@@ -574,8 +552,6 @@ const initTool = (form, results, progressContainer) => {
             </details>
           ` : ''}
         </div>
-        
-        
       </div>
     `;
   }).join('')}
