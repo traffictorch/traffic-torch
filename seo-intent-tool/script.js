@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // === EXPERIENCE ===
       const firstPersonCount = (cleanedText.match(/\b(I|we|my|our|I've|we've|me|us|myself|ourselves)\b/gi) || []).length;
       const anecdotePhrases = (cleanedText.match(/\b(in my experience|I tested|we found that|from my trials|I tried|we tried|my results|our case study|in practice|hands-on|real-world|based on my|after testing|client case|personal review)\b/gi) || []).length;
-      const timelineMentions = (cleanedText.match(/\b(last year|in 20\d{2}|this year|over the past \d+|since \d{4}|in \d{4}|during \d{4}|recently|within the last|for \d+ years?|after \d+ months?)\b.*\b(I|we|my|our)\b/gi) || []).length;
+      const timelineMentions = (cleanedText.match(/\b(last year|in 20\d{2}|this year|over the past \d+|since \d{4}|in \d{4}|during \d{4}|recently|within the last|for \d+ years?|after \d+ months?|as of \d{4}|updated (on|in) \d{4}|published (on|in) \d{4}|20\d{2}|202\d)\b.*\b(I|we|my|our)\b/gi) || []).length;
       const personalMedia = !!doc.querySelector('img[alt*="my" i], img[alt*="our" i], video caption, figure figcaption');
       const experienceMetrics = {
         firstPerson: firstPersonCount > 15 ? 100 : firstPersonCount > 5 ? 60 : 20,
@@ -137,7 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
         /privacy|terms/i.test(el.textContent)
       );
       const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
-      const hasUpdateDate = !!doc.querySelector('time[datetime], .updated, .last-modified, .date-updated, meta[name="date" i], meta[name="last-modified" i], meta[property="article:modified_time"], meta[property="og:updated_time"], meta[name="revised"]');
+      const hasUpdateDate = !!doc.querySelector('time[datetime], .updated, .last-modified, .date-updated, .published, .post-date, .entry-date, meta[name="date" i], meta[name="last-modified" i], meta[property="article:modified_time"], meta[property="og:updated_time"], meta[name="revised"], [class*="update" i], [class*="date" i]') ||
+  cleanedText.match(/\b(Updated|Last updated|Published|Modified on)[\s:]*\w+/gi);
       const trustworthinessMetrics = {
         https: isHttps ? 100 : 20,
         contact: hasContact ? 100 : 20,
