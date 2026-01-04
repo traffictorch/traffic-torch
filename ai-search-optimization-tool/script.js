@@ -497,14 +497,14 @@ function getPerCheckWhy(module, checkText) {
     </div>
   </div>
 </div>
-<div class="grid md:grid-cols-4 gap-6 my-16 px-4">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 my-16 px-4">>
   ${modules.map(m => {
     const grade = getGradeInfo(m.score);
     const moduleTests = tests.filter(t => moduleKeywords[m.name].some(kw => t.text.includes(kw)));
     const hasIssues = moduleTests.some(t => !t.passed);
     const allClear = !hasIssues;
     return `
-      <div class="p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color}">
+      <div class="p-2 min-h-96 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color} flex flex-col">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="16" fill="none"/>
@@ -524,7 +524,7 @@ function getPerCheckWhy(module, checkText) {
   </span>
 </div>
         <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200">${m.desc}</p>
-        <div class="mt-4 space-y-2 text-left text-sm">
+        <div class="mt-4 space-y-3 text-left text-sm flex-1">
           ${moduleTests.map(t => `
             <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
               <span class="text-lg">${t.emoji}</span>
