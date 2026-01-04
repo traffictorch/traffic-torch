@@ -214,6 +214,15 @@ const initTool = (form, results, progressContainer) => {
         { name: "Unique Insights", score: uniqueInsights, desc: "First-hand markers, dated results, interviews" },
         { name: "Anti-AI Safety", score: antiAiSafety, desc: "Variation, low repetition, no predictable patterns" }
       ];
+      function getGradeInfo(score) {
+  if (score >= 80) {
+    return { emoji: '✅', color: 'green-500', textColor: 'text-green-600', button: 'All Clear' };
+  } else if (score >= 60) {
+    return { emoji: '🆗', color: 'orange-500', textColor: 'text-orange-600', button: 'Show Fixes' };
+  } else {
+    return { emoji: '❌', color: 'red-500', textColor: 'text-red-600', button: 'Show Fixes' };
+  }
+}
       const lowScoring = modules.filter(m => m.score < 70).sort((a, b) => a.score - b.score);
 
       const tests = [
@@ -418,41 +427,77 @@ const initTool = (form, results, progressContainer) => {
         <div class="text-5xl sm:text-6xl md:text-7xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
           ${yourScore}
         </div>
-        <div class="text-xl sm:text-2xl text-gray-500 dark:text-gray-400">/100</div>
+        <div class="text-xl sm:text-2xl text-gray-800 dark:text-gray-200">/100</div>
       </div>
     </div>
   </div>
 </div>
 
 <div class="grid md:grid-cols-4 gap-6 my-16 px-4">
-  ${modules.map(m => {
-    const borderColor = m.score >= 80 ? 'border-green-500' : m.score >= 60 ? 'border-orange-500' : 'border-red-500';
-    const moduleTests = tests.filter(t => moduleKeywords[m.name].some(kw => t.text.includes(kw)));
-    return `
-      <div class="p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border ${borderColor}">
-        <div class="relative mx-auto w-32 h-32">
-          <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-            <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-            <circle cx="64" cy="64" r="56"
-                    stroke="${m.score >= 80 ? '#22c55e' : m.score >= 60 ? '#f97316' : '#ef4444'}"
-                    stroke-width="12" fill="none"
-                    stroke-dasharray="${(m.score/100)*352} 352"
-                    stroke-linecap="round"/>
-          </svg>
-          <div class="absolute inset-0 flex items-center justify-center text-4xl font-black ${m.score >= 80 ? 'text-green-600' : m.score >= 60 ? 'text-orange-600' : 'text-red-600'}">
-            ${m.score}
+
+
+${modules.map(m => {
+  const grade = getGradeInfo(m.score);
+  const moduleTests = tests.filter(t => moduleKeywords[m.name].some(kw => t.text.includes(kw)));
+  const fixes = getFixes(m.name);
+  const allClear = fixes.includes('All checks passed') || fixes.includes('All signals strong');
+  return `
+    <div class="p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color}">
+      <div class="relative mx-auto w-32 h-32">
+        <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+          <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="16" fill="none"/>
+          <circle cx="64" cy="64" r="56"
+                  stroke="#${grade.color === 'green-500' ? '22c55e' : grade.color === 'orange-500' ? 'f97316' : 'ef4444'}"
+                  stroke-width="16" fill="none"
+                  stroke-dasharray="${(m.score/100)*352} 352"
+                  stroke-linecap="round"/>
+        </svg>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="text-center">
+            <div class="text-4xl font-black $$ {grade.textColor}"> $${grade.emoji}</div>
+            <div class="text-2xl font-bold $$ {grade.textColor}"> $${m.score}</div>
           </div>
         </div>
-        <p class="mt-4 text-lg font-medium text-center">${m.name}</p>
-        <p class="text-sm opacity-70 mt-2 text-center">${m.desc}</p>
-
-        <div class="mt-6 space-y-2 text-left text-sm">
-          ${moduleTests.map(t => `
-            <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-              <span class="text-lg">${t.emoji}</span>
-              <span>${t.text}</span>
+      </div>
+      <p class="mt-4 text-lg font-medium text-center text-gray-800 dark:text-gray-200">${m.name}</p>
+      <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200">${m.desc}</p>
+      <div class="mt-6 space-y-2 text-left text-sm">
+        ${moduleTests.map(t => `
+          <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+            <span class="text-lg">${t.emoji}</span>
+            <span>${t.text}</span>
+          </div>
+        `).join('')}
+      </div>
+      <button onclick="this.parentNode.querySelector('.edu-panel').classList.toggle('hidden'); 
+                       this.textContent = this.textContent === '$$ {grade.button}' ? 'Hide Details' : ' $${grade.button}';"
+              class="mt-6 w-full px-6 py-3 rounded-full text-white font-medium text-sm
+                     ${grade.color === 'green-500' ? 'bg-green-500 hover:bg-green-600' : 'bg-orange-500 hover:bg-orange-600'}">
+        ${grade.button}
+      </button>
+      <div class="edu-panel hidden mt-6 text-left text-sm space-y-6 text-gray-800 dark:text-gray-200">
+        <div>
+          <p class="font-bold text-lg mb-3 $$ {grade.textColor}"> $${grade.emoji} ${m.name}</p>
+          <div class="space-y-4">
+            <div>
+              <p class="font-bold text-red-600 dark:text-red-400">Recommended Fixes</p>
+              <div class="mt-2 space-y-2">${allClear ? '<p class="text-green-600 dark:text-green-400">All signals strong — excellent work!</p>' : fixes}</div>
             </div>
-          `).join('')}
+            <div>
+              <p class="font-bold text-blue-600 dark:text-blue-400">More Details</p>
+              <p class="mt-3"><span class="font-bold text-blue-500">What:</span> ${getWhat(m.name)}</p>
+              <p class="mt-3"><span class="font-bold text-green-500">How:</span> ${getHow(m.name)}</p>
+              <p class="mt-3"><span class="font-bold text-orange-500">Why:</span> ${getWhy(m.name)}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}).join('')}
+          
+          
+          
         </div>
 
         <button onclick="this.parentNode.querySelector('.collapsible').classList.toggle('hidden'); this.textContent = this.textContent.includes('Show') ? 'Hide Fixes & Details' : 'Show Fixes & Details';"
@@ -490,15 +535,15 @@ ${prioritisedFixes.map(fix => `
         <h4 class="text-2xl font-bold ${fix.color}">${fix.title}</h4>
         <div class="mt-4">
           <p class="text-blue-500 font-bold">What:</p>
-          <p class="text-gray-500 mt-1">${fix.what}</p>
+          <p class="text-gray-800 dark:text-gray-200 mt-1">${fix.what}</p>
         </div>
         <div class="mt-2">
           <p class="text-green-500 font-bold">How:</p>
-          <p class="text-gray-500 mt-1">${fix.how}</p>
+          <p class="text-gray-800 dark:text-gray-200 mt-1">${fix.how}</p>
         </div>
         <div class="mt-2">
           <p class="text-orange-500 font-bold">Why:</p>
-          <p class="text-gray-500 mt-1">${fix.why}</p>
+          <p class="text-gray-800 dark:text-gray-200 mt-1">${fix.why}</p>
         </div>
       </div>
     </div>
