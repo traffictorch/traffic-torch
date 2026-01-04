@@ -469,7 +469,7 @@ ${modules.map(m => {
           </div>
         `).join('')}
       </div>
-      <button onclick="this.parentNode.querySelector('.edu-panel').classList.toggle('hidden'); 
+      <button onclick="const btn = this; const panel = this.parentNode.querySelector('.edu-panel'); panel.classList.toggle('hidden'); btn.textContent = panel.classList.contains('hidden') ? '${grade.button}' : 'Hide Details';"
                        this.textContent = this.textContent === '$$ {grade.button}' ? 'Hide Details' : ' $${grade.button}';"
               class="mt-6 w-full px-6 py-3 rounded-full text-white font-medium text-sm
                      ${grade.color === 'green-500' ? 'bg-green-500 hover:bg-green-600' : 'bg-orange-500 hover:bg-orange-600'}">
