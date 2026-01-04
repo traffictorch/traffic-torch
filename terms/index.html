@@ -243,53 +243,31 @@
 </div>
 <!-- AddToAny END -->
 
-<!-- Breadcrumbs + Last Updated: responsive, centered, with date from GitHub commit -->
-<div class="max-w-5xl mx-auto px-6 py-8 text-center">
+	<!-- Breadcrumbs -->
+<div class="max-w-5xl mx-auto px-6 py-4 text-center">
   <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
     <a href="/">Traffic Torch</a>
   </p>
   <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
     <span id="page-name"></span>
   </p>
-  <p id="last-updated" class="text-sm text-gray-500 dark:text-gray-400 mt-4">
-    Last updated: <span id="update-date">Loading...</span>
-  </p>
 </div>
 
 <script>
-  // Set page name (same as before, trimmed)
+  // Set page name
   document.getElementById('page-name').textContent = document.title
     .replace('Traffic Torch – ', '')
     .replace(' | Traffic Torch', '')
     .replace(' Tool', '')
     .trim();
-
-  // Fetch last commit date from GitHub API via CORS proxy
-  (async function() {
-    try {
-      // Get current page path (e.g., '/contact/' → 'contact/index.html')
-      let path = window.location.pathname;
-      if (path.endsWith('/')) path += 'index.html';
-      path = path.slice(1); // Remove leading '/'
-
-      const apiUrl = `https://api.github.com/repos/traffictorch/traffic-torch/commits?path=${encodeURIComponent(path)}&per_page=1`;
-      const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(apiUrl);
-
-      const response = await fetch(proxyUrl);
-      const data = await response.json();
-
-      if (data && data.length > 0) {
-        const commitDate = new Date(data[0].commit.author.date);
-        const formattedDate = commitDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        document.getElementById('update-date').textContent = formattedDate;
-      } else {
-        document.getElementById('update-date').textContent = 'Date not available';
-      }
-    } catch (error) {
-      document.getElementById('update-date').textContent = 'Date not available';
-    }
-  })();
 </script>
+
+<!-- Last Update Date -->
+<div class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <p class="text-sm text-gray-500 dark:text-gray-400">
+    Last updated: <span>January 4, 2026</span>
+  </p>
+</div>
 
   </main>
 
