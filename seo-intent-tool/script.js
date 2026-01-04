@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
  
  
  
-   ${[
+  ${[
     { key: 'Experience', score: experienceScore, metrics: experienceMetrics, failed: failedExperience },
     { key: 'Expertise', score: expertiseScore, metrics: expertiseMetrics, failed: failedExpertise },
     { key: 'Authoritativeness', score: authoritativenessScore, metrics: authoritativenessMetrics, failed: failedAuthoritativeness },
@@ -356,72 +356,83 @@ document.addEventListener('DOMContentLoaded', () => {
     const border = score >= 80 ? 'border-green-500' : score >= 60 ? 'border-orange-500' : 'border-red-500';
 
     const signals = key === 'Experience' ? [
-      { name: 'Strong first-person language', pass: metrics.firstPerson >= 80, 
+      { name: 'Strong first-person language', value: metrics.firstPerson, 
         fix: 'Add more first-person language (“I/we/my/our”) throughout the content. Use it naturally in intros, examples, and conclusions to show personal involvement.', 
         how: 'The tool counts occurrences of first-person pronouns (I, we, my, our, me, us) and related forms. Strong = 15+ mentions across the page.', 
         why: 'First-person writing signals genuine hands-on experience to Google and readers. It increases trust, engagement, and dwell time — all positive ranking factors. Pages with strong personal voice often outperform third-person corporate content.' },
-      { name: 'Personal anecdotes included', pass: metrics.anecdotes >= 80, 
+      { name: 'Personal anecdotes included', value: metrics.anecdotes, 
         fix: 'Include personal anecdotes or real-world examples. Share specific stories like “I tested this method on 5 client sites and saw…” or “In my experience working with…” to make advice relatable.', 
         how: 'Scans for phrases like “I tested”, “in my experience”, “we found that”, “hands-on”, “real-world”. Strong = 3+ detections.', 
         why: 'Anecdotes prove you’ve actually done what you’re teaching. They build emotional connection with readers and reduce bounce rates. Google favors content that demonstrates real application over theoretical advice.' },
-      { name: 'Timeline/date mentions', pass: metrics.timelines >= 80, 
+      { name: 'Timeline/date mentions', value: metrics.timelines, 
         fix: 'Mention specific timelines or dates from your experience, e.g., “Last year I tried…”, “Since 2020 we’ve used this approach…”, “Over the past 18 months our team has…”', 
         how: 'Looks for date/year references tied to first-person context. Strong = 2+ personal timeline mentions.', 
         why: 'Timelines show recency and depth of experience. They help Google assess content freshness and real-world testing. Dated personal experience outperforms generic evergreen claims.' },
-      { name: 'Personal media/captions', pass: metrics.personalMedia >= 80, 
+      { name: 'Personal media/captions', value: metrics.personalMedia, 
         fix: 'Add original photos, screenshots, or videos with personal captions like “My setup for testing…”, “Our results after 3 months”, or “Client dashboard I managed”.', 
         how: 'Checks image alt text, captions, and figures for personal context (“my”, “our”, “I took this”). Strong = at least one detected.', 
         why: 'Original media with personal context proves you actually did the work. It boosts credibility, reduces perceived AI content risk, and increases user trust and time on page.' }
     ] : key === 'Expertise' ? [
-      { name: 'Author byline present', pass: metrics.byline >= 80, 
+      { name: 'Author byline present', value: metrics.byline, 
         fix: 'Add a clear, visible author name linked to the content. Place it above or below the article with proper markup.', 
         how: 'Searches common byline selectors and meta tags across platforms. Strong = author name clearly detected.', 
         why: 'Google increasingly ties content quality to identifiable authors. Bylines help establish who is responsible for the advice. Pages with named authors often rank higher in E-E-A-T sensitive topics.' },
-      { name: 'Author bio section', pass: metrics.bio >= 80, 
+      { name: 'Author bio section', value: metrics.bio, 
         fix: 'Create a dedicated author box with professional photo, background, qualifications, and links to social/other work.', 
         how: 'Looks for bio containers and structured sections. Strong = dedicated bio area found.', 
         why: 'Bios provide proof of expertise and background. They help Google and readers assess whether the author is qualified. Strong author profiles correlate with higher rankings.' },
-      { name: 'Credentials mentioned', pass: metrics.credentials >= 80, 
+      { name: 'Credentials mentioned', value: metrics.credentials, 
         fix: 'Mention relevant qualifications, certifications, years of experience, publications, or awards directly in content or bio.', 
         how: 'Counts credential keywords (PhD, certified, licensed, years of experience, published in, etc.). Strong = 3+ mentions.', 
         why: 'Explicit credentials demonstrate specialized knowledge. They reduce perceived risk of inaccurate advice. Google rewards content from demonstrably qualified sources.' },
-      { name: 'Citations/references', pass: metrics.citations >= 80, 
+      { name: 'Citations/references', value: metrics.citations, 
         fix: 'Include links to supporting studies, sources, tools, or references. Add a references section if appropriate.', 
         how: 'Detects citation links and reference sections. Strong = references or source links found.', 
         why: 'Citations show research depth and respect for original sources. They increase perceived reliability. Well-cited content performs better in competitive SERPs.' }
     ] : key === 'Authoritativeness' ? [
-      { name: 'Strong schema markup', pass: metrics.schema >= 80, 
+      { name: 'Strong schema markup', value: metrics.schema, 
         fix: 'Implement relevant JSON-LD schema (Article, Person, Organization, FAQPage, HowTo) in the page head.', 
         how: 'Counts valid schema types in script tags. Strong = 2+ relevant types detected.', 
         why: 'Schema helps Google understand entities and content type. It enables rich results and strengthens entity authority. Proper markup is a clear authority signal.' },
-      { name: 'Awards/endorsements mentioned', pass: metrics.awards >= 80, 
+      { name: 'Awards/endorsements mentioned', value: metrics.awards, 
         fix: 'Mention any awards, media features, client testimonials, or industry recognition earned by you or your site.', 
         how: 'Scans text for award-related keywords and phrases. Strong = mentions detected.', 
         why: 'External recognition signals leadership in the niche. It builds trust with both users and search engines. Award mentions correlate with higher topical authority.' },
-      { name: 'About/Team links', pass: metrics.aboutLinks >= 80, 
+      { name: 'About/Team links', value: metrics.aboutLinks, 
         fix: 'Add clear links to About, Team, or Company pages in navigation or footer.', 
         how: 'Checks navigation and footer for About/Team links. Strong = link found.', 
         why: 'Established entities with About pages are seen as more authoritative. They show transparency and longevity. Google favors known entities over anonymous sites.' }
     ] : [
-      { name: 'Secure HTTPS', pass: metrics.https >= 80, 
+      { name: 'Secure HTTPS', value: metrics.https, 
         fix: 'Switch your site to HTTPS with a valid SSL certificate.', 
         how: 'Checks page URL protocol. Strong = loads via https://.', 
         why: 'HTTPS is a direct ranking factor and basic security requirement. It protects user data and builds trust. All modern sites must use HTTPS to avoid warnings and penalties.' },
-      { name: 'Contact info present', pass: metrics.contact >= 80, 
+      { name: 'Contact info present', value: metrics.contact, 
         fix: 'Add a dedicated Contact page with email, phone, or form. Include contact details in footer.', 
         how: 'Scans for contact links and footer text. Strong = contact method detected.', 
         why: 'Contactability shows legitimacy and accountability. It reduces perceived scam risk. Google favors sites users can actually reach.' },
-      { name: 'Privacy/Terms links', pass: metrics.policies >= 80, 
+      { name: 'Privacy/Terms links', value: metrics.policies, 
         fix: 'Add links to Privacy Policy and Terms of Service pages, especially in footer.', 
         how: 'Looks for policy links across common locations. Strong = at least one found.', 
         why: 'Policy pages demonstrate legal compliance and transparency. They are expected on professional sites. Missing policies can trigger trust issues.' },
-      { name: 'Update date shown', pass: metrics.updateDate >= 80, 
+      { name: 'Update date shown', value: metrics.updateDate, 
         fix: 'Display a visible “Last updated” or “Published” date on the page.', 
         how: 'Searches common date selectors and visible text. Strong = date detected.', 
         why: 'Update dates signal content freshness and maintenance. Google prioritizes current information. Dated content builds confidence in accuracy.' }
     ];
 
-    const failedSignals = signals.filter(s => !s.pass);
+    // Grade each signal: pass (>=80), average (>=40), fail (<40)
+    signals.forEach(s => {
+      if (s.value >= 80) {
+        s.grade = 'pass'; // ✅
+      } else if (s.value >= 40) {
+        s.grade = 'average'; // 🆗
+      } else {
+        s.grade = 'fail'; // ❌
+      }
+    });
+
+    const needsFixSignals = signals.filter(s => s.grade !== 'pass');
 
     return `
     <div class="score-card text-center p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${border}">
@@ -440,23 +451,30 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <p class="mt-3 text-lg font-medium text-gray-800 dark:text-gray-200">${key}</p>
       <div class="mt-3 space-y-2 text-sm text-left max-w-xs mx-auto">
-        ${signals.map(s => `<p class="${s.pass ? 'text-green-600' : 'text-red-600'}">${s.pass ? '✅' : '❌'} ${s.name}</p>`).join('')}
+        ${signals.map(s => {
+          const emoji = s.grade === 'pass' ? '✅' : s.grade === 'average' ? '🆗' : '❌';
+          const textColor = s.grade === 'pass' ? 'text-green-600' : s.grade === 'average' ? 'text-orange-600' : 'text-red-600';
+          return `<p class="${textColor}">${emoji} ${s.name}</p>`;
+        }).join('')}
       </div>
       <button class="fixes-toggle mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-        ${failedSignals.length ? 'Show Fixes (' + failedSignals.length + ')' : 'All Clear'}
+        ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
       </button>
       <div class="fixes-panel hidden mt-4 text-left text-xs bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-6">
-        ${failedSignals.length ? failedSignals.map(s => `
+        ${needsFixSignals.length ? needsFixSignals.map(s => {
+          const emoji = s.grade === 'average' ? '🆗' : '❌';
+          const titleColor = s.grade === 'average' ? 'text-orange-600' : 'text-red-600';
+          return `
           <div>
-            <p class="font-bold text-red-600 text-base">❌ ${s.name}</p>
+            <p class="font-bold ${titleColor} text-base">${emoji} ${s.name}</p>
             <p class="mt-2 font-semibold text-gray-800 dark:text-gray-200">How to fix?</p>
             <p class="mt-1 text-gray-800 dark:text-gray-200">${s.fix}</p>
             <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
             <p class="mt-1 text-gray-700 dark:text-gray-300">${s.how}</p>
             <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
             <p class="mt-1 text-gray-700 dark:text-gray-300">${s.why}</p>
-          </div>
-        `).join('') : '<p class="text-green-600 font-medium text-base mb-4">All signals strong — well done!</p>' + signals.map(s => `
+          </div>`;
+        }).join('') : '<p class="text-green-600 font-medium text-base mb-4">All signals strong — excellent work!</p>' + signals.map(s => `
           <div>
             <p class="font-bold text-green-600 text-base">✅ ${s.name}</p>
             <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
@@ -469,7 +487,6 @@ document.addEventListener('DOMContentLoaded', () => {
           More details →
         </button>
       </div>
-      <!-- full-details section unchanged -->
       <div class="full-details hidden mt-6 space-y-3 text-left text-sm">
         <p class="text-blue-500 font-bold">What it is?</p>
         <p>${key === 'Experience' ? 'Proof that the content creator has first-hand involvement in the topic, such as personal anecdotes, real-world applications, or direct participation, making the advice more relatable and credible.'
