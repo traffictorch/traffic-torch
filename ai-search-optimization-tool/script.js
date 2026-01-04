@@ -393,12 +393,18 @@ const initTool = (form, results, progressContainer) => {
               stroke-dasharray="${(yourScore / 100) * 754} 754"
               stroke-linecap="round"/>
     </svg>
-    <div class="absolute inset-0 flex items-center justify-center">
+<div class="absolute inset-0 flex items-center justify-center">
       <div class="text-center">
-        <div class="text-5xl sm:text-6xl md:text-7xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
+        <div class="text-5xl font-black ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
+          ${yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗' : '❌'}
+        </div>
+        <div class="text-6xl sm:text-7xl md:text-8xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
           ${yourScore}
         </div>
-        <div class="text-xl sm:text-2xl text-gray-500 dark:text-gray-400">/100</div>
+        <div class="text-xl sm:text-2xl font-medium mt-2 ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
+          ${yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Needs Improvement' : 'Needs Work'}
+        </div>
+        <div class="text-lg text-gray-500 dark:text-gray-400">/100</div>
       </div>
     </div>
   </div>
@@ -410,7 +416,7 @@ const initTool = (form, results, progressContainer) => {
     const fixes = getFixes(m.name);
     const allClear = fixes.includes('All signals strong');
     return `
-      <div class="p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color}">
+      <div class="p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color}">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="16" fill="none"/>
@@ -442,21 +448,51 @@ const initTool = (form, results, progressContainer) => {
                 onclick="const panel = this.nextElementSibling; panel.classList.toggle('hidden'); this.textContent = panel.classList.contains('hidden') ? '${grade.button}' : 'Hide Details';">
           ${grade.button}
         </button>
-        <div class="hidden mt-6 text-left text-sm space-y-6 text-gray-800 dark:text-gray-200">
-          <div>
-            <p class="font-bold text-lg mb-3 ${grade.textColor}">${grade.emoji} ${m.name}</p>
-            <div class="space-y-4">
-              <div>
-                <p class="font-bold text-red-600 dark:text-red-400">Recommended Fixes</p>
-                <div class="mt-2 space-y-2">${allClear ? '<p class="text-green-600 dark:text-green-400">All signals strong — excellent work!</p>' : fixes}</div>
+      <div class="hidden mt-6 text-left text-sm space-y-6 text-gray-800 dark:text-gray-200">
+        <div>
+          <p class="font-bold text-lg mb-4 $$ {grade.textColor}"> $${grade.emoji} ${m.name}</p>
+          ${moduleTests.filter(t => !t.passed).length === 0 ?
+            '<p class="text-green-600 dark:text-green-400 text-lg">All signals strong — excellent work!</p>' :
+            moduleTests.filter(t => !t.passed).map(t => `
+              <div class="mb-8 p-4 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
+                <p class="font-bold text-red-600 dark:text-red-400 text-lg mb-3">❌ ${t.text}</p>
+                <div class="space-y-3">
+                  <div>
+                    <p class="font-semibold text-red-700 dark:text-red-300">How to fix?</p>
+                    <p class="mt-1">${getFixes(m.name).includes(t.text) ? /* extract or map per-check fix */ '' : 'Add/improve this element for better AI visibility.'}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-red-700 dark:text-red-300">How the metric works:</p>
+                    <p class="mt-1">The tool checks for presence and quality of this signal. Strong = clear and prominent.</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-red-700 dark:text-red-300">Why it matters:</p>
+                    <p class="mt-1">This signal directly impacts AI trust and citation likelihood in generative results.</p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <p class="font-bold text-blue-600 dark:text-blue-400">More Details</p>
-                <p class="mt-3"><span class="font-bold text-blue-500">What:</span> ${getWhat(m.name)}</p>
-                <p class="mt-3"><span class="font-bold text-green-500">How:</span> ${getHow(m.name)}</p>
-                <p class="mt-3"><span class="font-bold text-orange-500">Why:</span> ${getWhy(m.name)}</p>
+            `).join('')}
+          ${moduleTests.filter(t => !t.passed).length > 0 ? `
+            <details class="mt-6">
+              <summary class="cursor-pointer font-medium text-blue-600 dark:text-blue-400 hover:underline">More details →</summary>
+              <div class="mt-4 space-y-4 pl-4 border-l-4 border-blue-400">
+                <div>
+                  <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
+                  <p>${getWhat(m.name)}</p>
+                </div>
+                <div>
+                  <p class="font-bold text-green-600 dark:text-green-400">How:</p>
+                  <p>${getHow(m.name)}</p>
+                </div>
+                <div>
+                  <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
+                  <p>${getWhy(m.name)}</p>
+                </div>
               </div>
-            </div>
+            </details>
+          ` : ''}
+        </div>
+      </div>
           </div>
         </div>
       </div>
