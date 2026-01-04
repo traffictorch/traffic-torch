@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!seed && urlInput) {
             try {
-                const proxyUrl = `https://cors-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(urlInput)}`;
+                const proxyUrl = `https://rendered-proxy.traffictorch.workers.dev/?url=${encodeURIComponent(urlInput)}`;
                 const response = await fetch(proxyUrl);
                 if (response.ok) {
                     pageText = await response.text();

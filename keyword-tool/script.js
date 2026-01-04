@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const pageUrlInput = document.getElementById('page-url');
   const targetKeywordInput = document.getElementById('target-keyword');
   const results = document.getElementById('results');
-  const PROXY = 'https://cors-proxy.traffictorch.workers.dev/';
+  const PROXY = 'https://rendered-proxy.traffictorch.workers.dev/';
   const progressModules = [
     "Fetching page...",
     "Analyzing meta & headings...",

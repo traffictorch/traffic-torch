@@ -104,7 +104,7 @@ if (!url) {
   return;
 }
 
-const proxyUrl = 'https://cors-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
+const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
     try {
       const res = await fetch(proxyUrl);
       if (!res.ok) throw new Error('Network response was not ok');

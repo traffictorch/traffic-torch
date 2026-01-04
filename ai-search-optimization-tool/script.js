@@ -55,7 +55,7 @@ const initTool = (form, results, progressContainer) => {
     const interval = setInterval(updateProgress, 1500);
 
     try {
-      const res = await fetch("https://cors-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
+      const res = await fetch("https://rendered-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable – check URL or try HTTPS');
       const html = await res.text();
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -609,11 +609,6 @@ ${prioritisedFixes.map(fix => `
     </div>
   </div>
 </div>
-
-
-
-
-
 
 <div class="text-center my-16">
   <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
