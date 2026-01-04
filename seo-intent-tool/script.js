@@ -453,7 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="mt-3 space-y-2 text-sm text-left max-w-xs mx-auto">
         ${signals.map(s => {
           const emoji = s.grade === 'pass' ? '✅' : s.grade === 'average' ? '🆗' : '❌';
-          const textColor = s.grade === 'pass' ? 'text-green-600' : s.grade === 'average' ? 'text-orange-600' : 'text-red-600';
+          const textColor = s.grade === 'pass' ? 'text-green-600' : s.grade === 'average' ? 'text-orange-400' : 'text-red-600';
           return `<p class="${textColor}">${emoji} ${s.name}</p>`;
         }).join('')}
       </div>
@@ -463,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="fixes-panel hidden mt-4 text-left text-xs bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-6">
         ${needsFixSignals.length ? needsFixSignals.map(s => {
           const emoji = s.grade === 'average' ? '🆗' : '❌';
-          const titleColor = s.grade === 'average' ? 'text-orange-600' : 'text-red-600';
+          const titleColor = s.grade === 'average' ? 'text-orange-400' : 'text-red-600';
           return `
           <div>
             <p class="font-bold ${titleColor} text-base">${emoji} ${s.name}</p>
@@ -515,127 +515,110 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- Content Depth + Readability + Schema Detected -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
+  <!-- Content Depth Card -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
-    <h3 class="text-2xl font-bold mb-4">Content Depth</h3>
-    <p class="text-5xl font-black mb-2">${words.toLocaleString()}</p>
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Content Depth</h3>
+    <p class="text-5xl font-black mb-2 text-gray-800 dark:text-gray-200">${words.toLocaleString()}</p>
     <p class="text-gray-800 dark:text-gray-200 mb-4">words</p>
-    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Fixes</button>
-    <div class="hidden mt-6 space-y-3 text-left text-sm">
-      <p class="text-blue-500 font-bold">What it is?</p>
-      <p>Comprehensive coverage that fully answers the user's query while going deeper with related questions, examples, and supporting details to provide the most complete resource possible.</p>
-      <p class="text-green-500 font-bold">How to improve?</p>
-      <p>Add real-world examples, statistics and data sources, screenshots or visuals, step-by-step guides, comparisons, templates or downloadable resources, FAQs addressing common follow-ups, and expert insights to expand value without fluff.</p>
-      <p class="text-orange-500 font-bold">Why it matters?</p>
-      <p>Depth is the strongest on-page ranking factor — search engines reward pages that fully satisfy user intent with the most helpful, thorough answer, leading to higher positions, longer dwell time, and more organic traffic.</p>
+    ${(() => {
+      const grade = words > 2000 ? 'pass' : words >= 1200 ? 'average' : 'fail';
+      const emoji = grade === 'pass' ? '✅' : grade === 'average' ? '🆗' : '❌';
+      const color = grade === 'pass' ? 'text-green-600' : grade === 'average' ? 'text-orange-400' : 'text-red-600';
+      return `<p class="${color} text-3xl font-bold mb-4">${emoji} ${grade === 'pass' ? 'Strong' : grade === 'average' ? 'Average' : 'Needs work'}</p>`;
+    })()}
+    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Details</button>
+    <div class="hidden mt-6 text-left text-xs space-y-6">
+      ${(() => {
+        const grade = words > 2000 ? 'pass' : words >= 1200 ? 'average' : 'fail';
+        const emoji = grade === 'pass' ? '✅' : grade === 'average' ? '🆗' : '❌';
+        const titleColor = grade === 'pass' ? 'text-green-600' : grade === 'average' ? 'text-orange-400' : 'text-red-600';
+        return `
+        <div>
+          <p class="font-bold ${titleColor} text-base">${emoji} Content Depth</p>
+          ${grade !== 'pass' ? `
+          <p class="mt-2 font-semibold text-gray-800 dark:text-gray-200">How to fix?</p>
+          <p class="mt-1 text-gray-800 dark:text-gray-200">Expand with real-world examples, statistics, screenshots, step-by-step breakdowns, comparisons, templates, expert quotes, case studies, and deeper FAQs. Aim for the most comprehensive resource on the topic without fluff.</p>` : ''}
+          <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
+          <p class="mt-1 text-gray-700 dark:text-gray-300">Counts visible words in the rendered page body (excluding navigation, footers, scripts). Strong = >2,000 words, Average = 1,200–2,000, Needs work = <1,200.</p>
+          <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
+          <p class="mt-1 text-gray-700 dark:text-gray-300">Depth is the strongest on-page ranking factor. Search engines reward the most thorough, helpful answer with top positions. Comprehensive content satisfies user intent fully, reduces bounces, and drives longer dwell time and higher traffic.</p>
+        </div>`;
+      })()}
     </div>
   </div>
+
+  <!-- Readability Card -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
-    <h3 class="text-2xl font-bold mb-4">Readability</h3>
-    <p class="text-5xl font-black mb-2">${readability}</p>
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Readability</h3>
+    <p class="text-5xl font-black mb-2 text-gray-800 dark:text-gray-200">${readability}</p>
     <p class="text-gray-800 dark:text-gray-200 mb-4">Flesch score</p>
-    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Fixes</button>
-    <div class="hidden mt-6 space-y-3 text-left text-sm">
-      <p class="text-blue-500 font-bold">What it is?</p>
-      <p>How easily users can read and understand your content — measured by sentence length, word complexity, and overall flow.</p>
-      <p class="text-green-500 font-bold">How to improve?</p>
-      <p>Use short sentences (under 20 words), simple everyday words, active voice, clear subheadings (H2/H3), bullet points and numbered lists, short paragraphs (3–4 lines max), bold key phrases, and transitional words to guide the reader smoothly.</p>
-      <p class="text-orange-500 font-bold">Why it matters?</p>
-      <p>Search engines track user behavior — highly readable content reduces bounce rates, increases time on page, and improves satisfaction signals, all of which directly boost rankings and conversions.</p>
+    ${(() => {
+      const grade = readability >= 60 && readability <= 70 ? 'pass' : (readability >= 50 && readability <= 80) ? 'average' : 'fail';
+      const emoji = grade === 'pass' ? '✅' : grade === 'average' ? '🆗' : '❌';
+      const color = grade === 'pass' ? 'text-green-600' : grade === 'average' ? 'text-orange-400' : 'text-red-600';
+      return `<p class="${color} text-3xl font-bold mb-4">${emoji} ${grade === 'pass' ? 'Ideal' : grade === 'average' ? 'Acceptable' : 'Difficult'}</p>`;
+    })()}
+    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Details</button>
+    <div class="hidden mt-6 text-left text-xs space-y-6">
+      ${(() => {
+        const grade = readability >= 60 && readability <= 70 ? 'pass' : (readability >= 50 && readability <= 80) ? 'average' : 'fail';
+        const emoji = grade === 'pass' ? '✅' : grade === 'average' ? '🆗' : '❌';
+        const titleColor = grade === 'pass' ? 'text-green-600' : grade === 'average' ? 'text-orange-400' : 'text-red-600';
+        return `
+        <div>
+          <p class="font-bold ${titleColor} text-base">${emoji} Readability</p>
+          ${grade !== 'pass' ? `
+          <p class="mt-2 font-semibold text-gray-800 dark:text-gray-200">How to fix?</p>
+          <p class="mt-1 text-gray-800 dark:text-gray-200">Use short sentences (under 20 words), simple words, active voice, clear subheadings, bullet points, short paragraphs (3–4 lines), and transitional phrases. Avoid jargon and complex structures.</p>` : ''}
+          <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
+          <p class="mt-1 text-gray-700 dark:text-gray-300">Flesch Reading Ease score (higher = easier). Ideal = 60–70 (plain English). Acceptable = 50–80. Difficult = outside this range.</p>
+          <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
+          <p class="mt-1 text-gray-700 dark:text-gray-300">Readable content reduces bounce rates and increases time on page. Search engines track user satisfaction signals. Easy-to-read pages engage more visitors, improve conversions, and rank higher.</p>
+        </div>`;
+      })()}
     </div>
   </div>
+
+  <!-- Schema Detected Card -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 text-center">
-    <h3 class="text-2xl font-bold mb-4">Schema Detected</h3>
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Schema Detected</h3>
     ${schemaTypes.length ? `
-      <select class="px-6 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-black dark:text-white">
+      <select class="px-6 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-black dark:text-white mb-4">
         ${schemaTypes.map(t => `<option>${t}</option>`).join('')}
       </select>
-      <p class="mt-4 text-green-500 font-bold">${schemaTypes.length} type${schemaTypes.length > 1 ? 's' : ''} found</p>
-    ` : '<p class="text-2xl text-red-500 mt-4">No schema detected</p>'}
-    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Fixes</button>
-    <div class="hidden mt-6 space-y-3 text-left text-sm">
-      <p class="text-blue-500 font-bold">What it is?</p>
-      <p>Structured data (JSON-LD) that explicitly tells search engines what your page content represents — such as Article, FAQ, HowTo, Product, Person, Organization, etc.</p>
-      <p class="text-green-500 font-bold">How to improve?</p>
-      <p>Add JSON-LD script blocks in the <head> for relevant types (e.g., Article + author Person link, FAQPage for questions, HowTo for tutorials, BreadcrumbList for navigation). Validate using official structured data testing tools and implement the most relevant types for your content.</p>
-      <p class="text-orange-500 font-bold">Why it matters?</p>
-      <p>Schema enables rich snippets (stars, FAQs, carousels), increases click-through rates significantly, strengthens E-E-A-T signals, and helps search engines understand and feature your content more prominently in results.</p>
+      <p class="text-green-600 font-bold mb-4">${schemaTypes.length} type${schemaTypes.length > 1 ? 's' : ''} found</p>
+    ` : '<p class="text-2xl text-red-600 mb-4">No schema detected</p>'}
+    ${(() => {
+      const grade = schemaTypes.length >= 2 ? 'pass' : schemaTypes.length === 1 ? 'average' : 'fail';
+      const emoji = grade === 'pass' ? '✅' : grade === 'average' ? '🆗' : '❌';
+      const color = grade === 'pass' ? 'text-green-600' : grade === 'average' ? 'text-orange-400' : 'text-red-600';
+      return `<p class="${color} text-3xl font-bold mb-4">${emoji} ${grade === 'pass' ? 'Strong' : grade === 'average' ? 'Basic' : 'Missing'}</p>`;
+    })()}
+    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">Show Details</button>
+    <div class="hidden mt-6 text-left text-xs space-y-6">
+      ${(() => {
+        const grade = schemaTypes.length >= 2 ? 'pass' : schemaTypes.length === 1 ? 'average' : 'fail';
+        const emoji = grade === 'pass' ? '✅' : grade === 'average' ? '🆗' : '❌';
+        const titleColor = grade === 'pass' ? 'text-green-600' : grade === 'average' ? 'text-orange-400' : 'text-red-600';
+        return `
+        <div>
+          <p class="font-bold ${titleColor} text-base">${emoji} Schema Markup</p>
+          ${grade !== 'pass' ? `
+          <p class="mt-2 font-semibold text-gray-800 dark:text-gray-200">How to fix?</p>
+          <p class="mt-1 text-gray-800 dark:text-gray-200">Add JSON-LD script blocks for relevant types (Article + Person author, FAQPage, HowTo, Product, BreadcrumbList). Use at least two matching your content type. Validate with Google's testing tool.</p>` : ''}
+          <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
+          <p class="mt-1 text-gray-700 dark:text-gray-300">Detects valid schema types in script[type="application/ld+json"]. Strong = 2+ relevant types, Basic = 1 type, Missing = none found.</p>
+          <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
+          <p class="mt-1 text-gray-700 dark:text-gray-300">Schema unlocks rich snippets (stars, FAQs, carousels), dramatically increases click-through rates, strengthens E-E-A-T signals, and helps search engines feature your content prominently in results.</p>
+        </div>`;
+      })()}
     </div>
   </div>
 </div>
-<!-- Competitive Gap Table -->
-<div class="overflow-x-auto my-12">
-  <table class="w-full border-collapse border border-gray-300 dark:border-gray-600 text-left">
-    <thead>
-      <tr class="bg-gray-200 dark:bg-gray-700">
-        <th class="p-4 font-bold">Metric</th>
-        <th class="p-4 font-bold">Current</th>
-        <th class="p-4 font-bold">Ideal</th>
-        <th class="p-4 font-bold">Gap</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="border-b"><td class="p-4 text-gray-800 dark:text-gray-200">Word Count</td><td class="p-4 text-gray-800 dark:text-gray-200">${words}</td><td class="p-4 text-gray-800 dark:text-gray-200">>1,500</td><td class="p-4 ${words<1500?'text-red-500':'text-green-500'}">${words<1500?'Add '+(1500-words)+' words':'Good'}</td></tr>
-      <tr class="border-b"><td class="p-4 text-gray-800 dark:text-gray-200">Readability</td><td class="p-4 text-gray-800 dark:text-gray-200">${readability}</td><td class="p-4 text-gray-800 dark:text-gray-200">60-70</td><td class="p-4 ${readability<60||readability>70?'text-orange-500':'text-green-500'}">${readability<60||readability>70?'Adjust':'Good'}</td></tr>
-      <tr class="border-b"><td class="p-4 text-gray-800 dark:text-gray-200">Schema Types</td><td class="p-4 text-gray-800 dark:text-gray-200">${schemaTypes.length}</td><td class="p-4 text-gray-800 dark:text-gray-200">≥2</td><td class="p-4 ${schemaTypes.length<2?'text-red-500':'text-green-500'}">${schemaTypes.length<2?'Add':'Good'}</td></tr>
-      <tr><td class="p-4 text-gray-800 dark:text-gray-200">Author Bio</td><td class="p-4 text-gray-800 dark:text-gray-200">${hasAuthorByline?'Yes':'No'}</td><td class="p-4 text-gray-800 dark:text-gray-200">Yes</td><td class="p-4 ${!hasAuthorByline?'text-red-500':'text-green-500'}">${!hasAuthorByline?'Add':'Good'}</td></tr>
-    </tbody>
-  </table>
-</div>
-<!-- Prioritised AI-Style Fixes -->
-<div class="space-y-8">
-  <h3 class="text-4xl font-bold text-green-400 text-center mb-8">Prioritised AI-Style Fixes</h3>
-  ${!hasAuthorByline ? `
-  <div class="p-8 bg-gradient-to-r from-red-500/10 border-l-8 border-red-500 rounded-r-2xl">
-    <div class="flex gap-6">
-      <div class="text-5xl">👤</div>
-      <div>
-        <h4 class="text-2xl font-bold text-red-600">Add Author Bio & Photo</h4>
-        <div class="mt-4 space-y-3 text-sm">
-          <p class="text-blue-500 font-bold">What it is?</p>
-          <p class="text-gray-800 dark:text-gray-200">A visible author byline with name, photo, and credentials that proves a real expert created the content.</p>
-          <p class="text-green-500 font-bold">How to improve?</p>
-          <p class="text-gray-800 dark:text-gray-200">Add a detailed author box with professional headshot, full bio highlighting relevant experience/qualifications, links to social profiles or other work, and clear connection to the topic.</p>
-          <p class="text-orange-500 font-bold">Why it matters?</p>
-          <p class="text-gray-800 dark:text-gray-200">Search engines heavily weigh proven authorship for E-E-A-T — pages with strong author signals rank higher, build trust faster, and reduce bounce rates significantly.</p>
-        </div>
-      </div>
-    </div>
-  </div>` : ''}
-  ${words < 1500 ? `
-  <div class="p-8 bg-gradient-to-r from-orange-500/10 border-l-8 border-orange-500 rounded-r-2xl">
-    <div class="flex gap-6">
-      <div class="text-5xl">✍️</div>
-      <div>
-        <h4 class="text-2xl font-bold text-orange-600">Expand Content Depth</h4>
-        <div class="mt-4 space-y-3 text-sm">
-          <p class="text-blue-500 font-bold">What it is?</p>
-          <p class="text-gray-800 dark:text-gray-200">Thorough, comprehensive coverage that fully answers the main query plus all related follow-up questions users typically have.</p>
-          <p class="text-green-500 font-bold">How to improve?</p>
-          <p class="text-gray-800 dark:text-gray-200">Add in-depth examples, data-backed statistics, step-by-step breakdowns, comparisons, visuals/screenshots, templates or tools, expert quotes, case studies, and expanded FAQs — aim for the most complete resource on the topic.</p>
-          <p class="text-orange-500 font-bold">Why it matters?</p>
-          <p class="text-gray-800 dark:text-gray-200">Depth remains the strongest on-page ranking factor — search engines consistently reward the most helpful, exhaustive pages with top positions and sustained traffic growth.</p>
-        </div>
-      </div>
-    </div>
-  </div>` : ''}
-  ${schemaTypes.length < 2 ? `
-  <div class="p-8 bg-gradient-to-r from-purple-500/10 border-l-8 border-purple-500 rounded-r-2xl">
-    <div class="flex gap-6">
-      <div class="text-5xl">✨</div>
-      <div>
-        <h4 class="text-2xl font-bold text-purple-600">Add Relevant Schema Markup</h4>
-        <div class="mt-4 space-y-3 text-sm">
-          <p class="text-blue-500 font-bold">What it is?</p>
-          <p class="text-gray-800 dark:text-gray-200">Structured data (JSON-LD) that explicitly defines your page type and key entities to search engines.</p>
-          <p class="text-green-500 font-bold">How to improve?</p>
-          <p class="text-gray-800 dark:text-gray-200">Implement at least two relevant types: Article (with author Person link), plus FAQPage, HowTo, Product, or BreadcrumbList as appropriate. Validate with official testing tools before publishing.</p>
-          <p class="text-orange-500 font-bold">Why it matters?</p>
-          <p class="text-gray-800 dark:text-gray-200">Proper schema unlocks rich results, boosts click-through rates dramatically, strengthens E-E-A-T signals, and helps search engines feature your content more prominently.</p>
-        </div>
-      </div>
-    </div>
-  </div>` : ''}
-</div>
+
+
+
+
 <!-- Score Improvement & Potential Ranking Gains -->
 <div class="max-w-5xl mx-auto mt-20 grid md:grid-cols-2 gap-8">
   <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
