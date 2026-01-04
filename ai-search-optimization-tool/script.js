@@ -561,14 +561,14 @@ const initTool = (form, results, progressContainer) => {
     </div>
   </div>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-16 px-4">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 my-16 px-4">
   ${modules.map(m => {
     const grade = getGradeInfo(m.score);
     const moduleTests = tests.filter(t => moduleKeywords[m.name].some(kw => t.text.includes(kw)));
     const hasIssues = moduleTests.some(t => !t.passed);
     const allClear = !hasIssues;
     return `
-      <div class="p-2 min-h-[420px] bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color} flex flex-col">
+      <div class="p-2 min-h-[440px] bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color} flex flex-col">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="16" fill="none"/>
