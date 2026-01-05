@@ -640,7 +640,7 @@ return `
         
         
         
-      </div>
+
     `;
   }).join('')}
 </div>
