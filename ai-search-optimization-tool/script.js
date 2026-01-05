@@ -454,9 +454,9 @@ const initTool = (form, results, progressContainer) => {
             </div>
           `).join('')}
         </div>
-        <button class="fixes-toggle mt-4 w-full px-6 py-3 rounded-full text-white font-medium text-sm ${grade.bg}">
-          ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
-        </button>
+<button class="fixes-toggle mt-4 w-full px-6 py-3 rounded-full text-white font-medium text-sm ${grade.bg} min-h-12 flex items-center justify-center">
+  ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
+</button>
         <div class="fixes-panel hidden mt-6 text-left text-sm space-y-8 text-gray-800 dark:text-gray-200">
           <p class="font-bold text-xl ${grade.textColor}">${grade.emoji} ${m.name}</p>
           ${allClear ? '<p class="text-green-600 dark:text-green-400 text-lg font-medium">All signals strong — excellent work!</p>' : getFixes(m.name)}
