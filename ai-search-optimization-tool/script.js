@@ -12,7 +12,6 @@ const waitForElements = () => {
 
 const initTool = (form, results, progressContainer) => {
   const progressText = document.getElementById('progress-text');
-
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     let inputUrl = document.getElementById('url-input').value.trim();
@@ -31,10 +30,8 @@ const initTool = (form, results, progressContainer) => {
       return;
     }
     const url = inputUrl;
-
     progressContainer.classList.remove('hidden');
     results.classList.add('hidden');
-
     const progressMessages = [
       'Fetching and rendering page...',
       'Extracting main content...',
@@ -47,7 +44,6 @@ const initTool = (form, results, progressContainer) => {
       'Checking Anti-AI Patterns...',
       'Generating Report...'
     ];
-
     let step = 0;
     progressText.textContent = progressMessages[step++];
     const updateProgress = () => {
@@ -56,14 +52,12 @@ const initTool = (form, results, progressContainer) => {
       }
     };
     const interval = setInterval(updateProgress, 2000);
-
     try {
       const res = await fetch("https://rendered-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable – check URL or try HTTPS');
       const html = await res.text();
       await new Promise(resolve => setTimeout(resolve, 1000));
       updateProgress();
-
       const doc = new DOMParser().parseFromString(html, 'text/html');
       let mainText = '';
       const candidates = [doc.querySelector('article'), doc.querySelector('main'), doc.querySelector('[role="main"]'), doc.body];
@@ -71,17 +65,14 @@ const initTool = (form, results, progressContainer) => {
       mainEl.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie, .sidebar').forEach(el => el.remove());
       mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
       const first300 = mainText.slice(0, 1200);
-
       await new Promise(resolve => setTimeout(resolve, 1200));
       updateProgress();
-
       const hasBoldInFirst = /<strong>|<b>|<em>/i.test(first300);
       const hasDefinition = /\b(is|means|refers to|defined as)\b/i.test(first300.toLowerCase());
       const hasFAQSchema = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))
         .some(s => s.textContent.includes('"FAQPage"'));
       const hasQuestionH2 = Array.from(doc.querySelectorAll('h2')).some(h => /[?!]/.test(h.textContent));
       const hasSteps = /\b(step|guide|how to|instructions|follow these)\b/i.test(first300.toLowerCase());
-
       // Answerability
       let answerability = 0;
       if (hasBoldInFirst || hasDefinition) answerability += 30;
@@ -89,7 +80,6 @@ const initTool = (form, results, progressContainer) => {
       if (hasQuestionH2) answerability += 15;
       if (hasSteps) answerability += 20;
       if (first300.length > 600) answerability += 10;
-
       // Structured Data
       let hasArticle = false;
       let hasFaqHowto = false;
@@ -116,7 +106,6 @@ const initTool = (form, results, progressContainer) => {
           }
         } catch {}
       });
-
       // EEAT Signals
       const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
       const hasDate = !!doc.querySelector('time[datetime], meta[name="date"], .published, .updated, .date');
@@ -127,7 +116,6 @@ const initTool = (form, results, progressContainer) => {
       if (hasDate) eeat += 25;
       if (hasTrustedLinks) eeat += 20;
       if (url.startsWith('https:')) eeat += 15;
-
       // Scannability
       const headings = doc.querySelectorAll('h1,h2,h3,h4').length;
       const lists = doc.querySelectorAll('ul,ol').length;
@@ -140,7 +128,6 @@ const initTool = (form, results, progressContainer) => {
       if (lists > 2) scannability += 20;
       if (tables > 0) scannability += 15;
       if (shortParas > 5) scannability += 15;
-
       // Conversational Tone
       const youCount = (mainText.match(/\byou\b|\byour\b|\byours\b/gi) || []).length;
       const iWeCount = (mainText.match(/\bI\b|\bwe\b|\bmy\b|\bour\b|\bme\b|\bus\b/gi) || []).length;
@@ -151,7 +138,6 @@ const initTool = (form, results, progressContainer) => {
       if (iWeCount > 3) conversational += 25;
       if (questions > 2) conversational += 20;
       if (painPoints > 3) conversational += 25;
-
       // Readability
       const words = mainText.split(/\s+/).filter(Boolean).length || 1;
       const sentences = (mainText.match(/[.!?]+/g) || []).length || 1;
@@ -173,7 +159,6 @@ const initTool = (form, results, progressContainer) => {
       if (variationScore > 70) readability += 25;
       if (passivePatterns.length < 5) readability += 20;
       if (complexRatio < 15) readability += 15;
-
       // Unique Insights
       const hasInsights = /\b(I tested|in my experience|we found|case study|based on my|hands-on|personally observed)\b/i.test(mainText);
       const hasDated = /\b(in last year|in this year|recently tested|results from)\b/i.test(mainText);
@@ -183,7 +168,6 @@ const initTool = (form, results, progressContainer) => {
       if (hasInsights) uniqueInsights += 35;
       if (hasDated) uniqueInsights += 20;
       if (hasInterviews) uniqueInsights += 15;
-
       // Anti-AI Safety
       const wordFreq = {};
       mainText.toLowerCase().split(/\s+/).forEach(w => wordFreq[w] = (wordFreq[w] || 0) + 1);
@@ -196,7 +180,6 @@ const initTool = (form, results, progressContainer) => {
       if (variationScore > 70) antiAiSafety += 50;
       if (repeatedWords <= 2) antiAiSafety += 30;
       if (!hasPredictable) antiAiSafety += 20;
-
       const overall = Math.round(
         answerability * 0.25 +
         structuredData * 0.15 +
@@ -207,9 +190,7 @@ const initTool = (form, results, progressContainer) => {
         uniqueInsights * 0.08 +
         antiAiSafety * 0.05
       );
-
       const yourScore = overall;
-
       const modules = [
         { name: "Answerability", score: answerability, desc: "Direct answers in first 300 words, FAQ schema, step-by-step structure" },
         { name: "Structured Data", score: structuredData, desc: "JSON-LD presence and relevant types" },
@@ -220,7 +201,6 @@ const initTool = (form, results, progressContainer) => {
         { name: "Unique Insights", score: uniqueInsights, desc: "First-hand markers, dated results, interviews" },
         { name: "Anti-AI Safety", score: antiAiSafety, desc: "Variation, low repetition, no predictable patterns" }
       ];
-
       function getGradeInfo(score) {
         if (score >= 80) {
           return { emoji: '✅', color: 'green-500', stroke: '22c55e', textColor: 'text-green-600', button: 'All Clear', bg: 'bg-green-500 hover:bg-green-600' };
@@ -230,9 +210,7 @@ const initTool = (form, results, progressContainer) => {
           return { emoji: '❌', color: 'red-500', stroke: 'ef4444', textColor: 'text-red-600', button: 'Show Fixes', bg: 'bg-orange-500 hover:bg-orange-600' };
         }
       }
-
       const lowScoring = modules.filter(m => m.score < 70).sort((a, b) => a.score - b.score);
-
       const tests = [
         { emoji: hasBoldInFirst ? '✅' : '❌', text: 'Bold/strong formatting in opening', passed: hasBoldInFirst },
         { emoji: hasDefinition ? '✅' : '❌', text: 'Clear definition pattern in opening', passed: hasDefinition },
@@ -269,7 +247,6 @@ const initTool = (form, results, progressContainer) => {
         { emoji: repeatedWords <= 2 ? '✅' : '❌', text: 'Low word repetition', passed: repeatedWords <= 2 },
         { emoji: !hasPredictable ? '✅' : '❌', text: 'No predictable sentence starts', passed: !hasPredictable }
       ];
-
       const topLowScoring = lowScoring.slice(0, 3);
       const prioritisedFixes = [];
       if (topLowScoring.some(m => m.name === "Answerability")) {
@@ -307,12 +284,10 @@ const initTool = (form, results, progressContainer) => {
           why: "Prevents de-duplication and boosts originality"
         });
       }
-
       await new Promise(resolve => setTimeout(resolve, 1500));
       clearInterval(interval);
       progressContainer.classList.add('hidden');
       results.classList.remove('hidden');
-
       function getWhat(name) {
         const map = {
           "Answerability": "The degree to which your page provides direct, concise, and quotable answers right at the beginning. AI engines prioritize pages that immediately satisfy user intent with clear summaries they can cite verbatim in search results.",
@@ -326,7 +301,6 @@ const initTool = (form, results, progressContainer) => {
         };
         return map[name] || "An important factor for AI search visibility and citation.";
       }
-
       function getHow(name) {
         const map = {
           "Answerability": "Place a bold, complete answer in the first 150–300 words. Use definition-style phrasing, question-based H2 headings, FAQ or HowTo structured data, and numbered step-by-step instructions where relevant.",
@@ -340,7 +314,6 @@ const initTool = (form, results, progressContainer) => {
         };
         return map[name] || "Follow established best practices for this optimization area.";
       }
-
       function getWhy(name) {
         const map = {
           "Answerability": "AI-powered search engines heavily favor pages that provide immediate, quotable answers. Direct answers are the #1 factor for being cited in overviews and generative results.",
@@ -354,49 +327,6 @@ const initTool = (form, results, progressContainer) => {
         };
         return map[name] || "This factor significantly impacts AI search performance and citation likelihood.";
       }
-
-      function getPerCheckFix(module, checkText) {
-        const fixes = {
-          "Answerability": {
-            "Bold/strong formatting in opening": "Place the main answer in bold text within the first paragraph so AI can easily quote it.",
-            "Clear definition pattern in opening": "Start with clear phrases like “X means…” or “X is defined as…” to directly satisfy definitional queries.",
-            "FAQPage schema detected": "Add structured data markup that tells search engines this page answers common questions or provides steps.",
-            "Question-style H2 headings": "Use heading tags formatted as questions (e.g., “How do I fix X?”) to match real user searches.",
-            "Step-by-step language in opening": "Include numbered lists with clear actions — AI engines love extractable instructions.",
-            "Strong opening section (>600 chars)": "Expand the first section to over 600 characters with valuable content so AI has more to summarize and cite."
-          },
-          // Add for other modules as needed
-        };
-        return fixes[module]?.[checkText] || "Improve this signal to boost AI visibility.";
-      }
-
-      function getPerCheckMetric(module, checkText) {
-        const metrics = {
-          "Answerability": {
-            "Bold/strong formatting in opening": "Scans first 1200 characters for <strong>, <b>, or <em> tags.",
-            "Clear definition pattern in opening": "Looks for phrases like 'is', 'means', 'refers to', 'defined as' in opening.",
-            "FAQPage schema detected": "Checks JSON-LD for FAQPage type.",
-            "Question-style H2 headings": "Searches H2 tags for question marks or ending ?!",
-            "Step-by-step language in opening": "Detects step/guide/how-to language in opening.",
-            "Strong opening section (>600 chars)": "Measures character count of extracted opening content."
-          },
-          // Add for other modules as needed
-        };
-        return metrics[module]?.[checkText] || "The tool checks for presence and quality of this signal.";
-      }
-
-      function getPerCheckWhy(module, checkText) {
-        const why = {
-          "Answerability": {
-            "Bold/strong formatting in opening": "Bold text is easily extractable and often quoted directly in AI overviews.",
-            "Clear definition pattern in opening": "Definitional phrasing matches common user queries and improves source selection.",
-            // etc.
-          },
-          // Add for other modules as needed
-        };
-        return why[module]?.[checkText] || "This signal significantly affects how AI engines trust and cite your content.";
-      }
-
       function getFixes(name) {
         let fixes = '';
         if (name === "Answerability") {
@@ -451,7 +381,6 @@ const initTool = (form, results, progressContainer) => {
         }
         return fixes || '<p class="text-green-600 dark:text-green-400">All signals strong — excellent work!</p>';
       }
-
       const moduleKeywords = {
         "Answerability": ["Bold/strong formatting in opening", "Clear definition pattern in opening", "FAQPage schema detected", "Question-style H2 headings", "Step-by-step language in opening", "Strong opening section (>600 chars)"],
         "Structured Data": ["JSON-LD structured data present", "Article/BlogPosting schema type", "FAQPage/HowTo schema type", "Person schema for author"],
@@ -462,7 +391,6 @@ const initTool = (form, results, progressContainer) => {
         "Unique Insights": ["First-hand experience markers", "Dated/timely results mentioned", "Interviews/quotes included", "Deep content (1500+ words)"],
         "Anti-AI Safety": ["High sentence burstiness", "Low word repetition", "No predictable sentence starts"]
       };
-
       results.innerHTML = `
 <div class="flex justify-center my-12 px-4">
   <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square">
@@ -525,8 +453,7 @@ const initTool = (form, results, progressContainer) => {
             </div>
           `).join('')}
         </div>
-        <button type="button" class="mt-4 w-full px-6 py-3 rounded-full text-white font-medium text-sm ${grade.bg}"
-                onclick="const panel = this.nextElementSibling; panel.classList.toggle('hidden'); this.textContent = panel.classList.contains('hidden') ? '${grade.button}' : 'Hide Details';">
+        <button type="button" class="toggle-details mt-4 w-full px-6 py-3 rounded-full text-white font-medium text-sm ${grade.bg}">
           ${grade.button}
         </button>
         <div class="hidden mt-6 text-left text-sm space-y-8 text-gray-800 dark:text-gray-200">
@@ -684,7 +611,6 @@ ${prioritisedFixes.map(fix => `
   </button>
 </div>
       `;
-
       let fullUrl = document.getElementById('url-input').value.trim();
       let displayUrl = 'traffictorch.net';
       if (fullUrl) {
@@ -699,6 +625,18 @@ ${prioritisedFixes.map(fix => `
         }
       }
       document.body.setAttribute('data-url', displayUrl);
+
+      // Proper event delegation for module detail toggles (fixes all panels opening issue)
+      results.addEventListener('click', (e) => {
+        const button = e.target.closest('.toggle-details');
+        if (!button) return;
+        const panel = button.nextElementSibling;
+        if (!panel) return;
+        panel.classList.toggle('hidden');
+        const isHidden = panel.classList.contains('hidden');
+        button.textContent = isHidden ? button.dataset.original || button.textContent : 'Hide Details';
+        if (!button.dataset.original) button.dataset.original = button.textContent;
+      });
     } catch (err) {
       clearInterval(interval);
       progressContainer.classList.add('hidden');
