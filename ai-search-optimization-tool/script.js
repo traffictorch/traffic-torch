@@ -596,15 +596,15 @@ return `
           }).join('')}
              
         </div>
-        <div class="mt-8">
-          <button class="fixes-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center">
-            ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
-          </button>
-        </div>
+<div class="mt-8">
+  <div class="w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center">
+    ${needsFixSignals.length ? `Fixes Available (${needsFixSignals.length})` : 'All Clear'}
+  </div>
+</div>
         
         
         
-<div class="fixes-panel hidden mt-6 space-y-8 text-gray-800 dark:text-gray-200">
+<div class="fixes-panel hidden mt-12 space-y-8 text-gray-800 dark:text-gray-200">
   ${allClear ?
     `<p class="text-green-600 dark:text-green-400 text-lg font-bold text-center py-12">All signals strong — excellent work! ✅</p>` :
     `
