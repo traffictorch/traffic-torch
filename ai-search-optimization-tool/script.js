@@ -129,7 +129,7 @@ const initTool = (form, results, progressContainer) => {
       if (tables > 0) scannability += 15;
       if (shortParas > 5) scannability += 15;
       // Conversational Tone
-      const youCount = (mainText.match(/\byou\b|\byour\b|\byours\b/gi) || [].length;
+      const youCount = (mainText.match(/\byou\b|\byour\b|\byours\b/gi) || []).length;
       const iWeCount = (mainText.match(/\bI\b|\bwe\b|\bmy\b|\bour\b|\bme\b|\bus\b/gi) || []).length;
       const questions = (mainText.match(/\?/g) || []).length;
       const painPoints = (mainText.match(/\b(struggle|problem|issue|challenge|frustrat|hard|difficult|pain|annoy|confus|overwhelm|fail|mistake|wrong)\b/gi) || []).length;
