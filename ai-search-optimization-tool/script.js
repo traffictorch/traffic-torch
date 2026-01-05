@@ -414,11 +414,11 @@ const initTool = (form, results, progressContainer) => {
 </div>
 
 <div class="flex justify-center mb-12 px-4">
-  <div class="text-center">
-    <div class="text-6xl sm:text-7xl md:text-8xl font-black ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
+  <div class="flex items-center gap-6">
+    <div class="text-7xl sm:text-8xl md:text-9xl font-black ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
       ${yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗' : '❌'}
     </div>
-    <div class="text-3xl sm:text-4xl font-bold mt-3 ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
+    <div class="text-4xl sm:text-5xl md:text-6xl font-bold ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
       ${yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Very Good' : 'Needs Work'}
     </div>
   </div>
