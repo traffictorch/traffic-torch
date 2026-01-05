@@ -577,20 +577,22 @@ function getPerMetricWhy(text) {
         <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200">${m.desc}</p>
         <div class="mt-4 space-y-3 text-left text-sm">
           ${moduleTests.map(t => {
-            let textColor = 'text-gray-600 dark:text-gray-400';
-            if (t.passed) {
-              textColor = 'text-green-600 dark:text-green-400';
-            } else if (t.text.includes('mentioned') || t.text.includes('present') || t.text.includes('shown')) {
-              textColor = 'text-orange-600 dark:text-orange-400';
-            } else {
-              textColor = 'text-red-600 dark:text-red-400';
-            }
-            return `
-            <div class="flex items-center gap-3">
-              <span class="text-2xl">${t.emoji}</span>
-              <span class="text-base font-medium ${textColor}">${t.text}</span>
-            </div>
-            `;
+let textColor = 'text-gray-600 dark:text-gray-400';
+let emojiOverride = t.emoji; // default to calculated ✅ or ❌
+if (t.passed) {
+  textColor = 'text-green-600 dark:text-green-400';
+} else if (t.text.includes('mentioned') || t.text.includes('present') || t.text.includes('shown') || t.text.includes('Trusted outbound links')) {
+  textColor = 'text-orange-600 dark:text-orange-400';
+  emojiOverride = '🆗'; // orange = recommended/important but not failure
+} else {
+  textColor = 'text-red-600 dark:text-red-400';
+}
+return `
+<div class="flex items-center gap-3">
+  <span class="text-2xl">${emojiOverride}</span>
+  <span class="text-base font-medium ${textColor}">${t.text}</span>
+</div>
+`;
           }).join('')}
              
         </div>
