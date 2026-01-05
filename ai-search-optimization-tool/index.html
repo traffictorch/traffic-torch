@@ -105,6 +105,7 @@
   </script>
   <script src="/main.js" type="module"></script>
   <script src="/ai-search-optimization-tool/script.js" defer></script>
+  <script src="metric-explanations.js" defer></script>
 </head>
 
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
@@ -242,6 +243,11 @@
 
     <div id="results" class="hidden"></div>
   </div>
+  
+  <div id="metric-popover" class="fixed z-50 hidden max-w-sm bg-white dark:bg-gray-900 rounded-xl shadow-2xl p-5 border border-gray-200 dark:border-gray-700">
+  <button id="popover-close" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">✕</button>
+  <div id="popover-content"></div>
+</div>
   
   
   

@@ -451,9 +451,34 @@ function getPerMetricWhy(text) {
       
       
       
-      function getFixes(name) {
-        let fixes = '';
-        if (name === "Answerability") {
+function getFixes(name) {
+  let fixes = '';
+  const addFix = (metricText, description) => {
+    const passed = tests.find(t => t.text === metricText)?.passed;
+    let emoji = '❌';
+    let titleColor = 'text-red-600 dark:text-red-400';
+    if (passed === true) {
+      emoji = '✅';
+      titleColor = 'text-green-600 dark:text-green-400';
+    } else if (passed === undefined) {
+      titleColor = 'text-orange-600 dark:text-orange-400';
+      emoji = '🆗';
+    }
+    fixes += `
+      <div class="border-l-4 border-gray-300 pl-4 py-3">
+        <div class="text-xl">${emoji}</div>
+        <div class="mt-2 font-medium ${titleColor}">${metricText}</div>
+        <div class="mt-1 text-sm text-gray-700 dark:text-gray-300">${description}</div>
+        <div class="mt-2">
+          <button class="metric-details-link text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline" data-metric="${metricText}">
+            Metric Details →
+          </button>
+        </div>
+      </div>
+    `;
+  };
+
+  if (name === "Answerability") {
           if (!hasBoldInFirst) fixes += '<p>• <strong>Bold key answers in opening:</strong> Place the main answer in bold text within the first paragraph so AI can easily quote it.</p>';
           if (!hasDefinition) fixes += '<p>• <strong>Add definition phrasing:</strong> Start with clear phrases like “X means…” or “X is defined as…” to directly satisfy definitional queries.</p>';
           if (!hasFAQSchema) fixes += '<p>• <strong>Use FAQ/HowTo schema:</strong> Add structured data markup that tells search engines this page answers common questions or provides steps.</p>';
@@ -812,6 +837,37 @@ document.addEventListener('click', (e) => {
     if (fixesPanel) fixesPanel.classList.toggle('hidden');
   }
 });
+
+
+  // Handle Metric Details link
+  if (e.target.matches('.metric-details-link')) {
+    e.preventDefault();
+    const metric = e.target.dataset.metric;
+    const explanation = metricExplanations[metric];
+    if (explanation) {
+      document.getElementById('popover-content').innerHTML = `
+        <div class="font-bold text-blue-600 dark:text-blue-400 mb-2">What is it?</div>
+        <p class="text-sm mb-4">${explanation.what}</p>
+        <div class="font-bold text-green-600 dark:text-green-400 mb-2">How to improve?</div>
+        <p class="text-sm mb-4">${explanation.how}</p>
+        <div class="font-bold text-orange-600 dark:text-orange-400 mb-2">Why it matters?</div>
+        <p class="text-sm">${explanation.why}</p>
+      `;
+      document.getElementById('metric-popover').classList.remove('hidden');
+    }
+  }
+
+  // Close popover
+  if (e.target.id === 'popover-close' || !e.target.closest('#metric-popover')) {
+    if (!e.target.closest('#metric-popover') && !e.target.matches('.metric-details-link')) {
+      document.getElementById('metric-popover').classList.add('hidden');
+    }
+  }
+  if (e.target.id === 'popover-close') {
+    document.getElementById('metric-popover').classList.add('hidden');
+  }
+
+
       
       
     } catch (err) {

@@ -150,4 +150,19 @@ html, body {
 }
 
 
+/* Metric popover */
+#metric-popover {
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+}
+@media (max-width: 640px) {
+  #metric-popover {
+    max-width: 90vw;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%);
+  }
+}
+
 
