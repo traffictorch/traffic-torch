@@ -404,14 +404,16 @@ const initTool = (form, results, progressContainer) => {
     </svg>
     <div class="absolute inset-0 flex items-center justify-center">
       <div class="text-center">
-        <div class="text-5xl font-black ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
-          ${yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗' : '❌'}
-        </div>
-        <div class="text-7xl sm:text-8xl md:text-9xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
+        <div class="text-7xl sm:text-8xl md:text-9xl font-black drop-shadow-2xl"
+             style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">
           ${yourScore}
         </div>
-        <div class="text-xl sm:text-2xl font-medium mt-2 ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
+        <div class="text-xl sm:text-2xl font-medium mt-2"
+             style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">
           ${yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Needs Improvement' : 'Needs Work'}
+        </div>
+        <div class="text-5xl mt-4">
+          ${yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗' : '❌'}
         </div>
         <div class="text-lg text-gray-500 dark:text-gray-400 mt-1">/100</div>
       </div>
