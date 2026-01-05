@@ -392,8 +392,6 @@ const initTool = (form, results, progressContainer) => {
         "Anti-AI Safety": ["High sentence burstiness", "Low word repetition", "No predictable sentence starts"]
       };
       results.innerHTML = `
-<div class="flex justify-center my-12 px-4">
-  <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square">
     <svg viewBox="0 0 260 260" class="w-full h-full transform -rotate-90">
       <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
       <circle cx="130" cy="130" r="120"
@@ -402,13 +400,25 @@ const initTool = (form, results, progressContainer) => {
               stroke-dasharray="${(yourScore / 100) * 754} 754"
               stroke-linecap="round"/>
     </svg>
-    <div class="absolute inset-0 flex items-center justify-center">
-      <div class="text-center">
-        <div class="text-7xl sm:text-8xl md:text-9xl font-black drop-shadow-2xl"
-             style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">
-          ${yourScore}
-        </div>
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <div class="text-7xl sm:text-8xl md:text-9xl font-black drop-shadow-2xl"
+           style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">
+        ${yourScore}
       </div>
+    </div>
+  </div>
+  <!-- Elements below the circle -->
+  <div class="mt-6 text-center">
+    <div class="text-6xl">
+      ${yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗' : '❌'}
+    </div>
+    <div class="text-2xl sm:text-3xl font-bold mt-3"
+         style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">
+      ${yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Needs Improvement' : 'Needs Work'}
+    </div>
+    <div class="text-lg text-gray-500 dark:text-gray-400 mt-2">/100</div>
+  </div>
+</div>
     </div>
     <div class="mt-6 text-center">
       <div class="text-5xl">
