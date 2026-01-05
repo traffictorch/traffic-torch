@@ -547,7 +547,7 @@ function getPerMetricWhy(text) {
     </div>
   </div>
 </div>
-<div class="flex flex-col gap-8 my-12 px-4">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 my-12 px-4 max-w-7xl mx-auto">
   ${modules.map(m => {
     const grade = getGradeInfo(m.score);
     const moduleTests = tests.filter(t => moduleKeywords[m.name].some(kw => t.text.includes(kw)));
