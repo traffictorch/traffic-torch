@@ -578,13 +578,10 @@ results.innerHTML = `
         </div>
         <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200 px-4">${m.desc}</p>
 
-        <!-- Buttons: More Details first, then Show Fixes -->
-        <div class="mt-6 flex flex-col gap-3">
+        <!-- More Details button - placed right after description -->
+        <div class="mt-6">
           <button class="more-details-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm bg-gray-600 hover:bg-gray-700 flex items-center justify-center transition">
             More Details
-          </button>
-          <button class="fixes-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center hover:opacity-90 transition">
-            ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
           </button>
         </div>
 
@@ -606,6 +603,13 @@ results.innerHTML = `
           }).join('')}
         </div>
 
+        <!-- Show Fixes button - kept below metrics list (original position) -->
+        <div class="mt-8">
+          <button class="fixes-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center hover:opacity-90 transition">
+            ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
+          </button>
+        </div>
+
         <!-- Fixes panel -->
         <div class="fixes-panel hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out">
           <div class="p-4 space-y-4 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
@@ -616,7 +620,7 @@ results.innerHTML = `
           </div>
         </div>
 
-        <!-- Full details panel (What/How/Why) -->
+        <!-- Full details panel (What/How/Why) - opens below More Details button -->
         <div class="full-details hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out">
           <div class="p-4 space-y-6 bg-blue-50 dark:bg-blue-900/20 rounded-b-2xl">
             <div>
@@ -637,6 +641,8 @@ results.innerHTML = `
     `;
   }).join('')}
 </div>
+
+
 
 ${prioritisedFixes.length > 0 ? `
   <div class="mt-16 px-4">
