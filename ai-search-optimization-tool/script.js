@@ -547,6 +547,8 @@ function getPerMetricWhy(text) {
     </div>
   </div>
 </div>
+
+
 <div class="grid grid-cols-1 md:grid-cols-4 gap-8 my-12 px-4 max-w-7xl mx-auto">
   ${modules.map(m => {
     const grade = getGradeInfo(m.score);
@@ -555,16 +557,14 @@ function getPerMetricWhy(text) {
     const allClear = !hasIssues;
     const needsFixSignals = moduleTests.filter(t => !t.passed);
     return `
-      <div class="score-card p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color} flex flex-col justify-between">
+      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color} p-6 flex flex-col">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="16" fill="none"/>
             <circle cx="64" cy="64" r="56" stroke="#${grade.stroke}" stroke-width="16" fill="none" stroke-dasharray="${(m.score/100)*352} 352" stroke-linecap="round"/>
           </svg>
           <div class="absolute inset-0 flex items-center justify-center">
-            <div class="text-center">
-              <div class="text-5xl font-black ${grade.textColor}">${m.score}</div>
-            </div>
+            <div class="text-5xl font-black ${grade.textColor}">${m.score}</div>
           </div>
         </div>
         <p class="mt-6 text-xl font-bold text-center text-gray-800 dark:text-gray-200">${m.name}</p>
@@ -575,75 +575,67 @@ function getPerMetricWhy(text) {
           </span>
         </div>
         <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200">${m.desc}</p>
-        <div class="mt-4 space-y-3 text-left text-sm">
+        <div class="mt-6 space-y-2 text-left text-sm">
           ${moduleTests.map(t => {
-let textColor = 'text-gray-600 dark:text-gray-400';
-let emojiOverride = t.emoji; // default to calculated ✅ or ❌
-if (t.passed) {
-  textColor = 'text-green-600 dark:text-green-400';
-} else if (t.text.includes('mentioned') || t.text.includes('present') || t.text.includes('shown') || t.text.includes('Trusted outbound links')) {
-  textColor = 'text-orange-600 dark:text-orange-400';
-  emojiOverride = '🆗'; // orange = recommended/important but not failure
-} else {
-  textColor = 'text-red-600 dark:text-red-400';
-}
-return `
-<div class="flex items-center gap-3">
-  <span class="text-2xl">${emojiOverride}</span>
-  <span class="text-base font-medium ${textColor}">${t.text}</span>
-</div>
-`;
+            let textColor = t.passed ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
+            let emojiOverride = t.emoji;
+            if (!t.passed && (t.text.includes('mentioned') || t.text.includes('present') || t.text.includes('shown') || t.text.includes('Trusted outbound links'))) {
+              textColor = 'text-orange-600 dark:text-orange-400';
+              emojiOverride = '🆗';
+            }
+            return `
+            <div class="flex items-center gap-3">
+              <span class="text-2xl">${emojiOverride}</span>
+              <span class="text-base font-medium ${textColor}">${t.text}</span>
+            </div>
+            `;
           }).join('')}
-             
         </div>
-<div class="mt-8">
-  <button class="fixes-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center hover:opacity-90 transition">
-    ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
-  </button>
-</div>
-        
-        
-        
-<div class="fixes-panel hidden overflow-hidden transition-all duration-300 ease-in-out">
-  <div class="p-6 space-y-8 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
-    ${allClear ?
-      `<p class="text-green-600 dark:text-green-400 text-lg font-bold text-center py-12">All signals strong — excellent work! ✅</p>` :
-      `
-      <div class="space-y-6">
-        ${getFixes(m.name)}
-      </div>
-      `}
-    ${!allClear ? `
-      <div class="mt-6 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl">
-        <button class="more-details-toggle text-base font-medium text-orange-600 dark:text-orange-400 hover:underline">
-          More details about ${m.name} module →
-        </button>
-        <div class="full-details hidden mt-6 space-y-6 text-base">
-          <div>
-            <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
-            <p>${getWhat(m.name)}</p>
-          </div>
-          <div>
-            <p class="font-bold text-green-600 dark:text-green-400">How:</p>
-            <p>${getHow(m.name)}</p>
-          </div>
-          <div>
-            <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
-            <p>${getWhy(m.name)}</p>
-          </div>
+        <div class="mt-8">
+          <button class="fixes-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center hover:opacity-90 transition">
+            ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
+          </button>
         </div>
-      </div>
-    ` : ''}
-  </div>
-</div>
-        
-        
-        
-        
 
+        <div class="fixes-panel hidden overflow-hidden transition-all duration-300 ease-in-out">
+          <div class="p-6 space-y-6 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
+            ${allClear ?
+              `<p class="text-green-600 dark:text-green-400 text-lg font-bold text-center py-8">All signals strong — excellent work! ✅</p>` :
+              `
+              <div class="space-y-6">
+                ${getFixes(m.name)}
+              </div>
+              `}
+            ${!allClear ? `
+              <div class="mt-6 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl">
+                <button class="more-details-toggle text-base font-medium text-orange-600 dark:text-orange-400 hover:underline">
+                  More details about ${m.name} module →
+                </button>
+                <div class="full-details hidden mt-6 space-y-6 text-base">
+                  <div>
+                    <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
+                    <p>${getWhat(m.name)}</p>
+                  </div>
+                  <div>
+                    <p class="font-bold text-green-600 dark:text-green-400">How:</p>
+                    <p>${getHow(m.name)}</p>
+                  </div>
+                  <div>
+                    <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
+                    <p>${getWhy(m.name)}</p>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      </div>
     `;
   }).join('')}
 </div>
+
+
+
 ${prioritisedFixes.length > 0 ? `
   <div class="mt-16 px-4">
     <h3 class="text-3xl font-black text-center mb-8 text-blue-800 dark:text-blue-200">Top Priority Fixes (Highest Impact First)</h3>
