@@ -424,8 +424,9 @@ const initTool = (form, results, progressContainer) => {
     const moduleTests = tests.filter(t => moduleKeywords[m.name].some(kw => t.text.includes(kw)));
     const hasIssues = moduleTests.some(t => !t.passed);
     const allClear = !hasIssues;
+    const needsFixSignals = moduleTests.filter(t => !t.passed);
     return `
-      <div class="p-2 min-h-[400px] bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color} flex flex-col">
+      <div class="score-card p-2 min-h-[400px] bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color} flex flex-col">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="16" fill="none"/>
@@ -453,30 +454,30 @@ const initTool = (form, results, progressContainer) => {
             </div>
           `).join('')}
         </div>
-        <button type="button" class="fixes-toggle mt-4 w-full px-6 py-3 rounded-full text-white font-medium text-sm ${grade.bg}"> ${grade.button} </button>
-        ${grade.button}
+        <button class="fixes-toggle mt-4 w-full px-6 py-3 rounded-full text-white font-medium text-sm ${grade.bg}">
+          ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
         </button>
-        <div class="hidden mt-6 text-left text-sm space-y-8 text-gray-800 dark:text-gray-200">
+        <div class="fixes-panel hidden mt-6 text-left text-sm space-y-8 text-gray-800 dark:text-gray-200">
           <p class="font-bold text-xl ${grade.textColor}">${grade.emoji} ${m.name}</p>
           ${allClear ? '<p class="text-green-600 dark:text-green-400 text-lg font-medium">All signals strong — excellent work!</p>' : getFixes(m.name)}
           ${!allClear ? `
-            <details class="mt-8">
-              <summary class="cursor-pointer text-blue-600 dark:text-blue-400 font-semibold hover:underline">More details →</summary>
-              <div class="mt-4 space-y-4 pl-6 border-l-4 border-blue-400">
-                <div>
-                  <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
-                  <p>${getWhat(m.name)}</p>
-                </div>
-                <div>
-                  <p class="font-bold text-green-600 dark:text-green-400">How:</p>
-                  <p>${getHow(m.name)}</p>
-                </div>
-                <div>
-                  <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
-                  <p>${getWhy(m.name)}</p>
-                </div>
+            <button class="more-details-toggle mt-4 text-xs text-orange-500 hover:underline block">
+              More details →
+            </button>
+            <div class="full-details hidden mt-4 space-y-4">
+              <div>
+                <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
+                <p>${getWhat(m.name)}</p>
               </div>
-            </details>
+              <div>
+                <p class="font-bold text-green-600 dark:text-green-400">How:</p>
+                <p>${getHow(m.name)}</p>
+              </div>
+              <div>
+                <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
+                <p>${getWhy(m.name)}</p>
+              </div>
+            </div>
           ` : ''}
         </div>
       </div>
@@ -626,27 +627,19 @@ ${prioritisedFixes.map(fix => `
       }
       document.body.setAttribute('data-url', displayUrl);
 
-      // Event delegation for fixes toggles to match SEO Intent behavior
+      // Event delegation for fixes toggles (matches SEO Intent exactly)
       results.addEventListener('click', (e) => {
         if (e.target.matches('.fixes-toggle')) {
-          const card = e.target.closest('.score-card'); // Isolate to this card only
-          if (!card) return;
+          const card = e.target.closest('.score-card');
           const fixesPanel = card.querySelector('.fixes-panel');
-          if (!fixesPanel) return;
           const fullDetails = card.querySelector('.full-details');
           fixesPanel.classList.toggle('hidden');
-          if (fixesPanel.classList.contains('hidden') && fullDetails) {
+          if (fixesPanel.classList.contains('hidden')) {
             fullDetails.classList.add('hidden');
           }
-          // Update button text per card
-          const originalText = e.target.dataset.original || e.target.textContent.trim();
-          if (!e.target.dataset.original) e.target.dataset.original = originalText;
-          e.target.textContent = fixesPanel.classList.contains('hidden') ? originalText : 'Hide Details';
         }
         if (e.target.matches('.more-details-toggle')) {
-          const card = e.target.closest('.score-card');
-          if (!card) return;
-          card.querySelector('.full-details').classList.toggle('hidden');
+          e.target.closest('.score-card').querySelector('.full-details').classList.toggle('hidden');
         }
       });
     } catch (err) {
