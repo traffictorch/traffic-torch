@@ -415,7 +415,7 @@ const initTool = (form, results, progressContainer) => {
 
 <div class="flex justify-center mb-12 px-4">
   <div class="flex items-center gap-6">
-    <div class="text-7xl sm:text-8xl md:text-9xl font-black ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
+    <div class="text-5xl sm:text-5xl md:text-5xl font-black ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
       ${yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗' : '❌'}
     </div>
     <div class="text-4xl sm:text-5xl md:text-6xl font-bold ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
@@ -452,12 +452,27 @@ const initTool = (form, results, progressContainer) => {
         </div>
         <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200">${m.desc}</p>
         <div class="mt-4 space-y-3 text-left text-sm">
-          ${moduleTests.map(t => `
-            <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-              <span class="text-lg">${t.emoji}</span>
-              <span>${t.text}</span>
+        
+        
+          ${moduleTests.map(t => {
+            let textColor = 'text-gray-600 dark:text-gray-400';
+            if (t.passed) {
+              textColor = 'text-green-600 dark:text-green-400';
+            } else if (t.text.includes('mentioned') || t.text.includes('present') || t.text.includes('shown')) {
+              textColor = 'text-orange-600 dark:text-orange-400';
+            } else {
+              textColor = 'text-red-600 dark:text-red-400';
+            }
+            return `
+            <div class="flex items-center gap-3">
+              <span class="text-2xl">${t.emoji}</span>
+              <span class="text-base font-medium ${textColor}">${t.text}</span>
             </div>
-          `).join('')}
+            `;
+          }).join('')}
+          
+          
+          
         </div>
         <div class="mt-8">
           <button class="fixes-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center">
