@@ -408,15 +408,17 @@ const initTool = (form, results, progressContainer) => {
              style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">
           ${yourScore}
         </div>
-        <div class="text-xl sm:text-2xl font-medium mt-2"
-             style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">
-          ${yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Needs Improvement' : 'Needs Work'}
-        </div>
-        <div class="text-5xl mt-4">
-          ${yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗' : '❌'}
-        </div>
-        <div class="text-lg text-gray-500 dark:text-gray-400 mt-1">/100</div>
       </div>
+    </div>
+    <div class="mt-6 text-center">
+      <div class="text-5xl">
+        ${yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗' : '❌'}
+      </div>
+      <div class="text-xl sm:text-2xl font-medium mt-2"
+           style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">
+        ${yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Needs Improvement' : 'Needs Work'}
+      </div>
+      <div class="text-lg text-gray-500 dark:text-gray-400 mt-1">/100</div>
     </div>
   </div>
 </div>
