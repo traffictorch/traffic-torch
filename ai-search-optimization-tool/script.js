@@ -576,6 +576,25 @@ results.innerHTML = `
           </span>
         </div>
         <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200">${m.desc}</p>
+        
+        
+        
+        <p class="mt-6 text-xl font-bold text-center text-gray-800 dark:text-gray-200">${m.name}</p>
+        <div class="flex justify-center items-center gap-2 mt-2">
+          <span class="text-2xl">${grade.emoji}</span>
+          <span class="text-base font-medium ${grade.textColor}">
+            ${m.score >= 80 ? 'Excellent' : m.score >= 60 ? 'Needs Improvement' : 'Needs Work'}
+          </span>
+        </div>
+        <p class="text-sm opacity-70 mt-4 text-center text-gray-800 dark:text-gray-200 px-4">${m.desc}</p>
+
+        <!-- More Details button moved here – below description -->
+        <div class="mt-6">
+          <button class="more-details-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm bg-gray-600 hover:bg-gray-700 flex items-center justify-center transition">
+            More Details
+          </button>
+        </div>
+
         <div class="mt-6 space-y-2 text-left text-sm">
           ${moduleTests.map(t => {
             let textColor = t.passed ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
@@ -593,13 +612,9 @@ results.innerHTML = `
           }).join('')}
         </div>
 
-        <!-- Always visible buttons -->
-        <div class="mt-8 flex flex-col gap-3">
+        <div class="mt-8">
           <button class="fixes-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center hover:opacity-90 transition">
             ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
-          </button>
-          <button class="more-details-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm bg-gray-600 hover:bg-gray-700 flex items-center justify-center transition">
-            More Details
           </button>
         </div>
 
@@ -616,7 +631,7 @@ results.innerHTML = `
           </div>
         </div>
 
-        <!-- More Details panel -->
+        <!-- Full details panel (What/How/Why) -->
         <div class="full-details hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out">
           <div class="p-4 space-y-6 bg-blue-50 dark:bg-blue-900/20 rounded-b-2xl">
             <div>
@@ -633,6 +648,9 @@ results.innerHTML = `
             </div>
           </div>
         </div>
+        
+        
+        
       </div>
     `;
   }).join('')}
