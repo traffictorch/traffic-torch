@@ -626,16 +626,24 @@ ${prioritisedFixes.map(fix => `
       }
       document.body.setAttribute('data-url', displayUrl);
 
-      // Proper event delegation for module detail toggles (fixes all panels opening issue)
+      // Fixed event delegation for module detail toggles
       results.addEventListener('click', (e) => {
         const button = e.target.closest('.toggle-details');
         if (!button) return;
         const panel = button.nextElementSibling;
         if (!panel) return;
-        panel.classList.toggle('hidden');
         const isHidden = panel.classList.contains('hidden');
-        button.textContent = isHidden ? button.dataset.original || button.textContent : 'Hide Details';
-        if (!button.dataset.original) button.dataset.original = button.textContent;
+        panel.classList.toggle('hidden');
+        if (isHidden) {
+          // Store original text only once when opening
+          if (!button.dataset.original) {
+            button.dataset.original = button.textContent.trim();
+          }
+          button.textContent = 'Hide Details';
+        } else {
+          // Restore original when closing
+          button.textContent = button.dataset.original || 'Show Fixes';
+        }
       });
     } catch (err) {
       clearInterval(interval);
