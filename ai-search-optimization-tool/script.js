@@ -557,7 +557,7 @@ function getPerMetricWhy(text) {
     const allClear = !hasIssues;
     const needsFixSignals = moduleTests.filter(t => !t.passed);
     return `
-      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color} p-6 flex flex-col">
+      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color} p-4 flex flex-col">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="16" fill="none"/>
@@ -598,7 +598,7 @@ function getPerMetricWhy(text) {
         </div>
 
         <div class="fixes-panel hidden overflow-hidden transition-all duration-300 ease-in-out">
-          <div class="p-6 space-y-6 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
+          <div class="p-4 space-y-6 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
             ${allClear ?
               `<p class="text-green-600 dark:text-green-400 text-lg font-bold text-center py-8">All signals strong — excellent work! ✅</p>` :
               `
