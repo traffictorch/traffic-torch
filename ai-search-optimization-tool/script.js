@@ -475,29 +475,64 @@ const initTool = (form, results, progressContainer) => {
             ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
           </button>
         </div>
-        <div class="fixes-panel hidden mt-6 text-left text-sm space-y-8 text-gray-800 dark:text-gray-200">
-          <p class="font-bold text-xl ${grade.textColor}">${grade.emoji} ${m.name}</p>
-          ${allClear ? '<p class="text-green-600 dark:text-green-400 text-lg font-medium">All signals strong — excellent work!</p>' : getFixes(m.name)}
+        
+        
+        
+        <div class="fixes-panel hidden mt-6 space-y-8 text-gray-800 dark:text-gray-200">
+          ${allClear ?
+            `<p class="text-green-600 dark:text-green-400 text-lg font-bold text-center py-12">All signals strong — excellent work! ✅</p>` :
+            moduleTests.filter(t => !t.passed).map(t => `
+              <div class="p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-md border-l-8 ${t.emoji === '✅' ? 'border-green-500' : t.emoji === '🆗' ? 'border-orange-500' : 'border-red-500'}">
+                <div class="flex items-start gap-4">
+                  <span class="text-4xl mt-1">${t.emoji}</span>
+                  <div class="flex-1 space-y-6">
+                    <p class="text-xl font-bold text-gray-900 dark:text-gray-100">${t.text}</p>
+                    
+                    <div>
+                      <p class="font-bold text-blue-600 dark:text-blue-400">How to fix?</p>
+                      <p class="mt-2 text-base">${getPerMetricHow(t.text)}</p>
+                    </div>
+                    
+                    <div>
+                      <p class="font-bold text-purple-600 dark:text-purple-400">How the metric works:</p>
+                      <p class="mt-2 text-base">${getPerMetricDetection(t.text)}</p>
+                    </div>
+                    
+                    <div>
+                      <p class="font-bold text-orange-600 dark:text-orange-400">Why it matters:</p>
+                      <p class="mt-2 text-base">${getPerMetricWhy(t.text)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          
           ${!allClear ? `
-            <button class="more-details-toggle mt-4 text-xs text-orange-500 hover:underline block">
-              More details →
-            </button>
-            <div class="full-details hidden mt-4 space-y-4">
-              <div>
-                <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
-                <p>${getWhat(m.name)}</p>
-              </div>
-              <div>
-                <p class="font-bold text-green-600 dark:text-green-400">How:</p>
-                <p>${getHow(m.name)}</p>
-              </div>
-              <div>
-                <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
-                <p>${getWhy(m.name)}</p>
+            <div class="mt-8 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl">
+              <button class="more-details-toggle text-base font-medium text-orange-600 dark:text-orange-400 hover:underline">
+                More details about ${m.name} module →
+              </button>
+              <div class="full-details hidden mt-6 space-y-6 text-base">
+                <div>
+                  <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
+                  <p>${getWhat(m.name)}</p>
+                </div>
+                <div>
+                  <p class="font-bold text-green-600 dark:text-green-400">How:</p>
+                  <p>${getHow(m.name)}</p>
+                </div>
+                <div>
+                  <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
+                  <p>${getWhy(m.name)}</p>
+                </div>
               </div>
             </div>
           ` : ''}
         </div>
+        
+        
+        
+        
       </div>
     `;
   }).join('')}
