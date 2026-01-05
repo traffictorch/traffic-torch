@@ -402,23 +402,25 @@ const initTool = (form, results, progressContainer) => {
               stroke-dasharray="${(yourScore / 100) * 754} 754"
               stroke-linecap="round"/>
     </svg>
-    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
       <div class="text-7xl sm:text-8xl md:text-9xl font-black drop-shadow-2xl"
            style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">
         ${yourScore}
       </div>
+      <div class="text-xl font-medium text-gray-600 dark:text-gray-400 mt-2">
+        /100
+      </div>
     </div>
   </div>
-  <!-- Elements below the circle -->
-  <div class="mt-6 text-center">
+  <!-- Grade and emoji below the circle -->
+  <div class="mt-8 text-center">
     <div class="text-6xl">
       ${yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗' : '❌'}
     </div>
-    <div class="text-2xl sm:text-3xl font-bold mt-3"
+    <div class="text-3xl font-bold mt-4"
          style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">
       ${yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Needs Improvement' : 'Needs Work'}
     </div>
-    <div class="text-lg text-gray-500 dark:text-gray-400 mt-2">/100</div>
   </div>
 </div>
 </div>
