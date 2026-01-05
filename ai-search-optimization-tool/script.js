@@ -604,35 +604,37 @@ return `
         
         
         
-<div class="fixes-panel hidden mt-6 space-y-8 text-gray-800 dark:text-gray-200">
-  ${allClear ?
-    `<p class="text-green-600 dark:text-green-400 text-lg font-bold text-center py-12">All signals strong — excellent work! ✅</p>` :
-    `
-    <div class="space-y-10">
-      ${getFixes(m.name)}
-    </div>
-    `}
-  ${!allClear ? `
-    <div class="mt-8 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl">
-      <button class="more-details-toggle text-base font-medium text-orange-600 dark:text-orange-400 hover:underline">
-        More details about ${m.name} module →
-      </button>
-      <div class="full-details hidden mt-6 space-y-6 text-base">
-        <div>
-          <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
-          <p>${getWhat(m.name)}</p>
-        </div>
-        <div>
-          <p class="font-bold text-green-600 dark:text-green-400">How:</p>
-          <p>${getHow(m.name)}</p>
-        </div>
-        <div>
-          <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
-          <p>${getWhy(m.name)}</p>
+<div class="fixes-panel hidden overflow-hidden transition-all duration-300 ease-in-out">
+  <div class="p-6 space-y-8 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
+    ${allClear ?
+      `<p class="text-green-600 dark:text-green-400 text-lg font-bold text-center py-12">All signals strong — excellent work! ✅</p>` :
+      `
+      <div class="space-y-6">
+        ${getFixes(m.name)}
+      </div>
+      `}
+    ${!allClear ? `
+      <div class="mt-6 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl">
+        <button class="more-details-toggle text-base font-medium text-orange-600 dark:text-orange-400 hover:underline">
+          More details about ${m.name} module →
+        </button>
+        <div class="full-details hidden mt-6 space-y-6 text-base">
+          <div>
+            <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
+            <p>${getWhat(m.name)}</p>
+          </div>
+          <div>
+            <p class="font-bold text-green-600 dark:text-green-400">How:</p>
+            <p>${getHow(m.name)}</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
+            <p>${getWhy(m.name)}</p>
+          </div>
         </div>
       </div>
-    </div>
-  ` : ''}
+    ` : ''}
+  </div>
 </div>
         
         
