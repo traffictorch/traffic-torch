@@ -550,6 +550,7 @@ results.innerHTML = `
   </div>
 </div>
 
+
 <div class="grid grid-cols-1 md:grid-cols-4 gap-8 my-12 px-4 max-w-7xl mx-auto">
   ${modules.map(m => {
     const grade = getGradeInfo(m.score);
@@ -575,17 +576,19 @@ results.innerHTML = `
             ${m.score >= 80 ? 'Excellent' : m.score >= 60 ? 'Needs Improvement' : 'Needs Work'}
           </span>
         </div>
-        <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200">${m.desc}</p>
-        
-        
+        <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200 px-4">${m.desc}</p>
 
-        <!-- More Details button moved here – below description -->
-        <div class="mt-6">
+        <!-- Buttons: More Details first, then Show Fixes -->
+        <div class="mt-6 flex flex-col gap-3">
           <button class="more-details-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm bg-gray-600 hover:bg-gray-700 flex items-center justify-center transition">
             More Details
           </button>
+          <button class="fixes-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center hover:opacity-90 transition">
+            ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
+          </button>
         </div>
 
+        <!-- Metrics list -->
         <div class="mt-6 space-y-2 text-left text-sm">
           ${moduleTests.map(t => {
             let textColor = t.passed ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
@@ -603,22 +606,13 @@ results.innerHTML = `
           }).join('')}
         </div>
 
-        <div class="mt-8">
-          <button class="fixes-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center hover:opacity-90 transition">
-            ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
-          </button>
-        </div>
-
         <!-- Fixes panel -->
         <div class="fixes-panel hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out">
           <div class="p-4 space-y-4 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
             ${allClear ?
               `<p class="text-green-600 dark:text-green-400 text-center py-6 font-medium">All signals strong — excellent work! ✅</p>` :
-              `
-              <div class="space-y-4">
-                ${getFixes(m.name)}
-              </div>
-              `}
+              `<div class="space-y-4">${getFixes(m.name)}</div>`
+            }
           </div>
         </div>
 
@@ -639,9 +633,6 @@ results.innerHTML = `
             </div>
           </div>
         </div>
-        
-        
-        
       </div>
     `;
   }).join('')}
