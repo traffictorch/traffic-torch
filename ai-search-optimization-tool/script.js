@@ -578,15 +578,6 @@ results.innerHTML = `
         <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200">${m.desc}</p>
         
         
-        
-        <p class="mt-6 text-xl font-bold text-center text-gray-800 dark:text-gray-200">${m.name}</p>
-        <div class="flex justify-center items-center gap-2 mt-2">
-          <span class="text-2xl">${grade.emoji}</span>
-          <span class="text-base font-medium ${grade.textColor}">
-            ${m.score >= 80 ? 'Excellent' : m.score >= 60 ? 'Needs Improvement' : 'Needs Work'}
-          </span>
-        </div>
-        <p class="text-sm opacity-70 mt-4 text-center text-gray-800 dark:text-gray-200 px-4">${m.desc}</p>
 
         <!-- More Details button moved here – below description -->
         <div class="mt-6">
