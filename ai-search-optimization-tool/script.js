@@ -515,7 +515,10 @@ function getPerMetricWhy(text) {
         "Unique Insights": ["First-hand experience markers", "Dated/timely results mentioned", "Interviews/quotes included", "Deep content (1500+ words)"],
         "Anti-AI Safety": ["High sentence burstiness", "Low word repetition", "No predictable sentence starts"]
       };
-      results.innerHTML = `
+      
+      
+      
+results.innerHTML = `
 <div class="flex justify-center my-12 px-4">
   <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square">
     <svg viewBox="0 0 260 260" class="w-full h-full transform -rotate-90">
@@ -536,10 +539,9 @@ function getPerMetricWhy(text) {
     </div>
   </div>
 </div>
-
 <div class="flex justify-center mb-12 px-4">
   <div class="flex items-center gap-6">
-    <div class="text-5xl sm:text-5xl md:text-5xl font-black ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
+    <div class="text-5xl font-black ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
       ${yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗' : '❌'}
     </div>
     <div class="text-4xl sm:text-5xl md:text-6xl font-bold ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
@@ -547,7 +549,6 @@ function getPerMetricWhy(text) {
     </div>
   </div>
 </div>
-
 
 <div class="grid grid-cols-1 md:grid-cols-4 gap-8 my-12 px-4 max-w-7xl mx-auto">
   ${modules.map(m => {
@@ -591,78 +592,71 @@ function getPerMetricWhy(text) {
             `;
           }).join('')}
         </div>
-        <div class="mt-8">
+
+        <!-- Always visible buttons -->
+        <div class="mt-8 flex flex-col gap-3">
           <button class="fixes-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center hover:opacity-90 transition">
             ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
           </button>
+          <button class="more-details-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm bg-gray-600 hover:bg-gray-700 flex items-center justify-center transition">
+            More Details
+          </button>
         </div>
 
-<div class="fixes-panel hidden mt-4">
-  <div class="space-y-4">
-    ${allClear ?
-      `<p class="text-green-600 dark:text-green-400 text-center py-8 font-medium">All signals strong — excellent work! ✅</p>` :
-      `
-      <div class="space-y-6">
-        ${getFixes(m.name)}
-      </div>
-      `}
-    ${!allClear ? `
-      <div class="mt-6 flex flex-col gap-3">
-        <button class="more-details-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm bg-orange-500 hover:bg-orange-600 flex items-center justify-center transition">
-          More Details
-        </button>
-      </div>
-      <div class="full-details hidden mt-6 space-y-6 text-base">
-        <div>
-          <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
-          <p>${getWhat(m.name)}</p>
+        <!-- Fixes panel -->
+        <div class="fixes-panel hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out">
+          <div class="p-4 space-y-4 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
+            ${allClear ?
+              `<p class="text-green-600 dark:text-green-400 text-center py-6 font-medium">All signals strong — excellent work! ✅</p>` :
+              `
+              <div class="space-y-4">
+                ${getFixes(m.name)}
+              </div>
+              `}
+          </div>
         </div>
-        <div>
-          <p class="font-bold text-green-600 dark:text-green-400">How:</p>
-          <p>${getHow(m.name)}</p>
-        </div>
-        <div>
-          <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
-          <p>${getWhy(m.name)}</p>
+
+        <!-- More Details panel -->
+        <div class="full-details hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out">
+          <div class="p-4 space-y-6 bg-blue-50 dark:bg-blue-900/20 rounded-b-2xl">
+            <div>
+              <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
+              <p>${getWhat(m.name)}</p>
+            </div>
+            <div>
+              <p class="font-bold text-green-600 dark:text-green-400">How:</p>
+              <p>${getHow(m.name)}</p>
+            </div>
+            <div>
+              <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
+              <p>${getWhy(m.name)}</p>
+            </div>
+          </div>
         </div>
       </div>
-    ` : ''}
-  </div>
+    `;
+  }).join('')}
 </div>
-    </div>
-  `;
-}).join('')}
-</div>
-
-
 
 ${prioritisedFixes.length > 0 ? `
   <div class="mt-16 px-4">
     <h3 class="text-3xl font-black text-center mb-8 text-blue-800 dark:text-blue-200">Top Priority Fixes (Highest Impact First)</h3>
   </div>
-` : ''}
-${prioritisedFixes.map(fix => `
-  <div class="mx-4 p-8 bg-gradient-to-r ${fix.gradient} border-l-8 rounded-r-2xl">
-    <div class="flex gap-6">
-      <div class="text-5xl">${fix.emoji}</div>
-      <div class="flex-1">
-        <h4 class="text-2xl font-bold ${fix.color}">${fix.title}</h4>
-        <div class="mt-4">
-          <p class="text-blue-500 font-bold">What:</p>
-          <p class="text-gray-800 dark:text-gray-200 mt-1">${fix.what}</p>
-        </div>
-        <div class="mt-2">
-          <p class="text-green-500 font-bold">How:</p>
-          <p class="text-gray-800 dark:text-gray-200 mt-1">${fix.how}</p>
-        </div>
-        <div class="mt-2">
-          <p class="text-orange-500 font-bold">Why:</p>
-          <p class="text-gray-800 dark:text-gray-200 mt-1">${fix.why}</p>
+  ${prioritisedFixes.map(fix => `
+    <div class="mx-4 p-8 bg-gradient-to-r ${fix.gradient} border-l-8 rounded-r-2xl">
+      <div class="flex gap-6">
+        <div class="text-5xl">${fix.emoji}</div>
+        <div class="flex-1">
+          <h4 class="text-2xl font-bold ${fix.color}">${fix.title}</h4>
+          <div class="mt-4"><p class="text-blue-500 font-bold">What:</p><p class="text-gray-800 dark:text-gray-200 mt-1">${fix.what}</p></div>
+          <div class="mt-2"><p class="text-green-500 font-bold">How:</p><p class="text-gray-800 dark:text-gray-200 mt-1">${fix.how}</p></div>
+          <div class="mt-2"><p class="text-orange-500 font-bold">Why:</p><p class="text-gray-800 dark:text-gray-200 mt-1">${fix.why}</p></div>
         </div>
       </div>
     </div>
-  </div>
-`).join('')}
+  `).join('')}
+` : ''}
+
 <div class="mt-20 px-4 max-w-6xl mx-auto">
   <div class="grid md:grid-cols-2 gap-8">
     <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl">
@@ -757,13 +751,14 @@ ${prioritisedFixes.map(fix => `
     </div>
   </div>
 </div>
+
 <div class="text-center my-16">
   <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
           class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
     📄 Save as PDF
   </button>
 </div>
-      `;
+`;
       let fullUrl = document.getElementById('url-input').value.trim();
       let displayUrl = 'traffictorch.net';
       if (fullUrl) {
@@ -779,33 +774,35 @@ ${prioritisedFixes.map(fix => `
       }
       document.body.setAttribute('data-url', displayUrl);
 
-      // Event delegation for fixes toggles - works after innerHTML replacement
+// Event delegation for fixes and more details toggles
 document.addEventListener('click', (e) => {
+  const card = e.target.closest('.score-card');
+  if (!card) return;
+
+  // Handle Show Fixes
   if (e.target.matches('.fixes-toggle')) {
-    const clickedCard = e.target.closest('.score-card');
-    if (!clickedCard) return;
-
-    const clickedPanel = clickedCard.querySelector('.fixes-panel');
-
-    // Close all other fixes-panels
+    const clickedPanel = card.querySelector('.fixes-panel');
+    // Close all other fixes panels
     document.querySelectorAll('.fixes-panel').forEach(panel => {
       if (panel !== clickedPanel) {
         panel.classList.add('hidden');
       }
     });
-
     // Toggle the clicked one
-    if (clickedPanel) {
-      clickedPanel.classList.toggle('hidden');
-    }
+    if (clickedPanel) clickedPanel.classList.toggle('hidden');
   }
 
+  // Handle More Details
   if (e.target.matches('.more-details-toggle')) {
-    const card = e.target.closest('.score-card');
-    if (card) {
-      const details = card.querySelector('.full-details');
-      if (details) details.classList.toggle('hidden');
-    }
+    const details = card.querySelector('.full-details');
+    // Close all other more details panels
+    document.querySelectorAll('.full-details').forEach(panel => {
+      if (panel !== details) {
+        panel.classList.add('hidden');
+      }
+    });
+    // Toggle the clicked one
+    if (details) details.classList.toggle('hidden');
   }
 });
       
