@@ -578,11 +578,29 @@ results.innerHTML = `
         </div>
         <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200 px-4">${m.desc}</p>
 
-        <!-- More Details button - placed right after description -->
+        <!-- More Details button -->
         <div class="mt-6">
           <button class="more-details-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm bg-gray-600 hover:bg-gray-700 flex items-center justify-center transition">
             More Details
           </button>
+        </div>
+
+        <!-- Full details panel - directly below More Details button -->
+        <div class="full-details hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out">
+          <div class="p-4 space-y-6 bg-blue-50 dark:bg-blue-900/20 rounded-b-2xl">
+            <div>
+              <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
+              <p>${getWhat(m.name)}</p>
+            </div>
+            <div>
+              <p class="font-bold text-green-600 dark:text-green-400">How:</p>
+              <p>${getHow(m.name)}</p>
+            </div>
+            <div>
+              <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
+              <p>${getWhy(m.name)}</p>
+            </div>
+          </div>
         </div>
 
         <!-- Metrics list -->
@@ -603,38 +621,20 @@ results.innerHTML = `
           }).join('')}
         </div>
 
-        <!-- Show Fixes button - kept below metrics list (original position) -->
+        <!-- Show Fixes button -->
         <div class="mt-8">
           <button class="fixes-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center hover:opacity-90 transition">
             ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
           </button>
         </div>
 
-        <!-- Fixes panel -->
+        <!-- Fixes panel - directly below Show Fixes button -->
         <div class="fixes-panel hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out">
           <div class="p-4 space-y-4 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
             ${allClear ?
               `<p class="text-green-600 dark:text-green-400 text-center py-6 font-medium">All signals strong — excellent work! ✅</p>` :
               `<div class="space-y-4">${getFixes(m.name)}</div>`
             }
-          </div>
-        </div>
-
-        <!-- Full details panel (What/How/Why) - opens below More Details button -->
-        <div class="full-details hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out">
-          <div class="p-4 space-y-6 bg-blue-50 dark:bg-blue-900/20 rounded-b-2xl">
-            <div>
-              <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
-              <p>${getWhat(m.name)}</p>
-            </div>
-            <div>
-              <p class="font-bold text-green-600 dark:text-green-400">How:</p>
-              <p>${getHow(m.name)}</p>
-            </div>
-            <div>
-              <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
-              <p>${getWhy(m.name)}</p>
-            </div>
           </div>
         </div>
       </div>
