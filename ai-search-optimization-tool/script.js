@@ -523,6 +523,20 @@ const initTool = (form, results, progressContainer) => {
         return why[module]?.[checkText] || "This signal significantly affects how AI engines trust and cite your content.";
       }
 
+      function getFixes(name) {
+        let fixes = '';
+        if (name === "Answerability") {
+          if (!hasBoldInFirst) fixes += '<p>• <strong>Bold key answers in opening:</strong> Place the main answer in bold text within the first paragraph so AI can easily quote it.</p>';
+          if (!hasDefinition) fixes += '<p>• <strong>Add definition phrasing:</strong> Start with clear phrases like “X means…” or “X is defined as…” to directly satisfy definitional queries.</p>';
+          if (!hasFAQSchema) fixes += '<p>• <strong>Use FAQ/HowTo schema:</strong> Add structured data markup that tells search engines this page answers common questions or provides steps.</p>';
+          if (!hasQuestionH2) fixes += '<p>• <strong>Question H2s:</strong> Use heading tags formatted as questions (e.g., “How do I fix X?”) to match real user searches.</p>';
+          if (!hasSteps) fixes += '<p>• <strong>Step-by-step guides:</strong> Include numbered lists with clear actions — AI engines love extractable instructions.</p>';
+          if (first300.length <= 600) fixes += '<p>• <strong>Strengthen opening section:</strong> Expand the first section to over 600 characters with valuable content so AI has more to summarize and cite.</p>';
+        }
+        // ... (keep the rest of getFixes as fallback)
+        return fixes || '<p class="text-green-600 dark:text-green-400">All signals strong — excellent work!</p>';
+      }
+
       const moduleKeywords = {
         "Answerability": ["Bold/strong formatting in opening", "Clear definition pattern in opening", "FAQPage schema detected", "Question-style H2 headings", "Step-by-step language in opening", "Strong opening section (>600 chars)"],
         "Structured Data": ["JSON-LD structured data present", "Article/BlogPosting schema type", "FAQPage/HowTo schema type", "Person schema for author"],
@@ -561,7 +575,7 @@ const initTool = (form, results, progressContainer) => {
     </div>
   </div>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 my-16 px-4">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 my-16 px-4">
   ${modules.map(m => {
     const grade = getGradeInfo(m.score);
     const moduleTests = tests.filter(t => moduleKeywords[m.name].some(kw => t.text.includes(kw)));
