@@ -606,32 +606,32 @@ function getPerMetricWhy(text) {
                 ${getFixes(m.name)}
               </div>
               `}
-            ${!allClear ? `
-              <div class="mt-6 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl">
-                <button class="more-details-toggle text-base font-medium text-orange-600 dark:text-orange-400 hover:underline">
-                  More details about ${m.name} module →
-                </button>
-                <div class="full-details hidden mt-6 space-y-6 text-base">
-                  <div>
-                    <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
-                    <p>${getWhat(m.name)}</p>
-                  </div>
-                  <div>
-                    <p class="font-bold text-green-600 dark:text-green-400">How:</p>
-                    <p>${getHow(m.name)}</p>
-                  </div>
-                  <div>
-                    <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
-                    <p>${getWhy(m.name)}</p>
-                  </div>
-                </div>
+          ${!allClear ? `
+            <div class="mt-6 text-center">
+              <button class="more-details-toggle text-sm font-medium text-orange-600 dark:text-orange-400 hover:underline">
+                More Details
+              </button>
+            </div>
+            <div class="full-details hidden mt-6 space-y-6 text-base">
+              <div>
+                <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
+                <p>${getWhat(m.name)}</p>
               </div>
-            ` : ''}
-          </div>
+              <div>
+                <p class="font-bold text-green-600 dark:text-green-400">How:</p>
+                <p>${getHow(m.name)}</p>
+              </div>
+              <div>
+                <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
+                <p>${getWhy(m.name)}</p>
+              </div>
+            </div>
+          ` : ''}
         </div>
       </div>
-    `;
-  }).join('')}
+    </div>
+  `;
+}).join('')}
 </div>
 
 
@@ -780,27 +780,36 @@ ${prioritisedFixes.map(fix => `
       document.body.setAttribute('data-url', displayUrl);
 
       // Event delegation for fixes toggles - works after innerHTML replacement
-      document.addEventListener('click', (e) => {
-        if (e.target.matches('.fixes-toggle')) {
-          const card = e.target.closest('.score-card');
-          if (!card) return;
-          const fixesPanel = card.querySelector('.fixes-panel');
-          const fullDetails = card.querySelector('.full-details');
-          if (fixesPanel) {
-            fixesPanel.classList.toggle('hidden');
-            if (fixesPanel.classList.contains('hidden') && fullDetails) {
-              fullDetails.classList.add('hidden');
-            }
-          }
-        }
-        if (e.target.matches('.more-details-toggle')) {
-          const card = e.target.closest('.score-card');
-          if (card) {
-            const fullDetails = card.querySelector('.full-details');
-            if (fullDetails) fullDetails.classList.toggle('hidden');
-          }
-        }
-      });
+document.addEventListener('click', (e) => {
+  if (e.target.matches('.fixes-toggle')) {
+    const clickedCard = e.target.closest('.score-card');
+    if (!clickedCard) return;
+
+    const clickedPanel = clickedCard.querySelector('.fixes-panel');
+
+    // Close all other fixes-panels
+    document.querySelectorAll('.fixes-panel').forEach(panel => {
+      if (panel !== clickedPanel) {
+        panel.classList.add('hidden');
+      }
+    });
+
+    // Toggle the clicked one
+    if (clickedPanel) {
+      clickedPanel.classList.toggle('hidden');
+    }
+  }
+
+  if (e.target.matches('.more-details-toggle')) {
+    const card = e.target.closest('.score-card');
+    if (card) {
+      const details = card.querySelector('.full-details');
+      if (details) details.classList.toggle('hidden');
+    }
+  }
+});
+      
+      
     } catch (err) {
       clearInterval(interval);
       progressContainer.classList.add('hidden');
