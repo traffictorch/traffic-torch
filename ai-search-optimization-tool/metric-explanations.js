@@ -1,5 +1,6 @@
 // ai-search-optimization-tool/metric-explanations.js
-const metricExplanations = {
+// Global object – no export needed for GitHub Pages classic script loading
+window.metricExplanations = {
   'Bold/strong formatting in opening': {
     definition: 'This metric evaluates whether key statements in the opening section are highlighted using bold or strong formatting. It focuses on the first ~1200 characters of main content to identify emphasis tags.',
     detection: 'The tool scans for the presence of <strong>, <b>, or <em> tags in the extracted opening content after removing navigation and sidebars.',
@@ -71,105 +72,103 @@ const metricExplanations = {
     impact: 'HTTPS is a fundamental security and trust requirement for modern web content. Insecure sites are deprioritized in search. Secure connections are essential for user trust and AI source selection.'
   },
   'Sufficient headings (H1-H4)': {
-    definition: 'This metric assesses content structure through proper heading hierarchy usage.',
+    definition: 'This metric assesses content structure through proper heading hierarchy usage. It ensures the page is logically organized for both users and crawlers.',
     detection: 'The tool counts total H1 through H4 elements in main content.',
     impact: 'Good heading structure improves readability and content organization. It helps both users and AI parse information quickly. Proper hierarchy enhances scannability and extraction accuracy.'
   },
   'Bullet/numbered lists used': {
-    definition: 'This metric evaluates use of structured lists for presenting information.',
+    definition: 'This metric evaluates use of structured lists for presenting information. It rewards clear, scannable formatting of key points.',
     detection: 'The tool counts <ul> and <ol> elements in cleaned main content.',
     impact: 'Lists are the most AI-friendly format for extracting key facts. They improve scannability for users. Structured lists significantly increase citation likelihood in summary answers.'
   },
   'Data tables present': {
-    definition: 'This metric checks for tabular data presentation using proper HTML tables.',
+    definition: 'This metric checks for tabular data presentation using proper HTML tables. It looks for structured comparison or statistical content.',
     detection: 'The tool detects any <table> elements in main content area.',
     impact: 'Tables provide highly structured, extractable data for AI systems. They improve comprehension of comparisons and stats. Well-marked tables dramatically boost reuse in answers.'
   },
   'Short paragraphs (<35 words)': {
-    definition: 'This metric measures paragraph length for optimal readability.',
+    definition: 'This metric measures paragraph length for optimal readability. It promotes concise, digestible writing style.',
     detection: 'The tool counts paragraphs with fewer than 35 words after cleaning.',
     impact: 'Short paragraphs improve reading speed and comprehension on all devices. They make content more scannable for both users and AI. Better readability reduces bounce rates and improves processing accuracy.'
   },
   'Excellent heading density': {
-    definition: 'This metric evaluates frequency of headings for optimal content flow.',
+    definition: 'This metric evaluates frequency of headings for optimal content flow. It ensures regular structural breaks in long-form content.',
     detection: 'The tool checks for more than 8 total headings across the content.',
     impact: 'Regular headings guide readers through long content effectively. They help AI understand content structure and hierarchy. Optimal density improves both engagement and parsing accuracy.'
   },
   'Direct "you" address (>5)': {
-    definition: 'This metric measures conversational tone through direct reader address.',
+    definition: 'This metric measures conversational tone through direct reader address. It rewards personal, engaging writing style.',
     detection: 'The tool counts occurrences of “you”, “your”, and “yours” in main content.',
     impact: 'Direct address creates personal connection and matches natural search language. It improves engagement and time on page. Conversational tone aligns closely with voice search patterns.'
   },
   'Personal "I/we" sharing': {
-    definition: 'This metric assesses personal voice and experience sharing in content.',
+    definition: 'This metric assesses personal voice and experience sharing in content. It looks for first-person perspective indicators.',
     detection: 'The tool counts personal pronouns indicating first-person perspective.',
     impact: 'Personal voice adds authenticity and human connection. It demonstrates real experience rather than generic information. This tone significantly improves trust and E-E-A-T perception.'
   },
   'Engaging questions asked': {
-    definition: 'This metric evaluates use of rhetorical questions to engage readers.',
+    definition: 'This metric evaluates use of rhetorical questions to engage readers. It rewards content that mirrors reader curiosity.',
     detection: 'The tool counts sentences ending with question marks.',
     impact: 'Questions mirror reader thoughts and increase engagement. They improve dwell time and interaction signals. Rhetorical questions align content with natural user curiosity.'
   },
   'Reader pain points acknowledged': {
-    definition: 'This metric checks for empathy through recognition of reader challenges.',
+    definition: 'This metric checks for empathy through recognition of reader challenges. It looks for acknowledgment of common problems or frustrations.',
     detection: 'The tool scans for keywords indicating problems, struggles, or frustrations.',
     impact: 'Acknowledging pain points builds immediate rapport and trust. It keeps readers engaged with relevant solutions. Empathy improves conversion rates and perceived helpfulness.'
   },
   'Good Flesch score (>60)': {
-    definition: 'This metric measures overall reading ease using the Flesch formula.',
+    definition: 'This metric measures overall reading ease using the Flesch formula. It evaluates sentence length and word complexity.',
     detection: 'The tool calculates score based on sentence length and syllable count.',
     impact: 'Clear writing improves comprehension for all audiences including AI processing. Higher readability reduces misinterpretation in summaries. Easy-to-read content performs better across all devices and demographics.'
   },
   'Natural sentence variation': {
-    definition: 'This metric evaluates rhythm through varying sentence lengths.',
+    definition: 'This metric evaluates rhythm through varying sentence lengths. It rewards natural, human-like flow in writing.',
     detection: 'The tool measures statistical variance in sentence word counts.',
     impact: 'Natural rhythm makes writing feel human and engaging. It avoids robotic patterns common in low-quality content. Variation improves readability and authenticity signals.'
   },
   'Low passive voice': {
-    definition: 'This metric assesses preference for active over passive constructions.',
+    definition: 'This metric assesses preference for active over passive constructions. It promotes direct, authoritative language.',
     detection: 'The tool detects common passive voice patterns in content.',
     impact: 'Active voice is clearer, more direct, and authoritative. It improves readability and impact. Clear voice enhances both user experience and AI processing accuracy.'
   },
   'Low complex words (<15%)': {
-    definition: 'This metric measures vocabulary complexity through syllable counting.',
+    definition: 'This metric measures vocabulary complexity through syllable counting. It encourages accessible language.',
     detection: 'The tool calculates percentage of words with 3+ syllables.',
     impact: 'Simple language improves accessibility and comprehension. It reduces cognitive load for readers. Clear vocabulary enhances both user experience and AI summarization quality.'
   },
   'First-hand experience markers': {
-    definition: 'This metric identifies language indicating personal testing or observation.',
+    definition: 'This metric identifies language indicating personal testing or observation. It looks for authentic experience signals.',
     detection: 'The tool scans for phrases like “I tested”, “in my experience”, “we found”.',
     impact: 'First-hand markers prove real expertise and original insight. They significantly boost E-E-A-T evaluation. Personal experience differentiates content from generic sources.'
   },
   'Dated/timely results mentioned': {
-    definition: 'This metric checks for references to recent testing or observations.',
+    definition: 'This metric checks for references to recent testing or observations. It rewards content showing current relevance.',
     detection: 'The tool looks for time-bound phrases indicating current relevance.',
     impact: 'Timely references demonstrate freshness and real-world application. They improve trust in fast-moving topics. Current results increase perceived authority and relevance.'
   },
   'Interviews/quotes included': {
-    definition: 'This metric evaluates inclusion of third-party perspectives and expert quotes.',
+    definition: 'This metric evaluates inclusion of third-party perspectives and expert quotes. It rewards external validation.',
     detection: 'The tool detects quote patterns and interview-related language.',
     impact: 'Expert quotes add external authority and exclusive value. They improve credibility and depth perception. Third-party validation strengthens E-E-A-T signals significantly.'
   },
   'Deep content (1500+ words)': {
-    definition: 'This metric measures overall content depth and comprehensiveness.',
+    definition: 'This metric measures overall content depth and comprehensiveness. It evaluates thoroughness of topic coverage.',
     detection: 'The tool counts words in cleaned main content area.',
     impact: 'In-depth content signals thorough expertise and coverage. It improves topical authority in competitive areas. Comprehensive pages are favored as primary sources by AI systems.'
   },
   'High sentence burstiness': {
-    definition: 'This metric assesses dramatic variation in sentence length patterns.',
+    definition: 'This metric assesses dramatic variation in sentence length patterns. It looks for natural human writing rhythm.',
     detection: 'The tool evaluates statistical burstiness in sentence structure.',
     impact: 'High burstiness is a strong indicator of natural human writing. It helps avoid AI-generation flags. Dramatic variation improves authenticity and engagement.'
   },
   'Low word repetition': {
-    definition: 'This metric measures vocabulary diversity and phrasing variety.',
+    definition: 'This metric measures vocabulary diversity and phrasing variety. It rewards sophisticated, non-repetitive writing.',
     detection: 'The tool checks if any word exceeds 10 repetitions.',
     impact: 'Varied vocabulary prevents robotic feel and improves readability. It signals sophisticated writing. Low repetition enhances both user experience and quality perception.'
   },
   'No predictable sentence starts': {
-    definition: 'This metric evaluates variety in sentence opening structure.',
+    definition: 'This metric evaluates variety in sentence opening structure. It rewards diverse, natural flow.',
     detection: 'The tool analyzes frequency of identical sentence starting words/phrases.',
     impact: 'Varied starts break predictable patterns common in generated text. They create natural flow and rhythm. This variation strengthens human authenticity signals.'
   }
 };
-
-export default metricExplanations;
