@@ -454,23 +454,24 @@ function getPerMetricWhy(text) {
 function getFixes(name) {
   let fixes = '';
   const addFix = (metricText, description) => {
-    const passed = tests.find(t => t.text === metricText)?.passed;
+    const test = tests.find(t => t.text === metricText);
+    const passed = test ? test.passed : undefined;
     let emoji = '❌';
     let titleColor = 'text-red-600 dark:text-red-400';
     if (passed === true) {
       emoji = '✅';
       titleColor = 'text-green-600 dark:text-green-400';
-    } else if (passed === undefined) {
-      titleColor = 'text-orange-600 dark:text-orange-400';
+    } else if (passed === false && metricText.includes('Trusted outbound links')) {
       emoji = '🆗';
+      titleColor = 'text-orange-600 dark:text-orange-400';
     }
     fixes += `
-      <div class="border-l-4 border-gray-300 pl-4 py-3">
-        <div class="text-xl">${emoji}</div>
-        <div class="mt-2 font-medium ${titleColor}">${metricText}</div>
-        <div class="mt-1 text-sm text-gray-700 dark:text-gray-300">${description}</div>
-        <div class="mt-2">
-          <button class="metric-details-link text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline" data-metric="${metricText}">
+      <div class="flex items-start gap-3 py-3 border-l-4 border-gray-200 dark:border-gray-700 pl-4">
+        <span class="text-2xl flex-shrink-0">${emoji}</span>
+        <div class="flex-1">
+          <p class="font-semibold ${titleColor}">${metricText}</p>
+          <p class="text-sm text-gray-700 dark:text-gray-300 mt-1">${description}</p>
+          <button class="metric-details-link text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline mt-2 inline-block" data-metric="${metricText}">
             Metric Details →
           </button>
         </div>
@@ -479,57 +480,62 @@ function getFixes(name) {
   };
 
   if (name === "Answerability") {
-          if (!hasBoldInFirst) fixes += '<p>• <strong>Bold key answers in opening:</strong> Place the main answer in bold text within the first paragraph so AI can easily quote it.</p>';
-          if (!hasDefinition) fixes += '<p>• <strong>Add definition phrasing:</strong> Start with clear phrases like “X means…” or “X is defined as…” to directly satisfy definitional queries.</p>';
-          if (!hasFAQSchema) fixes += '<p>• <strong>Use FAQ/HowTo schema:</strong> Add structured data markup that tells search engines this page answers common questions or provides steps.</p>';
-          if (!hasQuestionH2) fixes += '<p>• <strong>Question H2s:</strong> Use heading tags formatted as questions (e.g., “How do I fix X?”) to match real user searches.</p>';
-          if (!hasSteps) fixes += '<p>• <strong>Step-by-step guides:</strong> Include numbered lists with clear actions — AI engines love extractable instructions.</p>';
-          if (first300.length <= 600) fixes += '<p>• <strong>Strengthen opening section:</strong> Expand the first section to over 600 characters with valuable content so AI has more to summarize and cite.</p>';
-        }
-        if (name === "Structured Data") {
-          if (!hasJsonLd) fixes += '<p>• <strong>Add JSON-LD block:</strong> Include a script tag with structured data that search engines can read directly.</p>';
-          if (!hasArticle) fixes += '<p>• <strong>Include Article type:</strong> Mark the page as an Article or BlogPosting so AI knows it\'s authoritative content.</p>';
-          if (!hasFaqHowto) fixes += '<p>• <strong>Add FAQPage/HowTo:</strong> If the page answers questions or teaches a process, add the matching schema type.</p>';
-          if (!hasPerson) fixes += '<p>• <strong>Link Person schema:</strong> Connect the content to an author profile using Person markup for better trust signals.</p>';
-        }
-        if (name === "EEAT Signals") {
-          if (!hasAuthor) fixes += '<p>• <strong>Visible author byline:</strong> Show the writer\'s name, photo, and short bio near the top or bottom of the article.</p>';
-          if (!hasDate) fixes += '<p>• <strong>Publish date:</strong> Clearly display when the article was published and last updated.</p>';
-          if (!hasTrustedLinks) fixes += '<p>• <strong>Trusted outbound links:</strong> Link to reputable sources (universities, government sites, known authorities) to build credibility.</p>';
-          if (!url.startsWith('https:')) fixes += '<p>• <strong>Use HTTPS:</strong> Ensure your site uses a secure connection — basic but essential for trust.</p>';
-        }
-        if (name === "Scannability") {
-          if (headings <= 5) fixes += '<p>• <strong>More headings:</strong> Break content into logical sections with H2 and H3 tags every 300–400 words.</p>';
-          if (lists <= 2) fixes += '<p>• <strong>Bullet lists:</strong> Turn long paragraphs into scannable bullet or numbered lists.</p>';
-          if (tables === 0) fixes += '<p>• <strong>Tables for data:</strong> Present comparisons, specs, or stats in clean tables instead of paragraphs.</p>';
-          if (shortParas <= 5) fixes += '<p>• <strong>Short paragraphs:</strong> Keep most paragraphs under 4 lines for faster reading and easier AI extraction.</p>';
-          if (headings <= 8) fixes += '<p>• <strong>High heading density:</strong> Aim for a heading every few hundred words to guide both users and AI.</p>';
-        }
-        if (name === "Conversational Tone") {
-          if (youCount <= 5) fixes += '<p>• <strong>Use \'you\' frequently:</strong> Address the reader directly (“you can”, “your results”) to create connection.</p>';
-          if (iWeCount <= 3) fixes += '<p>• <strong>Share personal \'I/we\':</strong> Include phrases like “I tested this” or “we found that” to sound human.</p>';
-          if (questions <= 2) fixes += '<p>• <strong>Ask questions:</strong> Pose rhetorical questions that mirror what readers are thinking.</p>';
-          if (painPoints <= 3) fixes += '<p>• <strong>Mention reader struggles:</strong> Acknowledge pain points (“tired of slow results?”, “frustrated with…”) to build empathy.</p>';
-        }
-        if (name === "Readability") {
-          if (flesch <= 60) fixes += '<p>• <strong>Aim Flesch >60:</strong> Target a reading ease score above 60 by using shorter sentences and common words.</p>';
-          if (variationScore <= 70) fixes += '<p>• <strong>Vary sentence length:</strong> Mix short punchy sentences with medium ones for natural rhythm.</p>';
-          if (passivePatterns.length >= 5) fixes += '<p>• <strong>Reduce passive voice:</strong> Prefer active voice (“We tested X” instead of “X was tested by us”).</p>';
-          if (complexRatio >= 15) fixes += '<p>• <strong>Use simpler words:</strong> Replace complex jargon with everyday alternatives where possible.</p>';
-        }
-        if (name === "Unique Insights") {
-          if (!hasInsights) fixes += '<p>• <strong>Add personal markers:</strong> Include phrases like “In my experience”, “I tested”, or “we observed” to show original research.</p>';
-          if (!hasDated) fixes += '<p>• <strong>Mention timely results:</strong> Reference recent tests or current findings to prove freshness.</p>';
-          if (!hasInterviews) fixes += '<p>• <strong>Include quotes/interviews:</strong> Add direct quotes from experts or survey respondents for exclusive value.</p>';
-          if (words <= 1500) fixes += '<p>• <strong>Write in-depth content:</strong> Go beyond surface-level advice with detailed analysis and original data.</p>';
-        }
-        if (name === "Anti-AI Safety") {
-          if (variationScore <= 70) fixes += '<p>• <strong>High variation in sentences:</strong> Deliberately mix very short and longer sentences for human-like flow.</p>';
-          if (repeatedWords > 2) fixes += '<p>• <strong>Avoid repeating words:</strong> Use synonyms and varied phrasing instead of repeating the same terms.</p>';
-          if (hasPredictable) fixes += '<p>• <strong>Vary sentence starts:</strong> Don’t begin every sentence with the same structure or subject.</p>';
-        }
-        return fixes || '<p class="text-green-600 dark:text-green-400">All signals strong — excellent work!</p>';
-      }
+    if (!hasBoldInFirst) addFix('Bold/strong formatting in opening', 'Place the main answer in bold text within the first paragraph so AI can easily quote it.');
+    if (!hasDefinition) addFix('Clear definition pattern in opening', 'Start with clear phrases like “X means…” or “X is defined as…” to directly satisfy definitional queries.');
+    if (!hasFAQSchema) addFix('FAQPage schema detected', 'Add structured data markup that tells search engines this page answers common questions or provides steps.');
+    if (!hasQuestionH2) addFix('Question-style H2 headings', 'Use heading tags formatted as questions (e.g., “How do I fix X?”) to match real user searches.');
+    if (!hasSteps) addFix('Step-by-step language in opening', 'Include numbered lists with clear actions — AI engines love extractable instructions.');
+    if (first300.length <= 600) addFix('Strong opening section (>600 chars)', 'Expand the first section to over 600 characters with valuable content so AI has more to summarize and cite.');
+  }
+  if (name === "Structured Data") {
+    if (!hasJsonLd) addFix('JSON-LD structured data present', 'Include at least one valid JSON-LD script block with relevant markup.');
+    if (!hasArticle) addFix('Article/BlogPosting schema type', 'Mark the page as an Article or BlogPosting to confirm editorial content type.');
+    if (!hasFaqHowto) addFix('FAQPage/HowTo schema type', 'Add FAQPage for Q&A content or HowTo for instructional guides.');
+    if (!hasPerson) addFix('Person schema for author', 'Connect the content to a Person entity to prove authorship.');
+  }
+  if (name === "EEAT Signals") {
+    if (!hasAuthor) addFix('Author byline visible', 'Display the writer’s name, photo, and short bio prominently.');
+    if (!hasDate) addFix('Publish/update date shown', 'Clearly show when the article was published and last updated.');
+    if (!hasTrustedLinks) addFix('Trusted outbound links', 'Link to reputable sources to build credibility.');
+    if (!url.startsWith('https:')) addFix('Secure HTTPS connection', 'Ensure your site uses a secure HTTPS connection.');
+  }
+  if (name === "Scannability") {
+    if (headings <= 5) addFix('Sufficient headings (H1-H4)', 'Break content into logical sections with at least 6 headings.');
+    if (lists <= 2) addFix('Bullet/numbered lists used', 'Convert long paragraphs into bullet or numbered lists.');
+    if (tables === 0) addFix('Data tables present', 'Include at least one data table for comparisons or stats.');
+    if (shortParas <= 5) addFix('Short paragraphs (<35 words)', 'Keep most paragraphs under 4 lines for faster reading.');
+    if (headings <= 8) addFix('Excellent heading density', 'Aim for a heading every 300–400 words.');
+  }
+  if (name === "Conversational Tone") {
+    if (youCount <= 5) addFix('Direct "you" address (>5)', 'Address the reader directly with “you” more than 5 times.');
+    if (iWeCount <= 3) addFix('Personal "I/we" sharing', 'Include personal insights using “I” or “we” at least 4 times.');
+    if (questions <= 2) addFix('Engaging questions asked', 'Add rhetorical questions that mirror what readers are thinking.');
+    if (painPoints <= 3) addFix('Reader pain points acknowledged', 'Mention common struggles or frustrations to build empathy.');
+  }
+  if (name === "Readability") {
+    if (flesch <= 60) addFix('Good Flesch score (>60)', 'Use shorter sentences and simpler words to improve reading ease.');
+    if (variationScore <= 70) addFix('Natural sentence variation', 'Mix short and longer sentences for natural rhythm.');
+    if (passivePatterns.length >= 5) addFix('Low passive voice', 'Prefer active voice over passive constructions.');
+    if (complexRatio >= 15) addFix('Low complex words (<15%)', 'Replace complex jargon with simpler alternatives.');
+  }
+  if (name === "Unique Insights") {
+    if (!hasInsights) addFix('First-hand experience markers', 'Include phrases like “I tested” or “in my experience” to show original research.');
+    if (!hasDated) addFix('Dated/timely results mentioned', 'Reference recent tests or current findings.');
+    if (!hasInterviews) addFix('Interviews/quotes included', 'Add direct quotes from experts or survey respondents.');
+    if (words <= 1500) addFix('Deep content (1500+ words)', 'Expand with detailed analysis and original data.');
+  }
+  if (name === "Anti-AI Safety") {
+    if (variationScore <= 70) addFix('High sentence burstiness', 'Deliberately vary sentence length for human-like flow.');
+    if (repeatedWords > 2) addFix('Low word repetition', 'Use synonyms instead of repeating the same terms.');
+    if (hasPredictable) addFix('No predictable sentence starts', 'Avoid starting multiple sentences the same way.');
+  }
+
+  return fixes || '<p class="text-green-600 dark:text-green-400 text-center py-6 font-medium">All signals strong — excellent work! ✅</p>';
+}
+      
+      
+      
+      
       const moduleKeywords = {
         "Answerability": ["Bold/strong formatting in opening", "Clear definition pattern in opening", "FAQPage schema detected", "Question-style H2 headings", "Step-by-step language in opening", "Strong opening section (>600 chars)"],
         "Structured Data": ["JSON-LD structured data present", "Article/BlogPosting schema type", "FAQPage/HowTo schema type", "Person schema for author"],
