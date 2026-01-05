@@ -129,7 +129,7 @@ const initTool = (form, results, progressContainer) => {
       if (tables > 0) scannability += 15;
       if (shortParas > 5) scannability += 15;
       // Conversational Tone
-      const youCount = (mainText.match(/\byou\b|\byour\b|\byours\b/gi) || []).length;
+      const youCount = (mainText.match(/\byou\b|\byour\b|\byours\b/gi) || [].length;
       const iWeCount = (mainText.match(/\bI\b|\bwe\b|\bmy\b|\bour\b|\bme\b|\bus\b/gi) || []).length;
       const questions = (mainText.match(/\?/g) || []).length;
       const painPoints = (mainText.match(/\b(struggle|problem|issue|challenge|frustrat|hard|difficult|pain|annoy|confus|overwhelm|fail|mistake|wrong)\b/gi) || []).length;
@@ -418,7 +418,7 @@ const initTool = (form, results, progressContainer) => {
     </div>
   </div>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 my-16 px-4 items-stretch">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 my-16 px-4 items-start">
   ${modules.map(m => {
     const grade = getGradeInfo(m.score);
     const moduleTests = tests.filter(t => moduleKeywords[m.name].some(kw => t.text.includes(kw)));
@@ -426,7 +426,7 @@ const initTool = (form, results, progressContainer) => {
     const allClear = !hasIssues;
     const needsFixSignals = moduleTests.filter(t => !t.passed);
     return `
-      <div class="score-card p-2 min-h-[400px] bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color} flex flex-col">
+      <div class="score-card p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color} flex flex-col justify-between">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="16" fill="none"/>
@@ -446,7 +446,7 @@ const initTool = (form, results, progressContainer) => {
           </span>
         </div>
         <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200">${m.desc}</p>
-        <div class="mt-4 space-y-3 text-left text-sm flex-1">
+        <div class="mt-4 space-y-3 text-left text-sm">
           ${moduleTests.map(t => `
             <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
               <span class="text-lg">${t.emoji}</span>
@@ -454,9 +454,11 @@ const initTool = (form, results, progressContainer) => {
             </div>
           `).join('')}
         </div>
-<button class="fixes-toggle mt-4 w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center">
-  ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
-</button>
+        <div class="mt-8">
+          <button class="fixes-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center">
+            ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
+          </button>
+        </div>
         <div class="fixes-panel hidden mt-6 text-left text-sm space-y-8 text-gray-800 dark:text-gray-200">
           <p class="font-bold text-xl ${grade.textColor}">${grade.emoji} ${m.name}</p>
           ${allClear ? '<p class="text-green-600 dark:text-green-400 text-lg font-medium">All signals strong — excellent work!</p>' : getFixes(m.name)}
@@ -627,14 +629,14 @@ ${prioritisedFixes.map(fix => `
       }
       document.body.setAttribute('data-url', displayUrl);
 
-      // Event delegation for fixes toggles (matches SEO Intent exactly)
+      // Event delegation for fixes toggles - exact match to SEO Intent behavior
       results.addEventListener('click', (e) => {
         if (e.target.matches('.fixes-toggle')) {
           const card = e.target.closest('.score-card');
           const fixesPanel = card.querySelector('.fixes-panel');
           const fullDetails = card.querySelector('.full-details');
           fixesPanel.classList.toggle('hidden');
-          if (fixesPanel.classList.contains('hidden')) {
+          if (fixesPanel.classList.contains('hidden') && fullDetails) {
             fullDetails.classList.add('hidden');
           }
         }
