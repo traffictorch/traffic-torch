@@ -453,8 +453,8 @@ const initTool = (form, results, progressContainer) => {
             </div>
           `).join('')}
         </div>
-        <button type="button" class="toggle-details mt-4 w-full px-6 py-3 rounded-full text-white font-medium text-sm ${grade.bg}">
-          ${grade.button}
+        <button type="button" class="fixes-toggle mt-4 w-full px-6 py-3 rounded-full text-white font-medium text-sm ${grade.bg}"> ${grade.button} </button>
+        ${grade.button}
         </button>
         <div class="hidden mt-6 text-left text-sm space-y-8 text-gray-800 dark:text-gray-200">
           <p class="font-bold text-xl ${grade.textColor}">${grade.emoji} ${m.name}</p>
@@ -626,23 +626,27 @@ ${prioritisedFixes.map(fix => `
       }
       document.body.setAttribute('data-url', displayUrl);
 
-      // Fixed event delegation for module detail toggles
+      // Event delegation for fixes toggles to match SEO Intent behavior
       results.addEventListener('click', (e) => {
-        const button = e.target.closest('.toggle-details');
-        if (!button) return;
-        const panel = button.nextElementSibling;
-        if (!panel) return;
-        const isHidden = panel.classList.contains('hidden');
-        panel.classList.toggle('hidden');
-        if (isHidden) {
-          // Store original text only once when opening
-          if (!button.dataset.original) {
-            button.dataset.original = button.textContent.trim();
+        if (e.target.matches('.fixes-toggle')) {
+          const card = e.target.closest('.score-card'); // Isolate to this card only
+          if (!card) return;
+          const fixesPanel = card.querySelector('.fixes-panel');
+          if (!fixesPanel) return;
+          const fullDetails = card.querySelector('.full-details');
+          fixesPanel.classList.toggle('hidden');
+          if (fixesPanel.classList.contains('hidden') && fullDetails) {
+            fullDetails.classList.add('hidden');
           }
-          button.textContent = 'Hide Details';
-        } else {
-          // Restore original when closing
-          button.textContent = button.dataset.original || 'Show Fixes';
+          // Update button text per card
+          const originalText = e.target.dataset.original || e.target.textContent.trim();
+          if (!e.target.dataset.original) e.target.dataset.original = originalText;
+          e.target.textContent = fixesPanel.classList.contains('hidden') ? originalText : 'Hide Details';
+        }
+        if (e.target.matches('.more-details-toggle')) {
+          const card = e.target.closest('.score-card');
+          if (!card) return;
+          card.querySelector('.full-details').classList.toggle('hidden');
         }
       });
     } catch (err) {
