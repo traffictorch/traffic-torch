@@ -597,38 +597,38 @@ function getPerMetricWhy(text) {
           </button>
         </div>
 
-        <div class="fixes-panel hidden overflow-hidden transition-all duration-300 ease-in-out">
-          <div class="p-4 space-y-6 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
-            ${allClear ?
-              `<p class="text-green-600 dark:text-green-400 text-lg font-bold text-center py-8">All signals strong — excellent work! ✅</p>` :
-              `
-              <div class="space-y-6">
-                ${getFixes(m.name)}
-              </div>
-              `}
-          ${!allClear ? `
-            <div class="mt-6 text-center">
-              <button class="more-details-toggle text-sm font-medium text-orange-600 dark:text-orange-400 hover:underline">
-                More Details
-              </button>
-            </div>
-            <div class="full-details hidden mt-6 space-y-6 text-base">
-              <div>
-                <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
-                <p>${getWhat(m.name)}</p>
-              </div>
-              <div>
-                <p class="font-bold text-green-600 dark:text-green-400">How:</p>
-                <p>${getHow(m.name)}</p>
-              </div>
-              <div>
-                <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
-                <p>${getWhy(m.name)}</p>
-              </div>
-            </div>
-          ` : ''}
+<div class="fixes-panel hidden mt-4">
+  <div class="space-y-4">
+    ${allClear ?
+      `<p class="text-green-600 dark:text-green-400 text-center py-8 font-medium">All signals strong — excellent work! ✅</p>` :
+      `
+      <div class="space-y-6">
+        ${getFixes(m.name)}
+      </div>
+      `}
+    ${!allClear ? `
+      <div class="mt-6 flex flex-col gap-3">
+        <button class="more-details-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm bg-orange-500 hover:bg-orange-600 flex items-center justify-center transition">
+          More Details
+        </button>
+      </div>
+      <div class="full-details hidden mt-6 space-y-6 text-base">
+        <div>
+          <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
+          <p>${getWhat(m.name)}</p>
+        </div>
+        <div>
+          <p class="font-bold text-green-600 dark:text-green-400">How:</p>
+          <p>${getHow(m.name)}</p>
+        </div>
+        <div>
+          <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
+          <p>${getWhy(m.name)}</p>
         </div>
       </div>
+    ` : ''}
+  </div>
+</div>
     </div>
   `;
 }).join('')}
