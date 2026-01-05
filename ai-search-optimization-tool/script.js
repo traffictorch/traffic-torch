@@ -785,37 +785,30 @@ document.addEventListener('click', (e) => {
   const card = e.target.closest('.score-card');
   if (!card) return;
 
+  const detailsPanel = card.querySelector('.full-details');
+  const fixesPanel = card.querySelector('.fixes-panel');
+
   // Handle More Details toggle
   if (e.target.matches('.more-details-toggle')) {
-    const detailsPanel = card.querySelector('.full-details');
-    const fixesPanel = card.querySelector('.fixes-panel');
-
     // Close all other More Details panels globally
     document.querySelectorAll('.full-details').forEach(p => {
       if (p !== detailsPanel) p.classList.add('hidden');
     });
-
-    // Close the Fixes panel in THIS card only
+    // Close Fixes panel in this card
     if (fixesPanel) fixesPanel.classList.add('hidden');
-
-    // Toggle this card's More Details panel
+    // Toggle this More Details panel
     if (detailsPanel) detailsPanel.classList.toggle('hidden');
   }
 
   // Handle Show Fixes toggle
   if (e.target.matches('.fixes-toggle')) {
-    const fixesPanel = card.querySelector('.fixes-panel');
-    const detailsPanel = card.querySelector('.full-details');
-
     // Close all other Fixes panels globally
     document.querySelectorAll('.fixes-panel').forEach(p => {
       if (p !== fixesPanel) p.classList.add('hidden');
     });
-
-    // Close the More Details panel in THIS card only
+    // Close More Details panel in this card
     if (detailsPanel) detailsPanel.classList.add('hidden');
-
-    // Toggle this card's Fixes panel
+    // Toggle this Fixes panel
     if (fixesPanel) fixesPanel.classList.toggle('hidden');
   }
 });
