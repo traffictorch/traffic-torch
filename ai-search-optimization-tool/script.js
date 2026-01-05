@@ -392,7 +392,7 @@ const initTool = (form, results, progressContainer) => {
         "Anti-AI Safety": ["High sentence burstiness", "Low word repetition", "No predictable sentence starts"]
       };
       results.innerHTML = `
-<div class="flex justify-center my-12 px-4">
+<div class="flex flex-col items-center my-12 px-4">
   <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square">
     <svg viewBox="0 0 260 260" class="w-full h-full transform -rotate-90">
       <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
@@ -402,23 +402,20 @@ const initTool = (form, results, progressContainer) => {
               stroke-dasharray="${(yourScore / 100) * 754} 754"
               stroke-linecap="round"/>
     </svg>
-<div class="absolute inset-0 flex flex-col items-center justify-center">
-          <div class="text-center">
-            <div class="text-8xl sm:text-9xl md:text-10xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
-              ${yourScore}
-            </div>
-          </div>
-        </div>
-        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
-          <div class="text-5xl font-black ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
-            ${yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗' : '❌'}
-          </div>
-          <div class="text-2xl sm:text-3xl font-bold mt-2 ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
-            ${yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Needs Improvement' : 'Needs Work'}
-          </div>
-          <div class="text-lg text-gray-500 dark:text-gray-400 mt-1">/100</div>
-        </div>
+    <div class="absolute inset-0 flex items-center justify-center">
+      <div class="text-8xl sm:text-9xl md:text-10xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
+        ${yourScore}
+      </div>
     </div>
+  </div>
+  <div class="text-center mt-6">
+    <div class="text-5xl font-black ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
+      ${yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗' : '❌'}
+    </div>
+    <div class="text-2xl sm:text-3xl font-bold mt-2 ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
+      ${yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Needs Improvement' : 'Needs Work'}
+    </div>
+    <div class="text-lg text-gray-500 dark:text-gray-400 mt-1">/100</div>
   </div>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 my-16 px-4 items-start">
