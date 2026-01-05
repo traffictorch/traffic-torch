@@ -452,8 +452,6 @@ const initTool = (form, results, progressContainer) => {
         </div>
         <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200">${m.desc}</p>
         <div class="mt-4 space-y-3 text-left text-sm">
-        
-        
           ${moduleTests.map(t => {
             let textColor = 'text-gray-600 dark:text-gray-400';
             if (t.passed) {
@@ -470,9 +468,7 @@ const initTool = (form, results, progressContainer) => {
             </div>
             `;
           }).join('')}
-          
-          
-          
+             
         </div>
         <div class="mt-8">
           <button class="fixes-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center">
@@ -649,19 +645,26 @@ ${prioritisedFixes.map(fix => `
       }
       document.body.setAttribute('data-url', displayUrl);
 
-      // Event delegation for fixes toggles - exact match to SEO Intent behavior
-      results.addEventListener('click', (e) => {
+      // Event delegation for fixes toggles - works after innerHTML replacement
+      document.addEventListener('click', (e) => {
         if (e.target.matches('.fixes-toggle')) {
           const card = e.target.closest('.score-card');
+          if (!card) return;
           const fixesPanel = card.querySelector('.fixes-panel');
           const fullDetails = card.querySelector('.full-details');
-          fixesPanel.classList.toggle('hidden');
-          if (fixesPanel.classList.contains('hidden') && fullDetails) {
-            fullDetails.classList.add('hidden');
+          if (fixesPanel) {
+            fixesPanel.classList.toggle('hidden');
+            if (fixesPanel.classList.contains('hidden') && fullDetails) {
+              fullDetails.classList.add('hidden');
+            }
           }
         }
         if (e.target.matches('.more-details-toggle')) {
-          e.target.closest('.score-card').querySelector('.full-details').classList.toggle('hidden');
+          const card = e.target.closest('.score-card');
+          if (card) {
+            const fullDetails = card.querySelector('.full-details');
+            if (fullDetails) fullDetails.classList.toggle('hidden');
+          }
         }
       });
     } catch (err) {
