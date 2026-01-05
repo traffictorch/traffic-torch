@@ -785,30 +785,38 @@ document.addEventListener('click', (e) => {
   const card = e.target.closest('.score-card');
   if (!card) return;
 
-  // Handle Show Fixes
-  if (e.target.matches('.fixes-toggle')) {
-    const clickedPanel = card.querySelector('.fixes-panel');
-    // Close all other fixes panels
-    document.querySelectorAll('.fixes-panel').forEach(panel => {
-      if (panel !== clickedPanel) {
-        panel.classList.add('hidden');
-      }
+  // Handle More Details toggle
+  if (e.target.matches('.more-details-toggle')) {
+    const detailsPanel = card.querySelector('.full-details');
+    const fixesPanel = card.querySelector('.fixes-panel');
+
+    // Close all other More Details panels globally
+    document.querySelectorAll('.full-details').forEach(p => {
+      if (p !== detailsPanel) p.classList.add('hidden');
     });
-    // Toggle the clicked one
-    if (clickedPanel) clickedPanel.classList.toggle('hidden');
+
+    // Close the Fixes panel in THIS card only
+    if (fixesPanel) fixesPanel.classList.add('hidden');
+
+    // Toggle this card's More Details panel
+    if (detailsPanel) detailsPanel.classList.toggle('hidden');
   }
 
-  // Handle More Details
-  if (e.target.matches('.more-details-toggle')) {
-    const details = card.querySelector('.full-details');
-    // Close all other more details panels
-    document.querySelectorAll('.full-details').forEach(panel => {
-      if (panel !== details) {
-        panel.classList.add('hidden');
-      }
+  // Handle Show Fixes toggle
+  if (e.target.matches('.fixes-toggle')) {
+    const fixesPanel = card.querySelector('.fixes-panel');
+    const detailsPanel = card.querySelector('.full-details');
+
+    // Close all other Fixes panels globally
+    document.querySelectorAll('.fixes-panel').forEach(p => {
+      if (p !== fixesPanel) p.classList.add('hidden');
     });
-    // Toggle the clicked one
-    if (details) details.classList.toggle('hidden');
+
+    // Close the More Details panel in THIS card only
+    if (detailsPanel) detailsPanel.classList.add('hidden');
+
+    // Toggle this card's Fixes panel
+    if (fixesPanel) fixesPanel.classList.toggle('hidden');
   }
 });
       
