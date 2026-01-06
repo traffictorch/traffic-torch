@@ -799,12 +799,11 @@ ${prioritisedFixes.length > 0 ? `
 </div>
 
 
-<!-- Metric Details Popover - perfect centered modal, light backdrop -->
-<div id="metric-popover" class="fixed inset-0 z-50 hidden">
-  <div class="fixed inset-0 bg-white/70 dark:bg-black/50 backdrop-blur-sm" id="popover-overlay"></div>
-  <div class="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 w-full max-w-3xl">
-      <div class="sticky top-0 bg-white dark:bg-gray-900 rounded-t-3xl border-b border-gray-200 dark:border-gray-700 px-8 py-6 flex items-center justify-between">
+<!-- Metric Details Popover - perfectly centered in viewport, no overlay, mobile-perfect -->
+<div id="metric-popover" class="fixed inset-0 z-50 hidden pointer-events-none">
+  <div class="fixed inset-0 flex items-center justify-center p-4 pointer-events-none">
+    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 w-full max-w-3xl max-h-[90vh] overflow-y-auto pointer-events-auto">
+      <div class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-8 py-6 flex items-center justify-between">
         <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Metric Details</h3>
         <button id="popover-close" class="text-3xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 leading-none">&times;</button>
       </div>
@@ -853,7 +852,7 @@ document.addEventListener('click', (e) => {
     }
   }
 
-  // Metric Details popover - clean centered modal
+  // Metric Details popover - centered in viewport, no overlay
   if (e.target.matches('.metric-details-link') || e.target.closest('.metric-details-link')) {
     e.preventDefault();
     const button = e.target.closest('.metric-details-link');
@@ -881,8 +880,8 @@ document.addEventListener('click', (e) => {
     document.getElementById('metric-popover').classList.remove('hidden');
   }
 
-  // Close popover
-  if (e.target.id === 'popover-overlay' || e.target.id === 'popover-close') {
+  // Close popover - click outside or X
+  if (e.target.id === 'popover-close' || e.target === document.getElementById('metric-popover')) {
     document.getElementById('metric-popover').classList.add('hidden');
   }
 });
