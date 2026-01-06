@@ -236,10 +236,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 
                 
-                
-                
-                
-                
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
                   <div class="text-7xl font-black" style="color: ${mainGradeColor}">${yourScore}</div>
                   <div class="text-lg text-gray-600 dark:text-gray-400">Human Score</div>
@@ -293,9 +289,6 @@ document.addEventListener('DOMContentLoaded', () => {
                       <p class="font-medium" style="color: ${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)} Trigram Entropy</p>
                       <p class="font-medium" style="color: ${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)} Bigram Entropy</p>
                     </div>
-                      <p><span style="color:${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)}</span> Trigram Entropy</p>
-                      <p><span style="color:${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)}</span> Bigram Entropy</p>
-                    </div>
                     <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
                       More Details
                     </button>
@@ -305,7 +298,6 @@ document.addEventListener('DOMContentLoaded', () => {
                       <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve Overall:</span> Use varied phrasing, personal anecdotes, and unexpected ideas to boost scores. Mix short and long elements for rhythm, and incorporate synonyms or rarer words. Always edit with readability in mind to align with human patterns.</p>
                       <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters:</span> Search engines prioritize human-like content for higher rankings and user trust. Strong scores here reduce AI penalties and improve engagement metrics. Ultimately, this leads to better organic traffic and authority signals.</p>
                     </div>
-
                     <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
                       Show Fixes (${failedCount})
                     </button>
@@ -362,9 +354,6 @@ document.addEventListener('DOMContentLoaded', () => {
                       <p class="font-medium" style="color: ${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)} ${m.subNames[0]}</p>
                       <p class="font-medium" style="color: ${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)} ${m.subNames[1]}</p>
                     </div>
-                      <p><span style="color:${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)}</span> ${m.subNames[0]}</p>
-                      <p><span style="color:${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)}</span> ${m.subNames[1]}</p>
-                    </div>
                     <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
                       More Details
                     </button>
@@ -374,7 +363,6 @@ document.addEventListener('DOMContentLoaded', () => {
                       <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve Overall:</span> Use varied phrasing, personal anecdotes, and unexpected ideas to boost scores. Mix short and long elements for rhythm, and incorporate synonyms or rarer words. Always edit with readability in mind to align with human patterns.</p>
                       <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters:</span> Search engines prioritize human-like content for higher rankings and user trust. Strong scores here reduce AI penalties and improve engagement metrics. Ultimately, this leads to better organic traffic and authority signals.</p>
                     </div>
-
                     <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
                       Show Fixes (${failedCount})
                     </button>
@@ -397,10 +385,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }).join('')}
               </div>
             </div>
-            
-            
-            
-            
             
             
             
@@ -537,6 +521,15 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </details>
   </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <div class="p-8 bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
     <h3 class="text-3xl font-bold text-center mb-8">Potential Ranking & Traffic Gains</h3>
     ${failingModules === 0 ? `
