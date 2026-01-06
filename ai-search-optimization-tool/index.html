@@ -391,10 +391,10 @@
   
 <!-- 8 Module Metric Explanation Buttons (1 column mobile, 4 columns desktop = 2 rows) -->
 <section class="py-16 px-4 bg-gray-50 dark:bg-gray-900">
-  <h2 class="text-4xl font-bold text-center mb-12 text-gray-800 dark:text-gray-200">Module Metric Explanations</h2>
+  <h2 class="text-4xl font-bold text-center mb-12 text-gray-800 dark:text-gray-200">Ai Search Engine Metrics</h2>
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
     <!-- Answerability -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+    <div id="answerability" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
       <div class="p-4 text-center flex flex-col items-center justify-between min-h-64">
         <div class="text-6xl mb-6">🆗</div>
         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-12">Answerability</h3>
@@ -420,7 +420,7 @@
       </div>
     </div>
     <!-- Structured Data -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+    <div id="structured-data" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
       <div class="p-4 text-center flex flex-col items-center justify-between min-h-64">
         <div class="text-6xl mb-6">✨</div>
         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-12">Structured Data</h3>
@@ -446,7 +446,7 @@
       </div>
     </div>
     <!-- EEAT Signals -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+    <div id="eeat-signals" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
       <div class="p-4 text-center flex flex-col items-center justify-between min-h-64">
         <div class="text-6xl mb-6">👤</div>
         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-12">EEAT Signals</h3>
@@ -472,7 +472,7 @@
       </div>
     </div>
     <!-- Scannability -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+    <div id="scannability" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
       <div class="p-4 text-center flex flex-col items-center justify-between min-h-64">
         <div class="text-6xl mb-6">📋</div>
         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-12">Scannability</h3>
@@ -498,7 +498,7 @@
       </div>
     </div>
     <!-- Conversational Tone -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+    <div id="conversational-tone" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
       <div class="p-4 text-center flex flex-col items-center justify-between min-h-64">
         <div class="text-6xl mb-6">💬</div>
         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-12">Conversational Tone</h3>
@@ -524,7 +524,7 @@
       </div>
     </div>
     <!-- Readability -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+    <div id="readability" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
       <div class="p-4 text-center flex flex-col items-center justify-between min-h-64">
         <div class="text-6xl mb-6">📖</div>
         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-12">Readability</h3>
@@ -550,7 +550,7 @@
       </div>
     </div>
     <!-- Unique Insights -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+    <div id="unique-insights" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
       <div class="p-4 text-center flex flex-col items-center justify-between min-h-64">
         <div class="text-6xl mb-6">🧠</div>
         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-12">Unique Insights</h3>
@@ -576,7 +576,7 @@
       </div>
     </div>
     <!-- Anti-AI Safety -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+    <div id="anti-ai-safety" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
       <div class="p-4 text-center flex flex-col items-center justify-between min-h-64">
         <div class="text-6xl mb-6">🔒</div>
         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-12">Anti-AI Safety</h3>
@@ -625,7 +625,7 @@
     if (!clickedInside) {
       const openDetails = document.querySelector('.metric-details:not(.hidden)');
       if (openDetails && !openDetails.contains(e.target)) {
-        document.querySelectorAll('.metric-details').forEach(d => d.classList.add('hidden'));
+        document.querySelectorAll('.metric-details').forEach(d => d.classList.add('hidden');
       }
     }
   });
