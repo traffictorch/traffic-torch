@@ -825,69 +825,62 @@ ${prioritisedFixes.length > 0 ? `
       }
       document.body.setAttribute('data-url', displayUrl);
 
-// Event delegation for fixes and more details toggles
+// Event delegation for fixes, more details, and metric details popover
 document.addEventListener('click', (e) => {
   const card = e.target.closest('.score-card');
-  if (!card) return;
 
-  const detailsPanel = card.querySelector('.full-details');
-  const fixesPanel = card.querySelector('.fixes-panel');
+  // Card-specific toggles (More Details and Show Fixes)
+  if (card) {
+    const detailsPanel = card.querySelector('.full-details');
+    const fixesPanel = card.querySelector('.fixes-panel');
 
-  // Handle More Details toggle
-  if (e.target.matches('.more-details-toggle')) {
-    // Close all other More Details panels globally
-    document.querySelectorAll('.full-details').forEach(p => {
-      if (p !== detailsPanel) p.classList.add('hidden');
-    });
-    // Close Fixes panel in this card
-    if (fixesPanel) fixesPanel.classList.add('hidden');
-    // Toggle this More Details panel
-    if (detailsPanel) detailsPanel.classList.toggle('hidden');
+    if (e.target.matches('.more-details-toggle')) {
+      document.querySelectorAll('.full-details').forEach(p => {
+        if (p !== detailsPanel) p.classList.add('hidden');
+      });
+      if (fixesPanel) fixesPanel.classList.add('hidden');
+      if (detailsPanel) detailsPanel.classList.toggle('hidden');
+    }
+
+    if (e.target.matches('.fixes-toggle')) {
+      document.querySelectorAll('.fixes-panel').forEach(p => {
+        if (p !== fixesPanel) p.classList.add('hidden');
+      });
+      if (detailsPanel) detailsPanel.classList.add('hidden');
+      if (fixesPanel) fixesPanel.classList.toggle('hidden');
+    }
   }
 
-  // Handle Show Fixes toggle
-  if (e.target.matches('.fixes-toggle')) {
-    // Close all other Fixes panels globally
-    document.querySelectorAll('.fixes-panel').forEach(p => {
-      if (p !== fixesPanel) p.classList.add('hidden');
-    });
-    // Close More Details panel in this card
-    if (detailsPanel) detailsPanel.classList.add('hidden');
-    // Toggle this Fixes panel
-    if (fixesPanel) fixesPanel.classList.toggle('hidden');
-  }
-});
-
-
-  // Metric Details popover
+  // Metric Details popover - works anywhere on page
   if (e.target.matches('.metric-details-link') || e.target.closest('.metric-details-link')) {
     e.preventDefault();
     const button = e.target.closest('.metric-details-link');
     const metric = button.dataset.metric;
-    const exp = window.metricExplanations[metric];
+    const exp = window.metricExplanations && window.metricExplanations[metric];
     if (exp) {
       document.getElementById('popover-content').innerHTML = `
         <div>
           <h4 class="font-bold text-blue-600 dark:text-blue-400 text-lg">What is this metric?</h4>
-          <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.definition}</p>
+          <p class="text-sm mt-2">${exp.definition}</p>
         </div>
-        <div>
+        <div class="mt-6">
           <h4 class="font-bold text-purple-600 dark:text-purple-400 text-lg">How does the tool detect it?</h4>
-          <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.detection}</p>
+          <p class="text-sm mt-2">${exp.detection}</p>
         </div>
-        <div>
+        <div class="mt-6">
           <h4 class="font-bold text-orange-600 dark:text-orange-400 text-lg">Why does it matter for SEO & AI?</h4>
-          <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.impact}</p>
+          <p class="text-sm mt-2">${exp.impact}</p>
         </div>
       `;
       document.getElementById('metric-popover').classList.remove('hidden');
     }
   }
 
-  // Close popover on overlay or X button
+  // Close popover
   if (e.target.id === 'popover-overlay' || e.target.id === 'popover-close') {
     document.getElementById('metric-popover').classList.add('hidden');
   }
+});
 
 
       
