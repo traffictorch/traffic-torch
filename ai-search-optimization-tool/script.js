@@ -9,6 +9,7 @@ const waitForElements = () => {
     requestAnimationFrame(waitForElements);
   }
 };
+
 const initTool = (form, results, progressContainer) => {
   const progressText = document.getElementById('progress-text');
   form.addEventListener('submit', async (e) => {
@@ -591,13 +592,11 @@ const initTool = (form, results, progressContainer) => {
           </span>
         </div>
         <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200 px-4">${m.desc}</p>
-        <!-- More Details button -->
         <div class="mt-6">
           <button class="more-details-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm bg-gray-600 hover:bg-gray-700 flex items-center justify-center transition">
             More Details
           </button>
         </div>
-        <!-- Full details panel - directly below More Details button -->
         <div class="full-details hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out">
           <div class="p-4 space-y-6 bg-blue-50 dark:bg-blue-900/20 rounded-b-2xl">
             <div>
@@ -614,7 +613,6 @@ const initTool = (form, results, progressContainer) => {
             </div>
           </div>
         </div>
-        <!-- Metrics list -->
         <div class="mt-6 space-y-2 text-left text-sm">
           ${moduleTests.map(t => {
             let textColor = t.passed ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
@@ -631,13 +629,11 @@ const initTool = (form, results, progressContainer) => {
             `;
           }).join('')}
         </div>
-        <!-- Show Fixes button -->
         <div class="mt-8">
           <button class="fixes-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center hover:opacity-90 transition">
             ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
           </button>
         </div>
-        <!-- Fixes panel - directly below Show Fixes button -->
         <div class="fixes-panel hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out">
           <div class="p-4 space-y-4 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
             ${allClear ?
@@ -768,9 +764,11 @@ ${prioritisedFixes.length > 0 ? `
     📄 Save as PDF
   </button>
 </div>
-<!-- Metric Details Popover - true viewport centering with transform (most reliable method) -->
-<div id="metric-popover" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
-  <div class="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 w-full max-w-3xl max-h-[90vh] overflow-y-auto -translate-y-1/2 top-1/2">
+<!-- Backdrop for popover -->
+<div id="metric-backdrop" class="fixed inset-0 bg-black/50 z-40 hidden"></div>
+<!-- Metric Details Popover - perfectly centered in viewport using transform method -->
+<div id="metric-popover" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 hidden">
+  <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
     <div class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-8 py-6 flex items-center justify-between">
       <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Metric Details</h3>
       <button id="popover-close" class="text-3xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 leading-none">&times;</button>
@@ -793,61 +791,59 @@ ${prioritisedFixes.length > 0 ? `
         }
       }
       document.body.setAttribute('data-url', displayUrl);
-document.addEventListener('click', (e) => {
-  const card = e.target.closest('.score-card');
-  if (card) {
-    const detailsPanel = card.querySelector('.full-details');
-    const fixesPanel = card.querySelector('.fixes-panel');
-    if (e.target.matches('.more-details-toggle')) {
-      document.querySelectorAll('.full-details').forEach(p => {
-        if (p !== detailsPanel) p.classList.add('hidden');
+      document.addEventListener('click', (e) => {
+        const card = e.target.closest('.score-card');
+        if (card) {
+          const detailsPanel = card.querySelector('.full-details');
+          const fixesPanel = card.querySelector('.fixes-panel');
+          if (e.target.matches('.more-details-toggle')) {
+            document.querySelectorAll('.full-details').forEach(p => {
+              if (p !== detailsPanel) p.classList.add('hidden');
+            });
+            if (fixesPanel) fixesPanel.classList.add('hidden');
+            if (detailsPanel) detailsPanel.classList.toggle('hidden');
+          }
+          if (e.target.matches('.fixes-toggle')) {
+            document.querySelectorAll('.fixes-panel').forEach(p => {
+              if (p !== fixesPanel) p.classList.add('hidden');
+            });
+            if (detailsPanel) detailsPanel.classList.add('hidden');
+            if (fixesPanel) fixesPanel.classList.toggle('hidden');
+          }
+        }
+        if (e.target.matches('.metric-details-link') || e.target.closest('.metric-details-link')) {
+          e.preventDefault();
+          const button = e.target.closest('.metric-details-link');
+          const metric = button.dataset.metric;
+          const exp = {
+            definition: getPerMetricHow(metric),
+            detection: getPerMetricDetection(metric),
+            impact: getPerMetricWhy(metric)
+          };
+          document.getElementById('popover-content').innerHTML = `
+            <div class="space-y-10">
+              <div>
+                <h4 class="font-bold text-blue-600 dark:text-blue-400 text-xl mb-4">What is this metric?</h4>
+                <p class="text-base text-gray-700 dark:text-gray-300 leading-relaxed">${exp.definition}</p>
+              </div>
+              <div>
+                <h4 class="font-bold text-purple-600 dark:text-purple-400 text-xl mb-4">How does the tool detect it?</h4>
+                <p class="text-base text-gray-700 dark:text-gray-300 leading-relaxed">${exp.detection}</p>
+              </div>
+              <div>
+                <h4 class="font-bold text-orange-600 dark:text-orange-400 text-xl mb-4">Why does it matter for SEO & AI?</h4>
+                <p class="text-base text-gray-700 dark:text-gray-300 leading-relaxed">${exp.impact}</p>
+              </div>
+            </div>
+          `;
+          document.getElementById('metric-popover').classList.remove('hidden');
+          document.getElementById('metric-backdrop').classList.remove('hidden');
+        }
+        if (e.target.id === 'popover-close' || e.target === document.getElementById('metric-backdrop')) {
+          document.getElementById('metric-popover').classList.add('hidden');
+          document.getElementById('metric-backdrop').classList.add('hidden');
+        }
       });
-      if (fixesPanel) fixesPanel.classList.add('hidden');
-      if (detailsPanel) detailsPanel.classList.toggle('hidden');
-    }
-    if (e.target.matches('.fixes-toggle')) {
-      document.querySelectorAll('.fixes-panel').forEach(p => {
-        if (p !== fixesPanel) p.classList.add('hidden');
-      });
-      if (detailsPanel) detailsPanel.classList.add('hidden');
-      if (fixesPanel) fixesPanel.classList.toggle('hidden');
-    }
-  }
-  if (e.target.matches('.metric-details-link') || e.target.closest('.metric-details-link')) {
-    e.preventDefault();
-    const button = e.target.closest('.metric-details-link');
-    const metric = button.dataset.metric;
-    const exp = {
-      definition: getPerMetricHow(metric),
-      detection: getPerMetricDetection(metric),
-      impact: getPerMetricWhy(metric)
-    };
-    document.getElementById('popover-content').innerHTML = `
-      <div class="space-y-10">
-        <div>
-          <h4 class="font-bold text-blue-600 dark:text-blue-400 text-xl mb-4">What is this metric?</h4>
-          <p class="text-base text-gray-700 dark:text-gray-300 leading-relaxed">${exp.definition}</p>
-        </div>
-        <div>
-          <h4 class="font-bold text-purple-600 dark:text-purple-400 text-xl mb-4">How does the tool detect it?</h4>
-          <p class="text-base text-gray-700 dark:text-gray-300 leading-relaxed">${exp.detection}</p>
-        </div>
-        <div>
-          <h4 class="font-bold text-orange-600 dark:text-orange-400 text-xl mb-4">Why does it matter for SEO & AI?</h4>
-          <p class="text-base text-gray-700 dark:text-gray-300 leading-relaxed">${exp.impact}</p>
-        </div>
-      </div>
-    `;
-    document.getElementById('metric-popover').classList.remove('hidden');
-  }
-  if (e.target.id === 'popover-close') {
-    document.getElementById('metric-popover').classList.add('hidden');
-  }
-  // Click outside popover to close
-  if (e.target === document.getElementById('metric-popover')) {
-    document.getElementById('metric-popover').classList.add('hidden');
-  }
-});
     } catch (err) {
       clearInterval(interval);
       progressContainer.classList.add('hidden');
