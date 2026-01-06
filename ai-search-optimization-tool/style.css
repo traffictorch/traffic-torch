@@ -165,4 +165,9 @@ html, body {
   }
 }
 
+/* Metric Emojis */
+.fixes-panel .text-3xl {
+  line-height: 1 !important;
+}
+
 
