@@ -289,7 +289,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <p class="mt-6 text-2xl font-bold" style="color: ${gradeColor}">${m.name}</p>
                     <p class="mt-2 text-xl flex items-center justify-center gap-2" style="color: ${gradeColor}">${grade.text} ${grade.emoji}</p>
-                    <div class="mt-4 space-y-2 text-base text-gray-700 dark:text-gray-300">
+                    <div class="mt-4 space-y-3 text-base">
+                      <p class="font-medium" style="color: ${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)} Trigram Entropy</p>
+                      <p class="font-medium" style="color: ${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)} Bigram Entropy</p>
+                    </div>
                       <p><span style="color:${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)}</span> Trigram Entropy</p>
                       <p><span style="color:${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)}</span> Bigram Entropy</p>
                     </div>
@@ -355,7 +358,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <p class="mt-4 text-xl font-bold" style="color: ${gradeColor}">${m.name}</p>
                     <p class="mt-1 text-lg flex items-center justify-center gap-2" style="color: ${gradeColor}">${grade.text} ${grade.emoji}</p>
-                    <div class="mt-3 space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                    <div class="mt-3 space-y-2 text-sm">
+                      <p class="font-medium" style="color: ${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)} ${m.subNames[0]}</p>
+                      <p class="font-medium" style="color: ${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)} ${m.subNames[1]}</p>
+                    </div>
                       <p><span style="color:${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)}</span> ${m.subNames[0]}</p>
                       <p><span style="color:${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)}</span> ${m.subNames[1]}</p>
                     </div>
