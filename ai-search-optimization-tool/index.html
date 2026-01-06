@@ -624,6 +624,42 @@
     // Removed global outside-click close – no more accidental closing on mobile taps
   });
 </script>
+
+<script>
+  // Auto-open metric details when arriving via anchor link from fixes panel
+  window.addEventListener('load', () => {
+    if (window.location.hash) {
+      const targetId = window.location.hash.substring(1); // remove #
+      const targetCard = document.getElementById(targetId);
+      if (targetCard) {
+        const details = targetCard.querySelector('.metric-details');
+        if (details && details.classList.contains('hidden')) {
+          // Close all others first
+          document.querySelectorAll('.metric-details').forEach(d => d.classList.add('hidden'));
+          // Open the target
+          details.classList.remove('hidden');
+          // Smooth scroll to the card
+          targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    }
+  });
+
+  // Also handle hash changes (in case user clicks link multiple times)
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash) {
+      const targetId = window.location.hash.substring(1);
+      const targetCard = document.getElementById(targetId);
+      if (targetCard) {
+        const details = targetCard.querySelector('.metric-details');
+        if (details && details.classList.contains('hidden')) {
+          document.querySelectorAll('.metric-details').forEach(d => d.classList.add('hidden'));
+          details.classList.remove('hidden');
+        }
+      }
+    }
+  });
+</script>
   
   
   
