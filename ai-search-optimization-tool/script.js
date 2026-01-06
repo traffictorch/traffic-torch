@@ -462,21 +462,20 @@ function getFixes(name) {
       emoji = '✅';
       titleColor = 'text-green-600 dark:text-green-400';
     } else if (metricText.includes('Trusted outbound links') || metricText.includes('shown') || metricText.includes('present') || metricText.includes('mentioned')) {
-      // Special orange cases from original logic
       emoji = '🆗';
       titleColor = 'text-orange-600 dark:text-orange-400';
     }
     fixes += `
-      <div class="flex items-start gap-4 py-2 border-l-4 border-gray-200 dark:border-gray-700 pl-4">
-        <div class="flex flex-col items-center flex-shrink-0">
-          <span class="text-3xl leading-none">${emoji}</span>
-        </div>
-        <div class="flex-1 min-w-0">
-          <p class="font-semibold ${titleColor} text-base leading-tight">${metricText}</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300 mt-1 leading-relaxed">${description}</p>
-          <button class="metric-details-link text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline mt-3 inline-block" data-metric="${metricText}">
-            Metric Details →
-          </button>
+      <div class="py-2 border-l-4 border-gray-200 dark:border-gray-700 pl-4">
+        <div class="flex flex-col items-center gap-2">
+          <span class="text-4xl leading-none">${emoji}</span>
+          <div class="text-center">
+            <p class="font-semibold ${titleColor} text-base leading-tight">${metricText}</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300 mt-2 leading-relaxed">${description}</p>
+            <button class="metric-details-link text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline mt-3 inline-block" data-metric="${metricText}">
+              Metric Details →
+            </button>
+          </div>
         </div>
       </div>
     `;
