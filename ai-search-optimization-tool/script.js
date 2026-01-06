@@ -799,12 +799,19 @@ ${prioritisedFixes.length > 0 ? `
 </div>
 
 
-<!-- Metric Details Popover - clean centered card, no dark overlay -->
-<div id="metric-popover" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
-  <div class="fixed inset-0 bg-white/80 dark:bg-black/60 backdrop-blur-sm" id="popover-overlay"></div>
-  <div class="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8">
-    <button id="popover-close" class="absolute top-6 right-8 text-3xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 leading-none">&times;</button>
-    <div id="popover-content" class="space-y-8 pr-4"></div>
+<!-- Metric Details Popover - perfectly centered, modern best practice -->
+<div id="metric-popover" class="fixed inset-0 z-50 hidden">
+  <div class="fixed inset-0 bg-white/70 dark:bg-black/50 backdrop-blur-sm" id="popover-overlay"></div>
+  <div class="flex min-h-full items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+      <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">Metric Details</h3>
+        <button id="popover-close" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-3xl leading-none">&times;</button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-6 pt-4" id="popover-content">
+        <!-- Content injected here -->
+      </div>
+    </div>
   </div>
 </div>
 
