@@ -866,17 +866,19 @@ document.addEventListener('click', (e) => {
     const exp = window.metricExplanations && window.metricExplanations[metric];
     if (exp) {
       document.getElementById('popover-content').innerHTML = `
-        <div>
-          <h4 class="font-bold text-blue-600 dark:text-blue-400 text-lg">What is this metric?</h4>
-          <p class="text-sm mt-2">${exp.definition}</p>
-        </div>
-        <div class="mt-6">
-          <h4 class="font-bold text-purple-600 dark:text-purple-400 text-lg">How does the tool detect it?</h4>
-          <p class="text-sm mt-2">${exp.detection}</p>
-        </div>
-        <div class="mt-6">
-          <h4 class="font-bold text-orange-600 dark:text-orange-400 text-lg">Why does it matter for SEO & AI?</h4>
-          <p class="text-sm mt-2">${exp.impact}</p>
+        <div class="space-y-8">
+          <div>
+            <h4 class="font-bold text-blue-600 dark:text-blue-400 text-lg mb-3">What is this metric?</h4>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${exp.definition}</p>
+          </div>
+          <div>
+            <h4 class="font-bold text-purple-600 dark:text-purple-400 text-lg mb-3">How does the tool detect it?</h4>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${exp.detection}</p>
+          </div>
+          <div>
+            <h4 class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-3">Why does it matter for SEO & AI?</h4>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${exp.impact}</p>
+          </div>
         </div>
       `;
       document.getElementById('metric-popover').classList.remove('hidden');
