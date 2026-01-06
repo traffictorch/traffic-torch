@@ -604,59 +604,56 @@
   </div>
 </section>
 
+
+  // Combined: Toggle metric details + auto-open on anchor link arrival
 <script>
+  // Helper function to open a specific card's details
+  const openDetailsForCard = (card) => {
+    if (!card) return;
+    const details = card.querySelector('.metric-details');
+    if (details && details.classList.contains('hidden')) {
+      // Close all others
+      document.querySelectorAll('.metric-details').forEach(d => d.classList.add('hidden'));
+      // Open this one
+      details.classList.remove('hidden');
+    }
+  };
+
+  // Toggle on "Learn More" button click
   document.addEventListener('click', (e) => {
     if (e.target.matches('.learn-more-toggle') || e.target.closest('.learn-more-toggle')) {
       const toggle = e.target.closest('.learn-more-toggle');
       const card = toggle.closest('.metric-card');
       const details = card.querySelector('.metric-details');
 
-      // Close all other open details panels
+      // Close all others
       document.querySelectorAll('.metric-details').forEach(d => {
-        if (d !== details) {
-          d.classList.add('hidden');
-        }
+        if (d !== details) d.classList.add('hidden');
       });
 
-      // Toggle the clicked one
+      // Toggle current
       details.classList.toggle('hidden');
     }
-    // Removed global outside-click close – no more accidental closing on mobile taps
   });
-</script>
 
-<script>
-  // Auto-open metric details when arriving via anchor link from fixes panel
+  // Auto-open on page load if there's a hash
   window.addEventListener('load', () => {
     if (window.location.hash) {
-      const targetId = window.location.hash.substring(1); // remove #
+      const targetId = window.location.hash.substring(1);
       const targetCard = document.getElementById(targetId);
+      openDetailsForCard(targetCard);
       if (targetCard) {
-        const details = targetCard.querySelector('.metric-details');
-        if (details && details.classList.contains('hidden')) {
-          // Close all others first
-          document.querySelectorAll('.metric-details').forEach(d => d.classList.add('hidden'));
-          // Open the target
-          details.classList.remove('hidden');
-          // Smooth scroll to the card
-          targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }
   });
 
-  // Also handle hash changes (in case user clicks link multiple times)
+  // Auto-open on hash change (repeated clicks)
   window.addEventListener('hashchange', () => {
     if (window.location.hash) {
       const targetId = window.location.hash.substring(1);
       const targetCard = document.getElementById(targetId);
-      if (targetCard) {
-        const details = targetCard.querySelector('.metric-details');
-        if (details && details.classList.contains('hidden')) {
-          document.querySelectorAll('.metric-details').forEach(d => d.classList.add('hidden'));
-          details.classList.remove('hidden');
-        }
-      }
+      openDetailsForCard(targetCard);
     }
   });
 </script>
