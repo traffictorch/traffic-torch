@@ -799,14 +799,12 @@ ${prioritisedFixes.length > 0 ? `
 </div>
 
 
-<!-- Metric Details Popover - clean modern version -->
-<div id="metric-popover" class="fixed inset-0 z-50 hidden items-center justify-center px-4" aria-hidden="true">
-  <div class="fixed inset-0 bg-black/30 backdrop-blur-sm" id="popover-overlay"></div>
-  <div class="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-    <div class="p-8 overflow-y-auto max-h-[80vh]">
-      <button id="popover-close" class="absolute top-4 right-6 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-3xl leading-none">&times;</button>
-      <div id="popover-content" class="space-y-8 text-gray-800 dark:text-gray-200"></div>
-    </div>
+<!-- Metric Details Popover - clean centered card, no dark overlay -->
+<div id="metric-popover" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+  <div class="fixed inset-0 bg-white/80 dark:bg-black/60 backdrop-blur-sm" id="popover-overlay"></div>
+  <div class="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8">
+    <button id="popover-close" class="absolute top-6 right-8 text-3xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 leading-none">&times;</button>
+    <div id="popover-content" class="space-y-8 pr-4"></div>
   </div>
 </div>
 
