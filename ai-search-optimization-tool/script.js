@@ -423,7 +423,7 @@ const initTool = (form, results, progressContainer) => {
         let content = fixes || '<p class="text-green-600 dark:text-green-400 text-center py-6 font-medium">All signals strong — excellent work! ✅</p>';
 
         return `
-          <div class="text-right mb-4">
+          <div class="text-center mb-4">
             <a href="#${anchorId}" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">How ${displayName} is tested? →</a>
           </div>
           ${content}
