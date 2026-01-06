@@ -232,8 +232,11 @@ document.addEventListener('DOMContentLoaded', () => {
                           class="animate-stroke"
                           style="stroke-dasharray: ${(yourScore / 100) * 691} 691;"/>
                 </svg>
+                
+                
+                
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <div class="text-7xl font-black flex items-center gap-3" style="color: ${mainGradeColor}">${yourScore}<span class="text-5xl">${verdictEmoji}</span></div>
+                  <div class="text-7xl font-black" style="color: ${mainGradeColor}">${yourScore}</div>
                   <div class="text-lg text-gray-600 dark:text-gray-400">Human Score</div>
                   <div class="text-base text-gray-500 dark:text-gray-500">/100</div>
                 </div>
@@ -279,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="text-lg text-gray-500 dark:text-gray-400">/20</div>
                       </div>
                     </div>
-                    <p class="mt-6 text-2xl font-bold text-gray-800 dark:text-gray-200">${m.name}</p>
+                    <p class="mt-6 text-2xl font-bold" style="color: ${gradeColor}">${m.name}</p>
                     <p class="mt-2 text-xl flex items-center justify-center gap-2" style="color: ${gradeColor}">${grade.text} ${grade.emoji}</p>
                     <div class="mt-4 space-y-2 text-base text-gray-700 dark:text-gray-300">
                       <p><span style="color:${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)}</span> Trigram Entropy</p>
@@ -298,28 +301,96 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
                       Show Fixes (${failedCount})
                     </button>
-                    <div class="hidden mt-6 space-y-6 text-left">
+                    <div class="hidden mt-6 space-y-8 text-left">
                       ${failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">All tests passed! ✅</p>` : ''}
                       ${sub1Score < 10 ? `
-                        <div class="flex items-start gap-4">
-                          <span class="text-4xl">❌</span>
-                          <div>
-                            <p class="font-bold text-red-600 dark:text-red-400 text-lg">Trigram Entropy</p>
-                            <p class="mt-2 text-gray-700 dark:text-gray-300">${m.fixes.trigram}</p>
-                          </div>
+                        <div class="flex flex-col items-start gap-3">
+                          <span class="text-5xl" style="color: ${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)}</span>
+                          <p class="font-bold text-xl" style="color: ${getSubColor(sub1Score)}">Trigram Entropy</p>
+                          <p class="text-gray-700 dark:text-gray-300">${m.fixes.trigram}</p>
                         </div>` : ''}
                       ${sub2Score < 10 ? `
-                        <div class="flex items-start gap-4">
-                          <span class="text-4xl">❌</span>
-                          <div>
-                            <p class="font-bold text-red-600 dark:text-red-400 text-lg">Bigram Entropy</p>
-                            <p class="mt-2 text-gray-700 dark:text-gray-300">${m.fixes.bigram}</p>
-                          </div>
+                        <div class="flex flex-col items-start gap-3">
+                          <span class="text-5xl" style="color: ${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)}</span>
+                          <p class="font-bold text-xl" style="color: ${getSubColor(sub2Score)}">Bigram Entropy</p>
+                          <p class="text-gray-700 dark:text-gray-300">${m.fixes.bigram}</p>
                         </div>` : ''}
                     </div>
                   </div>`;
                 })()}
               </div>
+
+              <!-- Remaining 4 metrics -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                ${[
+                  {name: 'Burstiness', score: analysis.moduleScores[1], details: analysis.details.burstiness, info: 'Evaluates the variation in sentence and word lengths to ensure natural rhythm in your content. Human writing typically mixes short, punchy sentences with longer, descriptive ones for engagement. Consistent lengths can signal AI generation, as it often prioritizes uniformity over dynamic flow.', fixes: {sentence: analysis.details.burstiness.scores.sentence < 10 ? 'To address low sentence burstiness, alternate between short, impactful sentences and longer, explanatory ones throughout your text. This creates a more engaging rhythm that mimics human speech patterns. Review paragraphs for uniformity and split or combine sentences to add variety.' : '', word: analysis.details.burstiness.scores.word < 10 ? 'Fix word length burstiness by mixing short, simple words with longer, more descriptive ones to avoid monotony. Incorporate varied vocabulary that includes both everyday terms and specialized jargon where appropriate. This enhances readability and makes the content feel more authentic and less machine-like.' : ''}, subNames: ['Sentence Length Variation', 'Word Length Burstiness']},
+                  {name: 'Repetition', score: analysis.moduleScores[2], details: analysis.details.repetition, info: 'Detects overuse of bigram and trigram phrases, which can make text feel redundant and AI-like. Human writers naturally vary expressions to maintain interest and flow. High repetition scores indicate a need for more diverse phrasing to improve originality and engagement.', fixes: {bigram: analysis.details.repetition.scores.bigram < 10 ? 'Reduce bigram repetition by identifying common two-word phrases and replacing them with synonyms or restructured sentences. Use a thesaurus to find fresh alternatives and ensure no phrase dominates. This will make your writing more dynamic and less predictable.' : '', trigram: analysis.details.repetition.scores.trigram < 10 ? 'To fix trigram repetition, scan for recurring three-word sequences and rewrite them with varied structures or vocabulary. Introduce new ideas or transitions to break patterns. Editing for diversity here will elevate the text’s natural feel and reduce AI flags.' : ''}, subNames: ['Bigram Repetition', 'Trigram Repetition']},
+                  {name: 'Sentence Length', score: analysis.moduleScores[3], details: analysis.details.sentenceLength, info: 'Combines average sentence length with complexity measures like comma usage to assess structural depth. Ideal human writing balances lengths between 15-23 words while incorporating clauses for nuance. Deviations can suggest overly simplistic or convoluted AI output, impacting readability.', fixes: {avg: analysis.details.sentenceLength.scores.avg < 10 ? 'Adjust average sentence length by breaking up long run-ons or combining short fragments to hit the 15-23 word sweet spot. This improves flow and readability for users. Regularly count words per sentence during edits to achieve balance.' : '', complexity: analysis.details.sentenceLength.scores.complexity < 10 ? 'Increase sentence complexity by adding clauses with commas, semicolons, or conjunctions to layer ideas. This adds depth without overwhelming the reader. Aim for 1-2 clauses per sentence in key sections to mimic human thought processes.' : ''}, subNames: ['Average Length', 'Sentence Complexity']},
+                  {name: 'Vocabulary', score: analysis.moduleScores[4], details: analysis.details.vocabulary, info: 'Assesses unique word diversity and the frequency of rare words to gauge lexical richness. Human content often includes a broad, context-specific vocabulary with unique terms. Low scores here point to limited word choice, common in AI for efficiency, reducing perceived expertise.', fixes: {diversity: analysis.details.vocabulary.scores.diversity < 10 ? 'Boost vocabulary diversity by incorporating synonyms and avoiding word repetition through active editing. Draw from broader themes or analogies to introduce new terms. This enriches the text and signals deeper knowledge to search engines.' : '', rare: analysis.details.vocabulary.scores.rare < 10 ? 'Enhance rare word frequency by adding unique, context-specific terms that appear only once or twice. Research niche vocabulary related to your topic and weave it in naturally. This creates a more authentic, expert tone and improves SEO signals.' : ''}, subNames: ['Diversity', 'Rare Word Frequency']}
+                ].map(m => {
+                  const grade = getModuleGrade(m.score);
+                  const gradeColor = grade.color;
+                  const sub1Score = m.name === 'Burstiness' ? m.details.scores.sentence : m.name === 'Repetition' ? m.details.scores.bigram : m.name === 'Sentence Length' ? m.details.scores.avg : m.details.scores.diversity;
+                  const sub2Score = m.name === 'Burstiness' ? m.details.scores.word : m.name === 'Repetition' ? m.details.scores.trigram : m.name === 'Sentence Length' ? m.details.scores.complexity : m.details.scores.rare;
+                  const failedCount = (sub1Score < 10 ? 1 : 0) + (sub2Score < 10 ? 1 : 0);
+                  const failedFixes = Object.values(m.fixes).filter(f => f).join('<br><br>');
+
+                  return `
+                  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 text-center border-l-4" style="border-left-color: ${gradeColor}">
+                    <div class="relative w-32 h-32 mx-auto">
+                      <svg viewBox="0 0 128 128" class="-rotate-90">
+                        <circle cx="64" cy="64" r="56" stroke="#f1f5f9 dark:#374151" stroke-width="12" fill="none"/>
+                        <circle cx="64" cy="64" r="56" stroke="${gradeColor}" stroke-width="12" fill="none"
+                                stroke-dasharray="${m.score * 17.6} 352" stroke-linecap="round"/>
+                      </svg>
+                      <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <div class="text-3xl font-bold" style="color: ${gradeColor}">${m.score}</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">/20</div>
+                      </div>
+                    </div>
+                    <p class="mt-4 text-xl font-bold" style="color: ${gradeColor}">${m.name}</p>
+                    <p class="mt-1 text-lg flex items-center justify-center gap-2" style="color: ${gradeColor}">${grade.text} ${grade.emoji}</p>
+                    <div class="mt-3 space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                      <p><span style="color:${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)}</span> ${m.subNames[0]}</p>
+                      <p><span style="color:${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)}</span> ${m.subNames[1]}</p>
+                    </div>
+                    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
+                      More Details
+                    </button>
+                    <div class="hidden mt-4 space-y-4 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                      ${failedFixes ? `<p><span class="font-bold text-red-600 dark:text-red-400">How to Fix Failed Tests:</span><br><br>${failedFixes}</p>` : ''}
+                      <p><span class="font-bold text-blue-600 dark:text-blue-400">What it is:</span> ${m.info}</p>
+                      <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve Overall:</span> Use varied phrasing, personal anecdotes, and unexpected ideas to boost scores. Mix short and long elements for rhythm, and incorporate synonyms or rarer words. Always edit with readability in mind to align with human patterns.</p>
+                      <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters:</span> Search engines prioritize human-like content for higher rankings and user trust. Strong scores here reduce AI penalties and improve engagement metrics. Ultimately, this leads to better organic traffic and authority signals.</p>
+                    </div>
+
+                    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
+                      Show Fixes (${failedCount})
+                    </button>
+                    <div class="hidden mt-4 space-y-6 text-left text-sm">
+                      ${failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold">All tests passed! ✅</p>` : ''}
+                      ${sub1Score < 10 ? `
+                        <div class="flex flex-col items-start gap-2">
+                          <span class="text-4xl" style="color: ${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)}</span>
+                          <p class="font-bold" style="color: ${getSubColor(sub1Score)}">${m.subNames[0]}</p>
+                          <p class="mt-1 text-gray-700 dark:text-gray-300">${Object.values(m.fixes)[0]}</p>
+                        </div>` : ''}
+                      ${sub2Score < 10 ? `
+                        <div class="flex flex-col items-start gap-2">
+                          <span class="text-4xl" style="color: ${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)}</span>
+                          <p class="font-bold" style="color: ${getSubColor(sub2Score)}">${m.subNames[1]}</p>
+                          <p class="mt-1 text-gray-700 dark:text-gray-300">${Object.values(m.fixes)[1]}</p>
+                        </div>` : ''}
+                    </div>
+                  </div>`;
+                }).join('')}
+              </div>
+            </div>
+              
+              
+              
+              
+              
 
               <!-- Remaining 4 metrics -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
