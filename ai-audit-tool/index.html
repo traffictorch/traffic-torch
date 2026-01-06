@@ -624,29 +624,9 @@
 
 
   <script src="/main.js" type="module"></script>
+  <script src="ai-audit-tool/metric-explanations.js"></script>
   <script src="/ai-audit-tool/script.js" defer></script>
-<script src="ai-audit-tool/metric-explanations.js" type="module"></script>
-<script>
-  import metricExplanations from './ai-audit-tool/metric-explanations.js';
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('metric-cards-container');
-    if (!container) return;
-
-    container.innerHTML = metricExplanations.map((m, i) => `
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow border-l-4 border-orange-500">
-        <div class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-4">${m.name}</div>
-        <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">${m.short}</p>
-        <details class="group">
-          <summary class="cursor-pointer text-orange-500 font-bold hover:underline flex items-center gap-2">
-            Learn More <span class="text-2xl group-open:rotate-180 transition-transform">↓</span>
-          </summary>
-          <p class="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">${m.full}</p>
-        </details>
-      </div>
-    `).join('');
-  });
-</script>
 
 </body>
 </html>
