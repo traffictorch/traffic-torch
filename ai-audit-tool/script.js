@@ -391,93 +391,92 @@ document.addEventListener('DOMContentLoaded', () => {
                 }).join('')}
               </div>
             </div>
+            
+            
 
- <div class="mt-20 space-y-8">
-  <h2 class="text-4xl md:text-5xl font-black text-center text-gray-900 dark:text-gray-100">Top 3 Priority Fixes</h2>
-  ${(() => {
-    const modules = [
-      {
-        name: 'Perplexity',
-        score: analysis.moduleScores[0],
-        details: analysis.details.perplexity,
-        fixes: [
-          analysis.details.perplexity.scores.trigram < 10 ? 'To improve trigram entropy, deliberately introduce unexpected word combinations and personal anecdotes that don’t follow common patterns. This breaks predictable flows and makes your writing feel more spontaneous and human. Avoid sticking to safe, formulaic phrasing—edit specifically for surprise in every few sentences.' : '',
-          analysis.details.perplexity.scores.bigram < 10 ? 'Boost bigram entropy by actively swapping overused two-word pairs with creative alternatives or rephrased expressions. Incorporate transitional phrases that aren’t common and sprinkle in idiomatic expressions unique to your voice. These small changes create a less robotic rhythm and significantly increase overall unpredictability.' : ''
-        ].filter(f => f).join('<br><br>')
-      },
-      {
-        name: 'Burstiness',
-        score: analysis.moduleScores[1],
-        details: analysis.details.burstiness,
-        fixes: [
-          analysis.details.burstiness.scores.sentence < 10 ? 'To increase sentence burstiness, consciously alternate between short, punchy sentences and longer, more detailed ones throughout your paragraphs. This variation mimics natural human speech rhythm and keeps readers engaged. Go through your text and intentionally split or combine sentences to eliminate uniform length patterns.' : '',
-          analysis.details.burstiness.scores.word < 10 ? 'Improve word length burstiness by mixing very short, simple words with longer, descriptive ones to avoid monotony. Use everyday terms alongside occasional specialized or evocative vocabulary where it fits naturally. This creates subtle emphasis and makes the content feel more authentic and less mechanically generated.' : ''
-        ].filter(f => f).join('<br><br>')
-      },
-      {
-        name: 'Repetition',
-        score: analysis.moduleScores[2],
-        details: analysis.details.repetition,
-        fixes: [
-          analysis.details.repetition.scores.bigram < 10 ? 'Reduce bigram repetition by identifying the most common two-word phrases in your text and replacing them with synonyms or fully restructured sentences. Use a thesaurus strategically and ensure no single phrase dominates the content. This simple edit makes your writing far more dynamic and less predictable to both readers and search engines.' : '',
-          analysis.details.repetition.scores.trigram < 10 ? 'To fix trigram repetition, scan for any three-word sequences that appear multiple times and rewrite them with fresh vocabulary or different sentence structure. Introduce new transitional ideas to break recurring patterns. Consistent variation here dramatically improves the natural flow and reduces obvious AI-like flags.' : ''
-        ].filter(f => f).join('<br><br>')
-      },
-      {
-        name: 'Sentence Length',
-        score: analysis.moduleScores[3],
-        details: analysis.details.sentenceLength,
-        fixes: [
-          analysis.details.sentenceLength.scores.avg < 10 ? 'Bring your average sentence length into the ideal 15–23 word range by breaking up overly long run-on sentences and combining short, choppy ones where appropriate. This balance significantly improves readability and flow for all readers. Make it a habit to count words per sentence during final edits to maintain optimal rhythm.' : '',
-          analysis.details.sentenceLength.scores.complexity < 10 ? 'Increase sentence complexity by adding subordinate clauses using commas, semicolons, or conjunctions to layer related ideas naturally. This adds depth and sophistication without overwhelming the reader. Aim for 1–2 clauses in key sentences to better reflect complex human thought processes.' : ''
-        ].filter(f => f).join('<br><br>')
-      },
-      {
-        name: 'Vocabulary',
-        score: analysis.moduleScores[4],
-        details: analysis.details.vocabulary,
-        fixes: [
-          analysis.details.vocabulary.scores.diversity < 10 ? 'Boost vocabulary diversity by actively using synonyms and avoiding repetition of the same words throughout your content. Draw from broader themes, analogies, or related concepts to naturally introduce new terms. Higher unique word usage signals expertise and depth to both readers and search engines.' : '',
-          analysis.details.vocabulary.scores.rare < 10 ? 'Enhance rare word frequency by incorporating context-specific or niche terms that appear only once or twice in the text. Research specialized vocabulary relevant to your topic and weave it in thoughtfully. These unique words create an authentic, authoritative tone that stands out as genuinely human-written.' : ''
-        ].filter(f => f).join('<br><br>')
-      }
-    ];
-
-    const priority = modules
-      .filter(m => m.score < 20 && m.fixes)
-      .sort((a, b) => a.score - b.score)
-      .slice(0, 3);
-
-    if (priority.length === 0) {
-      return `
-        <div class="bg-green-50 dark:bg-green-900/20 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-green-500">
-          <h3 class="text-3xl font-bold text-green-600 dark:text-green-400 mb-6 text-center">No Major Fixes Needed!</h3>
-          <p class="text-lg text-center text-gray-800 dark:text-gray-200">All modules scored 20/20. Your content is highly human-like and optimized.</p>
-        </div>`;
-    }
-
-    return priority.map((m, i) => {
-      const sub1Score = m.name === 'Perplexity' ? m.details.scores.trigram : m.name === 'Burstiness' ? m.details.scores.sentence : m.name === 'Repetition' ? m.details.scores.bigram : m.name === 'Sentence Length' ? m.details.scores.avg : m.details.scores.diversity;
-      const sub2Score = m.name === 'Perplexity' ? m.details.scores.bigram : m.name === 'Burstiness' ? m.details.scores.word : m.name === 'Repetition' ? m.details.scores.trigram : m.name === 'Sentence Length' ? m.details.scores.complexity : m.details.scores.rare;
-      const sub1Name = m.name === 'Perplexity' ? 'Trigram Entropy' : m.name === 'Burstiness' ? 'Sentence Length Variation' : m.name === 'Repetition' ? 'Bigram Repetition' : m.name === 'Sentence Length' ? 'Average Length' : 'Diversity';
-      const sub2Name = m.name === 'Perplexity' ? 'Bigram Entropy' : m.name === 'Burstiness' ? 'Word Length Burstiness' : m.name === 'Repetition' ? 'Trigram Repetition' : m.name === 'Sentence Length' ? 'Sentence Complexity' : 'Rare Word Frequency';
-      return `
-        <div class="bg-orange-50 dark:bg-orange-900/20 rounded-3xl p-8 md:p-10 shadow-lg border-l-8 border-orange-500">
-          <div class="flex items-center mb-4">
-            <div class="text-5xl font-black text-orange-600 dark:text-orange-400 mr-6">${i + 1}</div>
-            <div>
-              <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">${m.name} – ${m.score}/20</h3>
-              <div class="mt-2 space-y-1 text-sm text-gray-700 dark:text-gray-300">
-                <p>${getPassFail(sub1Score)} ${sub1Name}</p>
-                <p>${getPassFail(sub2Score)} ${sub2Name}</p>
-              </div>
+            <div class="mt-20 space-y-8">
+              <h2 class="text-4xl md:text-5xl font-black text-center text-gray-900 dark:text-gray-100">Top 3 Priority Fixes</h2>
+              ${(() => {
+                const modules = [
+                  {
+                    name: 'Perplexity',
+                    score: analysis.moduleScores[0],
+                    details: analysis.details.perplexity,
+                    fixes: [
+                      analysis.details.perplexity.scores.trigram < 10 ? 'To improve trigram entropy, deliberately introduce unexpected word combinations and personal anecdotes that don’t follow common patterns. This breaks predictable flows and makes your writing feel more spontaneous and human. Avoid sticking to safe, formulaic phrasing—edit specifically for surprise in every few sentences.' : '',
+                      analysis.details.perplexity.scores.bigram < 10 ? 'Boost bigram entropy by actively swapping overused two-word pairs with creative alternatives or rephrased expressions. Incorporate transitional phrases that aren’t common and sprinkle in idiomatic expressions unique to your voice. These small changes create a less robotic rhythm and significantly increase overall unpredictability.' : ''
+                    ].filter(f => f).join('<br><br>')
+                  },
+                  {
+                    name: 'Burstiness',
+                    score: analysis.moduleScores[1],
+                    details: analysis.details.burstiness,
+                    fixes: [
+                      analysis.details.burstiness.scores.sentence < 10 ? 'To increase sentence burstiness, consciously alternate between short, punchy sentences and longer, more detailed ones throughout your paragraphs. This variation mimics natural human speech rhythm and keeps readers engaged. Go through your text and intentionally split or combine sentences to eliminate uniform length patterns.' : '',
+                      analysis.details.burstiness.scores.word < 10 ? 'Improve word length burstiness by mixing very short, simple words with longer, descriptive ones to avoid monotony. Use everyday terms alongside occasional specialized or evocative vocabulary where it fits naturally. This creates subtle emphasis and makes the content feel more authentic and less mechanically generated.' : ''
+                    ].filter(f => f).join('<br><br>')
+                  },
+                  {
+                    name: 'Repetition',
+                    score: analysis.moduleScores[2],
+                    details: analysis.details.repetition,
+                    fixes: [
+                      analysis.details.repetition.scores.bigram < 10 ? 'Reduce bigram repetition by identifying the most common two-word phrases in your text and replacing them with synonyms or fully restructured sentences. Use a thesaurus strategically and ensure no single phrase dominates the content. This simple edit makes your writing far more dynamic and less predictable to both readers and search engines.' : '',
+                      analysis.details.repetition.scores.trigram < 10 ? 'To fix trigram repetition, scan for any three-word sequences that appear multiple times and rewrite them with fresh vocabulary or different sentence structure. Introduce new transitional ideas to break recurring patterns. Consistent variation here dramatically improves the natural flow and reduces obvious AI-like flags.' : ''
+                    ].filter(f => f).join('<br><br>')
+                  },
+                  {
+                    name: 'Sentence Length',
+                    score: analysis.moduleScores[3],
+                    details: analysis.details.sentenceLength,
+                    fixes: [
+                      analysis.details.sentenceLength.scores.avg < 10 ? 'Bring your average sentence length into the ideal 15–23 word range by breaking up overly long run-on sentences and combining short, choppy ones where appropriate. This balance significantly improves readability and flow for all readers. Make it a habit to count words per sentence during final edits to maintain optimal rhythm.' : '',
+                      analysis.details.sentenceLength.scores.complexity < 10 ? 'Increase sentence complexity by adding subordinate clauses using commas, semicolons, or conjunctions to layer related ideas naturally. This adds depth and sophistication without overwhelming the reader. Aim for 1–2 clauses in key sentences to better reflect complex human thought processes.' : ''
+                    ].filter(f => f).join('<br><br>')
+                  },
+                  {
+                    name: 'Vocabulary',
+                    score: analysis.moduleScores[4],
+                    details: analysis.details.vocabulary,
+                    fixes: [
+                      analysis.details.vocabulary.scores.diversity < 10 ? 'Boost vocabulary diversity by actively using synonyms and avoiding repetition of the same words throughout your content. Draw from broader themes, analogies, or related concepts to naturally introduce new terms. Higher unique word usage signals expertise and depth to both readers and search engines.' : '',
+                      analysis.details.vocabulary.scores.rare < 10 ? 'Enhance rare word frequency by incorporating context-specific or niche terms that appear only once or twice in the text. Research specialized vocabulary relevant to your topic and weave it in thoughtfully. These unique words create an authentic, authoritative tone that stands out as genuinely human-written.' : ''
+                    ].filter(f => f).join('<br><br>')
+                  }
+                ];
+                const priority = modules
+                  .filter(m => m.score < 20 && m.fixes)
+                  .sort((a, b) => a.score - b.score)
+                  .slice(0, 3);
+                if (priority.length === 0) {
+                  return `
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-green-500">
+                      <h3 class="text-3xl font-bold text-green-600 dark:text-green-400 mb-6 text-center">No Major Fixes Needed!</h3>
+                      <p class="text-lg text-center text-gray-800 dark:text-gray-200">All modules scored 20/20. Your content is highly human-like and optimized.</p>
+                    </div>`;
+                }
+                return priority.map((m, i) => {
+                  const sub1Score = m.name === 'Perplexity' ? m.details.scores.trigram : m.name === 'Burstiness' ? m.details.scores.sentence : m.name === 'Repetition' ? m.details.scores.bigram : m.name === 'Sentence Length' ? m.details.scores.avg : m.details.scores.diversity;
+                  const sub2Score = m.name === 'Perplexity' ? m.details.scores.bigram : m.name === 'Burstiness' ? m.details.scores.word : m.name === 'Repetition' ? m.details.scores.trigram : m.name === 'Sentence Length' ? m.details.scores.complexity : m.details.scores.rare;
+                  const sub1Name = m.name === 'Perplexity' ? 'Trigram Entropy' : m.name === 'Burstiness' ? 'Sentence Length Variation' : m.name === 'Repetition' ? 'Bigram Repetition' : m.name === 'Sentence Length' ? 'Average Length' : 'Diversity';
+                  const sub2Name = m.name === 'Perplexity' ? 'Bigram Entropy' : m.name === 'Burstiness' ? 'Word Length Burstiness' : m.name === 'Repetition' ? 'Trigram Repetition' : m.name === 'Sentence Length' ? 'Sentence Complexity' : 'Rare Word Frequency';
+                  return `
+                    <div class="bg-orange-50 dark:bg-orange-900/20 rounded-3xl p-8 md:p-10 shadow-lg border-l-8 border-orange-500">
+                      <div class="flex items-center mb-4">
+                        <div class="text-5xl font-black text-orange-600 dark:text-orange-400 mr-6">${i + 1}</div>
+                        <div>
+                          <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">${m.name} – ${m.score}/20</h3>
+                          <div class="mt-2 space-y-1 text-sm text-gray-700 dark:text-gray-300">
+                            <p><span style="color:${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)}</span> ${sub1Name}</p>
+                            <p><span style="color:${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)}</span> ${sub2Name}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <p class="text-lg text-gray-800 dark:text-gray-200 mt-6"><span class="font-bold text-orange-600 dark:text-orange-400">Recommended Fix:</span><br><br>${m.fixes || 'Focus on improving variation and authenticity in this area.'}</p>
+                    </div>`;
+                }).join('');
+              })()}
             </div>
-          </div>
-          <p class="text-lg text-gray-800 dark:text-gray-200 mt-6"><span class="font-bold text-orange-600 dark:text-orange-400">Recommended Fix:</span><br><br>${m.fixes || 'Focus on improving variation and authenticity in this area.'}</p>
-        </div>`;
-    }).join('');
-  })()}
-</div>
 
 
 
