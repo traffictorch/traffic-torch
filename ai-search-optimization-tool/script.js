@@ -424,11 +424,11 @@ const initTool = (form, results, progressContainer) => {
 
         return `
           <div class="text-right mb-4">
-            <a href="#${anchorId}" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">How it's tested →</a>
+            <a href="#${anchorId}" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">How ${displayName} is tested? →</a>
           </div>
           ${content}
           <div class="text-center mt-6">
-            <a href="#${anchorId}" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">← Learn more about ${displayName}</a>
+            <a href="#${anchorId}" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">← More details about ${displayName}</a>
           </div>
         `;
       }
@@ -485,7 +485,7 @@ const initTool = (form, results, progressContainer) => {
     const allClear = !hasIssues;
     const needsFixSignals = moduleTests.filter(t => !t.passed);
     return `
-      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color} p-4 flex flex-col">
+      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color} p-2 flex flex-col">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="16" fill="none"/>
@@ -546,7 +546,7 @@ const initTool = (form, results, progressContainer) => {
           </button>
         </div>
         <div class="fixes-panel hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out">
-          <div class="p-4 space-y-4 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
+          <div class="p-2 space-y-4 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
             ${allClear ?
               `<p class="text-green-600 dark:text-green-400 text-center py-6 font-medium">All signals strong — excellent work! ✅</p>` :
               `<div class="space-y-4">${getFixes(m.name)}</div>`
