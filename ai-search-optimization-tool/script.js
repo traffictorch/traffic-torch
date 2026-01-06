@@ -806,8 +806,6 @@ ${prioritisedFixes.length > 0 ? `
     <div id="popover-content" class="space-y-6 pr-6"></div>
   </div>
 </div>
-
-
 `;
       let fullUrl = document.getElementById('url-input').value.trim();
       let displayUrl = 'traffictorch.net';
@@ -828,7 +826,6 @@ ${prioritisedFixes.length > 0 ? `
 document.addEventListener('click', (e) => {
   const card = e.target.closest('.score-card');
 
-  // Card-specific toggles (More Details and Show Fixes)
   if (card) {
     const detailsPanel = card.querySelector('.full-details');
     const fixesPanel = card.querySelector('.fixes-panel');
@@ -850,7 +847,7 @@ document.addEventListener('click', (e) => {
     }
   }
 
-// Metric Details popover - tooltip positioning on desktop, centered on mobile
+  // Metric Details popover
   if (e.target.matches('.metric-details-link') || e.target.closest('.metric-details-link')) {
     e.preventDefault();
     const button = e.target.closest('.metric-details-link');
@@ -860,29 +857,29 @@ document.addEventListener('click', (e) => {
 
     const popover = document.getElementById('metric-popover');
     const content = document.getElementById('popover-content');
-content.innerHTML = `
-  <div class="space-y-6">
-    <div>
-      <h4 class="font-bold text-blue-600 dark:text-blue-400 text-lg">What is this metric?</h4>
-      <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.definition}</p>
-    </div>
-    <div>
-      <h4 class="font-bold text-purple-600 dark:text-purple-400 text-lg">How does the tool detect it?</h4>
-      <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.detection}</p>
-    </div>
-    <div>
-      <h4 class="font-bold text-orange-600 dark:text-orange-400 text-lg">Why does it matter for SEO & AI?</h4>
-      <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.impact}</p>
-    </div>
-  </div>
-`;
+
+    content.innerHTML = `
+      <div class="space-y-6">
+        <div>
+          <h4 class="font-bold text-blue-600 dark:text-blue-400 text-lg">What is this metric?</h4>
+          <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.definition}</p>
+        </div>
+        <div>
+          <h4 class="font-bold text-purple-600 dark:text-purple-400 text-lg">How does the tool detect it?</h4>
+          <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.detection}</p>
+        </div>
+        <div>
+          <h4 class="font-bold text-orange-600 dark:text-orange-400 text-lg">Why does it matter for SEO & AI?</h4>
+          <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.impact}</p>
+        </div>
+      </div>
+    `;
 
     popover.classList.remove('hidden');
 
     const rect = button.getBoundingClientRect();
     const popoverRect = popover.firstElementChild.getBoundingClientRect();
 
-    // Mobile centered
     if (window.innerWidth < 768) {
       popover.style.position = 'fixed';
       popover.style.top = '50%';
@@ -890,25 +887,21 @@ content.innerHTML = `
       popover.style.transform = 'translate(-50%, -50%)';
       popover.style.maxWidth = '90vw';
       popover.firstElementChild.classList.add('max-h-[80vh]', 'overflow-y-auto');
-      return;
+    } else {
+      popover.style.position = 'absolute';
+      popover.style.top = `${rect.bottom + window.scrollY + 8}px`;
+      popover.style.left = `${rect.left + window.scrollX + rect.width / 2 - popoverRect.width / 2}px`;
+      popover.style.transform = 'none';
+      popover.style.maxWidth = '28rem';
     }
-
-    // Desktop tooltip
-    popover.style.position = 'absolute';
-    popover.style.top = `${rect.bottom + window.scrollY + 8}px`;
-    popover.style.left = `${rect.left + window.scrollX - popoverRect.width / 2 + rect.width / 2}px`;
-    popover.style.transform = 'none';
-    popover.style.maxWidth = '28rem';
   }
 
-  // Close popover on click outside or X
-  if (e.target.id === 'popover-close' || (!e.target.closest('#metric-popover') && !e.target.matches('.metric-details-link') && !document.getElementById('metric-popover').classList.contains('hidden'))) {
+  // Close popover
+  if (e.target.id === 'popover-close' || (!e.target.closest('#metric-popover') && !e.target.matches('.metric-details-link'))) {
     document.getElementById('metric-popover').classList.add('hidden');
   }
+});
 
-
-      
-      
     } catch (err) {
       clearInterval(interval);
       progressContainer.classList.add('hidden');
