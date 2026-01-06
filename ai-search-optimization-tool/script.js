@@ -860,31 +860,32 @@ document.addEventListener('click', (e) => {
 });
 
 
-  // Handle Metric Details link
-  if (e.target.matches('.metric-details-link')) {
-    e.preventDefault();
-    const metric = e.target.dataset.metric;
-    const explanation = metricExplanations[metric];
-    if (explanation) {
+  // Metric Details popover
+  if (e.target.matches('.metric-details-link') || e.target.closest('.metric-details-link')) {
+    const button = e.target.matches('.metric-details-link') ? e.target : e.target.closest('.metric-details-link');
+    const metric = button.dataset.metric;
+    const exp = window.metricExplanations[metric];
+    if (exp) {
       document.getElementById('popover-content').innerHTML = `
-        <div class="font-bold text-blue-600 dark:text-blue-400 mb-2">What is it?</div>
-        <p class="text-sm mb-4">${explanation.what}</p>
-        <div class="font-bold text-green-600 dark:text-green-400 mb-2">How to improve?</div>
-        <p class="text-sm mb-4">${explanation.how}</p>
-        <div class="font-bold text-orange-600 dark:text-orange-400 mb-2">Why it matters?</div>
-        <p class="text-sm">${explanation.why}</p>
+        <div>
+          <h4 class="font-bold text-blue-600 dark:text-blue-400 text-lg">What is this metric?</h4>
+          <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.definition}</p>
+        </div>
+        <div>
+          <h4 class="font-bold text-purple-600 dark:text-purple-400 text-lg">How does the tool detect it?</h4>
+          <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.detection}</p>
+        </div>
+        <div>
+          <h4 class="font-bold text-orange-600 dark:text-orange-400 text-lg">Why does it matter for SEO & AI?</h4>
+          <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.impact}</p>
+        </div>
       `;
       document.getElementById('metric-popover').classList.remove('hidden');
     }
   }
 
   // Close popover
-  if (e.target.id === 'popover-close' || !e.target.closest('#metric-popover')) {
-    if (!e.target.closest('#metric-popover') && !e.target.matches('.metric-details-link')) {
-      document.getElementById('metric-popover').classList.add('hidden');
-    }
-  }
-  if (e.target.id === 'popover-close') {
+  if (e.target.id === 'popover-overlay' || e.target.id === 'popover-close') {
     document.getElementById('metric-popover').classList.add('hidden');
   }
 
