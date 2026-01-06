@@ -860,20 +860,22 @@ document.addEventListener('click', (e) => {
 
     const popover = document.getElementById('metric-popover');
     const content = document.getElementById('popover-content');
-    content.innerHTML = `
-      <div>
-        <h4 class="font-bold text-blue-600 dark:text-blue-400 text-lg mb-2">What is this metric?</h4>
-        <p class="text-sm text-gray-700 dark:text-gray-300">${exp.definition}</p>
-      </div>
-      <div class="mt-4">
-        <h4 class="font-bold text-purple-600 dark:text-purple-400 text-lg mb-2">How does the tool detect it?</h4>
-        <p class="text-sm text-gray-700 dark:text-gray-300">${exp.detection}</p>
-      </div>
-      <div class="mt-4">
-        <h4 class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">Why does it matter for SEO & AI?</h4>
-        <p class="text-sm text-gray-700 dark:text-gray-300">${exp.impact}</p>
-      </div>
-    `;
+content.innerHTML = `
+  <div class="space-y-6">
+    <div>
+      <h4 class="font-bold text-blue-600 dark:text-blue-400 text-lg">What is this metric?</h4>
+      <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.definition}</p>
+    </div>
+    <div>
+      <h4 class="font-bold text-purple-600 dark:text-purple-400 text-lg">How does the tool detect it?</h4>
+      <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.detection}</p>
+    </div>
+    <div>
+      <h4 class="font-bold text-orange-600 dark:text-orange-400 text-lg">Why does it matter for SEO & AI?</h4>
+      <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.impact}</p>
+    </div>
+  </div>
+`;
 
     popover.classList.remove('hidden');
 
