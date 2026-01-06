@@ -97,8 +97,7 @@
     }
   })();
 </script>
-  <script src="/main.js" type="module"></script>
-  <script src="/ai-audit-tool/script.js" defer></script>
+
 </head>
 
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
@@ -227,23 +226,7 @@
       <!-- Your existing report sections go here – keep them exactly as in your script.js output -->
     </div>
     
-      	<!-- AddToAny BEGIN -->
-  <div style="display: flex; justify-content: center; margin: 30px 0;">
-  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
-<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
-<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-<a class="a2a_button_pinterest"></a>
-<a class="a2a_button_x"></a>
-<a class="a2a_button_reddit"></a>
-<a class="a2a_button_facebook"></a>
-<a class="a2a_button_copy_link"></a>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
-  </div>
-</div>
-	<!-- AddToAny END --> 
-	
-<!-- How the AI Content Detector Works Accordion -->
+    <!-- How the AI Content Detector Works Accordion -->
 <div class="max-w-1xl mx-auto my-16">
   <details>
     <summary class="px-3 py-5 text-1xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
@@ -287,6 +270,40 @@
     </div>
   </details>
 </div>
+    
+    
+      	<!-- AddToAny BEGIN -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_pinterest"></a>
+<a class="a2a_button_x"></a>
+<a class="a2a_button_reddit"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_copy_link"></a>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+</div>
+	<!-- AddToAny END --> 
+	
+	
+	<section class="py-20 bg-gray-50 dark:bg-gray-900">
+  <div class="max-w-7xl mx-auto px-4">
+    <h2 class="text-4xl md:text-5xl font-black text-center text-gray-900 dark:text-gray-100 mb-4">
+      How We Detect AI Content
+    </h2>
+    <p class="text-xl text-center text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-16">
+      Our AI Audit Tool analyzes five key linguistic patterns proven to distinguish human from AI-generated text
+    </p>
+    <div id="metric-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Cards will be injected here by JS -->
+    </div>
+  </div>
+</section>
+	
+
 
 <section id="ai-audit-seo-checklist" class="py-16 px-1 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
   <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-pink-600">
@@ -604,6 +621,32 @@
     </div>
   </div>
 </footer>
+
+
+  <script src="/main.js" type="module"></script>
+  <script src="/ai-audit-tool/script.js" defer></script>
+<script src="ai-audit-tool/metric-explanations.js" type="module"></script>
+<script>
+  import metricExplanations from './ai-audit-tool/metric-explanations.js';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('metric-cards-container');
+    if (!container) return;
+
+    container.innerHTML = metricExplanations.map((m, i) => `
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow border-l-4 border-orange-500">
+        <div class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-4">${m.name}</div>
+        <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">${m.short}</p>
+        <details class="group">
+          <summary class="cursor-pointer text-orange-500 font-bold hover:underline flex items-center gap-2">
+            Learn More <span class="text-2xl group-open:rotate-180 transition-transform">↓</span>
+          </summary>
+          <p class="mt-4 text-gray-600 dark:text-gray-400 leading-relaxed">${m.full}</p>
+        </details>
+      </div>
+    `).join('');
+  });
+</script>
 
 </body>
 </html>
