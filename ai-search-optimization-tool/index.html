@@ -606,24 +606,22 @@
 
 <script>
   document.addEventListener('click', (e) => {
-    const toggles = document.querySelectorAll('.learn-more-toggle');
-    let clickedInside = false;
+    if (e.target.matches('.learn-more-toggle') || e.target.closest('.learn-more-toggle')) {
+      const toggle = e.target.closest('.learn-more-toggle');
+      const card = toggle.closest('.metric-card');
+      const details = card.querySelector('.metric-details');
 
-    toggles.forEach(toggle => {
-      if (toggle.contains(e.target) || toggle === e.target) {
-        clickedInside = true;
-        const card = toggle.closest('.metric-card');
-        const details = card.querySelector('.metric-details');
-        document.querySelectorAll('.metric-details').forEach(d => {
-          if (d !== details) d.classList.add('hidden');
-        });
-        details.classList.toggle('hidden');
-      }
-    });
+      // Close all other open details panels
+      document.querySelectorAll('.metric-details').forEach(d => {
+        if (d !== details) {
+          d.classList.add('hidden');
+        }
+      });
 
-    if (!clickedInside) {
-      document.querySelectorAll('.metric-details').forEach(d => d.classList.add('hidden'));
+      // Toggle the clicked one
+      details.classList.toggle('hidden');
     }
+    // Removed global outside-click close – no more accidental closing on mobile taps
   });
 </script>
   
