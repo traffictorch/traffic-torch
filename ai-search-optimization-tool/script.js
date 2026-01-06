@@ -885,6 +885,7 @@ document.addEventListener('click', (e) => {
   if (e.target.id === 'popover-overlay' || e.target.id === 'popover-close') {
     document.getElementById('metric-popover').classList.add('hidden');
   }
+});
 
     } catch (err) {
       clearInterval(interval);
