@@ -327,6 +327,9 @@ const initTool = (form, results, progressContainer) => {
         };
         return map[name] || "This factor significantly impacts AI search performance and citation likelihood.";
       }
+      
+      
+      
       function getFixes(name) {
         let fixes = '';
         const addFix = (metricText, description) => {
@@ -403,7 +406,31 @@ const initTool = (form, results, progressContainer) => {
           if (repeatedWords > 2) addFix('Low word repetition', 'Use synonyms instead of repeating the same terms.');
           if (hasPredictable) addFix('No predictable sentence starts', 'Avoid starting multiple sentences the same way.');
         }
-        return fixes || '<p class="text-green-600 dark:text-green-400 text-center py-6 font-medium">All signals strong — excellent work! ✅</p>';
+
+        const anchorMap = {
+          "Answerability": "answerability",
+          "Structured Data": "structured-data",
+          "EEAT Signals": "eeat-signals",
+          "Scannability": "scannability",
+          "Conversational Tone": "conversational-tone",
+          "Readability": "readability",
+          "Unique Insights": "unique-insights",
+          "Anti-AI Safety": "anti-ai-safety"
+        };
+        const anchorId = anchorMap[name] || "";
+        const displayName = name;
+
+        let content = fixes || '<p class="text-green-600 dark:text-green-400 text-center py-6 font-medium">All signals strong — excellent work! ✅</p>';
+
+        return `
+          <div class="text-right mb-4">
+            <a href="#${anchorId}" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">How it's tested →</a>
+          </div>
+          ${content}
+          <div class="text-center mt-6">
+            <a href="#${anchorId}" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">← Learn more about ${displayName}</a>
+          </div>
+        `;
       }
       const moduleKeywords = {
         "Answerability": ["Bold/strong formatting in opening", "Clear definition pattern in opening", "FAQPage schema detected", "Question-style H2 headings", "Step-by-step language in opening", "Strong opening section (>600 chars)"],
@@ -415,6 +442,10 @@ const initTool = (form, results, progressContainer) => {
         "Unique Insights": ["First-hand experience markers", "Dated/timely results mentioned", "Interviews/quotes included", "Deep content (1500+ words)"],
         "Anti-AI Safety": ["High sentence burstiness", "Low word repetition", "No predictable sentence starts"]
       };
+      
+      
+      
+      
       results.innerHTML = `
 <div class="flex justify-center my-12 px-4">
   <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square">
