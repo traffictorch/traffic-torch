@@ -799,11 +799,17 @@ ${prioritisedFixes.length > 0 ? `
 </div>
 
 
-<!-- Metric Details Popover - tooltip on desktop, modal on mobile -->
-<div id="metric-popover" class="hidden z-50">
-  <div class="absolute bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 p-6 max-w-md pointer-events-auto">
-    <button id="popover-close" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 text-xl leading-none">&times;</button>
-    <div id="popover-content" class="space-y-6 pr-6"></div>
+<!-- Metric Details Popover - perfect centered modal, light backdrop -->
+<div id="metric-popover" class="fixed inset-0 z-50 hidden">
+  <div class="fixed inset-0 bg-white/70 dark:bg-black/50 backdrop-blur-sm" id="popover-overlay"></div>
+  <div class="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 w-full max-w-3xl">
+      <div class="sticky top-0 bg-white dark:bg-gray-900 rounded-t-3xl border-b border-gray-200 dark:border-gray-700 px-8 py-6 flex items-center justify-between">
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Metric Details</h3>
+        <button id="popover-close" class="text-3xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 leading-none">&times;</button>
+      </div>
+      <div class="p-8" id="popover-content"></div>
+    </div>
   </div>
 </div>
 `;
@@ -847,7 +853,7 @@ document.addEventListener('click', (e) => {
     }
   }
 
-  // Metric Details popover
+  // Metric Details popover - clean centered modal
   if (e.target.matches('.metric-details-link') || e.target.closest('.metric-details-link')) {
     e.preventDefault();
     const button = e.target.closest('.metric-details-link');
@@ -855,52 +861,30 @@ document.addEventListener('click', (e) => {
     const exp = window.metricExplanations[metric];
     if (!exp) return;
 
-    const popover = document.getElementById('metric-popover');
-    const content = document.getElementById('popover-content');
-
-    content.innerHTML = `
-      <div class="space-y-6">
+    document.getElementById('popover-content').innerHTML = `
+      <div class="space-y-10">
         <div>
-          <h4 class="font-bold text-blue-600 dark:text-blue-400 text-lg">What is this metric?</h4>
-          <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.definition}</p>
+          <h4 class="font-bold text-blue-600 dark:text-blue-400 text-xl mb-4">What is this metric?</h4>
+          <p class="text-base text-gray-700 dark:text-gray-300 leading-relaxed">${exp.definition}</p>
         </div>
         <div>
-          <h4 class="font-bold text-purple-600 dark:text-purple-400 text-lg">How does the tool detect it?</h4>
-          <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.detection}</p>
+          <h4 class="font-bold text-purple-600 dark:text-purple-400 text-xl mb-4">How does the tool detect it?</h4>
+          <p class="text-base text-gray-700 dark:text-gray-300 leading-relaxed">${exp.detection}</p>
         </div>
         <div>
-          <h4 class="font-bold text-orange-600 dark:text-orange-400 text-lg">Why does it matter for SEO & AI?</h4>
-          <p class="text-sm mt-2 text-gray-700 dark:text-gray-300">${exp.impact}</p>
+          <h4 class="font-bold text-orange-600 dark:text-orange-400 text-xl mb-4">Why does it matter for SEO & AI?</h4>
+          <p class="text-base text-gray-700 dark:text-gray-300 leading-relaxed">${exp.impact}</p>
         </div>
       </div>
     `;
 
-    popover.classList.remove('hidden');
-
-    const rect = button.getBoundingClientRect();
-    const popoverRect = popover.firstElementChild.getBoundingClientRect();
-
-    if (window.innerWidth < 768) {
-      popover.style.position = 'fixed';
-      popover.style.top = '50%';
-      popover.style.left = '50%';
-      popover.style.transform = 'translate(-50%, -50%)';
-      popover.style.maxWidth = '90vw';
-      popover.firstElementChild.classList.add('max-h-[80vh]', 'overflow-y-auto');
-    } else {
-      popover.style.position = 'absolute';
-      popover.style.top = `${rect.bottom + window.scrollY + 8}px`;
-      popover.style.left = `${rect.left + window.scrollX + rect.width / 2 - popoverRect.width / 2}px`;
-      popover.style.transform = 'none';
-      popover.style.maxWidth = '28rem';
-    }
+    document.getElementById('metric-popover').classList.remove('hidden');
   }
 
   // Close popover
-  if (e.target.id === 'popover-close' || (!e.target.closest('#metric-popover') && !e.target.matches('.metric-details-link'))) {
+  if (e.target.id === 'popover-overlay' || e.target.id === 'popover-close') {
     document.getElementById('metric-popover').classList.add('hidden');
   }
-});
 
     } catch (err) {
       clearInterval(interval);
