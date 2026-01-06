@@ -9,7 +9,6 @@ const waitForElements = () => {
     requestAnimationFrame(waitForElements);
   }
 };
-
 const initTool = (form, results, progressContainer) => {
   const progressText = document.getElementById('progress-text');
   form.addEventListener('submit', async (e) => {
@@ -327,217 +326,204 @@ const initTool = (form, results, progressContainer) => {
         };
         return map[name] || "This factor significantly impacts AI search performance and citation likelihood.";
       }
-      
-      
       function getPerMetricHow(text) {
-  const map = {
-    'Bold/strong formatting in opening': 'Place key answers or definitions in <strong> or <b> tags within the first paragraph so AI can easily quote them.',
-    'Clear definition pattern in opening': 'Start with clear definitional phrasing like “X is…”, “X means…”, “X refers to…” or “X is defined as…” to directly satisfy definitional queries.',
-    'FAQPage schema detected': 'Add a JSON-LD script with @type "FAQPage" containing your questions and answers.',
-    'Question-style H2 headings': 'Format headings as real user questions (e.g. “How do I fix slow loading?”, “What is the best…?”).',
-    'Step-by-step language in opening': 'Include clear numbered or bulleted steps early in the content using phrases like “follow these steps” or “here’s how”.',
-    'Strong opening section (>600 chars)': 'Expand the opening section with valuable, direct content to give AI more high-quality material to summarize and cite.',
-    'JSON-LD structured data present': 'Add at least one <script type="application/ld+json"> block with valid markup.',
-    'Article/BlogPosting schema type': 'Include @type "Article" or "BlogPosting" in your JSON-LD.',
-    'FAQPage/HowTo schema type': 'Use "FAQPage" for Q&A content or "HowTo" for instructional guides.',
-    'Person schema for author': 'Add a "Person" entity linked via the "author" property to prove authorship.',
-    'Author byline visible': 'Display the author name, photo and short bio prominently (top or bottom of article).',
-    'Publish/update date shown': 'Clearly show publish date and last updated date in the content.',
-    'Trusted outbound links': 'Link to reputable sources (universities, government sites, well-known authorities).',
-    'Secure HTTPS connection': 'Ensure your site uses HTTPS (get an SSL certificate if needed).',
-    'Sufficient headings (H1-H4)': 'Use at least 6 headings to break up the content logically.',
-    'Bullet/numbered lists used': 'Convert long paragraphs into 3+ bullet or numbered lists.',
-    'Data tables present': 'Include at least one data table for comparisons, specs or stats.',
-    'Short paragraphs (<35 words)': 'Keep most paragraphs under 4 lines / 35 words.',
-    'Excellent heading density': 'Aim for a heading every 300–400 words.',
-    'Direct "you" address (>5)': 'Use “you”, “your”, “yours” more than 5 times to speak directly to the reader.',
-    'Personal "I/we" sharing': 'Include “I”, “we”, “my”, “our” at least 4 times to sound personal.',
-    'Engaging questions asked': 'Add 3+ rhetorical questions that mirror what readers are thinking.',
-    'Reader pain points acknowledged': 'Mention common struggles/frustrations the reader might feel.',
-    'Good Flesch score (>60)': 'Use shorter sentences and simpler words to improve reading ease.',
-    'Natural sentence variation': 'Mix very short and longer sentences for natural rhythm.',
-    'Low passive voice': 'Prefer active voice (“We tested X”) over passive (“X was tested by us”).',
-    'Low complex words (<15%)': 'Replace complex jargon with simpler alternatives where possible.',
-    'First-hand experience markers': 'Add phrases like “I tested”, “in my experience”, “we found that”, “hands-on”.',
-    'Dated/timely results mentioned': 'Reference recent tests, current-year observations or timely findings.',
-    'Interviews/quotes included': 'Include direct quotes from experts, clients or survey respondents.',
-    'Deep content (1500+ words)': 'Expand with more depth, examples and original analysis.',
-    'High sentence burstiness': 'Deliberately vary sentence length dramatically for human-like flow.',
-    'Low word repetition': 'Use synonyms and varied phrasing instead of repeating the same terms.',
-    'No predictable sentence starts': 'Avoid starting multiple sentences with the same word or structure.'
-  };
-  return map[text] || 'Follow best practices for this signal to improve your score.';
-}
-
-function getPerMetricDetection(text) {
-  const map = {
-    'Bold/strong formatting in opening': 'Scans first ~1200 characters for <strong>, <b> or <em> tags.',
-    'Clear definition pattern in opening': 'Searches opening text for phrases like “is”, “means”, “refers to”, “defined as”.',
-    'FAQPage schema detected': 'Checks JSON-LD scripts for "FAQPage" type.',
-    'Question-style H2 headings': 'Detects H2 tags ending in ? or !.',
-    'Step-by-step language in opening': 'Searches opening for keywords like “step”, “guide”, “how to”, “instructions”.',
-    'Strong opening section (>600 chars)': 'Measures character count of extracted opening content.',
-    'JSON-LD structured data present': 'Counts <script type="application/ld+json"> blocks.',
-    'Article/BlogPosting schema type': 'Parses JSON-LD for "Article" or "BlogPosting" @type.',
-    'FAQPage/HowTo schema type': 'Checks for "FAQPage" or "HowTo" types.',
-    'Person schema for author': 'Looks for "Person" type in structured data.',
-    'Author byline visible': 'Scans page for common author selectors.',
-    'Publish/update date shown': 'Detects date elements or meta tags.',
-    'Trusted outbound links': 'Finds external HTTPS links (excluding social media).',
-    'Secure HTTPS connection': 'Checks if URL uses https://.',
-    'Sufficient headings (H1-H4)': 'Counts H1–H4 tags (more than 5 = pass).',
-    'Bullet/numbered lists used': 'Counts <ul> and <ol> (more than 2 = pass).',
-    'Data tables present': 'Detects <table> elements.',
-    'Short paragraphs (<35 words)': 'Counts paragraphs with <35 words.',
-    'Excellent heading density': 'Checks for more than 8 headings total.',
-    'Direct "you" address (>5)': 'Counts occurrences of “you/your/yours”.',
-    'Personal "I/we" sharing': 'Counts personal pronouns (“I/we/my/our/me/us”).',
-    'Engaging questions asked': 'Counts sentences ending in ?.',
-    'Reader pain points acknowledged': 'Scans for pain/frustration keywords.',
-    'Good Flesch score (>60)': 'Calculates Flesch Reading Ease formula.',
-    'Natural sentence variation': 'Measures variance in sentence length.',
-    'Low passive voice': 'Detects passive constructions.',
-    'Low complex words (<15%)': 'Counts words with 3+ syllables.',
-    'First-hand experience markers': 'Scans for phrases like “I tested”, “in my experience”, “we found”.',
-    'Dated/timely results mentioned': 'Looks for recent time references.',
-    'Interviews/quotes included': 'Detects quote patterns and interview keywords.',
-    'Deep content (1500+ words)': 'Counts words in main content.',
-    'High sentence burstiness': 'Same as sentence variation score.',
-    'Low word repetition': 'Checks if any word is repeated >10 times.',
-    'No predictable sentence starts': 'Ensures no single starting word is used too frequently.'
-  };
-  return map[text] || 'This metric uses on-page analysis to detect the signal.';
-}
-
-function getPerMetricWhy(text) {
-  const map = {
-    'Bold/strong formatting in opening': 'Bold text is highly quotable — AI engines love pulling it directly into answers.',
-    'Clear definition pattern in opening': 'Direct definitions satisfy definitional queries and increase chances of being cited.',
-    'FAQPage schema detected': 'Triggers rich FAQ results and improves AI understanding.',
-    'Question-style H2 headings': 'Matches real user queries, boosting relevance signals.',
-    'Step-by-step language in opening': 'Instructions are easy for AI to extract and reuse.',
-    'Strong opening section (>600 chars)': 'Gives AI more high-quality content to summarize in overviews.',
-    'JSON-LD structured data present': 'Explicit markup helps search engines understand and trust your content.',
-    'Article/BlogPosting schema type': 'Confirms content type for better topical authority.',
-    'FAQPage/HowTo schema type': 'Enables rich results and direct answer extraction.',
-    'Person schema for author': 'Proves real authorship — critical for E-E-A-T.',
-    'Author byline visible': 'Visible expertise builds trust with both users and AI.',
-    'Publish/update date shown': 'Shows freshness and maintenance — key trust signal.',
-    'Trusted outbound links': 'Linking to authorities proves research and credibility.',
-    'Secure HTTPS connection': 'Basic trust requirement for modern search.',
-    'Sufficient headings (H1-H4)': 'Improves scannability for users and parsing for AI.',
-    'Bullet/numbered lists used': 'Lists are the easiest format for AI to extract facts.',
-    'Data tables present': 'Tables provide structured data AI can reuse accurately.',
-    'Short paragraphs (<35 words)': 'Short paragraphs improve readability and extraction.',
-    'Excellent heading density': 'Optimal structure guides both readers and crawlers.',
-    'Direct "you" address (>5)': 'Conversational tone matches natural search queries.',
-    'Personal "I/we" sharing': 'Personal voice builds authenticity and connection.',
-    'Engaging questions asked': 'Questions increase engagement and mirror user intent.',
-    'Reader pain points acknowledged': 'Empathy builds trust and keeps readers on page.',
-    'Good Flesch score (>60)': 'Simple writing is easier for AI to process and summarize.',
-    'Natural sentence variation': 'Human-like rhythm avoids AI detection flags.',
-    'Low passive voice': 'Active voice is clearer and more authoritative.',
-    'Low complex words (<15%)': 'Simple words improve comprehension and accessibility.',
-    'First-hand experience markers': 'Proves real experience — core E-E-A-T requirement.',
-    'Dated/timely results mentioned': 'Shows freshness and real-world testing.',
-    'Interviews/quotes included': 'Adds exclusive value and authority.',
-    'Deep content (1500+ words)': 'Depth signals comprehensiveness and expertise.',
-    'High sentence burstiness': 'Natural human writing pattern.',
-    'Low word repetition': 'Avoids repetitive, robotic feel.',
-    'No predictable sentence starts': 'Breaks predictable patterns common in generated text.'
-  };
-  return map[text] || 'This signal significantly impacts AI search performance and content quality perception.';
-}
-      
-      
-      
-function getFixes(name) {
-  let fixes = '';
-  const addFix = (metricText, description) => {
-    const test = tests.find(t => t.text === metricText);
-    const passed = test ? test.passed : undefined;
-    let emoji = '❌';
-    let titleColor = 'text-red-600 dark:text-red-400';
-    if (passed === true) {
-      emoji = '✅';
-      titleColor = 'text-green-600 dark:text-green-400';
-    } else if (metricText.includes('Trusted outbound links') || metricText.includes('shown') || metricText.includes('present') || metricText.includes('mentioned')) {
-      emoji = '🆗';
-      titleColor = 'text-orange-600 dark:text-orange-400';
-    }
-    fixes += `
-      <div class="py-3 border-l-4 border-gray-200 dark:border-gray-700 pl-4 -ml-px">
-        <div class="flex flex-col items-center gap-1">
-          <span class="text-3xl leading-none -mb-1">${emoji}</span>
-          <div class="text-center w-full">
-            <p class="font-semibold ${titleColor} text-base leading-tight">${metricText}</p>
-            <p class="text-sm text-gray-700 dark:text-gray-300 mt-2 leading-relaxed px-2">${description}</p>
-            <button class="metric-details-link text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline mt-3 inline-block" data-metric="${metricText}">
-              Metric Details →
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-  };
-
-  if (name === "Answerability") {
-    if (!hasBoldInFirst) addFix('Bold/strong formatting in opening', 'Place the main answer in bold text within the first paragraph so AI can easily quote it.');
-    if (!hasDefinition) addFix('Clear definition pattern in opening', 'Start with clear phrases like “X means…” or “X is defined as…” to directly satisfy definitional queries.');
-    if (!hasFAQSchema) addFix('FAQPage schema detected', 'Add structured data markup that tells search engines this page answers common questions or provides steps.');
-    if (!hasQuestionH2) addFix('Question-style H2 headings', 'Use heading tags formatted as questions (e.g., “How do I fix X?”) to match real user searches.');
-    if (!hasSteps) addFix('Step-by-step language in opening', 'Include numbered lists with clear actions — AI engines love extractable instructions.');
-    if (first300.length <= 600) addFix('Strong opening section (>600 chars)', 'Expand the first section to over 600 characters with valuable content so AI has more to summarize and cite.');
-  }
-  if (name === "Structured Data") {
-    if (!hasJsonLd) addFix('JSON-LD structured data present', 'Include at least one valid JSON-LD script block with relevant markup.');
-    if (!hasArticle) addFix('Article/BlogPosting schema type', 'Mark the page as an Article or BlogPosting to confirm editorial content type.');
-    if (!hasFaqHowto) addFix('FAQPage/HowTo schema type', 'Add FAQPage for Q&A content or HowTo for instructional guides.');
-    if (!hasPerson) addFix('Person schema for author', 'Connect the content to a Person entity to prove authorship.');
-  }
-  if (name === "EEAT Signals") {
-    if (!hasAuthor) addFix('Author byline visible', 'Display the writer’s name, photo, and short bio prominently.');
-    if (!hasDate) addFix('Publish/update date shown', 'Clearly show when the article was published and last updated.');
-    if (!hasTrustedLinks) addFix('Trusted outbound links', 'Link to reputable sources to build credibility.');
-    if (!url.startsWith('https:')) addFix('Secure HTTPS connection', 'Ensure your site uses a secure HTTPS connection.');
-  }
-  if (name === "Scannability") {
-    if (headings <= 5) addFix('Sufficient headings (H1-H4)', 'Break content into logical sections with at least 6 headings.');
-    if (lists <= 2) addFix('Bullet/numbered lists used', 'Convert long paragraphs into bullet or numbered lists.');
-    if (tables === 0) addFix('Data tables present', 'Include at least one data table for comparisons or stats.');
-    if (shortParas <= 5) addFix('Short paragraphs (<35 words)', 'Keep most paragraphs under 4 lines for faster reading.');
-    if (headings <= 8) addFix('Excellent heading density', 'Aim for a heading every 300–400 words.');
-  }
-  if (name === "Conversational Tone") {
-    if (youCount <= 5) addFix('Direct "you" address (>5)', 'Address the reader directly with “you” more than 5 times.');
-    if (iWeCount <= 3) addFix('Personal "I/we" sharing', 'Include personal insights using “I” or “we” at least 4 times.');
-    if (questions <= 2) addFix('Engaging questions asked', 'Add rhetorical questions that mirror what readers are thinking.');
-    if (painPoints <= 3) addFix('Reader pain points acknowledged', 'Mention common struggles or frustrations to build empathy.');
-  }
-  if (name === "Readability") {
-    if (flesch <= 60) addFix('Good Flesch score (>60)', 'Use shorter sentences and simpler words to improve reading ease.');
-    if (variationScore <= 70) addFix('Natural sentence variation', 'Mix short and longer sentences for natural rhythm.');
-    if (passivePatterns.length >= 5) addFix('Low passive voice', 'Prefer active voice over passive constructions.');
-    if (complexRatio >= 15) addFix('Low complex words (<15%)', 'Replace complex jargon with simpler alternatives.');
-  }
-  if (name === "Unique Insights") {
-    if (!hasInsights) addFix('First-hand experience markers', 'Include phrases like “I tested” or “in my experience” to show original research.');
-    if (!hasDated) addFix('Dated/timely results mentioned', 'Reference recent tests or current findings.');
-    if (!hasInterviews) addFix('Interviews/quotes included', 'Add direct quotes from experts or survey respondents.');
-    if (words <= 1500) addFix('Deep content (1500+ words)', 'Expand with detailed analysis and original data.');
-  }
-  if (name === "Anti-AI Safety") {
-    if (variationScore <= 70) addFix('High sentence burstiness', 'Deliberately vary sentence length for human-like flow.');
-    if (repeatedWords > 2) addFix('Low word repetition', 'Use synonyms instead of repeating the same terms.');
-    if (hasPredictable) addFix('No predictable sentence starts', 'Avoid starting multiple sentences the same way.');
-  }
-
-  return fixes || '<p class="text-green-600 dark:text-green-400 text-center py-6 font-medium">All signals strong — excellent work! ✅</p>';
-}
-      
-      
-      
-      
+        const map = {
+          'Bold/strong formatting in opening': 'Place key answers or definitions in <strong> or <b> tags within the first paragraph so AI can easily quote them.',
+          'Clear definition pattern in opening': 'Start with clear definitional phrasing like “X is…”, “X means…”, “X refers to…” or “X is defined as…” to directly satisfy definitional queries.',
+          'FAQPage schema detected': 'Add a JSON-LD script with @type "FAQPage" containing your questions and answers.',
+          'Question-style H2 headings': 'Format headings as real user questions (e.g. “How do I fix slow loading?”, “What is the best…?”).',
+          'Step-by-step language in opening': 'Include clear numbered or bulleted steps early in the content using phrases like “follow these steps” or “here’s how”.',
+          'Strong opening section (>600 chars)': 'Expand the opening section with valuable, direct content to give AI more high-quality material to summarize and cite.',
+          'JSON-LD structured data present': 'Add at least one <script type="application/ld+json"> block with valid markup.',
+          'Article/BlogPosting schema type': 'Include @type "Article" or "BlogPosting" in your JSON-LD.',
+          'FAQPage/HowTo schema type': 'Use "FAQPage" for Q&A content or "HowTo" for instructional guides.',
+          'Person schema for author': 'Add a "Person" entity linked via the "author" property to prove authorship.',
+          'Author byline visible': 'Display the author name, photo and short bio prominently (top or bottom of article).',
+          'Publish/update date shown': 'Clearly show publish date and last updated date in the content.',
+          'Trusted outbound links': 'Link to reputable sources (universities, government sites, well-known authorities).',
+          'Secure HTTPS connection': 'Ensure your site uses HTTPS (get an SSL certificate if needed).',
+          'Sufficient headings (H1-H4)': 'Use at least 6 headings to break up the content logically.',
+          'Bullet/numbered lists used': 'Convert long paragraphs into 3+ bullet or numbered lists.',
+          'Data tables present': 'Include at least one data table for comparisons, specs or stats.',
+          'Short paragraphs (<35 words)': 'Keep most paragraphs under 4 lines / 35 words.',
+          'Excellent heading density': 'Aim for a heading every 300–400 words.',
+          'Direct "you" address (>5)': 'Use “you”, “your”, “yours” more than 5 times to speak directly to the reader.',
+          'Personal "I/we" sharing': 'Include “I”, “we”, “my”, “our” at least 4 times to sound personal.',
+          'Engaging questions asked': 'Add 3+ rhetorical questions that mirror what readers are thinking.',
+          'Reader pain points acknowledged': 'Mention common struggles/frustrations the reader might feel.',
+          'Good Flesch score (>60)': 'Use shorter sentences and simpler words to improve reading ease.',
+          'Natural sentence variation': 'Mix very short and longer sentences for natural rhythm.',
+          'Low passive voice': 'Prefer active voice (“We tested X”) over passive (“X was tested by us”).',
+          'Low complex words (<15%)': 'Replace complex jargon with simpler alternatives where possible.',
+          'First-hand experience markers': 'Add phrases like “I tested”, “in my experience”, “we found that”, “hands-on”.',
+          'Dated/timely results mentioned': 'Reference recent tests, current-year observations or timely findings.',
+          'Interviews/quotes included': 'Include direct quotes from experts, clients or survey respondents.',
+          'Deep content (1500+ words)': 'Expand with more depth, examples and original analysis.',
+          'High sentence burstiness': 'Deliberately vary sentence length dramatically for human-like flow.',
+          'Low word repetition': 'Use synonyms and varied phrasing instead of repeating the same terms.',
+          'No predictable sentence starts': 'Avoid starting multiple sentences with the same word or structure.'
+        };
+        return map[text] || 'Follow best practices for this signal to improve your score.';
+      }
+      function getPerMetricDetection(text) {
+        const map = {
+          'Bold/strong formatting in opening': 'Scans first ~1200 characters for <strong>, <b> or <em> tags.',
+          'Clear definition pattern in opening': 'Searches opening text for phrases like “is”, “means”, “refers to”, “defined as”.',
+          'FAQPage schema detected': 'Checks JSON-LD scripts for "FAQPage" type.',
+          'Question-style H2 headings': 'Detects H2 tags ending in ? or !.',
+          'Step-by-step language in opening': 'Searches opening for keywords like “step”, “guide”, “how to”, “instructions”.',
+          'Strong opening section (>600 chars)': 'Measures character count of extracted opening content.',
+          'JSON-LD structured data present': 'Counts <script type="application/ld+json"> blocks.',
+          'Article/BlogPosting schema type': 'Parses JSON-LD for "Article" or "BlogPosting" @type.',
+          'FAQPage/HowTo schema type': 'Checks for "FAQPage" or "HowTo" types.',
+          'Person schema for author': 'Looks for "Person" type in structured data.',
+          'Author byline visible': 'Scans page for common author selectors.',
+          'Publish/update date shown': 'Detects date elements or meta tags.',
+          'Trusted outbound links': 'Finds external HTTPS links (excluding social media).',
+          'Secure HTTPS connection': 'Checks if URL uses https://.',
+          'Sufficient headings (H1-H4)': 'Counts H1–H4 tags (more than 5 = pass).',
+          'Bullet/numbered lists used': 'Counts <ul> and <ol> (more than 2 = pass).',
+          'Data tables present': 'Detects <table> elements.',
+          'Short paragraphs (<35 words)': 'Counts paragraphs with <35 words.',
+          'Excellent heading density': 'Checks for more than 8 headings total.',
+          'Direct "you" address (>5)': 'Counts occurrences of “you/your/yours”.',
+          'Personal "I/we" sharing': 'Counts personal pronouns (“I/we/my/our/me/us”).',
+          'Engaging questions asked': 'Counts sentences ending in ?.',
+          'Reader pain points acknowledged': 'Scans for pain/frustration keywords.',
+          'Good Flesch score (>60)': 'Calculates Flesch Reading Ease formula.',
+          'Natural sentence variation': 'Measures variance in sentence length.',
+          'Low passive voice': 'Detects passive constructions.',
+          'Low complex words (<15%)': 'Counts words with 3+ syllables.',
+          'First-hand experience markers': 'Scans for phrases like “I tested”, “in my experience”, “we found”.',
+          'Dated/timely results mentioned': 'Looks for recent time references.',
+          'Interviews/quotes included': 'Detects quote patterns and interview keywords.',
+          'Deep content (1500+ words)': 'Counts words in main content.',
+          'High sentence burstiness': 'Same as sentence variation score.',
+          'Low word repetition': 'Checks if any word is repeated >10 times.',
+          'No predictable sentence starts': 'Ensures no single starting word is used too frequently.'
+        };
+        return map[text] || 'This metric uses on-page analysis to detect the signal.';
+      }
+      function getPerMetricWhy(text) {
+        const map = {
+          'Bold/strong formatting in opening': 'Bold text is highly quotable — AI engines love pulling it directly into answers.',
+          'Clear definition pattern in opening': 'Direct definitions satisfy definitional queries and increase chances of being cited.',
+          'FAQPage schema detected': 'Triggers rich FAQ results and improves AI understanding.',
+          'Question-style H2 headings': 'Matches real user queries, boosting relevance signals.',
+          'Step-by-step language in opening': 'Instructions are easy for AI to extract and reuse.',
+          'Strong opening section (>600 chars)': 'Gives AI more high-quality content to summarize in overviews.',
+          'JSON-LD structured data present': 'Explicit markup helps search engines understand and trust your content.',
+          'Article/BlogPosting schema type': 'Confirms content type for better topical authority.',
+          'FAQPage/HowTo schema type': 'Enables rich results and direct answer extraction.',
+          'Person schema for author': 'Proves real authorship — critical for E-E-A-T.',
+          'Author byline visible': 'Visible expertise builds trust with both users and AI.',
+          'Publish/update date shown': 'Shows freshness and maintenance — key trust signal.',
+          'Trusted outbound links': 'Linking to authorities proves research and credibility.',
+          'Secure HTTPS connection': 'Basic trust requirement for modern search.',
+          'Sufficient headings (H1-H4)': 'Improves scannability for users and parsing for AI.',
+          'Bullet/numbered lists used': 'Lists are the easiest format for AI to extract facts.',
+          'Data tables present': 'Tables provide structured data AI can reuse accurately.',
+          'Short paragraphs (<35 words)': 'Short paragraphs improve readability and extraction.',
+          'Excellent heading density': 'Optimal structure guides both readers and crawlers.',
+          'Direct "you" address (>5)': 'Conversational tone matches natural search queries.',
+          'Personal "I/we" sharing': 'Personal voice builds authenticity and connection.',
+          'Engaging questions asked': 'Questions increase engagement and mirror user intent.',
+          'Reader pain points acknowledged': 'Empathy builds trust and keeps readers on page.',
+          'Good Flesch score (>60)': 'Simple writing is easier for AI to process and summarize.',
+          'Natural sentence variation': 'Human-like rhythm avoids AI detection flags.',
+          'Low passive voice': 'Active voice is clearer and more authoritative.',
+          'Low complex words (<15%)': 'Simple words improve comprehension and accessibility.',
+          'First-hand experience markers': 'Proves real experience — core E-E-A-T requirement.',
+          'Dated/timely results mentioned': 'Shows freshness and real-world testing.',
+          'Interviews/quotes included': 'Adds exclusive value and authority.',
+          'Deep content (1500+ words)': 'Depth signals comprehensiveness and expertise.',
+          'High sentence burstiness': 'Natural human writing pattern.',
+          'Low word repetition': 'Avoids repetitive, robotic feel.',
+          'No predictable sentence starts': 'Breaks predictable patterns common in generated text.'
+        };
+        return map[text] || 'This signal significantly impacts AI search performance and content quality perception.';
+      }
+      function getFixes(name) {
+        let fixes = '';
+        const addFix = (metricText, description) => {
+          const test = tests.find(t => t.text === metricText);
+          const passed = test ? test.passed : undefined;
+          let emoji = '❌';
+          let titleColor = 'text-red-600 dark:text-red-400';
+          if (passed === true) {
+            emoji = '✅';
+            titleColor = 'text-green-600 dark:text-green-400';
+          } else if (metricText.includes('Trusted outbound links') || metricText.includes('shown') || metricText.includes('present') || metricText.includes('mentioned')) {
+            emoji = '🆗';
+            titleColor = 'text-orange-600 dark:text-orange-400';
+          }
+          fixes += `
+            <div class="py-3 border-l-4 border-gray-200 dark:border-gray-700 pl-4 -ml-px">
+              <div class="flex flex-col items-center gap-1">
+                <span class="text-3xl leading-none -mb-1">${emoji}</span>
+                <div class="text-center w-full">
+                  <p class="font-semibold ${titleColor} text-base leading-tight">${metricText}</p>
+                  <p class="text-sm text-gray-700 dark:text-gray-300 mt-2 leading-relaxed px-2">${description}</p>
+                  <button class="metric-details-link text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline mt-3 inline-block" data-metric="${metricText}">
+                    Metric Details →
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        };
+        if (name === "Answerability") {
+          if (!hasBoldInFirst) addFix('Bold/strong formatting in opening', 'Place the main answer in bold text within the first paragraph so AI can easily quote it.');
+          if (!hasDefinition) addFix('Clear definition pattern in opening', 'Start with clear phrases like “X means…” or “X is defined as…” to directly satisfy definitional queries.');
+          if (!hasFAQSchema) addFix('FAQPage schema detected', 'Add structured data markup that tells search engines this page answers common questions or provides steps.');
+          if (!hasQuestionH2) addFix('Question-style H2 headings', 'Use heading tags formatted as questions (e.g., “How do I fix X?”) to match real user searches.');
+          if (!hasSteps) addFix('Step-by-step language in opening', 'Include numbered lists with clear actions — AI engines love extractable instructions.');
+          if (first300.length <= 600) addFix('Strong opening section (>600 chars)', 'Expand the first section to over 600 characters with valuable content so AI has more to summarize and cite.');
+        }
+        if (name === "Structured Data") {
+          if (!hasJsonLd) addFix('JSON-LD structured data present', 'Include at least one valid JSON-LD script block with relevant markup.');
+          if (!hasArticle) addFix('Article/BlogPosting schema type', 'Mark the page as an Article or BlogPosting to confirm editorial content type.');
+          if (!hasFaqHowto) addFix('FAQPage/HowTo schema type', 'Add FAQPage for Q&A content or HowTo for instructional guides.');
+          if (!hasPerson) addFix('Person schema for author', 'Connect the content to a Person entity to prove authorship.');
+        }
+        if (name === "EEAT Signals") {
+          if (!hasAuthor) addFix('Author byline visible', 'Display the writer’s name, photo, and short bio prominently.');
+          if (!hasDate) addFix('Publish/update date shown', 'Clearly show when the article was published and last updated.');
+          if (!hasTrustedLinks) addFix('Trusted outbound links', 'Link to reputable sources to build credibility.');
+          if (!url.startsWith('https:')) addFix('Secure HTTPS connection', 'Ensure your site uses a secure HTTPS connection.');
+        }
+        if (name === "Scannability") {
+          if (headings <= 5) addFix('Sufficient headings (H1-H4)', 'Break content into logical sections with at least 6 headings.');
+          if (lists <= 2) addFix('Bullet/numbered lists used', 'Convert long paragraphs into bullet or numbered lists.');
+          if (tables === 0) addFix('Data tables present', 'Include at least one data table for comparisons or stats.');
+          if (shortParas <= 5) addFix('Short paragraphs (<35 words)', 'Keep most paragraphs under 4 lines for faster reading.');
+          if (headings <= 8) addFix('Excellent heading density', 'Aim for a heading every 300–400 words.');
+        }
+        if (name === "Conversational Tone") {
+          if (youCount <= 5) addFix('Direct "you" address (>5)', 'Address the reader directly with “you” more than 5 times.');
+          if (iWeCount <= 3) addFix('Personal "I/we" sharing', 'Include personal insights using “I” or “we” at least 4 times.');
+          if (questions <= 2) addFix('Engaging questions asked', 'Add rhetorical questions that mirror what readers are thinking.');
+          if (painPoints <= 3) addFix('Reader pain points acknowledged', 'Mention common struggles or frustrations to build empathy.');
+        }
+        if (name === "Readability") {
+          if (flesch <= 60) addFix('Good Flesch score (>60)', 'Use shorter sentences and simpler words to improve reading ease.');
+          if (variationScore <= 70) addFix('Natural sentence variation', 'Mix short and longer sentences for natural rhythm.');
+          if (passivePatterns.length >= 5) addFix('Low passive voice', 'Prefer active voice over passive constructions.');
+          if (complexRatio >= 15) addFix('Low complex words (<15%)', 'Replace complex jargon with simpler alternatives.');
+        }
+        if (name === "Unique Insights") {
+          if (!hasInsights) addFix('First-hand experience markers', 'Include phrases like “I tested” or “in my experience” to show original research.');
+          if (!hasDated) addFix('Dated/timely results mentioned', 'Reference recent tests or current findings.');
+          if (!hasInterviews) addFix('Interviews/quotes included', 'Add direct quotes from experts or survey respondents.');
+          if (words <= 1500) addFix('Deep content (1500+ words)', 'Expand with detailed analysis and original data.');
+        }
+        if (name === "Anti-AI Safety") {
+          if (variationScore <= 70) addFix('High sentence burstiness', 'Deliberately vary sentence length for human-like flow.');
+          if (repeatedWords > 2) addFix('Low word repetition', 'Use synonyms instead of repeating the same terms.');
+          if (hasPredictable) addFix('No predictable sentence starts', 'Avoid starting multiple sentences the same way.');
+        }
+        return fixes || '<p class="text-green-600 dark:text-green-400 text-center py-6 font-medium">All signals strong — excellent work! ✅</p>';
+      }
       const moduleKeywords = {
         "Answerability": ["Bold/strong formatting in opening", "Clear definition pattern in opening", "FAQPage schema detected", "Question-style H2 headings", "Step-by-step language in opening", "Strong opening section (>600 chars)"],
         "Structured Data": ["JSON-LD structured data present", "Article/BlogPosting schema type", "FAQPage/HowTo schema type", "Person schema for author"],
@@ -548,10 +534,7 @@ function getFixes(name) {
         "Unique Insights": ["First-hand experience markers", "Dated/timely results mentioned", "Interviews/quotes included", "Deep content (1500+ words)"],
         "Anti-AI Safety": ["High sentence burstiness", "Low word repetition", "No predictable sentence starts"]
       };
-      
-      
-      
-results.innerHTML = `
+      results.innerHTML = `
 <div class="flex justify-center my-12 px-4">
   <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square">
     <svg viewBox="0 0 260 260" class="w-full h-full transform -rotate-90">
@@ -582,8 +565,6 @@ results.innerHTML = `
     </div>
   </div>
 </div>
-
-
 <div class="grid grid-cols-1 md:grid-cols-4 gap-8 my-12 px-4 max-w-7xl mx-auto">
   ${modules.map(m => {
     const grade = getGradeInfo(m.score);
@@ -610,14 +591,12 @@ results.innerHTML = `
           </span>
         </div>
         <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200 px-4">${m.desc}</p>
-
         <!-- More Details button -->
         <div class="mt-6">
           <button class="more-details-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm bg-gray-600 hover:bg-gray-700 flex items-center justify-center transition">
             More Details
           </button>
         </div>
-
         <!-- Full details panel - directly below More Details button -->
         <div class="full-details hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out">
           <div class="p-4 space-y-6 bg-blue-50 dark:bg-blue-900/20 rounded-b-2xl">
@@ -635,7 +614,6 @@ results.innerHTML = `
             </div>
           </div>
         </div>
-
         <!-- Metrics list -->
         <div class="mt-6 space-y-2 text-left text-sm">
           ${moduleTests.map(t => {
@@ -653,14 +631,12 @@ results.innerHTML = `
             `;
           }).join('')}
         </div>
-
         <!-- Show Fixes button -->
         <div class="mt-8">
           <button class="fixes-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center hover:opacity-90 transition">
             ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
           </button>
         </div>
-
         <!-- Fixes panel - directly below Show Fixes button -->
         <div class="fixes-panel hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out">
           <div class="p-4 space-y-4 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
@@ -674,9 +650,6 @@ results.innerHTML = `
     `;
   }).join('')}
 </div>
-
-
-
 ${prioritisedFixes.length > 0 ? `
   <div class="mt-16 px-4">
     <h3 class="text-3xl font-black text-center mb-8 text-blue-800 dark:text-blue-200">Top Priority Fixes (Highest Impact First)</h3>
@@ -695,7 +668,6 @@ ${prioritisedFixes.length > 0 ? `
     </div>
   `).join('')}
 ` : ''}
-
 <div class="mt-20 px-4 max-w-6xl mx-auto">
   <div class="grid md:grid-cols-2 gap-8">
     <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl">
@@ -790,19 +762,16 @@ ${prioritisedFixes.length > 0 ? `
     </div>
   </div>
 </div>
-
 <div class="text-center my-16">
   <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
           class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
     📄 Save as PDF
   </button>
 </div>
-
-
-<!-- Metric Details Popover - centered viewport desktop, full-width mobile, no overlay -->
+<!-- Metric Details Popover - fixed and perfectly centered in viewport -->
 <div id="metric-popover" class="fixed inset-0 z-50 hidden">
-  <div class="fixed inset-0 flex flex-col justify-center items-center p-4 min-h-screen">
-    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 w-full max-w-3xl max-h-[90vh] overflow-y-auto md:w-auto my-auto">
+  <div class="grid place-items-center min-h-screen p-4">
+    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
       <div class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-8 py-6 flex items-center justify-between">
         <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Metric Details</h3>
         <button id="popover-close" class="text-3xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 leading-none">&times;</button>
@@ -826,15 +795,11 @@ ${prioritisedFixes.length > 0 ? `
         }
       }
       document.body.setAttribute('data-url', displayUrl);
-
-// Event delegation for fixes, more details, and metric details popover
 document.addEventListener('click', (e) => {
   const card = e.target.closest('.score-card');
-
   if (card) {
     const detailsPanel = card.querySelector('.full-details');
     const fixesPanel = card.querySelector('.fixes-panel');
-
     if (e.target.matches('.more-details-toggle')) {
       document.querySelectorAll('.full-details').forEach(p => {
         if (p !== detailsPanel) p.classList.add('hidden');
@@ -842,7 +807,6 @@ document.addEventListener('click', (e) => {
       if (fixesPanel) fixesPanel.classList.add('hidden');
       if (detailsPanel) detailsPanel.classList.toggle('hidden');
     }
-
     if (e.target.matches('.fixes-toggle')) {
       document.querySelectorAll('.fixes-panel').forEach(p => {
         if (p !== fixesPanel) p.classList.add('hidden');
@@ -851,15 +815,15 @@ document.addEventListener('click', (e) => {
       if (fixesPanel) fixesPanel.classList.toggle('hidden');
     }
   }
-
-  // Metric Details popover - responsive: centered desktop, full-width mobile
   if (e.target.matches('.metric-details-link') || e.target.closest('.metric-details-link')) {
     e.preventDefault();
     const button = e.target.closest('.metric-details-link');
     const metric = button.dataset.metric;
-    const exp = window.metricExplanations[metric];
-    if (!exp) return;
-
+    const exp = {
+      definition: getPerMetricHow(metric),
+      detection: getPerMetricDetection(metric),
+      impact: getPerMetricWhy(metric)
+    };
     document.getElementById('popover-content').innerHTML = `
       <div class="space-y-10">
         <div>
@@ -876,16 +840,16 @@ document.addEventListener('click', (e) => {
         </div>
       </div>
     `;
-
     document.getElementById('metric-popover').classList.remove('hidden');
   }
-
-  // Close popover
-  if (e.target.id === 'popover-overlay' || e.target.id === 'popover-close') {
+  if (e.target.id === 'popover-close') {
+    document.getElementById('metric-popover').classList.add('hidden');
+  }
+  // Click outside popover to close
+  if (e.target === document.getElementById('metric-popover')) {
     document.getElementById('metric-popover').classList.add('hidden');
   }
 });
-
     } catch (err) {
       clearInterval(interval);
       progressContainer.classList.add('hidden');
@@ -894,5 +858,4 @@ document.addEventListener('click', (e) => {
     }
   });
 };
-
 document.addEventListener('DOMContentLoaded', waitForElements);
