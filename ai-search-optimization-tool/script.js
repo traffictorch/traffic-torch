@@ -861,7 +861,8 @@ document.addEventListener('click', (e) => {
 
   // Metric Details popover
   if (e.target.matches('.metric-details-link') || e.target.closest('.metric-details-link')) {
-    const button = e.target.matches('.metric-details-link') ? e.target : e.target.closest('.metric-details-link');
+    e.preventDefault();
+    const button = e.target.closest('.metric-details-link');
     const metric = button.dataset.metric;
     const exp = window.metricExplanations[metric];
     if (exp) {
@@ -883,7 +884,7 @@ document.addEventListener('click', (e) => {
     }
   }
 
-  // Close popover
+  // Close popover on overlay or X button
   if (e.target.id === 'popover-overlay' || e.target.id === 'popover-close') {
     document.getElementById('metric-popover').classList.add('hidden');
   }
