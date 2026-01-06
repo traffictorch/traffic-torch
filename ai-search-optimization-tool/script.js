@@ -461,17 +461,20 @@ function getFixes(name) {
     if (passed === true) {
       emoji = '✅';
       titleColor = 'text-green-600 dark:text-green-400';
-    } else if (passed === false && metricText.includes('Trusted outbound links')) {
+    } else if (metricText.includes('Trusted outbound links') || metricText.includes('shown') || metricText.includes('present') || metricText.includes('mentioned')) {
+      // Special orange cases from original logic
       emoji = '🆗';
       titleColor = 'text-orange-600 dark:text-orange-400';
     }
     fixes += `
-      <div class="flex items-start gap-3 py-3 border-l-4 border-gray-200 dark:border-gray-700 pl-4">
-        <span class="text-2xl flex-shrink-0">${emoji}</span>
-        <div class="flex-1">
-          <p class="font-semibold ${titleColor}">${metricText}</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300 mt-1">${description}</p>
-          <button class="metric-details-link text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline mt-2 inline-block" data-metric="${metricText}">
+      <div class="flex items-start gap-4 py-2 border-l-4 border-gray-200 dark:border-gray-700 pl-4">
+        <div class="flex flex-col items-center flex-shrink-0">
+          <span class="text-3xl leading-none">${emoji}</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold ${titleColor} text-base leading-tight">${metricText}</p>
+          <p class="text-sm text-gray-700 dark:text-gray-300 mt-1 leading-relaxed">${description}</p>
+          <button class="metric-details-link text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline mt-3 inline-block" data-metric="${metricText}">
             Metric Details →
           </button>
         </div>
@@ -795,6 +798,18 @@ ${prioritisedFixes.length > 0 ? `
     📄 Save as PDF
   </button>
 </div>
+
+
+<!-- Metric Details Popover - add this block here -->
+<div id="metric-popover" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
+  <div class="bg-black/50 absolute inset-0" id="popover-overlay"></div>
+  <div class="relative max-w-lg w-full bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-6 max-h-[90vh] overflow-y-auto">
+    <button id="popover-close" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 text-2xl leading-none">×</button>
+    <div id="popover-content" class="space-y-6 text-gray-800 dark:text-gray-200"></div>
+  </div>
+</div>
+
+
 `;
       let fullUrl = document.getElementById('url-input').value.trim();
       let displayUrl = 'traffictorch.net';
