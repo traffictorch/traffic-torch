@@ -799,15 +799,15 @@ ${prioritisedFixes.length > 0 ? `
 </div>
 
 
-<!-- Metric Details Popover - perfectly centered in viewport, no overlay, mobile/desktop perfect -->
+<!-- Metric Details Popover - perfectly centered in current viewport, no overlay, mobile/desktop perfect -->
 <div id="metric-popover" class="fixed inset-0 z-50 hidden pointer-events-none">
-  <div class="fixed inset-0 flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 w-full max-w-3xl max-h-[90vh] overflow-y-auto pointer-events-auto">
-      <div class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-8 py-6 flex items-center justify-between">
+  <div class="fixed inset-0 flex items-center justify-center p-4 pointer-events-none">
+    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 w-full max-w-3xl max-h-[90vh] overflow-y-auto pointer-events-auto flex flex-col">
+      <div class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-8 py-6 flex items-center justify-between z-10">
         <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Metric Details</h3>
         <button id="popover-close" class="text-3xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 leading-none">&times;</button>
       </div>
-      <div class="p-8" id="popover-content"></div>
+      <div class="flex-1 p-8 overflow-y-auto" id="popover-content"></div>
     </div>
   </div>
 </div>
