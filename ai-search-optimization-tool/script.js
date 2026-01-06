@@ -67,12 +67,12 @@ const initTool = (form, results, progressContainer) => {
       const first300 = mainText.slice(0, 1200);
       await new Promise(resolve => setTimeout(resolve, 1200));
       updateProgress();
-      const hasBoldInFirst = /<strong>|<b>|<em>/i.test(first300);
-      const hasDefinition = /\b(is|means|refers to|defined as)\b/i.test(first300.toLowerCase());
+      const hasBoldInFirst = /<strong>|<b>|<em>|<mark>|<u>|class=["']([^"']*?bold|strong)[^"']*["']/i.test(first300);
+      const hasDefinition = /\b(is|means|refers to|defined as|stands for|known as|typically refers|commonly understood as|represents|equals|consists of|involves|includes|contains|features|covers|describes|explains|shows|outlines|details|breaks down|summarizes|highlights|focuses on|centers on)\b/i.test(first300.toLowerCase());
       const hasFAQSchema = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))
-        .some(s => s.textContent.includes('"FAQPage"'));
-      const hasQuestionH2 = Array.from(doc.querySelectorAll('h2')).some(h => /[?!]/.test(h.textContent));
-      const hasSteps = /\b(step|guide|how to|instructions|follow these)\b/i.test(first300.toLowerCase());
+        .some(s => s.textContent.includes('"FAQPage"') || s.textContent.includes('"HowTo"'));
+      const hasQuestionH2 = Array.from(doc.querySelectorAll('h2,h3')).some(h => /[?!]/.test(h.textContent.trim()));
+      const hasSteps = /\b(step|guide|how to|instructions|follow these|here's how|process|walkthrough|tutorial|do this|start by|next|then|finally|first|second|third|begin with|let's start|to get started|quick steps|simple steps|easy way|method|approach|technique|tip|trick|secret|pro tip|best way|recommended way|one way|another way|option|alternative|sequence|order|phase|stage)\b/i.test(first300.toLowerCase());
       // Answerability
       let answerability = 0;
       if (hasBoldInFirst || hasDefinition) answerability += 30;
@@ -107,8 +107,17 @@ const initTool = (form, results, progressContainer) => {
         } catch {}
       });
       // EEAT Signals
-      const hasAuthor = !!doc.querySelector('meta[name="author"], .author, [rel="author"], [class*="author" i]');
-      const hasDate = !!doc.querySelector('time[datetime], meta[name="date"], .published, .updated, .date');
+	  const hasAuthor = !!doc.querySelector(
+        'meta[name="author"], meta[property="og:author"], meta[property="article:author"], ' +
+        '.author, .byline, .post-author, .entry-author, [rel="author"], ' +
+        '[itemprop="author"], [class*="author" i], [class*="byline" i], [class*="posted-by" i]'
+      );
+      const hasDate = !!doc.querySelector(
+        'time[datetime], time[pubdate], time[itemprop="datePublished"], time[itemprop="dateModified"], ' +
+        'meta[name="date"], meta[property="article:published_time"], meta[property="article:modified_time"], ' +
+        'meta[property="og:updated_time"], ' +
+        '.published, .updated, .post-date, .entry-date, .date, [class*="date" i], [class*="time" i]'
+      );
       const hasTrustedLinks = Array.from(doc.querySelectorAll('a[href^="https"]'))
         .some(a => !a.href.includes(new URL(url).hostname) && !a.href.includes('facebook.com') && !a.href.includes('twitter.com'));
       let eeat = 0;
@@ -129,10 +138,10 @@ const initTool = (form, results, progressContainer) => {
       if (tables > 0) scannability += 15;
       if (shortParas > 5) scannability += 15;
       // Conversational Tone
-      const youCount = (mainText.match(/\byou\b|\byour\b|\byours\b/gi) || []).length;
-      const iWeCount = (mainText.match(/\bI\b|\bwe\b|\bmy\b|\bour\b|\bme\b|\bus\b/gi) || []).length;
+	  const youCount = (mainText.match(/\b(you|your|yours|yourself|yourselves|ya|y'all|yall)\b/gi) || []).length;
+      const iWeCount = (mainText.match(/\b(I|we|our|ours|us|my|mine|myself|ourselves|I'm|we're|we've|I've|our team|the team)\b/gi) || []).length;
       const questions = (mainText.match(/\?/g) || []).length;
-      const painPoints = (mainText.match(/\b(struggle|problem|issue|challenge|frustrat|hard|difficult|pain|annoy|confus|overwhelm|fail|mistake|wrong)\b/gi) || []).length;
+      const painPoints = (mainText.match(/\b(struggle|problem|issue|challenge|frustrat|hard|difficult|pain|annoy|confus|overwhelm|fail|mistake|wrong|tired|miss|ignore|skip|outdat|generic|robot|buried|hidden|waste|lose|never ranks|no traffic|invisible|confusing)\b/gi) || []).length;
       let conversational = 0;
       if (youCount > 5) conversational += 30;
       if (iWeCount > 3) conversational += 25;
@@ -160,9 +169,9 @@ const initTool = (form, results, progressContainer) => {
       if (passivePatterns.length < 5) readability += 20;
       if (complexRatio < 15) readability += 15;
       // Unique Insights
-      const hasInsights = /\b(I tested|in my experience|we found|case study|based on my|hands-on|personally observed)\b/i.test(mainText);
-      const hasDated = /\b(in last year|in this year|recently tested|results from)\b/i.test(mainText);
-      const hasInterviews = /\b(interview|spoke with|talked to|surveyed|asked|quoted|said ".*"|^".*"\s*-)\b/i.test(mainText);
+	  const hasInsights = /\b(I tested|we tested|in my experience|we found|case study|based on my|hands-on|personally observed|our research|in practice|real-world|client results|our data shows|from experience|based on testing|experimented|analyzed|surveyed)\b/i.test(mainText);
+      const hasDated = /\b(recent|latest|current|new|fresh|up-to-date|just tested|ongoing|as of now|in recent months|today's|modern|present-day)\b/i.test(mainText.toLowerCase());
+      const hasInterviews = /\b(interview|spoke with|talked to|surveyed|asked|quoted|said|reports|says|according to|^".*"\s*-|—\s*\w+|-\s*\w+)\b/i.test(mainText);
       let uniqueInsights = 0;
       if (words > 1500) uniqueInsights += 30;
       if (hasInsights) uniqueInsights += 35;
