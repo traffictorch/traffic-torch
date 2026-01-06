@@ -394,204 +394,250 @@
   <h2 class="text-4xl font-bold text-center mb-12 text-gray-800 dark:text-gray-200">Module Metric Explanations</h2>
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
     <!-- Answerability -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center flex flex-col items-center justify-between hover:shadow-2xl transition">
-      <div class="text-6xl mb-6">🆗</div>
-      <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Answerability</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Direct answers in first 300 words, FAQ schema, step-by-step structure</p>
-      <button class="learn-more-toggle w-full py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold transition">
-        Learn More
-      </button>
-      <div class="metric-details hidden mt-8 text-left w-full space-y-6 bg-orange-50 dark:bg-orange-900/20 p-6 rounded-xl">
-        <div>
-          <p class="font-bold text-orange-600 dark:text-orange-400">What is Answerability?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">The degree to which your page provides direct, concise, and quotable answers right at the beginning. AI engines prioritize pages that immediately satisfy user intent with clear summaries they can cite verbatim in search results.</p>
-        </div>
-        <div>
-          <p class="font-bold text-orange-600 dark:text-orange-400">How is Answerability tested?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Scans opening content for bold formatting, definition patterns, FAQ/HowTo schema, question-style headings, step-by-step language, and sufficient opening length.</p>
-        </div>
-        <div>
-          <p class="font-bold text-orange-600 dark:text-orange-400">Why does Answerability matter?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">AI-powered search engines heavily favor pages that provide immediate, quotable answers. Direct answers are the #1 factor for being cited in overviews and generative results.</p>
+    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-8 text-center flex flex-col items-center flex-grow">
+        <div class="text-6xl mb-6">🆗</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Answerability</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">Direct answers in first 300 words, FAQ schema, step-by-step structure</p>
+        <button class="learn-more-toggle w-full py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-orange-50 dark:bg-orange-900/20 px-8 pb-8">
+        <div class="space-y-6 text-left">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">What is Answerability?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">The degree to which your page provides direct, concise, and quotable answers right at the beginning. AI engines prioritize pages that immediately satisfy user intent with clear summaries they can cite verbatim in search results.</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">How is Answerability tested?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Scans opening content for bold formatting, definition patterns, FAQ/HowTo schema, question-style headings, step-by-step language, and sufficient opening length.</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">Why does Answerability matter?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">AI-powered search engines heavily favor pages that provide immediate, quotable answers. Direct answers are the #1 factor for being cited in overviews and generative results.</p>
+          </div>
         </div>
       </div>
     </div>
     <!-- Structured Data -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center flex flex-col items-center justify-between hover:shadow-2xl transition">
-      <div class="text-6xl mb-6">✨</div>
-      <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Structured Data</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">JSON-LD presence and relevant types</p>
-      <button class="learn-more-toggle w-full py-4 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-semibold transition">
-        Learn More
-      </button>
-      <div class="metric-details hidden mt-8 text-left w-full space-y-6 bg-purple-50 dark:bg-purple-900/20 p-6 rounded-xl">
-        <div>
-          <p class="font-bold text-purple-600 dark:text-purple-400">What is Structured Data?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Machine-readable markup (JSON-LD) that explicitly tells search engines what type of content your page contains. This helps trigger rich results, better understanding, and higher likelihood of being selected as a source.</p>
-        </div>
-        <div>
-          <p class="font-bold text-purple-600 dark:text-purple-400">How is Structured Data tested?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Parses all JSON-LD scripts for presence and relevant types (Article/BlogPosting, FAQPage/HowTo, Person).</p>
-        </div>
-        <div>
-          <p class="font-bold text-purple-600 dark:text-purple-400">Why does Structured Data matter?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Proper markup gives explicit signals that improve understanding and trigger rich features. Pages with relevant schema are significantly more likely to be selected as authoritative sources.</p>
+    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-8 text-center flex flex-col items-center flex-grow">
+        <div class="text-6xl mb-6">✨</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Structured Data</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">JSON-LD presence and relevant types</p>
+        <button class="learn-more-toggle w-full py-4 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-purple-50 dark:bg-purple-900/20 px-8 pb-8">
+        <div class="space-y-6 text-left">
+          <div>
+            <p class="font-bold text-purple-600 dark:text-purple-400">What is Structured Data?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Machine-readable markup (JSON-LD) that explicitly tells search engines what type of content your page contains. This helps trigger rich results, better understanding, and higher likelihood of being selected as a source.</p>
+          </div>
+          <div>
+            <p class="font-bold text-purple-600 dark:text-purple-400">How is Structured Data tested?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Parses all JSON-LD scripts for presence and relevant types (Article/BlogPosting, FAQPage/HowTo, Person).</p>
+          </div>
+          <div>
+            <p class="font-bold text-purple-600 dark:text-purple-400">Why does Structured Data matter?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Proper markup gives explicit signals that improve understanding and trigger rich features. Pages with relevant schema are significantly more likely to be selected as authoritative sources.</p>
+          </div>
         </div>
       </div>
     </div>
     <!-- EEAT Signals -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center flex flex-col items-center justify-between hover:shadow-2xl transition">
-      <div class="text-6xl mb-6">👤</div>
-      <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">EEAT Signals</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Author, dates, trusted links, HTTPS</p>
-      <button class="learn-more-toggle w-full py-4 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold transition">
-        Learn More
-      </button>
-      <div class="metric-details hidden mt-8 text-left w-full space-y-6 bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl">
-        <div>
-          <p class="font-bold text-blue-600 dark:text-blue-400">What are EEAT Signals?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Visible indicators of Expertise, Experience, Authoritativeness, and Trustworthiness. These include author information, dates, secure connection, and links to reputable sources — critical for AI trust evaluation.</p>
-        </div>
-        <div>
-          <p class="font-bold text-blue-600 dark:text-blue-400">How are EEAT Signals tested?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Detects author bylines, date elements, trusted outbound links, and HTTPS usage.</p>
-        </div>
-        <div>
-          <p class="font-bold text-blue-600 dark:text-blue-400">Why do EEAT Signals matter?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Trust is the primary deciding factor for AI citation. Clear authorship, dates, and credible references prove the content comes from a reliable, experienced source.</p>
+    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-8 text-center flex flex-col items-center flex-grow">
+        <div class="text-6xl mb-6">👤</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">EEAT Signals</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">Author, dates, trusted links, HTTPS</p>
+        <button class="learn-more-toggle w-full py-4 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-blue-50 dark:bg-blue-900/20 px-8 pb-8">
+        <div class="space-y-6 text-left">
+          <div>
+            <p class="font-bold text-blue-600 dark:text-blue-400">What are EEAT Signals?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Visible indicators of Expertise, Experience, Authoritativeness, and Trustworthiness. These include author information, dates, secure connection, and links to reputable sources — critical for AI trust evaluation.</p>
+          </div>
+          <div>
+            <p class="font-bold text-blue-600 dark:text-blue-400">How are EEAT Signals tested?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Detects author bylines, date elements, trusted outbound links, and HTTPS usage.</p>
+          </div>
+          <div>
+            <p class="font-bold text-blue-600 dark:text-blue-400">Why do EEAT Signals matter?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Trust is the primary deciding factor for AI citation. Clear authorship, dates, and credible references prove the content comes from a reliable, experienced source.</p>
+          </div>
         </div>
       </div>
     </div>
     <!-- Scannability -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center flex flex-col items-center justify-between hover:shadow-2xl transition">
-      <div class="text-6xl mb-6">📋</div>
-      <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Scannability</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Headings, lists, tables, short paragraphs</p>
-      <button class="learn-more-toggle w-full py-4 bg-teal-500 hover:bg-teal-600 text-white rounded-xl font-semibold transition">
-        Learn More
-      </button>
-      <div class="metric-details hidden mt-8 text-left w-full space-y-6 bg-teal-50 dark:bg-teal-900/20 p-6 rounded-xl">
-        <div>
-          <p class="font-bold text-teal-600 dark:text-teal-400">What is Scannability?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">How easily both humans and AI can quickly extract key facts from your page. Well-structured content with headings, lists, tables, and short paragraphs is far more likely to be parsed and cited.</p>
-        </div>
-        <div>
-          <p class="font-bold text-teal-600 dark:text-teal-400">How is Scannability tested?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Counts headings, lists, tables, and short paragraphs for optimal density.</p>
-        </div>
-        <div>
-          <p class="font-bold text-teal-600 dark:text-teal-400">Why does Scannability matter?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">AI engines prioritize content that can be quickly and accurately extracted. Well-formatted elements like lists and tables are easiest to parse and reuse in answers.</p>
+    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-8 text-center flex flex-col items-center flex-grow">
+        <div class="text-6xl mb-6">📋</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Scannability</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">Headings, lists, tables, short paragraphs</p>
+        <button class="learn-more-toggle w-full py-4 bg-teal-500 hover:bg-teal-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-teal-50 dark:bg-teal-900/20 px-8 pb-8">
+        <div class="space-y-6 text-left">
+          <div>
+            <p class="font-bold text-teal-600 dark:text-teal-400">What is Scannability?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">How easily both humans and AI can quickly extract key facts from your page. Well-structured content with headings, lists, tables, and short paragraphs is far more likely to be parsed and cited.</p>
+          </div>
+          <div>
+            <p class="font-bold text-teal-600 dark:text-teal-400">How is Scannability tested?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Counts headings, lists, tables, and short paragraphs for optimal density.</p>
+          </div>
+          <div>
+            <p class="font-bold text-teal-600 dark:text-teal-400">Why does Scannability matter?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">AI engines prioritize content that can be quickly and accurately extracted. Well-formatted elements like lists and tables are easiest to parse and reuse in answers.</p>
+          </div>
         </div>
       </div>
     </div>
     <!-- Conversational Tone -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center flex flex-col items-center justify-between hover:shadow-2xl transition">
-      <div class="text-6xl mb-6">💬</div>
-      <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Conversational Tone</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">You/I/we, questions, pain point acknowledgment</p>
-      <button class="learn-more-toggle w-full py-4 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl font-semibold transition">
-        Learn More
-      </button>
-      <div class="metric-details hidden mt-8 text-left w-full space-y-6 bg-indigo-50 dark:bg-indigo-900/20 p-6 rounded-xl">
-        <div>
-          <p class="font-bold text-indigo-600 dark:text-indigo-400">What is Conversational Tone?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Writing that feels natural and human by directly addressing the reader, using personal pronouns, asking questions, and acknowledging pain points. This matches how real people search and communicate.</p>
-        </div>
-        <div>
-          <p class="font-bold text-indigo-600 dark:text-indigo-400">How is Conversational Tone tested?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Counts "you" addresses, personal pronouns, questions, and pain point keywords.</p>
-        </div>
-        <div>
-          <p class="font-bold text-indigo-600 dark:text-indigo-400">Why does Conversational Tone matter?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Natural human language closely matches real user queries. Conversational writing feels authentic and builds reader connection — both valued by modern search systems.</p>
+    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-8 text-center flex flex-col items-center flex-grow">
+        <div class="text-6xl mb-6">💬</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Conversational Tone</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">You/I/we, questions, pain point acknowledgment</p>
+        <button class="learn-more-toggle w-full py-4 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-indigo-50 dark:bg-indigo-900/20 px-8 pb-8">
+        <div class="space-y-6 text-left">
+          <div>
+            <p class="font-bold text-indigo-600 dark:text-indigo-400">What is Conversational Tone?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Writing that feels natural and human by directly addressing the reader, using personal pronouns, asking questions, and acknowledging pain points. This matches how real people search and communicate.</p>
+          </div>
+          <div>
+            <p class="font-bold text-indigo-600 dark:text-indigo-400">How is Conversational Tone tested?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Counts "you" addresses, personal pronouns, questions, and pain point keywords.</p>
+          </div>
+          <div>
+            <p class="font-bold text-indigo-600 dark:text-indigo-400">Why does Conversational Tone matter?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Natural human language closely matches real user queries. Conversational writing feels authentic and builds reader connection — both valued by modern search systems.</p>
+          </div>
         </div>
       </div>
     </div>
     <!-- Readability -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center flex flex-col items-center justify-between hover:shadow-2xl transition">
-      <div class="text-6xl mb-6">📖</div>
-      <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Readability</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Flesch ease, variation, low passive/complex words</p>
-      <button class="learn-more-toggle w-full py-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold transition">
-        Learn More
-      </button>
-      <div class="metric-details hidden mt-8 text-left w-full space-y-6 bg-green-50 dark:bg-green-900/20 p-6 rounded-xl">
-        <div>
-          <p class="font-bold text-green-600 dark:text-green-400">What is Readability?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">How simple and clear your writing is to understand and summarize. High readability (good Flesch score, varied sentences, active voice, simple words) makes content easier for AI to process accurately.</p>
-        </div>
-        <div>
-          <p class="font-bold text-green-600 dark:text-green-400">How is Readability tested?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Calculates Flesch score, sentence variation, passive voice usage, and complex word ratio.</p>
-        </div>
-        <div>
-          <p class="font-bold text-green-600 dark:text-green-400">Why does Readability matter?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Clear, simple writing is easier for AI to accurately summarize and cite. High readability reduces misinterpretation and improves overall content quality perception.</p>
+    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-8 text-center flex flex-col items-center flex-grow">
+        <div class="text-6xl mb-6">📖</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Readability</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">Flesch ease, variation, low passive/complex words</p>
+        <button class="learn-more-toggle w-full py-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-green-50 dark:bg-green-900/20 px-8 pb-8">
+        <div class="space-y-6 text-left">
+          <div>
+            <p class="font-bold text-green-600 dark:text-green-400">What is Readability?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">How simple and clear your writing is to understand and summarize. High readability (good Flesch score, varied sentences, active voice, simple words) makes content easier for AI to process accurately.</p>
+          </div>
+          <div>
+            <p class="font-bold text-green-600 dark:text-green-400">How is Readability tested?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Calculates Flesch score, sentence variation, passive voice usage, and complex word ratio.</p>
+          </div>
+          <div>
+            <p class="font-bold text-green-600 dark:text-green-400">Why does Readability matter?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Clear, simple writing is easier for AI to accurately summarize and cite. High readability reduces misinterpretation and improves overall content quality perception.</p>
+          </div>
         </div>
       </div>
     </div>
     <!-- Unique Insights -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center flex flex-col items-center justify-between hover:shadow-2xl transition">
-      <div class="text-6xl mb-6">🧠</div>
-      <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Unique Insights</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">First-hand markers, dated results, interviews</p>
-      <button class="learn-more-toggle w-full py-4 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-semibold transition">
-        Learn More
-      </button>
-      <div class="metric-details hidden mt-8 text-left w-full space-y-6 bg-amber-50 dark:bg-amber-900/20 p-6 rounded-xl">
-        <div>
-          <p class="font-bold text-amber-600 dark:text-amber-400">What are Unique Insights?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Original, first-hand information that can't be found elsewhere — personal testing, case studies, interviews, or timely observations. This prevents de-duplication and boosts perceived value.</p>
-        </div>
-        <div>
-          <p class="font-bold text-amber-600 dark:text-amber-400">How are Unique Insights tested?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Scans for first-hand phrases, dated references, quotes/interviews, and content depth (word count).</p>
-        </div>
-        <div>
-          <p class="font-bold text-amber-600 dark:text-amber-400">Why do Unique Insights matter?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Original first-hand information stands out from generic content. Unique value prevents de-duplication and positions your page as an authoritative primary source.</p>
+    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-8 text-center flex flex-col items-center flex-grow">
+        <div class="text-6xl mb-6">🧠</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Unique Insights</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">First-hand markers, dated results, interviews</p>
+        <button class="learn-more-toggle w-full py-4 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-amber-50 dark:bg-amber-900/20 px-8 pb-8">
+        <div class="space-y-6 text-left">
+          <div>
+            <p class="font-bold text-amber-600 dark:text-amber-400">What are Unique Insights?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Original, first-hand information that can't be found elsewhere — personal testing, case studies, interviews, or timely observations. This prevents de-duplication and boosts perceived value.</p>
+          </div>
+          <div>
+            <p class="font-bold text-amber-600 dark:text-amber-400">How are Unique Insights tested?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Scans for first-hand phrases, dated references, quotes/interviews, and content depth (word count).</p>
+          </div>
+          <div>
+            <p class="font-bold text-amber-600 dark:text-amber-400">Why do Unique Insights matter?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Original first-hand information stands out from generic content. Unique value prevents de-duplication and positions your page as an authoritative primary source.</p>
+          </div>
         </div>
       </div>
     </div>
     <!-- Anti-AI Safety -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center flex flex-col items-center justify-between hover:shadow-2xl transition">
-      <div class="text-6xl mb-6">🔒</div>
-      <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Anti-AI Safety</h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Variation, low repetition, no predictable patterns</p>
-      <button class="learn-more-toggle w-full py-4 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition">
-        Learn More
-      </button>
-      <div class="metric-details hidden mt-8 text-left w-full space-y-6 bg-red-50 dark:bg-red-900/20 p-6 rounded-xl">
-        <div>
-          <p class="font-bold text-red-600 dark:text-red-400">What is Anti-AI Safety?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Subtle human writing patterns like natural sentence variation, low repetition, and unpredictable structure. These help avoid being mistakenly flagged as low-quality AI-generated content.</p>
-        </div>
-        <div>
-          <p class="font-bold text-red-600 dark:text-red-400">How is Anti-AI Safety tested?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Measures sentence variation (burstiness), word repetition, and predictable sentence starts.</p>
-        </div>
-        <div>
-          <p class="font-bold text-red-600 dark:text-red-400">Why does Anti-AI Safety matter?</p>
-          <p class="text-sm text-gray-700 dark:text-gray-300">Human-like variation helps avoid accidental filtering as low-quality generated text. Natural patterns maintain visibility while preserving authentic voice.</p>
+    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-8 text-center flex flex-col items-center flex-grow">
+        <div class="text-6xl mb-6">🔒</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Anti-AI Safety</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">Variation, low repetition, no predictable patterns</p>
+        <button class="learn-more-toggle w-full py-4 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-red-50 dark:bg-red-900/20 px-8 pb-8">
+        <div class="space-y-6 text-left">
+          <div>
+            <p class="font-bold text-red-600 dark:text-red-400">What is Anti-AI Safety?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Subtle human writing patterns like natural sentence variation, low repetition, and unpredictable structure. These help avoid being mistakenly flagged as low-quality AI-generated content.</p>
+          </div>
+          <div>
+            <p class="font-bold text-red-600 dark:text-red-400">How is Anti-AI Safety tested?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Measures sentence variation (burstiness), word repetition, and predictable sentence starts.</p>
+          </div>
+          <div>
+            <p class="font-bold text-red-600 dark:text-red-400">Why does Anti-AI Safety matter?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Human-like variation helps avoid accidental filtering as low-quality generated text. Natural patterns maintain visibility while preserving authentic voice.</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Toggle script for metric explanations (add this once at the end of <body>, after other scripts) -->
+<!-- Improved toggle script with click-outside close (add/replace at end of <body>) -->
 <script>
   document.addEventListener('click', (e) => {
-    if (e.target.matches('.learn-more-toggle')) {
-      const card = e.target.closest('.metric-card');
-      const details = card.querySelector('.metric-details');
-      // Close all others
-      document.querySelectorAll('.metric-details').forEach(d => {
-        if (d !== details) d.classList.add('hidden');
-      });
-      // Toggle current
-      details.classList.toggle('hidden');
+    const toggles = document.querySelectorAll('.learn-more-toggle');
+    let clickedInside = false;
+
+    toggles.forEach(toggle => {
+      if (toggle.contains(e.target) || toggle === e.target) {
+        clickedInside = true;
+        const card = toggle.closest('.metric-card');
+        const details = card.querySelector('.metric-details');
+        // Close all others
+        document.querySelectorAll('.metric-details').forEach(d => {
+          if (d !== details) d.classList.add('hidden');
+        });
+        // Toggle current
+        details.classList.toggle('hidden');
+      }
+    });
+
+    // If click is outside any open panel or toggle, close all
+    if (!clickedInside) {
+      const openDetails = document.querySelector('.metric-details:not(.hidden)');
+      if (openDetails && !openDetails.contains(e.target)) {
+        document.querySelectorAll('.metric-details').forEach(d => d.classList.add('hidden'));
+      }
     }
   });
 </script>
