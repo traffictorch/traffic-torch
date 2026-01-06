@@ -466,12 +466,12 @@ function getFixes(name) {
       titleColor = 'text-orange-600 dark:text-orange-400';
     }
     fixes += `
-      <div class="py-2 border-l-4 border-gray-200 dark:border-gray-700 pl-4">
-        <div class="flex flex-col items-center gap-2">
-          <span class="text-4xl leading-none">${emoji}</span>
-          <div class="text-center">
+      <div class="py-3 border-l-4 border-gray-200 dark:border-gray-700 pl-4 -ml-px">
+        <div class="flex flex-col items-center gap-1">
+          <span class="text-3xl leading-none -mb-1">${emoji}</span>
+          <div class="text-center w-full">
             <p class="font-semibold ${titleColor} text-base leading-tight">${metricText}</p>
-            <p class="text-sm text-gray-700 dark:text-gray-300 mt-2 leading-relaxed">${description}</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300 mt-2 leading-relaxed px-2">${description}</p>
             <button class="metric-details-link text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline mt-3 inline-block" data-metric="${metricText}">
               Metric Details →
             </button>
