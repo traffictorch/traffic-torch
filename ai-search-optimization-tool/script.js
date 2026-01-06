@@ -801,8 +801,8 @@ ${prioritisedFixes.length > 0 ? `
 
 <!-- Metric Details Popover - centered viewport desktop, full-width mobile, no overlay -->
 <div id="metric-popover" class="fixed inset-0 z-50 hidden">
-  <div class="fixed inset-0 flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 w-full max-w-3xl max-h-[90vh] overflow-y-auto md:w-auto">
+  <div class="fixed inset-0 flex flex-col justify-center items-center p-4 min-h-screen">
+    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 w-full max-w-3xl max-h-[90vh] overflow-y-auto md:w-auto my-auto">
       <div class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-8 py-6 flex items-center justify-between">
         <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Metric Details</h3>
         <button id="popover-close" class="text-3xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 leading-none">&times;</button>
