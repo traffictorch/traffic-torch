@@ -184,7 +184,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
           <span class="text-3xl mr-3">${metricGrade.emoji}</span>
           ${metricGrade.label} ${f.name}
         </p>
-        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
           ${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}
         </p>
       </div>`;
@@ -196,7 +196,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
             <span class="text-4xl mr-4">❌</span>
             ${f.name}
           </p>
-          <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+          <p class="text-gray-800 dark:text-gray-200 text-lg leading-relaxed">
             ${f.howToFix}
           </p>
         </div>`;
@@ -206,13 +206,13 @@ function buildModuleHTML(moduleName, value, moduleData) {
 
   const moreDetailsHTML = `
     <div class="text-left">
-      <h4 class="text-xl font-bold mb-6 text-gray-900 dark:text-gray-100">How ${moduleName} is tested →</h4>
-      <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">What it is:</strong> ${moduleData.moduleWhat}</p>
-      <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How to Improve:</strong> ${moduleData.moduleHow}</p>
-      <p class="text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">Why it matters:</strong> ${moduleData.moduleWhy}</p>
+      <h4 class="text-xl font-bold mb-6 text-gray-800 dark:text-gray-200">How ${moduleName} is tested →</h4>
+      <p class="mb-4 text-gray-800 dark:text-gray-200"><strong class="text-gray-800 dark:text-gray-200">What it is:</strong> ${moduleData.moduleWhat}</p>
+      <p class="mb-4 text-gray-800 dark:text-gray-200"><strong class="text-gray-800 dark:text-gray-200">How to Improve:</strong> ${moduleData.moduleHow}</p>
+      <p class="text-gray-800 dark:text-gray-200"><strong class="text-gray-800 dark:text-gray-200">Why it matters:</strong> ${moduleData.moduleWhy}</p>
     </div>`;
 
-  const fixesPanelHTML = failedCount > 0 ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-6">← More details about ${moduleName}</p>` : '<p class="text-gray-700 dark:text-gray-300 text-center">All checks passed — no fixes needed!</p>';
+  const fixesPanelHTML = failedCount > 0 ? failedOnlyHTML + `<p class="text-center text-gray-800 dark:text-gray-200 mt-6">← More details about ${moduleName}</p>` : '<p class="text-gray-800 dark:text-gray-200 text-center">All checks passed — no fixes needed!</p>';
 
   return `
     <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
@@ -226,7 +226,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
           ${value}
         </div>
       </div>
-      <p class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">${moduleName}</p>
+      <p class="mt-4 text-lg font-medium text-gray-800 dark:text-gray-200">${moduleName}</p>
       <div class="mt-2 text-3xl font-bold ${gradeInfo.color}">
         ${gradeInfo.emoji} ${gradeInfo.grade}
       </div>
@@ -353,11 +353,11 @@ function buildModuleHTML(moduleName, value, moduleData) {
             <div class="flex items-start gap-6 p-8 bg-gradient-to-r from-purple-600/10 to-cyan-600/10 rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all">
               <div class="text-5xl font-black text-purple-600">${index + 1}</div>
               <div class="flex-1">
-                <p class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                <p class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
                   ${fix.module} → ${fix.name}
                   ${fix.isSecond ? `<span class="text-sm font-normal text-purple-600 dark:text-purple-400 ml-3">(${fix.extraCount}/${fix.extraCount} failed in this module)</span>` : ''}
                 </p>
-                <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">${fix.howToFix}</p>
+                <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200">${fix.howToFix}</p>
               </div>
             </div>
           `).join('');
@@ -366,8 +366,8 @@ function buildModuleHTML(moduleName, value, moduleData) {
             <div class="p-12 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-3xl border border-green-500/50 text-center">
               <p class="text-5xl mb-6">🎉</p>
               <p class="text-4xl font-black text-green-600 dark:text-green-400 mb-4">Good job! Outstanding UX</p>
-              <p class="text-2xl text-gray-700 dark:text-gray-300">Your page delivers excellent user experience across all modules. No critical improvements needed at this time.</p>
-              <p class="text-lg text-gray-600 dark:text-gray-400 mt-6">Keep monitoring — even great pages benefit from ongoing optimization.</p>
+              <p class="text-2xl text-gray-800 dark:text-gray-200">Your page delivers excellent user experience across all modules. No critical improvements needed at this time.</p>
+              <p class="text-lg text-gray-800 dark:text-gray-200 mt-6">Keep monitoring — even great pages benefit from ongoing optimization.</p>
             </div>`;
         }
 
@@ -397,8 +397,8 @@ function buildModuleHTML(moduleName, value, moduleData) {
           priorityFixes.forEach(fix => {
             perFixImpact += `
               <div class="p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg">
-                <p class="font-medium text-gray-900 dark:text-gray-100">${fix.module} → ${fix.name}</p>
-                <p class="text-gray-700 dark:text-gray-300 mt-1">Reduces friction by making content more approachable and reducing early abandonment. Expected impact: 10–25% lower early exits.</p>
+                <p class="font-medium text-gray-800 dark:text-gray-200">${fix.module} → ${fix.name}</p>
+                <p class="text-gray-800 dark:text-gray-200 mt-1">Reduces friction by making content more approachable and reducing early abandonment. Expected impact: 10–25% lower early exits.</p>
               </div>`;
           });
           perFixImpact += '</div>';
@@ -421,22 +421,22 @@ function buildModuleHTML(moduleName, value, moduleData) {
                   <span class="text-purple-600">→</span>
                   <span class="bg-gradient-to-r ${projectedRiskColor} bg-clip-text text-transparent">${projectedRisk}</span>
                 </div>
-                <p class="text-xl text-gray-700 dark:text-gray-300">${riskDropText}</p>
+                <p class="text-xl text-gray-800 dark:text-gray-200">${riskDropText}</p>
               </div>
               ${perFixImpact}
               <details class="mt-8">
                 <summary class="cursor-pointer text-lg font-medium text-purple-600 dark:text-purple-400">How We Calculated This</summary>
-                <p class="text-gray-700 dark:text-gray-300 mt-4">Based on benchmarks from thousands of analyzed sites — fixing Readability issues alone can reduce quit risk by 20-30% by making content more approachable. Combined fixes across modules deliver compounded gains.</p>
+                <p class="text-gray-800 dark:text-gray-200 mt-4">Based on benchmarks from thousands of analyzed sites — fixing Readability issues alone can reduce quit risk by 20-30% by making content more approachable. Combined fixes across modules deliver compounded gains.</p>
               </details>
               <details class="mt-6">
                 <summary class="cursor-pointer text-lg font-medium text-purple-600 dark:text-purple-400">Risk Level Definitions</summary>
-                <ul class="text-gray-700 dark:text-gray-300 mt-4 space-y-2">
+                <ul class="text-gray-800 dark:text-gray-200 mt-4 space-y-2">
                   <li><strong>High Risk:</strong> >60% chance of quick bounce based on similar sites</li>
                   <li><strong>Moderate Risk:</strong> 40-60% early exit probability</li>
                   <li><strong>Low Risk:</strong> <40% — users typically stay and engage</li>
                 </ul>
               </details>
-              <p class="mt-8 text-center text-lg text-gray-700 dark:text-gray-300 font-medium">Track in Analytics: Monitor exit rates pre/post fixes to verify improvement.</p>
+              <p class="mt-8 text-center text-lg text-gray-800 dark:text-gray-200 font-medium">Track in Analytics: Monitor exit rates pre/post fixes to verify improvement.</p>
             </div>
 
             <div class="p-8 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-3xl border border-cyan-400/30">
@@ -445,8 +445,8 @@ function buildModuleHTML(moduleName, value, moduleData) {
                 <li class="flex items-center gap-6">
                   <span class="text-4xl">📉</span>
                   <div class="flex-1">
-                    <p class="font-bold text-xl text-gray-900 dark:text-gray-100">Bounce Rate</p>
-                    <p class="text-lg text-gray-700 dark:text-gray-300">Potential ${bounceRange} reduction</p>
+                    <p class="font-bold text-xl text-gray-800 dark:text-gray-200">Bounce Rate</p>
+                    <p class="text-lg text-gray-800 dark:text-gray-200">Potential ${bounceRange} reduction</p>
                     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
                       <div class="bg-purple-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : failedCount * 25 + '%'}"></div>
                     </div>
@@ -455,8 +455,8 @@ function buildModuleHTML(moduleName, value, moduleData) {
                 <li class="flex items-center gap-6">
                   <span class="text-4xl">⏱️</span>
                   <div class="flex-1">
-                    <p class="font-bold text-xl text-gray-900 dark:text-gray-100">Session Duration</p>
-                    <p class="text-lg text-gray-700 dark:text-gray-300">Potential ${durationRange} longer</p>
+                    <p class="font-bold text-xl text-gray-800 dark:text-gray-200">Session Duration</p>
+                    <p class="text-lg text-gray-800 dark:text-gray-200">Potential ${durationRange} longer</p>
                     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
                       <div class="bg-cyan-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : failedCount * 30 + '%'}"></div>
                     </div>
@@ -465,8 +465,8 @@ function buildModuleHTML(moduleName, value, moduleData) {
                 <li class="flex items-center gap-6">
                   <span class="text-4xl">📄</span>
                   <div class="flex-1">
-                    <p class="font-bold text-xl text-gray-900 dark:text-gray-100">Pages per Session</p>
-                    <p class="text-lg text-gray-700 dark:text-gray-300">Potential ${pagesRange} more pages viewed</p>
+                    <p class="font-bold text-xl text-gray-800 dark:text-gray-200">Pages per Session</p>
+                    <p class="text-lg text-gray-800 dark:text-gray-200">Potential ${pagesRange} more pages viewed</p>
                     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
                       <div class="bg-blue-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : failedCount * 25 + '%'}"></div>
                     </div>
@@ -475,16 +475,16 @@ function buildModuleHTML(moduleName, value, moduleData) {
                 <li class="flex items-center gap-6">
                   <span class="text-4xl">💰</span>
                   <div class="flex-1">
-                    <p class="font-bold text-xl text-gray-900 dark:text-gray-100">Conversion Rate Lift</p>
-                    <p class="text-lg text-gray-700 dark:text-gray-300">Potential ${conversionRange} improvement</p>
+                    <p class="font-bold text-xl text-gray-800 dark:text-gray-200">Conversion Rate Lift</p>
+                    <p class="text-lg text-gray-800 dark:text-gray-200">Potential ${conversionRange} improvement</p>
                     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
                       <div class="bg-green-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : failedCount * 20 + '%'}"></div>
                     </div>
                   </div>
                 </li>
               </ul>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mt-8">Conservative estimates based on industry benchmarks. Readability fixes often yield the largest session gains.</p>
-              <p class="text-lg text-gray-700 dark:text-gray-300 mt-6 font-medium text-center">How to Verify: Use Google Analytics to track these metrics before/after changes. Typical timeline: See gains in 1-4 weeks with consistent traffic.</p>
+              <p class="text-sm text-gray-800 dark:text-gray-200 mt-8">Conservative estimates based on industry benchmarks. Readability fixes often yield the largest session gains.</p>
+              <p class="text-lg text-gray-800 dark:text-gray-200 mt-6 font-medium text-center">How to Verify: Use Google Analytics to track these metrics before/after changes. Typical timeline: See gains in 1-4 weeks with consistent traffic.</p>
             </div>
           </div>`;
 
@@ -507,14 +507,14 @@ function buildModuleHTML(moduleName, value, moduleData) {
                 <div class="text-6xl font-bold ${overallGrade.color} mt-6 drop-shadow-lg">
                   ${overallGrade.emoji} ${overallGrade.grade}
                 </div>
-                <div class="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-400 mt-4">/100 Usability Score</div>
+                <div class="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-800 dark:text-gray-200 mt-4">/100 Usability Score</div>
               </div>
             </div>
           </div>
 
           <!-- Quit Risk Verdict -->
           <div class="text-center mb-12">
-            <p class="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-8">
+            <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">
               Quit Risk:
             </p>
             <div class="flex flex-col items-center gap-6">
@@ -527,7 +527,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
                 ${risk.text}
               </p>
             </div>
-            <p class="text-xl text-gray-600 dark:text-gray-400 mt-10">Scanned ${uxData.links} links + ${uxData.images} images</p>
+            <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Scanned ${uxData.links} links + ${uxData.images} images</p>
           </div>
 
           <!-- Modules -->
@@ -546,7 +546,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
               ${priorityFixesHTML}
             </div>
             ${priorityFixes.length > 0 ? `
-            <p class="mt-12 text-xl text-gray-600 dark:text-gray-400">
+            <p class="mt-12 text-xl text-gray-800 dark:text-gray-200">
               Prioritized by impact — focusing on diverse modules for balanced improvements. If one module dominates failures, address it first for biggest gains.
             </p>` : ''}
           </div>
