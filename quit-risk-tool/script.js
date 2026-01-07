@@ -130,7 +130,16 @@ document.addEventListener('DOMContentLoaded', () => {
   
   
   
-  
+function getGradeInfo(score) {
+  if (score >= 90) return { grade: "A+", color: "text-green-600", emoji: "🏆" };
+  if (score >= 85) return { grade: "A", color: "text-green-600", emoji: "✅" };
+  if (score >= 80) return { grade: "B+", color: "text-green-500", emoji: "✅" };
+  if (score >= 75) return { grade: "B", color: "text-yellow-600", emoji: "👍" };
+  if (score >= 70) return { grade: "C+", color: "text-yellow-600", emoji: "👍" };
+  if (score >= 65) return { grade: "C", color: "text-orange-600", emoji: "⚠️" };
+  if (score >= 60) return { grade: "D", color: "text-orange-600", emoji: "⚠️" };
+  return { grade: "F", color: "text-red-600", emoji: "❌" };
+}  
   
 function buildModuleHTML(moduleName, value, moduleData) {
   const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
