@@ -184,19 +184,21 @@ function buildModuleHTML(moduleName, value, moduleData) {
           <span class="text-3xl mr-3">${metricGrade.emoji}</span>
           ${metricGrade.label} ${f.name}
         </p>
-        <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
           ${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}
         </p>
       </div>`;
 
     if (!passed) {
       failedOnlyHTML += `
-        <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-6 border-red-500">
+        <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
           <p class="font-bold text-2xl text-red-600 mb-4">
-            <span class="text-4xl mr-4">❌</span>
+            <span class="text-6xl">❌</span>
+          </p>
+          <p class="font-bold text-2xl text-red-600 mb-4">
             ${f.name}
           </p>
-          <p class="text-gray-800 dark:text-gray-200 text-lg leading-relaxed">
+          <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
             ${f.howToFix}
           </p>
         </div>`;
@@ -206,13 +208,17 @@ function buildModuleHTML(moduleName, value, moduleData) {
 
   const moreDetailsHTML = `
     <div class="text-left">
-      <h4 class="text-xl font-bold mb-6 text-gray-800 dark:text-gray-200">How ${moduleName} is tested →</h4>
-      <p class="mb-4 text-gray-800 dark:text-gray-200"><strong class="text-gray-800 dark:text-gray-200">What it is:</strong> ${moduleData.moduleWhat}</p>
-      <p class="mb-4 text-gray-800 dark:text-gray-200"><strong class="text-gray-800 dark:text-gray-200">How to Improve:</strong> ${moduleData.moduleHow}</p>
-      <p class="text-gray-800 dark:text-gray-200"><strong class="text-gray-800 dark:text-gray-200">Why it matters:</strong> ${moduleData.moduleWhy}</p>
+      <h4 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100 text-center">How ${moduleName} is tested →</h4>
+      <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">What it is:</strong> ${moduleData.moduleWhat}</p>
+      <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How to Improve:</strong> ${moduleData.moduleHow}</p>
+      <p class="text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">Why it matters:</strong> ${moduleData.moduleWhy}</p>
     </div>`;
 
-  const fixesPanelHTML = failedCount > 0 ? failedOnlyHTML + `<p class="text-center text-gray-800 dark:text-gray-200 mt-6">← More details about ${moduleName}</p>` : '<p class="text-gray-800 dark:text-gray-200 text-center">All checks passed — no fixes needed!</p>';
+  const fixesPanelHTML = failedCount > 0 
+    ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-8">← More details about ${moduleName}</p>`
+    : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg">All checks passed — no fixes needed!</p>';
+
+  const tripleEmoji = value < 60 ? '❌❌❌' : value < 80 ? '⚠️⚠️' : '✅✅✅';
 
   return `
     <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
@@ -226,9 +232,11 @@ function buildModuleHTML(moduleName, value, moduleData) {
           ${value}
         </div>
       </div>
-      <p class="mt-4 text-lg font-medium text-gray-800 dark:text-gray-200">${moduleName}</p>
-      <div class="mt-2 text-3xl font-bold ${gradeInfo.color}">
-        ${gradeInfo.emoji} ${gradeInfo.grade}
+      <p class="mt-4 text-xl font-medium text-gray-900 dark:text-gray-100">${moduleName}</p>
+      <div class="mt-4 text-center">
+        <p class="text-5xl font-bold ${gradeInfo.color}">
+          ${tripleEmoji} ${gradeInfo.grade}
+        </p>
       </div>
 
       <div class="mt-6 text-left metrics-list">
