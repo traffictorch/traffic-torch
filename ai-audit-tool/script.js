@@ -250,6 +250,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
+
+
+
             <!-- Metrics Layout -->
             <div class="space-y-8">
               <!-- Perplexity - Full width -->
@@ -270,7 +274,6 @@ document.addEventListener('DOMContentLoaded', () => {
                   const failedCount = Object.values(m.fixes).filter(f => f).length;
                   const sub1Score = m.details.scores.trigram;
                   const sub2Score = m.details.scores.bigram;
-                  const failedFixes = Object.values(m.fixes).filter(f => f).join('<br><br>');
 
                   return `
                   <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 md:p-8 text-center border-l-4" style="border-left-color: ${gradeColor}">
@@ -296,7 +299,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </button>
                     <div class="hidden mt-6 space-y-6 text-base text-gray-700 dark:text-gray-300 leading-relaxed">
                       <p class="text-center mb-8"><a href="#perplexity" class="text-orange-500 font-bold hover:underline">How Perplexity is tested? →</a></p>
-                      ${failedFixes ? `<p><span class="font-bold text-red-600 dark:text-red-400">How to Fix Failed Tests:</span><br><br>${failedFixes}</p>` : ''}
                       <p><span class="font-bold text-blue-600 dark:text-blue-400">What it is:</span> ${m.info}</p>
                       <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve Overall:</span> Use varied phrasing, personal anecdotes, and unexpected ideas to boost scores. Mix short and long elements for rhythm, and incorporate synonyms or rarer words. Always edit with readability in mind to align with human patterns.</p>
                       <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters:</span> Search engines prioritize human-like content for higher rankings and user trust. Strong scores here reduce AI penalties and improve engagement metrics. Ultimately, this leads to better organic traffic and authority signals.</p>
@@ -334,10 +336,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 ].map(m => {
                   const grade = getModuleGrade(m.score);
                   const gradeColor = grade.color;
-                  const sub1Score = m.details.scores.sentence || m.details.scores.bigram || m.details.scores.avg || m.details.scores.diversity;
-                  const sub2Score = m.details.scores.word || m.details.scores.trigram || m.details.scores.complexity || m.details.scores.rare;
+                  const sub1Score = m.name === 'Burstiness' ? m.details.scores.sentence : m.name === 'Repetition' ? m.details.scores.bigram : m.name === 'Sentence Length' ? m.details.scores.avg : m.details.scores.diversity;
+                  const sub2Score = m.name === 'Burstiness' ? m.details.scores.word : m.name === 'Repetition' ? m.details.scores.trigram : m.name === 'Sentence Length' ? m.details.scores.complexity : m.details.scores.rare;
                   const failedCount = (sub1Score < 10 ? 1 : 0) + (sub2Score < 10 ? 1 : 0);
-                  const failedFixes = Object.values(m.fixes).filter(f => f).join('<br><br>');
 
                   return `
                   <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 text-center border-l-4" style="border-left-color: ${gradeColor}">
@@ -363,7 +364,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </button>
                     <div class="hidden mt-4 space-y-6 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                       <p class="text-center mb-8"><a href="#${m.id}" class="text-orange-500 font-bold hover:underline">How ${m.name} is tested? →</a></p>
-                      ${failedFixes ? `<p><span class="font-bold text-red-600 dark:text-red-400">How to Fix Failed Tests:</span><br><br>${failedFixes}</p>` : ''}
                       <p><span class="font-bold text-blue-600 dark:text-blue-400">What it is:</span> ${m.info}</p>
                       <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve Overall:</span> Use varied phrasing, personal anecdotes, and unexpected ideas to boost scores. Mix short and long elements for rhythm, and incorporate synonyms or rarer words. Always edit with readability in mind to align with human patterns.</p>
                       <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters:</span> Search engines prioritize human-like content for higher rankings and user trust. Strong scores here reduce AI penalties and improve engagement metrics. Ultimately, this leads to better organic traffic and authority signals.</p>
@@ -390,7 +390,12 @@ document.addEventListener('DOMContentLoaded', () => {
                   </div>`;
                 }).join('')}
               </div>
-            </div>            
+            </div>
+            
+            
+            
+            
+                        
             
 
             <div class="mt-20 space-y-8">
