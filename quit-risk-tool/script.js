@@ -157,8 +157,15 @@ function buildModuleHTML(moduleName, value, moduleData) {
   let failedCount = 0;
 
   moduleData.factors.forEach(f => {
-    const passed = value >= f.threshold;
-    const metricGrade = getGradeInfo(value);
+        const passed = value >= f.threshold;
+    let metricGrade;
+    if (passed) {
+      metricGrade = { label: "Pass", color: "text-green-600", emoji: "✅" };
+    } else if (value >= f.threshold - 10) {
+      metricGrade = { label: "Average", color: "text-orange-600", emoji: "⚠️" };
+    } else {
+      metricGrade = { label: "Fail", color: "text-red-600", emoji: "❌" };
+    }
 
     // Default list - clean: emoji + grade + name only
     metricsHTML += `
