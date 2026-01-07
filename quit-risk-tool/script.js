@@ -153,13 +153,14 @@ function buildModuleHTML(moduleName, value, moduleData) {
 
   let metricsHTML = '';
   let fixesHTML = '';
+  let failedOnlyHTML = '';
   let failedCount = 0;
 
   moduleData.factors.forEach(f => {
     const passed = value >= f.threshold;
     const metricGrade = getGradeInfo(passed ? 85 : 50);
 
-    // Default visible list - shows all metrics
+    // Default list - all metrics
     metricsHTML += `
       <div class="mb-5">
         <p class="font-medium ${metricGrade.color} text-lg">
@@ -169,7 +170,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
         <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 ml-10">${f.shortDesc}</p>
       </div>`;
 
-    // Fixes panel content - only failed + passing for completeness
+    // Full fixes (for More Details)
     fixesHTML += `
       <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
         <p class="font-bold text-xl ${metricGrade.color} mb-3">
@@ -181,24 +182,34 @@ function buildModuleHTML(moduleName, value, moduleData) {
         </p>
       </div>`;
 
-    if (!passed) failedCount++;
+    // Failed only for Show Fixes panel
+    if (!passed) {
+      failedOnlyHTML += `
+        <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-6 border-red-500">
+          <p class="font-bold text-2xl text-red-600 mb-4">
+            <span class="text-4xl mr-4">❌</span>
+            ${f.name}
+          </p>
+          <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+            ${f.howToFix}
+          </p>
+        </div>`;
+      failedCount++;
+    }
   });
 
-  const detailsHTML = `
-    <div class="mt-6 text-left">
-      <h4 class="text-xl font-bold mb-6 text-gray-900 dark:text-gray-100">
-        ${failedCount > 0 ? 'Recommended Fixes & Passing Tests' : 'All checks passed — excellent!'}
-      </h4>
-      ${fixesHTML}
-      <hr class="my-8 border-gray-300 dark:border-gray-700">
+  const moreDetailsHTML = `
+    <div class="text-left">
+      <h4 class="text-xl font-bold mb-6 text-gray-900 dark:text-gray-100">How ${moduleName} is tested →</h4>
       <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">What it is:</strong> ${moduleData.moduleWhat}</p>
-      <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How to Improve Overall:</strong> ${moduleData.moduleHow}</p>
+      <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How to Improve:</strong> ${moduleData.moduleHow}</p>
       <p class="text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">Why it matters:</strong> ${moduleData.moduleWhy}</p>
     </div>`;
 
+  const fixesPanelHTML = failedCount > 0 ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-6">← More details about ${moduleName}</p>` : '<p class="text-gray-700 dark:text-gray-300 text-center">All checks passed — no fixes needed!</p>';
+
   return `
     <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
-      <!-- Ring - score only -->
       <div class="relative mx-auto w-32 h-32">
         <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
           <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
@@ -209,31 +220,30 @@ function buildModuleHTML(moduleName, value, moduleData) {
           ${value}
         </div>
       </div>
-
-      <!-- Module name & grade -->
       <p class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">${moduleName}</p>
       <div class="mt-2 text-3xl font-bold ${gradeInfo.color}">
         ${gradeInfo.emoji} ${gradeInfo.grade}
       </div>
 
-      <!-- Default metrics list -->
-      <div class="mt-6 text-left metrics-list" style="overflow-wrap: break-word; word-break: break-word;">
+      <div class="mt-6 text-left metrics-list">
         ${metricsHTML}
       </div>
 
-      <!-- Shared details panel (toggled by both buttons) -->
-      <div class="details-panel hidden mt-8 text-left">
-        ${detailsHTML}
-      </div>
-
-      <!-- Buttons -->
-      <div class="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
-        <button class="more-details px-8 py-3 rounded-full bg-gray-600 text-white font-medium text-sm hover:opacity-90 transition">
+      <div class="mt-6 flex gap-4 justify-center flex-wrap">
+        <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
           More Details
         </button>
-        <button class="show-fixes px-8 py-3 rounded-full text-white font-medium text-sm hover:opacity-90 transition" style="background-color: ${ringColor};">
+        <button class="show-fixes px-8 py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
           Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
         </button>
+      </div>
+
+      <div class="more-details-panel hidden mt-8 text-left">
+        ${moreDetailsHTML}
+      </div>
+
+      <div class="fixes-panel hidden mt-8 text-left">
+        ${fixesPanelHTML}
       </div>
     </div>`;
 }
@@ -588,21 +598,16 @@ function buildModuleHTML(moduleName, value, moduleData) {
   
 
   document.addEventListener('click', e => {
-    const btn = e.target.closest('.show-fixes, .more-details');
-    if (!btn) return;
+    const moreBtn = e.target.closest('.more-details');
+    if (moreBtn) {
+      const card = moreBtn.closest('.p-6');
+      card.querySelector('.more-details-panel').classList.toggle('hidden');
+    }
 
-    const card = btn.closest('.p-6');
-    if (!card) return;
-
-    const panel = card.querySelector('.details-panel');
-    const metricsList = card.querySelector('.metrics-list');
-
-    panel.classList.toggle('hidden');
-
-    if (!panel.classList.contains('hidden')) {
-      metricsList.classList.add('hidden');
-    } else {
-      metricsList.classList.remove('hidden');
+    const fixesBtn = e.target.closest('.show-fixes');
+    if (fixesBtn) {
+      const card = fixesBtn.closest('.p-6');
+      card.querySelector('.fixes-panel').classList.toggle('hidden');
     }
   });
 });
