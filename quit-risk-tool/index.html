@@ -306,42 +306,78 @@
 </div>
 	<!-- AddToAny END -->
 	
-	      <section class="py-20 bg-gray-50 dark:bg-gray-900">
+
+<!-- Deep Dive into Key Modules -->
+      <section class="py-20 bg-gray-50 dark:bg-gray-900">
         <div class="max-w-7xl mx-auto px-6">
           <h2 class="text-4xl md:text-5xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
             Deep Dive into Key Modules
           </h2>
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <a href="quit-risk-tool/" class="block p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all border border-purple-200 dark:border-purple-900">
-              <div class="text-6xl mb-6">📖</div>
-              <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Readability</h3>
-              <p class="text-gray-600 dark:text-gray-400">Understand Flesch scores, sentence length, scannability and how to write for the web.</p>
-              <p class="mt-6 text-purple-600 dark:text-purple-400 font-semibold">Analyze Your Page →</p>
-            </a>
-            <a href="quit-risk-tool/" class="block p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all border border-cyan-200 dark:border-cyan-900">
-              <div class="text-6xl mb-6">🧭</div>
-              <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Navigation</h3>
-              <p class="text-gray-600 dark:text-gray-400">Menu clarity, internal linking, link density and CTA visibility.</p>
-              <p class="mt-6 text-cyan-600 dark:text-cyan-400 font-semibold">Analyze Your Page →</p>
-            </a>
-            <a href="quit-risk-tool/" class="block p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all border border-green-200 dark:border-green-900">
-              <div class="text-6xl mb-6">♿</div>
-              <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Accessibility</h3>
-              <p class="text-gray-600 dark:text-gray-400">Alt text, contrast, semantic HTML and WCAG compliance.</p>
-              <p class="mt-6 text-green-600 dark:text-green-400 font-semibold">Analyze Your Page →</p>
-            </a>
-            <a href="quit-risk-tool/" class="block p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all border border-blue-200 dark:border-blue-900">
-              <div class="text-6xl mb-6">📱</div>
-              <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Mobile & PWA</h3>
-              <p class="text-gray-600 dark:text-gray-400">Viewport, responsiveness, touch targets and installability.</p>
-              <p class="mt-6 text-blue-600 dark:text-blue-400 font-semibold">Analyze Your Page →</p>
-            </a>
-            <a href="quit-risk-tool/" class="block p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all border border-orange-200 dark:border-orange-900 lg:col-span-2">
-              <div class="text-6xl mb-6">⚡</div>
-              <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Performance</h3>
-              <p class="text-gray-600 dark:text-gray-400">Asset size, script bloat, image optimization, lazy loading and more.</p>
-              <p class="mt-6 text-orange-600 dark:text-orange-400 font-semibold">Analyze Your Page →</p>
-            </a>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+            <div class="module-card w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all cursor-pointer border border-purple-200 dark:border-purple-900" data-module="readability">
+              <div class="p-8 text-center">
+                <div class="text-6xl mb-6">📖</div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Readability</h3>
+                <button class="learn-more mt-6 px-8 py-3 rounded-full bg-purple-600 text-white font-semibold hover:bg-purple-700 transition">
+                  Learn More
+                </button>
+              </div>
+              <div class="module-details hidden p-8 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-left">
+                <div class="details-content"></div>
+              </div>
+            </div>
+
+            <div class="module-card w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all cursor-pointer border border-cyan-200 dark:border-cyan-900" data-module="navigation">
+              <div class="p-8 text-center">
+                <div class="text-6xl mb-6">🧭</div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Navigation</h3>
+                <button class="learn-more mt-6 px-8 py-3 rounded-full bg-cyan-600 text-white font-semibold hover:bg-cyan-700 transition">
+                  Learn More
+                </button>
+              </div>
+              <div class="module-details hidden p-8 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-left">
+                <div class="details-content"></div>
+              </div>
+            </div>
+
+            <div class="module-card w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all cursor-pointer border border-green-200 dark:border-green-900" data-module="accessibility">
+              <div class="p-8 text-center">
+                <div class="text-6xl mb-6">♿</div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Accessibility</h3>
+                <button class="learn-more mt-6 px-8 py-3 rounded-full bg-green-600 text-white font-semibold hover:bg-green-700 transition">
+                  Learn More
+                </button>
+              </div>
+              <div class="module-details hidden p-8 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-left">
+                <div class="details-content"></div>
+              </div>
+            </div>
+
+            <div class="module-card w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all cursor-pointer border border-blue-200 dark:border-blue-900" data-module="mobile">
+              <div class="p-8 text-center">
+                <div class="text-6xl mb-6">📱</div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Mobile & PWA</h3>
+                <button class="learn-more mt-6 px-8 py-3 rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-700 transition">
+                  Learn More
+                </button>
+              </div>
+              <div class="module-details hidden p-8 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-left">
+                <div class="details-content"></div>
+              </div>
+            </div>
+
+            <div class="module-card w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all cursor-pointer border border-orange-200 dark:border-orange-900 lg:col-span-2" data-module="performance">
+              <div class="p-8 text-center">
+                <div class="text-6xl mb-6">⚡</div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Performance</h3>
+                <button class="learn-more mt-6 px-8 py-3 rounded-full bg-orange-600 text-white font-semibold hover:bg-orange-700 transition">
+                  Learn More
+                </button>
+              </div>
+              <div class="module-details hidden p-8 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-left">
+                <div class="details-content"></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -729,7 +765,49 @@
 </footer>
 
   <script src="/main.js" type="module"></script>
-  <script src="/quit-risk-tool/metric-explanations.js"></script>
+<script src="metric-explanations.js"></script>
+<script>
+  document.querySelectorAll('.learn-more').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const card = btn.closest('.module-card');
+      const details = card.querySelector('.module-details');
+      const content = card.querySelector('.details-content');
+      const module = card.dataset.module;
+
+      details.classList.toggle('hidden');
+
+      if (!details.classList.contains('hidden') && content.innerHTML === '') {
+        const data = metricExplanations[module];
+        if (data) {
+          content.innerHTML = `
+            <div class="space-y-8">
+              <div>
+                <h4 class="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100">What is ${module.charAt(0).toUpperCase() + module.slice(1)}?</h4>
+                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${data.what}</p>
+              </div>
+              <div>
+                <h4 class="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100">How ${module.charAt(0).toUpperCase() + module.slice(1)} is tested?</h4>
+                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${data.how}</p>
+              </div>
+              <div>
+                <h4 class="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100">Why ${module.charAt(0).toUpperCase() + module.slice(1)} matters?</h4>
+                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${data.why}</p>
+              </div>
+            </div>
+          `;
+        }
+      }
+    });
+  });
+
+  // Close when clicking outside
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.module-card')) {
+      document.querySelectorAll('.module-details').forEach(d => d.classList.add('hidden'));
+    }
+  });
+</script>
   <script src="/quit-risk-tool/script.js" defer></script>
 
 
