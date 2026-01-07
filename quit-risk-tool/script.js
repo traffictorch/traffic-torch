@@ -132,17 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   
   
-function getGradeInfo(score) {
-  if (score >= 90) return { grade: "A+", color: "text-green-600", emoji: "🏆" };
-  if (score >= 85) return { grade: "A", color: "text-green-600", emoji: "✅" };
-  if (score >= 80) return { grade: "B+", color: "text-green-500", emoji: "✅" };
-  if (score >= 75) return { grade: "B", color: "text-yellow-600", emoji: "👍" };
-  if (score >= 70) return { grade: "C+", color: "text-yellow-600", emoji: "👍" };
-  if (score >= 65) return { grade: "C", color: "text-orange-600", emoji: "⚠️" };
-  if (score >= 60) return { grade: "D", color: "text-orange-600", emoji: "⚠️" };
-  return { grade: "F", color: "text-red-600", emoji: "❌" };
-}
-
 function buildModuleHTML(moduleName, value, moduleData) {
   const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
   const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
@@ -153,11 +142,11 @@ function buildModuleHTML(moduleName, value, moduleData) {
 
   moduleData.factors.forEach(f => {
     const passed = value >= f.threshold;
-    const metricGrade = getGradeInfo(passed ? 85 : 50); // 85 → A/✅ (OK), 50 → F/❌ (fail)
+    const metricGrade = getGradeInfo(passed ? 85 : 50); // passing = A/✅, failing = F/❌
 
-    // Normal small metrics list
+    // Normal metrics list (small scores with emoji + colored grade)
     metricsHTML += `
-      <div class="mb-4 metric-item">
+      <div class="mb-4">
         <p class="font-medium ${metricGrade.color} text-lg">
           <span class="text-2xl mr-2">${metricGrade.emoji}</span>
           <span class="font-bold">${metricGrade.grade}</span> ${f.name}
@@ -165,7 +154,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
         <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 ml-10">${f.shortDesc}</p>
       </div>`;
 
-    // Fixes / OK panel content
+    // Fixes / OK panel
     fixesHTML += `
       <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
         <p class="font-bold text-xl ${metricGrade.color} mb-3">
@@ -173,7 +162,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
           <span>${metricGrade.grade}</span> ${f.name}
         </p>
         <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-          ${passed ? '✓ This metric meets or exceeds best practices. Keep it up!' : f.howToFix}
+          ${passed ? '✓ This metric meets or exceeds best practices. Excellent!' : f.howToFix}
         </p>
       </div>`;
   });
@@ -181,7 +170,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
   const detailsHTML = `
     <div class="text-left">
       <h4 class="text-xl font-bold mb-6 text-gray-900 dark:text-gray-100">
-        ${fixesHTML.includes('border-red-500') ? 'Recommended Fixes & Passing Tests' : 'All checks passed — excellent work!'}
+        ${fixesHTML.includes('border-red-500') ? 'Recommended Fixes & Passing Tests' : 'All checks passed — outstanding!'}
       </h4>
       ${fixesHTML}
       <hr class="my-8 border-gray-300 dark:border-gray-700">
@@ -198,14 +187,18 @@ function buildModuleHTML(moduleName, value, moduleData) {
           <circle cx="64" cy="64" r="56" stroke="${ringColor}" stroke-width="12" fill="none"
                   stroke-dasharray="${(value / 100) * 352} 352" stroke-linecap="round"/>
         </svg>
-        <div class="absolute inset-0 flex flex-col items-center justify-center">
+        <div class="absolute inset-0 flex items-center justify-center">
           <div class="text-4xl font-black" style="color: ${ringColor};">${value}</div>
-          <div class="text-2xl font-bold ${gradeInfo.color} mt-1">${gradeInfo.emoji} ${gradeInfo.grade}</div>
         </div>
       </div>
-      <p class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">${moduleName}</p>
 
-      <div class="mt-6 text-left text-sm metrics-list" style="overflow-wrap: break-word; word-break: break-word;">
+      <!-- Overall module grade + emoji below the ring -->
+      <div class="mt-4">
+        <p class="text-3xl font-bold ${gradeInfo.color}">${gradeInfo.emoji} ${gradeInfo.grade}</p>
+        <p class="mt-2 text-lg font-medium text-gray-900 dark:text-gray-100">${moduleName}</p>
+      </div>
+
+      <div class="mt-6 text-left text-sm metrics-list">
         ${metricsHTML}
       </div>
 
@@ -466,26 +459,29 @@ function buildModuleHTML(moduleName, value, moduleData) {
                         stroke-width="24" fill="none"
                         stroke-dasharray="${safeDash} 804" stroke-linecap="round"/>
               </svg>
-              <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div class="text-center">
-                  <div class="font-black drop-shadow-2xl text-5xl xs:text-6xl sm:text-7xl md:text-8xl"
-                       style="color: ${safeScore < 60 ? '#ef4444' : safeScore < 80 ? '#fb923c' : '#22c55e'};">
-                    ${safeScore}
-                  </div>
-                  <div class="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-500 mt-2">/100 Usability</div>
+              <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <div class="font-black drop-shadow-2xl text-5xl xs:text-6xl sm:text-7xl md:text-8xl"
+                     style="color: ${safeScore < 60 ? '#ef4444' : safeScore < 80 ? '#fb923c' : '#22c55e'};">
+                  ${safeScore}
                 </div>
+                <div class="text-4xl font-bold ${getGradeInfo(safeScore).color} mt-3">
+                  ${getGradeInfo(safeScore).emoji} ${getGradeInfo(safeScore).grade}
+                </div>
+                <div class="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-500 mt-2">/100 Usability</div>
+              </div>
               </div>
             </div>
           </div>
 
           <!-- Quit Risk Verdict -->
           <div class="text-center mb-12">
-            <p class="text-4xl font-bold text-gray-500 mb-8">
-              Quit Risk: <span class="bg-gradient-to-r ${risk.color} bg-clip-text text-transparent">
-                ${risk.text}
-              </span>
+            <p class="text-4xl font-bold text-gray-700 dark:text-gray-300 mb-4">
+              Quit Risk:
             </p>
-            <p class="text-xl text-gray-500">Scanned ${uxData.links} links + ${uxData.images} images</p>
+            <p class="text-5xl font-black bg-gradient-to-r ${risk.color} bg-clip-text text-transparent">
+              ${risk.text === 'Low Risk' ? '✅✅✅ ' : risk.text === 'Moderate Risk' ? '⚠️⚠️ ' : '❌❌❌ '} ${risk.text}
+            </p>
+            <p class="text-xl text-gray-500 mt-6">Scanned ${uxData.links} links + ${uxData.images} images</p>
           </div>
 
           <!-- Modules -->
