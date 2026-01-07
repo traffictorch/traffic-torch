@@ -133,77 +133,79 @@ document.addEventListener('DOMContentLoaded', () => {
     return { grade: "F", color: "text-red-600", emoji: "❌" };
   }
 
-  function buildModuleHTML(moduleName, value, moduleData) {
-    const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
-    const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
-    const gradeInfo = getGradeInfo(value);
+function buildModuleHTML(moduleName, value, moduleData) {
+  const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
+  const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
+  const gradeInfo = getGradeInfo(value);
 
-    let statusMessage, statusEmoji;
-    if (value >= 85) {
-      statusMessage = "Excellent";
-      statusEmoji = "🏆";
-    } else if (value >= 75) {
-      statusMessage = "Very good";
-      statusEmoji = "✅";
-    } else if (value >= 60) {
-      statusMessage = "Needs improvement";
-      statusEmoji = "⚠️";
+  let statusMessage, statusEmoji;
+  if (value >= 85) {
+    statusMessage = "Excellent";
+    statusEmoji = "🏆";
+  } else if (value >= 75) {
+    statusMessage = "Very good";
+    statusEmoji = "✅";
+  } else if (value >= 60) {
+    statusMessage = "Needs improvement";
+    statusEmoji = "⚠️";
+  } else {
+    statusMessage = "Needs work";
+    statusEmoji = "❌";
+  }
+
+  let metricsHTML = '';
+  let fixesHTML = '';
+  let failedOnlyHTML = '';
+  let failedCount = 0;
+
+  moduleData.factors.forEach(f => {
+    const passed = value >= f.threshold;
+    let metricGrade;
+    if (passed) {
+      metricGrade = { color: "text-green-600", emoji: "✅" };
+    } else if (value >= f.threshold - 10) {
+      metricGrade = { color: "text-orange-600", emoji: "⚠️" };
     } else {
-      statusMessage = "Needs work";
-      statusEmoji = "❌";
+      metricGrade = { color: "text-red-600", emoji: "❌" };
     }
 
-    let metricsHTML = '';
-    let fixesHTML = '';
-    let failedOnlyHTML = '';
-    let failedCount = 0;
+    // Default list - emoji + colored metric name
+    metricsHTML += `
+      <div class="mb-6">
+        <p class="font-medium text-xl">
+          <span class="${metricGrade.color} text-3xl mr-3">${metricGrade.emoji}</span>
+          <span class="${metricGrade.color} font-bold">${f.name}</span>
+        </p>
+      </div>`;
 
-    moduleData.factors.forEach(f => {
-      const passed = value >= f.threshold;
-      let metricGrade;
-      if (passed) {
-        metricGrade = { color: "text-green-600", emoji: "✅" };
-      } else if (value >= f.threshold - 10) {
-        metricGrade = { color: "text-orange-600", emoji: "⚠️" };
-      } else {
-        metricGrade = { color: "text-red-600", emoji: "❌" };
-      }
+    // Full fixes for More Details
+    fixesHTML += `
+      <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
+        <p class="font-bold text-xl ${metricGrade.color} mb-3">
+          <span class="text-3xl mr-3">${metricGrade.emoji}</span>
+          ${f.name}
+        </p>
+        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+          ${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}
+        </p>
+      </div>`;
 
-      metricsHTML += `
-        <div class="mb-6">
-          <p class="font-medium text-xl">
-            <span class="${metricGrade.color} text-3xl mr-3">${metricGrade.emoji}</span>
-            <span class="${metricGrade.color} font-bold">${f.name}</span>
+    if (!passed) {
+      failedOnlyHTML += `
+        <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
+          <p class="font-bold text-2xl ${metricGrade.color} mb-4">
+            <span class="text-6xl">${metricGrade.emoji}</span>
           </p>
-        </div>`;
-
-      fixesHTML += `
-        <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
-          <p class="font-bold text-xl ${metricGrade.color} mb-3">
-            <span class="text-3xl mr-3">${metricGrade.emoji}</span>
+          <p class="font-bold text-2xl ${metricGrade.color} mb-4">
             ${f.name}
           </p>
-          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-            ${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}
+          <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+            ${f.howToFix}
           </p>
         </div>`;
-
-      if (!passed) {
-        failedOnlyHTML += `
-          <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
-            <p class="font-bold text-2xl ${metricGrade.color} mb-4">
-              <span class="text-6xl">${metricGrade.emoji}</span>
-            </p>
-            <p class="font-bold text-2xl ${metricGrade.color} mb-4">
-              ${f.name}
-            </p>
-            <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
-              ${f.howToFix}
-            </p>
-          </div>`;
-        failedCount++;
-      }
-    });
+      failedCount++;
+    }
+  });
 
   const moreDetailsHTML = `
     <div class="text-left px-4 py-6">
@@ -227,48 +229,48 @@ document.addEventListener('DOMContentLoaded', () => {
   const fixesPanelHTML = failedCount > 0 
     ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">← More details about ${moduleName}</p>`
     : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
-    
-        return `
-      <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
-        <div class="relative mx-auto w-32 h-32">
-          <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-            <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-            <circle cx="64" cy="64" r="56" stroke="${ringColor}" stroke-width="12" fill="none"
-                    stroke-dasharray="${(value / 100) * 352} 352" stroke-linecap="round"/>
-          </svg>
-          <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${ringColor};">
-            ${value}
-          </div>
-        </div>
 
-        <p class="mt-4 text-2xl font-bold ${gradeInfo.color}">${moduleName}</p>
-        <div class="mt-4 text-center">
-          <p class="text-6xl ${gradeInfo.color}">${statusEmoji}</p>
-          <p class="text-3xl font-bold ${gradeInfo.color} mt-2">${statusMessage}</p>
+  return `
+    <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
+      <div class="relative mx-auto w-32 h-32">
+        <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+          <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+          <circle cx="64" cy="64" r="56" stroke="${ringColor}" stroke-width="12" fill="none"
+                  stroke-dasharray="${(value / 100) * 352} 352" stroke-linecap="round"/>
+        </svg>
+        <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${ringColor};">
+          ${value}
         </div>
+      </div>
 
-        <div class="mt-6 text-center metrics-list">
-          ${metricsHTML}
-        </div>
+      <p class="mt-4 text-2xl font-bold ${gradeInfo.color}">${moduleName}</p>
+      <div class="mt-4 text-center">
+        <p class="text-6xl ${gradeInfo.color}">${statusEmoji}</p>
+        <p class="text-3xl font-bold ${gradeInfo.color} mt-2">${statusMessage}</p>
+      </div>
 
-        <div class="mt-6 flex gap-4 justify-center flex-wrap">
-          <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
-            More Details
-          </button>
-          <button class="show-fixes px-8 py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
-            Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
-          </button>
-        </div>
+      <div class="mt-6 text-left metrics-list">
+        ${metricsHTML}
+      </div>
 
-        <div class="more-details-panel hidden mt-8 text-left">
-          ${moreDetailsHTML}
-        </div>
+      <div class="mt-6 flex gap-4 justify-center flex-wrap">
+        <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
+          More Details
+        </button>
+        <button class="show-fixes px-8 py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
+          Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
+        </button>
+      </div>
 
-        <div class="fixes-panel hidden mt-8 text-left">
-          ${fixesPanelHTML}
-        </div>
-      </div>`;
-  }
+      <div class="more-details-panel hidden mt-8 text-left">
+        ${moreDetailsHTML}
+      </div>
+
+      <div class="fixes-panel hidden mt-8 text-left">
+        ${fixesPanelHTML}
+      </div>
+    </div>`;
+}
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
