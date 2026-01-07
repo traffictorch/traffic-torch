@@ -209,7 +209,11 @@ function buildModuleHTML(moduleName, value, moduleData) {
 
   const moreDetailsHTML = `
     <div class="text-left px-4 py-6">
-      <h4 class="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100 text-center">How ${moduleName} is tested →</h4>
+      <h4 class="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100 text-center">
+        <a href="index.html#${moduleName.toLowerCase()}" class="underline hover:text-purple-600 dark:hover:text-purple-400">
+          How ${moduleName} is tested?
+        </a>
+      </h4>
       <div class="space-y-6">
         <div>
           <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">What it is:</strong>
@@ -224,17 +228,16 @@ function buildModuleHTML(moduleName, value, moduleData) {
           <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleWhy}</p>
         </div>
       </div>
-      <p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">
-        <a href="index.html" class="underline hover:text-gray-900 dark:hover:text-gray-100">← Back to overview</a>
-      </p>
     </div>`;
 
   const fixesPanelHTML = failedCount > 0 
     ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">
-        <a href="index.html#${moduleName.toLowerCase()}" class="underline hover:text-gray-900 dark:hover:text-gray-100">← More details about ${moduleName}</a>
+        <a href="index.html#${moduleName.toLowerCase()}" class="underline hover:text-purple-600 dark:hover:text-purple-400">
+          Learn more about ${moduleName}?
+        </a>
       </p>`
     : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
-    
+        
   return `
     <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
       <div class="relative mx-auto w-32 h-32">
