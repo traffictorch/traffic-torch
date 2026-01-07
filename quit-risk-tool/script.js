@@ -210,7 +210,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
   const moreDetailsHTML = `
     <div class="text-left px-4 py-6">
       <h4 class="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100 text-center">
-        <a href="index.html#${moduleName.toLowerCase()}" class="underline hover:text-purple-600 dark:hover:text-purple-400">
+		<a href="../index.html#${moduleName.toLowerCase()}" class="underline hover:text-purple-600 dark:hover:text-purple-400">
           How ${moduleName} is tested?
         </a>
       </h4>
@@ -232,7 +232,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
 
   const fixesPanelHTML = failedCount > 0 
     ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">
-        <a href="index.html#${moduleName.toLowerCase()}" class="underline hover:text-purple-600 dark:hover:text-purple-400">
+        <a href="../index.html#${moduleName.toLowerCase()}" class="underline hover:text-purple-600 dark:hover:text-purple-400">
           Learn more about ${moduleName}?
         </a>
       </p>`
@@ -262,7 +262,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
       </div>
 
       <div class="mt-6 flex gap-4 justify-center flex-wrap">
-        <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
+        <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};" onclick="window.location.hash = '${moduleName.toLowerCase()}';">
           More Details
         </button>
         <button class="show-fixes px-8 py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
