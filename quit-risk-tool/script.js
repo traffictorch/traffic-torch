@@ -560,12 +560,14 @@ function buildModuleHTML(moduleName, value, moduleData) {
 
 
 document.addEventListener('click', e => {
+  // More Details button - toggles the fixes-panel (used for both Show Fixes and More Details)
   const moreBtn = e.target.closest('.more-details');
   if (moreBtn) {
     const panel = moreBtn.closest('.p-6').querySelector('.fixes-panel');
     panel.classList.toggle('hidden');
   }
 
+  // Show Fixes button - hides metrics list, shows fixes panel, hides itself
   const fixBtn = e.target.closest('.show-fixes');
   if (fixBtn) {
     const moduleCard = fixBtn.closest('.p-6');
