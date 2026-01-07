@@ -295,7 +295,9 @@ function buildModuleHTML(moduleName, value, moduleData) {
     const runStep = () => {
       if (currentStep < steps.length) {
         progressText.textContent = steps[currentStep].text;
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Balance loading by holding "Generating" for 2 seconds
+		setTimeout(() => {
+		  progressText.textContent = "Finalizing your personalized report...";
+		}, 1500);
         currentStep++;
         setTimeout(runStep, steps[currentStep - 1].delay);
       } else {
@@ -307,6 +309,10 @@ function buildModuleHTML(moduleName, value, moduleData) {
     async function performAnalysis() {
       try {
         progressText.textContent = "Generating detailed report...";
+        setTimeout(() => {
+          // This gives the impression of longer report generation
+        }, 1800);
+
         const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
         if (!res.ok) throw new Error('Page not reachable or blocked');
         const html = await res.text();
@@ -314,9 +320,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
         const uxData = getUXContent(doc);
         const ux = analyzeUX(uxData);
         const risk = getQuitRiskLabel(ux.score);
-
         document.getElementById('loading').classList.add('hidden');
-
         const safeScore = isNaN(ux.score) ? 60 : ux.score;
         const safeDash = (safeScore / 100) * 804;
         const overallGrade = getGradeInfo(safeScore);
