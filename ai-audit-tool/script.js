@@ -364,9 +364,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     </button>
                     <div class="hidden mt-4 space-y-6 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                       <p class="text-center mb-8"><a href="#${m.id}" class="text-orange-500 font-bold hover:underline">How ${m.name} is tested? →</a></p>
-                      <p><span class="font-bold text-blue-600 dark:text-blue-400">What it is:</span> ${m.info}</p>
-                      <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve Overall:</span> Use varied phrasing, personal anecdotes, and unexpected ideas to boost scores. Mix short and long elements for rhythm, and incorporate synonyms or rarer words. Always edit with readability in mind to align with human patterns.</p>
-                      <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters:</span> Search engines prioritize human-like content for higher rankings and user trust. Strong scores here reduce AI penalties and improve engagement metrics. Ultimately, this leads to better organic traffic and authority signals.</p>
+                      <p><span class="font-bold text-blue-600 dark:text-blue-400">What it is?:</span> ${m.info}</p>
+                      <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve?:</span> Use varied phrasing, personal anecdotes, and unexpected ideas to boost scores. Mix short and long elements for rhythm, and incorporate synonyms or rarer words. Always edit with readability in mind to align with human patterns.</p>
+                      <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters?:</span> Search engines prioritize human-like content for higher rankings and user trust. Strong scores here reduce AI penalties and improve engagement metrics. Ultimately, this leads to better organic traffic and authority signals.</p>
                     </div>
                     <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
                       Show Fixes (${failedCount})

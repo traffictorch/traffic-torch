@@ -41,6 +41,20 @@ const metricExplanations = [
   }
 ];
 
+function openDetailsFromHash() {
+  if (window.location.hash) {
+    const hash = window.location.hash.substring(1); // remove #
+    const target = document.getElementById(hash);
+    if (target) {
+      const details = target.querySelector('details');
+      if (details) {
+        details.open = true;
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('metric-cards-container');
   if (!container) return;
@@ -71,16 +85,9 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   `).join('');
 
-  // Auto-open if hash matches
-  if (window.location.hash) {
-    const hash = window.location.hash.substring(1);
-    const target = document.getElementById(hash);
-    if (target) {
-      const details = target.querySelector('details');
-      if (details) {
-        details.open = true;
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }
-  }
+  // Open on initial load if hash present
+  openDetailsFromHash();
 });
+
+// Open on hash change (e.g., when clicking internal links)
+window.addEventListener('hashchange', openDetailsFromHash);
