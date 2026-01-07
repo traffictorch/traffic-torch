@@ -789,41 +789,46 @@
 </footer>
 
   <script src="/main.js" type="module"></script>
-<script src="metric-explanations.js"></script>
+<script src="/quit-risk-tool/metric-explanations.js"></script>
 <script>
-  // Auto-expand module from URL hash
-  window.addEventListener('load', () => {
-    const hash = window.location.hash.substring(1);
-    if (hash) {
-      const card = document.querySelector(`.module-card[data-module="${hash}"]`);
-      if (card) {
-        const details = card.querySelector('.module-details');
-        const content = card.querySelector('.details-content');
-        details.classList.remove('hidden');
-        if (content.innerHTML === '') {
-          const data = metricExplanations[hash];
-          if (data) {
-            content.innerHTML = `
-              <div class="space-y-8">
-                <div>
-                  <h4 class="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100">What is ${hash.charAt(0).toUpperCase() + hash.slice(1)}?</h4>
-                  <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${data.what}</p>
-                </div>
-                <div>
-                  <h4 class="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100">How ${hash.charAt(0).toUpperCase() + hash.slice(1)} is tested?</h4>
-                  <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${data.how}</p>
-                </div>
-                <div>
-                  <h4 class="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100">Why ${hash.charAt(0).toUpperCase() + hash.slice(1)} matters?</h4>
-                  <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${data.why}</p>
-                </div>
+  document.querySelectorAll('.learn-more').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const card = btn.closest('.module-card');
+      const details = card.querySelector('.module-details');
+      const content = card.querySelector('.details-content');
+      const module = card.dataset.module;
+
+      details.classList.toggle('hidden');
+
+      if (!details.classList.contains('hidden') && content.innerHTML === '') {
+        const data = metricExplanations[module];
+        if (data) {
+          content.innerHTML = `
+            <div class="space-y-8">
+              <div>
+                <h4 class="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100">What is ${module.charAt(0).toUpperCase() + module.slice(1)}?</h4>
+                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${data.what}</p>
               </div>
-            `;
-          }
+              <div>
+                <h4 class="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100">How ${module.charAt(0).toUpperCase() + module.slice(1)} is tested?</h4>
+                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${data.how}</p>
+              </div>
+              <div>
+                <h4 class="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100">Why ${module.charAt(0).toUpperCase() + module.slice(1)} matters?</h4>
+                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${data.why}</p>
+              </div>
+            </div>
+          `;
         }
-        // Smooth scroll to card
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
+    });
+  });
+
+  // Close when clicking outside
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.module-card')) {
+      document.querySelectorAll('.module-details').forEach(d => d.classList.add('hidden'));
     }
   });
 </script>

@@ -224,12 +224,17 @@ function buildModuleHTML(moduleName, value, moduleData) {
           <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleWhy}</p>
         </div>
       </div>
+      <p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">
+        <a href="index.html" class="underline hover:text-gray-900 dark:hover:text-gray-100">← Back to overview</a>
+      </p>
     </div>`;
 
   const fixesPanelHTML = failedCount > 0 
-    ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">← More details about ${moduleName}</p>`
+    ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">
+        <a href="index.html#${moduleName.toLowerCase()}" class="underline hover:text-gray-900 dark:hover:text-gray-100">← More details about ${moduleName}</a>
+      </p>`
     : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
-
+    
   return `
     <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
       <div class="relative mx-auto w-32 h-32">
@@ -287,15 +292,15 @@ function buildModuleHTML(moduleName, value, moduleData) {
     document.getElementById('loading').classList.remove('hidden');
     const progressText = document.getElementById('progressText');
     const steps = [
-      { text: "Fetching and parsing page HTML securely...", delay: 600 },
-      { text: "Extracting main content and text for readability analysis...", delay: 800 },
-      { text: "Counting navigation links and menu structure...", delay: 700 },
-      { text: "Evaluating images for accessibility signals...", delay: 600 },
-      { text: "Checking mobile responsiveness patterns...", delay: 500 },
-      { text: "Assessing performance proxies and asset optimization...", delay: 700 },
-      { text: "Calculating overall usability score and quit risk...", delay: 800 }
+      { text: "Fetching and parsing page HTML securely...", delay: 1200 },
+      { text: "Extracting main content and text for readability analysis...", delay: 1600 },
+      { text: "Counting navigation links and menu structure...", delay: 1400 },
+      { text: "Evaluating images for accessibility signals...", delay: 1200 },
+      { text: "Checking mobile responsiveness patterns...", delay: 1000 },
+      { text: "Assessing performance proxies and asset optimization...", delay: 1400 },
+      { text: "Calculating overall usability score and quit risk...", delay: 1600 }
     ];
-    let currentStep = 0;
+
     const runStep = () => {
       if (currentStep < steps.length) {
         progressText.textContent = steps[currentStep].text;
@@ -303,7 +308,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
         setTimeout(runStep, steps[currentStep - 1].delay);
       } else {
         progressText.textContent = "Generating detailed report...";
-        setTimeout(performAnalysis, 2000); // Balanced delay before final report
+        setTimeout(performAnalysis, 3000); // Final generating step ~3s
       }
     };
     runStep();
