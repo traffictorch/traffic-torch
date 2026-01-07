@@ -260,21 +260,21 @@ function buildModuleHTML(moduleName, value, moduleData) {
       
       
 
-      <div class="mt-6 text-left metrics-list">
+      <div class="mt-6 text-center metrics-list">
         ${metricsHTML}
       </div>
 
-      <div class="mt-6 buttons-container flex gap-4 justify-center flex-wrap">
+      <div class="more-details-panel hidden mt-8 text-left">
+        ${moreDetailsHTML}
+      </div>
+
+      <div class="mt-6 flex gap-4 justify-center flex-wrap">
         <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
           More Details
         </button>
         <button class="show-fixes px-8 py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
           Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
         </button>
-      </div>
-
-      <div class="more-details-panel hidden mt-8 text-left">
-        ${moreDetailsHTML}
       </div>
 
       <div class="fixes-panel hidden mt-8 text-left">
