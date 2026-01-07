@@ -210,7 +210,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
   const moreDetailsHTML = `
     <div class="text-left px-4 py-6">
       <h4 class="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100 text-center">
-        <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}'; window.location.reload();">
+        <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}';">
           How ${moduleName} is tested?
         </button>
       </h4>
@@ -230,14 +230,14 @@ function buildModuleHTML(moduleName, value, moduleData) {
       </div>
     </div>`;
 
-  const fixesPanelHTML = failedCount > 0
+  const fixesPanelHTML = failedCount > 0 
     ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">
-        <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}'; window.location.reload();">
+		<button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}';">
           Learn more about ${moduleName}?
         </button>
       </p>`
     : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
-            
+         
   return `
     <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
       <div class="relative mx-auto w-32 h-32">
