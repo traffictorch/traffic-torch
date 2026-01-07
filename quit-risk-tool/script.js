@@ -157,7 +157,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
   let failedCount = 0;
 
   moduleData.factors.forEach(f => {
-        const passed = value >= f.threshold;
+    const passed = value >= f.threshold;
     let metricGrade;
     if (passed) {
       metricGrade = { label: "Pass", color: "text-green-600", emoji: "✅" };
@@ -167,28 +167,28 @@ function buildModuleHTML(moduleName, value, moduleData) {
       metricGrade = { label: "Fail", color: "text-red-600", emoji: "❌" };
     }
 
-    // Default list - clean: emoji + grade + name only
+    // Default list - individual grading, colored title
     metricsHTML += `
       <div class="mb-6">
-        <p class="font-medium ${metricGrade.color} text-xl">
-          <span class="text-3xl mr-3">${metricGrade.emoji}</span>
-          <span class="font-bold">${metricGrade.grade}</span> ${f.name}
+        <p class="font-medium text-xl">
+          <span class="${metricGrade.color} text-3xl mr-3">${metricGrade.emoji}</span>
+          <span class="${metricGrade.color} font-bold">${metricGrade.label}</span>
+          <span class="${metricGrade.color}"> ${f.name}</span>
         </p>
       </div>`;
 
-    // Full fixes for More Details panel
+    // Fixes panel - individual
     fixesHTML += `
       <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
         <p class="font-bold text-xl ${metricGrade.color} mb-3">
           <span class="text-3xl mr-3">${metricGrade.emoji}</span>
-          ${metricGrade.grade} ${f.name}
+          ${metricGrade.label} ${f.name}
         </p>
         <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
           ${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}
         </p>
       </div>`;
 
-    // Failed only for Show Fixes panel
     if (!passed) {
       failedOnlyHTML += `
         <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-6 border-red-500">
