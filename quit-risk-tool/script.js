@@ -264,7 +264,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
         ${metricsHTML}
       </div>
 
-      <div class="mt-6 flex flex-col gap-4">
+      <div class="mt-6 buttons-container flex gap-4 justify-center flex-wrap">
         <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
           More Details
         </button>
