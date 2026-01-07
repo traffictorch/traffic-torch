@@ -301,6 +301,8 @@ function buildModuleHTML(moduleName, value, moduleData) {
       { text: "Calculating overall usability score and quit risk...", delay: 1600 }
     ];
 
+    let currentStep = 0; // Move declaration outside
+
     const runStep = () => {
       if (currentStep < steps.length) {
         progressText.textContent = steps[currentStep].text;
@@ -308,7 +310,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
         setTimeout(runStep, steps[currentStep - 1].delay);
       } else {
         progressText.textContent = "Generating detailed report...";
-        setTimeout(performAnalysis, 3000); // Final generating step ~3s
+        setTimeout(performAnalysis, 3000); // Balanced final step
       }
     };
     runStep();
