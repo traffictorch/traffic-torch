@@ -153,88 +153,86 @@ function buildModuleHTML(moduleName, value, moduleData) {
 
   let metricsHTML = '';
   let fixesHTML = '';
+  let failedCount = 0;
 
   moduleData.factors.forEach(f => {
     const passed = value >= f.threshold;
     const metricGrade = getGradeInfo(passed ? 85 : 50);
 
-    // Normal metrics list
+    // Default visible list - shows all metrics
     metricsHTML += `
-      <div class="mb-6">
-        <p class="font-medium ${metricGrade.color} text-xl">
-          <span class="text-3xl mr-3">${metricGrade.emoji}</span>
+      <div class="mb-5">
+        <p class="font-medium ${metricGrade.color} text-lg">
+          <span class="text-2xl mr-2">${metricGrade.emoji}</span>
           <span class="font-bold">${metricGrade.grade}</span> ${f.name}
         </p>
-        <p class="text-gray-700 dark:text-gray-300 mt-2 ml-12 text-base">${f.shortDesc}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 ml-10">${f.shortDesc}</p>
       </div>`;
 
-    // Fixes / Recommended panel
+    // Fixes panel content - only failed + passing for completeness
     fixesHTML += `
-      <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-850 rounded-xl border-l-6 ${passed ? 'border-green-500' : 'border-red-500'}">
-        <p class="font-bold text-2xl ${metricGrade.color} mb-4">
-          <span class="text-4xl mr-4">${metricGrade.emoji}</span>
-          <span>${metricGrade.grade}</span> ${f.name}
+      <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
+        <p class="font-bold text-xl ${metricGrade.color} mb-3">
+          <span class="text-3xl mr-3">${metricGrade.emoji}</span>
+          ${metricGrade.grade} ${f.name}
         </p>
-        <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
-          ${passed ? '✓ Excellent – this metric meets or exceeds best practices.' : f.howToFix}
+        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+          ${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}
         </p>
       </div>`;
+
+    if (!passed) failedCount++;
   });
 
-  const moreDetailsHTML = `
-    <div class="mt-8 p-6 bg-gradient-to-br from-purple-50 to-cyan-50 dark:from-gray-800 dark:to-gray-850 rounded-2xl">
-      <h4 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Module Overview</h4>
+  const detailsHTML = `
+    <div class="mt-6 text-left">
+      <h4 class="text-xl font-bold mb-6 text-gray-900 dark:text-gray-100">
+        ${failedCount > 0 ? 'Recommended Fixes & Passing Tests' : 'All checks passed — excellent!'}
+      </h4>
+      ${fixesHTML}
+      <hr class="my-8 border-gray-300 dark:border-gray-700">
       <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">What it is:</strong> ${moduleData.moduleWhat}</p>
       <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How to Improve Overall:</strong> ${moduleData.moduleHow}</p>
       <p class="text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">Why it matters:</strong> ${moduleData.moduleWhy}</p>
     </div>`;
 
   return `
-    <div class="text-center p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border-4 ${borderClass}">
-      <!-- Ring with only number -->
-      <div class="relative mx-auto w-40 h-40">
-        <svg width="160" height="160" viewBox="0 0 160 160" class="transform -rotate-90">
-          <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="16" fill="none"/>
-          <circle cx="80" cy="80" r="70" stroke="${ringColor}" stroke-width="16" fill="none"
-                  stroke-dasharray="${(value / 100) * 440} 440" stroke-linecap="round"/>
+    <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
+      <!-- Ring - score only -->
+      <div class="relative mx-auto w-32 h-32">
+        <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+          <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+          <circle cx="64" cy="64" r="56" stroke="${ringColor}" stroke-width="12" fill="none"
+                  stroke-dasharray="${(value / 100) * 352} 352" stroke-linecap="round"/>
         </svg>
-        <div class="absolute inset-0 flex items-center justify-center">
-          <div class="text-5xl font-black" style="color: ${ringColor};">${value}</div>
+        <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${ringColor};">
+          ${value}
         </div>
       </div>
 
-      <!-- Grade + emoji below ring -->
-      <div class="mt-8">
-        <p class="text-5xl font-bold ${gradeInfo.color} drop-shadow-md">
-          ${gradeInfo.emoji} ${gradeInfo.grade}
-        </p>
-        <p class="mt-4 text-2xl font-semibold text-gray-900 dark:text-gray-100">${moduleName}</p>
+      <!-- Module name & grade -->
+      <p class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">${moduleName}</p>
+      <div class="mt-2 text-3xl font-bold ${gradeInfo.color}">
+        ${gradeInfo.emoji} ${gradeInfo.grade}
       </div>
 
-      <!-- Default view: metrics list -->
-      <div class="mt-10 text-left metrics-list">
+      <!-- Default metrics list -->
+      <div class="mt-6 text-left metrics-list" style="overflow-wrap: break-word; word-break: break-word;">
         ${metricsHTML}
       </div>
 
-      <!-- Hidden panels -->
-      <div class="fixes-panel hidden mt-10">
-        <h4 class="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8">
-          Recommended Fixes & Passing Tests
-        </h4>
-        ${fixesHTML}
-      </div>
-
-      <div class="more-details-panel hidden">
-        ${moreDetailsHTML}
+      <!-- Shared details panel (toggled by both buttons) -->
+      <div class="details-panel hidden mt-8 text-left">
+        ${detailsHTML}
       </div>
 
       <!-- Buttons -->
-      <div class="mt-10 flex gap-6 justify-center">
-        <button class="show-fixes px-8 py-3 rounded-full text-white font-bold text-lg hover:opacity-90 transition" style="background-color: ${ringColor};">
-          Show Fixes
-        </button>
-        <button class="more-details px-8 py-3 rounded-full bg-gray-600 text-white font-bold text-lg hover:opacity-90 transition">
+      <div class="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
+        <button class="more-details px-8 py-3 rounded-full bg-gray-600 text-white font-medium text-sm hover:opacity-90 transition">
           More Details
+        </button>
+        <button class="show-fixes px-8 py-3 rounded-full text-white font-medium text-sm hover:opacity-90 transition" style="background-color: ${ringColor};">
+          Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
         </button>
       </div>
     </div>`;
@@ -585,12 +583,26 @@ function buildModuleHTML(moduleName, value, moduleData) {
     }
   });
 
-  document.addEventListener('click', e => {
-    const moreBtn = e.target.closest('.more-details');
-    if (moreBtn) {
-      const card = moreBtn.closest('.p-8');
-      card.querySelector('.more-details-panel').classList.toggle('hidden');
-    }
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.show-fixes, .more-details');
+  if (!btn) return;
+
+  const card = btn.closest('.p-6');
+  if (!card) return;
+
+  const panel = card.querySelector('.details-panel');
+  const metricsList = card.querySelector('.metrics-list');
+
+  // Toggle panel visibility
+  panel.classList.toggle('hidden');
+
+  // Optional: hide metrics list when panel is shown (mimics AI audit behavior)
+  if (!panel.classList.contains('hidden')) {
+    metricsList.classList.add('hidden');
+  } else {
+    metricsList.classList.remove('hidden');
+  }
+});
 
     const fixBtn = e.target.closest('.show-fixes');
     if (fixBtn) {
