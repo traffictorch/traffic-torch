@@ -257,7 +257,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
         <p class="text-3xl font-bold ${gradeInfo.color} mt-2">${statusMessage}</p>
       </div>
 
-      <div class="mt-6 text-left metrics-list">
+      <div class="mt-6 text-center metrics-list">
         ${metricsHTML}
       </div>
 
