@@ -225,7 +225,6 @@ function buildModuleHTML(moduleName, value, moduleData) {
         ${gradeInfo.emoji} ${gradeInfo.grade}
       </div>
 
-    // Default list - all metrics, no shortDesc
     metricsHTML += `
       <div class="mb-6">
         <p class="font-medium ${metricGrade.color} text-xl">
