@@ -225,9 +225,14 @@ function buildModuleHTML(moduleName, value, moduleData) {
         ${gradeInfo.emoji} ${gradeInfo.grade}
       </div>
 
-      <div class="mt-6 text-left metrics-list">
-        ${metricsHTML}
-      </div>
+    // Default list - all metrics, no shortDesc
+    metricsHTML += `
+      <div class="mb-6">
+        <p class="font-medium ${metricGrade.color} text-xl">
+          <span class="text-3xl mr-3">${metricGrade.emoji}</span>
+          <span class="font-bold">${metricGrade.grade}</span> ${f.name}
+        </p>
+      </div>`;
 
       <div class="mt-6 flex gap-4 justify-center flex-wrap">
         <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
