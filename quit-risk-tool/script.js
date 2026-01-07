@@ -582,45 +582,27 @@ function buildModuleHTML(moduleName, value, moduleData) {
       }
     }
   });
+  
+  
+  
+  
 
-document.addEventListener('click', e => {
-  const btn = e.target.closest('.show-fixes, .more-details');
-  if (!btn) return;
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.show-fixes, .more-details');
+    if (!btn) return;
 
-  const card = btn.closest('.p-6');
-  if (!card) return;
+    const card = btn.closest('.p-6');
+    if (!card) return;
 
-  const panel = card.querySelector('.details-panel');
-  const metricsList = card.querySelector('.metrics-list');
+    const panel = card.querySelector('.details-panel');
+    const metricsList = card.querySelector('.metrics-list');
 
-  // Toggle panel visibility
-  panel.classList.toggle('hidden');
+    panel.classList.toggle('hidden');
 
-  // Optional: hide metrics list when panel is shown (mimics AI audit behavior)
-  if (!panel.classList.contains('hidden')) {
-    metricsList.classList.add('hidden');
-  } else {
-    metricsList.classList.remove('hidden');
-  }
-});
-
-    const fixBtn = e.target.closest('.show-fixes');
-    if (fixBtn) {
-      const card = fixBtn.closest('.p-8');
-      card.querySelector('.metrics-list').classList.add('hidden');
-      card.querySelector('.fixes-panel').classList.remove('hidden');
-      card.querySelector('.more-details-panel').classList.add('hidden');
-      fixBtn.textContent = 'Back to Overview';
-      fixBtn.classList.replace('show-fixes', 'back-overview');
-    }
-
-    const backBtn = e.target.closest('.back-overview');
-    if (backBtn) {
-      const card = backBtn.closest('.p-8');
-      card.querySelector('.metrics-list').classList.remove('hidden');
-      card.querySelector('.fixes-panel').classList.add('hidden');
-      backBtn.textContent = 'Show Fixes';
-      backBtn.classList.replace('back-overview', 'show-fixes');
+    if (!panel.classList.contains('hidden')) {
+      metricsList.classList.add('hidden');
+    } else {
+      metricsList.classList.remove('hidden');
     }
   });
 });
