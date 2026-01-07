@@ -3,13 +3,11 @@
 // Rich educational Quit Risk Reduction & Engagement Impact with per-fix impact, expandables, progress bars, personalized ranges
 // Day/night text fully fixed with consistent Tailwind classes
 // Dynamic title "Top Priority Fixes" + celebration message when no fixes needed
-
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
   const PROXY = 'https://rendered-proxy.traffictorch.workers.dev/';
-
   const factorDefinitions = {
     readability: {
       factors: [
@@ -102,15 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
       readability = Math.round(flesch);
     }
     readability = isNaN(readability) ? 60 : readability;
-
     const navScore = Math.max(30, Math.min(100, 100 - Math.floor(data.links / 5)));
     const accScore = data.images.length === 0 ? 70 : Math.min(95, 65 + Math.min(data.images.length, 15) * 2);
     const mobileScore = 90;
     const speedScore = data.images.length > 20 ? 70 : 85;
-
     const scores = [readability, navScore, accScore, mobileScore, speedScore].map(s => isNaN(s) ? 70 : s);
     const score = Math.round(scores.reduce((a, b) => a + b, 0) / 5);
-
     return {
       score: isNaN(score) ? 60 : score,
       readability: scores[0],
@@ -126,158 +121,143 @@ document.addEventListener('DOMContentLoaded', () => {
     if (score >= 55) return { text: "Moderate Risk", color: "from-yellow-400 to-orange-600" };
     return { text: "High Risk", color: "from-red-500 to-pink-600" };
   }
-  
-  
-  
-  
-function getGradeInfo(score) {
-  if (score >= 90) return { grade: "A+", color: "text-green-600", emoji: "🏆" };
-  if (score >= 85) return { grade: "A", color: "text-green-600", emoji: "✅" };
-  if (score >= 80) return { grade: "B+", color: "text-green-500", emoji: "✅" };
-  if (score >= 75) return { grade: "B", color: "text-yellow-500", emoji: "👍" };
-  if (score >= 70) return { grade: "C+", color: "text-yellow-600", emoji: "👍" };
-  if (score >= 65) return { grade: "C", color: "text-orange-600", emoji: "⚠️" };
-  if (score >= 60) return { grade: "D", color: "text-orange-600", emoji: "⚠️" };
-  return { grade: "F", color: "text-red-600", emoji: "❌" };
-} 
-  
-  
-  
-  
-  
-function buildModuleHTML(moduleName, value, moduleData) {
-  const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
-  const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
-  const gradeInfo = getGradeInfo(value);
 
-  let statusMessage, statusEmoji;
-  if (value >= 85) {
-    statusMessage = "Excellent";
-    statusEmoji = "🏆";
-  } else if (value >= 75) {
-    statusMessage = "Very good";
-    statusEmoji = "✅";
-  } else if (value >= 60) {
-    statusMessage = "Needs improvement";
-    statusEmoji = "⚠️";
-  } else {
-    statusMessage = "Needs work";
-    statusEmoji = "❌";
+  function getGradeInfo(score) {
+    if (score >= 90) return { grade: "A+", color: "text-green-600", emoji: "🏆" };
+    if (score >= 85) return { grade: "A", color: "text-green-600", emoji: "✅" };
+    if (score >= 80) return { grade: "B+", color: "text-green-500", emoji: "✅" };
+    if (score >= 75) return { grade: "B", color: "text-yellow-500", emoji: "👍" };
+    if (score >= 70) return { grade: "C+", color: "text-yellow-600", emoji: "👍" };
+    if (score >= 65) return { grade: "C", color: "text-orange-600", emoji: "⚠️" };
+    if (score >= 60) return { grade: "D", color: "text-orange-600", emoji: "⚠️" };
+    return { grade: "F", color: "text-red-600", emoji: "❌" };
   }
 
-  let metricsHTML = '';
-  let fixesHTML = '';
-  let failedOnlyHTML = '';
-  let failedCount = 0;
+  function buildModuleHTML(moduleName, value, moduleData) {
+    const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
+    const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
+    const gradeInfo = getGradeInfo(value);
 
-  moduleData.factors.forEach(f => {
-    const passed = value >= f.threshold;
-    let metricGrade;
-    if (passed) {
-      metricGrade = { color: "text-green-600", emoji: "✅" };
-    } else if (value >= f.threshold - 10) {
-      metricGrade = { color: "text-orange-600", emoji: "⚠️" };
+    let statusMessage, statusEmoji;
+    if (value >= 85) {
+      statusMessage = "Excellent";
+      statusEmoji = "🏆";
+    } else if (value >= 75) {
+      statusMessage = "Very good";
+      statusEmoji = "✅";
+    } else if (value >= 60) {
+      statusMessage = "Needs improvement";
+      statusEmoji = "⚠️";
     } else {
-      metricGrade = { color: "text-red-600", emoji: "❌" };
+      statusMessage = "Needs work";
+      statusEmoji = "❌";
     }
 
-    // Default list - emoji + colored metric name
-    metricsHTML += `
-      <div class="mb-6">
-        <p class="font-medium text-xl">
-          <span class="${metricGrade.color} text-3xl mr-3">${metricGrade.emoji}</span>
-          <span class="${metricGrade.color} font-bold">${f.name}</span>
-        </p>
-      </div>`;
+    let metricsHTML = '';
+    let fixesHTML = '';
+    let failedOnlyHTML = '';
+    let failedCount = 0;
 
-    // Full fixes for More Details
-    fixesHTML += `
-      <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
-        <p class="font-bold text-xl ${metricGrade.color} mb-3">
-          <span class="text-3xl mr-3">${metricGrade.emoji}</span>
-          ${f.name}
-        </p>
-        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-          ${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}
-        </p>
-      </div>`;
+    moduleData.factors.forEach(f => {
+      const passed = value >= f.threshold;
+      let metricGrade;
+      if (passed) {
+        metricGrade = { color: "text-green-600", emoji: "✅" };
+      } else if (value >= f.threshold - 10) {
+        metricGrade = { color: "text-orange-600", emoji: "⚠️" };
+      } else {
+        metricGrade = { color: "text-red-600", emoji: "❌" };
+      }
 
-    if (!passed) {
-      failedOnlyHTML += `
-        <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
-          <p class="font-bold text-2xl ${metricGrade.color} mb-4">
-            <span class="text-6xl">${metricGrade.emoji}</span>
-          </p>
-          <p class="font-bold text-2xl ${metricGrade.color} mb-4">
-            ${f.name}
-          </p>
-          <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
-            ${f.howToFix}
+      metricsHTML += `
+        <div class="mb-6">
+          <p class="font-medium text-xl">
+            <span class="${metricGrade.color} text-3xl mr-3">${metricGrade.emoji}</span>
+            <span class="${metricGrade.color} font-bold">${f.name}</span>
           </p>
         </div>`;
-      failedCount++;
-    }
-  });
 
-  const moreDetailsHTML = `
-    <div class="text-left">
-      <h4 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100 text-center">How ${moduleName} is tested →</h4>
-      <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">What it is:</strong> ${moduleData.moduleWhat}</p>
-      <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How to Improve:</strong> ${moduleData.moduleHow}</p>
-      <p class="text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">Why it matters:</strong> ${moduleData.moduleWhy}</p>
-    </div>`;
+      fixesHTML += `
+        <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
+          <p class="font-bold text-xl ${metricGrade.color} mb-3">
+            <span class="text-3xl mr-3">${metricGrade.emoji}</span>
+            ${f.name}
+          </p>
+          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+            ${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}
+          </p>
+        </div>`;
 
-  const fixesPanelHTML = failedCount > 0 
-    ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-8">← More details about ${moduleName}</p>`
-    : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg">All checks passed — no fixes needed!</p>';
+      if (!passed) {
+        failedOnlyHTML += `
+          <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
+            <p class="font-bold text-2xl ${metricGrade.color} mb-4">
+              <span class="text-6xl">${metricGrade.emoji}</span>
+            </p>
+            <p class="font-bold text-2xl ${metricGrade.color} mb-4">
+              ${f.name}
+            </p>
+            <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+              ${f.howToFix}
+            </p>
+          </div>`;
+        failedCount++;
+      }
+    });
 
-  return `
-    <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
-      <div class="relative mx-auto w-32 h-32">
-        <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-          <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-          <circle cx="64" cy="64" r="56" stroke="${ringColor}" stroke-width="12" fill="none"
-                  stroke-dasharray="${(value / 100) * 352} 352" stroke-linecap="round"/>
-        </svg>
-        <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${ringColor};">
-          ${value}
+    const moreDetailsHTML = `
+      <div class="text-left">
+        <h4 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100 text-center">How ${moduleName} is tested →</h4>
+        <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">What it is:</strong> ${moduleData.moduleWhat}</p>
+        <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How to Improve:</strong> ${moduleData.moduleHow}</p>
+        <p class="text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">Why it matters:</strong> ${moduleData.moduleWhy}</p>
+      </div>`;
+
+    const fixesPanelHTML = failedCount > 0 
+      ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-8">← More details about ${moduleName}</p>`
+      : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg">All checks passed — no fixes needed!</p>';
+
+    return `
+      <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
+        <div class="relative mx-auto w-32 h-32">
+          <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+            <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+            <circle cx="64" cy="64" r="56" stroke="${ringColor}" stroke-width="12" fill="none"
+                    stroke-dasharray="${(value / 100) * 352} 352" stroke-linecap="round"/>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${ringColor};">
+            ${value}
+          </div>
         </div>
-      </div>
 
-      <p class="mt-4 text-2xl font-bold ${gradeInfo.color}">${moduleName}</p>
-      <div class="mt-4 text-center">
-        <p class="text-6xl ${gradeInfo.color}">${statusEmoji}</p>
-        <p class="text-3xl font-bold ${gradeInfo.color} mt-2">${statusMessage}</p>
-      </div>
+        <p class="mt-4 text-2xl font-bold ${gradeInfo.color}">${moduleName}</p>
+        <div class="mt-4 text-center">
+          <p class="text-6xl ${gradeInfo.color}">${statusEmoji}</p>
+          <p class="text-3xl font-bold ${gradeInfo.color} mt-2">${statusMessage}</p>
+        </div>
 
-      <div class="mt-6 text-left metrics-list">
-        ${metricsHTML}
-      </div>
+        <div class="mt-6 text-left metrics-list">
+          ${metricsHTML}
+        </div>
 
-      <div class="mt-6 flex gap-4 justify-center flex-wrap">
-        <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
-          More Details
-        </button>
-        <button class="show-fixes px-8 py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
-          Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
-        </button>
-      </div>
+        <div class="mt-6 flex gap-4 justify-center flex-wrap">
+          <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
+            More Details
+          </button>
+          <button class="show-fixes px-8 py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
+            Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
+          </button>
+        </div>
 
-      <div class="more-details-panel hidden mt-8 text-left">
-        ${moreDetailsHTML}
-      </div>
+        <div class="more-details-panel hidden mt-8 text-left">
+          ${moreDetailsHTML}
+        </div>
 
-      <div class="fixes-panel hidden mt-8 text-left">
-        ${fixesPanelHTML}
-      </div>
-    </div>`;
-}
-
-
-
-
-
-
+        <div class="fixes-panel hidden mt-8 text-left">
+          ${fixesPanelHTML}
+        </div>
+      </div>`;
+  }
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
@@ -290,10 +270,8 @@ function buildModuleHTML(moduleName, value, moduleData) {
       url = 'https://' + url;
       input.value = url;
     }
-
     results.classList.remove('hidden');
     document.getElementById('loading').classList.remove('hidden');
-
     const progressText = document.getElementById('progressText');
     const steps = [
       { text: "Fetching and parsing page HTML securely...", delay: 600 },
@@ -304,29 +282,21 @@ function buildModuleHTML(moduleName, value, moduleData) {
       { text: "Assessing performance proxies and asset optimization...", delay: 700 },
       { text: "Calculating overall usability score and quit risk...", delay: 800 }
     ];
-
     let currentStep = 0;
     const runStep = () => {
       if (currentStep < steps.length) {
         progressText.textContent = steps[currentStep].text;
-		setTimeout(() => {
-        progressText.textContent = "Generating detailed report...";
-        setTimeout(() => {}, 2000); // Balance loading - hold generating step for 2 seconds
         currentStep++;
         setTimeout(runStep, steps[currentStep - 1].delay);
       } else {
-        performAnalysis();
+        progressText.textContent = "Generating detailed report...";
+        setTimeout(performAnalysis, 2000); // Balanced delay before final report
       }
     };
     runStep();
 
     async function performAnalysis() {
       try {
-        progressText.textContent = "Generating detailed report...";
-        setTimeout(() => {
-          // This gives the impression of longer report generation
-        }, 1800);
-
         const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
         if (!res.ok) throw new Error('Page not reachable or blocked');
         const html = await res.text();
@@ -342,7 +312,8 @@ function buildModuleHTML(moduleName, value, moduleData) {
         const navHTML = buildModuleHTML('Navigation', ux.nav, factorDefinitions.navigation);
         const accessHTML = buildModuleHTML('Accessibility', ux.accessibility, factorDefinitions.accessibility);
         const mobileHTML = buildModuleHTML('Mobile', ux.mobile, factorDefinitions.mobile);
-        const speedHTML = buildModuleHTML('Speed', ux.speed, factorDefinitions.performance);
+        const speedHTML = buildModuleHTML('Speed', ux.speed, factorDefinitions.performance);       
+        
 
         // Hybrid Top Priority Fixes
         const modulePriority = [
@@ -589,43 +560,33 @@ function buildModuleHTML(moduleName, value, moduleData) {
         `;
         
         
-      // Clean URL for PDF cover: domain on first line, path on second
-      let fullUrl = document.getElementById('url-input').value.trim();
-      let displayUrl = 'traffictorch.net'; // fallback
-
-      if (fullUrl) {
-        // Remove protocol and www
-        let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
-
-        // Split into domain and path
-        const firstSlash = cleaned.indexOf('/');
-        if (firstSlash !== -1) {
-          const domain = cleaned.slice(0, firstSlash);
-          const path = cleaned.slice(firstSlash);
-          displayUrl = domain + '\n' + path;
-        } else {
-          displayUrl = cleaned;
+        // Clean URL for PDF cover (unchanged)
+        let fullUrl = document.getElementById('url-input').value.trim();
+        let displayUrl = 'traffictorch.net';
+        if (fullUrl) {
+          let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
+          const firstSlash = cleaned.indexOf('/');
+          if (firstSlash !== -1) {
+            const domain = cleaned.slice(0, firstSlash);
+            const path = cleaned.slice(firstSlash);
+            displayUrl = domain + '\n' + path;
+          } else {
+            displayUrl = cleaned;
+          }
         }
-      }
+        document.body.setAttribute('data-url', displayUrl);
 
-      document.body.setAttribute('data-url', displayUrl);
-      
-      
       } catch (err) {
         document.getElementById('loading').classList.add('hidden');
         results.innerHTML = `
           <div class="text-center py-20">
             <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
-            <p class="mt-6 text-xl text-gray-500">Please check the URL and try again.</p>
+            <p class="mt-6 text-xl text-gray-600 dark:text-gray-400">Please check the URL and try again.</p>
           </div>
         `;
       }
     }
   });
-  
-  
-  
-  
 
   document.addEventListener('click', e => {
     const moreBtn = e.target.closest('.more-details');
