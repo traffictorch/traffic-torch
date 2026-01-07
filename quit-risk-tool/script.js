@@ -256,12 +256,15 @@ function buildModuleHTML(moduleName, value, moduleData) {
         <p class="text-6xl ${gradeInfo.color}">${statusEmoji}</p>
         <p class="text-3xl font-bold ${gradeInfo.color} mt-2">${statusMessage}</p>
       </div>
+      
+      
+      
 
-      <div class="mt-6 text-center metrics-list">
+      <div class="mt-6 text-left metrics-list">
         ${metricsHTML}
       </div>
 
-      <div class="mt-6 flex gap-4 justify-center flex-wrap">
+      <div class="mt-6 flex flex-col gap-4">
         <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
           More Details
         </button>
@@ -278,6 +281,8 @@ function buildModuleHTML(moduleName, value, moduleData) {
         ${fixesPanelHTML}
       </div>
     </div>`;
+    
+    
 }
 
   form.addEventListener('submit', async e => {
