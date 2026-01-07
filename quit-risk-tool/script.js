@@ -210,9 +210,9 @@ function buildModuleHTML(moduleName, value, moduleData) {
   const moreDetailsHTML = `
     <div class="text-left px-4 py-6">
       <h4 class="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100 text-center">
-		<a href="../index.html#${moduleName.toLowerCase()}" class="underline hover:text-purple-600 dark:hover:text-purple-400">
+        <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}';">
           How ${moduleName} is tested?
-        </a>
+        </button>
       </h4>
       <div class="space-y-6">
         <div>
@@ -232,12 +232,12 @@ function buildModuleHTML(moduleName, value, moduleData) {
 
   const fixesPanelHTML = failedCount > 0 
     ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">
-        <a href="../index.html#${moduleName.toLowerCase()}" class="underline hover:text-purple-600 dark:hover:text-purple-400">
+        <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}';">
           Learn more about ${moduleName}?
-        </a>
+        </button>
       </p>`
     : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
-        
+         
   return `
     <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
       <div class="relative mx-auto w-32 h-32">
@@ -262,7 +262,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
       </div>
 
       <div class="mt-6 flex gap-4 justify-center flex-wrap">
-        <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};" onclick="window.location.hash = '${moduleName.toLowerCase()}';">
+        <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
           More Details
         </button>
         <button class="show-fixes px-8 py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
