@@ -87,9 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const allToolsCard = `
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 hover:shadow-xl transition-shadow border-l-4 border-indigo-500 text-center lg:col-span-3">
-      <div class="text-6xl mb-6">⚡</div>
-      <div class="text-3xl font-black text-indigo-600 dark:text-indigo-400 mb-8">All Tools</div>
-      <p class="text-gray-700 dark:text-gray-300 mb-6 max-w-md mx-auto">Explore our full suite of AI-powered SEO & UX tools</p>
+      <div class="text-6xl mb-6">🛠️</div>
+      <div class="text-3xl font-black text-indigo-600 dark:text-indigo-400 mb-8">SEO UX AI Tools</div>
       <a href="https://traffictorch.net/ai-seo-ux-tools/" class="inline-block px-8 py-3 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold hover:from-indigo-700 hover:to-purple-700 transition">
         Explore All Tools
       </a>
