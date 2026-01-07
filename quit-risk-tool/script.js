@@ -158,7 +158,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
 
   moduleData.factors.forEach(f => {
     const passed = value >= f.threshold;
-    const metricGrade = getGradeInfo(passed ? 85 : 50);
+    const metricGrade = getGradeInfo(value);
 
     // Default list - clean: emoji + grade + name only
     metricsHTML += `
