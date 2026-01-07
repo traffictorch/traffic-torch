@@ -160,17 +160,16 @@ function buildModuleHTML(moduleName, value, moduleData) {
     const passed = value >= f.threshold;
     const metricGrade = getGradeInfo(passed ? 85 : 50);
 
-    // Default list - all metrics
+    // Default list - clean: emoji + grade + name only
     metricsHTML += `
-      <div class="mb-5">
-        <p class="font-medium ${metricGrade.color} text-lg">
-          <span class="text-2xl mr-2">${metricGrade.emoji}</span>
+      <div class="mb-6">
+        <p class="font-medium ${metricGrade.color} text-xl">
+          <span class="text-3xl mr-3">${metricGrade.emoji}</span>
           <span class="font-bold">${metricGrade.grade}</span> ${f.name}
         </p>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 ml-10">${f.shortDesc}</p>
       </div>`;
 
-    // Full fixes (for More Details)
+    // Full fixes for More Details panel
     fixesHTML += `
       <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
         <p class="font-bold text-xl ${metricGrade.color} mb-3">
@@ -225,13 +224,9 @@ function buildModuleHTML(moduleName, value, moduleData) {
         ${gradeInfo.emoji} ${gradeInfo.grade}
       </div>
 
-    metricsHTML += `
-      <div class="mb-6">
-        <p class="font-medium ${metricGrade.color} text-xl">
-          <span class="text-3xl mr-3">${metricGrade.emoji}</span>
-          <span class="font-bold">${metricGrade.grade}</span> ${f.name}
-        </p>
-      </div>`;
+      <div class="mt-6 text-left metrics-list">
+        ${metricsHTML}
+      </div>
 
       <div class="mt-6 flex gap-4 justify-center flex-wrap">
         <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
