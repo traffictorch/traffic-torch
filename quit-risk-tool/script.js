@@ -205,19 +205,30 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    const moreDetailsHTML = `
-      <div class="text-left">
-        <h4 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100 text-center">How ${moduleName} is tested →</h4>
-        <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">What it is:</strong> ${moduleData.moduleWhat}</p>
-        <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How to Improve:</strong> ${moduleData.moduleHow}</p>
-        <p class="text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">Why it matters:</strong> ${moduleData.moduleWhy}</p>
-      </div>`;
+  const moreDetailsHTML = `
+    <div class="text-left px-4 py-6">
+      <h4 class="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100 text-center">How ${moduleName} is tested →</h4>
+      <div class="space-y-6">
+        <div>
+          <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">What it is:</strong>
+          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleWhat}</p>
+        </div>
+        <div>
+          <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">How to Improve:</strong>
+          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleHow}</p>
+        </div>
+        <div>
+          <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">Why it matters:</strong>
+          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleWhy}</p>
+        </div>
+      </div>
+    </div>`;
 
-    const fixesPanelHTML = failedCount > 0 
-      ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-8">← More details about ${moduleName}</p>`
-      : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg">All checks passed — no fixes needed!</p>';
-
-    return `
+  const fixesPanelHTML = failedCount > 0 
+    ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">← More details about ${moduleName}</p>`
+    : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
+    
+        return `
       <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
