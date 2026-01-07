@@ -473,30 +473,37 @@ function buildModuleHTML(moduleName, value, moduleData) {
                      style="color: ${safeScore < 60 ? '#ef4444' : safeScore < 80 ? '#fb923c' : '#22c55e'};">
                   ${safeScore}
                 </div>
-                <div class="text-5xl font-bold ${overallGrade.color} mt-4">
+                <div class="text-6xl font-bold ${overallGrade.color} mt-6 drop-shadow-lg">
                   ${overallGrade.emoji} ${overallGrade.grade}
                 </div>
-                <div class="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-500 mt-3">/100 Usability Score</div>
+                <div class="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-400 mt-4">/100 Usability Score</div>
               </div>
             </div>
           </div>
 
           <!-- Quit Risk Verdict -->
           <div class="text-center mb-12">
-            <p class="text-4xl font-bold text-gray-700 dark:text-gray-300 mb-4">
+            <p class="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-8">
               Quit Risk:
             </p>
-            <p class="text-5xl font-black bg-gradient-to-r ${risk.color} bg-clip-text text-transparent">
-              ${risk.text === 'Low Risk' ? '✅✅✅ ' : risk.text === 'Moderate Risk' ? '⚠️⚠️ ' : '❌❌❌ '} ${risk.text}
-            </p>
-            <p class="text-xl text-gray-500 mt-6">Scanned ${uxData.links} links + ${uxData.images} images</p>
+            <div class="flex flex-col items-center gap-6">
+              <div class="flex items-center gap-6 text-7xl">
+                <span class="${risk.text === 'Low Risk' ? 'text-green-600' : risk.text === 'Moderate Risk' ? 'text-orange-600' : 'text-red-600'}">
+                  ${risk.text === 'Low Risk' ? '✅✅✅' : risk.text === 'Moderate Risk' ? '⚠️⚠️' : '❌❌❌'}
+                </span>
+              </div>
+              <p class="text-6xl font-black bg-gradient-to-r ${risk.color} bg-clip-text text-transparent">
+                ${risk.text}
+              </p>
+            </div>
+            <p class="text-xl text-gray-600 dark:text-gray-400 mt-10">Scanned ${uxData.links} links + ${uxData.images} images</p>
           </div>
 
           <!-- Modules -->
-          <div class="grid gap-6 my-16">
-            <div class="grid md:grid-cols-1">${readabilityHTML}</div>
-            <div class="grid md:grid-cols-2 gap-6">${navHTML}${accessHTML}</div>
-            <div class="grid md:grid-cols-2 gap-6">${mobileHTML}${speedHTML}</div>
+          <div class="grid gap-8 my-16 max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-1 gap-8">${readabilityHTML}</div>
+            <div class="grid md:grid-cols-2 gap-8">${navHTML}${accessHTML}</div>
+            <div class="grid md:grid-cols-2 gap-8">${mobileHTML}${speedHTML}</div>
           </div>
 
           <!-- Top Priority Fixes -->
