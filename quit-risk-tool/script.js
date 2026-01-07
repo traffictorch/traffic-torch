@@ -127,7 +127,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return { text: "High Risk", color: "from-red-500 to-pink-600" };
   }
   
-  function getGradeInfo(score) {
+  
+  
+  
+  
+  
+function getGradeInfo(score) {
   if (score >= 90) return { grade: "A+", color: "text-green-600", emoji: "🏆" };
   if (score >= 85) return { grade: "A", color: "text-green-600", emoji: "✅" };
   if (score >= 80) return { grade: "B+", color: "text-green-500", emoji: "✅" };
@@ -138,24 +143,19 @@ document.addEventListener('DOMContentLoaded', () => {
   return { grade: "F", color: "text-red-600", emoji: "❌" };
 }
 
-
-
-
-
 function buildModuleHTML(moduleName, value, moduleData) {
   const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
   const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
   const gradeInfo = getGradeInfo(value);
-  
+
   let metricsHTML = '';
   let fixesHTML = '';
-  
+
   moduleData.factors.forEach(f => {
     const passed = value >= f.threshold;
-    const metricGrade = getGradeInfo(passed ? 85 : 50); // OK = green range, fail = red
-    const statusEmoji = passed ? '✅' : '❌';
-    
-    // Normal metrics list
+    const metricGrade = getGradeInfo(passed ? 85 : 50); // 85 → A/✅ (OK), 50 → F/❌ (fail)
+
+    // Normal small metrics list
     metricsHTML += `
       <div class="mb-4 metric-item">
         <p class="font-medium ${metricGrade.color} text-lg">
@@ -164,24 +164,24 @@ function buildModuleHTML(moduleName, value, moduleData) {
         </p>
         <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 ml-10">${f.shortDesc}</p>
       </div>`;
-    
-    // Fixes / OK panel
+
+    // Fixes / OK panel content
     fixesHTML += `
       <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
-        <p class="font-bold text-xl ${metricGrade.color} mb-2">
+        <p class="font-bold text-xl ${metricGrade.color} mb-3">
           <span class="text-3xl mr-3">${metricGrade.emoji}</span>
           <span>${metricGrade.grade}</span> ${f.name}
         </p>
         <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-          ${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}
+          ${passed ? '✓ This metric meets or exceeds best practices. Keep it up!' : f.howToFix}
         </p>
       </div>`;
   });
-  
+
   const detailsHTML = `
     <div class="text-left">
-      <h4 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">
-        ${fixesHTML.includes('border-red-500') ? 'Recommended Fixes & Passing Tests:' : 'All checks passed! Excellent work.'}
+      <h4 class="text-xl font-bold mb-6 text-gray-900 dark:text-gray-100">
+        ${fixesHTML.includes('border-red-500') ? 'Recommended Fixes & Passing Tests' : 'All checks passed — excellent work!'}
       </h4>
       ${fixesHTML}
       <hr class="my-8 border-gray-300 dark:border-gray-700">
@@ -204,11 +204,11 @@ function buildModuleHTML(moduleName, value, moduleData) {
         </div>
       </div>
       <p class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">${moduleName}</p>
-      
+
       <div class="mt-6 text-left text-sm metrics-list" style="overflow-wrap: break-word; word-break: break-word;">
         ${metricsHTML}
       </div>
-      
+
       <div class="mt-6 flex gap-4 justify-center">
         <button class="show-fixes px-6 py-2 rounded-full text-white text-sm hover:opacity-90" style="background-color: ${ringColor};">
           Show Fixes
@@ -217,7 +217,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
           More Details
         </button>
       </div>
-      
+
       <div class="fixes-panel hidden mt-8 text-left">
         ${detailsHTML}
       </div>
@@ -560,14 +560,17 @@ function buildModuleHTML(moduleName, value, moduleData) {
 
 
 document.addEventListener('click', e => {
-  const btn = e.target.closest('.more-details');
-  if (btn) btn.closest('.p-6').querySelector('.fixes-panel').classList.toggle('hidden');
-  
+  const moreBtn = e.target.closest('.more-details');
+  if (moreBtn) {
+    const panel = moreBtn.closest('.p-6').querySelector('.fixes-panel');
+    panel.classList.toggle('hidden');
+  }
+
   const fixBtn = e.target.closest('.show-fixes');
   if (fixBtn) {
-    const module = fixBtn.closest('.p-6');
-    module.querySelector('.metrics-list').classList.add('hidden');
-    module.querySelector('.fixes-panel').classList.remove('hidden');
+    const moduleCard = fixBtn.closest('.p-6');
+    moduleCard.querySelector('.metrics-list').classList.add('hidden');
+    moduleCard.querySelector('.fixes-panel').classList.remove('hidden');
     fixBtn.classList.add('hidden');
   }
 });
