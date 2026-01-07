@@ -141,6 +141,11 @@ function getGradeInfo(score) {
   return { grade: "F", color: "text-red-600", emoji: "❌" };
 }  
   
+  
+  
+  
+  
+  
 function buildModuleHTML(moduleName, value, moduleData) {
   const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
   const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
@@ -151,80 +156,92 @@ function buildModuleHTML(moduleName, value, moduleData) {
 
   moduleData.factors.forEach(f => {
     const passed = value >= f.threshold;
-    const metricGrade = getGradeInfo(passed ? 85 : 50); // passing = A/✅, failing = F/❌
+    const metricGrade = getGradeInfo(passed ? 85 : 50);
 
-    // Normal metrics list (small scores with emoji + colored grade)
+    // Normal metrics list
     metricsHTML += `
-      <div class="mb-4">
-        <p class="font-medium ${metricGrade.color} text-lg">
-          <span class="text-2xl mr-2">${metricGrade.emoji}</span>
+      <div class="mb-6">
+        <p class="font-medium ${metricGrade.color} text-xl">
+          <span class="text-3xl mr-3">${metricGrade.emoji}</span>
           <span class="font-bold">${metricGrade.grade}</span> ${f.name}
         </p>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 ml-10">${f.shortDesc}</p>
+        <p class="text-gray-700 dark:text-gray-300 mt-2 ml-12 text-base">${f.shortDesc}</p>
       </div>`;
 
-    // Fixes / OK panel
+    // Fixes / Recommended panel
     fixesHTML += `
-      <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
-        <p class="font-bold text-xl ${metricGrade.color} mb-3">
-          <span class="text-3xl mr-3">${metricGrade.emoji}</span>
+      <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-850 rounded-xl border-l-6 ${passed ? 'border-green-500' : 'border-red-500'}">
+        <p class="font-bold text-2xl ${metricGrade.color} mb-4">
+          <span class="text-4xl mr-4">${metricGrade.emoji}</span>
           <span>${metricGrade.grade}</span> ${f.name}
         </p>
-        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-          ${passed ? '✓ This metric meets or exceeds best practices. Excellent!' : f.howToFix}
+        <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+          ${passed ? '✓ Excellent – this metric meets or exceeds best practices.' : f.howToFix}
         </p>
       </div>`;
   });
 
-  const detailsHTML = `
-    <div class="text-left">
-      <h4 class="text-xl font-bold mb-6 text-gray-900 dark:text-gray-100">
-        ${fixesHTML.includes('border-red-500') ? 'Recommended Fixes & Passing Tests' : 'All checks passed — outstanding!'}
-      </h4>
-      ${fixesHTML}
-      <hr class="my-8 border-gray-300 dark:border-gray-700">
-      <p class="mb-3 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">What it is:</strong> ${moduleData.moduleWhat}</p>
-      <p class="mb-3 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How to Improve Overall:</strong> ${moduleData.moduleHow}</p>
+  const moreDetailsHTML = `
+    <div class="mt-8 p-6 bg-gradient-to-br from-purple-50 to-cyan-50 dark:from-gray-800 dark:to-gray-850 rounded-2xl">
+      <h4 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Module Overview</h4>
+      <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">What it is:</strong> ${moduleData.moduleWhat}</p>
+      <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How to Improve Overall:</strong> ${moduleData.moduleHow}</p>
       <p class="text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">Why it matters:</strong> ${moduleData.moduleWhy}</p>
     </div>`;
 
   return `
-    <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
-      <div class="relative mx-auto w-32 h-32">
-        <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-          <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-          <circle cx="64" cy="64" r="56" stroke="${ringColor}" stroke-width="12" fill="none"
-                  stroke-dasharray="${(value / 100) * 352} 352" stroke-linecap="round"/>
+    <div class="text-center p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border-4 ${borderClass}">
+      <!-- Ring with only number -->
+      <div class="relative mx-auto w-40 h-40">
+        <svg width="160" height="160" viewBox="0 0 160 160" class="transform -rotate-90">
+          <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="16" fill="none"/>
+          <circle cx="80" cy="80" r="70" stroke="${ringColor}" stroke-width="16" fill="none"
+                  stroke-dasharray="${(value / 100) * 440} 440" stroke-linecap="round"/>
         </svg>
         <div class="absolute inset-0 flex items-center justify-center">
-          <div class="text-4xl font-black" style="color: ${ringColor};">${value}</div>
+          <div class="text-5xl font-black" style="color: ${ringColor};">${value}</div>
         </div>
       </div>
 
-      <!-- Overall module grade + emoji below the ring -->
-      <div class="mt-4">
-        <p class="text-3xl font-bold ${gradeInfo.color}">${gradeInfo.emoji} ${gradeInfo.grade}</p>
-        <p class="mt-2 text-lg font-medium text-gray-900 dark:text-gray-100">${moduleName}</p>
+      <!-- Grade + emoji below ring -->
+      <div class="mt-8">
+        <p class="text-5xl font-bold ${gradeInfo.color} drop-shadow-md">
+          ${gradeInfo.emoji} ${gradeInfo.grade}
+        </p>
+        <p class="mt-4 text-2xl font-semibold text-gray-900 dark:text-gray-100">${moduleName}</p>
       </div>
 
-      <div class="mt-6 text-left text-sm metrics-list">
+      <!-- Default view: metrics list -->
+      <div class="mt-10 text-left metrics-list">
         ${metricsHTML}
       </div>
 
-      <div class="mt-6 flex gap-4 justify-center">
-        <button class="show-fixes px-6 py-2 rounded-full text-white text-sm hover:opacity-90" style="background-color: ${ringColor};">
+      <!-- Hidden panels -->
+      <div class="fixes-panel hidden mt-10">
+        <h4 class="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center mb-8">
+          Recommended Fixes & Passing Tests
+        </h4>
+        ${fixesHTML}
+      </div>
+
+      <div class="more-details-panel hidden">
+        ${moreDetailsHTML}
+      </div>
+
+      <!-- Buttons -->
+      <div class="mt-10 flex gap-6 justify-center">
+        <button class="show-fixes px-8 py-3 rounded-full text-white font-bold text-lg hover:opacity-90 transition" style="background-color: ${ringColor};">
           Show Fixes
         </button>
-        <button class="more-details px-6 py-2 rounded-full bg-gray-600 text-white text-sm hover:opacity-90">
+        <button class="more-details px-8 py-3 rounded-full bg-gray-600 text-white font-bold text-lg hover:opacity-90 transition">
           More Details
         </button>
       </div>
-
-      <div class="fixes-panel hidden mt-8 text-left">
-        ${detailsHTML}
-      </div>
     </div>`;
 }
+
+
+
 
 
 
@@ -568,22 +585,30 @@ function buildModuleHTML(moduleName, value, moduleData) {
     }
   });
 
-  // Global click handler for More Details and Show Fixes buttons
   document.addEventListener('click', e => {
-    // More Details button - toggles the fixes panel
     const moreBtn = e.target.closest('.more-details');
     if (moreBtn) {
-      const panel = moreBtn.closest('.p-6').querySelector('.fixes-panel');
-      panel.classList.toggle('hidden');
+      const card = moreBtn.closest('.p-8');
+      card.querySelector('.more-details-panel').classList.toggle('hidden');
     }
 
-    // Show Fixes button - switches view to fixes panel and hides itself
     const fixBtn = e.target.closest('.show-fixes');
     if (fixBtn) {
-      const moduleCard = fixBtn.closest('.p-6');
-      moduleCard.querySelector('.metrics-list').classList.add('hidden');
-      moduleCard.querySelector('.fixes-panel').classList.remove('hidden');
-      fixBtn.classList.add('hidden');
+      const card = fixBtn.closest('.p-8');
+      card.querySelector('.metrics-list').classList.add('hidden');
+      card.querySelector('.fixes-panel').classList.remove('hidden');
+      card.querySelector('.more-details-panel').classList.add('hidden');
+      fixBtn.textContent = 'Back to Overview';
+      fixBtn.classList.replace('show-fixes', 'back-overview');
+    }
+
+    const backBtn = e.target.closest('.back-overview');
+    if (backBtn) {
+      const card = backBtn.closest('.p-8');
+      card.querySelector('.metrics-list').classList.remove('hidden');
+      card.querySelector('.fixes-panel').classList.add('hidden');
+      backBtn.textContent = 'Show Fixes';
+      backBtn.classList.replace('back-overview', 'show-fixes');
     }
   });
 });
