@@ -150,6 +150,21 @@ function buildModuleHTML(moduleName, value, moduleData) {
   const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
   const gradeInfo = getGradeInfo(value);
 
+  let statusMessage, statusEmoji;
+  if (value >= 85) {
+    statusMessage = "Excellent";
+    statusEmoji = "🏆";
+  } else if (value >= 75) {
+    statusMessage = "Very good";
+    statusEmoji = "✅";
+  } else if (value >= 60) {
+    statusMessage = "Needs improvement";
+    statusEmoji = "⚠️";
+  } else {
+    statusMessage = "Needs work";
+    statusEmoji = "❌";
+  }
+
   let metricsHTML = '';
   let fixesHTML = '';
   let failedOnlyHTML = '';
@@ -159,14 +174,14 @@ function buildModuleHTML(moduleName, value, moduleData) {
     const passed = value >= f.threshold;
     let metricGrade;
     if (passed) {
-      metricGrade = { label: "Pass", color: "text-green-600", emoji: "✅" };
+      metricGrade = { color: "text-green-600", emoji: "✅" };
     } else if (value >= f.threshold - 10) {
-      metricGrade = { label: "Average", color: "text-orange-600", emoji: "⚠️" };
+      metricGrade = { color: "text-orange-600", emoji: "⚠️" };
     } else {
-      metricGrade = { label: "Fail", color: "text-red-600", emoji: "❌" };
+      metricGrade = { color: "text-red-600", emoji: "❌" };
     }
 
-    // Default list - emoji + colored metric name only
+    // Default list - emoji + colored metric name
     metricsHTML += `
       <div class="mb-6">
         <p class="font-medium text-xl">
@@ -175,7 +190,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
         </p>
       </div>`;
 
-    // Full fixes for More Details panel
+    // Full fixes for More Details
     fixesHTML += `
       <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
         <p class="font-bold text-xl ${metricGrade.color} mb-3">
@@ -189,11 +204,11 @@ function buildModuleHTML(moduleName, value, moduleData) {
 
     if (!passed) {
       failedOnlyHTML += `
-        <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-6 border-red-500 text-center">
-          <p class="font-bold text-2xl text-red-600 mb-4">
-            <span class="text-6xl">❌</span>
+        <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
+          <p class="font-bold text-2xl ${metricGrade.color} mb-4">
+            <span class="text-6xl">${metricGrade.emoji}</span>
           </p>
-          <p class="font-bold text-2xl text-red-600 mb-4">
+          <p class="font-bold text-2xl ${metricGrade.color} mb-4">
             ${f.name}
           </p>
           <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
@@ -206,13 +221,15 @@ function buildModuleHTML(moduleName, value, moduleData) {
 
   const moreDetailsHTML = `
     <div class="text-left">
-      <h4 class="text-xl font-bold mb-6 text-gray-900 dark:text-gray-100 text-center">How ${moduleName} is tested →</h4>
+      <h4 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100 text-center">How ${moduleName} is tested →</h4>
       <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">What it is:</strong> ${moduleData.moduleWhat}</p>
       <p class="mb-4 text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">How to Improve:</strong> ${moduleData.moduleHow}</p>
       <p class="text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-gray-100">Why it matters:</strong> ${moduleData.moduleWhy}</p>
     </div>`;
 
-  const fixesPanelHTML = failedCount > 0 ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-6">← More details about ${moduleName}</p>` : '<p class="text-gray-700 dark:text-gray-300 text-center">All checks passed — no fixes needed!</p>';
+  const fixesPanelHTML = failedCount > 0 
+    ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-8">← More details about ${moduleName}</p>`
+    : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg">All checks passed — no fixes needed!</p>';
 
   return `
     <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
@@ -226,14 +243,11 @@ function buildModuleHTML(moduleName, value, moduleData) {
           ${value}
         </div>
       </div>
+
       <p class="mt-4 text-2xl font-bold ${gradeInfo.color}">${moduleName}</p>
       <div class="mt-4 text-center">
-        <p class="text-5xl font-bold ${gradeInfo.color}">
-          ${gradeInfo.emoji}
-        </p>
-        <p class="text-3xl font-bold ${gradeInfo.color} mt-2">
-          ${statusMessage}
-        </p>
+        <p class="text-6xl ${gradeInfo.color}">${statusEmoji}</p>
+        <p class="text-3xl font-bold ${gradeInfo.color} mt-2">${statusMessage}</p>
       </div>
 
       <div class="mt-6 text-left metrics-list">
@@ -296,8 +310,8 @@ function buildModuleHTML(moduleName, value, moduleData) {
       if (currentStep < steps.length) {
         progressText.textContent = steps[currentStep].text;
 		setTimeout(() => {
-		  progressText.textContent = "Finalizing your personalized report...";
-		}, 1500);
+        progressText.textContent = "Generating detailed report...";
+        setTimeout(() => {}, 2000); // Balance loading - hold generating step for 2 seconds
         currentStep++;
         setTimeout(runStep, steps[currentStep - 1].delay);
       } else {
