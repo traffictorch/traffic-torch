@@ -273,7 +273,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
 
         const safeScore = isNaN(ux.score) ? 60 : ux.score;
         const safeDash = (safeScore / 100) * 804;
-
+        const overallGrade = getGradeInfo(safeScore);
         const readabilityHTML = buildModuleHTML('Readability', ux.readability, factorDefinitions.readability);
         const navHTML = buildModuleHTML('Navigation', ux.nav, factorDefinitions.navigation);
         const accessHTML = buildModuleHTML('Accessibility', ux.accessibility, factorDefinitions.accessibility);
@@ -464,11 +464,10 @@ function buildModuleHTML(moduleName, value, moduleData) {
                      style="color: ${safeScore < 60 ? '#ef4444' : safeScore < 80 ? '#fb923c' : '#22c55e'};">
                   ${safeScore}
                 </div>
-                <div class="text-4xl font-bold ${getGradeInfo(safeScore).color} mt-3">
-                  ${getGradeInfo(safeScore).emoji} ${getGradeInfo(safeScore).grade}
+                <div class="text-5xl font-bold ${overallGrade.color} mt-4">
+                  ${overallGrade.emoji} ${overallGrade.grade}
                 </div>
-                <div class="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-500 mt-2">/100 Usability</div>
-              </div>
+                <div class="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-600 dark:text-gray-500 mt-3">/100 Usability Score</div>
               </div>
             </div>
           </div>
