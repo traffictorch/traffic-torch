@@ -56,6 +56,22 @@ const metricExplanations = [
     what: "Structured data that helps search engines understand content type, entities, and context for enhanced display.",
     how: "Detects valid JSON-LD script blocks and counts relevant schema types (Article, Person, Organization, FAQPage, etc.).",
     why: "Proper schema unlocks rich snippets, increases click-through rates dramatically, strengthens E-E-A-T, and improves visibility in featured results."
+  },
+  {
+    id: "keyword-tool",
+    emoji: "🔑",
+    name: "Keyword Research Tool",
+    what: "Discover high-opportunity keywords with accurate search volume, difficulty scores, intent classification, trending data, and competitor gaps — all in one free tool.",
+    linkText: "Open Keyword Tool →",
+    linkUrl: "https://traffictorch.net/keyword-tool/"
+  },
+  {
+    id: "ai-tools",
+    emoji: "🤖",
+    name: "AI SEO & UX Tools",
+    what: "Full suite of AI-powered analyzers: technical SEO audits, Core Web Vitals, UX health checks, content optimization, and predictive performance insights.",
+    linkText: "Explore AI Tools →",
+    linkUrl: "https://traffictorch.net/ai-seo-ux-tools/"
   }
 ];
 
@@ -77,8 +93,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('metric-cards-container');
   if (!container) return;
 
+  // Responsive 3×3 grid for 9 cards
+  container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center max-w-7xl mx-auto px-6';
+
   container.innerHTML = metricExplanations.map(m => `
-    <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center">
+    <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center w-full max-w-md">
       <div class="text-6xl mb-6">${m.emoji}</div>
       <div class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-8">${m.name}</div>
       <details class="group">
@@ -90,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">What is ${m.name}?</p>
             <p>${m.what}</p>
           </div>
+          ${m.linkUrl ? '' : `
           <div>
             <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">How is ${m.name} tested?</p>
             <p>${m.how}</p>
@@ -98,11 +118,14 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">Why does ${m.name} matter?</p>
             <p>${m.why}</p>
           </div>
+          `}
+          ${m.linkUrl ? `
           <div class="mt-8 text-center">
-            <a href="/seo-intent-tool/#audit-form" class="inline-block px-8 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-full hover:opacity-90 transition">
-              Run Analysis Now →
+            <a href="${m.linkUrl}" class="inline-block px-8 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-full hover:opacity-90 transition">
+              ${m.linkText}
             </a>
           </div>
+          ` : ''}
         </div>
       </details>
     </div>
