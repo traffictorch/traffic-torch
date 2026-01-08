@@ -351,88 +351,15 @@ document.addEventListener('DOMContentLoaded', () => {
       ];
 
       const scores = modules.map(m => m.score);
-
-      results.innerHTML = `
-      
-      
-            // === RADAR CHART INITIALIZATION (FIXED TIMING) ===
-      setTimeout(() => {
-        const canvas = document.getElementById('health-radar');
-        if (!canvas) {
-          console.warn('Canvas #health-radar not found in DOM');
-          return;
-        }
-
-        console.log('Canvas found, initializing radar chart...');
-
-        try {
-          const ctx = canvas.getContext('2d');
-          const isDark = document.documentElement.classList.contains('dark');
-          const gridColor = isDark ? 'rgba(156, 163, 175, 0.3)' : 'rgba(229, 231, 235, 0.8)';
-          const labelColor = isDark ? '#f3f4f6' : '#1f2937';
-          const borderColor = '#fb923c';
-          const fillColor = isDark ? 'rgba(251, 146, 60, 0.15)' : 'rgba(251, 146, 60, 0.1)';
-
-          window.myChart = new Chart(ctx, {
-            type: 'radar',
-            data: {
-              labels: modules.map(m => m.name),
-              datasets: [{
-                label: 'Health Score',
-                data: scores,
-                backgroundColor: fillColor,
-                borderColor: borderColor,
-                borderWidth: 4,
-                pointRadius: 8,
-                pointHoverRadius: 12,
-                pointBackgroundColor: scores.map(s => s >= 80 ? '#22c55e' : s >= 60 ? '#fb923c' : '#ef4444'),
-                pointBorderColor: '#fff',
-                pointBorderWidth: 3
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                r: {
-                  beginAtZero: true,
-                  min: 0,
-                  max: 100,
-                  ticks: {
-                    stepSize: 20,
-                    color: labelColor
-                  },
-                  grid: { color: gridColor },
-                  angleLines: { color: gridColor },
-                  pointLabels: {
-                    color: labelColor,
-                    font: { size: 15, weight: '600' }
-                  }
-                }
-              },
-              plugins: {
-                legend: { display: false },
-                tooltip: {
-                  callbacks: {
-                    label: (ctx) => {
-                      const value = Math.round(ctx.parsed.r);
-                      const grade = value >= 80 ? 'Excellent' : value >= 60 ? 'Good' : 'Needs Work';
-                      return `${ctx.label}: ${value}/100 — ${grade}`;
-                    }
-                  }
-                }
-              }
-            }
-          });
-
-          console.log('Radar chart initialized successfully');
-        } catch (e) {
-          console.error('Chart initialization failed:', e);
-        }
-      }, 100);
       
       
       
+      
+      
+      
+      
+      
+            results.innerHTML = `
 <!-- Overall Score Card -->
 <div class="flex justify-center my-12 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-10 max-w-md w-full border-4 ${overall >= 80 ? 'border-green-500' : overall >= 60 ? 'border-orange-400' : 'border-red-500'}">
@@ -471,9 +398,6 @@ document.addEventListener('DOMContentLoaded', () => {
     })()}
   </div>
 </div>
-
-
-
 <!-- On-Page Health Radar Chart -->
 <div class="max-w-5xl mx-auto my-16 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
@@ -488,8 +412,79 @@ document.addEventListener('DOMContentLoaded', () => {
     </p>
   </div>
 </div>
+<!-- Intent -->
+... (rest of your HTML unchanged)
+      `;
 
+      // Show radar container
+      const radarContainer = document.getElementById('radar-container');
+      if (radarContainer) radarContainer.classList.remove('hidden');
 
+      // === RADAR CHART INITIALIZATION (NOW OUTSIDE TEMPLATE) ===
+      setTimeout(() => {
+        const canvas = document.getElementById('health-radar');
+        if (!canvas) {
+          console.warn('Canvas #health-radar not found');
+          return;
+        }
+        console.log('Canvas found, initializing chart...');
+        try {
+          const ctx = canvas.getContext('2d');
+          const isDark = document.documentElement.classList.contains('dark');
+          const gridColor = isDark ? 'rgba(156, 163, 175, 0.3)' : 'rgba(229, 231, 235, 0.8)';
+          const labelColor = isDark ? '#f3f4f6' : '#1f2937';
+          const borderColor = '#fb923c';
+          const fillColor = isDark ? 'rgba(251, 146, 60, 0.15)' : 'rgba(251, 146, 60, 0.1)';
+
+          window.myChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+              labels: modules.map(m => m.name),
+              datasets: [{
+                label: 'Health Score',
+                data: scores,
+                backgroundColor: fillColor,
+                borderColor: borderColor,
+                borderWidth: 4,
+                pointRadius: 8,
+                pointHoverRadius: 12,
+                pointBackgroundColor: scores.map(s => s >= 80 ? '#22c55e' : s >= 60 ? '#fb923c' : '#ef4444'),
+                pointBorderColor: '#fff',
+                pointBorderWidth: 3
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                r: {
+                  beginAtZero: true,
+                  min: 0,
+                  max: 100,
+                  ticks: { stepSize: 20, color: labelColor },
+                  grid: { color: gridColor },
+                  angleLines: { color: gridColor },
+                  pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
+                }
+              },
+              plugins: { legend: { display: false } }
+            }
+          });
+          console.log('Radar chart initialized');
+        } catch (e) {
+          console.error('Chart init failed', e);
+        }
+      }, 150);
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
 <!-- Intent -->
 <div class="text-center mb-12">
   <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">
@@ -912,6 +907,9 @@ document.addEventListener('DOMContentLoaded', () => {
   </button>
 </div>
       `;
+
+
+
 
       // Event delegation for fixes toggles
       results.addEventListener('click', (e) => {
