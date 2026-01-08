@@ -32,7 +32,7 @@ const metricExplanations = [
     why: "Most users browse on mobile devices. Poor mobile experience causes immediate bounces. PWA capabilities increase return visits and engagement significantly."
   },
   {
-    id: "performance",
+    id: "speed",
     emoji: "⚡",
     name: "Performance",
     what: "Performance Optimization measures loading speed and resource efficiency. It flags heavy assets, script bloat, font issues, lazy loading, and image optimization opportunities.",
