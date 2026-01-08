@@ -121,20 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
     results.classList.remove('hidden');
-    const progressText = document.getElementById('progress-text');
-    
-    
-    
-    
-          // Show radar container now that canvas exists
-      const radarContainer = document.getElementById('radar-container');
-      if (radarContainer) radarContainer.classList.remove('hidden');
-    
-    
-   
-    
-    
-    
+    const progressText = document.getElementById('progress-text');        
 
     try {
       progressText.textContent = "Fetching and rendering page...";
@@ -404,8 +391,8 @@ document.addEventListener('DOMContentLoaded', () => {
 <div class="max-w-5xl mx-auto my-16 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
     <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
-    <div class="hidden md:block w-full">
-      <canvas id="health-radar" class="mx-auto min-w-[300px] max-w-full h-[600px]"></canvas>
+    <div class="w-full">
+      <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
     </div>
     <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
       Visual overview of your page performance across 7 key SEO Intent factors
@@ -418,14 +405,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const radarContainer = document.getElementById('radar-container');
       if (radarContainer) radarContainer.classList.remove('hidden');
 
-      // === RADAR CHART INITIALIZATION (NOW OUTSIDE TEMPLATE) ===
-      setTimeout(() => {
+       // === RADAR CHART INITIALIZATION (FINAL) ===
+      requestAnimationFrame(() => {
         const canvas = document.getElementById('health-radar');
         if (!canvas) {
           console.warn('Canvas #health-radar not found');
           return;
         }
-        console.log('Canvas found, initializing chart...');
+        console.log('Canvas found, initializing radar chart...');
         try {
           const ctx = canvas.getContext('2d');
           const isDark = document.documentElement.classList.contains('dark');
@@ -472,7 +459,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) {
           console.error('Chart init failed', e);
         }
-      }, 150);
+      });
       
       
       
