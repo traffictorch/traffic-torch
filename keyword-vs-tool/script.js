@@ -51,7 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!yourUrl || !compUrl || !phrase) return;
 
-    // === Clean single progress container below form ===
+
+
+
+    // === Dual-page progress loader ===
     const progressContainer = document.createElement('div');
     progressContainer.id = 'analysis-progress';
     progressContainer.className = 'mt-12 max-w-4xl mx-auto px-6';
@@ -66,8 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
         <div id="progress-steps" class="mt-16 space-y-6 w-full text-left"></div>
       </div>
     `;
-
-    // Insert safely after form
     if (form.nextSibling) {
       form.parentNode.insertBefore(progressContainer, form.nextSibling);
     } else {
@@ -75,14 +76,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     results.classList.add('hidden');
 
-    // Fetch pages immediately (background)
+    // Fetch both pages
     let yourDoc, compDoc;
     try {
       [yourDoc, compDoc] = await Promise.all([fetchPage(yourUrl), fetchPage(compUrl)]);
     } catch {
       yourDoc = compDoc = null;
     }
-
     if (!yourDoc || !compDoc) {
       progressContainer.remove();
       results.classList.remove('hidden');
@@ -90,24 +90,23 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="text-center py-32 px-6 max-w-3xl mx-auto">
           <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-8">Error: Could not load one or both pages</p>
           <p class="text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
-            Please check URLs, accessibility, and try again.
+            Please check URLs and try again.
           </p>
         </div>
       `;
       return;
     }
 
-    // === Staged progress steps (5.5 seconds total) ===
+    // Dual-analysis progress steps
     const steps = [
-      "Parsing titles, meta descriptions & headings",
-      "Analyzing content depth and keyword placement",
-      "Checking images, internal anchors & schema",
+      "Fetching both pages...",
+      "Parsing titles, meta & headings on both pages",
+      "Comparing content depth & keyword density",
+      "Scanning images, anchors & schema markup",
       "Calculating Phrase Power Scores",
-      "Identifying competitive gaps & fixes"
+      "Identifying competitive gaps"
     ];
-
     const progressSteps = document.getElementById('progress-steps');
-
     let stepIndex = 0;
     const addStep = () => {
       if (stepIndex < steps.length) {
@@ -118,21 +117,23 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="text-lg font-medium text-gray-800 dark:text-gray-200">${steps[stepIndex]}</p>
         `;
         progressSteps.appendChild(stepEl);
-        void stepEl.offsetWidth; // trigger reflow
+        void stepEl.offsetWidth;
         stepEl.classList.remove('opacity-0', 'translate-y-4');
         stepEl.classList.add('opacity-100', 'translate-y-0');
         stepIndex++;
-        setTimeout(addStep, 1100); // ~5.5s total
+        setTimeout(addStep, 1000);
       } else {
-        // Final delay before results
         setTimeout(() => {
           progressContainer.remove();
           renderResults();
-        }, 800);
+        }, 600);
       }
     };
-
     addStep();
+    
+    
+    
+    
 
     // === All scoring & rendering (moved to function for delay) ===
     const renderResults = () => {
