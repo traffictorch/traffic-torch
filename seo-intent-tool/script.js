@@ -488,11 +488,6 @@ document.addEventListener('DOMContentLoaded', () => {
       <button class="fixes-toggle mt-4 mb-3 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
         ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
       </button>
-      ${needsFixSignals.length ? `
-      <button class="more-details-toggle px-6 py-2 border border-orange-500 text-orange-500 rounded-full hover:bg-orange-50 dark:hover:bg-orange-900/30 text-sm">
-        More Details →
-      </button>
-      ` : ''}
       <div class="fixes-panel hidden mt-4 text-left text-xs bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-6">
         ${needsFixSignals.length ? needsFixSignals.map(s => {
           const g = getGrade(s.value);
@@ -507,7 +502,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
             <p class="mt-1 text-gray-700 dark:text-gray-300">${s.why}</p>
           </div>`;
-        }).join('') : '<p class="text-green-600 font-medium text-base mb-4">All signals strong — excellent work!</p>' + signals.map(s => `
+        }).join('') + 
+        `<div class="mt-6 text-center">
+          <button class="more-details-toggle px-6 py-2 border border-orange-500 text-orange-500 rounded-full hover:bg-orange-50 dark:hover:bg-orange-900/30 text-sm">
+            More Details →
+          </button>
+        </div>` 
+        : '<p class="text-green-600 font-medium text-base mb-4">All signals strong — excellent work!</p>' + signals.map(s => `
           <div>
             <p class="font-bold text-green-600 text-base">✅ ${s.name}</p>
             <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
