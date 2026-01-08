@@ -304,54 +304,61 @@ document.addEventListener('DOMContentLoaded', () => {
         let text, emoji, color;
         if (type === 'depth') {
           if (score >= 1500) { text = 'Excellent'; emoji = '✅'; color = 'text-green-600'; }
-          else if (score >= 800) { text = 'Good'; emoji = '🆗 ⚠️'; color = 'text-orange-400'; }
+          else if (score >= 800) { text = 'Good'; emoji = '⚠️'; color = 'text-orange-400'; }
           else { text = 'Needs Work'; emoji = '❌'; color = 'text-red-600'; }
         } else if (type === 'readability') {
           if (score >= 60 && score <= 70) { text = 'Excellent'; emoji = '✅'; color = 'text-green-600'; }
-          else if (score >= 50 && score <= 80) { text = 'Good'; emoji = '🆗 ⚠️'; color = 'text-orange-400'; }
+          else if (score >= 50 && score <= 80) { text = 'Good'; emoji = '⚠️'; color = 'text-orange-400'; }
           else { text = 'Needs Work'; emoji = '❌'; color = 'text-red-600'; }
         } else if (type === 'schema') {
           if (score >= 2) { text = 'Excellent'; emoji = '✅'; color = 'text-green-600'; }
-          else if (score === 1) { text = 'Good'; emoji = '🆗 ⚠️'; color = 'text-orange-400'; }
+          else if (score === 1) { text = 'Good'; emoji = '⚠️'; color = 'text-orange-400'; }
           else { text = 'Needs Work'; emoji = '❌'; color = 'text-red-600'; }
         } else {
           if (score >= 80) { text = 'Excellent'; emoji = '✅'; color = 'text-green-600'; }
-          else if (score >= 60) { text = 'Good'; emoji = '🆗 ⚠️'; color = 'text-orange-400'; }
+          else if (score >= 60) { text = 'Good'; emoji = '⚠️'; color = 'text-orange-400'; }
           else { text = 'Needs Work'; emoji = '❌'; color = 'text-red-600'; }
         }
         return { text, emoji, color };
       }
 
       results.innerHTML = `
-<!-- Big Score Circle -->
+      
+      
+<!-- Overall Score Card -->
 <div class="flex justify-center my-12 px-4">
-  <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square">
-    <svg viewBox="0 0 260 260" class="w-full h-full transform -rotate-90">
-      <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
-      <circle cx="130" cy="130" r="120"
-              stroke="${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'}"
-              stroke-width="18" fill="none"
-              stroke-dasharray="${(overall / 100) * 754} 754"
-              stroke-linecap="round"/>
-    </svg>
-    <div class="absolute inset-0 flex items-center justify-center">
-      <div class="text-center">
-        <div class="text-4xl sm:text-5xl md:text-6xl font-black drop-shadow-2xl"
-             style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'};">
-          ${overall}
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-10 max-w-md w-full border-4 ${overall >= 80 ? 'border-green-500' : overall >= 60 ? 'border-orange-400' : 'border-red-500'}">
+    <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall SEO Intent Score</p>
+    <div class="relative w-64 h-64 mx-auto">
+      <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+        <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
+        <circle cx="100" cy="100" r="90"
+                stroke="${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'}"
+                stroke-width="16" fill="none"
+                stroke-dasharray="${(overall / 100) * 565} 565"
+                stroke-linecap="round"/>
+      </svg>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="text-center">
+          <div class="text-5xl font-black drop-shadow-lg"
+               style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'};">
+            ${overall}
+          </div>
+          <div class="text-lg opacity-80 -mt-1"
+               style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'};">
+            /100
+          </div>
         </div>
-        <div class="text-lg sm:text-xl opacity-80 -mt-2"
-             style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'};">
-          /100
-        </div>
-        ${(() => {
-          const g = getGrade(overall);
-          return `<p class="${g.color} text-2xl font-bold mt-4">${g.emoji} ${g.text}</p>`;
-        })()}
       </div>
     </div>
+    ${(() => {
+      const g = getGrade(overall);
+      return `<p class="${g.color} text-3xl font-bold text-center mt-8">${g.emoji} ${g.text}</p>`;
+    })()}
   </div>
 </div>
+
+
 <!-- Intent -->
 <div class="text-center mb-12">
   <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">
@@ -476,9 +483,16 @@ document.addEventListener('DOMContentLoaded', () => {
           return `<p class="${g.color} font-medium">${g.emoji} ${s.name}</p>`;
         }).join('')}
       </div>
-      <button class="fixes-toggle mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+      
+      
+      <button class="fixes-toggle mt-4 mb-3 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
         ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
       </button>
+      ${needsFixSignals.length ? `
+      <button class="more-details-toggle px-6 py-2 border border-orange-500 text-orange-500 rounded-full hover:bg-orange-50 dark:hover:bg-orange-900/30 text-sm">
+        More Details →
+      </button>
+      ` : ''}
       <div class="fixes-panel hidden mt-4 text-left text-xs bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-6">
         ${needsFixSignals.length ? needsFixSignals.map(s => {
           const g = getGrade(s.value);
@@ -502,9 +516,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="mt-1 text-gray-700 dark:text-gray-300">${s.why}</p>
           </div>
         `).join('')}
-        <button class="more-details-toggle mt-4 text-xs text-orange-500 hover:underline block">
-          More details →
-        </button>
       </div>
       <div class="full-details hidden mt-6 space-y-3 text-left text-sm">
         <p class="text-blue-500 font-bold">What it is?</p>
@@ -524,6 +535,8 @@ document.addEventListener('DOMContentLoaded', () => {
           : 'High trustworthiness signals prevent user bounces, build loyalty, and align with search engine guidelines, avoiding downgrades and ensuring steady organic traffic growth.'}</p>
       </div>
     </div>`;
+    
+    
   }).join('')}
 </div>
 <!-- Content Depth + Readability + Schema Detected -->
