@@ -398,14 +398,14 @@ document.addEventListener('DOMContentLoaded', () => {
     })()}
   </div>
 </div>
+
+
 <!-- On-Page Health Radar Chart -->
 <div class="max-w-5xl mx-auto my-16 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
     <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
-    <div class="hidden md:block">
-      <div class="flex justify-center">
-        <canvas id="health-radar" class="max-w-full h-[600px]"></canvas>
-      </div>
+    <div class="hidden md:block w-full">
+      <canvas id="health-radar" class="mx-auto min-w-[300px] max-w-full h-[600px]"></canvas>
     </div>
     <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
       Visual overview of your page performance across 7 key SEO Intent factors
