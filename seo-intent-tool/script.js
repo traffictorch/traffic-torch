@@ -385,11 +385,11 @@ document.addEventListener('DOMContentLoaded', () => {
 <!-- On-Page Health Radar Chart -->
 <div class="max-w-5xl mx-auto my-16 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
-    <h3 class="text-2xl font-bold text-center text-gray-400 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
+    <h3 class="text-2xl font-bold text-center text-gray-700 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
     <div class="w-full">
       <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
     </div>
-    <p class="text-center text-sm text-gray-400 dark:text-gray-400 mt-6">
+    <p class="text-center text-sm text-gray-700 dark:text-gray-400 mt-6">
       Visual overview of your page performance across 7 key SEO Intent factors
     </p>
   </div>
@@ -787,20 +787,18 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
 
       // === RADAR CHART INITIALIZATION ===
-      setTimeout(() => {
+            setTimeout(() => {
         const canvas = document.getElementById('health-radar');
         if (!canvas) {
           console.warn('Canvas #health-radar not found');
           return;
         }
-        console.log('Canvas found, initializing radar chart...');
         try {
           const ctx = canvas.getContext('2d');
-          const isDark = document.documentElement.classList.contains('dark');
-          const gridColor = isDark ? 'rgba(156, 163, 175, 0.3)' : 'rgba(229, 231, 235, 0.8)';
-          const labelColor = isDark ? '#f3f4f6' : '#1f2937';
+          const labelColor = '#9ca3af'; // gray-400 — works perfectly day/night
+          const gridColor = 'rgba(156, 163, 175, 0.3)';
           const borderColor = '#fb923c';
-          const fillColor = isDark ? 'rgba(251, 146, 60, 0.15)' : 'rgba(251, 146, 60, 0.1)';
+          const fillColor = 'rgba(251, 146, 60, 0.15)';
 
           window.myChart = new Chart(ctx, {
             type: 'radar',
@@ -836,7 +834,6 @@ document.addEventListener('DOMContentLoaded', () => {
               plugins: { legend: { display: false } }
             }
           });
-          console.log('Radar chart initialized');
         } catch (e) {
           console.error('Chart init failed', e);
         }
