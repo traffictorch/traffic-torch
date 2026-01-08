@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ${!hasIssues ? '<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg mt-6">🎉 You outperform the competitor here!</p>' : ''}
           </div>
           <div class="text-center mt-8 pt-6 border-t border-red-200 dark:border-red-700">
-            <a href="javascript:void(0)" onclick="window.location.href='/keyword-vs-tool/#${hashId}'; return false;" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
+            <a href="#${hashId}" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
               Learn more about ${m.name}
             </a>
           </div>
@@ -413,7 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </button>
         <div class="hidden mt-6 space-y-6 text-left text-sm">
           <div class="text-center mb-4">
-            <a href="javascript:void(0)" onclick="window.location.href='/keyword-vs-tool/#${hashId}'; return false;" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
+            <a href="#${hashId}" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
               How ${m.name} is compared?
             </a>
           </div>
@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="text-green-600 dark:text-green-400 font-bold mt-3">How to improve?</p><p class="text-gray-800 dark:text-gray-200">${educ.how}</p>
           <p class="text-orange-600 dark:text-orange-400 font-bold mt-3">Why it matters?</p><p class="text-gray-800 dark:text-gray-200">${educ.why}</p>
           <div class="text-center mt-8 pt-6 border-t border-gray-300 dark:border-gray-700">
-            <a href="javascript:void(0)" onclick="window.location.href='/keyword-vs-tool/#${hashId}'; return false;" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
+            <a href="#${hashId}" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
               Learn more about ${m.name}
             </a>
           </div>
