@@ -348,6 +348,12 @@ document.addEventListener('DOMContentLoaded', () => {
                style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'};">
             /100
           </div>
+          ${(() => {
+            const title = (doc.title || '').trim();
+            if (!title) return '';
+            const truncated = title.length > 65 ? title.substring(0, 65) : title;
+            return `<p class="mt-4 text-base text-gray-600 dark:text-gray-200 leading-tight px-4">${truncated}</p>`;
+          })()}
         </div>
       </div>
     </div>
