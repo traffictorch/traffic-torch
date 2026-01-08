@@ -189,6 +189,9 @@ data.content = {
 
       yourScore = Math.min(100, Math.round(yourScore));
       compScore = Math.min(100, Math.round(compScore));
+      
+      const yourGrade = getGrade(yourScore);
+      const compGrade = getGrade(compScore);
 
       // === Top Priority Fixes & Final Render (same as previous epic version) ===
       const moduleOrder = ['meta', 'headings', 'content', 'alts', 'anchors', 'urlSchema'];
@@ -261,99 +264,187 @@ data.content = {
       const finalFixes = topFixes.slice(0, 3);
 
       results.classList.remove('hidden');
+      
+      
+      
       results.innerHTML = `
-<!-- Big Score Circles -->
-<div class="grid md:grid-cols-2 gap-8 lg:gap-12 my-12 px-4">
+      
+      
+<!-- Big Score Circles - Your Page vs Competitor -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-12 px-4 max-w-5xl mx-auto">
+  <!-- Your Page -->
   <div class="text-center">
-    <h3 class="text-2xl font-bold text-green-500 mb-6">Your Phrase Power Score</h3>
-    <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square mx-auto">
-      <svg viewBox="0 0 260 260" class="w-full h-full transform -rotate-90">
-        <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="20" fill="none"/>
-        <circle cx="130" cy="130" r="120" stroke="${getCircleColor(yourScore)}" stroke-width="20" fill="none" stroke-dasharray="${(yourScore / 100) * 754} 754" stroke-linecap="round" class="drop-shadow-lg"/>
+    <p class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">Your Page</p>
+    <div class="relative w-full max-w-xs aspect-square mx-auto">
+      <svg viewBox="0 0 160 160" class="w-full h-full transform -rotate-90">
+        <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="14" fill="none"/>
+        <circle cx="80" cy="80" r="70"
+                stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#fb923c' : '#ef4444'}"
+                stroke-width="14" fill="none"
+                stroke-dasharray="${(yourScore / 100) * 439} 439"
+                stroke-linecap="round"/>
       </svg>
-      <div class="absolute inset-0 flex flex-col items-center justify-center">
-        <span class="text-5xl sm:text-6xl md:text-7xl font-black ${getTextColorClass(yourScore)} drop-shadow-2xl">${yourScore}</span>
-        <span class="text-xl sm:text-2xl text-gray-500 dark:text-gray-500">/100</span>
-      </div>
-    </div>
-  </div>
-  <div class="text-center">
-    <h3 class="text-2xl font-bold text-red-500 mb-6">Competitor Phrase Power Score</h3>
-    <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square mx-auto">
-      <svg viewBox="0 0 260 260" class="w-full h-full transform -rotate-90">
-        <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="20" fill="none"/>
-        <circle cx="130" cy="130" r="120" stroke="${getCircleColor(compScore)}" stroke-width="20" fill="none" stroke-dasharray="${(compScore / 100) * 754} 754" stroke-linecap="round" class="drop-shadow-lg"/>
-      </svg>
-      <div class="absolute inset-0 flex flex-col items-center justify-center">
-        <span class="text-5xl sm:text-6xl md:text-7xl font-black ${getTextColorClass(compScore)} drop-shadow-2xl">${compScore}</span>
-        <span class="text-xl sm:text-2xl text-gray-500 dark:text-gray-500">/100</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Gap Verdict -->
-<div class="text-center mb-12">
-  <p class="text-4xl font-bold text-green-500 mb-8">
-    Competitive Gap: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-      ${yourScore > compScore ? 'You Lead' : yourScore < compScore ? 'Competitor Leads' : 'Neck & Neck'}
-    </span>
-  </p>
-  <p class="text-xl text-gray-500">Target phrase: "${phrase}"</p>
-</div>
-
-<!-- Small Module Cards - FIXED: 2 columns on desktop (3 rows), no base padding, balanced internal spacing -->
-<div class="grid md:grid-cols-2 gap-8 my-16">
-  ${[
-    { name: 'Meta Title & Desc', you: data.meta.yourMatches > 0 ? 100 : 0, comp: data.meta.compMatches > 0 ? 100 : 0, border: data.meta.yourMatches > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Checks if your target phrase appears naturally in the page title and meta description.", how: "Add the keyword near the start of the title (keep under 60 chars) and include it once in the meta description (under 155 chars).", why: "Google uses title and description for rankings and click-through rates — pages with keyword in both see 20-30% higher CTR." } },
-    { name: 'H1 & Headings', you: data.headings.yourH1Match > 0 ? 100 : 0, comp: data.headings.compH1Match > 0 ? 100 : 0, border: data.headings.yourH1Match > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Evaluates whether your main H1 heading contains the target phrase.", how: "Rewrite the H1 to include the exact or close-variant phrase while keeping it compelling and reader-focused.", why: "H1 is the strongest on-page signal for topic relevance and helps Google understand what the page is about." } },
-    { name: 'Content Density', you: parseFloat(data.content.yourDensity), comp: parseFloat(data.content.compDensity), border: parseFloat(data.content.yourDensity) >= 1 ? 'border-green-500' : 'border-red-500', educ: { what: "Measures how often the target phrase appears relative to total word count (ideal 1-2%).", how: "Add the phrase naturally in subheadings, intro, conclusion, and body — aim for 800+ words of in-depth content.", why: "Proper density signals relevance without stuffing; longer, keyword-optimized content dominates rankings." } },
-    { name: 'Image Alts', you: data.alts.yourPhrase > 0 ? 100 : 0, comp: data.alts.compPhrase > 0 ? 100 : 0, border: data.alts.yourPhrase > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Checks if any image alt text contains the target phrase.", how: "Update alt text of key images (hero, featured) to include the phrase descriptively.", why: "Improves accessibility, enables image search traffic, and adds extra relevance signals." } },
-    { name: 'Anchor Text', you: data.anchors.your > 0 ? 100 : 0, comp: data.anchors.comp > 0 ? 100 : 0, border: data.anchors.your > 0 ? 'border-green-500' : 'border-red-500', educ: { what: "Looks for internal links using the target phrase as anchor text.", how: "Add or edit internal links to use the phrase naturally where relevant.", why: "Strengthens site-wide relevance and improves internal PageRank flow." } },
-    { name: 'URL & Schema', you: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)), comp: Math.min(100, (data.urlSchema.compUrlMatch > 0 ? 50 : 0) + (data.urlSchema.compSchema ? 50 : 0)), border: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)) >= 50 ? 'border-green-500' : 'border-red-500', educ: { what: "Combines URL keyword inclusion and structured data presence.", how: "Include phrase in URL slug if possible; add JSON-LD schema (FAQ, Article, etc.).", why: "Descriptive URLs aid crawling; schema unlocks rich snippets and better SERP visibility." } }
-  ].map((m) => `
-    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-0 px-8 pt-12 pb-10 border-l-8 ${m.border} flex flex-col">
-      <h4 class="text-xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">${m.name}</h4>
-      <div class="flex-grow flex flex-col justify-center">
-        <div class="grid grid-cols-2 gap-8">
-          <div class="flex flex-col items-center">
-            <div class="relative w-32 h-32">
-              <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-                <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="14" fill="none"/>
-                <circle cx="64" cy="64" r="56" stroke="${getCircleColor(m.you)}" stroke-width="14" fill="none" stroke-dasharray="${(m.you / 100) * 352} 352" stroke-linecap="round"/>
-              </svg>
-              <div class="absolute inset-0 flex items-center justify-center">
-                <span class="text-4xl font-black ${getTextColorClass(m.you)}">${Math.round(m.you)}</span>
-              </div>
-            </div>
-            <p class="mt-6 text-lg font-medium">You</p>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="text-center">
+          <div class="text-4xl sm:text-5xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
+            ${yourScore}
           </div>
-          <div class="flex flex-col items-center">
-            <div class="relative w-32 h-32">
-              <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-                <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="14" fill="none"/>
-                <circle cx="64" cy="64" r="56" stroke="${getCircleColor(m.comp)}" stroke-width="14" fill="none" stroke-dasharray="${(m.comp / 100) * 352} 352" stroke-linecap="round"/>
+          <div class="text-lg text-gray-500 dark:text-gray-400">/100</div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-6">
+      <div class="text-3xl font-bold ${yourGrade.color}">
+        ${yourGrade.emoji} ${yourGrade.grade}
+      </div>
+    </div>
+  </div>
+
+  <!-- Competitor Page -->
+  <div class="text-center">
+    <p class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">Competitor Page</p>
+    <div class="relative w-full max-w-xs aspect-square mx-auto">
+      <svg viewBox="0 0 160 160" class="w-full h-full transform -rotate-90">
+        <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="14" fill="none"/>
+        <circle cx="80" cy="80" r="70"
+                stroke="${compScore >= 80 ? '#22c55e' : compScore >= 60 ? '#fb923c' : '#ef4444'}"
+                stroke-width="14" fill="none"
+                stroke-dasharray="${(compScore / 100) * 439} 439"
+                stroke-linecap="round"/>
+      </svg>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="text-center">
+          <div class="text-4xl sm:text-5xl font-black drop-shadow-2xl ${compScore >= 80 ? 'text-green-500 dark:text-green-400' : compScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
+            ${compScore}
+          </div>
+          <div class="text-lg text-gray-500 dark:text-gray-400">/100</div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-6">
+      <div class="text-3xl font-bold ${compGrade.color}">
+        ${compGrade.emoji} ${compGrade.grade}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Small Metric Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 my-16">
+  ${[
+    { name: 'Meta Title & Desc', you: data.meta.yourMatches > 0 ? 100 : 0, comp: data.meta.compMatches > 0 ? 100 : 0 },
+    { name: 'H1 & Headings', you: data.headings.yourH1Match > 0 ? 100 : 0, comp: data.headings.compH1Match > 0 ? 100 : 0 },
+    { name: 'Content Density', you: parseFloat(data.content.yourDensity), comp: parseFloat(data.content.compDensity) },
+    { name: 'Image Alts', you: data.alts.yourPhrase > 0 ? 100 : 0, comp: data.alts.compPhrase > 0 ? 100 : 0 },
+    { name: 'Anchor Text', you: data.anchors.your > 0 ? 100 : 0, comp: data.anchors.comp > 0 ? 100 : 0 },
+    { name: 'URL & Schema', you: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)), comp: Math.min(100, (data.urlSchema.compUrlMatch > 0 ? 50 : 0) + (data.urlSchema.compSchema ? 50 : 0)) }
+  ].map(m => {
+    const yourScore = m.you;
+    const compScore = m.comp;
+    const yourGrade = getGrade(Math.round(yourScore));
+    const compGrade = getGrade(Math.round(compScore));
+    const borderColor = yourScore >= compScore ? 'border-green-500' : 'border-red-500';
+    const hashId = moduleHashes[m.name] || '';
+    const educ = window.metricExplanations.find(e => e.name === m.name) || { what: '', how: '', why: '' };
+    const diagnostics = [
+      { status: yourScore >= compScore ? '✅' : '❌', issue: 'Your page', how: yourScore >= compScore ? 'Stronger than competitor' : 'Needs improvement' },
+      { status: compScore > yourScore ? '✅' : '❌', issue: 'Competitor page', how: compScore > yourScore ? 'Outperforms you' : 'Weaker than your page' }
+    ];
+    const hasIssues = yourScore < compScore;
+    return `
+      <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderColor}">
+        <h4 class="text-xl font-medium mb-4">${m.name}</h4>
+        <div class="grid grid-cols-2 gap-8 mb-8">
+          <div>
+            <div class="relative w-24 h-24 mx-auto">
+              <svg width="96" height="96" viewBox="0 0 96 96" class="transform -rotate-90">
+                <circle cx="48" cy="48" r="40" stroke="#e5e7eb" stroke-width="10" fill="none"/>
+                <circle cx="48" cy="48" r="40" stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#eab308' : '#ef4444'}"
+                        stroke-width="10" fill="none" stroke-dasharray="${(yourScore / 100) * 251} 251" stroke-linecap="round"/>
               </svg>
-              <div class="absolute inset-0 flex items-center justify-center">
-                <span class="text-4xl font-black ${getTextColorClass(m.comp)}">${Math.round(m.comp)}</span>
+              <div class="absolute inset-0 flex items-center justify-center text-3xl font-black ${yourScore >= 80 ? 'text-green-600' : yourScore >= 60 ? 'text-yellow-600' : 'text-red-600'}">
+                ${Math.round(yourScore)}
               </div>
             </div>
-            <p class="mt-6 text-lg font-medium">Comp</p>
+            <p class="mt-3 text-sm font-medium">You</p>
+          </div>
+          <div>
+            <div class="relative w-24 h-24 mx-auto">
+              <svg width="96" height="96" viewBox="0 0 96 96" class="transform -rotate-90">
+                <circle cx="48" cy="48" r="40" stroke="#e5e7eb" stroke-width="10" fill="none"/>
+                <circle cx="48" cy="48" r="40" stroke="${compScore >= 80 ? '#22c55e' : compScore >= 60 ? '#eab308' : '#ef4444'}"
+                        stroke-width="10" fill="none" stroke-dasharray="${(compScore / 100) * 251} 251" stroke-linecap="round"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center text-3xl font-black ${compScore >= 80 ? 'text-green-600' : compScore >= 60 ? 'text-yellow-600' : 'text-red-600'}">
+                ${Math.round(compScore)}
+              </div>
+            </div>
+            <p class="mt-3 text-sm font-medium">Comp</p>
+          </div>
+        </div>
+        <div class="space-y-2 mb-6">
+          <div class="text-xl font-bold ${yourGrade.color}">${yourGrade.emoji} ${yourGrade.grade}</div>
+          <div class="text-xl font-bold ${compGrade.color}">${compGrade.emoji} ${compGrade.grade}</div>
+        </div>
+        <button onclick="this.parentElement.querySelector('.fixes-panel').classList.toggle('hidden')" class="w-full py-3 bg-red-600 text-white rounded-full hover:bg-red-700 text-sm font-bold">
+          Show Fixes
+        </button>
+        <div class="fixes-panel hidden mt-6 p-6 bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800">
+          <div class="text-center mb-6">
+            <div class="text-3xl">${yourScore < compScore ? '🔴' : '🟢'}</div>
+            <div class="text-2xl font-black ${yourScore < compScore ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}">${m.name}</div>
+            <div class="text-xl font-bold ${yourScore < compScore ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'} mt-2">
+              ${yourScore < compScore ? 'Competitor Wins' : 'You Win'}
+            </div>
+          </div>
+          <div class="space-y-4 text-left">
+            ${diagnostics.map(d => `
+              <div class="flex items-start gap-3">
+                <span class="text-xl mt-1">${d.status}</span>
+                <div>
+                  <p class="font-medium text-gray-800 dark:text-gray-200">${d.issue}</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">${d.how}</p>
+                </div>
+              </div>
+            `).join('')}
+            ${!hasIssues ? '<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg mt-6">🎉 You outperform the competitor here!</p>' : ''}
+          </div>
+          <div class="text-center mt-8 pt-6 border-t border-red-200 dark:border-red-700">
+            <a href="javascript:void(0)" onclick="window.location.href='/keyword-vs-tool/#${hashId}'; return false;" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
+              Learn more about ${m.name}
+            </a>
+          </div>
+        </div>
+        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="w-full mt-3 py-3 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm font-bold">
+          More Details
+        </button>
+        <div class="hidden mt-6 space-y-6 text-left text-sm">
+          <div class="text-center mb-4">
+            <a href="javascript:void(0)" onclick="window.location.href='/keyword-vs-tool/#${hashId}'; return false;" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
+              How ${m.name} is compared?
+            </a>
+          </div>
+          <p class="text-blue-600 dark:text-blue-400 font-bold">What is it?</p><p class="text-gray-800 dark:text-gray-200">${educ.what}</p>
+          <p class="text-green-600 dark:text-green-400 font-bold mt-3">How to improve?</p><p class="text-gray-800 dark:text-gray-200">${educ.how}</p>
+          <p class="text-orange-600 dark:text-orange-400 font-bold mt-3">Why it matters?</p><p class="text-gray-800 dark:text-gray-200">${educ.why}</p>
+          <div class="text-center mt-8 pt-6 border-t border-gray-300 dark:border-gray-700">
+            <a href="javascript:void(0)" onclick="window.location.href='/keyword-vs-tool/#${hashId}'; return false;" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
+              Learn more about ${m.name}
+            </a>
           </div>
         </div>
       </div>
-      <button onclick="const details=this.closest('div').querySelector('.educ-details');details.classList.toggle('hidden');this.textContent=details.classList.contains('hidden')?'Show Details':'Hide Details';"
-              class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow mt-auto">
-        Show Details
-      </button>
-      <div class="educ-details mt-8 space-y-6 hidden">
-        <div><p class="font-semibold text-orange-600 dark:text-orange-400">What is it?</p><p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.what}</p></div>
-        <div><p class="font-semibold text-orange-600 dark:text-orange-400">How to improve?</p><p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.how}</p></div>
-        <div><p class="font-semibold text-orange-600 dark:text-orange-400">Why it matters?</p><p class="mt-2 text-gray-700 dark:text-gray-300">${m.educ.why}</p></div>
-      </div>
-    </div>
-  `).join('')}
+    `;
+  }).join('')}
 </div>
+
+
+
+
+
 
 <!-- Top Priority Fixes -->
 <div class="my-20 max-w-5xl mx-auto">
