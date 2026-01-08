@@ -46,6 +46,15 @@ document.addEventListener('DOMContentLoaded', () => {
   if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
   return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
 };
+
+const moduleHashes = {
+  'Meta Title & Desc': 'meta-title-desc',
+  'H1 & Headings': 'h1-headings',
+  'Content Density': 'content-density',
+  'Image Alts': 'image-alts',
+  'Anchor Text': 'anchor-text',
+  'URL & Schema': 'url-schema'
+};
   
   
   
