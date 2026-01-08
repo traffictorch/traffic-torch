@@ -122,6 +122,81 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     results.classList.remove('hidden');
     const progressText = document.getElementById('progress-text');
+    
+    
+    
+          // === RADAR CHART INITIALIZATION ===
+      try {
+        if (window.innerWidth >= 768) {
+          const radarCtx = document.getElementById('health-radar').getContext('2d');
+          const isDark = document.documentElement.classList.contains('dark');
+          const gridColor = isDark ? 'rgba(156, 163, 175, 0.5)' : 'rgba(0, 0, 0, 0.1)';
+          const labelColor = isDark ? '#d1d5db' : '#4b5563';
+          const borderColor = isDark ? '#9ca3af' : '#6b7280';
+
+          new Chart(radarCtx, {
+            type: 'radar',
+            data: {
+              labels: modules.map(m => m.name),
+              datasets: [{
+                label: 'Health Score',
+                data: scores,
+                backgroundColor: isDark ? 'rgba(156, 163, 175, 0.2)' : 'rgba(251, 146, 60, 0.1)',
+                borderColor: '#fb923c',
+                borderWidth: 3,
+                pointRadius: 6,
+                pointHoverRadius: 10,
+                pointBackgroundColor: scores.map(s => s >= 80 ? '#22c55e' : s >= 60 ? '#fb923c' : '#ef4444'),
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                r: {
+                  beginAtZero: true,
+                  min: 0,
+                  max: 100,
+                  ticks: {
+                    stepSize: 20,
+                    color: labelColor,
+                    backdropColor: 'transparent'
+                  },
+                  grid: { color: gridColor },
+                  angleLines: { color: gridColor },
+                  pointLabels: {
+                    color: labelColor,
+                    font: { size: 14, weight: '600' }
+                  }
+                }
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  backgroundColor: isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                  titleColor: labelColor,
+                  bodyColor: labelColor,
+                  callbacks: {
+                    label: (ctx) => {
+                      const value = Math.round(ctx.parsed.r);
+                      let grade = value >= 80 ? 'Excellent' : value >= 60 ? 'Good' : 'Needs Work';
+                      return `${ctx.label}: ${value}/100 (${grade})`;
+                    }
+                  }
+                }
+              }
+            }
+          });
+        }
+      } catch (e) {
+        console.warn('Radar chart failed to initialize', e);
+      }
+    
+    
+    
+    
 
     try {
       progressText.textContent = "Fetching and rendering page...";
@@ -321,6 +396,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return { text, emoji, color };
       }
+      
+            // === RADAR CHART DATA ===
+      const normalizeDepth = words >= 1500 ? 100 : words >= 800 ? 75 : words >= 400 ? 50 : 20;
+      const normalizeReadability = readability >= 60 && readability <= 70 ? 100 : (readability >= 50 && readability <= 80) ? 75 : 40;
+      const normalizeSchema = schemaTypes.length >= 3 ? 100 : schemaTypes.length >= 2 ? 90 : schemaTypes.length === 1 ? 60 : 20;
+
+      const modules = [
+        { name: 'Experience', score: experienceScore },
+        { name: 'Expertise', score: expertiseScore },
+        { name: 'Authoritativeness', score: authoritativenessScore },
+        { name: 'Trustworthiness', score: trustworthinessScore },
+        { name: 'Content Depth', score: normalizeDepth },
+        { name: 'Readability', score: normalizeReadability },
+        { name: 'Schema', score: normalizeSchema }
+      ];
+
+      const scores = modules.map(m => m.score);
 
       results.innerHTML = `
       
@@ -361,6 +453,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const g = getGrade(overall);
       return `<p class="${g.color} text-3xl font-bold text-center mt-6">${g.emoji} ${g.text}</p>`;
     })()}
+  </div>
+</div>
+
+<!-- On-Page Health Radar Chart -->
+<div class="max-w-5xl mx-auto my-16 px-4">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
+    <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
+    <div class="relative h-96 md:h-[500px]">
+      <canvas id="health-radar"></canvas>
+    </div>
+    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
+      Visual overview of your page performance across 7 key SEO Intent factors
+    </p>
   </div>
 </div>
 
