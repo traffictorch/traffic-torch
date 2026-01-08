@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const phraseInput = document.getElementById('target-phrase');
   const results = document.getElementById('results');
   const PROXY = 'https://rendered-proxy.traffictorch.workers.dev/';
+
   const fetchPage = async (url) => {
     try {
       const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
@@ -15,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return null;
     }
   };
+
   const countPhrase = (text = '', phrase = '') => {
     if (!text || !phrase) return 0;
     const lower = text.toLowerCase();
@@ -24,15 +26,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cleanP.length > 4) matches += (lower.match(new RegExp(cleanP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')) || []).length;
     return matches;
   };
+
   const getCleanContent = (doc) => {
     if (!doc?.body) return '';
     const clone = doc.body.cloneNode(true);
     clone.querySelectorAll('nav, header, footer, aside, script, style, noscript, .menu, .nav, .navbar, .footer, .cookie, .popup').forEach(el => el.remove());
     return clone.textContent.replace(/\s+/g, ' ').trim();
   };
+
   const getWordCount = (doc) => getCleanContent(doc).split(/\s+/).filter(w => w.length > 0).length;
+
   const getCircleColor = (score) => score < 60 ? '#ef4444' : score < 80 ? '#fb923c' : '#22c55e';
   const getTextColorClass = (score) => score < 60 ? 'text-red-600 dark:text-red-400' : score < 80 ? 'text-orange-500 dark:text-orange-400' : 'text-green-600 dark:text-green-400';
+
   const getGrade = (score) => {
     if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
     if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
@@ -49,8 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
     'Anchor Text': 'anchor-text',
     'URL & Schema': 'url-schema'
   };
-  
-
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
@@ -190,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const yourGrade = getGrade(yourScore);
       const compGrade = getGrade(compScore);
 
-      // === Top Priority Fixes & Final Render ===
+      // === Top Priority Fixes ===
       const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'Image Alts', 'Anchor Text', 'URL & Schema'];
       const failedModules = [];
       if (data.meta.yourMatches === 0) failedModules.push({ id: 'meta', name: 'Meta Title & Desc' });
@@ -249,10 +253,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const finalFixes = topFixes.slice(0, 3);
       results.classList.remove('hidden');
-      
-      
-      
-            results.innerHTML = `
+
+      results.innerHTML = `
 <!-- Big Score Circles - Your Page vs Competitor -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-12 px-4 max-w-5xl mx-auto">
   <!-- Your Page -->
@@ -282,7 +284,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>
   </div>
-
   <!-- Competitor Page -->
   <div class="text-center">
     <p class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">Competitor Page</p>
@@ -311,7 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
-
 <!-- Competitive Gap Verdict -->
 <div class="text-center my-12">
   <p class="text-4xl font-bold text-gray-800 dark:text-gray-200">
@@ -322,7 +322,6 @@ document.addEventListener('DOMContentLoaded', () => {
   </p>
   <p class="text-xl text-gray-600 dark:text-gray-400 mt-4">Target phrase: "${phrase}"</p>
 </div>
-
 <!-- Small Metric Cards -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 my-16">
   ${[
@@ -339,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const compGrade = getGrade(Math.round(compScore));
     const borderColor = yourScore >= compScore ? 'border-green-500' : 'border-red-500';
     const hashId = moduleHashes[m.name] || '';
-    const educ = window.metricExplanations.find(e => e.name === m.name) || { what: '', how: '', why: '' };
+    const educ = window.metricExplanations?.find(e => e.name === m.name) || { what: '', how: '', why: '' };
     const diagnostics = [
       { status: yourScore >= compScore ? '✅' : '❌', issue: 'Your page', how: yourScore >= compScore ? 'Stronger than competitor' : 'Needs improvement' },
       { status: compScore > yourScore ? '✅' : '❌', issue: 'Competitor page', how: compScore > yourScore ? 'Outperforms you' : 'Weaker than your page' }
@@ -405,8 +404,8 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div class="text-center mt-8 pt-6 border-t border-red-200 dark:border-red-700">
             <a href="javascript:void(0)" onclick="window.location.href='/keyword-vs-tool/#${hashId}'; return false;" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
- 			 Learn more about ${m.name}
-			</a>
+              Learn more about ${m.name}
+            </a>
           </div>
         </div>
         <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="w-full mt-3 py-3 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm font-bold">
@@ -431,7 +430,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }).join('')}
 </div>
-
 <!-- Top Priority Fixes & Competitive Gaps -->
 <div class="my-20 max-w-5xl mx-auto">
   <h3 class="text-4xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
@@ -462,7 +460,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   `}
 </div>
-
 <!-- Closing the Relevance Gap & Projected Gains -->
 <div class="grid md:grid-cols-2 gap-12 my-20 max-w-6xl mx-auto">
   <!-- Left: Relevance Improvement -->
@@ -581,7 +578,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `}
   </div>
 </div>
-
 <!-- PDF Button -->
 <div class="text-center my-20">
   <button onclick='document.querySelectorAll(".hidden").forEach(el => el.classList.remove("hidden")); window.print();'
@@ -591,4 +587,6 @@ document.addEventListener('DOMContentLoaded', () => {
   </button>
 </div>
       `;
-      
+    };
+  });
+});
