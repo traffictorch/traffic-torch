@@ -223,25 +223,29 @@ document.addEventListener('DOMContentLoaded', () => {
     
     results.innerHTML = `
 <!-- Big Score Circle -->
-<div class="flex justify-center my-12 px-4">
-  <div class="relative w-full max-w-xs sm:max-w-sm aspect-square">
-    <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
-      <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
-      <circle cx="100" cy="100" r="90"
+<div class="flex justify-center my-8 px-4">
+  <div class="relative w-full max-w-xs aspect-square">
+    <svg viewBox="0 0 160 160" class="w-full h-full transform -rotate-90">
+      <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="14" fill="none"/>
+      <circle cx="80" cy="80" r="70"
               stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#fb923c' : '#ef4444'}"
-              stroke-width="16" fill="none"
-              stroke-dasharray="${(yourScore / 100) * 565} 565"
+              stroke-width="14" fill="none"
+              stroke-dasharray="${(yourScore / 100) * 439} 439"
               stroke-linecap="round"/>
     </svg>
-    <div class="absolute inset-0 flex flex-col items-center justify-center pt-4">
-      <div class="text-5xl sm:text-6xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
-        ${yourScore}
-      </div>
-      <div class="text-xl text-gray-500 dark:text-gray-400">/100</div>
-      <div class="mt-6 text-3xl font-bold ${bigGrade.color}">
-        ${bigGrade.emoji} ${bigGrade.grade}
+    <div class="absolute inset-0 flex items-center justify-center">
+      <div class="text-center">
+        <div class="text-4xl sm:text-5xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
+          ${yourScore}
+        </div>
+        <div class="text-lg text-gray-500 dark:text-gray-400">/100</div>
       </div>
     </div>
+  </div>
+</div>
+<div class="text-center -mt-6 mb-10">
+  <div class="text-3xl font-bold ${bigGrade.color}">
+    ${bigGrade.emoji} ${bigGrade.grade}
   </div>
 </div>
 
