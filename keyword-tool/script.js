@@ -379,7 +379,7 @@ return `
             ${!hasIssues ? '<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">🎉 This module is fully optimized!</p>' : ''}
           </div>
           <div class="text-center mt-8 pt-6 border-t border-red-200 dark:border-red-700">
-            <a href="javascript:void(0)" onclick="window.location.href='/#${hashId}'" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
+            <a href="/keyword-tool/#${hashId}" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
               Learn more about ${m.name}
             </a>
           </div>
@@ -389,7 +389,7 @@ return `
         </button>
         <div class="hidden mt-6 space-y-6 text-left text-sm">
           <div class="text-center mb-4">
-            <a href="javascript:void(0)" onclick="window.location.href='/#${hashId}'" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
+            <a href="/keyword-tool/#${hashId}" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
               How ${m.name} is tested?
             </a>
           </div>
@@ -398,7 +398,7 @@ return `
           <p class="text-green-600 dark:text-green-400 font-bold mt-3">How to fix?</p><p class="text-gray-800 dark:text-gray-200">${m.how}</p>
           <p class="text-orange-600 dark:text-orange-400 font-bold mt-3">Why it matters?</p><p class="text-gray-800 dark:text-gray-200">${m.why}</p>
           <div class="text-center mt-8 pt-6 border-t border-gray-300 dark:border-gray-700">
-            <a href="javascript:void(0)" onclick="window.location.href='/#${hashId}'" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
+            <a href="/keyword-tool/#${hashId}" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
               Learn more about ${m.name}
             </a>
           </div>
