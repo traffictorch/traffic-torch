@@ -124,10 +124,3 @@ html, body {
 
 
 
-/* 360 Health Radar */
-#radar-container canvas#health-radar {
-  max-width: 600px;
-  width: 100%;
-  margin: 0 auto;
-}
-
