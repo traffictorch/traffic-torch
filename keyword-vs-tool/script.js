@@ -39,6 +39,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const getCircleColor = (score) => score < 60 ? '#ef4444' : score < 80 ? '#fb923c' : '#22c55e';
   const getTextColorClass = (score) => score < 60 ? 'text-red-600 dark:text-red-400' : score < 80 ? 'text-orange-500 dark:text-orange-400' : 'text-green-600 dark:text-green-400';
 
+  const getGrade = (score) => {
+  if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+  if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+  if (score >= 50) return { grade: 'Average', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
+  if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+  return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+};
+  
+  
+  
   form.addEventListener('submit', async e => {
     e.preventDefault();
 
@@ -450,23 +460,45 @@ data.content = {
 <!-- Top Priority Fixes -->
 <div class="my-20 max-w-5xl mx-auto">
   <h3 class="text-4xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-    Top Priority Fixes
+    Top Priority Fixes & Competitive Gaps
   </h3>
-  ${finalFixes.length > 0 ? finalFixes.map((fix, i) => `
-    <div class="mb-8 bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 border-l-8 ${fix.isWorst ? 'border-red-600' : 'border-orange-500'} flex gap-6">
-      <div class="text-6xl font-black text-orange-500">${i + 1}</div>
-      <div class="flex-1">
-        <p class="text-2xl font-bold mb-3 text-gray-900 dark:text-gray-100">${fix.module}</p>
-<div class="text-xl text-gray-700 dark:text-gray-300 space-y-2">
-  ${fix.text.split('\n').map(line => `<p>${line}</p>`).join('')}
-</div>
-        ${fix.isWorst && finalFixes.filter(f => f.isWorst).length > 1 ? '<p class="mt-4 text-sm italic text-red-600 dark:text-red-400">(Critical module — multiple gaps detected)</p>' : ''}
-      </div>
+  ${finalFixes.length > 0 ? `
+    <div class="space-y-12">
+      ${finalFixes.map((fix, i) => {
+        const isCompWin = fix.module && yourScoreForModule(fix.module) < compScoreForModule(fix.module);
+        return `
+          <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 border-l-8 ${isCompWin ? 'border-red-600' : 'border-orange-500'} flex gap-8">
+            <div class="text-6xl font-black text-orange-600 dark:text-orange-400">${i + 1}</div>
+            <div class="flex-1">
+              <div class="flex items-center gap-4 mb-4">
+                <h4 class="text-2xl font-bold text-gray-900 dark:text-gray-100">${fix.module}</h4>
+                ${isCompWin ? '<span class="px-4 py-1 bg-red-600 text-white rounded-full text-sm font-bold">Competitor Advantage</span>' : ''}
+              </div>
+              <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                  <p class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Your Page</p>
+                  <p class="text-gray-800 dark:text-gray-200">${fix.yourText || 'No major issue detected'}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Competitor Page</p>
+                  <p class="text-gray-800 dark:text-gray-200">${fix.compText || 'Stronger optimization'}</p>
+                </div>
+              </div>
+              <div class="mt-6 p-5 bg-orange-50 dark:bg-orange-900/30 rounded-2xl">
+                <p class="font-bold text-orange-600 dark:text-orange-400 mb-2">Recommended Action:</p>
+                <p class="text-gray-800 dark:text-gray-200">${fix.how}</p>
+              </div>
+              ${isCompWin ? '<p class="mt-4 text-sm italic text-red-600 dark:text-red-400">Closing this gap could significantly improve your ranking potential.</p>' : ''}
+            </div>
+          </div>
+        `;
+      }).join('')}
     </div>
-  `).join('') : `
+  ` : `
     <div class="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-3xl shadow-2xl p-16 text-center">
-      <p class="text-4xl font-black mb-6">Excellent Optimization!</p>
-      <p class="text-2xl">Your page shows strong relevance for "${phrase}" — no major gaps vs competitor.</p>
+      <p class="text-4xl font-black mb-6">🎉 Strong Competitive Position!</p>
+      <p class="text-2xl">Your page shows superior or equal on-page optimization across all key signals.</p>
+      <p class="text-xl mt-6 opacity-90">Focus on off-page factors like backlinks and content freshness for further gains.</p>
     </div>
   `}
 </div>
