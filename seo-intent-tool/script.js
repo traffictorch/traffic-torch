@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-
-
   // === STEP 1: CENTRAL CONFIG OBJECT + PARSING VARIABLES ===
   const defaultConfig = {
     parsing: {
@@ -65,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ]
     }
   };
-
   let config = { ...defaultConfig };
   const urlParams = new URLSearchParams(window.location.search);
   const configParam = urlParams.get('config');
@@ -77,7 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
       console.warn('Invalid config URL parameter');
     }
   }
-
   function deepMerge(target, source) {
     for (const key in source) {
       if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
@@ -89,9 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     return target;
   }
-  
-  
-  
+
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
@@ -105,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const path = trimmed.slice(host.length);
     return 'https://' + host + path;
   }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const inputValue = document.getElementById('url-input').value;
@@ -112,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Input:', inputValue);
     console.log('Cleaned URL sent to proxy:', url);
     if (!url) return;
+
     results.innerHTML = `
       <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 mt-2">
         <div class="relative w-20 h-20">
@@ -126,13 +122,14 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     results.classList.remove('hidden');
     const progressText = document.getElementById('progress-text');
-    try {
-	  progressText.textContent = "Fetching and rendering page...";
 
+    try {
+      progressText.textContent = "Fetching and rendering page...";
       const res = await fetch("https://rendered-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable – check URL');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
+
       function getVisibleText(root) {
         let text = '';
         const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
@@ -150,6 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return text.trim();
       }
+
       const text = getVisibleText(doc.body) || '';
       const cleanedText = text.replace(/\s+/g, ' ').trim();
       const words = cleanedText ? cleanedText.split(' ').filter(w => w.length > 0).length : 0;
@@ -159,8 +157,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return acc + Math.max(vowelGroups, 1);
       }, 0) : 0;
       const readability = Math.round(206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words));
+
       progressText.textContent = "Analyzing E-E-A-T Signals...";
       await sleep(2000);
+
       // === EXPERIENCE ===
       const firstPersonCount = (cleanedText.match(/\b(I|we|my|our|I've|we've|me|us|myself|ourselves)\b/gi) || []).length;
       const anecdotePhrases = (cleanedText.match(/\b(in my experience|I tested|we found that|from my trials|I tried|we tried|my results|our case study|in practice|hands-on|real-world|based on my|after testing|client case|personal review)\b/gi) || []).length;
@@ -178,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (experienceMetrics.anecdotes < 80) failedExperience.push("Include personal anecdotes or real-world examples");
       if (experienceMetrics.timelines < 80) failedExperience.push("Mention specific timelines or dates from your experience");
       if (experienceMetrics.personalMedia < 80) failedExperience.push("Add original photos/videos with personal captions");
+
       // === EXPERTISE ===
       const hasAuthorByline = !!doc.querySelector(config.parsing.authorBylineSelectors.join(', '));
       const hasAuthorBio = !!doc.querySelector(config.parsing.authorBioSelectors.join(', '));
@@ -195,6 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!hasAuthorBio) failedExpertise.push("Create an author bio section with photo and background");
       if (credentialKeywords <= 2) failedExpertise.push("Mention relevant qualifications, certifications, or years of experience");
       if (!hasCitations) failedExpertise.push("Include citations or links to supporting sources");
+
       // === AUTHORITATIVENESS ===
       const schemaTypes = [];
       doc.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
@@ -218,10 +220,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (schemaTypes.length < 2) failedAuthoritativeness.push("Implement relevant JSON-LD schema (Article, Person, Organization)");
       if (!hasAwards) failedAuthoritativeness.push("Mention any awards, endorsements, or media features");
       if (!hasAboutLinks) failedAuthoritativeness.push("Add links to an About or Team page");
+
       // === TRUSTWORTHINESS ===
       const isHttps = url.startsWith('https');
-      
-      
       const contactLinkElements = doc.querySelectorAll(config.parsing.contactLinkSelectors.join(', '));
       const footerContactText = Array.from(doc.querySelectorAll('footer a, footer span, footer div')).some(el =>
         el.textContent.toLowerCase().includes('contact')
@@ -235,8 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const updateDateElement = doc.querySelector(config.parsing.updateDateSelectors.join(', '));
       const hasUpdateDate = !!updateDateElement ||
         cleanedText.match(/\b(Updated|Last updated|Published|Modified on)[\s:]*\w+/gi);
-      
-      
+
       const trustworthinessMetrics = {
         https: isHttps ? 100 : 20,
         contact: hasContact ? 100 : 20,
@@ -249,6 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!hasContact) failedTrustworthiness.push("Add a visible Contact page or contact details");
       if (!hasPolicies) failedTrustworthiness.push("Include links to Privacy Policy and/or Terms");
       if (!hasUpdateDate) failedTrustworthiness.push("Display a last updated date");
+
       // Intent Analysis
       progressText.textContent = "Analyzing Search Intent...";
       await sleep(2000);
@@ -259,10 +260,12 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (/how|what|why|guide|tutorial|step|learn|explain|best way/i.test(titleLower)) { intent = 'Informational'; confidence = 94; }
       else if (/near me|location|store|city|local|hours|map|address/i.test(titleLower)) { intent = 'Local'; confidence = 87; }
       else if (/sign up|login|purchase|buy now|order|checkout|book/i.test(titleLower)) { intent = 'Transactional'; confidence = 91; }
+
       const eeatAvg = Math.round((experienceScore + expertiseScore + authoritativenessScore + trustworthinessScore) / 4);
       const depthScore = words > 2000 ? 95 : words > 1200 ? 82 : words > 700 ? 65 : 35;
       const readScore = readability > 70 ? 90 : readability > 50 ? 75 : 45;
       const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length * 8) / 5);
+
       // === Score Improvement & Potential Gains Calculation ===
       const currentScore = overall;
       let projectedScore = currentScore;
@@ -292,8 +295,33 @@ document.addEventListener('DOMContentLoaded', () => {
       const trafficUplift = isOptimal ? 0 : Math.round(scoreDelta * 1.8);
       const ctrBoost = isOptimal ? 0 : Math.min(30, Math.round(scoreDelta * 0.8));
       const rankingLift = isOptimal ? "Already strong" : currentScore < 60 ? "Page 2+ → Page 1 potential" : "Top 20 → Top 10 possible";
+
       progressText.textContent = "Generating Report...";
       await sleep(600);
+
+      // === GRADE FUNCTION ===
+      function getGrade(score, type = 'eeat') {
+        let text, emoji, color;
+        if (type === 'depth') {
+          if (score >= 1500) { text = 'Excellent'; emoji = '✅'; color = 'text-green-600'; }
+          else if (score >= 800) { text = 'Good'; emoji = '🆗 ⚠️'; color = 'text-orange-400'; }
+          else { text = 'Needs Work'; emoji = '❌'; color = 'text-red-600'; }
+        } else if (type === 'readability') {
+          if (score >= 60 && score <= 70) { text = 'Excellent'; emoji = '✅'; color = 'text-green-600'; }
+          else if (score >= 50 && score <= 80) { text = 'Good'; emoji = '🆗 ⚠️'; color = 'text-orange-400'; }
+          else { text = 'Needs Work'; emoji = '❌'; color = 'text-red-600'; }
+        } else if (type === 'schema') {
+          if (score >= 2) { text = 'Excellent'; emoji = '✅'; color = 'text-green-600'; }
+          else if (score === 1) { text = 'Good'; emoji = '🆗 ⚠️'; color = 'text-orange-400'; }
+          else { text = 'Needs Work'; emoji = '❌'; color = 'text-red-600'; }
+        } else {
+          if (score >= 80) { text = 'Excellent'; emoji = '✅'; color = 'text-green-600'; }
+          else if (score >= 60) { text = 'Good'; emoji = '🆗 ⚠️'; color = 'text-orange-400'; }
+          else { text = 'Needs Work'; emoji = '❌'; color = 'text-red-600'; }
+        }
+        return { text, emoji, color };
+      }
+
       results.innerHTML = `
 <!-- Big Score Circle -->
 <div class="flex justify-center my-12 px-4">
@@ -308,14 +336,18 @@ document.addEventListener('DOMContentLoaded', () => {
     </svg>
     <div class="absolute inset-0 flex items-center justify-center">
       <div class="text-center">
-        <div class="text-5xl sm:text-6xl md:text-7xl font-black drop-shadow-2xl"
+        <div class="text-4xl sm:text-5xl md:text-6xl font-black drop-shadow-2xl"
              style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'};">
           ${overall}
         </div>
-        <div class="text-xl sm:text-2xl opacity-80 -mt-2"
+        <div class="text-lg sm:text-xl opacity-80 -mt-2"
              style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'};">
           /100
         </div>
+        ${(() => {
+          const g = getGrade(overall);
+          return `<p class="${g.color} text-2xl font-bold mt-4">${g.emoji} ${g.text}</p>`;
+        })()}
       </div>
     </div>
   </div>
@@ -343,9 +375,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 <!-- E-E-A-T Breakdown with ✅/❌ signals -->
 <div class="grid md:grid-cols-4 gap-6 my-16">
- 
- 
- 
   ${[
     { key: 'Experience', score: experienceScore, metrics: experienceMetrics, failed: failedExperience },
     { key: 'Expertise', score: expertiseScore, metrics: expertiseMetrics, failed: failedExpertise },
@@ -353,87 +382,74 @@ document.addEventListener('DOMContentLoaded', () => {
     { key: 'Trustworthiness', score: trustworthinessScore, metrics: trustworthinessMetrics, failed: failedTrustworthiness }
   ].map(({key, score, metrics, failed}) => {
     const color = score >= 80 ? '#22c55e' : score >= 60 ? '#f97316' : '#ef4444';
-    const border = score >= 80 ? 'border-green-500' : score >= 60 ? 'border-orange-500' : 'border-red-500';
-
+    const border = score >= 80 ? 'border-green-500' : score >= 60 ? 'border-orange-400' : 'border-red-500';
     const signals = key === 'Experience' ? [
-      { name: 'Strong first-person language', value: metrics.firstPerson, 
-        fix: 'Add more first-person language (“I/we/my/our”) throughout the content. Use it naturally in intros, examples, and conclusions to show personal involvement.', 
-        how: 'The tool counts occurrences of first-person pronouns (I, we, my, our, me, us) and related forms. Strong = 15+ mentions across the page.', 
+      { name: 'Strong first-person language', value: metrics.firstPerson,
+        fix: 'Add more first-person language (“I/we/my/our”) throughout the content. Use it naturally in intros, examples, and conclusions to show personal involvement.',
+        how: 'The tool counts occurrences of first-person pronouns (I, we, my, our, me, us) and related forms. Strong = 15+ mentions across the page.',
         why: 'First-person writing signals genuine hands-on experience to Google and readers. It increases trust, engagement, and dwell time — all positive ranking factors. Pages with strong personal voice often outperform third-person corporate content.' },
-      { name: 'Personal anecdotes included', value: metrics.anecdotes, 
-        fix: 'Include personal anecdotes or real-world examples. Share specific stories like “I tested this method on 5 client sites and saw…” or “In my experience working with…” to make advice relatable.', 
-        how: 'Scans for phrases like “I tested”, “in my experience”, “we found that”, “hands-on”, “real-world”. Strong = 3+ detections.', 
+      { name: 'Personal anecdotes included', value: metrics.anecdotes,
+        fix: 'Include personal anecdotes or real-world examples. Share specific stories like “I tested this method on 5 client sites and saw…” or “In my experience working with…” to make advice relatable.',
+        how: 'Scans for phrases like “I tested”, “in my experience”, “we found that”, “hands-on”, “real-world”. Strong = 3+ detections.',
         why: 'Anecdotes prove you’ve actually done what you’re teaching. They build emotional connection with readers and reduce bounce rates. Google favors content that demonstrates real application over theoretical advice.' },
-      { name: 'Timeline/date mentions', value: metrics.timelines, 
-        fix: 'Mention specific timelines or dates from your experience, e.g., “Last year I tried…”, “Since 2020 we’ve used this approach…”, “Over the past 18 months our team has…”', 
-        how: 'Looks for date/year references tied to first-person context. Strong = 2+ personal timeline mentions.', 
+      { name: 'Timeline/date mentions', value: metrics.timelines,
+        fix: 'Mention specific timelines or dates from your experience, e.g., “Last year I tried…”, “Since 2020 we’ve used this approach…”, “Over the past 18 months our team has…”',
+        how: 'Looks for date/year references tied to first-person context. Strong = 2+ personal timeline mentions.',
         why: 'Timelines show recency and depth of experience. They help Google assess content freshness and real-world testing. Dated personal experience outperforms generic evergreen claims.' },
-      { name: 'Personal media/captions', value: metrics.personalMedia, 
-        fix: 'Add original photos, screenshots, or videos with personal captions like “My setup for testing…”, “Our results after 3 months”, or “Client dashboard I managed”.', 
-        how: 'Checks image alt text, captions, and figures for personal context (“my”, “our”, “I took this”). Strong = at least one detected.', 
+      { name: 'Personal media/captions', value: metrics.personalMedia,
+        fix: 'Add original photos, screenshots, or videos with personal captions like “My setup for testing…”, “Our results after 3 months”, or “Client dashboard I managed”.',
+        how: 'Checks image alt text, captions, and figures for personal context (“my”, “our”, “I took this”). Strong = at least one detected.',
         why: 'Original media with personal context proves you actually did the work. It boosts credibility, reduces perceived AI content risk, and increases user trust and time on page.' }
     ] : key === 'Expertise' ? [
-      { name: 'Author byline present', value: metrics.byline, 
-        fix: 'Add a clear, visible author name linked to the content. Place it above or below the article with proper markup.', 
-        how: 'Searches common byline selectors and meta tags across platforms. Strong = author name clearly detected.', 
+      { name: 'Author byline present', value: metrics.byline,
+        fix: 'Add a clear, visible author name linked to the content. Place it above or below the article with proper markup.',
+        how: 'Searches common byline selectors and meta tags across platforms. Strong = author name clearly detected.',
         why: 'Google increasingly ties content quality to identifiable authors. Bylines help establish who is responsible for the advice. Pages with named authors often rank higher in E-E-A-T sensitive topics.' },
-      { name: 'Author bio section', value: metrics.bio, 
-        fix: 'Create a dedicated author box with professional photo, background, qualifications, and links to social/other work.', 
-        how: 'Looks for bio containers and structured sections. Strong = dedicated bio area found.', 
+      { name: 'Author bio section', value: metrics.bio,
+        fix: 'Create a dedicated author box with professional photo, background, qualifications, and links to social/other work.',
+        how: 'Looks for bio containers and structured sections. Strong = dedicated bio area found.',
         why: 'Bios provide proof of expertise and background. They help Google and readers assess whether the author is qualified. Strong author profiles correlate with higher rankings.' },
-      { name: 'Credentials mentioned', value: metrics.credentials, 
-        fix: 'Mention relevant qualifications, certifications, years of experience, publications, or awards directly in content or bio.', 
-        how: 'Counts credential keywords (PhD, certified, licensed, years of experience, published in, etc.). Strong = 3+ mentions.', 
+      { name: 'Credentials mentioned', value: metrics.credentials,
+        fix: 'Mention relevant qualifications, certifications, years of experience, publications, or awards directly in content or bio.',
+        how: 'Counts credential keywords (PhD, certified, licensed, years of experience, published in, etc.). Strong = 3+ mentions.',
         why: 'Explicit credentials demonstrate specialized knowledge. They reduce perceived risk of inaccurate advice. Google rewards content from demonstrably qualified sources.' },
-      { name: 'Citations/references', value: metrics.citations, 
-        fix: 'Include links to supporting studies, sources, tools, or references. Add a references section if appropriate.', 
-        how: 'Detects citation links and reference sections. Strong = references or source links found.', 
+      { name: 'Citations/references', value: metrics.citations,
+        fix: 'Include links to supporting studies, sources, tools, or references. Add a references section if appropriate.',
+        how: 'Detects citation links and reference sections. Strong = references or source links found.',
         why: 'Citations show research depth and respect for original sources. They increase perceived reliability. Well-cited content performs better in competitive SERPs.' }
     ] : key === 'Authoritativeness' ? [
-      { name: 'Strong schema markup', value: metrics.schema, 
-        fix: 'Implement relevant JSON-LD schema (Article, Person, Organization, FAQPage, HowTo) in the page head.', 
-        how: 'Counts valid schema types in script tags. Strong = 2+ relevant types detected.', 
+      { name: 'Strong schema markup', value: metrics.schema,
+        fix: 'Implement relevant JSON-LD schema (Article, Person, Organization, FAQPage, HowTo) in the page head.',
+        how: 'Counts valid schema types in script tags. Strong = 2+ relevant types detected.',
         why: 'Schema helps Google understand entities and content type. It enables rich results and strengthens entity authority. Proper markup is a clear authority signal.' },
-      { name: 'Awards/endorsements mentioned', value: metrics.awards, 
-        fix: 'Mention any awards, media features, client testimonials, or industry recognition earned by you or your site.', 
-        how: 'Scans text for award-related keywords and phrases. Strong = mentions detected.', 
+      { name: 'Awards/endorsements mentioned', value: metrics.awards,
+        fix: 'Mention any awards, media features, client testimonials, or industry recognition earned by you or your site.',
+        how: 'Scans text for award-related keywords and phrases. Strong = mentions detected.',
         why: 'External recognition signals leadership in the niche. It builds trust with both users and search engines. Award mentions correlate with higher topical authority.' },
-      { name: 'About/Team links', value: metrics.aboutLinks, 
-        fix: 'Add clear links to About, Team, or Company pages in navigation or footer.', 
-        how: 'Checks navigation and footer for About/Team links. Strong = link found.', 
+      { name: 'About/Team links', value: metrics.aboutLinks,
+        fix: 'Add clear links to About, Team, or Company pages in navigation or footer.',
+        how: 'Checks navigation and footer for About/Team links. Strong = link found.',
         why: 'Established entities with About pages are seen as more authoritative. They show transparency and longevity. Google favors known entities over anonymous sites.' }
     ] : [
-      { name: 'Secure HTTPS', value: metrics.https, 
-        fix: 'Switch your site to HTTPS with a valid SSL certificate.', 
-        how: 'Checks page URL protocol. Strong = loads via https://.', 
+      { name: 'Secure HTTPS', value: metrics.https,
+        fix: 'Switch your site to HTTPS with a valid SSL certificate.',
+        how: 'Checks page URL protocol. Strong = loads via https://.',
         why: 'HTTPS is a direct ranking factor and basic security requirement. It protects user data and builds trust. All modern sites must use HTTPS to avoid warnings and penalties.' },
-      { name: 'Contact info present', value: metrics.contact, 
-        fix: 'Add a dedicated Contact page with email, phone, or form. Include contact details in footer.', 
-        how: 'Scans for contact links and footer text. Strong = contact method detected.', 
+      { name: 'Contact info present', value: metrics.contact,
+        fix: 'Add a dedicated Contact page with email, phone, or form. Include contact details in footer.',
+        how: 'Scans for contact links and footer text. Strong = contact method detected.',
         why: 'Contactability shows legitimacy and accountability. It reduces perceived scam risk. Google favors sites users can actually reach.' },
-      { name: 'Privacy/Terms links', value: metrics.policies, 
-        fix: 'Add links to Privacy Policy and Terms of Service pages, especially in footer.', 
-        how: 'Looks for policy links across common locations. Strong = at least one found.', 
+      { name: 'Privacy/Terms links', value: metrics.policies,
+        fix: 'Add links to Privacy Policy and Terms of Service pages, especially in footer.',
+        how: 'Looks for policy links across common locations. Strong = at least one found.',
         why: 'Policy pages demonstrate legal compliance and transparency. They are expected on professional sites. Missing policies can trigger trust issues.' },
-      { name: 'Update date shown', value: metrics.updateDate, 
-        fix: 'Display a visible “Last updated” or “Published” date on the page.', 
-        how: 'Searches common date selectors and visible text. Strong = date detected.', 
+      { name: 'Update date shown', value: metrics.updateDate,
+        fix: 'Display a visible “Last updated” or “Published” date on the page.',
+        how: 'Searches common date selectors and visible text. Strong = date detected.',
         why: 'Update dates signal content freshness and maintenance. Google prioritizes current information. Dated content builds confidence in accuracy.' }
     ];
 
-    // Grade each signal: pass (>=80), average (>=40), fail (<40)
-    signals.forEach(s => {
-      if (s.value >= 80) {
-        s.grade = 'pass'; // ✅
-      } else if (s.value >= 40) {
-        s.grade = 'average'; // 🆗
-      } else {
-        s.grade = 'fail'; // ❌
-      }
-    });
-
-    const needsFixSignals = signals.filter(s => s.grade !== 'pass');
-
+    const needsFixSignals = signals.filter(s => getGrade(s.value).text !== 'Excellent');
     return `
     <div class="score-card text-center p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${border}">
       <div class="relative mx-auto w-32 h-32">
@@ -449,12 +465,15 @@ document.addEventListener('DOMContentLoaded', () => {
           ${score}
         </div>
       </div>
+      ${(() => {
+        const g = getGrade(score);
+        return `<p class="${g.color} text-xl font-bold mt-4">${g.emoji} ${g.text}</p>`;
+      })()}
       <p class="mt-3 text-lg font-medium text-gray-800 dark:text-gray-200">${key}</p>
       <div class="mt-3 space-y-2 text-sm text-left max-w-xs mx-auto">
         ${signals.map(s => {
-          const emoji = s.grade === 'pass' ? '✅' : s.grade === 'average' ? '🆗' : '❌';
-          const textColor = s.grade === 'pass' ? 'text-green-600' : s.grade === 'average' ? 'text-orange-400' : 'text-red-600';
-          return `<p class="${textColor}">${emoji} ${s.name}</p>`;
+          const g = getGrade(s.value);
+          return `<p class="${g.color} font-medium">${g.emoji} ${s.name}</p>`;
         }).join('')}
       </div>
       <button class="fixes-toggle mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
@@ -462,11 +481,11 @@ document.addEventListener('DOMContentLoaded', () => {
       </button>
       <div class="fixes-panel hidden mt-4 text-left text-xs bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-6">
         ${needsFixSignals.length ? needsFixSignals.map(s => {
-          const emoji = s.grade === 'average' ? '🆗' : '❌';
-          const titleColor = s.grade === 'average' ? 'text-orange-400' : 'text-red-600';
+          const g = getGrade(s.value);
+          const titleColor = g.text === 'Good' ? 'text-orange-400' : 'text-red-600';
           return `
           <div>
-            <p class="font-bold ${titleColor} text-base">${emoji} ${s.name}</p>
+            <p class="font-bold ${titleColor} text-base">${g.emoji} ${s.name}</p>
             <p class="mt-2 font-semibold text-gray-800 dark:text-gray-200">How to fix?</p>
             <p class="mt-1 text-gray-800 dark:text-gray-200">${s.fix}</p>
             <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
@@ -506,85 +525,71 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>`;
   }).join('')}
-  
-  
-  
 </div>
-
-
-
 <!-- Content Depth + Readability + Schema Detected -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
   <!-- Content Depth Card -->
-  <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${words >= 1500 && words <= 2000 ? 'border-green-500' : words >= 800 ? 'border-orange-400' : 'border-red-500'}">
+  <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${words >= 1500 ? 'border-green-500' : words >= 800 ? 'border-orange-400' : 'border-red-500'}">
     <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Content Depth</h3>
     <p class="text-5xl font-black mb-2 text-gray-800 dark:text-gray-200">${words.toLocaleString()}</p>
     <p class="text-gray-800 dark:text-gray-200 mb-4">words</p>
     ${(() => {
-      const grade = words >= 1500 && words <= 2000 ? 'pass' : words >= 800 ? 'average' : 'fail';
-      const emoji = grade === 'pass' ? '✅' : grade === 'average' ? '🆗' : '❌';
-      const color = grade === 'pass' ? 'text-green-600' : grade === 'average' ? 'text-orange-400' : 'text-red-600';
-      return `<p class="${color} text-3xl font-bold mb-4">${emoji} ${grade === 'pass' ? 'Strong' : grade === 'average' ? 'Average' : 'Needs work'}</p>`;
+      const g = getGrade(words, 'depth');
+      return `<p class="${g.color} text-3xl font-bold mb-4">${g.emoji} ${g.text}</p>`;
     })()}
     <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-      ${words >= 1500 && words <= 2000 ? 'All Clear' : 'Show Fixes'}
+      ${words >= 1500 ? 'All Clear' : 'Show Fixes'}
     </button>
     <div class="hidden mt-6 text-left text-xs space-y-6">
       ${(() => {
-        const grade = words >= 1500 && words <= 2000 ? 'pass' : words >= 800 ? 'average' : 'fail';
-        const emoji = grade === 'pass' ? '✅' : grade === 'average' ? '🆗' : '❌';
-        const titleColor = grade === 'pass' ? 'text-green-600' : grade === 'average' ? 'text-orange-400' : 'text-red-600';
+        const g = getGrade(words, 'depth');
+        const titleColor = g.text === 'Good' ? 'text-orange-400' : g.text === 'Excellent' ? 'text-green-600' : 'text-red-600';
         return `
         <div>
-          <p class="font-bold ${titleColor} text-base">${emoji} Content Depth</p>
-          ${grade !== 'pass' ? `
+          <p class="font-bold ${titleColor} text-base">${g.emoji} Content Depth</p>
+          ${g.text !== 'Excellent' ? `
           <p class="mt-2 font-semibold text-gray-800 dark:text-gray-200">How to fix?</p>
           <p class="mt-1 text-gray-800 dark:text-gray-200">Expand with real-world examples, statistics, screenshots, step-by-step breakdowns, comparisons, templates, expert quotes, case studies, and deeper FAQs. Aim for the most comprehensive resource on the topic without fluff.</p>` : ''}
           <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
-          <p class="mt-1 text-gray-700 dark:text-gray-300">Counts visible words in the rendered page body. Strong = 1,500–2,000 words, Average = 800–1,499 words, Needs work = <800 words.</p>
+          <p class="mt-1 text-gray-700 dark:text-gray-300">Counts visible words in the rendered page body. Excellent = 1,500+ words, Good = 800–1,499 words, Needs Work = <800 words.</p>
           <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
           <p class="mt-1 text-gray-700 dark:text-gray-300">Depth is the strongest on-page ranking factor. Search engines reward the most thorough, helpful answer with top positions. Comprehensive content satisfies user intent fully, reduces bounces, and drives longer dwell time and higher traffic.</p>
-          ${grade === 'pass' ? '<p class="text-green-600 font-medium text-base mt-6">All signals strong — excellent work!</p>' : ''}
+          ${g.text === 'Excellent' ? '<p class="text-green-600 font-medium text-base mt-6">All signals strong — excellent work!</p>' : ''}
         </div>`;
       })()}
     </div>
   </div>
-
   <!-- Readability Card -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${readability >= 60 && readability <= 70 ? 'border-green-500' : (readability >= 50 && readability <= 80) ? 'border-orange-400' : 'border-red-500'}">
     <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Readability</h3>
     <p class="text-5xl font-black mb-2 text-gray-800 dark:text-gray-200">${readability}</p>
     <p class="text-gray-800 dark:text-gray-200 mb-4">Flesch score</p>
     ${(() => {
-      const grade = readability >= 60 && readability <= 70 ? 'pass' : (readability >= 50 && readability <= 80) ? 'average' : 'fail';
-      const emoji = grade === 'pass' ? '✅' : grade === 'average' ? '🆗' : '❌';
-      const color = grade === 'pass' ? 'text-green-600' : grade === 'average' ? 'text-orange-400' : 'text-red-600';
-      return `<p class="${color} text-3xl font-bold mb-4">${emoji} ${grade === 'pass' ? 'Ideal' : grade === 'average' ? 'Acceptable' : 'Difficult'}</p>`;
+      const g = getGrade(readability, 'readability');
+      return `<p class="${g.color} text-3xl font-bold mb-4">${g.emoji} ${g.text}</p>`;
     })()}
     <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
       ${readability >= 60 && readability <= 70 ? 'All Clear' : 'Show Fixes'}
     </button>
     <div class="hidden mt-6 text-left text-xs space-y-6">
       ${(() => {
-        const grade = readability >= 60 && readability <= 70 ? 'pass' : (readability >= 50 && readability <= 80) ? 'average' : 'fail';
-        const emoji = grade === 'pass' ? '✅' : grade === 'average' ? '🆗' : '❌';
-        const titleColor = grade === 'pass' ? 'text-green-600' : grade === 'average' ? 'text-orange-400' : 'text-red-600';
+        const g = getGrade(readability, 'readability');
+        const titleColor = g.text === 'Good' ? 'text-orange-400' : g.text === 'Excellent' ? 'text-green-600' : 'text-red-600';
         return `
         <div>
-          <p class="font-bold ${titleColor} text-base">${emoji} Readability</p>
-          ${grade !== 'pass' ? `
+          <p class="font-bold ${titleColor} text-base">${g.emoji} Readability</p>
+          ${g.text !== 'Excellent' ? `
           <p class="mt-2 font-semibold text-gray-800 dark:text-gray-200">How to fix?</p>
           <p class="mt-1 text-gray-800 dark:text-gray-200">Use short sentences (under 20 words), simple words, active voice, clear subheadings, bullet points, short paragraphs (3–4 lines), and transitional phrases. Avoid jargon and complex structures.</p>` : ''}
           <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
-          <p class="mt-1 text-gray-700 dark:text-gray-300">Flesch Reading Ease score (higher = easier). Ideal = 60–70 (plain English). Acceptable = 50–80. Difficult = outside this range.</p>
+          <p class="mt-1 text-gray-700 dark:text-gray-300">Flesch Reading Ease score (higher = easier). Excellent = 60–70 (plain English). Good = 50–80. Needs Work = outside this range.</p>
           <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
           <p class="mt-1 text-gray-700 dark:text-gray-300">Readable content reduces bounce rates and increases time on page. Search engines track user satisfaction signals. Easy-to-read pages engage more visitors, improve conversions, and rank higher.</p>
-          ${grade === 'pass' ? '<p class="text-green-600 font-medium text-base mt-6">All signals strong — excellent work!</p>' : ''}
+          ${g.text === 'Excellent' ? '<p class="text-green-600 font-medium text-base mt-6">All signals strong — excellent work!</p>' : ''}
         </div>`;
       })()}
     </div>
   </div>
-
   <!-- Schema Detected Card -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${schemaTypes.length >= 2 ? 'border-green-500' : schemaTypes.length === 1 ? 'border-orange-400' : 'border-red-500'}">
     <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Schema Detected</h3>
@@ -595,39 +600,32 @@ document.addEventListener('DOMContentLoaded', () => {
       <p class="text-gray-800 dark:text-gray-200 mb-4">${schemaTypes.length} type${schemaTypes.length > 1 ? 's' : ''} found</p>
     ` : '<p class="text-2xl text-red-600 mb-4">No schema detected</p>'}
     ${(() => {
-      const grade = schemaTypes.length >= 2 ? 'pass' : schemaTypes.length === 1 ? 'average' : 'fail';
-      const emoji = grade === 'pass' ? '✅' : grade === 'average' ? '🆗' : '❌';
-      const color = grade === 'pass' ? 'text-green-600' : grade === 'average' ? 'text-orange-400' : 'text-red-600';
-      return `<p class="${color} text-3xl font-bold mb-4">${emoji} ${grade === 'pass' ? 'Strong' : grade === 'average' ? 'Basic' : 'Missing'}</p>`;
+      const g = getGrade(schemaTypes.length, 'schema');
+      return `<p class="${g.color} text-3xl font-bold mb-4">${g.emoji} ${g.text}</p>`;
     })()}
     <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
       ${schemaTypes.length >= 2 ? 'All Clear' : 'Show Fixes'}
     </button>
     <div class="hidden mt-6 text-left text-xs space-y-6">
       ${(() => {
-        const grade = schemaTypes.length >= 2 ? 'pass' : schemaTypes.length === 1 ? 'average' : 'fail';
-        const emoji = grade === 'pass' ? '✅' : grade === 'average' ? '🆗' : '❌';
-        const titleColor = grade === 'pass' ? 'text-green-600' : grade === 'average' ? 'text-orange-400' : 'text-red-600';
+        const g = getGrade(schemaTypes.length, 'schema');
+        const titleColor = g.text === 'Good' ? 'text-orange-400' : g.text === 'Excellent' ? 'text-green-600' : 'text-red-600';
         return `
         <div>
-          <p class="font-bold ${titleColor} text-base">${emoji} Schema Markup</p>
-          ${grade !== 'pass' ? `
+          <p class="font-bold ${titleColor} text-base">${g.emoji} Schema Markup</p>
+          ${g.text !== 'Excellent' ? `
           <p class="mt-2 font-semibold text-gray-800 dark:text-gray-200">How to fix?</p>
           <p class="mt-1 text-gray-800 dark:text-gray-200">Add JSON-LD script blocks for relevant types (Article + Person author, FAQPage, HowTo, Product, BreadcrumbList). Use at least two matching your content type. Validate with Google's testing tool.</p>` : ''}
           <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
-          <p class="mt-1 text-gray-700 dark:text-gray-300">Detects valid schema types in script[type="application/ld+json"]. Strong = 2+ relevant types, Basic = 1 type, Missing = none found.</p>
+          <p class="mt-1 text-gray-700 dark:text-gray-300">Detects valid schema types in script[type="application/ld+json"]. Excellent = 2+ relevant types, Good = 1 type, Needs Work = none found.</p>
           <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
           <p class="mt-1 text-gray-700 dark:text-gray-300">Schema unlocks rich snippets (stars, FAQs, carousels), dramatically increases click-through rates, strengthens E-E-A-T signals, and helps search engines feature your content prominently in results.</p>
-          ${grade === 'pass' ? '<p class="text-green-600 font-medium text-base mt-6">All signals strong — excellent work!</p>' : ''}
+          ${g.text === 'Excellent' ? '<p class="text-green-600 font-medium text-base mt-6">All signals strong — excellent work!</p>' : ''}
         </div>`;
       })()}
     </div>
   </div>
 </div>
-
-
-
-
 <!-- Score Improvement & Potential Ranking Gains -->
 <div class="max-w-5xl mx-auto mt-20 grid md:grid-cols-2 gap-8">
   <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
@@ -719,7 +717,8 @@ document.addEventListener('DOMContentLoaded', () => {
   </button>
 </div>
       `;
-      // Event delegation for fixes toggles (fixes the ReferenceError)
+
+      // Event delegation for fixes toggles
       results.addEventListener('click', (e) => {
         if (e.target.matches('.fixes-toggle')) {
           const card = e.target.closest('.score-card');
@@ -737,27 +736,21 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
     }
-   
-   
-   
-      // Clean URL for PDF cover: domain on first line, path on second
-      let fullUrl = document.getElementById('url-input').value.trim();
-      let displayUrl = 'traffictorch.net'; // fallback
-      if (fullUrl) {
-        // Remove protocol and www
-        let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
-        // Split into domain and path
-        const firstSlash = cleaned.indexOf('/');
-        if (firstSlash !== -1) {
-          const domain = cleaned.slice(0, firstSlash);
-          const path = cleaned.slice(firstSlash);
-          displayUrl = domain + '\n' + path;
-        } else {
-          displayUrl = cleaned;
-        }
+
+    // Clean URL for PDF cover
+    let fullUrl = document.getElementById('url-input').value.trim();
+    let displayUrl = 'traffictorch.net';
+    if (fullUrl) {
+      let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
+      const firstSlash = cleaned.indexOf('/');
+      if (firstSlash !== -1) {
+        const domain = cleaned.slice(0, firstSlash);
+        const path = cleaned.slice(firstSlash);
+        displayUrl = domain + '\n' + path;
+      } else {
+        displayUrl = cleaned;
       }
-      document.body.setAttribute('data-url', displayUrl);
-   
-   
+    }
+    document.body.setAttribute('data-url', displayUrl);
   });
 });
