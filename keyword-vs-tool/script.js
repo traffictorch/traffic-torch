@@ -255,63 +255,77 @@ document.addEventListener('DOMContentLoaded', () => {
       results.classList.remove('hidden');
 
       results.innerHTML = `
-<!-- Big Score Circles - Your Page vs Competitor -->
+      
+      
+<!-- Big Score Cards - Your Page vs Competitor -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-12 px-4 max-w-5xl mx-auto">
   <!-- Your Page -->
-  <div class="text-center">
-    <p class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">Your Page</p>
-    <div class="relative w-full max-w-xs aspect-square mx-auto">
-      <svg viewBox="0 0 160 160" class="w-full h-full transform -rotate-90">
-        <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="14" fill="none"/>
-        <circle cx="80" cy="80" r="70"
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-10 max-w-md w-full mx-auto border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
+    <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Your Page</p>
+    <div class="relative w-[240px] h-[240px] mx-auto">
+      <svg viewBox="0 0 140 140" class="w-full h-full transform -rotate-90">
+        <circle cx="70" cy="70" r="60" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+        <circle cx="70" cy="70" r="60"
                 stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#fb923c' : '#ef4444'}"
-                stroke-width="14" fill="none"
-                stroke-dasharray="${(yourScore / 100) * 439} 439"
+                stroke-width="12" fill="none"
+                stroke-dasharray="${(yourScore / 100) * 377} 377"
                 stroke-linecap="round"/>
       </svg>
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="text-center">
-          <div class="text-4xl sm:text-5xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
+          <div class="text-5xl font-black drop-shadow-lg"
+               style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#fb923c' : '#ef4444'};">
             ${yourScore}
           </div>
-          <div class="text-lg text-gray-500 dark:text-gray-400">/100</div>
+          <div class="text-lg opacity-80 -mt-1"
+               style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#fb923c' : '#ef4444'};">
+            /100
+          </div>
         </div>
       </div>
     </div>
-    <div class="mt-6">
+    <div class="text-center mt-8">
       <div class="text-3xl font-bold ${yourGrade.color}">
         ${yourGrade.emoji} ${yourGrade.grade}
       </div>
     </div>
   </div>
+
   <!-- Competitor Page -->
-  <div class="text-center">
-    <p class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">Competitor Page</p>
-    <div class="relative w-full max-w-xs aspect-square mx-auto">
-      <svg viewBox="0 0 160 160" class="w-full h-full transform -rotate-90">
-        <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="14" fill="none"/>
-        <circle cx="80" cy="80" r="70"
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-10 max-w-md w-full mx-auto border-4 ${compScore >= 80 ? 'border-green-500' : compScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
+    <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Competitor Page</p>
+    <div class="relative w-[240px] h-[240px] mx-auto">
+      <svg viewBox="0 0 140 140" class="w-full h-full transform -rotate-90">
+        <circle cx="70" cy="70" r="60" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+        <circle cx="70" cy="70" r="60"
                 stroke="${compScore >= 80 ? '#22c55e' : compScore >= 60 ? '#fb923c' : '#ef4444'}"
-                stroke-width="14" fill="none"
-                stroke-dasharray="${(compScore / 100) * 439} 439"
+                stroke-width="12" fill="none"
+                stroke-dasharray="${(compScore / 100) * 377} 377"
                 stroke-linecap="round"/>
       </svg>
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="text-center">
-          <div class="text-4xl sm:text-5xl font-black drop-shadow-2xl ${compScore >= 80 ? 'text-green-500 dark:text-green-400' : compScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
+          <div class="text-5xl font-black drop-shadow-lg"
+               style="color: ${compScore >= 80 ? '#22c55e' : compScore >= 60 ? '#fb923c' : '#ef4444'};">
             ${compScore}
           </div>
-          <div class="text-lg text-gray-500 dark:text-gray-400">/100</div>
+          <div class="text-lg opacity-80 -mt-1"
+               style="color: ${compScore >= 80 ? '#22c55e' : compScore >= 60 ? '#fb923c' : '#ef4444'};">
+            /100
+          </div>
         </div>
       </div>
     </div>
-    <div class="mt-6">
+    <div class="text-center mt-8">
       <div class="text-3xl font-bold ${compGrade.color}">
         ${compGrade.emoji} ${compGrade.grade}
       </div>
     </div>
   </div>
 </div>
+
+
+
 <!-- Competitive Gap Verdict -->
 <div class="text-center my-12">
   <p class="text-4xl font-bold text-gray-800 dark:text-gray-200">

@@ -512,28 +512,43 @@ function buildModuleHTML(moduleName, value, moduleData) {
           </div>`;
 
         results.innerHTML = `
-          <!-- Big Overall Score Circle -->
+        
+        
+        
+          <!-- Big Overall Score Card -->
           <div class="flex justify-center my-12 px-4">
-            <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md">
-              <div class="absolute inset-0 bg-white/40 dark:bg-black/40 backdrop-blur-md rounded-full"></div>
-              <svg viewBox="0 0 280 280" class="transform -rotate-90 w-full h-auto">
-                <circle cx="140" cy="140" r="128" stroke="#e5e7eb" stroke-width="24" fill="none"/>
-                <circle cx="140" cy="140" r="128" stroke="${safeScore < 60 ? '#ef4444' : safeScore < 80 ? '#fb923c' : '#22c55e'}"
-                        stroke-width="24" fill="none"
-                        stroke-dasharray="${safeDash} 804" stroke-linecap="round"/>
-              </svg>
-              <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <div class="font-black drop-shadow-2xl text-5xl xs:text-6xl sm:text-7xl md:text-8xl"
-                     style="color: ${safeScore < 60 ? '#ef4444' : safeScore < 80 ? '#fb923c' : '#22c55e'};">
-                  ${safeScore}
+            <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-10 max-w-md w-full border-4 ${safeScore >= 80 ? 'border-green-500' : safeScore >= 60 ? 'border-orange-500' : 'border-red-500'}">
+              <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall Usability Score</p>
+              <div class="relative w-64 h-64 mx-auto">
+                <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+                  <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
+                  <circle cx="100" cy="100" r="90"
+                          stroke="${safeScore >= 80 ? '#22c55e' : safeScore >= 60 ? '#fb923c' : '#ef4444'}"
+                          stroke-width="16" fill="none"
+                          stroke-dasharray="${(safeScore / 100) * 565} 565"
+                          stroke-linecap="round"/>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="text-5xl font-black drop-shadow-lg"
+                       style="color: ${safeScore >= 80 ? '#22c55e' : safeScore >= 60 ? '#fb923c' : '#ef4444'};">
+                    ${safeScore}
+                  </div>
                 </div>
-                <div class="text-6xl font-bold ${overallGrade.color} mt-6 drop-shadow-lg">
-                  ${overallGrade.emoji} ${overallGrade.grade}
-                </div>
-                <div class="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-800 dark:text-gray-200 mt-4">/100 Usability Score</div>
+              </div>
+              <div class="mt-8 text-center">
+                <p class="text-6xl font-bold ${overallGrade.color} drop-shadow-lg">
+                  ${overallGrade.emoji}
+                </p>
+                <p class="text-4xl font-bold ${overallGrade.color} mt-4">
+                  ${overallGrade.grade}
+                </p>
+                <p class="text-lg text-gray-600 dark:text-gray-400 mt-4">/100 Usability Score</p>
               </div>
             </div>
           </div>
+          
+          
+          
 
           <!-- Quit Risk Verdict -->
           <div class="text-center mb-12">

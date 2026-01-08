@@ -216,38 +216,52 @@ document.addEventListener('DOMContentLoaded', () => {
       const remaining = Math.max(0, minLoadTime - elapsed);
 
       setTimeout(() => {
+      
+      
+      
         results.innerHTML = `
+        
+        
+        
         <style>
           .animate-stroke { transition: stroke-dasharray 1.5s ease-out; }
         </style>
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900 py-12 px-4">
-          <div class="max-w-4xl mx-auto space-y-16">
-            <div class="flex justify-center">
-              <div class="relative w-64 h-64">
-                <svg viewBox="0 0 256 256" class="absolute inset-0 -rotate-90">
-                  <circle cx="128" cy="128" r="110" fill="none" stroke="#e2e8f0" stroke-width="24"/>
-                  <circle cx="128" cy="128" r="110" fill="none" stroke="${mainGradeColor}" stroke-width="20"
-                          stroke-dasharray="0 691"
-                          stroke-linecap="round"
-                          class="animate-stroke"
-                          style="stroke-dasharray: ${(yourScore / 100) * 691} 691;"/>
-                </svg>
-                
-                
-                
-                
-                <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <div class="text-7xl font-black" style="color: ${mainGradeColor}">${yourScore}</div>
-                  <div class="text-lg text-gray-600 dark:text-gray-400">Human Score</div>
-                  <div class="text-base text-gray-500 dark:text-gray-500">/100</div>
+        <!-- Overall Human Score Card -->
+        <div class="flex justify-center my-12 px-4">
+          <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-10 max-w-md w-full border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 50 ? 'border-orange-400' : 'border-red-500'}">
+            <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-8">Overall Human Score</p>
+            <div class="relative w-56 h-56 mx-auto">
+              <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+                <circle cx="100" cy="100" r="90" stroke="#e5e7eb dark:#374151" stroke-width="16" fill="none"/>
+                <circle cx="100" cy="100" r="90"
+                        stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 50 ? '#f97316' : '#ef4444'}"
+                        stroke-width="16" fill="none"
+                        stroke-dasharray="${(yourScore / 100) * 565} 565"
+                        stroke-linecap="round"
+                        class="animate-stroke"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-center">
+                  <div class="text-5xl font-black drop-shadow-lg"
+                       style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 50 ? '#f97316' : '#ef4444'};">
+                    ${yourScore}
+                  </div>
+                  <div class="text-lg opacity-80 -mt-1"
+                       style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 50 ? '#f97316' : '#ef4444'};">
+                    /100
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="text-center mt-4">
-              <p class="text-3xl font-bold flex items-center justify-center gap-3" style="color: ${mainGradeColor}">${verdict} ${verdictEmoji}</p>
-            </div>
-            <p class="text-center text-base text-gray-600 dark:text-gray-400">Scanned ${wordCount.toLocaleString()} words from main content</p>
-
+            <p class="mt-10 text-3xl font-bold text-center flex items-center justify-center gap-3"
+               style="color: ${mainGradeColor}">
+              ${verdict} ${verdictEmoji}
+            </p>
+            <p class="mt-6 text-center text-base text-gray-600 dark:text-gray-400">
+              Scanned ${wordCount.toLocaleString()} words from main content
+            </p>
+          </div>
+        </div>
 
 
 

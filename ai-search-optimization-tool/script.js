@@ -456,36 +456,46 @@ const initTool = (form, results, progressContainer) => {
       
       
       results.innerHTML = `
+      
+      
 <div class="flex justify-center my-12 px-4">
-  <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square">
-    <svg viewBox="0 0 260 260" class="w-full h-full transform -rotate-90">
-      <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
-      <circle cx="130" cy="130" r="120"
-              stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'}"
-              stroke-width="18" fill="none"
-              stroke-dasharray="${(yourScore / 100) * 754} 754"
-              stroke-linecap="round"/>
-    </svg>
-    <div class="absolute inset-0 flex flex-col items-center justify-center gap-1">
-      <div class="text-8xl sm:text-9xl md:text-[10rem] font-black drop-shadow-2xl leading-none ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
-        ${yourScore}
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 max-w-md w-full border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-500' : 'border-red-500'}">
+    <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">
+      Overall AI Search Score
+    </p>
+    <div class="relative w-48 h-48 mx-auto">
+      <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+        <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
+        <circle cx="100" cy="100" r="90"
+                stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'}"
+                stroke-width="16" fill="none"
+                stroke-dasharray="${(yourScore / 100) * 565} 565"
+                stroke-linecap="round"/>
+      </svg>
+      <div class="absolute inset-0 flex flex-col items-center justify-center gap-1">
+        <div class="text-6xl font-black drop-shadow-lg ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
+          ${yourScore}
+        </div>
+        <div class="text-xl font-medium opacity-80 ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
+          /100
+        </div>
       </div>
-      <div class="text-2xl sm:text-3xl font-medium ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
-        /100
+    </div>
+    <div class="mt-8 text-center">
+      <div class="text-5xl font-black mb-2 ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
+        ${yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗' : '❌'}
+      </div>
+      <div class="text-2xl font-bold ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
+        ${yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Very Good' : 'Needs Work'}
       </div>
     </div>
   </div>
 </div>
-<div class="flex justify-center mb-12 px-4">
-  <div class="flex items-center gap-6">
-    <div class="text-5xl font-black ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
-      ${yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗' : '❌'}
-    </div>
-    <div class="text-4xl sm:text-5xl md:text-6xl font-bold ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
-      ${yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Very Good' : 'Needs Work'}
-    </div>
-  </div>
-</div>
+
+
+
+
+
 <div class="grid grid-cols-1 md:grid-cols-4 gap-8 my-12 px-4 max-w-7xl mx-auto">
   ${modules.map(m => {
     const grade = getGradeInfo(m.score);
