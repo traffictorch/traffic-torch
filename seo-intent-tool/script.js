@@ -477,22 +477,28 @@ document.addEventListener('DOMContentLoaded', () => {
         return `<p class="${g.color} text-xl font-bold mt-4">${g.emoji} ${g.text}</p>`;
       })()}
       <p class="mt-3 text-lg font-medium text-gray-800 dark:text-gray-200">${key}</p>
+      
+
+
+
+
+
+
+      
       <div class="mt-3 space-y-2 text-sm text-left max-w-xs mx-auto">
         ${signals.map(s => {
           const g = getGrade(s.value);
           return `<p class="${g.color} font-medium">${g.emoji} ${s.name}</p>`;
         }).join('')}
       </div>
-      
-      
-      <button class="fixes-toggle mt-4 mb-3 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+
+      <button class="fixes-toggle mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
         ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
       </button>
-      
-      
+
       <div class="fixes-panel hidden mt-4 text-left text-xs bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-6">
         ${needsFixSignals.length ? `
-          <div class="text-center mb-4">
+          <div class="text-center mb-6">
             <a href="/seo-intent-tool/#${key.toLowerCase()}" class="text-orange-500 font-bold hover:underline">
               How ${key} is tested?
             </a>
@@ -510,9 +516,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
             <p class="mt-1 text-gray-700 dark:text-gray-300">${s.why}</p>
           </div>`;
-        }).join('') + 
-        `
-          <div class="mt-6 text-center space-y-4">
+        }).join('') + `
+          <div class="mt-8 space-y-4 text-center">
             <a href="/seo-intent-tool/#${key.toLowerCase()}" class="block text-orange-500 font-bold hover:underline">
               Learn more about ${key}
             </a>
@@ -520,8 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
               More Details →
             </button>
           </div>
-        ` 
-        : '<p class="text-green-600 font-medium text-base mb-4">All signals strong — excellent work!</p>' + signals.map(s => `
+        ` : '<p class="text-green-600 font-medium text-base mb-4">All signals strong — excellent work!</p>' + signals.map(s => `
           <div>
             <p class="font-bold text-green-600 text-base">✅ ${s.name}</p>
             <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
@@ -531,8 +535,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         `).join('')}
       </div>
-      
-      
+
       <div class="full-details hidden mt-6 space-y-3 text-left text-sm">
         <p class="text-blue-500 font-bold">What it is?</p>
         <p>${key === 'Experience' ? 'Proof that the content creator has first-hand involvement in the topic, such as personal anecdotes, real-world applications, or direct participation, making the advice more relatable and credible.'
@@ -551,6 +554,11 @@ document.addEventListener('DOMContentLoaded', () => {
           : 'High trustworthiness signals prevent user bounces, build loyalty, and align with search engine guidelines, avoiding downgrades and ensuring steady organic traffic growth.'}</p>
       </div>
     </div>`;
+    
+    
+    
+    
+    
     
     
   }).join('')}
