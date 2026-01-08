@@ -224,25 +224,21 @@ document.addEventListener('DOMContentLoaded', () => {
     results.innerHTML = `
 <!-- Big Score Circle -->
 <div class="flex justify-center my-12 px-4">
-  <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square">
-    <svg viewBox="0 0 260 260" class="w-full h-full transform -rotate-90">
-      <circle cx="130" cy="130" r="120" stroke="#e5e7eb" stroke-width="18" fill="none"/>
-      <circle cx="130" cy="130" r="120"
+  <div class="relative w-full max-w-xs sm:max-w-sm aspect-square">
+    <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+      <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
+      <circle cx="100" cy="100" r="90"
               stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#fb923c' : '#ef4444'}"
-              stroke-width="18" fill="none"
-              stroke-dasharray="${(yourScore / 100) * 754} 754"
+              stroke-width="16" fill="none"
+              stroke-dasharray="${(yourScore / 100) * 565} 565"
               stroke-linecap="round"/>
     </svg>
-    <div class="absolute inset-0 flex items-center justify-center">
-      <div class="text-center">
-        <div class="text-5xl sm:text-6xl md:text-7xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
-          ${yourScore}
-        </div>
-        <div class="text-xl text-gray-500 dark:text-gray-400 mt-2">/100</div>
+    <div class="absolute inset-0 flex flex-col items-center justify-center pt-4">
+      <div class="text-5xl sm:text-6xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
+        ${yourScore}
       </div>
-    </div>
-    <div class="mt-6 text-center">
-      <div class="text-4xl font-bold ${bigGrade.color}">
+      <div class="text-xl text-gray-500 dark:text-gray-400">/100</div>
+      <div class="mt-6 text-3xl font-bold ${bigGrade.color}">
         ${bigGrade.emoji} ${bigGrade.grade}
       </div>
     </div>
@@ -342,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const diagnostics = getModuleDiagnostics({name: m.name}, data, phrase, fullUrl);
     const hasIssues = diagnostics.some(d => d.status === '❌');
     const hashId = moduleHashes[m.name] || '';
-    return `
+return `
       <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderColor}">
         <h4 class="text-xl font-medium mb-4">${m.name}</h4>
         <div class="relative w-28 h-28 mx-auto">
@@ -361,26 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
         ${details}
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-          More Details
-        </button>
-        <div class="hidden mt-6 space-y-6 text-left text-sm">
-          <div class="text-center mb-4">
-            <a href="/#${hashId}" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
-              How ${m.name} is tested?
-            </a>
-          </div>
-          ${fixEdu ? `<h5 class="text-lg font-bold text-orange-600 dark:text-orange-400 mb-3">Recommended Fixes</h5><p class="text-gray-800 dark:text-gray-200">${fixEdu}</p>` : ''}
-          <p class="text-blue-600 dark:text-blue-400 font-bold">What is it?</p><p class="text-gray-800 dark:text-gray-200">${m.what}</p>
-          <p class="text-green-600 dark:text-green-400 font-bold mt-3">How to fix?</p><p class="text-gray-800 dark:text-gray-200">${m.how}</p>
-          <p class="text-orange-600 dark:text-orange-400 font-bold mt-3">Why it matters?</p><p class="text-gray-800 dark:text-gray-200">${m.why}</p>
-          <div class="text-center mt-8 pt-6 border-t border-gray-300 dark:border-gray-700">
-            <a href="/#${hashId}" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
-              Learn more about ${m.name}
-            </a>
-          </div>
-        </div>
-        <button onclick="this.parentElement.querySelector('.fixes-panel').classList.toggle('hidden')" class="mt-3 px-6 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 text-sm">
+        <button onclick="this.parentElement.querySelector('.fixes-panel').classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 text-sm">
           Show Fixes
         </button>
         <div class="fixes-panel hidden mt-6 p-6 bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800">
@@ -402,7 +379,26 @@ document.addEventListener('DOMContentLoaded', () => {
             ${!hasIssues ? '<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">🎉 This module is fully optimized!</p>' : ''}
           </div>
           <div class="text-center mt-8 pt-6 border-t border-red-200 dark:border-red-700">
-            <a href="/#${hashId}" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
+            <a href="javascript:void(0)" onclick="window.location.href='/#${hashId}'" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
+              Learn more about ${m.name}
+            </a>
+          </div>
+        </div>
+        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
+          More Details
+        </button>
+        <div class="hidden mt-6 space-y-6 text-left text-sm">
+          <div class="text-center mb-4">
+            <a href="javascript:void(0)" onclick="window.location.href='/#${hashId}'" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
+              How ${m.name} is tested?
+            </a>
+          </div>
+          ${fixEdu ? `<h5 class="text-lg font-bold text-orange-600 dark:text-orange-400 mb-3">Recommended Fixes</h5><p class="text-gray-800 dark:text-gray-200">${fixEdu}</p>` : ''}
+          <p class="text-blue-600 dark:text-blue-400 font-bold">What is it?</p><p class="text-gray-800 dark:text-gray-200">${m.what}</p>
+          <p class="text-green-600 dark:text-green-400 font-bold mt-3">How to fix?</p><p class="text-gray-800 dark:text-gray-200">${m.how}</p>
+          <p class="text-orange-600 dark:text-orange-400 font-bold mt-3">Why it matters?</p><p class="text-gray-800 dark:text-gray-200">${m.why}</p>
+          <div class="text-center mt-8 pt-6 border-t border-gray-300 dark:border-gray-700">
+            <a href="javascript:void(0)" onclick="window.location.href='/#${hashId}'" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
               Learn more about ${m.name}
             </a>
           </div>
@@ -411,7 +407,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }).join('')}
 </div>
-
 
 <!-- Top Priority Fixes -->
 <div class="my-16">
