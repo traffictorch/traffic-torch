@@ -412,9 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </p>
   </div>
 </div>
-<!-- Intent -->
-... (rest of your HTML unchanged)
-      `;
+
 
       // Show radar container
       const radarContainer = document.getElementById('radar-container');
