@@ -131,88 +131,51 @@ document.addEventListener('DOMContentLoaded', () => {
       if (radarContainer) radarContainer.classList.remove('hidden');
     
     
-      // === RADAR CHART INITIALIZATION (FINAL FIXED) ===
-      requestAnimationFrame(() => {
-        const canvas = document.getElementById('health-radar');
-        if (!canvas || window.innerWidth < 768) return;
+      // === RADAR CHART INITIALIZATION (DEBUG VERSION) ===
+      const canvas = document.getElementById('health-radar');
+      if (!canvas) {
+        console.warn('Canvas not found');
+        return;
+      }
 
-        try {
-          const ctx = canvas.getContext('2d');
-          const isDark = document.documentElement.classList.contains('dark');
+      try {
+        const ctx = canvas.getContext('2d');
+        console.log('Canvas found, initializing chart...');
 
-          const gridColor = isDark ? 'rgba(156, 163, 175, 0.3)' : 'rgba(229, 231, 235, 0.8)';
-          const labelColor = isDark ? '#f3f4f6' : '#1f2937';
-          const borderColor = '#fb923c';
-          const fillColor = isDark ? 'rgba(251, 146, 60, 0.15)' : 'rgba(251, 146, 60, 0.1)';
-
-          new Chart(ctx, {
-            type: 'radar',
-            data: {
-              labels: modules.map(m => m.name),
-              datasets: [{
-                label: 'Health Score',
-                data: scores,
-                backgroundColor: fillColor,
-                borderColor: borderColor,
-                borderWidth: 4,
-                pointRadius: 8,
-                pointHoverRadius: 12,
-                pointBackgroundColor: scores.map(s => s >= 80 ? '#22c55e' : s >= 60 ? '#fb923c' : '#ef4444'),
-                pointBorderColor: '#fff',
-                pointBorderWidth: 3,
-                pointHoverBorderWidth: 4
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              animation: {
-                duration: 1400,
-                easing: 'easeOutQuart'
-              },
-              scales: {
-                r: {
-                  beginAtZero: true,
-                  min: 0,
-                  max: 100,
-                  ticks: {
-                    stepSize: 20,
-                    color: labelColor,
-                    font: { size: 12 },
-                    backdropColor: 'transparent'
-                  },
-                  grid: { color: gridColor },
-                  angleLines: { color: gridColor },
-                  pointLabels: {
-                    color: labelColor,
-                    font: { size: 15, weight: '600' }
-                  }
-                }
-              },
-              plugins: {
-                legend: { display: false },
-                tooltip: {
-                  backgroundColor: isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-                  titleColor: labelColor,
-                  bodyColor: labelColor,
-                  borderColor: borderColor,
-                  borderWidth: 1,
-                  cornerRadius: 8,
-                  callbacks: {
-                    label: (ctx) => {
-                      const value = Math.round(ctx.parsed.r);
-                      const grade = value >= 80 ? 'Excellent' : value >= 60 ? 'Good' : 'Needs Work';
-                      return `${ctx.label}: ${value}/100 — ${grade}`;
-                    }
-                  }
-                }
+        window.myChart = new Chart(ctx, {
+          type: 'radar',
+          data: {
+            labels: modules.map(m => m.name),
+            datasets: [{
+              label: 'Health Score',
+              data: scores,
+              backgroundColor: 'rgba(251, 146, 60, 0.15)',
+              borderColor: '#fb923c',
+              borderWidth: 4,
+              pointRadius: 8,
+              pointBackgroundColor: scores.map(s => s >= 80 ? '#22c55e' : s >= 60 ? '#fb923c' : '#ef4444'),
+              pointBorderColor: '#fff',
+              pointBorderWidth: 3
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              r: {
+                beginAtZero: true,
+                max: 100,
+                ticks: { stepSize: 20 }
               }
-            }
-          });
-        } catch (e) {
-          console.warn('Radar chart failed', e);
-        }
-      });
+            },
+            plugins: { legend: { display: false } }
+          }
+        });
+
+        console.log('Chart initialized:', window.myChart);
+      } catch (e) {
+        console.error('Chart init failed:', e);
+      }
     
     
     
@@ -480,10 +443,8 @@ document.addEventListener('DOMContentLoaded', () => {
 <div class="max-w-5xl mx-auto my-16 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
     <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
-    <div class="hidden md:block">
-      <div class="flex justify-center">
-        <canvas id="health-radar" class="max-w-full h-[600px]"></canvas>
-      </div>
+    <div class="w-full min-w-[400px] h-96 md:h-[600px]">
+      <canvas id="health-radar"></canvas>
     </div>
     <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
       Visual overview of your page performance across 7 key SEO Intent factors
