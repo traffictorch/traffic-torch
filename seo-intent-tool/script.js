@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return { text, emoji, color };
       }
       
-            // === RADAR CHART DATA ===
+// === RADAR CHART DATA ===
       const normalizeDepth = words >= 1500 ? 100 : words >= 800 ? 75 : words >= 400 ? 50 : 20;
       const normalizeReadability = readability >= 60 && readability <= 70 ? 100 : (readability >= 50 && readability <= 80) ? 75 : 40;
       const normalizeSchema = schemaTypes.length >= 3 ? 100 : schemaTypes.length >= 2 ? 90 : schemaTypes.length === 1 ? 60 : 20;
@@ -343,10 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       
       
-      
-      
-      
-            results.innerHTML = `
+      results.innerHTML = `
 <!-- Overall Score Card -->
 <div class="flex justify-center my-12 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-10 max-w-md w-full border-4 ${overall >= 80 ? 'border-green-500' : overall >= 60 ? 'border-orange-400' : 'border-red-500'}">
@@ -385,8 +382,6 @@ document.addEventListener('DOMContentLoaded', () => {
     })()}
   </div>
 </div>
-
-
 <!-- On-Page Health Radar Chart -->
 <div class="max-w-5xl mx-auto my-16 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
@@ -399,77 +394,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </p>
   </div>
 </div>
-
-
-      // Show radar container
-      const radarContainer = document.getElementById('radar-container');
-      if (radarContainer) radarContainer.classList.remove('hidden');
-
-       // === RADAR CHART INITIALIZATION (FINAL) ===
-      requestAnimationFrame(() => {
-        const canvas = document.getElementById('health-radar');
-        if (!canvas) {
-          console.warn('Canvas #health-radar not found');
-          return;
-        }
-        console.log('Canvas found, initializing radar chart...');
-        try {
-          const ctx = canvas.getContext('2d');
-          const isDark = document.documentElement.classList.contains('dark');
-          const gridColor = isDark ? 'rgba(156, 163, 175, 0.3)' : 'rgba(229, 231, 235, 0.8)';
-          const labelColor = isDark ? '#f3f4f6' : '#1f2937';
-          const borderColor = '#fb923c';
-          const fillColor = isDark ? 'rgba(251, 146, 60, 0.15)' : 'rgba(251, 146, 60, 0.1)';
-
-          window.myChart = new Chart(ctx, {
-            type: 'radar',
-            data: {
-              labels: modules.map(m => m.name),
-              datasets: [{
-                label: 'Health Score',
-                data: scores,
-                backgroundColor: fillColor,
-                borderColor: borderColor,
-                borderWidth: 4,
-                pointRadius: 8,
-                pointHoverRadius: 12,
-                pointBackgroundColor: scores.map(s => s >= 80 ? '#22c55e' : s >= 60 ? '#fb923c' : '#ef4444'),
-                pointBorderColor: '#fff',
-                pointBorderWidth: 3
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                r: {
-                  beginAtZero: true,
-                  min: 0,
-                  max: 100,
-                  ticks: { stepSize: 20, color: labelColor },
-                  grid: { color: gridColor },
-                  angleLines: { color: gridColor },
-                  pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
-                }
-              },
-              plugins: { legend: { display: false } }
-            }
-          });
-          console.log('Radar chart initialized');
-        } catch (e) {
-          console.error('Chart init failed', e);
-        }
-      });
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
 <!-- Intent -->
 <div class="text-center mb-12">
   <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">
@@ -566,7 +490,6 @@ document.addEventListener('DOMContentLoaded', () => {
         how: 'Searches common date selectors and visible text. Strong = date detected.',
         why: 'Update dates signal content freshness and maintenance. Google prioritizes current information. Dated content builds confidence in accuracy.' }
     ];
-
     const needsFixSignals = signals.filter(s => getGrade(s.value).text !== 'Excellent');
     return `
     <div class="score-card text-center p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${border}">
@@ -588,25 +511,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return `<p class="${g.color} text-xl font-bold mt-4">${g.emoji} ${g.text}</p>`;
       })()}
       <p class="mt-3 text-lg font-medium text-gray-800 dark:text-gray-200">${key}</p>
-      
-
-
-
-
-
-
-      
       <div class="mt-3 space-y-2 text-sm text-left max-w-xs mx-auto">
         ${signals.map(s => {
           const g = getGrade(s.value);
           return `<p class="${g.color} font-medium">${g.emoji} ${s.name}</p>`;
         }).join('')}
       </div>
-
       <button class="fixes-toggle mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
         ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
       </button>
-
       <div class="fixes-panel hidden mt-4 text-left text-xs bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-6">
         ${needsFixSignals.length ? `
           <div class="text-center mb-6">
@@ -646,7 +559,6 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         `).join('')}
       </div>
-
       <div class="full-details hidden mt-6 space-y-3 text-left text-sm">
         <p class="text-blue-500 font-bold">What it is?</p>
         <p>${key === 'Experience' ? 'Proof that the content creator has first-hand involvement in the topic, such as personal anecdotes, real-world applications, or direct participation, making the advice more relatable and credible.'
@@ -665,21 +577,8 @@ document.addEventListener('DOMContentLoaded', () => {
           : 'High trustworthiness signals prevent user bounces, build loyalty, and align with search engine guidelines, avoiding downgrades and ensuring steady organic traffic growth.'}</p>
       </div>
     </div>`;
-    
-    
-    
-    
-    
-    
-    
   }).join('')}
 </div>
-
-
-
-
-
-
 <!-- Content Depth + Readability + Schema Detected -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
   <!-- Content Depth Card -->
@@ -718,7 +617,6 @@ document.addEventListener('DOMContentLoaded', () => {
       })()}
     </div>
   </div>
-
   <!-- Readability Card -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${readability >= 60 && readability <= 70 ? 'border-green-500' : (readability >= 50 && readability <= 80) ? 'border-orange-400' : 'border-red-500'}">
     <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Readability</h3>
@@ -755,7 +653,6 @@ document.addEventListener('DOMContentLoaded', () => {
       })()}
     </div>
   </div>
-
   <!-- Schema Detected Card -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${schemaTypes.length >= 2 ? 'border-green-500' : schemaTypes.length === 1 ? 'border-orange-400' : 'border-red-500'}">
     <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Schema Detected</h3>
@@ -797,10 +694,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
-
-
-
-
 <!-- Score Improvement & Potential Ranking Gains -->
 <div class="max-w-5xl mx-auto mt-20 grid md:grid-cols-2 gap-8">
   <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
@@ -893,8 +786,61 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
       `;
 
+      // === RADAR CHART INITIALIZATION ===
+      setTimeout(() => {
+        const canvas = document.getElementById('health-radar');
+        if (!canvas) {
+          console.warn('Canvas #health-radar not found');
+          return;
+        }
+        console.log('Canvas found, initializing radar chart...');
+        try {
+          const ctx = canvas.getContext('2d');
+          const isDark = document.documentElement.classList.contains('dark');
+          const gridColor = isDark ? 'rgba(156, 163, 175, 0.3)' : 'rgba(229, 231, 235, 0.8)';
+          const labelColor = isDark ? '#f3f4f6' : '#1f2937';
+          const borderColor = '#fb923c';
+          const fillColor = isDark ? 'rgba(251, 146, 60, 0.15)' : 'rgba(251, 146, 60, 0.1)';
 
-
+          window.myChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+              labels: modules.map(m => m.name),
+              datasets: [{
+                label: 'Health Score',
+                data: scores,
+                backgroundColor: fillColor,
+                borderColor: borderColor,
+                borderWidth: 4,
+                pointRadius: 8,
+                pointHoverRadius: 12,
+                pointBackgroundColor: scores.map(s => s >= 80 ? '#22c55e' : s >= 60 ? '#fb923c' : '#ef4444'),
+                pointBorderColor: '#fff',
+                pointBorderWidth: 3
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                r: {
+                  beginAtZero: true,
+                  min: 0,
+                  max: 100,
+                  ticks: { stepSize: 20, color: labelColor },
+                  grid: { color: gridColor },
+                  angleLines: { color: gridColor },
+                  pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
+                }
+              },
+              plugins: { legend: { display: false } }
+            }
+          });
+          console.log('Radar chart initialized');
+        } catch (e) {
+          console.error('Chart init failed', e);
+        }
+      }, 150);
 
       // Event delegation for fixes toggles
       results.addEventListener('click', (e) => {
@@ -914,7 +860,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
     }
-
     // Clean URL for PDF cover
     let fullUrl = document.getElementById('url-input').value.trim();
     let displayUrl = 'traffictorch.net';
@@ -932,3 +877,5 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.setAttribute('data-url', displayUrl);
   });
 });
+
+
