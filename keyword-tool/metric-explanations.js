@@ -72,10 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="text-6xl mb-6">${m.emoji}</div>
       <div class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-8">${m.name}</div>
       <details class="group">
-        <summary class="cursor-pointer text-orange-500 font-bold hover:underline inline-flex items-center justify-center gap-2 whitespace-nowrap">
-          Learn More <span class="text-2xl group-open:rotate-180 transition-transform">↓</span>
+        <summary class="cursor-pointer text-orange-500 font-bold hover:underline inline-flex items-center gap-2 whitespace-nowrap mx-auto">
+          Learn More <span class="text-2xl transition-transform group-open:rotate-180">↓</span>
         </summary>
-        <div class="mt-6 space-y-6 text-left max-w-lg mx-auto text-gray-600 dark:text-gray-400 leading-relaxed">
+        <div class="mt-6 space-y-6 text-left max-w-lg mx-auto text-gray-800 dark:text-gray-200 leading-relaxed">
           <div>
             <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">What is ${m.name}?</p>
             <p>${m.what}</p>
