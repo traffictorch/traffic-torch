@@ -20,7 +20,7 @@ const metricExplanations = [
   {
     id: "authoritativeness",
     emoji: "🏆",
-    name: "Authoritativeness",
+    name: "Authority",
     what: "Recognition of the author or site as a leading voice through structured data, awards, endorsements, and transparent entity information.",
     how: "Analyzes JSON-LD schema types (Article, Person, Organization), mentions of awards or media features, and presence of About/Team page links.",
     why: "Authoritative sources earn topical leadership and richer search features. It boosts entity trust, backlink potential, and long-term ranking stability."
@@ -28,7 +28,7 @@ const metricExplanations = [
   {
     id: "trustworthiness",
     emoji: "🔒",
-    name: "Trustworthiness",
+    name: "Trust",
     what: "Clear indicators of reliability, security, transparency, and accountability that build user confidence.",
     how: "Verifies HTTPS, visible contact methods (email, form, phone), privacy/terms links, and displayed update or publish dates.",
     why: "Trust signals prevent bounces and complaints. Google favors secure, transparent sites to protect users, directly impacting rankings and traffic."
