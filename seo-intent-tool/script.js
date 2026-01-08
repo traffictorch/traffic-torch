@@ -569,6 +569,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
   }).join('')}
 </div>
+
+
+
+
+
+
 <!-- Content Depth + Readability + Schema Detected -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
   <!-- Content Depth Card -->
@@ -606,6 +612,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>`;
       })()}
     </div>
+  </div>
+
   <!-- Readability Card -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${readability >= 60 && readability <= 70 ? 'border-green-500' : (readability >= 50 && readability <= 80) ? 'border-orange-400' : 'border-red-500'}">
     <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Readability</h3>
@@ -641,6 +649,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>`;
       })()}
     </div>
+  </div>
+
   <!-- Schema Detected Card -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${schemaTypes.length >= 2 ? 'border-green-500' : schemaTypes.length === 1 ? 'border-orange-400' : 'border-red-500'}">
     <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Schema Detected</h3>
@@ -682,6 +692,10 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
+
+
+
+
 <!-- Score Improvement & Potential Ranking Gains -->
 <div class="max-w-5xl mx-auto mt-20 grid md:grid-cols-2 gap-8">
   <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
