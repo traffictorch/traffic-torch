@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressModules = [
     "Fetching page...",
     "Analyzing meta & headings...",
-    "Checking content density...",
+    "Checking content depth & density...",
     "Scanning image alts...",
-    "Evaluating anchors...",
+    "Evaluating internal anchors...",
     "Checking URL & schema...",
     "Generating report..."
   ];
@@ -234,10 +234,12 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="text-5xl sm:text-6xl md:text-7xl font-black drop-shadow-2xl ${yourScore >= 80 ? 'text-green-500 dark:text-green-400' : yourScore >= 60 ? 'text-orange-500 dark:text-orange-400' : 'text-red-500 dark:text-red-400'}">
           ${yourScore}
         </div>
-        <div class="mt-4 text-3xl font-bold ${bigGrade.color}">
-          ${bigGrade.emoji} ${bigGrade.grade}
-        </div>
-        <div class="text-xl text-gray-500 dark:text-gray-400">/100</div>
+        <div class="text-xl text-gray-500 dark:text-gray-400 mt-2">/100</div>
+      </div>
+    </div>
+    <div class="mt-6 text-center">
+      <div class="text-4xl font-bold ${bigGrade.color}">
+        ${bigGrade.emoji} ${bigGrade.grade}
       </div>
     </div>
   </div>
@@ -339,17 +341,19 @@ document.addEventListener('DOMContentLoaded', () => {
     return `
       <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderColor}">
         <h4 class="text-xl font-medium mb-4">${m.name}</h4>
-        <div class="relative w-24 h-24 mx-auto">
-          <svg width="96" height="96" viewBox="0 0 96 96" class="transform -rotate-90">
-            <circle cx="48" cy="48" r="40" stroke="#e5e7eb" stroke-width="10" fill="none"/>
-            <circle cx="48" cy="48" r="40" stroke="${score >= 80 ? '#22c55e' : score >= 60 ? '#eab308' : '#ef4444'}"
-                    stroke-width="10" fill="none" stroke-dasharray="${(score / 100) * 251} 251" stroke-linecap="round"/>
+        <div class="relative w-28 h-28 mx-auto">
+          <svg width="112" height="112" viewBox="0 0 112 112" class="transform -rotate-90">
+            <circle cx="56" cy="56" r="48" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+            <circle cx="56" cy="56" r="48" stroke="${score >= 80 ? '#22c55e' : score >= 60 ? '#eab308' : '#ef4444'}"
+                    stroke-width="12" fill="none" stroke-dasharray="${(score / 100) * 301} 301" stroke-linecap="round"/>
           </svg>
-          <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <div class="text-3xl font-black ${textColor}">${Math.round(score)}</div>
-            <div class="mt-1 text-lg font-bold ${grade.color}">
-              ${grade.emoji} ${grade.grade}
-            </div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-4xl font-black ${textColor}">${Math.round(score)}</div>
+          </div>
+        </div>
+        <div class="mt-4">
+          <div class="text-2xl font-bold ${grade.color}">
+            ${grade.emoji} ${grade.grade}
           </div>
         </div>
         ${details}
@@ -403,7 +407,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }).join('')}
 </div>
-
 
 
 <!-- Top Priority Fixes -->
