@@ -348,18 +348,18 @@ document.addEventListener('DOMContentLoaded', () => {
                style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'};">
             /100
           </div>
-          ${(() => {
-            const title = (doc.title || '').trim();
-            if (!title) return '';
-            const truncated = title.length > 65 ? title.substring(0, 65) : title;
-            return `<p class="mt-4 text-base text-gray-600 dark:text-gray-200 leading-tight px-4">${truncated}</p>`;
-          })()}
         </div>
       </div>
     </div>
     ${(() => {
+      const title = (doc.title || '').trim();
+      if (!title) return '';
+      const truncated = title.length > 65 ? title.substring(0, 65) : title;
+      return `<p class="mt-8 text-lg text-gray-600 dark:text-gray-200 text-center px-4 leading-tight">${truncated}</p>`;
+    })()}
+    ${(() => {
       const g = getGrade(overall);
-      return `<p class="${g.color} text-3xl font-bold text-center mt-8">${g.emoji} ${g.text}</p>`;
+      return `<p class="${g.color} text-3xl font-bold text-center mt-6">${g.emoji} ${g.text}</p>`;
     })()}
   </div>
 </div>
