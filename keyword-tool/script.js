@@ -114,109 +114,113 @@ document.addEventListener('DOMContentLoaded', () => {
   const getWordCount = (doc) => getCleanContent(doc).split(/\s+/).filter(w => w.length > 0).length;
   const truncate = (str, len) => str.length > len ? str.slice(0, len - 3) + '...' : str;
 
-  form.addEventListener('submit', async e => {
-    e.preventDefault();
-    const yourUrl = pageUrlInput.value.trim();
-    const phrase = targetKeywordInput.value.trim();
-    if (!yourUrl || !phrase) return;
-    let fullUrl = yourUrl;
-    if (!/^https?:\/\//i.test(yourUrl)) {
-      fullUrl = 'https://' + yourUrl;
-      pageUrlInput.value = fullUrl;
-    }
-    startSpinnerLoader();
-    const yourDoc = await fetchPage(fullUrl);
-    if (!yourDoc) {
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const yourUrl = pageUrlInput.value.trim();
+      const phrase = targetKeywordInput.value.trim();
+      if (!yourUrl || !phrase) return;
+      let fullUrl = yourUrl;
+      if (!/^https?:\/\//i.test(yourUrl)) {
+        fullUrl = 'https://' + yourUrl;
+        pageUrlInput.value = fullUrl;
+      }
+      startSpinnerLoader();
+      const yourDoc = await fetchPage(fullUrl);
+      if (!yourDoc) {
+        stopSpinnerLoader();
+        results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Page not reachable.</p>`;
+        return;
+      }
+      let yourScore = 0;
+      const data = {};
+      const allFixes = [];
+
+      // Meta Title & Desc
+      const titleText = yourDoc.querySelector('title')?.textContent.trim() || '';
+      const descText = yourDoc.querySelector('meta[name="description"]')?.content.trim() || '';
+      const titleMatch = countPhrase(titleText, phrase);
+      const descMatch = countPhrase(descText, phrase);
+      data.meta = { titleText, descText, titleMatch, descMatch, yourMatches: titleMatch + descMatch };
+      yourScore += data.meta.yourMatches > 0 ? 25 : 0;
+      if (titleMatch === 0) allFixes.push({module: 'Meta Title & Desc', issue: 'Add keyword to meta title', how: 'Place the keyword near the start of the title (under 60 characters) for maximum relevance.'});
+      if (descMatch === 0) allFixes.push({module: 'Meta Title & Desc', issue: 'Add keyword to meta description', how: 'Include the keyword once naturally in the description (under 155 characters) to boost click-through rates.'});
+
+      // H1 & Headings
+      const headings = Array.from(yourDoc.querySelectorAll('h1, h2, h3, h4, h5, h6')).slice(0, 5);
+      const headingsData = headings.map(h => ({ tag: h.tagName, text: h.textContent.trim(), match: countPhrase(h.textContent, phrase) > 0 }));
+      const yourH1 = yourDoc.querySelector('h1')?.textContent.trim() || '';
+      data.h1 = { match: countPhrase(yourH1, phrase) };
+      data.headingsData = headingsData;
+      yourScore += data.h1.match > 0 ? 15 : 0;
+      if (data.h1.match === 0) allFixes.push({module: 'H1 & Headings', issue: 'Add keyword to H1', how: 'Rewrite your H1 to include the keyword naturally while keeping it engaging and reader-focused.'});
+
+      // Content Density
+      const cleanContent = getCleanContent(yourDoc);
+      const yourWords = getWordCount(yourDoc);
+      const yourContentMatches = countPhrase(cleanContent, phrase);
+      const yourDensity = yourWords ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
+      data.content = { words: yourWords, matches: yourContentMatches, density: yourDensity };
+      yourScore += yourWords > 800 ? 20 : 0;
+      if (yourWords < 800) allFixes.push({module: 'Content Density', issue: `Add depth (${800 - yourWords} words recommended)`, how: 'Expand with examples, FAQs, comparisons, or data to provide comprehensive value.'});
+      if (parseFloat(yourDensity) < 0.5) allFixes.push({module: 'Content Density', issue: 'Increase keyword density', how: 'Add the keyword naturally in intro, subheads, and body (aim for 1-2%).'});
+
+      // Image Alts
+      const yourImgs = yourDoc.querySelectorAll('img');
+      const matchingAlts = Array.from(yourImgs)
+        .filter(img => countPhrase(img.alt || '', phrase) > 0)
+        .slice(0, 5)
+        .map(img => img.alt?.trim() || '(empty alt)');
+      data.alts = { total: yourImgs.length, phrase: matchingAlts.length, matchingAlts };
+      yourScore += matchingAlts.length > 0 ? 15 : 0;
+      if (matchingAlts.length === 0 && yourImgs.length > 0) allFixes.push({module: 'Image Alts', issue: 'Add keyword to key image alts', how: 'Update important images with descriptive alt text that includes the keyword naturally.'});
+
+      // Anchor Text
+      const matchingAnchors = Array.from(yourDoc.querySelectorAll('a'))
+        .filter(a => countPhrase(a.textContent || '', phrase) > 0)
+        .slice(0, 5)
+        .map(a => ({ text: (a.textContent || '').trim(), href: a.href }));
+      data.anchors = { count: matchingAnchors.length, matchingAnchors };
+      yourScore += matchingAnchors.length > 0 ? 10 : 0;
+      if (matchingAnchors.length === 0) allFixes.push({module: 'Anchor Text', issue: 'Add keyword to anchor text', how: 'Use the keyword naturally as clickable text when linking to related pages.'});
+
+      // URL & Schema
+      const schemaScript = yourDoc.querySelector('script[type="application/ld+json"]');
+      const schemaPresent = !!schemaScript;
+      data.urlSchema = { urlMatch: countPhrase(fullUrl, phrase), schema: schemaPresent ? 1 : 0 };
+      yourScore += data.urlSchema.urlMatch > 0 ? 10 : 0;
+      if (data.urlSchema.urlMatch === 0) allFixes.push({module: 'URL & Schema', issue: 'Include keyword in URL', how: 'Use a clean, hyphenated URL containing the keyword and set up redirects if changing.'});
+      if (data.urlSchema.schema === 0) allFixes.push({module: 'URL & Schema', issue: 'Add structured data', how: 'Add JSON-LD schema (Article or FAQ) in the head for rich results.'});
+
+      yourScore = Math.min(100, Math.round(yourScore));
       stopSpinnerLoader();
-      results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Page not reachable.</p>`;
-      return;
-    }
-    let yourScore = 0;
-    const data = {};
-    const allFixes = [];
-    const nextStep = async (stepIndex) => {
-      if (stepIndex < progressModules.length) {
-        document.getElementById('module-text').textContent = progressModules[stepIndex];
+
+      const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'URL & Schema', 'Image Alts', 'Anchor Text'];
+      const topPriorityFixes = [];
+      const moduleIssues = {};
+      allFixes.forEach(f => {
+        if (!moduleIssues[f.module]) moduleIssues[f.module] = [];
+        moduleIssues[f.module].push(f);
+      });
+      moduleOrder.forEach(mod => {
+        if (moduleIssues[mod] && moduleIssues[mod].length > 0) {
+          topPriorityFixes.push(moduleIssues[mod][0]);
+        }
+      });
+      if (topPriorityFixes.length < 3) {
+        const topMod = topPriorityFixes.length > 0 ? topPriorityFixes[0].module : null;
+        if (topMod && moduleIssues[topMod] && moduleIssues[topMod].length > 1) {
+          topPriorityFixes.push(moduleIssues[topMod][1]);
+        }
       }
-      await new Promise(resolve => setTimeout(resolve, 800));
-    };
-    await nextStep(1);
-    const titleText = yourDoc.querySelector('title')?.textContent.trim() || '';
-    const descText = yourDoc.querySelector('meta[name="description"]')?.content.trim() || '';
-    const titleMatch = countPhrase(titleText, phrase);
-    const descMatch = countPhrase(descText, phrase);
-    data.meta = { titleText, descText, titleMatch, descMatch, yourMatches: titleMatch + descMatch };
-    yourScore += data.meta.yourMatches > 0 ? 25 : 0;
-    if (titleMatch === 0) allFixes.push({module: 'Meta Title & Desc', issue: 'Add keyword to meta title', how: 'Place the keyword near the start of the title (under 60 characters) for maximum relevance.'});
-    if (descMatch === 0) allFixes.push({module: 'Meta Title & Desc', issue: 'Add keyword to meta description', how: 'Include the keyword once naturally in the description (under 155 characters) to boost click-through rates.'});
-    await nextStep(2);
-    const headings = Array.from(yourDoc.querySelectorAll('h1, h2, h3, h4, h5, h6')).slice(0, 5);
-    const headingsData = headings.map(h => ({ tag: h.tagName, text: h.textContent.trim(), match: countPhrase(h.textContent, phrase) > 0 }));
-    const yourH1 = yourDoc.querySelector('h1')?.textContent.trim() || '';
-    data.h1 = { match: countPhrase(yourH1, phrase) };
-    data.headingsData = headingsData;
-    yourScore += data.h1.match > 0 ? 15 : 0;
-    if (data.h1.match === 0) allFixes.push({module: 'H1 & Headings', issue: 'Add keyword to H1', how: 'Rewrite your H1 to include the keyword naturally while keeping it engaging and reader-focused.'});
-    await nextStep(3);
-    const cleanContent = getCleanContent(yourDoc);
-    const yourWords = getWordCount(yourDoc);
-    const yourContentMatches = countPhrase(cleanContent, phrase);
-    const yourDensity = yourWords ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
-    data.content = { words: yourWords, matches: yourContentMatches, density: yourDensity };
-    yourScore += yourWords > 800 ? 20 : 0;
-    if (yourWords < 800) allFixes.push({module: 'Content Density', issue: `Add depth (${800 - yourWords} words recommended)`, how: 'Expand with examples, FAQs, comparisons, or data to provide comprehensive value.'});
-    if (parseFloat(yourDensity) < 0.5) allFixes.push({module: 'Content Density', issue: 'Increase keyword density', how: 'Add the keyword naturally in intro, subheads, and body (aim for 1-2%).'});
-    await nextStep(4);
-    const yourImgs = yourDoc.querySelectorAll('img');
-    const matchingAlts = Array.from(yourImgs)
-      .filter(img => countPhrase(img.alt || '', phrase) > 0)
-      .slice(0, 5)
-      .map(img => img.alt?.trim() || '(empty alt)');
-    data.alts = { total: yourImgs.length, phrase: matchingAlts.length, matchingAlts };
-    yourScore += matchingAlts.length > 0 ? 15 : 0;
-    if (matchingAlts.length === 0 && yourImgs.length > 0) allFixes.push({module: 'Image Alts', issue: 'Add keyword to key image alts', how: 'Update important images with descriptive alt text that includes the keyword naturally.'});
-    await nextStep(5);
-    const matchingAnchors = Array.from(yourDoc.querySelectorAll('a'))
-      .filter(a => countPhrase(a.textContent || '', phrase) > 0)
-      .slice(0, 5)
-      .map(a => ({ text: (a.textContent || '').trim(), href: a.href }));
-    data.anchors = { count: matchingAnchors.length, matchingAnchors };
-    yourScore += matchingAnchors.length > 0 ? 10 : 0;
-    if (matchingAnchors.length === 0) allFixes.push({module: 'Anchor Text', issue: 'Add keyword to anchor text', how: 'Use the keyword naturally as clickable text when linking to related pages.'});
-    await nextStep(6);
-    const schemaScript = yourDoc.querySelector('script[type="application/ld+json"]');
-    const schemaPresent = !!schemaScript;
-    data.urlSchema = { urlMatch: countPhrase(fullUrl, phrase), schema: schemaPresent ? 1 : 0 };
-    yourScore += data.urlSchema.urlMatch > 0 ? 10 : 0;
-    if (data.urlSchema.urlMatch === 0) allFixes.push({module: 'URL & Schema', issue: 'Include keyword in URL', how: 'Use a clean, hyphenated URL containing the keyword and set up redirects if changing.'});
-    if (data.urlSchema.schema === 0) allFixes.push({module: 'URL & Schema', issue: 'Add structured data', how: 'Add JSON-LD schema (Article or FAQ) in the head for rich results.'});
-    await nextStep(7);
-    yourScore = Math.min(100, Math.round(yourScore));
-    stopSpinnerLoader();
-    const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'URL & Schema', 'Image Alts', 'Anchor Text'];
-    const topPriorityFixes = [];
-    const moduleIssues = {};
-    allFixes.forEach(f => {
-      if (!moduleIssues[f.module]) moduleIssues[f.module] = [];
-      moduleIssues[f.module].push(f);
-    });
-    moduleOrder.forEach(mod => {
-      if (moduleIssues[mod] && moduleIssues[mod].length > 0) {
-        topPriorityFixes.push(moduleIssues[mod][0]);
-      }
-    });
-    if (topPriorityFixes.length < 3) {
-      const topMod = topPriorityFixes.length > 0 ? topPriorityFixes[0].module : null;
-      if (topMod && moduleIssues[topMod] && moduleIssues[topMod].length > 1) {
-        topPriorityFixes.push(moduleIssues[topMod][1]);
-      }
-    }
-    topPriorityFixes.length = Math.min(3, topPriorityFixes.length);
-    const levels = ['Page 2+', 'Page 1 Possible', 'Top 10', 'Top 3 Potential'];
-    const currentLevel = yourScore >= 90 ? 3 : yourScore >= 80 ? 2 : yourScore >= 60 ? 1 : 0;
-    const projectedLevel = Math.min(3, currentLevel + (topPriorityFixes.length >= 2 ? 2 : topPriorityFixes.length));
-    const hasMetaOrContent = topPriorityFixes.some(f => f.module === 'Meta Title & Desc' || f.module === 'Content Density');
-    const bigGrade = getGrade(yourScore);
+      topPriorityFixes.length = Math.min(3, topPriorityFixes.length);
+      const levels = ['Page 2+', 'Page 1 Possible', 'Top 10', 'Top 3 Potential'];
+      const currentLevel = yourScore >= 90 ? 3 : yourScore >= 80 ? 2 : yourScore >= 60 ? 1 : 0;
+      const projectedLevel = Math.min(3, currentLevel + (topPriorityFixes.length >= 2 ? 2 : topPriorityFixes.length));
+      const hasMetaOrContent = topPriorityFixes.some(f => f.module === 'Meta Title & Desc' || f.module === 'Content Density');
+      const bigGrade = getGrade(yourScore);
+    
+    
+    
     results.innerHTML = `
 <!-- Big Score Circle -->
 <div class="flex justify-center my-12 px-4">
