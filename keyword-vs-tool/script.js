@@ -419,8 +419,8 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div class="text-center mt-8 pt-6 border-t border-red-200 dark:border-red-700">
             <a href="javascript:void(0)" onclick="window.location.href='/keyword-vs-tool/#${hashId}'; return false;" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
-              Learn more about ${m.name}
-            </a>
+ 			 Learn more about ${m.name}
+			</a>
           </div>
         </div>
         <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="w-full mt-3 py-3 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm font-bold">
