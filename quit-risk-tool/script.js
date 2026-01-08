@@ -510,6 +510,15 @@ function buildModuleHTML(moduleName, value, moduleData) {
               <p class="text-lg text-gray-800 dark:text-gray-200 mt-6 font-medium text-center">How to Verify: Use Google Analytics to track these metrics before/after changes. Typical timeline: See gains in 1-4 weeks with consistent traffic.</p>
             </div>
           </div>`;
+          
+            const modules = [
+    { name: 'Readability', score: ux.readability },
+    { name: 'Navigation', score: ux.nav },
+    { name: 'Accessibility', score: ux.accessibility },
+    { name: 'Mobile & PWA', score: ux.mobile },
+    { name: 'Performance', score: ux.speed }
+  ];
+  const scores = modules.map(m => m.score);
 
         results.innerHTML = `
         
@@ -546,6 +555,20 @@ function buildModuleHTML(moduleName, value, moduleData) {
               </div>
             </div>
           </div>
+          
+          
+          <!-- On-Page Health Radar Chart -->
+<div class="max-w-5xl mx-auto my-16 px-4">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
+    <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
+    <div class="w-full">
+      <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
+    </div>
+    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
+      Visual overview of your page performance across key factors
+    </p>
+  </div>
+</div>
           
           
           
@@ -601,6 +624,57 @@ function buildModuleHTML(moduleName, value, moduleData) {
             </button>
           </div>
         `;
+        
+              // === RADAR CHART INITIALIZATION ===
+      setTimeout(() => {
+        const canvas = document.getElementById('health-radar');
+        if (!canvas) return;
+
+        try {
+          const ctx = canvas.getContext('2d');
+          const labelColor = '#9ca3af'; // gray-400 — perfect day/night
+          const gridColor = 'rgba(156, 163, 175, 0.3)';
+          const borderColor = '#fb923c';
+          const fillColor = 'rgba(251, 146, 60, 0.15)';
+
+          window.myChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+              labels: modules.map(m => m.name),
+              datasets: [{
+                label: 'Health Score',
+                data: scores,
+                backgroundColor: fillColor,
+                borderColor: borderColor,
+                borderWidth: 4,
+                pointRadius: 8,
+                pointHoverRadius: 12,
+                pointBackgroundColor: scores.map(s => s >= 80 ? '#22c55e' : s >= 60 ? '#fb923c' : '#ef4444'),
+                pointBorderColor: '#fff',
+                pointBorderWidth: 3
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                r: {
+                  beginAtZero: true,
+                  min: 0,
+                  max: 100,
+                  ticks: { stepSize: 20, color: labelColor },
+                  grid: { color: gridColor },
+                  angleLines: { color: gridColor },
+                  pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
+                }
+              },
+              plugins: { legend: { display: false } }
+            }
+          });
+        } catch (e) {
+          console.error('Radar chart failed', e);
+        }
+      }, 150);
         
         
         // Clean URL for PDF cover (unchanged)

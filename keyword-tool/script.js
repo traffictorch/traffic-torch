@@ -220,6 +220,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const bigGrade = getGrade(yourScore);
     
     
+      const modules = [
+        { name: 'Meta Title & Desc', score: data.meta.yourMatches > 0 ? 100 : 0 },
+        { name: 'H1 & Headings', score: data.h1.match > 0 ? 100 : 0 },
+        { name: 'Content Density', score: parseFloat(data.content.density) },
+        { name: 'Image Alts', score: data.alts.phrase > 0 ? 100 : 0 },
+        { name: 'Anchor Text', score: data.anchors.count > 0 ? 100 : 0 },
+        { name: 'URL & Schema', score: Math.min(100, (data.urlSchema.urlMatch ? 50 : 0) + (data.urlSchema.schema ? 50 : 0)) }
+      ];
+      const scores = modules.map(m => m.score);
+    
     
     results.innerHTML = `
     
@@ -255,6 +265,20 @@ document.addEventListener('DOMContentLoaded', () => {
         ${bigGrade.emoji} ${bigGrade.grade}
       </div>
     </div>
+  </div>
+</div>
+
+
+<!-- On-Page Health Radar Chart -->
+<div class="max-w-5xl mx-auto my-16 px-4">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
+    <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
+    <div class="w-full">
+      <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
+    </div>
+    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
+      Visual overview of your page performance across key factors
+    </p>
   </div>
 </div>
 
@@ -560,5 +584,58 @@ return `
   </button>
 </div>
     `;
+    
+          // === RADAR CHART INITIALIZATION ===
+      setTimeout(() => {
+        const canvas = document.getElementById('health-radar');
+        if (!canvas) return;
+
+        try {
+          const ctx = canvas.getContext('2d');
+          const labelColor = '#9ca3af'; // gray-400 — perfect day/night
+          const gridColor = 'rgba(156, 163, 175, 0.3)';
+          const borderColor = '#fb923c';
+          const fillColor = 'rgba(251, 146, 60, 0.15)';
+
+          window.myChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+              labels: modules.map(m => m.name),
+              datasets: [{
+                label: 'Health Score',
+                data: scores,
+                backgroundColor: fillColor,
+                borderColor: borderColor,
+                borderWidth: 4,
+                pointRadius: 8,
+                pointHoverRadius: 12,
+                pointBackgroundColor: scores.map(s => s >= 80 ? '#22c55e' : s >= 60 ? '#fb923c' : '#ef4444'),
+                pointBorderColor: '#fff',
+                pointBorderWidth: 3
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                r: {
+                  beginAtZero: true,
+                  min: 0,
+                  max: 100,
+                  ticks: { stepSize: 20, color: labelColor },
+                  grid: { color: gridColor },
+                  angleLines: { color: gridColor },
+                  pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
+                }
+              },
+              plugins: { legend: { display: false } }
+            }
+          });
+        } catch (e) {
+          console.error('Radar chart failed', e);
+        }
+      }, 150);
+      
+      
   });
 });
