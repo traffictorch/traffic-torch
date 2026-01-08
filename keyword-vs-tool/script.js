@@ -49,6 +49,22 @@ document.addEventListener('DOMContentLoaded', () => {
     'Anchor Text': 'anchor-text',
     'URL & Schema': 'url-schema'
   };
+  
+    const diagnostics = getModuleDiagnostics(m, data, true); // for your page perspective
+    const comparisonText = yourScore > compScore ? 'You Win' : yourScore < compScore ? 'Competitor Wins' : 'Tie';
+    const comparisonColor = yourScore > compScore ? 'text-green-600 dark:text-green-400' : yourScore < compScore ? 'text-red-600 dark:text-red-400' : 'text-orange-600 dark:text-orange-400';
+    const diags = [];
+    const score = isYourPage ? m.you : m.comp;
+    const opponentScore = isYourPage ? m.comp : m.you;
+    const winText = isYourPage ? 'You win' : 'Competitor wins';
+    const loseText = isYourPage ? 'Competitor wins' : 'You win';
+    diags.push({
+      status: score >= opponentScore ? '✅' : '❌',
+      issue: isYourPage ? 'Your page' : 'Competitor page',
+      how: score >= opponentScore ? winText : loseText
+    });
+    return diags;
+  };
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
