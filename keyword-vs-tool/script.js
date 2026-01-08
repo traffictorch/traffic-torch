@@ -247,8 +247,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const finalFixes = topFixes.slice(0, 3);
       results.classList.remove('hidden');
-
-      results.innerHTML = `
+      
+      
+      
+            results.innerHTML = `
 <!-- Big Score Circles - Your Page vs Competitor -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-12 px-4 max-w-5xl mx-auto">
   <!-- Your Page -->
@@ -278,6 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>
   </div>
+
   <!-- Competitor Page -->
   <div class="text-center">
     <p class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">Competitor Page</p>
@@ -306,6 +309,18 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
+
+<!-- Competitive Gap Verdict -->
+<div class="text-center my-12">
+  <p class="text-4xl font-bold text-gray-800 dark:text-gray-200">
+    Competitive Gap: 
+    <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent font-black">
+      ${yourScore > compScore ? 'You Lead' : yourScore < compScore ? 'Competitor Leads' : 'Neck & Neck'}
+    </span>
+  </p>
+  <p class="text-xl text-gray-600 dark:text-gray-400 mt-4">Target phrase: "${phrase}"</p>
+</div>
+
 <!-- Small Metric Cards -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 my-16">
   ${[
@@ -414,6 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }).join('')}
 </div>
+
 <!-- Top Priority Fixes & Competitive Gaps -->
 <div class="my-20 max-w-5xl mx-auto">
   <h3 class="text-4xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
@@ -444,17 +460,18 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   `}
 </div>
+
 <!-- Closing the Relevance Gap & Projected Gains -->
 <div class="grid md:grid-cols-2 gap-12 my-20 max-w-6xl mx-auto">
   <!-- Left: Relevance Improvement -->
   <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 border-l-8 border-orange-500">
-    <h3 class="text-3xl font-black mb-8 text-center">Relevance Score Improvement</h3>
+    <h3 class="text-3xl font-black mb-8 text-center text-gray-900 dark:text-gray-100">Relevance Score Improvement</h3>
     <div class="flex justify-center items-center gap-12 mb-12">
       <div class="text-center">
         <span class="text-6xl font-black ${getTextColorClass(yourScore)}">${yourScore}</span>
-        <p class="text-xl mt-3 opacity-80">Current</p>
+        <p class="text-xl mt-3 text-gray-600 dark:text-gray-400">Current</p>
       </div>
-      <span class="text-6xl font-bold">→</span>
+      <span class="text-6xl font-bold text-orange-500">→</span>
       <div class="text-center">
         <span class="text-6xl font-black text-green-500">${Math.min(100, yourScore + (finalFixes.length * 15))}</span>
         <p class="text-xl mt-3 text-green-500">Projected</p>
@@ -462,7 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     ${finalFixes.length > 0 ? `
       <div class="space-y-6">
-        <p class="text-lg font-semibold text-center mb-6">Potential uplift from fixing these gaps:</p>
+        <p class="text-lg font-semibold text-center mb-6 text-gray-800 dark:text-gray-200">Potential uplift from fixing these gaps:</p>
         ${finalFixes.map(fix => {
           let points = '';
           if (fix.module.includes('Meta')) points = '+20–25 points';
@@ -562,15 +579,14 @@ document.addEventListener('DOMContentLoaded', () => {
     `}
   </div>
 </div>
+
 <!-- PDF Button -->
 <div class="text-center my-20">
   <button onclick='document.querySelectorAll(".hidden").forEach(el => el.classList.remove("hidden")); window.print();'
           class="group relative inline-flex items-center px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
-    <span class="flex items-center gap-6">Save Report as PDF</span>
+    <span class="flex items-center gap-6">📄 Save Report as PDF</span>
     <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
   </button>
 </div>
       `;
-    };
-  });
-});
+      
