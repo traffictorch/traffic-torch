@@ -598,10 +598,14 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
           <p class="mt-1 text-gray-700 dark:text-gray-300">Depth is the strongest on-page ranking factor. Search engines reward the most thorough, helpful answer with top positions. Comprehensive content satisfies user intent fully, reduces bounces, and drives longer dwell time and higher traffic.</p>
           ${g.text === 'Excellent' ? '<p class="text-green-600 font-medium text-base mt-6">All signals strong — excellent work!</p>' : ''}
+          <div class="mt-8 text-center">
+            <a href="/seo-intent-tool/#depth" class="text-blue-500 font-bold hover:underline">
+              How Content Depth is tested?
+            </a>
+          </div>
         </div>`;
       })()}
     </div>
-  </div>
   <!-- Readability Card -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${readability >= 60 && readability <= 70 ? 'border-green-500' : (readability >= 50 && readability <= 80) ? 'border-orange-400' : 'border-red-500'}">
     <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Readability</h3>
@@ -629,10 +633,14 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
           <p class="mt-1 text-gray-700 dark:text-gray-300">Readable content reduces bounce rates and increases time on page. Search engines track user satisfaction signals. Easy-to-read pages engage more visitors, improve conversions, and rank higher.</p>
           ${g.text === 'Excellent' ? '<p class="text-green-600 font-medium text-base mt-6">All signals strong — excellent work!</p>' : ''}
+          <div class="mt-8 text-center">
+            <a href="/seo-intent-tool/#readability" class="text-blue-500 font-bold hover:underline">
+              How Readability is tested?
+            </a>
+          </div>
         </div>`;
       })()}
     </div>
-  </div>
   <!-- Schema Detected Card -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${schemaTypes.length >= 2 ? 'border-green-500' : schemaTypes.length === 1 ? 'border-orange-400' : 'border-red-500'}">
     <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Schema Detected</h3>
@@ -664,6 +672,11 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
           <p class="mt-1 text-gray-700 dark:text-gray-300">Schema unlocks rich snippets (stars, FAQs, carousels), dramatically increases click-through rates, strengthens E-E-A-T signals, and helps search engines feature your content prominently in results.</p>
           ${g.text === 'Excellent' ? '<p class="text-green-600 font-medium text-base mt-6">All signals strong — excellent work!</p>' : ''}
+          <div class="mt-8 text-center">
+            <a href="/seo-intent-tool/#schema" class="text-blue-500 font-bold hover:underline">
+              How Schema Markup is tested?
+            </a>
+          </div>
         </div>`;
       })()}
     </div>
