@@ -1,3 +1,5 @@
+export { renderPluginSolutions };
+
 const pluginData = {
   "Schema Markup": {
     WordPress: [
