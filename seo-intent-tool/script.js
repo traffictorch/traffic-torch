@@ -1,8 +1,5 @@
 import { renderPluginSolutions } from './plugin-solutions.js';
 
-
-renderPluginSolutions(suitableFailed.map(m => m.name || m));
-
 document.addEventListener('DOMContentLoaded', () => {
   // === STEP 1: CENTRAL CONFIG OBJECT + PARSING VARIABLES ===
   const defaultConfig = {
