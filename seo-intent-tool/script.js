@@ -702,57 +702,7 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-// Create placeholder for Plugin Solutions
-   const pluginSection = document.createElement('div');
-   pluginSection.id = 'plugin-solutions-section';
-   pluginSection.className = 'mt-12';
-   results.appendChild(pluginSection);
 
-const failedMetrics = [];
-
-// Schema Markup
-const schemaGrade = getGrade(schemaTypes.length, 'schema');
-if (schemaGrade.text !== 'Excellent') {
-  failedMetrics.push({ name: "Schema Markup", grade: schemaGrade });
-}
-
-// Title
-const title = doc.title?.trim() || '';
-const titleScore = title && title.length >= 50 && title.length <= 65 ? 100 : title ? 60 : 20;
-const titleGrade = getGrade(titleScore);
-if (titleGrade.text !== 'Excellent') {
-  failedMetrics.push({ name: "Optimized Title Tag", grade: titleGrade });
-}
-
-// Meta Description
-const metaDesc = doc.querySelector('meta[name="description" i]')?.content?.trim() || '';
-const metaScore = metaDesc && metaDesc.length >= 120 && metaDesc.length <= 160 ? 100 : metaDesc ? 60 : 20;
-const metaGrade = getGrade(metaScore);
-if (metaGrade.text !== 'Excellent') {
-  failedMetrics.push({ name: "Compelling Meta Description", grade: metaGrade });
-}
-
-// Images
-const images = doc.querySelectorAll('img');
-const imagesWithoutAlt = Array.from(images).filter(img => !img.alt || img.alt.trim() === '');
-const imageScore = imagesWithoutAlt.length === 0 ? 100 : imagesWithoutAlt.length < images.length * 0.3 ? 75 : 40;
-const imageGrade = getGrade(imageScore);
-if (images.length > 3 && imageGrade.text !== 'Excellent') {
-  failedMetrics.push({ name: "Image Optimization & Alt Text", grade: imageGrade });
-}
-
-// Speed / HTTPS proxy
-const speedScore = isHttps && readability >= 50 ? 100 : 60;
-const speedGrade = getGrade(speedScore);
-if ((words > 2000 && readability < 50) || !isHttps) {
-  if (speedGrade.text !== 'Excellent') {
-    failedMetrics.push({ name: "Core Web Vitals / Page Speed Optimization", grade: speedGrade });
-  }
-}
-
-if (failedMetrics.length > 0) {
-  renderPluginSolutions(failedMetrics);
-}
 
 <!-- Priority Fixes -->
    <div class="mt-20 space-y-8">
@@ -898,7 +848,57 @@ if (failedMetrics.length > 0) {
       `;
       
       
+// Create placeholder for Plugin Solutions
+   const pluginSection = document.createElement('div');
+   pluginSection.id = 'plugin-solutions-section';
+   pluginSection.className = 'mt-12';
+   results.appendChild(pluginSection);
 
+const failedMetrics = [];
+
+// Schema Markup
+const schemaGrade = getGrade(schemaTypes.length, 'schema');
+if (schemaGrade.text !== 'Excellent') {
+  failedMetrics.push({ name: "Schema Markup", grade: schemaGrade });
+}
+
+// Title
+const title = doc.title?.trim() || '';
+const titleScore = title && title.length >= 50 && title.length <= 65 ? 100 : title ? 60 : 20;
+const titleGrade = getGrade(titleScore);
+if (titleGrade.text !== 'Excellent') {
+  failedMetrics.push({ name: "Optimized Title Tag", grade: titleGrade });
+}
+
+// Meta Description
+const metaDesc = doc.querySelector('meta[name="description" i]')?.content?.trim() || '';
+const metaScore = metaDesc && metaDesc.length >= 120 && metaDesc.length <= 160 ? 100 : metaDesc ? 60 : 20;
+const metaGrade = getGrade(metaScore);
+if (metaGrade.text !== 'Excellent') {
+  failedMetrics.push({ name: "Compelling Meta Description", grade: metaGrade });
+}
+
+// Images
+const images = doc.querySelectorAll('img');
+const imagesWithoutAlt = Array.from(images).filter(img => !img.alt || img.alt.trim() === '');
+const imageScore = imagesWithoutAlt.length === 0 ? 100 : imagesWithoutAlt.length < images.length * 0.3 ? 75 : 40;
+const imageGrade = getGrade(imageScore);
+if (images.length > 3 && imageGrade.text !== 'Excellent') {
+  failedMetrics.push({ name: "Image Optimization & Alt Text", grade: imageGrade });
+}
+
+// Speed / HTTPS proxy
+const speedScore = isHttps && readability >= 50 ? 100 : 60;
+const speedGrade = getGrade(speedScore);
+if ((words > 2000 && readability < 50) || !isHttps) {
+  if (speedGrade.text !== 'Excellent') {
+    failedMetrics.push({ name: "Core Web Vitals / Page Speed Optimization", grade: speedGrade });
+  }
+}
+
+if (failedMetrics.length > 0) {
+  renderPluginSolutions(failedMetrics);
+}
       
 
 
