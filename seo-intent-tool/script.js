@@ -856,9 +856,42 @@ document.addEventListener('DOMContentLoaded', () => {
    // Collect failed metrics that have plugin solutions
    const failedMetrics = [];
 
-   if (schemaTypes.length < 2) {
-     failedMetrics.push("Schema Markup");
-   }
+// Collect failed metrics that have plugin solutions
+const failedMetrics = [];
+
+// Schema Markup (already strong signal)
+if (schemaTypes.length < 2) {
+  failedMetrics.push("Schema Markup");
+}
+
+// Optimized Title Tag
+const title = doc.title?.trim();
+if (!title || title.length < 50 || title.length > 65) {
+  failedMetrics.push("Optimized Title Tag");
+}
+
+// Compelling Meta Description
+const metaDesc = doc.querySelector('meta[name="description" i]')?.content?.trim();
+if (!metaDesc || metaDesc.length < 120 || metaDesc.length > 160) {
+  failedMetrics.push("Compelling Meta Description");
+}
+
+// Image Optimization & Alt Text
+const images = doc.querySelectorAll('img');
+const imagesWithoutAlt = Array.from(images).filter(img => !img.hasAttribute('alt') || img.getAttribute('alt').trim() === '');
+if (images.length > 3 && imagesWithoutAlt.length > images.length * 0.5) {
+  failedMetrics.push("Image Optimization & Alt Text");
+}
+
+// Core Web Vitals / Page Speed Optimization (proxy via large visible text + low readability)
+if (words > 2000 && readability < 50) {
+  failedMetrics.push("Core Web Vitals / Page Speed Optimization");
+}
+
+// HTTPS Enforcement
+if (!isHttps) {
+  failedMetrics.push("Core Web Vitals / Page Speed Optimization"); // Many speed plugins also help with HTTPS redirects
+}
 
    // Add more if you expand later, e.g.:
    // if (!isHttps) failedMetrics.push("HTTPS Enforcement");
