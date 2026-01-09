@@ -78,107 +78,96 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
   const section = document.createElement('section');
   section.className = 'mt-20 max-w-5xl mx-auto';
 
+  const nonExcellentCount = failedMetrics.filter(m => m.grade.text !== 'Excellent').length;
+
   section.innerHTML = `
     <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
-      Plugin Solutions for Failed Metrics
+      Plugin Solutions for Metrics Needing Improvement
     </h2>
-<p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
-  $$ {pluginMetrics.filter(m => m.grade.text !== 'Excellent').length} metric $${pluginMetrics.filter(m => m.grade.text !== 'Excellent').length > 1 ? 's need' : ' needs'} improvement. 
-  Expand any panel to see top plugin fixes for your CMS.
-</p>
-    
-    
-    
+    <p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
+      ${nonExcellentCount} metric${nonExcellentCount > 1 ? 's need' : ' needs'} attention. 
+      Expand any panel below to see top free/freemium plugins that can help fix it.
+    </p>
 
-${(() => {
-  const pluginMetrics = [
-    { name: "Schema Markup", condition: schemaTypes.length < 2, grade: getGrade(schemaTypes.length, 'schema') },
-    { name: "Optimized Title Tag", condition: !title || title.length < 50 || title.length > 65, grade: getGrade(title ? (title.length >= 50 && title.length <= 65 ? 100 : 60) : 20) },
-    { name: "Compelling Meta Description", condition: !metaDesc || metaDesc.length < 120 || metaDesc.length > 160, grade: getGrade(metaDesc ? (metaDesc.length >= 120 && metaDesc.length <= 160 ? 100 : 60) : 20) },
-    { name: "Image Optimization & Alt Text", condition: images.length > 3 && imagesWithoutAlt.length > images.length * 0.5, grade: getGrade(imagesWithoutAlt.length === 0 ? 100 : imagesWithoutAlt.length < images.length * 0.3 ? 75 : 40) },
-    { name: "Core Web Vitals / Page Speed Optimization", condition: (words > 2000 && readability < 50) || !isHttps, grade: getGrade(isHttps && readability >= 50 ? 100 : 60) }
-  ];
+    <div class="space-y-6">
+      ${failedMetrics
+        .filter(m => m.grade.text !== 'Excellent')
+        .map(m => {
+          const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
+          const g = m.grade;
+          return `
+            <details class="group bg-white dark:bg-gray-900 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <summary class="flex items-center justify-between p-6 md:p-8 cursor-pointer list-none">
+                <h3 class="text-2xl md:text-3xl font-bold ${g.color}">
+                  ${g.emoji} ${m.name}
+                </h3>
+                <div class="transform transition-transform duration-300 group-open:rotate-180">
+                  <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </div>
+              </summary>
 
-  // Show only metrics that are average (Good ⚠️) or worse (Needs Work ❌) — never Excellent ✅
-  return pluginMetrics
-    .filter(m => m.grade.text !== 'Excellent')
-    .map(m => {
-      const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
-      const g = m.grade;
-      return `
-        <details class="group bg-white dark:bg-gray-900 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <summary class="flex items-center justify-between p-6 md:p-8 cursor-pointer list-none">
-            <h3 class="text-2xl md:text-3xl font-bold ${g.color}">
-              ${g.emoji} ${m.name}
-            </h3>
-            <div class="transform transition-transform duration-300 group-open:rotate-180">
-              <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/>
-              </svg>
-            </div>
-          </summary>
+              <div class="px-6 md:px-8 pb-8 md:pb-10 border-t border-gray-200 dark:border-gray-700">
+                <div class="max-w-md mx-auto my-8">
+                  <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-orange-300 dark:border-orange-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 outline-none transition">
+                    <option value="">Select your CMS...</option>
+                    ${Object.keys(pluginData[m.name] || {}).map(cms => 
+                      `<option value="${cms}">${cms}</option>`
+                    ).join('')}
+                  </select>
+                </div>
 
-          <div class="px-6 md:px-8 pb-8 md:pb-10 border-t border-gray-200 dark:border-gray-700">
-            <div class="max-w-md mx-auto my-8">
-              <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-orange-300 dark:border-orange-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 outline-none transition">
-                <option value="">Select your CMS...</option>
-                ${Object.keys(pluginData[m.name] || {}).map(cms => 
-                  `<option value="${cms}">${cms}</option>`
-                ).join('')}
-              </select>
-            </div>
-
-            <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
-              <!-- Plugins injected here -->
-            </div>
-          </div>
-        </details>
-      `;
-    }).join('');
-})()}
-  
-  
-  
+                <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+                  <!-- Plugins injected here -->
+                </div>
+              </div>
+            </details>
+          `;
+        }).join('')}
+    </div>
+  `;
 
   container.appendChild(section);
 
-  // Event listeners for each dropdown
-  failedMetrics.forEach(metric => {
-    if (!pluginData[metric]) return;
-    const metricId = metric.replace(/\s+/g, '-').toLowerCase();
-    const select = document.getElementById(`cms-select-${metricId}`);
-    const pluginsList = document.getElementById(`plugins-${metricId}`);
+  // Event listeners
+  failedMetrics
+    .filter(m => m.grade.text !== 'Excellent')
+    .forEach(m => {
+      const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
+      const select = document.getElementById(`cms-select-${metricId}`);
+      const pluginsList = document.getElementById(`plugins-${metricId}`);
 
-    if (!select || !pluginsList) return;
+      if (!select || !pluginsList) return;
 
-    select.addEventListener('change', (e) => {
-      const selected = e.target.value;
-      pluginsList.innerHTML = '';
-      pluginsList.classList.add('hidden');
+      select.addEventListener('change', (e) => {
+        const selected = e.target.value;
+        pluginsList.innerHTML = '';
+        pluginsList.classList.add('hidden');
 
-      if (!selected || !pluginData[metric][selected]) return;
+        if (!selected || !pluginData[m.name]?.[selected]) return;
 
-      pluginData[metric][selected].forEach(plugin => {
-        const card = document.createElement('div');
-        card.className = 'group relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-200 dark:border-gray-700 overflow-hidden';
+        pluginData[m.name][selected].forEach(plugin => {
+          const card = document.createElement('div');
+          card.className = 'group relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-200 dark:border-gray-700 overflow-hidden';
 
-        card.innerHTML = `
-          <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <div class="relative">
-            <h4 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">
-              <a href="${plugin.link || '#'}" target="_blank" rel="noopener" class="hover:text-orange-600 dark:hover:text-orange-400 transition">
-                ${plugin.name}
-              </a>
-            </h4>
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">${plugin.desc}</p>
-          </div>
-        `;
-        pluginsList.appendChild(card);
+          card.innerHTML = `
+            <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="relative">
+              <h4 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">
+                <a href="${plugin.link || '#'}" target="_blank" rel="noopener" class="hover:text-orange-600 dark:hover:text-orange-400 transition">
+                  ${plugin.name}
+                </a>
+              </h4>
+              <p class="text-gray-600 dark:text-gray-400 leading-relaxed">${plugin.desc}</p>
+            </div>
+          `;
+          pluginsList.appendChild(card);
+        });
+
+        pluginsList.classList.remove('hidden');
       });
-
-      pluginsList.classList.remove('hidden');
     });
-  });
 }
 
 export { renderPluginSolutions };
