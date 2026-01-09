@@ -252,7 +252,7 @@ card.innerHTML = `
     <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">${plugin.desc}</p>
     <div class="flex flex-wrap gap-4">
       <a href="${plugin.link || '#'}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white text-lg font-medium rounded-lg shadow-md hover:shadow-lg transition duration-300">
-        Install from CMS Library
+        CMS Plugin Library
       </a>
       ${plugin.homeLink ? `
         <a href="${plugin.homeLink}" target="_blank" rel="noopener" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white text-lg font-medium rounded-lg shadow-md hover:shadow-lg transition duration-300">
