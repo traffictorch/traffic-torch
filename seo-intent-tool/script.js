@@ -1,3 +1,8 @@
+import { renderPluginSolutions } from './plugin-solutions.js';
+
+
+renderPluginSolutions(suitableFailed.map(m => m.name || m));
+
 document.addEventListener('DOMContentLoaded', () => {
   // === STEP 1: CENTRAL CONFIG OBJECT + PARSING VARIABLES ===
   const defaultConfig = {
@@ -782,6 +787,12 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
+
+
+
+
+
+
 <!-- PDF Button -->
 <div class="text-center my-16">
   <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
@@ -846,23 +857,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }, 150);
       
+      
+      
+      
+   // Create plugin solutions placeholder
+   const pluginSection = document.createElement('div');
+   pluginSection.id = 'plugin-solutions-section';
+   pluginSection.className = 'mt-12';
+   results.appendChild(pluginSection);
 
+   // Collect failed metrics suitable for plugin solutions
+   const failedMetrics = [];
 
+   if (schemaTypes.length < 2) failedMetrics.push('Schema Markup');
+   if (!doc.title || doc.title.length > 65 || doc.title.length < 50) failedMetrics.push('Optimized Title Tag'); // Approximate – adjust if you have exact title check
+   // Add meta description check if available, else skip or approximate
+   if (words < 1500 || readability < 60 || readability > 70) failedMetrics.push('Content Depth & Readability'); // If you add later
+   // Core Web Vitals / Speed not directly measured here, skip
+   // Add more based on actual fails, e.g., from failedTrustworthiness if HTTPS false, etc.
 
-import { renderPluginSolutions } from './plugin-solutions.js';
+   // Add specific ones from E-E-A-T fails if plugin-relevant
+   if (failedAuthoritativeness.includes("Implement relevant JSON-LD schema (Article, Person, Organization)")) failedMetrics.push('Schema Markup');
+   // Image opt not checked, skip
 
-// Assuming you have let failedMetrics = [...] ; from your analysis
-// Filter only plugin-suitable ones
-const suitableFailed = failedMetrics.filter(m => Object.keys(pluginData).includes(m.name || m)); // Adjust based on your metric structure
-
-renderPluginSolutions(suitableFailed.map(m => m.name || m));
-
-
-
-
-
-
-
+   if (failedMetrics.length > 0) {
+     renderPluginSolutions(failedMetrics);
+   }
+   
+   
+   
 
       // Event delegation for fixes toggles
       results.addEventListener('click', (e) => {
