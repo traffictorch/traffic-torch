@@ -703,18 +703,18 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 
-
+<!-- Priority Fixes -->
    <div class="mt-20 space-y-8">
      <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">Top 3 Priority Fixes</h2>
      ${(() => {
        const priority = [
          !hasAuthorByline ? { name: 'Add Author Byline & Bio', impact: '+15–25 points', desc: 'Visible author name and detailed bio with photo establish credibility and E-E-A-T signals.' } : null,
          words < 1500 ? { name: 'Expand Content Depth', impact: '+12–20 points', desc: 'Aim for >1,500 words with examples, stats, case studies, and deeper coverage to fully satisfy search intent.' } : null,
-         schemaTypes.length < 2 ? { name: 'Add Relevant Schema Markup', impact: '+10–18 points', desc: 'Implement JSON-LD for Article, Person, FAQPage, etc. to unlock rich results and boost authority.' }
+         schemaTypes.length < 2 ? { name: 'Add Relevant Schema Markup', impact: '+10–18 points', desc: 'Implement JSON-LD for Article, Person, FAQPage, etc. to unlock rich results and boost authority.' } : null
        ].filter(Boolean);
 
        const remaining = topFixes.filter(f => 
-         !priority.some(p => p && f.text.includes(p.name.split(' ')[1] || p.name))
+         !priority.some(p => p && f.text.includes(p.name.split(' ')[1] ?? p.name))
        ).slice(0, 3 - priority.length);
 
        const finalPriority = [...priority, ...remaining.map(f => ({ name: f.text, impact: f.impact, desc: 'Strong on-page improvement with high ranking impact.' }))].slice(0, 3);
