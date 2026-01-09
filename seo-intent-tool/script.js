@@ -346,9 +346,9 @@ document.addEventListener('DOMContentLoaded', () => {
       results.innerHTML = `
 <!-- Overall Score Card -->
 <div class="flex justify-center my-12 px-4">
-  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-10 max-w-md w-full border-4 ${overall >= 80 ? 'border-green-500' : overall >= 60 ? 'border-orange-400' : 'border-red-500'}">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full border-4 ${overall >= 80 ? 'border-green-500' : overall >= 60 ? 'border-orange-400' : 'border-red-500'}">
     <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall SEO Intent Score</p>
-    <div class="relative w-64 h-64 mx-auto">
+    <div class="relative w-56 h-56 mx-auto md:w-64 md:h-64">
       <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
         <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
         <circle cx="100" cy="100" r="90"
@@ -359,11 +359,11 @@ document.addEventListener('DOMContentLoaded', () => {
       </svg>
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="text-center">
-          <div class="text-5xl font-black drop-shadow-lg"
+          <div class="text-4xl md:text-5xl font-black drop-shadow-lg"
                style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'};">
             ${overall}
           </div>
-          <div class="text-lg opacity-80 -mt-1"
+          <div class="text-base md:text-lg opacity-80 -mt-1"
                style="color: ${overall >= 80 ? '#22c55e' : overall >= 60 ? '#f97316' : '#ef4444'};">
             /100
           </div>
@@ -374,14 +374,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const title = (doc.title || '').trim();
       if (!title) return '';
       const truncated = title.length > 65 ? title.substring(0, 65) : title;
-      return `<p class="mt-8 text-lg text-gray-600 dark:text-gray-200 text-center px-4 leading-tight">${truncated}</p>`;
+      return `<p class="mt-6 md:mt-8 text-base md:text-lg text-gray-600 dark:text-gray-200 text-center px-4 leading-tight">${truncated}</p>`;
     })()}
     ${(() => {
       const g = getGrade(overall);
-      return `<p class="${g.color} text-3xl font-bold text-center mt-6">${g.emoji} ${g.text}</p>`;
+      return `<p class="${g.color} text-2xl md:text-3xl font-bold text-center mt-4 md:mt-6">${g.emoji} ${g.text}</p>`;
     })()}
   </div>
 </div>
+
+
 <!-- On-Page Health Radar Chart -->
 <div class="max-w-5xl mx-auto my-16 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
