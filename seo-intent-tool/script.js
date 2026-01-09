@@ -790,6 +790,8 @@ document.addEventListener('DOMContentLoaded', () => {
   </button>
 </div>
       `;
+      
+
 
       // === RADAR CHART INITIALIZATION ===
             setTimeout(() => {
@@ -843,6 +845,24 @@ document.addEventListener('DOMContentLoaded', () => {
           console.error('Chart init failed', e);
         }
       }, 150);
+      
+
+
+
+import { renderPluginSolutions } from './plugin-solutions.js';
+
+// Assuming you have let failedMetrics = [...] ; from your analysis
+// Filter only plugin-suitable ones
+const suitableFailed = failedMetrics.filter(m => Object.keys(pluginData).includes(m.name || m)); // Adjust based on your metric structure
+
+renderPluginSolutions(suitableFailed.map(m => m.name || m));
+
+
+
+
+
+
+
 
       // Event delegation for fixes toggles
       results.addEventListener('click', (e) => {
@@ -862,6 +882,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
     }
+    
     // Clean URL for PDF cover
     let fullUrl = document.getElementById('url-input').value.trim();
     let displayUrl = 'traffictorch.net';
