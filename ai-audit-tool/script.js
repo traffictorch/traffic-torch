@@ -234,45 +234,46 @@ document.addEventListener('DOMContentLoaded', () => {
         
         
         
-        <style>
-          .animate-stroke { transition: stroke-dasharray 1.5s ease-out; }
-        </style>
-        <!-- Overall Human Score Card -->
-        <div class="flex justify-center my-12 px-4">
-          <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-10 max-w-md w-full border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 50 ? 'border-orange-400' : 'border-red-500'}">
-            <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-8">Overall Human Score</p>
-            <div class="relative w-56 h-56 mx-auto">
-              <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
-                <circle cx="100" cy="100" r="90" stroke="#e5e7eb dark:#374151" stroke-width="16" fill="none"/>
-                <circle cx="100" cy="100" r="90"
-                        stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 50 ? '#f97316' : '#ef4444'}"
-                        stroke-width="16" fill="none"
-                        stroke-dasharray="${(yourScore / 100) * 565} 565"
-                        stroke-linecap="round"
-                        class="animate-stroke"/>
-              </svg>
-              <div class="absolute inset-0 flex items-center justify-center">
-                <div class="text-center">
-                  <div class="text-5xl font-black drop-shadow-lg"
-                       style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 50 ? '#f97316' : '#ef4444'};">
-                    ${yourScore}
-                  </div>
-                  <div class="text-lg opacity-80 -mt-1"
-                       style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 50 ? '#f97316' : '#ef4444'};">
-                    /100
-                  </div>
-                </div>
-              </div>
-            </div>
-            <p class="mt-10 text-3xl font-bold text-center flex items-center justify-center gap-3"
-               style="color: ${mainGradeColor}">
-              ${verdict} ${verdictEmoji}
-            </p>
-            <p class="mt-6 text-center text-base text-gray-600 dark:text-gray-400">
-              Scanned ${wordCount.toLocaleString()} words from main content
-            </p>
+<!-- Overall Score Card -->
+<div class="flex justify-center my-12 px-4">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
+    <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall AI Search Score</p>
+    <div class="relative w-56 h-56 mx-auto md:w-64 md:h-64">
+      <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+        <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
+        <circle cx="100" cy="100" r="90"
+                stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'}"
+                stroke-width="16" fill="none"
+                stroke-dasharray="${(yourScore / 100) * 565} 565"
+                stroke-linecap="round"/>
+      </svg>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="text-center">
+          <div class="text-4xl md:text-5xl font-black drop-shadow-lg"
+               style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">
+            ${yourScore}
+          </div>
+          <div class="text-base md:text-lg opacity-80 -mt-1"
+               style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">
+            /100
           </div>
         </div>
+      </div>
+    </div>
+    ${(() => {
+      const title = (doc?.title || '').trim();
+      if (!title) return '';
+      const truncated = title.length > 65 ? title.substring(0, 65) : title;
+      return `<p class="mt-6 md:mt-8 text-base md:text-lg text-gray-600 dark:text-gray-200 text-center px-4 leading-tight">${truncated}</p>`;
+    })()}
+    ${(() => {
+      const gradeText = yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Very Good' : 'Needs Work';
+      const gradeEmoji = yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗 ⚠️' : '❌';
+      const gradeColor = yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400';
+      return `<p class="${gradeColor} text-2xl md:text-3xl font-bold text-center mt-4 md:mt-6">${gradeEmoji} ${gradeText}</p>`;
+    })()}
+  </div>
+</div>
 
 
 <!-- On-Page Health Radar Chart -->

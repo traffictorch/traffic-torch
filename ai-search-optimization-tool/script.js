@@ -469,12 +469,11 @@ const initTool = (form, results, progressContainer) => {
       results.innerHTML = `
       
       
+<!-- Overall Score Card -->
 <div class="flex justify-center my-12 px-4">
-  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 max-w-md w-full border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-500' : 'border-red-500'}">
-    <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">
-      Overall AI Search Score
-    </p>
-    <div class="relative w-48 h-48 mx-auto">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
+    <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall AI Search Score</p>
+    <div class="relative w-56 h-56 mx-auto md:w-64 md:h-64">
       <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
         <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
         <circle cx="100" cy="100" r="90"
@@ -483,23 +482,31 @@ const initTool = (form, results, progressContainer) => {
                 stroke-dasharray="${(yourScore / 100) * 565} 565"
                 stroke-linecap="round"/>
       </svg>
-      <div class="absolute inset-0 flex flex-col items-center justify-center gap-1">
-        <div class="text-6xl font-black drop-shadow-lg ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
-          ${yourScore}
-        </div>
-        <div class="text-xl font-medium opacity-80 ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
-          /100
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="text-center">
+          <div class="text-4xl md:text-5xl font-black drop-shadow-lg"
+               style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">
+            ${yourScore}
+          </div>
+          <div class="text-base md:text-lg opacity-80 -mt-1"
+               style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">
+            /100
+          </div>
         </div>
       </div>
     </div>
-    <div class="mt-8 text-center">
-      <div class="text-5xl font-black mb-2 ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
-        ${yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗' : '❌'}
-      </div>
-      <div class="text-2xl font-bold ${yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">
-        ${yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Very Good' : 'Needs Work'}
-      </div>
-    </div>
+    ${(() => {
+      const title = (doc?.title || '').trim();
+      if (!title) return '';
+      const truncated = title.length > 65 ? title.substring(0, 65) : title;
+      return `<p class="mt-6 md:mt-8 text-base md:text-lg text-gray-600 dark:text-gray-200 text-center px-4 leading-tight">${truncated}</p>`;
+    })()}
+    ${(() => {
+      const gradeText = yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Very Good' : 'Needs Work';
+      const gradeEmoji = yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗 ⚠️' : '❌';
+      const gradeColor = yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400';
+      return `<p class="${gradeColor} text-2xl md:text-3xl font-bold text-center mt-4 md:mt-6">${gradeEmoji} ${gradeText}</p>`;
+    })()}
   </div>
 </div>
 
