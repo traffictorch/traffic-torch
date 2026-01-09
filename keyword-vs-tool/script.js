@@ -107,6 +107,9 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       return;
     }
+    
+      const yourTitle = yourDoc.querySelector('title')?.textContent.trim() || '';
+      const compTitle = compDoc.querySelector('title')?.textContent.trim() || '';
 
     // Dual-analysis progress steps
     const steps = [
