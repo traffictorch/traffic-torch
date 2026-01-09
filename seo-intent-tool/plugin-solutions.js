@@ -77,7 +77,7 @@ const pluginData = {
   }
 };
 
-export function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-section') {
+function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-section') {
   if (failedMetrics.length === 0) return;
 
   const container = document.getElementById(containerId);
@@ -90,6 +90,7 @@ export function renderPluginSolutions(failedMetrics, containerId = 'plugin-solut
 
   failedMetrics.forEach(metric => {
     if (!pluginData[metric]) return;
+
     const metricDiv = document.createElement('div');
     metricDiv.className = 'mb-8';
     metricDiv.innerHTML = `<h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">${metric}</h3>`;
