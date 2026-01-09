@@ -1,7 +1,7 @@
 const pluginData = {
   "Schema Markup": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Leading SEO plugin with robust built-in schema for Article, FAQ, HowTo, Product, and Person. Automatically generates markup with easy overrides and rich snippet previews. Ideal for reliable rich results without extra complexity.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Yoast SEO", desc: "Leading SEO plugin with robust built-in schema for Article, FAQ, HowTo, Product, and Person types. Automatically generates markup with easy overrides and rich snippet previews. Ideal for reliable rich results without extra complexity.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
       { name: "Rank Math", desc: "Advanced freemium schema generator with 20+ types, custom fields, and AI suggestions. Includes testing tools and automation for rich snippets. Perfect for detailed control and maximum rich result impact.", link: "https://wordpress.org/plugins/seo-by-rank-math/", homeLink: "https://rankmath.com/" },
       { name: "All in One SEO", desc: "Guided schema setup with TruSEO scoring and automatic markup for common types. Supports dynamic variables and strong defaults. Trusted by millions for simple yet powerful schema.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/", homeLink: "https://aioseo.com/" },
       { name: "Schema & Structured Data for WP", desc: "Dedicated schema plugin with advanced types (Review, Recipe, etc.) and conditional display. Full AMP support and migration tools. Best for maximum schema flexibility.", link: "https://wordpress.org/plugins/schema-and-structured-data-for-wp/", homeLink: "https://wpschema.com/" }
@@ -11,10 +11,10 @@ const pluginData = {
       { name: "Webrex AI SEO Optimizer Schema", desc: "AI-powered schema generation for products, FAQs, videos, with duplicate removal. Integrates with 30+ review apps. Great for automated, accurate markup.", link: "https://apps.shopify.com/webrex-seo-schema-jsonld", homeLink: "https://webrexstudio.com/" }
     ],
     Wix: [
-      { name: "Built-in Structured Data", desc: "Wix auto-generates basic schema for pages, products, blogs. Custom options via SEO settings and Velo. Solid native solution for most Wix sites.", link: "https://support.wix.com/en/article/seo-adding-structured-data-to-your-wix-site" }
+      { name: "Built-in Structured Data", desc: "Wix auto-generates basic schema for pages, products, blogs. Custom options via SEO settings and Velo. Solid native solution for most Wix sites.", link: "" }
     ],
     Squarespace: [
-      { name: "Built-in Markup", desc: "Native schema for pages, products, events, blogs. Automatic and always updated. No extra tools needed for standard rich results.", link: "https://support.squarespace.com/hc/en-us/articles/360002091288-Structured-data-and-rich-results" }
+      { name: "Built-in Markup", desc: "Native schema for pages, products, events, blogs. Automatic and always updated. No extra tools needed for standard rich results.", link: "" }
     ],
     Joomla: [
       { name: "Google Structured Data", desc: "Free extension for breadcrumb, article, organization schema. Simple config with overrides. Reliable for basic rich snippets.", link: "https://extensions.joomla.org/extension/google-structured-data/", homeLink: "https://stackideas.com/" },
@@ -33,13 +33,13 @@ const pluginData = {
       { name: "WP Post Author", desc: "Adds author boxes, co-authors, guest authors, social links, and byline display. Theme-agnostic with customization. Strong for enhancing author visibility.", link: "https://wordpress.org/plugins/wp-post-author/", homeLink: "https://afthemes.com/" }
     ],
     Shopify: [
-      { name: "Staff Accounts", desc: "Built-in Shopify tool for assigning authors and displaying bylines on blog posts. Simple and native. Works well for basic author attribution.", link: "https://help.shopify.com/en/manual/your-account/staff-accounts" }
+      { name: "Staff Accounts", desc: "Built-in Shopify tool for assigning authors and displaying bylines on blog posts. Simple and native. Works well for basic author attribution.", link: "" }
     ],
     Wix: [
-      { name: "Blog Authors", desc: "Built-in Wix feature to assign authors and display bylines on blog posts. Easy management in editor. Native solution for visible author attribution.", link: "https://support.wix.com/en/article/wix-blog-adding-and-managing-authors" }
+      { name: "Blog Authors", desc: "Built-in Wix feature to assign authors and display bylines on blog posts. Easy management in editor. Native solution for visible author attribution.", link: "" }
     ],
     Squarespace: [
-      { name: "Built-in Blog Authors", desc: "Native Squarespace setting to add authors and show bylines on posts. Simple profile setup. Reliable for basic author visibility.", link: "https://support.squarespace.com/hc/en-us/articles/206543697-Adding-blog-post-author-profiles" }
+      { name: "Built-in Blog Authors", desc: "Native Squarespace setting to add authors and show bylines on posts. Simple profile setup. Reliable for basic author visibility.", link: "" }
     ],
     Joomla: [
       { name: "Author List", desc: "Extension to display author bylines and profiles. Customizable placement. Fixes missing author attribution.", link: "https://extensions.joomla.org/extension/author-list/" }
@@ -59,10 +59,10 @@ const pluginData = {
       { name: "Staff Bio App", desc: "Customizable staff/author bio sections with social links. Adds visible bios to posts. Good for guest author display.", link: "https://apps.shopify.com/staff-bio" }
     ],
     Wix: [
-      { name: "Team Members", desc: "Built-in app for team/author bios with photos and social links. Easy to add to posts/pages. Native bio solution.", link: "https://www.wix.com/app-market/web-solution/team-members" }
+      { name: "Team Members", desc: "Built-in app for team/author bios with photos and social links. Easy to add to posts/pages. Native bio solution.", link: "" }
     ],
     Squarespace: [
-      { name: "Built-in Author Profiles", desc: "Native blog author profiles with bio and social links. Simple setup. Reliable for visible bios.", link: "https://support.squarespace.com/hc/en-us/articles/206543697-Adding-blog-post-author-profiles" }
+      { name: "Built-in Author Profiles", desc: "Native blog author profiles with bio and social links. Simple setup. Reliable for visible bios.", link: "" }
     ],
     Joomla: [
       { name: "Community Builder", desc: "User profiles with bio and social fields. Adds rich author bios. Great for detailed display.", link: "https://extensions.joomla.org/extension/community-builder/" }
@@ -74,18 +74,18 @@ const pluginData = {
 
   "Update Date Shown": {
     WordPress: [
-      { name: "Post Updated Date", desc: "Simple plugin to display last updated date on posts. Customizable format and placement. Fixes missing update date visibility.", link: "https://wordpress.org/plugins/post-updated-date/", homeLink: "https://wordpress.org/plugins/post-updated-date/" },
-      { name: "Display Last Modified Date", desc: "Shows last modified date in posts/pages. Theme-agnostic with shortcodes. Reliable for update visibility.", link: "https://wordpress.org/plugins/display-last-modified-date/" },
-      { name: "Last Modified Timestamp", desc: "Adds updated timestamp with custom styling. Easy integration. Good for clear update signaling.", link: "https://wordpress.org/plugins/last-modified-timestamp/" }
+      { name: "Post Updated Date", desc: "Simple plugin to display last updated date on posts. Customizable format and placement. Fixes missing update date visibility in themes.", link: "https://wordpress.org/plugins/post-updated-date/", homeLink: "https://wordpress.org/plugins/post-updated-date/" },
+      { name: "Display Last Modified Date", desc: "Shows last modified date in posts/pages. Theme-agnostic with shortcodes/widgets. Reliable for clear update signaling.", link: "https://wordpress.org/plugins/display-last-modified-date/" },
+      { name: "Last Modified Timestamp", desc: "Adds updated timestamp with custom styling. Easy integration via shortcode. Good for visible freshness indicator.", link: "https://wordpress.org/plugins/last-modified-timestamp/" }
     ],
     Shopify: [
-      { name: "Updated Date Display", desc: "App to show last updated date on products/pages. Customizable placement. Helps signal freshness.", link: "https://apps.shopify.com/updated-date-display" }
+      { name: "Updated Date Display", desc: "App to show last updated date on products/pages. Customizable placement. Helps signal content freshness.", link: "https://apps.shopify.com/updated-date-display" }
     ],
     Wix: [
-      { name: "Built-in Update Date", desc: "Native blog post date display includes last updated. Manual edit in settings. Reliable built-in.", link: "https://support.wix.com/en/article/wix-blog-managing-blog-post-dates" }
+      { name: "Built-in Update Date", desc: "Native blog post date display includes last updated. Manual edit in settings. Reliable built-in solution.", link: "" }
     ],
     Squarespace: [
-      { name: "Built-in Date Display", desc: "Native blog post dates show published/updated. Customizable in editor. No extra plugin needed.", link: "https://support.squarespace.com/hc/en-us/articles/206543697-Adding-blog-post-author-profiles" }
+      { name: "Built-in Date Display", desc: "Native blog post dates show published/updated. Customizable in editor. No extra plugin needed.", link: "" }
     ],
     Joomla: [
       { name: "Last Updated Date", desc: "Extension to display last modified date. Customizable format. Fixes missing update visibility.", link: "https://extensions.joomla.org/extension/last-updated-date/" }
@@ -97,7 +97,7 @@ const pluginData = {
 
   "Contact Info Present": {
     WordPress: [
-      { name: "Contact Form 7", desc: "Most popular form plugin to add contact forms anywhere. Easy shortcode placement. Essential for visible contact.", link: "https://wordpress.org/plugins/contact-form-7/", homeLink: "https://contactform7.com/" },
+      { name: "Contact Form 7", desc: "Most popular form plugin to add contact forms anywhere. Easy shortcode placement. Essential for visible contact presence.", link: "https://wordpress.org/plugins/contact-form-7/", homeLink: "https://contactform7.com/" },
       { name: "WPForms", desc: "User-friendly form builder with contact templates. Drag-and-drop and spam protection. Great for quick contact addition.", link: "https://wordpress.org/plugins/wpforms-lite/", homeLink: "https://wpforms.com/" },
       { name: "Simple Contact Form", desc: "Lightweight contact form with email notifications. Easy widget/shortcode. Perfect for basic contact visibility.", link: "https://wordpress.org/plugins/simple-contact-form/" }
     ],
@@ -105,10 +105,10 @@ const pluginData = {
       { name: "Contact Form by POWR", desc: "Customizable contact form with spam protection. Easy embed on pages. Strong for contact presence.", link: "https://apps.shopify.com/contact-form" }
     ],
     Wix: [
-      { name: "Built-in Contact Form", desc: "Native forms for contact pages. Drag-and-drop customization. Built-in solution for visible contact.", link: "https://support.wix.com/en/article/wix-forms-adding-and-setting-up-a-contact-form" }
+      { name: "Built-in Contact Form", desc: "Native forms for contact pages. Drag-and-drop customization. Built-in solution for visible contact.", link: "" }
     ],
     Squarespace: [
-      { name: "Built-in Forms", desc: "Native contact forms with customizable fields. Easy to add to pages. Reliable built-in contact solution.", link: "https://support.squarespace.com/hc/en-us/articles/206543997-Adding-a-form-block" }
+      { name: "Built-in Forms", desc: "Native contact forms with customizable fields. Easy to add to pages. Reliable built-in contact solution.", link: "" }
     ],
     Joomla: [
       { name: "Contact Enhanced", desc: "Advanced contact forms with multiple fields. Easy page integration. Strong for contact visibility.", link: "https://extensions.joomla.org/extension/contact-enhanced/" }
@@ -128,10 +128,10 @@ const pluginData = {
       { name: "Privacy Policy Generator", desc: "Creates privacy/terms pages with automatic footer links. Customizable and compliant. Easy legal link addition.", link: "https://apps.shopify.com/privacy-policy-generator" }
     ],
     Wix: [
-      { name: "Built-in Privacy & Terms", desc: "Native pages for privacy policy and terms. Easy to add footer links. Built-in solution for legal visibility.", link: "https://support.wix.com/en/article/adding-a-privacy-policy-page" }
+      { name: "Built-in Privacy & Terms", desc: "Native pages for privacy policy and terms. Easy to add footer links. Built-in solution for legal visibility.", link: "" }
     ],
     Squarespace: [
-      { name: "Built-in Legal Pages", desc: "Native privacy/terms pages with footer link options. Simple setup. Reliable built-in compliance.", link: "https://support.squarespace.com/hc/en-us/articles/206543987-Adding-legal-pages" }
+      { name: "Built-in Legal Pages", desc: "Native privacy/terms pages with footer link options. Simple setup. Reliable built-in compliance.", link: "" }
     ],
     Joomla: [
       { name: "Privacy Policy Component", desc: "Generates privacy/terms pages with footer links. Customizable templates. Good for legal visibility.", link: "https://extensions.joomla.org/extension/privacy-policy-component/" }
@@ -150,7 +150,7 @@ const pluginData = {
       { name: "Team Showcase", desc: "App for team pages with menu/footer links. Customizable profiles. Strong for About/Team visibility.", link: "https://apps.shopify.com/team-showcase" }
     ],
     Wix: [
-      { name: "Team Members", desc: "Built-in app for team pages with menu links. Easy About/Team section. Native solution.", link: "https://www.wix.com/app-market/web-solution/team-members" }
+      { name: "Team Members", desc: "Built-in app for team pages with menu links. Easy About/Team section. Native solution.", link: "" }
     ],
     Squarespace: [
       { name: "Team Page Plugin", desc: "Adds team sections with navigation links. Customizable display. Good for About/Team presence.", link: "https://sparkplugin.com/plugins/team-page" }
@@ -162,7 +162,7 @@ const pluginData = {
       { name: "Team", desc: "Module for team pages with menu links. Simple setup. Solid for visibility.", link: "https://www.drupal.org/project/team" }
     ]
   }
-}; 
+};
 
 function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-section') {
   if (failedMetrics.length === 0) return;
