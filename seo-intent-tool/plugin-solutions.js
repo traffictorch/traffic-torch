@@ -1,33 +1,33 @@
 const pluginData = {
-  "Schema Markup": {
-    WordPress: [
-      { name: "Yoast SEO", desc: "The leading SEO plugin with robust built-in schema support for Article, FAQ, HowTo, Product, and Person types. It automatically generates markup and offers easy overrides. Ideal for most sites wanting reliable rich snippets without complexity.", link: "https://wordpress.org/plugins/wordpress-seo/" },
-      { name: "Rank Math", desc: "Feature-rich freemium plugin with an advanced schema generator supporting 20+ types and custom fields. Includes rich snippet testing and automation. Perfect for users needing granular control and AI-powered suggestions.", link: "https://wordpress.org/plugins/seo-by-rank-math/" },
-      { name: "All in One SEO", desc: "Trusted by millions, it provides guided schema setup for common types with TruSEO scoring. Supports dynamic variables and automatic markup. Great balance of simplicity and power for beginners to pros.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/" },
-      { name: "Schema & Structured Data for WP", desc: "Dedicated schema plugin with conditional display and advanced types like Review and Recipe. Full AMP compatibility and migration tools. Best for sites requiring maximum schema flexibility.", link: "https://wordpress.org/plugins/schema-and-structured-data-for-wp/" },
-      { name: "SEOPress", desc: "Lightweight yet powerful with built-in schema for multiple types and no ads in free version. Easy JSON-LD management and validation. Excellent for performance-focused sites.", link: "https://wordpress.org/plugins/wp-seopress/" }
-    ],
-    Shopify: [
-      { name: "Schema Plus for SEO", desc: "Top-rated app that automatically adds complete JSON-LD schema for products, collections, blogs, and more. Fixes Google errors and enables rich results. Essential for e-commerce stores targeting higher CTR.", link: "https://apps.shopify.com/schema-plus" },
-      { name: "Webrex AI SEO Optimizer Schema", desc: "AI-powered app generating accurate schema for products, FAQs, and videos. Integrates with 30+ review apps and removes duplicates. Great for automated, up-to-date markup.", link: "https://apps.shopify.com/webrex-seo-schema-jsonld" },
-      { name: "JSON-LD Express for SEO Schema", desc: "Fast and complete schema support with automatic installation. Supports all rich data types and custom markup. Reliable choice for quick rich snippet setup.", link: "https://apps.shopify.com/json-express-for-seo" },
-      { name: "SearchPie SEO", desc: "All-in-one SEO app including strong schema generation and speed tools. Regularly updated for new rich result types. Good for comprehensive optimization.", link: "https://apps.shopify.com/seo-booster" }
-    ],
-    Wix: [
-      { name: "Built-in Structured Data", desc: "Wix automatically generates basic schema for pages, products, and blogs. Custom options available via SEO settings and Velo. Sufficient for most Wix sites without extra apps.", link: "https://support.wix.com/en/article/seo-adding-structured-data-to-your-wix-site" }
-    ],
-    Squarespace: [
-      { name: "Built-in Markup", desc: "Squarespace natively creates schema for pages, products, events, and blogs. Automatic and always updated with platform changes. No third-party tools needed for standard rich results.", link: "https://support.squarespace.com/hc/en-us/articles/360002091288-Structured-data-and-rich-results" }
-    ],
-    Joomla: [
-      { name: "Google Structured Data", desc: "Free extension adding breadcrumb, article, and organization schema. Simple configuration with overrides. Reliable for basic rich snippets on Joomla sites.", link: "https://extensions.joomla.org/extension/google-structured-data/" },
-      { name: "EFSEO", desc: "Freemium tool handling structured data alongside meta tags. Frontend editing and multiple types supported. Good centralized solution.", link: "https://extensions.joomla.org/extension/efseo-easy-frontend-seo/" }
-    ],
-    Drupal: [
-      { name: "Schema.org Metatag", desc: "Comprehensive module with full Schema.org vocabulary support. Highly configurable for any entity type. Industry standard for advanced Drupal schema.", link: "https://www.drupal.org/project/schema_metatag" },
-      { name: "Metatag", desc: "Core-like module providing base for structured data extensions. Required for most schema implementations. Solid foundation.", link: "https://www.drupal.org/project/metatag" }
-    ]
-  },
+"Schema Markup": {
+  WordPress: [
+    { name: "Yoast SEO", desc: "The leading SEO plugin with robust built-in schema support for Article, FAQ, HowTo, Product, and Person types. It automatically generates markup and offers easy overrides. Ideal for most sites wanting reliable rich snippets without complexity.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
+    { name: "Rank Math", desc: "Feature-rich freemium plugin with an advanced schema generator supporting 20+ types and custom fields. Includes rich snippet testing and automation. Perfect for users needing granular control and AI-powered suggestions.", link: "https://wordpress.org/plugins/seo-by-rank-math/", homeLink: "https://rankmath.com/" },
+    { name: "All in One SEO", desc: "Trusted by millions, it provides guided schema setup for common types with TruSEO scoring. Supports dynamic variables and automatic markup. Great balance of simplicity and power for beginners to pros.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/", homeLink: "https://aioseo.com/" },
+    { name: "Schema & Structured Data for WP", desc: "Dedicated schema plugin with conditional display and advanced types like Review and Recipe. Full AMP compatibility and migration tools. Best for sites requiring maximum schema flexibility.", link: "https://wordpress.org/plugins/schema-and-structured-data-for-wp/", homeLink: "https://wpschema.com/" },
+    { name: "SEOPress", desc: "Lightweight yet powerful with built-in schema for multiple types and no ads in free version. Easy JSON-LD management and validation. Excellent for performance-focused sites.", link: "https://wordpress.org/plugins/wp-seopress/", homeLink: "https://www.seopress.org/" }
+  ],
+  Shopify: [
+    { name: "Schema Plus for SEO", desc: "Top-rated app that automatically adds complete JSON-LD schema for products, collections, blogs, and more. Fixes Google errors and enables rich results. Essential for e-commerce stores targeting higher CTR.", link: "https://apps.shopify.com/schema-plus", homeLink: "https://schemaplus.io/" },
+    { name: "Webrex AI SEO Optimizer Schema", desc: "AI-powered app generating accurate schema for products, FAQs, and videos. Integrates with 30+ review apps and removes duplicates. Great for automated, up-to-date markup.", link: "https://apps.shopify.com/webrex-seo-schema-jsonld", homeLink: "https://webrexstudio.com/" },
+    { name: "JSON-LD Express for SEO Schema", desc: "Fast and complete schema support with automatic installation. Supports all rich data types and custom markup. Reliable choice for quick rich snippet setup.", link: "https://apps.shopify.com/json-express-for-seo", homeLink: "https://quantumseolabs.com/" },
+    { name: "SearchPie SEO", desc: "All-in-one SEO app including strong schema generation and speed tools. Regularly updated for new rich result types. Good for comprehensive optimization.", link: "https://apps.shopify.com/seo-booster", homeLink: "https://boosterapps.com/" }
+  ],
+  Wix: [
+    { name: "Built-in Structured Data", desc: "Wix automatically generates basic schema for pages, products, and blogs. Custom options available via SEO settings and Velo. Sufficient for most Wix sites without extra apps.", link: "https://support.wix.com/en/article/seo-adding-structured-data-to-your-wix-site" }
+  ],
+  Squarespace: [
+    { name: "Built-in Markup", desc: "Squarespace natively creates schema for pages, products, events, and blogs. Automatic and always updated with platform changes. No third-party tools needed for standard rich results.", link: "https://support.squarespace.com/hc/en-us/articles/360002091288-Structured-data-and-rich-results" }
+  ],
+  Joomla: [
+    { name: "Google Structured Data", desc: "Free extension adding breadcrumb, article, and organization schema. Simple configuration with overrides. Reliable for basic rich snippets on Joomla sites.", link: "https://extensions.joomla.org/extension/google-structured-data/", homeLink: "https://stackideas.com/" },
+    { name: "EFSEO", desc: "Freemium tool handling structured data alongside meta tags. Frontend editing and multiple types supported. Good centralized solution.", link: "https://extensions.joomla.org/extension/efseo-easy-frontend-seo/", homeLink: "https://stackideas.com/" }
+  ],
+  Drupal: [
+    { name: "Schema.org Metatag", desc: "Comprehensive module with full Schema.org vocabulary support. Highly configurable for any entity type. Industry standard for advanced Drupal schema.", link: "https://www.drupal.org/project/schema_metatag" },
+    { name: "Metatag", desc: "Core-like module providing base for structured data extensions. Required for most schema implementations. Solid foundation.", link: "https://www.drupal.org/project/metatag" }
+  ]
+},
   "Optimized Title Tag": {
     WordPress: [
       { name: "Yoast SEO", desc: "Industry leader with real-time title previews, length indicators, and AI suggestions. Dynamic variables and bulk editing available. Essential for professional title optimization.", link: "https://wordpress.org/plugins/wordpress-seo/" },
@@ -102,7 +102,7 @@ const pluginData = {
       { name: "BigPipe", desc: "Core module sending static content first while loading personalized parts. Greatly improves perceived speed and LCP.", link: "https://www.drupal.org/docs/core-modules-and-themes/core-modules/bigpipe-module" }
     ]
   }
-};
+}; 
 
 function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-section') {
   if (failedMetrics.length === 0) return;
@@ -186,17 +186,22 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
           const card = document.createElement('div');
           card.className = 'group relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-200 dark:border-gray-700 overflow-hidden';
 
-          card.innerHTML = `
-            <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div class="relative">
-              <h4 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">
-                <a href="${plugin.link || '#'}" target="_blank" rel="noopener" class="hover:text-orange-600 dark:hover:text-orange-400 transition">
-                  ${plugin.name}
-                </a>
-              </h4>
-              <p class="text-gray-600 dark:text-gray-400 leading-relaxed">${plugin.desc}</p>
-            </div>
-          `;
+card.innerHTML = `
+  <div class="relative">
+    <h4 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">${plugin.name}</h4>
+    <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">${plugin.desc}</p>
+    <div class="flex flex-wrap gap-4">
+      <a href="${plugin.link || '#'}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white text-lg font-medium rounded-lg shadow-md hover:shadow-lg transition duration-300">
+        Install from CMS Library
+      </a>
+      ${plugin.homeLink ? `
+        <a href="${plugin.homeLink}" target="_blank" rel="noopener" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white text-lg font-medium rounded-lg shadow-md hover:shadow-lg transition duration-300">
+          Visit Plugin Website
+        </a>
+      ` : ''}
+    </div>
+  </div>
+`;
           pluginsList.appendChild(card);
         });
 
