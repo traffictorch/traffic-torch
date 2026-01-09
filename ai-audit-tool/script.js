@@ -641,11 +641,13 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         `;
         
-              // === RADAR CHART INITIALIZATION ===
+
+
+
+      // === RADAR CHART INITIALIZATION ===
       setTimeout(() => {
         const canvas = document.getElementById('health-radar');
         if (!canvas) return;
-
         try {
           const ctx = canvas.getContext('2d');
           const labelColor = '#9ca3af'; // gray-400 — perfect day/night
@@ -653,19 +655,22 @@ document.addEventListener('DOMContentLoaded', () => {
           const borderColor = '#fb923c';
           const fillColor = 'rgba(251, 146, 60, 0.15)';
 
+          // Normalize scores: each module is out of 20 → convert to 0-100 scale
+          const normalizedScores = modules.map(m => m.score * 5);
+
           window.myChart = new Chart(ctx, {
             type: 'radar',
             data: {
               labels: modules.map(m => m.name),
               datasets: [{
-                label: 'Health Score',
-                data: scores,
+                label: 'Human-Like Score',
+                data: normalizedScores,
                 backgroundColor: fillColor,
                 borderColor: borderColor,
                 borderWidth: 4,
                 pointRadius: 8,
                 pointHoverRadius: 12,
-                pointBackgroundColor: scores.map(s => s >= 80 ? '#22c55e' : s >= 60 ? '#fb923c' : '#ef4444'),
+                pointBackgroundColor: normalizedScores.map(s => s >= 80 ? '#22c55e' : s >= 50 ? '#fb923c' : '#ef4444'),
                 pointBorderColor: '#fff',
                 pointBorderWidth: 3
               }]
@@ -684,7 +689,17 @@ document.addEventListener('DOMContentLoaded', () => {
                   pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
                 }
               },
-              plugins: { legend: { display: false } }
+              plugins: { 
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: function(context) {
+                      const rawScore = modules[context.dataIndex].score;
+                      return `${context.dataset.label}: ${rawScore}/20 (${context.parsed.r}/100)`;
+                    }
+                  }
+                }
+              }
             }
           });
         } catch (e) {
