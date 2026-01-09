@@ -76,29 +76,36 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
   if (!container) return;
 
   const section = document.createElement('section');
-  section.className = 'mt-20';
+  section.className = 'mt-20 max-w-5xl mx-auto';
 
   section.innerHTML = `
-    <div class="max-w-5xl mx-auto">
-      <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
-        Plugin Solutions for Failed Metrics
-      </h2>
-      <p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
-        Select your CMS below to instantly discover the top free/freemium plugins that fix these issues. 
-        All recommendations are from official repositories — always test compatibility on a staging site first.
-      </p>
+    <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
+      Plugin Solutions for Failed Metrics
+    </h2>
+    <p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
+      ${failedMetrics.length} issue${failedMetrics.length > 1 ? 's' : ''} can be fixed with plugins. 
+      Click any metric below to reveal top free/freemium solutions for your CMS.
+    </p>
 
-      <div class="grid gap-12 md:gap-16">
-        ${failedMetrics.map(metric => {
-          if (!pluginData[metric]) return '';
-          const metricId = metric.replace(/\s+/g, '-').toLowerCase();
-          return `
-            <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 md:p-10 border border-gray-200 dark:border-gray-700">
-              <h3 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-8 text-center">
+    <div class="space-y-6">
+      ${failedMetrics.map(metric => {
+        if (!pluginData[metric]) return '';
+        const metricId = metric.replace(/\s+/g, '-').toLowerCase();
+        return `
+          <details class="group bg-white dark:bg-gray-900 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <summary class="flex items-center justify-between p-6 md:p-8 cursor-pointer list-none">
+              <h3 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200">
                 ${metric}
               </h3>
+              <div class="transform transition-transform duration-300 group-open:rotate-180">
+                <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </summary>
 
-              <div class="max-w-md mx-auto mb-8">
+            <div class="px-6 md:px-8 pb-8 md:pb-10 border-t border-gray-200 dark:border-gray-700">
+              <div class="max-w-md mx-auto my-8">
                 <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-orange-300 dark:border-orange-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 outline-none transition">
                   <option value="">Select your CMS...</option>
                   ${Object.keys(pluginData[metric]).map(cms => 
@@ -108,18 +115,18 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
               </div>
 
               <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
-                <!-- Plugins injected here -->
+                <!-- Plugins will be injected here -->
               </div>
             </div>
-          `;
-        }).join('')}
-      </div>
+          </details>
+        `;
+      }).join('')}
     </div>
   `;
 
   container.appendChild(section);
 
-  // Attach event listeners correctly using unique IDs
+  // Event listeners for each dropdown
   failedMetrics.forEach(metric => {
     if (!pluginData[metric]) return;
     const metricId = metric.replace(/\s+/g, '-').toLowerCase();
