@@ -802,6 +802,28 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
       `;
       
+      
+         // Create placeholder for Plugin Solutions
+   const pluginSection = document.createElement('div');
+   pluginSection.id = 'plugin-solutions-section';
+   pluginSection.className = 'mt-12';
+   results.appendChild(pluginSection);
+
+   // Collect failed metrics that have plugin solutions
+   const failedMetrics = [];
+
+   if (schemaTypes.length < 2) {
+     failedMetrics.push("Schema Markup");
+   }
+
+   // Add more if you expand later, e.g.:
+   // if (!isHttps) failedMetrics.push("HTTPS Enforcement");
+   // Title/meta not directly checked, but you can add conditions if needed
+
+   if (failedMetrics.length > 0) {
+     renderPluginSolutions(failedMetrics);
+   }
+      
 
 
       // === RADAR CHART INITIALIZATION ===
@@ -859,30 +881,6 @@ document.addEventListener('DOMContentLoaded', () => {
       
       
       
-      
-   // Create plugin solutions placeholder
-   const pluginSection = document.createElement('div');
-   pluginSection.id = 'plugin-solutions-section';
-   pluginSection.className = 'mt-12';
-   results.appendChild(pluginSection);
-
-   // Collect failed metrics suitable for plugin solutions
-   const failedMetrics = [];
-
-   if (schemaTypes.length < 2) failedMetrics.push('Schema Markup');
-   if (!doc.title || doc.title.length > 65 || doc.title.length < 50) failedMetrics.push('Optimized Title Tag'); // Approximate – adjust if you have exact title check
-   // Add meta description check if available, else skip or approximate
-   if (words < 1500 || readability < 60 || readability > 70) failedMetrics.push('Content Depth & Readability'); // If you add later
-   // Core Web Vitals / Speed not directly measured here, skip
-   // Add more based on actual fails, e.g., from failedTrustworthiness if HTTPS false, etc.
-
-   // Add specific ones from E-E-A-T fails if plugin-relevant
-   if (failedAuthoritativeness.includes("Implement relevant JSON-LD schema (Article, Person, Organization)")) failedMetrics.push('Schema Markup');
-   // Image opt not checked, skip
-
-   if (failedMetrics.length > 0) {
-     renderPluginSolutions(failedMetrics);
-   }
    
    
    
