@@ -1,5 +1,3 @@
-export { renderPluginSolutions };
-
 const pluginData = {
   "Schema Markup": {
     WordPress: [
@@ -144,4 +142,6 @@ const pluginData = {
       { name: "SearchPie", desc: "Freemium keyword optimization." }
     ]
   }
-};
+}
+
+export { renderPluginSolutions };
