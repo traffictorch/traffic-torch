@@ -341,9 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const scores = modules.map(m => m.score);
       
-      
-      
-      
+  
       
       results.innerHTML = `
 <!-- Overall Score Card -->
@@ -834,10 +832,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 
-
-
-
-
 <!-- PDF Button -->
 <div class="text-center my-16">
   <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
@@ -851,7 +845,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Create placeholder for Plugin Solutions
 const pluginSection = document.createElement('div');
 pluginSection.id = 'plugin-solutions-section';
-pluginSection.className = 'mt-20'; // Consistent large spacing
+pluginSection.className = 'mt-20';
 results.appendChild(pluginSection);
 
 // Collect only real failed/display metrics that plugins can fix
@@ -863,40 +857,32 @@ if (schemaGrade.text !== 'Excellent') {
   failedMetrics.push({ name: "Schema Markup", grade: schemaGrade });
 }
 
-// Author byline present
-const hasAuthorByline = !!doc.querySelector(config.parsing.authorBylineSelectors.join(', '));
+// Author byline present (use original variable)
 if (!hasAuthorByline) {
   failedMetrics.push({ name: "Author Byline Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
 }
 
-// Author bio section
-const hasAuthorBio = !!doc.querySelector(config.parsing.authorBioSelectors.join(', '));
+// Author bio section (use original variable)
 if (!hasAuthorBio) {
   failedMetrics.push({ name: "Author Bio Section", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
 }
 
-// Update date shown
-const hasUpdateDate = !!doc.querySelector(config.parsing.updateDateSelectors.join(', ')) ||
-  cleanedText.match(/\b(Updated|Last updated|Published|Modified on)[\s:]*\w+/gi);
+// Update date shown (use original variable)
 if (!hasUpdateDate) {
   failedMetrics.push({ name: "Update Date Shown", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
 }
 
-// Contact info present
-const hasContact = contactLinkElements.length > 0 || footerContactText;
+// Contact info present (use original variable)
 if (!hasContact) {
   failedMetrics.push({ name: "Contact Info Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
 }
 
-// Privacy/Terms links
-const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
+// Privacy/Terms links (use original variable)
 if (!hasPolicies) {
   failedMetrics.push({ name: "Privacy & Terms Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
 }
 
-// About/Team links (already have detection)
-const hasAboutLinks = aboutLinkElements.length > 0 ||
-  Array.from(doc.querySelectorAll('nav a')).some(a => a.textContent.toLowerCase().includes('about'));
+// About/Team links (use original variable)
 if (!hasAboutLinks) {
   failedMetrics.push({ name: "About/Team Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
 }
@@ -906,8 +892,7 @@ if (failedMetrics.length > 0) {
   renderPluginSolutions(failedMetrics);
 }
       
-
-
+      
       // === RADAR CHART INITIALIZATION ===
             setTimeout(() => {
         const canvas = document.getElementById('health-radar');
@@ -961,11 +946,6 @@ if (failedMetrics.length > 0) {
         }
       }, 150);
       
-      
-      
-   
-   
-   
 
       // Event delegation for fixes toggles
       results.addEventListener('click', (e) => {
