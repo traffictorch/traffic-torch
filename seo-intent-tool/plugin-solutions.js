@@ -142,6 +142,5 @@ const pluginData = {
       { name: "SearchPie", desc: "Freemium keyword optimization." }
     ]
   }
-}
 
 export { renderPluginSolutions };
