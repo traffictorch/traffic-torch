@@ -84,55 +84,83 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
   if (!container) return;
 
   const section = document.createElement('section');
-  section.className = 'mt-12 p-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg';
-  section.innerHTML = `<h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Plugin Solutions for Failed Metrics</h2>
-    <p class="text-gray-700 dark:text-gray-300 mb-6">Select your CMS to see top free/freemium plugins that can help fix these issues. Always test compatibility.</p>`;
+  section.className = 'mt-20';
 
+  section.innerHTML = `
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
+        Plugin Solutions for Failed Metrics
+      </h2>
+      <p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
+        Select your CMS below to instantly discover the top free/freemium plugins that fix these issues. 
+        All recommendations are from official repositories — always test compatibility on a staging site first.
+      </p>
+
+      <div class="grid gap-12 md:gap-16">
+        ${failedMetrics.map(metric => {
+          if (!pluginData[metric]) return '';
+          return `
+            <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 md:p-10 border border-gray-200 dark:border-gray-700">
+              <h3 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-8 text-center">
+                ${metric}
+              </h3>
+
+              <div class="max-w-md mx-auto mb-8">
+                <select class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-orange-300 dark:border-orange-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 outline-none transition">
+                  <option value="">Select your CMS...</option>
+                  ${Object.keys(pluginData[metric]).map(cms => 
+                    `<option value="${cms}">${cms}</option>`
+                  ).join('')}
+                </select>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden" id="plugins-${metric.replace(/\\s+/g, '-').toLowerCase()}">
+                <!-- Plugins will be injected here -->
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+
+  container.appendChild(section);
+
+  // Attach event listeners after insertion
   failedMetrics.forEach(metric => {
     if (!pluginData[metric]) return;
+    const select = section.querySelector(`select`);
+    if (!select) return;
 
-    const metricDiv = document.createElement('div');
-    metricDiv.className = 'mb-8';
-    metricDiv.innerHTML = `<h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">${metric}</h3>`;
-
-    const select = document.createElement('select');
-    select.className = 'mb-4 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200';
-    select.innerHTML = '<option value="">Select your CMS...</option>';
-
-    Object.keys(pluginData[metric]).forEach(cms => {
-      const option = document.createElement('option');
-      option.value = cms;
-      option.textContent = cms;
-      select.appendChild(option);
-    });
-
-    const pluginsList = document.createElement('div');
-    pluginsList.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 hidden';
+    const pluginsList = section.querySelector(`#plugins-${metric.replace(/\s+/g, '-').toLowerCase()}`);
+    if (!pluginsList) return;
 
     select.addEventListener('change', (e) => {
-      pluginsList.classList.add('hidden');
-      pluginsList.innerHTML = '';
       const selected = e.target.value;
-      if (!selected) return;
+      pluginsList.innerHTML = '';
+      pluginsList.classList.add('hidden');
+
+      if (!selected || !pluginData[metric][selected]) return;
 
       pluginData[metric][selected].forEach(plugin => {
         const card = document.createElement('div');
-        card.className = 'p-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md';
+        card.className = 'group relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-200 dark:border-gray-700 overflow-hidden';
+
         card.innerHTML = `
-          <h4 class="font-medium text-gray-800 dark:text-gray-200"><a href="${plugin.link || '#'}" target="_blank" rel="noopener" class="hover:underline">${plugin.name}</a></h4>
-          <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">${plugin.desc}</p>
+          <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="relative">
+            <h4 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">
+              <a href="${plugin.link || '#'}" target="_blank" rel="noopener" class="hover:text-orange-600 dark:hover:text-orange-400 transition">
+                ${plugin.name}
+              </a>
+            </h4>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">${plugin.desc}</p>
+          </div>
         `;
         pluginsList.appendChild(card);
       });
+
       pluginsList.classList.remove('hidden');
     });
-
-    metricDiv.appendChild(select);
-    metricDiv.appendChild(pluginsList);
-    section.appendChild(metricDiv);
   });
-
-  container.appendChild(section);
 }
-
-export { renderPluginSolutions };
