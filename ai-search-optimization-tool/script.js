@@ -200,6 +200,17 @@ const initTool = (form, results, progressContainer) => {
         antiAiSafety * 0.05
       );
       const yourScore = overall;
+      
+      const modules = [
+        { name: "Answerability", score: answerability, desc: "Direct answers in first 300 words, FAQ schema, step-by-step structure" },
+        { name: "Structured Data", score: structuredData, desc: "JSON-LD presence and relevant types" },
+        { name: "EEAT Signals", score: eeat, desc: "Author, dates, trusted links, HTTPS" },
+        { name: "Scannability", score: scannability, desc: "Headings, lists, tables, short paragraphs" },
+        { name: "Conversational Tone", score: conversational, desc: "You/I/we, questions, pain point acknowledgment" },
+        { name: "Readability", score: readability, desc: "Flesch ease, variation, low passive/complex words" },
+        { name: "Unique Insights", score: uniqueInsights, desc: "First-hand markers, dated results, interviews" },
+        { name: "Anti-AI Safety", score: antiAiSafety, desc: "Variation, low repetition, no predictable patterns" }
+      ];
 
       function getGradeInfo(score) {
         if (score >= 80) {
@@ -444,16 +455,7 @@ const initTool = (form, results, progressContainer) => {
       };
       
       
-            const modules = [
-        { name: "Answerability", score: answerability, desc: "Direct answers in first 300 words, FAQ schema, step-by-step structure" },
-        { name: "Structured Data", score: structuredData, desc: "JSON-LD presence and relevant types" },
-        { name: "EEAT Signals", score: eeat, desc: "Author, dates, trusted links, HTTPS" },
-        { name: "Scannability", score: scannability, desc: "Headings, lists, tables, short paragraphs" },
-        { name: "Conversational Tone", score: conversational, desc: "You/I/we, questions, pain point acknowledgment" },
-        { name: "Readability", score: readability, desc: "Flesch ease, variation, low passive/complex words" },
-        { name: "Unique Insights", score: uniqueInsights, desc: "First-hand markers, dated results, interviews" },
-        { name: "Anti-AI Safety", score: antiAiSafety, desc: "Variation, low repetition, no predictable patterns" }
-      ];
+
       const scores = modules.map(m => m.score);
       
       
