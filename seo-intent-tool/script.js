@@ -701,6 +701,53 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
+
+
+
+   <div class="mt-20 space-y-8">
+     <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">Top 3 Priority Fixes</h2>
+     ${(() => {
+       const priority = [
+         !hasAuthorByline ? { name: 'Add Author Byline & Bio', impact: '+15–25 points', desc: 'Visible author name and detailed bio with photo establish credibility and E-E-A-T signals.' } : null,
+         words < 1500 ? { name: 'Expand Content Depth', impact: '+12–20 points', desc: 'Aim for >1,500 words with examples, stats, case studies, and deeper coverage to fully satisfy search intent.' } : null,
+         schemaTypes.length < 2 ? { name: 'Add Relevant Schema Markup', impact: '+10–18 points', desc: 'Implement JSON-LD for Article, Person, FAQPage, etc. to unlock rich results and boost authority.' }
+       ].filter(Boolean);
+
+       const remaining = topFixes.filter(f => 
+         !priority.some(p => p && f.text.includes(p.name.split(' ')[1] || p.name))
+       ).slice(0, 3 - priority.length);
+
+       const finalPriority = [...priority, ...remaining.map(f => ({ name: f.text, impact: f.impact, desc: 'Strong on-page improvement with high ranking impact.' }))].slice(0, 3);
+
+       if (finalPriority.length === 0) {
+         return `
+           <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-3xl p-10 md:p-14 shadow-2xl border-l-8 border-green-500">
+             <h3 class="text-4xl font-black text-green-600 dark:text-green-400 mb-6 text-center">🎉 No Major Fixes Needed!</h3>
+             <p class="text-xl text-center text-gray-800 dark:text-gray-200 leading-relaxed">Your page is exceptionally optimized. All key on-page signals are strong.<br>Focus next on building high-authority backlinks and fresh content.</p>
+           </div>`;
+       }
+
+       return finalPriority.map((fix, i) => `
+         <div class="group relative bg-white dark:bg-gray-900 rounded-3xl p-8 md:p-10 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-200 dark:border-gray-700 overflow-hidden">
+           <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+           <div class="relative flex items-start gap-6">
+             <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center text-white text-3xl font-black shadow-xl">
+               ${i + 1}
+             </div>
+             <div class="flex-1">
+               <h3 class="text-2xl md:text-3xl font-black text-gray-900 dark:text-gray-100 mb-3">${fix.name}</h3>
+               <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-4">${fix.desc}</p>
+               <div class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-full shadow-lg">
+                 ${fix.impact}
+               </div>
+             </div>
+           </div>
+         </div>
+       `).join('');
+     })()}
+   </div>
+
+
 <!-- Score Improvement & Potential Ranking Gains -->
 <div class="max-w-5xl mx-auto mt-20 grid md:grid-cols-2 gap-8">
   <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
