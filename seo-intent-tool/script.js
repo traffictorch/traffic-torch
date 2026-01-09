@@ -849,53 +849,59 @@ document.addEventListener('DOMContentLoaded', () => {
       
       
 // Create placeholder for Plugin Solutions
-   const pluginSection = document.createElement('div');
-   pluginSection.id = 'plugin-solutions-section';
-   pluginSection.className = 'mt-12';
-   results.appendChild(pluginSection);
+const pluginSection = document.createElement('div');
+pluginSection.id = 'plugin-solutions-section';
+pluginSection.className = 'mt-20'; // Consistent large spacing
+results.appendChild(pluginSection);
 
+// Collect only real failed/display metrics that plugins can fix
 const failedMetrics = [];
 
-// Schema Markup
+// Schema Markup (already detected)
 const schemaGrade = getGrade(schemaTypes.length, 'schema');
 if (schemaGrade.text !== 'Excellent') {
   failedMetrics.push({ name: "Schema Markup", grade: schemaGrade });
 }
 
-// Title
-const title = doc.title?.trim() || '';
-const titleScore = title && title.length >= 50 && title.length <= 65 ? 100 : title ? 60 : 20;
-const titleGrade = getGrade(titleScore);
-if (titleGrade.text !== 'Excellent') {
-  failedMetrics.push({ name: "Optimized Title Tag", grade: titleGrade });
+// Author byline present
+const hasAuthorByline = !!doc.querySelector(config.parsing.authorBylineSelectors.join(', '));
+if (!hasAuthorByline) {
+  failedMetrics.push({ name: "Author Byline Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
 }
 
-// Meta Description
-const metaDesc = doc.querySelector('meta[name="description" i]')?.content?.trim() || '';
-const metaScore = metaDesc && metaDesc.length >= 120 && metaDesc.length <= 160 ? 100 : metaDesc ? 60 : 20;
-const metaGrade = getGrade(metaScore);
-if (metaGrade.text !== 'Excellent') {
-  failedMetrics.push({ name: "Compelling Meta Description", grade: metaGrade });
+// Author bio section
+const hasAuthorBio = !!doc.querySelector(config.parsing.authorBioSelectors.join(', '));
+if (!hasAuthorBio) {
+  failedMetrics.push({ name: "Author Bio Section", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
 }
 
-// Images
-const images = doc.querySelectorAll('img');
-const imagesWithoutAlt = Array.from(images).filter(img => !img.alt || img.alt.trim() === '');
-const imageScore = imagesWithoutAlt.length === 0 ? 100 : imagesWithoutAlt.length < images.length * 0.3 ? 75 : 40;
-const imageGrade = getGrade(imageScore);
-if (images.length > 3 && imageGrade.text !== 'Excellent') {
-  failedMetrics.push({ name: "Image Optimization & Alt Text", grade: imageGrade });
+// Update date shown
+const hasUpdateDate = !!doc.querySelector(config.parsing.updateDateSelectors.join(', ')) ||
+  cleanedText.match(/\b(Updated|Last updated|Published|Modified on)[\s:]*\w+/gi);
+if (!hasUpdateDate) {
+  failedMetrics.push({ name: "Update Date Shown", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
 }
 
-// Speed / HTTPS proxy
-const speedScore = isHttps && readability >= 50 ? 100 : 60;
-const speedGrade = getGrade(speedScore);
-if ((words > 2000 && readability < 50) || !isHttps) {
-  if (speedGrade.text !== 'Excellent') {
-    failedMetrics.push({ name: "Core Web Vitals / Page Speed Optimization", grade: speedGrade });
-  }
+// Contact info present
+const hasContact = contactLinkElements.length > 0 || footerContactText;
+if (!hasContact) {
+  failedMetrics.push({ name: "Contact Info Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
 }
 
+// Privacy/Terms links
+const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
+if (!hasPolicies) {
+  failedMetrics.push({ name: "Privacy & Terms Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+}
+
+// About/Team links (already have detection)
+const hasAboutLinks = aboutLinkElements.length > 0 ||
+  Array.from(doc.querySelectorAll('nav a')).some(a => a.textContent.toLowerCase().includes('about'));
+if (!hasAboutLinks) {
+  failedMetrics.push({ name: "About/Team Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+}
+
+// Render only if we have real fixes
 if (failedMetrics.length > 0) {
   renderPluginSolutions(failedMetrics);
 }

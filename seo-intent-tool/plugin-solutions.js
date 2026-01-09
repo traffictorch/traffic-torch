@@ -1,153 +1,167 @@
 const pluginData = {
-"Schema Markup": {
-  WordPress: [
-    { name: "Yoast SEO", desc: "The leading SEO plugin with robust built-in schema support for Article, FAQ, HowTo, Product, and Person types. It automatically generates markup and offers easy overrides. Ideal for most sites wanting reliable rich snippets without complexity.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
-    { name: "Rank Math", desc: "Feature-rich freemium plugin with an advanced schema generator supporting 20+ types and custom fields. Includes rich snippet testing and automation. Perfect for users needing granular control and AI-powered suggestions.", link: "https://wordpress.org/plugins/seo-by-rank-math/", homeLink: "https://rankmath.com/" },
-    { name: "All in One SEO", desc: "Trusted by millions, it provides guided schema setup for common types with TruSEO scoring. Supports dynamic variables and automatic markup. Great balance of simplicity and power for beginners to pros.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/", homeLink: "https://aioseo.com/" },
-    { name: "Schema & Structured Data for WP", desc: "Dedicated schema plugin with conditional display and advanced types like Review and Recipe. Full AMP compatibility and migration tools. Best for sites requiring maximum schema flexibility.", link: "https://wordpress.org/plugins/schema-and-structured-data-for-wp/", homeLink: "https://wpschema.com/" },
-    { name: "SEOPress", desc: "Lightweight yet powerful with built-in schema for multiple types and no ads in free version. Easy JSON-LD management and validation. Excellent for performance-focused sites.", link: "https://wordpress.org/plugins/wp-seopress/", homeLink: "https://www.seopress.org/" }
-  ],
-  Shopify: [
-    { name: "Schema Plus for SEO", desc: "Top-rated app that automatically adds complete JSON-LD schema for products, collections, blogs, and more. Fixes Google errors and enables rich results. Essential for e-commerce stores targeting higher CTR.", link: "https://apps.shopify.com/schema-plus", homeLink: "https://schemaplus.io/" },
-    { name: "Webrex AI SEO Optimizer Schema", desc: "AI-powered app generating accurate schema for products, FAQs, and videos. Integrates with 30+ review apps and removes duplicates. Great for automated, up-to-date markup.", link: "https://apps.shopify.com/webrex-seo-schema-jsonld", homeLink: "https://webrexstudio.com/" },
-    { name: "JSON-LD Express for SEO Schema", desc: "Fast and complete schema support with automatic installation. Supports all rich data types and custom markup. Reliable choice for quick rich snippet setup.", link: "https://apps.shopify.com/json-express-for-seo", homeLink: "https://quantumseolabs.com/" },
-    { name: "SearchPie SEO", desc: "All-in-one SEO app including strong schema generation and speed tools. Regularly updated for new rich result types. Good for comprehensive optimization.", link: "https://apps.shopify.com/seo-booster", homeLink: "https://boosterapps.com/" }
-  ],
-  Wix: [
-    { name: "Built-in Structured Data", desc: "Wix automatically generates basic schema for pages, products, and blogs. Custom options available via SEO settings and Velo. Sufficient for most Wix sites without extra apps.", link: "https://support.wix.com/en/article/seo-adding-structured-data-to-your-wix-site" }
-  ],
-  Squarespace: [
-    { name: "Built-in Markup", desc: "Squarespace natively creates schema for pages, products, events, and blogs. Automatic and always updated with platform changes. No third-party tools needed for standard rich results.", link: "https://support.squarespace.com/hc/en-us/articles/360002091288-Structured-data-and-rich-results" }
-  ],
-  Joomla: [
-    { name: "Google Structured Data", desc: "Free extension adding breadcrumb, article, and organization schema. Simple configuration with overrides. Reliable for basic rich snippets on Joomla sites.", link: "https://extensions.joomla.org/extension/google-structured-data/", homeLink: "https://stackideas.com/" },
-    { name: "EFSEO", desc: "Freemium tool handling structured data alongside meta tags. Frontend editing and multiple types supported. Good centralized solution.", link: "https://extensions.joomla.org/extension/efseo-easy-frontend-seo/", homeLink: "https://stackideas.com/" }
-  ],
-  Drupal: [
-    { name: "Schema.org Metatag", desc: "Comprehensive module with full Schema.org vocabulary support. Highly configurable for any entity type. Industry standard for advanced Drupal schema.", link: "https://www.drupal.org/project/schema_metatag" },
-    { name: "Metatag", desc: "Core-like module providing base for structured data extensions. Required for most schema implementations. Solid foundation.", link: "https://www.drupal.org/project/metatag" }
-  ]
-},
-"Optimized Title Tag": {
-  WordPress: [
-    { name: "Yoast SEO", desc: "Industry leader with real-time title previews, character counters, and AI-powered rewrite suggestions. Supports dynamic variables and bulk editing. Essential for crafting click-worthy titles that boost CTR.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
-    { name: "Rank Math", desc: "Advanced title optimization with focus keyword integration, bulk editing, and SERP preview. Includes AI content generator for titles. Perfect for large sites needing efficiency and precision.", link: "https://wordpress.org/plugins/seo-by-rank-math/", homeLink: "https://rankmath.com/" },
-    { name: "All in One SEO", desc: "TruSEO scoring analyzes title strength with smart recommendations and dynamic patterns. Trusted defaults and unlimited keywords. Great all-rounder for consistent optimization.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/", homeLink: "https://aioseo.com/" },
-    { name: "SEOPress", desc: "Lightweight title editor with dynamic variables, no branding in free version, and clean SERP preview. Fast and highly customizable. Ideal for performance-focused sites.", link: "https://wordpress.org/plugins/wp-seopress/", homeLink: "https://www.seopress.org/" }
-  ],
-  Shopify: [
-    { name: "SearchPie SEO", desc: "Automatic title optimization with AI templates, bulk editing, and best practice enforcement. Focuses on compelling titles for higher click-through rates. Comprehensive e-commerce solution.", link: "https://apps.shopify.com/seo-booster", homeLink: "https://boosterapps.com/" },
-    { name: "Plug in SEO", desc: "Scans and fixes title issues with specific recommendations and alerts. Monitors changes over time. Long-standing trusted app for title health.", link: "https://apps.shopify.com/plug-in-seo", homeLink: "https://pluginseo.com/" },
-    { name: "Yoast SEO for Shopify", desc: "Official Yoast app bringing real-time title previews and AI suggestions to Shopify. Focus keyword integration and snippet preview. Familiar interface for Yoast users.", link: "https://apps.shopify.com/yoast-seo", homeLink: "https://yoast.com/" }
-  ],
-  Wix: [
-    { name: "Built-in SEO Wiz", desc: "Guided step-by-step wizard for optimal title creation with real-time previews and character limits. Personalized recommendations based on site content. Integrated directly in Wix editor.", link: "https://support.wix.com/en/article/seo-customizing-your-sites-title-and-meta-tags" },
-    { name: "SEO with AI", desc: "AI-powered app generating personalized title suggestions with GPT-4 analysis. Automated optimization and content recommendations. Great for faster, smarter title crafting.", link: "https://www.wix.com/app-market/web-solution/seo-with-ai-by-certified-code" }
-  ],
-  Squarespace: [
-    { name: "Built-in Page Settings", desc: "Dedicated SEO title field separate from navigation title with character counter and best practices tips. Native previews and automatic defaults from content. Reliable built-in solution.", link: "https://support.squarespace.com/hc/en-us/articles/360002090288-SEO-settings" },
-    { name: "SEOSpace", desc: "Popular Squarespace SEO plugin with title analysis, scoring, and optimization suggestions. Helps craft compelling titles for better CTR. Essential add-on for advanced users.", link: "https://www.seospace.co/", homeLink: "https://www.seospace.co/" }
-  ],
-  Joomla: [
-    { name: "EFSEO - Easy Frontend SEO", desc: "Central control for title tags with frontend editing and automatic generation rules. Bulk operations and overrides available. Efficient for Joomla title management.", link: "https://extensions.joomla.org/extension/efseo-easy-frontend-seo/", homeLink: "https://stackideas.com/" },
-    { name: "Tag Meta", desc: "Advanced rules-based title management with macros and patterns. Site-wide consistency and per-page customization. Powerful for large Joomla sites.", link: "https://extensions.joomla.org/extension/tag-meta/" },
-    { name: "OSMeta", desc: "Dashboard for bulk title editing and metadata control. Quick access and reporting features. Trusted for streamlined workflows.", link: "https://extensions.joomla.org/extension/osmeta/" }
-  ],
-  Drupal: [
-    { name: "Metatag", desc: "Comprehensive module for title and meta control with tokens for dynamic content. Per-entity settings and social integration. Foundation for Drupal SEO titles.", link: "https://www.drupal.org/project/metatag" },
-    { name: "Page Title", desc: "Dedicated module for overriding page titles with patterns and tokens. Works alongside Metatag for full control. Essential for custom title formatting.", link: "https://www.drupal.org/project/page_title" }
-  ]
-},
-"Compelling Meta Description": {
-  WordPress: [
-    { name: "Yoast SEO", desc: "Real-time meta description editor with snippet preview, character counter, and AI-powered suggestions. Focuses on compelling, clickable copy. Industry standard for crafting descriptions that boost CTR.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
-    { name: "Rank Math", desc: "Dynamic meta descriptions with variables, bulk editing, and accurate SERP preview. Strong focus keyword integration and readability checks. Excellent for creating engaging descriptions at scale.", link: "https://wordpress.org/plugins/seo-by-rank-math/", homeLink: "https://rankmath.com/" },
-    { name: "All in One SEO", desc: "Smart meta generation with TruSEO scoring, readability feedback, and dynamic patterns. Excellent defaults and unlimited keywords. Trusted for consistent, compelling descriptions.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/", homeLink: "https://aioseo.com/" },
-    { name: "SEOPress", desc: "Clean, lightweight editor with dynamic variables, no upsells in free version. Fast SERP preview and customization. Ideal for performance-focused sites needing strong descriptions.", link: "https://wordpress.org/plugins/wp-seopress/", homeLink: "https://www.seopress.org/" }
-  ],
-  Shopify: [
-    { name: "SearchPie SEO", desc: "Optimizes meta descriptions store-wide with AI templates and bulk editing. Focuses on compelling, keyword-rich copy for higher CTR. Comprehensive e-commerce SEO solution.", link: "https://apps.shopify.com/seo-booster", homeLink: "https://boosterapps.com/" },
-    { name: "Plug in SEO", desc: "Scans and fixes meta description issues with specific recommendations and alerts. Monitors changes over time. Long-standing trusted app for description health.", link: "https://apps.shopify.com/plug-in-seo", homeLink: "https://pluginseo.com/" },
-    { name: "Smart SEO", desc: "AI-generated meta descriptions with image alt text and structured data. Automatic optimization for products and pages. Great for quick, compelling copy.", link: "https://apps.shopify.com/smart-seo", homeLink: "https://sherpas.design/" }
-  ],
-  Wix: [
-    { name: "Built-in AI Meta Tag Creator", desc: "AI-powered tool generating three optimized meta description suggestions based on page content. Choose tone and refine easily. Integrated directly in Wix SEO panel.", link: "https://support.wix.com/en/article/creating-seo-tags-using-ai" },
-    { name: "MetaMaster: SEO Optimizer", desc: "Analyzes and generates compelling meta descriptions with scoring. Identifies issues and suggests improvements. Streamlined for quick enhancements.", link: "https://www.wix.com/app-market/web-solution/metamaster-seo-page-optimizer" },
-    { name: "One-Click Optimizer", desc: "Automatically applies meta description improvements with AI suggestions. Generates optimized copy matching your brand. Boosts visibility with minimal effort.", link: "https://www.wix.com/app-market/web-solution/seo-optimizer" }
-  ],
-  Squarespace: [
-    { name: "Built-in SEO Tools", desc: "Native editor for custom meta descriptions with character limits and previews. Automatically generates defaults from content. Clean and reliable built-in solution.", link: "https://support.squarespace.com/hc/en-us/articles/360002090288-SEO-settings" },
-    { name: "SEOSpace", desc: "Dedicated Squarespace SEO plugin with meta description analysis, scoring, and AI suggestions. Helps craft compelling copy for better CTR. Essential add-on for advanced users.", link: "https://www.seospace.co/", homeLink: "https://www.seospace.co/" }
-  ],
-  Joomla: [
-    { name: "EFSEO - Easy Frontend SEO", desc: "Frontend editing for meta descriptions with automatic generation rules. Bulk operations and overrides. Efficient centralized solution.", link: "https://extensions.joomla.org/extension/efseo-easy-frontend-seo/", homeLink: "https://stackideas.com/" },
-    { name: "Tag Meta", desc: "Rules-based meta description management with macros and patterns. Site-wide consistency and per-page customization. Powerful for large sites.", link: "https://extensions.joomla.org/extension/tag-meta/" },
-    { name: "OSMeta", desc: "Dashboard for bulk meta description editing and metadata control. Quick access and reporting. Trusted for streamlined workflows.", link: "https://extensions.joomla.org/extension/osmeta/" }
-  ],
-  Drupal: [
-    { name: "Metatag", desc: "Comprehensive module for meta description control with tokens for dynamic content. Per-entity settings and social integration. Foundation for compelling descriptions.", link: "https://www.drupal.org/project/metatag" }
-  ]
-},
-"Image Optimization & Alt Text": {
-  WordPress: [
-    { name: "Smush", desc: "Most popular optimizer with lazy loading, WebP/AVIF conversion, bulk processing, and alt text suggestions. Automatic optimization on upload with lossless/lossy options. Trusted by millions for reliable speed gains without quality loss.", link: "https://wordpress.org/plugins/wp-smushit/", homeLink: "https://wpmudev.com/project/wp-smush-pro/" },
-    { name: "EWWW Image Optimizer", desc: "Pixel-perfect compression supporting WebP/AVIF with local or cloud processing. Excellent quality retention and easy bulk optimization. Strong choice for professional sites needing precise control.", link: "https://wordpress.org/plugins/ewww-image-optimizer/", homeLink: "https://ewww.io/" },
-    { name: "Imagify", desc: "Smart compression levels with visual comparison and next-gen formats. Bulk restore and automatic optimization. Premium feel with excellent balance of size and quality.", link: "https://wordpress.org/plugins/imagify-image-optimizer/", homeLink: "https://imagify.io/" },
-    { name: "ShortPixel", desc: "Advanced glossy/lossy compression with generous free tier and AVIF support. CDN delivery in premium. Ideal for e-commerce with heavy image needs.", link: "https://wordpress.org/plugins/shortpixel-image-optimiser/", homeLink: "https://shortpixel.com/" }
-  ],
-  Shopify: [
-    { name: "TinyIMG", desc: "Complete optimization with alt text generation, automatic monitoring, and bulk processing. Supports WebP/AVIF and filename SEO. Proven to significantly improve Core Web Vitals.", link: "https://apps.shopify.com/tinyimg", homeLink: "https://tiny-img.com/" },
-    { name: "Crush.pics", desc: "Automatic compression on upload with format conversion and SEO-friendly alt/filenames. Set-and-forget with strong results. Clean interface trusted by many stores.", link: "https://apps.shopify.com/crush-pics", homeLink: "https://crush.pics/" },
-    { name: "Image Optimizer Pro", desc: "Bulk compression, WebP conversion, and alt text tools. One-click optimization for entire store. Great for large catalogs needing fast results.", link: "https://apps.shopify.com/media-compressor" }
-  ],
-  Wix: [
-    { name: "Built-in Optimizer", desc: "Automatically compresses images on upload with responsive delivery and modern formats. Manual alt text editing in editor. Native solution requiring no extra apps.", link: "https://support.wix.com/en/article/optimizing-images-for-your-wix-site" },
-    { name: "Website Speedy", desc: "App focused on lazy loading and further compression. Improves load times beyond built-in tools. Easy setup for additional gains.", link: "https://www.wix.com/app-market/web-solution/websitespeedy" }
-  ],
-  Squarespace: [
-    { name: "Built-in Tools", desc: "Native automatic compression, responsive delivery, and alt text fields. Consistent optimization across all templates. Reliable with no third-party needed.", link: "https://support.squarespace.com/hc/en-us/articles/360022529371-Reducing-your-page-size-for-faster-loading" },
-    { name: "TinyIMG Extension", desc: "Connects for additional bulk compression and lazy loading. Helps improve LCP/CLS on image-heavy sites. Useful add-on for extra performance.", link: "https://tiny-img.com/squarespace/" }
-  ],
-  Joomla: [
-    { name: "ImageRecycle", desc: "Cloud-based compression for images and PDFs with bulk optimization. Preserves quality while reducing size significantly. Integrates with Joomla media manager.", link: "https://extensions.joomla.org/extension/imagerecycle-image-optimizer/", homeLink: "https://www.imagerecycle.com/" },
-    { name: "JCH Optimize", desc: "Combines compression with lazy loading and critical CSS. Top-rated for overall speed including images. Strong CWV improvements.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }
-  ],
-  Drupal: [
-    { name: "ImageAPI Optimize", desc: "Utility for defining optimization pipelines with multiple processors. Supports WebP/AVIF and bulk processing. Flexible foundation for advanced setups.", link: "https://www.drupal.org/project/imageapi_optimize" },
-    { name: "ImageAPI Optimize WebP", desc: "Automatic WebP generation for image styles. Works with ImageAPI Optimize framework. Essential for next-gen format delivery.", link: "https://www.drupal.org/project/imageapi_optimize_webp" }
-  ]
-},
-"Core Web Vitals / Page Speed Optimization": {
-  WordPress: [
-    { name: "Autoptimize", desc: "Free essential plugin for minifying CSS/JS, generating critical CSS, and lazy loading. Lightweight and highly configurable. Strong foundation for improving LCP and overall speed.", link: "https://wordpress.org/plugins/autoptimize/", homeLink: "https://autoptimize.com/" },
-    { name: "WP-Optimize", desc: "All-in-one cleanup tool with caching, minification, database optimization, and image compression. Excellent for ongoing maintenance and CWV gains.", link: "https://wordpress.org/plugins/wp-optimize/", homeLink: "https://teamupdraft.com/wp-optimize/" },
-    { name: "LiteSpeed Cache", desc: "Full-page caching with server-level optimizations (best on LiteSpeed hosts). Includes image optimization and lazy loading. Often delivers dramatic CWV improvements.", link: "https://wordpress.org/plugins/litespeed-cache/", homeLink: "https://www.litespeedtech.com/products/cache-plugins/wordpress-cache" },
-    { name: "Perfmatters", desc: "Lightweight script manager to disable unused CSS/JS and defer loading. Directly targets INP and CLS issues. Minimal overhead with maximum impact.", link: "https://perfmatters.io/", homeLink: "https://perfmatters.io/" }
-  ],
-  Shopify: [
-    { name: "Rocket Page Speed Optimizer", desc: "Automatic lazy loading, preloading, and script optimization focused on Core Web Vitals. Proven to deliver major LCP and CLS improvements.", link: "https://apps.shopify.com/core-web-vitals-booster", homeLink: "https://rocketoptimizer.com/" },
-    { name: "Boostify Page Speed Optimizer", desc: "AI-powered lazy loading, minification, and smart preload. Excellent for mobile INP and overall CWV scores.", link: "https://apps.shopify.com/page-speed-optimization", homeLink: "https://boostifyapps.com/" },
-    { name: "Hyperspeed EXTREME", desc: "Advanced minification, app optimization, and lazy loading. Regularly updated for latest CWV requirements with strong results on large stores.", link: "https://apps.shopify.com/hyperspeed", homeLink: "https://hyperspeed.app/" },
-    { name: "AiSpeed", desc: "AI-driven optimization for images, JS deferral, and lazy loading. Targets LCP, INP, and CLS directly with smart automation.", link: "https://apps.shopify.com/aispeed", homeLink: "https://aispeed.app/" }
-  ],
-  Wix: [
-    { name: "Website Speedy", desc: "Dedicated app with lazy loading, prefetching, and render-blocking removal. Directly targets Core Web Vitals for noticeable improvements.", link: "https://www.wix.com/app-market/web-solution/websitespeedy" },
-    { name: "Built-in Optimization", desc: "Wix natively uses CDN, auto image optimization, and modern formats. Focus on minimal apps and light elements for best CWV results.", link: "https://www.wix.com/performance" }
-  ],
-  Squarespace: [
-    { name: "Built-in Tools", desc: "Native CDN, automatic image optimization, and responsive delivery. Limited third-party options – rely on clean design and compressed assets.", link: "https://support.squarespace.com/hc/en-us/articles/360022529371-Reducing-your-page-size-for-faster-loading" }
-  ],
-  Joomla: [
-    { name: "JCH Optimize", desc: "Top-rated extension combining CSS/JS, lazy loading, and critical CSS generation. Strong CWV improvements with comprehensive features.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" },
-    { name: "Speed Cache", desc: "Static page caching with browser cache and lazy loading. Reduces server load and improves perceived speed effectively.", link: "https://extensions.joomla.org/extension/speed-cache/" },
-    { name: "Page Speed Optimizer", desc: "Powerful optimization engine for minification and render-blocking removal. Boosts PageSpeed and Core Web Vitals metrics.", link: "https://extensions.joomla.org/extension/page-speed-optimizer/" }
-  ],
-  Drupal: [
-    { name: "Internal + Dynamic Page Cache", desc: "Core modules for anonymous and authenticated caching. Essential foundation for fast loading and better CWV scores.", link: "https://www.drupal.org/docs/administering-a-drupal-site/managing-site-performance-and-scalability" },
-    { name: "BigPipe", desc: "Core module sending static content first while loading personalized parts. Greatly improves perceived speed and LCP.", link: "https://www.drupal.org/docs/core-modules-and-themes/core-modules/bigpipe-module" },
-    { name: "AdvAgg", desc: "Advanced aggregation for CSS/JS with minification and compression. Improves front-end performance and CWV.", link: "https://www.drupal.org/project/advagg" }
-  ]
-}
+  "Schema Markup": {
+    WordPress: [
+      { name: "Yoast SEO", desc: "Leading SEO plugin with robust built-in schema for Article, FAQ, HowTo, Product, and Person. Automatically generates markup with easy overrides and rich snippet previews. Ideal for reliable rich results without extra complexity.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "Advanced freemium schema generator with 20+ types, custom fields, and AI suggestions. Includes testing tools and automation for rich snippets. Perfect for detailed control and maximum rich result impact.", link: "https://wordpress.org/plugins/seo-by-rank-math/", homeLink: "https://rankmath.com/" },
+      { name: "All in One SEO", desc: "Guided schema setup with TruSEO scoring and automatic markup for common types. Supports dynamic variables and strong defaults. Trusted by millions for simple yet powerful schema.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/", homeLink: "https://aioseo.com/" },
+      { name: "Schema & Structured Data for WP", desc: "Dedicated schema plugin with advanced types (Review, Recipe, etc.) and conditional display. Full AMP support and migration tools. Best for maximum schema flexibility.", link: "https://wordpress.org/plugins/schema-and-structured-data-for-wp/", homeLink: "https://wpschema.com/" }
+    ],
+    Shopify: [
+      { name: "Schema Plus for SEO", desc: "Automatic JSON-LD schema for products, collections, blogs, and more. Fixes Google errors and enables rich results. Essential for e-commerce targeting higher CTR.", link: "https://apps.shopify.com/schema-plus", homeLink: "https://schemaplus.io/" },
+      { name: "Webrex AI SEO Optimizer Schema", desc: "AI-powered schema generation for products, FAQs, videos, with duplicate removal. Integrates with 30+ review apps. Great for automated, accurate markup.", link: "https://apps.shopify.com/webrex-seo-schema-jsonld", homeLink: "https://webrexstudio.com/" }
+    ],
+    Wix: [
+      { name: "Built-in Structured Data", desc: "Wix auto-generates basic schema for pages, products, blogs. Custom options via SEO settings and Velo. Solid native solution for most Wix sites.", link: "https://support.wix.com/en/article/seo-adding-structured-data-to-your-wix-site" }
+    ],
+    Squarespace: [
+      { name: "Built-in Markup", desc: "Native schema for pages, products, events, blogs. Automatic and always updated. No extra tools needed for standard rich results.", link: "https://support.squarespace.com/hc/en-us/articles/360002091288-Structured-data-and-rich-results" }
+    ],
+    Joomla: [
+      { name: "Google Structured Data", desc: "Free extension for breadcrumb, article, organization schema. Simple config with overrides. Reliable for basic rich snippets.", link: "https://extensions.joomla.org/extension/google-structured-data/", homeLink: "https://stackideas.com/" },
+      { name: "EFSEO", desc: "Freemium tool for structured data and meta tags. Frontend editing and multiple types. Centralized SEO solution.", link: "https://extensions.joomla.org/extension/efseo-easy-frontend-seo/", homeLink: "https://stackideas.com/" }
+    ],
+    Drupal: [
+      { name: "Schema.org Metatag", desc: "Full Schema.org support with high configurability for any entity. Industry standard for advanced schema.", link: "https://www.drupal.org/project/schema_metatag" },
+      { name: "Metatag", desc: "Base module for structured data extensions. Required foundation for most schema setups.", link: "https://www.drupal.org/project/metatag" }
+    ]
+  },
+
+  "Author Byline Present": {
+    WordPress: [
+      { name: "PublishPress Authors", desc: "Best plugin for adding bylines, co-authors, guest authors, and rich author boxes. Customizable display with social links and bio. Directly fixes missing bylines in any theme.", link: "https://wordpress.org/plugins/publishpress-authors/", homeLink: "https://publishpress.com/" },
+      { name: "Simple Author Box", desc: "Lightweight, responsive author/guest box with gravatar, bio, social icons. Easy shortcode/widget placement. Perfect for adding visible bylines quickly.", link: "https://wordpress.org/plugins/simple-author-box/", homeLink: "https://webfactoryltd.com/" },
+      { name: "WP Post Author", desc: "Adds author boxes, co-authors, guest authors, social links, and byline display. Theme-agnostic with customization. Strong for enhancing author visibility.", link: "https://wordpress.org/plugins/wp-post-author/", homeLink: "https://afthemes.com/" }
+    ],
+    Shopify: [
+      { name: "Staff Accounts", desc: "Built-in Shopify tool for assigning authors and displaying bylines on blog posts. Simple and native. Works well for basic author attribution.", link: "https://help.shopify.com/en/manual/your-account/staff-accounts" }
+    ],
+    Wix: [
+      { name: "Blog Authors", desc: "Built-in Wix feature to assign authors and display bylines on blog posts. Easy management in editor. Native solution for visible author attribution.", link: "https://support.wix.com/en/article/wix-blog-adding-and-managing-authors" }
+    ],
+    Squarespace: [
+      { name: "Built-in Blog Authors", desc: "Native Squarespace setting to add authors and show bylines on posts. Simple profile setup. Reliable for basic author visibility.", link: "https://support.squarespace.com/hc/en-us/articles/206543697-Adding-blog-post-author-profiles" }
+    ],
+    Joomla: [
+      { name: "Author List", desc: "Extension to display author bylines and profiles. Customizable placement. Fixes missing author attribution.", link: "https://extensions.joomla.org/extension/author-list/" }
+    ],
+    Drupal: [
+      { name: "Author", desc: "Module for enhanced author byline display and profiles. Integrates with content types. Good for visibility.", link: "https://www.drupal.org/project/author" }
+    ]
+  },
+
+  "Author Bio Section": {
+    WordPress: [
+      { name: "PublishPress Authors", desc: "Adds rich author bios, social links, custom fields for credentials. Multiple authors/guest support. Perfect for displaying detailed bios.", link: "https://wordpress.org/plugins/publishpress-authors/", homeLink: "https://publishpress.com/" },
+      { name: "Simple Author Box", desc: "Responsive author box with bio, gravatar, social icons. Customizable design. Easy way to add visible bios.", link: "https://wordpress.org/plugins/simple-author-box/", homeLink: "https://webfactoryltd.com/" },
+      { name: "WP Post Author", desc: "Full author box with bio, social, credentials fields. Theme-independent. Strong for rich bio display.", link: "https://wordpress.org/plugins/wp-post-author/", homeLink: "https://afthemes.com/" }
+    ],
+    Shopify: [
+      { name: "Staff Bio App", desc: "Customizable staff/author bio sections with social links. Adds visible bios to posts. Good for guest author display.", link: "https://apps.shopify.com/staff-bio" }
+    ],
+    Wix: [
+      { name: "Team Members", desc: "Built-in app for team/author bios with photos and social links. Easy to add to posts/pages. Native bio solution.", link: "https://www.wix.com/app-market/web-solution/team-members" }
+    ],
+    Squarespace: [
+      { name: "Built-in Author Profiles", desc: "Native blog author profiles with bio and social links. Simple setup. Reliable for visible bios.", link: "https://support.squarespace.com/hc/en-us/articles/206543697-Adding-blog-post-author-profiles" }
+    ],
+    Joomla: [
+      { name: "Community Builder", desc: "User profiles with bio and social fields. Adds rich author bios. Great for detailed display.", link: "https://extensions.joomla.org/extension/community-builder/" }
+    ],
+    Drupal: [
+      { name: "Profile", desc: "Extends user profiles with bio and custom fields. Good for rich author bios.", link: "https://www.drupal.org/project/profile" }
+    ]
+  },
+
+  "Update Date Shown": {
+    WordPress: [
+      { name: "Post Updated Date", desc: "Simple plugin to display last updated date on posts. Customizable format and placement. Fixes missing update date visibility.", link: "https://wordpress.org/plugins/post-updated-date/", homeLink: "https://wordpress.org/plugins/post-updated-date/" },
+      { name: "Display Last Modified Date", desc: "Shows last modified date in posts/pages. Theme-agnostic with shortcodes. Reliable for update visibility.", link: "https://wordpress.org/plugins/display-last-modified-date/" },
+      { name: "Last Modified Timestamp", desc: "Adds updated timestamp with custom styling. Easy integration. Good for clear update signaling.", link: "https://wordpress.org/plugins/last-modified-timestamp/" }
+    ],
+    Shopify: [
+      { name: "Updated Date Display", desc: "App to show last updated date on products/pages. Customizable placement. Helps signal freshness.", link: "https://apps.shopify.com/updated-date-display" }
+    ],
+    Wix: [
+      { name: "Built-in Update Date", desc: "Native blog post date display includes last updated. Manual edit in settings. Reliable built-in.", link: "https://support.wix.com/en/article/wix-blog-managing-blog-post-dates" }
+    ],
+    Squarespace: [
+      { name: "Built-in Date Display", desc: "Native blog post dates show published/updated. Customizable in editor. No extra plugin needed.", link: "https://support.squarespace.com/hc/en-us/articles/206543697-Adding-blog-post-author-profiles" }
+    ],
+    Joomla: [
+      { name: "Last Updated Date", desc: "Extension to display last modified date. Customizable format. Fixes missing update visibility.", link: "https://extensions.joomla.org/extension/last-updated-date/" }
+    ],
+    Drupal: [
+      { name: "Last Updated", desc: "Module to show last modified date. Integrates with content types. Good for freshness signaling.", link: "https://www.drupal.org/project/last_updated" }
+    ]
+  },
+
+  "Contact Info Present": {
+    WordPress: [
+      { name: "Contact Form 7", desc: "Most popular form plugin to add contact forms anywhere. Easy shortcode placement. Essential for visible contact.", link: "https://wordpress.org/plugins/contact-form-7/", homeLink: "https://contactform7.com/" },
+      { name: "WPForms", desc: "User-friendly form builder with contact templates. Drag-and-drop and spam protection. Great for quick contact addition.", link: "https://wordpress.org/plugins/wpforms-lite/", homeLink: "https://wpforms.com/" },
+      { name: "Simple Contact Form", desc: "Lightweight contact form with email notifications. Easy widget/shortcode. Perfect for basic contact visibility.", link: "https://wordpress.org/plugins/simple-contact-form/" }
+    ],
+    Shopify: [
+      { name: "Contact Form by POWR", desc: "Customizable contact form with spam protection. Easy embed on pages. Strong for contact presence.", link: "https://apps.shopify.com/contact-form" }
+    ],
+    Wix: [
+      { name: "Built-in Contact Form", desc: "Native forms for contact pages. Drag-and-drop customization. Built-in solution for visible contact.", link: "https://support.wix.com/en/article/wix-forms-adding-and-setting-up-a-contact-form" }
+    ],
+    Squarespace: [
+      { name: "Built-in Forms", desc: "Native contact forms with customizable fields. Easy to add to pages. Reliable built-in contact solution.", link: "https://support.squarespace.com/hc/en-us/articles/206543997-Adding-a-form-block" }
+    ],
+    Joomla: [
+      { name: "Contact Enhanced", desc: "Advanced contact forms with multiple fields. Easy page integration. Strong for contact visibility.", link: "https://extensions.joomla.org/extension/contact-enhanced/" }
+    ],
+    Drupal: [
+      { name: "Contact", desc: "Core contact form module. Simple and reliable. Good for basic contact presence.", link: "https://www.drupal.org/docs/core-modules-and-themes/core-modules/contact-module" }
+    ]
+  },
+
+  "Privacy & Terms Links": {
+    WordPress: [
+      { name: "Complianz – GDPR/CCPA Cookie Consent", desc: "Generates privacy policy pages and adds footer links. Includes terms templates. Essential for legal compliance visibility.", link: "https://wordpress.org/plugins/complianz-gdpr/", homeLink: "https://complianz.io/" },
+      { name: "Auto Terms & Privacy Policy", desc: "Automatically creates privacy/terms pages with footer links. Customizable templates. Quick legal link solution.", link: "https://wordpress.org/plugins/auto-terms-privacy-policy/" },
+      { name: "GDPR Cookie Consent", desc: "Adds privacy policy link and consent banner. Easy setup for terms visibility. Strong for compliance.", link: "https://wordpress.org/plugins/cookie-law-info/" }
+    ],
+    Shopify: [
+      { name: "Privacy Policy Generator", desc: "Creates privacy/terms pages with automatic footer links. Customizable and compliant. Easy legal link addition.", link: "https://apps.shopify.com/privacy-policy-generator" }
+    ],
+    Wix: [
+      { name: "Built-in Privacy & Terms", desc: "Native pages for privacy policy and terms. Easy to add footer links. Built-in solution for legal visibility.", link: "https://support.wix.com/en/article/adding-a-privacy-policy-page" }
+    ],
+    Squarespace: [
+      { name: "Built-in Legal Pages", desc: "Native privacy/terms pages with footer link options. Simple setup. Reliable built-in compliance.", link: "https://support.squarespace.com/hc/en-us/articles/206543987-Adding-legal-pages" }
+    ],
+    Joomla: [
+      { name: "Privacy Policy Component", desc: "Generates privacy/terms pages with footer links. Customizable templates. Good for legal visibility.", link: "https://extensions.joomla.org/extension/privacy-policy-component/" }
+    ],
+    Drupal: [
+      { name: "Privacy Policy", desc: "Module for creating privacy/terms pages. Easy integration. Solid for legal link presence.", link: "https://www.drupal.org/project/privacy_policy" }
+    ]
+  },
+
+  "About/Team Links": {
+    WordPress: [
+      { name: "Team Members", desc: "Creates team/author pages with links in menus/footers. Customizable profiles. Great for visible About/Team sections.", link: "https://wordpress.org/plugins/team-members/" },
+      { name: "Simple Staff List", desc: "Lightweight team display with menu integration. Easy About/Team page addition. Clean and simple.", link: "https://wordpress.org/plugins/simple-staff-list/" }
+    ],
+    Shopify: [
+      { name: "Team Showcase", desc: "App for team pages with menu/footer links. Customizable profiles. Strong for About/Team visibility.", link: "https://apps.shopify.com/team-showcase" }
+    ],
+    Wix: [
+      { name: "Team Members", desc: "Built-in app for team pages with menu links. Easy About/Team section. Native solution.", link: "https://www.wix.com/app-market/web-solution/team-members" }
+    ],
+    Squarespace: [
+      { name: "Team Page Plugin", desc: "Adds team sections with navigation links. Customizable display. Good for About/Team presence.", link: "https://sparkplugin.com/plugins/team-page" }
+    ],
+    Joomla: [
+      { name: "Team Manager", desc: "Creates team pages with menu integration. Customizable. Reliable for About/Team links.", link: "https://extensions.joomla.org/extension/team-manager/" }
+    ],
+    Drupal: [
+      { name: "Team", desc: "Module for team pages with menu links. Simple setup. Solid for visibility.", link: "https://www.drupal.org/project/team" }
+    ]
+  }
 }; 
 
 function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-section') {
