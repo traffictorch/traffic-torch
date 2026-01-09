@@ -261,9 +261,9 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>
     ${(() => {
-      const title = (doc?.title || '').trim();
+      const title = (yourDoc?.title || '').trim();
       if (!title) return '';
-      const truncated = title.length > 65 ? title.substring(0, 65) : title;
+      const truncated = title.length > 65 ? title.substring(0, 65) + '...' : title;
       return `<p class="mt-6 md:mt-8 text-base md:text-lg text-gray-600 dark:text-gray-200 text-center px-4 leading-tight">${truncated}</p>`;
     })()}
     <div class="mt-6 text-center">

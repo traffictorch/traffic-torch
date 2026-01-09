@@ -280,11 +280,8 @@ function buildModuleHTML(moduleName, value, moduleData) {
       <div class="fixes-panel hidden mt-8 text-left">
         ${fixesPanelHTML}
       </div>
-    </div>`;
-    
-    
+    </div>`;  
 }
-
   form.addEventListener('submit', async e => {
     e.preventDefault();
     let url = input.value.trim();
@@ -522,7 +519,6 @@ function buildModuleHTML(moduleName, value, moduleData) {
 
         results.innerHTML = `
         
-        
 <!-- Big Overall Score Card -->
 <div class="flex justify-center my-12 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full border-4 ${safeScore >= 80 ? 'border-green-500' : safeScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
@@ -566,26 +562,6 @@ function buildModuleHTML(moduleName, value, moduleData) {
     </div>
   </div>
 </div>
-          
-          
-<!-- On-Page Health Radar Chart -->
-<div class="max-w-5xl mx-auto my-16 px-4">
-  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
-    <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
-    <div class="hidden md:block w-full">
-      <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
-    </div>
-    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">
-      Radar chart available on desktop/tablet
-    </p>
-    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">
-      Visual overview of your page performance across 7 key SEO Intent factors
-    </p>
-  </div>
-</div>
-          
-          
-          
 
           <!-- Quit Risk Verdict -->
           <div class="text-center mb-12">
@@ -603,8 +579,24 @@ function buildModuleHTML(moduleName, value, moduleData) {
               </p>
             </div>
             <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Scanned ${uxData.links} links + ${uxData.images} images</p>
-          </div>
-
+          </div>  
+          
+<!-- On-Page Health Radar Chart -->
+<div class="max-w-5xl mx-auto my-16 px-4">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
+    <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
+    <div class="hidden md:block w-full">
+      <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
+    </div>
+    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">
+      Radar chart available on desktop/tablet
+    </p>
+    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">
+      Visual overview of your page performance across 7 key SEO Intent factors
+    </p>
+  </div>
+</div>
+          
           <!-- Modules -->
           <div class="grid gap-8 my-16 max-w-7xl mx-auto px-6">
             <div class="grid md:grid-cols-1 gap-8">${readabilityHTML}</div>
@@ -689,7 +681,6 @@ function buildModuleHTML(moduleName, value, moduleData) {
           console.error('Radar chart failed', e);
         }
       }, 150);
-        
         
         // Clean URL for PDF cover (unchanged)
         let fullUrl = document.getElementById('url-input').value.trim();
