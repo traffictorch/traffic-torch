@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
     </div>
     <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">
-      Radar chart available on desktop/tablet for better visibility
+      Radar chart available on desktop/tablet
     </p>
     <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">
       Visual overview of your page performance across 7 key SEO Intent factors

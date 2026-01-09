@@ -557,15 +557,18 @@ function buildModuleHTML(moduleName, value, moduleData) {
           </div>
           
           
-          <!-- On-Page Health Radar Chart -->
+<!-- On-Page Health Radar Chart -->
 <div class="max-w-5xl mx-auto my-16 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
     <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
-    <div class="w-full">
+    <div class="hidden md:block w-full">
       <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
     </div>
-    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
-      Visual overview of your page performance across key factors
+    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">
+      Radar chart available on desktop/tablet
+    </p>
+    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">
+      Visual overview of your page performance across 7 key SEO Intent factors
     </p>
   </div>
 </div>
