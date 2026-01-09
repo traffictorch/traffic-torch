@@ -236,34 +236,40 @@ document.addEventListener('DOMContentLoaded', () => {
     
 <!-- Overall Score Card -->
 <div class="flex justify-center my-12 px-4">
-  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-10 max-w-md w-full border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
     <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Your Page</p>
-    <div class="relative w-[240px] h-[240px] mx-auto">
-      <svg viewBox="0 0 140 140" class="w-full h-full transform -rotate-90">
-        <circle cx="70" cy="70" r="60" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-        <circle cx="70" cy="70" r="60"
+    <div class="relative w-56 h-56 mx-auto md:w-64 md:h-64">
+      <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+        <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
+        <circle cx="100" cy="100" r="90"
                 stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#fb923c' : '#ef4444'}"
-                stroke-width="12" fill="none"
-                stroke-dasharray="${(yourScore / 100) * 377} 377"
+                stroke-width="16" fill="none"
+                stroke-dasharray="${(yourScore / 100) * 565} 565"
                 stroke-linecap="round"/>
       </svg>
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="text-center">
-          <div class="text-5xl font-black drop-shadow-lg"
+          <div class="text-4xl md:text-5xl font-black drop-shadow-lg"
                style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#fb923c' : '#ef4444'};">
             ${yourScore}
           </div>
-          <div class="text-lg opacity-80 -mt-1"
+          <div class="text-base md:text-lg opacity-80 -mt-1"
                style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#fb923c' : '#ef4444'};">
             /100
           </div>
         </div>
       </div>
     </div>
-    <div class="text-center mt-8">
-      <div class="text-3xl font-bold ${bigGrade.color}">
+    ${(() => {
+      const title = (doc?.title || '').trim();
+      if (!title) return '';
+      const truncated = title.length > 65 ? title.substring(0, 65) : title;
+      return `<p class="mt-6 md:mt-8 text-base md:text-lg text-gray-600 dark:text-gray-200 text-center px-4 leading-tight">${truncated}</p>`;
+    })()}
+    <div class="mt-6 text-center">
+      <p class="text-3xl md:text-4xl font-bold ${bigGrade.color}">
         ${bigGrade.emoji} ${bigGrade.grade}
-      </div>
+      </p>
     </div>
   </div>
 </div>
