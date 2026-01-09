@@ -269,8 +269,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return `<p class="mt-6 md:mt-8 text-base md:text-lg text-gray-600 dark:text-gray-200 text-center px-4 leading-tight">${truncated}</p>`;
     })()}
     ${(() => {
-      const gradeText = yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Very Good' : 'Needs Work';
-      const gradeEmoji = yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗 ⚠️' : '❌';
+      const gradeText = yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Needs Improvement' : 'Needs Work';
+      const gradeEmoji = yourScore >= 80 ? '✅' : yourScore >= 60 ? '⚠️' : '❌';
       const gradeColor = yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400';
       return `<p class="${gradeColor} text-2xl md:text-3xl font-bold text-center mt-4 md:mt-6">${gradeEmoji} ${gradeText}</p>`;
     })()}
