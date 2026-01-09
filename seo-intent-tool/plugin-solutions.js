@@ -1,146 +1,137 @@
 const pluginData = {
   "Schema Markup": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Freemium with schema support, real-time previews, focus keyword optimization.", link: "https://wordpress.org/plugins/wordpress-seo/" },
-      { name: "Rank Math", desc: "Freemium advanced schema types, easy generator, rich snippets.", link: "https://wordpress.org/plugins/seo-by-rank-math/" },
-      { name: "AIOSEO", desc: "Freemium guided schema generator, supports FAQ/Product/Article.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/" }
+      { name: "Yoast SEO", desc: "Freemium – comprehensive schema support including Article, FAQ, and Person.", link: "https://wordpress.org/plugins/wordpress-seo/" },
+      { name: "Rank Math", desc: "Freemium – advanced schema generator with many types and rich snippets.", link: "https://wordpress.org/plugins/seo-by-rank-math/" },
+      { name: "All in One SEO", desc: "Freemium – guided schema setup for common types.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/" },
+      { name: "Schema & Structured Data for WP", desc: "Freemium – dedicated schema plugin with rich snippet support.", link: "https://wordpress.org/plugins/schema-and-structured-data-for-wp/" }
     ],
     Shopify: [
-      { name: "Webrex SEO Schema & JSON-LD", desc: "Free schema markup, rich snippets, fixes Google errors.", link: "https://apps.shopify.com/webrex-seo-schema-jsonld" },
-      { name: "Schema Plus for SEO", desc: "Freemium auto JSON-LD schema, product markup.", link: "https://apps.shopify.com/schema-plus" },
-      { name: "JSON-LD for SEO", desc: "Freemium automatic schema for rich results.", link: "https://apps.shopify.com/json-ld-for-seo" }
+      { name: "Schema Plus for SEO", desc: "Freemium – automatic JSON-LD schema and rich snippets.", link: "https://apps.shopify.com/schema-plus" },
+      { name: "Webrex SEO Schema & JSON-LD", desc: "Freemium – AI-powered schema for products and pages.", link: "https://apps.shopify.com/webrex-seo-schema-jsonld" },
+      { name: "SearchPie SEO", desc: "Freemium – includes schema markup with speed optimization.", link: "https://apps.shopify.com/seo-booster" }
     ],
     Wix: [
-      { name: "JSON LD Schema for AI LLM SEO", desc: "Freemium schema templates for Organization, Product, etc.", link: "https://www.wix.com/app-market/web-solution/json-ld-schema" },
-      { name: "Built-in Structured Data", desc: "Free Wix auto-adds basic schema." }
+      { name: "Built-in Structured Data", desc: "Free – Wix automatically adds basic schema; custom via SEO settings." }
     ],
     Squarespace: [
-      { name: "TinyIMG", desc: "Freemium schema generation with AI, but mainly for images/SEO." },
-      { name: "Built-in Markup", desc: "Free auto schema for pages/products." }
+      { name: "Built-in Markup", desc: "Free – automatic schema for pages and products." }
     ],
     Joomla: [
-      { name: "Google Structured Data", desc: "Free schema markup, rich snippets.", link: "https://extensions.joomla.org/extension/google-structured-data/" },
-      { name: "EFSEO", desc: "Freemium handles meta and structured data.", link: "https://extensions.joomla.org/extension/efseo-easy-frontend-seo/" }
+      { name: "Google Structured Data", desc: "Free – adds rich snippets and schema.", link: "https://extensions.joomla.org/extension/google-structured-data/" },
+      { name: "EFSEO", desc: "Freemium – handles structured data and meta." }
     ],
     Drupal: [
-      { name: "Schema.org Metatag", desc: "Free comprehensive schema type support.", link: "https://www.drupal.org/project/schema_metatag" },
-      { name: "Metatag", desc: "Free base for structured data extensions." }
+      { name: "Schema.org Metatag", desc: "Free – full schema type support.", link: "https://www.drupal.org/project/schema_metatag" },
+      { name: "Metatag", desc: "Free – base module for structured data." }
     ]
   },
   "Optimized Title Tag": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Freemium AI-generated titles, previews, focus keyphrase.", link: "https://wordpress.org/plugins/wordpress-seo/" },
-      { name: "Rank Math", desc: "Freemium bulk editing, dynamic variables.", link: "https://wordpress.org/plugins/seo-by-rank-math/" },
-      { name: "AIOSEO", desc: "Freemium TruSEO score, title/meta editor." }
+      { name: "Yoast SEO", desc: "Freemium – real-time title previews and optimization.", link: "https://wordpress.org/plugins/wordpress-seo/" },
+      { name: "Rank Math", desc: "Freemium – bulk editing and dynamic variables.", link: "https://wordpress.org/plugins/seo-by-rank-math/" },
+      { name: "All in One SEO", desc: "Freemium – TruSEO score and title editor.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/" },
+      { name: "SEOPress", desc: "Freemium – custom titles and meta robots." }
     ],
     Shopify: [
-      { name: "Plug in SEO", desc: "Freemium checks/fixes titles across store." },
-      { name: "AVADA SEO Suite", desc: "Freemium auto-optimizes titles/meta." }
+      { name: "SearchPie SEO", desc: "Freemium – auto title optimization." },
+      { name: "Plug in SEO", desc: "Freemium – checks and fixes titles." }
     ],
-    Wix: [
-      { name: "SEO Wiz", desc: "Free guides title optimization." }
-    ],
-    Squarespace: [
-      { name: "Built-in Page Settings", desc: "Free custom SEO title fields." }
-    ],
-    Joomla: [
-      { name: "EFSEO", desc: "Freemium handles title tags." },
-      { name: "sh404SEF", desc: "Freemium SEO controls including titles." }
-    ],
-    Drupal: [
-      { name: "Metatag", desc: "Free meta tag management including titles." }
-    ]
+    Wix: [{ name: "Built-in SEO Wiz", desc: "Free – guides page title optimization." }],
+    Squarespace: [{ name: "Built-in Page Settings", desc: "Free – custom SEO titles." }]
   },
   "Compelling Meta Description": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Freemium previews and suggestions." },
-      { name: "Rank Math", desc: "Freemium dynamic meta descriptions." },
-      { name: "AIOSEO", desc: "Freemium meta description editor." }
-    ],
-    // Similar for other CMS, reuse where applicable
-  },
-  "Proper Heading Hierarchy": {
-    WordPress: [
-      { name: "Yoast SEO", desc: "Freemium analyzes heading structure." },
-      { name: "Rank Math", desc: "Freemium content editor checks." }
+      { name: "Yoast SEO", desc: "Freemium – meta description previews and suggestions." },
+      { name: "Rank Math", desc: "Freemium – dynamic meta descriptions." },
+      { name: "All in One SEO", desc: "Freemium – meta editor with scoring." },
+      { name: "SEOPress", desc: "Freemium – custom meta descriptions." }
     ],
     Shopify: [
-      { name: "AVADA SEO Suite", desc: "Freemium on-page analysis." }
+      { name: "SearchPie SEO", desc: "Freemium – meta description optimization." }
     ]
-    // Limited for others; many built-in or manual
   },
   "Image Optimization & Alt Text": {
     WordPress: [
-      { name: "Smush", desc: "Freemium compress, WebP, lazy load, bulk alt suggestions.", link: "https://wordpress.org/plugins/wp-smushit/" },
-      { name: "Imagify", desc: "Freemium bulk optimization, next-gen formats.", link: "https://wordpress.org/plugins/imagify-image-optimizer/" },
-      { name: "ShortPixel", desc: "Freemium compression, AVIF/WebP, auto alt." }
+      { name: "Smush", desc: "Freemium – compression, WebP, lazy load, alt suggestions.", link: "https://wordpress.org/plugins/wp-smushit/" },
+      { name: "EWWW Image Optimizer", desc: "Free core – pixel-perfect optimization and WebP.", link: "https://wordpress.org/plugins/ewww-image-optimizer/" },
+      { name: "reSmush.it", desc: "Free – image compressor and optimizer.", link: "https://wordpress.org/plugins/resmushit-image-optimizer/" },
+      { name: "Imagify", desc: "Freemium – bulk optimization and next-gen formats.", link: "https://wordpress.org/plugins/imagify-image-optimizer/" }
     ],
     Shopify: [
-      { name: "TinyIMG", desc: "Freemium auto compression, alt text optimization." },
-      { name: "Crush.pics", desc: "Freemium auto image compression." }
+      { name: "TinyIMG", desc: "Freemium – compression and alt text optimization." },
+      { name: "Crush.pics", desc: "Freemium – auto image compression." }
     ],
-    Wix: [
-      { name: "Built-in Optimizer", desc: "Free auto compression; manual alt." }
-    ],
-    Squarespace: [
-      { name: "Built-in Tools", desc: "Free auto optimization." }
-    ],
-    Joomla: [
-      { name: "ImageRecycle", desc: "Freemium image compression." }
-    ],
-    Drupal: [
-      { name: "Image Optimize", desc: "Free alt text and optimization." }
-    ]
-  },
-  "Strategic Internal & External Linking": {
-    WordPress: [
-      { name: "Yoast SEO", desc: "Freemium internal linking suggestions." },
-      { name: "Rank Math", desc: "Freemium link analysis." }
-    ],
-    Shopify: [
-      { name: "Selleasy", desc: "Freemium internal linking automation." }
-    ],
-    Wix: [
-      { name: "Built-in Links", desc: "Free linking tools." }
-    ]
-  },
-  "Mobile-Friendly & Responsive Design": {
-    WordPress: [
-      { name: "AMP", desc: "Freemium mobile-optimized pages." }
-    ],
-    Shopify: [
-      { name: "Booster SEO", desc: "Freemium mobile speed apps." }
-    ],
-    Wix: [
-      { name: "Built-in Responsive", desc: "Free responsive design." }
-    ]
+    Wix: [{ name: "Built-in Optimizer", desc: "Free – auto compression and manual alt text." }],
+    Squarespace: [{ name: "Built-in Tools", desc: "Free – automatic optimization." }]
   },
   "Core Web Vitals / Page Speed Optimization": {
     WordPress: [
-      { name: "Autoptimize", desc: "Free minify, combine CSS/JS, critical CSS.", link: "https://wordpress.org/plugins/autoptimize/" },
-      { name: "WP Super Cache", desc: "Free caching for speed." },
-      { name: "Perfmatters", desc: "Freemium lightweight optimizer." }
+      { name: "Autoptimize", desc: "Free – minify/combine CSS/JS, critical CSS.", link: "https://wordpress.org/plugins/autoptimize/" },
+      { name: "WP-Optimize", desc: "Free – caching, minify, database cleanup.", link: "https://wordpress.org/plugins/wp-optimize/" },
+      { name: "LiteSpeed Cache", desc: "Free – full-page caching and optimization (best with LiteSpeed server)." }
     ],
     Shopify: [
-      { name: "Booster SEO", desc: "Freemium speed + CWV optimization." }
-    ]
-  },
-  "HTTPS Enforcement": {
-    WordPress: [
-      { name: "Really Simple SSL", desc: "Freemium HTTPS redirect, mixed content fix." }
-    ],
-    Shopify: [
-      { name: "Built-in HTTPS", desc: "Free Shopify enforces HTTPS." }
-    ]
-  },
-  "Avoid Keyword Stuffing": {
-    WordPress: [
-      { name: "Yoast SEO", desc: "Freemium keyword density checks." },
-      { name: "Rank Math", desc: "Freemium optimization without stuffing." }
-    ],
-    Shopify: [
-      { name: "SearchPie", desc: "Freemium keyword optimization." }
+      { name: "SearchPie SEO", desc: "Freemium – speed and CWV tools." }
     ]
   }
+};
+
+export function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-section') {
+  if (failedMetrics.length === 0) return;
+
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const section = document.createElement('section');
+  section.className = 'mt-12 p-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg';
+  section.innerHTML = `<h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Plugin Solutions for Failed Metrics</h2>
+    <p class="text-gray-700 dark:text-gray-300 mb-6">Select your CMS to see top free/freemium plugins that can help fix these issues. Always test compatibility.</p>`;
+
+  failedMetrics.forEach(metric => {
+    if (!pluginData[metric]) return;
+    const metricDiv = document.createElement('div');
+    metricDiv.className = 'mb-8';
+    metricDiv.innerHTML = `<h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">${metric}</h3>`;
+
+    const select = document.createElement('select');
+    select.className = 'mb-4 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200';
+    select.innerHTML = '<option value="">Select your CMS...</option>';
+
+    Object.keys(pluginData[metric]).forEach(cms => {
+      const option = document.createElement('option');
+      option.value = cms;
+      option.textContent = cms;
+      select.appendChild(option);
+    });
+
+    const pluginsList = document.createElement('div');
+    pluginsList.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 hidden';
+
+    select.addEventListener('change', (e) => {
+      pluginsList.classList.add('hidden');
+      pluginsList.innerHTML = '';
+      const selected = e.target.value;
+      if (!selected) return;
+
+      pluginData[metric][selected].forEach(plugin => {
+        const card = document.createElement('div');
+        card.className = 'p-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md';
+        card.innerHTML = `
+          <h4 class="font-medium text-gray-800 dark:text-gray-200"><a href="${plugin.link || '#'}" target="_blank" rel="noopener" class="hover:underline">${plugin.name}</a></h4>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">${plugin.desc}</p>
+        `;
+        pluginsList.appendChild(card);
+      });
+      pluginsList.classList.remove('hidden');
+    });
+
+    metricDiv.appendChild(select);
+    metricDiv.appendChild(pluginsList);
+    section.appendChild(metricDiv);
+  });
+
+  container.appendChild(section);
+}
 
 export { renderPluginSolutions };
