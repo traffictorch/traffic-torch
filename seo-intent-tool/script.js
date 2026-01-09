@@ -853,9 +853,6 @@ document.addEventListener('DOMContentLoaded', () => {
    pluginSection.className = 'mt-12';
    results.appendChild(pluginSection);
 
-   // Collect failed metrics that have plugin solutions
-   const failedMetrics = [];
-
 // Collect failed metrics that have plugin solutions
 const failedMetrics = [];
 
