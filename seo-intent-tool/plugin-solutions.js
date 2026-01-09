@@ -11,12 +11,8 @@ const pluginData = {
       { name: "Webrex SEO Schema & JSON-LD", desc: "Freemium – AI-powered schema for products and pages.", link: "https://apps.shopify.com/webrex-seo-schema-jsonld" },
       { name: "SearchPie SEO", desc: "Freemium – includes schema markup with speed optimization.", link: "https://apps.shopify.com/seo-booster" }
     ],
-    Wix: [
-      { name: "Built-in Structured Data", desc: "Free – Wix automatically adds basic schema; custom via SEO settings." }
-    ],
-    Squarespace: [
-      { name: "Built-in Markup", desc: "Free – automatic schema for pages and products." }
-    ],
+    Wix: [{ name: "Built-in Structured Data", desc: "Free – Wix automatically adds basic schema; custom via SEO settings." }],
+    Squarespace: [{ name: "Built-in Markup", desc: "Free – automatic schema for pages and products." }],
     Joomla: [
       { name: "Google Structured Data", desc: "Free – adds rich snippets and schema.", link: "https://extensions.joomla.org/extension/google-structured-data/" },
       { name: "EFSEO", desc: "Freemium – handles structured data and meta." }
@@ -47,9 +43,7 @@ const pluginData = {
       { name: "All in One SEO", desc: "Freemium – meta editor with scoring." },
       { name: "SEOPress", desc: "Freemium – custom meta descriptions." }
     ],
-    Shopify: [
-      { name: "SearchPie SEO", desc: "Freemium – meta description optimization." }
-    ]
+    Shopify: [{ name: "SearchPie SEO", desc: "Freemium – meta description optimization." }]
   },
   "Image Optimization & Alt Text": {
     WordPress: [
@@ -71,9 +65,7 @@ const pluginData = {
       { name: "WP-Optimize", desc: "Free – caching, minify, database cleanup.", link: "https://wordpress.org/plugins/wp-optimize/" },
       { name: "LiteSpeed Cache", desc: "Free – full-page caching and optimization (best with LiteSpeed server)." }
     ],
-    Shopify: [
-      { name: "SearchPie SEO", desc: "Freemium – speed and CWV tools." }
-    ]
+    Shopify: [{ name: "SearchPie SEO", desc: "Freemium – speed and CWV tools." }]
   }
 };
 
@@ -99,6 +91,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
       <div class="grid gap-12 md:gap-16">
         ${failedMetrics.map(metric => {
           if (!pluginData[metric]) return '';
+          const metricId = metric.replace(/\s+/g, '-').toLowerCase();
           return `
             <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 md:p-10 border border-gray-200 dark:border-gray-700">
               <h3 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-8 text-center">
@@ -106,7 +99,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
               </h3>
 
               <div class="max-w-md mx-auto mb-8">
-                <select class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-orange-300 dark:border-orange-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 outline-none transition">
+                <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-orange-300 dark:border-orange-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 outline-none transition">
                   <option value="">Select your CMS...</option>
                   ${Object.keys(pluginData[metric]).map(cms => 
                     `<option value="${cms}">${cms}</option>`
@@ -114,8 +107,8 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
                 </select>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden" id="plugins-${metric.replace(/\\s+/g, '-').toLowerCase()}">
-                <!-- Plugins will be injected here -->
+              <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+                <!-- Plugins injected here -->
               </div>
             </div>
           `;
@@ -126,14 +119,14 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
 
   container.appendChild(section);
 
-  // Attach event listeners after insertion
+  // Attach event listeners correctly using unique IDs
   failedMetrics.forEach(metric => {
     if (!pluginData[metric]) return;
-    const select = section.querySelector(`select`);
-    if (!select) return;
+    const metricId = metric.replace(/\s+/g, '-').toLowerCase();
+    const select = document.getElementById(`cms-select-${metricId}`);
+    const pluginsList = document.getElementById(`plugins-${metricId}`);
 
-    const pluginsList = section.querySelector(`#plugins-${metric.replace(/\s+/g, '-').toLowerCase()}`);
-    if (!pluginsList) return;
+    if (!select || !pluginsList) return;
 
     select.addEventListener('change', (e) => {
       const selected = e.target.value;
@@ -164,3 +157,5 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
     });
   });
 }
+
+export { renderPluginSolutions };
