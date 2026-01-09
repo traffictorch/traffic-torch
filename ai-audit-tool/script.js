@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const verdict = mainGrade.text;
       const verdictEmoji = mainGrade.emoji;
 
-      // Canonical list of the 5 AI Audit modules (in display order)
+      // Define the 5 core AI Audit modules with correct scores
       const modules = [
         { name: 'Perplexity',      score: analysis.moduleScores[0] },
         { name: 'Burstiness',      score: analysis.moduleScores[1] },
@@ -216,6 +216,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Sentence Length', score: analysis.moduleScores[3] },
         { name: 'Vocabulary',      score: analysis.moduleScores[4] }
       ];
+
+      const scores = modules.map(m => m.score); // Fixed: now defined for radar chart
 
       const failingModules = modules.filter(m => m.score < 20).length;
       const boost = failingModules * 15;
