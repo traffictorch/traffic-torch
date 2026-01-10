@@ -373,20 +373,21 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
   if (!container) return;
 
   const section = document.createElement('section');
-  section.className = 'mt-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8';
+  section.className = 'mt-20 max-w-5xl mx-auto';
 
   section.innerHTML = `
     <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
-      Plugin Solutions for Detected Issues
+      Plugin Solutions for Keyword Issues
     </h2>
     <p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
-      ${failedMetrics.length} issue${failedMetrics.length > 1 ? 's need' : ' needs'} attention.
-      Expand any panel below to discover top free/freemium plugins and tools.
+      ${failedMetrics.length} issue${failedMetrics.length > 1 ? 's need' : ' needs'} attention. Check your theme or template for functionality first.
+      Expand any panel below to see top free/freemium plugins that can help fix it.
     </p>
+
     <div class="space-y-6">
       ${failedMetrics.map(m => {
-        const metricId = m.name.replace(/\s+/g, '-').toLowerCase().replace(/[()]/g, '');
-        const g = m.grade || getGrade(50); // fallback if grade missing
+        const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
+        const g = m.grade;
         return `
           <details class="group bg-white dark:bg-gray-900 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden">
             <summary class="flex items-center justify-between p-6 md:p-8 cursor-pointer list-none">
@@ -399,33 +400,36 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
                 </svg>
               </div>
             </summary>
+
             <div class="px-6 md:px-8 pb-8 md:pb-10 border-t border-gray-200 dark:border-gray-700">
               <div class="max-w-md mx-auto my-8">
                 <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-orange-300 dark:border-orange-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 outline-none transition">
-                  <option value="">Select your platform / CMS...</option>
-                  ${Object.keys(pluginData[m.name] || {}).map(cms =>
+                  <option value="">Select your CMS...</option>
+                  ${Object.keys(pluginData[m.name] || {}).map(cms => 
                     `<option value="${cms}">${cms}</option>`
                   ).join('')}
                 </select>
               </div>
+
               <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
-                <!-- Plugins will be injected here -->
+                <!-- Plugins injected here -->
               </div>
             </div>
           </details>
         `;
       }).join('')}
     </div>
+
     <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-12">
-      Recommendations feature popular free/freemium solutions. Always test on staging first and check for the latest updates.
+      These popular free/freemium plugins can help optimize these keyword-related areas. Always test compatibility on a staging site and review recent updates.
     </p>
   `;
 
   container.appendChild(section);
 
-  // Add interactivity for each dropdown
+  // Event listeners for dropdowns
   failedMetrics.forEach(m => {
-    const metricId = m.name.replace(/\s+/g, '-').toLowerCase().replace(/[()]/g, '');
+    const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
     const select = document.getElementById(`cms-select-${metricId}`);
     const pluginsList = document.getElementById(`plugins-${metricId}`);
 
@@ -441,22 +445,21 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
       pluginData[m.name][selected].forEach(plugin => {
         const card = document.createElement('div');
         card.className = 'group relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-200 dark:border-gray-700 overflow-hidden';
+
         card.innerHTML = `
           <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <div class="relative z-10">
+          <div class="relative">
             <h4 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">${plugin.name}</h4>
             <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">${plugin.desc}</p>
             <div class="flex flex-wrap gap-4">
               ${plugin.link ? `
-                <a href="${plugin.link}" target="_blank" rel="noopener noreferrer" 
-                   class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-                  Install from Store
+                <a href="${plugin.link}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow hover:shadow-md transition">
+                  Plugin Library
                 </a>
               ` : ''}
               ${plugin.homeLink ? `
-                <a href="${plugin.homeLink}" target="_blank" rel="noopener" 
-                   class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-                  Visit Website
+                <a href="${plugin.homeLink}" target="_blank" rel="noopener" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-medium rounded-lg shadow hover:shadow-md transition">
+                  Visit Plugin Website
                 </a>
               ` : ''}
             </div>

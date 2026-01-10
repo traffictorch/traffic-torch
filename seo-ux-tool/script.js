@@ -353,6 +353,40 @@ const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encod
         resultsWrapper.style.opacity = '1';
         resultsWrapper.style.transform = 'translateY(0)';
       });
+      
+      
+      
+      
+      
+      // Prepare failed / low-scoring metrics for plugin recommendations
+const failedMetrics = [];
+modules.forEach(mod => {
+  const scoreEl = document.getElementById(`${mod.id}-score`);
+  if (!scoreEl) return;
+  
+  const score = parseInt(scoreEl.querySelector('.number')?.textContent || '0', 10);
+  if (score < 80) {  // ← you can adjust threshold: 70 / 75 / 80
+    failedMetrics.push({
+      name: mod.name,
+      score: score,
+      grade: score < 60 ? { emoji: '🔴', color: 'text-red-400' } :
+             score < 80 ? { emoji: '🟠', color: 'text-orange-400' } :
+                          { emoji: '🟢', color: 'text-green-400' }
+    });
+  }
+});
+
+if (failedMetrics.length > 0) {
+  document.getElementById('plugin-solutions-section')?.classList.remove('hidden');
+  renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
+}
+      
+      
+      
+      
+      
+      
+      
       resultsWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
       try {
