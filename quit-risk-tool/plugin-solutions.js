@@ -1,3 +1,12 @@
+// Shared getGrade function (copied from script.js for compatibility in plugin-solutions.js)
+const getGrade = (score) => {
+  if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+  if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+  if (score >= 50) return { grade: 'Average', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
+  if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+  return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+};
+
 const pluginData = {
   "Alt Text Coverage": {
     WordPress: [
@@ -22,7 +31,6 @@ const pluginData = {
       { name: "ImageAPI Optimize", desc: "Defines optimization pipelines with alt text support and WebP/AVIF. Bulk processing for accessibility. Flexible for advanced sites.", link: "https://www.drupal.org/project/imageapi_optimize" }
     ]
   },
-
   "Image Optimization": {
     WordPress: [
       { name: "Smush", desc: "Bulk compression with lazy loading, WebP/AVIF, and lossless/lossy options. Automatic on upload. Trusted for speed + accessibility gains.", link: "https://wordpress.org/plugins/wp-smushit/", homeLink: "https://wpmudev.com/project/wp-smush-pro/" },
@@ -46,7 +54,6 @@ const pluginData = {
       { name: "ImageAPI Optimize", desc: "Optimization pipelines with WebP/AVIF support and bulk processing. Flexible for advanced image performance.", link: "https://www.drupal.org/project/imageapi_optimize" }
     ]
   },
-
   "Lazy Loading Media": {
     WordPress: [
       { name: "Autoptimize", desc: "Free plugin for lazy loading images/videos/iframes with minification. Lightweight and configurable. Strong foundation for faster loading.", link: "https://wordpress.org/plugins/autoptimize/", homeLink: "https://autoptimize.com/" },
@@ -69,7 +76,6 @@ const pluginData = {
       { name: "Lazy Load", desc: "Module for lazy loading images/iframes. Simple and effective.", link: "https://www.drupal.org/project/lazyload" }
     ]
   },
-
   "Script Minification & Deferral": {
     WordPress: [
       { name: "Autoptimize", desc: "Minifies and combines CSS/JS, defers scripts, and generates critical CSS. Lightweight foundation for faster loading.", link: "https://wordpress.org/plugins/autoptimize/", homeLink: "https://autoptimize.com/" },
@@ -92,7 +98,6 @@ const pluginData = {
       { name: "AdvAgg", desc: "Advanced aggregation and minification for CSS/JS. Improves front-end speed.", link: "https://www.drupal.org/project/advagg" }
     ]
   },
-
   "Font Optimization": {
     WordPress: [
       { name: "OMGF", desc: "Local Google Fonts hosting with preload and optimization. Removes external requests for faster loading.", link: "https://wordpress.org/plugins/host-webfonts-local/", homeLink: "https://daan.dev/omgf/" },
@@ -114,7 +119,6 @@ const pluginData = {
       { name: "AdvAgg", desc: "Font aggregation and optimization. Improves front-end loading.", link: "https://www.drupal.org/project/advagg" }
     ]
   },
-
   "Asset Volume & Script Bloat": {
     WordPress: [
       { name: "Asset CleanUp", desc: "Disable unused CSS/JS per page/post. Reduces bloat and asset volume dramatically.", link: "https://wordpress.org/plugins/wp-asset-clean-up/", homeLink: "https://wp-rocket.me/asset-cleanup/" },
@@ -136,7 +140,6 @@ const pluginData = {
       { name: "AdvAgg", desc: "Advanced asset aggregation and bloat reduction. Improves overall performance.", link: "https://www.drupal.org/project/advagg" }
     ]
   },
-
   "PWA Readiness": {
     WordPress: [
       { name: "Super Progressive Web Apps", desc: "Adds manifest, service worker, and PWA features. Simple setup for installable sites.", link: "https://wordpress.org/plugins/super-progressive-web-apps/", homeLink: "https://superpwa.com/" },
@@ -248,7 +251,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
             <div class="flex flex-wrap gap-4">
               ${plugin.link ? `
                 <a href="${plugin.link}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-                  Plugin Library
+                  Install from CMS Library
                 </a>
               ` : ''}
               ${plugin.homeLink ? `
