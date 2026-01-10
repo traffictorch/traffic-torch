@@ -177,10 +177,10 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
 
   section.innerHTML = `
     <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
-      Plugin Solutions for Metrics Needing Improvement
+      Plugin Solutions for SEO Intent Metrics
     </h2>
     <p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
-      ${nonExcellentCount} metric${nonExcellentCount > 1 ? 's need' : ' needs'} attention. 
+      ${nonExcellentCount} metric${nonExcellentCount > 1 ? 's need' : ' needs'} attention. Check your theme or template for functionality first.
       Expand any panel below to see top free/freemium plugins that can help fix it.
     </p>
 

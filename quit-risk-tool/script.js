@@ -1,3 +1,5 @@
+import { renderPluginSolutions } from './plugin-solutions.js';
+
 // quit-risk-tool/script.js - full complete epic perfect version
 // Hybrid Top Priority Fixes: balanced, allows extra emphasis on critical modules (max 2 per module)
 // Rich educational Quit Risk Reduction & Engagement Impact with per-fix impact, expandables, progress bars, personalized ranges
