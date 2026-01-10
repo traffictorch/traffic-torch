@@ -1,3 +1,5 @@
+import { renderPluginSolutions } from './plugin-solutions.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const pageUrlInput = document.getElementById('page-url');
@@ -593,6 +595,36 @@ return `
   </button>
 </div>
     `;
+    
+// Plugin Solutions placeholder (above priority/fixes if present)
+const pluginSection = document.createElement('div');
+pluginSection.id = 'plugin-solutions-section';
+pluginSection.className = 'mt-20';
+results.appendChild(pluginSection);
+
+// Collect failed/average metrics that plugins can solve
+const failedMetrics = [];
+
+// Meta Title & Desc (no meta desc = fail; title not keyword-optimized = average)
+const hasMetaDesc = !!doc.querySelector('meta[name="description" i]');
+if (!hasMetaDesc) {
+  failedMetrics.push({ name: "Meta Description", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+}
+
+// Structured Data (Schema) - if none or low
+if (schemaTypes.length < 1) { // Adjust threshold based on your tool's schema detection
+  failedMetrics.push({ name: "Structured Data (Schema)", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+}
+
+// Image Alts (if <80% or low matching)
+if (altTextCoverage < 80) {
+  failedMetrics.push({ name: "Image Alts", grade: getGrade(altTextCoverage) });
+}
+
+// Render
+if (failedMetrics.length > 0) {
+  renderPluginSolutions(failedMetrics);
+}
     
           // === RADAR CHART INITIALIZATION ===
       setTimeout(() => {
