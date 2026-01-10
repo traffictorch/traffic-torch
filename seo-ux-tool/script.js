@@ -1,3 +1,5 @@
+import { renderPluginSolutions } from './plugin-solutions.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
   const form = document.getElementById('url-form');
