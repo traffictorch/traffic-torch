@@ -163,6 +163,8 @@ const pluginData = {
   }
 };
 
+console.log('Quit Risk - Failed Metrics count:', failedMetrics.length, failedMetrics);
+
 function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-section') {
   if (failedMetrics.length === 0) return;
 
