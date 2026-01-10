@@ -264,12 +264,12 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
               <div class="flex flex-wrap gap-4">
                 ${plugin.link ? `
                   <a href="${plugin.link}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-                    View on Plugin Directory
+                    Plugin Library
                   </a>
                 ` : ''}
                 ${plugin.homeLink ? `
                   <a href="${plugin.homeLink}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-                    Visit Official Site
+                    Plugin Website
                   </a>
                 ` : ''}
               </div>
