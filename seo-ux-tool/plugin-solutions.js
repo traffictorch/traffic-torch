@@ -366,103 +366,87 @@ const pluginData = {
   }
 };
 
+
 function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-section') {
   if (failedMetrics.length === 0) return;
-
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  const section = document.createElement('section');
-  section.className = 'mt-20 max-w-5xl mx-auto';
+  // Clear previous content and remove hidden class
+  container.innerHTML = '';
+  container.classList.remove('hidden');
 
-  section.innerHTML = `
-    <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
-      Plugin Solutions for Keyword Issues
-    </h2>
-    <p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
-      ${failedMetrics.length} issue${failedMetrics.length > 1 ? 's need' : ' needs'} attention. Check your theme or template for functionality first.
-      Expand any panel below to see top free/freemium plugins that can help fix it.
-    </p>
-
-    <div class="space-y-6">
-      ${failedMetrics.map(m => {
-        const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
-        const g = m.grade;
-        return `
-          <details class="group bg-white dark:bg-gray-900 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <summary class="flex items-center justify-between p-6 md:p-8 cursor-pointer list-none">
-              <h3 class="text-2xl md:text-3xl font-bold ${g.color}">
-                ${g.emoji} ${m.name}
-              </h3>
-              <div class="transform transition-transform duration-300 group-open:rotate-180">
-                <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  container.innerHTML = `
+    <div class="mt-20 max-w-5xl mx-auto px-4">
+      <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
+        Recommended Plugin Solutions
+      </h2>
+      <p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
+        ${failedMetrics.length} critical area${failedMetrics.length > 1 ? 's need' : ' needs'} improvement.  
+        Select your platform below to see the best free/freemium tools that fix it instantly.
+      </p>
+      <div class="space-y-8">
+        ${failedMetrics.map(m => {
+          const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
+          const g = m.grade;
+          const cmsOptions = Object.keys(pluginData[m.name] || {});
+          return `
+            <details class="group bg-white/10 dark:bg-white/5 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 overflow-hidden">
+              <summary class="flex items-center justify-between p-8 cursor-pointer list-none">
+                <h3 class="text-2xl md:text-3xl font-bold ${g.color}">
+                  ${g.emoji} ${m.name}
+                </h3>
+                <svg class="w-9 h-9 text-orange-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/>
                 </svg>
+              </summary>
+              <div class="px-8 pb-10 border-t border-white/10">
+                ${cmsOptions.length > 0 ? `
+                  <div class="max-w-md mx-auto my-8">
+                    <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl bg-white/90 dark:bg-gray-800/90 border-2 border-orange-400 dark:border-orange-600 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 outline-none transition">
+                      <option value="">Choose your platform...</option>
+                      ${cmsOptions.map(cms => `<option value="${cms}">${cms}</option>`).join('')}
+                    </select>
+                  </div>
+                  <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+                ` : `
+                  <p class="text-center text-gray-400 py-8">Native support or manual fix recommended for this issue.</p>
+                `}
               </div>
-            </summary>
-
-            <div class="px-6 md:px-8 pb-8 md:pb-10 border-t border-gray-200 dark:border-gray-700">
-              <div class="max-w-md mx-auto my-8">
-                <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-orange-300 dark:border-orange-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 outline-none transition">
-                  <option value="">Select your CMS...</option>
-                  ${Object.keys(pluginData[m.name] || {}).map(cms => 
-                    `<option value="${cms}">${cms}</option>`
-                  ).join('')}
-                </select>
-              </div>
-
-              <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
-                <!-- Plugins injected here -->
-              </div>
-            </div>
-          </details>
-        `;
-      }).join('')}
+            </details>
+          `;
+        }).join('')}
+      </div>
+      <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-16">
+        All recommendations are current, free or freemium, and trusted by millions of sites.
+      </p>
     </div>
-
-    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-12">
-      These popular free/freemium plugins can help optimize these keyword-related areas. Always test compatibility on a staging site and review recent updates.
-    </p>
   `;
 
-  container.appendChild(section);
-
-  // Event listeners for dropdowns
+  // Attach event listeners after DOM injection
   failedMetrics.forEach(m => {
     const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
     const select = document.getElementById(`cms-select-${metricId}`);
     const pluginsList = document.getElementById(`plugins-${metricId}`);
-
+    
     if (!select || !pluginsList) return;
 
-    select.addEventListener('change', (e) => {
-      const selected = e.target.value;
+    select.addEventListener('change', () => {
+      const cms = select.value;
       pluginsList.innerHTML = '';
       pluginsList.classList.add('hidden');
 
-      if (!selected || !pluginData[m.name]?.[selected]) return;
+      if (!cms || !pluginData[m.name][cms]) return;
 
-      pluginData[m.name][selected].forEach(plugin => {
+      pluginData[m.name][cms].forEach(plugin => {
         const card = document.createElement('div');
-        card.className = 'group relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-200 dark:border-gray-700 overflow-hidden';
-
+        card.className = 'bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-800/50 dark:to-gray-900/50 backdrop-blur rounded-2xl p-6 border border-white/10 hover:border-orange-400/50 transition-all duration-300';
         card.innerHTML = `
-          <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <div class="relative">
-            <h4 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">${plugin.name}</h4>
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">${plugin.desc}</p>
-            <div class="flex flex-wrap gap-4">
-              ${plugin.link ? `
-                <a href="${plugin.link}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-                  Plugin Library
-                </a>
-              ` : ''}
-              ${plugin.homeLink ? `
-                <a href="${plugin.homeLink}" target="_blank" rel="noopener" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-                  Visit Plugin Website
-                </a>
-              ` : ''}
-            </div>
+          <h4 class="text-xl font-bold text-orange-300 mb-3">${plugin.name}</h4>
+          <p class="text-gray-300 text-sm leading-relaxed mb-6">${plugin.desc}</p>
+          <div class="flex flex-wrap gap-3">
+            ${plugin.link ? `<a href="${plugin.link}" target="_blank" rel="noopener" class="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition">Get Plugin</a>` : ''}
+            ${plugin.homeLink ? `<a href="${plugin.homeLink}" target="_blank" rel="noopener" class="px-5 py-2.5 bg-gradient-to-r from-orange-600 to-pink-600 text-white text-sm font-medium rounded-lg transition">Official Site</a>` : ''}
           </div>
         `;
         pluginsList.appendChild(card);
