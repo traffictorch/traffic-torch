@@ -358,25 +358,84 @@ const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encod
       
       
       
-// === PLUGIN SOLUTIONS – Show only low-scoring modules ===
-const failedMetrics = modules
-  .map(mod => {
-    const scoreEl = document.querySelector(`#${mod.id}-score .number`);
-    const score = scoreEl ? parseInt(scoreEl.textContent.trim(), 10) : 100;
-    
-    if (score >= 80) return null;
+// === Plugin Solutions - detect only the 16 supported metrics from checklist (❌) ===
+const pluginSection = document.getElementById('plugin-solutions-section');
+if (!pluginSection) return;
 
-    return {
-      name: mod.name,
-      grade: score < 60 
-        ? { emoji: '🔴', color: 'text-red-400' }
-        : { emoji: '🟠', color: 'text-orange-400' }
-    };
-  })
-  .filter(Boolean);
+pluginSection.innerHTML = '';
+pluginSection.classList.remove('hidden');
+
+const failedMetrics = [];
+
+// List of the exact 16 supported metric names from pluginData
+const supportedMetricNames = [
+  "Title optimized (30–65 chars, keyword early)",
+  "Meta description present & optimal",
+  "Structured data (schema) detected",
+  "Canonical tag present",
+  "All images have meaningful alt text",
+  "Web app manifest linked",
+  "Homescreen icons (192px+) provided",
+  "Service worker",
+  "Page weight reasonable (<300KB HTML)",
+  "Number of HTTP requests",
+  "Render-blocking resources",
+  "Web fonts optimized",
+  "Form fields properly labeled",
+  "Clear primary calls-to-action",
+  "Breadcrumb navigation (on deep pages)",
+  "Served over HTTPS / No mixed content"
+];
+
+modules.forEach(mod => {
+  const card = document.getElementById(`${mod.id}-score`);
+  if (!card) return;
+
+  const checklistItems = card.querySelectorAll('.checklist p');
+  
+  checklistItems.forEach(item => {
+    const text = item.textContent.trim();
+    if (text.startsWith('❌')) {
+      // Clean the name to match pluginData keys
+      let issueName = text.replace(/^❌\s*/, '').trim();
+      
+      // Quick normalization for common checklist variations
+      if (issueName.includes('Title optimized')) issueName = supportedMetricNames[0];
+      if (issueName.includes('Meta description')) issueName = supportedMetricNames[1];
+      if (issueName.includes('Structured data')) issueName = supportedMetricNames[2];
+      if (issueName.includes('Canonical tag')) issueName = supportedMetricNames[3];
+      if (issueName.includes('alt text')) issueName = supportedMetricNames[4];
+      if (issueName.includes('manifest')) issueName = supportedMetricNames[5];
+      if (issueName.includes('homescreen') || issueName.includes('icon')) issueName = supportedMetricNames[6];
+      if (issueName.includes('service worker')) issueName = supportedMetricNames[7];
+      if (issueName.includes('Page weight')) issueName = supportedMetricNames[8];
+      if (issueName.includes('HTTP requests')) issueName = supportedMetricNames[9];
+      if (issueName.includes('Render-blocking')) issueName = supportedMetricNames[10];
+      if (issueName.includes('Web fonts')) issueName = supportedMetricNames[11];
+      if (issueName.includes('Form fields')) issueName = supportedMetricNames[12];
+      if (issueName.includes('calls-to-action')) issueName = supportedMetricNames[13];
+      if (issueName.includes('Breadcrumb')) issueName = supportedMetricNames[14];
+      if (issueName.includes('HTTPS') || issueName.includes('mixed content')) issueName = supportedMetricNames[15];
+
+      // Only add if it's one of the 16 supported ones
+      if (supportedMetricNames.includes(issueName)) {
+        failedMetrics.push({
+          name: issueName,
+          grade: { emoji: '🔴', color: 'text-red-400' }
+        });
+      }
+    }
+  });
+});
 
 if (failedMetrics.length > 0) {
   renderPluginSolutions(failedMetrics);
+} else {
+  pluginSection.innerHTML = `
+    <div class="mt-20 text-center">
+      <p class="text-xl text-gray-400">No issues found among the 16 supported areas that need plugin fixes.</p>
+    </div>
+  `;
 }
       
       
