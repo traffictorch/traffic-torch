@@ -536,99 +536,137 @@ const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encod
 
       document.body.setAttribute('data-url', displayUrl);
       
-         // === Plugin Solutions - placed after full report (below small metric modules) ===
-   const pluginSection = document.createElement('div');
-   pluginSection.id = 'plugin-solutions-section';
-   pluginSection.className = 'mt-20 max-w-5xl mx-auto px-4';
-   results.appendChild(pluginSection);
+ // === Plugin Solutions – using already calculated scores ===
+const pluginSection = document.createElement('div');
+pluginSection.id = 'plugin-solutions-section';
+pluginSection.className = 'mt-20 max-w-5xl mx-auto px-4';
+results.appendChild(pluginSection);
 
-   // Collect failed metrics using ux scores
-   const failedMetrics = [];
+const failedMetrics = [];
 
-   // 1. Title optimized (30–65 chars, keyword early)
-   if (analyzeSEO(html, doc).score < 80) {
-     failedMetrics.push({ name: "Title optimized (30–65 chars, keyword early)", grade: getGrade(analyzeSEO(html, doc).score) });
-   }
+// We already have real scores from the analysis loop!
+const moduleScores = {};
+modules.forEach((mod, index) => {
+  moduleScores[mod.id] = scores[index];
+});
 
-   // 2. Meta description present & optimal
-   if (analyzeSEO(html, doc).score < 80) {
-     failedMetrics.push({ name: "Meta description present & optimal", grade: getGrade(analyzeSEO(html, doc).score) });
-   }
+// Now use pre-calculated scores + getGrade helper
+if (moduleScores.seo < 80) {
+  failedMetrics.push({
+    name: "Title optimized (30–65 chars, keyword early)",
+    grade: getGrade(moduleScores.seo)
+  });
+}
 
-   // 3. Structured data (schema) detected
-   if (analyzeSEO(html, doc).score < 80) {
-     failedMetrics.push({ name: "Structured data (schema) detected", grade: getGrade(analyzeSEO(html, doc).score) });
-   }
+if (moduleScores.seo < 80) {
+  failedMetrics.push({
+    name: "Meta description present & optimal",
+    grade: getGrade(moduleScores.seo)
+  });
+}
 
-   // 4. Canonical tag present
-   if (analyzeSEO(html, doc).score < 80) {
-     failedMetrics.push({ name: "Canonical tag present", grade: getGrade(analyzeSEO(html, doc).score) });
-   }
+if (moduleScores.seo < 80) {
+  failedMetrics.push({
+    name: "Structured data (schema) detected",
+    grade: getGrade(moduleScores.seo)
+  });
+}
 
-   // 5. All images have meaningful alt text
-   if (analyzeSEO(html, doc).score < 80) {
-     failedMetrics.push({ name: "All images have meaningful alt text", grade: getGrade(analyzeSEO(html, doc).score) });
-   }
+if (moduleScores.seo < 80) {
+  failedMetrics.push({
+    name: "Canonical tag present",
+    grade: getGrade(moduleScores.seo)
+  });
+}
 
-   // 6. Web app manifest linked
-   if (analyzeMobile(html, doc).score < 80) {
-     failedMetrics.push({ name: "Web app manifest linked", grade: getGrade(analyzeMobile(html, doc).score) });
-   }
+if (moduleScores.seo < 80) {
+  failedMetrics.push({
+    name: "All images have meaningful alt text",
+    grade: getGrade(moduleScores.seo)
+  });
+}
 
-   // 7. Homescreen icons (192px+) provided
-   if (analyzeMobile(html, doc).score < 80) {
-     failedMetrics.push({ name: "Homescreen icons (192px+) provided", grade: getGrade(analyzeMobile(html, doc).score) });
-   }
+if (moduleScores.mobile < 80) {
+  failedMetrics.push({
+    name: "Web app manifest linked",
+    grade: getGrade(moduleScores.mobile)
+  });
+}
 
-   // 8. Service worker
-   if (analyzeMobile(html, doc).score < 80) {
-     failedMetrics.push({ name: "Service worker", grade: getGrade(analyzeMobile(html, doc).score) });
-   }
+if (moduleScores.mobile < 80) {
+  failedMetrics.push({
+    name: "Homescreen icons (192px+) provided",
+    grade: getGrade(moduleScores.mobile)
+  });
+}
 
-   // 9. Page weight reasonable (<300KB HTML)
-   if (analyzePerf(html, doc).score < 80) {
-     failedMetrics.push({ name: "Page weight reasonable (<300KB HTML)", grade: getGrade(analyzePerf(html, doc).score) });
-   }
+if (moduleScores.mobile < 80) {
+  failedMetrics.push({
+    name: "Service worker",
+    grade: getGrade(moduleScores.mobile)
+  });
+}
 
-   // 10. Number of HTTP requests
-   if (analyzePerf(html, doc).score < 80) {
-     failedMetrics.push({ name: "Number of HTTP requests", grade: getGrade(analyzePerf(html, doc).score) });
-   }
+if (moduleScores.perf < 80) {
+  failedMetrics.push({
+    name: "Page weight reasonable (<300KB HTML)",
+    grade: getGrade(moduleScores.perf)
+  });
+}
 
-   // 11. Render-blocking resources
-   if (analyzePerf(html, doc).score < 80) {
-     failedMetrics.push({ name: "Render-blocking resources", grade: getGrade(analyzePerf(html, doc).score) });
-   }
+if (moduleScores.perf < 80) {
+  failedMetrics.push({
+    name: "Number of HTTP requests",
+    grade: getGrade(moduleScores.perf)
+  });
+}
 
-   // 12. Web fonts optimized
-   if (analyzePerf(html, doc).score < 80) {
-     failedMetrics.push({ name: "Web fonts optimized", grade: getGrade(analyzePerf(html, doc).score) });
-   }
+if (moduleScores.perf < 80) {
+  failedMetrics.push({
+    name: "Render-blocking resources",
+    grade: getGrade(moduleScores.perf)
+  });
+}
 
-   // 13. Form fields properly labeled
-   if (analyzeAccess(html, doc).score < 80) {
-     failedMetrics.push({ name: "Form fields properly labeled", grade: getGrade(analyzeAccess(html, doc).score) });
-   }
+if (moduleScores.perf < 80) {
+  failedMetrics.push({
+    name: "Web fonts optimized",
+    grade: getGrade(moduleScores.perf)
+  });
+}
 
-   // 14. Clear primary calls-to-action
-   if (analyzeUXDesign(html, doc).score < 80) {
-     failedMetrics.push({ name: "Clear primary calls-to-action", grade: getGrade(analyzeUXDesign(html, doc).score) });
-   }
+if (moduleScores.access < 80) {
+  failedMetrics.push({
+    name: "Form fields properly labeled",
+    grade: getGrade(moduleScores.access)
+  });
+}
 
-   // 15. Breadcrumb navigation (on deep pages)
-   if (analyzeUXDesign(html, doc).score < 80) {
-     failedMetrics.push({ name: "Breadcrumb navigation (on deep pages)", grade: getGrade(analyzeUXDesign(html, doc).score) });
-   }
+if (moduleScores.ux < 80) {
+  failedMetrics.push({
+    name: "Clear primary calls-to-action",
+    grade: getGrade(moduleScores.ux)
+  });
+}
 
-   // 16. Served over HTTPS / No mixed content
-   if (analyzeSecurity(html, doc, url).score < 80) {
-     failedMetrics.push({ name: "Served over HTTPS / No mixed content", grade: getGrade(analyzeSecurity(html, doc, url).score) });
-   }
+if (moduleScores.ux < 80) {
+  failedMetrics.push({
+    name: "Breadcrumb navigation (on deep pages)",
+    grade: getGrade(moduleScores.ux)
+  });
+}
 
-   // Render only if fixes needed
-   if (failedMetrics.length > 0) {
-     renderPluginSolutions(failedMetrics);
-   }
+if (moduleScores.security < 80) {
+  failedMetrics.push({
+    name: "Served over HTTPS / No mixed content",
+    grade: getGrade(moduleScores.security)
+  });
+}
+
+// Only render if we actually have something to show
+if (failedMetrics.length > 0) {
+  renderPluginSolutions(failedMetrics);
+}
       
       
     }
