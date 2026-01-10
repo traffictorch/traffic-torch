@@ -537,6 +537,55 @@ const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encod
       document.body.setAttribute('data-url', displayUrl);
       
       
+            // === Plugin Solutions module - placed after full report (below small metric modules, at bottom of report) ===
+      const pluginSection = document.createElement('div');
+      pluginSection.id = 'plugin-solutions-section';
+      pluginSection.className = 'mt-20 max-w-5xl mx-auto px-4';
+      results.appendChild(pluginSection);
+
+      // Collect failed metrics using ux scores from analyzeUX
+      const failedMetrics = [];
+
+      // 1. Alt Text Coverage (from accessibility score)
+      if (ux.accessibility < 80) {
+        failedMetrics.push({ name: "Alt Text Coverage", grade: getGrade(ux.accessibility) });
+      }
+
+      // 2. Image Optimization (from speed score)
+      if (ux.speed < 80) {
+        failedMetrics.push({ name: "Image Optimization", grade: getGrade(ux.speed) });
+      }
+
+      // 3. Lazy Loading Media (from speed score)
+      if (ux.speed < 80) {
+        failedMetrics.push({ name: "Lazy Loading Media", grade: getGrade(ux.speed) });
+      }
+
+      // 4. Script Minification & Deferral (from speed score)
+      if (ux.speed < 80) {
+        failedMetrics.push({ name: "Script Minification & Deferral", grade: getGrade(ux.speed) });
+      }
+
+      // 5. Font Optimization (from speed score)
+      if (ux.speed < 80) {
+        failedMetrics.push({ name: "Font Optimization", grade: getGrade(ux.speed) });
+      }
+
+      // 6. Asset Volume & Script Bloat (merged, from speed score)
+      if (ux.speed < 80) {
+        failedMetrics.push({ name: "Asset Volume & Script Bloat", grade: getGrade(ux.speed) });
+      }
+
+      // 7. PWA Readiness (from mobile score)
+      if (ux.mobile < 80) {
+        failedMetrics.push({ name: "PWA Readiness", grade: getGrade(ux.mobile) });
+      }
+
+      // Render only if fixes needed
+      if (failedMetrics.length > 0) {
+        renderPluginSolutions(failedMetrics);
+      }
+      
       
     }
   });
