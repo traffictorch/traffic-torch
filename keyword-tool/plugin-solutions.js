@@ -119,7 +119,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
       Plugin Solutions for Keyword Issues
     </h2>
     <p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
-      ${failedMetrics.length} issue${failedMetrics.length > 1 ? 's need' : ' needs'} attention. 
+      ${failedMetrics.length} issue${failedMetrics.length > 1 ? 's need' : ' needs'} attention. Check your theme or template for functionality first.
       Expand any panel below to see top free/freemium plugins that can help fix it.
     </p>
 
@@ -193,7 +193,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
             <div class="flex flex-wrap gap-4">
               ${plugin.link ? `
                 <a href="${plugin.link}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-                  Install from CMS Library
+                  Plugin Library
                 </a>
               ` : ''}
               ${plugin.homeLink ? `

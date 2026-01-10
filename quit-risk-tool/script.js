@@ -633,6 +633,58 @@ function buildModuleHTML(moduleName, value, moduleData) {
           </div>
         `;
         
+
+      // === Plugin Solutions - placed below Save as PDF ===
+      const pluginSection = document.createElement('div');
+      pluginSection.id = 'plugin-solutions-section';
+      pluginSection.className = 'mt-20';
+      results.appendChild(pluginSection);
+
+      // Collect failed/average metrics that plugins can solve (7 key ones)
+      const failedMetrics = [];
+
+      // 1. Alt Text Coverage
+      if (ux.accessibility < 80) {
+        failedMetrics.push({ name: "Alt Text Coverage", grade: getGrade(ux.accessibility) });
+      }
+
+      // 2. Image Optimization
+      if (ux.speed < 80) {
+        failedMetrics.push({ name: "Image Optimization", grade: getGrade(ux.speed) });
+      }
+
+      // 3. Lazy Loading Media
+      if (ux.speed < 80) {
+        failedMetrics.push({ name: "Lazy Loading Media", grade: getGrade(ux.speed) });
+      }
+
+      // 4. Script Minification & Deferral
+      if (ux.speed < 80) {
+        failedMetrics.push({ name: "Script Minification & Deferral", grade: getGrade(ux.speed) });
+      }
+
+      // 5. Font Optimization
+      if (ux.speed < 80) {
+        failedMetrics.push({ name: "Font Optimization", grade: getGrade(ux.speed) });
+      }
+
+      // 6. Asset Volume Flags / Script Bloat (merged)
+      if (ux.speed < 80) {
+        failedMetrics.push({ name: "Asset Volume & Script Bloat", grade: getGrade(ux.speed) });
+      }
+
+      // 7. PWA Readiness Indicators
+      if (ux.mobile < 80) {
+        failedMetrics.push({ name: "PWA Readiness", grade: getGrade(ux.mobile) });
+      }
+
+      // Render only if we have fixes
+      if (failedMetrics.length > 0) {
+        renderPluginSolutions(failedMetrics);
+      }
+
+        
+        
               // === RADAR CHART INITIALIZATION ===
       setTimeout(() => {
         const canvas = document.getElementById('health-radar');
