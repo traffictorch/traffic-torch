@@ -1,4 +1,11 @@
-import { renderPluginSolutions } from '/quit-risk-tool/plugin-solutions.js';
+// Dynamic import for better GitHub Pages compatibility
+let renderPluginSolutions;
+import('/quit-risk-tool/plugin-solutions.js')
+  .then(module => {
+    renderPluginSolutions = module.renderPluginSolutions;
+    console.log('Plugin solutions module loaded successfully');
+  })
+  .catch(err => console.error('Failed to load plugin-solutions.js:', err));
 
 // quit-risk-tool/script.js - full complete epic perfect version with realistic metrics
 // Hybrid Top Priority Fixes: balanced, allows extra emphasis on critical modules (max 2 per module)
@@ -464,7 +471,20 @@ if (ux.mobile < 90) {
         const mobileHTML = buildModuleHTML('Mobile', ux.mobile, factorDefinitions.mobile);
         const speedHTML = buildModuleHTML('Speed', ux.speed, factorDefinitions.performance);
         // Render plugin solutions for low/average performance-related metrics
-		renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
+		// Safe call: only render if the function is loaded
+if (typeof renderPluginSolutions === 'function') {
+  console.log('Calling renderPluginSolutions now...');
+  renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
+} else {
+  console.warn('renderPluginSolutions not ready yet - delaying 300ms');
+  setTimeout(() => {
+    if (typeof renderPluginSolutions === 'function') {
+      renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
+    } else {
+      console.error('renderPluginSolutions still not available');
+    }
+  }, 300);
+}
 
         // Hybrid Top Priority Fixes
         const modulePriority = [
