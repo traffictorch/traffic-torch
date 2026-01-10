@@ -1,4 +1,4 @@
-// Shared getGrade function (copied from script.js for compatibility)
+// Shared getGrade function (copied from script.js for compatibility in plugin-solutions.js)
 const getGrade = (score) => {
   if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
   if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
@@ -202,7 +202,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
               <div class="max-w-md mx-auto my-8">
                 <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-orange-300 dark:border-orange-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 outline-none transition">
                   <option value="">Select your CMS...</option>
-                  ${Object.keys(pluginData[m.name] || {}).map(cms =>
+                  ${Object.keys(pluginData[m.name] || {}).map(cms => 
                     `<option value="${cms}">${cms}</option>`
                   ).join('')}
                 </select>
@@ -224,7 +224,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
 
   container.appendChild(section);
 
-  // Event listeners for dropdowns
+  // Event listeners for dropdowns - fixed: uses parameter failedMetrics
   failedMetrics.forEach(m => {
     const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
     const select = document.getElementById(`cms-select-${metricId}`);
