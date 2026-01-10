@@ -8,11 +8,6 @@ import('/quit-risk-tool/plugin-solutions.js')
   .catch(err => console.error('Failed to load plugin-solutions.js:', err));
 
 // quit-risk-tool/script.js - full complete epic perfect version with realistic metrics
-// Hybrid Top Priority Fixes: balanced, allows extra emphasis on critical modules (max 2 per module)
-// Rich educational Quit Risk Reduction & Engagement Impact with per-fix impact, expandables, progress bars, personalized ranges
-// Day/night text fully fixed with consistent Tailwind classes
-// Dynamic title "Top Priority Fixes" + celebration message when no fixes needed
-
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
@@ -80,10 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // ────────────────────────────────────────────────
   // Helper functions for realistic metric calculation
-  // ────────────────────────────────────────────────
-
   function countWords(text) {
     return text.trim().split(/\s+/).filter(w => w.length > 0).length;
   }
@@ -123,13 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function estimateColorContrastScore() {
-    // Real contrast calculation impossible from HTML alone → conservative proxy
     return 72;
   }
-
-  // ────────────────────────────────────────────────
-  // Data extraction
-  // ────────────────────────────────────────────────
 
   function getUXContent(doc) {
     const textElements = doc.querySelectorAll('p, li, article, section, main, div');
@@ -138,11 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const t = el.textContent.trim();
       if (t.length > 15) textContent += t + ' ';
     });
-
     const links = doc.querySelectorAll('a[href]');
     const images = doc.querySelectorAll('img');
     const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
-
     return {
       fullText: textContent,
       wordCount: countWords(textContent),
@@ -157,66 +142,52 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // ────────────────────────────────────────────────
-  // Realistic score calculation for all modules
-  // ────────────────────────────────────────────────
-
   function analyzeUX(data) {
-    // 1. Readability
     let readability = 55;
     if (data.wordCount > 80) {
       const paragraphs = data.fullText.split(/\n{2,}|\r\n{2,}/).filter(p => p.trim().length > 0);
       const sentenceCount = (data.fullText.match(/[.!?]+/g) || []).length || 1;
       const avgSentenceLength = data.wordCount / sentenceCount;
       const avgWordsPerParagraph = data.wordCount / Math.max(1, paragraphs.length);
-
       let base = 100 - (avgSentenceLength * 2.2);
       if (avgWordsPerParagraph > 120) base -= 30;
       if (avgWordsPerParagraph > 80) base -= 15;
       readability = Math.max(35, Math.min(92, Math.round(base)));
     }
 
-    // 2. Navigation / Linking
     let navScore = 85;
     if (data.linkCount > 180) navScore -= 35;
     else if (data.linkCount > 120) navScore -= 18;
     else if (data.linkCount < 12) navScore -= 25;
-
     if (data.externalLinkCount > data.linkCount * 0.45) navScore -= 15;
     navScore = Math.max(40, Math.min(98, navScore));
 
-    // 3. Accessibility
     let accScore = 65;
-    // Alt text coverage
     if (data.imageCount > 0) {
       const altRatio = (data.imageCount - data.missingAltCount) / data.imageCount;
       if (altRatio > 0.9) accScore += 18;
       else if (altRatio > 0.6) accScore += 8;
       else accScore -= 25;
     } else if (data.imageCount === 0) {
-      accScore += 10; // no images = no alt problem
+      accScore += 10;
     }
-    // Semantics
     if (data.hasMain) accScore += 12;
     if (data.hasArticleOrSection) accScore += 10;
     if (data.headingCount >= 3) accScore += 10;
     accScore += estimateColorContrastScore() - 70;
     accScore = Math.max(35, Math.min(97, Math.round(accScore)));
 
-    // 4. Mobile & PWA
     let mobileScore = data.hasViewport ? 88 : 42;
     if (data.imageCount > 35) mobileScore -= 12;
     mobileScore = Math.max(40, Math.min(98, mobileScore));
 
-    // 5. Performance proxies
     let speedScore = 78;
     if (data.imageCount > 40) speedScore -= 22;
     if (data.imageCount > 70) speedScore -= 35;
     if (data.externalLinkCount > 25) speedScore -= 15;
-    if (data.linkCount > 150) speedScore -= 12; // many links often = many requests
+    if (data.linkCount > 150) speedScore -= 12;
     speedScore = Math.max(40, Math.min(94, speedScore));
 
-    // Final aggregation
     const scores = [readability, navScore, accScore, mobileScore, speedScore];
     const overall = Math.round(scores.reduce((a,b) => a + b, 0) / scores.length);
 
@@ -246,14 +217,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (score >= 60) return { grade: "D", color: "text-orange-600", emoji: "⚠️" };
     return { grade: "F", color: "text-red-600", emoji: "❌" };
   }
-  
+
   function getPluginGrade(score) {
-  if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
-  if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
-  if (score >= 50) return { grade: 'Average', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
-  if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
-  return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
-}
+    if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+    if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+    if (score >= 50) return { grade: 'Average', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
+    if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+    return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+  }
 
   function buildModuleHTML(moduleName, value, moduleData) {
     const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
@@ -349,7 +320,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </button>
       </p>`
       : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
-          
     return `
       <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
         <div class="relative mx-auto w-32 h-32">
@@ -431,36 +401,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const doc = new DOMParser().parseFromString(html, 'text/html');
         const uxData = getUXContent(doc);
         const ux = analyzeUX(uxData);
-        // Collect metrics that are Average or worse (grade < Strong) for plugin recommendations
-const failedMetrics = [];
 
-// Alt Text Coverage → tied to Accessibility
-if (ux.accessibility < 75) {  // < Strong threshold
-  failedMetrics.push({
-    name: "Alt Text Coverage",
-    grade: getPluginGrade(ux.accessibility)
-  });
-}
+        const failedMetrics = [];
+        if (ux.accessibility < 75) {
+          failedMetrics.push({
+            name: "Alt Text Coverage",
+            grade: getPluginGrade(ux.accessibility)
+          });
+        }
+        if (ux.speed < 85) {
+          const speedGrade = getPluginGrade(ux.speed);
+          failedMetrics.push(
+            { name: "Image Optimization", grade: speedGrade },
+            { name: "Lazy Loading Media", grade: speedGrade },
+            { name: "Font Optimization", grade: speedGrade },
+            { name: "Script Minification & Deferral", grade: speedGrade },
+            { name: "Asset Volume & Script Bloat", grade: speedGrade }
+          );
+        }
+        if (ux.mobile < 90) {
+          failedMetrics.push({
+            name: "PWA Readiness",
+            grade: getPluginGrade(ux.mobile)
+          });
+        }
 
-// Image Optimization, Lazy Loading, Font, Script Minify, Asset Bloat → all tied to Speed
-if (ux.speed < 85) {
-  const speedGrade = getPluginGrade(ux.speed);
-  failedMetrics.push(
-    { name: "Image Optimization", grade: speedGrade },
-    { name: "Lazy Loading Media", grade: speedGrade },
-    { name: "Font Optimization", grade: speedGrade },
-    { name: "Script Minification & Deferral", grade: speedGrade },
-    { name: "Asset Volume & Script Bloat", grade: speedGrade }
-  );
-}
-
-// PWA Readiness → tied to Mobile
-if (ux.mobile < 90) {
-  failedMetrics.push({
-    name: "PWA Readiness",
-    grade: getPluginGrade(ux.mobile)
-  });
-}
         const risk = getQuitRiskLabel(ux.score);
         document.getElementById('loading').classList.add('hidden');
         const safeScore = isNaN(ux.score) ? 60 : ux.score;
@@ -470,23 +435,8 @@ if (ux.mobile < 90) {
         const accessHTML = buildModuleHTML('Accessibility', ux.accessibility, factorDefinitions.accessibility);
         const mobileHTML = buildModuleHTML('Mobile', ux.mobile, factorDefinitions.mobile);
         const speedHTML = buildModuleHTML('Speed', ux.speed, factorDefinitions.performance);
-        // Render plugin solutions for low/average performance-related metrics
-		// Safe call: only render if the function is loaded
-if (typeof renderPluginSolutions === 'function') {
-  console.log('Calling renderPluginSolutions now...');
-  renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
-} else {
-  console.warn('renderPluginSolutions not ready yet - delaying 300ms');
-  setTimeout(() => {
-    if (typeof renderPluginSolutions === 'function') {
-      renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
-    } else {
-      console.error('renderPluginSolutions still not available');
-    }
-  }, 300);
-}
 
-        // Hybrid Top Priority Fixes
+        // Build priority fixes, impact, etc.
         const modulePriority = [
           { name: 'Readability', score: ux.readability, threshold: 65, data: factorDefinitions.readability },
           { name: 'Navigation', score: ux.nav, threshold: 70, data: factorDefinitions.navigation },
@@ -652,6 +602,7 @@ if (typeof renderPluginSolutions === 'function') {
         ];
         const scores = modules.map(m => m.score);
 
+        // Assign HTML to results (this creates the DOM elements)
         results.innerHTML = `
           <!-- Big Overall Score Card -->
           <div class="flex justify-center my-12 px-4">
@@ -749,9 +700,9 @@ if (typeof renderPluginSolutions === 'function') {
               Prioritized by impact — focusing on diverse modules for balanced improvements. If one module dominates failures, address it first for biggest gains.
             </p>` : ''}
           </div>
-          
+
           <!-- Plugin Solutions Accordion -->
-<div id="plugin-solutions-section" class="mt-16 px-4"></div>
+          <div id="plugin-solutions-section" class="mt-16 px-4"></div>
 
           <!-- Enhanced Quit Risk Reduction & Engagement Impact -->
           ${impactHTML}
@@ -766,7 +717,25 @@ if (typeof renderPluginSolutions === 'function') {
           </div>
         `;
 
-        // === RADAR CHART INITIALIZATION ===
+        // NOW the container exists – render plugins
+        console.log('Container AFTER HTML set:', !!document.getElementById('plugin-solutions-section'));
+
+        if (typeof renderPluginSolutions === 'function') {
+          console.log('Calling renderPluginSolutions now');
+          renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
+        } else {
+          console.warn('renderPluginSolutions not loaded yet - delaying 500ms');
+          setTimeout(() => {
+            if (typeof renderPluginSolutions === 'function') {
+              console.log('Delayed call successful');
+              renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
+            } else {
+              console.error('renderPluginSolutions still not available after delay');
+            }
+          }, 500);
+        }
+
+        // RADAR CHART
         setTimeout(() => {
           const canvas = document.getElementById('health-radar');
           if (!canvas) return;
@@ -815,7 +784,6 @@ if (typeof renderPluginSolutions === 'function') {
           }
         }, 150);
 
-        // Clean URL for PDF cover
         let fullUrl = document.getElementById('url-input').value.trim();
         let displayUrl = 'traffictorch.net';
         if (fullUrl) {
