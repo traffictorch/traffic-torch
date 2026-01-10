@@ -1,4 +1,4 @@
-// Shared getGrade function - adapted for seo-ux-tool compatibility
+// Shared getGrade function (copied from script.js for compatibility)
 const getGrade = (score) => {
   if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
   if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
@@ -8,157 +8,388 @@ const getGrade = (score) => {
 };
 
 const pluginData = {
-  "Alt Text Coverage": {
+  "Title optimized (30–65 chars, keyword early)": {
     WordPress: [
-      { name: "Smush", desc: "Most popular optimizer with lazy loading, WebP/AVIF conversion, bulk processing, and alt text suggestions. Auto-fills alt from filename/title or uses AI extensions. Trusted by millions for reliable accessibility and performance.", link: "https://wordpress.org/plugins/wp-smushit/", homeLink: "https://wpmudev.com/project/wp-smush-pro/" },
-      { name: "EWWW Image Optimizer", desc: "Pixel-perfect compression with WebP/AVIF support and bulk alt text tools. Local or cloud processing for quality retention. Excellent for professional sites needing accessibility fixes.", link: "https://wordpress.org/plugins/ewww-image-optimizer/", homeLink: "https://ewww.io/" },
-      { name: "Imagify", desc: "Smart compression levels with visual comparison, next-gen formats, and alt text suggestions. Bulk restore and automatic optimization. Premium feel with strong accessibility focus.", link: "https://wordpress.org/plugins/imagify-image-optimizer/", homeLink: "https://imagify.io/" }
+      { name: "Yoast SEO", desc: "Real-time title editor with length counter, keyword placement suggestions, and SERP preview. Enforces 50-60 char optimal range. AI title ideas in premium.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "Advanced title optimization with dynamic variables, bulk editing, and focus keyword scoring. Accurate preview and length guidance.", link: "https://wordpress.org/plugins/seo-by-rank-math/", homeLink: "https://rankmath.com/" },
+      { name: "All in One SEO", desc: "TruSEO scoring for title strength with smart patterns and recommendations. Unlimited keywords and defaults.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/", homeLink: "https://aioseo.com/" }
     ],
     Shopify: [
-      { name: "TinyIMG", desc: "Complete optimization with AI alt text generation, bulk processing, and WebP/AVIF support. Monitors new uploads automatically. Proven to fix alt coverage and improve accessibility.", link: "https://apps.shopify.com/tinyimg", homeLink: "https://tiny-img.com/" },
-      { name: "Crush.pics", desc: "Automatic compression on upload with SEO-friendly alt/filenames and bulk tools. Set-and-forget with strong results. Clean way to improve alt text coverage.", link: "https://apps.shopify.com/crush-pics", homeLink: "https://crush.pics/" }
+      { name: "SearchPie SEO", desc: "Automatic title optimization with AI templates and bulk tools. Focuses on keyword placement and length for CTR.", link: "https://apps.shopify.com/seo-booster", homeLink: "https://boosterapps.com/" },
+      { name: "Plug in SEO", desc: "Scans titles, provides fixes, and monitors length/keyword placement. Reliable for ongoing optimization.", link: "https://apps.shopify.com/plug-in-seo", homeLink: "https://pluginseo.com/" }
     ],
     Wix: [
-      { name: "Built-in Optimizer", desc: "Auto-compresses images on upload with manual alt text editing in editor. Native accessibility solution. Focus on adding alt text manually for full coverage.", link: "" }
+      { name: "Built-in SEO Wiz", desc: "Guided title creation with previews, character limits, and keyword suggestions. Native and personalized.", link: "" }
     ],
     Squarespace: [
-      { name: "Built-in Tools", desc: "Native compression and responsive delivery with alt text fields in editor. Consistent across templates. Add alt text manually for complete coverage.", link: "" }
+      { name: "Built-in Page Settings", desc: "Dedicated SEO title field with counter and tips. Native previews and defaults from content.", link: "" }
     ],
     Joomla: [
-      { name: "ImageRecycle", desc: "Cloud compression for images/PDFs with bulk alt text tools. Preserves quality and improves accessibility. Integrates with media manager.", link: "https://extensions.joomla.org/extension/imagerecycle-image-optimizer/", homeLink: "https://www.imagerecycle.com/" }
+      { name: "EFSEO - Easy Frontend SEO", desc: "Frontend title editing with length rules and automatic generation. Bulk operations.", link: "https://extensions.joomla.org/extension/efseo-easy-frontend-seo/", homeLink: "https://stackideas.com/" },
+      { name: "Tag Meta", desc: "Rules-based title management with patterns and length control. Site-wide consistency.", link: "https://extensions.joomla.org/extension/tag-meta/" }
     ],
     Drupal: [
-      { name: "ImageAPI Optimize", desc: "Defines optimization pipelines with alt text support and WebP/AVIF. Bulk processing for accessibility. Flexible for advanced sites.", link: "https://www.drupal.org/project/imageapi_optimize" }
+      { name: "Metatag", desc: "Comprehensive title control with tokens and length validation. Per-entity settings.", link: "https://www.drupal.org/project/metatag" }
     ]
   },
-  "Image Optimization": {
+
+  "Meta description present & optimal": {
     WordPress: [
-      { name: "Smush", desc: "Bulk compression with lazy loading, WebP/AVIF, and lossless/lossy options. Automatic on upload. Trusted for speed + accessibility gains.", link: "https://wordpress.org/plugins/wp-smushit/", homeLink: "https://wpmudev.com/project/wp-smush-pro/" },
-      { name: "EWWW Image Optimizer", desc: "Pixel-perfect compression with local/cloud processing and next-gen formats. Excellent quality retention. Strong for professional image optimization.", link: "https://wordpress.org/plugins/ewww-image-optimizer/", homeLink: "https://ewww.io/" },
-      { name: "Imagify", desc: "Smart compression levels, visual comparison, and bulk restore. Next-gen formats included. Premium balance of size and quality.", link: "https://wordpress.org/plugins/imagify-image-optimizer/", homeLink: "https://imagify.io/" }
+      { name: "Yoast SEO", desc: "Real-time editor with length guidance, keyword integration, and SERP preview. AI suggestions for compelling copy.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "Dynamic descriptions with variables, bulk tools, and accurate preview. Strong readability checks.", link: "https://wordpress.org/plugins/seo-by-rank-math/", homeLink: "https://rankmath.com/" },
+      { name: "All in One SEO", desc: "Smart generation with TruSEO scoring and dynamic patterns. Excellent defaults.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/", homeLink: "https://aioseo.com/" }
     ],
     Shopify: [
-      { name: "TinyIMG", desc: "AI-powered bulk compression, WebP/AVIF, and automatic monitoring. Improves Core Web Vitals significantly. Complete image optimization solution.", link: "https://apps.shopify.com/tinyimg", homeLink: "https://tiny-img.com/" },
-      { name: "Crush.pics", desc: "Automatic compression on upload with format conversion. Set-and-forget with proven results. Clean and reliable for stores.", link: "https://apps.shopify.com/crush-pics", homeLink: "https://crush.pics/" }
+      { name: "SearchPie SEO", desc: "Optimizes descriptions store-wide with AI templates and bulk editing. Keyword-rich copy for CTR.", link: "https://apps.shopify.com/seo-booster", homeLink: "https://boosterapps.com/" },
+      { name: "Plug in SEO", desc: "Scans and fixes description issues with recommendations and alerts. Monitors changes.", link: "https://apps.shopify.com/plug-in-seo", homeLink: "https://pluginseo.com/" }
     ],
     Wix: [
-      { name: "Built-in Optimizer", desc: "Native auto-compression with responsive delivery and modern formats. Focus on light images for best results.", link: "" }
+      { name: "Built-in AI Meta Tag Creator", desc: "AI generates optimized description suggestions. Choose tone and refine. Native in SEO panel.", link: "" }
     ],
     Squarespace: [
-      { name: "Built-in Tools", desc: "Native compression, responsive delivery, and automatic optimization. Consistent across templates.", link: "" }
+      { name: "Built-in SEO Tools", desc: "Native editor for custom descriptions with limits and previews. Generates defaults from content.", link: "" }
     ],
     Joomla: [
-      { name: "ImageRecycle", desc: "Cloud compression with bulk processing and quality preservation. Strong for site-wide image optimization.", link: "https://extensions.joomla.org/extension/imagerecycle-image-optimizer/", homeLink: "https://www.imagerecycle.com/" }
+      { name: "EFSEO - Easy Frontend SEO", desc: "Frontend description editing with generation rules. Bulk operations.", link: "https://extensions.joomla.org/extension/efseo-easy-frontend-seo/", homeLink: "https://stackideas.com/" },
+      { name: "Tag Meta", desc: "Rules-based description management with patterns. Site-wide consistency.", link: "https://extensions.joomla.org/extension/tag-meta/" }
     ],
     Drupal: [
-      { name: "ImageAPI Optimize", desc: "Optimization pipelines with WebP/AVIF support and bulk processing. Flexible for advanced image performance.", link: "https://www.drupal.org/project/imageapi_optimize" }
+      { name: "Metatag", desc: "Comprehensive description control with tokens and length validation.", link: "https://www.drupal.org/project/metatag" }
     ]
   },
-  "Lazy Loading Media": {
+
+  "Structured data (schema) detected": {
     WordPress: [
-      { name: "Autoptimize", desc: "Free plugin for lazy loading images/videos/iframes with minification. Lightweight and configurable. Strong foundation for faster loading.", link: "https://wordpress.org/plugins/autoptimize/", homeLink: "https://autoptimize.com/" },
-      { name: "Smush", desc: "Built-in lazy loading with compression and WebP support. Automatic on upload. Trusted for media performance.", link: "https://wordpress.org/plugins/wp-smushit/", homeLink: "https://wpmudev.com/project/wp-smush-pro/" }
+      { name: "Yoast SEO", desc: "Built-in schema for Article, FAQ, HowTo, etc. Auto markup and easy overrides.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "Advanced generator with 20+ types and AI suggestions. Testing tools.", link: "https://wordpress.org/plugins/seo-by-rank-math/", homeLink: "https://rankmath.com/" },
+      { name: "All in One SEO", desc: "Guided setup with TruSEO and auto markup. Dynamic variables.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/", homeLink: "https://aioseo.com/" }
     ],
     Shopify: [
-      { name: "Rocket Page Speed Optimizer", desc: "Automatic lazy loading for media and scripts. Targets Core Web Vitals directly. Proven major loading improvements.", link: "https://apps.shopify.com/core-web-vitals-booster", homeLink: "https://rocketoptimizer.com/" },
-      { name: "Boostify Page Speed Optimizer", desc: "AI-powered lazy loading for images/videos. Excellent for mobile performance.", link: "https://apps.shopify.com/page-speed-optimization", homeLink: "https://boostifyapps.com/" }
+      { name: "Schema Plus for SEO", desc: "Automatic JSON-LD for products, collections, blogs. Fixes errors.", link: "https://apps.shopify.com/schema-plus", homeLink: "https://schemaplus.io/" },
+      { name: "Webrex AI SEO Optimizer Schema", desc: "AI-powered schema for products, FAQs, videos. Duplicate removal.", link: "https://apps.shopify.com/webrex-seo-schema-jsonld", homeLink: "https://webrexstudio.com/" }
     ],
     Wix: [
-      { name: "Website Speedy", desc: "Dedicated lazy loading app for media. Improves load times with one-click setup.", link: "https://www.wix.com/app-market/web-solution/websitespeedy" }
+      { name: "Built-in Structured Data", desc: "Auto-generates basic schema for pages, products, blogs. Custom via Velo.", link: "" }
     ],
     Squarespace: [
-      { name: "Built-in Lazy Loading", desc: "Native lazy loading for images in galleries/blocks. Consistent across templates.", link: "" }
+      { name: "Built-in Markup", desc: "Native schema for pages, products, events, blogs. Automatic updates.", link: "" }
     ],
     Joomla: [
-      { name: "JCH Optimize", desc: "Lazy loading for images/media with minification. Top-rated for performance.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }
+      { name: "Google Structured Data", desc: "Free extension for breadcrumb, article, organization schema.", link: "https://extensions.joomla.org/extension/google-structured-data/", homeLink: "https://stackideas.com/" },
+      { name: "EFSEO", desc: "Freemium tool for structured data and meta tags. Multiple types.", link: "https://extensions.joomla.org/extension/efseo-easy-frontend-seo/", homeLink: "https://stackideas.com/" }
     ],
     Drupal: [
-      { name: "Lazy Load", desc: "Module for lazy loading images/iframes. Simple and effective.", link: "https://www.drupal.org/project/lazyload" }
+      { name: "Schema.org Metatag", desc: "Full Schema.org support with high configurability.", link: "https://www.drupal.org/project/schema_metatag" },
+      { name: "Metatag", desc: "Base module for structured data extensions.", link: "https://www.drupal.org/project/metatag" }
     ]
   },
-  "Script Minification & Deferral": {
+
+  "Canonical tag present": {
     WordPress: [
-      { name: "Autoptimize", desc: "Minifies and combines CSS/JS, defers scripts, and generates critical CSS. Lightweight foundation for faster loading.", link: "https://wordpress.org/plugins/autoptimize/", homeLink: "https://autoptimize.com/" },
-      { name: "Perfmatters", desc: "Lightweight script manager to defer/delay JS and remove unused code. Directly improves INP and load times.", link: "https://perfmatters.io/", homeLink: "https://perfmatters.io/" }
+      { name: "Yoast SEO", desc: "Automatically adds canonical tags with overrides. Prevents duplicate content issues.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "Generates canonical URLs with bulk control. Strong duplicate handling.", link: "https://wordpress.org/plugins/seo-by-rank-math/", homeLink: "https://rankmath.com/" },
+      { name: "All in One SEO", desc: "Auto canonical with custom options. Trusted for consistency.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/", homeLink: "https://aioseo.com/" }
     ],
     Shopify: [
-      { name: "Rocket Page Speed Optimizer", desc: "Automatic script minification and deferral. Targets Core Web Vitals directly.", link: "https://apps.shopify.com/core-web-vitals-booster", homeLink: "https://rocketoptimizer.com/" },
-      { name: "Boostify Page Speed Optimizer", desc: "AI-powered script minify and defer. Excellent for mobile performance.", link: "https://apps.shopify.com/page-speed-optimization", homeLink: "https://boostifyapps.com/" }
+      { name: "Plug in SEO", desc: "Scans and adds canonical tags with recommendations.", link: "https://apps.shopify.com/plug-in-seo", homeLink: "https://pluginseo.com/" }
     ],
     Wix: [
-      { name: "Website Speedy", desc: "App for script deferral and render-blocking removal. Improves load times.", link: "https://www.wix.com/app-market/web-solution/websitespeedy" }
+      { name: "Built-in SEO Settings", desc: "Native canonical support via advanced settings.", link: "" }
     ],
     Squarespace: [
-      { name: "Built-in Optimization", desc: "Native script handling and minification. Focus on minimal code.", link: "" }
+      { name: "Built-in Tools", desc: "Native canonical handling for duplicate pages.", link: "" }
     ],
     Joomla: [
-      { name: "JCH Optimize", desc: "Minifies and defers CSS/JS with critical CSS. Top-rated for performance.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }
+      { name: "Tag Meta", desc: "Rules-based canonical management.", link: "https://extensions.joomla.org/extension/tag-meta/" }
     ],
     Drupal: [
-      { name: "AdvAgg", desc: "Advanced aggregation and minification for CSS/JS. Improves front-end speed.", link: "https://www.drupal.org/project/advagg" }
+      { name: "Metatag", desc: "Canonical control with tokens.", link: "https://www.drupal.org/project/metatag" }
     ]
   },
-  "Font Optimization": {
+
+  "All images have meaningful alt text": {
     WordPress: [
-      { name: "OMGF", desc: "Local Google Fonts hosting with preload and optimization. Removes external requests for faster loading.", link: "https://wordpress.org/plugins/host-webfonts-local/", homeLink: "https://daan.dev/omgf/" },
-      { name: "Perfmatters", desc: "Preload, swap, and disable unused fonts. Lightweight with maximum impact.", link: "https://perfmatters.io/", homeLink: "https://perfmatters.io/" }
+      { name: "Smush", desc: "Bulk alt text suggestions and auto-fill. AI extensions available.", link: "https://wordpress.org/plugins/wp-smushit/", homeLink: "https://wpmudev.com/project/wp-smush-pro/" },
+      { name: "EWWW Image Optimizer", desc: "Bulk alt tools with quality focus.", link: "https://wordpress.org/plugins/ewww-image-optimizer/", homeLink: "https://ewww.io/" },
+      { name: "Imagify", desc: "Alt suggestions with compression.", link: "https://wordpress.org/plugins/imagify-image-optimizer/", homeLink: "https://imagify.io/" }
     ],
     Shopify: [
-      { name: "Rocket Page Speed Optimizer", desc: "Font preload and optimization. Improves LCP and overall speed.", link: "https://apps.shopify.com/core-web-vitals-booster", homeLink: "https://rocketoptimizer.com/" }
+      { name: "TinyIMG", desc: "AI alt text generation and bulk processing.", link: "https://apps.shopify.com/tinyimg", homeLink: "https://tiny-img.com/" },
+      { name: "Crush.pics", desc: "SEO-friendly alt/filenames with bulk tools.", link: "https://apps.shopify.com/crush-pics", homeLink: "https://crush.pics/" }
     ],
     Wix: [
-      { name: "Built-in Font Optimization", desc: "Native font handling with CDN delivery. Focus on minimal font usage.", link: "" }
+      { name: "Built-in Optimizer", desc: "Manual alt text editing in editor.", link: "" }
     ],
     Squarespace: [
-      { name: "Built-in Tools", desc: "Native font delivery with responsive optimization. Keep font count low.", link: "" }
+      { name: "Built-in Tools", desc: "Alt text fields in editor.", link: "" }
     ],
     Joomla: [
-      { name: "JCH Optimize", desc: "Font preload and minification. Part of comprehensive performance suite.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }
+      { name: "ImageRecycle", desc: "Bulk alt text tools with compression.", link: "https://extensions.joomla.org/extension/imagerecycle-image-optimizer/", homeLink: "https://www.imagerecycle.com/" }
     ],
     Drupal: [
-      { name: "AdvAgg", desc: "Font aggregation and optimization. Improves front-end loading.", link: "https://www.drupal.org/project/advagg" }
+      { name: "ImageAPI Optimize", desc: "Alt text support in optimization pipelines.", link: "https://www.drupal.org/project/imageapi_optimize" }
     ]
   },
-  "Asset Volume & Script Bloat": {
+
+  "Web app manifest linked": {
     WordPress: [
-      { name: "Asset CleanUp", desc: "Disable unused CSS/JS per page/post. Reduces bloat and asset volume dramatically.", link: "https://wordpress.org/plugins/wp-asset-clean-up/", homeLink: "https://wp-rocket.me/asset-cleanup/" },
-      { name: "Perfmatters", desc: "Script manager to disable bloat and unused assets. Lightweight with huge performance gains.", link: "https://perfmatters.io/", homeLink: "https://perfmatters.io/" }
+      { name: "Super Progressive Web Apps", desc: "Adds manifest.json and links it automatically.", link: "https://wordpress.org/plugins/super-progressive-web-apps/", homeLink: "https://superpwa.com/" },
+      { name: "PWA for WP", desc: "Complete manifest and PWA setup.", link: "https://wordpress.org/plugins/pwa-for-wp/", homeLink: "https://pwa-for-wp.com/" }
     ],
     Shopify: [
-      { name: "Hyperspeed EXTREME", desc: "Advanced app/script optimization and bloat removal. Regularly updated for clean performance.", link: "https://apps.shopify.com/hyperspeed", homeLink: "https://hyperspeed.app/" }
+      { name: "PWA by Shop Sheriff", desc: "Adds manifest and links it.", link: "https://apps.shopify.com/pwa-by-shop-sheriff" }
     ],
     Wix: [
-      { name: "Website Speedy", desc: "Removes render-blocking and unused assets. Reduces bloat effectively.", link: "https://www.wix.com/app-market/web-solution/websitespeedy" }
+      { name: "Built-in PWA Features", desc: "Native manifest support.", link: "" }
     ],
     Squarespace: [
-      { name: "Built-in Tools", desc: "Native asset management. Keep code minimal to avoid bloat.", link: "" }
+      { name: "Built-in PWA", desc: "Native manifest handling.", link: "" }
     ],
     Joomla: [
-      { name: "JCH Optimize", desc: "Removes unused assets and minifies. Strong bloat reduction.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }
+      { name: "PWA Joomla", desc: "Adds manifest for PWA.", link: "https://extensions.joomla.org/extension/pwa-joomla/" }
     ],
     Drupal: [
-      { name: "AdvAgg", desc: "Advanced asset aggregation and bloat reduction. Improves overall performance.", link: "https://www.drupal.org/project/advagg" }
+      { name: "Progressive Web App", desc: "Module for manifest.", link: "https://www.drupal.org/project/pwa" }
     ]
   },
-  "PWA Readiness": {
+
+  "Homescreen icons (192px+) provided": {
     WordPress: [
-      { name: "Super Progressive Web Apps", desc: "Adds manifest, service worker, and PWA features. Simple setup for installable sites.", link: "https://wordpress.org/plugins/super-progressive-web-apps/", homeLink: "https://superpwa.com/" },
-      { name: "PWA for WP", desc: "Complete PWA solution with AMP support and push notifications. Full readiness features.", link: "https://wordpress.org/plugins/pwa-for-wp/", homeLink: "https://pwa-for-wp.com/" }
+      { name: "Super Progressive Web Apps", desc: "Generates and includes homescreen icons.", link: "https://wordpress.org/plugins/super-progressive-web-apps/", homeLink: "https://superpwa.com/" },
+      { name: "PWA for WP", desc: "Complete icon support for PWA.", link: "https://wordpress.org/plugins/pwa-for-wp/", homeLink: "https://pwa-for-wp.com/" }
     ],
     Shopify: [
-      { name: "PWA by Shop Sheriff", desc: "Adds manifest and service worker for PWA. Improves installability and offline readiness.", link: "https://apps.shopify.com/pwa-by-shop-sheriff" }
+      { name: "PWA by Shop Sheriff", desc: "Provides homescreen icons.", link: "https://apps.shopify.com/pwa-by-shop-sheriff" }
     ],
     Wix: [
-      { name: "Built-in PWA Features", desc: "Native PWA support with manifest and service worker. Reliable built-in readiness.", link: "" }
+      { name: "Built-in PWA Features", desc: "Native icon handling.", link: "" }
     ],
     Squarespace: [
-      { name: "Built-in PWA", desc: "Native manifest and basic PWA support. Focus on clean code for readiness.", link: "" }
+      { name: "Built-in PWA", desc: "Native icon support.", link: "" }
     ],
     Joomla: [
-      { name: "PWA Joomla", desc: "Adds manifest and service worker for PWA. Good for installable Joomla sites.", link: "https://extensions.joomla.org/extension/pwa-joomla/" }
+      { name: "PWA Joomla", desc: "Adds homescreen icons.", link: "https://extensions.joomla.org/extension/pwa-joomla/" }
     ],
     Drupal: [
-      { name: "Progressive Web App", desc: "Module for manifest and service worker. Brings PWA readiness to Drupal.", link: "https://www.drupal.org/project/pwa" }
+      { name: "Progressive Web App", desc: "Module for icons.", link: "https://www.drupal.org/project/pwa" }
+    ]
+  },
+
+  "Service worker": {
+    WordPress: [
+      { name: "Super Progressive Web Apps", desc: "Registers service worker for PWA.", link: "https://wordpress.org/plugins/super-progressive-web-apps/", homeLink: "https://superpwa.com/" },
+      { name: "PWA for WP", desc: "Complete service worker setup.", link: "https://wordpress.org/plugins/pwa-for-wp/", homeLink: "https://pwa-for-wp.com/" }
+    ],
+    Shopify: [
+      { name: "PWA by Shop Sheriff", desc: "Adds service worker.", link: "https://apps.shopify.com/pwa-by-shop-sheriff" }
+    ],
+    Wix: [
+      { name: "Built-in PWA Features", desc: "Native service worker support.", link: "" }
+    ],
+    Squarespace: [
+      { name: "Built-in PWA", desc: "Native service worker.", link: "" }
+    ],
+    Joomla: [
+      { name: "PWA Joomla", desc: "Adds service worker.", link: "https://extensions.joomla.org/extension/pwa-joomla/" }
+    ],
+    Drupal: [
+      { name: "Progressive Web App", desc: "Module for service worker.", link: "https://www.drupal.org/project/pwa" }
+    ]
+  },
+
+  "Page weight reasonable (<300KB HTML)": {
+    WordPress: [
+      { name: "Autoptimize", desc: "Minifies HTML/CSS/JS to reduce page weight.", link: "https://wordpress.org/plugins/autoptimize/", homeLink: "https://autoptimize.com/" },
+      { name: "Perfmatters", desc: "Removes bloat and unused code to shrink page size.", link: "https://perfmatters.io/", homeLink: "https://perfmatters.io/" }
+    ],
+    Shopify: [
+      { name: "Rocket Page Speed Optimizer", desc: "Compresses and removes bloat for lighter pages.", link: "https://apps.shopify.com/core-web-vitals-booster", homeLink: "https://rocketoptimizer.com/" }
+    ],
+    Wix: [
+      { name: "Website Speedy", desc: "Reduces page weight by optimizing assets.", link: "https://www.wix.com/app-market/web-solution/websitespeedy" }
+    ],
+    Squarespace: [
+      { name: "Built-in Optimization", desc: "Native compression for reasonable page weight.", link: "" }
+    ],
+    Joomla: [
+      { name: "JCH Optimize", desc: "Minifies and removes bloat for lighter pages.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }
+    ],
+    Drupal: [
+      { name: "AdvAgg", desc: "Aggregates and minifies to reduce weight.", link: "https://www.drupal.org/project/advagg" }
+    ]
+  },
+
+  "Number of HTTP requests": {
+    WordPress: [
+      { name: "Autoptimize", desc: "Combines CSS/JS to reduce requests.", link: "https://wordpress.org/plugins/autoptimize/", homeLink: "https://autoptimize.com/" },
+      { name: "Perfmatters", desc: "Removes unused assets to lower requests.", link: "https://perfmatters.io/", homeLink: "https://perfmatters.io/" }
+    ],
+    Shopify: [
+      { name: "Rocket Page Speed Optimizer", desc: "Combines and removes requests.", link: "https://apps.shopify.com/core-web-vitals-booster", homeLink: "https://rocketoptimizer.com/" }
+    ],
+    Wix: [
+      { name: "Website Speedy", desc: "Reduces requests by optimization.", link: "https://www.wix.com/app-market/web-solution/websitespeedy" }
+    ],
+    Squarespace: [
+      { name: "Built-in Tools", desc: "Native minimization of requests.", link: "" }
+    ],
+    Joomla: [
+      { name: "JCH Optimize", desc: "Combines files to reduce requests.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }
+    ],
+    Drupal: [
+      { name: "AdvAgg", desc: "Aggregates to lower request count.", link: "https://www.drupal.org/project/advagg" }
+    ]
+  },
+
+  "Render-blocking resources": {
+    WordPress: [
+      { name: "Autoptimize", desc: "Defers and asyncs render-blocking scripts.", link: "https://wordpress.org/plugins/autoptimize/", homeLink: "https://autoptimize.com/" },
+      { name: "Perfmatters", desc: "Delays and removes render-blocking code.", link: "https://perfmatters.io/", homeLink: "https://perfmatters.io/" }
+    ],
+    Shopify: [
+      { name: "Rocket Page Speed Optimizer", desc: "Defers render-blocking resources.", link: "https://apps.shopify.com/core-web-vitals-booster", homeLink: "https://rocketoptimizer.com/" }
+    ],
+    Wix: [
+      { name: "Website Speedy", desc: "Removes render-blocking issues.", link: "https://www.wix.com/app-market/web-solution/websitespeedy" }
+    ],
+    Squarespace: [
+      { name: "Built-in Optimization", desc: "Native deferral of render-blocking.", link: "" }
+    ],
+    Joomla: [
+      { name: "JCH Optimize", desc: "Defers render-blocking CSS/JS.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }
+    ],
+    Drupal: [
+      { name: "AdvAgg", desc: "Defers render-blocking resources.", link: "https://www.drupal.org/project/advagg" }
+    ]
+  },
+
+  "Web fonts optimized": {
+    WordPress: [
+      { name: "OMGF", desc: "Local Google Fonts with preload and swap.", link: "https://wordpress.org/plugins/host-webfonts-local/", homeLink: "https://daan.dev/omgf/" },
+      { name: "Perfmatters", desc: "Preload and disable unused fonts.", link: "https://perfmatters.io/", homeLink: "https://perfmatters.io/" }
+    ],
+    Shopify: [
+      { name: "Rocket Page Speed Optimizer", desc: "Font preload and optimization.", link: "https://apps.shopify.com/core-web-vitals-booster", homeLink: "https://rocketoptimizer.com/" }
+    ],
+    Wix: [
+      { name: "Built-in Font Optimization", desc: "Native font handling.", link: "" }
+    ],
+    Squarespace: [
+      { name: "Built-in Tools", desc: "Native font optimization.", link: "" }
+    ],
+    Joomla: [
+      { name: "JCH Optimize", desc: "Font preload and minification.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }
+    ],
+    Drupal: [
+      { name: "AdvAgg", desc: "Font aggregation and optimization.", link: "https://www.drupal.org/project/advagg" }
+    ]
+  },
+
+  "Form fields properly labeled": {
+    WordPress: [
+      { name: "WP Accessibility", desc: "Adds labels to form fields and improves accessibility.", link: "https://wordpress.org/plugins/wp-accessibility/", homeLink: "https://equalizedigital.com/" }
+    ],
+    Shopify: [
+      { name: "Accessibility Booster", desc: "Enhances form labels and accessibility.", link: "https://apps.shopify.com/accessibility-booster" }
+    ],
+    Wix: [
+      { name: "Built-in Accessibility Tools", desc: "Native form label support.", link: "" }
+    ],
+    Squarespace: [
+      { name: "Built-in Tools", desc: "Native form labeling.", link: "" }
+    ],
+    Joomla: [
+      { name: "Accessibility Plugin", desc: "Improves form labels.", link: "https://extensions.joomla.org/extension/accessibility/" }
+    ],
+    Drupal: [
+      { name: "Accessibility", desc: "Enhances form field labels.", link: "https://www.drupal.org/project/accessibility" }
+    ]
+  },
+
+  "Clear primary calls-to-action": {
+    WordPress: [
+      { name: "Elementor", desc: "Drag-and-drop builder for prominent CTAs.", link: "https://wordpress.org/plugins/elementor/", homeLink: "https://elementor.com/" },
+      { name: "Thrive Architect", desc: "Focused CTA builder with conversion focus.", link: "https://thrivethemes.com/architect/", homeLink: "https://thrivethemes.com/" }
+    ],
+    Shopify: [
+      { name: "Shogun Page Builder", desc: "Builds clear, prominent CTAs.", link: "https://apps.shopify.com/shogun" }
+    ],
+    Wix: [
+      { name: "Built-in Editor", desc: "Drag-and-drop for clear CTAs.", link: "" }
+    ],
+    Squarespace: [
+      { name: "Fluid Engine", desc: "Native CTA design tools.", link: "" }
+    ],
+    Joomla: [
+      { name: "SP Page Builder", desc: "Builds prominent CTAs.", link: "https://extensions.joomla.org/extension/sp-page-builder/" }
+    ],
+    Drupal: [
+      { name: "Layout Builder", desc: "Creates clear CTAs.", link: "https://www.drupal.org/project/layout_builder" }
+    ]
+  },
+
+  "Breadcrumb navigation (on deep pages)": {
+    WordPress: [
+      { name: "Yoast SEO", desc: "Built-in breadcrumb generation.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Breadcrumb NavXT", desc: "Dedicated breadcrumb plugin.", link: "https://wordpress.org/plugins/breadcrumb-navxt/", homeLink: "https://mtekk.us/" }
+    ],
+    Shopify: [
+      { name: "Yoast SEO for Shopify", desc: "Adds breadcrumb navigation.", link: "https://apps.shopify.com/yoast-seo" }
+    ],
+    Wix: [
+      { name: "Built-in Breadcrumbs", desc: "Native breadcrumb support.", link: "" }
+    ],
+    Squarespace: [
+      { name: "Built-in Breadcrumbs", desc: "Native breadcrumb tools.", link: "" }
+    ],
+    Joomla: [
+      { name: "Breadcrumb Module", desc: "Adds breadcrumbs.", link: "https://extensions.joomla.org/extension/breadcrumb/" }
+    ],
+    Drupal: [
+      { name: "Breadcrumb", desc: "Generates breadcrumbs.", link: "https://www.drupal.org/project/breadcrumb" }
+    ]
+  },
+
+  "Served over HTTPS": {
+    WordPress: [
+      { name: "Really Simple SSL", desc: "Forces HTTPS and fixes mixed content.", link: "https://wordpress.org/plugins/really-simple-ssl/", homeLink: "https://really-simple-ssl.com/" }
+    ],
+    Shopify: [
+      { name: "Built-in HTTPS", desc: "Native HTTPS support.", link: "" }
+    ],
+    Wix: [
+      { name: "Built-in SSL", desc: "Native HTTPS.", link: "" }
+    ],
+    Squarespace: [
+      { name: "Built-in SSL", desc: "Native HTTPS.", link: "" }
+    ],
+    Joomla: [
+      { name: "Force HTTPS", desc: "Forces HTTPS.", link: "https://extensions.joomla.org/extension/force-https/" }
+    ],
+    Drupal: [
+      { name: "Secure Pages", desc: "Forces HTTPS.", link: "https://www.drupal.org/project/secure_pages" }
+    ]
+  },
+
+  "No mixed content": {
+    WordPress: [
+      { name: "Really Simple SSL", desc: "Fixes mixed content automatically.", link: "https://wordpress.org/plugins/really-simple-ssl/", homeLink: "https://really-simple-ssl.com/" },
+      { name: "SSL Insecure Content Fixer", desc: "Rewrites mixed content to HTTPS.", link: "https://wordpress.org/plugins/ssl-insecure-content-fixer/" }
+    ],
+    Shopify: [
+      { name: "Built-in HTTPS", desc: "Native mixed content handling.", link: "" }
+    ],
+    Wix: [
+      { name: "Built-in SSL", desc: "Native fix.", link: "" }
+    ],
+    Squarespace: [
+      { name: "Built-in SSL", desc: "Native fix.", link: "" }
+    ],
+    Joomla: [
+      { name: "Force HTTPS", desc: "Fixes mixed content.", link: "https://extensions.joomla.org/extension/force-https/" }
+    ],
+    Drupal: [
+      { name: "Secure Pages", desc: "Handles mixed content.", link: "https://www.drupal.org/project/secure_pages" }
     ]
   }
 };
