@@ -358,12 +358,11 @@ const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encod
       
       
       
-// === PLUGIN SOLUTIONS – only show modules that have plugin recommendations ===
+// === PLUGIN SOLUTIONS – Show only low-scoring modules ===
 const failedMetrics = modules
-  .filter(mod => pluginData[mod.name]) // ← critical line: only include if key exists in pluginData
   .map(mod => {
     const scoreEl = document.querySelector(`#${mod.id}-score .number`);
-    const score = scoreEl ? parseInt(scoreEl.textContent, 10) : 100;
+    const score = scoreEl ? parseInt(scoreEl.textContent.trim(), 10) : 100;
     
     if (score >= 80) return null;
 

@@ -369,24 +369,42 @@ const pluginData = {
 
 function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-section') {
   if (failedMetrics.length === 0) return;
+
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  // Clear previous content and remove hidden class
+  // Clear previous content and show container
   container.innerHTML = '';
   container.classList.remove('hidden');
 
+  // Filter to only metrics that actually exist in pluginData
+  const supportedMetrics = failedMetrics.filter(m => 
+    pluginData.hasOwnProperty(m.name) && Object.keys(pluginData[m.name]).length > 0
+  );
+
+  if (supportedMetrics.length === 0) {
+    container.innerHTML = `
+      <div class="mt-20 text-center max-w-5xl mx-auto px-4">
+        <h2 class="text-4xl font-bold text-gray-300 mb-6">Excellent!</h2>
+        <p class="text-xl text-gray-400">No critical issues requiring plugin recommendations at this time.</p>
+        <p class="text-gray-500 mt-4">Keep up the great work — your site is in solid shape.</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Use only supported metrics for rendering
   container.innerHTML = `
     <div class="mt-20 max-w-5xl mx-auto px-4">
       <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
         Recommended Plugin Solutions
       </h2>
       <p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
-        ${failedMetrics.length} critical area${failedMetrics.length > 1 ? 's need' : ' needs'} improvement.  
+        ${supportedMetrics.length} critical area${supportedMetrics.length > 1 ? 's need' : ' needs'} improvement.<br>
         Select your platform below to see the best free/freemium tools that fix it instantly.
       </p>
       <div class="space-y-8">
-        ${failedMetrics.map(m => {
+        ${supportedMetrics.map(m => {
           const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
           const g = m.grade;
           const cmsOptions = Object.keys(pluginData[m.name] || {});
@@ -401,23 +419,23 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
                 </svg>
               </summary>
               <div class="px-8 pb-10 border-t border-white/10">
-${cmsOptions.length > 0 ? `
-  <div class="max-w-md mx-auto my-10">
-    <label for="cms-select-${metricId}" class="block text-sm font-medium text-gray-300 mb-3">
-      Select your platform
-    </label>
-    <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl bg-white/90 dark:bg-gray-800/90 border-2 border-orange-400 dark:border-orange-600 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 outline-none transition">
-      <option value="">Choose your platform...</option>
-      ${cmsOptions.map(cms => `<option value="${cms}">${cms}</option>`).join('')}
-    </select>
-  </div>
-  <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
-` : `
-  <div class="text-center py-12 px-6">
-    <p class="text-gray-400 text-lg">This area is usually handled natively by your platform or requires a manual code fix.</p>
-    <p class="text-gray-500 text-sm mt-3">No plugin recommendations available for this specific issue yet.</p>
-  </div>
-`}
+                ${cmsOptions.length > 0 ? `
+                  <div class="max-w-md mx-auto my-10">
+                    <label for="cms-select-${metricId}" class="block text-sm font-medium text-gray-300 mb-3">
+                      Select your platform
+                    </label>
+                    <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl bg-white/90 dark:bg-gray-800/90 border-2 border-orange-400 dark:border-orange-600 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 outline-none transition">
+                      <option value="">Choose your platform...</option>
+                      ${cmsOptions.map(cms => `<option value="${cms}">${cms}</option>`).join('')}
+                    </select>
+                  </div>
+                  <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+                ` : `
+                  <div class="text-center py-12 px-6">
+                    <p class="text-gray-400 text-lg">This area is usually handled natively by your platform or requires a manual code fix.</p>
+                    <p class="text-gray-500 text-sm mt-3">No plugin recommendations available for this specific issue yet.</p>
+                  </div>
+                `}
               </div>
             </details>
           `;
@@ -429,8 +447,8 @@ ${cmsOptions.length > 0 ? `
     </div>
   `;
 
-  // Attach event listeners after DOM injection
-  failedMetrics.forEach(m => {
+  // Attach event listeners after DOM is injected
+  supportedMetrics.forEach(m => {
     const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
     const select = document.getElementById(`cms-select-${metricId}`);
     const pluginsList = document.getElementById(`plugins-${metricId}`);
@@ -442,7 +460,7 @@ ${cmsOptions.length > 0 ? `
       pluginsList.innerHTML = '';
       pluginsList.classList.add('hidden');
 
-      if (!cms || !pluginData[m.name][cms]) return;
+      if (!cms || !pluginData[m.name]?.[cms]) return;
 
       pluginData[m.name][cms].forEach(plugin => {
         const card = document.createElement('div');
@@ -458,7 +476,9 @@ ${cmsOptions.length > 0 ? `
         pluginsList.appendChild(card);
       });
 
-      pluginsList.classList.remove('hidden');
+      if (pluginsList.children.length > 0) {
+        pluginsList.classList.remove('hidden');
+      }
     });
   });
 }
