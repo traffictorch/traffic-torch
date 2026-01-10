@@ -1,12 +1,15 @@
-// Shared getGrade function (copied from script.js for compatibility)
+// seo-ux-tool/plugin-solutions.js
+
+// Helper to generate grade object (used both in main script and here)
 const getGrade = (score) => {
   if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
-  if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
-  if (score >= 50) return { grade: 'Average', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
-  if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+  if (score >= 70) return { grade: 'Strong',      emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+  if (score >= 50) return { grade: 'Average',     emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
+  if (score >= 30) return { grade: 'Needs Work',  emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
   return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
 };
 
+// Complete plugin recommendations database – all metrics covered
 const pluginData = {
   "Title optimized (30–65 chars, keyword early)": {
     WordPress: [
@@ -19,10 +22,10 @@ const pluginData = {
       { name: "Plug in SEO", desc: "Scans titles, provides fixes, and monitors length/keyword placement. Reliable for ongoing optimization.", link: "https://apps.shopify.com/plug-in-seo", homeLink: "https://pluginseo.com/" }
     ],
     Wix: [
-      { name: "Built-in SEO Wiz", desc: "Guided title creation with previews, character limits, and keyword suggestions. Native and personalized.", link: "" }
+      { name: "Built-in SEO Wiz", desc: "Guided title creation with previews, character limits, and keyword suggestions. Native and personalized." }
     ],
     Squarespace: [
-      { name: "Built-in Page Settings", desc: "Dedicated SEO title field with counter and tips. Native previews and defaults from content.", link: "" }
+      { name: "Built-in Page Settings", desc: "Dedicated SEO title field with counter and tips. Native previews and defaults from content." }
     ],
     Joomla: [
       { name: "EFSEO - Easy Frontend SEO", desc: "Frontend title editing with length rules and automatic generation. Bulk operations.", link: "https://extensions.joomla.org/extension/efseo-easy-frontend-seo/", homeLink: "https://stackideas.com/" },
@@ -44,10 +47,10 @@ const pluginData = {
       { name: "Plug in SEO", desc: "Scans and fixes description issues with recommendations and alerts. Monitors changes.", link: "https://apps.shopify.com/plug-in-seo", homeLink: "https://pluginseo.com/" }
     ],
     Wix: [
-      { name: "Built-in AI Meta Tag Creator", desc: "AI generates optimized description suggestions. Choose tone and refine. Native in SEO panel.", link: "" }
+      { name: "Built-in AI Meta Tag Creator", desc: "AI generates optimized description suggestions. Choose tone and refine. Native in SEO panel." }
     ],
     Squarespace: [
-      { name: "Built-in SEO Tools", desc: "Native editor for custom descriptions with limits and previews. Generates defaults from content.", link: "" }
+      { name: "Built-in SEO Tools", desc: "Native editor for custom descriptions with limits and previews. Generates defaults from content." }
     ],
     Joomla: [
       { name: "EFSEO - Easy Frontend SEO", desc: "Frontend description editing with generation rules. Bulk operations.", link: "https://extensions.joomla.org/extension/efseo-easy-frontend-seo/", homeLink: "https://stackideas.com/" },
@@ -69,13 +72,13 @@ const pluginData = {
       { name: "Webrex AI SEO Optimizer Schema", desc: "AI-powered schema for products, FAQs, videos. Duplicate removal.", link: "https://apps.shopify.com/webrex-seo-schema-jsonld", homeLink: "https://webrexstudio.com/" }
     ],
     Wix: [
-      { name: "Built-in Structured Data", desc: "Auto-generates basic schema for pages, products, blogs. Custom via Velo.", link: "" }
+      { name: "Built-in Structured Data", desc: "Auto-generates basic schema for pages, products, blogs. Custom via Velo." }
     ],
     Squarespace: [
-      { name: "Built-in Markup", desc: "Native schema for pages, products, events, blogs. Automatic updates.", link: "" }
+      { name: "Built-in Markup", desc: "Native schema for pages, products, events, blogs. Automatic updates." }
     ],
     Joomla: [
-      { name: "Google Structured Data", desc: "Free extension for breadcrumb, article, organization schema.", link: "https://extensions.joomla.org/extension/google-structured-data/", homeLink: "https://stackideas.com/" },
+      { name: "Google Structured Data", desc: "Free extension for breadcrumb, article, organization schema.", link: "https://extensions.joomla.org/extension/google-structured-data/" },
       { name: "EFSEO", desc: "Freemium tool for structured data and meta tags. Multiple types.", link: "https://extensions.joomla.org/extension/efseo-easy-frontend-seo/", homeLink: "https://stackideas.com/" }
     ],
     Drupal: [
@@ -94,10 +97,10 @@ const pluginData = {
       { name: "Plug in SEO", desc: "Scans and adds canonical tags with recommendations.", link: "https://apps.shopify.com/plug-in-seo", homeLink: "https://pluginseo.com/" }
     ],
     Wix: [
-      { name: "Built-in SEO Settings", desc: "Native canonical support via advanced settings.", link: "" }
+      { name: "Built-in SEO Settings", desc: "Native canonical support via advanced settings." }
     ],
     Squarespace: [
-      { name: "Built-in Tools", desc: "Native canonical handling for duplicate pages.", link: "" }
+      { name: "Built-in Tools", desc: "Native canonical handling for duplicate pages." }
     ],
     Joomla: [
       { name: "Tag Meta", desc: "Rules-based canonical management.", link: "https://extensions.joomla.org/extension/tag-meta/" }
@@ -118,10 +121,10 @@ const pluginData = {
       { name: "Crush.pics", desc: "SEO-friendly alt/filenames with bulk tools.", link: "https://apps.shopify.com/crush-pics", homeLink: "https://crush.pics/" }
     ],
     Wix: [
-      { name: "Built-in Optimizer", desc: "Manual alt text editing in editor.", link: "" }
+      { name: "Built-in Optimizer", desc: "Manual alt text editing in editor." }
     ],
     Squarespace: [
-      { name: "Built-in Tools", desc: "Alt text fields in editor.", link: "" }
+      { name: "Built-in Tools", desc: "Alt text fields in editor." }
     ],
     Joomla: [
       { name: "ImageRecycle", desc: "Bulk alt text tools with compression.", link: "https://extensions.joomla.org/extension/imagerecycle-image-optimizer/", homeLink: "https://www.imagerecycle.com/" }
@@ -140,10 +143,10 @@ const pluginData = {
       { name: "PWA by Shop Sheriff", desc: "Adds manifest and links it.", link: "https://apps.shopify.com/pwa-by-shop-sheriff" }
     ],
     Wix: [
-      { name: "Built-in PWA Features", desc: "Native manifest support.", link: "" }
+      { name: "Built-in PWA Features", desc: "Native manifest support." }
     ],
     Squarespace: [
-      { name: "Built-in PWA", desc: "Native manifest handling.", link: "" }
+      { name: "Built-in PWA", desc: "Native manifest handling." }
     ],
     Joomla: [
       { name: "PWA Joomla", desc: "Adds manifest for PWA.", link: "https://extensions.joomla.org/extension/pwa-joomla/" }
@@ -162,10 +165,10 @@ const pluginData = {
       { name: "PWA by Shop Sheriff", desc: "Provides homescreen icons.", link: "https://apps.shopify.com/pwa-by-shop-sheriff" }
     ],
     Wix: [
-      { name: "Built-in PWA Features", desc: "Native icon handling.", link: "" }
+      { name: "Built-in PWA Features", desc: "Native icon handling." }
     ],
     Squarespace: [
-      { name: "Built-in PWA", desc: "Native icon support.", link: "" }
+      { name: "Built-in PWA", desc: "Native icon support." }
     ],
     Joomla: [
       { name: "PWA Joomla", desc: "Adds homescreen icons.", link: "https://extensions.joomla.org/extension/pwa-joomla/" }
@@ -184,10 +187,10 @@ const pluginData = {
       { name: "PWA by Shop Sheriff", desc: "Adds service worker.", link: "https://apps.shopify.com/pwa-by-shop-sheriff" }
     ],
     Wix: [
-      { name: "Built-in PWA Features", desc: "Native service worker support.", link: "" }
+      { name: "Built-in PWA Features", desc: "Native service worker support." }
     ],
     Squarespace: [
-      { name: "Built-in PWA", desc: "Native service worker.", link: "" }
+      { name: "Built-in PWA", desc: "Native service worker." }
     ],
     Joomla: [
       { name: "PWA Joomla", desc: "Adds service worker.", link: "https://extensions.joomla.org/extension/pwa-joomla/" }
@@ -209,7 +212,7 @@ const pluginData = {
       { name: "Website Speedy", desc: "Reduces page weight by optimizing assets.", link: "https://www.wix.com/app-market/web-solution/websitespeedy" }
     ],
     Squarespace: [
-      { name: "Built-in Optimization", desc: "Native compression for reasonable page weight.", link: "" }
+      { name: "Built-in Optimization", desc: "Native compression for reasonable page weight." }
     ],
     Joomla: [
       { name: "JCH Optimize", desc: "Minifies and removes bloat for lighter pages.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }
@@ -231,7 +234,7 @@ const pluginData = {
       { name: "Website Speedy", desc: "Reduces requests by optimization.", link: "https://www.wix.com/app-market/web-solution/websitespeedy" }
     ],
     Squarespace: [
-      { name: "Built-in Tools", desc: "Native minimization of requests.", link: "" }
+      { name: "Built-in Tools", desc: "Native minimization of requests." }
     ],
     Joomla: [
       { name: "JCH Optimize", desc: "Combines files to reduce requests.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }
@@ -253,7 +256,7 @@ const pluginData = {
       { name: "Website Speedy", desc: "Removes render-blocking issues.", link: "https://www.wix.com/app-market/web-solution/websitespeedy" }
     ],
     Squarespace: [
-      { name: "Built-in Optimization", desc: "Native deferral of render-blocking.", link: "" }
+      { name: "Built-in Optimization", desc: "Native deferral of render-blocking." }
     ],
     Joomla: [
       { name: "JCH Optimize", desc: "Defers render-blocking CSS/JS.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }
@@ -272,10 +275,10 @@ const pluginData = {
       { name: "Rocket Page Speed Optimizer", desc: "Font preload and optimization.", link: "https://apps.shopify.com/core-web-vitals-booster", homeLink: "https://rocketoptimizer.com/" }
     ],
     Wix: [
-      { name: "Built-in Font Optimization", desc: "Native font handling.", link: "" }
+      { name: "Built-in Font Optimization", desc: "Native font handling." }
     ],
     Squarespace: [
-      { name: "Built-in Tools", desc: "Native font optimization.", link: "" }
+      { name: "Built-in Tools", desc: "Native font optimization." }
     ],
     Joomla: [
       { name: "JCH Optimize", desc: "Font preload and minification.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }
@@ -293,10 +296,10 @@ const pluginData = {
       { name: "Accessibility Booster", desc: "Enhances form labels and accessibility.", link: "https://apps.shopify.com/accessibility-booster" }
     ],
     Wix: [
-      { name: "Built-in Accessibility Tools", desc: "Native form label support.", link: "" }
+      { name: "Built-in Accessibility Tools", desc: "Native form label support." }
     ],
     Squarespace: [
-      { name: "Built-in Tools", desc: "Native form labeling.", link: "" }
+      { name: "Built-in Tools", desc: "Native form labeling." }
     ],
     Joomla: [
       { name: "Accessibility Plugin", desc: "Improves form labels.", link: "https://extensions.joomla.org/extension/accessibility/" }
@@ -315,10 +318,10 @@ const pluginData = {
       { name: "Shogun Page Builder", desc: "Builds clear, prominent CTAs.", link: "https://apps.shopify.com/shogun" }
     ],
     Wix: [
-      { name: "Built-in Editor", desc: "Drag-and-drop for clear CTAs.", link: "" }
+      { name: "Built-in Editor", desc: "Drag-and-drop for clear CTAs." }
     ],
     Squarespace: [
-      { name: "Fluid Engine", desc: "Native CTA design tools.", link: "" }
+      { name: "Fluid Engine", desc: "Native CTA design tools." }
     ],
     Joomla: [
       { name: "SP Page Builder", desc: "Builds prominent CTAs.", link: "https://extensions.joomla.org/extension/sp-page-builder/" }
@@ -337,10 +340,10 @@ const pluginData = {
       { name: "Yoast SEO for Shopify", desc: "Adds breadcrumb navigation.", link: "https://apps.shopify.com/yoast-seo" }
     ],
     Wix: [
-      { name: "Built-in Breadcrumbs", desc: "Native breadcrumb support.", link: "" }
+      { name: "Built-in Breadcrumbs", desc: "Native breadcrumb support." }
     ],
     Squarespace: [
-      { name: "Built-in Breadcrumbs", desc: "Native breadcrumb tools.", link: "" }
+      { name: "Built-in Breadcrumbs", desc: "Native breadcrumb tools." }
     ],
     Joomla: [
       { name: "Breadcrumb Module", desc: "Adds breadcrumbs.", link: "https://extensions.joomla.org/extension/breadcrumb/" }
@@ -350,46 +353,25 @@ const pluginData = {
     ]
   },
 
-  "Served over HTTPS": {
+  "Served over HTTPS / No mixed content": {
     WordPress: [
-      { name: "Really Simple SSL", desc: "Forces HTTPS and fixes mixed content.", link: "https://wordpress.org/plugins/really-simple-ssl/", homeLink: "https://really-simple-ssl.com/" }
-    ],
-    Shopify: [
-      { name: "Built-in HTTPS", desc: "Native HTTPS support.", link: "" }
-    ],
-    Wix: [
-      { name: "Built-in SSL", desc: "Native HTTPS.", link: "" }
-    ],
-    Squarespace: [
-      { name: "Built-in SSL", desc: "Native HTTPS.", link: "" }
-    ],
-    Joomla: [
-      { name: "Force HTTPS", desc: "Forces HTTPS.", link: "https://extensions.joomla.org/extension/force-https/" }
-    ],
-    Drupal: [
-      { name: "Secure Pages", desc: "Forces HTTPS.", link: "https://www.drupal.org/project/secure_pages" }
-    ]
-  },
-
-  "No mixed content": {
-    WordPress: [
-      { name: "Really Simple SSL", desc: "Fixes mixed content automatically.", link: "https://wordpress.org/plugins/really-simple-ssl/", homeLink: "https://really-simple-ssl.com/" },
+      { name: "Really Simple SSL", desc: "Forces HTTPS and fixes mixed content automatically.", link: "https://wordpress.org/plugins/really-simple-ssl/", homeLink: "https://really-simple-ssl.com/" },
       { name: "SSL Insecure Content Fixer", desc: "Rewrites mixed content to HTTPS.", link: "https://wordpress.org/plugins/ssl-insecure-content-fixer/" }
     ],
     Shopify: [
-      { name: "Built-in HTTPS", desc: "Native mixed content handling.", link: "" }
+      { name: "Built-in HTTPS", desc: "Native HTTPS & mixed content handling." }
     ],
     Wix: [
-      { name: "Built-in SSL", desc: "Native fix.", link: "" }
+      { name: "Built-in SSL", desc: "Native HTTPS and mixed content protection." }
     ],
     Squarespace: [
-      { name: "Built-in SSL", desc: "Native fix.", link: "" }
+      { name: "Built-in SSL", desc: "Native HTTPS and mixed content protection." }
     ],
     Joomla: [
-      { name: "Force HTTPS", desc: "Fixes mixed content.", link: "https://extensions.joomla.org/extension/force-https/" }
+      { name: "Force HTTPS", desc: "Forces HTTPS and helps with mixed content.", link: "https://extensions.joomla.org/extension/force-https/" }
     ],
     Drupal: [
-      { name: "Secure Pages", desc: "Handles mixed content.", link: "https://www.drupal.org/project/secure_pages" }
+      { name: "Secure Pages", desc: "Forces HTTPS and handles mixed content.", link: "https://www.drupal.org/project/secure_pages" }
     ]
   }
 };
@@ -401,21 +383,20 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
   if (!container) return;
 
   const section = document.createElement('section');
-  section.className = 'mt-20 max-w-5xl mx-auto';
+  section.className = 'mt-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8';
 
   section.innerHTML = `
     <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
-      Plugin Solutions for SEO & UX Issues
+      Plugin Solutions for Detected Issues
     </h2>
     <p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
-      ${failedMetrics.length} issue${failedMetrics.length > 1 ? 's need' : ' needs'} attention. 
-      Expand any panel below to see top free/freemium plugins that can help fix it.
+      ${failedMetrics.length} issue${failedMetrics.length > 1 ? 's need' : ' needs'} attention.
+      Expand any panel below to discover top free/freemium plugins and tools.
     </p>
-
     <div class="space-y-6">
       ${failedMetrics.map(m => {
-        const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
-        const g = m.grade;
+        const metricId = m.name.replace(/\s+/g, '-').toLowerCase().replace(/[()]/g, '');
+        const g = m.grade || getGrade(50); // fallback if grade missing
         return `
           <details class="group bg-white dark:bg-gray-900 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden">
             <summary class="flex items-center justify-between p-6 md:p-8 cursor-pointer list-none">
@@ -428,36 +409,33 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
                 </svg>
               </div>
             </summary>
-
             <div class="px-6 md:px-8 pb-8 md:pb-10 border-t border-gray-200 dark:border-gray-700">
               <div class="max-w-md mx-auto my-8">
                 <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-orange-300 dark:border-orange-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 outline-none transition">
-                  <option value="">Select your CMS...</option>
-                  ${Object.keys(pluginData[m.name] || {}).map(cms => 
+                  <option value="">Select your platform / CMS...</option>
+                  ${Object.keys(pluginData[m.name] || {}).map(cms =>
                     `<option value="${cms}">${cms}</option>`
                   ).join('')}
                 </select>
               </div>
-
               <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
-                <!-- Plugins injected here -->
+                <!-- Plugins will be injected here -->
               </div>
             </div>
           </details>
         `;
       }).join('')}
     </div>
-
     <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-12">
-      These popular free/freemium plugins can help optimize these SEO and UX areas. Always test compatibility on a staging site and review recent updates.
+      Recommendations feature popular free/freemium solutions. Always test on staging first and check for the latest updates.
     </p>
   `;
 
   container.appendChild(section);
 
-  // Event listeners for dropdowns
+  // Add interactivity for each dropdown
   failedMetrics.forEach(m => {
-    const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
+    const metricId = m.name.replace(/\s+/g, '-').toLowerCase().replace(/[()]/g, '');
     const select = document.getElementById(`cms-select-${metricId}`);
     const pluginsList = document.getElementById(`plugins-${metricId}`);
 
@@ -473,21 +451,22 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
       pluginData[m.name][selected].forEach(plugin => {
         const card = document.createElement('div');
         card.className = 'group relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-200 dark:border-gray-700 overflow-hidden';
-
         card.innerHTML = `
           <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <div class="relative">
+          <div class="relative z-10">
             <h4 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">${plugin.name}</h4>
             <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">${plugin.desc}</p>
             <div class="flex flex-wrap gap-4">
               ${plugin.link ? `
-                <a href="${plugin.link}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-                  Install from CMS Library
+                <a href="${plugin.link}" target="_blank" rel="noopener noreferrer" 
+                   class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow hover:shadow-md transition">
+                  Install from Store
                 </a>
               ` : ''}
               ${plugin.homeLink ? `
-                <a href="${plugin.homeLink}" target="_blank" rel="noopener" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-                  Visit Plugin Website
+                <a href="${plugin.homeLink}" target="_blank" rel="noopener" 
+                   class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-medium rounded-lg shadow hover:shadow-md transition">
+                  Visit Website
                 </a>
               ` : ''}
             </div>
