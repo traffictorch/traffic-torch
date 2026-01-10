@@ -1,13 +1,15 @@
-// quit-risk-tool/script.js - full complete epic perfect version
+// quit-risk-tool/script.js - full complete epic perfect version with realistic metrics
 // Hybrid Top Priority Fixes: balanced, allows extra emphasis on critical modules (max 2 per module)
 // Rich educational Quit Risk Reduction & Engagement Impact with per-fix impact, expandables, progress bars, personalized ranges
 // Day/night text fully fixed with consistent Tailwind classes
 // Dynamic title "Top Priority Fixes" + celebration message when no fixes needed
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
   const PROXY = 'https://rendered-proxy.traffictorch.workers.dev/';
+
   const factorDefinitions = {
     readability: {
       factors: [
@@ -69,50 +71,153 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // ────────────────────────────────────────────────
+  // Helper functions for realistic metric calculation
+  // ────────────────────────────────────────────────
+
+  function countWords(text) {
+    return text.trim().split(/\s+/).filter(w => w.length > 0).length;
+  }
+
+  function countExternalLinks(links) {
+    const currentHost = window.location.host;
+    return Array.from(links).filter(a => {
+      try {
+        return new URL(a.href, window.location.href).host !== currentHost;
+      } catch {
+        return false;
+      }
+    }).length;
+  }
+
+  function hasViewportMeta(doc) {
+    const meta = doc.querySelector('meta[name="viewport"]');
+    return meta && /width\s*=\s*device-width/i.test(meta.content);
+  }
+
+  function hasSemanticMain(doc) {
+    return !!doc.querySelector('main');
+  }
+
+  function hasSemanticArticleOrSection(doc) {
+    return !!doc.querySelector('article, section');
+  }
+
+  function countMissingAlt(doc) {
+    const imgs = doc.querySelectorAll('img');
+    let missing = 0;
+    imgs.forEach(img => {
+      const alt = img.getAttribute('alt');
+      if (alt === null || alt.trim() === '') missing++;
+    });
+    return missing;
+  }
+
+  function estimateColorContrastScore() {
+    // Real contrast calculation impossible from HTML alone → conservative proxy
+    return 72;
+  }
+
+  // ────────────────────────────────────────────────
+  // Data extraction
+  // ────────────────────────────────────────────────
+
   function getUXContent(doc) {
-    const nav = doc.querySelector('nav') || doc.querySelector('header');
-    const headings = doc.querySelectorAll('h1, h2, h3');
+    const textElements = doc.querySelectorAll('p, li, article, section, main, div');
+    let textContent = '';
+    textElements.forEach(el => {
+      const t = el.textContent.trim();
+      if (t.length > 15) textContent += t + ' ';
+    });
+
     const links = doc.querySelectorAll('a[href]');
     const images = doc.querySelectorAll('img');
-    const main = doc.querySelector('main') || doc.body;
+    const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
+
     return {
-      nav: nav?.textContent?.length || 0,
-      headings: headings.length,
-      links: links.length,
-      images: images.length,
-      text: main.textContent || ''
+      fullText: textContent,
+      wordCount: countWords(textContent),
+      linkCount: links.length,
+      externalLinkCount: countExternalLinks(links),
+      imageCount: images.length,
+      missingAltCount: countMissingAlt(doc),
+      headingCount: headings.length,
+      hasViewport: hasViewportMeta(doc),
+      hasMain: hasSemanticMain(doc),
+      hasArticleOrSection: hasSemanticArticleOrSection(doc)
     };
   }
 
+  // ────────────────────────────────────────────────
+  // Realistic score calculation for all modules
+  // ────────────────────────────────────────────────
+
   function analyzeUX(data) {
-    let readability = 60;
-    if (data.text && data.text.length >= 200) {
-      const text = data.text.replace(/\s+/g, ' ').trim();
-      const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
-      const words = text.split(/\s+/).filter(w => w.length > 0);
-      const syl = text.match(/[aeiouy]+/gi) || [];
-      let flesch = 60;
-      if (sentences.length > 0 && words.length > 0) {
-        const avgSentence = words.length / sentences.length;
-        const avgSyllable = syl.length / words.length || 1;
-        flesch = Math.max(0, Math.min(100, 206.835 - 1.015 * avgSentence - 84.6 * avgSyllable));
-      }
-      readability = Math.round(flesch);
+    // 1. Readability
+    let readability = 55;
+    if (data.wordCount > 80) {
+      const paragraphs = data.fullText.split(/\n{2,}|\r\n{2,}/).filter(p => p.trim().length > 0);
+      const sentenceCount = (data.fullText.match(/[.!?]+/g) || []).length || 1;
+      const avgSentenceLength = data.wordCount / sentenceCount;
+      const avgWordsPerParagraph = data.wordCount / Math.max(1, paragraphs.length);
+
+      let base = 100 - (avgSentenceLength * 2.2);
+      if (avgWordsPerParagraph > 120) base -= 30;
+      if (avgWordsPerParagraph > 80) base -= 15;
+      readability = Math.max(35, Math.min(92, Math.round(base)));
     }
-    readability = isNaN(readability) ? 60 : readability;
-    const navScore = Math.max(30, Math.min(100, 100 - Math.floor(data.links / 5)));
-    const accScore = data.images.length === 0 ? 70 : Math.min(95, 65 + Math.min(data.images.length, 15) * 2);
-    const mobileScore = 90;
-    const speedScore = data.images.length > 20 ? 70 : 85;
-    const scores = [readability, navScore, accScore, mobileScore, speedScore].map(s => isNaN(s) ? 70 : s);
-    const score = Math.round(scores.reduce((a, b) => a + b, 0) / 5);
+
+    // 2. Navigation / Linking
+    let navScore = 85;
+    if (data.linkCount > 180) navScore -= 35;
+    else if (data.linkCount > 120) navScore -= 18;
+    else if (data.linkCount < 12) navScore -= 25;
+
+    if (data.externalLinkCount > data.linkCount * 0.45) navScore -= 15;
+    navScore = Math.max(40, Math.min(98, navScore));
+
+    // 3. Accessibility
+    let accScore = 65;
+    // Alt text coverage
+    if (data.imageCount > 0) {
+      const altRatio = (data.imageCount - data.missingAltCount) / data.imageCount;
+      if (altRatio > 0.9) accScore += 18;
+      else if (altRatio > 0.6) accScore += 8;
+      else accScore -= 25;
+    } else if (data.imageCount === 0) {
+      accScore += 10; // no images = no alt problem
+    }
+    // Semantics
+    if (data.hasMain) accScore += 12;
+    if (data.hasArticleOrSection) accScore += 10;
+    if (data.headingCount >= 3) accScore += 10;
+    accScore += estimateColorContrastScore() - 70;
+    accScore = Math.max(35, Math.min(97, Math.round(accScore)));
+
+    // 4. Mobile & PWA
+    let mobileScore = data.hasViewport ? 88 : 42;
+    if (data.imageCount > 35) mobileScore -= 12;
+    mobileScore = Math.max(40, Math.min(98, mobileScore));
+
+    // 5. Performance proxies
+    let speedScore = 78;
+    if (data.imageCount > 40) speedScore -= 22;
+    if (data.imageCount > 70) speedScore -= 35;
+    if (data.externalLinkCount > 25) speedScore -= 15;
+    if (data.linkCount > 150) speedScore -= 12; // many links often = many requests
+    speedScore = Math.max(40, Math.min(94, speedScore));
+
+    // Final aggregation
+    const scores = [readability, navScore, accScore, mobileScore, speedScore];
+    const overall = Math.round(scores.reduce((a,b) => a + b, 0) / scores.length);
+
     return {
-      score: isNaN(score) ? 60 : score,
-      readability: scores[0],
-      nav: scores[1],
-      accessibility: scores[2],
-      mobile: scores[3],
-      speed: scores[4]
+      score: isNaN(overall) ? 60 : overall,
+      readability,
+      nav: navScore,
+      accessibility: accScore,
+      mobile: mobileScore,
+      speed: speedScore
     };
   }
 
@@ -133,155 +238,138 @@ document.addEventListener('DOMContentLoaded', () => {
     return { grade: "F", color: "text-red-600", emoji: "❌" };
   }
 
-function buildModuleHTML(moduleName, value, moduleData) {
-  const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
-  const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
-  const gradeInfo = getGradeInfo(value);
-
-  let statusMessage, statusEmoji;
-  if (value >= 85) {
-    statusMessage = "Excellent";
-    statusEmoji = "🏆";
-  } else if (value >= 75) {
-    statusMessage = "Very good";
-    statusEmoji = "✅";
-  } else if (value >= 60) {
-    statusMessage = "Needs improvement";
-    statusEmoji = "⚠️";
-  } else {
-    statusMessage = "Needs work";
-    statusEmoji = "❌";
-  }
-
-  let metricsHTML = '';
-  let fixesHTML = '';
-  let failedOnlyHTML = '';
-  let failedCount = 0;
-
-  moduleData.factors.forEach(f => {
-    const passed = value >= f.threshold;
-    let metricGrade;
-    if (passed) {
-      metricGrade = { color: "text-green-600", emoji: "✅" };
-    } else if (value >= f.threshold - 10) {
-      metricGrade = { color: "text-orange-600", emoji: "⚠️" };
+  function buildModuleHTML(moduleName, value, moduleData) {
+    const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
+    const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
+    const gradeInfo = getGradeInfo(value);
+    let statusMessage, statusEmoji;
+    if (value >= 85) {
+      statusMessage = "Excellent";
+      statusEmoji = "🏆";
+    } else if (value >= 75) {
+      statusMessage = "Very good";
+      statusEmoji = "✅";
+    } else if (value >= 60) {
+      statusMessage = "Needs improvement";
+      statusEmoji = "⚠️";
     } else {
-      metricGrade = { color: "text-red-600", emoji: "❌" };
+      statusMessage = "Needs work";
+      statusEmoji = "❌";
     }
-
-    // Default list - emoji + colored metric name
-    metricsHTML += `
-      <div class="mb-6">
-        <p class="font-medium text-xl">
-          <span class="${metricGrade.color} text-3xl mr-3">${metricGrade.emoji}</span>
-          <span class="${metricGrade.color} font-bold">${f.name}</span>
-        </p>
-      </div>`;
-
-    // Full fixes for More Details
-    fixesHTML += `
-      <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
-        <p class="font-bold text-xl ${metricGrade.color} mb-3">
-          <span class="text-3xl mr-3">${metricGrade.emoji}</span>
-          ${f.name}
-        </p>
-        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-          ${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}
-        </p>
-      </div>`;
-
-    if (!passed) {
-      failedOnlyHTML += `
-        <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
-          <p class="font-bold text-2xl ${metricGrade.color} mb-4">
-            <span class="text-6xl">${metricGrade.emoji}</span>
-          </p>
-          <p class="font-bold text-2xl ${metricGrade.color} mb-4">
-            ${f.name}
-          </p>
-          <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
-            ${f.howToFix}
+    let metricsHTML = '';
+    let fixesHTML = '';
+    let failedOnlyHTML = '';
+    let failedCount = 0;
+    moduleData.factors.forEach(f => {
+      const passed = value >= f.threshold;
+      let metricGrade;
+      if (passed) {
+        metricGrade = { color: "text-green-600", emoji: "✅" };
+      } else if (value >= f.threshold - 10) {
+        metricGrade = { color: "text-orange-600", emoji: "⚠️" };
+      } else {
+        metricGrade = { color: "text-red-600", emoji: "❌" };
+      }
+      metricsHTML += `
+        <div class="mb-6">
+          <p class="font-medium text-xl">
+            <span class="${metricGrade.color} text-3xl mr-3">${metricGrade.emoji}</span>
+            <span class="${metricGrade.color} font-bold">${f.name}</span>
           </p>
         </div>`;
-      failedCount++;
-    }
-  });
-
-  const moreDetailsHTML = `
-    <div class="text-left px-4 py-6">
-      <h4 class="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100 text-center">
-        <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}';">
-          How ${moduleName} is tested?
-        </button>
-      </h4>
-      <div class="space-y-6">
-        <div>
-          <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">What it is:</strong>
-          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleWhat}</p>
+      fixesHTML += `
+        <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
+          <p class="font-bold text-xl ${metricGrade.color} mb-3">
+            <span class="text-3xl mr-3">${metricGrade.emoji}</span>
+            ${f.name}
+          </p>
+          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+            ${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}
+          </p>
+        </div>`;
+      if (!passed) {
+        failedOnlyHTML += `
+          <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
+            <p class="font-bold text-2xl ${metricGrade.color} mb-4">
+              <span class="text-6xl">${metricGrade.emoji}</span>
+            </p>
+            <p class="font-bold text-2xl ${metricGrade.color} mb-4">
+              ${f.name}
+            </p>
+            <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+              ${f.howToFix}
+            </p>
+          </div>`;
+        failedCount++;
+      }
+    });
+    const moreDetailsHTML = `
+      <div class="text-left px-4 py-6">
+        <h4 class="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100 text-center">
+          <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}';">
+            How ${moduleName} is tested?
+          </button>
+        </h4>
+        <div class="space-y-6">
+          <div>
+            <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">What it is:</strong>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleWhat}</p>
+          </div>
+          <div>
+            <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">How to Improve:</strong>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleHow}</p>
+          </div>
+          <div>
+            <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">Why it matters:</strong>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleWhy}</p>
+          </div>
         </div>
-        <div>
-          <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">How to Improve:</strong>
-          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleHow}</p>
-        </div>
-        <div>
-          <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">Why it matters:</strong>
-          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleWhy}</p>
-        </div>
-      </div>
-    </div>`;
-
-  const fixesPanelHTML = failedCount > 0 
-    ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">
-		<button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}';">
+      </div>`;
+    const fixesPanelHTML = failedCount > 0
+      ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">
+<button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}';">
           Learn more about ${moduleName}?
         </button>
       </p>`
-    : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
-         
-  return `
-    <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
-      <div class="relative mx-auto w-32 h-32">
-        <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-          <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-          <circle cx="64" cy="64" r="56" stroke="${ringColor}" stroke-width="12" fill="none"
-                  stroke-dasharray="${(value / 100) * 352} 352" stroke-linecap="round"/>
-        </svg>
-        <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${ringColor};">
-          ${value}
+      : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
+          
+    return `
+      <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
+        <div class="relative mx-auto w-32 h-32">
+          <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+            <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+            <circle cx="64" cy="64" r="56" stroke="${ringColor}" stroke-width="12" fill="none"
+                    stroke-dasharray="${(value / 100) * 352} 352" stroke-linecap="round"/>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${ringColor};">
+            ${value}
+          </div>
         </div>
-      </div>
+        <p class="mt-4 text-2xl font-bold ${gradeInfo.color}">${moduleName}</p>
+        <div class="mt-4 text-center">
+          <p class="text-6xl ${gradeInfo.color}">${statusEmoji}</p>
+          <p class="text-3xl font-bold ${gradeInfo.color} mt-2">${statusMessage}</p>
+        </div>
+        <div class="mt-6 text-center metrics-list">
+          ${metricsHTML}
+        </div>
+        <div class="more-details-panel hidden mt-8 text-left">
+          ${moreDetailsHTML}
+        </div>
+        <div class="mt-6 flex gap-4 justify-center flex-wrap">
+          <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
+            More Details
+          </button>
+          <button class="show-fixes px-8 py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
+            Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
+          </button>
+        </div>
+        <div class="fixes-panel hidden mt-8 text-left">
+          ${fixesPanelHTML}
+        </div>
+      </div>`;
+  }
 
-      <p class="mt-4 text-2xl font-bold ${gradeInfo.color}">${moduleName}</p>
-      <div class="mt-4 text-center">
-        <p class="text-6xl ${gradeInfo.color}">${statusEmoji}</p>
-        <p class="text-3xl font-bold ${gradeInfo.color} mt-2">${statusMessage}</p>
-      </div>
-      
-      
-      
-
-      <div class="mt-6 text-center metrics-list">
-        ${metricsHTML}
-      </div>
-
-      <div class="more-details-panel hidden mt-8 text-left">
-        ${moreDetailsHTML}
-      </div>
-
-      <div class="mt-6 flex gap-4 justify-center flex-wrap">
-        <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
-          More Details
-        </button>
-        <button class="show-fixes px-8 py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
-          Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
-        </button>
-      </div>
-
-      <div class="fixes-panel hidden mt-8 text-left">
-        ${fixesPanelHTML}
-      </div>
-    </div>`;  
-}
   form.addEventListener('submit', async e => {
     e.preventDefault();
     let url = input.value.trim();
@@ -305,9 +393,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
       { text: "Assessing performance proxies and asset optimization...", delay: 1400 },
       { text: "Calculating overall usability score and quit risk...", delay: 1600 }
     ];
-
-    let currentStep = 0; // Move declaration outside
-
+    let currentStep = 0;
     const runStep = () => {
       if (currentStep < steps.length) {
         progressText.textContent = steps[currentStep].text;
@@ -315,7 +401,7 @@ function buildModuleHTML(moduleName, value, moduleData) {
         setTimeout(runStep, steps[currentStep - 1].delay);
       } else {
         progressText.textContent = "Generating detailed report...";
-        setTimeout(performAnalysis, 3000); // Balanced final step
+        setTimeout(performAnalysis, 3000);
       }
     };
     runStep();
@@ -331,14 +417,12 @@ function buildModuleHTML(moduleName, value, moduleData) {
         const risk = getQuitRiskLabel(ux.score);
         document.getElementById('loading').classList.add('hidden');
         const safeScore = isNaN(ux.score) ? 60 : ux.score;
-        const safeDash = (safeScore / 100) * 804;
         const overallGrade = getGradeInfo(safeScore);
         const readabilityHTML = buildModuleHTML('Readability', ux.readability, factorDefinitions.readability);
         const navHTML = buildModuleHTML('Navigation', ux.nav, factorDefinitions.navigation);
         const accessHTML = buildModuleHTML('Accessibility', ux.accessibility, factorDefinitions.accessibility);
         const mobileHTML = buildModuleHTML('Mobile', ux.mobile, factorDefinitions.mobile);
-        const speedHTML = buildModuleHTML('Speed', ux.speed, factorDefinitions.performance);       
-        
+        const speedHTML = buildModuleHTML('Speed', ux.speed, factorDefinitions.performance);
 
         // Hybrid Top Priority Fixes
         const modulePriority = [
@@ -348,25 +432,19 @@ function buildModuleHTML(moduleName, value, moduleData) {
           { name: 'Accessibility', score: ux.accessibility, threshold: 75, data: factorDefinitions.accessibility },
           { name: 'Mobile', score: ux.mobile, threshold: 90, data: factorDefinitions.mobile }
         ];
-
         const priorityFixes = [];
         const failedModules = modulePriority.filter(m => m.score < m.threshold);
-
-        // First: one from each failed module
         failedModules.forEach(mod => {
           if (mod.data.factors.length > 0) {
             priorityFixes.push({ ...mod.data.factors[0], module: mod.name, extraCount: mod.data.factors.length });
           }
         });
-
-        // Second: if <3 fixes and top module has 3+ failures, add second factor
         if (priorityFixes.length < 3 && failedModules.length > 0) {
           const topModule = failedModules[0];
           if (topModule.data.factors.length >= 3) {
             priorityFixes.push({ ...topModule.data.factors[1], module: topModule.name, isSecond: true, extraCount: topModule.data.factors.length });
           }
         }
-
         let priorityFixesHTML = '';
         if (priorityFixes.length > 0) {
           priorityFixesHTML = priorityFixes.map((fix, index) => `
@@ -391,7 +469,6 @@ function buildModuleHTML(moduleName, value, moduleData) {
             </div>`;
         }
 
-        // Enhanced Quit Risk Reduction & Engagement Impact
         const failedCount = failedModules.length;
         let projectedRisk = risk.text;
         let riskDropText = '';
@@ -406,11 +483,9 @@ function buildModuleHTML(moduleName, value, moduleData) {
         } else {
           riskDropText = 'Already optimal';
         }
-
         const projectedRiskColor = projectedRisk === 'Low Risk' ? 'from-green-400 to-emerald-600' :
                                    projectedRisk === 'Moderate Risk' ? 'from-yellow-400 to-orange-600' : 'from-red-500 to-pink-600';
 
-        // Per-fix impact
         let perFixImpact = '';
         if (priorityFixes.length > 0) {
           perFixImpact = '<div class="mt-8 space-y-4 text-left">';
@@ -424,7 +499,6 @@ function buildModuleHTML(moduleName, value, moduleData) {
           perFixImpact += '</div>';
         }
 
-        // Personalized engagement ranges (extra boost if Readability dominates)
         const dominant = priorityFixes.length > 0 ? priorityFixes[0].module : '';
         let bounceRange = failedCount === 0 ? 'Already optimal' : failedCount === 1 ? '10–20%' : failedCount === 2 ? '20–35%' : '30–50%';
         let durationRange = dominant === 'Readability' ? (failedCount >= 2 ? '+60–120%' : '+40–80%') : (failedCount === 0 ? 'Strong' : failedCount === 1 ? '+20–50%' : failedCount === 2 ? '+40–80%' : '+60–120%');
@@ -458,7 +532,6 @@ function buildModuleHTML(moduleName, value, moduleData) {
               </details>
               <p class="mt-8 text-center text-lg text-gray-800 dark:text-gray-200 font-medium">Track in Analytics: Monitor exit rates pre/post fixes to verify improvement.</p>
             </div>
-
             <div class="p-8 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-3xl border border-cyan-400/30">
               <h3 class="text-3xl font-black mb-8 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent text-center">Potential Engagement Gains</h3>
               <ul class="space-y-8">
@@ -507,67 +580,64 @@ function buildModuleHTML(moduleName, value, moduleData) {
               <p class="text-lg text-gray-800 dark:text-gray-200 mt-6 font-medium text-center">How to Verify: Use Google Analytics to track these metrics before/after changes. Typical timeline: See gains in 1-4 weeks with consistent traffic.</p>
             </div>
           </div>`;
-          
-            const modules = [
-    { name: 'Readability', score: ux.readability },
-    { name: 'Navigation', score: ux.nav },
-    { name: 'Accessibility', score: ux.accessibility },
-    { name: 'Mobile & PWA', score: ux.mobile },
-    { name: 'Performance', score: ux.speed }
-  ];
-  const scores = modules.map(m => m.score);
+
+        const modules = [
+          { name: 'Readability', score: ux.readability },
+          { name: 'Navigation', score: ux.nav },
+          { name: 'Accessibility', score: ux.accessibility },
+          { name: 'Mobile & PWA', score: ux.mobile },
+          { name: 'Performance', score: ux.speed }
+        ];
+        const scores = modules.map(m => m.score);
 
         results.innerHTML = `
-        
-<!-- Big Overall Score Card -->
-<div class="flex justify-center my-12 px-4">
-  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full border-4 ${safeScore >= 80 ? 'border-green-500' : safeScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
-    <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall Usability Score</p>
-    <div class="relative w-56 h-56 mx-auto md:w-64 md:h-64">
-      <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
-        <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
-        <circle cx="100" cy="100" r="90"
-                stroke="${safeScore >= 80 ? '#22c55e' : safeScore >= 60 ? '#fb923c' : '#ef4444'}"
-                stroke-width="16" fill="none"
-                stroke-dasharray="${(safeScore / 100) * 565} 565"
-                stroke-linecap="round"/>
-      </svg>
-      <div class="absolute inset-0 flex items-center justify-center">
-        <div class="text-center">
-          <div class="text-4xl md:text-5xl font-black drop-shadow-lg"
-               style="color: ${safeScore >= 80 ? '#22c55e' : safeScore >= 60 ? '#fb923c' : '#ef4444'};">
-            ${safeScore}
+          <!-- Big Overall Score Card -->
+          <div class="flex justify-center my-12 px-4">
+            <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full border-4 ${safeScore >= 80 ? 'border-green-500' : safeScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
+              <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall Usability Score</p>
+              <div class="relative w-56 h-56 mx-auto md:w-64 md:h-64">
+                <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+                  <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
+                  <circle cx="100" cy="100" r="90"
+                          stroke="${safeScore >= 80 ? '#22c55e' : safeScore >= 60 ? '#fb923c' : '#ef4444'}"
+                          stroke-width="16" fill="none"
+                          stroke-dasharray="${(safeScore / 100) * 565} 565"
+                          stroke-linecap="round"/>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="text-center">
+                    <div class="text-4xl md:text-5xl font-black drop-shadow-lg"
+                         style="color: ${safeScore >= 80 ? '#22c55e' : safeScore >= 60 ? '#fb923c' : '#ef4444'};">
+                      ${safeScore}
+                    </div>
+                    <div class="text-base md:text-lg opacity-80 -mt-1"
+                         style="color: ${safeScore >= 80 ? '#22c55e' : safeScore >= 60 ? '#fb923c' : '#ef4444'};">
+                      /100
+                    </div>
+                  </div>
+                </div>
+              </div>
+              ${(() => {
+                const title = (doc?.title || '').trim();
+                if (!title) return '';
+                const truncated = title.length > 65 ? title.substring(0, 65) : title;
+                return `<p class="mt-6 md:mt-8 text-base md:text-lg text-gray-600 dark:text-gray-200 text-center px-4 leading-tight">${truncated}</p>`;
+              })()}
+              <div class="mt-6 text-center">
+                <p class="text-5xl md:text-6xl font-bold ${overallGrade.color} drop-shadow-lg">
+                  ${overallGrade.emoji}
+                </p>
+                <p class="text-3xl md:text-4xl font-bold ${overallGrade.color} mt-4">
+                  ${overallGrade.grade}
+                </p>
+                <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 mt-4">/100 Usability Score</p>
+              </div>
+            </div>
           </div>
-          <div class="text-base md:text-lg opacity-80 -mt-1"
-               style="color: ${safeScore >= 80 ? '#22c55e' : safeScore >= 60 ? '#fb923c' : '#ef4444'};">
-            /100
-          </div>
-        </div>
-      </div>
-    </div>
-    ${(() => {
-      const title = (doc?.title || '').trim();
-      if (!title) return '';
-      const truncated = title.length > 65 ? title.substring(0, 65) : title;
-      return `<p class="mt-6 md:mt-8 text-base md:text-lg text-gray-600 dark:text-gray-200 text-center px-4 leading-tight">${truncated}</p>`;
-    })()}
-    <div class="mt-6 text-center">
-      <p class="text-5xl md:text-6xl font-bold ${overallGrade.color} drop-shadow-lg">
-        ${overallGrade.emoji}
-      </p>
-      <p class="text-3xl md:text-4xl font-bold ${overallGrade.color} mt-4">
-        ${overallGrade.grade}
-      </p>
-      <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 mt-4">/100 Usability Score</p>
-    </div>
-  </div>
-</div>
 
           <!-- Quit Risk Verdict -->
           <div class="text-center mb-12">
-            <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">
-              Quit Risk:
-            </p>
+            <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">Quit Risk:</p>
             <div class="flex flex-col items-center gap-6">
               <div class="flex items-center gap-6 text-7xl">
                 <span class="${risk.text === 'Low Risk' ? 'text-green-600' : risk.text === 'Moderate Risk' ? 'text-orange-600' : 'text-red-600'}">
@@ -578,25 +648,25 @@ function buildModuleHTML(moduleName, value, moduleData) {
                 ${risk.text}
               </p>
             </div>
-            <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Scanned ${uxData.links} links + ${uxData.images} images</p>
-          </div>  
-          
-<!-- On-Page Health Radar Chart -->
-<div class="max-w-5xl mx-auto my-16 px-4">
-  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
-    <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
-    <div class="hidden md:block w-full">
-      <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
-    </div>
-    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">
-      Radar chart available on desktop/tablet
-    </p>
-    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">
-      Visual overview of your page performance across 7 key SEO Intent factors
-    </p>
-  </div>
-</div>
-          
+            <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Scanned ${uxData.linkCount} links + ${uxData.imageCount} images</p>
+          </div>
+
+          <!-- On-Page Health Radar Chart -->
+          <div class="max-w-5xl mx-auto my-16 px-4">
+            <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
+              <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
+              <div class="hidden md:block w-full">
+                <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
+              </div>
+              <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">
+                Radar chart available on desktop/tablet
+              </p>
+              <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">
+                Visual overview of your page performance across key SEO & UX factors
+              </p>
+            </div>
+          </div>
+
           <!-- Modules -->
           <div class="grid gap-8 my-16 max-w-7xl mx-auto px-6">
             <div class="grid md:grid-cols-1 gap-8">${readabilityHTML}</div>
@@ -630,64 +700,57 @@ function buildModuleHTML(moduleName, value, moduleData) {
             </button>
           </div>
         `;
-        
 
-
-
-        
-        
-              // === RADAR CHART INITIALIZATION ===
-      setTimeout(() => {
-        const canvas = document.getElementById('health-radar');
-        if (!canvas) return;
-
-        try {
-          const ctx = canvas.getContext('2d');
-          const labelColor = '#9ca3af'; // gray-400 — perfect day/night
-          const gridColor = 'rgba(156, 163, 175, 0.3)';
-          const borderColor = '#fb923c';
-          const fillColor = 'rgba(251, 146, 60, 0.15)';
-
-          window.myChart = new Chart(ctx, {
-            type: 'radar',
-            data: {
-              labels: modules.map(m => m.name),
-              datasets: [{
-                label: 'Health Score',
-                data: scores,
-                backgroundColor: fillColor,
-                borderColor: borderColor,
-                borderWidth: 4,
-                pointRadius: 8,
-                pointHoverRadius: 12,
-                pointBackgroundColor: scores.map(s => s >= 80 ? '#22c55e' : s >= 60 ? '#fb923c' : '#ef4444'),
-                pointBorderColor: '#fff',
-                pointBorderWidth: 3
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                r: {
-                  beginAtZero: true,
-                  min: 0,
-                  max: 100,
-                  ticks: { stepSize: 20, color: labelColor },
-                  grid: { color: gridColor },
-                  angleLines: { color: gridColor },
-                  pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
-                }
+        // === RADAR CHART INITIALIZATION ===
+        setTimeout(() => {
+          const canvas = document.getElementById('health-radar');
+          if (!canvas) return;
+          try {
+            const ctx = canvas.getContext('2d');
+            const labelColor = '#9ca3af';
+            const gridColor = 'rgba(156, 163, 175, 0.3)';
+            const borderColor = '#fb923c';
+            const fillColor = 'rgba(251, 146, 60, 0.15)';
+            window.myChart = new Chart(ctx, {
+              type: 'radar',
+              data: {
+                labels: modules.map(m => m.name),
+                datasets: [{
+                  label: 'Health Score',
+                  data: scores,
+                  backgroundColor: fillColor,
+                  borderColor: borderColor,
+                  borderWidth: 4,
+                  pointRadius: 8,
+                  pointHoverRadius: 12,
+                  pointBackgroundColor: scores.map(s => s >= 80 ? '#22c55e' : s >= 60 ? '#fb923c' : '#ef4444'),
+                  pointBorderColor: '#fff',
+                  pointBorderWidth: 3
+                }]
               },
-              plugins: { legend: { display: false } }
-            }
-          });
-        } catch (e) {
-          console.error('Radar chart failed', e);
-        }
-      }, 150);
-        
-        // Clean URL for PDF cover (unchanged)
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  r: {
+                    beginAtZero: true,
+                    min: 0,
+                    max: 100,
+                    ticks: { stepSize: 20, color: labelColor },
+                    grid: { color: gridColor },
+                    angleLines: { color: gridColor },
+                    pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
+                  }
+                },
+                plugins: { legend: { display: false } }
+              }
+            });
+          } catch (e) {
+            console.error('Radar chart failed', e);
+          }
+        }, 150);
+
+        // Clean URL for PDF cover
         let fullUrl = document.getElementById('url-input').value.trim();
         let displayUrl = 'traffictorch.net';
         if (fullUrl) {
@@ -702,7 +765,6 @@ function buildModuleHTML(moduleName, value, moduleData) {
           }
         }
         document.body.setAttribute('data-url', displayUrl);
-
       } catch (err) {
         document.getElementById('loading').classList.add('hidden');
         results.innerHTML = `
@@ -721,7 +783,6 @@ function buildModuleHTML(moduleName, value, moduleData) {
       const card = moreBtn.closest('.p-6');
       card.querySelector('.more-details-panel').classList.toggle('hidden');
     }
-
     const fixesBtn = e.target.closest('.show-fixes');
     if (fixesBtn) {
       const card = fixesBtn.closest('.p-6');
