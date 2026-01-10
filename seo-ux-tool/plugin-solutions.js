@@ -401,17 +401,23 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
                 </svg>
               </summary>
               <div class="px-8 pb-10 border-t border-white/10">
-                ${cmsOptions.length > 0 ? `
-                  <div class="max-w-md mx-auto my-8">
-                    <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl bg-white/90 dark:bg-gray-800/90 border-2 border-orange-400 dark:border-orange-600 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 outline-none transition">
-                      <option value="">Choose your platform...</option>
-                      ${cmsOptions.map(cms => `<option value="${cms}">${cms}</option>`).join('')}
-                    </select>
-                  </div>
-                  <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
-                ` : `
-                  <p class="text-center text-gray-400 py-8">Native support or manual fix recommended for this issue.</p>
-                `}
+${cmsOptions.length > 0 ? `
+  <div class="max-w-md mx-auto my-10">
+    <label for="cms-select-${metricId}" class="block text-sm font-medium text-gray-300 mb-3">
+      Select your platform
+    </label>
+    <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl bg-white/90 dark:bg-gray-800/90 border-2 border-orange-400 dark:border-orange-600 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 outline-none transition">
+      <option value="">Choose your platform...</option>
+      ${cmsOptions.map(cms => `<option value="${cms}">${cms}</option>`).join('')}
+    </select>
+  </div>
+  <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+` : `
+  <div class="text-center py-12 px-6">
+    <p class="text-gray-400 text-lg">This area is usually handled natively by your platform or requires a manual code fix.</p>
+    <p class="text-gray-500 text-sm mt-3">No plugin recommendations available for this specific issue yet.</p>
+  </div>
+`}
               </div>
             </details>
           `;

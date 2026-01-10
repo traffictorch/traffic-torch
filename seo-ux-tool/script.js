@@ -358,23 +358,27 @@ const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encod
       
       
       
-      // === PLUGIN SOLUTIONS – Show only when needed ===
-      const failedMetrics = modules
-        .map(mod => {
-          const score = parseInt(document.querySelector(`#${mod.id}-score .number`)?.textContent || '100', 10);
-          if (score >= 80) return null;
-          return {
-            name: mod.name,
-            grade: score < 60 
-              ? { emoji: '🔴', color: 'text-red-400' }
-              : { emoji: '🟠', color: 'text-orange-400' }
-          };
-        })
-        .filter(Boolean);
+// === PLUGIN SOLUTIONS – only show modules that have plugin recommendations ===
+const failedMetrics = modules
+  .filter(mod => pluginData[mod.name]) // ← critical line: only include if key exists in pluginData
+  .map(mod => {
+    const scoreEl = document.querySelector(`#${mod.id}-score .number`);
+    const score = scoreEl ? parseInt(scoreEl.textContent, 10) : 100;
+    
+    if (score >= 80) return null;
 
-      if (failedMetrics.length > 0) {
-        renderPluginSolutions(failedMetrics);
-      }
+    return {
+      name: mod.name,
+      grade: score < 60 
+        ? { emoji: '🔴', color: 'text-red-400' }
+        : { emoji: '🟠', color: 'text-orange-400' }
+    };
+  })
+  .filter(Boolean);
+
+if (failedMetrics.length > 0) {
+  renderPluginSolutions(failedMetrics);
+}
       
       
       
