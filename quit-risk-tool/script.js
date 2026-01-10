@@ -1,3 +1,5 @@
+import { renderPluginSolutions } from '/quit-risk-tool/plugin-solutions.js';
+
 // quit-risk-tool/script.js - full complete epic perfect version with realistic metrics
 // Hybrid Top Priority Fixes: balanced, allows extra emphasis on critical modules (max 2 per module)
 // Rich educational Quit Risk Reduction & Engagement Impact with per-fix impact, expandables, progress bars, personalized ranges
@@ -237,6 +239,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (score >= 60) return { grade: "D", color: "text-orange-600", emoji: "⚠️" };
     return { grade: "F", color: "text-red-600", emoji: "❌" };
   }
+  
+  function getPluginGrade(score) {
+  if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+  if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+  if (score >= 50) return { grade: 'Average', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
+  if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+  return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+}
 
   function buildModuleHTML(moduleName, value, moduleData) {
     const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
@@ -414,6 +424,36 @@ document.addEventListener('DOMContentLoaded', () => {
         const doc = new DOMParser().parseFromString(html, 'text/html');
         const uxData = getUXContent(doc);
         const ux = analyzeUX(uxData);
+        // Collect metrics that are Average or worse (grade < Strong) for plugin recommendations
+const failedMetrics = [];
+
+// Alt Text Coverage → tied to Accessibility
+if (ux.accessibility < 75) {  // < Strong threshold
+  failedMetrics.push({
+    name: "Alt Text Coverage",
+    grade: getPluginGrade(ux.accessibility)
+  });
+}
+
+// Image Optimization, Lazy Loading, Font, Script Minify, Asset Bloat → all tied to Speed
+if (ux.speed < 85) {
+  const speedGrade = getPluginGrade(ux.speed);
+  failedMetrics.push(
+    { name: "Image Optimization", grade: speedGrade },
+    { name: "Lazy Loading Media", grade: speedGrade },
+    { name: "Font Optimization", grade: speedGrade },
+    { name: "Script Minification & Deferral", grade: speedGrade },
+    { name: "Asset Volume & Script Bloat", grade: speedGrade }
+  );
+}
+
+// PWA Readiness → tied to Mobile
+if (ux.mobile < 90) {
+  failedMetrics.push({
+    name: "PWA Readiness",
+    grade: getPluginGrade(ux.mobile)
+  });
+}
         const risk = getQuitRiskLabel(ux.score);
         document.getElementById('loading').classList.add('hidden');
         const safeScore = isNaN(ux.score) ? 60 : ux.score;
@@ -423,6 +463,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const accessHTML = buildModuleHTML('Accessibility', ux.accessibility, factorDefinitions.accessibility);
         const mobileHTML = buildModuleHTML('Mobile', ux.mobile, factorDefinitions.mobile);
         const speedHTML = buildModuleHTML('Speed', ux.speed, factorDefinitions.performance);
+        // Render plugin solutions for low/average performance-related metrics
+		renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
 
         // Hybrid Top Priority Fixes
         const modulePriority = [
@@ -687,6 +729,9 @@ document.addEventListener('DOMContentLoaded', () => {
               Prioritized by impact — focusing on diverse modules for balanced improvements. If one module dominates failures, address it first for biggest gains.
             </p>` : ''}
           </div>
+          
+          <!-- Plugin Solutions Accordion -->
+<div id="plugin-solutions-section" class="mt-16 px-4"></div>
 
           <!-- Enhanced Quit Risk Reduction & Engagement Impact -->
           ${impactHTML}
