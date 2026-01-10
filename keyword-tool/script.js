@@ -130,43 +130,46 @@ document.addEventListener('DOMContentLoaded', () => {
       startSpinnerLoader();
       const yourDoc = await fetchPage(fullUrl);
       if (!yourDoc) {
-      
-      
-            // === Plugin Solutions - placed after page is fetched and analyzed ===
-const pluginSection = document.createElement('div');
-pluginSection.id = 'plugin-solutions-section';
-pluginSection.className = 'mt-20';
-results.appendChild(pluginSection);
-
-// Collect failed/average metrics that plugins can solve
-const failedMetrics = [];
-
-// Meta Description (missing = fail)
-const hasMetaDesc = !!yourDoc.querySelector('meta[name="description" i]');
-if (!hasMetaDesc) {
-  failedMetrics.push({ name: "Meta Description", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-}
-
-// Structured Data (Schema) - none or low
-if (schemaTypes.length < 1) {
-  failedMetrics.push({ name: "Structured Data (Schema)", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-}
-
-// Image Alts (coverage below 80%)
-if (altTextCoverage < 80) {
-  failedMetrics.push({ name: "Image Alts", grade: getGrade(altTextCoverage) });
-}
-
-// Render only if we have fixes
-if (failedMetrics.length > 0) {
-  renderPluginSolutions(failedMetrics);
-}
-      
-      
         stopSpinnerLoader();
         results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Page not reachable.</p>`;
         return;
       }
+      
+            // === Plugin Solutions - placed after page fetch and before report generation ===
+      const doc = yourDoc; // rename yourDoc to doc for consistency (optional but cleaner)
+
+      // Plugin Solutions placeholder (above priority/fixes if present)
+      const pluginSection = document.createElement('div');
+      pluginSection.id = 'plugin-solutions-section';
+      pluginSection.className = 'mt-20';
+      results.appendChild(pluginSection);
+
+      // Collect failed/average metrics that plugins can solve
+      const failedMetrics = [];
+
+      // Meta Description (missing = fail)
+      const hasMetaDesc = !!doc.querySelector('meta[name="description" i]');
+      if (!hasMetaDesc) {
+        failedMetrics.push({ name: "Meta Description", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+
+      // Structured Data (Schema) - none or low
+      if (schemaTypes.length < 1) {
+        failedMetrics.push({ name: "Structured Data (Schema)", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+
+      // Image Alts (coverage below 80%)
+      if (altTextCoverage < 80) {
+        failedMetrics.push({ name: "Image Alts", grade: getGrade(altTextCoverage) });
+      }
+
+      // Render only if we have fixes
+      if (failedMetrics.length > 0) {
+        renderPluginSolutions(failedMetrics);
+      }
+      
+      
+      
       let yourScore = 0;
       const data = {};
       const allFixes = [];
