@@ -1,20 +1,48 @@
 const pluginData = {
-  "Meta Description": {
+  "Meta Title": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Real-time meta description editor with live snippet preview, length guidance, and AI suggestions in premium. Focuses on compelling, clickable copy that boosts CTR. Industry standard for crafting high-performing descriptions.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
-      { name: "Rank Math", desc: "Dynamic meta descriptions with variables, bulk editing, and accurate SERP preview. Strong focus keyword integration and readability checks. Excellent for creating engaging descriptions at scale.", link: "https://wordpress.org/plugins/seo-by-rank-math/", homeLink: "https://rankmath.com/" },
-      { name: "All in One SEO", desc: "Smart meta generation with TruSEO scoring, readability feedback, and dynamic patterns. Excellent defaults and unlimited keywords. Trusted for consistent, compelling descriptions.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/", homeLink: "https://aioseo.com/" },
-      { name: "SEOPress", desc: "Clean, lightweight editor with dynamic variables and no upsells in free version. Fast SERP preview and customization. Ideal for performance-focused sites needing strong descriptions.", link: "https://wordpress.org/plugins/wp-seopress/", homeLink: "https://www.seopress.org/" }
+      { name: "Yoast SEO", desc: "Real-time title editor with length indicator, keyword focus, and SERP preview. AI suggestions in premium. Essential for keyword-optimized, click-worthy titles.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "Advanced title optimization with bulk editing, dynamic variables, and focus keyword integration. Excellent preview and scoring. Perfect for large sites.", link: "https://wordpress.org/plugins/seo-by-rank-math/", homeLink: "https://rankmath.com/" },
+      { name: "All in One SEO", desc: "TruSEO scoring for title strength with smart recommendations and patterns. Trusted defaults and unlimited keywords. Great all-rounder.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/", homeLink: "https://aioseo.com/" },
+      { name: "SEOPress", desc: "Lightweight title editor with dynamic variables, no branding in free. Fast preview and customization. Ideal for performance sites.", link: "https://wordpress.org/plugins/wp-seopress/", homeLink: "https://www.seopress.org/" }
     ],
     Shopify: [
-      { name: "SearchPie SEO", desc: "Optimizes meta descriptions store-wide with AI templates and bulk editing. Focuses on compelling, keyword-rich copy for higher CTR. Comprehensive e-commerce SEO solution.", link: "https://apps.shopify.com/seo-booster", homeLink: "https://boosterapps.com/" },
-      { name: "Plug in SEO", desc: "Scans and fixes meta description issues with specific recommendations and alerts. Monitors changes over time. Long-standing trusted app for description health.", link: "https://apps.shopify.com/plug-in-seo", homeLink: "https://pluginseo.com/" }
+      { name: "SearchPie SEO", desc: "Automatic title optimization with AI templates and bulk tools. Focuses on keyword placement for higher CTR. Comprehensive e-commerce solution.", link: "https://apps.shopify.com/seo-booster", homeLink: "https://boosterapps.com/" },
+      { name: "Plug in SEO", desc: "Scans titles, provides fixes, and monitors changes. Long-standing reliable app for title health.", link: "https://apps.shopify.com/plug-in-seo", homeLink: "https://pluginseo.com/" },
+      { name: "Yoast SEO for Shopify", desc: "Official Yoast app bringing real-time title previews and AI suggestions to Shopify. Focus keyword integration and snippet preview. Familiar interface.", link: "https://apps.shopify.com/yoast-seo", homeLink: "https://yoast.com/" }
     ],
     Wix: [
-      { name: "Built-in AI Meta Tag Creator", desc: "AI-powered tool generating three optimized meta description suggestions based on page content. Choose tone and refine easily. Integrated directly in Wix SEO panel.", link: "" }
+      { name: "Built-in SEO Wiz", desc: "Guided wizard for optimal title creation with previews and character limits. Personalized recommendations based on site content. Native and easy to use.", link: "" }
     ],
     Squarespace: [
-      { name: "Built-in SEO Tools", desc: "Native editor for custom meta descriptions with character limits and previews. Automatically generates defaults from content. Clean and reliable built-in solution.", link: "" }
+      { name: "Built-in Page Settings", desc: "Dedicated SEO title field with character counter and best practice tips. Native previews and automatic defaults from content. Reliable built-in solution.", link: "" }
+    ],
+    Joomla: [
+      { name: "EFSEO - Easy Frontend SEO", desc: "Central control for title tags with frontend editing and automatic generation rules. Bulk operations and overrides. Efficient for Joomla title management.", link: "https://extensions.joomla.org/extension/efseo-easy-frontend-seo/", homeLink: "https://stackideas.com/" },
+      { name: "Tag Meta", desc: "Advanced rules-based title management with macros and patterns. Site-wide consistency and per-page customization. Powerful for large Joomla sites.", link: "https://extensions.joomla.org/extension/tag-meta/" }
+    ],
+    Drupal: [
+      { name: "Metatag", desc: "Comprehensive module for title and meta control with tokens for dynamic content. Per-entity settings and social integration. Foundation for Drupal SEO titles.", link: "https://www.drupal.org/project/metatag" },
+      { name: "Page Title", desc: "Dedicated module for overriding page titles with patterns and tokens. Works alongside Metatag for full control. Essential for custom title formatting.", link: "https://www.drupal.org/project/page_title" }
+    ]
+  },
+
+  "Meta Description": {
+    WordPress: [
+      { name: "Yoast SEO", desc: "Real-time editor with snippet preview, length guidance, and AI suggestions. Focuses on compelling, clickable copy. Industry standard for descriptions that boost CTR.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "Dynamic descriptions with variables, bulk editing, and accurate SERP preview. Strong keyword integration and readability checks. Excellent for engaging descriptions.", link: "https://wordpress.org/plugins/seo-by-rank-math/", homeLink: "https://rankmath.com/" },
+      { name: "All in One SEO", desc: "Smart generation with TruSEO scoring, readability feedback, and dynamic patterns. Excellent defaults and unlimited keywords. Trusted for compelling descriptions.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/", homeLink: "https://aioseo.com/" },
+      { name: "SEOPress", desc: "Clean, lightweight editor with dynamic variables and no upsells in free. Fast SERP preview and customization. Ideal for performance-focused sites.", link: "https://wordpress.org/plugins/wp-seopress/", homeLink: "https://www.seopress.org/" }
+    ],
+    Shopify: [
+      { name: "SearchPie SEO", desc: "Optimizes descriptions store-wide with AI templates and bulk editing. Focuses on keyword-rich copy for higher CTR. Comprehensive e-commerce solution.", link: "https://apps.shopify.com/seo-booster", homeLink: "https://boosterapps.com/" },
+      { name: "Plug in SEO", desc: "Scans and fixes description issues with specific recommendations and alerts. Monitors changes over time. Trusted for description health.", link: "https://apps.shopify.com/plug-in-seo", homeLink: "https://pluginseo.com/" }
+    ],
+    Wix: [
+      { name: "Built-in AI Meta Tag Creator", desc: "AI generates three optimized description suggestions based on page content. Choose tone and refine easily. Native in Wix SEO panel.", link: "" }
+    ],
+    Squarespace: [
+      { name: "Built-in SEO Tools", desc: "Native editor for custom descriptions with limits and previews. Generates defaults from content. Clean and reliable built-in solution.", link: "" }
     ],
     Joomla: [
       { name: "EFSEO - Easy Frontend SEO", desc: "Frontend editing for meta descriptions with automatic generation rules. Bulk operations and overrides. Efficient centralized solution.", link: "https://extensions.joomla.org/extension/efseo-easy-frontend-seo/", homeLink: "https://stackideas.com/" },
@@ -27,37 +55,52 @@ const pluginData = {
 
   "Structured Data (Schema)": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Leading SEO plugin with robust built-in schema for Article, FAQ, HowTo, Product, and Person types. Automatically generates markup with easy overrides and rich snippet previews. Ideal for reliable rich results without extra complexity.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
-      { name: "Rank Math", desc: "Advanced freemium schema generator with 20+ types, custom fields, and AI suggestions. Includes testing tools and automation for rich snippets. Perfect for detailed control and maximum rich result impact.", link: "https://wordpress.org/plugins/seo-by-rank-math/", homeLink: "https://rankmath.com/" },
-      { name: "All in One SEO", desc: "Guided schema setup with TruSEO scoring and automatic markup for common types. Supports dynamic variables and strong defaults. Trusted by millions for simple yet powerful schema.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/", homeLink: "https://aioseo.com/" }
+      { name: "Yoast SEO", desc: "Built-in schema for Article, FAQ, HowTo, etc. Auto markup and easy overrides. Reliable rich results.", link: "https://wordpress.org/plugins/wordpress-seo/", homeLink: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "Advanced generator with 20+ types and AI suggestions. Testing tools and automation. Maximum rich snippet impact.", link: "https://wordpress.org/plugins/seo-by-rank-math/", homeLink: "https://rankmath.com/" },
+      { name: "All in One SEO", desc: "Guided setup with TruSEO and auto markup. Dynamic variables and defaults. Trusted for powerful schema.", link: "https://wordpress.org/plugins/all-in-one-seo-pack/", homeLink: "https://aioseo.com/" },
+      { name: "Schema & Structured Data for WP", desc: "Dedicated plugin with advanced types and conditional display. Full AMP support. Best for maximum flexibility.", link: "https://wordpress.org/plugins/schema-and-structured-data-for-wp/", homeLink: "https://wpschema.com/" }
     ],
     Shopify: [
-      { name: "Schema Plus for SEO", desc: "Automatic JSON-LD schema for products, collections, blogs, and more. Fixes Google errors and enables rich results. Essential for e-commerce targeting higher CTR.", link: "https://apps.shopify.com/schema-plus", homeLink: "https://schemaplus.io/" },
-      { name: "Webrex AI SEO Optimizer Schema", desc: "AI-powered schema generation for products, FAQs, videos, with duplicate removal. Integrates with 30+ review apps. Great for automated, accurate markup.", link: "https://apps.shopify.com/webrex-seo-schema-jsonld", homeLink: "https://webrexstudio.com/" }
+      { name: "Schema Plus for SEO", desc: "Automatic JSON-LD schema for products, collections, blogs, and more. Fixes Google errors and enables rich results. Essential for higher CTR.", link: "https://apps.shopify.com/schema-plus", homeLink: "https://schemaplus.io/" },
+      { name: "Webrex AI SEO Optimizer Schema", desc: "AI-powered schema for products, FAQs, videos, with duplicate removal. Integrates with 30+ review apps. Great for automated markup.", link: "https://apps.shopify.com/webrex-seo-schema-jsonld", homeLink: "https://webrexstudio.com/" }
     ],
     Wix: [
-      { name: "Built-in Structured Data", desc: "Wix auto-generates basic schema for pages, products, blogs. Custom options via SEO settings and Velo. Solid native solution for most Wix sites.", link: "" }
+      { name: "Built-in Structured Data", desc: "Wix auto-generates basic schema for pages, products, blogs. Custom options via SEO settings and Velo. Solid native solution.", link: "" }
     ],
     Squarespace: [
-      { name: "Built-in Markup", desc: "Native schema for pages, products, events, blogs. Automatic and always updated. No extra tools needed for standard rich results.", link: "" }
+      { name: "Built-in Markup", desc: "Native schema for pages, products, events, blogs. Automatic and always updated. No extra tools needed.", link: "" }
+    ],
+    Joomla: [
+      { name: "Google Structured Data", desc: "Free extension for breadcrumb, article, organization schema. Simple config with overrides. Reliable for basic rich snippets.", link: "https://extensions.joomla.org/extension/google-structured-data/", homeLink: "https://stackideas.com/" },
+      { name: "EFSEO", desc: "Freemium tool for structured data and meta tags. Frontend editing and multiple types. Centralized SEO solution.", link: "https://extensions.joomla.org/extension/efseo-easy-frontend-seo/", homeLink: "https://stackideas.com/" }
+    ],
+    Drupal: [
+      { name: "Schema.org Metatag", desc: "Full Schema.org support with high configurability for any entity. Industry standard for advanced schema.", link: "https://www.drupal.org/project/schema_metatag" },
+      { name: "Metatag", desc: "Base module for structured data extensions. Required foundation for most schema setups.", link: "https://www.drupal.org/project/metatag" }
     ]
   },
 
   "Image Alts": {
     WordPress: [
-      { name: "Smush", desc: "Most popular optimizer with lazy loading, WebP/AVIF conversion, bulk processing, and alt text suggestions. Auto-fills alt from filename/title or uses AI extensions. Trusted by millions for reliable accessibility and performance.", link: "https://wordpress.org/plugins/wp-smushit/", homeLink: "https://wpmudev.com/project/wp-smush-pro/" },
-      { name: "EWWW Image Optimizer", desc: "Pixel-perfect compression with WebP/AVIF support and bulk alt text tools. Local or cloud processing for quality retention. Excellent for professional sites needing accessibility fixes.", link: "https://wordpress.org/plugins/ewww-image-optimizer/", homeLink: "https://ewww.io/" },
-      { name: "Imagify", desc: "Smart compression with visual comparison, next-gen formats, and alt text suggestions. Bulk restore and automatic optimization. Premium feel with strong accessibility focus.", link: "https://wordpress.org/plugins/imagify-image-optimizer/", homeLink: "https://imagify.io/" }
+      { name: "Smush", desc: "Bulk compression with lazy loading, WebP/AVIF, and alt text suggestions. Auto-fills or uses AI extensions. Trusted for accessibility and performance.", link: "https://wordpress.org/plugins/wp-smushit/", homeLink: "https://wpmudev.com/project/wp-smush-pro/" },
+      { name: "EWWW Image Optimizer", desc: "Pixel-perfect compression with WebP/AVIF and bulk alt tools. Excellent quality retention and accessibility.", link: "https://wordpress.org/plugins/ewww-image-optimizer/", homeLink: "https://ewww.io/" },
+      { name: "Imagify", desc: "Smart compression with next-gen formats and alt suggestions. Bulk restore and optimization. Premium accessibility focus.", link: "https://wordpress.org/plugins/imagify-image-optimizer/", homeLink: "https://imagify.io/" }
     ],
     Shopify: [
-      { name: "TinyIMG", desc: "Complete optimization with AI alt text generation, bulk processing, and WebP/AVIF support. Monitors new uploads automatically. Proven to fix alt coverage and improve accessibility.", link: "https://apps.shopify.com/tinyimg", homeLink: "https://tiny-img.com/" },
-      { name: "Crush.pics", desc: "Automatic compression on upload with SEO-friendly alt/filenames and bulk tools. Set-and-forget with strong results. Clean way to improve alt text coverage.", link: "https://apps.shopify.com/crush-pics", homeLink: "https://crush.pics/" }
+      { name: "TinyIMG", desc: "AI alt text generation, bulk processing, WebP/AVIF. Automatic monitoring. Proven accessibility and speed fix.", link: "https://apps.shopify.com/tinyimg", homeLink: "https://tiny-img.com/" },
+      { name: "Crush.pics", desc: "Auto compression with SEO-friendly alt/filenames and bulk tools. Set-and-forget accessibility.", link: "https://apps.shopify.com/crush-pics", homeLink: "https://crush.pics/" }
     ],
     Wix: [
-      { name: "Built-in Optimizer", desc: "Auto-compresses images on upload with manual alt text editing in editor. Native accessibility solution. Focus on adding alt text manually for full coverage.", link: "" }
+      { name: "Built-in Optimizer", desc: "Auto-compresses images with manual alt text editing. Native accessibility solution.", link: "" }
     ],
     Squarespace: [
-      { name: "Built-in Tools", desc: "Native compression and responsive delivery with alt text fields in editor. Consistent across templates. Add alt text manually for complete coverage.", link: "" }
+      { name: "Built-in Tools", desc: "Native compression with alt text fields in editor. Consistent accessibility.", link: "" }
+    ],
+    Joomla: [
+      { name: "ImageRecycle", desc: "Cloud compression with bulk alt text tools. Preserves quality and improves accessibility.", link: "https://extensions.joomla.org/extension/imagerecycle-image-optimizer/", homeLink: "https://www.imagerecycle.com/" }
+    ],
+    Drupal: [
+      { name: "ImageAPI Optimize", desc: "Optimization pipelines with alt text support and WebP/AVIF. Bulk processing for accessibility.", link: "https://www.drupal.org/project/imageapi_optimize" }
     ]
   }
 };

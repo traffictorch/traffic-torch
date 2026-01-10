@@ -135,41 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       
-            // === Plugin Solutions - placed after page fetch and before report generation ===
-      const doc = yourDoc; // rename yourDoc to doc for consistency (optional but cleaner)
-
-      // Plugin Solutions placeholder (above priority/fixes if present)
-      const pluginSection = document.createElement('div');
-      pluginSection.id = 'plugin-solutions-section';
-      pluginSection.className = 'mt-20';
-      results.appendChild(pluginSection);
-
-      // Collect failed/average metrics that plugins can solve
-      const failedMetrics = [];
-
-      // Meta Description (missing = fail)
-      const hasMetaDesc = !!doc.querySelector('meta[name="description" i]');
-      if (!hasMetaDesc) {
-        failedMetrics.push({ name: "Meta Description", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-      }
-
-      // Structured Data (Schema) - none or low
-      if (schemaTypes.length < 1) {
-        failedMetrics.push({ name: "Structured Data (Schema)", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-      }
-
-      // Image Alts (coverage below 80%)
-      if (altTextCoverage < 80) {
-        failedMetrics.push({ name: "Image Alts", grade: getGrade(altTextCoverage) });
-      }
-
-      // Render only if we have fixes
-      if (failedMetrics.length > 0) {
-        renderPluginSolutions(failedMetrics);
-      }
-      
-      
-      
       let yourScore = 0;
       const data = {};
       const allFixes = [];
@@ -634,7 +599,33 @@ return `
 </div>
     `;
     
-
+// === Plugin Solutions - adapted for Keyword Tool (4 metrics only) ===
+const pluginSection = document.createElement('div');
+pluginSection.id = 'plugin-solutions-section';
+pluginSection.className = 'mt-20';
+results.appendChild(pluginSection);
+// Collect failed/average metrics that plugins can solve (using existing data object)
+const failedMetrics = [];
+// 1. Meta Title (missing keyword or empty = fail)
+if (data.meta.titleMatch === 0 || !data.meta.titleText || data.meta.titleText.trim() === '') {
+  failedMetrics.push({ name: "Meta Title", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+}
+// 2. Meta Description (missing or empty = fail)
+if (data.meta.descMatch === 0 || !data.meta.descText || data.meta.descText.trim() === '') {
+  failedMetrics.push({ name: "Meta Description", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+}
+// 3. Structured Data (Schema) - missing = fail
+if (data.urlSchema.schema === 0) {
+  failedMetrics.push({ name: "Structured Data (Schema)", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+}
+// 4. Image Alts (no keyword in alts on pages with images = fail)
+if (data.alts.phrase === 0 && data.alts.total > 0) {
+  failedMetrics.push({ name: "Image Alts", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+}
+// Render only if we have fixes
+if (failedMetrics.length > 0) {
+  renderPluginSolutions(failedMetrics);
+}
     
           // === RADAR CHART INITIALIZATION ===
       setTimeout(() => {
