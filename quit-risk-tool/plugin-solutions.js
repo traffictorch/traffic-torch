@@ -1,4 +1,4 @@
-// Shared getGrade function (copied from script.js for compatibility in plugin-solutions.js)
+// Shared getGrade function (copied from script.js for compatibility)
 const getGrade = (score) => {
   if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
   if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
@@ -224,7 +224,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
 
   container.appendChild(section);
 
-  // Event listeners for dropdowns - fixed: uses parameter failedMetrics
+  // Event listeners for dropdowns
   failedMetrics.forEach(m => {
     const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
     const select = document.getElementById(`cms-select-${metricId}`);
