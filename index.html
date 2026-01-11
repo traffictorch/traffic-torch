@@ -235,13 +235,16 @@
       <canvas id="health-radar" class="max-w-full h-[600px]"></canvas>
     </div>
   </div>
+  
+  
+  
 
 <div id="overall-container" class="my-20">
   <h2 class="text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
     Overall SEO & UX Health Score
   </h2>
   <div class="flex justify-center">
-    <div id="overall-score" class="score-card force-dark-card">
+    <div id="overall-score" class="score-card">
       <div class="score-circle large mb-8" data-score="0">
         <svg viewBox="0 0 200 200">
           <circle class="bg" cx="100" cy="100" r="90"/>
@@ -254,7 +257,7 @@
   </div>
 </div>
 <div id="results" class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-  <section id="seo-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
+  <section id="seo-score" class="score-card p-8 text-center">
     <div class="score-circle" data-score="0">
       <svg viewBox="0 0 120 120">
         <circle class="bg" cx="60" cy="60" r="54"/>
@@ -266,7 +269,7 @@
     <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
     <div class="details hidden mt-6 text-left"><ul id="seo-issues" class="space-y-4"></ul></div>
   </section>
-  <section id="mobile-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
+  <section id="mobile-score" class="score-card p-8 text-center">
     <div class="score-circle" data-score="0">
       <svg viewBox="0 0 120 120">
         <circle class="bg" cx="60" cy="60" r="54"/>
@@ -278,7 +281,7 @@
     <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
     <div class="details hidden mt-6 text-left"><ul id="mobile-issues" class="space-y-4"></ul></div>
   </section>
-  <section id="perf-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
+  <section id="perf-score" class="score-card p-8 text-center">
     <div class="score-circle" data-score="0">
       <svg viewBox="0 0 120 120">
         <circle class="bg" cx="60" cy="60" r="54"/>
@@ -290,7 +293,7 @@
     <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
     <div class="details hidden mt-6 text-left"><ul id="perf-issues" class="space-y-4"></ul></div>
   </section>
-  <section id="access-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
+  <section id="access-score" class="score-card p-8 text-center">
     <div class="score-circle" data-score="0">
       <svg viewBox="0 0 120 120">
         <circle class="bg" cx="60" cy="60" r="54"/>
@@ -302,7 +305,7 @@
     <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
     <div class="details hidden mt-6 text-left"><ul id="access-issues" class="space-y-4"></ul></div>
   </section>
-  <section id="content-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
+  <section id="content-score" class="score-card p-8 text-center">
     <div class="score-circle" data-score="0">
       <svg viewBox="0 0 120 120">
         <circle class="bg" cx="60" cy="60" r="54"/>
@@ -314,7 +317,7 @@
     <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
     <div class="details hidden mt-6 text-left"><ul id="content-issues" class="space-y-4"></ul></div>
   </section>
-  <section id="ux-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
+  <section id="ux-score" class="score-card p-8 text-center">
     <div class="score-circle" data-score="0">
       <svg viewBox="0 0 120 120">
         <circle class="bg" cx="60" cy="60" r="54"/>
@@ -326,7 +329,7 @@
     <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
     <div class="details hidden mt-6 text-left"><ul id="ux-issues" class="space-y-4"></ul></div>
   </section>
-  <section id="security-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
+  <section id="security-score" class="score-card p-8 text-center">
     <div class="score-circle" data-score="0">
       <svg viewBox="0 0 120 120">
         <circle class="bg" cx="60" cy="60" r="54"/>
@@ -338,7 +341,7 @@
     <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
     <div class="details hidden mt-6 text-left"><ul id="security-issues" class="space-y-4"></ul></div>
   </section>
-  <section id="indexability-score" class="score-card bg-white/10 backdrop-blur-xl rounded-3xl p-8 text-center force-dark-card">
+  <section id="indexability-score" class="score-card p-8 text-center">
     <div class="score-circle" data-score="0">
       <svg viewBox="0 0 120 120">
         <circle class="bg" cx="60" cy="60" r="54"/>
