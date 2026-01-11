@@ -143,6 +143,50 @@ body { transition: background-color 0.3s ease; }
 .text-orange-400 { fill: #fb923c !important; }
 .text-green-400 { fill: #34d399 !important; }
 
+
+/* Larger overall card sizing */
+#overall-score {
+  padding: 2.5rem 1.5rem;
+}
+
+#overall-score .score-circle.large svg {
+  width: 240px;
+  height: 240px;
+}
+
+#overall-score .score-circle.large .number {
+  font-size: 96px;
+}
+
+@media (max-width: 768px) {
+  #overall-score .score-circle.large svg {
+    width: 200px;
+    height: 200px;
+  }
+  #overall-score .score-circle.large .number {
+    font-size: 80px;
+  }
+  #overall-score {
+    padding: 2rem 1rem;
+  }
+}
+
+/* Title & grade styling */
+#page-title-display {
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+#overall-grade {
+  transition: color 0.6s ease;
+}
+
+
+
+
+
+
+
 /* Module Cards - Clean Glass + Grade Border */
 .score-card {
   background: rgba(255, 255, 255, 0.08);       /* very light translucent in light mode */
@@ -258,43 +302,24 @@ body { transition: background-color 0.3s ease; }
 
 
 
-
-/* Larger overall card sizing */
-#overall-score {
-  padding: 2.5rem 1.5rem;
+/* Module grade display below title */
+.module-grade {
+  transition: opacity 0.6s ease, color 0.6s ease;
 }
 
-#overall-score .score-circle.large svg {
-  width: 240px;
-  height: 240px;
+.module-grade.text-red-500 { color: #ef4444; }
+.module-grade.text-orange-500 { color: #f97316; }
+.module-grade.text-green-500 { color: #22c55e; }
+
+.dark .module-grade.text-red-500,
+.dark .module-grade.text-orange-500,
+.dark .module-grade.text-green-500 {
+  filter: brightness(1.2); /* slight boost for dark mode contrast */
 }
 
-#overall-score .score-circle.large .number {
-  font-size: 96px;
-}
 
-@media (max-width: 768px) {
-  #overall-score .score-circle.large svg {
-    width: 200px;
-    height: 200px;
-  }
-  #overall-score .score-circle.large .number {
-    font-size: 80px;
-  }
-  #overall-score {
-    padding: 2rem 1rem;
-  }
-}
 
-/* Title & grade styling */
-#page-title-display {
-  max-width: 90%;
-  margin: 0 auto;
-}
 
-#overall-grade {
-  transition: color 0.6s ease;
-}
 
 
 

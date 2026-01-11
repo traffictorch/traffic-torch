@@ -132,6 +132,44 @@ const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encod
         const result = mod.fn(html, doc, analysisUrl);
         scores.push(result.score);
         updateScore(`${mod.id}-score`, result.score);
+        
+      
+      
+      
+        
+        // Add grade + emoji for each module card
+const moduleScore = result.score;
+const gradeElement = document.querySelector(`.module-grade[data-module="${mod.id}"]`);
+if (gradeElement) {
+  let gradeText = '';
+  let gradeEmoji = '';
+  let colorClass = '';
+
+  if (moduleScore < 60) {
+    gradeText = 'Needs Work';
+    gradeEmoji = '❌';
+    colorClass = 'text-red-500';
+  } else if (moduleScore < 80) {
+    gradeText = 'Room for Improvement';
+    gradeEmoji = '⚠️';
+    colorClass = 'text-orange-500';
+  } else {
+    gradeText = 'Excellent';
+    gradeEmoji = '🟢';
+    colorClass = 'text-green-500';
+  }
+
+  gradeElement.querySelector('.grade-text').textContent = gradeText;
+  gradeElement.querySelector('.grade-emoji').textContent = gradeEmoji;
+  gradeElement.classList.add(colorClass);
+  gradeElement.classList.remove('opacity-0');
+  gradeElement.classList.add('opacity-100');
+}
+
+
+
+        
+        
         populateIssues(`${mod.id}-issues`, result.issues);
         result.issues.forEach(iss => {
           allIssues.push({ ...iss, module: mod.name, impact: 100 - result.score });
