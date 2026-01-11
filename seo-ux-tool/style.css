@@ -202,7 +202,7 @@ body { transition: background-color 0.3s ease; }
 
 /* ── Score Cards ─────────────────────────────────────────────── */
 .score-card {
-  background: theme('colors.gray.800' / 0.4);     /* light mode default */
+  background: rgba(31, 41, 55, 0.4);          /* gray-800 / 0.4 light mode */
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: 1.5rem;
@@ -215,10 +215,10 @@ body { transition: background-color 0.3s ease; }
 }
 
 .dark .score-card {
-  background: theme('colors.gray.200' / 0.15);    /* dark mode — very light & translucent */
+  background: rgba(229, 231, 235, 0.15);     /* gray-200 / 0.15 dark mode */
 }
 
-/* Subtle glow effect - toned down */
+/* Subtle glow (keep but make it softer) */
 .score-card::before {
   content: '';
   position: absolute;
@@ -226,13 +226,13 @@ body { transition: background-color 0.3s ease; }
   background: linear-gradient(45deg, #000000);
   border-radius: inherit;
   z-index: -1;
-  opacity: 0.12;
-  filter: blur(16px);
+  opacity: 0.08;
+  filter: blur(20px);
   transition: opacity 0.6s ease;
 }
 
 .score-card:hover::before {
-  opacity: 0.25;
+  opacity: 0.18;
 }
 
 .score-card:hover {
@@ -240,63 +240,67 @@ body { transition: background-color 0.3s ease; }
   box-shadow: 0 16px 32px rgba(0,0,0,0.25);
 }
 
-/* Grade borders using Tailwind compatible classes */
+/* Grade borders */
 .score-card.red    { border-color: #f87171; }
 .score-card.orange { border-color: #fb923c; }
 .score-card.green  { border-color: #34d399; }
 
-/* Better contrast for text in both modes */
+/* Better text contrast */
 .score-card .label,
 .score-card .number,
 .score-card button {
   transition: color 0.3s ease;
 }
 
-.dark .score-card .label {
-  color: #111827 !important;     /* almost black in dark mode for contrast */
-}
-
+.dark .score-card .label,
 .dark .score-card button {
-  color: #111827 !important;
+  color: #111827 !important;   /* gray-900 / almost black - best contrast on light gray-200 bg */
 }
 
-/* Keep thin outline on numbers & progress - works in both modes */
+/* ── SVG Circle Elements ─────────────────────────────────────── */
+
+/* Background circle (subtle ring behind progress) */
+.score-card .bg {
+  stroke: rgba(255,255,255,0.18);
+  stroke-width: 8px;
+  fill: none;
+}
+
+.dark .score-card .bg {
+  stroke: rgba(0,0,0,0.4);
+}
+
+/* Progress ring - IMPORTANT: no fixed stroke color here → JS controls it */
+.score-card .progress {
+  fill: none;
+  stroke-width: 10px;                    /* thick enough to be visible, thin enough for color */
+  stroke-linecap: round;
+  transition: stroke-dasharray 1s ease, stroke 0.6s ease;
+  paint-order: fill stroke;              /* ← KEY CHANGE: fill (color) drawn first, stroke second */
+}
+
+/* No default stroke color → JS classes stroke-red-400 etc will apply fully */
+.score-card .progress,
+.dark .score-card .progress {
+  stroke: transparent;                   /* prevent any base color interference */
+}
+
+/* Number text */
 .score-card .number {
+  font-size: 48px;
+  font-weight: 900;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: currentColor;
   paint-order: stroke fill;
   stroke: #000000;
-  stroke-width: 2px;           /* thin black stroke in light mode */
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke-width: 2.5px;
   transition: fill 0.6s ease, stroke 0.6s ease;
 }
 
 .dark .score-card .number {
-  stroke: #ffffff;             /* white stroke in dark mode */
-  stroke-width: 2.5px;
-}
-
-.score-card .progress {
-  paint-order: stroke fill;
-  stroke: #000000;
-  stroke-width: 4px;           /* much thinner — lets color show */
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transition: stroke 0.6s ease;
-}
-
-.dark .score-card .progress {
-  stroke: #ffffff;             /* white stroke in dark mode for contrast */
-  stroke-width: 3px;           /* even thinner in dark */
-}
-
-.score-card .bg {
-  stroke: rgba(255,255,255,0.25);
-  stroke-width: 8px;
-}
-
-.dark .score-card .bg {
-  stroke: rgba(0,0,0,0.35);
-  stroke-width: 8px;
+  stroke: #ffffff;
+  stroke-width: 3px;
 }
   
   
