@@ -239,23 +239,36 @@
   
   
 
-<div id="overall-container" class="my-20">
-  <h2 class="text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+<div id="overall-container" class="my-16 md:my-24">
+  <h2 class="text-4xl md:text-5xl font-black text-center mb-10 md:mb-14 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
     Overall SEO & UX Health Score
   </h2>
   <div class="flex justify-center">
-    <div id="overall-score" class="score-card">
-      <div class="score-circle large mb-8" data-score="0">
-        <svg viewBox="0 0 200 200">
-          <circle class="bg" cx="100" cy="100" r="90"/>
-          <circle class="progress" cx="100" cy="100" r="90"/>
-          <text x="100" y="110" class="number">0</text>
+    <div id="overall-score" class="score-card max-w-md w-full md:max-w-lg">
+      <div class="score-circle large mb-10" data-score="0">
+        <svg viewBox="0 0 240 240">
+          <circle class="bg" cx="120" cy="120" r="108"/>
+          <circle class="progress" cx="120" cy="120" r="108"/>
+          <text x="120" y="132" class="number">0</text>
         </svg>
       </div>
-      <div class="text-3xl font-bold mt-8 text-gray-500">Overall Score</div>
+      <div id="page-title-display" class="text-xl md:text-2xl font-semibold text-center text-gray-800 dark:text-gray-200 mb-4 px-6 line-clamp-2">
+        Loading title...
+      </div>
+      <div id="overall-grade" class="text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3">
+        <span class="grade-emoji text-3xl"></span>
+        <span class="grade-text">Evaluating...</span>
+      </div>
+      <div class="text-2xl md:text-3xl font-bold mt-8 text-gray-600 dark:text-gray-300 text-center">
+        Overall Score
+      </div>
     </div>
   </div>
 </div>
+
+
+
+
 <div id="results" class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
   <section id="seo-score" class="score-card p-8 text-center">
     <div class="score-circle" data-score="0">

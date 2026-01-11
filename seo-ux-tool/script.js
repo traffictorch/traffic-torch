@@ -140,6 +140,42 @@ const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encod
       }
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       updateScore('overall-score', overallScore);
+      
+      
+      
+      
+      
+      // Display truncated page title
+const titleElement = doc.querySelector('title');
+let pageTitle = titleElement ? titleElement.textContent.trim() : 'Example Domain';
+if (pageTitle.length > 65) {
+  pageTitle = pageTitle.substring(0, 62) + '...';
+}
+document.getElementById('page-title-display').textContent = pageTitle;
+
+// Calculate and display grade + emoji
+let gradeText = '';
+let gradeEmoji = '';
+if (overallScore < 60) {
+  gradeText = 'Needs Work';
+  gradeEmoji = '❌';
+  document.getElementById('overall-grade').className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-red-500';
+} else if (overallScore < 80) {
+  gradeText = 'Room for Improvement';
+  gradeEmoji = '⚠️';
+  document.getElementById('overall-grade').className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-orange-500';
+} else {
+  gradeText = 'Excellent';
+  gradeEmoji = '🟢';
+  document.getElementById('overall-grade').className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-green-500';
+}
+document.querySelector('#overall-grade .grade-text').textContent = gradeText;
+document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
+
+
+
+
+
 
       modules.forEach(mod => {
         const card = document.getElementById(`${mod.id}-score`);
