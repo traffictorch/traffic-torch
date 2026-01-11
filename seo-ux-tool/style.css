@@ -202,7 +202,7 @@ body { transition: background-color 0.3s ease; }
 
 /* ── Score Cards ─────────────────────────────────────────────── */
 .score-card {
-  background: rgba(249, 250, 251, 0.35);     /* very light gray in light mode - almost page bg */
+  background: rgba(255, 255, 255, 0.08);       /* very light in light mode - almost transparent */
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: 1.5rem;
@@ -215,10 +215,10 @@ body { transition: background-color 0.3s ease; }
 }
 
 .dark .score-card {
-  background: rgba(229, 231, 235, 0.12);     /* very subtle gray-200 in dark mode */
+  background: rgba(229, 231, 235, 0.10);       /* subtle gray-200 in dark mode */
 }
 
-/* Subtle glow - keep it minimal */
+/* Minimal glow */
 .score-card::before {
   content: '';
   position: absolute;
@@ -226,18 +226,18 @@ body { transition: background-color 0.3s ease; }
   background: linear-gradient(45deg, #000000);
   border-radius: inherit;
   z-index: -1;
-  opacity: 0.06;
+  opacity: 0.05;
   filter: blur(20px);
   transition: opacity 0.6s ease;
 }
 
 .score-card:hover::before {
-  opacity: 0.14;
+  opacity: 0.12;
 }
 
 .score-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 16px 32px rgba(0,0,0,0.18);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
 }
 
 /* Grade borders */
@@ -245,7 +245,7 @@ body { transition: background-color 0.3s ease; }
 .score-card.orange { border-color: #fb923c; }
 .score-card.green  { border-color: #34d399; }
 
-/* Text contrast */
+/* Text/labels contrast */
 .score-card .label,
 .score-card .number,
 .score-card button {
@@ -254,33 +254,38 @@ body { transition: background-color 0.3s ease; }
 
 .dark .score-card .label,
 .dark .score-card button {
-  color: #111827 !important;
+  color: #111827 !important;   /* dark text on light translucent bg */
 }
 
 /* ── SVG Circles ─────────────────────────────────────────────── */
 
-/* Background subtle ring */
+/* Background ring (subtle static base) */
 .score-card .bg {
-  stroke: rgba(0,0,0,0.15);
+  stroke: rgba(0,0,0,0.12);
   stroke-width: 8px;
   fill: none;
 }
 
 .dark .score-card .bg {
-  stroke: rgba(255,255,255,0.20);
+  stroke: rgba(255,255,255,0.18);
 }
 
-/* Progress ring - NO default color → JS controls it fully */
+/* Progress ring - LET JS CONTROL COLOR FULLY */
 .score-card .progress {
   fill: none;
-  stroke-width: 12px;                       /* thick ring */
+  stroke-width: 12px;
   stroke-linecap: round;
   transition: stroke-dasharray 1s ease, stroke 0.6s ease;
-  paint-order: fill stroke;                 /* color first = visible grade color */
-  stroke: transparent !important;           /* critical: no base color interference */
+  paint-order: fill stroke;
 }
 
-/* Number text with thin contrast stroke */
+/* No stroke override at all → JS stroke-red-400 / orange-400 / green-400 will show */
+.score-card .progress,
+.dark .score-card .progress {
+  stroke: inherit !important;   /* critical: inherit lets JS class win */
+}
+
+/* Number with thin contrast stroke */
 .score-card .number {
   font-size: 48px;
   font-weight: 900;
