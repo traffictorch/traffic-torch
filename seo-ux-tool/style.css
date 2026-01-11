@@ -263,23 +263,40 @@ body { transition: background-color 0.3s ease; }
 /* Keep thin outline on numbers & progress - works in both modes */
 .score-card .number {
   paint-order: stroke fill;
-  stroke: #ffffff;
-  stroke-width: 3px;
+  stroke: #000000;
+  stroke-width: 2px;           /* thin black stroke in light mode */
   stroke-linecap: round;
   stroke-linejoin: round;
+  transition: fill 0.6s ease, stroke 0.6s ease;
+}
+
+.dark .score-card .number {
+  stroke: #ffffff;             /* white stroke in dark mode */
+  stroke-width: 2.5px;
 }
 
 .score-card .progress {
   paint-order: stroke fill;
   stroke: #000000;
-  stroke-width: 12px;
+  stroke-width: 4px;           /* much thinner — lets color show */
   stroke-linecap: round;
   stroke-linejoin: round;
+  transition: stroke 0.6s ease;
+}
+
+.dark .score-card .progress {
+  stroke: #ffffff;             /* white stroke in dark mode for contrast */
+  stroke-width: 3px;           /* even thinner in dark */
 }
 
 .score-card .bg {
-  stroke: rgba(255,255,255,0.18);
-  stroke-width: 10;
+  stroke: rgba(255,255,255,0.25);
+  stroke-width: 8px;
+}
+
+.dark .score-card .bg {
+  stroke: rgba(0,0,0,0.35);
+  stroke-width: 8px;
 }
   
   
