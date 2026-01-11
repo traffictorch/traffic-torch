@@ -18,36 +18,46 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'https://' + trimmed;
   }
 
-  function updateScore(id, score) {
-    const circle = document.querySelector('#' + id + ' .score-circle');
-    const card = circle?.closest('.score-card');
-    if (!circle) return;
-    score = Math.round(score);
-    const radius = id === 'overall-score' || id === 'forecast-circle' ? 90 : 54;
-    const circumference = 2 * Math.PI * radius;
-    const dash = (score / 100) * circumference;
-    const progress = circle.querySelector('.progress');
-    progress.style.strokeDasharray = `${dash} ${circumference}`;
-    const num = circle.querySelector('.number');
-    num.textContent = score;
-    num.style.opacity = '1';
-    progress.classList.remove('stroke-red-400', 'stroke-orange-400', 'stroke-green-400');
-    num.classList.remove('text-red-400', 'text-orange-400', 'text-green-400');
-    if (card) card.classList.remove('red', 'orange', 'green');
-    if (score < 60) {
-      progress.classList.add('stroke-red-400');
-      num.classList.add('text-red-400');
-      if (card) card.classList.add('red');
-    } else if (score < 80) {
-      progress.classList.add('stroke-orange-400');
-      num.classList.add('text-orange-400');
-      if (card) card.classList.add('orange');
-    } else {
-      progress.classList.add('stroke-green-400');
-      num.classList.add('text-green-400');
-      if (card) card.classList.add('green');
-    }
+function updateScore(id, score) {
+  const circle = document.querySelector('#' + id + ' .score-circle');
+  const card = circle?.closest('.score-card');
+  if (!circle) return;
+
+  score = Math.round(score);
+  const radius = id === 'overall-score' ? 108 : 54;  // updated for larger overall
+  const circumference = 2 * Math.PI * radius;
+  const dash = (score / 100) * circumference;
+
+  const progress = circle.querySelector('.progress');
+  progress.style.strokeDasharray = `${dash} ${circumference}`;
+
+  const num = circle.querySelector('.number');
+  num.textContent = score;
+  num.style.opacity = '1';
+
+  // Remove old classes
+  progress.classList.remove('stroke-red-400', 'stroke-orange-400', 'stroke-green-400');
+  num.classList.remove('text-red-400', 'text-orange-400', 'text-green-400');
+  if (card) card.classList.remove('red', 'orange', 'green');
+
+  // Apply new 3-tier grading
+  let colorClass;
+  if (score < 60) {
+    colorClass = 'red';
+    progress.classList.add('stroke-red-400');
+    num.classList.add('text-red-400');
+  } else if (score < 80) {
+    colorClass = 'orange';
+    progress.classList.add('stroke-orange-400');
+    num.classList.add('text-orange-400');
+  } else {
+    colorClass = 'green';
+    progress.classList.add('stroke-green-400');
+    num.classList.add('text-green-400');
   }
+
+  if (card) card.classList.add(colorClass);
+}
 
   function populateIssues(id, issues) {
     const ul = document.getElementById(id);
