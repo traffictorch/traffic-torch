@@ -240,7 +240,6 @@ document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
             { text: 'Meta description present & optimal', passed: !modIssues.some(i => i.issue.toLowerCase().includes('meta description')) },
             { text: 'Main heading includes keyword', passed: !modIssues.some(i => i.issue.toLowerCase().includes('main heading') || i.issue.toLowerCase().includes('keyword')) },
             { text: 'Structured data (schema) detected', passed: !modIssues.some(i => i.issue.toLowerCase().includes('schema') || i.issue.toLowerCase().includes('structured data')) },
-            { text: 'Canonical tag present', passed: !modIssues.some(i => i.issue.toLowerCase().includes('canonical')) },
             { text: 'All images have meaningful alt text', passed: !modIssues.some(i => i.issue.toLowerCase().includes('alt text')) }
           ];
         } else if (mod.id === 'mobile') {
@@ -852,14 +851,6 @@ if (failedMetrics.length > 0) {
       issues.push({
         issue: 'Page blocked from Google (noindex)',
         fix: 'The noindex directive prevents the page from appearing in search results, which is only useful for staging or private pages. Remove it or set to index,follow for public pages you want visible. Always double-check before deploying changes.'
-      });
-    }
-
-    if (!doc.querySelector('link[rel="canonical"]')) {
-      score -= 8;
-      issues.push({
-        issue: 'Missing canonical tag',
-        fix: 'Canonical tags tell search engines which URL is the main version to avoid duplicate content issues. Add one pointing to the preferred URL, especially on sites with parameters or similar pages. This consolidates ranking power to a single page.'
       });
     }
 
