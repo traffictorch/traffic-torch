@@ -86,6 +86,180 @@ body { transition: background-color 0.3s ease; }
 
 
 
+
+
+/* Score Circles - Perfect Centering */
+.score-circle {
+  margin: 0 auto 1.5rem auto;
+}
+.score-circle svg {
+  width: 120px;
+  height: 120px;
+  display: block;
+  margin: 0 auto;
+}
+.score-circle .bg {
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 10;
+  fill: none;
+}
+.score-circle .progress {
+  stroke-width: 10;
+  stroke-linecap: round;
+  fill: none;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dasharray 1s ease, stroke 0.6s ease;
+}
+.score-circle .number {
+  font-size: 48px;
+  font-weight: 900;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  transition: fill 0.6s ease;
+}
+/* Large Overall Circle */
+.score-circle.large svg {
+  width: 200px;
+  height: 200px;
+}
+.score-circle.large .number {
+  font-size: 80px;
+}
+@media (max-width: 768px) {
+  .score-circle.large svg {
+    width: 150px;
+    height: 150px;
+  }
+  .score-circle.large .number {
+    font-size: 60px;
+  }
+}
+/* Grade Colors */
+.stroke-red-400 { stroke: #f87171 !important; }
+.stroke-orange-400 { stroke: #fb923c !important; }
+.stroke-green-400 { stroke: #34d399 !important; }
+.text-red-400 { fill: #f87171 !important; }
+.text-orange-400 { fill: #fb923c !important; }
+.text-green-400 { fill: #34d399 !important; }
+
+/* Module Cards - Clean Glass + Grade Border */
+.score-card {
+  background: rgba(255, 255, 255, 0.08);       /* very light translucent in light mode */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 3rem;
+  padding: 2rem;
+  text-align: center;
+  border: 4px solid transparent;
+  transition: border-color 0.6s ease, transform 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.dark .score-card {
+  background: rgba(229, 231, 235, 0.12);       /* subtle gray-200 translucent in dark mode */
+}
+
+.score-card:hover {
+  transform: translateY(-8px);
+}
+.score-card.red { border-color: #f87171; }
+.score-card.orange { border-color: #fb923c; }
+.score-card.green { border-color: #34d399; }
+
+/* Perfect centering for the large overall score circle */
+#overall-score .score-circle.large {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#overall-score .score-circle.large svg {
+  width: 200px;
+  height: 200px;
+}
+@media (max-width: 768px) {
+  #overall-score .score-circle.large svg {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+/* Subtle neon halo */
+.score-card::before {
+  content: '';
+  position: absolute;
+  top: -2px; left: -2px; right: -2px; bottom: -2px;
+  background: linear-gradient(45deg, #000000);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  filter: blur(16px);
+  transition: opacity 0.5s ease;
+  animation: subtle-glow 8s ease-in-out infinite;
+}
+.score-card:hover::before {
+  opacity: 0.5; /* less intense */
+}
+
+/* Gentle hover lift */
+.score-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Restore grade-based colored borders */
+.score-card.border-red-500 { border: 3px solid #ef4444 !important; }
+.score-card.border-orange-500 { border: 3px solid #f97316 !important; }
+.score-card.border-green-500 { border: 3px solid #22c55e !important; }
+
+/* Labels */
+.score-card .label,
+.score-card > div:last-child {
+  color: #34d399 !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Keep dynamic score number colors (no override) */
+.score-card button {
+  color: white !important;
+}
+.score-card .details {
+  color: #d1d5db !important;
+}
+
+/* Thin black outline around score numbers for better contrast on colored rings */
+.score-card .number {
+  paint-order: stroke fill;
+  stroke: #ffffff;
+  stroke-width: 3px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  text-shadow: none !important;
+}
+
+/* Thin black outline around score progress circles for better contrast and definition */
+.score-card .progress {
+  paint-order: stroke fill;
+  stroke: #000000;
+  stroke-width: 12px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Background circle */
+.score-card .bg {
+  stroke: #ffffff;
+  stroke-width: 12px;
+}
+
+
+
+
+
+
+
+
 /* Mobile Preview Frame Base */
 #phone-frame {
   width: min(100%, 375px);
@@ -195,144 +369,6 @@ body { transition: background-color 0.3s ease; }
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
 }
 
-
-
-
-
-
-/* ── Score Cards ─────────────────────────────────────────────── */
-.score-card {
-  background: rgba(255, 255, 255, 0.06);       /* almost transparent in light mode - blends with page */
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 1.5rem;
-  padding: 2rem;
-  text-align: center;
-  border: 4px solid transparent;
-  transition: all 0.4s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.dark .score-card {
-  background: rgba(229, 231, 235, 0.09);       /* very subtle gray-200 in dark mode */
-}
-
-/* Soft hover glow */
-.score-card::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  background: linear-gradient(45deg, #000000);
-  border-radius: inherit;
-  z-index: -1;
-  opacity: 0.04;
-  filter: blur(18px);
-  transition: opacity 0.6s ease;
-}
-
-.score-card:hover::before {
-  opacity: 0.10;
-}
-
-.score-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
-}
-
-/* Grade border colors */
-.score-card.red    { border-color: #f87171; }
-.score-card.orange { border-color: #fb923c; }
-.score-card.green  { border-color: #34d399; }
-
-/* Label & button contrast */
-.score-card .label,
-.score-card button {
-  transition: color 0.3s ease;
-}
-
-.dark .score-card .label,
-.dark .score-card button {
-  color: #111827 !important;
-}
-
-/* ── SVG Progress Circles ────────────────────────────────────── */
-
-/* Subtle static background ring */
-.score-card .bg {
-  stroke: rgba(0,0,0,0.10);
-  stroke-width: 8px;
-  fill: none;
-}
-
-.dark .score-card .bg {
-  stroke: rgba(255,255,255,0.15);
-}
-
-/* Progress ring - JS stroke classes fully control color */
-.score-card .progress {
-  fill: none;
-  stroke-width: 12px;
-  stroke-linecap: round;
-  transition: stroke-dasharray 1.2s ease, stroke 0.7s ease;
-  paint-order: stroke fill;
-}
-
-/* No interference — let Tailwind stroke-red-400 / orange-400 / green-400 show */
-.score-card .progress,
-.dark .score-card .progress {
-  stroke: currentColor !important;   /* inherits JS color class */
-}
-
-/* Number with minimal contrast stroke */
-.score-card .number {
-  fill: currentColor;
-  paint-order: stroke fill;
-  stroke: #000000;
-  stroke-width: 1.5px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transition: fill 0.6s ease, stroke 0.6s ease;
-}
-
-.dark .score-card .number {
-  stroke: #ffffff;
-  stroke-width: 2px;
-}
-  
-  
-  
-  
-  
-  
-  
-  
-/* Mobile preview popup - black background in dark mode */
-#highlight-popup {
-  background: rgba(0, 0, 0, 0.9) !important;
-}
-
-#highlight-popup .popup-content {
-  background: #111827 !important; /* gray-900 */
-  color: #f3f4f6 !important; /* gray-100 */
-  border: 1px solid #374151 !important; /* gray-700 */
-}
-
-#highlight-popup h3 {
-  color: #fb923c !important; /* orange-400 */
-}
-
-#highlight-popup p {
-  color: #e5e7eb !important; /* gray-200 */
-}
-
-#highlight-popup .close {
-  color: #9ca3af !important; /* gray-400 */
-}
-
-#highlight-popup .close:hover {
-  color: #fb923c !important;
-}
 
 
 
