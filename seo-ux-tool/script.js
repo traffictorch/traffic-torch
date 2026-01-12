@@ -696,49 +696,36 @@ if (failedMetrics.length > 0) {
         console.warn('Radar chart failed (non-critical)', chartErr);
       }
 
-      try {
-        const previewIframe = document.getElementById('preview-iframe');
-        const phoneFrame = document.getElementById('phone-frame');
-        const viewToggle = document.getElementById('view-toggle');
-        const deviceToggle = document.getElementById('device-toggle');
-        const highlightOverlays = document.getElementById('highlight-overlays');
-        previewIframe.src = url;
-        let isMobile = true;
-        let isIphone = true;
-        viewToggle.addEventListener('click', () => {
-          isMobile = !isMobile;
-phoneFrame.style.width = isMobile ? '375px' : 'min(100%, 1280px)';
-phoneFrame.style.height = isMobile ? '812px' : 'min(90vh, 900px)';
-phoneFrame.style.margin = isMobile ? '0 auto' : '0';
-phoneFrame.style.transform = isMobile ? 'scale(1)' : 'scale(1)';
-          viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
-        });
-        deviceToggle.addEventListener('click', () => {
-          isIphone = !isIphone;
-          phoneFrame.classList.toggle('iphone-frame', isIphone);
-          phoneFrame.classList.toggle('android-frame', !isIphone);
-          deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
-        });
-        }
+try {
+  const previewIframe = document.getElementById('preview-iframe');
+  const phoneFrame = document.getElementById('phone-frame');
+  const viewToggle = document.getElementById('view-toggle');
+  const deviceToggle = document.getElementById('device-toggle');
+  const highlightOverlays = document.getElementById('highlight-overlays');
 
-    // Close on X or outside click
-    popup.querySelector('.close').addEventListener('click', () => popup.style.display = 'none');
-    popup.addEventListener('click', (e) => {
-      if (e.target === popup) popup.style.display = 'none';
-    });
-  }
+  previewIframe.src = url;
 
-  // Populate content
-  popup.querySelector('h3').textContent = issue.issue;
-  popup.querySelector('p').innerHTML = `<strong class="text-green-600 dark:text-green-400 block mb-2 text-lg">How to fix:</strong><br>${issue.fix}`;
+  let isMobile = true;
+  let isIphone = true;
 
-  // Force show and reset scroll
-  popup.style.display = 'flex';
-  popup.querySelector('.popup-content').scrollTop = 0; // Start at top
+  viewToggle.addEventListener('click', () => {
+    isMobile = !isMobile;
+    phoneFrame.style.width = isMobile ? '375px' : 'min(100%, 1280px)';
+    phoneFrame.style.height = isMobile ? '812px' : 'min(90vh, 900px)';
+    phoneFrame.style.margin = isMobile ? '0 auto' : '0';
+    phoneFrame.style.transform = isMobile ? 'scale(1)' : 'scale(1)';
+    viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
+  });
+
+  deviceToggle.addEventListener('click', () => {
+    isIphone = !isIphone;
+    phoneFrame.classList.toggle('iphone-frame', isIphone);
+    phoneFrame.classList.toggle('android-frame', !isIphone);
+    deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
+  });
+} catch (previewErr) {
+  console.warn('Mobile preview failed (non-critical)', previewErr);
 }
-      } catch (previewErr) {
-        console.warn('Mobile preview failed (non-critical)', previewErr);
-      }
     } catch (err) {
       alert('Failed to analyze — try another site or check the URL');
       console.error(err);
