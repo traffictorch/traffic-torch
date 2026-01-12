@@ -719,8 +719,6 @@ phoneFrame.style.transform = isMobile ? 'scale(1)' : 'scale(1)';
           phoneFrame.classList.toggle('android-frame', !isIphone);
           deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
         });
-        });
-
 
     // Close on X or outside click
     popup.querySelector('.close').addEventListener('click', () => popup.style.display = 'none');
