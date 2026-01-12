@@ -7,7 +7,7 @@ export function renderPriorityAndGains(prioritisedFixes, yourScore, overallScore
   priorityContainer.innerHTML = '';
   gainsContainer.innerHTML = '';
 
-  // Compact Priority Cards (metric name only as title)
+  // Compact Priority Cards - metric name as title only
   if (prioritisedFixes.length > 0) {
     prioritisedFixes.forEach((fix, index) => {
       const rank = index + 1;
@@ -15,18 +15,18 @@ export function renderPriorityAndGains(prioritisedFixes, yourScore, overallScore
       const impact = index === 0 ? '15–25' : index === 1 ? '10–20' : '8–15';
 
       const card = document.createElement('div');
-      card.className = 'rounded-2xl overflow-hidden shadow-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700';
+      card.className = 'rounded-2xl overflow-hidden shadow-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700';
 
       card.innerHTML = `
-        <div class="${rankColor} text-white py-6 text-center">
-          <div class="text-5xl font-black">${rank}</div>
+        <div class="${rankColor} text-white py-5 text-center">
+          <div class="text-4xl font-black">${rank}</div>
         </div>
         <div class="p-6">
-          <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">${fix.title}</h3>
+          <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100">${fix.title}</h3>
           <p class="text-gray-700 dark:text-gray-300 mb-4">
             <strong class="text-green-600 dark:text-green-400">How to fix:</strong> ${fix.how}
           </p>
-          <div class="inline-block px-5 py-2 bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-200 rounded-full font-bold text-sm">
+          <div class="inline-block px-4 py-1.5 bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-200 rounded-full text-sm font-semibold">
             +${impact} points
           </div>
         </div>
@@ -42,7 +42,7 @@ export function renderPriorityAndGains(prioritisedFixes, yourScore, overallScore
     `;
   }
 
-  // Richer Gains Section (matches SEO Intent screenshot style)
+  // Rich Gains Section
   const projected = Math.min(100, yourScore + Math.round((100 - yourScore) * 0.65));
   const scoreDelta = projected - yourScore;
   const trafficBoost = Math.round((100 - yourScore) * 2);
@@ -62,8 +62,8 @@ export function renderPriorityAndGains(prioritisedFixes, yourScore, overallScore
           <p class="font-medium text-gray-700 dark:text-gray-300 mb-4">Top priority fixes & estimated impact:</p>
           <ul class="space-y-3 text-left max-w-lg mx-auto">
             ${prioritisedFixes.map(fix => `
-              <li class="flex justify-between items-center p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl">
-                <span class="text-sm md:text-base">${fix.title}</span>
+              <li class="flex justify-between items-center p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl text-sm">
+                <span>${fix.title}</span>
                 <span class="font-bold text-orange-600">+${Math.round(fix.impact / 3)}–${Math.round(fix.impact / 2)} points</span>
               </li>
             `).join('')}
