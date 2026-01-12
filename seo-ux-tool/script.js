@@ -398,7 +398,15 @@ document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
           expand.appendChild(block);
         });
         
-        
+        // Learn more about [Module]? – BELOW the expanded fixes section
+const learnMore = document.createElement('p');
+learnMore.className = 'mt-10 text-center';
+learnMore.innerHTML = 
+  '<a href="#' + mod.id + '" ' +
+  'class="inline-block text-purple-600 dark:text-purple-400 font-bold text-xl hover:underline">' +
+  'Learn more about ' + mod.name + '?' +
+  '</a>';
+expand.appendChild(learnMore);
         
         
         // More Details toggle for all modules
@@ -1269,7 +1277,7 @@ function analyzeUXDesign(html, doc) {
 
     return { score: Math.max(0, Math.round(score)), issues };
   }
-
+});
 
 // Global smooth hash navigation + auto-expand deep-dive cards
 function handleHashNavigation() {
