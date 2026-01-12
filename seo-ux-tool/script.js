@@ -1,3 +1,5 @@
+import { renderPriorityAndGains } from './priority-gains.js';
+
 import { renderPluginSolutions } from './plugin-solutions.js';
 
 const moduleInfo = {
@@ -274,6 +276,8 @@ if (gradeElement) {
         await new Promise(r => setTimeout(r, 600));
       }
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+      const yourScore = Math.round(overallScore * 0.92); // or adjust weighting
+renderPriorityAndGains(prioritisedFixes, yourScore, overallScore);
       updateScore('overall-score', overallScore);
       
       
@@ -453,75 +457,8 @@ document.querySelectorAll('.more-details').forEach(btn => {
           
 
       allIssues.sort((a, b) => b.impact - a.impact);
-      const top3 = allIssues.slice(0, 3);
+ 
 
-      // Richer educational explanations per module (2-3 high-quality sentences)
-      const explanations = {
-        'On-Page SEO': {
-          what: 'On-page SEO checks how well your page is optimized for search engines using the content and code they can read.',
-          how: 'Write a clear title with your main keyword near the start, keep it 50-60 characters. Add a compelling meta description of 150-160 characters that invites clicks. Use proper headings and include relevant schema markup.',
-          why: 'These elements tell search engines exactly what your page is about and help users decide to click from search results. Strong on-page SEO is one of the biggest factors for better rankings and more traffic.'
-        },
-        'Mobile & PWA': {
-          what: 'Mobile & PWA checks if your site works perfectly on phones and can be added to home screens like an app.',
-          how: 'Add the viewport meta tag for proper scaling. Create and link a manifest.json with app icons. Register a service worker for faster loading and offline readiness.',
-          why: 'Google uses mobile-first indexing — non-mobile-friendly sites rank lower. Good mobile experience keeps users on your page longer and improves overall trust signals.'
-        },
-        'Performance': {
-          what: 'Performance looks at how fast your page loads and feels to users, especially on mobile.',
-          how: 'Compress images to WebP format and lazy-load them. Minify CSS, JS, and HTML. Limit render-blocking resources by deferring non-critical scripts.',
-          why: 'Fast pages reduce bounce rates and improve user satisfaction. Core Web Vitals (speed metrics) are direct ranking factors — faster sites rank higher.'
-        },
-        'Accessibility': {
-          what: 'Accessibility ensures everyone, including people with disabilities, can use your site easily.',
-          how: 'Add meaningful alt text to all images. Use proper heading order and landmarks. Label form fields and declare the page language.',
-          why: 'Good accessibility helps screen readers and keyboard users. Search engines treat it as a quality signal, and it expands your audience while reducing legal risks.'
-        },
-        'Content Quality': {
-          what: 'Content Quality evaluates how deep, readable, and valuable your writing is.',
-          how: 'Write clear, concise sentences with short paragraphs. Use headings every 300-400 words. Add bullet lists, tables, or examples to break up text.',
-          why: 'High-quality content keeps users engaged longer and matches search intent better. Deep, scannable content ranks higher and builds authority.'
-        },
-        'UX Design': {
-          what: 'UX Design checks how easy and intuitive it is for visitors to use your page.',
-          how: 'Highlight 1-3 main calls-to-action with big, contrasting buttons. Reduce clutter and add clear navigation. Test on mobile for tap-friendly elements.',
-          why: 'Great UX lowers bounce rates and increases time on site. Positive user signals tell search engines your page is valuable and trustworthy.'
-        },
-        'Security': {
-          what: 'Security confirms your site is safe and uses HTTPS for encrypted connections.',
-          how: 'Switch to HTTPS with a valid SSL certificate. Update all resources (images, scripts) to HTTPS. Regularly scan for mixed content.',
-          why: 'HTTPS is now a ranking factor and builds user trust. Insecure sites trigger browser warnings, causing visitors to leave immediately.'
-        },
-        'Indexability': {
-          what: 'Indexability ensures search engines can find and include your page in results.',
-          how: 'Remove any noindex meta tags. Add a canonical link to the preferred URL. Use robots.txt carefully.',
-          why: 'If a page can’t be indexed, it’s invisible to search traffic. Proper indexability consolidates authority and prevents duplicate content penalties.'
-        }
-      };
-
-      ['1', '2', '3'].forEach((num, idx) => {
-        const issue = top3[idx];
-        const prefix = `priority${num}`;
-
-        if (issue) {
-          document.getElementById(`${prefix}-issue`).textContent = issue.issue;
-          const exp = explanations[issue.module] || {
-            what: 'This is a critical area needing optimization.',
-            how: 'Follow best practices for this module to resolve the issue quickly.',
-            why: 'Fixing this improves both search visibility and user satisfaction.'
-          };
-
-          document.getElementById(`${prefix}-what`).textContent = exp.what;
-          document.getElementById(`${prefix}-fix`).textContent = exp.how;
-          document.getElementById(`${prefix}-why`).textContent = exp.why;
-        } else {
-          // Positive reinforcement when strong
-          document.getElementById(`${prefix}-issue`).textContent = idx === 0 ? 'Excellent Overall Health' : 'Strong Performance';
-          document.getElementById(`${prefix}-what`).textContent = 'Your page scores highly across key SEO and UX factors — great job!';
-          document.getElementById(`${prefix}-fix`).textContent = 'Keep monitoring and refreshing content regularly to stay ahead.';
-          document.getElementById(`${prefix}-why`).textContent = 'High-scoring pages consistently rank well and deliver outstanding user experiences.';
-        }
-      });
       
 
       resultsWrapper.classList.remove('hidden');
