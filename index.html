@@ -283,26 +283,28 @@
         <span class="grade-text">Evaluating...</span>
       </div>
     </div>
-<button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-<div class="details hidden mt-6 text-left"><ul id="seo-issues" class="space-y-4"></ul></div>
 
-<button class="more-details mt-4 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-full font-bold text-white transition">More Details</button>
-<div class="module-info hidden mt-6 text-left p-6 bg-white/10 dark:bg-black/10 backdrop-blur rounded-2xl border border-white/20">
-  <h4 class="text-xl font-bold mb-4 text-indigo-300">More Details</h4>
-  <div class="what text-gray-200 mb-6">
-    <strong class="text-cyan-300">What is it?</strong><br>
-    <!-- Content will be filled by JS -->
-  </div>
-  <div class="how text-gray-200 mb-6">
-    <strong class="text-blue-300">How to improve?</strong><br>
-    <!-- Content will be filled by JS -->
-  </div>
-  <div class="why text-gray-200">
-    <strong class="text-purple-300">Why it matters?</strong><br>
-    <strong>UX:</strong> <!-- JS --><br>
-    <strong>SEO:</strong> <!-- JS -->
-  </div>
-</div>
+    <!-- Buttons and content now outside score-circle -->
+    <button class="expand mt-6 px-6 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
+    <div class="details hidden mt-6 text-left"><ul id="seo-issues" class="space-y-4"></ul></div>
+
+    <button class="more-details mt-4 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-full font-bold text-white transition">More Details</button>
+    <div class="module-info hidden mt-6 text-left p-6 bg-white/10 dark:bg-black/10 backdrop-blur rounded-2xl border border-white/20">
+      <h4 class="text-xl font-bold mb-4 text-indigo-300">About this module</h4>
+      <div class="what text-gray-200 mb-6">
+        <strong class="text-cyan-300">What is it?</strong><br>
+        <!-- Content filled by JS -->
+      </div>
+      <div class="how text-gray-200 mb-6">
+        <strong class="text-blue-300">How to improve overall:</strong><br>
+        <!-- Content filled by JS -->
+      </div>
+      <div class="why text-gray-200">
+        <strong class="text-purple-300">Why it matters:</strong><br>
+        <strong>UX:</strong> <!-- JS --><br>
+        <strong>SEO:</strong> <!-- JS -->
+      </div>
+    </div>
   </section>
   <section id="mobile-score" class="score-card p-8 text-center">
     <div class="score-circle" data-score="0">
