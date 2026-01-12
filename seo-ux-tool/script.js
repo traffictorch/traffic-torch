@@ -376,7 +376,7 @@ document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
 
         modIssues.forEach(iss => {
           const block = document.createElement('div');
-          block.className = 'p-6 bg-white/5 backdrop-blur rounded-xl border border-white/10';
+          block.className = 'p-2 bg-white/5 backdrop-blur rounded-xl border border-white/10';
           block.innerHTML = `
             <strong class="text-xl block mb-4 text-orange-300">${iss.issue}</strong>
             <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
@@ -413,23 +413,6 @@ document.querySelectorAll('.more-details').forEach(btn => {
 
 
 
-
-
-
-
-        const info = moduleInfo[mod.id];
-        const moduleBlock = document.createElement('div');
-        moduleBlock.className = 'p-6 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 rounded-xl border border-purple-500/20';
-        moduleBlock.innerHTML = `
-          <h4 class="text-lg font-bold mb-4 text-purple-300">About this module</h4>
-          <p class="mb-4 text-gray-200"><span class="font-bold text-cyan-400">What is it?</span><br>${info.what}</p>
-          <p class="mb-4 text-gray-200"><span class="font-bold text-blue-400">How to improve overall:</span><br>${info.how}</p>
-          <p class="text-gray-200"><span class="font-bold text-red-400">Why it matters:</span><br>
-            <strong>UX:</strong> ${info.whyUx}<br>
-            <strong>SEO:</strong> ${info.whySeo}
-          </p>
-        `;
-        expand.appendChild(moduleBlock);
 
         expandBtn.className = 'expand mt-4 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full transition';
         expandBtn.textContent = 'Show Fixes';
