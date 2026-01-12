@@ -51,7 +51,17 @@ const moduleInfo = {
   }
 };
 
-
+// Map short module IDs to deep-dive card IDs used in metric-explanations.js
+const deepDiveIdMap = {
+  seo: 'on-page-seo',
+  mobile: 'mobile-pwa',
+  perf: 'performance',
+  access: 'accessibility',
+  content: 'content-quality',
+  ux: 'ux-design',
+  security: 'security',
+  indexability: 'indexability'
+};
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -202,11 +212,11 @@ if (info) {
     // How [Module] is tested? – FIRST thing inside More Details expanded area
     const howTested = document.createElement('p');
     howTested.className = 'mb-8 text-center';
-    howTested.innerHTML = 
-      '<a href="#' + mod.id + '" ' +
-      'class="inline-block text-purple-600 dark:text-purple-400 font-bold text-xl hover:underline">' +
-      'How ' + mod.name + ' is tested?' +
-      '</a>';
+howTested.innerHTML = 
+  '<a href="#' + deepDiveIdMap[mod.id] + '" ' +
+  'class="inline-block text-blue-600 dark:text-blue-400 font-bold text-xl hover:underline">' +
+  'How ' + mod.name + ' is tested?' +
+  '</a>';
     infoDiv.prepend(howTested);  // <-- prepend = add at the very top
 
     // Existing content
@@ -402,8 +412,8 @@ document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
 const learnMore = document.createElement('p');
 learnMore.className = 'mt-10 text-center';
 learnMore.innerHTML = 
-  '<a href="#' + mod.id + '" ' +
-  'class="inline-block text-purple-600 dark:text-purple-400 font-bold text-xl hover:underline">' +
+  '<a href="#' + deepDiveIdMap[mod.id] + '" ' +
+  'class="inline-block text-blue-600 dark:text-blue-400 font-bold text-xl hover:underline">' +
   'Learn more about ' + mod.name + '?' +
   '</a>';
 expand.appendChild(learnMore);

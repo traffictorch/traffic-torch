@@ -66,17 +66,35 @@ const metricExplanations = [
 ];
 
 function openDetailsFromHash() {
-  if (window.location.hash) {
-    const hash = window.location.hash.substring(1);
-    const target = document.getElementById(hash);
-    if (target) {
-      const details = target.querySelector('details');
-      if (details) {
-        details.open = true;
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+  if (!window.location.hash) return;
+  
+  let hash = window.location.hash.substring(1);
+  
+  // Fallback: if short ID like "seo" is used, try mapped full ID
+  const shortToFull = {
+    seo: 'on-page-seo',
+    mobile: 'mobile-pwa',
+    perf: 'performance',
+    access: 'accessibility',
+    content: 'content-quality',
+    ux: 'ux-design',
+    security: 'security',
+    indexability: 'indexability'
+  };
+  
+  if (shortToFull[hash]) {
+    hash = shortToFull[hash];
+  }
+  
+  const target = document.getElementById(hash);
+  if (target) {
+    const details = target.querySelector('details');
+    if (details) {
+      details.open = true;
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
+}
 }
 
 document.addEventListener('DOMContentLoaded', () => {
