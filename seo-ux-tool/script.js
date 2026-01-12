@@ -1,5 +1,59 @@
 import { renderPluginSolutions } from './plugin-solutions.js';
 
+const moduleInfo = {
+  seo: {
+    what: 'On-Page SEO evaluates the core elements search engines read directly to understand your page topic and relevance.',
+    how: 'Write a unique title (50–60 characters) with your main keyword near the start. Add a compelling meta description (120–158 characters). Use proper heading hierarchy and include structured data where applicable.',
+    whyUx: 'Clear titles and descriptions set accurate user expectations in search results.',
+    whySeo: 'These are the strongest direct ranking factors Google uses.'
+  },
+  mobile: {
+    what: 'Mobile & PWA checks if your site is fully mobile-friendly and ready to be installed as a progressive web app.',
+    how: 'Add the viewport meta tag, create and link a manifest.json file, provide multiple icon sizes, and register a service worker.',
+    whyUx: 'Ensures flawless experience on phones and allows users to add your site to their home screen.',
+    whySeo: 'Google uses mobile-first indexing – non-mobile-friendly sites are penalized.'
+  },
+  perf: {
+    what: 'Performance analyzes page weight, requests, fonts, and render-blocking resources.',
+    how: 'Compress images to WebP format and use lazy-loading. Minify HTML, CSS, and JS. Limit custom fonts and defer non-critical scripts.',
+    whyUx: 'Fast loading keeps users engaged and reduces bounce rates.',
+    whySeo: 'Core Web Vitals are direct ranking factors.'
+  },
+  access: {
+    what: 'Accessibility ensures your site is usable by everyone, including people with disabilities.',
+    how: 'Add meaningful alt text to all images. Use proper heading order and landmarks. Label form fields and declare the page language.',
+    whyUx: 'Makes content available to screen readers and keyboard users.',
+    whySeo: 'Google treats accessibility as a quality signal.'
+  },
+  content: {
+    what: 'Content Quality assesses depth, readability, structure, and scannability.',
+    how: 'Write comprehensive content with short sentences and paragraphs. Use frequent H2/H3 headings and bullet lists. Include tables where helpful.',
+    whyUx: 'Helps users quickly find and understand information.',
+    whySeo: 'In-depth, structured content ranks higher.'
+  },
+  ux: {
+    what: 'UX Design reviews clarity of actions and navigation flow.',
+    how: 'Highlight 1–3 primary CTAs with contrasting buttons. Reduce excessive links. Add breadcrumbs on deep pages.',
+    whyUx: 'Reduces confusion and helps users complete goals faster.',
+    whySeo: 'Better engagement signals improve rankings.'
+  },
+  security: {
+    what: 'Security confirms HTTPS and no mixed content.',
+    how: 'Install a valid SSL certificate. Update all resources to HTTPS. Regularly scan for insecure links.',
+    whyUx: 'Prevents browser warnings that scare users away.',
+    whySeo: 'Google marks HTTP sites as Not Secure and downgrades them.'
+  },
+  indexability: {
+    what: 'Indexability ensures the page can appear in search results.',
+    how: 'Remove noindex tags unless intentional. Add a canonical link to the preferred URL.',
+    whyUx: 'No direct user impact.',
+    whySeo: 'Without indexability the page is invisible in search.'
+  }
+};
+
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
   const form = document.getElementById('url-form');
@@ -358,58 +412,6 @@ document.querySelectorAll('.more-details').forEach(btn => {
 });
 
 
-
-
-const moduleInfo = {
-  seo: {
-    what: 'On-Page SEO evaluates the core elements search engines read directly to understand your page topic and relevance.',
-    how: 'Write a unique title (50–60 characters) with your main keyword near the start. Add a compelling meta description (120–158 characters). Use proper heading hierarchy and include structured data where applicable.',
-    whyUx: 'Clear titles and descriptions set accurate user expectations in search results.',
-    whySeo: 'These are the strongest direct ranking factors Google uses.'
-  },
-  mobile: {
-    what: 'Mobile & PWA checks if your site is fully mobile-friendly and ready to be installed as a progressive web app.',
-    how: 'Add the viewport meta tag, create and link a manifest.json file, provide multiple icon sizes, and register a service worker.',
-    whyUx: 'Ensures flawless experience on phones and allows users to add your site to their home screen.',
-    whySeo: 'Google uses mobile-first indexing – non-mobile-friendly sites are penalized.'
-  },
-  perf: {
-    what: 'Performance analyzes page weight, requests, fonts, and render-blocking resources.',
-    how: 'Compress images to WebP format and use lazy-loading. Minify HTML, CSS, and JS. Limit custom fonts and defer non-critical scripts.',
-    whyUx: 'Fast loading keeps users engaged and reduces bounce rates.',
-    whySeo: 'Core Web Vitals are direct ranking factors.'
-  },
-  access: {
-    what: 'Accessibility ensures your site is usable by everyone, including people with disabilities.',
-    how: 'Add meaningful alt text to all images. Use proper heading order and landmarks. Label form fields and declare the page language.',
-    whyUx: 'Makes content available to screen readers and keyboard users.',
-    whySeo: 'Google treats accessibility as a quality signal.'
-  },
-  content: {
-    what: 'Content Quality assesses depth, readability, structure, and scannability.',
-    how: 'Write comprehensive content with short sentences and paragraphs. Use frequent H2/H3 headings and bullet lists. Include tables where helpful.',
-    whyUx: 'Helps users quickly find and understand information.',
-    whySeo: 'In-depth, structured content ranks higher.'
-  },
-  ux: {
-    what: 'UX Design reviews clarity of actions and navigation flow.',
-    how: 'Highlight 1–3 primary CTAs with contrasting buttons. Reduce excessive links. Add breadcrumbs on deep pages.',
-    whyUx: 'Reduces confusion and helps users complete goals faster.',
-    whySeo: 'Better engagement signals improve rankings.'
-  },
-  security: {
-    what: 'Security confirms HTTPS and no mixed content.',
-    how: 'Install a valid SSL certificate. Update all resources to HTTPS. Regularly scan for insecure links.',
-    whyUx: 'Prevents browser warnings that scare users away.',
-    whySeo: 'Google marks HTTP sites as Not Secure and downgrades them.'
-  },
-  indexability: {
-    what: 'Indexability ensures the page can appear in search results.',
-    how: 'Remove noindex tags unless intentional. Add a canonical link to the preferred URL.',
-    whyUx: 'No direct user impact.',
-    whySeo: 'Without indexability the page is invisible in search.'
-  }
-};
 
 
 
