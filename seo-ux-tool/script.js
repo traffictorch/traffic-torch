@@ -183,137 +183,99 @@ if (!url) {
 }
 
 const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
-    try {
-      const res = await fetch(proxyUrl);
-      if (!res.ok) throw new Error('Network response was not ok');
-      const html = await res.text();
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-
-      const resultsWrapper = document.getElementById('results-wrapper');
-      const modules = [
-        { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
-        { id: 'mobile', name: 'Mobile & PWA', fn: analyzeMobile },
-        { id: 'perf', name: 'Performance', fn: analyzePerf },
-        { id: 'access', name: 'Accessibility', fn: analyzeAccess },
-        { id: 'content', name: 'Content Quality', fn: analyzeContentQuality },
-        { id: 'ux', name: 'UX Design', fn: analyzeUXDesign },
-        { id: 'security', name: 'Security', fn: analyzeSecurity },
-        { id: 'indexability', name: 'Indexability', fn: analyzeIndexability }
-      ];
-      const scores = [];
-      const allIssues = [];
-      for (const mod of modules) {
-        progressText.textContent = `Analyzing ${mod.name}...`;
-        const analysisUrl = mod.id === 'security' ? originalInput : url;
-        const result = mod.fn(html, doc, analysisUrl);
-        // Populate More Details content
-const info = moduleInfo[mod.id];
-if (info) {
-  const infoDiv = document.querySelector(`#${mod.id}-score .module-info`);
-  if (infoDiv) {
-    // How [Module] is tested? – FIRST thing inside More Details expanded area
-    const howTested = document.createElement('p');
-    howTested.className = 'mb-8 text-center';
-howTested.innerHTML = 
-  '<a href="#' + deepDiveIdMap[mod.id] + '" ' +
-  'class="inline-block text-blue-600 dark:text-blue-400 font-bold text-xl hover:underline">' +
-  'How ' + mod.name + ' is tested?' +
-  '</a>';
-    infoDiv.prepend(howTested);  // <-- prepend = add at the very top
-
-    // Existing content
-    infoDiv.querySelector('.what').innerHTML = `<strong class="text-cyan-400">What is it?</strong><br>${info.what}`;
-    infoDiv.querySelector('.how').innerHTML = `<strong class="text-blue-400">How to improve overall:</strong><br>${info.how}`;
-    infoDiv.querySelector('.why').innerHTML = `<strong class="text-purple-400">Why it matters:</strong><br>
-      <strong>UX:</strong> ${info.whyUx}<br>
-      <strong>SEO:</strong> ${info.whySeo}`;
-  }
-}
-        scores.push(result.score);
-        updateScore(`${mod.id}-score`, result.score);
-        
-      
-      
-      
-        
-        // Add grade + emoji for each module card
-const moduleScore = result.score;
-const gradeElement = document.querySelector(`.module-grade[data-module="${mod.id}"]`);
-if (gradeElement) {
-  let gradeText = '';
-  let gradeEmoji = '';
-  let colorClass = '';
-
-  if (moduleScore < 60) {
-    gradeText = 'Needs Work';
-    gradeEmoji = '❌';
-    colorClass = 'text-red-500';
-  } else if (moduleScore < 80) {
-    gradeText = 'Needs Improvement';
-    gradeEmoji = '⚠️';
-    colorClass = 'text-orange-500';
-  } else {
-    gradeText = 'Excellent';
-    gradeEmoji = '🟢';
-    colorClass = 'text-green-500';
-  }
-
-  gradeElement.querySelector('.grade-text').textContent = gradeText;
-  gradeElement.querySelector('.grade-emoji').textContent = gradeEmoji;
-  gradeElement.classList.add(colorClass);
-  gradeElement.classList.remove('opacity-0');
-  gradeElement.classList.add('opacity-100');
-}
-
-
-
-        
-        
-        populateIssues(`${mod.id}-issues`, result.issues);
-        result.issues.forEach(iss => {
-          allIssues.push({ ...iss, module: mod.name, impact: 100 - result.score });
-        });
-        await new Promise(r => setTimeout(r, 600));
+try {
+  const res = await fetch(proxyUrl);
+  if (!res.ok) throw new Error('Network response was not ok');
+  const html = await res.text();
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const resultsWrapper = document.getElementById('results-wrapper');
+  const modules = [
+    { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
+    { id: 'mobile', name: 'Mobile & PWA', fn: analyzeMobile },
+    { id: 'perf', name: 'Performance', fn: analyzePerf },
+    { id: 'access', name: 'Accessibility', fn: analyzeAccess },
+    { id: 'content', name: 'Content Quality', fn: analyzeContentQuality },
+    { id: 'ux', name: 'UX Design', fn: analyzeUXDesign },
+    { id: 'security', name: 'Security', fn: analyzeSecurity },
+    { id: 'indexability', name: 'Indexability', fn: analyzeIndexability }
+  ];
+  const scores = [];
+  const allIssues = [];
+  for (const mod of modules) {
+    progressText.textContent = `Analyzing ${mod.name}...`;
+    const analysisUrl = mod.id === 'security' ? originalInput : url;
+    const result = mod.fn(html, doc, analysisUrl);
+    // Populate More Details content
+    const info = moduleInfo[mod.id];
+    if (info) {
+      const infoDiv = document.querySelector(`#${mod.id}-score .module-info`);
+      if (infoDiv) {
+        const howTested = document.createElement('p');
+        howTested.className = 'mb-8 text-center';
+        howTested.innerHTML =
+          '<a href="#' + deepDiveIdMap[mod.id] + '" ' +
+          'class="inline-block text-blue-600 dark:text-blue-400 font-bold text-xl hover:underline">' +
+          'How ' + mod.name + ' is tested?' +
+          '</a>';
+        infoDiv.prepend(howTested);
+        infoDiv.querySelector('.what').innerHTML = `<strong class="text-cyan-400">What is it?</strong><br>${info.what}`;
+        infoDiv.querySelector('.how').innerHTML = `<strong class="text-blue-400">How to improve overall:</strong><br>${info.how}`;
+        infoDiv.querySelector('.why').innerHTML = `<strong class="text-purple-400">Why it matters:</strong><br>
+          <strong>UX:</strong> ${info.whyUx}<br>
+          <strong>SEO:</strong> ${info.whySeo}`;
       }
-      const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
-      // Create prioritisedFixes right after collecting all issues (fixes TDZ error)
-allIssues.sort((a, b) => b.impact - a.impact);
-const top3 = allIssues.slice(0, 3);
+    }
+    scores.push(result.score);
+    updateScore(`${mod.id}-score`, result.score);
+    // Add grade + emoji for each module card
+    const moduleScore = result.score;
+    const gradeElement = document.querySelector(`.module-grade[data-module="${mod.id}"]`);
+    if (gradeElement) {
+      let gradeText = '';
+      let gradeEmoji = '';
+      let colorClass = '';
+      if (moduleScore < 60) {
+        gradeText = 'Needs Work';
+        gradeEmoji = '❌';
+        colorClass = 'text-red-500';
+      } else if (moduleScore < 80) {
+        gradeText = 'Needs Improvement';
+        gradeEmoji = '⚠️';
+        colorClass = 'text-orange-500';
+      } else {
+        gradeText = 'Excellent';
+        gradeEmoji = '🟢';
+        colorClass = 'text-green-500';
+      }
+      gradeElement.querySelector('.grade-text').textContent = gradeText;
+      gradeElement.querySelector('.grade-emoji').textContent = gradeEmoji;
+      gradeElement.classList.add(colorClass);
+      gradeElement.classList.remove('opacity-0');
+      gradeElement.classList.add('opacity-100');
+    }
+    populateIssues(`${mod.id}-issues`, result.issues);
+    result.issues.forEach(iss => {
+      allIssues.push({ ...iss, module: mod.name, impact: 100 - result.score });
+    });
+    await new Promise(r => setTimeout(r, 600));
+  }
+  const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+  updateScore('overall-score', overallScore);
 
-const prioritisedFixes = top3.map(issue => ({
-  title: issue.issue,                    // e.g. "Title too short (14 characters)"
-  what: `This metric (${issue.issue.toLowerCase().split('(')[0].trim()}) is failing on your page.`,
-  how: issue.fix,                        // the specific fix from your analysis functions
-  why: 'Improving this metric boosts crawlability, relevance, user experience, or technical health – directly impacting rankings and AI visibility.',
-  emoji: '⚠️',                           // simple warning emoji
-  impact: issue.impact || (100 - overallScore)  // use per-issue impact if set, fallback to overall delta
-}));
-
-  const styleMap = {
-    'On-Page SEO': { gradient: 'from-blue-50 to-indigo-50', color: 'text-blue-700', emoji: '🔍' },
-    'Mobile & PWA': { gradient: 'from-purple-50 to-pink-50', color: 'text-purple-700', emoji: '📱' },
-    'Performance': { gradient: 'from-amber-50 to-orange-50', color: 'text-amber-700', emoji: '⚡' },
-    'Accessibility': { gradient: 'from-teal-50 to-emerald-50', color: 'text-teal-700', emoji: '♿' },
-    'Content Quality': { gradient: 'from-cyan-50 to-blue-50', color: 'text-cyan-700', emoji: '✍️' },
-    'UX Design': { gradient: 'from-rose-50 to-pink-50', color: 'text-rose-700', emoji: '🖱️' },
-    'Security': { gradient: 'from-red-50 to-rose-50', color: 'text-red-700', emoji: '🔒' },
-    'Indexability': { gradient: 'from-gray-50 to-slate-50', color: 'text-gray-700', emoji: '📌' }
-  };
-
-  const style = styleMap[issue.module] || { gradient: 'from-gray-100 to-gray-200', color: 'text-gray-700', emoji: '⚙️' };
-
-  return {
+  // Create prioritisedFixes (per-metric, no module explanations)
+  allIssues.sort((a, b) => b.impact - a.impact);
+  const top3 = allIssues.slice(0, 3);
+  const prioritisedFixes = top3.map(issue => ({
     title: issue.issue,
-    what: exp.what,
-    how: issue.fix || exp.how,
-    why: exp.why,
-    emoji: style.emoji,
-    gradient: style.gradient,
-    color: style.color
-  };
-});
-      const yourScore = Math.round(overallScore * 0.92); // or adjust weighting
-renderPriorityAndGains(prioritisedFixes, yourScore, overallScore);
+    how: issue.fix,
+    what: `Failing metric: ${issue.issue.toLowerCase().split('(')[0].trim()}`,
+    why: 'Improving this metric strengthens on-page signals, crawlability, or user experience.',
+    emoji: '⚠️',
+    impact: issue.impact || (100 - overallScore)
+  }));
+
+  const yourScore = Math.round(overallScore * 0.92);
+  renderPriorityAndGains(prioritisedFixes, yourScore, overallScore);
       updateScore('overall-score', overallScore);
       
       
