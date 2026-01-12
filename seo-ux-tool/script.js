@@ -160,6 +160,7 @@ function updateScore(id, score) {
 
 progressContainer.classList.remove('hidden');
 progressText.textContent = 'Fetching page...';
+await new Promise(r => setTimeout(r, 3000)); // force 3 seconds on fetching
 
 const originalInput = input.value.trim();  // Add this line
 const url = cleanUrl(originalInput);       // Add this line - defines 'url' properly
@@ -250,7 +251,7 @@ if (gradeElement) {
         result.issues.forEach(iss => {
           allIssues.push({ ...iss, module: mod.name, impact: 100 - result.score });
         });
-        await new Promise(r => setTimeout(r, 300));
+        await new Promise(r => setTimeout(r, 600));
       }
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       updateScore('overall-score', overallScore);
@@ -357,7 +358,7 @@ document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
         let checklist = card.querySelector('.checklist');
         if (!checklist) {
           checklist = document.createElement('div');
-          checklist.className = 'checklist mt-4 px-4 space-y-1 text-left text-gray-200 text-sm';
+          checklist.className = 'checklist mt-4 px-2 space-y-1 text-left text-gray-200 text-sm';
           expandBtn.parentNode.insertBefore(checklist, expandBtn);
         }
         checklist.innerHTML = checks.map(c => `
@@ -369,7 +370,7 @@ document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
         let expand = card.querySelector('.expand-content');
         if (!expand) {
           expand = document.createElement('div');
-          expand.className = 'expand-content hidden mt-6 px-4 space-y-8 pb-6';
+          expand.className = 'expand-content hidden mt-6 px-2 space-y-8 pb-6';
           card.appendChild(expand);
         }
         expand.innerHTML = '';
