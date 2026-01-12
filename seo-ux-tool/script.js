@@ -247,7 +247,7 @@ if (gradeElement) {
     gradeEmoji = '❌';
     colorClass = 'text-red-500';
   } else if (moduleScore < 80) {
-    gradeText = 'Room for Improvement';
+    gradeText = 'Needs Improvement';
     gradeEmoji = '⚠️';
     colorClass = 'text-orange-500';
   } else {
@@ -296,7 +296,7 @@ if (overallScore < 60) {
   gradeEmoji = '❌';
   document.getElementById('overall-grade').className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-red-500';
 } else if (overallScore < 80) {
-  gradeText = 'Room for Improvement';
+  gradeText = 'Needs Improvement';
   gradeEmoji = '⚠️';
   document.getElementById('overall-grade').className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-orange-500';
 } else {
