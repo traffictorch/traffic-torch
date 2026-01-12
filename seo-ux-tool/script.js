@@ -122,7 +122,7 @@ function updateScore(id, score) {
       li.innerHTML = `
         <div class="p-5 bg-white/10 backdrop-blur rounded-2xl mb-4 border border-white/20">
           <strong class="text-xl block mb-3">${i.issue}</strong>
-          <p class="text-gray-200 leading-relaxed">
+          <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
             <span class="font-bold text-green-400">How to fix:</span><br>
             ${i.fix}
           </p>
@@ -379,7 +379,7 @@ document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
           block.className = 'p-6 bg-white/5 backdrop-blur rounded-xl border border-white/10';
           block.innerHTML = `
             <strong class="text-xl block mb-4 text-orange-300">${iss.issue}</strong>
-            <p class="text-gray-200 leading-relaxed">
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
               <span class="font-bold text-green-400">How to fix:</span><br>
               ${iss.fix}
             </p>
