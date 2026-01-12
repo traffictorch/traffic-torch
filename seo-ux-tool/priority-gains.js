@@ -21,22 +21,22 @@ export function renderPriorityAndGains(prioritisedFixes, yourScore, overallScore
       const card = document.createElement('div');
       card.className = 'rounded-2xl shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden';
 
-      card.innerHTML = `
-        <div class="${rankColor} text-white py-6 text-center">
-          <div class="text-5xl font-black">${rank}</div>
-        </div>
-        <div class="p-6">
-          <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">${fix.title}</h3>
-          <div class="space-y-4 text-gray-700 dark:text-gray-300 text-sm">
-            <p><strong class="text-blue-600 dark:text-blue-400">What:</strong> ${fix.what}</p>
-            <p><strong class="text-green-600 dark:text-green-400">How:</strong> ${fix.how}</p>
-            <p><strong class="text-orange-600 dark:text-orange-400">Why:</strong> ${fix.why}</p>
-          </div>
-          <div class="mt-6 inline-block px-4 py-1.5 bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-200 rounded-full text-sm font-semibold">
-            +${index === 0 ? '15–25' : index === 1 ? '10–20' : '8–15'} points
-          </div>
-        </div>
-      `;
+card.innerHTML = `
+  <div class="${rankColor} text-white py-6 text-center">
+    <div class="text-5xl font-black">${rank}</div>
+  </div>
+  <div class="p-6">
+    <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">${fix.title}</h3>
+    <div class="space-y-4 text-gray-700 dark:text-gray-300 text-sm">
+      <p><strong class="text-blue-600 dark:text-blue-400">What:</strong> ${fix.what}</p>
+      <p><strong class="text-green-600 dark:text-green-400">How to fix:</strong> ${fix.how}</p>
+      <p><strong class="text-orange-600 dark:text-orange-400">Why it matters:</strong> ${fix.why}</p>
+    </div>
+    <div class="mt-6 inline-block px-4 py-1.5 bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-200 rounded-full text-sm font-semibold">
+      +${index === 0 ? '15–25' : index === 1 ? '10–20' : '8–15'} points
+    </div>
+  </div>
+`;
 
       priorityCards.appendChild(card);
     });

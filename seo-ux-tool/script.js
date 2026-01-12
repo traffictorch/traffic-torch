@@ -280,12 +280,14 @@ if (gradeElement) {
 allIssues.sort((a, b) => b.impact - a.impact);
 const top3 = allIssues.slice(0, 3);
 
-const prioritisedFixes = top3.map(issue => {
-  const exp = explanations[issue.module] || {
-    what: 'This is a critical optimization area.',
-    how: 'Implement the recommended fixes for this module.',
-    why: 'Improving this area boosts both rankings and user experience.'
-  };
+const prioritisedFixes = top3.map(issue => ({
+  title: issue.issue,                    // e.g. "Title too short (14 characters)"
+  what: `This metric (${issue.issue.toLowerCase().split('(')[0].trim()}) is failing on your page.`,
+  how: issue.fix,                        // the specific fix from your analysis functions
+  why: 'Improving this metric boosts crawlability, relevance, user experience, or technical health – directly impacting rankings and AI visibility.',
+  emoji: '⚠️',                           // simple warning emoji
+  impact: issue.impact || (100 - overallScore)  // use per-issue impact if set, fallback to overall delta
+}));
 
   const styleMap = {
     'On-Page SEO': { gradient: 'from-blue-50 to-indigo-50', color: 'text-blue-700', emoji: '🔍' },
