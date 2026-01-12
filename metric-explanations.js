@@ -95,7 +95,6 @@ function openDetailsFromHash() {
     }
   }
 }
-}
 
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('metric-cards-container');
