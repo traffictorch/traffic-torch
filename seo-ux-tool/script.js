@@ -707,8 +707,10 @@ if (failedMetrics.length > 0) {
         let isIphone = true;
         viewToggle.addEventListener('click', () => {
           isMobile = !isMobile;
-          phoneFrame.style.width = isMobile ? '375px' : '100%';
-          phoneFrame.style.height = isMobile ? '812px' : '800px';
+phoneFrame.style.width = isMobile ? '375px' : 'min(100%, 1280px)';
+phoneFrame.style.height = isMobile ? '812px' : 'min(90vh, 900px)';
+phoneFrame.style.margin = isMobile ? '0 auto' : '0';
+phoneFrame.style.transform = isMobile ? 'scale(1)' : 'scale(1)';
           viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
         });
         deviceToggle.addEventListener('click', () => {
