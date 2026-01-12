@@ -456,7 +456,40 @@ document.querySelectorAll('.more-details').forEach(btn => {
       });
           
 
-      allIssues.sort((a, b) => b.impact - a.impact);
+// Sort and create prioritisedFixes right after collecting all issues
+allIssues.sort((a, b) => b.impact - a.impact);
+const top3 = allIssues.slice(0, 3);
+
+const prioritisedFixes = top3.map(issue => {
+  const exp = explanations[issue.module] || {
+    what: 'This is a critical optimization area.',
+    how: 'Implement the recommended fixes for this module.',
+    why: 'Improving this area boosts both rankings and user experience.'
+  };
+
+  const styleMap = {
+    'On-Page SEO': { gradient: 'from-blue-50 to-indigo-50', color: 'text-blue-700', emoji: '🔍' },
+    'Mobile & PWA': { gradient: 'from-purple-50 to-pink-50', color: 'text-purple-700', emoji: '📱' },
+    'Performance': { gradient: 'from-amber-50 to-orange-50', color: 'text-amber-700', emoji: '⚡' },
+    'Accessibility': { gradient: 'from-teal-50 to-emerald-50', color: 'text-teal-700', emoji: '♿' },
+    'Content Quality': { gradient: 'from-cyan-50 to-blue-50', color: 'text-cyan-700', emoji: '✍️' },
+    'UX Design': { gradient: 'from-rose-50 to-pink-50', color: 'text-rose-700', emoji: '🖱️' },
+    'Security': { gradient: 'from-red-50 to-rose-50', color: 'text-red-700', emoji: '🔒' },
+    'Indexability': { gradient: 'from-gray-50 to-slate-50', color: 'text-gray-700', emoji: '📌' }
+  };
+
+  const style = styleMap[issue.module] || { gradient: 'from-gray-100 to-gray-200', color: 'text-gray-700', emoji: '⚙️' };
+
+  return {
+    title: issue.issue,
+    what: exp.what,
+    how: issue.fix || exp.how,
+    why: exp.why,
+    emoji: style.emoji,
+    gradient: style.gradient,
+    color: style.color
+  };
+});
  
 
       
