@@ -199,9 +199,9 @@ const info = moduleInfo[mod.id];
 if (info) {
   const infoDiv = document.querySelector(`#${mod.id}-score .module-info`);
   if (infoDiv) {
-    infoDiv.querySelector('.what').innerHTML = `<strong class="text-cyan-300">What is it?</strong><br>${info.what}`;
-    infoDiv.querySelector('.how').innerHTML = `<strong class="text-blue-300">How to improve overall:</strong><br>${info.how}`;
-    infoDiv.querySelector('.why').innerHTML = `<strong class="text-purple-300">Why it matters:</strong><br>
+    infoDiv.querySelector('.what').innerHTML = `<strong class="text-cyan-400">What is it?</strong><br>${info.what}`;
+    infoDiv.querySelector('.how').innerHTML = `<strong class="text-blue-400">How to improve overall:</strong><br>${info.how}`;
+    infoDiv.querySelector('.why').innerHTML = `<strong class="text-purple-400">Why it matters:</strong><br>
       <strong>UX:</strong> ${info.whyUx}<br>
       <strong>SEO:</strong> ${info.whySeo}`;
   }
@@ -378,7 +378,7 @@ document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
           const block = document.createElement('div');
           block.className = 'p-2 bg-white/5 backdrop-blur rounded-xl border border-white/10';
           block.innerHTML = `
-            <strong class="text-xl block mb-4 text-orange-300">${iss.issue}</strong>
+            <strong class="text-xl block mb-4 text-orange-500">${iss.issue}</strong>
             <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
               <span class="font-bold text-green-400">How to fix:</span><br>
               ${iss.fix}
