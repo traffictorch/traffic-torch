@@ -735,30 +735,29 @@ function showPopup(issue) {
   if (!popup) {
     popup = document.createElement('div');
     popup.id = 'highlight-popup';
-    popup.className = 'fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50';
+    popup.className = 'fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 overflow-hidden';
     popup.innerHTML = `
-      <div class="popup-content relative bg-white dark:bg-gray-900 rounded-2xl p-8 max-w-lg w-11/12 m-4 shadow-2xl max-h-[80vh] overflow-y-auto">
-        <span class="close absolute top-4 right-6 text-3xl cursor-pointer text-gray-600 dark:text-gray-300 hover:text-red-500">&times;</span>
-        <h3 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100"></h3>
+      <div class="popup-content relative bg-white dark:bg-gray-900 rounded-2xl p-6 sm:p-8 max-w-lg w-11/12 max-h-[85vh] overflow-y-auto shadow-2xl">
+        <span class="close absolute top-4 right-5 text-4xl cursor-pointer text-gray-600 dark:text-gray-300 hover:text-red-500">&times;</span>
+        <h3 class="text-xl sm:text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100 pr-8"></h3>
         <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
-          <strong class="text-green-600 dark:text-green-400 block mb-2">How to fix:</strong>
+          <strong class="text-green-600 dark:text-green-400 block mb-2 text-lg">How to fix:</strong>
         </p>
       </div>
     `;
     document.body.appendChild(popup);
 
-    // Close on X click or outside
+    // Close on X or outside click
     popup.querySelector('.close').addEventListener('click', () => popup.style.display = 'none');
     popup.addEventListener('click', (e) => {
       if (e.target === popup) popup.style.display = 'none';
     });
   }
 
-  // Populate content
+  // Populate and show
   popup.querySelector('h3').textContent = issue.issue;
-  popup.querySelector('p').innerHTML = `<strong class="text-green-600 dark:text-green-400 block mb-2">How to fix:</strong><br>${issue.fix}`;
-
-  popup.style.display = 'flex'; // Show it
+  popup.querySelector('p').innerHTML = `<strong class="text-green-600 dark:text-green-400 block mb-2 text-lg">How to fix:</strong><br>${issue.fix}`;
+  popup.style.display = 'flex';
 }
       } catch (previewErr) {
         console.warn('Mobile preview failed (non-critical)', previewErr);
