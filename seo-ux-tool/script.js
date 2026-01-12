@@ -1279,27 +1279,50 @@ function analyzeUXDesign(html, doc) {
   }
 });
 
-// Global smooth hash navigation + auto-expand deep-dive cards
-function handleHashNavigation() {
+// Global smooth internal navigation + auto-expand for deep-dive cards
+function handleDeepDiveHash() {
   if (!window.location.hash) return;
-  const id = window.location.hash.substring(1);
-  const target = document.getElementById(id);
-  if (target) {
-    const details = target.querySelector('details');
-    if (details) details.open = true;
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  const targetId = window.location.hash.substring(1);
+  const targetElement = document.getElementById(targetId);
+
+  if (targetElement) {
+    // Auto-open the <details> element inside the deep-dive card
+    const detailsElement = targetElement.querySelector('details');
+    if (detailsElement) {
+      detailsElement.open = true;
+    }
+
+    // Smooth scroll with better centering
+    setTimeout(() => {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest'
+      });
+    }, 100); // small delay helps after details open
   }
 }
 
-document.addEventListener('DOMContentLoaded', handleHashNavigation);
-window.addEventListener('hashchange', handleHashNavigation);
+// Trigger on page load
+document.addEventListener('DOMContentLoaded', () => {
+  handleDeepDiveHash();
+});
 
-document.addEventListener('click', function(e) {
-  const link = e.target.closest('a[href^="#"]');
-  if (link && link.getAttribute('href') !== '#') {
-    e.preventDefault();
-    const hash = link.getAttribute('href');
-    history.pushState(null, null, hash);
+// Trigger on hash change (back/forward button, manual hash)
+window.addEventListener('hashchange', handleDeepDiveHash);
+
+// Intercept clicks on ALL internal # links (prevents default jump)
+document.addEventListener('click', function(event) {
+  const clickedLink = event.target.closest('a[href^="#"]');
+
+  if (clickedLink && clickedLink.getAttribute('href') !== '#') {
+    event.preventDefault(); // stop normal jump
+
+    const targetHash = clickedLink.getAttribute('href');
+    history.replaceState(null, null, targetHash); // update URL
+
+    // Trigger our custom handler
     window.dispatchEvent(new HashChangeEvent('hashchange'));
   }
-});
+}, { passive: false }); // passive:false needed for preventDefault to work in some browsers
