@@ -735,11 +735,11 @@ function showPopup(issue) {
   if (!popup) {
     popup = document.createElement('div');
     popup.id = 'highlight-popup';
-    popup.className = 'fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 overflow-hidden';
+    popup.className = 'fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50';
     popup.innerHTML = `
       <div class="popup-content relative bg-white dark:bg-gray-900 rounded-2xl p-6 sm:p-8 max-w-lg w-11/12 max-h-[85vh] overflow-y-auto shadow-2xl">
         <span class="close absolute top-4 right-5 text-4xl cursor-pointer text-gray-600 dark:text-gray-300 hover:text-red-500">&times;</span>
-        <h3 class="text-xl sm:text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100 pr-8"></h3>
+        <h3 class="text-xl sm:text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100 pr-10"></h3>
         <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
           <strong class="text-green-600 dark:text-green-400 block mb-2 text-lg">How to fix:</strong>
         </p>
@@ -754,10 +754,13 @@ function showPopup(issue) {
     });
   }
 
-  // Populate and show
+  // Populate content
   popup.querySelector('h3').textContent = issue.issue;
   popup.querySelector('p').innerHTML = `<strong class="text-green-600 dark:text-green-400 block mb-2 text-lg">How to fix:</strong><br>${issue.fix}`;
+
+  // Force show and reset scroll
   popup.style.display = 'flex';
+  popup.querySelector('.popup-content').scrollTop = 0; // Start at top
 }
       } catch (previewErr) {
         console.warn('Mobile preview failed (non-critical)', previewErr);
