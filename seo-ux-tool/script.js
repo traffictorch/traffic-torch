@@ -275,10 +275,18 @@ try {
   }));
 
   const yourScore = Math.round(overallScore * 0.92);
-  renderPriorityAndGains(prioritisedFixes, yourScore, overallScore);
+// Delay render until DOM + HTML container is guaranteed ready
+setTimeout(() => {
+  if (document.getElementById('priority-cards-container')) {
+    renderPriorityAndGains(prioritisedFixes, yourScore, overallScore);
+  } else {
+    console.warn('Priority container not found - HTML may not be loaded yet');
+  }
+}, 500); // 500ms delay - safe for GitHub Pages load
       updateScore('overall-score', overallScore);
       
-      
+     console.log('Render attempt for priority/gains - prioritisedFixes length:', prioritisedFixes.length);
+console.log('Your score:', yourScore, 'Overall score:', overallScore); 
       
       
       
