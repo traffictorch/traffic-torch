@@ -1,4 +1,4 @@
-import { renderPriorityAndGains } from './priority-gains.js';
+import { renderPriorityAndGains } from './ai-priority-gains.js';
 
 import { renderPluginSolutions } from './plugin-solutions.js';
 
