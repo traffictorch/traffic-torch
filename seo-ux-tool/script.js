@@ -719,35 +719,8 @@ phoneFrame.style.transform = isMobile ? 'scale(1)' : 'scale(1)';
           phoneFrame.classList.toggle('android-frame', !isIphone);
           deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
         });
-        const mobileIssues = allIssues.filter(i => ['Mobile & PWA', 'Performance', 'Accessibility'].includes(i.module));
-        mobileIssues.slice(0, 3).forEach((issue, idx) => {
-          const hl = document.createElement('div');
-          hl.classList.add('issue-highlight');
-          hl.style.top = `${20 + idx * 25}%`;
-          hl.style.left = '5%';
-          hl.style.width = '90%';
-          hl.style.height = '20%';
-          hl.addEventListener('click', () => {
-            showPopup(issue);
-          });
-          highlightOverlays.appendChild(hl);
         });
-function showPopup(issue) {
-  let popup = document.getElementById('highlight-popup');
-  if (!popup) {
-    popup = document.createElement('div');
-    popup.id = 'highlight-popup';
-    popup.className = 'fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50';
-    popup.innerHTML = `
-      <div class="popup-content relative bg-white dark:bg-gray-900 rounded-2xl p-6 sm:p-8 max-w-lg w-11/12 max-h-[85vh] overflow-y-auto shadow-2xl">
-        <span class="close absolute top-4 right-5 text-4xl cursor-pointer text-gray-600 dark:text-gray-300 hover:text-red-500">&times;</span>
-        <h3 class="text-xl sm:text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100 pr-10"></h3>
-        <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
-          <strong class="text-green-600 dark:text-green-400 block mb-2 text-lg">How to fix:</strong>
-        </p>
-      </div>
-    `;
-    document.body.appendChild(popup);
+
 
     // Close on X or outside click
     popup.querySelector('.close').addEventListener('click', () => popup.style.display = 'none');
