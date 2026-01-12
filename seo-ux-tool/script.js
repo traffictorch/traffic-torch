@@ -199,6 +199,17 @@ const info = moduleInfo[mod.id];
 if (info) {
   const infoDiv = document.querySelector(`#${mod.id}-score .module-info`);
   if (infoDiv) {
+    // How [Module] is tested? – FIRST thing inside More Details expanded area
+    const howTested = document.createElement('p');
+    howTested.className = 'mb-8 text-center';
+    howTested.innerHTML = 
+      '<a href="#' + mod.id + '" ' +
+      'class="inline-block text-purple-600 dark:text-purple-400 font-bold text-xl hover:underline">' +
+      'How ' + mod.name + ' is tested?' +
+      '</a>';
+    infoDiv.prepend(howTested);  // <-- prepend = add at the very top
+
+    // Existing content
     infoDiv.querySelector('.what').innerHTML = `<strong class="text-cyan-400">What is it?</strong><br>${info.what}`;
     infoDiv.querySelector('.how').innerHTML = `<strong class="text-blue-400">How to improve overall:</strong><br>${info.how}`;
     infoDiv.querySelector('.why').innerHTML = `<strong class="text-purple-400">Why it matters:</strong><br>
@@ -365,15 +376,6 @@ document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
             ${c.passed ? '✅' : '❌'} ${c.text}
           </p>
         `).join('');
-        
-        // Link to deep-dive module: How [Name] is tested?
-const howLink = document.createElement('p');
-howLink.className = 'mt-6 text-center';
-howLink.innerHTML = '<a href="#' + mod.id + '" ' +
-                    'class="inline-block text-purple-600 dark:text-purple-400 font-bold text-lg hover:underline">' +
-                    'How ' + mod.name + ' is tested?' +
-                    '</a>';
-expandBtn.parentNode.insertBefore(howLink, expandBtn);
 
         let expand = card.querySelector('.expand-content');
         if (!expand) {
@@ -1266,5 +1268,30 @@ function analyzeUXDesign(html, doc) {
     }
 
     return { score: Math.max(0, Math.round(score)), issues };
+  }
+
+
+// Global smooth hash navigation + auto-expand deep-dive cards
+function handleHashNavigation() {
+  if (!window.location.hash) return;
+  const id = window.location.hash.substring(1);
+  const target = document.getElementById(id);
+  if (target) {
+    const details = target.querySelector('details');
+    if (details) details.open = true;
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', handleHashNavigation);
+window.addEventListener('hashchange', handleHashNavigation);
+
+document.addEventListener('click', function(e) {
+  const link = e.target.closest('a[href^="#"]');
+  if (link && link.getAttribute('href') !== '#') {
+    e.preventDefault();
+    const hash = link.getAttribute('href');
+    history.pushState(null, null, hash);
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
   }
 });
