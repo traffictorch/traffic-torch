@@ -889,7 +889,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
   if (supportedMetrics.length === 0) {
     container.innerHTML = `
       <div class="mt-20 text-center max-w-5xl mx-auto px-4">
-        <h2 class="text-4xl font-bold text-gray-300 mb-6">Excellent!</h2>
+        <h2 class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-6">Excellent!</h2>
         <p class="text-xl text-gray-400">No critical issues requiring plugin recommendations at this time.</p>
         <p class="text-gray-500 mt-4">Keep up the great work — your site is in solid shape.</p>
       </div>
@@ -970,7 +970,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
         const card = document.createElement('div');
         card.className = 'bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-800/50 dark:to-gray-900/50 backdrop-blur rounded-2xl p-6 border border-white/10 hover:border-orange-400/50 transition-all duration-300';
         card.innerHTML = `
-          <h4 class="text-xl font-bold text-orange-300 mb-3">${plugin.name}</h4>
+          <h4 class="text-xl font-bold text-orange-500 mb-3">${plugin.name}</h4>
           <p class="text-gray-800 dark:text-gray-200 text-sm leading-relaxed mb-6">${plugin.desc}</p>
           <div class="flex flex-wrap gap-3">
             ${plugin.link ? `<a href="${plugin.link}" target="_blank" rel="noopener" class="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition">Plugin Library</a>` : ''}
