@@ -160,7 +160,6 @@ function updateScore(id, score) {
 
 progressContainer.classList.remove('hidden');
 progressText.textContent = 'Fetching page...';
-await new Promise(r => setTimeout(r, 3000)); // force 3 seconds on fetching
 
 const originalInput = input.value.trim();  // Add this line
 const url = cleanUrl(originalInput);       // Add this line - defines 'url' properly

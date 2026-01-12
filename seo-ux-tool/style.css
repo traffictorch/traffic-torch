@@ -308,9 +308,6 @@ body { transition: background-color 0.3s ease; }
   filter: brightness(1.2); /* slight boost for dark mode contrast */
 }
 
-
-
-
 /* Ensure 3-grade colors are strong in both modes */
 .score-card.red    { border-color: #f87171 !important; }
 .score-card.orange { border-color: #fb923c !important; }
@@ -329,8 +326,6 @@ body { transition: background-color 0.3s ease; }
 .text-orange-400 { fill: #fb923c !important; }
 .text-green-400  { fill: #34d399 !important; }
 
-
-
 .more-details {
   background: #4f46e5;
   color: white;
@@ -347,6 +342,26 @@ body { transition: background-color 0.3s ease; }
 
 .module-info:not(.hidden) {
   opacity: 1;
+}
+
+
+
+/* Stand-out text links for deep dive */
+.how-tested-link,
+.learn-more-link {
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.how-tested-link:hover,
+.learn-more-link:hover {
+  transform: translateX(4px);
+  text-decoration: underline;
+}
+
+.dark .how-tested-link,
+.dark .learn-more-link {
+  color: #a78bfa; /* lighter purple in dark mode */
 }
 
 
