@@ -365,6 +365,15 @@ document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
             ${c.passed ? '✅' : '❌'} ${c.text}
           </p>
         `).join('');
+        
+        // Link to deep-dive module: How [Name] is tested?
+const howLink = document.createElement('p');
+howLink.className = 'mt-6 text-center';
+howLink.innerHTML = '<a href="#' + mod.id + '" ' +
+                    'class="inline-block text-purple-600 dark:text-purple-400 font-bold text-lg hover:underline">' +
+                    'How ' + mod.name + ' is tested?' +
+                    '</a>';
+expandBtn.parentNode.insertBefore(howLink, expandBtn);
 
         let expand = card.querySelector('.expand-content');
         if (!expand) {
