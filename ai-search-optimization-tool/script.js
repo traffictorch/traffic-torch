@@ -210,7 +210,7 @@ let conversational = 0;
 if (youCount > 5) conversational += 30;
 if (iWeCount > 5) conversational += 25;          // raised threshold for stronger personal tone
 if (questions > 3) conversational += 20;         // slightly higher threshold + better detection
-if (painPointsNearYou > 2 || painPoints > 5) conversational += 20;  // softened + context-aware
+if (painPointsNearYou > 2 || painPoints > 5) conversational += 20;  // softened + context-aware 
       // Readability
       const words = mainText.split(/\s+/).filter(Boolean).length || 1;
       const sentences = (mainText.match(/[.!?]+/g) || []).length || 1;
