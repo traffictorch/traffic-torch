@@ -90,31 +90,47 @@ const hasQuestionH2 = Array.from(doc.querySelectorAll('h2,h3')).some(h => {
       if (hasSteps) answerability += 20;
       if (first300.length > 600) answerability += 10;
       // Structured Data
-      let hasArticle = false;
-      let hasFaqHowto = false;
-      let hasPerson = false;
-      const jsonLdScripts = doc.querySelectorAll('script[type="application/ld+json"]');
-      const hasJsonLd = jsonLdScripts.length > 0;
-      let structuredData = 0;
-      if (hasJsonLd) structuredData += 30;
-      jsonLdScripts.forEach(s => {
-        try {
-          const data = JSON.parse(s.textContent);
-          const types = Array.isArray(data) ? data.map(i => i['@type']) : [data['@type']];
-          if (types.some(t => ['Article', 'BlogPosting'].includes(t))) {
-            structuredData += 30;
-            hasArticle = true;
-          }
-          if (types.some(t => ['FAQPage', 'HowTo'].includes(t))) {
-            structuredData += 20;
-            hasFaqHowto = true;
-          }
-          if (types.includes('Person')) {
-            structuredData += 20;
-            hasPerson = true;
-          }
-        } catch {}
-      });
+let hasArticle = false;
+let hasFaqHowto = false;
+let hasPerson = false;
+const jsonLdScripts = doc.querySelectorAll('script[type="application/ld+json"]');
+let structuredData = 0;
+
+// Require at least one valid parse
+let hasValidJsonLd = false;
+
+jsonLdScripts.forEach(s => {
+  try {
+    const data = JSON.parse(s.textContent);
+    hasValidJsonLd = true;
+    const items = Array.isArray(data) ? data : [data];
+
+    items.forEach(item => {
+      if (!item?.['@type']) return;
+      const type = item['@type'];
+
+      if (['Article', 'BlogPosting', 'NewsArticle', 'TechArticle', 'ScholarlyArticle'].includes(type)) {
+        hasArticle = true;
+      }
+
+      if (['FAQPage', 'HowTo'].includes(type)) {
+        hasFaqHowto = true;
+      }
+
+      if (type === 'Person') {
+        // Prefer when seems connected to article
+        if (hasArticle || item.name?.length > 3 || item.givenName || item.familyName) {
+          hasPerson = true;
+        }
+      }
+    });
+  } catch {}
+});
+
+if (hasValidJsonLd) structuredData += 20;
+if (hasArticle) structuredData += 35;
+if (hasFaqHowto) structuredData += 18;
+if (hasPerson) structuredData += 22;
       // EEAT Signals
 	  const hasAuthor = !!doc.querySelector(
         'meta[name="author"], meta[property="og:author"], meta[property="article:author"], ' +
