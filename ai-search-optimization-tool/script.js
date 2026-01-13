@@ -91,7 +91,6 @@ const hasQuestionH2 = Array.from(doc.querySelectorAll('h2,h3')).some(h => {
       if (hasFAQSchema) answerability += 25;
       if (hasQuestionH2) answerability += 15;
       if (hasSteps) answerability += 20;
-      if (first300.length > 600) answerability += 10;
       // Structured Data
 let hasArticle = false;
 let hasFaqHowto = false;
@@ -407,12 +406,12 @@ if (hasPerson) structuredData += 22;
           if (!hasSteps) addFix('Step-by-step language in opening', 'Include numbered lists with clear actions — AI engines love extractable instructions.');
           if (first300.length <= 600) addFix('Strong opening section (>600 chars)', 'Expand the first section to over 600 characters with valuable content so AI has more to summarize and cite.');
         }
-        if (name === "Structured Data") {
-          if (!hasJsonLd) addFix('JSON-LD structured data present', 'Include at least one valid JSON-LD script block with relevant markup.');
-          if (!hasArticle) addFix('Article/BlogPosting schema type', 'Mark the page as an Article or BlogPosting to confirm editorial content type.');
-          if (!hasFaqHowto) addFix('FAQPage/HowTo schema type', 'Add FAQPage for Q&A content or HowTo for instructional guides.');
-          if (!hasPerson) addFix('Person schema for author', 'Connect the content to a Person entity to prove authorship.');
-        }
+if (name === "Structured Data") {
+  if (!hasValidJsonLd) addFix('JSON-LD structured data present', 'Include at least one valid JSON-LD script block with relevant markup.');
+  if (!hasArticle) addFix('Article/BlogPosting schema type', 'Mark the page as an Article or BlogPosting to confirm editorial content type.');
+  if (!hasFaqHowto) addFix('FAQPage/HowTo schema type', 'Add FAQPage for Q&A content or HowTo for instructional guides.');
+  if (!hasPerson) addFix('Person schema for author', 'Connect the content to a Person entity to prove authorship.');
+}
         if (name === "EEAT Signals") {
           if (!hasAuthor) addFix('Author byline visible', 'Display the writer’s name, photo, and short bio prominently.');
           if (!hasDate) addFix('Publish/update date shown', 'Clearly show when the article was published and last updated.');
