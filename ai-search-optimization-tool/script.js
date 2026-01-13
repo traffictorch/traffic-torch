@@ -64,7 +64,6 @@ const initTool = (form, results, progressContainer) => {
       const mainEl = candidates.find(el => el && el.textContent.trim().length > 1000) || doc.body;
       mainEl.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie, .sidebar').forEach(el => el.remove());
       mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
-      const first300 = mainText.slice(0, 1200);
       
      let answerability = 0;
 
@@ -257,7 +256,7 @@ if (hasPerson) structuredData += 22;
         { emoji: hasQuestionH2 ? '✅' : '❌', text: 'Question-style H2 headings', passed: hasQuestionH2 },
         { emoji: hasSteps ? '✅' : '❌', text: 'Step-by-step language in opening', passed: hasSteps },
         { emoji: first300.length > 600 ? '✅' : '❌', text: 'Strong opening section (>600 chars)', passed: first300.length > 600 },
-        { emoji: hasJsonLd ? '✅' : '❌', text: 'JSON-LD structured data present', passed: hasJsonLd },
+        { emoji: hasValidJsonLd ? '✅' : '❌', text: 'JSON-LD structured data present', passed: hasValidJsonLd },
         { emoji: hasArticle ? '✅' : '❌', text: 'Article/BlogPosting schema type', passed: hasArticle },
         { emoji: hasFaqHowto ? '✅' : '❌', text: 'FAQPage/HowTo schema type', passed: hasFaqHowto },
         { emoji: hasPerson ? '✅' : '❌', text: 'Person schema for author', passed: hasPerson },
@@ -379,10 +378,14 @@ if (hasPerson) structuredData += 22;
           if (passed === true) {
             emoji = '✅';
             titleColor = 'text-green-600 dark:text-green-400';
-          } else if (metricText.includes('Trusted outbound links') || metricText.includes('shown') || metricText.includes('present') || metricText.includes('mentioned')) {
-            emoji = '⚠️';
-            titleColor = 'text-orange-600 dark:text-orange-400';
-          }
+} else if (metricText.includes('Trusted outbound links') || 
+           metricText.includes('shown') || 
+           metricText.includes('present') || 
+           metricText.includes('mentioned') ||
+           metricText.includes('JSON-LD structured data present')) {
+  emoji = '⚠️';
+  titleColor = 'text-orange-600 dark:text-orange-400';
+}
           fixes += `
             <div class="py-3 border-l-4 border-gray-200 dark:border-gray-700 pl-4 -ml-px">
               <div class="flex flex-col items-center gap-1">
