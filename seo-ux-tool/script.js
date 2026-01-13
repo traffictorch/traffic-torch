@@ -2,6 +2,18 @@ import { renderPriorityAndGains } from './priority-gains.js';
 
 import { renderPluginSolutions } from './plugin-solutions.js';
 
+function isHomepage(url) {
+  try {
+    const parsed = new URL(url);
+    const pathname = parsed.pathname.toLowerCase();
+    return pathname === '/' || pathname === '' || 
+           pathname === '/index.html' || pathname === '/index.htm' ||
+           pathname.match(/^\/(home|welcome|start)?\/?$/i);
+  } catch {
+    return false;
+  }
+}
+
 const moduleInfo = {
   seo: {
     what: 'On-Page SEO evaluates the core elements search engines read directly to understand your page topic and relevance.',
@@ -953,13 +965,12 @@ try {
         fix: 'Homescreen icons appear when users save the site to their device. Provide high-resolution PNG/WebP icons in sizes like 192x192 and 512x512. This ensures crisp, professional branding on user home screens.'
       });
     }
-    if (!hasServiceWorker) {
-      score -= 10;
-      issues.push({
-        issue: 'No service worker detected',
-        fix: 'Service workers enable offline functionality and faster loading for repeat visits. Register a service worker script (e.g., sw.js) in your main JavaScript to cache key assets. This is key for full PWA capabilities and better perceived performance.'
-      });
-    }
+if (!hasServiceWorker) {
+  issues.push({
+    issue: 'No service worker detected',
+    fix: 'Service workers power offline support, background sync, push notifications, and faster repeat visits. Register one (e.g. via <code>navigator.serviceWorker.register(\'/sw.js\')</code>) to cache assets and improve perceived performance. Not needed for every site — tool detection can miss dynamic or minified registrations.'
+  });
+}
     return { score: Math.max(0, Math.round(score)), issues };
   }
 
@@ -987,13 +998,12 @@ try {
       });
     }
 
-    if (fonts > 4) {
-      score -= 12;
-      issues.push({
-        issue: `${fonts} web font requests`,
-        fix: 'Excessive web fonts cause delays in text visibility and increase payload. Limit to 2-3 font families, use system fonts where possible, and preload critical ones. This prevents flash of unstyled text and speeds up rendering.'
-      });
-    }
+if (fonts > 4) {
+  issues.push({
+    issue: `${fonts} external web font requests detected`,
+    fix: 'Multiple external font requests can delay text visibility (FOUT/FOIT). Best practices: Limit to 1–2 font families, use system fonts, use <code>font-display: swap</code> on all @font-face rules, and preload critical font files. This greatly improves perceived performance. Note: Tool only detects external links — misses @font-face in CSS files and self-hosted fonts.'
+  });
+}
 
     if (blocking > 4) {
       score -= 15;
@@ -1146,13 +1156,13 @@ function analyzeUXDesign(html, doc) {
         fix: 'Overwhelming users with too many options can lead to decision paralysis and higher bounce rates. Focus on 1-3 primary actions with clear, prominent buttons and move secondary links to menus or footers. This guides users toward your main goals more effectively.'
       });
     }
-    if (!hasBreadcrumb && doc.body.textContent.length > 2000) {
-      score -= 10;
-      issues.push({
-        issue: 'Missing breadcrumb navigation',
-        fix: 'On longer or deeper pages, breadcrumbs show users their location within the site structure. Add a simple breadcrumb trail linking back to higher-level pages. This reduces disorientation and makes navigation more intuitive.'
-      });
-    }
+if (!isHomepage(url) && !hasBreadcrumb && doc.body.textContent.length > 2000) {
+  score -= 10;
+  issues.push({
+    issue: 'Missing breadcrumb navigation',
+    fix: 'On longer or deeper pages, breadcrumbs show users their location within the site structure. Add a simple breadcrumb trail linking back to higher-level pages. This reduces disorientation and makes navigation more intuitive.'
+  });
+}
     return { score: Math.max(0, Math.round(score)), issues };
   }
 
