@@ -164,18 +164,35 @@ if (hasAuthor) eeat += 40;
 if (hasDate) eeat += 28;           // slight boost for better detection
 if (hasTrustedLinks) eeat += 18;   // tightened condition
 if (url.startsWith('https:')) eeat += 10;  // softened - HTTPS is now standard
-      // Scannability
-      const headings = doc.querySelectorAll('h1,h2,h3,h4').length;
-      const lists = doc.querySelectorAll('ul,ol').length;
-      const tables = doc.querySelectorAll('table').length;
-      const shortParas = Array.from(mainEl.querySelectorAll('p'))
-        .filter(p => p.textContent.trim().split(/\s+/).length < 35).length;
-      let scannability = 0;
-      if (headings > 5) scannability += 30;
-      if (headings > 8) scannability += 20;
-      if (lists > 2) scannability += 20;
-      if (tables > 0) scannability += 15;
-      if (shortParas > 5) scannability += 15;
+// Scannability
+const headings = doc.querySelectorAll('h1,h2,h3,h4').length;
+const lists = doc.querySelectorAll('ul,ol').length;
+
+// Better table detection (real <table> + common CSS tables)
+const tables = doc.querySelectorAll('table, [role="table"], [style*="display: table"], [class*="table"], .wp-block-table').length;
+
+// Short paragraphs - progressive scoring
+const shortParas = Array.from(mainEl.querySelectorAll('p'))
+  .filter(p => p.textContent.trim().split(/\s+/).length < 35).length;
+
+let scannability = 0;
+
+// Headings - progressive, capped
+if (headings >= 12) scannability += 45;
+else if (headings >= 8) scannability += 40;
+else if (headings >= 5) scannability += 30;
+
+// Lists - require some substance
+if (lists > 3) scannability += 20;
+else if (lists > 1) scannability += 12;
+
+// Tables - stronger signal
+if (tables > 0) scannability += 18;
+
+// Short paragraphs - scale gently
+if (shortParas > 10) scannability += 15;
+else if (shortParas > 6) scannability += 10;
+else if (shortParas > 3) scannability += 5;
       // Conversational Tone
 	  const youCount = (mainText.match(/\b(you|your|yours|yourself|yourselves|ya|y'all|yall)\b/gi) || []).length;
       const iWeCount = (mainText.match(/\b(I|we|our|ours|us|my|mine|myself|ourselves|I'm|we're|we've|I've|our team|the team)\b/gi) || []).length;
