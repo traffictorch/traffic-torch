@@ -65,6 +65,10 @@ const initTool = (form, results, progressContainer) => {
       mainEl.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie, .sidebar').forEach(el => el.remove());
       mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
       const first300 = mainText.slice(0, 1200);
+      
+     let answerability = 0;
+
+      
       // Opening strength – reward good length, don't heavily punish very concise excellent answers
 const openingLen = first300.length;
 if (openingLen > 900) answerability += 15;
@@ -83,7 +87,6 @@ const hasQuestionH2 = Array.from(doc.querySelectorAll('h2,h3')).some(h => {
 });
       const hasSteps = /\b(step|guide|how to|instructions|follow these|here's how|process|walkthrough|tutorial|do this|start by|next|then|finally|first|second|third|begin with|let's start|to get started|quick steps|simple steps|easy way|method|approach|technique|tip|trick|secret|pro tip|best way|recommended way|one way|another way|option|alternative|sequence|order|phase|stage)\b/i.test(first300.toLowerCase());
       // Answerability
-      let answerability = 0;
       if (hasBoldInFirst || hasDefinition) answerability += 30;
       if (hasFAQSchema) answerability += 25;
       if (hasQuestionH2) answerability += 15;
