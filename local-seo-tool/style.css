@@ -1,0 +1,164 @@
+/* Core local-seo-tool styles – mobile-first, dark mode ready, time-proof */
+/* Only needed for radar chart & overrides – everything else uses Tailwind */
+
+/* Radar Chart (Chart.js canvas) */
+.radar {
+  width: 180px;
+  height: 180px;
+  margin: 1.5rem auto;
+  display: block;
+}
+
+/* Smooth dark/light transitions */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Big Score Card Fixes */
+.health-score polygon {
+  fill: rgba(16, 185, 129, 0.3); /* green-500 with opacity */
+}
+
+/* Day/Night Mode Text Consistency (gray-800 light / gray-200 dark) */
+.text-gray-800, h1, h2, h3, h4, h5, h6, strong, .font-bold {
+  color: #1f2937; /* gray-800 light */
+}
+.dark .text-gray-800,
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6,
+.dark strong, .dark .font-bold {
+  color: #e5e7eb !important; /* gray-200 dark */
+}
+
+/* Score Number Colors – Light & Dark Mode */
+.score-low { color: #ef4444 !important; } /* red-500 */
+.score-mid { color: #fb923c !important; } /* orange-500 */
+.score-high { color: #22c55e !important; } /* green-500 */
+
+.dark .score-low { color: #f87171 !important; } /* lighter red */
+.dark .score-mid { color: #fdba74 !important; } /* lighter orange */
+.dark .score-high { color: #86efac !important; } /* lighter green */
+
+/* /100 Slash Text */
+.score-slash {
+  color: #9ca3af !important; /* gray-400 */
+}
+.dark .score-slash {
+  color: #6b7280 !important; /* gray-500 dark */
+}
+
+/* Loading Spinner */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Mobile-First Report – Full Width, Reduced Padding, Better Readability */
+@media (max-width: 768px) {
+  .container, .max-w-5xl, .max-w-4xl, .max-w-3xl {
+    max-width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .p-12, .p-10, .p-8, .p-6 {
+    padding: 1.5rem !important;
+  }
+
+  .text-5xl, .text-6xl, .text-7xl, .text-8xl {
+    font-size: 2.25rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .md\\:grid-cols-3, .md\\:grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  table, .overflow-x-auto {
+    width: 100% !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table th, table td {
+    padding: 0.75rem !important;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Very Small Phones */
+@media (max-width: 480px) {
+  .p-12, .p-10, .p-8 {
+    padding: 1rem !important;
+  }
+
+  .text-5xl {
+    font-size: 2rem !important;
+  }
+}
+
+/* Disable iOS rubber-band bounce */
+html, body {
+  overscroll-behavior-x: none;
+}
+
+/* Priority Fixes Wrapping & Readability */
+@media (max-width: 768px) {
+  .space-y-8 > div > .flex > .flex-1 > h4 {
+    font-size: 1.25rem !important;
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  .space-y-8 > div > .flex > .flex-1 > p {
+    line-height: 1.6 !important;
+  }
+}
+
+/* Module Details Text – Consistent Gray */
+.text-left p, .text-sm, .text-gray-600 {
+  color: #4b5563; /* gray-600 light */
+}
+.dark .text-left p, .dark .text-sm, .dark .text-gray-600 {
+  color: #d1d5db; /* gray-300 dark */
+}
+
+/* Bold Labels Inside Details */
+.text-left strong, .font-bold {
+  color: #1f2937; /* gray-800 light */
+}
+.dark .text-left strong, .dark .font-bold {
+  color: #e5e7eb; /* gray-200 dark */
+}
+
+/* Radar Chart Labels & Grid */
+canvas {
+  max-width: 100%;
+}
+
+
+
+
+
+
+
+/* Metric Explanation Cards */
+#metric-cards-container > div {
+  min-height: 380px; /* Consistent height for 2–3 line descriptions */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+#metric-cards-container details summary {
+  color: #ea580c; /* orange-600 light */
+}
+.dark #metric-cards-container details summary {
+  color: #fb923c; /* orange-400 dark */
+}

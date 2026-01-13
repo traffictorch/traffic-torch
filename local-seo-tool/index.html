@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Optimized SEO Title & Description for Local SEO On-Page Checker -->
+  <title>Local SEO On-Page Checker – Audit Tool | Traffic Torch</title>
+  <meta name="description" content="Free local SEO on-page checker: Instant audit for NAP consistency, local schema, headings, images, geo-keywords. Get AI-generated fixes, predictive forecasts." />
+  <meta name="keywords" content="local seo checker, free local seo tool, local seo audit tool, nap consistency checker, local schema validator, website local seo checker, on-page local optimization, local seo analysis tool" />
+  <!-- Robots & Canonical -->
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://traffictorch.net/local-seo-tool/" />
+  <!-- Open Graph Tags (Facebook, LinkedIn, etc.) -->
+  <meta property="og:title" content="Free Local SEO On-Page Checker – Instant Audit Tool | Traffic Torch" />
+  <meta property="og:description" content="Audit webpages instantly for local SEO: NAP, schema, geo-keywords, headings, images. AI fixes and ranking forecasts for better map pack performance." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://traffictorch.net/local-seo-tool/" />
+  <meta property="og:image" content="https://traffictorch.net/local-seo-tool/images/local-seo-torch-tool.webp" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="Traffic Torch" />
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free Local SEO On-Page Checker – Instant Audit Tool | Traffic Torch" />
+  <meta name="twitter:description" content="Audit webpages instantly for local SEO: NAP, schema, geo-keywords, headings, images. AI fixes and ranking forecasts for better map pack performance." />
+  <meta name="twitter:image" content="https://traffictorch.net/local-seo-tool/images/local-seo-torch-tool.webp" />
+  <meta name="twitter:site" content="@TrafficTorch" /> <!-- Update if you have an X handle -->
+  <!-- Structured Data (JSON-LD): WebPage + SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Free Local SEO On-Page Checker",
+    "description": "Instant on-page local SEO audit tool: Score webpages for NAP, schema, geo-signals, with deep modules, AI fixes, and predictive insights.",
+    "url": "https://traffictorch.net/local-seo-tool/",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Traffic Torch"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Traffic Torch Local SEO Checker – Free On-Page Tool",
+    "applicationCategory": "SEO Tool",
+    "operatingSystem": "Web Browser",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "Free local SEO on-page checker: Audits NAP, schema, headings, images, geo-keywords; provides 0-100 scores, AI fixes, and ranking forecasts.",
+    "url": "https://traffictorch.net/local-seo-tool/",
+    "image": "https://traffictorch.net/local-seo-tool/images/local-seo-torch-tool.webp"
+  }
+  </script>
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/local-seo-tool/style.css">
+  <link rel="stylesheet" media="print" href="/local-seo-tool/print.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+  tailwind.config = {
+    darkMode: 'class',
+  }
+</script>
+<script>
+  (function() {
+    const saved = localStorage.getItem('theme');
+    const preferDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (preferDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  })();
+</script>
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">
+      <!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+          <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+      <!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚡</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📝</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Comp</span>
+        </a>
+        <a href="/news.html" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📰</span> <span class="sidebar-text hidden">News</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+            <img src="/logo.webp" alt="Traffic Torch" class="w-10 rounded-xl">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🛡️</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">SEO Intent 🎯</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Search 🔍</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Content 🤖</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">Quit Risk ⚡</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">Keywords 📝</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">Competition 🆚</a>
+            </div>
+            <a href="/about/" class="text-gray-100 hover:text-orange-400 transition">About</a>
+            <a href="/news.html" class="text-gray-100 hover:text-orange-400 transition">News</a>
+          </nav>
+        </div>
+      </header>
+<main class="container mx-auto px-6 py-4 max-w-5xl">
+    <div class="text-center mb-16">
+      <h1 class="text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-6">
+        Local SEO On-Page Checker
+      </h1>
+      <p class="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-3xl mx-auto">
+        Local SEO audit tool: Enter any URL and business location, for analysis of NAP consistency, local schema, headings, geo-keywords, images, and links.
+      </p>
+     
+<form id="audit-form" class="max-w-4xl mx-auto space-y-4">
+  <div class="flex flex-col md:flex-row gap-4">
+    <div class="flex-1">
+      <label for="page-url" class="sr-only">Enter page URL to analyze</label>
+      <input
+        type="text"
+        id="page-url"
+        placeholder="yourbusiness.com/contact"
+        aria-label="Enter page URL to analyze"
+        required
+        class="w-full px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+      />
+    </div>
+    <div class="flex-1">
+      <label for="location" class="sr-only">Enter business location (e.g., City, State)</label>
+      <input
+        type="text"
+        id="location"
+        placeholder="Sydney, NSW"
+        aria-label="Enter business location"
+        required
+        class="w-full px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+      />
+    </div>
+  </div>
+  <div class="flex justify-center">
+    <button
+      type="submit"
+      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+    >
+      Analyze
+    </button>
+  </div>
+</form>
+    </div>
+    <!-- Results container (JS will populate this) -->
+    <div id="results" class="hidden space-y-16 mt-16">
+      <!-- Your existing cards/Chart.js output goes here -->
+    </div>
+   
+<!-- How it Works Accordion -->
+<div class="max-w-4xl mx-auto my-16">
+  <details>
+    <summary class="px-3 py-5 text-1xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
+      How Local SEO On-Page Checker Works?
+      <span class="text-3xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-8 py-10 bg-white dark:bg-gray-800 rounded-2xl shadow-inner space-y-10 text-gray-800 dark:text-gray-100">
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">Instant Local SEO On-Page Audit Tool</h2>
+        <p class="leading-relaxed">
+    This free local SEO on-page checker scores any webpage against your business location — delivering a 0–100 local SEO health score and comprehensive report instantly.
+        </p>
+        <p class="leading-relaxed">
+    All analysis runs client-side via a secure CORS proxy. Your data remains fully private — nothing is stored, logged, or transmitted to servers.
+        </p>
+</section>
+      <section class="space-y-6">
+        <h3 class="text-xl font-bold text-indigo-600 dark:text-indigo-400">What Our Local SEO Analysis Tool Evaluates</h3>
+        <ul class="space-y-4 text-base list-disc list-inside text-gray-800 dark:text-gray-100">
+          <li><strong>NAP Presence & Consistency</strong> — visible address/phone match, footer standardization</li>
+          <li><strong>Local Schema Markup</strong> — LocalBusiness type, geo coords, opening hours</li>
+          <li><strong>Title & Meta with Local Keywords</strong> — geo-terms inclusion, optimal length</li>
+          <li><strong>H1–H6 Headings with Location</strong> — relevance, density in content</li>
+          <li><strong>Embedded Maps & Contact Info</strong> — iframes, tel links, completeness</li>
+          <li><strong>Images & Internal Links</strong> — local alt text, geo-page anchors</li>
+        </ul>
+      </section>
+      <section class="space-y-4">
+        <p class="leading-relaxed text-gray-800 dark:text-gray-100">
+          Get a visual <strong>Local SEO Score</strong> with gauges, deep-dive modules, AI-prioritized fixes ranked by impact, and predictive map pack forecasts.
+        </p>
+        <p class="leading-relaxed font-medium text-gray-800 dark:text-gray-100">
+          Fully mobile-friendly with dark/light modes — actionable, educational insights to elevate local rankings and UX quickly.
+        </p>
+      </section>
+      <section class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 p-6 rounded-xl">
+        <h3 class="text-xl font-bold mb-3">Key Insight</h3>
+        <p class="text-sm leading-relaxed text-gray-800 dark:text-gray-100">
+          Local on-page optimization is crucial for map pack visibility — master these elements with our free tool to build stronger geo-relevance and drive foot traffic.
+        </p>
+      </section>
+    </div>
+  </details>
+</div>
+       <!-- AddToAny BEGIN -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_pinterest"></a>
+<a class="a2a_button_x"></a>
+<a class="a2a_button_reddit"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_copy_link"></a>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+</div>
+<!-- AddToAny END -->
+      <!-- Deep Dive into Key Modules -->
+      <section class="py-20 bg-gray-50 dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-6">
+          <h2 class="text-4xl md:text-5xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+            Deep Dive into Key Local Modules
+          </h2>
+          <div id="metric-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center lg:justify-start">
+            <!-- Cards generated dynamically -->
+          </div>
+        </div>
+      </section>
+     
+     
+     
+<!-- Expandable Local SEO Checklist Accordion -->
+<section class="py-16 px-3 max-w-6xl mx-auto">
+  <details class="group">
+    <summary class="px-3 py-4 text-1xl text-center font-black bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+      <span>Local SEO Checklist 📝</span>
+      <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+    </summary>
+   
+    <div class="mt-12 space-y-12">
+      <!-- Introductory Good vs Bad Practices -->
+      <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-3xl p-10 shadow-2xl border border-gray-200 dark:border-gray-700">
+        <h2 class="text-3xl font-bold text-center mb-10 text-orange-600 dark:text-orange-400">
+          Key Local SEO Practices: What to Do & What to Avoid
+        </h3>
+        <div class="grid md:grid-cols-2 gap-8 text-lg">
+          <div class="space-y-6">
+            <h4 class="text-2xl font-bold text-green-600 dark:text-green-400">✅ Best Practices to Implement</h4>
+            <ul class="space-y-4 list-disc list-inside text-gray-700 dark:text-gray-300">
+              <li>Include consistent NAP in footer and contact page</li>
+              <li>Add LocalBusiness schema with geo coords and hours</li>
+              <li>Incorporate location keywords in title, meta, headings</li>
+              <li>Embed Google Maps and use tel/mailto links</li>
+              <li>Optimize image alts with local descriptors</li>
+              <li>Link internally to location-specific pages</li>
+              <li>Maintain natural local keyword density in content</li>
+            </ul>
+          </div>
+          <div class="space-y-6">
+            <h4 class="text-2xl font-bold text-red-600 dark:text-red-400">❌ Common Mistakes to Avoid</h4>
+            <ul class="space-y-4 list-disc list-inside text-gray-700 dark:text-gray-300">
+              <li>Inconsistent or missing NAP across pages</li>
+              <li>Absent local schema or invalid markup</li>
+              <li>Generic titles/metas without geo-terms</li>
+              <li>No embedded maps or incomplete contact info</li>
+              <li>Images without local alt text</li>
+              <li>Poor internal linking to geo-pages</li>
+              <li>Keyword stuffing with location terms</li>
+            </ul>
+          </div>
+        </div>
+        <p class="text-center mt-10 text-xl font-medium text-gray-800 dark:text-gray-100">
+          Following these guidelines helps search engines verify your local presence while delivering better user experience for nearby searchers.
+        </p>
+      </div>
+      <!-- Checklist Cards Grid -->
+      <div class="grid md:grid-cols-2 gap-10">
+        <!-- NAP & Core Elements -->
+        <div class="checklist-card bg-gradient-to-br from-green-900/20 to-emerald-900/20 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+          <h3 class="text-2xl font-bold mb-8 text-green-400 flex items-center gap-4">
+            <span class="text-4xl">📍</span> NAP & Core Local Optimization
+          </h3>
+          <div class="space-y-8 text-lg">
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">❌</span>
+              <div class="text-gray-800 dark:text-gray-100">Inconsistent or missing NAP</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">📈</span>
+              <div class="text-gray-800 dark:text-gray-100"><strong>NAP Audit</strong>: Presence, consistency, footer standardization</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">📜</span>
+              <div class="text-gray-800 dark:text-gray-100">Incomplete contact info</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">✅</span>
+              <div class="text-gray-800 dark:text-gray-100"><strong>Contact Completeness</strong>: Full NAP, hours, tel/mailto links</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">🗺️</span>
+              <div class="text-gray-800 dark:text-gray-100"><strong>Embedded Map Check</strong>: Google Maps iframe or directions links</div>
+            </div>
+          </div>
+        </div>
+       
+        <!-- Schema & Structured Data -->
+        <div class="checklist-card bg-gradient-to-br from-emerald-900/20 to-teal-900/20 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+          <h3 class="text-2xl font-bold mb-8 text-orange-400 flex items-center gap-4">
+            <span class="text-4xl">🏷️</span> Local Schema & Structured Data
+          </h3>
+          <div class="space-y-8 text-lg">
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">⚠️</span>
+              <div class="text-gray-800 dark:text-gray-100">Missing or invalid local schema</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">🎯</span>
+              <div class="text-gray-800 dark:text-gray-100"><strong>Schema Markup</strong>: LocalBusiness type, required props</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">🌍</span>
+              <div class="text-gray-800 dark:text-gray-100">No geo coordinates</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">📑</span>
+              <div class="text-gray-800 dark:text-gray-100"><strong>Geo Coords Audit</strong>: Latitude/longitude precision in schema</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">🕒</span>
+              <div class="text-gray-800 dark:text-gray-100"><strong>Opening Hours</strong>: Structured data or visible lists</div>
+            </div>
+          </div>
+        </div>
+       
+        <!-- Keywords & Content -->
+        <div class="checklist-card bg-gradient-to-br from-teal-900/20 to-cyan-900/20 dark:from-teal-900/30 dark:to-cyan-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+          <h3 class="text-2xl font-bold mb-8 text-red-400 flex items-center gap-4">
+            <span class="text-4xl">🔑</span> Local Keywords, Headings & Media
+          </h3>
+          <div class="space-y-8 text-lg">
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">❌</span>
+              <div class="text-gray-800 dark:text-gray-100">No local keywords in title/meta</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">⚡</span>
+              <div class="text-gray-800 dark:text-gray-100"><strong>Title & Meta Check</strong>: Geo-terms, optimal length</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">🏗️</span>
+              <div class="text-gray-800 dark:text-gray-100">Headings without location</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">🌟</span>
+              <div class="text-gray-800 dark:text-gray-100"><strong>H1-H6 Audit</strong>: Location integration, hierarchy</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">🖼️</span>
+              <div class="text-gray-800 dark:text-gray-100"><strong>Image Alt Text</strong>: Local descriptors</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">📊</span>
+              <div class="text-gray-800 dark:text-gray-100"><strong>Body Content Density</strong>: Natural geo-keywords</div>
+            </div>
+          </div>
+        </div>
+       
+        <!-- Linking & Reviews -->
+        <div class="checklist-card bg-gradient-to-br from-cyan-900/20 to-green-900/20 dark:from-cyan-900/30 dark:to-green-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+          <h3 class="text-2xl font-bold mb-8 text-green-400 text-center flex items-center justify-center gap-4">
+            <span class="text-4xl">🔗</span> Linking, Reviews & Overall Score
+          </h3>
+          <div class="space-y-8 text-lg max-w-4xl mx-auto">
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">❓</span>
+              <div class="text-gray-800 dark:text-gray-100">Weak internal geo-links</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">✅</span>
+              <div class="text-gray-800 dark:text-gray-100"><strong>Internal Links Audit</strong>: To location pages, descriptive anchors</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">🤔</span>
+              <div class="text-gray-800 dark:text-gray-100">No reviews schema</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">✅</span>
+              <div class="text-gray-800 dark:text-gray-100"><strong>Reviews Section</strong>: AggregateRating markup</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">🔍</span>
+              <div class="text-gray-800 dark:text-gray-100"><strong>Canonical Tags</strong>: For multi-location pages</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-5xl">🛡️</span>
+              <div class="text-gray-800 dark:text-gray-100"><strong>Comprehensive Score</strong>: 0–100 with AI fixes, forecasts</div>
+            </div>
+          </div>
+        </div>
+      </div>
+     
+      <div class="text-center mt-16">
+        <p class="text-2xl font-semibold max-w-3xl mx-auto text-gray-800 dark:text-gray-100">
+          Master this free local SEO checklist with our instant audit tool — unlock fixes and boost your map pack performance today.
+        </p>
+      </div>
+    </div>
+  </details>
+</section>
+<!-- Why it Matters Accordion -->
+<div class="max-w-4xl mx-auto my-16">
+  <details>
+    <summary class="px-3 py-5 text-1xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
+      Why Local On-Page Optimization Matters?
+      <span class="text-3xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-8 py-10 bg-white dark:bg-gray-800 rounded-2xl shadow-inner space-y-10 text-gray-800 dark:text-gray-100">
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">Local On-Page Is Your Map Pack Foundation</h2>
+        <p class="leading-relaxed">
+          Search engines prioritize local pages that demonstrate accurate location signals, authority, and user value through on-page elements.
+        </p>
+        <p class="leading-relaxed">
+          Excelling in local on-page SEO boosts map visibility, engagement, and sustained foot traffic.
+        </p>
+      </section>
+      <section class="space-y-6">
+        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Proven Real-World Benefits</h3>
+        <div class="space-y-5 text-sm text-gray-800 dark:text-gray-100">
+          <div class="flex gap-4">
+            <div class="text-3xl">📈</div>
+            <div>
+              <strong>Higher Local CTR</strong><br>
+              Geo-optimized titles and metas drive better clicks in local results.
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl">🔝</div>
+            <div>
+              <strong>Improved Map Rankings</strong><br>
+              Strong NAP/schema signals elevate positions in local packs.
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl">⭐</div>
+            <div>
+              <strong>Enhanced Rich Results</strong><br>
+              Valid local schema unlocks stars, hours in SERPs.
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl">😊</div>
+            <div>
+              <strong>Better Local UX</strong><br>
+              Maps, complete info reduce friction for nearby users.
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/30 p-6 rounded-xl">
+        <h3 class="text-xl font-bold mb-3">The Bottom Line</h3>
+        <p class="text-sm leading-relaxed text-gray-800 dark:text-gray-100">
+          While external citations vary, you control local on-page excellence — optimize it for a lasting edge in "near me" searches.
+        </p>
+        <p class="text-sm font-medium mt-4 text-gray-800 dark:text-gray-100">
+          Use our free local SEO checker regularly to audit, refine, and grow your local traffic confidently.
+        </p>
+      </section>
+      <p class="text-center text-sm italic opacity-70 mt-6 text-gray-800 dark:text-gray-100">
+        Perfect local on-page → Dominate map packs.
+      </p>
+    </div>
+  </details>
+</div>
+<div class="my-16"></div>
+<!-- SEO Tools Section -->
+<div class="tools-grid max-w-7xl mx-auto px-6">
+  <div class="grid md:grid-cols-3 gap-8">
+    <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+        <h4 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">SEO Intent Tool</h4>
+        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+      </div>
+    </a>
+    <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+        <h4 class="text-orange-500 dark:text-orange-300 text-2xl font-bold mb-3">VS Tool</h4>
+        <p class="text-gray-800 dark:text-gray-100">Competitive keyword gap analysis</p>
+      </div>
+    </a>
+    <a href="https://traffictorch.net/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h4 class="text-red-500 dark:text-red-300 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h4>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools powered by AI</p>
+      </div>
+    </a>
+  </div>
+</div>
+  <!-- Author Bio (for EEAT boost) -->
+  <section class="max-w-5xl mx-auto my-24 px-4">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+      <div class="bg-gradient-to-br from-orange-500 to-pink-600 py-12 px-8 text-center">
+        <img src="/logo.webp" alt="Traffic Torch Local SEO Optimization Team" class="w-40 h-40 rounded-full mx-auto mb-6 object-cover border-8 border-white shadow-xl">
+        <h3 class="text-4xl font-black text-white mb-4">Developed by Traffic Torch Experts</h3>
+        <p class="text-xl text-white/90 max-w-3xl mx-auto">
+          Dedicated to Precision Local SEO On-Page Optimization
+        </p>
+      </div>
+      <div class="p-10 md:p-12 text-center space-y-8">
+        <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          Our team continuously studies high-ranking local pages across competitive niches to identify the exact on-page patterns that drive superior map pack performance. This Local SEO On-Page Audit Tool distills years of correlation research and real-world testing into a fast, accurate diagnostic that reveals hidden optimization gaps in seconds.
+        </p>
+        <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          We built this tool to give every business owner — from local shops to agency professionals — transparent, evidence-based feedback and prioritized recommendations that directly improve geo-relevance signals, user satisfaction, and local visibility.
+        </p>
+        <div class="pt-8 space-y-3">
+          <p class="text-base text-gray-500 dark:text-gray-400">
+            <time datetime="2024-11-15" itemprop="datePublished">Published: November 15</time>
+          </p>
+          <p class="text-base text-gray-500 dark:text-gray-400">
+            <time datetime="2026-01-08" itemprop="dateModified">Last Updated: January 8</time>
+          </p>
+          <p class="text-base text-gray-800 dark:text-gray-200 italic mt-4">
+            Informed by ongoing analysis of search algorithm updates, ranking factor studies, and performance data from thousands of optimized local pages
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+<!-- AddToAny BEGIN -->
+<div style="display: flex; justify-content: center; margin: 30px 0;">
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+    <script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+</div>
+<!-- AddToAny END -->
+<!-- Breadcrumbs -->
+<div class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+    <a href="/">Traffic Torch</a>
+  </p>
+  <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+    <span id="page-name"></span>
+  </p>
+</div>
+<script>
+  // Set page name
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+<section class="bottom-banner" aria-label="Traffic Torch visual summary">
+  <picture style="--banner-ratio: 31.25%;"> <!-- 500 / 1600 -->
+    <img
+      src="/images/tool-banners/local-seo-tool-infographic.webp"
+      alt="Traffic Torch Local SEO Tool - On-page local signals audit with NAP and schema insights"
+      width="1600"
+      height="500"
+      loading="lazy"
+      decoding="async">
+  </picture>
+</section>
+  </main>
+<!-- Footer -->
+<footer class="border-t border-white/10 dark:border-white/5 py-12 bg-white/5 dark:bg-black/20 backdrop-blur-xl">
+  <div class="container mx-auto px-6 max-w-7xl">
+    <!-- Top Row: Traffic Torch + Author (2 columns, fully centered on mobile) -->
+    <div class="grid md:grid-cols-2 gap-12 md:gap-24 mb-12">
+      <!-- Traffic Torch Section (centered) -->
+      <div class="flex flex-col items-center text-center">
+        <a href="/" class="mb-6">
+          <img src="/logo.webp" alt="Traffic Torch" class="w-20 h-20 rounded-full shadow-2xl object-cover">
+        </a>
+        <h3 class="text-2xl font-black text-orange-500 hover:text-orange-600 transition mb-3">
+          Traffic Torch 🛡️
+        </h3>
+        <p class="text-gray-800 dark:text-gray-200 text-sm leading-relaxed max-w-md">
+          Instant 360° AI-powered SEO and UX health analysis. Get deep-dive audits, competitive gap insights, AI-generated fixes, predictive forecasting, and educational reports. All privacy-first, mobile-optimized and client-side.
+        </p>
+      </div>
+      <!-- Author Section (centered) -->
+      <div class="flex flex-col items-center text-center author-bio author-box max-w-md">
+        <img src="/images/ylia-callan.webp" alt="My photo: Ylia Callan, Founder of Traffic Torch" class="w-20 h-20 rounded-full shadow-lg mb-6 object-cover">
+        <h3 class="text-2xl font-black text-orange-500 hover:text-orange-600 transition mb-3 author byline">
+          Author
+        </h3>
+        <p class="font-bold text-gray-800 dark:text-gray-200">Ylia Callan</p>
+        <p class="text-sm text-gray-800 dark:text-gray-200 mt-2 max-w-xs">
+          Musician • Author • Web Design (Certificate IV) at TAFE NSW, certified web developer building privacy-first AI SEO/UX tools.
+        </p>
+        <ul class="flex gap-6 mt-4">
+          <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">LinkedIn</a></li>
+          <li><a href="https://x.com/guitaralize" target="_blank" rel="noopener noreferrer" class="text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">X</a></li>
+        </ul>
+      </div>
+    </div>
+    <!-- Bottom Row: Tools | Company | Traffic Torch (3 columns, centered) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-24 text-center border-t border-white/10 dark:border-white/5 pt-10">
+      <!-- Tools -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Tools</h3>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+          <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
+          <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a></li>
+          <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
+          <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a></li>
+          <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a></li>
+        </ul>
+      </div>
+      <!-- Company -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Company</h3>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
+          <li><a href="/contact/" class="hover:text-orange-400 transition">Contact</a></li>
+          <li><a href="/news.html" class="hover:text-orange-400 transition">News</a></li>
+          <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
+          <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
+        </ul>
+      </div>
+      <!-- Traffic Torch Quick Links -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Traffic Torch</h3>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/ai-seo-ux-tools/#seo-tools" class="hover:text-orange-400 transition">SEO Tools 🎯</a></li>
+          <li><a href="/ai-seo-ux-tools/#ux-tools" class="hover:text-orange-400 transition">UX Tools ⚡</a></li>
+          <li><a href="/ai-seo-ux-tools/#ai-tools" class="hover:text-orange-400 transition">Ai Tools 🔍</a></li>
+          <li class="mt-6 text-sm">Built with 🔥</li>
+          <li class="text-xs mt-6">© Traffic Torch</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="/main.js" type="module"></script>
+  <script src="/local-seo-tool/plugin-solutions.js" type="module" defer></script>
+  <script src="/local-seo-tool/metric-explanations.js"></script>
+  <script src="/local-seo-tool/script.js" type="module" defer></script>
+</body>
+</html>
