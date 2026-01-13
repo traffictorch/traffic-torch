@@ -64,14 +64,22 @@ const initTool = (form, results, progressContainer) => {
       const mainEl = candidates.find(el => el && el.textContent.trim().length > 1000) || doc.body;
       mainEl.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie, .sidebar').forEach(el => el.remove());
       mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
-      const first300 = mainText.slice(0, 1200);
+      // Opening strength – reward good length, don't heavily punish very concise excellent answers
+const openingLen = first300.length;
+if (openingLen > 900) answerability += 15;
+else if (openingLen > 550) answerability += 10;
+else if (openingLen > 300) answerability += 5;
       await new Promise(resolve => setTimeout(resolve, 1200));
       updateProgress();
       const hasBoldInFirst = /<strong>|<b>|<em>|<mark>|<u>|class=["']([^"']*?bold|strong)[^"']*["']/i.test(first300);
       const hasDefinition = /\b(is|means|refers to|defined as|stands for|known as|typically refers|commonly understood as|represents|equals|consists of|involves|includes|contains|features|covers|describes|explains|shows|outlines|details|breaks down|summarizes|highlights|focuses on|centers on)\b/i.test(first300.toLowerCase());
       const hasFAQSchema = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))
         .some(s => s.textContent.includes('"FAQPage"') || s.textContent.includes('"HowTo"'));
-      const hasQuestionH2 = Array.from(doc.querySelectorAll('h2,h3')).some(h => /[?!]/.test(h.textContent.trim()));
+      const questionWords = /^(what|how|why|when|where|who|which|can|should|do|does|is|are|will|would|could|may|might|shall)\b/i;
+const hasQuestionH2 = Array.from(doc.querySelectorAll('h2,h3')).some(h => {
+  const txt = h.textContent.trim();
+  return txt.length > 15 && txt.length < 120 && questionWords.test(txt) && /[?]/.test(txt);
+});
       const hasSteps = /\b(step|guide|how to|instructions|follow these|here's how|process|walkthrough|tutorial|do this|start by|next|then|finally|first|second|third|begin with|let's start|to get started|quick steps|simple steps|easy way|method|approach|technique|tip|trick|secret|pro tip|best way|recommended way|one way|another way|option|alternative|sequence|order|phase|stage)\b/i.test(first300.toLowerCase());
       // Answerability
       let answerability = 0;
@@ -216,7 +224,7 @@ const initTool = (form, results, progressContainer) => {
         if (score >= 80) {
           return { emoji: '✅', color: 'green-500', stroke: '22c55e', textColor: 'text-green-600', button: 'All Clear', bg: 'bg-green-500 hover:bg-green-600' };
         } else if (score >= 60) {
-          return { emoji: '🆗', color: 'orange-500', stroke: 'f97316', textColor: 'text-orange-600', button: 'Show Fixes', bg: 'bg-orange-500 hover:bg-orange-600' };
+          return { emoji: '⚠️', color: 'orange-500', stroke: 'f97316', textColor: 'text-orange-600', button: 'Show Fixes', bg: 'bg-orange-500 hover:bg-orange-600' };
         } else {
           return { emoji: '❌', color: 'red-500', stroke: 'ef4444', textColor: 'text-red-600', button: 'Show Fixes', bg: 'bg-orange-500 hover:bg-orange-600' };
         }
@@ -352,7 +360,7 @@ const initTool = (form, results, progressContainer) => {
             emoji = '✅';
             titleColor = 'text-green-600 dark:text-green-400';
           } else if (metricText.includes('Trusted outbound links') || metricText.includes('shown') || metricText.includes('present') || metricText.includes('mentioned')) {
-            emoji = '🆗';
+            emoji = '⚠️';
             titleColor = 'text-orange-600 dark:text-orange-400';
           }
           fixes += `
@@ -496,7 +504,7 @@ const initTool = (form, results, progressContainer) => {
     })()}
     ${(() => {
       const gradeText = yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Very Good' : 'Needs Work';
-      const gradeEmoji = yourScore >= 80 ? '✅' : yourScore >= 60 ? '🆗 ⚠️' : '❌';
+      const gradeEmoji = yourScore >= 80 ? '✅' : yourScore >= 60 ? '⚠️' : '❌';
       const gradeColor = yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400';
       return `<p class="${gradeColor} text-2xl md:text-3xl font-bold text-center mt-4 md:mt-6">${gradeEmoji} ${gradeText}</p>`;
     })()}
@@ -576,7 +584,7 @@ const initTool = (form, results, progressContainer) => {
             let emojiOverride = t.emoji;
             if (!t.passed && (t.text.includes('mentioned') || t.text.includes('present') || t.text.includes('shown') || t.text.includes('Trusted outbound links'))) {
               textColor = 'text-orange-600 dark:text-orange-400';
-              emojiOverride = '🆗';
+              emojiOverride = '⚠️';
             }
             return `
             <div class="flex items-center gap-3">
@@ -603,6 +611,8 @@ const initTool = (form, results, progressContainer) => {
     `;
   }).join('')}
 </div>
+
+
 ${prioritisedFixes.length > 0 ? `
   <div class="mt-16 px-4">
     <h3 class="text-3xl font-black text-center mb-8 text-blue-800 dark:text-blue-200">Top Priority Fixes (Highest Impact First)</h3>
