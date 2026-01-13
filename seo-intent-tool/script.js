@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
           schemaTypes.push(...types.filter(Boolean));
         } catch {}
       });
-      const hasAwards = !!cleanedText.match(/\b(award|winner|featured in|recognized by|endorsed by|best \d{4}|honored|accolade|prize|nominee|finalist|top \d+|ranked|certified by|accredited by)\b/gi);
+      const hasAwards = !!cleanedText.match(/\b(award|winner|awarded|featured in|as seen on|recognized by|endorsed by|endorsement|best|top|honored|accolade|prize|nominee|finalist|ranked|trusted by|partnered with|collaborated with|official|certified by|accredited by|recommended by|highly rated|testimonials?|client success|case study success|media mention|press coverage)\b/gi);
       const aboutLinkElements = doc.querySelectorAll('a[href*="/about" i], a[href*="/team" i]');
       const hasAboutLinks = aboutLinkElements.length > 0 ||
         Array.from(doc.querySelectorAll('nav a')).some(a => a.textContent.toLowerCase().includes('about'));
@@ -327,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // === RADAR CHART DATA ===
       const normalizeDepth = words >= 1500 ? 100 : words >= 800 ? 75 : words >= 400 ? 50 : 20;
       const normalizeReadability = readability >= 60 && readability <= 70 ? 100 : (readability >= 50 && readability <= 80) ? 75 : 40;
-      const normalizeSchema = schemaTypes.length >= 3 ? 100 : schemaTypes.length >= 2 ? 90 : schemaTypes.length === 1 ? 60 : 20;
+      const normalizeSchema = schemaTypes.length >= 3 ? 100 : schemaTypes.length >= 2 ? 95 : schemaTypes.length === 1 ? 65 : 20;
 
       const modules = [
         { name: 'Experience', score: experienceScore },
