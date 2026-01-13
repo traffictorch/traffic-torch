@@ -193,7 +193,7 @@ if (tables > 0) scannability += 18;
 if (shortParas > 10) scannability += 15;
 else if (shortParas > 6) scannability += 10;
 else if (shortParas > 3) scannability += 5;
-      // Conversational Tone
+
 // Conversational Tone
 const youCount = (mainText.match(/\b(you|your|yours|yourself|yourselves|ya|y'all|yall|you're|you've|you'll|you'd)\b/gi) || []).length;
 const iWeCount = (mainText.match(/\b(I|we|our|ours|us|my|mine|myself|ourselves|I'm|we're|we've|I've|our team|the team)\b/gi) || []).length;
@@ -208,9 +208,9 @@ const painPointsNearYou = (mainText.match(new RegExp(`\\b(you|your|you're)\\b.*?
 
 let conversational = 0;
 if (youCount > 5) conversational += 30;
-if (iWeCount > 5) conversational += 25;          // raised threshold for stronger personal tone
-if (questions > 3) conversational += 20;         // slightly higher threshold + better detection
-if (painPointsNearYou > 2 || painPoints > 5) conversational += 20;  // softened + context-aware
+if (iWeCount > 5) conversational += 25;
+if (questions > 3) conversational += 20;
+if (painPointsNearYou > 2) conversational += 20;
       // Readability
       const words = mainText.split(/\s+/).filter(Boolean).length || 1;
       const sentences = (mainText.match(/[.!?]+/g) || []).length || 1;
