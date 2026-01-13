@@ -64,6 +64,7 @@ const initTool = (form, results, progressContainer) => {
       const mainEl = candidates.find(el => el && el.textContent.trim().length > 1000) || doc.body;
       mainEl.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie, .sidebar').forEach(el => el.remove());
       mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
+      const first300 = mainText.slice(0, 1200);
       // Opening strength – reward good length, don't heavily punish very concise excellent answers
 const openingLen = first300.length;
 if (openingLen > 900) answerability += 15;
