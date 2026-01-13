@@ -232,7 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
  	  /\b(email|phone|tel|call|message|reach us|say hello)\b/i.test(el.textContent)
 		);
 	  const hasContact = contactLinkElements.length > 0 || footerContactText;
-      const hasContact = contactLinkElements.length > 0 || footerContactText;
 	  const policyLinkElements = doc.querySelectorAll(config.parsing.policyLinkSelectors.join(', ') + ', a[href*="/policy" i], a[href*="/cookie" i], a[href*="/gdpr" i], a[href*="/legal" i]');
 	  const footerPolicyText = Array.from(doc.querySelectorAll('footer a, footer span, footer div, footer p')).some(el =>
 	   /privacy|terms|cookie|gdpr|legal|disclaimer|imprint/i.test(el.textContent.toLowerCase())
