@@ -1149,7 +1149,7 @@ if (!hasBreadcrumb && doc.body.textContent.length > 2000) {
   score -= 10;
   issues.push({
     issue: 'Missing breadcrumb navigation',
-    fix: 'On longer or deeper pages, breadcrumbs show users their location within the site structure. Add a simple breadcrumb trail linking back to higher-level pages. This reduces disorientation and makes navigation more intuitive.'
+    fix: 'On longer or deeper pages, breadcrumbs show users their location within the site structure. Add a simple breadcrumb trail linking back to higher-level pages. This reduces disorientation and makes navigation more intuitive. Not required on homepage.'
   });
 }
     return { score: Math.max(0, Math.round(score)), issues };

@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // === EXPERTISE ===
       const hasAuthorByline = !!doc.querySelector(config.parsing.authorBylineSelectors.join(', '));
       const hasAuthorBio = !!doc.querySelector(config.parsing.authorBioSelectors.join(', '));
-      const credentialKeywords = (cleanedText.match(/\b(PhD|MD|doctor|certified|licensed|years? of experience|expert in|specialist|award-winning|published in|fellow|board-certified|certificate|diploma|qualification|accredited|professional membership|industry leader|renowned|distinguished|master's degree|bachelor's degree)\b/gi) || []).length;
+	  const credentialKeywords = (cleanedText.match(/\b(PhD|MD|doctor|Dr\.?|certified|licensed|years? of experience|expert in|specialist|award-winning|published in|fellow|board-certified|certificate|diploma|qualification|accredited|professional membership|industry leader|renowned|distinguished|master'?s degree|bachelor'?s degree|MBA|CPA|CFA|PMP|JD|LLB|engineer|architect|scientist|professor|consultant|coach|trainer|instructor|15\+ years?|10\+ years?|veteran|authority|thought leader)\b/gi) || []).length;
       const hasCitations = !!doc.querySelector('cite, .references, .sources, a[href*="doi.org"], a[href*="pubmed"], a[href*="researchgate"], footer a[href*="/references"]');
       const expertiseMetrics = {
         byline: hasAuthorByline ? 100 : 20,
