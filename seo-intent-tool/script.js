@@ -225,16 +225,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // === TRUSTWORTHINESS ===
       const isHttps = url.startsWith('https');
-      const contactLinkElements = doc.querySelectorAll(config.parsing.contactLinkSelectors.join(', '));
-      const footerContactText = Array.from(doc.querySelectorAll('footer a, footer span, footer div')).some(el =>
-        el.textContent.toLowerCase().includes('contact')
-      );
+      const contactLinkElements = doc.querySelectorAll(config.parsing.contactLinkSelectors.join(', ') + ', a[href*="contact"], a[href*="/contact"], [class*="contact" i], [id*="contact" i]');
+	  const footerContactText = Array.from(doc.querySelectorAll('footer a, footer span, footer div, footer p, .contact-info, .get-in-touch')).some(el =>
+ 	  el.textContent.toLowerCase().includes('contact') ||
+ 	  el.textContent.toLowerCase().includes('get in touch') ||
+ 	  /\b(email|phone|tel|call|message|reach us|say hello)\b/i.test(el.textContent)
+		);
+	  const hasContact = contactLinkElements.length > 0 || footerContactText;
       const hasContact = contactLinkElements.length > 0 || footerContactText;
-      const policyLinkElements = doc.querySelectorAll(config.parsing.policyLinkSelectors.join(', '));
-      const footerPolicyText = Array.from(doc.querySelectorAll('footer a, footer span, footer div')).some(el =>
-        /privacy|terms/i.test(el.textContent)
-      );
-      const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
+	  const policyLinkElements = doc.querySelectorAll(config.parsing.policyLinkSelectors.join(', ') + ', a[href*="/policy" i], a[href*="/cookie" i], a[href*="/gdpr" i], a[href*="/legal" i]');
+	  const footerPolicyText = Array.from(doc.querySelectorAll('footer a, footer span, footer div, footer p')).some(el =>
+	   /privacy|terms|cookie|gdpr|legal|disclaimer|imprint/i.test(el.textContent.toLowerCase())
+		);
+	  const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
       const updateDateElement = doc.querySelector(config.parsing.updateDateSelectors.join(', '));
       const hasUpdateDate = !!updateDateElement ||
         cleanedText.match(/\b(Updated|Last updated|Published|Modified on)[\s:]*\w+/gi);
