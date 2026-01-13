@@ -2,17 +2,6 @@ import { renderPriorityAndGains } from './priority-gains.js';
 
 import { renderPluginSolutions } from './plugin-solutions.js';
 
-function isHomepage(url) {
-  try {
-    const parsed = new URL(url);
-    const pathname = parsed.pathname.toLowerCase();
-    return pathname === '/' || pathname === '' || 
-           pathname === '/index.html' || pathname === '/index.htm' ||
-           pathname.match(/^\/(home|welcome|start)?\/?$/i);
-  } catch {
-    return false;
-  }
-}
 
 const moduleInfo = {
   seo: {
@@ -1156,7 +1145,7 @@ function analyzeUXDesign(html, doc) {
         fix: 'Overwhelming users with too many options can lead to decision paralysis and higher bounce rates. Focus on 1-3 primary actions with clear, prominent buttons and move secondary links to menus or footers. This guides users toward your main goals more effectively.'
       });
     }
-if (!isHomepage(url) && !hasBreadcrumb && doc.body.textContent.length > 2000) {
+if (!hasBreadcrumb && doc.body.textContent.length > 2000) {
   score -= 10;
   issues.push({
     issue: 'Missing breadcrumb navigation',
