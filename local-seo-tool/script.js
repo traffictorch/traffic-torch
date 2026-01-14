@@ -365,250 +365,239 @@ const scoreDelta = projectedScore - yourScore;
 
     const scores = modules.map(m => m.score);
 
-    results.innerHTML = `
-      <!-- Overall Score Card -->
-      <div class="flex justify-center my-12 px-4">
-        <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full border-4 ${bigGrade.border} border-opacity-60">
-          <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6 truncate px-4" title="${pageTitle}">${truncatedTitle}</p>
-          <div class="relative w-56 h-56 mx-auto md:w-64 md:h-64">
-            <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
-              <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
-              <circle cx="100" cy="100" r="90"
-                      stroke="${bigGrade.fill}"
-                      stroke-width="16" fill="none"
-                      stroke-dasharray="${(yourScore / 100) * 565} 565"
-                      stroke-linecap="round"/>
-            </svg>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="text-center">
-                <div class="text-4xl md:text-5xl font-black drop-shadow-lg ${bigGrade.text}">
-                  ${yourScore}
-                </div>
-                <div class="text-base md:text-lg opacity-80 -mt-1 text-gray-600 dark:text-gray-400">
-                  /100
-                </div>
+results.innerHTML = `
+  <!-- Overall Score Card -->
+  <div class="flex justify-center my-12 px-4">
+    <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full border-4 ${bigGrade.border} border-opacity-60">
+      <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6 truncate px-4" title="${pageTitle}">${truncatedTitle}</p>
+      <div class="relative w-56 h-56 mx-auto md:w-64 md:h-64">
+        <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+          <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
+          <circle cx="100" cy="100" r="90"
+                  stroke="${bigGrade.fill}"
+                  stroke-width="16" fill="none"
+                  stroke-dasharray="${(yourScore / 100) * 565} 565"
+                  stroke-linecap="round"/>
+        </svg>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="text-center">
+            <div class="text-4xl md:text-5xl font-black drop-shadow-lg ${bigGrade.text}">
+              ${yourScore}
+            </div>
+            <div class="text-base md:text-lg opacity-80 -mt-1 text-gray-600 dark:text-gray-400">
+              /100
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-6 text-center">
+        <p class="text-3xl md:text-4xl font-bold ${bigGrade.text}">
+          ${bigGrade.emoji} ${bigGrade.grade}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Radar Chart -->
+  <div class="max-w-5xl mx-auto my-16 px-4">
+    <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-2xl p-8">
+      <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">Local SEO Health Radar</h3>
+      <div class="hidden md:block w-full">
+        <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
+      </div>
+      <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">
+        Radar chart available on desktop/tablet
+      </p>
+    </div>
+  </div>
+
+  <!-- Modern Scoring Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 w-full max-w-none mx-auto">
+    ${modules.map((m, index) => {
+      const grade = getGrade(m.score);
+      const explanation = window.metricExplanations?.find(e => e.id === moduleHashes[m.name]) || { what: 'Local check' };
+      const shortDesc = explanation.what ? explanation.what.split('.')[0] + '.' : 'Local SEO metric';
+      const deepDiveId = moduleHashes[m.name];
+      return `
+        <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-xl overflow-hidden border-2 ${grade.border} border-opacity-50 flex flex-col transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
+          <div class="p-6 md:p-8 text-center border-b ${grade.bgLight} border-opacity-40">
+            <div class="relative w-32 h-32 md:w-36 md:h-36 mx-auto">
+              <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
+                <circle cx="70" cy="70" r="60" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
+                <circle cx="70" cy="70" r="60" stroke="${grade.fill}" stroke-width="12" fill="none" stroke-dasharray="${(m.score / 100) * 377} 377" stroke-linecap="round"/>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <div class="text-5xl md:text-6xl font-extrabold ${grade.text}">${Math.round(m.score)}</div>
+                <div class="text-sm md:text-base opacity-70 ${grade.text}">/100</div>
               </div>
             </div>
           </div>
-          <div class="mt-6 text-center">
-            <p class="text-3xl md:text-4xl font-bold ${bigGrade.text}">
-              ${bigGrade.emoji} ${bigGrade.grade}
+          <h3 class="text-xl md:text-2xl font-bold text-center text-gray-900 dark:text-gray-100 mt-6 mb-2 px-6">
+            ${m.name}
+          </h3>
+          <p class="text-xl md:text-2xl font-bold text-center ${grade.text} mb-4 px-6">
+            ${grade.emoji} ${grade.grade}
+          </p>
+          <p class="text-sm text-gray-600 dark:text-gray-400 text-center leading-relaxed px-6 mb-6">
+            ${shortDesc}
+          </p>
+          <div class="px-6 pb-4">
+            <a href="#${deepDiveId}" class="block w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl font-medium transition text-gray-900 dark:text-gray-100 shadow-sm text-center">
+              More Details
+            </a>
+          </div>
+          <div class="px-6 py-6 space-y-4 border-t border-gray-200 dark:border-gray-700">
+            ${m.sub.map(s => `
+              <div class="flex items-center gap-3">
+                <span class="text-2xl ${s.color}">${s.status}</span>
+                <span class="text-gray-800 dark:text-gray-200">${s.label}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="px-6 pt-2 pb-6">
+            <button class="w-full px-6 py-3 ${grade.bgLight} hover:opacity-90 rounded-xl font-medium transition ${grade.text} shadow-sm" onclick="document.getElementById('fixes-${index}').classList.toggle('hidden')">
+              Show Fixes
+            </button>
+          </div>
+          <div id="fixes-${index}" class="hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">
+            ${allFixes.filter(f => f.module === m.name).length > 0 ?
+              allFixes.filter(f => f.module === m.name).map(f => `
+                <div class="mb-5 pb-5 border-b border-gray-200 dark:border-gray-700 last:border-0 last:pb-0">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="font-semibold text-orange-600">${f.sub}</span>
+                    ${f.priority === 'very-high' ? '<span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">URGENT</span>' :
+                      f.priority === 'high' ? '<span class="text-xs bg-orange-600 text-white px-2 py-0.5 rounded-full">HIGH</span>' : ''}
+                  </div>
+                  <p class="font-medium text-gray-900 dark:text-gray-100 mb-1">${f.issue}</p>
+                  <p class="text-gray-700 dark:text-gray-300">${f.how}</p>
+                </div>
+              `).join('')
+            : '<p class="text-green-600 dark:text-green-400 font-medium text-center">All checks passed – excellent!</p>'}
+            <!-- Link to deep dive -->
+            <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 text-center">
+              <a href="#${moduleHashes[m.name]}" class="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:underline font-medium">
+                How ${m.name} is tested? <span class="text-xl">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('')}
+  </div>
+
+  <!-- Top Priority Fixes -->
+  <div class="my-16">
+    <h3 class="text-4xl font-bold text-center text-orange-600 mb-8">Top Priority Fixes</h3>
+    ${topPriorityFixes.length ? `
+      <div class="space-y-8 max-w-4xl mx-auto">
+        ${topPriorityFixes.map((fix, i) => {
+          const gainFix = fixGains.find(f => f.module === fix.module && f.sub === fix.sub) || { estimatedGain: 5, trafficImpact: 'Medium' };
+          const gainText = `+${gainFix.estimatedGain}–${gainFix.estimatedGain + 5} points`;
+          let impactIcon = '📈';
+          let impactColor = 'text-orange-600';
+          if (gainFix.trafficImpact === 'Very High') {
+            impactIcon = '🚀'; impactColor = 'text-red-600';
+          } else if (gainFix.trafficImpact === 'High') {
+            impactIcon = '📊'; impactColor = 'text-orange-600';
+          }
+          return `
+            <div class="p-6 md:p-8 bg-white dark:bg-gray-950 rounded-2xl shadow-xl border-l-8 border-orange-500 flex flex-col md:flex-row gap-6">
+              <div class="text-5xl md:text-6xl font-black text-orange-600 shrink-0">${i+1}</div>
+              <div class="flex-1">
+                <div class="flex flex-wrap items-center gap-3 mb-4">
+                  <span class="px-4 py-1 bg-orange-500 text-white rounded-full text-sm font-bold">${fix.module}</span>
+                  ${fix.priority === 'very-high' ? '<span class="px-3 py-1 bg-red-600 text-white rounded-full text-xs font-bold">URGENT</span>' : ''}
+                  ${fix.priority === 'high' ? '<span class="px-3 py-1 bg-orange-600 text-white rounded-full text-xs font-bold">HIGH</span>' : ''}
+                </div>
+                <h4 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">${fix.issue}</h4>
+                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${fix.how}</p>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      <!-- Score Improvement & Potential Ranking Gains -->
+      <div class="max-w-5xl mx-auto mt-16 grid md:grid-cols-2 gap-8 px-4">
+        <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
+          <h3 class="text-3xl font-bold text-center mb-8 text-orange-500">Overall Score Improvement</h3>
+          <div class="flex justify-center items-baseline gap-4 mb-8">
+            <div class="text-5xl font-black text-gray-800 dark:text-gray-200">${yourScore}</div>
+            <div class="text-4xl text-gray-400">→</div>
+            <div class="text-6xl font-black text-green-500">${projectedScore}</div>
+            <div class="text-2xl text-green-600 font-medium">(${scoreDelta > 0 ? '+' + scoreDelta : 'Optimal'})</div>
+          </div>
+          <div class="text-center py-4">
+            <p class="text-lg text-gray-600 dark:text-gray-400">
+              Fixing the top priorities above could boost your score by up to ${totalPotentialGain} points.
             </p>
           </div>
-        </div>
-      </div>
-
-      <!-- Radar Chart -->
-      <div class="max-w-5xl mx-auto my-16 px-4">
-        <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-2xl p-8">
-          <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">Local SEO Health Radar</h3>
-          <div class="hidden md:block w-full">
-            <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
-          </div>
-          <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">
-            Radar chart available on desktop/tablet
-          </p>
-        </div>
-      </div>
-
-
-<!-- Modern Scoring Cards - simplified, More Details links to deep dive -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 w-full max-w-none mx-auto">
-  ${modules.map((m, index) => {
-    const grade = getGrade(m.score);
-    const explanation = window.metricExplanations?.find(e => e.id === moduleHashes[m.name]) || { what: 'Local check' };
-    const shortDesc = explanation.what ? explanation.what.split('.')[0] + '.' : 'Local SEO metric';
-    const deepDiveId = moduleHashes[m.name];
-    return `
-      <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-xl overflow-hidden border-2 ${grade.border} border-opacity-50 flex flex-col transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
-        <!-- 1. Round Progress Circle -->
-        <div class="p-6 md:p-8 text-center border-b ${grade.bgLight} border-opacity-40">
-          <div class="relative w-32 h-32 md:w-36 md:h-36 mx-auto">
-            <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
-              <circle cx="70" cy="70" r="60" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
-              <circle cx="70" cy="70" r="60" stroke="${grade.fill}" stroke-width="12" fill="none" stroke-dasharray="${(m.score / 100) * 377} 377" stroke-linecap="round"/>
-            </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <div class="text-5xl md:text-6xl font-extrabold ${grade.text}">${Math.round(m.score)}</div>
-              <div class="text-sm md:text-base opacity-70 ${grade.text}">/100</div>
+          <details class="mt-8 text-sm text-gray-600 dark:text-gray-400">
+            <summary class="cursor-pointer font-medium text-orange-500 hover:underline text-center block">
+              How We Calculated This
+            </summary>
+            <div class="mt-4 space-y-2 px-2">
+              <p>• Weighted scoring across 6 key local modules (NAP, Keywords, Content, Maps, Schema, Reviews)</p>
+              <p>• Each module contributes proportionally based on real-world local SEO impact</p>
+              <p>• Projected score assumes full implementation of top priority fixes</p>
+              <p>• Top-ranking pages in local pack typically score 80+ on these on-page factors</p>
+              <p class="italic mt-4">Conservative estimate based on on-page optimization benchmarks from high-performing local sites</p>
             </div>
-          </div>
+          </details>
         </div>
-        <!-- 2. Module Name -->
-        <h3 class="text-xl md:text-2xl font-bold text-center text-gray-900 dark:text-gray-100 mt-6 mb-2 px-6">
-          ${m.name}
-        </h3>
-        <!-- 3. Grade + Emoji -->
-        <p class="text-xl md:text-2xl font-bold text-center ${grade.text} mb-4 px-6">
-          ${grade.emoji} ${grade.grade}
-        </p>
-        <!-- 4. Short Description -->
-        <p class="text-sm text-gray-600 dark:text-gray-400 text-center leading-relaxed px-6 mb-6">
-          ${shortDesc}
-        </p>
-        <!-- 5. More Details Link (to deep dive) -->
-        <div class="px-6 pb-4">
-          <a href="#${deepDiveId}" class="block w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl font-medium transition text-gray-900 dark:text-gray-100 shadow-sm text-center">
-            More Details
-          </a>
-        </div>
-        <!-- 6. Sub-metrics (always visible) -->
-        <div class="px-6 py-6 space-y-4 border-t border-gray-200 dark:border-gray-700">
-          ${m.sub.map(s => `
-            <div class="flex items-center gap-3">
-              <span class="text-2xl ${s.color}">${s.status}</span>
-              <span class="text-gray-800 dark:text-gray-200">${s.label}</span>
-            </div>
-          `).join('')}
-        </div>
-        <!-- 7. Show Fixes Button -->
-        <div class="px-6 pt-2 pb-6">
-          <button class="w-full px-6 py-3 ${grade.bgLight} hover:opacity-90 rounded-xl font-medium transition ${grade.text} shadow-sm" onclick="document.getElementById('fixes-${index}').classList.toggle('hidden')">
-            Show Fixes
-          </button>
-        </div>
-        <!-- Fixes Expandable Content -->
-<div id="fixes-${index}" class="hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">
-  ${allFixes.filter(f => f.module === m.name).length > 0 ?
-    allFixes.filter(f => f.module === m.name).map(f => `
-      <div class="mb-5 pb-5 border-b border-gray-200 dark:border-gray-700 last:border-0 last:pb-0">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="font-semibold text-orange-600">${f.sub}</span>
-          ${f.priority === 'very-high' ? '<span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">URGENT</span>' : 
-            f.priority === 'high' ? '<span class="text-xs bg-orange-600 text-white px-2 py-0.5 rounded-full">HIGH</span>' : ''}
-        </div>
-        <p class="font-medium text-gray-900 dark:text-gray-100 mb-1">${f.issue}</p>
-        <p class="text-gray-700 dark:text-gray-300">${f.how}</p>
-      </div>
-    `).join('')
-  : '<p class="text-green-600 dark:text-green-400 font-medium text-center">All checks passed – excellent!</p>'}
-  
-  <!-- Link to deep dive: How [Module Name] is tested -->
-  <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 text-center">
-    <a href="#${moduleHashes[m.name]}" class="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:underline font-medium">
-      How ${m.name} is tested? <span class="text-xl">→</span>
-    </a>
-  </div>
-</div>
-      </div>
-    `;
-  }).join('')}
-</div>
 
-<!-- Top Priority Fixes – keep priority list clean, move score & gains below -->
-<div class="my-16">
-  <h3 class="text-4xl font-bold text-center text-orange-600 mb-8">Top Priority Fixes</h3>
-  ${topPriorityFixes.length ? `
-    <div class="space-y-8 max-w-4xl mx-auto">
-      ${topPriorityFixes.map((fix, i) => {
-        const gainFix = fixGains.find(f => f.module === fix.module && f.sub === fix.sub) || { estimatedGain: 5, trafficImpact: 'Medium' };
-        const gainText = `+${gainFix.estimatedGain}–${gainFix.estimatedGain + 5} points`;
-        let impactIcon = '📈';
-        let impactColor = 'text-orange-600';
-        if (gainFix.trafficImpact === 'Very High') {
-          impactIcon = '🚀'; impactColor = 'text-red-600';
-        } else if (gainFix.trafficImpact === 'High') {
-          impactIcon = '📊'; impactColor = 'text-orange-600';
-        }
-        return `
-          <div class="p-6 md:p-8 bg-white dark:bg-gray-950 rounded-2xl shadow-xl border-l-8 border-orange-500 flex flex-col md:flex-row gap-6">
-            <div class="text-5xl md:text-6xl font-black text-orange-600 shrink-0">${i+1}</div>
-            <div class="flex-1">
-              <div class="flex flex-wrap items-center gap-3 mb-4">
-                <span class="px-4 py-1 bg-orange-500 text-white rounded-full text-sm font-bold">${fix.module}</span>
-                ${fix.priority === 'very-high' ? '<span class="px-3 py-1 bg-red-600 text-white rounded-full text-xs font-bold">URGENT</span>' : ''}
-                ${fix.priority === 'high' ? '<span class="px-3 py-1 bg-orange-600 text-white rounded-full text-xs font-bold">HIGH</span>' : ''}
+        <div class="p-8 bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
+          <h3 class="text-3xl font-bold text-center mb-8">Potential Visibility & Traffic Gains</h3>
+          <div class="space-y-6">
+            <div class="flex items-center gap-4">
+              <div class="text-4xl">📈</div>
+              <div class="flex-1">
+                <p class="font-medium">Ranking Position Lift</p>
+                <p class="text-2xl font-bold">Medium → High potential</p>
               </div>
-              <h4 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">${fix.issue}</h4>
-              <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${fix.how}</p>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="text-4xl">🚀</div>
+              <div class="flex-1">
+                <p class="font-medium">Organic Traffic Increase</p>
+                <p class="text-2xl font-bold">+40–100% potential</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="text-4xl">👆</div>
+              <div class="flex-1">
+                <p class="font-medium">Click-Through Rate Boost</p>
+                <p class="text-2xl font-bold">+15–35% from better local signals</p>
+              </div>
             </div>
           </div>
-        `;
-      }).join('')}
-    </div>
-
-    <!-- Score Improvement & Potential Ranking Gains (moved below) -->
-<div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
-  <h3 class="text-3xl font-bold text-center mb-8 text-orange-500">Overall Score Improvement</h3>
-  <div class="flex justify-center items-baseline gap-4 mb-8">
-    <div class="text-5xl font-black text-gray-800 dark:text-gray-200">${yourScore}</div>
-    <div class="text-4xl text-gray-400">→</div>
-    <div class="text-6xl font-black text-green-500">${projectedScore}</div>
-    <div class="text-2xl text-green-600 font-medium">(${scoreDelta > 0 ? '+' + scoreDelta : 'Optimal'})</div>
-  </div>
-  <div class="text-center py-4">
-    <p class="text-lg text-gray-600 dark:text-gray-400">
-      Fixing the top priorities above could boost your score by up to ${totalPotentialGain} points.
-    </p>
-  </div>
-  <details class="mt-8 text-sm text-gray-600 dark:text-gray-400">
-    <summary class="cursor-pointer font-medium text-orange-500 hover:underline text-center block">
-      How We Calculated This
-    </summary>
-    <div class="mt-4 space-y-2 px-2">
-      <p>• Weighted scoring across 6 key local modules (NAP, Keywords, Content, Maps, Schema, Reviews)</p>
-      <p>• Each module contributes proportionally based on real-world local SEO impact</p>
-      <p>• Projected score assumes full implementation of top priority fixes</p>
-      <p>• Top-ranking pages in local pack typically score 80+ on these on-page factors</p>
-      <p class="italic mt-4">Conservative estimate based on on-page optimization benchmarks from high-performing local sites</p>
-    </div>
-  </details>
-</div>
-      </div>
-
-      <div class="p-8 bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
-        <h3 class="text-3xl font-bold text-center mb-8">Potential Visibility & Traffic Gains</h3>
-        <div class="space-y-6">
-          <div class="flex items-center gap-4">
-            <div class="text-4xl">📈</div>
-            <div class="flex-1">
-              <p class="font-medium">Ranking Position Lift</p>
-              <p class="text-2xl font-bold">Medium → High potential</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-4">
-            <div class="text-4xl">🚀</div>
-            <div class="flex-1">
-              <p class="font-medium">Organic Traffic Increase</p>
-              <p class="text-2xl font-bold">+40–100% potential</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-4">
-            <div class="text-4xl">👆</div>
-            <div class="flex-1">
-              <p class="font-medium">Click-Through Rate Boost</p>
-              <p class="text-2xl font-bold">+15–35% from better local signals</p>
-            </div>
+          <div class="mt-10 text-sm space-y-2 opacity-90">
+            <p>Conservative estimates based on on-page fixes.</p>
+            <p>Actual gains depend on competition and off-page factors.</p>
           </div>
         </div>
-        <div class="mt-10 text-sm space-y-2 opacity-90">
-          <p>Conservative estimates based on on-page fixes.</p>
-          <p>Actual gains depend on competition and off-page factors.</p>
-        </div>
       </div>
-    </div>
 
-    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-8 max-w-3xl mx-auto">
-      Conservative estimates based on on-page optimization benchmarks. Improvements often visible in 1–4 weeks.
+      <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-8 max-w-3xl mx-auto">
+        Conservative estimates based on on-page optimization benchmarks. Improvements often visible in 1–4 weeks.
+      </p>
+    ` : '<p class="text-center text-green-500 text-2xl font-bold">Strong local optimization — keep it up!</p>'}
+  </div>
+
+  <!-- Plugin Solutions -->
+  <div id="plugin-solutions-section" class="mt-20"></div>
+
+  <!-- PDF Button -->
+  <div class="text-center my-16 px-4">
+    <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
+            class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl md:text-3xl font-bold rounded-2xl shadow-lg hover:opacity-90 transition transform hover:scale-105">
+      📄 Save as PDF
+    </button>
+    <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+      This will expand all sections for a complete printable report
     </p>
-  ` : '<p class="text-center text-green-500 text-2xl font-bold">Strong local optimization — keep it up!</p>'}
-</div>
-
-      <!-- Plugin Solutions -->
-      <div id="plugin-solutions-section" class="mt-20"></div>
-      
-      
-      <!-- PDF Button - print-friendly with expand all -->
-<div class="text-center my-16 px-4">
-  <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
-          class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl md:text-3xl font-bold rounded-2xl shadow-lg hover:opacity-90 transition transform hover:scale-105">
-    📄 Save as PDF
-  </button>
-  <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-    This will expand all sections for a complete printable report
-  </p>
-</div>
-    `;
+  </div>
+`;
 
     // Trigger plugins on critical failures
     const failedModules = modules.filter(m => m.score < 50).map(m => m.name);
