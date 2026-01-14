@@ -10,28 +10,8 @@
 }
 
 /* Smooth dark/light transitions */
-/* Core body – no flex to avoid breaking child grids */
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  min-height: 100vh;
-  background-color: #f9fafb; /* gray-50 light */
-  color: #111827; /* gray-900 light */
+body {
   transition: background-color 0.3s ease, color 0.3s ease;
-  font-family: system-ui, -apple-system, sans-serif;
-}
-
-body.dark {
-  background-color: #111827; /* gray-950 dark */
-  color: #e5e7eb; /* gray-200 dark */
-}
-
-/* Prevent any parent overflow clipping grids */
-section, main, .container, .max-w-*, #deep-dive-section {
-  overflow: visible !important;
-  width: 100%;
-  max-width: none !important; /* override any max-w restrictions */
 }
 
 /* Big Score Card Fixes */
@@ -166,38 +146,6 @@ canvas {
 
 
 
-
-
-
-/* Deep Dive Cards – strong overrides to ensure visibility */
-#metric-cards-container {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
-  gap: 2rem !important;
-  padding: 2rem 0 !important;
-  margin: 0 auto !important;
-  max-width: 100% !important;
-}
-
-#metric-cards-container > div {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  min-height: 420px !important;
-  background: white !important;
-  border-radius: 1rem !important;
-  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1) !important;
-  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-}
-
-#metric-cards-container > div:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 20px 35px -10px rgba(0,0,0,0.15) !important;
-}
-
-.dark #metric-cards-container > div {
-  background: #1f2937 !important; /* gray-800 dark */
-}
 
 /* Sub-metric icons in main scoring cards */
 .sub-metric {
