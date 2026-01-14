@@ -162,3 +162,20 @@ canvas {
 .dark #metric-cards-container details summary {
   color: #fb923c; /* orange-400 dark */
 }
+
+
+
+
+
+/* Sub-metric icons */
+.sub-metric { display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0; }
+.pass { color: #22c55e; }
+.warn { color: #fb923c; }
+.fail { color: #ef4444; }
+
+/* Fixes toggle button */
+.fix-toggle { background: #ea580c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; }
+.fix-toggle:hover { background: #c2410c; }
+
+/* Fallback textarea */
+#paste-fallback { width: 100%; height: 300px; padding: 1rem; border: 2px solid #ea580c; border-radius: 0.5rem; font-family: monospace; }
