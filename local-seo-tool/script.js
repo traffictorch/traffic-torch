@@ -648,37 +648,6 @@ results.innerHTML = `
   }
   
   
-  // Toggle "Learn More" buttons for deep dive cards
-document.querySelectorAll('.learn-more-toggle').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const details = btn.closest('.metric-card').querySelector('.metric-details');
-    details.classList.toggle('hidden');
-  });
-});
 
-// Auto-expand details on hash change + scroll to card
-function handleHash() {
-  if (!window.location.hash) return;
-  
-  const id = window.location.hash.substring(1);
-  const targetCard = document.getElementById(id);
-  
-  if (targetCard) {
-    // Scroll to the card smoothly
-    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    
-    // Find and open the details section
-    const details = targetCard.querySelector('.metric-details');
-    if (details) {
-      details.classList.remove('hidden');
-    }
-  }
-}
-
-// Run on load
-document.addEventListener('DOMContentLoaded', handleHash);
-
-// Run on hash change (back/forward or direct link)
-window.addEventListener('hashchange', handleHash);
 
 });
