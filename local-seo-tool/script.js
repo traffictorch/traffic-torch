@@ -1,4 +1,5 @@
 // script.js
+import { metricExplanations } from './metric-explanations.js';
 import { renderPluginSolutions } from './plugin-solutions.js';
 import { moduleFixes } from './fixes.js';
 
@@ -380,48 +381,109 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-      <!-- Module Cards -->
-      <div class="grid md:grid-cols-3 gap-8 my-16">
-        ${modules.map(m => {
-          const grade = getGrade(m.score);
-          return `
-            <div class="bg-white dark:bg-gray-950 rounded-2xl shadow-lg p-6 border-4 ${grade.border} border-opacity-60 flex flex-col">
-              <h4 class="text-xl font-medium mb-4 text-center ${grade.text}">${m.name}</h4>
-              <div class="relative w-28 h-28 mx-auto mb-4">
-                <svg width="112" height="112" viewBox="0 0 112 112" class="transform -rotate-90">
-                  <circle cx="56" cy="56" r="48" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-                  <circle cx="56" cy="56" r="48" stroke="${grade.fill}"
-                          stroke-width="12" fill="none" stroke-dasharray="${(m.score / 100) * 301} 301" stroke-linecap="round"/>
-                </svg>
-                <div class="absolute inset-0 flex items-center justify-center">
-                  <div class="text-center">
-                    <div class="text-4xl font-black ${grade.text}">${Math.round(m.score)}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="text-center mb-4">
-                <span class="text-2xl ${grade.text}">${grade.emoji} ${grade.grade}</span>
-              </div>
-              <div class="space-y-2 mb-4">
-                ${m.sub.map(s => `
-                  <div class="sub-metric flex items-center gap-2">
-                    <span class="${s.color} text-xl">${s.status}</span>
-                    <span class="text-gray-800 dark:text-gray-200">${s.label}</span>
-                  </div>
-                `).join('')}
-              </div>
-              <button class="fix-toggle w-full mt-auto px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg transition">
-                Show Fixes for ${m.name}
-              </button>
-              <div class="hidden mt-4 p-4 ${grade.bgLight} rounded-xl text-sm text-gray-800 dark:text-gray-200">
-                ${m.sub.filter(s => s.status !== '✅').length > 0 ?
-                  m.sub.map(s => s.status !== '✅' ? `<p><strong>${s.label}:</strong> Needs attention</p>` : '').join('') :
-                  '<p class="text-green-600 dark:text-green-400">All sub-metrics look good!</p>'}
-              </div>
+<!-- Modern Scoring Cards - exact requested order -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 max-w-7xl mx-auto">
+  ${modules.map(m => {
+    const grade = getGrade(m.score);
+    const explanation = window.metricExplanations?.find(e => e.id === moduleHashes[m.name]) || { what: 'Local optimization check' };
+    const shortDesc = explanation.what ? explanation.what.split('.').slice(0,1).join('.') + '.' : 'Local SEO health metric';
+    return `
+      <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-xl overflow-hidden border-2 ${grade.border} border-opacity-50 flex flex-col transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
+        <!-- 1. Round Progress Circle -->
+        <div class="p-6 md:p-8 text-center border-b ${grade.bgLight} border-opacity-40">
+          <div class="relative w-32 h-32 md:w-36 md:h-36 mx-auto">
+            <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
+              <circle cx="70" cy="70" r="60" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
+              <circle cx="70" cy="70" r="60" 
+                      stroke="${grade.fill}" stroke-width="12" fill="none"
+                      stroke-dasharray="${(m.score / 100) * 377} 377" stroke-linecap="round"/>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <div class="text-5xl md:text-6xl font-extrabold ${grade.text}">${Math.round(m.score)}</div>
+              <div class="text-sm md:text-base opacity-70 ${grade.text}">/100</div>
             </div>
-          `;
-        }).join('')}
+          </div>
+        </div>
+
+        <!-- 2. Module Name -->
+        <h3 class="text-xl md:text-2xl font-bold text-center text-gray-900 dark:text-gray-100 mt-6 mb-2 px-6">
+          ${m.name}
+        </h3>
+
+        <!-- 3. Grade + Emoji -->
+        <p class="text-xl md:text-2xl font-bold text-center ${grade.text} mb-4 px-6">
+          ${grade.emoji} ${grade.grade}
+        </p>
+
+        <!-- 4. Short Description -->
+        <p class="text-sm text-gray-600 dark:text-gray-400 text-center leading-relaxed px-6 mb-6">
+          ${shortDesc}
+        </p>
+
+        <!-- 5. More Details Button -->
+        <div class="px-6 pb-4">
+          <button 
+            class="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl font-medium transition text-gray-900 dark:text-gray-100 shadow-sm"
+            onclick="this.parentElement.nextElementSibling.classList.toggle('hidden')">
+            More Details
+          </button>
+        </div>
+
+        <!-- More Details Expandable Content -->
+        <div class="hidden px-6 pb-6 space-y-6 text-sm border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-2">What is this?</p>
+            <p class="text-gray-700 dark:text-gray-300">${explanation.what}</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-2">How is it measured?</p>
+            <p class="text-gray-700 dark:text-gray-300">${explanation.how || 'Scans relevant page elements for this metric.'}</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-2">Why does it matter?</p>
+            <p class="text-gray-700 dark:text-gray-300">${explanation.why}</p>
+          </div>
+        </div>
+
+        <!-- 6. Sub-metrics (always visible) -->
+        <div class="px-6 py-6 space-y-4 border-t border-gray-200 dark:border-gray-700">
+          ${m.sub.map(s => `
+            <div class="flex items-center gap-3">
+              <span class="text-2xl ${s.color}">${s.status}</span>
+              <span class="text-gray-800 dark:text-gray-200">${s.label}</span>
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- 7. Show Fixes Button -->
+        <div class="px-6 pt-2 pb-6">
+          <button 
+            class="w-full px-6 py-3 ${grade.bgLight} hover:opacity-90 rounded-xl font-medium transition ${grade.text} shadow-sm"
+            onclick="this.parentElement.nextElementSibling.classList.toggle('hidden')">
+            Show Fixes
+          </button>
+        </div>
+
+        <!-- Fixes Expandable Content -->
+        <div class="hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">
+          ${allFixes.filter(f => f.module === m.name).length > 0 ?
+            allFixes.filter(f => f.module === m.name).map(f => `
+              <div class="mb-5 pb-5 border-b border-gray-200 dark:border-gray-700 last:border-0 last:pb-0">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="font-semibold text-orange-600">${f.sub}</span>
+                  ${f.priority === 'very-high' ? '<span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">URGENT</span>' :
+                    f.priority === 'high' ? '<span class="text-xs bg-orange-600 text-white px-2 py-0.5 rounded-full">HIGH</span>' : ''}
+                </div>
+                <p class="font-medium text-gray-900 dark:text-gray-100 mb-1">${f.issue}</p>
+                <p class="text-gray-700 dark:text-gray-300">${f.how}</p>
+              </div>
+            `).join('')
+          : '<p class="text-green-600 dark:text-green-400 font-medium text-center">All checks passed – excellent!</p>'}
+        </div>
       </div>
+    `;
+  }).join('')}
+</div>
 
       <!-- Top Priority Fixes -->
       <div class="my-16">
