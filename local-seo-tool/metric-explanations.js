@@ -1,4 +1,4 @@
-const metricExplanations = [
+export const metricExplanations = [
   {
     id: 'nap-contact',
     emoji: '📍',
