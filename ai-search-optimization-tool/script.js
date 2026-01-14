@@ -466,7 +466,7 @@ if (name === "Structured Data") {
           if (youCount <= 5) addFix('Direct "you" address (>5)', 'Address the reader directly with “you” more than 5 times.');
           if (iWeCount <= 3) addFix('Personal "I/we" sharing', 'Include personal insights using “I” or “we” at least 4 times.');
           if (questions <= 2) addFix('Engaging questions asked', 'Add rhetorical questions that mirror what readers are thinking.');
-          if (painPoints <= 3) addFix('Reader pain points acknowledged', 'Mention common struggles or frustrations to build empathy.');
+          if (painPointsNearYou <= 3) addFix('Reader pain points acknowledged', 'Mention common struggles or frustrations to build empathy.');
         }
         if (name === "Readability") {
           if (flesch <= 60) addFix('Good Flesch score (>60)', 'Use shorter sentences and simpler words to improve reading ease.');
