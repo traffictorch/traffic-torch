@@ -380,11 +380,11 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-<!-- Modern Scoring Cards - all 6 modules -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 max-w-7xl mx-auto">
+<!-- Modern Scoring Cards - all 6 modules with unique IDs -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 w-full max-w-none mx-auto">
   ${modules.map((m, index) => {
     const grade = getGrade(m.score);
-    const explanation = window.metricExplanations?.find(e => e.id === moduleHashes[m.name]) || { what: 'Local optimization check' };
+    const explanation = window.metricExplanations?.find(e => e.id === moduleHashes[m.name]) || { what: 'Local optimization check', how: 'Scans page elements', why: 'Important for local rankings' };
     const shortDesc = explanation.what ? explanation.what.split('.')[0] + '.' : 'Local SEO health metric';
     return `
       <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-xl overflow-hidden border-2 ${grade.border} border-opacity-50 flex flex-col transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
@@ -419,7 +419,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <!-- 5. More Details Button -->
         <div class="px-6 pb-4">
-          <button class="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl font-medium transition text-gray-900 dark:text-gray-100 shadow-sm" onclick="document.querySelector('#details-${index}').classList.toggle('hidden')">
+          <button 
+            class="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl font-medium transition text-gray-900 dark:text-gray-100 shadow-sm"
+            onclick="document.getElementById('details-${index}').classList.toggle('hidden')">
             More Details
           </button>
         </div>
@@ -432,15 +434,15 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div>
             <p class="font-bold text-orange-600 dark:text-orange-400 mb-2">How is it measured?</p>
-            <p class="text-gray-700 dark:text-gray-300">${explanation.how || 'Scans relevant page elements.'}</p>
+            <p class="text-gray-700 dark:text-gray-300">${explanation.how}</p>
           </div>
           <div>
             <p class="font-bold text-orange-600 dark:text-orange-400 mb-2">Why does it matter?</p>
-            <p class="text-gray-700 dark:text-gray-300">${explanation.why || 'Important for local SEO.'}</p>
+            <p class="text-gray-700 dark:text-gray-300">${explanation.why}</p>
           </div>
         </div>
 
-        <!-- 6. Sub-metrics (always visible) -->
+        <!-- 6. Sub-metrics -->
         <div class="px-6 py-6 space-y-4 border-t border-gray-200 dark:border-gray-700">
           ${m.sub.map(s => `
             <div class="flex items-center gap-3">
@@ -452,7 +454,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <!-- 7. Show Fixes Button -->
         <div class="px-6 pt-2 pb-6">
-          <button class="w-full px-6 py-3 ${grade.bgLight} hover:opacity-90 rounded-xl font-medium transition ${grade.text} shadow-sm" onclick="document.querySelector('#fixes-${index}').classList.toggle('hidden')">
+          <button 
+            class="w-full px-6 py-3 ${grade.bgLight} hover:opacity-90 rounded-xl font-medium transition ${grade.text} shadow-sm"
+            onclick="document.getElementById('fixes-${index}').classList.toggle('hidden')">
             Show Fixes
           </button>
         </div>
@@ -464,7 +468,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="mb-5 pb-5 border-b border-gray-200 dark:border-gray-700 last:border-0">
                 <div class="flex items-center gap-2 mb-2">
                   <span class="font-semibold text-orange-600">${f.sub}</span>
-                  ${f.priority === 'very-high' ? '<span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">URGENT</span>' :
+                  ${f.priority === 'very-high' ? '<span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">URGENT</span>' : 
                     f.priority === 'high' ? '<span class="text-xs bg-orange-600 text-white px-2 py-0.5 rounded-full">HIGH</span>' : ''}
                 </div>
                 <p class="font-medium text-gray-900 dark:text-gray-100 mb-1">${f.issue}</p>
