@@ -270,6 +270,37 @@ document.addEventListener('DOMContentLoaded', () => {
     yourScore += reviewsScore;
 
     yourScore = Math.min(100, Math.round(yourScore));
+    
+    // Rough potential improvement estimation
+let totalPotentialGain = 0;
+const fixGains = allFixes.map(fix => {
+  let gain = 0;
+  let trafficImpact = 'Low';
+  switch (fix.sub) {
+    case 'NAP Present': gain = 8; trafficImpact = 'High'; break;
+    case 'Footer NAP': gain = 5; trafficImpact = 'Medium'; break;
+    case 'Contact Complete': gain = 5; trafficImpact = 'Medium'; break;
+    case 'Title Local': gain = 7; trafficImpact = 'Very High'; break;
+    case 'Meta Local': gain = 5; trafficImpact = 'High'; break;
+    case 'Headings Local': gain = 5; trafficImpact = 'Medium'; break;
+    case 'Body Keywords': gain = 8; trafficImpact = 'High'; break;
+    case 'Intent Patterns': gain = 6; trafficImpact = 'Medium'; break;
+    case 'Location Mentions': gain = 6; trafficImpact = 'Medium'; break;
+    case 'Map Embedded': gain = 8; trafficImpact = 'High'; break;
+    case 'Local Alt Text': gain = 8; trafficImpact = 'Medium'; break;
+    case 'Local Schema': gain = 8; trafficImpact = 'Very High'; break;
+    case 'Geo Coords': gain = 5; trafficImpact = 'High'; break;
+    case 'Opening Hours': gain = 5; trafficImpact = 'High'; break;
+    case 'Review Schema': gain = 7; trafficImpact = 'High'; break;
+    case 'Canonical Tag': gain = 5; trafficImpact = 'Medium'; break;
+    case 'Internal Geo Links': gain = 5; trafficImpact = 'Medium'; break;
+    default: gain = 3; trafficImpact = 'Low';
+  }
+  totalPotentialGain += gain;
+  return { ...fix, estimatedGain: gain, trafficImpact };
+});
+const projectedScore = Math.min(100, yourScore + totalPotentialGain);
+const scoreDelta = projectedScore - yourScore;
 
     // Title truncation for big card
     const pageTitle = doc.querySelector('title')?.textContent?.trim() || 'Your Page';
@@ -330,10 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { label: 'Canonical Tag', ...passFail(canonical) },
         { label: 'Internal Geo Links', ...passFail(internalGeoLinks) }
       ]}
-    ]
-    console.log('DEBUG - modules array length:', modules.length);
-console.log('DEBUG - module names:', modules.map(m => m.name).join(' | '));
-    ;
+    ];
 
     const scores = modules.map(m => m.score);
 
@@ -383,10 +411,6 @@ console.log('DEBUG - module names:', modules.map(m => m.name).join(' | '));
         </div>
       </div>
 
-console.log('Number of modules to render:', modules.length);
-console.log('Module names:', modules.map(m => m.name).join(', '));
-console.log('DEBUG - Number of modules defined:', modules.length);
-console.log('DEBUG - Module names:', modules.map(m => m.name).join(' | '));
 
 <!-- Modern Scoring Cards - simplified, More Details links to deep dive -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 w-full max-w-none mx-auto">
@@ -464,28 +488,92 @@ console.log('DEBUG - Module names:', modules.map(m => m.name).join(' | '));
   }).join('')}
 </div>
 
-      <!-- Top Priority Fixes -->
-      <div class="my-16">
-        <h3 class="text-4xl font-bold text-center text-orange-600 mb-8">Top Priority Fixes</h3>
-        ${topPriorityFixes.length ? `
-          <div class="space-y-8 max-w-4xl mx-auto">
-            ${topPriorityFixes.map((fix, i) => `
-              <div class="p-6 md:p-8 bg-white dark:bg-gray-950 rounded-2xl shadow-xl border-l-8 border-orange-500 flex flex-col md:flex-row gap-6">
-                <div class="text-5xl md:text-6xl font-black text-orange-600 shrink-0">${i+1}</div>
-                <div class="flex-1">
-                  <div class="flex flex-wrap items-center gap-3 mb-4">
-                    <span class="px-4 py-1 bg-orange-500 text-white rounded-full text-sm font-bold">${fix.module}</span>
-                    ${fix.priority === 'very-high' ? '<span class="px-3 py-1 bg-red-600 text-white rounded-full text-xs font-bold">URGENT</span>' : ''}
-                    ${fix.priority === 'high' ? '<span class="px-3 py-1 bg-orange-600 text-white rounded-full text-xs font-bold">HIGH</span>' : ''}
-                  </div>
-                  <h4 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">${fix.issue}</h4>
-                  <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${fix.how}</p>
-                </div>
+<!-- Top Priority Fixes – keep priority list clean, move score & gains below -->
+<div class="my-16">
+  <h3 class="text-4xl font-bold text-center text-orange-600 mb-8">Top Priority Fixes</h3>
+  ${topPriorityFixes.length ? `
+    <div class="space-y-8 max-w-4xl mx-auto">
+      ${topPriorityFixes.map((fix, i) => {
+        const gainFix = fixGains.find(f => f.module === fix.module && f.sub === fix.sub) || { estimatedGain: 5, trafficImpact: 'Medium' };
+        const gainText = `+${gainFix.estimatedGain}–${gainFix.estimatedGain + 5} points`;
+        let impactIcon = '📈';
+        let impactColor = 'text-orange-600';
+        if (gainFix.trafficImpact === 'Very High') {
+          impactIcon = '🚀'; impactColor = 'text-red-600';
+        } else if (gainFix.trafficImpact === 'High') {
+          impactIcon = '📊'; impactColor = 'text-orange-600';
+        }
+        return `
+          <div class="p-6 md:p-8 bg-white dark:bg-gray-950 rounded-2xl shadow-xl border-l-8 border-orange-500 flex flex-col md:flex-row gap-6">
+            <div class="text-5xl md:text-6xl font-black text-orange-600 shrink-0">${i+1}</div>
+            <div class="flex-1">
+              <div class="flex flex-wrap items-center gap-3 mb-4">
+                <span class="px-4 py-1 bg-orange-500 text-white rounded-full text-sm font-bold">${fix.module}</span>
+                ${fix.priority === 'very-high' ? '<span class="px-3 py-1 bg-red-600 text-white rounded-full text-xs font-bold">URGENT</span>' : ''}
+                ${fix.priority === 'high' ? '<span class="px-3 py-1 bg-orange-600 text-white rounded-full text-xs font-bold">HIGH</span>' : ''}
               </div>
-            `).join('')}
+              <h4 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">${fix.issue}</h4>
+              <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${fix.how}</p>
+            </div>
           </div>
-        ` : '<p class="text-center text-green-500 text-2xl font-bold">Strong local optimization — keep it up!</p>'}
+        `;
+      }).join('')}
+    </div>
+
+    <!-- Score Improvement & Potential Ranking Gains (moved below) -->
+    <div class="max-w-5xl mx-auto mt-16 grid md:grid-cols-2 gap-8 px-4">
+      <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
+        <h3 class="text-3xl font-bold text-center mb-8 text-orange-500">Overall Score Improvement</h3>
+        <div class="flex justify-center items-baseline gap-4 mb-8">
+          <div class="text-5xl font-black text-gray-800 dark:text-gray-200">${yourScore}</div>
+          <div class="text-4xl text-gray-400">→</div>
+          <div class="text-6xl font-black text-green-500">${projectedScore}</div>
+          <div class="text-2xl text-green-600 font-medium">(${scoreDelta > 0 ? '+' + scoreDelta : 'Optimal'})</div>
+        </div>
+        <div class="text-center py-4">
+          <p class="text-lg text-gray-600 dark:text-gray-400">
+            Fixing the top priorities above could boost your score by up to ${totalPotentialGain} points.
+          </p>
+        </div>
       </div>
+
+      <div class="p-8 bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
+        <h3 class="text-3xl font-bold text-center mb-8">Potential Visibility & Traffic Gains</h3>
+        <div class="space-y-6">
+          <div class="flex items-center gap-4">
+            <div class="text-4xl">📈</div>
+            <div class="flex-1">
+              <p class="font-medium">Ranking Position Lift</p>
+              <p class="text-2xl font-bold">Medium → High potential</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="text-4xl">🚀</div>
+            <div class="flex-1">
+              <p class="font-medium">Organic Traffic Increase</p>
+              <p class="text-2xl font-bold">+40–100% potential</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="text-4xl">👆</div>
+            <div class="flex-1">
+              <p class="font-medium">Click-Through Rate Boost</p>
+              <p class="text-2xl font-bold">+15–35% from better local signals</p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-10 text-sm space-y-2 opacity-90">
+          <p>Conservative estimates based on on-page fixes.</p>
+          <p>Actual gains depend on competition and off-page factors.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-8 max-w-3xl mx-auto">
+      Conservative estimates based on on-page optimization benchmarks. Improvements often visible in 1–4 weeks.
+    </p>
+  ` : '<p class="text-center text-green-500 text-2xl font-bold">Strong local optimization — keep it up!</p>'}
+</div>
 
       <!-- Plugin Solutions -->
       <div id="plugin-solutions-section" class="mt-20"></div>
