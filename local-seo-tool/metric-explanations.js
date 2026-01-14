@@ -64,58 +64,58 @@ function openDetailsFromHash() {
   }
 }
 
-// Robust injection: run immediately + watch for container
 function injectMetricCards() {
   const container = document.getElementById('metric-cards-container');
-  if (!container) return; // not ready yet
+  if (!container) {
+    console.warn('metric-cards-container not found yet');
+    return;
+  }
+  if (container.dataset.cardsInjected === 'true') {
+    console.log('Cards already injected – skipping');
+    return;
+  }
+  console.log(`Attempting to inject ${metricExplanations.length} cards`);
 
-  // Prevent duplicate injection
-  if (container.dataset.cardsInjected === 'true') return;
-  
-  if (metricExplanations.length !== 6) {
-  console.warn(`Expected 6 modules, found ${metricExplanations.length}`);
-}
-
- try {
-  const cardsHTML = metricExplanations.map((m, index) => {
+  let cardsHTML = '';
+  metricExplanations.forEach((m, index) => {
     try {
-      console.log(`Rendering card ${index + 1}: ${m.id} - ${m.name}`); // debug: see which ones succeed
-      return `
-        <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center w-full max-w-md">
-          <div class="text-6xl mb-6">${m.emoji}</div>
-          <div class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-8">${m.name}</div>
-          <details class="group">
-            <summary class="cursor-pointer text-orange-500 font-bold hover:underline inline-flex items-center justify-center gap-2 whitespace-nowrap">
-              Learn More <span class="text-2xl group-open:rotate-180 transition-transform">↓</span>
-            </summary>
-            <div class="mt-6 space-y-6 text-left max-w-lg mx-auto text-gray-600 dark:text-gray-400 leading-relaxed">
-              <div>
-                <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">What is ${m.name}?</p>
-                <p>${m.what}</p>
-              </div>
-              <div>
-                <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">How is ${m.name} tested?</p>
-                <p>${m.how}</p>
-              </div>
-              <div>
-                <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">Why does ${m.name} matter?</p>
-                <p>${m.why}</p>
-              </div>
-            </div>
-          </details>
-        </div>
-      `;
-    } catch (innerErr) {
-      console.error(`Error rendering card ${index + 1} (${m?.id || 'unknown'}):`, innerErr);
-      return ''; // skip broken card, let others render
+      console.log(`Building card ${index + 1}: ${m.id}`);
+
+      // Template literal is now cleanly closed on its own line
+      cardsHTML += `
+<div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center w-full max-w-md">
+  <div class="text-6xl mb-6">${m.emoji}</div>
+  <div class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-8">${m.name}</div>
+  <details class="group">
+    <summary class="cursor-pointer text-orange-500 font-bold hover:underline inline-flex items-center justify-center gap-2 whitespace-nowrap">
+      Learn More <span class="text-2xl group-open:rotate-180 transition-transform">↓</span>
+    </summary>
+    <div class="mt-6 space-y-6 text-left max-w-lg mx-auto text-gray-600 dark:text-gray-400 leading-relaxed">
+      <div>
+        <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">What is ${m.name}?</p>
+        <p>${m.what}</p>
+      </div>
+      <div>
+        <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">How is ${m.name} tested?</p>
+        <p>${m.how}</p>
+      </div>
+      <div>
+        <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">Why does ${m.name} matter?</p>
+        <p>${m.why}</p>
+      </div>
+    </div>
+  </details>
+</div>
+      `;  // <-- closing backtick here, on its own line
+
+    } catch (err) {
+      console.error(`Failed to build card ${index + 1} (${m?.id || 'unknown'}):`, err);
     }
-  }).join('');
+  });
 
-  container.innerHTML = cardsHTML;
-  console.log('All cards injected – total attempted:', metricExplanations.length);
-} catch (err) {
-  console.error('Critical error in metric cards injection:', err);
-  container.innerHTML = '<p class="text-red-600 text-center">Error loading modules – check console</p>';
+  container.innerHTML = cardsHTML.trim();
+  container.dataset.cardsInjected = 'true';
+  console.log('Injection complete – cards rendered:', container.querySelectorAll('[id]').length);
+
+  openDetailsFromHash();
 }
-
-openDetailsFromHash();
