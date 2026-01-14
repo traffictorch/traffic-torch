@@ -111,10 +111,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  const hasLocalIntent = (text = '', city = '') => {
-    const lower = text.toLowerCase();
-    return lower.includes('near me') || lower.includes(`in ${city}`) || lower.includes('local ') || lower.includes(city);
-  };
+const hasLocalIntent = (text = '', city = '') => {
+  if (!text || !city) return false;
+  const lower = text.toLowerCase();
+  const cityLower = city.toLowerCase();
+  const patterns = [
+    'near me',
+    `in ${cityLower}`,
+    `near ${cityLower}`,
+    `${cityLower} near me`,
+    'local ',
+    cityLower,                    // exact city name
+    `${cityLower} area`,
+    `${cityLower} suburbs`,
+    `${cityLower} cbd`,           // common AU variation
+  ];
+  return patterns.some(p => lower.includes(p));
+};
 
   const getCleanContent = (doc) => {
     if (!doc?.body) return '';
@@ -201,9 +214,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const metaDesc = doc.querySelector('meta[name="description"]')?.content.trim() || '';
     const titleLocal = hasLocalIntent(titleText, city);
     const metaLocal = hasLocalIntent(metaDesc, city);
-    const headingsLocal = Array.from(doc.querySelectorAll('h1, h2')).some(h => hasLocalIntent(h.textContent, city));
+const headingsLocal = Array.from(doc.querySelectorAll('h1, h2, h3')).some(h => hasLocalIntent(h.textContent, city));
     data.keywords = { title: titleLocal, meta: metaLocal, headings: headingsLocal };
-    const keywordsScore = (titleLocal ? 7 : 0) + (metaLocal ? 5 : 0) + (headingsLocal ? 5 : 0);
+const keywordsScore = (titleLocal ? 7 : 0) + (metaLocal ? 4 : 0) + (headingsLocal ? 5 : 0);
 
     // 3. Local Content & Relevance
     const cleanContent = getCleanContent(doc);
@@ -481,7 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </button>
               </div>
               <div id="fixes-${index}" class="hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">
-                ${allFixes.filter(f => f.module === m.name).length > 0 ?
+                ${allFixes.filter(f => f.module.trim().toLowerCase() === m.name.trim().toLowerCase()).length > 0 ?
                   allFixes.filter(f => f.module === m.name).map(f => `
                     <div class="mb-5 pb-5 border-b border-gray-200 dark:border-gray-700 last:border-0 last:pb-0">
                       <div class="flex items-center gap-2 mb-2">
