@@ -380,15 +380,19 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-<!-- Modern Scoring Cards - all 6 modules with unique IDs -->
+console.log('Number of modules to render:', modules.length);
+console.log('Module names:', modules.map(m => m.name).join(', '));
+
+<!-- Modern Scoring Cards - split rendering to prevent parsing failures -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 w-full max-w-none mx-auto">
   ${modules.map((m, index) => {
     const grade = getGrade(m.score);
-    const explanation = window.metricExplanations?.find(e => e.id === moduleHashes[m.name]) || { what: 'Local optimization check', how: 'Scans page elements', why: 'Important for local rankings' };
-    const shortDesc = explanation.what ? explanation.what.split('.')[0] + '.' : 'Local SEO health metric';
-    return `
-      <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-xl overflow-hidden border-2 ${grade.border} border-opacity-50 flex flex-col transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
-        <!-- 1. Round Progress Circle -->
+    const explanation = window.metricExplanations?.find(e => e.id === moduleHashes[m.name]) || { what: 'Local check' };
+    const shortDesc = explanation.what ? explanation.what.split('.')[0] + '.' : 'Local SEO metric';
+
+    // Build card HTML in smaller pieces to avoid parser crash
+    let html = `
+      <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-xl overflow-hidden border-2 ${grade.border} border-opacity-50 flex flex-col">
         <div class="p-6 md:p-8 text-center border-b ${grade.bgLight} border-opacity-40">
           <div class="relative w-32 h-32 md:w-36 md:h-36 mx-auto">
             <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
@@ -402,47 +406,27 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- 2. Module Name -->
-        <h3 class="text-xl md:text-2xl font-bold text-center text-gray-900 dark:text-gray-100 mt-6 mb-2 px-6">
-          ${m.name}
-        </h3>
+        <h3 class="text-xl md:text-2xl font-bold text-center text-gray-900 dark:text-gray-100 mt-6 mb-2 px-6">${m.name}</h3>
+        <p class="text-xl md:text-2xl font-bold text-center ${grade.text} mb-4 px-6">${grade.emoji} ${grade.grade}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 text-center px-6 mb-6">${shortDesc}</p>
+    `;
 
-        <!-- 3. Grade + Emoji -->
-        <p class="text-xl md:text-2xl font-bold text-center ${grade.text} mb-4 px-6">
-          ${grade.emoji} ${grade.grade}
-        </p>
-
-        <!-- 4. Short Description -->
-        <p class="text-sm text-gray-600 dark:text-gray-400 text-center leading-relaxed px-6 mb-6">
-          ${shortDesc}
-        </p>
-
-        <!-- 5. More Details Button -->
+    // Add More Details button + expandable
+    html += `
         <div class="px-6 pb-4">
-          <button 
-            class="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl font-medium transition text-gray-900 dark:text-gray-100 shadow-sm"
-            onclick="document.getElementById('details-${index}').classList.toggle('hidden')">
+          <button class="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl font-medium transition" onclick="document.getElementById('details-${index}').classList.toggle('hidden')">
             More Details
           </button>
         </div>
-
-        <!-- More Details Expandable -->
         <div id="details-${index}" class="hidden px-6 pb-6 space-y-6 text-sm border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-          <div>
-            <p class="font-bold text-orange-600 dark:text-orange-400 mb-2">What is this?</p>
-            <p class="text-gray-700 dark:text-gray-300">${explanation.what}</p>
-          </div>
-          <div>
-            <p class="font-bold text-orange-600 dark:text-orange-400 mb-2">How is it measured?</p>
-            <p class="text-gray-700 dark:text-gray-300">${explanation.how}</p>
-          </div>
-          <div>
-            <p class="font-bold text-orange-600 dark:text-orange-400 mb-2">Why does it matter?</p>
-            <p class="text-gray-700 dark:text-gray-300">${explanation.why}</p>
-          </div>
+          <div><p class="font-bold text-orange-600 dark:text-orange-400 mb-2">What is this?</p><p>${explanation.what}</p></div>
+          <div><p class="font-bold text-orange-600 dark:text-orange-400 mb-2">How is it measured?</p><p>${explanation.how || 'Scans page elements'}</p></div>
+          <div><p class="font-bold text-orange-600 dark:text-orange-400 mb-2">Why does it matter?</p><p>${explanation.why || 'Important for local SEO'}</p></div>
         </div>
+    `;
 
-        <!-- 6. Sub-metrics -->
+    // Add sub-metrics
+    html += `
         <div class="px-6 py-6 space-y-4 border-t border-gray-200 dark:border-gray-700">
           ${m.sub.map(s => `
             <div class="flex items-center gap-3">
@@ -451,34 +435,33 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           `).join('')}
         </div>
+    `;
 
-        <!-- 7. Show Fixes Button -->
+    // Add Show Fixes button + expandable
+    html += `
         <div class="px-6 pt-2 pb-6">
-          <button 
-            class="w-full px-6 py-3 ${grade.bgLight} hover:opacity-90 rounded-xl font-medium transition ${grade.text} shadow-sm"
-            onclick="document.getElementById('fixes-${index}').classList.toggle('hidden')">
+          <button class="w-full px-6 py-3 ${grade.bgLight} hover:opacity-90 rounded-xl font-medium transition ${grade.text}" onclick="document.getElementById('fixes-${index}').classList.toggle('hidden')">
             Show Fixes
           </button>
         </div>
-
-        <!-- Fixes Expandable -->
         <div id="fixes-${index}" class="hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">
-          ${allFixes.filter(f => f.module === m.name).length > 0 ?
+          ${allFixes.filter(f => f.module === m.name).length > 0 ? 
             allFixes.filter(f => f.module === m.name).map(f => `
-              <div class="mb-5 pb-5 border-b border-gray-200 dark:border-gray-700 last:border-0">
-                <div class="flex items-center gap-2 mb-2">
+              <div class="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700 last:border-0">
+                <div class="flex items-center gap-2 mb-1">
                   <span class="font-semibold text-orange-600">${f.sub}</span>
-                  ${f.priority === 'very-high' ? '<span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">URGENT</span>' : 
-                    f.priority === 'high' ? '<span class="text-xs bg-orange-600 text-white px-2 py-0.5 rounded-full">HIGH</span>' : ''}
+                  ${f.priority === 'very-high' ? '<span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded">URGENT</span>' : ''}
                 </div>
-                <p class="font-medium text-gray-900 dark:text-gray-100 mb-1">${f.issue}</p>
-                <p class="text-gray-700 dark:text-gray-300">${f.how}</p>
+                <p class="font-medium">${f.issue}</p>
+                <p>${f.how}</p>
               </div>
-            `).join('')
-          : '<p class="text-green-600 dark:text-green-400 font-medium text-center">All checks passed – excellent!</p>'}
+            `).join('') 
+          : '<p class="text-green-600 dark:text-green-400 text-center">All good here!</p>'}
         </div>
       </div>
     `;
+
+    return html;
   }).join('')}
 </div>
 
