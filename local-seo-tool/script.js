@@ -264,14 +264,45 @@ if (!localAlts) {
 }
 
     // 5. Structured Data
-    const schemaScripts = doc.querySelectorAll('script[type="application/ld+json"]');
-    let schemaData = {};
-    schemaScripts.forEach(s => {
-      try {
-        const parsed = JSON.parse(s.textContent);
-        if (parsed['@type'] === 'LocalBusiness') schemaData = parsed;
-      } catch {}
-    });
+const schemaScripts = doc.querySelectorAll('script[type="application/ld+json"]');
+let schemaData = null;
+
+const findLocalBusiness = (obj) => {
+  if (!obj) return null;
+  if (obj['@type'] === 'LocalBusiness') return obj;
+  // Support common subtypes that behave like LocalBusiness
+  if (['ProfessionalService', 'Store', 'Restaurant', 'Dentist', 'VeterinaryCare', 'LocalBusiness'].includes(obj['@type']) && obj.address) {
+    return obj;
+  }
+  // Check @graph array
+  if (obj['@graph'] && Array.isArray(obj['@graph'])) {
+    for (const item of obj['@graph']) {
+      const found = findLocalBusiness(item);
+      if (found) return found;
+    }
+  }
+  // Check nested (e.g. Organization contains department LocalBusiness)
+  if (obj.department && Array.isArray(obj.department)) {
+    for (const dep of obj.department) {
+      const found = findLocalBusiness(dep);
+      if (found) return found;
+    }
+  }
+  return null;
+};
+
+for (const script of schemaScripts) {
+  try {
+    const parsed = JSON.parse(script.textContent);
+    const candidate = findLocalBusiness(parsed);
+    if (candidate) {
+      schemaData = candidate;
+      break; // take the first valid one
+    }
+  } catch {}
+}
+
+const localSchemaPresent = !!schemaData;
     const localSchemaPresent = !!schemaData['@type'];
     const geoCoords = !!schemaData?.geo?.latitude && !!schemaData?.geo?.longitude;
     const hoursPresent = !!schemaData?.openingHoursSpecification || !!schemaData?.openingHours;
