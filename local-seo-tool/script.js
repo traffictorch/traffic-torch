@@ -217,6 +217,16 @@ const hasLocalIntent = (text = '', city = '') => {
 const headingsLocal = Array.from(doc.querySelectorAll('h1, h2, h3')).some(h => hasLocalIntent(h.textContent, city));
     data.keywords = { title: titleLocal, meta: metaLocal, headings: headingsLocal };
 const keywordsScore = (titleLocal ? 7 : 0) + (metaLocal ? 4 : 0) + (headingsLocal ? 5 : 0);
+// Push fixes for failed Local Keywords & Titles metrics
+if (!titleLocal) {
+  allFixes.push({ module: 'Local Keywords & Titles', sub: 'Title Local', ...moduleFixes['Local Keywords & Titles']['Title Local'] });
+}
+if (!metaLocal) {
+  allFixes.push({ module: 'Local Keywords & Titles', sub: 'Meta Local', ...moduleFixes['Local Keywords & Titles']['Meta Local'] });
+}
+if (!headingsLocal) {
+  allFixes.push({ module: 'Local Keywords & Titles', sub: 'Headings Local', ...moduleFixes['Local Keywords & Titles']['Headings Local'] });
+}
 
     // 3. Local Content & Relevance
     const cleanContent = getCleanContent(doc);
