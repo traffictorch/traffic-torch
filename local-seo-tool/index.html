@@ -285,13 +285,13 @@
 
 
 
-<!-- Deep Dive into Key Local Modules (static + toggle like AI Search tool) -->
+<!-- Deep Dive into Key Local Modules -->
 <section class="py-16 px-4 bg-gray-50 dark:bg-gray-900">
   <h2 class="text-4xl font-bold text-center mb-12 text-gray-800 dark:text-gray-200">Deep Dive into Key Local Modules</h2>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
 
     <!-- 1. NAP & Contact -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+    <div id="nap-contact" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
       <div class="p-6 text-center flex flex-col items-center justify-between h-64">
         <div class="text-6xl mb-6">📍</div>
         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">NAP & Contact Signals</h3>
@@ -301,15 +301,25 @@
       </div>
       <div class="metric-details hidden bg-orange-50 dark:bg-orange-900/20 px-6 pb-6 transition-all duration-300 ease-in-out">
         <div class="space-y-6 text-left text-sm">
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p><p>Evaluates presence, consistency and completeness of Name, Address, Phone across page elements.</p></div>
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">How tested?</p><p>Scans address, footer, tel: links, schema patterns.</p></div>
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">Why matters?</p><p>Consistent NAP builds trust and boosts local pack rankings.</p></div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p>
+            <p>NAP (Name, Address, Phone) consistency across your page builds trust with search engines and users. It includes visible contact information in footers, address blocks, and phone links.</p>
+            <p>Complete NAP with business hours reinforces your local legitimacy and helps Google understand your physical presence.</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">How is it tested?</p>
+            <p>The tool looks for <address> tags, footer contact blocks, tel: links, opening hours markup, and consistent business name patterns.</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">Why does it matter?</p>
+            <p>Inconsistent or missing NAP confuses search engines and hurts local pack rankings. Strong, standardized NAP on every page is one of the strongest foundational local SEO signals.</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 2. Keywords & Titles -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+    <!-- 2. Local Keywords & Titles -->
+    <div id="keywords-titles" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
       <div class="p-6 text-center flex flex-col items-center justify-between h-64">
         <div class="text-6xl mb-6">🔤</div>
         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Local Keywords & Titles</h3>
@@ -319,15 +329,25 @@
       </div>
       <div class="metric-details hidden bg-orange-50 dark:bg-orange-900/20 px-6 pb-6 transition-all duration-300 ease-in-out">
         <div class="space-y-6 text-left text-sm">
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p><p>Checks local intent in title, meta description and headings.</p></div>
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">How tested?</p><p>Scans title, meta desc, H1/H2 for city/local phrases.</p></div>
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">Why matters?</p><p>Geo-titles improve relevance for city/near-me searches.</p></div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p>
+            <p>This module checks whether your page title, meta description, and headings naturally include local intent signals such as the city name, "near me", or service + location phrases.</p>
+            <p>These elements tell search engines exactly which geographic area your page serves.</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">How is it tested?</p>
+            <p>Scans the <title> tag, meta description content, and all H1/H2 headings for the entered city name or common local intent patterns.</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">Why does it matter?</p>
+            <p>Geo-optimized titles and headings dramatically increase relevance for "near me" and city-specific searches. They improve click-through rates and help Google confidently match your page to local queries.</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 3. Content & Relevance -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+    <!-- 3. Local Content & Relevance -->
+    <div id="content-relevance" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
       <div class="p-6 text-center flex flex-col items-center justify-between h-64">
         <div class="text-6xl mb-6">📄</div>
         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Local Content & Relevance</h3>
@@ -337,15 +357,25 @@
       </div>
       <div class="metric-details hidden bg-orange-50 dark:bg-orange-900/20 px-6 pb-6 transition-all duration-300 ease-in-out">
         <div class="space-y-6 text-left text-sm">
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p><p>Analyzes body content for local keywords, intent phrases, location mentions.</p></div>
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">How tested?</p><p>Extracts content, counts city mentions and local patterns.</p></div>
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">Why matters?</p><p>Proves relevance to area, increases topical authority.</p></div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p>
+            <p>This checks how naturally and frequently your main content mentions the target location, local intent phrases ("near me", "in [city]"), and related local keywords.</p>
+            <p>Strong local content demonstrates to search engines that your page genuinely serves the area.</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">How is it tested?</p>
+            <p>Extracts clean body text (excluding navigation/footer), counts city name mentions, local intent patterns, and evaluates overall depth of location integration.</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">Why does it matter?</p>
+            <p>Google favors pages that clearly prove local relevance through natural language. Deep, well-integrated local content builds topical authority and significantly improves map pack visibility.</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 4. Maps & Visuals -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+    <!-- 4. Maps & Visual Signals -->
+    <div id="maps-visuals" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
       <div class="p-6 text-center flex flex-col items-center justify-between h-64">
         <div class="text-6xl mb-6">🗺️</div>
         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Maps & Visual Signals</h3>
@@ -355,15 +385,24 @@
       </div>
       <div class="metric-details hidden bg-orange-50 dark:bg-orange-900/20 px-6 pb-6 transition-all duration-300 ease-in-out">
         <div class="space-y-6 text-left text-sm">
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p><p>Detects embedded maps and local image alt text.</p></div>
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">How tested?</p><p>Checks Google Maps iframes and alt attributes.</p></div>
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">Why matters?</p><p>Confirms presence, improves UX and image search.</p></div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p>
+            <p>Detects embedded Google Maps iframes and images with location-specific alt text that reinforce your physical presence and local relevance.</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">How is it tested?</p>
+            <p>Looks for Google Maps embed codes and scans all <img> alt attributes for city name, neighborhood, or local service mentions.</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">Why does it matter?</p>
+            <p>Embedded maps reduce bounce rates and visually confirm location. Local alt text boosts image search visibility and provides extra geo-signals to crawlers.</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 5. Structured Data -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+    <!-- 5. Structured Data (Schema) -->
+    <div id="structured-data" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
       <div class="p-6 text-center flex flex-col items-center justify-between h-64">
         <div class="text-6xl mb-6">🏷️</div>
         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Structured Data (Schema)</h3>
@@ -373,15 +412,24 @@
       </div>
       <div class="metric-details hidden bg-orange-50 dark:bg-orange-900/20 px-6 pb-6 transition-all duration-300 ease-in-out">
         <div class="space-y-6 text-left text-sm">
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p><p>Verifies LocalBusiness schema with geo and hours.</p></div>
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">How tested?</p><p>Parses JSON-LD for @type, geo, openingHours.</p></div>
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">Why matters?</p><p>Unlocks rich results, strongest local signal.</p></div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p>
+            <p>Machine-readable LocalBusiness schema markup that explicitly tells search engines your business details, including location coordinates and operating hours.</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">How is it tested?</p>
+            <p>Parses all JSON-LD scripts for @type: "LocalBusiness", geo latitude/longitude, and openingHours or openingHoursSpecification.</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">Why does it matter?</p>
+            <p>Proper schema unlocks rich snippets (hours, directions, reviews) in search results. It's one of the most powerful on-page signals for local pack placement and entity trust.</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 6. Reviews & Structure -->
-    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+    <!-- 6. Reviews, Canonical & Linking -->
+    <div id="reviews-structure" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
       <div class="p-6 text-center flex flex-col items-center justify-between h-64">
         <div class="text-6xl mb-6">⭐</div>
         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Reviews, Canonical & Linking</h3>
@@ -391,9 +439,18 @@
       </div>
       <div class="metric-details hidden bg-orange-50 dark:bg-orange-900/20 px-6 pb-6 transition-all duration-300 ease-in-out">
         <div class="space-y-6 text-left text-sm">
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p><p>Checks review schema, canonical tag, geo internal links.</p></div>
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">How tested?</p><p>Scans schema for aggregateRating, rel=canonical, local links.</p></div>
-          <div><p class="font-bold text-orange-600 dark:text-orange-400">Why matters?</p><p>Stars boost CTR, canonical prevents duplicates, links strengthen architecture.</p></div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p>
+            <p>Combines review star ratings in schema, correct canonical tags to prevent duplicate content issues, and internal links to location/contact pages.</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">How is it tested?</p>
+            <p>Checks schema for aggregateRating, verifies <link rel="canonical"> matches the current URL, and looks for geo-relevant internal links.</p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">Why does it matter?</p>
+            <p>Star ratings dramatically increase click-through rates. Proper canonicals protect ranking power in multi-location sites, and geo-links strengthen site architecture for local relevance.</p>
+          </div>
         </div>
       </div>
     </div>
