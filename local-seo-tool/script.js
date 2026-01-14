@@ -312,11 +312,49 @@ const localSchemaPresent = !!schemaData;
     const schemaScore = (localSchemaPresent ? 8 : 0) + (geoCoords ? 5 : 0) + (hoursPresent ? 5 : 0);
 
     // 6. Reviews & Structure
-    const aggregateRating = schemaData?.aggregateRating?.ratingValue;
+    // Helper to find aggregateRating anywhere in the schema object
+const findAggregateRating = (obj) => {
+  if (!obj) return null;
+  if (obj.aggregateRating?.ratingValue) return obj.aggregateRating.ratingValue;
+  // Check @graph
+  if (obj['@graph'] && Array.isArray(obj['@graph'])) {
+    for (const item of obj['@graph']) {
+      const found = findAggregateRating(item);
+      if (found) return found;
+    }
+  }
+  // Check common nesting (e.g. inside Review)
+  if (obj.review && Array.isArray(obj.review)) {
+    for (const review of obj.review) {
+      if (review.author && review.reviewRating?.ratingValue) {
+        return review.reviewRating.ratingValue; // fallback to individual if no aggregate
+      }
+    }
+  }
+  return null;
+};
+
+const aggregateRating = findAggregateRating(schemaData);
     const canonical = doc.querySelector('link[rel="canonical"]')?.href === fullUrl;
-    const internalGeoLinks = Array.from(doc.querySelectorAll('a')).filter(a =>
-      a.href.includes('/contact') || a.href.includes('/locations') || hasLocalIntent(a.textContent, city)
-    ).length > 0;
+const locationPagesPatterns = [
+  /\/(contact|locations?|branches|stores?|offices?|areas|service-?areas?|cities|suburbs?|near-me)/i,
+  new RegExp(city, 'i') // URL contains city name
+];
+
+const geoAnchorPatterns = [
+  /in\s+[\w\s]+/i, /near\s+[\w\s]+/i, /areas?\s+we\s+serve/i, /service\s+areas?/i,
+  new RegExp(`\\b${city}\\b`, 'i')
+];
+
+const internalGeoLinks = Array.from(doc.querySelectorAll('a')).some(a => {
+  const href = a.href.toLowerCase();
+  const text = (a.textContent || '').trim().toLowerCase();
+
+  const hasLocationPath = locationPagesPatterns.some(p => p.test(href));
+  const hasGeoText = geoAnchorPatterns.some(p => p.test(text));
+
+  return (hasLocationPath && (text.length > 5)) || (hasGeoText && hasLocationPath);
+});
     data.reviews = { schema: !!aggregateRating, canonical, internalLinks: internalGeoLinks };
     if (!aggregateRating) allFixes.push({ module: 'Reviews & Structure', sub: 'Review Schema', ...moduleFixes['Reviews & Structure']['Review Schema'] });
     if (!canonical) allFixes.push({ module: 'Reviews & Structure', sub: 'Canonical Tag', ...moduleFixes['Reviews & Structure']['Canonical Tag'] });
