@@ -379,7 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
             Radar chart available on desktop/tablet
           </p>
         </div>
-      </div>
+      </div> 
 
 <!-- Modern Scoring Cards - exact requested order -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 max-w-7xl mx-auto">
