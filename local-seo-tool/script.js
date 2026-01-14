@@ -231,13 +231,22 @@ if (!headingsLocal) {
     // 3. Local Content & Relevance
     const cleanContent = getCleanContent(doc);
     const bodyLocalKeywords = hasLocalIntent(cleanContent, city) ? 1 : 0;
-    const intentPatterns = (cleanContent.match(/near me|in\s+\w+|local\s+/gi) || []).length > 2 ? 1 : 0;
+    const intentPatterns = (cleanContent.match(/near me|nearby|local(ly)?\s|in the area|close to|in my area|areas? we serve/gi) || []).length > 1 ? 1 : 0;
     const locationMentionsCount = (cleanContent.match(new RegExp(city, 'gi')) || []).length;
-    const locationMentions = locationMentionsCount > 1 ? 1 : 0;
+    const locationMentions = locationMentionsCount > 2 ? 1 : 0;
     data.content = { localKeywords: bodyLocalKeywords, intentPatterns, locationMentions };
     let contentScore = (bodyLocalKeywords * 8) + (intentPatterns * 6) + (locationMentions * 6);
-    if (locationMentionsCount >= 4) contentScore += 4;
+    if (locationMentionsCount >= 5) contentScore += 4;
     contentScore = Math.min(20, contentScore);
+    if (!bodyLocalKeywords) {
+  allFixes.push({ module: 'Local Content & Relevance', sub: 'Body Keywords', ...moduleFixes['Local Content & Relevance']['Body Keywords'] });
+}
+if (!intentPatterns) {
+  allFixes.push({ module: 'Local Content & Relevance', sub: 'Intent Patterns', ...moduleFixes['Local Content & Relevance']['Intent Patterns'] });
+}
+if (!locationMentions) {
+  allFixes.push({ module: 'Local Content & Relevance', sub: 'Location Mentions', ...moduleFixes['Local Content & Relevance']['Location Mentions'] });
+}
 
     // 4. Maps & Visuals
     const mapIframe = doc.querySelector('iframe[src*="maps.google"], [src*="google.com/maps"]');
