@@ -388,26 +388,26 @@ console.log('Module names:', modules.map(m => m.name).join(', '));
 console.log('DEBUG - Number of modules defined:', modules.length);
 console.log('DEBUG - Module names:', modules.map(m => m.name).join(' | '));
 
-<!-- Modern Scoring Cards - FINAL SAFE VERSION -->
+<!-- Full modern scoring cards - safe construction -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 w-full max-w-none mx-auto">
   ${modules.map((m, index) => {
     const grade = getGrade(m.score);
     const exp = window.metricExplanations?.find(e => e.id === moduleHashes[m.name]) || { what: 'Local check', how: 'Scans elements', why: 'Important' };
     
-    // Safe escaping for quotes/apostrophes
+    // Safe escaping
     const safeWhat = (exp.what || 'Local check').replace(/'/g, "\\'").replace(/"/g, '&quot;');
     const safeHow = (exp.how || 'Scans page elements').replace(/'/g, "\\'").replace(/"/g, '&quot;');
     const safeWhy = (exp.why || 'Important for local SEO').replace(/'/g, "\\'").replace(/"/g, '&quot;');
     const shortDesc = exp.what ? exp.what.split('.')[0].trim() + '.' : 'Local SEO metric';
 
-    // Build in pieces
+    // Build card in smaller, safe chunks
     let card = '<div class="bg-white dark:bg-gray-950 rounded-3xl shadow-xl overflow-hidden border-2 ' + grade.border + ' border-opacity-50 flex flex-col transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">';
 
     card += '<div class="p-6 md:p-8 text-center border-b ' + grade.bgLight + ' border-opacity-40">';
     card += '<div class="relative w-32 h-32 md:w-36 md:h-36 mx-auto">';
     card += '<svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">';
     card += '<circle cx="70" cy="70" r="60" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>';
-    card += '<circle cx="70" cy="70" r="60" stroke="' + grade.fill + '" stroke-width="12" fill="none" stroke-dasharray="' + (m.score / 100 * 377) + ' 377" stroke-linecap="round"/>';
+    card += '<circle cx="70" cy="70" r="60" stroke="' + grade.fill + '" stroke-width="12" fill="none" stroke-dasharray="' + Math.round((m.score / 100) * 377) + ' 377" stroke-linecap="round"/>';
     card += '</svg>';
     card += '<div class="absolute inset-0 flex flex-col items-center justify-center">';
     card += '<div class="text-5xl md:text-6xl font-extrabold ' + grade.text + '">' + Math.round(m.score) + '</div>';
@@ -416,10 +416,10 @@ console.log('DEBUG - Module names:', modules.map(m => m.name).join(' | '));
 
     card += '<h3 class="text-xl md:text-2xl font-bold text-center text-gray-900 dark:text-gray-100 mt-6 mb-2 px-6">' + m.name + '</h3>';
     card += '<p class="text-xl md:text-2xl font-bold text-center ' + grade.text + ' mb-4 px-6">' + grade.emoji + ' ' + grade.grade + '</p>';
-    card += '<p class="text-sm text-gray-600 dark:text-gray-400 text-center px-6 mb-6">' + shortDesc + '</p>';
+    card += '<p class="text-sm text-gray-600 dark:text-gray-400 text-center leading-relaxed px-6 mb-6">' + shortDesc + '</p>';
 
     card += '<div class="px-6 pb-4">';
-    card += '<button class="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl font-medium transition" onclick="document.getElementById(\'details-' + index + '\').classList.toggle(\'hidden\')">';
+    card += '<button class="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl font-medium transition text-gray-900 dark:text-gray-100" onclick="document.getElementById(\'details-' + index + '\').classList.toggle(\'hidden\')">';
     card += 'More Details';
     card += '</button>';
     card += '</div>';
@@ -431,12 +431,7 @@ console.log('DEBUG - Module names:', modules.map(m => m.name).join(' | '));
     card += '</div>';
 
     card += '<div class="px-6 py-6 space-y-4 border-t border-gray-200 dark:border-gray-700">';
-    card += m.sub.map(s => `
-      <div class="flex items-center gap-3">
-        <span class="text-2xl ${s.color}">${s.status}</span>
-        <span class="text-gray-800 dark:text-gray-200">${s.label}</span>
-      </div>
-    `).join('');
+    card += m.sub.map(s => '<div class="flex items-center gap-3"><span class="text-2xl ' + s.color + '">' + s.status + '</span><span class="text-gray-800 dark:text-gray-200">' + s.label + '</span></div>').join('');
     card += '</div>';
 
     card += '<div class="px-6 pt-2 pb-6">';
@@ -446,8 +441,9 @@ console.log('DEBUG - Module names:', modules.map(m => m.name).join(' | '));
     card += '</div>';
 
     card += '<div id="fixes-' + index + '" class="hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">';
-    if (allFixes.filter(f => f.module === m.name).length > 0) {
-      card += allFixes.filter(f => f.module === m.name).map(f => `
+    const moduleFixes = allFixes.filter(f => f.module === m.name);
+    if (moduleFixes.length > 0) {
+      card += moduleFixes.map(f => `
         <div class="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700 last:border-0">
           <div class="flex items-center gap-2 mb-1">
             <span class="font-semibold text-orange-600">${f.sub}</span>
@@ -457,7 +453,7 @@ console.log('DEBUG - Module names:', modules.map(m => m.name).join(' | '));
         </div>
       `).join('');
     } else {
-      card += '<p class="text-green-600 dark:text-green-400 text-center">All good here!</p>';
+      card += '<p class="text-green-600 dark:text-green-400 text-center font-medium">All checks passed – excellent!</p>';
     }
     card += '</div>';
 
