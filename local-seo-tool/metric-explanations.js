@@ -64,12 +64,13 @@ function openDetailsFromHash() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+// Robust injection: run immediately + watch for container
+function injectMetricCards() {
   const container = document.getElementById('metric-cards-container');
-  if (!container) return;
+  if (!container) return; // not ready yet
 
-  // Responsive 3×3 grid for 9 cards
-  container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center max-w-7xl mx-auto px-6';
+  // Prevent duplicate injection
+  if (container.dataset.cardsInjected === 'true') return;
 
   container.innerHTML = metricExplanations.map(m => `
     <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center w-full max-w-md">
@@ -84,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">What is ${m.name}?</p>
             <p>${m.what}</p>
           </div>
-          ${m.linkUrl ? '' : `
           <div>
             <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">How is ${m.name} tested?</p>
             <p>${m.how}</p>
@@ -93,20 +93,27 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">Why does ${m.name} matter?</p>
             <p>${m.why}</p>
           </div>
-          `}
-          ${m.linkUrl ? `
-          <div class="mt-8 text-center">
-            <a href="${m.linkUrl}" class="inline-block px-8 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-full hover:opacity-90 transition">
-              ${m.linkText}
-            </a>
-          </div>
-          ` : ''}
         </div>
       </details>
     </div>
   `).join('');
 
+  container.dataset.cardsInjected = 'true'; // mark as done
   openDetailsFromHash();
-});
+}
 
-window.addEventListener('hashchange', openDetailsFromHash);
+// Run once immediately (in case DOM is already ready)
+if (document.readyState !== 'loading') {
+  injectMetricCards();
+} else {
+  document.addEventListener('DOMContentLoaded', injectMetricCards);
+}
+
+// Watch for late appearance of container (after audit results load)
+const observer = new MutationObserver(() => {
+  if (document.getElementById('metric-cards-container')) {
+    injectMetricCards();
+    observer.disconnect(); // only need once
+  }
+});
+observer.observe(document.body, { childList: true, subtree: true });
