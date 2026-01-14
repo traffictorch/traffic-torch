@@ -49,7 +49,6 @@ const metricExplanations = [
   }
 ];
 
-
 function openDetailsFromHash() {
   if (window.location.hash) {
     const hash = window.location.hash.substring(1);
@@ -70,10 +69,12 @@ function injectMetricCards() {
     console.warn('metric-cards-container not found yet');
     return;
   }
+
   if (container.dataset.cardsInjected === 'true') {
     console.log('Cards already injected – skipping');
     return;
   }
+
   console.log(`Attempting to inject ${metricExplanations.length} cards`);
 
   let cardsHTML = '';
@@ -81,7 +82,6 @@ function injectMetricCards() {
     try {
       console.log(`Building card ${index + 1}: ${m.id}`);
 
-      // Template literal is now cleanly closed on its own line
       cardsHTML += `
 <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center w-full max-w-md">
   <div class="text-6xl mb-6">${m.emoji}</div>
@@ -106,8 +106,7 @@ function injectMetricCards() {
     </div>
   </details>
 </div>
-      `;  // <-- closing backtick here, on its own line
-
+      `;
     } catch (err) {
       console.error(`Failed to build card ${index + 1} (${m?.id || 'unknown'}):`, err);
     }
@@ -118,4 +117,11 @@ function injectMetricCards() {
   console.log('Injection complete – cards rendered:', container.querySelectorAll('[id]').length);
 
   openDetailsFromHash();
-} 
+}
+
+// Execute immediately if DOM ready, or on load
+if (document.readyState !== 'loading') {
+  injectMetricCards();
+} else {
+  document.addEventListener('DOMContentLoaded', injectMetricCards);
+}
