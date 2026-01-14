@@ -256,6 +256,9 @@ const localAlts = localAltImages.length >= 2;
 const strongLocalAlts = localAltImages.length >= 4 ? 2 : 0;  // small bonus for excellent implementation
     data.maps = { embedded: !!mapIframe, localAlt: localAlts };
 const mapsScore = (mapIframe ? 8 : 0) + (localAlts ? 8 : 0) + strongLocalAlts;
+if (!mapIframe) {
+  allFixes.push({ module: 'Maps & Visuals', sub: 'Map Embedded', ...moduleFixes['Maps & Visuals']['Map Embedded'] });
+}
 if (!localAlts) {
   allFixes.push({ module: 'Maps & Visuals', sub: 'Local Alt Text', ...moduleFixes['Maps & Visuals']['Local Alt Text'] });
 }
