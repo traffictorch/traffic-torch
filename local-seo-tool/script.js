@@ -1,4 +1,6 @@
+// script.js
 import { renderPluginSolutions } from './plugin-solutions.js';
+import { moduleFixes } from './fixes.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
@@ -22,11 +24,48 @@ document.addEventListener('DOMContentLoaded', () => {
   let moduleInterval;
 
   const getGrade = (score) => {
-    if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: '#22c55e', bg: 'bg-green-500/20' };
-    if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: '#22c55e', bg: 'bg-green-500/20' };
-    if (score >= 50) return { grade: 'Average', emoji: '⚠️', color: '#fb923c', bg: 'bg-orange-500/20' };
-    if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: '#ef4444', bg: 'bg-red-500/20' };
-    return { grade: 'Poor', emoji: '🔴', color: '#ef4444', bg: 'bg-red-500/20' };
+    if (score >= 90) {
+      return {
+        grade: 'Excellent',
+        emoji: '🟢',
+        color: '#22c55e',           // green-500
+        border: 'border-green-500',
+        text: 'text-green-600 dark:text-green-400',
+        bgLight: 'bg-green-50 dark:bg-green-950/30',
+        fill: '#22c55e'
+      };
+    }
+    if (score >= 70) {
+      return {
+        grade: 'Strong',
+        emoji: '🟢',
+        color: '#16a34a',           // green-600
+        border: 'border-green-600',
+        text: 'text-green-700 dark:text-green-300',
+        bgLight: 'bg-green-50 dark:bg-green-950/30',
+        fill: '#16a34a'
+      };
+    }
+    if (score >= 50) {
+      return {
+        grade: 'Average',
+        emoji: '⚠️',
+        color: '#f59e0b',           // amber-500
+        border: 'border-amber-500',
+        text: 'text-amber-700 dark:text-amber-300',
+        bgLight: 'bg-amber-50 dark:bg-amber-950/30',
+        fill: '#f59e0b'
+      };
+    }
+    return {
+      grade: score >= 30 ? 'Needs Work' : 'Poor',
+      emoji: '🔴',
+      color: '#dc2626',             // red-600
+      border: 'border-red-600',
+      text: 'text-red-700 dark:text-red-300',
+      bgLight: 'bg-red-50 dark:bg-red-950/30',
+      fill: '#dc2626'
+    };
   };
 
   const moduleHashes = {
@@ -93,19 +132,14 @@ document.addEventListener('DOMContentLoaded', () => {
       results.classList.remove('hidden');
       return;
     }
-
     let fullUrl = yourUrl;
     if (!/^https?:\/\//i.test(yourUrl)) {
       fullUrl = 'https://' + yourUrl;
       pageUrlInput.value = fullUrl;
     }
-
     const city = location.split(',')[0].trim().toLowerCase();
-
     startSpinnerLoader();
-
     let yourDoc = await fetchPage(fullUrl);
-
     if (!yourDoc) {
       stopSpinnerLoader();
       results.innerHTML = `
@@ -119,7 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
       results.classList.remove('hidden');
-
       document.getElementById('analyze-paste').addEventListener('click', () => {
         const pasted = document.getElementById('paste-html').value.trim();
         if (!pasted) return;
@@ -132,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       return;
     }
-
     analyzePage(yourDoc, city, fullUrl, location);
   });
 
@@ -141,10 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = {};
     const allFixes = [];
 
-    // Helper for pass/fail
     const passFail = (condition) => condition ? { status: '✅', color: 'text-green-600' } : { status: '❌', color: 'text-red-600' };
 
-    // 1. NAP & Contact Signals
+    // 1. NAP & Contact
     const addressEl = doc.querySelector('address, [itemprop="address"], footer, .contact, .location');
     const phoneEl = doc.querySelector('a[href^="tel:"], [itemprop="telephone"]');
     const napPresent = !!(addressEl?.textContent.trim() && phoneEl);
@@ -152,9 +183,13 @@ document.addEventListener('DOMContentLoaded', () => {
                       !!doc.querySelector('footer address');
     const contactComplete = napPresent && (doc.querySelector('[itemprop="openingHours"]') || doc.querySelector('time, .hours'));
     data.nap = { present: napPresent, footer: footerNap, complete: contactComplete };
+
+    if (!napPresent) allFixes.push({ module: 'NAP & Contact', sub: 'NAP Present', ...moduleFixes['NAP & Contact']['NAP Present'] });
+    if (!footerNap) allFixes.push({ module: 'NAP & Contact', sub: 'Footer NAP', ...moduleFixes['NAP & Contact']['Footer NAP'] });
+    if (!contactComplete) allFixes.push({ module: 'NAP & Contact', sub: 'Contact Complete', ...moduleFixes['NAP & Contact']['Contact Complete'] });
+
     const napScore = (napPresent ? 8 : 0) + (footerNap ? 5 : 0) + (contactComplete ? 5 : 0);
     yourScore += napScore;
-    if (!napPresent) allFixes.push({module: 'NAP & Contact', issue: 'Add NAP', how: 'Include full name, address, phone in contact section.'});
 
     // 2. Local Keywords & Titles
     const titleText = doc.querySelector('title')?.textContent.trim() || '';
@@ -163,16 +198,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const metaLocal = hasLocalIntent(metaDesc, city);
     const headingsLocal = Array.from(doc.querySelectorAll('h1, h2')).some(h => hasLocalIntent(h.textContent, city));
     data.keywords = { title: titleLocal, meta: metaLocal, headings: headingsLocal };
+
     const keywordsScore = (titleLocal ? 7 : 0) + (metaLocal ? 5 : 0) + (headingsLocal ? 5 : 0);
     yourScore += keywordsScore;
 
-    // 3. Local Content & Relevance
+    // 3. Local Content & Relevance (Rebalanced - max ~20)
     const cleanContent = getCleanContent(doc);
     const bodyLocalKeywords = hasLocalIntent(cleanContent, city) ? 1 : 0;
     const intentPatterns = (cleanContent.match(/near me|in\s+\w+|local\s+/gi) || []).length > 2 ? 1 : 0;
-    const locationMentions = (cleanContent.match(new RegExp(city, 'gi')) || []).length > 1 ? 1 : 0;
+    const locationMentionsCount = (cleanContent.match(new RegExp(city, 'gi')) || []).length;
+    const locationMentions = locationMentionsCount > 1 ? 1 : 0;
+
     data.content = { localKeywords: bodyLocalKeywords, intentPatterns, locationMentions };
-    const contentScore = (bodyLocalKeywords * 6) + (intentPatterns * 5) + (locationMentions * 5);
+
+    let contentScore = 
+      (bodyLocalKeywords * 8) +
+      (intentPatterns * 6) +
+      (locationMentions * 6);
+
+    if (locationMentionsCount >= 4) {
+      contentScore += 4; // bonus for deep integration
+    }
+    contentScore = Math.min(20, contentScore);
     yourScore += contentScore;
 
     // 4. Maps & Visuals
@@ -180,6 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const images = doc.querySelectorAll('img');
     const localAlts = Array.from(images).filter(img => hasLocalIntent(img.alt || '', city)).length > 0;
     data.maps = { embedded: !!mapIframe, localAlt: localAlts };
+
     const mapsScore = (mapIframe ? 8 : 0) + (localAlts ? 8 : 0);
     yourScore += mapsScore;
 
@@ -196,20 +244,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const geoCoords = !!schemaData?.geo?.latitude && !!schemaData?.geo?.longitude;
     const hoursPresent = !!schemaData?.openingHoursSpecification || !!schemaData?.openingHours;
     data.schema = { localPresent: localSchemaPresent, geoCoords, hours: hoursPresent };
+
+    if (!localSchemaPresent) allFixes.push({ module: 'Structured Data', sub: 'Local Schema', ...moduleFixes['Structured Data']['Local Schema'] });
+    if (!geoCoords) allFixes.push({ module: 'Structured Data', sub: 'Geo Coords', ...moduleFixes['Structured Data']['Geo Coords'] });
+    if (!hoursPresent) allFixes.push({ module: 'Structured Data', sub: 'Opening Hours', ...moduleFixes['Structured Data']['Opening Hours'] });
+
     const schemaScore = (localSchemaPresent ? 8 : 0) + (geoCoords ? 5 : 0) + (hoursPresent ? 5 : 0);
     yourScore += schemaScore;
 
     // 6. Reviews, Canonical & Linking
     const aggregateRating = schemaData?.aggregateRating?.ratingValue;
     const canonical = doc.querySelector('link[rel="canonical"]')?.href === fullUrl;
-    const internalGeoLinks = Array.from(doc.querySelectorAll('a')).filter(a => 
+    const internalGeoLinks = Array.from(doc.querySelectorAll('a')).filter(a =>
       a.href.includes('/contact') || a.href.includes('/locations') || hasLocalIntent(a.textContent, city)
     ).length > 0;
     data.reviews = { schema: !!aggregateRating, canonical, internalLinks: internalGeoLinks };
+
+    if (aggregateRating) { /* good */ } else {
+      allFixes.push({ module: 'Reviews & Structure', sub: 'Review Schema', ...moduleFixes['Reviews & Structure']['Review Schema'] });
+    }
+    if (!canonical) allFixes.push({ module: 'Reviews & Structure', sub: 'Canonical Tag', ...moduleFixes['Reviews & Structure']['Canonical Tag'] });
+    if (!internalGeoLinks) allFixes.push({ module: 'Reviews & Structure', sub: 'Internal Geo Links', ...moduleFixes['Reviews & Structure']['Internal Geo Links'] });
+
     const reviewsScore = (aggregateRating ? 7 : 0) + (canonical ? 5 : 0) + (internalGeoLinks ? 5 : 0);
     yourScore += reviewsScore;
 
     yourScore = Math.min(100, Math.round(yourScore));
+
+    // Title truncation for big card
+    const pageTitle = doc.querySelector('title')?.textContent?.trim() || 'Your Page';
+    const truncatedTitle = pageTitle.length > 65 
+      ? pageTitle.substring(0, 62) + '...' 
+      : pageTitle;
 
     stopSpinnerLoader();
 
@@ -227,10 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     moduleOrder.forEach(mod => {
       if (moduleIssues[mod] && moduleIssues[mod].length > 0) {
-        topPriorityFixes.push(moduleIssues[mod][0]);
+        topPriorityFixes.push(moduleIssues[mod][0]); // highest priority first in module
       }
     });
-
     topPriorityFixes.length = Math.min(3, topPriorityFixes.length);
 
     const bigGrade = getGrade(yourScore);
@@ -272,20 +337,20 @@ document.addEventListener('DOMContentLoaded', () => {
     results.innerHTML = `
       <!-- Overall Score Card -->
       <div class="flex justify-center my-12 px-4">
-        <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full border-4 ${bigGrade.color.replace('text-', 'border-')}">
-          <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Your Page</p>
+        <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full border-4 ${bigGrade.border} border-opacity-60">
+          <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6 truncate px-4" title="${pageTitle}">${truncatedTitle}</p>
           <div class="relative w-56 h-56 mx-auto md:w-64 md:h-64">
             <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
               <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
               <circle cx="100" cy="100" r="90"
-                      stroke="${bigGrade.color}"
+                      stroke="${bigGrade.fill}"
                       stroke-width="16" fill="none"
                       stroke-dasharray="${(yourScore / 100) * 565} 565"
                       stroke-linecap="round"/>
             </svg>
             <div class="absolute inset-0 flex items-center justify-center">
               <div class="text-center">
-                <div class="text-4xl md:text-5xl font-black drop-shadow-lg ${bigGrade.color}">
+                <div class="text-4xl md:text-5xl font-black drop-shadow-lg ${bigGrade.text}">
                   ${yourScore}
                 </div>
                 <div class="text-base md:text-lg opacity-80 -mt-1 text-gray-600 dark:text-gray-400">
@@ -295,14 +360,14 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
           <div class="mt-6 text-center">
-            <p class="text-3xl md:text-4xl font-bold ${bigGrade.color}">
+            <p class="text-3xl md:text-4xl font-bold ${bigGrade.text}">
               ${bigGrade.emoji} ${bigGrade.grade}
             </p>
           </div>
         </div>
       </div>
 
-      <!-- On-Page Health Radar Chart -->
+      <!-- Radar Chart -->
       <div class="max-w-5xl mx-auto my-16 px-4">
         <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-2xl p-8">
           <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">Local SEO Health Radar</h3>
@@ -315,47 +380,43 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-      <!-- Small Metric Circles with Sub-Metrics & Fixes -->
+      <!-- Module Cards -->
       <div class="grid md:grid-cols-3 gap-8 my-16">
         ${modules.map(m => {
           const grade = getGrade(m.score);
           return `
-            <div class="bg-white dark:bg-gray-950 rounded-2xl shadow-lg p-6 border-4 border-${grade.color.replace('#', '')} flex flex-col">
-              <h4 class="text-xl font-medium mb-4 text-center">${m.name}</h4>
+            <div class="bg-white dark:bg-gray-950 rounded-2xl shadow-lg p-6 border-4 ${grade.border} border-opacity-60 flex flex-col">
+              <h4 class="text-xl font-medium mb-4 text-center ${grade.text}">${m.name}</h4>
               <div class="relative w-28 h-28 mx-auto mb-4">
                 <svg width="112" height="112" viewBox="0 0 112 112" class="transform -rotate-90">
                   <circle cx="56" cy="56" r="48" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-                  <circle cx="56" cy="56" r="48" stroke="${grade.color}"
+                  <circle cx="56" cy="56" r="48" stroke="${grade.fill}"
                           stroke-width="12" fill="none" stroke-dasharray="${(m.score / 100) * 301} 301" stroke-linecap="round"/>
                 </svg>
                 <div class="absolute inset-0 flex items-center justify-center">
                   <div class="text-center">
-                    <div class="text-4xl font-black ${grade.color}">${Math.round(m.score)}</div>
+                    <div class="text-4xl font-black ${grade.text}">${Math.round(m.score)}</div>
                   </div>
                 </div>
               </div>
               <div class="text-center mb-4">
-                <span class="text-2xl ${grade.color}">${grade.emoji} ${grade.grade}</span>
+                <span class="text-2xl ${grade.text}">${grade.emoji} ${grade.grade}</span>
               </div>
-
-              <!-- Sub-Metrics -->
               <div class="space-y-2 mb-4">
                 ${m.sub.map(s => `
-                  <div class="sub-metric">
+                  <div class="sub-metric flex items-center gap-2">
                     <span class="${s.color} text-xl">${s.status}</span>
                     <span class="text-gray-800 dark:text-gray-200">${s.label}</span>
                   </div>
                 `).join('')}
               </div>
-
-              <!-- Per-Module Fixes Toggle -->
-              <button class="fix-toggle w-full mt-auto" onclick="this.nextElementSibling.classList.toggle('hidden')">
+              <button class="fix-toggle w-full mt-auto px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg transition">
                 Show Fixes for ${m.name}
               </button>
-              <div class="hidden mt-4 p-4 bg-gray-100 dark:bg-gray-900 rounded-xl text-sm text-gray-800 dark:text-gray-200">
-                ${m.sub.filter(s => s.status === '❌' || s.status === '⚠️').length > 0 ? 
+              <div class="hidden mt-4 p-4 ${grade.bgLight} rounded-xl text-sm text-gray-800 dark:text-gray-200">
+                ${m.sub.filter(s => s.status !== '✅').length > 0 ?
                   m.sub.map(s => s.status !== '✅' ? `<p><strong>${s.label}:</strong> Needs attention</p>` : '').join('') :
-                  '<p class="text-green-600">All sub-metrics look good!</p>'}
+                  '<p class="text-green-600 dark:text-green-400">All sub-metrics look good!</p>'}
               </div>
             </div>
           `;
@@ -368,14 +429,16 @@ document.addEventListener('DOMContentLoaded', () => {
         ${topPriorityFixes.length ? `
           <div class="space-y-8 max-w-4xl mx-auto">
             ${topPriorityFixes.map((fix, i) => `
-              <div class="p-8 bg-white dark:bg-gray-950 rounded-2xl shadow-xl border-l-8 border-orange-500 flex gap-6">
-                <div class="text-5xl font-black text-orange-600">${i+1}</div>
+              <div class="p-6 md:p-8 bg-white dark:bg-gray-950 rounded-2xl shadow-xl border-l-8 border-orange-500 flex flex-col md:flex-row gap-6">
+                <div class="text-5xl md:text-6xl font-black text-orange-600 shrink-0">${i+1}</div>
                 <div class="flex-1">
-                  <div class="flex items-center gap-3 mb-3">
+                  <div class="flex flex-wrap items-center gap-3 mb-4">
                     <span class="px-4 py-1 bg-orange-500 text-white rounded-full text-sm font-bold">${fix.module}</span>
+                    ${fix.priority === 'very-high' ? '<span class="px-3 py-1 bg-red-600 text-white rounded-full text-xs font-bold">URGENT</span>' : ''}
+                    ${fix.priority === 'high' ? '<span class="px-3 py-1 bg-orange-600 text-white rounded-full text-xs font-bold">HIGH</span>' : ''}
                   </div>
-                  <h4 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">${fix.issue}</h4>
-                  <p class="text-gray-800 dark:text-gray-200">${fix.how}</p>
+                  <h4 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">${fix.issue}</h4>
+                  <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${fix.how}</p>
                 </div>
               </div>
             `).join('')}
@@ -410,7 +473,7 @@ document.addEventListener('DOMContentLoaded', () => {
             borderWidth: 4,
             pointRadius: 8,
             pointHoverRadius: 12,
-            pointBackgroundColor: scores.map(s => s >= 80 ? '#22c55e' : s >= 60 ? '#fb923c' : '#ef4444'),
+            pointBackgroundColor: scores.map(s => getGrade(s).fill),
             pointBorderColor: '#fff',
             pointBorderWidth: 3
           }]
