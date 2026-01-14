@@ -119,9 +119,26 @@ function injectMetricCards() {
   openDetailsFromHash();
 }
 
-// Execute immediately if DOM ready, or on load
-if (document.readyState !== 'loading') {
+// Initial attempt + observer for dynamic content (after audit)
+function tryInject() {
   injectMetricCards();
-} else {
-  document.addEventListener('DOMContentLoaded', injectMetricCards);
 }
+
+// Run once immediately
+tryInject();
+
+// Watch for #results changes (audit report loaded)
+const observer = new MutationObserver((mutations) => {
+  const results = document.getElementById('results');
+  if (results && results.innerHTML.trim().length > 500 && results.querySelector('.bg-white.dark\\:bg-gray-950')) { // detect real report content
+    console.log('Detected audit report – re-injecting cards');
+    tryInject();
+    // observer.disconnect(); // optional: uncomment if you want only one re-trigger
+  }
+});
+
+observer.observe(document.body, {
+  childList: true,
+  subtree: true,
+  characterData: true
+});
