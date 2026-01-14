@@ -118,4 +118,4 @@ function injectMetricCards() {
   console.log('Injection complete – cards rendered:', container.querySelectorAll('[id]').length);
 
   openDetailsFromHash();
-}
+} 
