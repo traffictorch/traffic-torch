@@ -494,19 +494,19 @@ const keywordsScore = (titleLocal ? 7 : 0) + (metaLocal ? 4 : 0) + (headingsLoca
                 </button>
               </div>
               <div id="fixes-${index}" class="hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">
-                ${allFixes.filter(f => f.module.trim().toLowerCase() === m.name.trim().toLowerCase()).length > 0 ?
-                  allFixes.filter(f => f.module === m.name).map(f => `
-                    <div class="mb-5 pb-5 border-b border-gray-200 dark:border-gray-700 last:border-0 last:pb-0">
-                      <div class="flex items-center gap-2 mb-2">
-                        <span class="font-semibold text-orange-600">${f.sub}</span>
-                        ${f.priority === 'very-high' ? '<span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">URGENT</span>' :
-                          f.priority === 'high' ? '<span class="text-xs bg-orange-600 text-white px-2 py-0.5 rounded-full">HIGH</span>' : ''}
-                      </div>
-                      <p class="font-medium text-gray-900 dark:text-gray-100 mb-1">${f.issue}</p>
-                      <p class="text-gray-700 dark:text-gray-300">${f.how}</p>
-                    </div>
-                  `).join('')
-                : '<p class="text-green-600 dark:text-green-400 font-medium text-center">All checks passed – excellent!</p>'}
+${allFixes.filter(f => f.module.trim().toLowerCase() === m.name.trim().toLowerCase()).length > 0 ?
+  allFixes.filter(f => f.module.trim().toLowerCase() === m.name.trim().toLowerCase()).map(f => `
+    <div class="mb-5 pb-5 border-b border-gray-200 dark:border-gray-700 last:border-0 last:pb-0">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="font-semibold text-orange-600">${f.sub}</span>
+        ${f.priority === 'very-high' ? '<span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">URGENT</span>' :
+          f.priority === 'high' ? '<span class="text-xs bg-orange-600 text-white px-2 py-0.5 rounded-full">HIGH</span>' : ''}
+      </div>
+      <p class="font-medium text-gray-900 dark:text-gray-100 mb-1">${f.issue}</p>
+      <p class="text-gray-700 dark:text-gray-300">${f.how}</p>
+    </div>
+  `).join('')
+: '<p class="text-green-600 dark:text-green-400 font-medium text-center">All checks passed – excellent!</p>'}
                 <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 text-center">
                   <a href="#${moduleHashes[m.name]}" class="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:underline font-medium">
                     How ${m.name} is tested? <span class="text-xl">→</span>
