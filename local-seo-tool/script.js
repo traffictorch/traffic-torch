@@ -1,5 +1,4 @@
 // script.js
-import { metricExplanations } from './metric-explanations.js';
 import { renderPluginSolutions } from './plugin-solutions.js';
 import { moduleFixes } from './fixes.js';
 
