@@ -1,4 +1,4 @@
-// local-seo-tool/fixes.js
+// local-seo-tool/fixes.js 
 export const moduleFixes = {
   'NAP & Contact': {
     'NAP Present': {
