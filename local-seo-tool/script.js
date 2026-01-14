@@ -169,88 +169,63 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   async function analyzePage(doc, city, fullUrl, location) {
-    let yourScore = 0;
-    const data = {};
-    const allFixes = [];
+// Module weights (total 100%) based on real-world local SEO impact
+const moduleWeights = {
+  'NAP & Contact': 22,
+  'Local Keywords & Titles': 18,
+  'Local Content & Relevance': 20,
+  'Maps & Visuals': 12,
+  'Structured Data': 18,
+  'Reviews & Structure': 10
+};
 
-    const passFail = (condition) => condition ? { status: '✅', color: 'text-green-600' } : { status: '❌', color: 'text-red-600' };
+// Max raw points per module
+const moduleMaxRaw = {
+  'NAP & Contact': 18,
+  'Local Keywords & Titles': 17,
+  'Local Content & Relevance': 20,
+  'Maps & Visuals': 16,
+  'Structured Data': 18,
+  'Reviews & Structure': 17
+};
 
-    // 1. NAP & Contact
-    const addressEl = doc.querySelector('address, [itemprop="address"], footer, .contact, .location');
-    const phoneEl = doc.querySelector('a[href^="tel:"], [itemprop="telephone"]');
-    const napPresent = !!(addressEl?.textContent.trim() && phoneEl);
-    const footerNap = !!doc.querySelector('footer')?.textContent.toLowerCase().includes(city) ||
-                      !!doc.querySelector('footer address');
-    const contactComplete = napPresent && (doc.querySelector('[itemprop="openingHours"]') || doc.querySelector('time, .hours'));
-    data.nap = { present: napPresent, footer: footerNap, complete: contactComplete };
+// Calculate normalized (0-100) and weighted scores
+const normalizedModuleScores = {};
+let overallScore = 0;
 
-    if (!napPresent) allFixes.push({ module: 'NAP & Contact', sub: 'NAP Present', ...moduleFixes['NAP & Contact']['NAP Present'] });
-    if (!footerNap) allFixes.push({ module: 'NAP & Contact', sub: 'Footer NAP', ...moduleFixes['NAP & Contact']['Footer NAP'] });
-    if (!contactComplete) allFixes.push({ module: 'NAP & Contact', sub: 'Contact Complete', ...moduleFixes['NAP & Contact']['Contact Complete'] });
+Object.keys(moduleWeights).forEach(mod => {
+  const rawScore = {
+    'NAP & Contact': napScore,
+    'Local Keywords & Titles': keywordsScore,
+    'Local Content & Relevance': contentScore,
+    'Maps & Visuals': mapsScore,
+    'Structured Data': schemaScore,
+    'Reviews & Structure': reviewsScore
+  }[mod];
 
-    const napScore = (napPresent ? 8 : 0) + (footerNap ? 5 : 0) + (contactComplete ? 5 : 0);
-    yourScore += napScore;
+  const maxRaw = moduleMaxRaw[mod];
+  const weight = moduleWeights[mod];
 
-    // 2. Local Keywords & Titles
-    const titleText = doc.querySelector('title')?.textContent.trim() || '';
-    const metaDesc = doc.querySelector('meta[name="description"]')?.content.trim() || '';
-    const titleLocal = hasLocalIntent(titleText, city);
-    const metaLocal = hasLocalIntent(metaDesc, city);
-    const headingsLocal = Array.from(doc.querySelectorAll('h1, h2')).some(h => hasLocalIntent(h.textContent, city));
-    data.keywords = { title: titleLocal, meta: metaLocal, headings: headingsLocal };
+  const percentage = maxRaw > 0 ? (rawScore / maxRaw) * 100 : 0;
+  const weighted = (percentage / 100) * weight;
 
-    const keywordsScore = (titleLocal ? 7 : 0) + (metaLocal ? 5 : 0) + (headingsLocal ? 5 : 0);
-    yourScore += keywordsScore;
+  normalizedModuleScores[mod] = Math.round(percentage); // 0-100 for module cards
+  overallScore += weighted;
+});
 
-    // 3. Local Content & Relevance (Rebalanced - max ~20)
-    const cleanContent = getCleanContent(doc);
-    const bodyLocalKeywords = hasLocalIntent(cleanContent, city) ? 1 : 0;
-    const intentPatterns = (cleanContent.match(/near me|in\s+\w+|local\s+/gi) || []).length > 2 ? 1 : 0;
-    const locationMentionsCount = (cleanContent.match(new RegExp(city, 'gi')) || []).length;
-    const locationMentions = locationMentionsCount > 1 ? 1 : 0;
+overallScore = Math.min(100, Math.round(overallScore));
+yourScore = overallScore;
 
-    data.content = { localKeywords: bodyLocalKeywords, intentPatterns, locationMentions };
+// Use normalizedModuleScores for modules array instead of raw
+// In the modules array definition, change score: to:
+score: normalizedModuleScores[m.name]
 
-    let contentScore = 
-      (bodyLocalKeywords * 8) +
-      (intentPatterns * 6) +
-      (locationMentions * 6);
+// For radar chart data:
+data: Object.values(normalizedModuleScores),  // instead of scores (which was raw)
 
-    if (locationMentionsCount >= 4) {
-      contentScore += 4; // bonus for deep integration
-    }
-    contentScore = Math.min(20, contentScore);
-    yourScore += contentScore;
-
-    // 4. Maps & Visuals
-    const mapIframe = doc.querySelector('iframe[src*="maps.google"], [src*="google.com/maps"]');
-    const images = doc.querySelectorAll('img');
-    const localAlts = Array.from(images).filter(img => hasLocalIntent(img.alt || '', city)).length > 0;
-    data.maps = { embedded: !!mapIframe, localAlt: localAlts };
-
-    const mapsScore = (mapIframe ? 8 : 0) + (localAlts ? 8 : 0);
-    yourScore += mapsScore;
-
-    // 5. Structured Data
-    const schemaScripts = doc.querySelectorAll('script[type="application/ld+json"]');
-    let schemaData = {};
-    schemaScripts.forEach(s => {
-      try {
-        const parsed = JSON.parse(s.textContent);
-        if (parsed['@type'] === 'LocalBusiness') schemaData = parsed;
-      } catch {}
-    });
-    const localSchemaPresent = !!schemaData['@type'];
-    const geoCoords = !!schemaData?.geo?.latitude && !!schemaData?.geo?.longitude;
-    const hoursPresent = !!schemaData?.openingHoursSpecification || !!schemaData?.openingHours;
-    data.schema = { localPresent: localSchemaPresent, geoCoords, hours: hoursPresent };
-
-    if (!localSchemaPresent) allFixes.push({ module: 'Structured Data', sub: 'Local Schema', ...moduleFixes['Structured Data']['Local Schema'] });
-    if (!geoCoords) allFixes.push({ module: 'Structured Data', sub: 'Geo Coords', ...moduleFixes['Structured Data']['Geo Coords'] });
-    if (!hoursPresent) allFixes.push({ module: 'Structured Data', sub: 'Opening Hours', ...moduleFixes['Structured Data']['Opening Hours'] });
-
-    const schemaScore = (localSchemaPresent ? 8 : 0) + (geoCoords ? 5 : 0) + (hoursPresent ? 5 : 0);
-    yourScore += schemaScore;
+// Final overall score uses the weighted sum
+yourScore = overallScore;
+    
 
     // 6. Reviews, Canonical & Linking
     const aggregateRating = schemaData?.aggregateRating?.ratingValue;
@@ -310,10 +285,10 @@ const scoreDelta = projectedScore - yourScore;
 
     stopSpinnerLoader();
 
-    const moduleOrder = [
-      'NAP & Contact', 'Local Keywords & Titles', 'Local Content & Relevance',
-      'Maps & Visuals', 'Structured Data', 'Reviews & Structure'
-    ];
+const moduleOrder = [
+  'NAP & Contact', 'Local Keywords & Titles', 'Local Content & Relevance',
+  'Maps & Visuals', 'Structured Data', 'Reviews & Structure'
+];
 
     const topPriorityFixes = [];
     const moduleIssues = {};
@@ -331,37 +306,37 @@ const scoreDelta = projectedScore - yourScore;
 
     const bigGrade = getGrade(yourScore);
 
-    const modules = [
-      { name: 'NAP & Contact', score: napScore, sub: [
-        { label: 'NAP Present', ...passFail(napPresent) },
-        { label: 'Footer NAP', ...passFail(footerNap) },
-        { label: 'Contact Complete', ...passFail(contactComplete) }
-      ]},
-      { name: 'Local Keywords & Titles', score: keywordsScore, sub: [
-        { label: 'Title Local', ...passFail(titleLocal) },
-        { label: 'Meta Local', ...passFail(metaLocal) },
-        { label: 'Headings Local', ...passFail(headingsLocal) }
-      ]},
-      { name: 'Local Content & Relevance', score: contentScore, sub: [
-        { label: 'Body Keywords', ...passFail(bodyLocalKeywords) },
-        { label: 'Intent Patterns', ...passFail(intentPatterns) },
-        { label: 'Location Mentions', ...passFail(locationMentions) }
-      ]},
-      { name: 'Maps & Visuals', score: mapsScore, sub: [
-        { label: 'Map Embedded', ...passFail(mapIframe) },
-        { label: 'Local Alt Text', ...passFail(localAlts) }
-      ]},
-      { name: 'Structured Data', score: schemaScore, sub: [
-        { label: 'Local Schema', ...passFail(localSchemaPresent) },
-        { label: 'Geo Coords', ...passFail(geoCoords) },
-        { label: 'Opening Hours', ...passFail(hoursPresent) }
-      ]},
-      { name: 'Reviews & Structure', score: reviewsScore, sub: [
-        { label: 'Review Schema', ...passFail(aggregateRating) },
-        { label: 'Canonical Tag', ...passFail(canonical) },
-        { label: 'Internal Geo Links', ...passFail(internalGeoLinks) }
-      ]}
-    ];
+const modules = [
+  { name: 'NAP & Contact', score: normalizedModuleScores['NAP & Contact'], sub: [
+    { label: 'NAP Present', ...passFail(napPresent) },
+    { label: 'Footer NAP', ...passFail(footerNap) },
+    { label: 'Contact Complete', ...passFail(contactComplete) }
+  ]},
+  { name: 'Local Keywords & Titles', score: normalizedModuleScores['Local Keywords & Titles'], sub: [
+    { label: 'Title Local', ...passFail(titleLocal) },
+    { label: 'Meta Local', ...passFail(metaLocal) },
+    { label: 'Headings Local', ...passFail(headingsLocal) }
+  ]},
+  { name: 'Local Content & Relevance', score: normalizedModuleScores['Local Content & Relevance'], sub: [
+    { label: 'Body Keywords', ...passFail(bodyLocalKeywords) },
+    { label: 'Intent Patterns', ...passFail(intentPatterns) },
+    { label: 'Location Mentions', ...passFail(locationMentions) }
+  ]},
+  { name: 'Maps & Visuals', score: normalizedModuleScores['Maps & Visuals'], sub: [
+    { label: 'Map Embedded', ...passFail(!!mapIframe) },
+    { label: 'Local Alt Text', ...passFail(localAlts) }
+  ]},
+  { name: 'Structured Data', score: normalizedModuleScores['Structured Data'], sub: [
+    { label: 'Local Schema', ...passFail(localSchemaPresent) },
+    { label: 'Geo Coords', ...passFail(geoCoords) },
+    { label: 'Opening Hours', ...passFail(hoursPresent) }
+  ]},
+  { name: 'Reviews & Structure', score: normalizedModuleScores['Reviews & Structure'], sub: [
+    { label: 'Review Schema', ...passFail(!!aggregateRating) },
+    { label: 'Canonical Tag', ...passFail(canonical) },
+    { label: 'Internal Geo Links', ...passFail(internalGeoLinks) }
+  ]}
+];
 
     const scores = modules.map(m => m.score);
 
@@ -605,47 +580,46 @@ results.innerHTML = `
       renderPluginSolutions(failedModules);
     }
 
-    // Radar Chart
-    setTimeout(() => {
-      const canvas = document.getElementById('health-radar');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      new Chart(ctx, {
-        type: 'radar',
-        data: {
-          labels: modules.map(m => m.name),
-          datasets: [{
-            label: 'Local SEO Score',
-            data: scores,
-            backgroundColor: 'rgba(251, 146, 60, 0.15)',
-            borderColor: '#fb923c',
-            borderWidth: 4,
-            pointRadius: 8,
-            pointHoverRadius: 12,
-            pointBackgroundColor: scores.map(s => getGrade(s).fill),
-            pointBorderColor: '#fff',
-            pointBorderWidth: 3
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            r: {
-              beginAtZero: true,
-              min: 0,
-              max: 100,
-              ticks: { stepSize: 20, color: '#9ca3af' },
-              grid: { color: 'rgba(156, 163, 175, 0.3)' },
-              angleLines: { color: 'rgba(156, 163, 175, 0.3)' },
-              pointLabels: { color: '#9ca3af', font: { size: 15, weight: '600' } }
-            }
-          },
-          plugins: { legend: { display: false } }
+// ── Radar Chart (now uses normalized 0-100 scores) ─────────────────────────────
+setTimeout(() => {
+  const canvas = document.getElementById('health-radar');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: modules.map(m => m.name),
+      datasets: [{
+        label: 'Local SEO Score',
+        data: Object.values(normalizedModuleScores),
+        backgroundColor: 'rgba(251, 146, 60, 0.15)',
+        borderColor: '#fb923c',
+        borderWidth: 4,
+        pointRadius: 8,
+        pointHoverRadius: 12,
+        pointBackgroundColor: Object.values(normalizedModuleScores).map(s => getGrade(s).fill),
+        pointBorderColor: '#fff',
+        pointBorderWidth: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        r: {
+          beginAtZero: true,
+          min: 0,
+          max: 100,
+          ticks: { stepSize: 20, color: '#9ca3af' },
+          grid: { color: 'rgba(156, 163, 175, 0.3)' },
+          angleLines: { color: 'rgba(156, 163, 175, 0.3)' },
+          pointLabels: { color: '#9ca3af', font: { size: 15, weight: '600' } }
         }
-      });
-    }, 150);
-  }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+}, 150);
   
   
 
