@@ -494,8 +494,8 @@ const keywordsScore = (titleLocal ? 7 : 0) + (metaLocal ? 4 : 0) + (headingsLoca
                 </button>
               </div>
               <div id="fixes-${index}" class="hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">
-${allFixes.filter(f => f.module.trim().toLowerCase() === m.name.trim().toLowerCase()).length > 0 ?
-  allFixes.filter(f => f.module.trim().toLowerCase() === m.name.trim().toLowerCase()).map(f => `
+${allFixes.filter(f => f.module?.trim().toLowerCase() === m.name.trim().toLowerCase()).length > 0 ?
+  allFixes.filter(f => f.module?.trim().toLowerCase() === m.name.trim().toLowerCase()).map(f => `
     <div class="mb-5 pb-5 border-b border-gray-200 dark:border-gray-700 last:border-0 last:pb-0">
       <div class="flex items-center gap-2 mb-2">
         <span class="font-semibold text-orange-600">${f.sub}</span>
