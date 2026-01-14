@@ -380,12 +380,12 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-<!-- Modern Scoring Cards - exact requested order -->
+<!-- Modern Scoring Cards - all 6 modules -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 max-w-7xl mx-auto">
-  ${modules.map(m => {
+  ${modules.map((m, index) => {
     const grade = getGrade(m.score);
     const explanation = window.metricExplanations?.find(e => e.id === moduleHashes[m.name]) || { what: 'Local optimization check' };
-    const shortDesc = explanation.what ? explanation.what.split('.').slice(0,1).join('.') + '.' : 'Local SEO health metric';
+    const shortDesc = explanation.what ? explanation.what.split('.')[0] + '.' : 'Local SEO health metric';
     return `
       <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-xl overflow-hidden border-2 ${grade.border} border-opacity-50 flex flex-col transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
         <!-- 1. Round Progress Circle -->
@@ -393,9 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="relative w-32 h-32 md:w-36 md:h-36 mx-auto">
             <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
               <circle cx="70" cy="70" r="60" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
-              <circle cx="70" cy="70" r="60" 
-                      stroke="${grade.fill}" stroke-width="12" fill="none"
-                      stroke-dasharray="${(m.score / 100) * 377} 377" stroke-linecap="round"/>
+              <circle cx="70" cy="70" r="60" stroke="${grade.fill}" stroke-width="12" fill="none" stroke-dasharray="${(m.score / 100) * 377} 377" stroke-linecap="round"/>
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center">
               <div class="text-5xl md:text-6xl font-extrabold ${grade.text}">${Math.round(m.score)}</div>
@@ -421,26 +419,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <!-- 5. More Details Button -->
         <div class="px-6 pb-4">
-          <button 
-            class="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl font-medium transition text-gray-900 dark:text-gray-100 shadow-sm"
-            onclick="this.parentElement.nextElementSibling.classList.toggle('hidden')">
+          <button class="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl font-medium transition text-gray-900 dark:text-gray-100 shadow-sm" onclick="document.querySelector('#details-${index}').classList.toggle('hidden')">
             More Details
           </button>
         </div>
 
-        <!-- More Details Expandable Content -->
-        <div class="hidden px-6 pb-6 space-y-6 text-sm border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+        <!-- More Details Expandable -->
+        <div id="details-${index}" class="hidden px-6 pb-6 space-y-6 text-sm border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
           <div>
             <p class="font-bold text-orange-600 dark:text-orange-400 mb-2">What is this?</p>
             <p class="text-gray-700 dark:text-gray-300">${explanation.what}</p>
           </div>
           <div>
             <p class="font-bold text-orange-600 dark:text-orange-400 mb-2">How is it measured?</p>
-            <p class="text-gray-700 dark:text-gray-300">${explanation.how || 'Scans relevant page elements for this metric.'}</p>
+            <p class="text-gray-700 dark:text-gray-300">${explanation.how || 'Scans relevant page elements.'}</p>
           </div>
           <div>
             <p class="font-bold text-orange-600 dark:text-orange-400 mb-2">Why does it matter?</p>
-            <p class="text-gray-700 dark:text-gray-300">${explanation.why}</p>
+            <p class="text-gray-700 dark:text-gray-300">${explanation.why || 'Important for local SEO.'}</p>
           </div>
         </div>
 
@@ -456,18 +452,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <!-- 7. Show Fixes Button -->
         <div class="px-6 pt-2 pb-6">
-          <button 
-            class="w-full px-6 py-3 ${grade.bgLight} hover:opacity-90 rounded-xl font-medium transition ${grade.text} shadow-sm"
-            onclick="this.parentElement.nextElementSibling.classList.toggle('hidden')">
+          <button class="w-full px-6 py-3 ${grade.bgLight} hover:opacity-90 rounded-xl font-medium transition ${grade.text} shadow-sm" onclick="document.querySelector('#fixes-${index}').classList.toggle('hidden')">
             Show Fixes
           </button>
         </div>
 
-        <!-- Fixes Expandable Content -->
-        <div class="hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">
+        <!-- Fixes Expandable -->
+        <div id="fixes-${index}" class="hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">
           ${allFixes.filter(f => f.module === m.name).length > 0 ?
             allFixes.filter(f => f.module === m.name).map(f => `
-              <div class="mb-5 pb-5 border-b border-gray-200 dark:border-gray-700 last:border-0 last:pb-0">
+              <div class="mb-5 pb-5 border-b border-gray-200 dark:border-gray-700 last:border-0">
                 <div class="flex items-center gap-2 mb-2">
                   <span class="font-semibold text-orange-600">${f.sub}</span>
                   ${f.priority === 'very-high' ? '<span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">URGENT</span>' :
