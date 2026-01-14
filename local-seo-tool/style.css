@@ -150,11 +150,26 @@ canvas {
 
 
 /* Metric Explanation Cards (Deep Dive) - minimal essentials */
+#metric-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
 #metric-cards-container > div {
-  min-height: 400px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-height: 420px; /* slightly more breathing room */
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#metric-cards-container > div:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 35px -10px rgba(0,0,0,0.15);
 }
 
 /* Sub-metric icons in main scoring cards */
