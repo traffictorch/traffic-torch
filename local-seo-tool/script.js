@@ -450,7 +450,6 @@ document.addEventListener('DOMContentLoaded', () => {
                   </svg>
                   <div class="absolute inset-0 flex flex-col items-center justify-center">
                     <div class="text-5xl md:text-6xl font-extrabold ${grade.text}">${Math.round(m.score)}</div>
-                    <div class="text-sm md:text-base opacity-70 ${grade.text}">/100</div>
                   </div>
                 </div>
               </div>
