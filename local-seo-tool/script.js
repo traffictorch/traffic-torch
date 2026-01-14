@@ -250,10 +250,15 @@ if (!locationMentions) {
 
     // 4. Maps & Visuals
     const mapIframe = doc.querySelector('iframe[src*="maps.google"], [src*="google.com/maps"]');
-    const images = doc.querySelectorAll('img');
-    const localAlts = Array.from(images).filter(img => hasLocalIntent(img.alt || '', city)).length > 0;
+const images = doc.querySelectorAll('img');
+const localAltImages = Array.from(images).filter(img => hasLocalIntent(img.alt || '', city));
+const localAlts = localAltImages.length >= 2;
+const strongLocalAlts = localAltImages.length >= 4 ? 2 : 0;  // small bonus for excellent implementation
     data.maps = { embedded: !!mapIframe, localAlt: localAlts };
-    const mapsScore = (mapIframe ? 8 : 0) + (localAlts ? 8 : 0);
+const mapsScore = (mapIframe ? 8 : 0) + (localAlts ? 8 : 0) + strongLocalAlts;
+if (!localAlts) {
+  allFixes.push({ module: 'Maps & Visuals', sub: 'Local Alt Text', ...moduleFixes['Maps & Visuals']['Local Alt Text'] });
+}
 
     // 5. Structured Data
     const schemaScripts = doc.querySelectorAll('script[type="application/ld+json"]');
