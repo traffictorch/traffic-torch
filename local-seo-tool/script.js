@@ -303,7 +303,6 @@ for (const script of schemaScripts) {
 }
 
 const localSchemaPresent = !!schemaData;
-    const localSchemaPresent = !!schemaData['@type'];
     const geoCoords = !!schemaData?.geo?.latitude && !!schemaData?.geo?.longitude;
     const hoursPresent = !!schemaData?.openingHoursSpecification || !!schemaData?.openingHours;
     data.schema = { localPresent: localSchemaPresent, geoCoords, hours: hoursPresent };
