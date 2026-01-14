@@ -211,27 +211,47 @@ if (youCount > 5) conversational += 30;
 if (iWeCount > 5) conversational += 25;
 if (questions > 3) conversational += 20;
 if (painPointsNearYou > 2) conversational += 20;
-      // Readability
-      const words = mainText.split(/\s+/).filter(Boolean).length || 1;
-      const sentences = (mainText.match(/[.!?]+/g) || []).length || 1;
-      const syllables = mainText.split(/\s+/).reduce((a, w) => a + (w.match(/[aeiouy]+/gi) || []).length, 0);
-      const flesch = 206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words);
-      const sentencesArr = mainText.split(/[.!?]+/).filter(Boolean);
-      const lengths = sentencesArr.map(s => s.split(/\s+/).length);
-      let variationScore = 50;
-      if (lengths.length >= 5) {
-        const avg = lengths.reduce((a, b) => a + b, 0) / lengths.length;
-        const variance = lengths.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / lengths.length;
-        variationScore = variance > 50 ? 100 : variance > 40 ? 95 : variance > 20 ? 80 : variance > 10 ? 60 : 40;
-      }
-      const passivePatterns = mainText.match(/\b(is|are|was|were|been|be|being)\b.*\b(by|using|with|through)\b/gi) || [];
-      const complexWords = mainText.split(/\s+/).filter(w => (w.match(/[aeiouy]+/gi) || []).length >= 3).length;
-      const complexRatio = words > 0 ? (complexWords / words) * 100 : 0;
-      let readability = 0;
-      if (flesch > 60) readability += 40;
-      if (variationScore > 70) readability += 25;
-      if (passivePatterns.length < 5) readability += 20;
-      if (complexRatio < 15) readability += 15;
+// Readability
+const words = mainText.split(/\s+/).filter(Boolean).length || 1;
+const sentences = (mainText.match(/[.!?]+/g) || []).length || 1;
+const syllables = mainText.split(/\s+/).reduce((a, w) => a + (w.match(/[aeiouy]+/gi) || []).length, 0);
+const flesch = 206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words);
+
+const sentencesArr = mainText.split(/[.!?]+/).filter(Boolean);
+const lengths = sentencesArr.map(s => s.split(/\s+/).length);
+let variationScore = 50;
+if (lengths.length >= 3) {  // lowered from 5 to handle shorter content better
+  const avg = lengths.reduce((a, b) => a + b, 0) / lengths.length;
+  const variance = lengths.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / lengths.length;
+  variationScore = Math.min(100, variance > 50 ? 100 : variance > 40 ? 95 : variance > 20 ? 80 : variance > 10 ? 60 : 40);
+}
+
+// Improved passive detection (more patterns, scale penalty)
+const passivePatterns = mainText.match(/\b(is|are|was|were|been|be|being|am|gets|got|has been|have been)\b.*?\b(by|using|with|through|of|from|to|for)\b/gi) || [];
+const passivePenalty = Math.max(0, 20 - (passivePatterns.length * 2));  // max 20, lose 2 pts per pattern
+
+// Complex words - tiered, more forgiving
+const complexWords = mainText.split(/\s+/).filter(w => w.length > 10 || (w.match(/[aeiouy]+/gi) || []).length >= 4).length;
+const complexRatio = words > 0 ? (complexWords / words) * 100 : 0;
+
+let readability = 0;
+
+// Flesch - tiered for better granularity
+if (flesch > 70) readability += 45;
+else if (flesch > 60) readability += 35;
+else if (flesch > 50) readability += 20;
+
+// Variation
+if (variationScore > 80) readability += 25;
+else if (variationScore > 60) readability += 15;
+
+// Passive voice (inverted penalty)
+readability += passivePenalty;
+
+// Complex words - forgiving
+if (complexRatio < 12) readability += 20;
+else if (complexRatio < 18) readability += 12;
+else if (complexRatio < 25) readability += 5;
       // Unique Insights
 	  const hasInsights = /\b(I tested|we tested|in my experience|we found|case study|based on my|hands-on|personally observed|our research|in practice|real-world|client results|our data shows|from experience|based on testing|experimented|analyzed|surveyed)\b/i.test(mainText);
       const hasDated = /\b(recent|latest|current|new|fresh|up-to-date|just tested|ongoing|as of now|in recent months|today's|modern|present-day)\b/i.test(mainText.toLowerCase());
