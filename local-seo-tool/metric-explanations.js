@@ -67,31 +67,33 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('metric-cards-container');
   if (!container) return;
 
-  container.innerHTML = metricExplanations.map(m => `
-    <div id="${m.id}" class="bg-white dark:bg-gray-950 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center">
+container.innerHTML = metricExplanations.map(m => `
+  <div id="${m.id}" class="bg-white dark:bg-gray-950 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center flex flex-col justify-between min-h-[380px]">
+    <div>
       <div class="text-6xl mb-6">${m.emoji}</div>
       <div class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-8">${m.name}</div>
-      <details class="group">
-        <summary class="cursor-pointer text-orange-500 dark:text-orange-400 font-bold hover:underline inline-flex items-center gap-2 whitespace-nowrap mx-auto">
-          Learn More <span class="text-2xl transition-transform group-open:rotate-180">↓</span>
-        </summary>
-        <div class="mt-6 space-y-6 text-left max-w-lg mx-auto text-gray-800 dark:text-gray-200 leading-relaxed">
-          <div>
-            <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">What is ${m.name}?</p>
-            <p>${m.what}</p>
-          </div>
-          <div>
-            <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">How is ${m.name} tested?</p>
-            <p>${m.how}</p>
-          </div>
-          <div>
-            <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">Why does ${m.name} matter?</p>
-            <p>${m.why}</p>
-          </div>
-        </div>
-      </details>
     </div>
-  `).join('');
+    <details class="group mt-auto">
+      <summary class="cursor-pointer text-orange-500 dark:text-orange-400 font-bold hover:underline inline-flex items-center gap-2 whitespace-nowrap mx-auto">
+        Learn More <span class="text-2xl transition-transform group-open:rotate-180">↓</span>
+      </summary>
+      <div class="mt-6 space-y-6 text-left max-w-lg mx-auto text-gray-800 dark:text-gray-200 leading-relaxed">
+        <div>
+          <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">What is ${m.name}?</p>
+          <p>${m.what}</p>
+        </div>
+        <div>
+          <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">How is ${m.name} tested?</p>
+          <p>${m.how}</p>
+        </div>
+        <div>
+          <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">Why does ${m.name} matter?</p>
+          <p>${m.why}</p>
+        </div>
+      </div>
+    </details>
+  </div>
+`).join('');
 
   // Open details on hash (for direct links)
   openDetailsFromHash();
