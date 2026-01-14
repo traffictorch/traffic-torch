@@ -468,21 +468,28 @@ const scoreDelta = projectedScore - yourScore;
           </button>
         </div>
         <!-- Fixes Expandable Content -->
-        <div id="fixes-${index}" class="hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">
-          ${allFixes.filter(f => f.module === m.name).length > 0 ?
-            allFixes.filter(f => f.module === m.name).map(f => `
-              <div class="mb-5 pb-5 border-b border-gray-200 dark:border-gray-700 last:border-0 last:pb-0">
-                <div class="flex items-center gap-2 mb-2">
-                  <span class="font-semibold text-orange-600">${f.sub}</span>
-                  ${f.priority === 'very-high' ? '<span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">URGENT</span>' : 
-                    f.priority === 'high' ? '<span class="text-xs bg-orange-600 text-white px-2 py-0.5 rounded-full">HIGH</span>' : ''}
-                </div>
-                <p class="font-medium text-gray-900 dark:text-gray-100 mb-1">${f.issue}</p>
-                <p class="text-gray-700 dark:text-gray-300">${f.how}</p>
-              </div>
-            `).join('')
-          : '<p class="text-green-600 dark:text-green-400 font-medium text-center">All checks passed – excellent!</p>'}
+<div id="fixes-${index}" class="hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">
+  ${allFixes.filter(f => f.module === m.name).length > 0 ?
+    allFixes.filter(f => f.module === m.name).map(f => `
+      <div class="mb-5 pb-5 border-b border-gray-200 dark:border-gray-700 last:border-0 last:pb-0">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="font-semibold text-orange-600">${f.sub}</span>
+          ${f.priority === 'very-high' ? '<span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">URGENT</span>' : 
+            f.priority === 'high' ? '<span class="text-xs bg-orange-600 text-white px-2 py-0.5 rounded-full">HIGH</span>' : ''}
         </div>
+        <p class="font-medium text-gray-900 dark:text-gray-100 mb-1">${f.issue}</p>
+        <p class="text-gray-700 dark:text-gray-300">${f.how}</p>
+      </div>
+    `).join('')
+  : '<p class="text-green-600 dark:text-green-400 font-medium text-center">All checks passed – excellent!</p>'}
+  
+  <!-- Link to deep dive: How [Module Name] is tested -->
+  <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 text-center">
+    <a href="#${moduleHashes[m.name]}" class="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:underline font-medium">
+      How ${m.name} is tested? <span class="text-xl">→</span>
+    </a>
+  </div>
+</div>
       </div>
     `;
   }).join('')}
@@ -521,20 +528,32 @@ const scoreDelta = projectedScore - yourScore;
     </div>
 
     <!-- Score Improvement & Potential Ranking Gains (moved below) -->
-    <div class="max-w-5xl mx-auto mt-16 grid md:grid-cols-2 gap-8 px-4">
-      <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
-        <h3 class="text-3xl font-bold text-center mb-8 text-orange-500">Overall Score Improvement</h3>
-        <div class="flex justify-center items-baseline gap-4 mb-8">
-          <div class="text-5xl font-black text-gray-800 dark:text-gray-200">${yourScore}</div>
-          <div class="text-4xl text-gray-400">→</div>
-          <div class="text-6xl font-black text-green-500">${projectedScore}</div>
-          <div class="text-2xl text-green-600 font-medium">(${scoreDelta > 0 ? '+' + scoreDelta : 'Optimal'})</div>
-        </div>
-        <div class="text-center py-4">
-          <p class="text-lg text-gray-600 dark:text-gray-400">
-            Fixing the top priorities above could boost your score by up to ${totalPotentialGain} points.
-          </p>
-        </div>
+<div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
+  <h3 class="text-3xl font-bold text-center mb-8 text-orange-500">Overall Score Improvement</h3>
+  <div class="flex justify-center items-baseline gap-4 mb-8">
+    <div class="text-5xl font-black text-gray-800 dark:text-gray-200">${yourScore}</div>
+    <div class="text-4xl text-gray-400">→</div>
+    <div class="text-6xl font-black text-green-500">${projectedScore}</div>
+    <div class="text-2xl text-green-600 font-medium">(${scoreDelta > 0 ? '+' + scoreDelta : 'Optimal'})</div>
+  </div>
+  <div class="text-center py-4">
+    <p class="text-lg text-gray-600 dark:text-gray-400">
+      Fixing the top priorities above could boost your score by up to ${totalPotentialGain} points.
+    </p>
+  </div>
+  <details class="mt-8 text-sm text-gray-600 dark:text-gray-400">
+    <summary class="cursor-pointer font-medium text-orange-500 hover:underline text-center block">
+      How We Calculated This
+    </summary>
+    <div class="mt-4 space-y-2 px-2">
+      <p>• Weighted scoring across 6 key local modules (NAP, Keywords, Content, Maps, Schema, Reviews)</p>
+      <p>• Each module contributes proportionally based on real-world local SEO impact</p>
+      <p>• Projected score assumes full implementation of top priority fixes</p>
+      <p>• Top-ranking pages in local pack typically score 80+ on these on-page factors</p>
+      <p class="italic mt-4">Conservative estimate based on on-page optimization benchmarks from high-performing local sites</p>
+    </div>
+  </details>
+</div>
       </div>
 
       <div class="p-8 bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
@@ -577,6 +596,18 @@ const scoreDelta = projectedScore - yourScore;
 
       <!-- Plugin Solutions -->
       <div id="plugin-solutions-section" class="mt-20"></div>
+      
+      
+      <!-- PDF Button - print-friendly with expand all -->
+<div class="text-center my-16 px-4">
+  <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
+          class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl md:text-3xl font-bold rounded-2xl shadow-lg hover:opacity-90 transition transform hover:scale-105">
+    📄 Save as PDF
+  </button>
+  <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+    This will expand all sections for a complete printable report
+  </p>
+</div>
     `;
 
     // Trigger plugins on critical failures
