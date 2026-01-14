@@ -646,4 +646,15 @@ results.innerHTML = `
       });
     }, 150);
   }
+  
+  
+  // Toggle "Learn More" buttons for deep dive cards
+document.querySelectorAll('.learn-more-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const details = btn.closest('.metric-card').querySelector('.metric-details');
+    details.classList.toggle('hidden');
+  });
+});
+
+
 });

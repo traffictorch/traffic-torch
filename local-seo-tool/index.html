@@ -285,16 +285,119 @@
 
 
 
-<!-- Deep Dive into Key Local Modules -->
-<section id="deep-dive-section" class="py-20 bg-gray-50 dark:bg-gray-900">
-  <div class="max-w-7xl mx-auto px-6">
-    <h2 class="text-4xl md:text-5xl font-black text-center mb-16 text-gray-900 dark:text-gray-100">
-      Deep Dive into Key Local Modules
-    </h2>
-    
-<div id="metric-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-  <!-- JS will insert all 6 cards here – do not add anything manually -->
-</div>
+<!-- Deep Dive into Key Local Modules (static + toggle like AI Search tool) -->
+<section class="py-16 px-4 bg-gray-50 dark:bg-gray-900">
+  <h2 class="text-4xl font-bold text-center mb-12 text-gray-800 dark:text-gray-200">Deep Dive into Key Local Modules</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+
+    <!-- 1. NAP & Contact -->
+    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-6 text-center flex flex-col items-center justify-between h-64">
+        <div class="text-6xl mb-6">📍</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">NAP & Contact Signals</h3>
+        <button class="learn-more-toggle mt-auto w-full py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-orange-50 dark:bg-orange-900/20 px-6 pb-6 transition-all duration-300 ease-in-out">
+        <div class="space-y-6 text-left text-sm">
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p><p>Evaluates presence, consistency and completeness of Name, Address, Phone across page elements.</p></div>
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">How tested?</p><p>Scans address, footer, tel: links, schema patterns.</p></div>
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">Why matters?</p><p>Consistent NAP builds trust and boosts local pack rankings.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Keywords & Titles -->
+    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-6 text-center flex flex-col items-center justify-between h-64">
+        <div class="text-6xl mb-6">🔤</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Local Keywords & Titles</h3>
+        <button class="learn-more-toggle mt-auto w-full py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-orange-50 dark:bg-orange-900/20 px-6 pb-6 transition-all duration-300 ease-in-out">
+        <div class="space-y-6 text-left text-sm">
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p><p>Checks local intent in title, meta description and headings.</p></div>
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">How tested?</p><p>Scans title, meta desc, H1/H2 for city/local phrases.</p></div>
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">Why matters?</p><p>Geo-titles improve relevance for city/near-me searches.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Content & Relevance -->
+    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-6 text-center flex flex-col items-center justify-between h-64">
+        <div class="text-6xl mb-6">📄</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Local Content & Relevance</h3>
+        <button class="learn-more-toggle mt-auto w-full py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-orange-50 dark:bg-orange-900/20 px-6 pb-6 transition-all duration-300 ease-in-out">
+        <div class="space-y-6 text-left text-sm">
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p><p>Analyzes body content for local keywords, intent phrases, location mentions.</p></div>
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">How tested?</p><p>Extracts content, counts city mentions and local patterns.</p></div>
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">Why matters?</p><p>Proves relevance to area, increases topical authority.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Maps & Visuals -->
+    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-6 text-center flex flex-col items-center justify-between h-64">
+        <div class="text-6xl mb-6">🗺️</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Maps & Visual Signals</h3>
+        <button class="learn-more-toggle mt-auto w-full py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-orange-50 dark:bg-orange-900/20 px-6 pb-6 transition-all duration-300 ease-in-out">
+        <div class="space-y-6 text-left text-sm">
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p><p>Detects embedded maps and local image alt text.</p></div>
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">How tested?</p><p>Checks Google Maps iframes and alt attributes.</p></div>
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">Why matters?</p><p>Confirms presence, improves UX and image search.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Structured Data -->
+    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-6 text-center flex flex-col items-center justify-between h-64">
+        <div class="text-6xl mb-6">🏷️</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Structured Data (Schema)</h3>
+        <button class="learn-more-toggle mt-auto w-full py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-orange-50 dark:bg-orange-900/20 px-6 pb-6 transition-all duration-300 ease-in-out">
+        <div class="space-y-6 text-left text-sm">
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p><p>Verifies LocalBusiness schema with geo and hours.</p></div>
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">How tested?</p><p>Parses JSON-LD for @type, geo, openingHours.</p></div>
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">Why matters?</p><p>Unlocks rich results, strongest local signal.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Reviews & Structure -->
+    <div class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-6 text-center flex flex-col items-center justify-between h-64">
+        <div class="text-6xl mb-6">⭐</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Reviews, Canonical & Linking</h3>
+        <button class="learn-more-toggle mt-auto w-full py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-orange-50 dark:bg-orange-900/20 px-6 pb-6 transition-all duration-300 ease-in-out">
+        <div class="space-y-6 text-left text-sm">
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">What is it?</p><p>Checks review schema, canonical tag, geo internal links.</p></div>
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">How tested?</p><p>Scans schema for aggregateRating, rel=canonical, local links.</p></div>
+          <div><p class="font-bold text-orange-600 dark:text-orange-400">Why matters?</p><p>Stars boost CTR, canonical prevents duplicates, links strengthen architecture.</p></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
      
