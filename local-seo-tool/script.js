@@ -521,7 +521,7 @@ const internalGeoLinks = Array.from(doc.querySelectorAll('a')).some(a => {
   </div>
 
   <!-- Moved title here, below the circle -->
-  <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mt-6 truncate px-4" title="$$   {pageTitle}">   $${truncatedTitle}</p>
+  <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mt-6 truncate px-4" title="$   {pageTitle}">   $${truncatedTitle}</p>
 
   <div class="mt-4 text-center">  <!-- reduced margin-top slightly since title is now closer -->
     <p class="text-3xl md:text-4xl font-bold ${bigGrade.text}">
