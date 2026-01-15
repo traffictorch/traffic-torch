@@ -92,19 +92,15 @@ modal.innerHTML = `
           Tap the <strong class="text-white">Share</strong> button
           <!-- REAL Apple Share Icon -->
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00eaff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" class="inline h-8 w-8 align-middle mx-2">
-            <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
-            <path d="M12 17V3"></path>
-            <path d="m8 8 4-4 4 4"></path>
-          </svg>
+  <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
+  <path d="M12 14V1"></path>           <!-- shaft starts higher -->
+  <path d="m8 5 4-4 4 4"></path>       <!-- chevron moved up -->
+</svg>
         </div>
       </li>
       <li class="flex items-start gap-3">
         <span class="font-bold text-cyan-400 shrink-0">2.</span>
-        Scroll down and tap <strong class="text-white">Add to Home Screen</strong>
-      </li>
-      <li class="flex items-start gap-3">
-        <span class="font-bold text-cyan-400 shrink-0">3.</span>
-        Tap <strong class="text-white">Add</strong> in the top-right corner
+        Scroll down and tap Add to Home Screen
       </li>
     </ol>
     
