@@ -30,23 +30,28 @@ function isIOS() {
 function createInstallButton() {
   if (isInStandaloneMode()) return;
 
+  // Remove any existing button to avoid duplicates
+  const existing = document.getElementById('pwa-install-btn');
+  if (existing) existing.remove();
+
   const btn = document.createElement('button');
   btn.textContent = 'Install App';
   btn.id = 'pwa-install-btn';
 
-  // Direct fixed positioning with !important overrides (beats stacking context quirks)
-  Object.assign(btn.style, {
-    position: 'fixed !important',
-    bottom: '1.5rem !important',
-    right: '1.5rem !important',
-    zIndex: '999999 !important',      // Extremely high to sit above all blur/stacking contexts
-    pointerEvents: 'auto',
-    willChange: 'transform'           // Forces own compositing layer in Firefox (helps rendering)
-  });
+  // Inline fixed with !important + high z-index + layer promotion (escapes Firefox stacking quirks)
+  btn.style.cssText = `
+    position: fixed !important;
+    bottom: 1.5rem !important;
+    right: 1.5rem !important;
+    z-index: 2147483647 !important;  /* max safe z-index */
+    pointer-events: auto !important;
+    will-change: transform, opacity;  /* forces GPU layer, fixes Firefox render bugs */
+    transform: translateZ(0);         /* extra stacking isolation */
+  `;
 
-  // Tailwind classes for appearance
-  btn.className =
-    'px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-white font-bold transition transform hover:scale-105 active:scale-95';
+  // Tailwind classes for style (non-positioning)
+  btn.className +=
+    ' px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-white font-bold transition transform hover:scale-105 active:scale-95';
 
   btn.addEventListener('click', () => {
     if (isIOS()) {
@@ -65,7 +70,7 @@ function createInstallButton() {
     }
   });
 
-  // Append directly to body at the very end (after all content)
+  // Append as last child of body (after all content, no trapping)
   document.body.appendChild(btn);
 }
 
