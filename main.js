@@ -14,7 +14,18 @@ if (toggle) {
   });
 }
 
-// 2. PWA Install 
+// 2. PWA Install
+let deferredPrompt = null;
+
+const isInStandaloneMode = () =>
+  window.matchMedia('(display-mode: standalone)').matches ||
+  window.navigator.standalone === true ||
+  document.referrer.includes('ios-app://');
+
+function isIOS() {
+  return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+}
+
 function createInstallButton() {
   if (isInStandaloneMode()) return;
 
@@ -25,7 +36,6 @@ function createInstallButton() {
   btn.id = 'pwa-install-btn';
   btn.textContent = 'Install App';
 
-  // Modern Tailwind classes – big, floating, premium feel, good mobile spacing
   btn.className =
     'fixed bottom-6 right-6 z-50 ' +
     'px-7 py-3.5 md:px-8 md:py-4 ' +
@@ -34,7 +44,7 @@ function createInstallButton() {
     'rounded-full shadow-2xl hover:shadow-[0_20px_35px_-10px_rgba(249,115,22,0.5),0_10px_15px_-6px_rgba(236,72,153,0.5)] ' +
     'transition-all duration-200 ease-out ' +
     'hover:scale-105 active:scale-95 ' +
-    'transform-gpu';
+    'transform-gpu pointer-events-auto';
 
   btn.addEventListener('click', () => {
     if (isIOS()) {
@@ -55,6 +65,48 @@ function createInstallButton() {
 
   document.body.appendChild(btn);
 }
+
+// iOS popup (unchanged)
+function showIOSInstallInstructions() {
+  if (document.getElementById('ios-install-modal')) return;
+  const modal = document.createElement('div');
+  modal.id = 'ios-install-modal';
+  modal.className = 'fixed inset-0 bg-black/70 flex items-end justify-center z-[2147483646] pb-10 transition-opacity duration-300';
+  modal.innerHTML = `
+    <div class="bg-white dark:bg-gray-800 rounded-t-3xl p-6 max-w-md w-full shadow-2xl animate-slide-up">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">Install Traffic Torch</h3>
+        <button class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl leading-none" onclick="this.closest('#ios-install-modal').remove()">×</button>
+      </div>
+      <ol class="text-gray-700 dark:text-gray-300 space-y-4 text-lg">
+        <li>1. Tap the <strong>Share</strong> button <img src="https://via.placeholder.com/28x28?text=Share" alt="Share icon" class="inline h-7 w-7 align-middle mx-1"></li>
+        <li>2. Scroll down and tap <strong>Add to Home Screen</strong></li>
+        <li>3. Tap <strong>Add</strong> in the top-right corner</li>
+      </ol>
+      <p class="mt-6 text-sm text-gray-500 dark:text-gray-400 text-center">
+        You'll get quick access like a real app!
+      </p>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.remove();
+  });
+}
+
+// ── Event Listeners ─────────────────────────────────────────────────────
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  console.log('beforeinstallprompt fired → showing install button');
+  createInstallButton();
+});
+
+window.addEventListener('appinstalled', () => {
+  console.log('PWA was successfully installed');
+  document.getElementById('pwa-install-btn')?.remove();
+  deferredPrompt = null;
+});
 
 // 3. Register minimal service worker for PWA readiness (detectable by audits, no caching)
 if ('serviceWorker' in navigator) {
