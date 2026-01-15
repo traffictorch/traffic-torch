@@ -177,9 +177,8 @@ details > div,
   
 #pwa-install-btn {
   position: fixed !important;
-  inset-block-end: 1.5rem !important;
-  inset-inline-end: 1.5rem !important;
+  bottom: 24px !important;
+  right: 24px !important;
   z-index: 2147483647 !important;
-  isolation: isolate !important;
 }
 }

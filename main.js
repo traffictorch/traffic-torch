@@ -26,34 +26,31 @@ function isIOS() {
   return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
 }
 
-// Create install button (append to fixed portal for true viewport positioning)
 function createInstallButton() {
   if (isInStandaloneMode()) return;
 
-  // Clean up any duplicate buttons
+  // Remove any existing buttons to prevent duplicates
   document.querySelectorAll('#pwa-install-btn').forEach(el => el.remove());
 
-  // Small delay to ensure DOM is fully rendered before appending
   setTimeout(() => {
     const btn = document.createElement('button');
     btn.textContent = 'Install App';
     btn.id = 'pwa-install-btn';
 
-    // Force isolated compositing layer + max overrides
+    // Maximum isolation + compositing layer forcing (escapes backdrop-filter/contain stacking)
     btn.style.cssText = `
       position: fixed !important;
-      bottom: 1.5rem !important;
-      right: 1.5rem !important;
+      bottom: 24px !important;
+      right: 24px !important;
       z-index: 2147483647 !important;
       pointer-events: auto !important;
       will-change: transform, opacity !important;
-      transform: translate3d(0, 0, 0) !important;  /* Stronger than translateZ(0) */
+      transform: translate3d(0,0,1px) !important;
       backface-visibility: hidden !important;
       isolation: isolate !important;
-      contain: paint !important;  /* Self-contain to avoid parent interference */
+      contain: strict !important;
     `;
 
-    // Tailwind classes (visual only)
     btn.className = 'px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-white font-bold transition transform hover:scale-105 active:scale-95';
 
     btn.addEventListener('click', () => {
@@ -73,19 +70,17 @@ function createInstallButton() {
       }
     });
 
-    // Append as absolute last child of body
     document.body.appendChild(btn);
-  }, 100);  // 100ms delay is safe and effective
+  }, 300);  // Slightly longer delay to ensure all layout + blur is applied first
 }
 
-// iOS instructions popup (unchanged)
+// iOS popup unchanged (keep as is)
 function showIOSInstallInstructions() {
   if (document.getElementById('ios-install-modal')) return;
 
   const modal = document.createElement('div');
   modal.id = 'ios-install-modal';
-  modal.className =
-    'fixed inset-0 bg-black/70 flex items-end justify-center z-50 pb-10 transition-opacity duration-300';
+  modal.className = 'fixed inset-0 bg-black/70 flex items-end justify-center z-[2147483646] pb-10 transition-opacity duration-300';
 
   modal.innerHTML = `
     <div class="bg-white dark:bg-gray-800 rounded-t-3xl p-6 max-w-md w-full shadow-2xl animate-slide-up">
@@ -110,14 +105,19 @@ function showIOSInstallInstructions() {
   });
 }
 
-// ── Events ───────────────────────────────────────────────────────────────
+// Events
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
   console.log('beforeinstallprompt fired');
 });
 
-// Create button immediately after load (no delay, matches working site)
+window.addEventListener('appinstalled', () => {
+  console.log('PWA was installed');
+  document.getElementById('pwa-install-btn')?.remove();
+  deferredPrompt = null;
+});
+
 window.addEventListener('load', () => {
   createInstallButton();
 });
