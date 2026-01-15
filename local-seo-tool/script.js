@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (score >= 50) {
       return {
-        grade: 'Average',
+        grade: 'Needs Improvement',
         emoji: '⚠️',
         color: '#f59e0b',
         border: 'border-amber-500',
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     }
     return {
-      grade: score >= 30 ? 'Needs Work' : 'Poor',
+      grade: score >= 30 ? 'Needs Work',
       emoji: '🔴',
       color: '#dc2626',
       border: 'border-red-600',
@@ -498,34 +498,37 @@ const internalGeoLinks = Array.from(doc.querySelectorAll('a')).some(a => {
     results.innerHTML = `
       <!-- Overall Score Card -->
       <div class="flex justify-center my-12 px-4">
-        <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full border-4 ${bigGrade.border} border-opacity-60">
-          <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6 truncate px-4" title="${pageTitle}">${truncatedTitle}</p>
-          <div class="relative w-56 h-56 mx-auto md:w-64 md:h-64">
-            <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
-              <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
-              <circle cx="100" cy="100" r="90"
-                      stroke="${bigGrade.fill}"
-                      stroke-width="16" fill="none"
-                      stroke-dasharray="${(yourScore / 100) * 565} 565"
-                      stroke-linecap="round"/>
-            </svg>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="text-center">
-                <div class="text-4xl md:text-5xl font-black drop-shadow-lg ${bigGrade.text}">
-                  ${yourScore}
-                </div>
-                <div class="text-base md:text-lg opacity-80 -mt-1 text-gray-600 dark:text-gray-400">
-                  /100
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="mt-6 text-center">
-            <p class="text-3xl md:text-4xl font-bold ${bigGrade.text}">
-              ${bigGrade.emoji} ${bigGrade.grade}
-            </p>
-          </div>
+<div class="bg-white dark:bg-gray-950 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full border-4 ${bigGrade.border} border-opacity-60">
+  <div class="relative w-56 h-56 mx-auto md:w-64 md:h-64">
+    <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+      <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
+      <circle cx="100" cy="100" r="90"
+              stroke="${bigGrade.fill}"
+              stroke-width="16" fill="none"
+              stroke-dasharray="${(yourScore / 100) * 565} 565"
+              stroke-linecap="round"/>
+    </svg>
+    <div class="absolute inset-0 flex items-center justify-center">
+      <div class="text-center">
+        <div class="text-4xl md:text-5xl font-black drop-shadow-lg ${bigGrade.text}">
+          ${yourScore}
         </div>
+        <div class="text-base md:text-lg opacity-80 -mt-1 text-gray-600 dark:text-gray-400">
+          /100
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Moved title here, below the circle -->
+  <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mt-6 truncate px-4" title="$$   {pageTitle}">   $${truncatedTitle}</p>
+
+  <div class="mt-4 text-center">  <!-- reduced margin-top slightly since title is now closer -->
+    <p class="text-3xl md:text-4xl font-bold ${bigGrade.text}">
+      ${bigGrade.emoji} ${bigGrade.grade}
+    </p>
+  </div>
+</div>
       </div>
 
       <!-- Radar Chart -->
