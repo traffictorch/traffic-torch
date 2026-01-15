@@ -91,7 +91,7 @@ modal.innerHTML = `
       <li class="flex items-start gap-3">
         <span class="font-bold text-cyan-400 shrink-0">1.</span>
         <div>
-          Tap the <strong class="text-white">Share</strong> button
+          In Safari tap the <strong class="text-white">Share</strong> button
           <!-- REAL Apple Share Icon -->
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00eaff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" class="inline h-8 w-8 align-middle mx-2">
   <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
@@ -137,7 +137,7 @@ window.addEventListener('load', () => {
       console.log('No beforeinstallprompt detected → fallback mode for Firefox/etc');
       createInstallButton();
     }
-  }, 2000); // 2 second delay to feel natural, not pushy
+  }, 3000); // 3 second delay to feel natural, not pushy
 });
 
 window.addEventListener('appinstalled', () => {
