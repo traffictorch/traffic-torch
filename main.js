@@ -101,11 +101,24 @@ function showIOSInstallInstructions() {
 }
 
 // ── Event Listeners ─────────────────────────────────────────────────────
+// ── PWA Install Event Handlers ──────────────────────────────────────────
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  console.log('beforeinstallprompt fired → showing install button');
+  console.log('beforeinstallprompt fired (Chromium) → showing install button');
   createInstallButton();
+});
+
+// Fallback for Firefox (and other non-Chromium browsers that don't fire beforeinstallprompt)
+// Show button after load if no prompt appeared after short delay
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    // Only show if we didn't already show via Chromium event
+    if (!deferredPrompt && !document.getElementById('pwa-install-btn')) {
+      console.log('No beforeinstallprompt detected → fallback mode for Firefox/etc');
+      createInstallButton();
+    }
+  }, 2000); // 2 second delay to feel natural, not pushy
 });
 
 window.addEventListener('appinstalled', () => {
