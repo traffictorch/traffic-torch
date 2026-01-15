@@ -77,7 +77,9 @@ function showIOSInstallInstructions() {
   if (document.getElementById('ios-install-modal')) return;
   const modal = document.createElement('div');
   modal.id = 'ios-install-modal';
-  modal.className = 'fixed inset-0 bg-black/70 flex items-end justify-center z-[2147483646] pb-10 transition-opacity duration-300';
+  modal.className = 
+  'fixed inset-0 bg-black/80 flex items-center justify-center z-[2147483647] ' +
+  'overflow-hidden transition-opacity duration-300 backdrop-blur-sm';
 modal.innerHTML = `
   <div class="bg-gray-900/95 backdrop-blur-xl rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-cyan-500/30 animate-slide-up">
     <div class="flex justify-between items-center mb-6">
@@ -110,6 +112,8 @@ modal.innerHTML = `
   </div>
 `;
   document.body.appendChild(modal);
+  // Force center in viewport (critical on iOS Safari with long pages)
+modal.scrollIntoView({ behavior: 'instant', block: 'center', inline: 'center' });
   modal.addEventListener('click', (e) => {
     if (e.target === modal) modal.remove();
   });
