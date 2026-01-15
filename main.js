@@ -33,10 +33,16 @@ function createInstallButton() {
   const btn = document.createElement('button');
   btn.textContent = 'Install App';
   btn.id = 'pwa-install-btn';
-  
-  // Explicit fixed positioning + high z-index to stay above everything
+
+  // Inline styles for reliable fixed positioning (bypasses Tailwind JIT issues)
+  btn.style.position = 'fixed';
+  btn.style.bottom = '1.5rem';  // Matches Tailwind bottom-6
+  btn.style.right = '1.5rem';   // Matches right-6
+  btn.style.zIndex = '9999';    // High to float above footer/sidebar/header
+
+  // Keep Tailwind classes for other styling (bg, padding, etc. — these apply fine)
   btn.className =
-    'fixed bottom-6 right-6 z-[9999] px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-white font-bold transition transform hover:scale-105 active:scale-95';
+    'px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-white font-bold transition transform hover:scale-105 active:scale-95';
 
   btn.addEventListener('click', () => {
     if (isIOS()) {
