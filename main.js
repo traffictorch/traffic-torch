@@ -28,6 +28,7 @@ function isIOS() {
 
 function createInstallButton() {
   if (isInStandaloneMode()) return;
+  console.log('createInstallButton() called');
 
   document.querySelectorAll('#pwa-install-btn').forEach(el => el.remove());
 
@@ -182,15 +183,13 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 // Fallback for Firefox (and other non-Chromium browsers that don't fire beforeinstallprompt)
-// Show button after load if no prompt appeared after short delay
 window.addEventListener('load', () => {
   setTimeout(() => {
-    // Only show if we didn't already show via Chromium event
-    if (!deferredPrompt && !document.getElementById('pwa-install-btn')) {
-      console.log('No beforeinstallprompt detected → fallback mode for Firefox/etc');
+    if (!document.getElementById('pwa-install-btn')) {
+      console.log('Fallback trigger: no button exists yet → creating PWA install button');
       createInstallButton();
     }
-  }, 3000); // 3 second delay to feel natural, not pushy
+  }, 1200); // 1.2 seconds – fast enough to feel responsive, slow enough to not feel aggressive
 });
 
 window.addEventListener('appinstalled', () => {
