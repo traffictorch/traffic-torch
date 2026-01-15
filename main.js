@@ -23,7 +23,8 @@ const isInStandaloneMode = () =>
   document.referrer.includes('ios-app://');
 
 function isIOS() {
-  return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+  return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase()) ||
+         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 }
 
 function createInstallButton() {
@@ -45,9 +46,8 @@ function createInstallButton() {
     'transition-all duration-200 ease-out ' +
     'hover:scale-105 active:scale-95 transform-gpu pointer-events-auto';
 
-  // Force new stacking context + GPU layer
   btn.style.position = 'fixed';
-  btn.style.inset = 'auto 1.5rem 1.5rem auto'; // bottom-6 right-6 in rem
+  btn.style.inset = 'auto 1.5rem 1.5rem auto';
   btn.style.zIndex = '9999';
   btn.style.transform = 'translate3d(0,0,0)';
   btn.style.willChange = 'transform';
@@ -69,23 +69,19 @@ function createInstallButton() {
     }
   });
 
-  // Append to documentElement (html) instead of body → bypasses body stacking contexts
   document.documentElement.appendChild(btn);
 }
 
-// iOS popup (unchanged)
 function showIOSInstallInstructions() {
   if (document.getElementById('ios-install-modal')) return;
 
   const modal = document.createElement('div');
   modal.id = 'ios-install-modal';
 
-  // Correct class assignment (no string concatenation mess)
   modal.className =
     'fixed inset-0 bg-black/80 flex items-center justify-center ' +
     'z-[2147483647] overflow-hidden transition-opacity duration-300 backdrop-blur-sm';
 
-  // Force flex centering directly
   modal.style.display = 'flex';
   modal.style.alignItems = 'center';
   modal.style.justifyContent = 'center';
@@ -127,54 +123,25 @@ function showIOSInstallInstructions() {
 
   document.body.appendChild(modal);
 
-  // Critical fix: delay + force center + lock scroll properly
   setTimeout(() => {
     modal.scrollIntoView({ behavior: 'instant', block: 'center', inline: 'center' });
-    document.body.style.overflow = 'hidden'; // lock background scroll
-    modal.focus(); // helps iOS treat it as active
-  }, 80); // 80ms – safe sweet spot for iOS Safari
+    document.body.style.overflow = 'hidden';
+    modal.focus();
+  }, 80);
 
-  // Single, proper cleanup listener
   const closeModal = (e) => {
     if (e.target === modal) {
       modal.remove();
-      document.body.style.overflow = ''; // restore scroll
-      document.body.style.position = ''; // extra safety
+      document.body.style.overflow = '';
+      document.body.style.position = '';
       document.body.style.top = '';
     }
   };
 
   modal.addEventListener('click', closeModal);
 }
-document.body.appendChild(modal);
-
-// Delay scrollIntoView slightly to let DOM settle (fixes iOS first-tap glitch)
-setTimeout(() => {
-  modal.scrollIntoView({ 
-    behavior: 'instant', 
-    block: 'center', 
-    inline: 'center' 
-  });
-  
-  // Extra safety: lock body scroll & force viewport focus
-  document.body.style.overflow = 'hidden';
-  modal.focus();
-}, 50);  // 50ms is enough for Safari DOM + layout to be ready
-
-// Cleanup when modal closes
-modal.addEventListener('click', (e) => {
-  if (e.target === modal) {
-    modal.remove();
-    document.body.style.overflow = '';  // restore scroll
-  }
-});
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.remove();
-  });
-}
 
 // ── Event Listeners ─────────────────────────────────────────────────────
-// ── PWA Install Event Handlers ──────────────────────────────────────────
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
@@ -182,14 +149,19 @@ window.addEventListener('beforeinstallprompt', (e) => {
   createInstallButton();
 });
 
-// Fallback for Firefox (and other non-Chromium browsers that don't fire beforeinstallprompt)
+// Immediate + load fallback – ensures button appears almost always
+if (!isInStandaloneMode() && !document.getElementById('pwa-install-btn')) {
+  console.log('Immediate fallback: creating PWA button');
+  createInstallButton();
+}
+
 window.addEventListener('load', () => {
   setTimeout(() => {
     if (!document.getElementById('pwa-install-btn')) {
-      console.log('Fallback trigger: no button exists yet → creating PWA install button');
+      console.log('Load fallback: creating PWA button');
       createInstallButton();
     }
-  }, 1200); // 1.2 seconds – fast enough to feel responsive, slow enough to not feel aggressive
+  }, 800);
 });
 
 window.addEventListener('appinstalled', () => {
@@ -197,6 +169,15 @@ window.addEventListener('appinstalled', () => {
   document.getElementById('pwa-install-btn')?.remove();
   deferredPrompt = null;
 });
+
+// 3. Minimal service worker registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('Service Worker registered:', reg.scope))
+      .catch(err => console.log('Service Worker registration failed:', err));
+  });
+}
 
 // 3. Register minimal service worker for PWA readiness (detectable by audits, no caching)
 if ('serviceWorker' in navigator) {
