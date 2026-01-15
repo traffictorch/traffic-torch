@@ -16,23 +16,23 @@ if (toggle) {
 
 // 2. PWA Install 
 let deferredPrompt = null;
+
 const isInStandaloneMode = () =>
   window.matchMedia('(display-mode: standalone)').matches ||
   window.navigator.standalone === true ||
   document.referrer.includes('ios-app://');
 
 function isIOS() {
-  const ua = window.navigator.userAgent.toLowerCase();
-  return /iphone|ipad|ipod/.test(ua);
+  return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
 }
 
 // Create / manage install button
 function createInstallButton() {
   const btn = document.createElement('button');
   btn.textContent = 'Install App';
+  btn.id = 'pwa-install-btn';
   btn.className =
     'fixed bottom-6 right-6 z-50 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-white font-bold transition transform hover:scale-105 active:scale-95';
-  btn.id = 'pwa-install-btn';
 
   btn.addEventListener('click', () => {
     if (isIOS()) {
@@ -44,12 +44,12 @@ function createInstallButton() {
           console.log('PWA install accepted');
         }
         deferredPrompt = null;
-        btn.style.display = 'none';
+        hideInstallButton();
       });
     }
   });
 
-  // Hide if already installed / running in standalone
+  // Hide if already installed / in standalone mode
   if (isInStandaloneMode()) {
     btn.style.display = 'none';
   }
@@ -58,10 +58,17 @@ function createInstallButton() {
   return btn;
 }
 
+// Helper to safely hide the button (used in multiple places)
+function hideInstallButton() {
+  const btn = document.getElementById('pwa-install-btn');
+  if (btn) {
+    btn.style.display = 'none';
+  }
+}
+
 // iOS instructions popup (simple native-looking modal)
 function showIOSInstallInstructions() {
-  const existing = document.getElementById('ios-install-modal');
-  if (existing) return;
+  if (document.getElementById('ios-install-modal')) return;
 
   const modal = document.createElement('div');
   modal.id = 'ios-install-modal';
@@ -97,12 +104,11 @@ function showIOSInstallInstructions() {
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  // Button will be shown by default (unless already installed)
 });
 
 window.addEventListener('appinstalled', () => {
   console.log('PWA was installed');
-  document.getElementById('pwa-install-btn')?.style.display = 'none';
+  hideInstallButton();
   deferredPrompt = null;
 });
 
