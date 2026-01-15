@@ -78,22 +78,37 @@ function showIOSInstallInstructions() {
   const modal = document.createElement('div');
   modal.id = 'ios-install-modal';
   modal.className = 'fixed inset-0 bg-black/70 flex items-end justify-center z-[2147483646] pb-10 transition-opacity duration-300';
-  modal.innerHTML = `
-    <div class="bg-white dark:bg-gray-800 rounded-t-3xl p-6 max-w-md w-full shadow-2xl animate-slide-up">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">Install Traffic Torch</h3>
-        <button class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl leading-none" onclick="this.closest('#ios-install-modal').remove()">×</button>
-      </div>
-      <ol class="text-gray-700 dark:text-gray-300 space-y-4 text-lg">
-        <li>1. Tap the <strong>Share</strong> button <img src="https://via.placeholder.com/28x28?text=Share" alt="Share icon" class="inline h-7 w-7 align-middle mx-1"></li>
-        <li>2. Scroll down and tap <strong>Add to Home Screen</strong></li>
-        <li>3. Tap <strong>Add</strong> in the top-right corner</li>
-      </ol>
-      <p class="mt-6 text-sm text-gray-500 dark:text-gray-400 text-center">
-        You'll get quick access like a real app!
-      </p>
+modal.innerHTML = `
+  <div class="bg-gray-900/95 backdrop-blur-xl rounded-3xl p-8 max-w-md w-full shadow-2xl border border-cyan-500/30 animate-slide-up">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-2xl font-bold text-white">Install Traffic Torch</h3>
+      <button class="text-gray-400 hover:text-cyan-300 text-3xl leading-none transition-colors" onclick="this.closest('#ios-install-modal').remove()">×</button>
     </div>
-  `;
+    
+    <ol class="text-gray-300 space-y-6 text-lg">
+      <li class="flex items-start">
+        <span class="font-bold text-cyan-400 mr-3">1.</span>
+        Tap the <strong class="text-white">Share</strong> button 
+        <!-- REAL Apple Share Icon (arrow perfectly positioned) -->
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00eaff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" class="inline h-8 w-8 align-middle mx-2">
+  <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
+  <path d="M12 17V3"></path>
+  <path d="m8 8 4-4 4 4"></path>
+</svg>
+      </li>
+      <li class="flex items-start">
+        <span class="font-bold text-cyan-400 mr-3">2.</span>
+        Scroll down and tap <strong class="text-white">Add to Home Screen</strong>
+      </li>
+      <li class="flex items-start">
+        <span class="font-bold text-cyan-400 mr-3">3.</span>
+        Tap <strong class="text-white">Add</strong> in the top-right corner
+      </li>
+    </ol>
+
+    </p>
+  </div>
+`;
   document.body.appendChild(modal);
   modal.addEventListener('click', (e) => {
     if (e.target === modal) modal.remove();
