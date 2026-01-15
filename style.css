@@ -167,18 +167,58 @@ details > div,
 }
 
 
-/* PWA Install */
-.animate-slide-up {
-  animation: slideUp 0.4s ease-out;
-}
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to   { transform: translateY(0); }
-  
+/* ── PWA Install Button ─────────────────────────────────────────────── */
 #pwa-install-btn {
-  position: fixed !important;
-  bottom: 24px !important;
-  right: 24px !important;
-  z-index: 2147483647 !important;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;                    /* 2147483647 is almost never needed */
+  
+  padding: 0.75rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  
+  background: linear-gradient(to right, #f97316, #ec4899);
+  color: white;
+  border-radius: 9999px;
+  
+  box-shadow: 
+    0 10px 25px -5px rgba(249, 115, 22, 0.4),
+    0 8px 10px -6px rgba(236, 72, 153, 0.4);
+  
+  transition: all 0.2s ease;
+  transform: translateZ(0);         /* force hardware acceleration */
+  will-change: transform, opacity;
+  
+  pointer-events: auto;
+  user-select: none;
+}
+
+#pwa-install-btn:hover {
+  transform: scale(1.06) translateZ(0);
+  box-shadow: 
+    0 20px 35px -10px rgba(249, 115, 22, 0.5),
+    0 10px 15px -6px rgba(236, 72, 153, 0.5);
+}
+
+#pwa-install-btn:active {
+  transform: scale(0.97) translateZ(0);
+}
+
+@media (max-width: 640px) {
+  #pwa-install-btn {
+    bottom: 16px;
+    right: 16px;
+    padding: 0.65rem 1.4rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Optional: very small screens / very safe fallback */
+@media (max-width: 360px) {
+  #pwa-install-btn {
+    font-size: 0.875rem;
+    padding: 0.5rem 1.25rem;
+  }
 }
 }
