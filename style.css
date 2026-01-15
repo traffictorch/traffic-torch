@@ -237,4 +237,18 @@ details > div,
 body {
   transform: none !important;     /* kill accidental transforms on body/html */
 }
+
+/* Ultimate Firefox fixed button safety net */
+#pwa-install-btn {
+  position: fixed !important;
+  inset: auto 1.5rem 1.5rem auto !important;
+  z-index: 9999 !important;
+  transform: translate3d(0,0,0) !important;
+  isolation: isolate !important;
+}
+
+/* Kill any rogue body transform that breaks fixed positioning */
+body {
+  transform: none !important;
+  will-change: auto !important;
 }

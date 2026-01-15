@@ -29,7 +29,6 @@ function isIOS() {
 function createInstallButton() {
   if (isInStandaloneMode()) return;
 
-  // Remove any existing buttons to prevent duplicates
   document.querySelectorAll('#pwa-install-btn').forEach(el => el.remove());
 
   const btn = document.createElement('button');
@@ -37,14 +36,20 @@ function createInstallButton() {
   btn.textContent = 'Install App';
 
   btn.className =
-	'fixed bottom-6 right-6 z-[9999] ' +  
+    'fixed bottom-6 right-6 z-[9999] ' +
     'px-7 py-3.5 md:px-8 md:py-4 ' +
     'bg-gradient-to-r from-orange-500 to-pink-600 ' +
     'text-white font-bold text-base md:text-lg ' +
     'rounded-full shadow-2xl hover:shadow-[0_20px_35px_-10px_rgba(249,115,22,0.5),0_10px_15px_-6px_rgba(236,72,153,0.5)] ' +
     'transition-all duration-200 ease-out ' +
-    'hover:scale-105 active:scale-95 ' +
-    'transform-gpu pointer-events-auto';
+    'hover:scale-105 active:scale-95 transform-gpu pointer-events-auto';
+
+  // Force new stacking context + GPU layer
+  btn.style.position = 'fixed';
+  btn.style.inset = 'auto 1.5rem 1.5rem auto'; // bottom-6 right-6 in rem
+  btn.style.zIndex = '9999';
+  btn.style.transform = 'translate3d(0,0,0)';
+  btn.style.willChange = 'transform';
 
   btn.addEventListener('click', () => {
     if (isIOS()) {
@@ -63,7 +68,8 @@ function createInstallButton() {
     }
   });
 
-  document.body.appendChild(btn);
+  // Append to documentElement (html) instead of body → bypasses body stacking contexts
+  document.documentElement.appendChild(btn);
 }
 
 // iOS popup (unchanged)
