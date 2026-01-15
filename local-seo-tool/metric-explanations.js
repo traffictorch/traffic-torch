@@ -49,19 +49,26 @@ const metricExplanations = [
   }
 ];
 
-function openDetailsFromHash() {
-  if (window.location.hash) {
-    const hash = window.location.hash.substring(1);
-    const target = document.getElementById(hash);
-    if (target) {
-      const details = target.querySelector('details');
-      if (details) {
-        details.open = true;
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+function openModuleDetails(moduleId) {
+  const target = document.getElementById(moduleId);
+  if (target) {
+    const details = target.querySelector('details');
+    if (details) {
+      details.open = true;
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
 }
+
+// Keep hash support for backward compatibility / direct links
+function openDetailsFromHash() {
+  if (window.location.hash) {
+    const hash = window.location.hash.substring(1);
+    openModuleDetails(hash);
+  }
+}
+
+window.openModuleDetails = openModuleDetails;
 
 function injectMetricCards() {
   const container = document.getElementById('metric-cards-container');

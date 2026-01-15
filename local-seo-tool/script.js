@@ -571,9 +571,9 @@ const internalGeoLinks = Array.from(doc.querySelectorAll('a')).some(a => {
                 ${shortDesc}
               </p>
               <div class="px-6 pb-4">
-                <a href="#${deepDiveId}" class="block w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl font-medium transition text-gray-900 dark:text-gray-100 shadow-sm text-center">
-                  More Details
-                </a>
+<button onclick="openModuleDetails('${deepDiveId}')" class="block w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl font-medium transition text-gray-900 dark:text-gray-100 shadow-sm text-center cursor-pointer">
+  More Details
+</button>
               </div>
               <div class="px-6 py-6 space-y-4 border-t border-gray-200 dark:border-gray-700">
                 ${m.sub.map(s => `
@@ -603,9 +603,9 @@ ${allFixes.filter(f => f.module?.trim().toLowerCase() === m.name.trim().toLowerC
   `).join('')
 : '<p class="text-green-600 dark:text-green-400 font-medium text-center">All checks passed – excellent!</p>'}
                 <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 text-center">
-                  <a href="#${moduleHashes[m.name]}" class="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:underline font-medium">
-                    How ${m.name} is tested? <span class="text-xl">→</span>
-                  </a>
+<button onclick="openModuleDetails('${moduleHashes[m.name]}')" class="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:underline font-medium cursor-pointer">
+  How ${m.name} is tested? <span class="text-xl">→</span>
+</button>
                 </div>
               </div>
             </div>
