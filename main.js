@@ -26,21 +26,27 @@ function isIOS() {
   return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
 }
 
-// Create install button (always floating bottom-right, unless installed)
+// Create install button (append to fixed portal for true viewport positioning)
 function createInstallButton() {
-  if (isInStandaloneMode()) return; // Already installed → no button
+  if (isInStandaloneMode()) return;
+
+  const portal = document.getElementById('fixed-portal');
+  if (!portal) {
+    console.warn('Fixed portal not found - falling back to body');
+    return;
+  }
 
   const btn = document.createElement('button');
   btn.textContent = 'Install App';
   btn.id = 'pwa-install-btn';
 
-  // Inline styles for reliable fixed positioning (bypasses Tailwind JIT issues)
-  btn.style.position = 'fixed';
-  btn.style.bottom = '1.5rem';  // Matches Tailwind bottom-6
-  btn.style.right = '1.5rem';   // Matches right-6
-  btn.style.zIndex = '9999';    // High to float above footer/sidebar/header
+  // Inline critical positioning (reliable)
+  btn.style.position = 'absolute';  // Relative to portal (which is fixed full-viewport)
+  btn.style.bottom = '1.5rem';
+  btn.style.right = '1.5rem';
+  btn.style.pointerEvents = 'auto'; // Allow clicks on button
 
-  // Keep Tailwind classes for other styling (bg, padding, etc. — these apply fine)
+  // Tailwind classes for style only
   btn.className =
     'px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-white font-bold transition transform hover:scale-105 active:scale-95';
 
@@ -61,7 +67,7 @@ function createInstallButton() {
     }
   });
 
-  document.body.appendChild(btn);
+  portal.appendChild(btn);
 }
 
 // iOS instructions popup (unchanged)
