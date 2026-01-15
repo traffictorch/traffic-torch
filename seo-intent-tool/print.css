@@ -1,29 +1,20 @@
+/* Cover page – keep full viewport height only for first page */
   body::before {
     content: "Traffic Torch 🛡️\A\A SEO Intent Tool 🎯\A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
+    min-height: 100vh;
     page-break-after: always;
     background: linear-gradient(135deg, #10b981, #059669);
-    color: #4b5563; /* gray-600 */
+    color: #4b5563;
     font-family: system-ui, -apple-system, sans-serif;
     font-weight: 900;
     text-align: center;
     padding-top: 20vh;
     line-height: 1.4;
     white-space: pre;
-    font-size: 3rem;
-    /* Orange outline using 8-directional text-shadow (reliable cross-browser in print) */
+    font-size: 3.5rem;
     text-shadow:
-      -2px -2px 0 #fb923c,
-      2px -2px 0 #fb923c,
-      -2px 2px 0 #fb923c,
-      2px 2px 0 #fb923c,
-      -2px 0 0 #fb923c,
-      2px 0 0 #fb923c,
-      0 -2px 0 #fb923c,
-      0 2px 0 #fb923c;
-    /* Existing black drop shadow for depth */
-    text-shadow: /* combine with existing */
       -2px -2px 0 #fb923c,
       2px -2px 0 #fb923c,
       -2px 2px 0 #fb923c,
@@ -35,148 +26,60 @@
       0 10px 30px rgba(0,0,0,0.5);
   }
 
-  /* Hide form/progress/non-report elements */
+  /* Make sure report starts cleanly on next page */
+  #results-wrapper {
+    page-break-before: always;
+    margin-top: 0 !important;
+  }
+
+  /* Better control over cards/modules – prevent ugly breaks */
+  .score-card,
+  .fixes-panel,
+  .full-details,
+  section > div,
+  .grid,
+  .flex {
+    page-break-inside: avoid;
+    break-inside: avoid;              /* modern alias */
+  }
+
+  /* Force long text blocks to break cleanly if needed */
+  p, li, div {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Hide anything we don't want */
   #keyword-form,
   #analysis-progress,
   header,
   footer,
   nav,
-  .no-print {
+  aside,
+  .no-print,
+  button,
+  .hidden:not(.fixes-panel):not(.full-details):not(.expand-content),
+  details > summary {
     display: none !important;
   }
 
-  /* Force white background + black text on report pages */
-  body {
-    background: white !important;
-    color: black !important;
-  }
-
-  .bg-gray-900,
-  .dark\\:bg-gray-900,
-  .bg-white/10 {
-    background: white !important;
-  }
-
-  .text-gray-100,
-  .dark\\:text-gray-100,
-  .text-gray-200 {
-    color: black !important;
-  }
-
-  /* Start report on page 2 */
-  #results-wrapper {
-    page-break-before: always;
-  }
-}
-
-
-
-
-/* Save as PDF */
- @media print {
-  #audit-form, #analysis-progress, header, footer, nav, aside, .no-print {
-    display: none !important;
-  }
-  body {
-    background: white !important;
-    color: black !important;
-  }
-  .hidden {
-    display: block !important;
-  }
-  .bg-white, .dark\\:bg-gray-900 {
-    background: white !important;
-  }
-  .text-gray-900, .dark\\:text-gray-100 {
-    color: black !important;
-  }
-  .shadow-lg {
-    box-shadow: none !important;
-  }
-  .max-w-5xl {
-    max-width: none !important;
-  }
-} 
-
-
-
-  /* Hide general expanding accordions (e.g., "How SEO Intent Analyzer Works?") and checklists */
-  .max-w-4xl details,               /* the main "How it works" accordion */
-  .max-w-4xl .group,                /* any group accordions */
-  .checklist {                      /* all ✅/❌ checklists in modules */
-    display: none !important;
-  }
-
-  /* Force module-specific expanded panels to show in PDF (expanded by default for print) */
+  /* Show hidden fix content etc. */
   .fixes-panel,
   .full-details,
   .expand-content,
   .hidden.mt-4,
   .hidden.mt-6,
   .hidden.mt-8 {
-    display: block !important;      /* show the long fix text */
-    visibility: visible !important;
+    display: block !important;
   }
 
-  /* Hide the "Show Fixes" / toggle buttons in modules (no need in PDF since content is forced open) */
-  .fixes-toggle,
-  .more-details-toggle {
-    display: none !important;
+  /* Remove shadows, borders that look bad in print */
+  .shadow-lg,
+  .shadow-xl,
+  [class*="shadow"] {
+    box-shadow: none !important;
   }
-
-  /* Ensure module cards stay clean */
-  .score-card {
-    page-break-inside: avoid;
-  }
-  
-  /* Hide the entire SEO Intent Checklist section and its expandable in PDF */
-  #seo-ux-checklist,
-  #seo-ux-checklist details,
-  #seo-ux-checklist summary,
-  .max-w-6xl details {  /* fallback for the checklist accordion */
-    display: none !important;
-  }
-  
-  
-  
-  
-  /* ──────────────────────────────────────────────────────────────
-   PRINT / PDF OPTIMIZATION – Full page content + clean layout
-────────────────────────────────────────────────────────────── */
-
-@media print {
-  /* Reset everything to edge-to-edge */
-  html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    height: auto !important;          /* ← very important */
-    min-height: unset !important;
-    max-height: none !important;
-    width: 100% !important;
-    background: white !important;
-    color: black !important;
-    font-size: 11pt;                  /* better readability than tiny text */
-    line-height: 1.4;
-  }
-
-  /* Remove ALL container restrictions */
-  .container,
-  .max-w-5xl,
-  .max-w-6xl,
-  .max-w-7xl,
-  .mx-auto,
-  #results-wrapper,
-  main,
-  .prose,
-  section,
-  article,
-  div[style*="max-width"] {
-    max-width: none !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 1.5cm 1.2cm !important;   /* ← comfortable readable margins */
-    box-sizing: border-box;
-  }
+}
   
   
   
