@@ -57,15 +57,15 @@ document.addEventListener('DOMContentLoaded', () => {
         fill: '#f59e0b'
       };
     }
-    return {
-      grade: score >= 30 ? 'Needs Work',
-      emoji: '🔴',
-      color: '#dc2626',
-      border: 'border-red-600',
-      text: 'text-red-700 dark:text-red-300',
-      bgLight: 'bg-red-50 dark:bg-red-950/30',
-      fill: '#dc2626'
-    };
+return {
+  grade: score >= 30 ? 'Needs Work' : 'Needs Work',  // fixed: added missing :
+  emoji: '🔴',
+  color: '#dc2626',
+  border: 'border-red-600',
+  text: 'text-red-700 dark:text-red-300',
+  bgLight: 'bg-red-50 dark:bg-red-950/30',
+  fill: '#dc2626'
+};
   };
 
   const moduleHashes = {
