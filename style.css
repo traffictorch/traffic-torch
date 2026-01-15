@@ -174,4 +174,11 @@ details > div,
 @keyframes slideUp {
   from { transform: translateY(100%); }
   to   { transform: translateY(0); }
+  
+  #pwa-install-btn {
+  position: fixed !important;
+  bottom: 1.5rem !important;
+  right: 1.5rem !important;
+  z-index: 999999 !important;
+}
 }
