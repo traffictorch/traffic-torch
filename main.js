@@ -79,33 +79,37 @@ function showIOSInstallInstructions() {
   modal.id = 'ios-install-modal';
   modal.className = 'fixed inset-0 bg-black/70 flex items-end justify-center z-[2147483646] pb-10 transition-opacity duration-300';
 modal.innerHTML = `
-  <div class="bg-gray-900/95 backdrop-blur-xl rounded-3xl p-8 max-w-md w-full shadow-2xl border border-cyan-500/30 animate-slide-up">
+  <div class="bg-gray-900/95 backdrop-blur-xl rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-cyan-500/30 animate-slide-up">
     <div class="flex justify-between items-center mb-6">
       <h3 class="text-2xl font-bold text-white">Install Traffic Torch</h3>
       <button class="text-gray-400 hover:text-cyan-300 text-3xl leading-none transition-colors" onclick="this.closest('#ios-install-modal').remove()">×</button>
     </div>
     
-    <ol class="text-gray-300 space-y-6 text-lg">
-      <li class="flex items-start">
-        <span class="font-bold text-cyan-400 mr-3">1.</span>
-        Tap the <strong class="text-white">Share</strong> button 
-        <!-- REAL Apple Share Icon (arrow perfectly positioned) -->
-<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00eaff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" class="inline h-8 w-8 align-middle mx-2">
-  <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
-  <path d="M12 17V3"></path>
-  <path d="m8 8 4-4 4 4"></path>
-</svg>
+    <ol class="text-gray-300 space-y-6 text-lg leading-relaxed">
+      <li class="flex items-start gap-3">
+        <span class="font-bold text-cyan-400 shrink-0">1.</span>
+        <div>
+          Tap the <strong class="text-white">Share</strong> button
+          <!-- REAL Apple Share Icon -->
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00eaff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" class="inline h-8 w-8 align-middle mx-2">
+            <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
+            <path d="M12 17V3"></path>
+            <path d="m8 8 4-4 4 4"></path>
+          </svg>
+        </div>
       </li>
-      <li class="flex items-start">
-        <span class="font-bold text-cyan-400 mr-3">2.</span>
+      <li class="flex items-start gap-3">
+        <span class="font-bold text-cyan-400 shrink-0">2.</span>
         Scroll down and tap <strong class="text-white">Add to Home Screen</strong>
       </li>
-      <li class="flex items-start">
-        <span class="font-bold text-cyan-400 mr-3">3.</span>
+      <li class="flex items-start gap-3">
+        <span class="font-bold text-cyan-400 shrink-0">3.</span>
         Tap <strong class="text-white">Add</strong> in the top-right corner
       </li>
     </ol>
-
+    
+    <p class="mt-8 text-center text-sm text-gray-400">
+      PWA quick access app! 📱
     </p>
   </div>
 `;
