@@ -15,7 +15,6 @@ if (toggle) {
 }
 
 // 2. PWA Install 
-// ── PWA Install handling ────────────────────────────────────────────────
 let deferredPrompt = null;
 
 const isInStandaloneMode = () =>
@@ -27,8 +26,10 @@ function isIOS() {
   return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
 }
 
-// Create / manage install button
+// Create install button (always show on desktop/mobile unless installed)
 function createInstallButton() {
+  if (isInStandaloneMode()) return; // Already installed → no button
+
   const btn = document.createElement('button');
   btn.textContent = 'Install App';
   btn.id = 'pwa-install-btn';
@@ -39,32 +40,22 @@ function createInstallButton() {
     if (isIOS()) {
       showIOSInstallInstructions();
     } else if (deferredPrompt) {
+      // Chrome/Android → trigger native prompt
       deferredPrompt.prompt();
       deferredPrompt.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === 'accepted') {
           console.log('PWA install accepted');
         }
         deferredPrompt = null;
-        hideInstallButton();
+        btn.remove(); // Clean up after install attempt
       });
+    } else {
+      // Fallback for Firefox desktop or cases where event didn't fire
+      alert('Installation ready! Check your browser menu (usually in address bar) for Install option.');
     }
   });
 
-  // Initially hide, show only when ready
-  btn.style.display = 'none';
-
   document.body.appendChild(btn);
-  return btn;
-}
-
-// Helper to show/hide safely
-function showInstallButton() {
-  const btn = document.getElementById('pwa-install-btn');
-  if (btn) btn.style.display = 'block';
-}
-function hideInstallButton() {
-  const btn = document.getElementById('pwa-install-btn');
-  if (btn) btn.style.display = 'none';
 }
 
 // iOS instructions popup (unchanged)
@@ -103,27 +94,12 @@ function showIOSInstallInstructions() {
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  console.log('beforeinstallprompt fired → ready to install!');
-  if (!isInStandaloneMode()) {
-    showInstallButton();
-  }
+  console.log('beforeinstallprompt fired');
 });
 
-window.addEventListener('appinstalled', () => {
-  console.log('PWA was installed');
-  hideInstallButton();
-  deferredPrompt = null;
-});
-
-// Create button after load & force check after delay (helps with timing)
+// Create button immediately after load (no delay, matches working site)
 window.addEventListener('load', () => {
-  const btn = createInstallButton();
-  // Extra check after 35s for slow engagement heuristics
-  setTimeout(() => {
-    if (deferredPrompt && !isInStandaloneMode()) {
-      showInstallButton();
-    }
-  }, 35000);
+  createInstallButton();
 });
 
 // 3. Register minimal service worker for PWA readiness (detectable by audits, no caching)
