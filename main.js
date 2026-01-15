@@ -37,7 +37,7 @@ function createInstallButton() {
   btn.textContent = 'Install App';
 
   btn.className =
-    'fixed bottom-6 right-6 z-50 ' +
+	'fixed bottom-6 right-6 z-[9999] ' +  
     'px-7 py-3.5 md:px-8 md:py-4 ' +
     'bg-gradient-to-r from-orange-500 to-pink-600 ' +
     'text-white font-bold text-base md:text-lg ' +

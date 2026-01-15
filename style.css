@@ -221,4 +221,20 @@ details > div,
     padding: 0.5rem 1.25rem;
   }
 }
+
+
+
+/* Force PWA button on top – fixes Firefox stacking issues */
+#pwa-install-btn {
+  position: fixed !important;
+  inset: auto 24px 24px auto;     /* right & bottom – more reliable than separate props */
+  z-index: 9999 !important;
+  transform: translate3d(0,0,0);  /* creates fresh stacking context + forces GPU layer */
+  will-change: transform;
+}
+
+/* Extra safety for parents creating bad contexts */
+body {
+  transform: none !important;     /* kill accidental transforms on body/html */
+}
 }
