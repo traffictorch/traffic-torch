@@ -35,3 +35,148 @@
       0 10px 30px rgba(0,0,0,0.5);
   }
 
+  /* Hide form/progress/non-report elements */
+  #keyword-form,
+  #analysis-progress,
+  header,
+  footer,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Force white background + black text on report pages */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .bg-gray-900,
+  .dark\\:bg-gray-900,
+  .bg-white/10 {
+    background: white !important;
+  }
+
+  .text-gray-100,
+  .dark\\:text-gray-100,
+  .text-gray-200 {
+    color: black !important;
+  }
+
+  /* Start report on page 2 */
+  #results-wrapper {
+    page-break-before: always;
+  }
+}
+
+
+
+
+/* Save as PDF */
+ @media print {
+  #audit-form, #analysis-progress, header, footer, nav, aside, .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .hidden {
+    display: block !important;
+  }
+  .bg-white, .dark\\:bg-gray-900 {
+    background: white !important;
+  }
+  .text-gray-900, .dark\\:text-gray-100 {
+    color: black !important;
+  }
+  .shadow-lg {
+    box-shadow: none !important;
+  }
+  .max-w-5xl {
+    max-width: none !important;
+  }
+} 
+
+
+
+  /* Hide general expanding accordions (e.g., "How SEO Intent Analyzer Works?") and checklists */
+  .max-w-4xl details,               /* the main "How it works" accordion */
+  .max-w-4xl .group,                /* any group accordions */
+  .checklist {                      /* all ✅/❌ checklists in modules */
+    display: none !important;
+  }
+
+  /* Force module-specific expanded panels to show in PDF (expanded by default for print) */
+  .fixes-panel,
+  .full-details,
+  .expand-content,
+  .hidden.mt-4,
+  .hidden.mt-6,
+  .hidden.mt-8 {
+    display: block !important;      /* show the long fix text */
+    visibility: visible !important;
+  }
+
+  /* Hide the "Show Fixes" / toggle buttons in modules (no need in PDF since content is forced open) */
+  .fixes-toggle,
+  .more-details-toggle {
+    display: none !important;
+  }
+
+  /* Ensure module cards stay clean */
+  .score-card {
+    page-break-inside: avoid;
+  }
+  
+  /* Hide the entire SEO Intent Checklist section and its expandable in PDF */
+  #seo-ux-checklist,
+  #seo-ux-checklist details,
+  #seo-ux-checklist summary,
+  .max-w-6xl details {  /* fallback for the checklist accordion */
+    display: none !important;
+  }
+  
+  
+  
+  
+  /* ──────────────────────────────────────────────────────────────
+   PRINT / PDF OPTIMIZATION – Full page content + clean layout
+────────────────────────────────────────────────────────────── */
+
+@media print {
+  /* Reset everything to edge-to-edge */
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;          /* ← very important */
+    min-height: unset !important;
+    max-height: none !important;
+    width: 100% !important;
+    background: white !important;
+    color: black !important;
+    font-size: 11pt;                  /* better readability than tiny text */
+    line-height: 1.4;
+  }
+
+  /* Remove ALL container restrictions */
+  .container,
+  .max-w-5xl,
+  .max-w-6xl,
+  .max-w-7xl,
+  .mx-auto,
+  #results-wrapper,
+  main,
+  .prose,
+  section,
+  article,
+  div[style*="max-width"] {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 1.5cm 1.2cm !important;   /* ← comfortable readable margins */
+    box-sizing: border-box;
+  }
+  
+  
+  
