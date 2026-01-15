@@ -30,48 +30,52 @@ function isIOS() {
 function createInstallButton() {
   if (isInStandaloneMode()) return;
 
-  // Remove any existing button to avoid duplicates
-  const existing = document.getElementById('pwa-install-btn');
-  if (existing) existing.remove();
+  // Clean up any duplicate buttons
+  document.querySelectorAll('#pwa-install-btn').forEach(el => el.remove());
 
-  const btn = document.createElement('button');
-  btn.textContent = 'Install App';
-  btn.id = 'pwa-install-btn';
+  // Small delay to ensure DOM is fully rendered before appending
+  setTimeout(() => {
+    const btn = document.createElement('button');
+    btn.textContent = 'Install App';
+    btn.id = 'pwa-install-btn';
 
-  // Inline fixed with !important + high z-index + layer promotion (escapes Firefox stacking quirks)
-  btn.style.cssText = `
-    position: fixed !important;
-    bottom: 1.5rem !important;
-    right: 1.5rem !important;
-    z-index: 2147483647 !important;  /* max safe z-index */
-    pointer-events: auto !important;
-    will-change: transform, opacity;  /* forces GPU layer, fixes Firefox render bugs */
-    transform: translateZ(0);         /* extra stacking isolation */
-  `;
+    // Force isolated compositing layer + max overrides
+    btn.style.cssText = `
+      position: fixed !important;
+      bottom: 1.5rem !important;
+      right: 1.5rem !important;
+      z-index: 2147483647 !important;
+      pointer-events: auto !important;
+      will-change: transform, opacity !important;
+      transform: translate3d(0, 0, 0) !important;  /* Stronger than translateZ(0) */
+      backface-visibility: hidden !important;
+      isolation: isolate !important;
+      contain: paint !important;  /* Self-contain to avoid parent interference */
+    `;
 
-  // Tailwind classes for style (non-positioning)
-  btn.className +=
-    ' px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-white font-bold transition transform hover:scale-105 active:scale-95';
+    // Tailwind classes (visual only)
+    btn.className = 'px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-white font-bold transition transform hover:scale-105 active:scale-95';
 
-  btn.addEventListener('click', () => {
-    if (isIOS()) {
-      showIOSInstallInstructions();
-    } else if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('PWA install accepted');
-        }
-        deferredPrompt = null;
-        btn.remove();
-      });
-    } else {
-      alert('Installation ready! Check your browser menu (usually in address bar) for Install option.');
-    }
-  });
+    btn.addEventListener('click', () => {
+      if (isIOS()) {
+        showIOSInstallInstructions();
+      } else if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('PWA install accepted');
+          }
+          deferredPrompt = null;
+          btn.remove();
+        });
+      } else {
+        alert('Installation ready! Check your browser menu (usually in address bar) for Install option.');
+      }
+    });
 
-  // Append as last child of body (after all content, no trapping)
-  document.body.appendChild(btn);
+    // Append as absolute last child of body
+    document.body.appendChild(btn);
+  }, 100);  // 100ms delay is safe and effective
 }
 
 // iOS instructions popup (unchanged)

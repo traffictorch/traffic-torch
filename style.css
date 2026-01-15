@@ -175,10 +175,11 @@ details > div,
   from { transform: translateY(100%); }
   to   { transform: translateY(0); }
   
-  #pwa-install-btn {
+#pwa-install-btn {
   position: fixed !important;
-  bottom: 1.5rem !important;
-  right: 1.5rem !important;
-  z-index: 999999 !important;
+  inset-block-end: 1.5rem !important;
+  inset-inline-end: 1.5rem !important;
+  z-index: 2147483647 !important;
+  isolation: isolate !important;
 }
 }
