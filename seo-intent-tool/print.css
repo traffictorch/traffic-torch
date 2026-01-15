@@ -1,17 +1,10 @@
 @media print {
   /* ──────────────────────────────────────────────────────────────
-     STRONG WHITELIST: Hide everything by default for clean PDF
+     Your original proven cover – unchanged (this was working)
   ─────────────────────────────────────────────────────────────── */
-  html, body, body * {
-    visibility: hidden !important;
-    display: none !important; /* Removes from layout flow */
-  }
-
-  /* ── Restore ONLY what we want in the PDF ── */
   body::before {
-    visibility: visible !important;
-    display: block !important;
     content: "Traffic Torch 🛡️\A\A SEO Intent Tool 🎯\A\A Report:\A " attr(data-url);
+    display: block;
     height: 100vh;
     min-height: 100vh;
     page-break-after: always;
@@ -36,13 +29,13 @@
       0 10px 30px rgba(0,0,0,0.5);
   }
 
-  #results-wrapper,
-  #results-wrapper * {
-    visibility: visible !important;
-    display: block !important; /* Override any flex/grid hiding */
+  /* Report starts cleanly on next page */
+  #results-wrapper {
+    page-break-before: always;
+    margin-top: 0 !important;
   }
 
-  /* Ensure full-page layout inside results */
+  /* Full-width content inside results (keeps previous full-page fix) */
   #results-wrapper,
   #results-wrapper .container,
   #results-wrapper .max-w-*,
@@ -50,26 +43,11 @@
     max-width: none !important;
     width: 100% !important;
     margin: 0 !important;
-    padding: 1cm 1.2cm !important; /* Readable margins */
+    padding: 1cm 1.2cm !important;
     box-sizing: border-box;
   }
 
-  /* Report starts cleanly on next page */
-  #results-wrapper {
-    page-break-before: always;
-    margin-top: 0 !important;
-  }
-
-  /* General print safety */
-  body {
-    background: white !important;
-    color: black !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    font-size: 11pt; /* Better readability in PDF */
-  }
-
-  /* Prevent ugly page breaks inside cards/modules */
+  /* Prevent ugly page breaks */
   .score-card,
   .fixes-panel,
   .full-details,
@@ -80,20 +58,68 @@
     break-inside: avoid;
   }
 
-  /* Force long text to break nicely */
+  /* Better text breaking */
   p, li, div {
     orphans: 3;
     widows: 3;
   }
 
-  /* Remove shadows for clean print */
+  /* General print safety */
+  body {
+    background: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 11pt;
+  }
+
+  /* Remove shadows */
   .shadow-lg,
   .shadow-xl,
   [class*="shadow"] {
     box-shadow: none !important;
   }
 
-  /* Hide unwanted elements explicitly (extra safety) */
+  /* ──────────────────────────────────────────────────────────────
+     TARGETED HIDING – only the elements you requested to remove
+  ─────────────────────────────────────────────────────────────── */
+  /* How the SEO Intent Tool Works accordion */
+  .max-w-4xl.mx-auto.my-16 details.group,
+  /* Why Search Intent Matters accordion */
+  .max-w-4xl.mx-auto.my-16 details.group:nth-of-type(2),
+  /* SEO Intent Checklist section */
+  #seo-ux-checklist,
+  /* Deep Dive into SEO Intent Modules section */
+  section.py-20.bg-gray-50.dark\:bg-gray-900,
+  /* Tools grid (Keyword/Local/More tools) */
+  .tools-grid,
+  /* Author Bio & Credibility section */
+  section.max-w-5xl.mx-auto.my-24,
+  /* AddToAny share buttons (both instances) */
+  div[style*="display: flex; justify-content: center; margin: 30px 0;"],
+  .a2a_kit,
+  /* Breadcrumbs */
+  div.max-w-5xl.mx-auto.px-6.py-4.text-center,
+  /* Bottom banner infographic */
+  section.bottom-banner,
+  /* Any leftover large containers that might slip through */
+  .max-w-7xl.mx-auto {
+    display: none !important;
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     Keep showing fixes & expanded content
+  ─────────────────────────────────────────────────────────────── */
+  .fixes-panel,
+  .full-details,
+  .expand-content,
+  .hidden.mt-4,
+  .hidden.mt-6,
+  .hidden.mt-8 {
+    display: block !important;
+  }
+
+  /* Hide form/progress/header/footer/etc (your original) */
   #keyword-form,
   #analysis-progress,
   header,
@@ -102,28 +128,7 @@
   aside,
   .no-print,
   button,
-  .hidden:not(.fixes-panel):not(.full-details):not(.expand-content),
-  details > summary,
-  .max-w-4xl, .max-w-5xl, .max-w-6xl, .max-w-7xl,
-  .tools-grid, .bottom-banner, .a2a_kit {
+  details > summary {
     display: none !important;
-  }
-
-  /* Always show fix content, details panels, etc. */
-  .fixes-panel,
-  .full-details,
-  .expand-content,
-  .hidden.mt-4,
-  .hidden.mt-6,
-  .hidden.mt-8 {
-    display: block !important;
-    visibility: visible !important;
-  }
-
-  /* Optional: Make internal links show URLs in PDF */
-  a[href]:after {
-    content: " (" attr(href) ") ";
-    font-size: 0.85em;
-    color: #555;
   }
 }
