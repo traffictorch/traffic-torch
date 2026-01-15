@@ -26,31 +26,31 @@ function isIOS() {
   return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
 }
 
-// Create install button (always show on desktop/mobile unless installed)
+// Create install button (always floating bottom-right, unless installed)
 function createInstallButton() {
   if (isInStandaloneMode()) return; // Already installed → no button
 
   const btn = document.createElement('button');
   btn.textContent = 'Install App';
   btn.id = 'pwa-install-btn';
+  
+  // Explicit fixed positioning + high z-index to stay above everything
   btn.className =
-    'fixed bottom-6 right-6 z-50 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-white font-bold transition transform hover:scale-105 active:scale-95';
+    'fixed bottom-6 right-6 z-[9999] px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-white font-bold transition transform hover:scale-105 active:scale-95';
 
   btn.addEventListener('click', () => {
     if (isIOS()) {
       showIOSInstallInstructions();
     } else if (deferredPrompt) {
-      // Chrome/Android → trigger native prompt
       deferredPrompt.prompt();
       deferredPrompt.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === 'accepted') {
           console.log('PWA install accepted');
         }
         deferredPrompt = null;
-        btn.remove(); // Clean up after install attempt
+        btn.remove();
       });
     } else {
-      // Fallback for Firefox desktop or cases where event didn't fire
       alert('Installation ready! Check your browser menu (usually in address bar) for Install option.');
     }
   });
