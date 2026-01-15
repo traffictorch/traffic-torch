@@ -30,23 +30,21 @@ function isIOS() {
 function createInstallButton() {
   if (isInStandaloneMode()) return;
 
-  const portal = document.getElementById('fixed-portal');
-  if (!portal) {
-    console.warn('Fixed portal not found - falling back to body');
-    return;
-  }
+  // Use portal if exists (for stacking), else body
+  const container = document.getElementById('fixed-portal') || document.body;
 
   const btn = document.createElement('button');
   btn.textContent = 'Install App';
   btn.id = 'pwa-install-btn';
 
-  // Inline critical positioning (reliable)
-  btn.style.position = 'absolute';  // Relative to portal (which is fixed full-viewport)
+  // Use fixed directly on button (most reliable cross-browser)
+  btn.style.position = 'fixed';
   btn.style.bottom = '1.5rem';
   btn.style.right = '1.5rem';
-  btn.style.pointerEvents = 'auto'; // Allow clicks on button
+  btn.style.zIndex = '9999';
+  btn.style.pointerEvents = 'auto';
 
-  // Tailwind classes for style only
+  // Tailwind classes for visual style only
   btn.className =
     'px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full shadow-2xl text-white font-bold transition transform hover:scale-105 active:scale-95';
 
@@ -67,7 +65,7 @@ function createInstallButton() {
     }
   });
 
-  portal.appendChild(btn);
+  container.appendChild(btn);
 }
 
 // iOS instructions popup (unchanged)
