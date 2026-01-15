@@ -15,6 +15,7 @@ if (toggle) {
 }
 
 // 2. PWA Install 
+// ── PWA Install handling ────────────────────────────────────────────────
 let deferredPrompt = null;
 
 const isInStandaloneMode = () =>
@@ -49,24 +50,24 @@ function createInstallButton() {
     }
   });
 
-  // Hide if already installed / in standalone mode
-  if (isInStandaloneMode()) {
-    btn.style.display = 'none';
-  }
+  // Initially hide, show only when ready
+  btn.style.display = 'none';
 
   document.body.appendChild(btn);
   return btn;
 }
 
-// Helper to safely hide the button (used in multiple places)
+// Helper to show/hide safely
+function showInstallButton() {
+  const btn = document.getElementById('pwa-install-btn');
+  if (btn) btn.style.display = 'block';
+}
 function hideInstallButton() {
   const btn = document.getElementById('pwa-install-btn');
-  if (btn) {
-    btn.style.display = 'none';
-  }
+  if (btn) btn.style.display = 'none';
 }
 
-// iOS instructions popup (simple native-looking modal)
+// iOS instructions popup (unchanged)
 function showIOSInstallInstructions() {
   if (document.getElementById('ios-install-modal')) return;
 
@@ -93,8 +94,6 @@ function showIOSInstallInstructions() {
   `;
 
   document.body.appendChild(modal);
-
-  // Close on background click
   modal.addEventListener('click', (e) => {
     if (e.target === modal) modal.remove();
   });
@@ -104,6 +103,10 @@ function showIOSInstallInstructions() {
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
+  console.log('beforeinstallprompt fired → ready to install!');
+  if (!isInStandaloneMode()) {
+    showInstallButton();
+  }
 });
 
 window.addEventListener('appinstalled', () => {
@@ -112,9 +115,15 @@ window.addEventListener('appinstalled', () => {
   deferredPrompt = null;
 });
 
-// Create button after load (safe)
+// Create button after load & force check after delay (helps with timing)
 window.addEventListener('load', () => {
-  createInstallButton();
+  const btn = createInstallButton();
+  // Extra check after 35s for slow engagement heuristics
+  setTimeout(() => {
+    if (deferredPrompt && !isInStandaloneMode()) {
+      showInstallButton();
+    }
+  }, 35000);
 });
 
 // 3. Register minimal service worker for PWA readiness (detectable by audits, no caching)
