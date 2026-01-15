@@ -78,6 +78,9 @@ function showIOSInstallInstructions() {
   const modal = document.createElement('div');
   modal.id = 'ios-install-modal';
   modal.className = 
+  modal.style.display = 'flex';
+modal.style.alignItems = 'center';
+modal.style.justifyContent = 'center';
   'fixed inset-0 bg-black/80 flex items-center justify-center z-[2147483647] ' +
   'overflow-hidden transition-opacity duration-300 backdrop-blur-sm';
 modal.innerHTML = `
@@ -111,9 +114,28 @@ modal.innerHTML = `
     </p>
   </div>
 `;
-  document.body.appendChild(modal);
-  // Force center in viewport (critical on iOS Safari with long pages)
-modal.scrollIntoView({ behavior: 'instant', block: 'center', inline: 'center' });
+document.body.appendChild(modal);
+
+// Delay scrollIntoView slightly to let DOM settle (fixes iOS first-tap glitch)
+setTimeout(() => {
+  modal.scrollIntoView({ 
+    behavior: 'instant', 
+    block: 'center', 
+    inline: 'center' 
+  });
+  
+  // Extra safety: lock body scroll & force viewport focus
+  document.body.style.overflow = 'hidden';
+  modal.focus();
+}, 50);  // 50ms is enough for Safari DOM + layout to be ready
+
+// Cleanup when modal closes
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) {
+    modal.remove();
+    document.body.style.overflow = '';  // restore scroll
+  }
+});
   modal.addEventListener('click', (e) => {
     if (e.target === modal) modal.remove();
   });
