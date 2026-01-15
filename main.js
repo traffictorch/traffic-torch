@@ -90,7 +90,7 @@ function showIOSInstallInstructions() {
     <div class="bg-gray-900/95 backdrop-blur-xl rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-cyan-500/30 animate-slide-up">
       <div class="flex justify-between items-center mb-6">
         <h3 class="text-2xl font-bold text-white">Install Traffic Torch</h3>
-        <button class="text-gray-400 hover:text-cyan-300 text-3xl leading-none transition-colors" onclick="this.closest('#ios-install-modal').remove()">×</button>
+        <button class="text-gray-400 hover:text-cyan-300 text-3xl leading-none transition-colors" onclick="this.closest('#ios-install-modal').dispatchEvent(new Event('click'))">×</button>
       </div>
       
       <ol class="text-gray-300 space-y-6 text-lg leading-relaxed">
@@ -130,11 +130,21 @@ function showIOSInstallInstructions() {
   }, 80);
 
   const closeModal = (e) => {
-    if (e.target === modal) {
+    if (e.target === modal || e.target.closest('button')?.textContent === '×') {
       modal.remove();
+
+      const scrollY = window.pageYOffset;
       document.body.style.overflow = '';
       document.body.style.position = '';
       document.body.style.top = '';
+      document.body.style.height = '';
+      document.body.style.width = '';
+      document.documentElement.style.touchAction = '';
+
+      // Force scroll restoration on iOS
+      setTimeout(() => {
+        window.scrollTo(0, scrollY);
+      }, 0);
     }
   };
 
@@ -142,6 +152,11 @@ function showIOSInstallInstructions() {
 }
 
 // ── Event Listeners ─────────────────────────────────────────────────────
+if (!isInStandaloneMode() && !document.getElementById('pwa-install-btn')) {
+  console.log('Immediate fallback: creating PWA install button');
+  createInstallButton();
+}
+
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
@@ -149,16 +164,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
   createInstallButton();
 });
 
-// Immediate + load fallback – ensures button appears almost always
-if (!isInStandaloneMode() && !document.getElementById('pwa-install-btn')) {
-  console.log('Immediate fallback: creating PWA button');
-  createInstallButton();
-}
-
 window.addEventListener('load', () => {
   setTimeout(() => {
     if (!document.getElementById('pwa-install-btn')) {
-      console.log('Load fallback: creating PWA button');
+      console.log('Load fallback: creating PWA install button');
       createInstallButton();
     }
   }, 800);
@@ -176,15 +185,6 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
       .then(reg => console.log('Service Worker registered:', reg.scope))
       .catch(err => console.log('Service Worker registration failed:', err));
-  });
-}
-
-// 3. Register minimal service worker for PWA readiness (detectable by audits, no caching)
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('SW registered with scope:', reg.scope))
-      .catch(err => console.log('SW registration failed:', err));
   });
 }
 
