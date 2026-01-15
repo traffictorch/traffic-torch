@@ -1,7 +1,17 @@
-/* Cover page – keep full viewport height only for first page */
+@media print {
+  /* ──────────────────────────────────────────────────────────────
+     STRONG WHITELIST: Hide everything by default for clean PDF
+  ─────────────────────────────────────────────────────────────── */
+  html, body, body * {
+    visibility: hidden !important;
+    display: none !important; /* Removes from layout flow */
+  }
+
+  /* ── Restore ONLY what we want in the PDF ── */
   body::before {
+    visibility: visible !important;
+    display: block !important;
     content: "Traffic Torch 🛡️\A\A SEO Intent Tool 🎯\A\A Report:\A " attr(data-url);
-    display: block;
     height: 100vh;
     min-height: 100vh;
     page-break-after: always;
@@ -26,13 +36,40 @@
       0 10px 30px rgba(0,0,0,0.5);
   }
 
-  /* Make sure report starts cleanly on next page */
+  #results-wrapper,
+  #results-wrapper * {
+    visibility: visible !important;
+    display: block !important; /* Override any flex/grid hiding */
+  }
+
+  /* Ensure full-page layout inside results */
+  #results-wrapper,
+  #results-wrapper .container,
+  #results-wrapper .max-w-*,
+  #results-wrapper .mx-auto {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 1cm 1.2cm !important; /* Readable margins */
+    box-sizing: border-box;
+  }
+
+  /* Report starts cleanly on next page */
   #results-wrapper {
     page-break-before: always;
     margin-top: 0 !important;
   }
 
-  /* Better control over cards/modules – prevent ugly breaks */
+  /* General print safety */
+  body {
+    background: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 11pt; /* Better readability in PDF */
+  }
+
+  /* Prevent ugly page breaks inside cards/modules */
   .score-card,
   .fixes-panel,
   .full-details,
@@ -40,16 +77,23 @@
   .grid,
   .flex {
     page-break-inside: avoid;
-    break-inside: avoid;              /* modern alias */
+    break-inside: avoid;
   }
 
-  /* Force long text blocks to break cleanly if needed */
+  /* Force long text to break nicely */
   p, li, div {
     orphans: 3;
     widows: 3;
   }
 
-  /* Hide anything we don't want */
+  /* Remove shadows for clean print */
+  .shadow-lg,
+  .shadow-xl,
+  [class*="shadow"] {
+    box-shadow: none !important;
+  }
+
+  /* Hide unwanted elements explicitly (extra safety) */
   #keyword-form,
   #analysis-progress,
   header,
@@ -59,11 +103,13 @@
   .no-print,
   button,
   .hidden:not(.fixes-panel):not(.full-details):not(.expand-content),
-  details > summary {
+  details > summary,
+  .max-w-4xl, .max-w-5xl, .max-w-6xl, .max-w-7xl,
+  .tools-grid, .bottom-banner, .a2a_kit {
     display: none !important;
   }
 
-  /* Show hidden fix content etc. */
+  /* Always show fix content, details panels, etc. */
   .fixes-panel,
   .full-details,
   .expand-content,
@@ -71,15 +117,13 @@
   .hidden.mt-6,
   .hidden.mt-8 {
     display: block !important;
+    visibility: visible !important;
   }
 
-  /* Remove shadows, borders that look bad in print */
-  .shadow-lg,
-  .shadow-xl,
-  [class*="shadow"] {
-    box-shadow: none !important;
+  /* Optional: Make internal links show URLs in PDF */
+  a[href]:after {
+    content: " (" attr(href) ") ";
+    font-size: 0.85em;
+    color: #555;
   }
 }
-  
-  
-  
