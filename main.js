@@ -105,14 +105,20 @@ function showIOSInstallInstructions() {
             </svg>
           </div>
         </li>
-        <li class="flex items-start gap-3">
-          <span class="font-bold text-cyan-400 shrink-0">2.</span>
-          Scroll down and tap <strong class="text-white">Add to Home Screen</strong>
-        </li>
-        <li class="flex items-start gap-3">
-          <span class="font-bold text-cyan-400 shrink-0">3.</span>
-          Tap <strong class="text-white">Add</strong> in the top-right corner
-        </li>
+<li class="flex items-start gap-3">
+  <span class="font-bold text-cyan-400 shrink-0">2.</span>
+  <div class="flex items-center gap-3 flex-wrap">
+    Scroll down and tap Add to Home Screen
+    <!-- Add to Home Screen icon - same size/style as Share -->
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00eaff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" class="inline h-8 w-8 align-middle mx-1">
+      <!-- Square border -->
+      <rect x="3" y="3" width="18" height="18" rx="4" ry="4"></rect>
+      <!-- Plus sign in center -->
+      <path d="M12 7v10"></path>
+      <path d="M7 12h10"></path>
+    </svg>
+  </div>
+</li>
       </ol>
       
       <p class="mt-8 text-center text-sm text-gray-400">
