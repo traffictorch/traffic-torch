@@ -134,7 +134,7 @@ function updateScore(id, score) {
       const li = document.createElement('li');
       li.innerHTML = `
         <div class="p-5 bg-white/10 backdrop-blur rounded-2xl mb-4 border border-white/20">
-          <strong class="text-xl block mb-3">${i.issue}</strong>
+          <strong class="text-xl text-gray-800 dark:text-gray-200 block mb-3">${i.issue}</strong>
           <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
             <span class="font-bold text-green-400">How to fix:</span><br>
             ${i.fix}
