@@ -316,7 +316,24 @@ if (data.hasAriaLabels) accScore += 8;
 const contrastProxy = estimateColorContrastScore();
 accScore += (contrastProxy - 70) * 0.8; // dampened impact
 
-accScore = Math.max(30, Math.min(98, Math.round(accScore)));
+  accScore = Math.max(30, Math.min(98, Math.round(accScore)));
+
+  // === MISSING MOBILE SCORE CALCULATION ===
+  let mobileScore = data.hasViewport ? 88 : 42;
+  if (data.imageCount > 35) mobileScore -= 12;
+  mobileScore = Math.max(40, Math.min(98, mobileScore));
+
+  // === MISSING SPEED SCORE CALCULATION ===
+  let speedScore = 78;
+  if (data.imageCount > 40) speedScore -= 22;
+  if (data.imageCount > 70) speedScore -= 35;
+  if (data.externalLinkCount > 25) speedScore -= 15;
+  if (data.linkCount > 150) speedScore -= 12;
+  speedScore = Math.max(40, Math.min(94, speedScore));
+
+  // Now that ALL scores exist, calculate overall
+  const scores = [readability, navScore, accScore, mobileScore, speedScore];
+  const overall = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
 
   return {
     score: isNaN(overall) ? 60 : overall,
