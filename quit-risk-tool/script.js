@@ -60,15 +60,15 @@ document.addEventListener('DOMContentLoaded', () => {
       moduleHow: "Implement proper viewport meta tag. Use responsive design with flexible layouts. Ensure large touch targets. Add manifest and service worker for PWA features.",
       moduleWhy: "Most users browse on mobile devices. Poor mobile experience causes immediate bounces. PWA capabilities increase return visits and engagement."
     },
-    performance: {
-      factors: [
-        { name: "Asset Volume Flags", threshold: 82, shortDesc: "Total page weight (especially images) directly affects load time. Keep under ~1.5–2MB on mobile for best experience.", howToFix: "Compress images, use modern formats (WebP/AVIF), remove unused assets, enable GZIP/Brotli on server." },
-        { name: "Script Bloat Detection", threshold: 85, shortDesc: "Too many or large external scripts delay interactivity (TTI). Aim for minimal third-party code.", howToFix: "Remove unused JS, defer/async non-critical scripts, bundle/minify, use lightweight alternatives." },
-        { name: "Font Optimization", threshold: 82, shortDesc: "Excessive or unoptimized web fonts cause FOUT/FOIT. Use system fonts or limit to 2–3 families.", howToFix: "Limit font weights/variants, use font-display: swap, preload important fonts, prefer system stacks." },
-        { name: "Lazy Loading Media", threshold: 80, shortDesc: "Offscreen images/videos should lazy-load to reduce initial payload and improve LCP.", howToFix: "Add loading='lazy' to <img> and <iframe> below the fold. Use native lazy-loading or libraries for older browsers." },
-        { name: "Image Optimization", threshold: 82, shortDesc: "Unoptimized images are the #1 performance killer. Use next-gen formats and proper sizing.", howToFix: "Convert to WebP/AVIF, compress with tools like Squoosh, use srcset/sizes for responsive images." },
-        { name: "Script Minification & Deferral", threshold: 85, shortDesc: "Render-blocking JS/CSS delays First Contentful Paint. Defer/async and minify everything.", howToFix: "Add defer/async to scripts, minify CSS/JS, inline critical CSS, eliminate render-blocking resources." }
-      ],
+performance: {
+  factors: [
+    { name: "Asset Volume Flags", threshold: 82, shortDesc: "...", howToFix: "Compress all images aggressively (aim <100KB each), convert to WebP or AVIF, remove unused images, enable server compression (GZIP/Brotli), minify CSS/JS." },
+    { name: "Script Bloat Detection", threshold: 85, shortDesc: "...", howToFix: "Audit and remove unused JavaScript, defer or async non-critical scripts, bundle/minify all JS, replace heavy third-party scripts with lightweight alternatives." },
+    { name: "Font Optimization", threshold: 82, shortDesc: "...", howToFix: "Limit to 2-3 font families and essential weights, use font-display: swap to prevent invisible text, preload critical fonts, prefer system fonts where possible." },
+    { name: "Lazy Loading Media", threshold: 80, shortDesc: "...", howToFix: "Add native loading='lazy' attribute to all offscreen <img> and <iframe> elements (below the fold). For videos use preload='none' or lazy-loading libraries if needed." },
+    { name: "Image Optimization", threshold: 82, shortDesc: "...", howToFix: "Convert images to next-gen formats (WebP or AVIF), use proper responsive sizing with srcset/sizes, compress files without visible quality loss (tools: Squoosh, ImageOptim)." },
+    { name: "Script Minification & Deferral", threshold: 85, shortDesc: "...", howToFix: "Minify all JavaScript and CSS files, add defer or async attributes to non-critical <script> tags, inline critical CSS above the fold, eliminate render-blocking resources." }
+  ],
       moduleWhat: "Performance Optimization measures loading speed and resource efficiency. It flags heavy assets, script bloat, font issues, lazy loading, and image optimization. Speed is critical for user satisfaction and rankings.",
       moduleHow: "Compress and optimize all assets. Lazy load offscreen content. Minify and defer scripts. Use modern image formats.",
       moduleWhy: "Fast pages keep users and reduce bounce rates. Speed is a direct ranking factor. Users perceive faster sites as higher quality."
@@ -505,13 +505,18 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>`;
 
-    const fixesPanelHTML = failedCount > 0
-      ? failedOnlyHTML + `<p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">
-          <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}';">
-            Learn more about ${moduleName}?
-          </button>
-        </p>`
-      : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
+const fixesPanelHTML = failedCount > 0
+  ? `
+    <div class="space-y-6">
+      ${failedOnlyHTML}
+    </div>
+    <p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">
+      <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}';">
+        Learn more about ${moduleName}?
+      </button>
+    </p>
+  `
+  : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
 
     return `
       <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
@@ -544,9 +549,9 @@ document.addEventListener('DOMContentLoaded', () => {
             Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
           </button>
         </div>
-        <div class="fixes-panel hidden mt-8 text-left">
-          ${fixesPanelHTML}
-        </div>
+<div class="fixes-panel hidden mt-8 text-left px-4 md:px-0">
+  ${fixesPanelHTML}
+</div>
       </div>`;
   }
 
