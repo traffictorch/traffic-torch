@@ -29,10 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     navigation: {
       factors: [
-        { name: "Link Density Evaluation", threshold: 70, shortDesc: "Too many links create choice overload and dilute focus. Optimal density balances navigation with clarity. Excessive links confuse users and weaken topical signals.", howToFix: "Audit and remove redundant or low-value links. Focus on quality over quantity. Keep primary navigation focused on key user goals." },
-        { name: "Menu Structure Clarity", threshold: 75, shortDesc: "Clear, logical menus help users find information quickly. Simple hierarchy reduces frustration. Poor structure leads to higher bounce rates.", howToFix: "Limit top-level items to 5-7. Use descriptive labels users understand. Organize by user needs, not internal structure." },
-        { name: "Internal Linking Balance", threshold: 70, shortDesc: "Balanced internal links guide users deeper into your site. They spread authority and improve crawlability. Isolated pages get less traffic and ranking power.", howToFix: "Add contextual links from body content to related pages. Link important pages from high-traffic content. Use descriptive anchor text naturally." },
-        { name: "CTA Prominence & Visibility", threshold: 80, shortDesc: "Clear calls-to-action guide users toward goals. Prominent placement reduces friction. Hidden CTAs mean missed conversions.", howToFix: "Place primary CTAs above the fold with contrasting colors. Use action-oriented text and sufficient size. Add secondary CTAs further down." }
+        { name: "Link Density Evaluation", threshold: 78, shortDesc: "Too many links create choice overload and dilute focus. Optimal density balances navigation with clarity. Excessive links confuse users and weaken topical signals.", howToFix: "Audit and remove redundant or low-value links. Focus on quality over quantity. Keep primary navigation focused on key user goals." },
+        { name: "Menu Structure Clarity", threshold: 80, shortDesc: "Clear, logical menus help users find information quickly. Simple hierarchy reduces frustration. Poor structure leads to higher bounce rates.", howToFix: "Limit top-level items to 5-7. Use descriptive labels users understand. Organize by user needs, not internal structure." },
+        { name: "Internal Linking Balance", threshold: 72, shortDesc: "Balanced internal links guide users deeper into your site. They spread authority and improve crawlability. Isolated pages get less traffic and ranking power.", howToFix: "Add contextual links from body content to related pages. Link important pages from high-traffic content. Use descriptive anchor text naturally." },
+        { name: "CTA Prominence & Visibility", threshold: 82, shortDesc: "Clear calls-to-action guide users toward goals. Prominent placement reduces friction. Hidden CTAs mean missed conversions.", howToFix: "Place primary CTAs above the fold with contrasting colors. Use action-oriented text and sufficient size. Add secondary CTAs further down." }
       ],
       moduleWhat: "Navigation Clarity evaluates how easily users can move through your site. It examines link density, menu organization, internal linking patterns, and call-to-action visibility. Strong navigation reduces frustration and improves flow.",
       moduleHow: "Keep menus simple with clear labels. Use contextual links naturally in content. Make primary actions stand out visually. Guide users logically toward their goals.",
@@ -159,7 +159,11 @@ textElements.forEach(el => {
       headingCount: headings.length,
       hasViewport: hasViewportMeta(doc),
       hasMain: hasSemanticMain(doc),
-      hasArticleOrSection: hasSemanticArticleOrSection(doc)
+      hasArticleOrSection: hasSemanticArticleOrSection(doc),
+      mainNav: doc.querySelector('nav, [role="navigation"], header nav, .main-menu, #main-menu, .navbar, .navigation'),
+hasDropdowns: !!doc.querySelector('nav li ul, .dropdown, [aria-haspopup="true"]'),
+topLevelItems: doc.querySelectorAll('nav > ul > li, .main-menu > li, header nav > ul > li').length || 0,
+hasBreadcrumb: !!doc.querySelector('[aria-label*="breadcrumb"], .breadcrumb, nav[aria-label="breadcrumb"]')
     };
   }
 
@@ -185,12 +189,46 @@ if (data.wordCount > 80) {
   readability = Math.round((easeScore + gradeScore + sentenceScore + paraDensityScore + scannability) / 5);
 }
 
-    let navScore = 85;
-    if (data.linkCount > 180) navScore -= 35;
-    else if (data.linkCount > 120) navScore -= 18;
-    else if (data.linkCount < 12) navScore -= 25;
-    if (data.externalLinkCount > data.linkCount * 0.45) navScore -= 15;
-    navScore = Math.max(40, Math.min(98, navScore));
+let navScore = 85;
+
+// More realistic link density: total links / visible text blocks + body words
+const bodyTextLength = data.wordCount > 0 ? data.wordCount : 100;
+const linkDensity = (data.linkCount / Math.max(1, bodyTextLength)) * 100; // links per 100 words
+// Menu Structure Clarity bonus/penalty
+if (data.mainNav) navScore += 12;
+if (data.hasDropdowns) navScore += 8;           // modern menus often use dropdowns sensibly
+if (data.topLevelItems > 9) navScore -= 18;     // too many top items = cognitive overload
+else if (data.topLevelItems > 7) navScore -= 8;
+else if (data.topLevelItems <= 5 && data.topLevelItems > 0) navScore += 10;
+
+if (data.hasBreadcrumb && data.wordCount > 400) navScore += 9;  // helpful on deep content sites
+if (linkDensity > 12) navScore -= Math.min(45, (linkDensity - 8) * 6);     // harsh above ~12 links/100 words
+else if (linkDensity > 8) navScore -= (linkDensity - 8) * 4;
+else if (linkDensity < 2 && data.wordCount > 300) navScore -= 18;          // too few links on content-heavy page = bad
+
+// External link ratio penalty (too promotional/spammy)
+const externalRatio = data.externalLinkCount / Math.max(1, data.linkCount);
+if (externalRatio > 0.45) navScore -= 22;
+else if (externalRatio > 0.30) navScore -= 12;
+
+// Internal linking balance – reward contextual links, penalize orphan-ish pages
+const contextualLinkEstimate = data.linkCount - data.topLevelItems * 2; // rough guess: subtract probable nav/footer
+if (contextualLinkEstimate < 3 && data.wordCount > 600) navScore -= 20;      // very few body links on long page = bad
+else if (contextualLinkEstimate > 0) navScore += Math.min(15, contextualLinkEstimate * 1.8);
+// Very basic CTA detection proxies
+const potentialCTAs = doc.querySelectorAll('a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="trial"], a[href*="buy"], a[href*="get"], button, [role="button"], .btn, .button, [class*="cta"], [id*="cta"]');
+const bigButtons = Array.from(potentialCTAs).filter(el => {
+  const style = window.getComputedStyle ? window.getComputedStyle(el) : {};
+  const height = parseInt(style.height || '0', 10);
+  const width = parseInt(style.width || '0', 10);
+  const fontSize = parseInt(style.fontSize || '0', 10);
+  return (height >= 44 && width >= 100) || fontSize >= 16;
+}).length;
+
+if (bigButtons >= 2) navScore += 14;
+else if (bigButtons === 1) navScore += 7;
+else if (data.wordCount > 400 && bigButtons === 0) navScore -= 16; // long page without any prominent action = poor
+navScore = Math.max(35, Math.min(98, Math.round(navScore)));
 
     let accScore = 65;
     if (data.imageCount > 0) {
