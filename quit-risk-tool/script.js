@@ -193,10 +193,10 @@ function getUXContent(doc) {
     hasDropdowns: !!doc.querySelector('nav li ul, .dropdown, [aria-haspopup="true"]'),
     topLevelItems: doc.querySelectorAll('nav > ul > li, .main-menu > li, header nav > ul > li').length || 0,
     hasBreadcrumb: !!doc.querySelector('[aria-label*="breadcrumb"], .breadcrumb, nav[aria-label="breadcrumb"]'),
-    // New accessibility helpers (moved here to avoid doc scope error)
+    // Accessibility helpers
     hasLandmarks: !!doc.querySelector('header, footer, aside, [role="banner"], [role="contentinfo"], [role="complementary"]'),
-    hasAriaLabels: !!doc.querySelector('[aria-label], [aria-labelledby]')
-        // Mobile & PWA signals
+    hasAriaLabels: !!doc.querySelector('[aria-label], [aria-labelledby]'),
+    // Mobile & PWA signals (comma fixed here)
     viewportContent: (() => {
       const meta = doc.querySelector('meta[name="viewport"]');
       return meta ? meta.getAttribute('content') || '' : '';
@@ -321,7 +321,7 @@ accScore += (contrastProxy - 70) * 0.8; // dampened impact
   let mobileScore = 50; // neutral base
 
   // Viewport Configuration (most important)
-  const vp = data.viewportContent.toLowerCase();
+    const vp = (data.viewportContent || '').toLowerCase();
   if (vp.includes('width=device-width') && vp.includes('initial-scale=1')) {
     mobileScore += 35;
     if (!vp.includes('maximum-scale') && !vp.includes('user-scalable=no')) {
