@@ -62,12 +62,42 @@ const factorDefinitions = {
   },
   performance: {
     factors: [
-      { name: "Asset Volume Flags", threshold: 80, shortDesc: "Large total asset size slows loading dramatically. Every kilobyte counts on mobile networks. Lean pages load faster across connections.", howToFix: "Compress images aggressively. Remove unused resources. Minify CSS and JavaScript." },
-      { name: "Script Bloat Detection", threshold: 85, shortDesc: "Excessive JavaScript delays interactivity. Unused code wastes bandwidth. Lean scripts enable faster rendering.", howToFix: "Remove unused JS completely. Defer non-critical scripts. Use lightweight alternatives." },
-      { name: "Font Optimization", threshold: 85, shortDesc: "Too many web fonts delay text display. Large font files hurt performance. Optimized fonts balance design with speed.", howToFix: "Limit to essential weights. Use font-display: swap. Prefer system fonts when possible." },
-      { name: "Lazy Loading Media", threshold: 80, shortDesc: "Offscreen images and videos should load only when needed. Lazy loading reduces initial payload. Critical content loads first.", howToFix: "Add loading='lazy' to below-fold images and iframes. Implement for videos too." },
-      { name: "Image Optimization", threshold: 80, shortDesc: "Images are usually the largest assets. Next-gen formats reduce size dramatically. Proper sizing prevents over-delivery.", howToFix: "Convert to WebP/AVIF. Compress appropriately. Serve device-sized images." },
-      { name: "Script Minification & Deferral", threshold: 85, shortDesc: "Render-blocking resources delay visible content. Minified and deferred scripts load faster. Async loading improves perceived speed.", howToFix: "Minify all code. Defer non-critical scripts. Async third-party resources." }
+      { 
+        name: "Asset Volume Flags", 
+        threshold: 82, 
+        shortDesc: "Total page weight (especially images) directly affects load time. Keep under ~1.5–2MB on mobile for best experience.", 
+        howToFix: "Compress images, use modern formats (WebP/AVIF), remove unused assets, enable GZIP/Brotli on server." 
+      },
+      { 
+        name: "Script Bloat Detection", 
+        threshold: 85, 
+        shortDesc: "Too many or large external scripts delay interactivity (TTI). Aim for minimal third-party code.", 
+        howToFix: "Remove unused JS, defer/async non-critical scripts, bundle/minify, use lightweight alternatives." 
+      },
+      { 
+        name: "Font Optimization", 
+        threshold: 82, 
+        shortDesc: "Excessive or unoptimized web fonts cause FOUT/FOIT. Use system fonts or limit to 2–3 families.", 
+        howToFix: "Limit font weights/variants, use font-display: swap, preload important fonts, prefer system stacks." 
+      },
+      { 
+        name: "Lazy Loading Media", 
+        threshold: 80, 
+        shortDesc: "Offscreen images/videos should lazy-load to reduce initial payload and improve LCP.", 
+        howToFix: "Add loading='lazy' to <img> and <iframe> below the fold. Use native lazy-loading or libraries for older browsers." 
+      },
+      { 
+        name: "Image Optimization", 
+        threshold: 82, 
+        shortDesc: "Unoptimized images are the #1 performance killer. Use next-gen formats and proper sizing.", 
+        howToFix: "Convert to WebP/AVIF, compress with tools like Squoosh, use srcset/sizes for responsive images." 
+      },
+      { 
+        name: "Script Minification & Deferral", 
+        threshold: 85, 
+        shortDesc: "Render-blocking JS/CSS delays First Contentful Paint. Defer/async and minify everything.", 
+        howToFix: "Add defer/async to scripts, minify CSS/JS, inline critical CSS, eliminate render-blocking resources." 
+      }
     ],
     moduleWhat: "Performance Optimization measures loading speed and resource efficiency. It flags heavy assets, script bloat, font issues, lazy loading, and image optimization. Speed is critical for user satisfaction and rankings.",
     moduleHow: "Compress and optimize all assets. Lazy load offscreen content. Minify and defer scripts. Use modern image formats.",
@@ -215,6 +245,13 @@ function getUXContent(doc) {
     hasServiceWorkerHint: doc.body.innerHTML.includes('serviceWorker') || doc.body.innerHTML.includes('register('),
     hasAppleTouchIcon: !!doc.querySelector('link[rel*="apple-touch-icon"]'),
     isHttps: window.location.protocol === 'https:'
+        // Performance proxies
+    hasLazyLoading: !!doc.querySelector('img[loading="lazy"], iframe[loading="lazy"]'),
+    externalScripts: doc.querySelectorAll('script[src^="http"]').length,
+    hasRenderBlocking: doc.querySelectorAll('script:not([defer]):not([async]), link[rel="stylesheet"]:not([media])').length,
+    fontCount: doc.querySelectorAll('link[href*="fonts.googleapis.com"], link[href*="fonts.gstatic.com"], @font-face').length || 0,
+    hasFontDisplaySwap: doc.body.innerHTML.includes('font-display: swap') || doc.body.innerHTML.includes('font-display:swap'),
+    hasWebpOrAvif: !!doc.querySelector('img[src$=".webp"], img[src$=".avif"], source[type="image/webp"], source[type="image/avif"]')
   };
 }
 
@@ -352,12 +389,38 @@ accScore += (contrastProxy - 70) * 0.8; // dampened impact
   mobileScore = Math.max(25, Math.min(98, Math.round(mobileScore)));
 
   // === MISSING SPEED SCORE CALCULATION ===
-  let speedScore = 78;
-  if (data.imageCount > 40) speedScore -= 22;
-  if (data.imageCount > 70) speedScore -= 35;
-  if (data.externalLinkCount > 25) speedScore -= 15;
-  if (data.linkCount > 150) speedScore -= 12;
-  speedScore = Math.max(40, Math.min(94, speedScore));
+  let speedScore = 65; // realistic neutral starting point (most sites are mediocre)
+
+  // Asset Volume Flags (image-heavy pages penalized more aggressively)
+  if (data.imageCount > 60) speedScore -= 28;
+  else if (data.imageCount > 35) speedScore -= 16;
+  else if (data.imageCount <= 10) speedScore += 12; // light pages bonus
+
+  // Script Bloat Detection
+  if (data.externalScripts > 15) speedScore -= 25;
+  else if (data.externalScripts > 8) speedScore -= 14;
+  else if (data.externalScripts <= 3) speedScore += 10;
+
+  if (data.hasRenderBlocking > 5) speedScore -= 18;
+  else if (data.hasRenderBlocking > 2) speedScore -= 9;
+
+  // Font Optimization
+  if (data.fontCount > 4) speedScore -= 16;
+  else if (data.fontCount > 2) speedScore -= 7;
+  if (data.hasFontDisplaySwap) speedScore += 12;
+
+  // Lazy Loading Media
+  if (data.hasLazyLoading && data.imageCount > 10) speedScore += 18;
+  else if (data.imageCount > 15) speedScore -= 20; // no lazy on image-heavy page = bad
+
+  // Image Optimization (format proxy)
+  if (data.hasWebpOrAvif) speedScore += 15;
+  else if (data.imageCount > 20) speedScore -= 12; // likely old formats
+
+  // General link/external resource penalty (rough render-blocking proxy)
+  if (data.externalLinkCount > 30) speedScore -= 14;
+
+  speedScore = Math.max(30, Math.min(98, Math.round(speedScore)));
 
   // Now that ALL scores exist, calculate overall
   const scores = [readability, navScore, accScore, mobileScore, speedScore];
