@@ -223,15 +223,13 @@ function getUXContent(doc) {
     hasDropdowns: !!doc.querySelector('nav li ul, .dropdown, [aria-haspopup="true"]'),
     topLevelItems: doc.querySelectorAll('nav > ul > li, .main-menu > li, header nav > ul > li').length || 0,
     hasBreadcrumb: !!doc.querySelector('[aria-label*="breadcrumb"], .breadcrumb, nav[aria-label="breadcrumb"]'),
-    // Accessibility helpers
     hasLandmarks: !!doc.querySelector('header, footer, aside, [role="banner"], [role="contentinfo"], [role="complementary"]'),
-    hasAriaLabels: !!doc.querySelector('[aria-label], [aria-labelledby]'),   // ← added missing comma here!
-    // Mobile & PWA signals
+    hasAriaLabels: !!doc.querySelector('[aria-label], [aria-labelledby]'),
     viewportContent: (() => {
       const meta = doc.querySelector('meta[name="viewport"]');
       return meta ? meta.getAttribute('content') || '' : '';
     })(),
-    hasMediaQueries: !!doc.querySelector('style, link[rel="stylesheet"][href*="css"]'), // rough proxy
+    hasMediaQueries: !!doc.querySelector('style, link[rel="stylesheet"][href*="css"]'),
     hasTouchFriendly: (() => {
       const links = doc.querySelectorAll('a, button, [role="button"]');
       let smallCount = 0;
@@ -239,19 +237,19 @@ function getUXContent(doc) {
         const rect = el.getBoundingClientRect?.() || { width: 0, height: 0 };
         if (rect.width < 44 || rect.height < 44) smallCount++;
       });
-      return smallCount < 5; // very rough – assumes small page
+      return smallCount < 5;
     })(),
     hasManifest: !!doc.querySelector('link[rel="manifest"]'),
     hasServiceWorkerHint: doc.body.innerHTML.includes('serviceWorker') || doc.body.innerHTML.includes('register('),
     hasAppleTouchIcon: !!doc.querySelector('link[rel*="apple-touch-icon"]'),
-    isHttps: window.location.protocol === 'https:'
-        // Performance proxies
+    isHttps: window.location.protocol === 'https:',
+    // Performance proxies
     hasLazyLoading: !!doc.querySelector('img[loading="lazy"], iframe[loading="lazy"]'),
     externalScripts: doc.querySelectorAll('script[src^="http"]').length,
     hasRenderBlocking: doc.querySelectorAll('script:not([defer]):not([async]), link[rel="stylesheet"]:not([media])').length,
     fontCount: doc.querySelectorAll('link[href*="fonts.googleapis.com"], link[href*="fonts.gstatic.com"], @font-face').length || 0,
     hasFontDisplaySwap: doc.body.innerHTML.includes('font-display: swap') || doc.body.innerHTML.includes('font-display:swap'),
-    hasWebpOrAvif: !!doc.querySelector('img[src$=".webp"], img[src$=".avif"], source[type="image/webp"], source[type="image/avif"]'),
+    hasWebpOrAvif: !!doc.querySelector('img[src$=".webp"], img[src$=".avif"], source[type="image/webp"], source[type="image/avif"]')
   };
 }
 
