@@ -595,14 +595,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const uxData = getUXContent(doc);
         const ux = analyzeUX(uxData);
 
-        // Calculate potentialCTAs here so it's available for factorDetails
+        // Calculate potentialCTAs early so it's available for factorDetails
         const potentialCTAs = document.querySelectorAll(
           'a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="trial"], a[href*="buy"], ' +
           'a[href*="get"], a[href*="start"], button, [role="button"], .btn, .button, ' +
           '[class*="cta"], [id*="cta"], [class*="button"], [class*="CallToAction"]'
         ).length;
 
-        // Now define factorDetails in the correct scope
+        // Define factorDetails in the correct scope (performAnalysis)
         const factorDetails = {
           readability: {
             fleschEase: Math.round(
