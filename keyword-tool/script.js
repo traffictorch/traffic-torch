@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
     if (score >= 50) return { grade: 'Average', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
     if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
-    return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+    return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
   };
 
   const moduleHashes = {
