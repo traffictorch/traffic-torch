@@ -71,10 +71,30 @@ accessibility: {
 },
 mobile: {
   factors: [
-    { name: "Viewport Configuration", threshold: 90, shortDesc: "Viewport meta tag controls mobile layout scaling. Missing or incorrect tag causes zoomed-out desktop view. Proper setting enables responsive behavior.", howToFix: "Add exact meta tag: width=device-width, initial-scale=1. Avoid restricting zoom. Test on real devices." },
-    { name: "Responsive Breakpoints", threshold: 85, shortDesc: "Responsive design adapts layout to screen size. Poor breakpoints cause horizontal scrolling. Content should reflow naturally on all devices.", howToFix: "Use relative units and flexible grids. Test at common breakpoints. Adopt mobile-first approach." },
-    { name: "Touch Target Size", threshold: 85, shortDesc: "Small tap targets cause mis-taps on mobile. Minimum recommended size is 44×44 pixels. Adequate spacing prevents errors.", howToFix: "Add padding around links and buttons. Ensure at least 44px targets. Test tapping on actual phones." },
-    { name: "PWA Readiness Indicators", threshold: 80, shortDesc: "PWA features enable install prompts and offline capability. Manifest and service worker are required. They improve engagement significantly.", howToFix: "Add valid manifest.json with icons and name. Implement basic service worker. Ensure HTTPS." }
+    { 
+      name: "Viewport Configuration", 
+      threshold: 92, 
+      shortDesc: "The viewport meta tag is the foundation of mobile usability. It must use width=device-width and initial-scale=1 without disabling zoom.", 
+      howToFix: "Add or correct: <meta name='viewport' content='width=device-width, initial-scale=1'>. Never use maximum-scale=1.0 or user-scalable=no." 
+    },
+    { 
+      name: "Responsive Breakpoints", 
+      threshold: 78, 
+      shortDesc: "Site should adapt layout smoothly at tablet, mobile, and small screen sizes using media queries and flexible units.", 
+      howToFix: "Use CSS media queries, relative units (%, vw, rem), flexible grids (flexbox/grid). Test on real devices at 320–480px, 768px, 1024px." 
+    },
+    { 
+      name: "Touch Target Size", 
+      threshold: 75, 
+      shortDesc: "Buttons and links need minimum 44×44px tap area with padding to prevent mis-taps on touchscreens.", 
+      howToFix: "Add padding/margin to interactive elements. Use min-height/width or touch-action CSS. Test with mobile device tap accuracy." 
+    },
+    { 
+      name: "PWA Readiness Indicators", 
+      threshold: 70, 
+      shortDesc: "Progressive Web App signals (manifest, service worker, HTTPS, icons) enable installability and better mobile engagement.", 
+      howToFix: "Add manifest.json with name, icons, start_url. Register service worker. Use HTTPS. Include apple-touch-icon for iOS." 
+    }
   ],
   moduleWhat: "Mobile & PWA Readiness checks how well your page works on phones and tablets. It evaluates viewport, responsiveness, touch targets, and progressive web app signals. Mobile traffic dominates modern web usage.",
   moduleHow: "Implement proper viewport meta tag. Use responsive design with flexible layouts. Ensure large touch targets. Add manifest and service worker for PWA features.",
@@ -216,6 +236,25 @@ function getUXContent(doc) {
     // New accessibility helpers (moved here to avoid doc scope error)
     hasLandmarks: !!doc.querySelector('header, footer, aside, [role="banner"], [role="contentinfo"], [role="complementary"]'),
     hasAriaLabels: !!doc.querySelector('[aria-label], [aria-labelledby]')
+        // Mobile & PWA signals
+    viewportContent: (() => {
+      const meta = doc.querySelector('meta[name="viewport"]');
+      return meta ? meta.getAttribute('content') || '' : '';
+    })(),
+    hasMediaQueries: !!doc.querySelector('style, link[rel="stylesheet"][href*="css"]'), // rough proxy
+    hasTouchFriendly: (() => {
+      const links = doc.querySelectorAll('a, button, [role="button"]');
+      let smallCount = 0;
+      links.forEach(el => {
+        const rect = el.getBoundingClientRect?.() || { width: 0, height: 0 };
+        if (rect.width < 44 || rect.height < 44) smallCount++;
+      });
+      return smallCount < 5; // very rough – assumes small page
+    })(),
+    hasManifest: !!doc.querySelector('link[rel="manifest"]'),
+    hasServiceWorkerHint: doc.body.innerHTML.includes('serviceWorker') || doc.body.innerHTML.includes('register('),
+    hasAppleTouchIcon: !!doc.querySelector('link[rel*="apple-touch-icon"]'),
+    isHttps: window.location.protocol === 'https:'
   };
 }
 
@@ -319,9 +358,38 @@ accScore += (contrastProxy - 70) * 0.8; // dampened impact
   accScore = Math.max(30, Math.min(98, Math.round(accScore)));
 
   // === MISSING MOBILE SCORE CALCULATION ===
-  let mobileScore = data.hasViewport ? 88 : 42;
-  if (data.imageCount > 35) mobileScore -= 12;
-  mobileScore = Math.max(40, Math.min(98, mobileScore));
+  let mobileScore = 50; // neutral base
+
+  // Viewport Configuration (most important)
+  const vp = data.viewportContent.toLowerCase();
+  if (vp.includes('width=device-width') && vp.includes('initial-scale=1')) {
+    mobileScore += 35;
+    if (!vp.includes('maximum-scale') && !vp.includes('user-scalable=no')) {
+      mobileScore += 10; // bonus for full zoom allowed
+    }
+  } else if (vp.includes('width=device-width')) {
+    mobileScore += 18; // partial credit
+  } else {
+    mobileScore -= 35; // critical fail
+  }
+
+  // Responsive Breakpoints (rough proxies)
+  if (data.hasMediaQueries) mobileScore += 18;
+  if (data.imageCount > 20 && data.imageCount < 60) mobileScore += 8; // reasonable image count for responsive site
+
+  // Touch Target Size (very limited proxy)
+  if (data.hasTouchFriendly) mobileScore += 15;
+  else if (data.imageCount > 10) mobileScore -= 12; // many images often mean small taps
+
+  // PWA Readiness Indicators
+  let pwaScore = 0;
+  if (data.hasManifest) pwaScore += 20;
+  if (data.hasServiceWorkerHint) pwaScore += 15;
+  if (data.hasAppleTouchIcon) pwaScore += 10;
+  if (data.isHttps) pwaScore += 15;
+  mobileScore += Math.round(pwaScore * 0.6); // PWA is bonus, not core
+
+  mobileScore = Math.max(25, Math.min(98, Math.round(mobileScore)));
 
   // === MISSING SPEED SCORE CALCULATION ===
   let speedScore = 78;
