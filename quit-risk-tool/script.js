@@ -67,7 +67,7 @@ performance: {
     { name: "Font Optimization", threshold: 82, shortDesc: "...", howToFix: "Limit to 2-3 font families and essential weights, use font-display: swap to prevent invisible text, preload critical fonts, prefer system fonts where possible." },
     { name: "Lazy Loading Media", threshold: 80, shortDesc: "...", howToFix: "Add native loading='lazy' attribute to all offscreen image and iframe elements (below the fold). For videos use preload='none' or lazy-loading libraries if needed." },
     { name: "Image Optimization", threshold: 82, shortDesc: "...", howToFix: "Convert images to next-gen formats (WebP or AVIF), use proper responsive sizing with srcset/sizes, compress files without visible quality loss." },
-    { name: "Script Minification & Deferral", threshold: 85, shortDesc: "...", howToFix: "Minify all JavaScript and CSS files, add defer or async attributes to non-critical <script> tags, inline critical CSS above the fold, eliminate render-blocking resources." }
+    { name: "Script Minification & Deferral", threshold: 85, shortDesc: "...", howToFix: "Minify all JavaScript and CSS files, add defer or async attributes to non-critical script tags, inline critical CSS above the fold, eliminate render-blocking resources." }
   ],
       moduleWhat: "Performance Optimization measures loading speed and resource efficiency. It flags heavy assets, script bloat, font issues, lazy loading, and image optimization. Speed is critical for user satisfaction and rankings.",
       moduleHow: "Compress and optimize all assets. Lazy load offscreen content. Minify and defer scripts. Use modern image formats.",
