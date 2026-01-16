@@ -130,145 +130,149 @@ function countTotalSyllables(text) {
     return 72;
   }
 
-  function getUXContent(doc) {
-    const textElements = doc.querySelectorAll('p, li, article, section, main, div');
-    let textContent = '';
-let fullText = '';
-let paragraphTexts = [];
-let boldCount = 0;
-let listItemCount = 0;
-textElements.forEach(el => {
-  const t = el.textContent.trim();
-  if (t.length > 15) {
-    fullText += t + ' ';
-    if (el.tagName === 'P') paragraphTexts.push(t);
-  }
-  boldCount += el.querySelectorAll('b, strong').length;
-  if (el.tagName === 'UL' || el.tagName === 'OL') listItemCount += el.querySelectorAll('li').length;
-});
-    const links = doc.querySelectorAll('a[href]');
-    const images = doc.querySelectorAll('img');
-    const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
-    return {
-      fullText: textContent,
-      wordCount: countWords(textContent),
-      linkCount: links.length,
-      externalLinkCount: countExternalLinks(links),
-      imageCount: images.length,
-      missingAltCount: countMissingAlt(doc),
-      headingCount: headings.length,
-      hasViewport: hasViewportMeta(doc),
-      hasMain: hasSemanticMain(doc),
-      hasArticleOrSection: hasSemanticArticleOrSection(doc),
-      mainNav: doc.querySelector('nav, [role="navigation"], header nav, .main-menu, #main-menu, .navbar, .navigation'),
-hasDropdowns: !!doc.querySelector('nav li ul, .dropdown, [aria-haspopup="true"]'),
-topLevelItems: doc.querySelectorAll('nav > ul > li, .main-menu > li, header nav > ul > li').length || 0,
-hasBreadcrumb: !!doc.querySelector('[aria-label*="breadcrumb"], .breadcrumb, nav[aria-label="breadcrumb"]')
-    };
-  }
+function getUXContent(doc) {
+  const textElements = doc.querySelectorAll('p, li, article, section, main, div');
+  let fullText = '';
+  let paragraphTexts = [];
+  let boldCount = 0;
+  let listItemCount = 0;
 
-  function analyzeUX(data) {
-let readability = 55;
-if (data.wordCount > 80) {
-  const sentenceCount = (data.fullText.match(/[.!?]+/g) || []).length || 1;
-  const avgSentenceLength = data.wordCount / sentenceCount;
-  const syllableCount = countTotalSyllables(data.fullText);
-  const avgSyllablesPerWord = syllableCount / data.wordCount;
-  const fleschEase = 206.835 - 1.015 * avgSentenceLength - 84.6 * avgSyllablesPerWord;
-  const kincaidGrade = 0.39 * avgSentenceLength + 11.8 * avgSyllablesPerWord - 15.59;
-  const paragraphCount = data.paragraphTexts.length || 1;
-  const avgWordsPerParagraph = data.wordCount / paragraphCount;
-  const scannability = Math.min(100, (data.boldCount * 5 + data.listItemCount * 3 + data.headingCount * 10) / (data.wordCount / 100));
-  let paraDensityScore = 100;
-  if (avgWordsPerParagraph > 120) paraDensityScore -= 40;
-  else if (avgWordsPerParagraph > 80) paraDensityScore -= 20;
-  let sentenceScore = 100 - (avgSentenceLength > 20 ? (avgSentenceLength - 20) * 5 : 0);
-  sentenceScore = Math.max(40, Math.min(100, sentenceScore));
-  const easeScore = Math.max(0, Math.min(100, fleschEase));
-  const gradeScore = kincaidGrade <= 8 ? 100 : Math.max(0, 100 - (kincaidGrade - 8) * 10);
-  readability = Math.round((easeScore + gradeScore + sentenceScore + paraDensityScore + scannability) / 5);
+  textElements.forEach(el => {
+    const t = el.textContent.trim();
+    if (t.length > 15) {
+      fullText += t + ' ';
+      if (el.tagName === 'P') paragraphTexts.push(t);
+    }
+    boldCount += el.querySelectorAll('b, strong').length;
+    if (el.tagName === 'UL' || el.tagName === 'OL') listItemCount += el.querySelectorAll('li').length;
+  });
+
+  const links = doc.querySelectorAll('a[href]');
+  const images = doc.querySelectorAll('img');
+  const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
+
+  return {
+    fullText: fullText,
+    wordCount: countWords(fullText),
+    linkCount: links.length,
+    externalLinkCount: countExternalLinks(links),
+    imageCount: images.length,
+    missingAltCount: countMissingAlt(doc),
+    headingCount: headings.length,
+    hasViewport: hasViewportMeta(doc),
+    hasMain: hasSemanticMain(doc),
+    hasArticleOrSection: hasSemanticArticleOrSection(doc),
+    paragraphTexts,
+    boldCount,
+    listItemCount,
+    mainNav: doc.querySelector('nav, [role="navigation"], header nav, .main-menu, #main-menu, .navbar, .navigation'),
+    hasDropdowns: !!doc.querySelector('nav li ul, .dropdown, [aria-haspopup="true"]'),
+    topLevelItems: doc.querySelectorAll('nav > ul > li, .main-menu > li, header nav > ul > li').length || 0,
+    hasBreadcrumb: !!doc.querySelector('[aria-label*="breadcrumb"], .breadcrumb, nav[aria-label="breadcrumb"]')
+  };
 }
 
-let navScore = 85;
-
-// More realistic link density: total links / visible text blocks + body words
-const bodyTextLength = data.wordCount > 0 ? data.wordCount : 100;
-const linkDensity = (data.linkCount / Math.max(1, bodyTextLength)) * 100; // links per 100 words
-// Menu Structure Clarity bonus/penalty
-if (data.mainNav) navScore += 12;
-if (data.hasDropdowns) navScore += 8;           // modern menus often use dropdowns sensibly
-if (data.topLevelItems > 9) navScore -= 18;     // too many top items = cognitive overload
-else if (data.topLevelItems > 7) navScore -= 8;
-else if (data.topLevelItems <= 5 && data.topLevelItems > 0) navScore += 10;
-
-if (data.hasBreadcrumb && data.wordCount > 400) navScore += 9;  // helpful on deep content sites
-if (linkDensity > 12) navScore -= Math.min(45, (linkDensity - 8) * 6);     // harsh above ~12 links/100 words
-else if (linkDensity > 8) navScore -= (linkDensity - 8) * 4;
-else if (linkDensity < 2 && data.wordCount > 300) navScore -= 18;          // too few links on content-heavy page = bad
-
-// External link ratio penalty (too promotional/spammy)
-const externalRatio = data.externalLinkCount / Math.max(1, data.linkCount);
-if (externalRatio > 0.45) navScore -= 22;
-else if (externalRatio > 0.30) navScore -= 12;
-
-// Internal linking balance – reward contextual links, penalize orphan-ish pages
-const contextualLinkEstimate = data.linkCount - data.topLevelItems * 2; // rough guess: subtract probable nav/footer
-if (contextualLinkEstimate < 3 && data.wordCount > 600) navScore -= 20;      // very few body links on long page = bad
-else if (contextualLinkEstimate > 0) navScore += Math.min(15, contextualLinkEstimate * 1.8);
-// Very basic CTA detection proxies
-const potentialCTAs = doc.querySelectorAll('a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="trial"], a[href*="buy"], a[href*="get"], button, [role="button"], .btn, .button, [class*="cta"], [id*="cta"]');
-const bigButtons = Array.from(potentialCTAs).filter(el => {
-  const style = window.getComputedStyle ? window.getComputedStyle(el) : {};
-  const height = parseInt(style.height || '0', 10);
-  const width = parseInt(style.width || '0', 10);
-  const fontSize = parseInt(style.fontSize || '0', 10);
-  return (height >= 44 && width >= 100) || fontSize >= 16;
-}).length;
-
-if (bigButtons >= 2) navScore += 14;
-else if (bigButtons === 1) navScore += 7;
-else if (data.wordCount > 400 && bigButtons === 0) navScore -= 16; // long page without any prominent action = poor
-navScore = Math.max(35, Math.min(98, Math.round(navScore)));
-
-    let accScore = 65;
-    if (data.imageCount > 0) {
-      const altRatio = (data.imageCount - data.missingAltCount) / data.imageCount;
-      if (altRatio > 0.9) accScore += 18;
-      else if (altRatio > 0.6) accScore += 8;
-      else accScore -= 25;
-    } else if (data.imageCount === 0) {
-      accScore += 10;
-    }
-    if (data.hasMain) accScore += 12;
-    if (data.hasArticleOrSection) accScore += 10;
-    if (data.headingCount >= 3) accScore += 10;
-    accScore += estimateColorContrastScore() - 70;
-    accScore = Math.max(35, Math.min(97, Math.round(accScore)));
-
-    let mobileScore = data.hasViewport ? 88 : 42;
-    if (data.imageCount > 35) mobileScore -= 12;
-    mobileScore = Math.max(40, Math.min(98, mobileScore));
-
-    let speedScore = 78;
-    if (data.imageCount > 40) speedScore -= 22;
-    if (data.imageCount > 70) speedScore -= 35;
-    if (data.externalLinkCount > 25) speedScore -= 15;
-    if (data.linkCount > 150) speedScore -= 12;
-    speedScore = Math.max(40, Math.min(94, speedScore));
-
-    const scores = [readability, navScore, accScore, mobileScore, speedScore];
-    const overall = Math.round(scores.reduce((a,b) => a + b, 0) / scores.length);
-
-    return {
-      score: isNaN(overall) ? 60 : overall,
-      readability,
-      nav: navScore,
-      accessibility: accScore,
-      mobile: mobileScore,
-      speed: speedScore
-    };
+function analyzeUX(data) {
+  let readability = 55;
+  if (data.wordCount > 80) {
+    const sentenceCount = (data.fullText.match(/[.!?]+/g) || []).length || 1;
+    const avgSentenceLength = data.wordCount / sentenceCount;
+    const syllableCount = countTotalSyllables(data.fullText);
+    const avgSyllablesPerWord = syllableCount / data.wordCount;
+    const fleschEase = 206.835 - 1.015 * avgSentenceLength - 84.6 * avgSyllablesPerWord;
+    const kincaidGrade = 0.39 * avgSentenceLength + 11.8 * avgSyllablesPerWord - 15.59;
+    const paragraphCount = data.paragraphTexts.length || 1;
+    const avgWordsPerParagraph = data.wordCount / paragraphCount;
+    const scannability = Math.min(100, (data.boldCount * 5 + data.listItemCount * 3 + data.headingCount * 10) / (data.wordCount / 100 || 1));
+    let paraDensityScore = 100;
+    if (avgWordsPerParagraph > 120) paraDensityScore -= 40;
+    else if (avgWordsPerParagraph > 80) paraDensityScore -= 20;
+    let sentenceScore = 100 - (avgSentenceLength > 20 ? (avgSentenceLength - 20) * 5 : 0);
+    sentenceScore = Math.max(40, Math.min(100, sentenceScore));
+    const easeScore = Math.max(0, Math.min(100, fleschEase));
+    const gradeScore = kincaidGrade <= 8 ? 100 : Math.max(0, 100 - (kincaidGrade - 8) * 10);
+    readability = Math.round((easeScore + gradeScore + sentenceScore + paraDensityScore + scannability) / 5);
   }
 
+  let navScore = 85;
+  const bodyTextLength = data.wordCount > 0 ? data.wordCount : 100;
+  const linkDensity = (data.linkCount / Math.max(1, bodyTextLength)) * 100;
+
+  // Menu Structure Clarity
+  if (data.mainNav) navScore += 12;
+  if (data.hasDropdowns) navScore += 8;
+  if (data.topLevelItems > 9) navScore -= 18;
+  else if (data.topLevelItems > 7) navScore -= 8;
+  else if (data.topLevelItems <= 5 && data.topLevelItems > 0) navScore += 10;
+  if (data.hasBreadcrumb && data.wordCount > 400) navScore += 9;
+
+  // Link density
+  if (linkDensity > 12) navScore -= Math.min(45, (linkDensity - 8) * 6);
+  else if (linkDensity > 8) navScore -= (linkDensity - 8) * 4;
+  else if (linkDensity < 2 && data.wordCount > 300) navScore -= 18;
+
+  // External ratio
+  const externalRatio = data.externalLinkCount / Math.max(1, data.linkCount);
+  if (externalRatio > 0.45) navScore -= 22;
+  else if (externalRatio > 0.30) navScore -= 12;
+
+  // Internal linking balance
+  const contextualLinkEstimate = data.linkCount - data.topLevelItems * 2;
+  if (contextualLinkEstimate < 3 && data.wordCount > 600) navScore -= 20;
+  else if (contextualLinkEstimate > 0) navScore += Math.min(15, contextualLinkEstimate * 1.8);
+
+  // Simplified CTA detection (pattern only)
+  const potentialCTAs = document.querySelectorAll(
+    'a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="trial"], a[href*="buy"], ' +
+    'a[href*="get"], a[href*="start"], button, [role="button"], .btn, .button, ' +
+    '[class*="cta"], [id*="cta"], [class*="button"], [class*="CallToAction"]'
+  ).length;
+
+  if (potentialCTAs >= 4) navScore += 12;
+  else if (potentialCTAs >= 2) navScore += 7;
+  else if (data.wordCount > 500 && potentialCTAs === 0) navScore -= 14;
+
+  navScore = Math.max(35, Math.min(98, Math.round(navScore)));
+
+  // Accessibility, Mobile, Speed scores remain unchanged in this fix
+  let accScore = 65;
+  if (data.imageCount > 0) {
+    const altRatio = (data.imageCount - data.missingAltCount) / data.imageCount;
+    if (altRatio > 0.9) accScore += 18;
+    else if (altRatio > 0.6) accScore += 8;
+    else accScore -= 25;
+  } else if (data.imageCount === 0) {
+    accScore += 10;
+  }
+  if (data.hasMain) accScore += 12;
+  if (data.hasArticleOrSection) accScore += 10;
+  if (data.headingCount >= 3) accScore += 10;
+  accScore += estimateColorContrastScore() - 70;
+  accScore = Math.max(35, Math.min(97, Math.round(accScore)));
+
+  let mobileScore = data.hasViewport ? 88 : 42;
+  if (data.imageCount > 35) mobileScore -= 12;
+  mobileScore = Math.max(40, Math.min(98, mobileScore));
+
+  let speedScore = 78;
+  if (data.imageCount > 40) speedScore -= 22;
+  if (data.imageCount > 70) speedScore -= 35;
+  if (data.externalLinkCount > 25) speedScore -= 15;
+  if (data.linkCount > 150) speedScore -= 12;
+  speedScore = Math.max(40, Math.min(94, speedScore));
+
+  const scores = [readability, navScore, accScore, mobileScore, speedScore];
+  const overall = Math.round(scores.reduce((a,b) => a + b, 0) / scores.length);
+
+  return {
+    score: isNaN(overall) ? 60 : overall,
+    readability,
+    nav: navScore,
+    accessibility: accScore,
+    mobile: mobileScore,
+    speed: speedScore
+  };
+}
   function getQuitRiskLabel(score) {
     if (score >= 75) return { text: "Low Risk", color: "from-green-400 to-emerald-600" };
     if (score >= 55) return { text: "Moderate Risk", color: "from-yellow-400 to-orange-600" };
