@@ -38,61 +38,61 @@ document.addEventListener('DOMContentLoaded', () => {
       moduleHow: "Keep menus simple with clear labels. Use contextual links naturally in content. Make primary actions stand out visually. Guide users logically toward their goals.",
       moduleWhy: "Intuitive navigation lowers bounce rates and increases pages per session. Users complete goals faster with less effort. Clear structure strengthens topical authority and user signals for search engines."
     },
-    accessibility: {
-factors: [
-  { 
-    name: "Alt Text Coverage", 
-    threshold: 85, 
-    shortDesc: "Meaningful images need descriptive alt text. Decorative images should have empty alt attributes. Complete coverage is essential for screen readers and image SEO.", 
-    howToFix: "Audit all images. Add concise, meaningful alt text to informative images. Use alt='' for purely decorative ones. Never leave alt attributes missing on meaningful images." 
-  },
-  { 
-    name: "Color Contrast Ratios", 
-    threshold: 80, 
-    shortDesc: "Text must meet WCAG AA (4.5:1 for normal text, 3:1 for large). Low contrast causes readability issues for low-vision users and in bright light.", 
-    howToFix: "Use contrast checkers (e.g. WebAIM). Aim for 4.5:1+ on normal text. Adjust foreground/background colors or increase font size/weight where needed." 
-  },
-  { 
-    name: "Semantic HTML Structure", 
-    threshold: 82, 
-    shortDesc: "Proper use of headings, landmarks (main, nav, article), and sections creates a logical document outline for assistive tech and search engines.", 
-    howToFix: "Use one H1 per page, logical heading hierarchy. Replace generic divs with semantic elements like main, article, section, aside, header, footer." 
-  },
-  { 
-    name: "Overall WCAG Compliance", 
-    threshold: 78, 
-    shortDesc: "WCAG 2.2 AA covers perceivability, operability, understandability, robustness. Compliance improves inclusivity, SEO, and reduces legal risk.", 
-    howToFix: "Run automated audits with WAVE, axe, or Lighthouse. Manually test keyboard navigation and screen reader experience. Fix high-impact issues first." 
-  }
-],
-      moduleWhat: "Accessibility Health measures how inclusive your page is for users with disabilities. It checks alt text, contrast, semantic structure, and overall WCAG alignment. Good accessibility serves 15-20% of users with impairments.",
-      moduleHow: "Provide alt text for all images. Ensure sufficient color contrast. Use proper HTML semantics and landmarks. Test with accessibility tools regularly.",
-      moduleWhy: "Accessible sites reach more people and build trust. They face lower legal risk. Many accessibility improvements also enhance SEO and overall user experience."
+accessibility: {
+  factors: [
+    {
+      name: "Alt Text Coverage",
+      threshold: 85,
+      shortDesc: "Meaningful images need descriptive alt text. Decorative images should have empty alt attributes. Complete coverage is essential for screen readers and image SEO.",
+      howToFix: "Audit all images. Add concise, meaningful alt text to informative images. Use alt='' for purely decorative ones. Never leave alt attributes missing on meaningful images."
     },
-    mobile: {
-      factors: [
-        { name: "Viewport Configuration", threshold: 90, shortDesc: "Viewport meta tag controls mobile layout scaling. Missing or incorrect tag causes zoomed-out desktop view. Proper setting enables responsive behavior.", howToFix: "Add exact meta tag: width=device-width, initial-scale=1. Avoid restricting zoom. Test on real devices." },
-        { name: "Responsive Breakpoints", threshold: 85, shortDesc: "Responsive design adapts layout to screen size. Poor breakpoints cause horizontal scrolling. Content should reflow naturally on all devices.", howToFix: "Use relative units and flexible grids. Test at common breakpoints. Adopt mobile-first approach." },
-        { name: "Touch Target Size", threshold: 85, shortDesc: "Small tap targets cause mis-taps on mobile. Minimum recommended size is 44×44 pixels. Adequate spacing prevents errors.", howToFix: "Add padding around links and buttons. Ensure at least 44px targets. Test tapping on actual phones." },
-        { name: "PWA Readiness Indicators", threshold: 80, shortDesc: "PWA features enable install prompts and offline capability. Manifest and service worker are required. They improve engagement significantly.", howToFix: "Add valid manifest.json with icons and name. Implement basic service worker. Ensure HTTPS." }
-      ],
-      moduleWhat: "Mobile & PWA Readiness checks how well your page works on phones and tablets. It evaluates viewport, responsiveness, touch targets, and progressive web app signals. Mobile traffic dominates modern web usage.",
-      moduleHow: "Implement proper viewport meta tag. Use responsive design with flexible layouts. Ensure large touch targets. Add manifest and service worker for PWA features.",
-      moduleWhy: "Most users browse on mobile devices. Poor mobile experience causes immediate bounces. PWA capabilities increase return visits and engagement."
+    {
+      name: "Color Contrast Ratios",
+      threshold: 80,
+      shortDesc: "Text must meet WCAG AA (4.5:1 for normal text, 3:1 for large). Low contrast causes readability issues for low-vision users and in bright light.",
+      howToFix: "Use contrast checkers (e.g. WebAIM). Aim for 4.5:1+ on normal text. Adjust foreground/background colors or increase font size/weight where needed."
     },
-    performance: {
-      factors: [
-        { name: "Asset Volume Flags", threshold: 80, shortDesc: "Large total asset size slows loading dramatically. Every kilobyte counts on mobile networks. Lean pages load faster across connections.", howToFix: "Compress images aggressively. Remove unused resources. Minify CSS and JavaScript." },
-        { name: "Script Bloat Detection", threshold: 85, shortDesc: "Excessive JavaScript delays interactivity. Unused code wastes bandwidth. Lean scripts enable faster rendering.", howToFix: "Remove unused JS completely. Defer non-critical scripts. Use lightweight alternatives." },
-        { name: "Font Optimization", threshold: 85, shortDesc: "Too many web fonts delay text display. Large font files hurt performance. Optimized fonts balance design with speed.", howToFix: "Limit to essential weights. Use font-display: swap. Prefer system fonts when possible." },
-        { name: "Lazy Loading Media", threshold: 80, shortDesc: "Offscreen images and videos should load only when needed. Lazy loading reduces initial payload. Critical content loads first.", howToFix: "Add loading='lazy' to below-fold images and iframes. Implement for videos too." },
-        { name: "Image Optimization", threshold: 80, shortDesc: "Images are usually the largest assets. Next-gen formats reduce size dramatically. Proper sizing prevents over-delivery.", howToFix: "Convert to WebP/AVIF. Compress appropriately. Serve device-sized images." },
-        { name: "Script Minification & Deferral", threshold: 85, shortDesc: "Render-blocking resources delay visible content. Minified and deferred scripts load faster. Async loading improves perceived speed.", howToFix: "Minify all code. Defer non-critical scripts. Async third-party resources." }
-      ],
-      moduleWhat: "Performance Optimization measures loading speed and resource efficiency. It flags heavy assets, script bloat, font issues, lazy loading, and image optimization. Speed is critical for user satisfaction and rankings.",
-      moduleHow: "Compress and optimize all assets. Lazy load offscreen content. Minify and defer scripts. Use modern image formats.",
-      moduleWhy: "Fast pages keep users and reduce bounce rates. Speed is a direct ranking factor. Users perceive faster sites as higher quality."
+    {
+      name: "Semantic HTML Structure",
+      threshold: 82,
+      shortDesc: "Proper use of headings, landmarks (main, nav, article), and sections creates a logical document outline for assistive tech and search engines.",
+      howToFix: "Use one H1 per page, logical heading hierarchy. Replace generic divs with semantic elements like main, article, section, aside, header, footer."
+    },
+    {
+      name: "Overall WCAG Compliance",
+      threshold: 78,
+      shortDesc: "WCAG 2.2 AA covers perceivability, operability, understandability, robustness. Compliance improves inclusivity, SEO, and reduces legal risk.",
+      howToFix: "Run automated audits with WAVE, axe, or Lighthouse. Manually test keyboard navigation and screen reader experience. Fix high-impact issues first."
     }
+  ],
+  moduleWhat: "Accessibility Health measures how inclusive your page is for users with disabilities. It checks alt text, contrast, semantic structure, and overall WCAG alignment. Good accessibility serves 15-20% of users with impairments.",
+  moduleHow: "Provide alt text for all images. Ensure sufficient color contrast. Use proper HTML semantics and landmarks. Test with accessibility tools regularly.",
+  moduleWhy: "Accessible sites reach more people and build trust. They face lower legal risk. Many accessibility improvements also enhance SEO and overall user experience."
+},
+mobile: {
+  factors: [
+    { name: "Viewport Configuration", threshold: 90, shortDesc: "Viewport meta tag controls mobile layout scaling. Missing or incorrect tag causes zoomed-out desktop view. Proper setting enables responsive behavior.", howToFix: "Add exact meta tag: width=device-width, initial-scale=1. Avoid restricting zoom. Test on real devices." },
+    { name: "Responsive Breakpoints", threshold: 85, shortDesc: "Responsive design adapts layout to screen size. Poor breakpoints cause horizontal scrolling. Content should reflow naturally on all devices.", howToFix: "Use relative units and flexible grids. Test at common breakpoints. Adopt mobile-first approach." },
+    { name: "Touch Target Size", threshold: 85, shortDesc: "Small tap targets cause mis-taps on mobile. Minimum recommended size is 44×44 pixels. Adequate spacing prevents errors.", howToFix: "Add padding around links and buttons. Ensure at least 44px targets. Test tapping on actual phones." },
+    { name: "PWA Readiness Indicators", threshold: 80, shortDesc: "PWA features enable install prompts and offline capability. Manifest and service worker are required. They improve engagement significantly.", howToFix: "Add valid manifest.json with icons and name. Implement basic service worker. Ensure HTTPS." }
+  ],
+  moduleWhat: "Mobile & PWA Readiness checks how well your page works on phones and tablets. It evaluates viewport, responsiveness, touch targets, and progressive web app signals. Mobile traffic dominates modern web usage.",
+  moduleHow: "Implement proper viewport meta tag. Use responsive design with flexible layouts. Ensure large touch targets. Add manifest and service worker for PWA features.",
+  moduleWhy: "Most users browse on mobile devices. Poor mobile experience causes immediate bounces. PWA capabilities increase return visits and engagement."
+},
+performance: {
+  factors: [
+    { name: "Asset Volume Flags", threshold: 80, shortDesc: "Large total asset size slows loading dramatically. Every kilobyte counts on mobile networks. Lean pages load faster across connections.", howToFix: "Compress images aggressively. Remove unused resources. Minify CSS and JavaScript." },
+    { name: "Script Bloat Detection", threshold: 85, shortDesc: "Excessive JavaScript delays interactivity. Unused code wastes bandwidth. Lean scripts enable faster rendering.", howToFix: "Remove unused JS completely. Defer non-critical scripts. Use lightweight alternatives." },
+    { name: "Font Optimization", threshold: 85, shortDesc: "Too many web fonts delay text display. Large font files hurt performance. Optimized fonts balance design with speed.", howToFix: "Limit to essential weights. Use font-display: swap. Prefer system fonts when possible." },
+    { name: "Lazy Loading Media", threshold: 80, shortDesc: "Offscreen images and videos should load only when needed. Lazy loading reduces initial payload. Critical content loads first.", howToFix: "Add loading='lazy' to below-fold images and iframes. Implement for videos too." },
+    { name: "Image Optimization", threshold: 80, shortDesc: "Images are usually the largest assets. Next-gen formats reduce size dramatically. Proper sizing prevents over-delivery.", howToFix: "Convert to WebP/AVIF. Compress appropriately. Serve device-sized images." },
+    { name: "Script Minification & Deferral", threshold: 85, shortDesc: "Render-blocking resources delay visible content. Minified and deferred scripts load faster. Async loading improves perceived speed.", howToFix: "Minify all code. Defer non-critical scripts. Async third-party resources." }
+  ],
+  moduleWhat: "Performance Optimization measures loading speed and resource efficiency. It flags heavy assets, script bloat, font issues, lazy loading, and image optimization. Speed is critical for user satisfaction and rankings.",
+  moduleHow: "Compress and optimize all assets. Lazy load offscreen content. Minify and defer scripts. Use modern image formats.",
+  moduleWhy: "Fast pages keep users and reduce bounce rates. Speed is a direct ranking factor. Users perceive faster sites as higher quality."
+}
   };
 
   // Helper functions for realistic metric calculation
@@ -212,7 +212,10 @@ function getUXContent(doc) {
     mainNav: doc.querySelector('nav, [role="navigation"], header nav, .main-menu, #main-menu, .navbar, .navigation'),
     hasDropdowns: !!doc.querySelector('nav li ul, .dropdown, [aria-haspopup="true"]'),
     topLevelItems: doc.querySelectorAll('nav > ul > li, .main-menu > li, header nav > ul > li').length || 0,
-    hasBreadcrumb: !!doc.querySelector('[aria-label*="breadcrumb"], .breadcrumb, nav[aria-label="breadcrumb"]')
+    hasBreadcrumb: !!doc.querySelector('[aria-label*="breadcrumb"], .breadcrumb, nav[aria-label="breadcrumb"]'),
+    // New accessibility helpers (moved here to avoid doc scope error)
+    hasLandmarks: !!doc.querySelector('header, footer, aside, [role="banner"], [role="contentinfo"], [role="complementary"]'),
+    hasAriaLabels: !!doc.querySelector('[aria-label], [aria-labelledby]')
   };
 }
 
@@ -305,17 +308,13 @@ if (data.hasArticleOrSection) accScore += 12;
 if (data.headingCount >= 3) accScore += 10;
 if (data.headingCount === 0 && data.wordCount > 300) accScore -= 18; // no headings on content page = bad
 
-// Very basic landmark usage check
-const hasLandmarks = doc.querySelector('header, footer, aside, [role="banner"], [role="contentinfo"], [role="complementary"]');
-if (hasLandmarks) accScore += 10;
+// Landmarks & ARIA (now using pre-computed flags)
+if (data.hasLandmarks) accScore += 10;
+if (data.hasAriaLabels) accScore += 8;
 
-// Color Contrast (placeholder remains, but we can acknowledge limitation)
-const contrastProxy = estimateColorContrastScore(); // keep existing for now
-accScore += (contrastProxy - 70) * 0.8; // dampen impact since we can't really measure
-
-// ARIA & keyboard hints (very basic)
-const hasAriaLabels = !!doc.querySelector('[aria-label], [aria-labelledby]');
-if (hasAriaLabels) accScore += 8;
+// Color Contrast (placeholder - client-side limitation)
+const contrastProxy = estimateColorContrastScore();
+accScore += (contrastProxy - 70) * 0.8; // dampened impact
 
 accScore = Math.max(30, Math.min(98, Math.round(accScore)));
 
