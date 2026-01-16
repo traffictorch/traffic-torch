@@ -79,6 +79,18 @@ document.addEventListener('DOMContentLoaded', () => {
   function countWords(text) {
     return text.trim().split(/\s+/).filter(w => w.length > 0).length;
   }
+  
+  function countSyllables(word) {
+  word = word.toLowerCase();
+  if (word.length <= 3) return 1;
+  word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+  word = word.replace(/^y/, '');
+  return (word.match(/[aeiouy]{1,2}/g) || []).length;
+}
+function countTotalSyllables(text) {
+  const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+  return words.reduce((sum, w) => sum + countSyllables(w), 0);
+}
 
   function countExternalLinks(links) {
     const currentHost = window.location.host;
@@ -121,10 +133,19 @@ document.addEventListener('DOMContentLoaded', () => {
   function getUXContent(doc) {
     const textElements = doc.querySelectorAll('p, li, article, section, main, div');
     let textContent = '';
-    textElements.forEach(el => {
-      const t = el.textContent.trim();
-      if (t.length > 15) textContent += t + ' ';
-    });
+let fullText = '';
+let paragraphTexts = [];
+let boldCount = 0;
+let listItemCount = 0;
+textElements.forEach(el => {
+  const t = el.textContent.trim();
+  if (t.length > 15) {
+    fullText += t + ' ';
+    if (el.tagName === 'P') paragraphTexts.push(t);
+  }
+  boldCount += el.querySelectorAll('b, strong').length;
+  if (el.tagName === 'UL' || el.tagName === 'OL') listItemCount += el.querySelectorAll('li').length;
+});
     const links = doc.querySelectorAll('a[href]');
     const images = doc.querySelectorAll('img');
     const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
@@ -143,17 +164,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function analyzeUX(data) {
-    let readability = 55;
-    if (data.wordCount > 80) {
-      const paragraphs = data.fullText.split(/\n{2,}|\r\n{2,}/).filter(p => p.trim().length > 0);
-      const sentenceCount = (data.fullText.match(/[.!?]+/g) || []).length || 1;
-      const avgSentenceLength = data.wordCount / sentenceCount;
-      const avgWordsPerParagraph = data.wordCount / Math.max(1, paragraphs.length);
-      let base = 100 - (avgSentenceLength * 2.2);
-      if (avgWordsPerParagraph > 120) base -= 30;
-      if (avgWordsPerParagraph > 80) base -= 15;
-      readability = Math.max(35, Math.min(92, Math.round(base)));
-    }
+let readability = 55;
+if (data.wordCount > 80) {
+  const sentenceCount = (data.fullText.match(/[.!?]+/g) || []).length || 1;
+  const avgSentenceLength = data.wordCount / sentenceCount;
+  const syllableCount = countTotalSyllables(data.fullText);
+  const avgSyllablesPerWord = syllableCount / data.wordCount;
+  const fleschEase = 206.835 - 1.015 * avgSentenceLength - 84.6 * avgSyllablesPerWord;
+  const kincaidGrade = 0.39 * avgSentenceLength + 11.8 * avgSyllablesPerWord - 15.59;
+  const paragraphCount = data.paragraphTexts.length || 1;
+  const avgWordsPerParagraph = data.wordCount / paragraphCount;
+  const scannability = Math.min(100, (data.boldCount * 5 + data.listItemCount * 3 + data.headingCount * 10) / (data.wordCount / 100));
+  let paraDensityScore = 100;
+  if (avgWordsPerParagraph > 120) paraDensityScore -= 40;
+  else if (avgWordsPerParagraph > 80) paraDensityScore -= 20;
+  let sentenceScore = 100 - (avgSentenceLength > 20 ? (avgSentenceLength - 20) * 5 : 0);
+  sentenceScore = Math.max(40, Math.min(100, sentenceScore));
+  const easeScore = Math.max(0, Math.min(100, fleschEase));
+  const gradeScore = kincaidGrade <= 8 ? 100 : Math.max(0, 100 - (kincaidGrade - 8) * 10);
+  readability = Math.round((easeScore + gradeScore + sentenceScore + paraDensityScore + scannability) / 5);
+}
 
     let navScore = 85;
     if (data.linkCount > 180) navScore -= 35;
