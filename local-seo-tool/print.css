@@ -1,29 +1,21 @@
+@media print {
+
   body::before {
-    content: "Traffic Torch 🛡️\A\A Local SEO Audit 📝\A\A Report:\A " attr(data-url);
+    content: "Traffic Torch 🛡️\A\A Local SEO Audit Tool 📝\A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
+    min-height: 100vh;
     page-break-after: always;
     background: linear-gradient(135deg, #10b981, #059669);
-    color: #4b5563; /* gray-600 */
+    color: #4b5563;
     font-family: system-ui, -apple-system, sans-serif;
     font-weight: 900;
     text-align: center;
     padding-top: 20vh;
     line-height: 1.4;
     white-space: pre;
-    font-size: 3rem;
-    /* Orange outline using 8-directional text-shadow (reliable cross-browser in print) */
+    font-size: 3.5rem;
     text-shadow:
-      -2px -2px 0 #fb923c,
-      2px -2px 0 #fb923c,
-      -2px 2px 0 #fb923c,
-      2px 2px 0 #fb923c,
-      -2px 0 0 #fb923c,
-      2px 0 0 #fb923c,
-      0 -2px 0 #fb923c,
-      0 2px 0 #fb923c;
-    /* Existing black drop shadow for depth */
-    text-shadow: /* combine with existing */
       -2px -2px 0 #fb923c,
       2px -2px 0 #fb923c,
       -2px 2px 0 #fb923c,
@@ -35,102 +27,113 @@
       0 10px 30px rgba(0,0,0,0.5);
   }
 
-  /* Hide form/progress/non-report elements */
-  #keyword-form,
-  #analysis-progress,
-  header,
-  footer,
-  nav,
-  .no-print {
-    display: none !important;
-  }
-
-  /* Force white background + black text on report pages */
-  body {
-    background: white !important;
-    color: black !important;
-  }
-
-  .bg-gray-900,
-  .dark\\:bg-gray-900,
-  .bg-white/10 {
-    background: white !important;
-  }
-
-  .text-gray-100,
-  .dark\\:text-gray-100,
-  .text-gray-200 {
-    color: black !important;
-  }
-
-  /* Start report on page 2 */
+  /* Report starts cleanly on next page */
   #results-wrapper {
     page-break-before: always;
+    margin-top: 0 !important;
   }
-}
 
-/* Save as PDF */
- @media print {
-  #audit-form, #analysis-progress, header, footer, nav, aside, .no-print {
-    display: none !important;
+  /* Full-width content inside results */
+  #results-wrapper,
+  #results-wrapper .container,
+  #results-wrapper .max-w-*,
+  #results-wrapper .mx-auto {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 1cm 1.2cm !important;
+    box-sizing: border-box;
   }
+
+  /* Prevent ugly page breaks inside modules */
+  .score-card,
+  .fixes-panel,
+  .full-details,
+  section > div,
+  .grid,
+  .flex {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Better text flow */
+  p, li, div {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Print safety basics */
   body {
     background: white !important;
     color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 11pt;
   }
-  .hidden {
-    display: block !important;
-  }
-  .bg-white, .dark\\:bg-gray-900 {
-    background: white !important;
-  }
-  .text-gray-900, .dark\\:text-gray-100 {
-    color: black !important;
-  }
-  .shadow-lg {
+
+  /* Clean print – no shadows */
+  .shadow-lg,
+  .shadow-xl,
+  [class*="shadow"] {
     box-shadow: none !important;
   }
-  .max-w-5xl {
-    max-width: none !important;
-  }
-} 
 
-
-  /* Hide general expanding accordions (e.g., "How SEO Intent Analyzer Works?") and checklists */
-  .max-w-4xl details,               /* the main "How it works" accordion */
-  .max-w-4xl .group,                /* any group accordions */
-  .checklist {                      /* all ✅/❌ checklists in modules */
+  /* ──────────────────────────────────────────────────────────────
+     TARGETED HIDING – updated & strengthened for Local SEO page
+  ─────────────────────────────────────────────────────────────── */
+  /* Both "How it Works" and "Why it Matters" accordions */
+  .max-w-4xl.mx-auto.my-16 details,
+  /* Local SEO Checklist section */
+  section.py-16.px-3.max-w-6xl.mx-auto,
+  /* Deep Dive modules section */
+  section.py-20.bg-gray-50.dark\:bg-gray-900,
+  /* Tools grid (SEO Intent / Keywords / More tools) */
+  .tools-grid,
+  /* Author Bio / E-E-A-T section */
+  section.max-w-5xl.mx-auto.my-24,
+  /* AddToAny share blocks (both) */
+  div[style*="display: flex; justify-content: center; margin: 30px 0;"],
+  .a2a_kit,
+  /* Breadcrumbs */
+  div.max-w-5xl.mx-auto.px-6.py-4.text-center,
+  /* Bottom banner */
+  section.bottom-banner,
+  /* Checklist cards that might escape */
+  .checklist-card,
+  /* Any large max-width containers */
+  .max-w-7xl.mx-auto,
+  .max-w-6xl.mx-auto,
+  .max-w-5xl.mx-auto:not(#results-wrapper) {
     display: none !important;
   }
 
-  /* Force module-specific expanded panels to show in PDF (expanded by default for print) */
+  /* Extra safety: hide all top-level details unless inside results */
+  details:not(.fixes-panel details, .full-details details) {
+    display: none !important;
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     Always show important report content
+  ─────────────────────────────────────────────────────────────── */
   .fixes-panel,
   .full-details,
   .expand-content,
   .hidden.mt-4,
   .hidden.mt-6,
   .hidden.mt-8 {
-    display: block !important;      /* show the long fix text */
-    visibility: visible !important;
+    display: block !important;
   }
 
-  /* Hide the "Show Fixes" / toggle buttons in modules (no need in PDF since content is forced open) */
-  .fixes-toggle,
-  .more-details-toggle {
+  /* Original form/header/footer hiding */
+  #keyword-form,
+  #analysis-progress,
+  header,
+  footer,
+  nav,
+  aside,
+  .no-print,
+  button,
+  details > summary {
     display: none !important;
   }
-
-  /* Ensure module cards stay clean */
-  .score-card {
-    page-break-inside: avoid;
-  }
-  
-  /* Hide the entire SEO Intent Checklist section and its expandable in PDF */
-  #seo-ux-checklist,
-  #seo-ux-checklist details,
-  #seo-ux-checklist summary,
-  .max-w-6xl details {  /* fallback for the checklist accordion */
-    display: none !important;
-  }
-  
-  
+}

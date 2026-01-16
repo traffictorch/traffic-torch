@@ -1,9 +1,7 @@
 @media print {
-  /* ──────────────────────────────────────────────────────────────
-     Your original proven cover – unchanged (this was working)
-  ─────────────────────────────────────────────────────────────── */
+
   body::before {
-    content: "Traffic Torch 🛡️\A\A SEO Intent Tool 🎯\A\A Report:\A " attr(data-url);
+    content: "Traffic Torch 🛡️\A\A SEO Intent Audit Tool 🎯\A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
     min-height: 100vh;
