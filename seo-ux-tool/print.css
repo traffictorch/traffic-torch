@@ -81,32 +81,20 @@
   }
 
   /* ──────────────────────────────────────────────────────────────
-     TARGETED HIDING – fully updated for main SEO UX Audit Tool / homepage
+     TARGETED HIDING – safe & specific (no :not breakage)
   ─────────────────────────────────────────────────────────────── */
-  /* "How Traffic Torch Works?" accordion */
-  .max-w-4xl.mx-auto.my-20 details,
-  /* "Why Search matters?" accordion */
-  .max-w-4xl.mx-auto.my-20 details:last-of-type,
-  /* Deep Dive into Key Modules section */
-  section.py-20.bg-gray-50.dark\:bg-gray-900,
-  /* SEO & UX Checklist section */
-  #seo-ux-checklist,
-  /* Tools grid (all tools overview) */
+  .max-w-4xl.mx-auto.my-20 details,               /* how/why accordions */
+  section.py-20.bg-gray-50.dark\:bg-gray-900,     /* deep dive modules */
+  #seo-ux-checklist,                              /* SEO & UX checklist */
   .tools-grid,
-  /* Author Bio section */
-  section.max-w-5xl.mx-auto.my-24,
-  /* AddToAny share blocks (both) */
-  div[style*="display: flex; justify-content: center; margin: 30px 0;"],
+  section.max-w-5xl.mx-auto.my-24,                /* author bio */
+  div[style*="display: flex; justify-content: center; margin: 30px 0;"],  /* share blocks */
   .a2a_kit,
-  /* Breadcrumbs */
-  div.max-w-5xl.mx-auto.px-6.py-4.text-center,
-  /* Bottom banner */
+  div.max-w-5xl.mx-auto.px-6.py-4.text-center,    /* breadcrumbs */
   section.bottom-banner,
-  /* Any leftover cards/containers */
   .checklist-card,
   .max-w-7xl.mx-auto,
-  .max-w-6xl.mx-auto,
-  .max-w-5xl.mx-auto:not(#results-wrapper) {
+  .max-w-6xl.mx-auto {
     display: none !important;
   }
 

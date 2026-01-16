@@ -81,32 +81,21 @@
   }
 
   /* ──────────────────────────────────────────────────────────────
-     TARGETED HIDING – fully updated for AI Audit / Content Detector page
+     TARGETED HIDING – safe & specific (no :not breakage)
   ─────────────────────────────────────────────────────────────── */
-  /* "How AI Content Detector Works?" accordion */
-  .max-w-1xl.mx-auto.my-16 details,
-  /* "Why AI Content Matters?" accordion */
-  .max-w-2xl.mx-auto.my-10 details,
-  /* Metric explanations section */
-  section.py-20.bg-gray-50.dark\:bg-gray-900,
-  /* Ultimate AI Content Audit & Humanization Checklist section */
-  #ai-audit-seo-checklist,
-  /* Tools grid */
+  .max-w-1xl.mx-auto.my-16 details,               /* how AI detector works accordion */
+  .max-w-2xl.mx-auto.my-10 details,               /* why AI content matters accordion */
+  section.py-20.bg-gray-50.dark\:bg-gray-900,     /* metric explanations section */
+  #ai-audit-seo-checklist,                        /* ultimate audit checklist */
   .tools-grid,
-  /* Author Bio section */
-  section.max-w-5xl.mx-auto.my-24,
-  /* AddToAny share blocks (both) */
-  div[style*="display: flex; justify-content: center; margin: 30px 0;"],
+  section.max-w-5xl.mx-auto.my-24,                /* author bio */
+  div[style*="display: flex; justify-content: center; margin: 30px 0;"],  /* share blocks */
   .a2a_kit,
-  /* Breadcrumbs */
-  div.max-w-5xl.mx-auto.px-6.py-4.text-center,
-  /* Bottom banner */
+  div.max-w-5xl.mx-auto.px-6.py-4.text-center,    /* breadcrumbs */
   section.bottom-banner,
-  /* Any leftover cards/containers */
   .checklist-card,
   .max-w-7xl.mx-auto,
-  .max-w-6xl.mx-auto,
-  .max-w-5xl.mx-auto:not(#results-wrapper) {
+  .max-w-6xl.mx-auto {
     display: none !important;
   }
 
