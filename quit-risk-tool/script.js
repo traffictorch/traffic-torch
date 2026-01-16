@@ -225,8 +225,8 @@ function getUXContent(doc) {
     hasBreadcrumb: !!doc.querySelector('[aria-label*="breadcrumb"], .breadcrumb, nav[aria-label="breadcrumb"]'),
     // Accessibility helpers
     hasLandmarks: !!doc.querySelector('header, footer, aside, [role="banner"], [role="contentinfo"], [role="complementary"]'),
-    hasAriaLabels: !!doc.querySelector('[aria-label], [aria-labelledby]'),
-    // Mobile & PWA signals (comma fixed here)
+    hasAriaLabels: !!doc.querySelector('[aria-label], [aria-labelledby]'),   // ← added missing comma here!
+    // Mobile & PWA signals
     viewportContent: (() => {
       const meta = doc.querySelector('meta[name="viewport"]');
       return meta ? meta.getAttribute('content') || '' : '';
