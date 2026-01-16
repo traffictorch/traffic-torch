@@ -251,7 +251,7 @@ function getUXContent(doc) {
     hasRenderBlocking: doc.querySelectorAll('script:not([defer]):not([async]), link[rel="stylesheet"]:not([media])').length,
     fontCount: doc.querySelectorAll('link[href*="fonts.googleapis.com"], link[href*="fonts.gstatic.com"], @font-face').length || 0,
     hasFontDisplaySwap: doc.body.innerHTML.includes('font-display: swap') || doc.body.innerHTML.includes('font-display:swap'),
-    hasWebpOrAvif: !!doc.querySelector('img[src$=".webp"], img[src$=".avif"], source[type="image/webp"], source[type="image/avif"]')
+    hasWebpOrAvif: !!doc.querySelector('img[src$=".webp"], img[src$=".avif"], source[type="image/webp"], source[type="image/avif"]'),
   };
 }
 
