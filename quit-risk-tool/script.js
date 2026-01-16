@@ -39,12 +39,32 @@ document.addEventListener('DOMContentLoaded', () => {
       moduleWhy: "Intuitive navigation lowers bounce rates and increases pages per session. Users complete goals faster with less effort. Clear structure strengthens topical authority and user signals for search engines."
     },
     accessibility: {
-      factors: [
-        { name: "Alt Text Coverage", threshold: 75, shortDesc: "Missing alt text excludes screen reader users and hurts image SEO. Complete coverage ensures inclusivity. Decorative images should have empty alt attributes.", howToFix: "Add concise, descriptive alt text to every meaningful image. Use empty alt for purely decorative ones. Audit images during content creation." },
-        { name: "Color Contrast Ratios", threshold: 75, shortDesc: "Insufficient contrast makes text hard to read for low-vision users. WCAG AA standards ensure readability. Poor contrast causes strain in various conditions.", howToFix: "Test with contrast checkers and meet 4.5:1 ratio. Adjust colors rather than relying on bolding. Provide alternatives where needed." },
-        { name: "Semantic HTML Structure", threshold: 70, shortDesc: "Proper headings and landmarks help screen readers navigate. Semantic markup creates logical outline. It improves both accessibility and SEO understanding.", howToFix: "Use single H1 and proper heading hierarchy. Implement landmarks like main, nav, footer. Replace generic divs with meaningful elements." },
-        { name: "Overall WCAG Compliance", threshold: 70, shortDesc: "WCAG guidelines cover perceivability, operability, and robustness. Compliance creates truly inclusive experiences. It reduces legal risk and expands reach.", howToFix: "Run regular automated audits. Fix keyboard navigation issues. Test with screen readers when possible." }
-      ],
+factors: [
+  { 
+    name: "Alt Text Coverage", 
+    threshold: 85, 
+    shortDesc: "Meaningful images need descriptive alt text. Decorative images should have empty alt attributes. Complete coverage is essential for screen readers and image SEO.", 
+    howToFix: "Audit all images. Add concise, meaningful alt text to informative images. Use alt='' for purely decorative ones. Never leave alt attributes missing on meaningful images." 
+  },
+  { 
+    name: "Color Contrast Ratios", 
+    threshold: 80, 
+    shortDesc: "Text must meet WCAG AA (4.5:1 for normal text, 3:1 for large). Low contrast causes readability issues for low-vision users and in bright light.", 
+    howToFix: "Use contrast checkers (e.g. WebAIM). Aim for 4.5:1+ on normal text. Adjust foreground/background colors or increase font size/weight where needed." 
+  },
+  { 
+    name: "Semantic HTML Structure", 
+    threshold: 82, 
+    shortDesc: "Proper use of headings, landmarks (main, nav, article), and sections creates a logical document outline for assistive tech and search engines.", 
+    howToFix: "Use one H1 per page, logical heading hierarchy. Replace generic divs with semantic elements like main, article, section, aside, header, footer." 
+  },
+  { 
+    name: "Overall WCAG Compliance", 
+    threshold: 78, 
+    shortDesc: "WCAG 2.2 AA covers perceivability, operability, understandability, robustness. Compliance improves inclusivity, SEO, and reduces legal risk.", 
+    howToFix: "Run automated audits with WAVE, axe, or Lighthouse. Manually test keyboard navigation and screen reader experience. Fix high-impact issues first." 
+  }
+],
       moduleWhat: "Accessibility Health measures how inclusive your page is for users with disabilities. It checks alt text, contrast, semantic structure, and overall WCAG alignment. Good accessibility serves 15-20% of users with impairments.",
       moduleHow: "Provide alt text for all images. Ensure sufficient color contrast. Use proper HTML semantics and landmarks. Test with accessibility tools regularly.",
       moduleWhy: "Accessible sites reach more people and build trust. They face lower legal risk. Many accessibility improvements also enhance SEO and overall user experience."
@@ -116,19 +136,43 @@ function countTotalSyllables(text) {
     return !!doc.querySelector('article, section');
   }
 
-  function countMissingAlt(doc) {
-    const imgs = doc.querySelectorAll('img');
-    let missing = 0;
-    imgs.forEach(img => {
-      const alt = img.getAttribute('alt');
-      if (alt === null || alt.trim() === '') missing++;
-    });
-    return missing;
-  }
+function countMissingAlt(doc) {
+  const imgs = doc.querySelectorAll('img');
+  let missing = 0;
+  let decorative = 0;
+  let meaningful = 0;
 
-  function estimateColorContrastScore() {
-    return 72;
-  }
+  imgs.forEach(img => {
+    const alt = img.getAttribute('alt');
+    const isDecorative = img.classList.contains('decorative') ||
+                        img.getAttribute('role') === 'presentation' ||
+                        (alt !== null && alt.trim() === '' && !img.hasAttribute('title'));
+
+    if (isDecorative) {
+      decorative++;
+    } else {
+      meaningful++;
+      if (alt === null || alt.trim() === '') {
+        missing++;
+      }
+    }
+  });
+
+  return {
+    missingCount: missing,
+    meaningfulCount: meaningful,
+    decorativeCount: decorative,
+    totalImages: imgs.length
+  };
+}
+
+function estimateColorContrastScore() {
+  // Extremely rough proxy: most modern sites are ~70-85 compliant
+  // Future: could scan body/text color attributes if present
+  const body = document.body;
+  const hasCustomColors = body.style.color || body.style.backgroundColor;
+  return hasCustomColors ? 78 : 72; // tiny bump if site bothers with styling
+}
 
 function getUXContent(doc) {
   const textElements = doc.querySelectorAll('p, li, article, section, main, div');
@@ -157,7 +201,7 @@ function getUXContent(doc) {
     linkCount: links.length,
     externalLinkCount: countExternalLinks(links),
     imageCount: images.length,
-    missingAltCount: countMissingAlt(doc),
+    altData: countMissingAlt(doc),
     headingCount: headings.length,
     hasViewport: hasViewportMeta(doc),
     hasMain: hasSemanticMain(doc),
@@ -235,34 +279,45 @@ function analyzeUX(data) {
   navScore = Math.max(35, Math.min(98, Math.round(navScore)));
 
   // Accessibility, Mobile, Speed scores remain unchanged in this fix
-  let accScore = 65;
-  if (data.imageCount > 0) {
-    const altRatio = (data.imageCount - data.missingAltCount) / data.imageCount;
-    if (altRatio > 0.9) accScore += 18;
-    else if (altRatio > 0.6) accScore += 8;
-    else accScore -= 25;
-  } else if (data.imageCount === 0) {
-    accScore += 10;
+let accScore = 60; // slightly lower base to reflect stricter modern WCAG
+
+// Alt Text Coverage (now weighted more realistically)
+if (data.altData) {
+  const { missingCount, meaningfulCount, totalImages } = data.altData;
+  if (totalImages === 0) {
+    accScore += 15; // no images = no alt problems, slight bonus
+  } else {
+    const altCoverage = meaningfulCount > 0 
+      ? (meaningfulCount - missingCount) / meaningfulCount 
+      : 1;
+
+    if (altCoverage >= 0.98) accScore += 22;
+    else if (altCoverage >= 0.90) accScore += 14;
+    else if (altCoverage >= 0.70) accScore += 6;
+    else if (altCoverage < 0.50) accScore -= 30;
+    else accScore -= 18;
   }
-  if (data.hasMain) accScore += 12;
-  if (data.hasArticleOrSection) accScore += 10;
-  if (data.headingCount >= 3) accScore += 10;
-  accScore += estimateColorContrastScore() - 70;
-  accScore = Math.max(35, Math.min(97, Math.round(accScore)));
+}
 
-  let mobileScore = data.hasViewport ? 88 : 42;
-  if (data.imageCount > 35) mobileScore -= 12;
-  mobileScore = Math.max(40, Math.min(98, mobileScore));
+// Semantic HTML Structure (expanded checks)
+if (data.hasMain) accScore += 14;
+if (data.hasArticleOrSection) accScore += 12;
+if (data.headingCount >= 3) accScore += 10;
+if (data.headingCount === 0 && data.wordCount > 300) accScore -= 18; // no headings on content page = bad
 
-  let speedScore = 78;
-  if (data.imageCount > 40) speedScore -= 22;
-  if (data.imageCount > 70) speedScore -= 35;
-  if (data.externalLinkCount > 25) speedScore -= 15;
-  if (data.linkCount > 150) speedScore -= 12;
-  speedScore = Math.max(40, Math.min(94, speedScore));
+// Very basic landmark usage check
+const hasLandmarks = doc.querySelector('header, footer, aside, [role="banner"], [role="contentinfo"], [role="complementary"]');
+if (hasLandmarks) accScore += 10;
 
-  const scores = [readability, navScore, accScore, mobileScore, speedScore];
-  const overall = Math.round(scores.reduce((a,b) => a + b, 0) / scores.length);
+// Color Contrast (placeholder remains, but we can acknowledge limitation)
+const contrastProxy = estimateColorContrastScore(); // keep existing for now
+accScore += (contrastProxy - 70) * 0.8; // dampen impact since we can't really measure
+
+// ARIA & keyboard hints (very basic)
+const hasAriaLabels = !!doc.querySelector('[aria-label], [aria-labelledby]');
+if (hasAriaLabels) accScore += 8;
+
+accScore = Math.max(30, Math.min(98, Math.round(accScore)));
 
   return {
     score: isNaN(overall) ? 60 : overall,
