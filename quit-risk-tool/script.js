@@ -426,6 +426,54 @@ accScore += (contrastProxy - 70) * 0.8; // dampened impact
   // Now that ALL scores exist, calculate overall
   const scores = [readability, navScore, accScore, mobileScore, speedScore];
   const overall = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+  
+    const factorDetails = {
+    readability: {
+      fleschEase: Math.round(
+        206.835 -
+        1.015 * (data.wordCount / ((data.fullText.match(/[.!?]+/g) || []).length || 1)) -
+        84.6 * (countTotalSyllables(data.fullText) / (data.wordCount || 1))
+      ),
+      kincaidGrade: Math.round(
+        0.39 * (data.wordCount / ((data.fullText.match(/[.!?]+/g) || []).length || 1)) +
+        11.8 * (countTotalSyllables(data.fullText) / (data.wordCount || 1)) -
+        15.59
+      ),
+      avgSentence: Math.round(data.wordCount / ((data.fullText.match(/[.!?]+/g) || []).length || 1)),
+      avgParagraph: Math.round(data.wordCount / (data.paragraphTexts.length || 1)),
+      scannability: Math.round(
+        (data.boldCount * 5 + data.listItemCount * 3 + data.headingCount * 10) /
+        (data.wordCount / 100 || 1)
+      )
+    },
+    navigation: {
+      linkDensity: Math.round((data.linkCount / (data.wordCount / 100 || 1)) * 10), // links per 100 words ×10 for score-like range
+      menuClarity: data.topLevelItems > 0 ? Math.max(0, 100 - (data.topLevelItems - 5) * 8) : 40,
+      internalBalance: Math.round((data.linkCount - (data.topLevelItems * 2)) / (data.wordCount / 500 || 1) * 25),
+      ctaStrength: data.potentialCTAs >= 4 ? 90 : data.potentialCTAs >= 2 ? 65 : 30
+    },
+    accessibility: {
+      altCoverage: data.altData && data.altData.meaningfulCount > 0
+        ? Math.round(((data.altData.meaningfulCount - data.altData.missingCount) / data.altData.meaningfulCount) * 100)
+        : (data.imageCount === 0 ? 100 : 30),
+      contrastProxy: estimateColorContrastScore(),
+      semanticStrength: (data.hasMain ? 25 : 0) + (data.hasArticleOrSection ? 20 : 0) + (data.headingCount >= 3 ? 25 : 0) + (data.hasLandmarks ? 20 : 0) + (data.hasAriaLabels ? 10 : 0)
+    },
+    mobile: {
+      viewportQuality: data.viewportContent.toLowerCase().includes('width=device-width') && data.viewportContent.toLowerCase().includes('initial-scale=1') ? 95 : 30,
+      responsiveProxy: data.hasMediaQueries ? 85 : 40,
+      touchFriendly: data.hasTouchFriendly ? 80 : 35,
+      pwaReadiness: (data.hasManifest ? 25 : 0) + (data.hasServiceWorkerHint ? 20 : 0) + (data.hasAppleTouchIcon ? 15 : 0) + (data.isHttps ? 20 : 0)
+    },
+    performance: {
+      assetVolume: data.imageCount <= 10 ? 95 : data.imageCount <= 35 ? 70 : data.imageCount <= 60 ? 45 : 20,
+      scriptBloat: data.externalScripts <= 3 ? 90 : data.externalScripts <= 8 ? 70 : data.externalScripts <= 15 ? 45 : 25,
+      fontOptimization: data.fontCount <= 2 ? 90 : data.fontCount <= 4 ? 65 : data.hasFontDisplaySwap ? 55 : 30,
+      lazyLoading: data.hasLazyLoading && data.imageCount > 10 ? 85 : data.imageCount > 15 ? 35 : 60,
+      imageFormat: data.hasWebpOrAvif ? 90 : data.imageCount > 20 ? 40 : 70,
+      renderBlocking: data.hasRenderBlocking <= 2 ? 90 : data.hasRenderBlocking <= 5 ? 65 : 35
+    }
+  };
 
   return {
     score: isNaN(overall) ? 60 : overall,
@@ -460,72 +508,106 @@ accScore += (contrastProxy - 70) * 0.8; // dampened impact
     if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
     return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
   }
+  
+function buildModuleHTML(moduleName, value, moduleData, factorScores = null) {
+  const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
+  const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
+  const gradeInfo = getGradeInfo(value);
 
-  function buildModuleHTML(moduleName, value, moduleData) {
-    const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
-    const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
-    const gradeInfo = getGradeInfo(value);
-    let statusMessage, statusEmoji;
-    if (value >= 85) {
-      statusMessage = "Excellent";
-      statusEmoji = "🏆";
-    } else if (value >= 75) {
-      statusMessage = "Very good";
-      statusEmoji = "✅";
-    } else if (value >= 60) {
-      statusMessage = "Needs improvement";
-      statusEmoji = "⚠️";
-    } else {
-      statusMessage = "Needs work";
-      statusEmoji = "❌";
-    }
-    let metricsHTML = '';
-    let fixesHTML = '';
-    let failedOnlyHTML = '';
-    let failedCount = 0;
-    moduleData.factors.forEach(f => {
-      const passed = value >= f.threshold;
-      let metricGrade;
-      if (passed) {
-        metricGrade = { color: "text-green-600", emoji: "✅" };
-      } else if (value >= f.threshold - 10) {
-        metricGrade = { color: "text-orange-600", emoji: "⚠️" };
-      } else {
-        metricGrade = { color: "text-red-600", emoji: "❌" };
+  let statusMessage, statusEmoji;
+  if (value >= 85) { statusMessage = "Excellent"; statusEmoji = "🏆"; }
+  else if (value >= 75) { statusMessage = "Very good"; statusEmoji = "✅"; }
+  else if (value >= 60) { statusMessage = "Needs improvement"; statusEmoji = "⚠️"; }
+  else { statusMessage = "Needs work"; statusEmoji = "❌"; }
+
+  let metricsHTML = '';
+  let fixesHTML = '';
+  let failedOnlyHTML = '';
+  let failedCount = 0;
+
+  moduleData.factors.forEach((f, index) => {
+    let passed = value >= f.threshold; // default fallback
+
+    // Per-factor override when data exists
+    if (factorScores) {
+      const fs = factorScores;
+      if (moduleName === 'Readability') {
+        if (f.name === "Flesch Reading Ease Score") passed = fs.fleschEase >= 60;
+        else if (f.name === "Flesch-Kincaid Grade Level") passed = fs.kincaidGrade <= 10;
+        else if (f.name === "Average Sentence Length") passed = fs.avgSentence <= 20;
+        else if (f.name === "Paragraph Density & Length") passed = fs.avgParagraph <= 80;
+        else if (f.name === "Overall Text Scannability") passed = fs.scannability >= 70;
       }
-      metricsHTML += `
-        <div class="mb-6">
-          <p class="font-medium text-xl">
-            <span class="${metricGrade.color} text-3xl mr-3">${metricGrade.emoji}</span>
-            <span class="${metricGrade.color} font-bold">${f.name}</span>
+      else if (moduleName === 'Navigation') {
+        if (f.name === "Link Density Evaluation") passed = fs.linkDensity <= 8;
+        else if (f.name === "Menu Structure Clarity") passed = fs.menuClarity >= 70;
+        else if (f.name === "Internal Linking Balance") passed = fs.internalBalance >= 50;
+        else if (f.name === "CTA Prominence & Visibility") passed = fs.ctaStrength >= 70;
+      }
+      else if (moduleName === 'Accessibility') {
+        if (f.name === "Alt Text Coverage") passed = fs.altCoverage >= 85;
+        else if (f.name === "Color Contrast Ratios") passed = fs.contrastProxy >= 80;
+        else if (f.name === "Semantic HTML Structure") passed = fs.semanticStrength >= 70;
+        else if (f.name === "Overall WCAG Compliance") passed = (fs.altCoverage + fs.contrastProxy + fs.semanticStrength) / 3 >= 75;
+      }
+      else if (moduleName === 'Mobile') {
+        if (f.name === "Viewport Configuration") passed = fs.viewportQuality >= 85;
+        else if (f.name === "Responsive Breakpoints") passed = fs.responsiveProxy >= 75;
+        else if (f.name === "Touch Target Size") passed = fs.touchFriendly >= 70;
+        else if (f.name === "PWA Readiness Indicators") passed = fs.pwaReadiness >= 60;
+      }
+      else if (moduleName === 'Speed') {
+        if (f.name === "Asset Volume Flags") passed = fs.assetVolume >= 70;
+        else if (f.name === "Script Bloat Detection") passed = fs.scriptBloat >= 70;
+        else if (f.name === "Font Optimization") passed = fs.fontOptimization >= 70;
+        else if (f.name === "Lazy Loading Media") passed = fs.lazyLoading >= 70;
+        else if (f.name === "Image Optimization") passed = fs.imageFormat >= 70;
+        else if (f.name === "Script Minification & Deferral") passed = fs.renderBlocking >= 70;
+      }
+    }
+
+    let metricGrade = passed 
+      ? { color: "text-green-600", emoji: "✅" }
+      : (value >= f.threshold - 10)
+        ? { color: "text-orange-600", emoji: "⚠️" }
+        : { color: "text-red-600", emoji: "❌" };
+
+    metricsHTML += `
+      <div class="mb-6">
+        <p class="font-medium text-xl">
+          <span class="${metricGrade.color} text-3xl mr-3">${metricGrade.emoji}</span>
+          <span class="${metricGrade.color} font-bold">${f.name}</span>
+        </p>
+      </div>`;
+
+    fixesHTML += `
+      <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
+        <p class="font-bold text-xl ${metricGrade.color} mb-3">
+          <span class="text-3xl mr-3">${metricGrade.emoji}</span>
+          ${f.name}
+        </p>
+        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+          ${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}
+        </p>
+      </div>`;
+
+    if (!passed) {
+      failedOnlyHTML += `
+        <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
+          <p class="font-bold text-2xl ${metricGrade.color} mb-4">
+            <span class="text-6xl">${metricGrade.emoji}</span>
           </p>
-        </div>`;
-      fixesHTML += `
-        <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
-          <p class="font-bold text-xl ${metricGrade.color} mb-3">
-            <span class="text-3xl mr-3">${metricGrade.emoji}</span>
+          <p class="font-bold text-2xl ${metricGrade.color} mb-4">
             ${f.name}
           </p>
-          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-            ${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}
+          <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+            ${f.howToFix}
           </p>
         </div>`;
-      if (!passed) {
-        failedOnlyHTML += `
-          <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
-            <p class="font-bold text-2xl ${metricGrade.color} mb-4">
-              <span class="text-6xl">${metricGrade.emoji}</span>
-            </p>
-            <p class="font-bold text-2xl ${metricGrade.color} mb-4">
-              ${f.name}
-            </p>
-            <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
-              ${f.howToFix}
-            </p>
-          </div>`;
-        failedCount++;
-      }
-    });
+      failedCount++;
+    }
+  });
+ 
     const moreDetailsHTML = `
       <div class="text-left px-4 py-6">
         <h4 class="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100 text-center">
@@ -665,11 +747,11 @@ accScore += (contrastProxy - 70) * 0.8; // dampened impact
         document.getElementById('loading').classList.add('hidden');
         const safeScore = isNaN(ux.score) ? 60 : ux.score;
         const overallGrade = getGradeInfo(safeScore);
-        const readabilityHTML = buildModuleHTML('Readability', ux.readability, factorDefinitions.readability);
-        const navHTML = buildModuleHTML('Navigation', ux.nav, factorDefinitions.navigation);
-        const accessHTML = buildModuleHTML('Accessibility', ux.accessibility, factorDefinitions.accessibility);
-        const mobileHTML = buildModuleHTML('Mobile', ux.mobile, factorDefinitions.mobile);
-        const speedHTML = buildModuleHTML('Speed', ux.speed, factorDefinitions.performance);
+const readabilityHTML = buildModuleHTML('Readability', ux.readability, factorDefinitions.readability, factorDetails.readability);
+const navHTML        = buildModuleHTML('Navigation', ux.nav, factorDefinitions.navigation, factorDetails.navigation);
+const accessHTML     = buildModuleHTML('Accessibility', ux.accessibility, factorDefinitions.accessibility, factorDetails.accessibility);
+const mobileHTML     = buildModuleHTML('Mobile', ux.mobile, factorDefinitions.mobile, factorDetails.mobile);
+const speedHTML      = buildModuleHTML('Speed', ux.speed, factorDefinitions.performance, factorDetails.performance);
 
         // Build priority fixes, impact, etc.
         const modulePriority = [
