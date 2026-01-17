@@ -1,15 +1,32 @@
-// 1. Theme Toggle - Standard Tailwind 'dark' class
+// main.js
+// Theme Toggle + Auto-initial setup (system preference + user override)
+
 const toggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+
+// ── 1. Set initial theme (run this as early as possible) ───────────────
+if (localStorage.theme === 'dark') {
+  html.classList.add('dark');
+} else if (localStorage.theme === 'light') {
+  html.classList.remove('dark');
+} else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
+  html.classList.add('dark');
+}
+// Note: if nothing above matches → stays light (common default)
+
+// ── 2. Set correct icon right after initial class is set ────────────────
 if (toggle) {
-  const html = document.documentElement;
-  // Set initial icon based on current mode
-  const isDark = html.classList.contains('dark');
-  toggle.textContent = isDark ? '☀️' : '🌙';
-  // Toggle on click
+  toggle.textContent = html.classList.contains('dark') ? '☀️' : '🌙';
+}
+
+// ── 3. Manual toggle handler ────────────────────────────────────────────
+if (toggle) {
   toggle.addEventListener('click', () => {
     html.classList.toggle('dark');
+    
     const isDarkNow = html.classList.contains('dark');
     localStorage.theme = isDarkNow ? 'dark' : 'light';
+    
     toggle.textContent = isDarkNow ? '☀️' : '🌙';
   });
 }
