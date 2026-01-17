@@ -1,7 +1,8 @@
 {
-  "name": "traffic-torch",  // Must match your exact Cloudflare Pages/Workers project name (check dashboard > Workers & Pages > your project)
-  "compatibility_date": "2026-01-17",  // Use today's date or later; keeps it time-proof
+  "name": "traffic-torch",  // must match your exact project name
+  "compatibility_date": "2026-01-17",
   "assets": {
-    "directory": "./dist"  // Your Vite output dir
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"  // ← This enables SPA fallback!
   }
 }
