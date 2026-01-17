@@ -1,16 +1,20 @@
+// vite.config.js
 import { defineConfig } from 'vite'
+import { resolve } from 'path'
 
 export default defineConfig({
   base: '/',
   build: {
     rollupOptions: {
-      // Tell Vite this is multi-page
       input: {
-        main: './index.html',              // home
-        'local-seo-tool': './local-seo-tool.html',   // add one per page
-        // add others as you create them, e.g.:
-        // about: './about.html',
-        // 'ai-seo-ux-tools': './ai-seo-ux-tools.html',
+        main: resolve(__dirname, 'index.html'),                  // homepage
+        'local-seo-tool': resolve(__dirname, 'local-seo-tool/index.html'),
+        'seo-intent-tool': resolve(__dirname, 'seo-intent-tool/index.html'),
+        'quit-risk-tool': resolve(__dirname, 'quit-risk-tool/index.html'),
+        // Add one line for EVERY tool folder you have, e.g.:
+        // 'seo-ux-tool': resolve(__dirname, 'seo-ux-tool/index.html'),
+        // 'ai-audit-tool': resolve(__dirname, 'ai-audit-tool/index.html'),
+        // etc. — do this for all 10+ tools
       },
       output: {
         entryFileNames: 'assets/[name]-[hash].js',
