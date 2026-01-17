@@ -9,7 +9,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),                        // homepage / dashboard
 
-        // All deep-dive tool pages
+        // All tool pages
         'ai-audit-tool': resolve(__dirname, 'ai-audit-tool/index.html'),
         'ai-search-optimization-tool': resolve(__dirname, 'ai-search-optimization-tool/index.html'),
         'keyword-tool': resolve(__dirname, 'keyword-tool/index.html'),
@@ -25,8 +25,10 @@ export default defineConfig({
         'contact': resolve(__dirname, 'contact/index.html'),
         'privacy': resolve(__dirname, 'privacy/index.html'),
         'terms': resolve(__dirname, 'terms/index.html'),
-        'news': resolve(__dirname, 'news.html'),                       // note: this one is not in folder
-        '404': resolve(__dirname, '404.html')                          // custom 404
+        'news': resolve(__dirname, 'news.html'),  
+        'blog/posts/developing-traffic-torch-tools': resolve(__dirname, 'blog/posts/developing-traffic-torch-tools/index.html'),
+        'blog/posts/traffic-torch-seo-ux-analysis-tool-build': resolve(__dirname, 'blog/posts/traffic-torch-seo-ux-analysis-tool-build/index.html'),                    
+        '404': resolve(__dirname, '404.html')                         
       },
       output: {
         entryFileNames: 'assets/[name]-[hash].js',
