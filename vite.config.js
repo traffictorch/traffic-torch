@@ -26,8 +26,8 @@ export default defineConfig({
         'privacy': resolve(__dirname, 'privacy/index.html'),
         'terms': resolve(__dirname, 'terms/index.html'),
         'news': resolve(__dirname, 'news.html'),  
-        'blog/posts/developing-traffic-torch-tools': resolve(__dirname, 'blog/posts/developing-traffic-torch-tools/index.html'),
-        'blog/posts/traffic-torch-seo-ux-analysis-tool-build': resolve(__dirname, 'blog/posts/traffic-torch-seo-ux-analysis-tool-build/index.html'),                    
+        'blog/posts/developing-traffic-torch-tools': resolve(__dirname, 'blog/posts/developing-traffic-torch-tools.html'),
+        'blog/posts/traffic-torch-seo-ux-analysis-tool-build': resolve(__dirname, 'blog/posts/traffic-torch-seo-ux-analysis-tool-build.html'),                    
         '404': resolve(__dirname, '404.html')                         
       },
       output: {
