@@ -431,8 +431,7 @@ if (hasInterviews) uniqueInsights += 15;
         };
         return map[name] || "This factor significantly impacts AI search performance and citation likelihood.";
       }
-      
-      
+
       
       function getFixes(name) {
         let fixes = '';
@@ -550,12 +549,22 @@ if (name === "Structured Data") {
         "Unique Insights": ["First-hand experience markers", "Dated/timely results mentioned", "Interviews/quotes included", "Deep content (1500+ words)"],
         "Anti-AI Safety": ["High sentence burstiness", "Low word repetition", "No predictable sentence starts"]
       };
-      
-      
 
       const scores = modules.map(m => m.score);
       
-      
+                // Controlled smooth scroll toward results - max 220px move (prevents big jumps, consistent UX)
+const resultsContainer = document.getElementById('results');
+if (resultsContainer) {
+  const targetY = resultsContainer.getBoundingClientRect().top + window.pageYOffset;
+  const currentY = window.pageYOffset;
+  const maxMove = 240; // ← balanced value (try 120–300 if needed)
+
+  window.scrollTo({
+    top: Math.min(targetY, currentY + maxMove),
+    behavior: 'smooth'
+  });
+}
+
       results.innerHTML = `
       
       
@@ -615,10 +624,6 @@ if (name === "Structured Data") {
     </p>
   </div>
 </div>
-
-
-
-
 
 <div class="grid grid-cols-1 md:grid-cols-4 gap-8 my-12 px-4 max-w-7xl mx-auto">
   ${modules.map(m => {

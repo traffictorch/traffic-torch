@@ -239,7 +239,7 @@ const resultsContainer = document.getElementById('results');
 if (resultsContainer) {
   const targetY = resultsContainer.getBoundingClientRect().top + window.pageYOffset;
   const currentY = window.pageYOffset;
-  const maxMove = 240; // ← balanced value (try 120–300 if needed)
+  const maxMove = 280; // ← balanced value (try 120–300 if needed)
 
   window.scrollTo({
     top: Math.min(targetY, currentY + maxMove),
