@@ -5,7 +5,7 @@
   "type": "module",
 "scripts": {
   "dev": "vite",
-  "build": "vite build && rm -rf dist && mkdir dist && rsync -av --exclude='dist' --exclude='node_modules' --exclude='.git' --exclude='.gitignore' --exclude='package*.json' --exclude='vite.config.js' --exclude='wrangler.jsonc' --exclude='.vite' ./ dist/",
+  "build": "vite build && rm -rf dist && mkdir -p dist && cp -r ./* dist/ && rm -rf dist/dist dist/node_modules dist/.git dist/.gitignore dist/package*.json dist/vite.config.js dist/wrangler.jsonc dist/.vite",
   "preview": "vite preview",
   "deploy": "npm run build && gh-pages -d dist"
 },
