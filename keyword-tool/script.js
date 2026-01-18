@@ -515,10 +515,21 @@ return `
       <div class="space-y-4">
         <p class="text-center text-lg font-medium text-gray-700 dark:text-gray-300 mb-6">Top priority fixes & impact:</p>
         ${topPriorityFixes.map((fix, i) => `
-          <div class="flex justify-between items-center p-5 bg-orange-50 dark:bg-orange-900/20 rounded-2xl border border-orange-200 dark:border-orange-800">
-            <span class="text-gray-800 dark:text-gray-200 font-medium">${i+1}. ${fix.issue}</span>
-            <span class="text-orange-600 dark:text-orange-400 font-bold">${fix.how.split('.')[0]}.</span>
-          </div>
+<div class="p-5 bg-orange-50 dark:bg-orange-900/20 rounded-2xl border border-orange-200 dark:border-orange-800">
+  <div class="flex items-start gap-4">
+    <div class="flex-shrink-0 font-bold text-xl text-orange-600 dark:text-orange-400">
+      ${i+1}.
+    </div>
+    <div class="flex-1 min-w-0">
+      <p class="text-gray-800 dark:text-gray-200 font-medium leading-relaxed">
+        ${fix.issue}
+      </p>
+    </div>
+    <div class="flex-shrink-0 text-right font-bold text-orange-600 dark:text-orange-400 whitespace-nowrap">
+      ${fix.how.split('.')[0]}.
+    </div>
+  </div>
+</div>
         `).join('')}
       </div>
     ` : `
