@@ -564,7 +564,7 @@ if (failedMetrics.length > 0) {
 }
        
       // Improved scroll with offset so radar title isn't hidden under header
-const offset = 110; // ← perfect sweet spot from your screenshots (try 90–130)
+const offset = 90; // ← perfect sweet spot from your screenshots (try 90–130)
 
 const elementPosition = resultsWrapper.getBoundingClientRect().top + window.pageYOffset;
 const offsetPosition = elementPosition - offset;
