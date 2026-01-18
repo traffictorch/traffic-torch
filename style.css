@@ -32,11 +32,6 @@ body {
 /* Header & footer stay perfect from global design */
 header, footer { backdrop-filter: blur(12px); }
 
-
-
-
-
-
 /* DesktopSidebar */
 #desktopSidebar {
   width: 16rem !important; /* Matches your Tailwind w-64 (256px) for expanded */
@@ -58,7 +53,6 @@ header, footer { backdrop-filter: blur(12px); }
   display: block; /* Visible only when expanded */
 }
 
-
 #desktopSidebar.collapsed .sidebar-link {
   justify-content: center !important; /* Overrides md:justify-start */
   padding-left: 0 !important;
@@ -69,9 +63,6 @@ header, footer { backdrop-filter: blur(12px); }
 #desktopSidebar.collapsed .logo-container-or-img { /* If needed for logo centering */
   justify-content: center !important;
 }
-
-
-
 
 /* Mobile Friendly */
 @media (max-width: 640px) {
@@ -101,7 +92,6 @@ header, footer { backdrop-filter: blur(12px); }
   }
 }
 
-
 /* iOS Safari reflow fix */
 .grid > *,
 .flex > *,
@@ -116,7 +106,6 @@ details > div,
 .container {
   contain: layout paint;
 }
-
 
 /* Bottom Banner – Mobile-friendly, 2rem top/bottom padding, no CLS */
 .bottom-banner {
@@ -165,7 +154,6 @@ details > div,
     position: static;
   }
 }
-
 
 /* ── PWA Install Button ─────────────────────────────────────────────── */
 #pwa-install-btn {
@@ -222,8 +210,6 @@ details > div,
   }
 }
 
-
-
 /* Force PWA button on top – fixes Firefox stacking issues */
 #pwa-install-btn {
   position: fixed !important;
@@ -251,4 +237,10 @@ body {
 body {
   transform: none !important;
   will-change: auto !important;
+}
+
+
+/* assets/css/styles.css or wherever your main styles live */
+#results-wrapper {
+  scroll-margin-top: 100px;   /* ← change this value - same logic as above */
 }
