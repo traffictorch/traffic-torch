@@ -600,15 +600,16 @@
     </p>
   </div>
 
-<!-- PDF Button - Simple browser print, exact match to Keyword VS and other tools -->
+<!-- PDF Button - Fixed fast-close race condition -->
 <div class="text-center my-20">
-  <button onclick='document.querySelectorAll(".hidden").forEach(el => el.classList.remove("hidden")); window.print();'
+  <button onclick='const els = [...document.querySelectorAll(".hidden")]; els.forEach(el => el.classList.remove("hidden")); window.print(); setTimeout(() => els.forEach(el => el.classList.add("hidden")), 1800);'
           class="group relative inline-flex items-center px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
-    <span class="flex items-center gap-6">Save Report as PDF 📝</span>
+    <span class="flex items-center gap-6">Save Report 📝</span>
     <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
   </button>
 </div>
 
+<!-- Copy Badge Code -->
   <div id="score-badge" class="hidden my-16 text-center">
     <a href="https://traffictorch.net/" target="_blank" style="display: inline-block; position: relative; font-family: system-ui, -apple-system, sans-serif; font-weight: bold; font-size: 13px; color: #969696; text-decoration: none;">
       Traffic Torch Optimized 🛡️

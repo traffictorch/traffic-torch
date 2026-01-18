@@ -922,7 +922,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/>
                 </svg>
               </summary>
-              <div class="px-8 pb-10 border-t border-white/10">
+              <div class="px-4 pb-10 border-t border-white/10">
                 ${cmsOptions.length > 0 ? `
                   <div class="max-w-md mx-auto my-10">
                     <label for="cms-select-${metricId}" class="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-3">
@@ -968,7 +968,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
 
       pluginData[m.name][cms].forEach(plugin => {
         const card = document.createElement('div');
-        card.className = 'bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-800/50 dark:to-gray-900/50 backdrop-blur rounded-2xl p-6 border border-white/10 hover:border-orange-400/50 transition-all duration-300';
+        card.className = 'bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-800/50 dark:to-gray-900/50 backdrop-blur rounded-2xl p-4 border border-white/10 hover:border-orange-400/50 transition-all duration-300';
         card.innerHTML = `
           <h4 class="text-xl font-bold text-orange-500 mb-3">${plugin.name}</h4>
           <p class="text-gray-800 dark:text-gray-200 text-sm leading-relaxed mb-6">${plugin.desc}</p>
