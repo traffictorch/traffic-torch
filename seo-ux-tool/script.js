@@ -564,7 +564,7 @@ if (failedMetrics.length > 0) {
 }
        
 // Reliable smooth scroll with offset for fixed header (prevents title hiding)
-const offset = 120; // ← start with 120px; matches your screenshot needs (radar title fully visible + breathing room)
+const offset = 20; // ← start with 120px; matches your screenshot needs (radar title fully visible + breathing room)
 // Try 100–140 range to fine-tune
 
 const rect = resultsWrapper.getBoundingClientRect();
