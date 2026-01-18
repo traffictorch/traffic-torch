@@ -99,50 +99,30 @@
   <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
   <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
     
-<!-- Preconnects (early DNS + connection) -->
-<link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/seo-ux-tool/style.css">
+  <link rel="stylesheet" media="print" href="/seo-ux-tool/print.css">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
-<!-- Custom styles – small & critical, load sync -->
-<link rel="stylesheet" href="/style.css">
-<link rel="stylesheet" href="/seo-ux-tool/style.css">
-
-<!-- Dark mode detection – tiny & sync (runs before paint) -->
-<script>
+  <script>
   (function() {
     const saved = localStorage.getItem('theme');
     const preferDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    if (preferDark) document.documentElement.classList.add('dark');
+    if (preferDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   })();
-</script>
+  </script>
 
-<!-- Tailwind CSS – async non-blocking load with fallback -->
-<link rel="preload" href="https://cdn.tailwindcss.com/tailwind.css" as="style" onload="this.rel='stylesheet';this.onload=null">
-<link rel="stylesheet" href="https://cdn.tailwindcss.com/tailwind.css" media="print" onload="this.media='all';this.onload=null">
-<noscript>
-  <link rel="stylesheet" href="https://cdn.tailwindcss.com/tailwind.css">
-</noscript>
-
-<!-- Fallback mirror if main CDN fails -->
-<script>
-  // Silent fallback for Tailwind CSS if primary fails
-  if (!document.querySelector('link[href*="tailwind.css"][media="all"]')) {
-    const fallback = document.createElement('link');
-    fallback.rel = 'stylesheet';
-    fallback.href = 'https://unpkg.com/tailwindcss@3.4.17/dist/tailwind.min.css';
-    document.head.appendChild(fallback);
-  }
-</script>
-
-<!-- Tailwind config – defer until CSS is ready -->
-<script defer>
-  tailwind.config = {
-    darkMode: 'class',
-  };
-</script>
-
-<!-- Optional print styles -->
-<link rel="stylesheet" media="print" href="/seo-ux-tool/print.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
   
 </head>
 
