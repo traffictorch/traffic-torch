@@ -565,6 +565,15 @@ if (failedMetrics.length > 0) {
        
 //commented out - resultsWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset;
+const currentY = window.pageYOffset;
+const maxMove = 25;
+
+window.scrollTo({
+  top: Math.min(targetY, currentY + maxMove),
+  behavior: 'smooth'
+});
+
       try {
         if (window.innerWidth >= 768) {
           const radarCtx = document.getElementById('health-radar').getContext('2d');
