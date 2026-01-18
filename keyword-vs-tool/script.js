@@ -481,7 +481,7 @@ window.scrollTo({
           <div class="flex-1">
             <div class="flex items-center gap-4 mb-4">
               <h4 class="text-2xl font-bold text-gray-900 dark:text-gray-100">${fix.module}</h4>
-              ${fix.isWorst ? '<span class="px-4 py-1 bg-red-600 text-white rounded-full text-sm font-bold">Critical Gap</span>' : ''}
+              ${fix.isWorst ? '<span class="px-4 py-1 bg-red-600 text-white rounded-full text-sm font-bold"></span>' : ''}
             </div>
             <div class="text-gray-800 dark:text-gray-200 space-y-2">
               ${fix.text.split('\n').map(line => `<p>${line}</p>`).join('')}
