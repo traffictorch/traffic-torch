@@ -517,16 +517,18 @@ return `
         ${topPriorityFixes.map((fix, i) => `
 <div class="p-5 bg-orange-50 dark:bg-orange-900/20 rounded-2xl border border-orange-200 dark:border-orange-800">
   <div class="flex items-start gap-4">
-    <div class="flex-shrink-0 font-bold text-xl text-orange-600 dark:text-orange-400">
-      ${i+1}.
+    <!-- Number -->
+    <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/40 text-xl font-bold text-orange-700 dark:text-orange-300">
+      ${i+1}
     </div>
+    
+    <!-- Content -->
     <div class="flex-1 min-w-0">
-      <p class="text-gray-800 dark:text-gray-200 font-medium leading-relaxed">
-        ${fix.issue}
+      <p class="text-gray-900 dark:text-gray-100 font-medium leading-relaxed">
+        <span class="font-bold text-orange-700 dark:text-orange-300">${fix.issue}</span>
+        <br class="sm:hidden">
+        ${fix.how}
       </p>
-    </div>
-    <div class="flex-shrink-0 text-right font-bold text-orange-600 dark:text-orange-400 whitespace-nowrap">
-      ${fix.how.split('.')[0]}.
     </div>
   </div>
 </div>
