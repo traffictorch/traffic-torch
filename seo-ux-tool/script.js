@@ -563,7 +563,7 @@ if (failedMetrics.length > 0) {
   `;
 }
        
-//commented out - resultsWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+// Scroll into view after results load
 
 const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset;
 const currentY = window.pageYOffset;
