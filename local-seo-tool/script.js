@@ -498,7 +498,7 @@ const internalGeoLinks = Array.from(doc.querySelectorAll('a')).some(a => {
 // Scroll to results from top of viewport + generous offset - always consistent
 const offset = 240; // (adjust 80–340)
 
-const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset - offset;
+const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
 
 window.scrollTo({
   top: targetY,
