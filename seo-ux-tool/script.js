@@ -1,7 +1,5 @@
 import { renderPriorityAndGains } from './priority-gains.js';
-
 import { renderPluginSolutions } from './plugin-solutions.js';
-
 
 const moduleInfo = {
   seo: {
@@ -288,9 +286,7 @@ setTimeout(() => {
       
      console.log('Render attempt for priority/gains - prioritisedFixes length:', prioritisedFixes.length);
 console.log('Your score:', yourScore, 'Overall score:', overallScore); 
-      
-      
-      
+  
       // Display truncated page title
 const titleElement = doc.querySelector('title');
 let pageTitle = titleElement ? titleElement.textContent.trim() : 'Example Domain';
@@ -317,11 +313,6 @@ if (overallScore < 60) {
 }
 document.querySelector('#overall-grade .grade-text').textContent = gradeText;
 document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
-
-
-
-
-
 
       modules.forEach(mod => {
         const card = document.getElementById(`${mod.id}-score`);
@@ -429,7 +420,6 @@ learnMore.innerHTML =
   '</a>';
 expand.appendChild(learnMore);
         
-        
         // More Details toggle for all modules
 document.querySelectorAll('.more-details').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -451,9 +441,6 @@ document.querySelectorAll('.more-details').forEach(btn => {
   });
 });
 
-
-
-
         expandBtn.className = 'expand mt-4 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full transition';
         expandBtn.textContent = 'Show Fixes';
         expandBtn.onclick = () => {
@@ -462,12 +449,8 @@ document.querySelectorAll('.more-details').forEach(btn => {
         };
       });
           
-
       allIssues.sort((a, b) => b.impact - a.impact);
  
-
-      
-
       resultsWrapper.classList.remove('hidden');
       document.getElementById('radar-title').classList.remove('hidden');
       document.getElementById('copy-badge').classList.remove('hidden');
@@ -478,10 +461,6 @@ document.querySelectorAll('.more-details').forEach(btn => {
         resultsWrapper.style.opacity = '1';
         resultsWrapper.style.transform = 'translateY(0)';
       });
-      
-      
-      
-      
       
 // === Plugin Solutions - detect only the 16 supported metrics from checklist (❌) ===
 const pluginSection = document.getElementById('plugin-solutions-section');
@@ -553,10 +532,6 @@ modules.forEach(mod => {
   });
 });
 
-
-
-
-
 // More Details toggle for all modules
 document.querySelectorAll('.more-details').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -578,10 +553,6 @@ document.querySelectorAll('.more-details').forEach(btn => {
   });
 });
 
-
-
-
-
 if (failedMetrics.length > 0) {
   renderPluginSolutions(failedMetrics);
 } else {
@@ -591,13 +562,7 @@ if (failedMetrics.length > 0) {
     </div>
   `;
 }
-      
-      
-      
-      
-      
-      
-      
+       
       // Improved scroll with offset so radar title isn't hidden under header
 const offset = 110; // ← perfect sweet spot from your screenshots (try 90–130)
 
@@ -762,10 +727,7 @@ try {
         }
       }
 
-      document.body.setAttribute('data-url', displayUrl);
-      
-
-      
+      document.body.setAttribute('data-url', displayUrl);   
       
     }
   });
@@ -926,9 +888,6 @@ try {
 
     return { score: Math.max(0, Math.round(score)), issues };
   }
-  
-  
-  
   
   function analyzeMobile(html, doc) {
     let score = 100;
