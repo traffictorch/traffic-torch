@@ -562,15 +562,14 @@ if (failedMetrics.length > 0) {
     </div>
   `;
 }
-       
-// Scroll into view after results load
 
-const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset;
-const currentY = window.pageYOffset;
-const maxMove = 220;
+// Scroll to results from top of viewport + generous offset - always consistent
+const offset = 220; // (adjust 80–140)
+
+const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset - offset;
 
 window.scrollTo({
-  top: Math.min(targetY, currentY + maxMove),
+  top: targetY,
   behavior: 'smooth'
 });
 
