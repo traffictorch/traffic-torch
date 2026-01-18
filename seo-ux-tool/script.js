@@ -563,17 +563,7 @@ if (failedMetrics.length > 0) {
   `;
 }
        
-// Reliable smooth scroll with offset for fixed header (prevents title hiding)
-const offset = 20; // ← start with 120px; matches your screenshot needs (radar title fully visible + breathing room)
-// Try 100–140 range to fine-tune
-
-const rect = resultsWrapper.getBoundingClientRect();
-const absoluteTop = rect.top + window.pageYOffset; // current absolute position
-
-window.scrollTo({
-  top: absoluteTop - offset,
-  behavior: 'smooth'
-});
+//commented out - resultsWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
       try {
         if (window.innerWidth >= 768) {
