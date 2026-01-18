@@ -256,6 +256,19 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const finalFixes = topFixes.slice(0, 3);
       results.classList.remove('hidden');
+      
+          // Controlled smooth scroll toward results - max 220px move (prevents big jumps, consistent UX)
+const resultsContainer = document.getElementById('results');
+if (resultsContainer) {
+  const targetY = resultsContainer.getBoundingClientRect().top + window.pageYOffset;
+  const currentY = window.pageYOffset;
+  const maxMove = 320; // ← balanced value (try 120–300 if needed)
+
+  window.scrollTo({
+    top: Math.min(targetY, currentY + maxMove),
+    behavior: 'smooth'
+  });
+}
 
       results.innerHTML = `
       

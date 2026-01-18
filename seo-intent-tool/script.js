@@ -343,7 +343,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const scores = modules.map(m => m.score);
       
-  
+      // Controlled smooth scroll toward results - max 220px move (prevents big jumps, consistent UX)
+const resultsContainer = document.getElementById('results');
+if (resultsContainer) {
+  const targetY = resultsContainer.getBoundingClientRect().top + window.pageYOffset;
+  const currentY = window.pageYOffset;
+  const maxMove = 220; // ← balanced value (try 120–300 if needed)
+
+  window.scrollTo({
+    top: Math.min(targetY, currentY + maxMove),
+    behavior: 'smooth'
+  });
+}
       
       results.innerHTML = `
 <!-- Overall Score Card -->
