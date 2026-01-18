@@ -99,30 +99,38 @@
   <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
   <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
     
-  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
-  <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/seo-ux-tool/style.css">
-  <link rel="stylesheet" media="print" href="/seo-ux-tool/print.css">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+<!-- Preconnects for faster resource loading -->
+<link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
-  <script>
+<!-- Custom styles – load immediately (small files) -->
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/seo-ux-tool/style.css">
+
+<!-- Dark mode class – fast & synchronous -->
+<script>
   (function() {
     const saved = localStorage.getItem('theme');
     const preferDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    if (preferDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    if (preferDark) document.documentElement.classList.add('dark');
   })();
-  </script>
+</script>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-    }
-  </script>
+<!-- Deferred full Tailwind CSS – no render-blocking -->
+<link rel="stylesheet" 
+      href="https://cdn.tailwindcss.com/tailwind.css" 
+      media="print" 
+      onload="this.media='all';this.onload=null">
+<noscript>
+  <link rel="stylesheet" href="https://cdn.tailwindcss.com/tailwind.css">
+</noscript>
+
+<!-- Tailwind config – only after Tailwind loads -->
+<script defer>
+  tailwind.config = {
+    darkMode: 'class',
+  };
+</script>
   
 </head>
 
