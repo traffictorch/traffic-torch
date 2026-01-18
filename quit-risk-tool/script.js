@@ -981,14 +981,14 @@ window.scrollTo({
           <!-- Enhanced Quit Risk Reduction & Engagement Impact -->
           ${impactHTML}
 
-<!-- PDF Button -->
-<div class="text-center my-16">
-  <button onclick="showPanelsForPrint(); window.print();"
-          class="group relative inline-flex items-center px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
-    <span class="flex items-center gap-6">📄 Save Report</span>
-    <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-  </button>
-</div>
+          <!-- PDF Button -->
+          <div class="text-center my-16">
+            <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
+                    class="group relative inline-flex items-center px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
+              <span class="flex items-center gap-6">📄 Save Report as PDF</span>
+              <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </button>
+          </div>
         `;
 
         console.log('Container AFTER HTML set:', !!document.getElementById('plugin-solutions-section'));
