@@ -467,9 +467,9 @@ performance: {
 
       if (!passed) {
         failedOnlyHTML += `
-          <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
+          <div class="mb-8 p-2 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
             <p class="font-bold text-2xl ${metricGrade.color} mb-4">
-              <span class="text-6xl">${metricGrade.emoji}</span>
+              <span class="text-4xl">${metricGrade.emoji}</span>
             </p>
             <p class="font-bold text-2xl ${metricGrade.color} mb-4">
               ${f.name}
@@ -519,7 +519,7 @@ const fixesPanelHTML = failedCount > 0
   : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
 
     return `
-      <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
+      <div class="text-center p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
@@ -532,7 +532,7 @@ const fixesPanelHTML = failedCount > 0
         </div>
         <p class="mt-4 text-2xl font-bold ${gradeInfo.color}">${moduleName}</p>
         <div class="mt-4 text-center">
-          <p class="text-6xl ${gradeInfo.color}">${statusEmoji}</p>
+          <p class="text-4xl ${gradeInfo.color}">${statusEmoji}</p>
           <p class="text-3xl font-bold ${gradeInfo.color} mt-2">${statusMessage}</p>
         </div>
         <div class="mt-6 text-center metrics-list">
@@ -549,7 +549,7 @@ const fixesPanelHTML = failedCount > 0
             Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
           </button>
         </div>
-<div class="fixes-panel hidden mt-8 text-left px-4 md:px-0">
+<div class="fixes-panel hidden mt-8 text-left px-2 md:px-0">
   ${fixesPanelHTML}
 </div>
       </div>`;
@@ -911,7 +911,7 @@ window.scrollTo({
                 return `<p class="mt-6 md:mt-8 text-base md:text-lg text-gray-600 dark:text-gray-200 text-center px-4 leading-tight">${truncated}</p>`;
               })()}
               <div class="mt-6 text-center">
-                <p class="text-5xl md:text-6xl font-bold ${overallGrade.color} drop-shadow-lg">
+                <p class="text-5xl md:text-4xl font-bold ${overallGrade.color} drop-shadow-lg">
                   ${overallGrade.emoji}
                 </p>
                 <p class="text-3xl md:text-4xl font-bold ${overallGrade.color} mt-4">
@@ -931,7 +931,7 @@ window.scrollTo({
                   ${risk.text === 'Low Risk' ? '✅✅✅' : risk.text === 'Moderate Risk' ? '⚠️⚠️' : '❌❌❌'}
                 </span>
               </div>
-              <p class="text-6xl font-black bg-gradient-to-r ${risk.color} bg-clip-text text-transparent">
+              <p class="text-4xl font-black bg-gradient-to-r ${risk.color} bg-clip-text text-transparent">
                 ${risk.text}
               </p>
             </div>
