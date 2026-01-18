@@ -240,7 +240,3 @@ body {
 }
 
 
-/* assets/css/styles.css or wherever your main styles live */
-#results-wrapper {
-  scroll-margin-top: 10px;   /* ← change this value - same logic as above */
-}
