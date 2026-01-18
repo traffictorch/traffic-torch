@@ -926,9 +926,9 @@ window.scrollTo({
           <div class="text-center mb-12">
             <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">Quit Risk:</p>
             <div class="flex flex-col items-center gap-6">
-              <div class="flex items-center gap-6 text-7xl">
+              <div class="flex items-center gap-6 text-6xl">
                 <span class="${risk.text === 'Low Risk' ? 'text-green-600' : risk.text === 'Moderate Risk' ? 'text-orange-600' : 'text-red-600'}">
-                  ${risk.text === 'Low Risk' ? '✅✅✅' : risk.text === 'Moderate Risk' ? '⚠️⚠️' : '❌❌❌'}
+                  ${risk.text === 'Low Risk' ? '✅' : risk.text === 'Moderate Risk' ? '⚠️' : '❌'}
                 </span>
               </div>
               <p class="text-4xl font-black bg-gradient-to-r ${risk.color} bg-clip-text text-transparent">
@@ -1081,16 +1081,23 @@ window.scrollTo({
     }
   });
 
-  document.addEventListener('click', e => {
-    const moreBtn = e.target.closest('.more-details');
-    if (moreBtn) {
-      const card = moreBtn.closest('.p-6');
+document.addEventListener('click', e => {
+  // More Details button
+  const moreBtn = e.target.closest('.more-details');
+  if (moreBtn) {
+    const card = moreBtn.closest('.module-card');
+    if (card) {
       card.querySelector('.more-details-panel').classList.toggle('hidden');
     }
-    const fixesBtn = e.target.closest('.show-fixes');
-    if (fixesBtn) {
-      const card = fixesBtn.closest('.p-6');
+  }
+
+  // Show Fixes button
+  const fixesBtn = e.target.closest('.show-fixes');
+  if (fixesBtn) {
+    const card = fixesBtn.closest('.module-card');
+    if (card) {
       card.querySelector('.fixes-panel').classList.toggle('hidden');
     }
-  });
+  }
+});
 });
