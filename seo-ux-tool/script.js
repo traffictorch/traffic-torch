@@ -598,7 +598,16 @@ if (failedMetrics.length > 0) {
       
       
       
-      resultsWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Improved scroll with offset so radar title isn't hidden under header
+const offset = 110; // ← perfect sweet spot from your screenshots (try 90–130)
+
+const elementPosition = resultsWrapper.getBoundingClientRect().top + window.pageYOffset;
+const offsetPosition = elementPosition - offset;
+
+window.scrollTo({
+  top: offsetPosition,
+  behavior: 'smooth'
+});
 
       try {
         if (window.innerWidth >= 768) {
