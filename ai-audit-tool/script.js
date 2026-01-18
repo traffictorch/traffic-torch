@@ -296,7 +296,7 @@ if (resultsContainer) {
       Radar chart available on desktop/tablet
     </p>
     <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">
-      Visual overview of your page performance across 7 key SEO Intent factors
+      Visual overview of your page performance across 5 key SEO Intent factors
     </p>
   </div>
 </div>
