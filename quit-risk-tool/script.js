@@ -518,41 +518,41 @@ const fixesPanelHTML = failedCount > 0
   `
   : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
 
-    return `
-      <div class="text-center p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
-        <div class="relative mx-auto w-32 h-32">
-          <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-            <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-            <circle cx="64" cy="64" r="56" stroke="${ringColor}" stroke-width="12" fill="none"
-                    stroke-dasharray="${(value / 100) * 352} 352" stroke-linecap="round"/>
-          </svg>
-          <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${ringColor};">
-            ${value}
-          </div>
-        </div>
-        <p class="mt-4 text-2xl font-bold ${gradeInfo.color}">${moduleName}</p>
-        <div class="mt-4 text-center">
-          <p class="text-4xl ${gradeInfo.color}">${statusEmoji}</p>
-          <p class="text-3xl font-bold ${gradeInfo.color} mt-2">${statusMessage}</p>
-        </div>
-        <div class="mt-6 text-center metrics-list">
-          ${metricsHTML}
-        </div>
-        <div class="more-details-panel hidden mt-8 text-left">
-          ${moreDetailsHTML}
-        </div>
-        <div class="mt-6 flex gap-4 justify-center flex-wrap">
-          <button class="more-details px-8 py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
-            More Details
-          </button>
-          <button class="show-fixes px-8 py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
-            Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
-          </button>
-        </div>
-<div class="fixes-panel hidden mt-8 text-left px-2 md:px-0">
-  ${fixesPanelHTML}
-</div>
-      </div>`;
+return `
+  <div class="module-card text-center p-4 sm:p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
+    <div class="relative mx-auto w-32 h-32">
+      <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+        <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+        <circle cx="64" cy="64" r="56" stroke="${ringColor}" stroke-width="12" fill="none"
+                stroke-dasharray="${(value / 100) * 352} 352" stroke-linecap="round"/>
+      </svg>
+      <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${ringColor};">
+        ${value}
+      </div>
+    </div>
+    <p class="mt-4 text-2xl font-bold $$   {gradeInfo.color}">   $${moduleName}</p>
+    <div class="mt-4 text-center">
+      <p class="text-4xl $$   {gradeInfo.color}">   $${statusEmoji}</p>
+      <p class="text-3xl font-bold $$   {gradeInfo.color} mt-2">   $${statusMessage}</p>
+    </div>
+    <div class="mt-6 text-center metrics-list px-2 sm:px-0">
+      ${metricsHTML}
+    </div>
+    <div class="more-details-panel hidden mt-8 text-left px-2 sm:px-4">
+      ${moreDetailsHTML}
+    </div>
+    <div class="mt-6 flex gap-4 justify-center flex-wrap">
+      <button class="more-details px-6 py-3 sm:px-8 sm:py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
+        More Details
+      </button>
+      <button class="show-fixes px-6 py-3 sm:px-8 sm:py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
+        Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
+      </button>
+    </div>
+    <div class="fixes-panel hidden mt-8 text-left px-2 sm:px-4">
+      ${fixesPanelHTML}
+    </div>
+  </div>`;
   }
 
   form.addEventListener('submit', async e => {
