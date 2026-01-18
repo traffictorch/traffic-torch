@@ -1164,18 +1164,20 @@
 </div>
 	<!-- AddToAny END --> 
 	
-	<!-- Breadcrumbs -->
-<div class="max-w-5xl mx-auto px-6 py-4 text-center">
-  <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
-    <a href="/">Traffic Torch</a>
-  </p>
-  <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
-    <span id="page-name"></span>
-  </p>
-</div>
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
 
 <script>
-  // Set page name
+  // Set page name (unchanged)
   document.getElementById('page-name').textContent = document.title
     .replace('Traffic Torch – ', '')
     .replace(' | Traffic Torch', '')
