@@ -530,10 +530,10 @@ return `
         ${value}
       </div>
     </div>
-    <p class="mt-4 text-2xl font-bold $$   {gradeInfo.color}">   $${moduleName}</p>
+    <p class="mt-4 text-2xl font-bold ${gradeInfo.color}">   ${moduleName}</p>
     <div class="mt-4 text-center">
       <p class="text-4xl $$   {gradeInfo.color}">   $${statusEmoji}</p>
-      <p class="text-3xl font-bold $$   {gradeInfo.color} mt-2">   $${statusMessage}</p>
+      <p class="text-3xl font-bold ${gradeInfo.color} mt-2">   ${statusMessage}</p>
     </div>
     <div class="mt-6 text-center metrics-list px-2 sm:px-0">
       ${metricsHTML}
