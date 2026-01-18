@@ -567,7 +567,7 @@ if (failedMetrics.length > 0) {
 
 const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset;
 const currentY = window.pageYOffset;
-const maxMove = 125;
+const maxMove = 165;
 
 window.scrollTo({
   top: Math.min(targetY, currentY + maxMove),
