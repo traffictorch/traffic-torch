@@ -228,13 +228,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
       setTimeout(() => {
       
-      
-      
-      
-      
+                // Controlled smooth scroll toward results - max 220px move (prevents big jumps, consistent UX)
+const resultsContainer = document.getElementById('results');
+if (resultsContainer) {
+  const targetY = resultsContainer.getBoundingClientRect().top + window.pageYOffset;
+  const currentY = window.pageYOffset;
+  const maxMove = 240; // ← balanced value (try 120–300 if needed)
+
+  window.scrollTo({
+    top: Math.min(targetY, currentY + maxMove),
+    behavior: 'smooth'
+  });
+}
+
         results.innerHTML = `
-        
-        
         
 <!-- Overall Score Card -->
 <div class="flex justify-center my-12 px-4">
@@ -293,8 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </p>
   </div>
 </div>
-
-
 
             <!-- Metrics Layout -->
             <div class="space-y-8">
@@ -433,12 +438,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }).join('')}
               </div>
             </div>
-            
-            
-            
-            
-                        
-            
 
             <div class="mt-20 space-y-8">
               <h2 class="text-4xl md:text-5xl font-black text-center text-gray-900 dark:text-gray-100">Top 3 Priority Fixes</h2>
@@ -524,9 +523,6 @@ document.addEventListener('DOMContentLoaded', () => {
               })()}
             </div>
 
-
-
-
 <div class="max-w-5xl mx-auto mt-20 grid md:grid-cols-2 gap-8">
   <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
     <h3 class="text-3xl font-bold text-center mb-8 text-orange-500">Human Score Improvement</h3>
@@ -572,14 +568,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </details>
   </div>
-  
-  
-  
-  
-  
-  
-  
-  
   
   <div class="p-8 bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
     <h3 class="text-3xl font-bold text-center mb-8">Potential Ranking & Traffic Gains</h3>
@@ -627,9 +615,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
-            
-            
-            
 
             <div class="text-center my-16">
               <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
@@ -641,8 +626,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         `;
         
-
-
 
       // === RADAR CHART INITIALIZATION ===
       setTimeout(() => {
@@ -707,8 +690,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }, 150);
       
-      
-        
       // Clean URL for PDF cover: domain on first line, path on second
       let fullUrl = document.getElementById('url-input').value.trim();
       let displayUrl = 'traffictorch.net'; // fallback
@@ -729,8 +710,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       document.body.setAttribute('data-url', displayUrl);
-        
-        
         
       }, remaining);
     } catch (err) {
