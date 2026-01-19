@@ -84,7 +84,7 @@
      TARGETED HIDING – safe & specific (no :not breakage)
   ─────────────────────────────────────────────────────────────── */
   .max-w-4xl.mx-auto.my-16 details,               /* how/why accordions */
-
+  section.py-16.px-4.bg-gray-50.dark\:bg-gray-900, /* 8 metric cards section */
   .max-w-4xl.mx-auto.mb-16,                       /* strong opening + 5 must-do sections */
   #ai-search-seo-checklist,                       /* ultimate checklist */
   .tools-grid,
@@ -95,7 +95,7 @@
   section.bottom-banner,
   .metric-card,
   .checklist-card,
-
+  .max-w-6xl.mx-auto {
     display: none !important;
   }
 
