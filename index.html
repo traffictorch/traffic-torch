@@ -101,7 +101,25 @@
   
   <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
   
-
+  <style id="critical-css">
+:root{--bg-gradient: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1);--accent: #ea580c;--track: rgba(0,0,0,0.15);--text-primary:#111827;--text-dark:#e5e7eb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-gradient);color:var(--text-primary);min-height:100vh;line-height:1.5}
+.dark body{color:var(--text-dark);--bg-gradient:linear-gradient(to bottom right,#0f172a,#1e293b,#334155)}
+header{backdrop-filter:blur(12px);position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(255,255,255,0.8)}
+.dark header{background:rgba(15,23,42,0.8)}
+.flex,.items-center{display:flex;align-items:center}
+.container,.mx-auto{max-width:80rem;margin-left:auto;margin-right:auto;padding:0 1.5rem}
+main{margin-top:5.5rem;padding:2rem 0;text-align:center}
+h1,.text-5xl{font-size:3rem;line-height:1.1;font-weight:700;margin-bottom:1rem}
+.text-2xl{font-size:1.5rem;line-height:2rem}
+@media (max-width:640px){h1,.text-5xl{font-size:2.25rem}main{padding:1.5rem 1rem}}
+#desktopSidebar{width:16rem!important}
+#desktopSidebar .sidebar-text,#desktopSidebar #sidebarTitle{display:none}
+#desktopSidebar:not(.collapsed) .sidebar-text,#desktopSidebar:not(.collapsed) #sidebarTitle{display:block}
+@media (max-width:640px){.text-5xl{font-size:2.25rem}}
+@media (max-width:420px){header .flex.items-center.gap-4{gap:0.5rem}}
+</style>
     
 
   <link rel="stylesheet" href="/style.css">
