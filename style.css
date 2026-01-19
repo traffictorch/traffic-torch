@@ -155,88 +155,72 @@ details > div,
   }
 }
 
-/* ── PWA Install Button ─────────────────────────────────────────────── */
+/* ── PWA Install Button – Glassmorphism ──────────────────────────────── */
 #pwa-install-btn {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 9999;                    /* 2147483647 is almost never needed */
+  inset: auto 1.5rem 1.5rem auto;   /* right + bottom – reliable */
+  z-index: 9999;
   
-  padding: 0.75rem 1.75rem;
-  font-size: 1rem;
-  font-weight: 700;
-  
-  background: linear-gradient(to right, #f97316, #ec4899);
-  color: white;
+  /* Core glass effect */
+  background: rgba(249, 115, 22, 0.18);           /* semi-transparent orange-pink base */
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(249, 115, 22, 0.35);     /* subtle glowing edge */
   border-radius: 9999px;
   
+  /* Text & padding */
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.85rem 2rem;
+  letter-spacing: 0.02em;
+  
+  /* Shadows – soft outer glow + inner depth */
   box-shadow: 
-    0 10px 25px -5px rgba(249, 115, 22, 0.4),
-    0 8px 10px -6px rgba(236, 72, 153, 0.4);
+    0 8px 32px -8px rgba(249, 115, 22, 0.42),
+    inset 0 1px 1px rgba(255, 255, 255, 0.18);
   
-  transition: all 0.2s ease;
-  transform: translateZ(0);         /* force hardware acceleration */
-  will-change: transform, opacity;
-  
+  /* Smoothness & performance */
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translate3d(0,0,0);
+  will-change: transform, box-shadow, background;
   pointer-events: auto;
   user-select: none;
+  isolation: isolate;
 }
 
+/* Hover – lift + stronger glow */
 #pwa-install-btn:hover {
-  transform: scale(1.06) translateZ(0);
+  transform: translateY(-4px) scale(1.04) translate3d(0,0,0);
   box-shadow: 
-    0 20px 35px -10px rgba(249, 115, 22, 0.5),
-    0 10px 15px -6px rgba(236, 72, 153, 0.5);
+    0 20px 40px -12px rgba(249, 115, 22, 0.55),
+    inset 0 1px 1px rgba(255, 255, 255, 0.28);
+  background: rgba(249, 115, 22, 0.26);
 }
 
+/* Active – pressed feel */
 #pwa-install-btn:active {
-  transform: scale(0.97) translateZ(0);
+  transform: translateY(-1px) scale(0.97) translate3d(0,0,0);
+  transition-duration: 0.15s;
+  box-shadow: 
+    0 6px 20px -6px rgba(249, 115, 22, 0.45),
+    inset 0 2px 4px rgba(0,0,0,0.15);
 }
 
+/* Mobile adjustments */
 @media (max-width: 640px) {
   #pwa-install-btn {
-    bottom: 16px;
-    right: 16px;
-    padding: 0.65rem 1.4rem;
-    font-size: 0.95rem;
+    inset: auto 1rem 1rem auto;
+    padding: 0.75rem 1.8rem;
+    font-size: 0.96rem;
   }
 }
 
-/* Optional: very small screens / very safe fallback */
 @media (max-width: 360px) {
   #pwa-install-btn {
-    font-size: 0.875rem;
-    padding: 0.5rem 1.25rem;
+    padding: 0.65rem 1.5rem;
+    font-size: 0.92rem;
   }
-}
-
-/* Force PWA button on top – fixes Firefox stacking issues */
-#pwa-install-btn {
-  position: fixed !important;
-  inset: auto 24px 24px auto;     /* right & bottom – more reliable than separate props */
-  z-index: 9999 !important;
-  transform: translate3d(0,0,0);  /* creates fresh stacking context + forces GPU layer */
-  will-change: transform;
-}
-
-/* Extra safety for parents creating bad contexts */
-body {
-  transform: none !important;     /* kill accidental transforms on body/html */
-}
-
-/* Ultimate Firefox fixed button safety net */
-#pwa-install-btn {
-  position: fixed !important;
-  inset: auto 1.5rem 1.5rem auto !important;
-  z-index: 9999 !important;
-  transform: translate3d(0,0,0) !important;
-  isolation: isolate !important;
-}
-
-/* Kill any rogue body transform that breaks fixed positioning */
-body {
-  transform: none !important;
-  will-change: auto !important;
 }
 
 /* Copy Link Button */
