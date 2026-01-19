@@ -52,7 +52,7 @@ function createInstallButton() {
 
   const btn = document.createElement('button');
   btn.id = 'pwa-install-btn';
-  btn.textContent = 'Install App';
+  btn.textContent = 'Install App 📱';
 
   btn.className =
     'fixed bottom-6 right-6 z-[9999] ' +

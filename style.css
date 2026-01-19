@@ -244,30 +244,48 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 30vh;          /* adjust height as needed */
-  padding: 2rem 1rem;
+  min-height: 40vh;
+  padding: 1rem;
 }
 
 .copy-link-btn {
-  padding: 0.75rem 1.75rem;
-  background: #6366f1;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
+  padding: 0.8rem 1.8rem;
   font-size: 1.05rem;
   font-weight: 500;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  color: var(--text-primary);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.75rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 6px 20px var(--shadow-glass);
+  cursor: pointer;
+  transition: transform 0.18s ease;
 }
 
 .copy-link-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.15);
 }
 
 .copy-link-btn:active {
   transform: translateY(0);
+}
+
+/* Day / Night mode variables – put this at the top of style.css */
+:root {
+  --text-primary: #1f2937;          /* gray-800 */
+  --glass-bg: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.35);
+  --shadow-glass: rgba(0, 0, 0, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-primary: #e5e7eb;        /* gray-200 */
+    --glass-bg: rgba(30, 41, 59, 0.4);
+    --glass-border: rgba(148, 163, 184, 0.25);
+    --shadow-glass: rgba(0, 0, 0, 0.5);
+  }
 }
 
 
