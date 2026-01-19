@@ -99,11 +99,54 @@
   <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
   <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
   
+   <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+  
   <style id="critical-css">
   :root{--bg-gradient: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1);--accent: #ea580c;--track: rgba(0,0,0,0.15)}*{box-sizing:border-box}body{font-family:'Inter',sans-serif;background:var(--bg-gradient);color:white;min-height:100vh;margin:0}body{}header{backdrop-filter:blur(12px)}#desktopSidebar{width:16rem!important}#desktopSidebar .sidebar-text,#desktopSidebar #sidebarTitle{display:none}#desktopSidebar:not(.collapsed) .sidebar-text,#desktopSidebar:not(.collapsed) #sidebarTitle{display:block}@media (max-width:640px){.text-5xl{font-size:2.25rem}}@media (max-width:420px){header .flex.items-center.gap-4{gap:0.5rem}}.flex>*{min-width:0}.flex,.container{contain:layout paint}body{transform:none!important}body{transform:none!important;will-change:auto!important}
+
+/* Layout structure */
+html, body { height:100%; width:100%; }
+body { margin:0; padding:0; overflow-x:hidden; }
+
+/* Header & Navigation skeleton */
+header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 1000;
+  backdrop-filter: blur(12px);
+  background: rgba(255,255,255,0.7);   /* light mode fallback */
+  --tw-bg-opacity: 0.7;
+}
+.dark header { background: rgba(31,41,55,0.7); --tw-bg-opacity: 0.7; }
+
+nav, .sidebar, #desktopSidebar {
+  display: flex;
+  align-items: center;
+}
+
+/* Most used text sizes/colors */
+.text-2xl, .text-3xl, .text-4xl { font-size: 1.5rem; line-height: 2rem; }
+.text-gray-800, .dark .text-gray-200 { color: #1f2937; }
+.dark .text-gray-200 { color: #e5e7eb; }
+
+/* Buttons & common interactive elements */
+button, a.btn-like, [class*="bg-"][class*="text-"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+}
+
+/* Main content area skeleton */
+main, .container, .content-wrapper {
+  margin-top: 5rem;          /* prevent content under fixed header */
+  padding: 1rem;
+}
+
 </style>
     
-  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/seo-ux-tool/style.css">
   <link rel="stylesheet" media="print" href="/seo-ux-tool/print.css">
@@ -121,12 +164,23 @@
   })();
   </script>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-    }
-  </script>
+/* 1. Very important – hide everything until Tailwind is ready */
+<style>
+  html { visibility: hidden; }
+  .js-tailwind-ready html { visibility: visible; }
+</style>
+
+<!-- 2. Load tailwind deferred -->
+<script defer src="https://cdn.tailwindcss.com"></script>
+
+<script>
+  tailwind.config = { darkMode: 'class' }
+
+  // When tailwind has done first pass
+  requestAnimationFrame(() => {
+    document.documentElement.classList.add('js-tailwind-ready');
+  });
+</script>
   
 </head>
 
