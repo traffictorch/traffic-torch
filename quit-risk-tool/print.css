@@ -128,38 +128,65 @@
     display: none !important;
   }
 
-/* Force show the Quit Risk small metric modules & containers */
-.module-card,
-.grid,
-.max-w-7xl.mx-auto,
-.max-w-5xl.mx-auto,
-section,
-div[class*="grid-cols"],
-.my-16,
-.my-12,
-.p-8,
-.p-6 {
-  display: block !important;   /* fallback for print quirks */
-  display: grid !important;    /* restore grid if needed */
-  visibility: visible !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-  padding: 1cm !important;
-  break-inside: avoid;         /* prevent cards splitting across pages */
-  page-break-inside: avoid;
-}
+/* Force full-width layout for Quit Risk modules in print */
+@media print {
+  /* Main report wrapper – full bleed */
+  #results,
+  #results-wrapper,
+  .max-w-7xl.mx-auto,
+  .max-w-5xl.mx-auto,
+  .px-6,
+  .grid.gap-8.my-16 {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
 
-/* Ensure individual cards don't collapse */
-.module-card {
-  display: block !important;
-  min-height: auto !important;
-}
+  /* Individual module cards – expand to full available width */
+  .module-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0.5cm 0 !important;
+    padding: 1cm !important;       /* generous internal space – looks clean */
+    box-sizing: border-box !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
 
-/* Force open all hidden panels inside modules for full print content */
-.more-details-panel,
-.fixes-panel,
-.hidden {
-  display: block !important;
-  visibility: visible !important;
+  /* Grid containers inside – force single column + full width */
+  .grid.gap-8,
+  [class*="grid-cols"] {
+    display: block !important;     /* collapse multi-column grids into stacked */
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    gap: 1cm !important;
+  }
+
+  /* Override any leftover narrow containers */
+  .max-w-md,
+  .max-w-lg,
+  .mx-auto {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Make the circular score bigger and centered for better PDF look */
+  .module-card .relative.mx-auto.w-32.h-32,
+  .module-card svg {
+    width: 140px !important;
+    height: 140px !important;
+    margin: 0 auto !important;
+  }
+
+  /* Prevent tiny text in print */
+  .module-card p,
+  .module-card h3,
+  .module-card h4 {
+    font-size: 14pt !important;
+    line-height: 1.4 !important;
+  }
 }
 }
