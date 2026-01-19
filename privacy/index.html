@@ -41,31 +41,61 @@
   <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch.webp" />
   <meta name="twitter:site" content="@TrafficTorch" /> <!-- Update if you have an X handle -->
   
-  <!-- Structured Data (JSON-LD): PrivacyPolicy Page + Organization -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "Privacy Policy",
-    "description": "Traffic Torch privacy policy – 100% client-side processing with no data collection or tracking.",
-    "url": "https://traffictorch.net/privacy-policy/",
-    "publisher": {
-      "@type": "Organization",
-      "name": "Traffic Torch"
-    }
-  }
-  </script>
-  
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "PrivacyPolicy",
+  "name": "Privacy Policy - Traffic Torch",
+  "description": "Traffic Torch privacy policy: All tools run 100% client-side in your browser. No data is collected, stored, tracked, or sent to any server. Complete user privacy and zero logging.",
+  "url": "https://traffictorch.net/privacy-policy/",
+  "mainEntity": {
     "@type": "Organization",
     "name": "Traffic Torch",
-    "url": "https://traffictorch.net/",
-    "logo": "https://traffictorch.net/favicon.ico",
-    "description": "AI-powered instant SEO and UX health analysis tools – fully private and client-side."
+    "url": "https://traffictorch.net/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch"
   }
-  </script>
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Traffic Torch",
+  "url": "https://traffictorch.net/",
+  "logo": "https://traffictorch.net/logo-512.webp",
+  "description": "Creators of free, privacy-first AI-powered SEO and UX analysis tools. All processing happens client-side – no data collection, no tracking, no servers involved.",
+  "sameAs": [
+    "https://twitter.com/guitaralize"
+  ]
+}
+</script>
+
+<!-- BreadcrumbList for consistent site hierarchy signals -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://traffictorch.net/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Privacy Policy",
+      "item": "https://traffictorch.net/privacy-policy/"
+    }
+  ]
+}
+</script>
   
   <meta name="color-scheme" content="dark light">
   <link rel="icon" href="/favicon.ico" />

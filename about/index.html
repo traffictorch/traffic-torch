@@ -41,31 +41,62 @@
   <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch.webp" />
   <meta name="twitter:site" content="@TrafficTorch" /> <!-- Update if you have an X handle -->
   
-  <!-- Structured Data (JSON-LD): AboutPage + Organization -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "AboutPage",
-    "name": "About Traffic Torch",
-    "description": "Information about Traffic Torch – a 360 suite of AI-powered SEO and UX analysis tools.",
-    "url": "https://traffictorch.net/about/",
-    "publisher": {
-      "@type": "Organization",
-      "name": "Traffic Torch"
-    }
-  }
-  </script>
-  
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "name": "About Traffic Torch",
+  "description": "Learn about Traffic Torch – the free instant 360° SEO & UX health analysis suite. Instant scores, deep audits, competitive gap insights, AI-generated fixes, and predictive forecasts across keyword optimization, AI search readiness, content authenticity, bounce risk, local signals, and more.",
+  "url": "https://traffictorch.net/about/",
+  "mainEntity": {
     "@type": "Organization",
     "name": "Traffic Torch",
     "url": "https://traffictorch.net/",
-    "logo": "https://traffictorch.net/favicon.ico",
-    "description": "AI-powered instant SEO and UX health analysis tools – Mobile-friendly with deep educational reports."
+    "logo": "https://traffictorch.net/logo-512.webp"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch"
   }
-  </script>
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Traffic Torch",
+  "url": "https://traffictorch.net/",
+  "logo": "https://traffictorch.net/logo-512.webp",
+  "description": "Creators of free AI-powered instant SEO and UX analysis tools that help websites improve rankings, user engagement, and visibility in both traditional and AI-powered search.",
+  "sameAs": [
+    "https://twitter.com/guitaralize"
+  ]
+}
+</script>
+
+<!-- Optional but recommended: BreadcrumbList for better site hierarchy signals -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://traffictorch.net/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "About Traffic Torch",
+      "item": "https://traffictorch.net/about/"
+    }
+  ]
+}
+</script>
   
   <meta name="color-scheme" content="dark light">
   <link rel="icon" href="/favicon.ico" />

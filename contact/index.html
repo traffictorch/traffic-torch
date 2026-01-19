@@ -41,31 +41,68 @@
   <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch.webp" />
   <meta name="twitter:site" content="@TrafficTorch" /> <!-- Update if you have an X handle -->
  
-  <!-- Structured Data (JSON-LD): ContactPage + Organization -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ContactPage",
-    "name": "Contact Traffic Torch",
-    "description": "Contact information for Traffic Torch – AI-powered SEO and UX tools support.",
-    "url": "https://traffictorch.net/contact/",
-    "publisher": {
-      "@type": "Organization",
-      "name": "Traffic Torch"
-    }
-  }
-  </script>
- 
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "name": "Contact Traffic Torch",
+  "description": "Get in touch with the Traffic Torch team – creators of free, client-side AI-powered SEO and UX analysis tools. Questions, feedback, suggestions or support inquiries welcome.",
+  "url": "https://traffictorch.net/contact/",
+  "mainEntity": {
     "@type": "Organization",
     "name": "Traffic Torch",
     "url": "https://traffictorch.net/",
-    "logo": "https://traffictorch.net/favicon.ico",
-    "description": "AI-powered instant SEO and UX health analysis tools – Mobile-friendly with deep educational reports."
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer support",
+      "email": "support@traffictorch.net",  <!-- change to your real email if you have one -->
+      "areaServed": "Global",
+      "availableLanguage": ["English"]
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch"
   }
-  </script>
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Traffic Torch",
+  "url": "https://traffictorch.net/",
+  "logo": "https://traffictorch.net/logo-512.webp",
+  "description": "Creators of free, privacy-first AI-powered SEO and UX analysis tools. All processing happens 100% client-side – no data collection, no tracking.",
+  "sameAs": [
+    "https://twitter.com/guitaralize"
+  ]
+}
+</script>
+
+<!-- BreadcrumbList for consistent site hierarchy signals -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://traffictorch.net/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Contact",
+      "item": "https://traffictorch.net/contact/"
+    }
+  ]
+}
+</script>
  
   <meta name="color-scheme" content="dark light">
   <link rel="icon" href="/favicon.ico" />
