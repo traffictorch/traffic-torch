@@ -494,7 +494,7 @@ return `
 <!-- Score Improvement & Potential Gains -->
 <div class="max-w-6xl mx-auto my-20 grid md:grid-cols-2 gap-8">
   <!-- Left: Ranking Potential Improvement -->
-  <div class="p-12 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border-4 border-orange-500/20">
+  <div class="p-4 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border-4 border-orange-500/20">
     <h3 class="text-4xl font-black text-center mb-10 text-orange-600 dark:text-orange-400">Ranking Potential Improvement</h3>
     <div class="flex justify-center items-baseline gap-8 mb-10">
       <div class="text-center">
@@ -551,7 +551,7 @@ return `
     </details>
   </div>
   <!-- Right: Expected Performance Gains -->
-  <div class="p-12 bg-gradient-to-br from-green-500 to-teal-600 text-white rounded-3xl shadow-2xl">
+  <div class="p-4 bg-gradient-to-br from-green-500 to-teal-600 text-white rounded-3xl shadow-2xl">
     <h3 class="text-4xl font-black text-center mb-10">Expected Performance Gains</h3>
     <div class="space-y-8">
       <div class="flex items-center gap-6">
