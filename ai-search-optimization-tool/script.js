@@ -710,8 +710,8 @@ ${prioritisedFixes.length > 0 ? `
   </div>
   ${prioritisedFixes.map(fix => `
     <div class="mx-4 p-8 bg-gradient-to-r ${fix.gradient} border-l-8 rounded-r-2xl">
-      <div class="flex gap-6">
-        <div class="text-5xl">${fix.emoji}</div>
+      <div class="flex gap-4">
+        <div class="text-2xl">${fix.emoji}</div>
         <div class="flex-1">
           <h4 class="text-2xl font-bold ${fix.color}">${fix.title}</h4>
           <div class="mt-4"><p class="text-blue-500 font-bold">What:</p><p class="text-gray-800 dark:text-gray-200 mt-1">${fix.what}</p></div>
@@ -722,7 +722,7 @@ ${prioritisedFixes.length > 0 ? `
     </div>
   `).join('')}
 ` : ''}
-<div class="mt-20 px-4 max-w-6xl mx-auto">
+<div class="mt-20 px-2 max-w-6xl mx-auto">
   <div class="grid md:grid-cols-2 gap-8">
     <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl">
       <h3 class="text-3xl font-black text-center mb-8 text-gray-800 dark:text-gray-200">AI Search Score Improvement</h3>
