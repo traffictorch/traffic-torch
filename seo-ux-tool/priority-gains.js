@@ -54,7 +54,7 @@ export function renderPriorityAndGains(prioritisedFixes, yourScore, overallScore
         <div class="flex justify-center items-baseline gap-6 mb-10">
           <div class="text-6xl font-black text-gray-500 dark:text-gray-400">${yourScore}</div>
           <div class="text-4xl text-gray-400">→</div>
-          <div class="text-7xl font-black text-green-600 dark:text-green-400">${projected}</div>
+          <div class="text-5xl font-black text-green-600 dark:text-green-400">${projected}</div>
           <div class="text-2xl font-medium text-green-600 dark:text-green-400 ml-4">(+${scoreDelta})</div>
         </div>
         <p class="text-center text-xl font-bold mb-6">+${scoreDelta} points potential</p>
