@@ -84,7 +84,6 @@
      TARGETED HIDING – safe & specific (no :not breakage)
   ─────────────────────────────────────────────────────────────── */
   .max-w-4xl.mx-auto.my-16 details,               /* how/why accordions */
-  section.py-16.px-4.bg-gray-50.dark\:bg-gray-900, /* 8 metric cards section */
   .max-w-4xl.mx-auto.mb-16,                       /* strong opening + 5 must-do sections */
   #ai-search-seo-checklist,                       /* ultimate checklist */
   .tools-grid,
@@ -95,7 +94,6 @@
   section.bottom-banner,
   .metric-card,
   .checklist-card,
-  .max-w-6xl.mx-auto {
     display: none !important;
   }
 
@@ -179,5 +177,69 @@
     max-width: 100% !important;
     width: 100% !important;
     margin: 0 auto !important;
+  }
+  
+  /* ──────────────────────────────────────────────────────────────
+   FIX OVERLAPPING MODULES – AI Search Tool full-width stacked print
+──────────────────────────────────────────────────────────────── */
+@media print {
+  /* Collapse grid to single column + full bleed */
+  .grid.grid-cols-1.md\\:grid-cols-4,
+  .grid.gap-8.my-12,
+  .px-4,
+  .max-w-7xl.mx-auto {
+    display: block !important;
+    grid-template-columns: 1fr !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 1.5cm !important; /* space between stacked cards */
+  }
+
+  /* Individual score cards – full width, generous padding, no split */
+  .score-card {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 1.2cm 0 !important;
+    padding: 1.5cm !important; /* bigger internal space – prevents text overflow */
+    box-sizing: border-box !important;
+    break-inside: avoid-page !important;
+    page-break-inside: avoid !important;
+    page-break-after: always !important; /* one card per page – cleanest PDF */
+    border: 2pt solid #e5e7eb !important; /* optional: light border for separation */
+  }
+
+  /* Make score circle bigger & centered */
+  .score-card .relative.mx-auto.w-32.h-32,
+  .score-card svg {
+    width: 180px !important;
+    height: 180px !important;
+    margin: 0 auto 1cm !important;
+  }
+
+  /* Larger readable text – no squeezing */
+  .score-card p,
+  .score-card span,
+  .score-card .text-xl,
+  .score-card .text-base,
+  .score-card .text-sm {
+    font-size: 14pt !important;
+    line-height: 1.5 !important;
+    word-break: break-word !important;
+  }
+
+  /* Prevent any leftover narrow containers */
+  .max-w-md,
+  .mx-auto {
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* Overall score card at top – also full width */
+  .flex.justify-center.my-12 .max-w-md.w-full {
+    max-width: 100% !important;
+    width: 100% !important;
   }
 }
