@@ -727,7 +727,7 @@ ${allFixes.filter(f => f.module?.trim().toLowerCase() === m.name.trim().toLowerC
       <div class="text-center my-16 px-4">
         <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
                 class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl md:text-3xl font-bold rounded-2xl shadow-lg hover:opacity-90 transition transform hover:scale-105">
-          📄 Save as PDF
+          Save Report 📄
         </button>
         <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
           This will expand all sections for a complete printable report
