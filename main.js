@@ -257,4 +257,32 @@ if (sidebar && (collapseBtn || desktopMenuToggle)) {
   if (sidebar.classList.contains('collapsed')) toggleSidebar();
 }
 
- 
+// 6. Global PDF save helper – survives fast mobile cancel
+function saveAsPdf() {
+  // Collect elements once (more efficient)
+  const hiddenElements = [...document.querySelectorAll('.hidden')];
+
+  // Show them for printing
+  hiddenElements.forEach(el => el.classList.remove('hidden'));
+
+  // Optional: jump to top for better print start (helps mobile UX)
+  window.scrollTo({ top: 0, behavior: 'instant' });
+
+  // Trigger print dialog
+  window.print();
+
+  // Restore after dialog closes – main fix
+  const restoreHidden = () => {
+    hiddenElements.forEach(el => el.classList.add('hidden'));
+  };
+
+  // Primary: focus returns after preview close (very reliable on mobile Chrome)
+  const onFocusRestore = () => {
+    restoreHidden();
+    window.removeEventListener('focus', onFocusRestore);
+  };
+  window.addEventListener('focus', onFocusRestore);
+
+  // Safety backup: longer timeout for very fast cancels or weird timing
+  setTimeout(restoreHidden, 2200);
+} 
