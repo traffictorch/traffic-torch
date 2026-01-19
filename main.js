@@ -175,10 +175,10 @@ function showIOSInstallInstructions() {
 }
 
 // ── Event Listeners ─────────────────────────────────────────────────────
-if (!isInStandaloneMode() && !document.getElementById('pwa-install-btn')) {
-  console.log('Immediate fallback: creating PWA install button');
-  createInstallButton();
-}
+//if (!isInStandaloneMode() && !document.getElementById('pwa-install-btn')) {
+//  console.log('Immediate fallback: creating PWA install button');
+//  createInstallButton();
+//}
 
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
