@@ -164,23 +164,12 @@ main, .container, .content-wrapper {
   })();
   </script>
 
-/* 1. Very important – hide everything until Tailwind is ready */
-<style>
-  html { visibility: hidden; }
-  .js-tailwind-ready html { visibility: visible; }
-</style>
-
-<!-- 2. Load tailwind deferred -->
-<script defer src="https://cdn.tailwindcss.com"></script>
-
-<script>
-  tailwind.config = { darkMode: 'class' }
-
-  // When tailwind has done first pass
-  requestAnimationFrame(() => {
-    document.documentElement.classList.add('js-tailwind-ready');
-  });
-</script>
+  <script defer src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
   
 </head>
 
