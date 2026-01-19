@@ -244,70 +244,30 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 50vh;
+  min-height: 30vh;          /* adjust height as needed */
   padding: 2rem 1rem;
 }
 
-.glass-copy-btn {
-  position: relative;
-  overflow: hidden;
-  padding: 0.9rem 2.2rem;
-  font-size: 1.1rem;
-  font-weight: 600;
+.copy-link-btn {
+  padding: 0.75rem 1.75rem;
+  background: #6366f1;
   color: white;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.28), rgba(139, 92, 246, 0.20));
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 1rem;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px); /* Safari support */
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.22);
+  border: none;
+  border-radius: 0.5rem;
   cursor: pointer;
-  transition: all 0.25s ease;
+  font-size: 1.05rem;
+  font-weight: 500;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Hover & focus states */
-.glass-copy-btn:hover,
-.glass-copy-btn:focus-visible {
-  transform: translateY(-3px);
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.38), rgba(139, 92, 246, 0.30));
-  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.32);
+.copy-link-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.15);
 }
 
-/* Active / pressed state – fake ripple feel with scale & opacity */
-.glass-copy-btn:active {
-  transform: translateY(-1px) scale(0.97);
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.45), rgba(139, 92, 246, 0.38));
+.copy-link-btn:active {
+  transform: translateY(0);
 }
 
-/* Very subtle inner shine on press */
-.glass-copy-btn::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 1rem;
-  background: radial-gradient(
-    circle at 30% 30%,
-    rgba(255, 255, 255, 0.35) 0%,
-    transparent 60%
-  );
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
 
-.glass-copy-btn:active::after {
-  opacity: 1;
-}
-
-/* Dark mode adjustment */
-@media (prefers-color-scheme: dark) {
-  .glass-copy-btn {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.32), rgba(99, 102, 241, 0.24));
-    border-color: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 10px 36px rgba(0, 0, 0, 0.45);
-  }
-
-  .glass-copy-btn:hover,
-  .glass-copy-btn:focus-visible {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.42), rgba(99, 102, 241, 0.34));
-  }
-}
