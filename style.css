@@ -4,11 +4,13 @@
   --bg-gradient: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1);
   --accent: #ea580c;
   --track: rgba(0,0,0,0.15);
+  --text-primary: #1f2937;      /* gray-800 */
 }
 .dark {
   --bg-gradient: linear-gradient(to bottom right, #0f172a, #020617, #000000);
   --accent: #f97316;
   --track: rgba(255,255,255,0.15);
+  --text-primary: #e5e7eb;    /* gray-200 */
 }
 
 
