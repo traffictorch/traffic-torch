@@ -4,13 +4,11 @@
   --bg-gradient: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1);
   --accent: #ea580c;
   --track: rgba(0,0,0,0.15);
-  --text-primary: #1f2937;      /* gray-800 */
 }
 .dark {
   --bg-gradient: linear-gradient(to bottom right, #0f172a, #020617, #000000);
   --accent: #f97316;
   --track: rgba(255,255,255,0.15);
-  --text-primary: #e5e7eb;    /* gray-200 */
 }
 
 
@@ -246,7 +244,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 40vh;
+  min-height: 0vh;
   padding: 1rem;
 }
 
@@ -254,7 +252,7 @@ body {
   padding: 0.8rem 1.8rem;
   font-size: 1.05rem;
   font-weight: 500;
-  color: var(--text-primary);
+  color: #838384;
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: 0.75rem;
@@ -273,21 +271,5 @@ body {
   transform: translateY(0);
 }
 
-/* Day / Night mode variables – put this at the top of style.css */
-:root {
-  --text-primary: #1f2937;          /* gray-800 */
-  --glass-bg: rgba(255, 255, 255, 0.25);
-  --glass-border: rgba(255, 255, 255, 0.35);
-  --shadow-glass: rgba(0, 0, 0, 0.12);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text-primary: #e5e7eb;        /* gray-200 */
-    --glass-bg: rgba(30, 41, 59, 0.4);
-    --glass-border: rgba(148, 163, 184, 0.25);
-    --shadow-glass: rgba(0, 0, 0, 0.5);
-  }
-}
 
 
