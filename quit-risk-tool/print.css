@@ -83,48 +83,43 @@
   /* ──────────────────────────────────────────────────────────────
      TARGETED HIDING – safe & specific (no :not on containers)
   ─────────────────────────────────────────────────────────────── */
-  .max-w-4xl.mx-auto.my-16 details,               /* how/why accordions */
-  section.py-20.bg-gray-50.dark\:bg-gray-900,     /* deep dive modules */
-  #quit-risk-seo-checklist,                       /* checklist */
-  .tools-grid,
-  section.max-w-5xl.mx-auto.my-24,                /* author bio */
-  div[style*="display: flex; justify-content: center; margin: 30px 0;"],  /* share */
-  .a2a_kit,
-  div.max-w-5xl.mx-auto.px-6.py-4.text-center,    /* breadcrumbs */
-  section.bottom-banner,
-  .checklist-card,
-  .max-w-7xl.mx-auto,
-  .max-w-6xl.mx-auto {
-    display: none !important;
-  }
+header,
+footer,
+nav,
+aside,
+#keyword-form,
+#analysis-progress,
+.no-print,
+button,
+.tools-grid,
+.a2a_kit,
+section.bottom-banner,
+div[style*="display: flex; justify-content: center; margin: 30px 0;"], /* share blocks */
+div.max-w-5xl.mx-auto.px-6.py-4.text-center, /* breadcrumbs etc. */
+.max-w-7xl.mx-auto,
+.max-w-6xl.mx-auto {
+  display: none !important;
+}
 
-  /* Extra safety: hide top-level details not in report */
-  details:not(.fixes-panel details, .full-details details) {
-    display: none !important;
-  }
+/* ──────────────────────────────────────────────────────────────
+   Force show all report essentials
+─────────────────────────────────────────────────────────────── */
+#results-wrapper,
+.fixes-panel,
+.full-details,
+.expand-content,
+.score-card,
+section,
+.grid,
+.flex,
+details,
+#quit-risk-seo-checklist,          /* ← explicitly keep if needed */
+.checklist-card {
+  display: block !important;
+  visibility: visible !important;
+}
 
-  /* ──────────────────────────────────────────────────────────────
-     Always show important report content
-  ─────────────────────────────────────────────────────────────── */
-  .fixes-panel,
-  .full-details,
-  .expand-content,
-  .hidden.mt-4,
-  .hidden.mt-6,
-  .hidden.mt-8 {
-    display: block !important;
-  }
-
-  /* Original form/header/footer hiding */
-  #keyword-form,
-  #analysis-progress,
-  header,
-  footer,
-  nav,
-  aside,
-  .no-print,
-  button,
-  details > summary {
-    display: none !important;
-  }
+details[open] {
+  display: block !important;
+}
 }
