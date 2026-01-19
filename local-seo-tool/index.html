@@ -355,6 +355,17 @@
     <div id="results" class="hidden space-y-16 mt-16">
       <!-- Your existing cards/Chart.js output goes here -->
     </div>
+    
+    
+    <div class="center-btn-container">
+  <button
+    class="copy-link-btn"
+    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link 🔗',1600);"
+    data-text="https://traffictorch.net/local-seo-tool/"
+  >
+    Copy Link 🔗
+  </button>
+</div>
    
 <!-- How it Works Accordion -->
 <div class="max-w-4xl mx-auto my-16">

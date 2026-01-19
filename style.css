@@ -257,16 +257,16 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 0vh;
-  padding: 1rem;
+  padding: 0rem;
 }
 
 .copy-link-btn {
   padding: 0.8rem 1.8rem;
   font-size: 1.05rem;
-  font-weight: 500;
+  font-weight: 501;
   color: #297ce7;
   background: rgba(255, 255, 255, 0.25);
-  border: 1px solid rgba(49, 140, 237, 0.35);
+  border: 2px solid rgba(49, 140, 237, 0.35);
   border-radius: 0.75rem;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);

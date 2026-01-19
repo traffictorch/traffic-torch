@@ -295,8 +295,6 @@
         </div>
       </header>
       
-      
-  
 <main class="container mx-auto px-6 py-0 max-w-5xl flex-1">
   <div class="max-w-5xl mx-auto px-6 py-8">
     <h1 class="text-3xl md:text-4xl font-black text-center mb-6 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
@@ -306,8 +304,6 @@
       Discover how likely AI engines are to cite your page in generative answers.
     </p>
     
-
-
 <form id="audit-form" class="max-w-2xl mx-auto space-y-4">
   <div class="flex flex-col sm:flex-row gap-4">
     <label for="url-input" class="sr-only">Enter website URL to analyze</label>
@@ -342,7 +338,15 @@
     <div id="results" class="hidden"></div>
   </div>
   
-  
+      <div class="center-btn-container">
+  <button
+    class="copy-link-btn"
+    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link 🔗',1600);"
+    data-text="https://traffictorch.net/ai-search-optimization-tool/"
+  >
+    Copy Link 🔗
+  </button>
+</div>
   
   <!-- How It Works Expander (simplified) -->
    <div class="max-w-4xl mx-auto my-16"> 

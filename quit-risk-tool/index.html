@@ -363,7 +363,15 @@
       <!-- Your existing report sections go here -->
     </div>
 
-	
+	    <div class="center-btn-container">
+  <button
+    class="copy-link-btn"
+    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link 🔗',1600);"
+    data-text="https://traffictorch.net/quit-risk-tool/"
+  >
+    Copy Link 🔗
+  </button>
+</div>
 
 	
 <!-- How Quit Risk Works Accordion -->
