@@ -1,11 +1,13 @@
 /* Traffic Torch Analyzer 2025 — FINAL LOCAL CSS (dark + light + circles) */
 
 :root {
+  --text-primary: #1f2937;
   --bg-gradient: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1);
   --accent: #ea580c;
   --track: rgba(0,0,0,0.15);
 }
 .dark {
+  --text-primary: #e5e7eb;
   --bg-gradient: linear-gradient(to bottom right, #0f172a, #020617, #000000);
   --accent: #f97316;
   --track: rgba(255,255,255,0.15);
@@ -264,7 +266,7 @@ body {
   padding: 0.8rem 1.8rem;
   font-size: 1.05rem;
   font-weight: 500;
-  color: var(--text-primary);          /* ← this MUST switch now */
+  color: var(--text-primary);          /* Now switches when .dark is active */
   background: rgba(255, 255, 255, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 0.75rem;
@@ -279,17 +281,12 @@ body {
   transform: translateY(-2px);
 }
 
-.copy-link-btn:active {
-  transform: translateY(0);
+/* Better glass in dark mode – add to the existing .dark block or here */
+.dark .copy-link-btn {
+  background: rgba(30, 41, 59, 0.45);
+  border-color: rgba(148, 163, 184, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
 }
-
-/* Dark mode glass adjustment */
-@media (prefers-color-scheme: dark) {
-  .copy-link-btn {
-    background: rgba(30, 41, 59, 0.4);          /* slate-800 transparent */
-    border-color: rgba(148, 163, 184, 0.25);    /* slate-400 light */
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-  }
 }
 
 
