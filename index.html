@@ -101,71 +101,7 @@
   
   <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
   
-<style id="critical-css">
-:root{
-  --bg-gradient: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1);
-  --accent: #ea580c;
-  --track: rgba(0,0,0,0.15);
-  --text-primary: #111827;
-  --text-dark-mode: #e5e7eb;
-}
-*{box-sizing:border-box}
-body{
-  font-family:'Inter',system-ui,sans-serif;
-  background:var(--bg-gradient);
-  color:var(--text-primary);
-  min-height:100vh;
-  margin:0;
-  line-height:1.5;
-}
-.dark body{
-  color:var(--text-dark-mode);
-  --bg-gradient: linear-gradient(to bottom right, #0f172a, #1e293b, #334155);
-}
-header{
-  backdrop-filter:blur(12px);
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  z-index:50;
-  background:rgba(255,255,255,0.75);
-}
-.dark header{
-  background:rgba(15,23,42,0.75);
-}
-nav,.flex,.items-center{
-  display:flex;
-  align-items:center;
-}
-.justify-between{
-  justify-content:space-between;
-}
-.container,.max-w-7xl,.mx-auto{
-  max-width:80rem;
-  margin-left:auto;
-  margin-right:auto;
-}
-main{
-  margin-top:6rem;           /* ← most important fix: space under fixed header */
-  padding:2rem 1rem;
-}
-h1,.text-4xl,.text-5xl{
-  font-size:2.75rem;
-  line-height:1.1;
-  font-weight:700;
-}
-.text-center{
-  text-align:center;
-}
-.gap-4{
-  gap:1rem;
-}
-@media (max-width:640px){
-  main{padding:1.5rem 1rem;}
-  h1,.text-4xl,.text-5xl{font-size:2.25rem;}
-}
-</style>
+
     
 
   <link rel="stylesheet" href="/style.css">
