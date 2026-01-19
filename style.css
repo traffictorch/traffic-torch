@@ -240,6 +240,18 @@ body {
 }
 
 /* Copy Link Button */
+
+:root {
+  --text-primary: #1f2937;      /* gray-800 – perfect for light mode */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-primary: #e5e7eb;    /* gray-200 – perfect for dark mode */
+  }
+}
+
+/* Simple glass button – no bloat */
 .center-btn-container {
   display: flex;
   justify-content: center;
@@ -252,13 +264,13 @@ body {
   padding: 0.8rem 1.8rem;
   font-size: 1.05rem;
   font-weight: 500;
-  color: #838384;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  color: var(--text-primary);          /* ← this MUST switch now */
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 0.75rem;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 6px 20px var(--shadow-glass);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
   cursor: pointer;
   transition: transform 0.18s ease;
 }
@@ -269,6 +281,15 @@ body {
 
 .copy-link-btn:active {
   transform: translateY(0);
+}
+
+/* Dark mode glass adjustment */
+@media (prefers-color-scheme: dark) {
+  .copy-link-btn {
+    background: rgba(30, 41, 59, 0.4);          /* slate-800 transparent */
+    border-color: rgba(148, 163, 184, 0.25);    /* slate-400 light */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  }
 }
 
 
