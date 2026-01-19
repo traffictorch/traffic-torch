@@ -646,13 +646,15 @@
 </div>
 
 <!-- Copy link Button -->
-<button 
-  onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link 🔗',1600);"
-  data-text="https://traffic-torch.com/"
-  style="padding: 8px 14px; background: #6366f1; color: white; border: none; border-radius: 6px; cursor: pointer;"
->
-  Copy Link 🔗
-</button>
+<div class="center-btn-container">
+  <button 
+    class="copy-link-btn"
+    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link 🔗',1600);"
+    data-text="https://traffic-torch.com/"
+  >
+    Copy Link 🔗
+  </button>
+</div>
 
 	<!-- How Traffic Torch Works Accordion -->
 <div class="max-w-4xl mx-auto my-20">
