@@ -31,7 +31,7 @@ if (toggle) {
   });
 }
 
-// 2. PWA Install
+// 4. PWA Install
 let deferredPrompt = null;
 
 const isInStandaloneMode = () =>
@@ -193,7 +193,7 @@ window.addEventListener('load', () => {
       console.log('Load fallback: creating PWA install button');
       createInstallButton();
     }
-  }, 800);
+  }, 6000);
 });
 
 window.addEventListener('appinstalled', () => {
@@ -202,7 +202,7 @@ window.addEventListener('appinstalled', () => {
   deferredPrompt = null;
 });
 
-// 3. Minimal service worker registration
+// 5. Minimal service worker registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
@@ -211,7 +211,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// 4. Mobile menu (unchanged – preserved exactly)
+// 6. Mobile menu (unchanged – preserved exactly)
 document.addEventListener('DOMContentLoaded', () => {
   const button = document.getElementById('menuToggle');
   const menu = document.getElementById('mobileMenu');
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// 5. Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text)
+// 7. Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text)
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
 const desktopMenuToggle = document.getElementById('desktopMenuToggle');
@@ -257,7 +257,7 @@ if (sidebar && (collapseBtn || desktopMenuToggle)) {
   if (sidebar.classList.contains('collapsed')) toggleSidebar();
 }
 
-// 6. Global PDF save helper – survives fast mobile cancel
+// 8. Global PDF save helper – survives fast mobile cancel
 function saveAsPdf() {
   // Collect elements once (more efficient)
   const hiddenElements = [...document.querySelectorAll('.hidden')];
