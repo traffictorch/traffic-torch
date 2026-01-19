@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!container) return;
 
   container.innerHTML = metricExplanations.map(m => `
-    <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center">
+    <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center">
       <div class="text-6xl mb-6">${m.emoji}</div>
       <div class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-8">${m.name}</div>
       <details class="group">

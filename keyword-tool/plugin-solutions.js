@@ -129,7 +129,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
         const g = m.grade;
         return `
           <details class="group bg-white dark:bg-gray-900 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <summary class="flex items-center justify-between p-6 md:p-8 cursor-pointer list-none">
+            <summary class="flex items-center justify-between p-4 md:p-8 cursor-pointer list-none">
               <h3 class="text-2xl md:text-3xl font-bold ${g.color}">
                 ${g.emoji} ${m.name}
               </h3>
@@ -140,7 +140,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
               </div>
             </summary>
 
-            <div class="px-6 md:px-8 pb-8 md:pb-10 border-t border-gray-200 dark:border-gray-700">
+            <div class="px-4 md:px-8 pb-8 md:pb-10 border-t border-gray-200 dark:border-gray-700">
               <div class="max-w-md mx-auto my-8">
                 <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-orange-300 dark:border-orange-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 outline-none transition">
                   <option value="">Select your CMS...</option>
