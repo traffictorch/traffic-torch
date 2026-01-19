@@ -449,7 +449,7 @@ performance: {
       metricsHTML += `
         <div class="mb-6">
           <p class="font-medium text-xl">
-            <span class="${metricGrade.color} text-3xl mr-3">${metricGrade.emoji}</span>
+            <span class="${metricGrade.color} text-2xl mr-3">${metricGrade.emoji}</span>
             <span class="${metricGrade.color} font-bold">${f.name}</span>
           </p>
         </div>`;
@@ -724,7 +724,7 @@ return `
         let priorityFixesHTML = '';
         if (priorityFixes.length > 0) {
           priorityFixesHTML = priorityFixes.map((fix, index) => `
-            <div class="flex items-start gap-6 p-8 bg-gradient-to-r from-purple-600/10 to-cyan-600/10 rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all">
+            <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-purple-600/10 to-cyan-600/10 rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all">
               <div class="text-5xl font-black text-purple-600">${index + 1}</div>
               <div class="flex-1">
                 <p class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
@@ -813,7 +813,7 @@ return `
               <h3 class="text-3xl font-black mb-8 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent text-center">Potential Engagement Gains</h3>
               <ul class="space-y-8">
                 <li class="flex items-center gap-6">
-                  <span class="text-4xl">📉</span>
+                  <span class="text-2xl">📉</span>
                   <div class="flex-1">
                     <p class="font-bold text-xl text-gray-800 dark:text-gray-200">Bounce Rate</p>
                     <p class="text-lg text-gray-800 dark:text-gray-200">Potential ${bounceRange} reduction</p>
@@ -823,7 +823,7 @@ return `
                   </div>
                 </li>
                 <li class="flex items-center gap-6">
-                  <span class="text-4xl">⏱️</span>
+                  <span class="text-2xl">⏱️</span>
                   <div class="flex-1">
                     <p class="font-bold text-xl text-gray-800 dark:text-gray-200">Session Duration</p>
                     <p class="text-lg text-gray-800 dark:text-gray-200">Potential ${durationRange} longer</p>
@@ -833,7 +833,7 @@ return `
                   </div>
                 </li>
                 <li class="flex items-center gap-6">
-                  <span class="text-4xl">📄</span>
+                  <span class="text-2xl">📄</span>
                   <div class="flex-1">
                     <p class="font-bold text-xl text-gray-800 dark:text-gray-200">Pages per Session</p>
                     <p class="text-lg text-gray-800 dark:text-gray-200">Potential ${pagesRange} more pages viewed</p>
@@ -843,7 +843,7 @@ return `
                   </div>
                 </li>
                 <li class="flex items-center gap-6">
-                  <span class="text-4xl">💰</span>
+                  <span class="text-2xl">💰</span>
                   <div class="flex-1">
                     <p class="font-bold text-xl text-gray-800 dark:text-gray-200">Conversion Rate Lift</p>
                     <p class="text-lg text-gray-800 dark:text-gray-200">Potential ${conversionRange} improvement</p>
@@ -926,7 +926,7 @@ window.scrollTo({
           <div class="text-center mb-12">
             <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">Quit Risk:</p>
             <div class="flex flex-col items-center gap-6">
-              <div class="flex items-center gap-6 text-6xl">
+              <div class="flex items-center gap-6 text-4xl">
                 <span class="${risk.text === 'Low Risk' ? 'text-green-600' : risk.text === 'Moderate Risk' ? 'text-orange-600' : 'text-red-600'}">
                   ${risk.text === 'Low Risk' ? '✅' : risk.text === 'Moderate Risk' ? '⚠️' : '❌'}
                 </span>
@@ -955,7 +955,7 @@ window.scrollTo({
           </div>
 
           <!-- Modules -->
-          <div class="grid gap-8 my-16 max-w-7xl mx-auto px-6">
+          <div class="grid gap-8 my-16 max-w-7xl mx-auto px-4">
             <div class="grid md:grid-cols-1 gap-8">${readabilityHTML}</div>
             <div class="grid md:grid-cols-2 gap-8">${navHTML}${accessHTML}</div>
             <div class="grid md:grid-cols-2 gap-8">${mobileHTML}${speedHTML}</div>
