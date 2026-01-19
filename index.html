@@ -102,92 +102,69 @@
   <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
   
 <style id="critical-css">
-:root {
+:root{
   --bg-gradient: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1);
   --accent: #ea580c;
   --track: rgba(0,0,0,0.15);
-  --gray-50: #f9fafb;
-  --gray-100: #f3f4f6;
-  --gray-800: #1f2937;
-  --gray-900: #111827;
-  --gray-200-dark: #e5e7eb;
+  --text-primary: #111827;
+  --text-dark-mode: #e5e7eb;
 }
-
-* { box-sizing: border-box; }
-
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  line-height: 1.5;
+*{box-sizing:border-box}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--bg-gradient);
+  color:var(--text-primary);
+  min-height:100vh;
+  margin:0;
+  line-height:1.5;
 }
-
-body {
-  background: var(--bg-gradient);
-  color: var(--gray-900);
-}
-
-.dark body {
-  color: var(--gray-200-dark);
+.dark body{
+  color:var(--text-dark-mode);
   --bg-gradient: linear-gradient(to bottom right, #0f172a, #1e293b, #334155);
 }
-
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  backdrop-filter: blur(12px);
-  background: rgba(255,255,255,0.8);
+header{
+  backdrop-filter:blur(12px);
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:50;
+  background:rgba(255,255,255,0.75);
 }
-
-.dark header {
-  background: rgba(15,23,42,0.8);
+.dark header{
+  background:rgba(15,23,42,0.75);
 }
-
-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.5rem;
-  max-width: 1400px;
-  margin: 0 auto;
+nav,.flex,.items-center{
+  display:flex;
+  align-items:center;
 }
-
-.flex { display: flex; }
-.items-center { align-items: center; }
-.gap-4 { gap: 1rem; }
-.gap-6 { gap: 1.5rem; }
-
-.container, main {
-  margin-top: 5.5rem;           /* ← critical for fixed header clearance */
-  padding: 1.5rem;
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
+.justify-between{
+  justify-content:space-between;
 }
-
-h1, .text-4xl, .text-5xl {
-  font-size: 2.5rem;
-  line-height: 1.1;
-  font-weight: 700;
-  margin-bottom: 1rem;
+.container,.max-w-7xl,.mx-auto{
+  max-width:80rem;
+  margin-left:auto;
+  margin-right:auto;
 }
-
-@media (max-width: 640px) {
-  h1, .text-4xl, .text-5xl { font-size: 2rem; }
-  nav { padding: 1rem; }
-  .container, main { padding: 1rem; }
+main{
+  margin-top:6rem;           /* ← most important fix: space under fixed header */
+  padding:2rem 1rem;
 }
-
-/* Basic card/score placeholder shape to reduce CLS */
-.rounded-xl { border-radius: 0.75rem; }
-.bg-white { background-color: white; }
-.dark .bg-white { background-color: #1e293b; }
-.shadow-lg { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-.p-6 { padding: 1.5rem; }
+h1,.text-4xl,.text-5xl{
+  font-size:2.75rem;
+  line-height:1.1;
+  font-weight:700;
+}
+.text-center{
+  text-align:center;
+}
+.gap-4{
+  gap:1rem;
+}
+@media (max-width:640px){
+  main{padding:1.5rem 1rem;}
+  h1,.text-4xl,.text-5xl{font-size:2.25rem;}
+}
 </style>
     
 
