@@ -193,7 +193,7 @@ window.addEventListener('load', () => {
       console.log('Load fallback: creating PWA install button');
       createInstallButton();
     }
-  }, 6000);
+  }, 5000);
 });
 
 window.addEventListener('appinstalled', () => {
