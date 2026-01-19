@@ -498,14 +498,14 @@ return `
     <h3 class="text-4xl font-black text-center mb-10 text-orange-600 dark:text-orange-400">Ranking Potential Improvement</h3>
     <div class="flex justify-center items-baseline gap-8 mb-10">
       <div class="text-center">
-        <div class="px-8 py-4 bg-gray-100 dark:bg-gray-800 rounded-2xl text-2xl font-bold text-gray-600 dark:text-gray-400">
+        <div class="px-4 py-4 bg-gray-100 dark:bg-gray-800 rounded-2xl text-2xl font-bold text-gray-600 dark:text-gray-400">
           ${levels[currentLevel]}
         </div>
         <p class="text-lg mt-3 text-gray-600 dark:text-gray-400">Current</p>
       </div>
       <div class="text-5xl text-orange-500">→</div>
       <div class="text-center">
-        <div class="px-8 py-4 bg-green-100 dark:bg-green-900/30 rounded-2xl text-2xl font-bold text-green-700 dark:text-green-300">
+        <div class="px-4 py-4 bg-green-100 dark:bg-green-900/30 rounded-2xl text-2xl font-bold text-green-700 dark:text-green-300">
           ${levels[projectedLevel]}
         </div>
         <p class="text-lg mt-3 text-gray-600 dark:text-gray-400">Projected</p>

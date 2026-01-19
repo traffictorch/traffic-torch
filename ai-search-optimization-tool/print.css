@@ -95,7 +95,6 @@
   section.bottom-banner,
   .metric-card,
   .checklist-card,
-  .max-w-7xl.mx-auto,
   .max-w-6xl.mx-auto {
     display: none !important;
   }
@@ -128,5 +127,57 @@
   button,
   details > summary {
     display: none !important;
+  }
+  
+  /* ──────────────────────────────────────────────────────────────
+   Full-width & stacked modules for AI Search tool print/PDF
+─────────────────────────────────────────────────────────────── */
+@media print {
+  /* Main modules grid – full bleed, collapse to single column */
+  .grid.grid-cols-1.md\\:grid-cols-4,
+  .grid.gap-8.my-12,
+  .max-w-7xl.mx-auto {
+    display: block !important;
+    grid-template-columns: 1fr !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Individual score cards – expand fully */
+  .score-card {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 1cm 0 !important;
+    padding: 1.2cm !important;
+    box-sizing: border-box !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Make the circular score bigger & centered */
+  .score-card .relative.mx-auto.w-32.h-32,
+  .score-card svg {
+    width: 160px !important;
+    height: 160px !important;
+    margin: 0 auto 1cm !important;
+  }
+
+  /* Bigger readable text in cards */
+  .score-card p,
+  .score-card h3,
+  .score-card .text-xl,
+  .score-card .text-base {
+    font-size: 14pt !important;
+    line-height: 1.45 !important;
+  }
+
+  /* Remove narrow max-width from overall score card too */
+  .max-w-md.w-full {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 auto !important;
   }
 }
