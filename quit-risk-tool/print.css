@@ -83,7 +83,7 @@
   /* ──────────────────────────────────────────────────────────────
      TARGETED HIDING – safe & specific (no :not on containers)
   ─────────────────────────────────────────────────────────────── */
-  /* .max-w-4xl.mx-auto.my-16 details,               /* how/why accordions */
+  .max-w-4xl.mx-auto.my-16 details,               /* how/why accordions */
   section.py-20.bg-gray-50.dark\:bg-gray-900,     /* deep dive modules */
   #quit-risk-seo-checklist,                       /* checklist */
   .tools-grid,
@@ -127,11 +127,38 @@
   details > summary {
     display: none !important;
   }
-  /* Force show small metric modules and accordions */
-.metric-card,
-.max-w-4xl.mx-auto.my-16 details,
-.max-w-4xl.mx-auto.my-16 section,
-details {
+
+/* Force show the Quit Risk small metric modules & containers */
+.module-card,
+.grid,
+.max-w-7xl.mx-auto,
+.max-w-5xl.mx-auto,
+section,
+div[class*="grid-cols"],
+.my-16,
+.my-12,
+.p-8,
+.p-6 {
+  display: block !important;   /* fallback for print quirks */
+  display: grid !important;    /* restore grid if needed */
+  visibility: visible !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 1cm !important;
+  break-inside: avoid;         /* prevent cards splitting across pages */
+  page-break-inside: avoid;
+}
+
+/* Ensure individual cards don't collapse */
+.module-card {
+  display: block !important;
+  min-height: auto !important;
+}
+
+/* Force open all hidden panels inside modules for full print content */
+.more-details-panel,
+.fixes-panel,
+.hidden {
   display: block !important;
   visibility: visible !important;
 }
