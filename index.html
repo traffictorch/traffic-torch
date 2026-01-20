@@ -115,21 +115,7 @@
   <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
   <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
   
-<style>
-  :root {
-    --bg-gradient: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1);
-  }
-  .dark {
-    --bg-gradient: linear-gradient(to bottom right, #0f172a, #020617, #000000);
-  }
-  body {
-    background: var(--bg-gradient);
-    margin: 0;
-    min-height: 100vh;
-    font-family: 'Inter', system-ui, sans-serif;
-  }
-  html { scroll-behavior: smooth; }
-</style>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
 
 <link rel="preload" as="style" href="/style.css" onload="this.onload=null;this.rel='stylesheet'">
 <link rel="preload" as="style" href="/seo-ux-tool/style.css" onload="this.onload=null;this.rel='stylesheet'">
@@ -141,7 +127,12 @@
   <link rel="stylesheet" media="print" href="/seo-ux-tool/print.css">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   
-<script src="/tailwind-play-local.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
 
   <script>
   (function() {
@@ -773,6 +764,8 @@
   </p>
 
   <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
+    <p>Most websites still optimize like it's 2018: keyword stuffing, backlink chasing, long content for the sake of length.</p>
+    <p>Today that approach delivers fragile rankings and vanishing traffic.</p>
     <p class="font-semibold text-indigo-700 dark:text-indigo-300">
       Real, sustainable growth now requires mastery of three interlocking pillars at once:
     </p>
