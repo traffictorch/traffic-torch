@@ -506,39 +506,45 @@ window.scrollTo({
 });
 
     results.innerHTML = `
-      <!-- Overall Score Card -->
-      <div class="flex justify-center my-12 px-4">
-<div class="bg-white dark:bg-gray-950 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full border-4 ${bigGrade.border} border-opacity-60">
-  <div class="relative w-56 h-56 mx-auto md:w-64 md:h-64">
-    <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
-      <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
-      <circle cx="100" cy="100" r="90"
-              stroke="${bigGrade.fill}"
-              stroke-width="16" fill="none"
-              stroke-dasharray="${(yourScore / 100) * 565} 565"
-              stroke-linecap="round"/>
-    </svg>
-    <div class="absolute inset-0 flex items-center justify-center">
-      <div class="text-center">
-        <div class="text-4xl md:text-5xl font-black drop-shadow-lg ${bigGrade.text}">
-          ${yourScore}
-        </div>
-        <div class="text-base md:text-lg opacity-80 -mt-1 text-gray-600 dark:text-gray-400">
-          /100
+<!-- Overall Score Card -->
+<div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
+  <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${bigGrade.border} border-opacity-60">
+    
+    <!-- Responsive SVG wrapper -->
+    <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
+      <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+        <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
+        <circle cx="100" cy="100" r="90"
+                stroke="${bigGrade.fill}"
+                stroke-width="16" fill="none"
+                stroke-dasharray="${(yourScore / 100) * 565} 565"
+                stroke-linecap="round"/>
+      </svg>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="text-center">
+          <div class="text-5xl sm:text-6xl font-black drop-shadow-lg ${bigGrade.text}">
+            ${yourScore}
+          </div>
+          <div class="text-lg sm:text-xl opacity-80 -mt-1 text-gray-600 dark:text-gray-400">
+            /100
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Moved title here, below the circle -->
-<p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mt-6 truncate px-4" title="$   {pageTitle}">   ${truncatedTitle}</p>
-  <div class="mt-4 text-center">  <!-- reduced margin-top slightly since title is now closer -->
-    <p class="text-3xl md:text-4xl font-bold ${bigGrade.text}">
-      ${bigGrade.emoji} ${bigGrade.grade}
+    <!-- Title below circle (kept your truncation and title attribute) -->
+    <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mt-6 truncate px-3 sm:px-4" title="${pageTitle}">
+      ${truncatedTitle}
     </p>
+
+    <!-- Grade/emoji section -->
+    <div class="mt-4 text-center">
+      <p class="text-5xl sm:text-6xl font-bold ${bigGrade.text} drop-shadow-lg">
+        ${bigGrade.emoji} ${bigGrade.grade}
+      </p>
+    </div>
   </div>
 </div>
-      </div>
 
       <!-- Radar Chart -->
       <div class="max-w-5xl mx-auto my-16 px-4">
