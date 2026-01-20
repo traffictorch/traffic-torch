@@ -115,7 +115,21 @@
   <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
   <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
   
-<style id="critical-css">@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}:root{--bg-gradient:linear-gradient(to bottom right,#f8fafc,#e2e8f0,#cbd5e1);--accent:#ea580c;--track:rgba(0,0,0,0.15)}*{box-sizing:border-box}body{transition:background-color 0.3s}}header,footer{backdrop-filter:blur(12px)}#desktopSidebar{transition:width 0.3s ease-in-out;width:16rem !important}#desktopSidebar .sidebar-text,#desktopSidebar #sidebarTitle{display:none}#desktopSidebar:not(.collapsed) .sidebar-text,#desktopSidebar:not(.collapsed) #sidebarTitle{display:block}#desktopSidebar.collapsed .sidebar-link{justify-content:center !important;padding-left:0px !important;padding-right:0px !important;gap:0px !important}#priority-fixes p,.details p,.details li{overflow-wrap:break-word;word-break:break-word;hyphens:auto}.grid > *,.flex > *,.checklist-card,[class*="grid-cols-"] > *{min-width:0px}details > div,.grid,.flex,.container{contain:layout paint}.bottom-banner img{width:100%;height:auto;display:block;object-fit:cover;object-position:center center;border-radius:12px}:root{--text-primary:#1f2937}.health-score h2{margin-bottom:0.5rem}.spinner{border-width:8px;border-style:solid;border-color:rgb(249,115,22) rgba(255,255,255,0.1) rgba(255,255,255,0.1);border-image:initial;border-radius:50%;width:60px;height:60px;animation:1.2s linear 0s infinite normal none running spin;margin:0px auto}.score-card .label,.score-card > div:last-child{color:rgb(52,211,153) !important;text-shadow:rgba(0,0,0,0.5) 0px 1px 1px}.score-card button{color:white !important}#score-badge a:hover{color:rgb(251,146,60) !important}#score-badge a:hover > span{opacity:1 !important}#radar-container canvas#health-radar{max-width:600px;width:100%;margin:0px auto}@media (max-width:420px){header .flex.items-center.gap-4{gap:0.5rem}}@media (max-width:767px){.bottom-banner img{position:absolute;top:0px;left:0px}}@media (min-width:768px){.bottom-banner img{position:static}}@media (prefers-color-scheme:dark){:root{--text-primary:#e5e7eb}}@media (max-width:1024px){.container,.max-w-5xl,.max-w-3xl,.max-w-4xl{max-width:100% !important;padding-left:1rem !important;padding-right:1rem !important}.text-5xl{font-size:2rem !important;line-height:1.1 !important}}@media (max-width:480px){.text-5xl{font-size:1.875rem !important}}@media print{body::before{content:"Traffic Torch 🛡️\A\A SEO UX Audit Tool \A\A Report:\A " attr(data-url);display:block;height:100vh;min-height:100vh;break-after:page;background:linear-gradient(135deg,rgb(16,185,129),rgb(5,150,105));color:rgb(75,85,99);font-family:system-ui,-apple-system,sans-serif;font-weight:900;text-align:center;padding-top:20vh;line-height:1.4;white-space:pre;font-size:3.5rem;text-shadow:rgb(251,146,60) -2px -2px 0px,rgb(251,146,60) 2px -2px 0px,rgb(251,146,60) -2px 2px 0px,rgb(251,146,60) 2px 2px 0px,rgb(251,146,60) -2px 0px 0px,rgb(251,146,60) 2px 0px 0px,rgb(251,146,60) 0px -2px 0px,rgb(251,146,60) 0px 2px 0px,rgba(0,0,0,0.5) 0px 10px 30px}#results-wrapper{break-before:page;margin-top:0px !important}.score-card,.fixes-panel,.full-details,section > div,.grid,.flex{break-inside:avoid}p,li,div{orphans:3;widows:3}body{font-size:11pt;background:white !important;color:black !important;margin:0px !important;padding:0px !important}.shadow-lg,.shadow-xl,[class*="shadow"]{box-shadow:none !important}.max-w-4xl.mx-auto.my-20 details,section.py-20.bg-gray-50.dark\:bg-gray-900,#seo-ux-checklist,.tools-grid,section.max-w-5xl.mx-auto.my-24,div[style*="display:flex;justify-content:center;margin:30px 0;"],.a2a_kit,div.max-w-5xl.mx-auto.px-6.py-4.text-center,section.bottom-banner,.checklist-card,.max-w-7xl.mx-auto,.max-w-6xl.mx-auto{display:none !important}#keyword-form,#analysis-progress,header,footer,nav,aside,.no-print,button,details > summary{display:none !important}}</style>
+<style>
+  :root {
+    --bg-gradient: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1);
+  }
+  .dark {
+    --bg-gradient: linear-gradient(to bottom right, #0f172a, #020617, #000000);
+  }
+  body {
+    background: var(--bg-gradient);
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+</style>
 
 <link rel="preload" as="style" href="/style.css" onload="this.onload=null;this.rel='stylesheet'">
 <link rel="preload" as="style" href="/seo-ux-tool/style.css" onload="this.onload=null;this.rel='stylesheet'">
@@ -127,7 +141,7 @@
   <link rel="stylesheet" media="print" href="/seo-ux-tool/print.css">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   
-<script src="/tailwind-play-local.js"></script>
+<link rel="preload" as="script" href="/tailwind-play-local.js">
 
   <script>
   (function() {
