@@ -116,16 +116,17 @@
   <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
   
   <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
-
-<link rel="preload" as="style" href="/style.css" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="preload" as="style" href="/seo-ux-tool/style.css" onload="this.onload=null;this.rel='stylesheet'">
-<noscript>
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://static.addtoany.com">
+  <link rel="preload" as="style" href="/style.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/seo-ux-tool/style.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/seo-ux-tool/style.css">
-</noscript>
+  </noscript>
   
   <link rel="stylesheet" media="print" href="/seo-ux-tool/print.css">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -155,8 +156,13 @@
 	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      <!-- Sidebar Header with Logo -->
       <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
         <a href="/" class="flex items-center gap-4">
-          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
-          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+<img src="/logo-160w.webp"
+     srcset="/logo-100w.webp 100w, /logo-160w.webp 160w, /logo-320w.webp 320w"
+     sizes="70px"
+     alt="Traffic Torch – SEO • UX • AI Analysis Tools Logo"
+     class="w-10 rounded-xl flex-shrink-0"
+     width="40" height="40" loading="eager">
+               <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
             Traffic Torch
           </span>
         </a>
@@ -202,8 +208,13 @@
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
           <!-- Logo hidden on desktop since in sidebar -->
           <a href="/" class="flex items-center gap-4 md:hidden">
-          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
-            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+<img src="/logo-100w.webp"
+     srcset="/logo-100w.webp 100w, /logo-160w.webp 160w, /logo-320w.webp 320w"
+     sizes="(max-width: 767px) 70px, 160px"
+     alt="Traffic Torch SEO Analysis Tools Logo"
+     class="w-10 rounded-xl flex-shrink-0"
+     width="40" height="40" loading="eager">
+                 <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
               Traffic Torch
             </p>
           </a>
