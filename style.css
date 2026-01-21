@@ -23,12 +23,6 @@ body {
   background: var(--bg-gradient);
   min-height: 100vh;
   margin: 0;
-  color: #1f2937; /* gray-800 light */
-}
-
-/* Dark mode text fallback */
-.dark body {
-  color: #e5e7eb; /* gray-200 dark */
 }
 
 /* Header & footer glass */
