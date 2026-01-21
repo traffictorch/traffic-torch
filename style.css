@@ -37,7 +37,7 @@ body {
 .dark footer p,
 .dark footer a,
 .dark .text-center p {
-  color: #9E9E9E !important; /* gray-500 */
+  color: #767474 !important; /* gray-500ish */
 }
 
 .dark .sidebar-link:hover,
