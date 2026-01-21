@@ -332,37 +332,22 @@
 <!-- Footer -->
 <footer class="border-t border-white/10 dark:border-white/5 py-12 bg-white/5 dark:bg-black/20 backdrop-blur-xl">
   <div class="container mx-auto px-6 max-w-7xl">
-    <!-- Top Row: Traffic Torch + Author (2 columns, fully centered on mobile) -->
-    <div class="grid md:grid-cols-2 gap-12 md:gap-24 mb-12">
-      <!-- Traffic Torch Section (centered) -->
-      <div class="flex flex-col items-center text-center">
-       <a href="/" class="mb-6"><img src="/logo-320w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="80px" alt="Traffic Torch SEO • UX • AI Optimization Toolkit" class="w-20 h-20 rounded-full shadow-2xl object-cover" width="80" height="80" loading="eager"></a>
+    <!-- Main Footer Grid: 4 columns on md+, 1 column on mobile -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12 text-center md:text-left">
+      <!-- Column 1: Traffic Torch + Logo/Author -->
+      <div class="flex flex-col items-center md:items-start">
+        <a href="/" class="mb-6 inline-block">
+          <img src="/logo-320w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="80px" alt="Traffic Torch SEO • UX • AI Optimization Toolkit" class="w-20 h-20 rounded-full shadow-2xl object-cover" width="80" height="80" loading="eager">
+        </a>
         <h3 class="text-2xl font-black text-orange-500 hover:text-orange-600 transition mb-3">
           Traffic Torch 🛡️
         </h3>
         <p class="text-gray-800 dark:text-gray-200 text-sm leading-relaxed max-w-md">
-          Instant 360° AI-powered SEO and UX health analysis. Get deep-dive audits, competitive gap insights, AI-generated fixes, predictive forecasting, and educational reports. All privacy-first, mobile-optimized and client-side.
+          SEO • UX • AI Website Optimization & Health Analysis Toolkit.
         </p>
       </div>
-      <!-- Author Section (centered) -->
-      <div class="flex flex-col items-center text-center author-bio author-box max-w-md">
-        <img src="/images/ylia-callan-320w.webp" srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w" sizes="80px" alt="My photo: Ylia Callan, Founder of Traffic Torch" class="w-20 h-20 rounded-full shadow-lg mb-6 object-cover" width="80" height="80" loading="eager">
-        <h3 class="text-2xl font-black text-orange-500 hover:text-orange-600 transition mb-3 author byline">
-          Author
-        </h3>
-        <p class="font-bold text-gray-800 dark:text-gray-200">Ylia Callan</p>
-        <p class="text-sm text-gray-800 dark:text-gray-200 mt-2 max-w-xs">
-          Musician • Author • Web Design • TAFE NSW • Building privacy-first AI SEO/UX tools
-        </p>
-        <ul class="flex gap-6 mt-4">
-          <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">LinkedIn</a></li>
-          <li><a href="https://x.com/guitaralize" target="_blank" rel="noopener noreferrer" class="text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">X</a></li>
-        </ul>
-      </div>
-    </div>
-    <!-- Bottom Row: Tools | Company | Traffic Torch (3 columns, centered) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-24 text-center border-t border-white/10 dark:border-white/5 pt-10">
-      <!-- Tools -->
+
+      <!-- Column 2: Tools -->
       <div>
         <h3 class="text-xl font-bold text-orange-400 mb-6">Tools</h3>
         <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
@@ -375,7 +360,8 @@
           <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a></li>
         </ul>
       </div>
-      <!-- Company -->
+
+      <!-- Column 3: Company -->
       <div>
         <h3 class="text-xl font-bold text-orange-400 mb-6">Company</h3>
         <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
@@ -386,7 +372,8 @@
           <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
         </ul>
       </div>
-      <!-- Traffic Torch Quick Links -->
+
+      <!-- Column 4: Traffic Torch Quick Links -->
       <div>
         <h3 class="text-xl font-bold text-orange-400 mb-6">Traffic Torch</h3>
         <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
@@ -394,9 +381,13 @@
           <li><a href="/ai-seo-ux-tools/#ux-tools" class="hover:text-orange-400 transition">UX Tools ⚡</a></li>
           <li><a href="/ai-seo-ux-tools/#ai-tools" class="hover:text-orange-400 transition">Ai Tools 🔍</a></li>
           <li class="mt-6 text-sm">Built with 🔥</li>
-          <li class="text-xs mt-6">© Traffic Torch</li>
         </ul>
       </div>
+    </div>
+
+    <!-- Copyright / Bottom Note (full width, centered) -->
+    <div class="mt-12 pt-8 border-t border-white/10 dark:border-white/5 text-center text-gray-800 dark:text-gray-200 text-sm">
+      © Traffic Torch
     </div>
   </div>
 </footer>
