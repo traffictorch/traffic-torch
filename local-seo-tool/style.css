@@ -112,15 +112,6 @@ html, body {
   }
 }
 
-/* Module Details Text – Consistent Gray */
-.text-left p, .text-sm, .text-gray-600 {
-  color: #4b5563; /* gray-600 light */
-}
-.dark .text-left p, .dark .text-sm, .dark .text-gray-600 {
-  color: #d1d5db; /* gray-300 dark */
-}
-
-
 /* Radar Chart Labels & Grid */
 canvas {
   max-width: 100%;
