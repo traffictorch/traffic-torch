@@ -925,7 +925,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
               <div class="px-4 pb-10 border-t border-white/10">
                 ${cmsOptions.length > 0 ? `
                   <div class="max-w-md mx-auto my-10">
-                    <label for="cms-select-${metricId}" class="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-3">
+                    <label for="cms-select-${metricId}" class="block text-sm font-medium text-gray-500 dark:text-gray-200 mb-3">
                       Select your platform
                     </label>
                     <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl bg-white/90 dark:bg-gray-800/90 border-2 border-orange-400 dark:border-orange-600 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 outline-none transition">
