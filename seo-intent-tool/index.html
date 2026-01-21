@@ -213,47 +213,7 @@
   <link rel="preload" as="style" href="/tailwind-local.css" onload="this.rel='stylesheet'">
   <!-- Tailwind output – comes last so utilities can override -->
   <link rel="stylesheet" href="/tailwind-local.css">
-<style>
-  /* Only override on dark backgrounds – skip light cards */
-  .dark body,
-  .dark [class*="bg-gray-9"],
-  .dark [class*="bg-black"],
-  .dark [class*="bg-gradient"][class*="to-black"],
-  .dark .dark\:bg-gray-900,
-  .dark .dark\:bg-gray-800 {
-    --text-base: #e5e7eb;
-    --text-muted: #d1d5db;
-    --text-subtle: #9ca3af;
-  }
 
-  .dark .text-gray-800,
-  .dark .text-gray-900,
-  .dark .text-gray-700,
-  .dark .text-gray-600,
-  .dark .text-gray-500 {
-    color: var(--text-base) !important;
-  }
-
-  .dark .text-gray-600,
-  .dark .text-gray-500 {
-    color: var(--text-subtle) !important;
-  }
-
-  /* Protect light cards – reset to original or near-black */
-  .dark [class*="bg-white"],
-  .dark [class*="bg-gray-50"],
-  .dark [class*="from-"][class*="50"],
-  .dark [class*="bg-gradient-to-br from-purple-50"],
-  .dark [class*="bg-gradient-to-br from-pink-50"] {
-    color: #111827 !important; /* gray-900 fallback */
-  }
-
-  .dark [class*="bg-white"] .text-gray-800,
-  .dark [class*="bg-gray-50"] .text-gray-800,
-  .dark [class*="from-"][class*="50"] .text-gray-800 {
-    color: #111827 !important;
-  }
-</style>
   <link rel="stylesheet" media="print" href="/seo-intent-tool/print.css">
 
   <script>
