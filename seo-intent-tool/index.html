@@ -203,7 +203,10 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="preconnect" href="https://static.addtoany.com">
   <!-- Preload critical CSS -->
-
+  <link rel="preload" as="style" href="/style.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style.css">
+  </noscript>
 
   <link rel="preload" as="style" href="/tailwind-local.css" onload="this.rel='stylesheet'">
   <!-- Tailwind output – comes last so utilities can override -->
