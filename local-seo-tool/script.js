@@ -11,13 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const progressModules = [
     "Fetching page...",
-    "Scanning NAP & contact info...",
-    "Analyzing local keywords & titles...",
-    "Checking content relevance...",
-    "Detecting maps & visual signals...",
-    "Parsing structured data & schema...",
-    "Evaluating reviews, canonical & links...",
-    "Generating local SEO report..."
+    "Scanning NAP & contact",
+    "Analyzing local keywords",
+    "Checking content relevance",
+    "Detecting maps & visuals",
+    "Parsing structured data",
+    "Evaluating reviews & links",
+    "Generating local report"
   ];
 
   let currentModuleIndex = 0;

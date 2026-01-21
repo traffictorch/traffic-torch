@@ -181,3 +181,11 @@
     margin: 0 auto !important;
   }
 }
+
+/* Hide promotional / educational blocks via unique IDs – safe from JS class changes */
+#author-bio,
+#promo-high-impact-cards,
+#promo-old-vs-modern-seo {
+  display: none !important;
+}
+}

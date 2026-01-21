@@ -128,7 +128,8 @@
     display: none !important;
   }
 
-  /* Hide promotional / educational blocks via unique IDs – safe from JS class changes */
+/* Hide promotional / educational blocks via unique IDs – safe from JS class changes */
+#author-bio,
 #promo-high-impact-cards,
 #promo-old-vs-modern-seo {
   display: none !important;
