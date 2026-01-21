@@ -1,30 +1,29 @@
 // main.js
 // Theme Toggle + Auto-initial setup (system preference + user override)
-
 const toggle = document.getElementById('themeToggle');
 const html = document.documentElement;
 
-// ── 1. Set initial theme (run this as early as possible) ───────────────
+// ── 1. Set initial theme (run as early as possible + force reflow) ────────
 function applyInitialTheme() {
   const saved = localStorage.getItem('theme');
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
   if (saved === 'dark' || (!saved && prefersDark)) {
-    document.documentElement.classList.add('dark');
+    html.classList.add('dark');
   } else {
-    document.documentElement.classList.remove('dark');
+    html.classList.remove('dark');
   }
 
-  // Force browser repaint (fixes some stubborn Tailwind dark: variants)
-  document.body.offsetHeight;
+  // Force Tailwind dark: variants to re-evaluate (critical after local build)
+  void html.offsetHeight;
+  void document.body.offsetHeight;
 }
 
 // Run immediately
 applyInitialTheme();
 
-// Also run after DOMContentLoaded in case of race conditions
+// Run again after DOM is fully ready (covers async CSS load on GitHub Pages)
 document.addEventListener('DOMContentLoaded', applyInitialTheme);
-
 
 // ── 2. Set correct icon right after initial class is set ────────────────
 if (toggle) {
@@ -37,9 +36,12 @@ if (toggle) {
     html.classList.toggle('dark');
     
     const isDarkNow = html.classList.contains('dark');
-    localStorage.theme = isDarkNow ? 'dark' : 'light';
+    localStorage.setItem('theme', isDarkNow ? 'dark' : 'light');
     
     toggle.textContent = isDarkNow ? '☀️' : '🌙';
+    
+    // Extra reflow after toggle (helps stubborn elements)
+    void html.offsetHeight;
   });
 }
 
