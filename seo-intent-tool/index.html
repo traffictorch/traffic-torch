@@ -204,13 +204,22 @@
   <link rel="preconnect" href="https://static.addtoany.com">
   <!-- Preload critical CSS -->
   <link rel="preload" as="style" href="/style.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/seo-intent-tool/style.css" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/seo-intent-tool/style.css">
   </noscript>
 
   <link rel="preload" as="style" href="/tailwind-local.css" onload="this.rel='stylesheet'">
   <!-- Tailwind output – comes last so utilities can override -->
   <link rel="stylesheet" href="/tailwind-local.css">
+  <style>
+  .dark .text-gray-800 { color: #e5e7eb !important; }
+  .dark .text-gray-700 { color: #d1d5db !important; }
+  .dark .text-gray-600 { color: #9ca3af !important; }
+  .dark .text-gray-500 { color: #9ca3af !important; }
+  .dark .text-gray-900 { color: #f3f4f6 !important; }
+  </style>
   <link rel="stylesheet" media="print" href="/seo-intent-tool/print.css">
 
   <script>
