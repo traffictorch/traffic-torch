@@ -797,11 +797,11 @@ return `
               ${perFixImpact}
               <details class="mt-8">
                 <summary class="cursor-pointer text-lg font-medium text-purple-600 dark:text-purple-400">How We Calculated This</summary>
-                <p class="text-gray-800 dark:text-gray-200 mt-4">Based on benchmarks from thousands of analyzed sites — fixing Readability issues alone can reduce quit risk by 20-30% by making content more approachable. Combined fixes across modules deliver compounded gains.</p>
+                <p class="text-gray-500 dark:text-gray-200 mt-4">Based on benchmarks from thousands of analyzed sites — fixing Readability issues alone can reduce quit risk by 20-30% by making content more approachable. Combined fixes across modules deliver compounded gains.</p>
               </details>
               <details class="mt-6">
                 <summary class="cursor-pointer text-lg font-medium text-purple-600 dark:text-purple-400">Risk Level Definitions</summary>
-                <ul class="text-gray-800 dark:text-gray-200 mt-4 space-y-2">
+                <ul class="text-gray-500 dark:text-gray-200 mt-4 space-y-2">
                   <li><strong>High Risk:</strong> >60% chance of quick bounce based on similar sites</li>
                   <li><strong>Moderate Risk:</strong> 40-60% early exit probability</li>
                   <li><strong>Low Risk:</strong> <40% — users typically stay and engage</li>
