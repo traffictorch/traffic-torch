@@ -5,14 +5,26 @@ const toggle = document.getElementById('themeToggle');
 const html = document.documentElement;
 
 // ── 1. Set initial theme (run this as early as possible) ───────────────
-if (localStorage.theme === 'dark') {
-  html.classList.add('dark');
-} else if (localStorage.theme === 'light') {
-  html.classList.remove('dark');
-} else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
-  html.classList.add('dark');
+function applyInitialTheme() {
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  if (saved === 'dark' || (!saved && prefersDark)) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+
+  // Force browser repaint (fixes some stubborn Tailwind dark: variants)
+  document.body.offsetHeight;
 }
-// Note: if nothing above matches → stays light (common default)
+
+// Run immediately
+applyInitialTheme();
+
+// Also run after DOMContentLoaded in case of race conditions
+document.addEventListener('DOMContentLoaded', applyInitialTheme);
+
 
 // ── 2. Set correct icon right after initial class is set ────────────────
 if (toggle) {
