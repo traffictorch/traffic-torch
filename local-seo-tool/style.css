@@ -19,16 +19,6 @@ body {
   fill: rgba(16, 185, 129, 0.3); /* green-500 with opacity */
 }
 
-/* Day/Night Mode Text Consistency (gray-800 light / gray-200 dark) */
-.text-gray-800, h1, h2, h3, h4, h5, h6, strong, .font-bold {
-  color: #1f2937; /* gray-800 light */
-}
-.dark .text-gray-800,
-.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6,
-.dark strong, .dark .font-bold {
-  color: #e5e7eb !important; /* gray-200 dark */
-}
-
 /* Score Number Colors – Light & Dark Mode */
 .score-low { color: #ef4444 !important; } /* red-500 */
 .score-mid { color: #fb923c !important; } /* orange-500 */
@@ -130,21 +120,11 @@ html, body {
   color: #d1d5db; /* gray-300 dark */
 }
 
-/* Bold Labels Inside Details */
-.text-left strong, .font-bold {
-  color: #1f2937; /* gray-800 light */
-}
-.dark .text-left strong, .dark .font-bold {
-  color: #e5e7eb; /* gray-200 dark */
-}
 
 /* Radar Chart Labels & Grid */
 canvas {
   max-width: 100%;
 }
-
-
-
 
 
 /* Sub-metric icons in main scoring cards */
