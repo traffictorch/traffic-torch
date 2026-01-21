@@ -23,6 +23,26 @@ body {
   background: var(--bg-gradient);
   min-height: 100vh;
   margin: 0;
+  color: #1f2937; /* gray-800 light */
+}
+
+.dark body {
+  color: #e5e7eb; /* gray-200 dark */
+}
+
+/* Force dark mode text on sidebar, tool cards, bio, footer – high specificity override */
+.dark .sidebar-link,
+.dark .tool-card p,
+.dark .author-bio p,
+.dark footer p,
+.dark footer a,
+.dark .text-center p {
+  color: #e5e7eb !important; /* gray-200 */
+}
+
+.dark .sidebar-link:hover,
+.dark .tool-card a:hover {
+  color: #fb923c !important; /* orange-400 hover */
 }
 
 /* Header & footer glass */
