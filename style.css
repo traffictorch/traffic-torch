@@ -27,7 +27,7 @@ body {
 }
 
 .dark body {
-  color: #e5e7eb; /* gray-200 dark */
+  color: #9E9E9E; /* gray-500 dark */
 }
 
 /* Force dark mode text on sidebar, tool cards, bio, footer – high specificity override */
