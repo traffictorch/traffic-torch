@@ -198,37 +198,35 @@
 }
 </script>
    
-    <!-- Main Styles -->
-  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+  <!-- Main Styles -->
   <link rel="preconnect" href="https://static.cloudflareinsights.com">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="preconnect" href="https://static.addtoany.com">
+  <!-- Preload critical CSS -->
   <link rel="preload" as="style" href="/style.css" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" as="style" href="/seo-intent-tool/style.css" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-  <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/seo-intent-tool/style.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/seo-intent-tool/style.css">
   </noscript>
-    <link rel="stylesheet" media="print" href="/seo-intent-tool/print.css">
-   
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
+
+  <link rel="preload" as="style" href="/tailwind-local.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local.css">
+  <link rel="stylesheet" media="print" href="/seo-intent-tool/print.css">
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
       }
-    </script>
-    <script>
-      (function() {
-        const saved = localStorage.getItem('theme');
-        const preferDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
-        if (preferDark) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-      })();
-    </script>
+    })();
+  </script>
 
 </head>
 
