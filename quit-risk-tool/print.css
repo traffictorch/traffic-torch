@@ -188,5 +188,11 @@
     font-size: 14pt !important;
     line-height: 1.4 !important;
   }
+
+  /* Hide promotional / educational blocks via unique IDs – safe from JS class changes */
+#promo-high-impact-cards,
+#promo-old-vs-modern-seo {
+  display: none !important;
+}
 }
 }

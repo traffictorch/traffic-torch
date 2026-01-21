@@ -127,4 +127,10 @@
   details > summary {
     display: none !important;
   }
+
+  /* Hide promotional / educational blocks via unique IDs – safe from JS class changes */
+#promo-high-impact-cards,
+#promo-old-vs-modern-seo {
+  display: none !important;
+}
 }
