@@ -1479,19 +1479,20 @@
       </div>
 
       <!-- Founder Bio with Smaller Photo -->
-      <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-6 md:p-8 rounded-2xl backdrop-blur-sm"> <!-- Subtle blur for depth if desired; remove backdrop-blur-* if not wanted -->
+      <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-6 md:p-8 rounded-2xl backdrop-blur-sm">
         <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
-          <!-- Ylia Photo: Moved here, smaller -->
-  <img 
-  src="/images/ylia-callan-320w.webp" 
-  srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w" 
-  sizes="(max-width: 768px) 96px, 128px" 
-  alt="Ylia Callan: Musician, Author, Researcher, Web Designer, Founder of Traffic Torch – Bridging Creativity, Consciousness, and Cutting-Edge Web Tools" 
-  class="w-24 h-24 md:w-32 md:h-32 rounded-full shadow-xl object-cover aspect-square border-4 border-orange-400 dark:border-orange-500" 
-  width="128" 
-  height="128" 
-  loading="eager"> 
-           <div class="space-y-4 text-center md:text-left">
+          <!-- Ylia Photo: Perfect round circle with plain CSS -->
+          <img
+            src="/images/ylia-callan-320w.webp"
+            srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
+            sizes="(max-width: 768px) 96px, 128px"
+            alt="Ylia Callan: Musician, Author, Researcher, Web Designer, Founder of Traffic Torch – Bridging Creativity, Consciousness, and Cutting-Edge Web Tools"
+            style="width: 96px; height: 96px; border-radius: 50%; object-fit: cover; object-position: center; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); border: 4px solid #f97316;"
+            width="128"
+            height="128"
+            loading="eager"
+            class="md:w-32 md:h-32 md:border-orange-500">
+          <div class="space-y-4 text-center md:text-left">
             <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Meet Ylia Callan – Founder & Builder</h3>
             <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
               Musician • Author • Researcher • Web Designer (Certificate IV, TAFE NSW) • Creator of privacy-first AI-powered web tools. Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.
@@ -1501,6 +1502,7 @@
             </p>
           </div>
         </div>
+
         <!-- Social Links -->
         <ul class="flex flex-wrap justify-center md:justify-start gap-6 mt-6">
           <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="text-gray-800 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">LinkedIn</a></li>
@@ -1518,10 +1520,6 @@
         <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-4 max-w-3xl mx-auto">
           Core Expertise: SEO Correlation Research • UX Optimization • Privacy-First Development • AI-Assisted Diagnostics. Continuously aligned with the latest guidelines, best practices, and real-world data.
         </p>
-        <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
-        <p>Published: November 12 2025</p>
-        <p>Last updated: January 17 2026</p>
-      </div>
       </div>
     </div>
   </div>
