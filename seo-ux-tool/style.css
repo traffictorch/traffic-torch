@@ -1,471 +1,334 @@
-body { transition: background-color 0.3s ease; }
-.health-score polygon { fill: rgba(16, 185, 129, 0.3); }
-.radar { width: 180px; height: 180px; margin: 1.5rem auto; display: block; }
-.health-score h2 { margin-bottom: 0.5rem; }
+/* ==========================================================================
+   Traffic Torch – SEO/UX Tool Results Styles
+   Mobile-first, glassmorphism-inspired, dark/light ready
+   ========================================================================== */
 
-/* Mobile Responsiveness (your original) */
-@media (max-width: 1024px) {
-  .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
-    max-width: 100% !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-  .p-12, .p-10, .p-8 {
-    padding: 1.5rem !important;
-  }
-  .text-5xl {
-    font-size: 2rem !important;
-    line-height: 1.1 !important;
-  }
-  .text-9xl {
-    font-size: 6rem !important;
-    line-height: 1 !important;
-  }
+/* Smooth theme transitions */
+html, body {
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
-@media (max-width: 480px) {
-  .p-12, .p-10 { padding: 1.25rem !important; }
-  .text-5xl { font-size: 1.875rem !important; }
-  .text-9xl { font-size: 5.5rem !important; }
+
+/* Base resets for report */
+.health-score polygon {
+  fill: rgba(16, 185, 129, 0.25);
+}
+
+.radar {
+  width: 180px;
+  height: 180px;
+  margin: 1.5rem auto;
+  display: block;
+}
+
+.health-score h2 {
+  margin-bottom: 0.5rem;
 }
 
 /* Spinner */
 .spinner {
-  border: 8px solid rgba(255,255,255,0.1);
+  border: 8px solid rgba(255, 255, 255, 0.12);
   border-top: 8px solid #f97316;
   border-radius: 50%;
   width: 60px;
   height: 60px;
   animation: spin 1.2s linear infinite;
-  margin: 0 auto;
+  margin: 3rem auto;
 }
+
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  to { transform: rotate(360deg); }
 }
 
-/* LOCAL TOOL FIX – MOBILE-FRIENDLY REPORT (WORKS 100% – Dec 2025) */
-  @media (max-width: 1024px) {
-    /* Kill narrow containers */
-    .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
-      max-width: 100% !important;
-      padding-left: 1rem !important;
-      padding-right: 1rem !important;
-    }
-
-    /* Reduce huge padding on form + report cards */
-    .p-12, .p-10, .p-8 {
-      padding: 1.5rem !important;
-    }
-
-    /* Smaller title */
-    .text-5xl {
-      font-size: 2rem !important;
-      line-height: 1.1 !important;
-    }
-
-    /* Smaller giant percentage */
-    .text-9xl {
-      font-size: 6rem !important;
-      line-height: 1 !important;
-    }
+/* ──────────────────────────────────────────────────────────────────────────
+   Responsive container & padding fixes
+   ────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .container, .max-w-5xl, .max-w-4xl, .max-w-3xl {
+    max-width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
   }
 
-  /* Optional: slightly tighter on very small phones */
-  @media (max-width: 480px) {
-    .p-12, .p-10 { padding: 1.25rem !important; }
-    .text-5xl { font-size: 1.875rem !important; }
-    .text-9xl { font-size: 5.5rem !important; }
+  .p-12, .p-10, .p-8 {
+    padding: 1.75rem !important;
   }
-  
-/* What How Why Padding */  
-  .p-8 {
-  padding: 0.5rem !important;
+
+  .text-5xl {
+    font-size: 2.25rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .text-9xl {
+    font-size: 6.5rem !important;
+    line-height: 0.95 !important;
+  }
 }
 
-/* Score Circles - Perfect Centering */
+@media (max-width: 480px) {
+  .p-12, .p-10, .p-8 {
+    padding: 1.25rem !important;
+  }
+
+  .text-5xl {
+    font-size: 1.875rem !important;
+  }
+
+  .text-9xl {
+    font-size: 5.5rem !important;
+  }
+}
+
+/* What/How/Why sections – tighter padding */
+.p-8 {
+  padding: 1rem !important;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Score Circles
+   ────────────────────────────────────────────────────────────────────────── */
 .score-circle {
-  margin: 0 auto 1.5rem auto;
+  margin: 0 auto 1.75rem;
+  text-align: center;
 }
+
 .score-circle svg {
   width: 120px;
   height: 120px;
   display: block;
   margin: 0 auto;
 }
+
 .score-circle .bg {
-  stroke: rgba(255, 255, 255, 0.15);
+  stroke: rgba(255, 255, 255, 0.18);
   stroke-width: 10;
   fill: none;
 }
+
 .score-circle .progress {
   stroke-width: 10;
   stroke-linecap: round;
   fill: none;
   transform: rotate(-90deg);
   transform-origin: 50% 50%;
-  transition: stroke-dasharray 1s ease, stroke 0.6s ease;
+  transition: stroke-dasharray 1.2s ease, stroke 0.7s ease;
 }
+
 .score-circle .number {
-  font-size: 48px;
+  font-size: 2.75rem;
   font-weight: 900;
   text-anchor: middle;
   dominant-baseline: middle;
-  transition: fill 0.6s ease;
+  transition: fill 0.7s ease;
+  paint-order: stroke fill;
+  stroke: #000000;
+  stroke-width: 2.5px;
+  stroke-linejoin: round;
 }
-/* Large Overall Circle */
+
+/* Large overall score */
 .score-circle.large svg {
-  width: 200px;
-  height: 200px;
+  width: 220px;
+  height: 220px;
 }
+
 .score-circle.large .number {
-  font-size: 80px;
+  font-size: 5.5rem;
 }
+
 @media (max-width: 768px) {
   .score-circle.large svg {
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
   }
   .score-circle.large .number {
-    font-size: 60px;
+    font-size: 4.5rem;
   }
 }
-/* Grade Colors */
-.stroke-red-400 { stroke: #f87171 !important; }
-.stroke-orange-400 { stroke: #fb923c !important; }
-.stroke-green-400 { stroke: #34d399 !important; }
-.text-red-400 { fill: #f87171 !important; }
-.text-orange-400 { fill: #fb923c !important; }
-.text-green-400 { fill: #34d399 !important; }
 
+/* ──────────────────────────────────────────────────────────────────────────
+   Grade colors (consistent vivid but accessible)
+   ────────────────────────────────────────────────────────────────────────── */
+.stroke-red-500 { stroke: #ef4444 !important; }
+.stroke-orange-500 { stroke: #f97316 !important; }
+.stroke-green-500 { stroke: #22c55e !important; }
 
-/* Larger overall card sizing */
+.text-red-500 { fill: #ef4444 !important; color: #ef4444 !important; }
+.text-orange-500 { fill: #f97316 !important; color: #f97316 !important; }
+.text-green-500 { fill: #22c55e !important; color: #22c55e !important; }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Overall score card
+   ────────────────────────────────────────────────────────────────────────── */
 #overall-score {
-  padding: 2.5rem 1.5rem;
-}
-
-#overall-score .score-circle.large svg {
-  width: 240px;
-  height: 240px;
-}
-
-#overall-score .score-circle.large .number {
-  font-size: 96px;
+  padding: 2.5rem 1.75rem;
+  border-radius: 2rem;
 }
 
 @media (max-width: 768px) {
-  #overall-score .score-circle.large svg {
-    width: 200px;
-    height: 200px;
-  }
-  #overall-score .score-circle.large .number {
-    font-size: 80px;
-  }
   #overall-score {
-    padding: 2rem 1rem;
+    padding: 2rem 1.25rem;
   }
 }
 
-/* Title & grade styling */
-#page-title-display {
-  max-width: 90%;
-  margin: 0 auto;
-}
-
-#overall-grade {
-  transition: color 0.6s ease;
-}
-
-/* Module Cards - Clean Glass + Grade Border */
+/* ──────────────────────────────────────────────────────────────────────────
+   Module Cards – Glassmorphism + grade border
+   ────────────────────────────────────────────────────────────────────────── */
 .score-card {
-  background: rgba(255, 255, 255, 0.08);       /* very light translucent in light mode */
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 3rem;
-  padding: 2rem;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 2rem;
+  padding: 1.75rem;
   text-align: center;
-  border: 4px solid transparent;
-  transition: border-color 0.6s ease, transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.4s ease;
   position: relative;
   overflow: hidden;
 }
 
 .dark .score-card {
-  background: rgba(229, 231, 235, 0.12);       /* subtle gray-200 translucent in dark mode */
+  background: rgba(31, 41, 55, 0.25); /* gray-800 translucent */
+  border-color: rgba(229, 231, 235, 0.18); /* gray-200 subtle */
 }
 
 .score-card:hover {
-  transform: translateY(-8px);
-}
-.score-card.red { border-color: #f87171; }
-.score-card.orange { border-color: #fb923c; }
-.score-card.green { border-color: #34d399; }
-
-/* Perfect centering for the large overall score circle */
-#overall-score .score-circle.large {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-#overall-score .score-circle.large svg {
-  width: 200px;
-  height: 200px;
-}
-@media (max-width: 768px) {
-  #overall-score .score-circle.large svg {
-    width: 150px;
-    height: 150px;
-  }
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.18);
 }
 
-/* Subtle neon halo */
-.score-card::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  background: linear-gradient(45deg, #000000);
-  border-radius: inherit;
-  z-index: -1;
-  opacity: 0; /* always hidden - no overlay ever */
-  filter: blur(16px);
-  transition: none; /* no animation needed */
-}
+.score-card.red    { border-color: #ef4444; }
+.score-card.orange { border-color: #f97316; }
+.score-card.green  { border-color: #22c55e; }
 
-.score-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-  /* No background, no opacity, no overlay change */
-}
+.dark .score-card.red    { border-color: #f87171; }
+.dark .score-card.orange { border-color: #fb923c; }
+.dark .score-card.green  { border-color: #4ade80; }
 
-/* Restore grade-based colored borders */
-.score-card.border-red-500 { border: 3px solid #ef4444 !important; }
-.score-card.border-orange-500 { border: 3px solid #f97316 !important; }
-.score-card.border-green-500 { border: 3px solid #22c55e !important; }
-
-/* Labels */
-.score-card .label,
-.score-card > div:last-child {
-  color: #34d399 !important;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
-}
-
-/* Keep dynamic score number colors (no override) */
-.score-card button {
-  color: white !important;
-}
-.score-card .details {
-  color: #d1d5db !important;
-}
-
-/* Thin black outline around score numbers for better contrast on colored rings */
+/* Thin outline for better contrast on rings/numbers */
+.score-card .progress,
 .score-card .number {
-  paint-order: stroke fill;
-  stroke: #ffffff;
-  stroke-width: 3px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  text-shadow: none !important;
-}
-
-/* Thin black outline around score progress circles for better contrast and definition */
-.score-card .progress {
-  paint-order: stroke fill;
   stroke: #000000;
-  stroke-width: 12px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke-width: 3px;
 }
 
-/* Background circle */
-.score-card .bg {
-  stroke: #ffffff;
-  stroke-width: 12px;
-}
-
-/* Module grade display below title */
-.module-grade {
-  transition: opacity 0.6s ease, color 0.6s ease;
-}
-
-.module-grade.text-red-500 { color: #ef4444; }
-.module-grade.text-orange-500 { color: #f97316; }
-.module-grade.text-green-500 { color: #22c55e; }
-
-.dark .module-grade.text-red-500,
-.dark .module-grade.text-orange-500,
-.dark .module-grade.text-green-500 {
-  filter: brightness(1.2); /* slight boost for dark mode contrast */
-}
-
-/* Ensure 3-grade colors are strong in both modes */
-.score-card.red    { border-color: #f87171 !important; }
-.score-card.orange { border-color: #fb923c !important; }
-.score-card.green  { border-color: #34d399 !important; }
-
-.dark .score-card.red    { border-color: #ef4444 !important; }
-.dark .score-card.orange { border-color: #f97316 !important; }
-.dark .score-card.green  { border-color: #22c55e !important; }
-
-/* Progress ring & number colors - make sure Tailwind classes apply fully */
-.stroke-red-400   { stroke: #f87171 !important; }
-.stroke-orange-400 { stroke: #fb923c !important; }
-.stroke-green-400  { stroke: #34d399 !important; }
-
-.text-red-400   { fill: #f87171 !important; }
-.text-orange-400 { fill: #fb923c !important; }
-.text-green-400  { fill: #34d399 !important; }
-
+/* ──────────────────────────────────────────────────────────────────────────
+   More details / buttons
+   ────────────────────────────────────────────────────────────────────────── */
 .more-details {
   background: #4f46e5;
   color: white;
+  transition: background 0.25s ease;
 }
 
 .more-details:hover {
   background: #4338ca;
 }
 
-.module-info {
-  transition: opacity 0.5s ease;
-  opacity: 0;
-}
-
-.module-info:not(.hidden) {
-  opacity: 1;
-}
-
-/* Stand-out text links for deep dive */
+/* ──────────────────────────────────────────────────────────────────────────
+   Links & educational elements
+   ────────────────────────────────────────────────────────────────────────── */
 .how-tested-link,
 .learn-more-link {
-  font-size: 1.1rem;
-  transition: all 0.3s ease;
+  font-size: 1.05rem;
+  transition: all 0.25s ease;
+  color: #a78bfa;
 }
 
 .how-tested-link:hover,
 .learn-more-link:hover {
-  transform: translateX(4px);
+  transform: translateX(3px);
   text-decoration: underline;
 }
 
-.dark .how-tested-link,
-.dark .learn-more-link {
-  color: #a78bfa; /* lighter purple in dark mode */
-}
-
-/* Mobile Preview Frame Base */
+/* ──────────────────────────────────────────────────────────────────────────
+   Mobile Preview Frame
+   ────────────────────────────────────────────────────────────────────────── */
 #phone-frame {
-  width: min(100%, 375px);
-  height: auto;
+  width: min(100%, 380px);
   aspect-ratio: 9 / 19.5;
-  margin: 0 auto;
-  padding: 20px;20px 40px rgba(0,0,0,0.3);
-  transition: all 0.6s ease;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: linear-gradient(to bottom, #111, #000);
+  border-radius: 2.5rem;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
-/* iPhone Frame */
-.iphone-frame {
-  background: linear-gradient(to bottom, #111, #000);
-}
-.iphone-frame::before { /* Notch */
+#phone-frame::before {
   content: '';
   position: absolute;
-  top: 0;
+  top: 0.75rem;
   left: 50%;
   transform: translateX(-50%);
-  width: 160px;
-  height: 30px;
+  width: 140px;
+  height: 28px;
   background: #000;
-  border-radius: 0 0 20px 20px;
+  border-radius: 0 0 18px 18px;
+  z-index: 1;
 }
 
-/* Android Frame */
-.android-frame {
-  background: linear-gradient(to bottom, #222, #000);
-}
-.android-frame::before { /* No notch, subtle bar */
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 24px;
-  background: #111;
-}
-
-/* Iframe */
 #preview-iframe {
-  border: none;
-  background: #fff;
-}
-
-#phone-frame {
-  transition: width 0.6s ease, height 0.6s ease, transform 0.6s ease;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-/* Copy Code Badge */
-#score-badge a:hover {
-  color: #fb923c !important;
-}
-#score-badge a:hover > span {
-  opacity: 1 !important;
-}
-
-/* 360 Health Radar */
-#radar-container canvas#health-radar {
-  max-width: 600px;
   width: 100%;
-  margin: 0 auto;
-}
-
-/* Optional subtle shadow for depth */
-.chartjs-render-monitor {
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
-}
-
-/* Plugin Solutions Accordion */
-.plugin-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  height: 100%;
+  border: none;
   border-radius: 1rem;
+  background: white;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Radar & Chart
+   ────────────────────────────────────────────────────────────────────────── */
+#radar-container canvas#health-radar {
+  max-width: 560px;
+  width: 100%;
+  margin: 2rem auto;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.12));
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Accordion / Plugin Solutions
+   ────────────────────────────────────────────────────────────────────────── */
+.plugin-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1.25rem;
   overflow: hidden;
   transition: all 0.3s ease;
 }
 
 .plugin-card:hover {
-  border-color: rgba(249, 115, 22, 0.4);
-  transform: translateY(-4px);
+  border-color: rgba(249, 115, 22, 0.35);
+  transform: translateY(-3px);
 }
 
 .accordion-header {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.18);
   padding: 1.25rem 1.5rem;
   cursor: pointer;
-  user-select: none;
-  transition: all 0.2s ease;
 }
 
 .accordion-header:hover {
-  background: rgba(249, 115, 22, 0.15);
+  background: rgba(249, 115, 22, 0.12);
 }
 
 .accordion-content {
-  padding: 0 1.5rem 1.5rem;
+  padding: 0 1.5rem;
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.4s ease, padding 0.3s ease;
+  transition: max-height 0.45s ease, padding 0.3s ease;
 }
 
 .accordion-content.open {
-  max-height: 1200px; /* large enough for content */
+  max-height: 1400px;
   padding: 1.5rem;
 }
 
+/* Gradient text utility */
 .gradient-text {
   background: linear-gradient(to right, #f97316, #fbbf24);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
