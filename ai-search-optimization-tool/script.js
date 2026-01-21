@@ -719,9 +719,9 @@ ${prioritisedFixes.length > 0 ? `
         <div class="text-2xl">${fix.emoji}</div>
         <div class="flex-1">
           <h4 class="text-2xl font-bold ${fix.color}">${fix.title}</h4>
-          <div class="mt-4"><p class="text-blue-500 font-bold">What:</p><p class="text-gray-800 dark:text-gray-200 mt-1">${fix.what}</p></div>
-          <div class="mt-2"><p class="text-green-500 font-bold">How:</p><p class="text-gray-800 dark:text-gray-200 mt-1">${fix.how}</p></div>
-          <div class="mt-2"><p class="text-orange-500 font-bold">Why:</p><p class="text-gray-800 dark:text-gray-200 mt-1">${fix.why}</p></div>
+          <div class="mt-4"><p class="text-blue-500 font-bold">What:</p><p class="text-gray-500 dark:text-gray-200 mt-1">${fix.what}</p></div>
+          <div class="mt-2"><p class="text-green-500 font-bold">How:</p><p class="text-gray-500 dark:text-gray-200 mt-1">${fix.how}</p></div>
+          <div class="mt-2"><p class="text-orange-500 font-bold">Why:</p><p class="text-gray-500 dark:text-gray-200 mt-1">${fix.why}</p></div>
         </div>
       </div>
     </div>
