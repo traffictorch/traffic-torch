@@ -741,7 +741,7 @@ return `
               <p class="text-5xl mb-6">🎉</p>
               <p class="text-4xl font-black text-green-600 dark:text-green-400 mb-4">Good job! Outstanding UX</p>
               <p class="text-2xl text-gray-800 dark:text-gray-200">Your page delivers excellent user experience across all modules. No critical improvements needed at this time.</p>
-              <p class="text-lg text-gray-800 dark:text-gray-200 mt-6">Keep monitoring — even great pages benefit from ongoing optimization.</p>
+              <p class="text-lg text-gray-500 dark:text-gray-200 mt-6">Keep monitoring — even great pages benefit from ongoing optimization.</p>
             </div>`;
         }
 
@@ -807,7 +807,7 @@ return `
                   <li><strong>Low Risk:</strong> <40% — users typically stay and engage</li>
                 </ul>
               </details>
-              <p class="mt-8 text-center text-lg text-gray-800 dark:text-gray-200 font-medium">Track in Analytics: Monitor exit rates pre/post fixes to verify improvement.</p>
+              <p class="mt-8 text-center text-lg text-gray-500 dark:text-gray-200 font-medium">Track in Analytics: Monitor exit rates pre/post fixes to verify improvement.</p>
             </div>
             <div class="p-8 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-3xl border border-cyan-400/30">
               <h3 class="text-3xl font-black mb-8 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent text-center">Potential Engagement Gains</h3>
@@ -815,8 +815,8 @@ return `
                 <li class="flex items-center gap-6">
                   <span class="text-2xl">📉</span>
                   <div class="flex-1">
-                    <p class="font-bold text-xl text-gray-800 dark:text-gray-200">Bounce Rate</p>
-                    <p class="text-lg text-gray-800 dark:text-gray-200">Potential ${bounceRange} reduction</p>
+                    <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Bounce Rate</p>
+                    <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${bounceRange} reduction</p>
                     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
                       <div class="bg-purple-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : failedCount * 25 + '%'}"></div>
                     </div>
@@ -825,8 +825,8 @@ return `
                 <li class="flex items-center gap-6">
                   <span class="text-2xl">⏱️</span>
                   <div class="flex-1">
-                    <p class="font-bold text-xl text-gray-800 dark:text-gray-200">Session Duration</p>
-                    <p class="text-lg text-gray-800 dark:text-gray-200">Potential ${durationRange} longer</p>
+                    <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Session Duration</p>
+                    <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${durationRange} longer</p>
                     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
                       <div class="bg-cyan-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : failedCount * 30 + '%'}"></div>
                     </div>
@@ -835,8 +835,8 @@ return `
                 <li class="flex items-center gap-6">
                   <span class="text-2xl">📄</span>
                   <div class="flex-1">
-                    <p class="font-bold text-xl text-gray-800 dark:text-gray-200">Pages per Session</p>
-                    <p class="text-lg text-gray-800 dark:text-gray-200">Potential ${pagesRange} more pages viewed</p>
+                    <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Pages per Session</p>
+                    <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${pagesRange} more pages viewed</p>
                     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
                       <div class="bg-blue-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : failedCount * 25 + '%'}"></div>
                     </div>
@@ -845,16 +845,16 @@ return `
                 <li class="flex items-center gap-6">
                   <span class="text-2xl">💰</span>
                   <div class="flex-1">
-                    <p class="font-bold text-xl text-gray-800 dark:text-gray-200">Conversion Rate Lift</p>
-                    <p class="text-lg text-gray-800 dark:text-gray-200">Potential ${conversionRange} improvement</p>
+                    <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Conversion Rate Lift</p>
+                    <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${conversionRange} improvement</p>
                     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
                       <div class="bg-green-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : failedCount * 20 + '%'}"></div>
                     </div>
                   </div>
                 </li>
               </ul>
-              <p class="text-sm text-gray-800 dark:text-gray-200 mt-8">Conservative estimates based on industry benchmarks. Readability fixes often yield the largest session gains.</p>
-              <p class="text-lg text-gray-800 dark:text-gray-200 mt-6 font-medium text-center">How to Verify: Use Google Analytics to track these metrics before/after changes. Typical timeline: See gains in 1-4 weeks with consistent traffic.</p>
+              <p class="text-sm text-gray-500 dark:text-gray-200 mt-8">Conservative estimates based on industry benchmarks. Readability fixes often yield the largest session gains.</p>
+              <p class="text-lg text-gray-500 dark:text-gray-200 mt-6 font-medium text-center">How to Verify: Use Google Analytics to track these metrics before/after changes. Typical timeline: See gains in 1-4 weeks with consistent traffic.</p>
             </div>
           </div>`;
 
