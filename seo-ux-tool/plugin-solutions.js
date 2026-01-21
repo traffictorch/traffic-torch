@@ -903,7 +903,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
       <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
         Recommended Plugin Solutions
       </h2>
-      <p class="text-center text-lg md:text-xl text-gray-800 dark:text-gray-200 max-w-3xl mx-auto mb-12">
+      <p class="text-center text-lg md:text-xl text-gray-400 dark:text-gray-200 max-w-3xl mx-auto mb-12">
         ${supportedMetrics.length} critical area${supportedMetrics.length > 1 ? 's need' : ' needs'} improvement.<br>
         Check your theme or template for functionality first. Select your platform below to see the best free/freemium tools that fix it instantly.
       </p>
@@ -971,7 +971,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
         card.className = 'bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-800/50 dark:to-gray-900/50 backdrop-blur rounded-2xl p-4 border border-white/10 hover:border-orange-400/50 transition-all duration-300';
         card.innerHTML = `
           <h4 class="text-xl font-bold text-orange-500 mb-3">${plugin.name}</h4>
-          <p class="text-gray-800 dark:text-gray-200 text-sm leading-relaxed mb-6">${plugin.desc}</p>
+          <p class="text-gray-400 dark:text-gray-200 text-sm leading-relaxed mb-6">${plugin.desc}</p>
           <div class="flex flex-wrap gap-3">
             ${plugin.link ? `<a href="${plugin.link}" target="_blank" rel="noopener" class="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition">Plugin Library</a>` : ''}
             ${plugin.homeLink ? `<a href="${plugin.homeLink}" target="_blank" rel="noopener" class="px-5 py-2.5 bg-gradient-to-r from-orange-600 to-pink-600 text-white text-sm font-medium rounded-lg transition">Plugin Website</a>` : ''}
