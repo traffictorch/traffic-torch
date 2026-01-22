@@ -33,15 +33,15 @@ const initTool = (form, results, progressContainer) => {
     progressContainer.classList.remove('hidden');
     results.classList.add('hidden');
     const progressMessages = [
-      'Fetching and rendering page...',
-      'Extracting main content...',
-      'Analyzing Answerability...',
-      'Analyzing Structured Data...',
-      'Evaluating E-E-A-T Signals...',
-      'Testing Scannability...',
-      'Analyzing Tone & Readability...',
-      'Detecting Unique Insights...',
-      'Checking Anti-AI Patterns...',
+      'Fetching page...',
+      'Extracting main content',
+      'Analyzing Answerability',
+      'Analyzing Structured Data',
+      'Evaluating EEAT Signals',
+      'Testing Scannability',
+      'Analyzing Readability',
+      'Detecting Unique Insights',
+      'Checking Anti-AI Patterns',
       'Generating Report...'
     ];
     let step = 0;
