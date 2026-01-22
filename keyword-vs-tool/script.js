@@ -75,8 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="absolute inset-0 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
           <div class="absolute inset-0 rounded-full border-8 border-t-orange-500 border-r-pink-500 border-b-transparent border-l-transparent animate-spin"></div>
         </div>
-        <p class="mt-10 text-3xl font-bold text-orange-600 dark:text-orange-400">Analyzing relevance for "${phrase}"...</p>
-        <p class="mt-4 text-xl text-gray-600 dark:text-gray-400">Comparing your page vs competitor securely in-browser</p>
+        <p class="mt-10 text-3xl font-bold text-orange-600 dark:text-orange-400">Analyzing for "${phrase}"...</p>
+        <p class="mt-4 text-xl text-gray-600 dark:text-gray-400">Comparing page vs competitor</p>
         <div id="progress-steps" class="mt-16 space-y-6 w-full text-left"></div>
       </div>
     `;

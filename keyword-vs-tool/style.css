@@ -66,11 +66,7 @@ h2 + p { color: #6b7280; }
 .bg-white h4, .dark .bg-gray-900 h4 { color: #1f2937; }
 .dark .bg-gray-900 h4 { color: #f3f4f6; }
 .text-left p { color: #4b5563; }
-.dark .text-left p { color: #d1d5db !important; }
 .text-blue-300, .text-green-300, .text-orange-300 { color: #6b7280 !important; }
-
-.dark .text-sm { color: #939699 !important; }
-.dark .text-sm.italic { color: #939699 !important; }
 
 /* Fade-in animation */
 @keyframes fade-in {
