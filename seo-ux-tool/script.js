@@ -929,48 +929,61 @@ if (!hasServiceWorker) {
 }
     return { score: Math.max(0, Math.round(score)), issues };
   }
+  
+  
+  
+  
 
-  function analyzePerf(html, doc) {
-    let score = 100;
-    const issues = [];
-    const sizeKB = Math.round(html.length / 1024);
-    const requests = doc.querySelectorAll('link[rel="stylesheet"], script[src], img[src], iframe[src]').length + 1;
-    const fonts = doc.querySelectorAll('link[href*="font"], link[href*="googleapis"]').length;
-    const blocking = doc.querySelectorAll('link[rel="stylesheet"]:not([media]), script:not([async]):not([defer])').length;
+function analyzePerf(html, doc) {
+  let score = 100;
+  const issues = [];
 
-    if (sizeKB > 150) {
-      score -= sizeKB > 300 ? 30 : 15;
-      issues.push({
-        issue: `Page weight: ${sizeKB} KB ${sizeKB > 300 ? '(Very heavy)' : '(Heavy)'}`,
-        fix: 'Large page sizes slow down loading, especially on mobile networks. Compress images to modern formats like WebP or AVIF, implement lazy loading for offscreen content, and minify HTML, CSS, and JavaScript. Keeping the initial payload small creates a faster, more enjoyable experience for all users.'
-      });
-    }
+  const sizeKB = Math.round(html.length / 1024);
 
-    if (requests > 30) {
-      score -= requests > 50 ? 25 : 15;
-      issues.push({
-        issue: `${requests} HTTP requests`,
-        fix: 'Multiple HTTP requests add latency, particularly on high-latency connections. Combine CSS and JS files, use image sprites or modern formats, and lazy-load non-critical resources. Fewer requests mean faster page rendering overall.'
-      });
-    }
+  // More realistic request count: only external resources that actually block or add latency
+  const cssLinks = doc.querySelectorAll('link[rel="stylesheet"][href^="http"]');
+  const jsScripts = doc.querySelectorAll('script[src^="http"]:not([async]):not([defer])');
+  const blockingCss = cssLinks.length;
+  const blockingJs = jsScripts.length;
+  const renderBlockingCount = blockingCss + blockingJs;
 
-if (fonts > 4) {
-  issues.push({
-    issue: `${fonts} external web font requests detected`,
-    fix: 'Multiple external font requests can delay text visibility (FOUT/FOIT). Best practices: Limit to 1–2 font families, use system fonts, use <code>font-display: swap</code> on all @font-face rules, and preload critical font files. This greatly improves perceived performance. Note: Tool only detects external links — misses @font-face in CSS files and self-hosted fonts.'
-  });
-}
+  // Font count – keep external only (most common cause of delay)
+  const fonts = doc.querySelectorAll('link[href*="fonts.googleapis.com"], link[href*="font"][rel="stylesheet"]').length;
 
-    if (blocking > 4) {
-      score -= 15;
-      issues.push({
-        issue: `${blocking} render-blocking resources`,
-        fix: 'External scripts and styles can delay page rendering if they load synchronously. Add the async attribute to scripts that don’t need to execute immediately, or defer for those that should wait until the HTML is parsed, and inline critical CSS needed for above-the-fold content. This allows the page to display content faster, improving perceived load speed and Core Web Vitals.'
-      });
-    }
-
-    return { score: Math.max(0, Math.round(score)), issues };
+  // Page weight check – tighten thresholds slightly & improve messaging
+  if (sizeKB > 120) {
+    const severity = sizeKB > 250 ? 28 : sizeKB > 180 ? 18 : 10;
+    score -= severity;
+    issues.push({
+      issue: `HTML payload: ${sizeKB} KB ${sizeKB > 250 ? '(Heavy)' : '(Somewhat large)'}`,
+      fix: 'Even minified HTML can grow large with inline styles/scripts or unoptimized markup. Minify HTML, remove unused inline CSS/JS, lazy-load below-fold content, and compress images to WebP/AVIF. Tools like Autoptimize or WP Rocket often reduce HTML size 20–40% when combined with other techniques.'
+    });
   }
+
+  // HTTP requests — focus more on render-blocking ones instead of total
+  if (renderBlockingCount > 6) {
+    score -= renderBlockingCount > 12 ? 24 : 14;
+    issues.push({
+      issue: `${renderBlockingCount} render-blocking resource${renderBlockingCount === 1 ? '' : 's'} (external CSS + sync JS)`,
+      fix: 'Render-blocking files delay First Contentful Paint. Best fixes: inline critical (above-fold) CSS and defer/async non-critical CSS/JS. Plugins like Autoptimize Pro can auto-generate critical CSS and delay non-essential JS until user interaction. For manual fix: move non-critical <script> to end of body or add defer/async attributes.'
+    });
+  }
+
+  // Fonts — slightly more tolerant, but still flag high counts
+  if (fonts > 3) {
+    score -= (fonts - 2) * 6;
+    issues.push({
+      issue: `${fonts} external font requests (likely Google Fonts or similar)`,
+      fix: 'Multiple font requests delay text rendering (FOIT/FOUT). Best practice: limit to 1–2 families, use system fonts where possible, apply font-display: swap, and preload key font files. Autoptimize + critical CSS can help by inlining font-related styles when needed.'
+    });
+  }
+
+  return { score: Math.max(0, Math.round(score)), issues };
+}
+  
+  
+  
+  
 
   function analyzeAccess(html, doc) {
     let score = 100;
