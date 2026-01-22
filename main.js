@@ -1,17 +1,47 @@
-// main.js
-// 1. Theme Toggle - Standard Tailwind 'dark' class
+n// main.js
+// Theme Toggle + Auto-initial setup (system preference + user override)
 const toggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+
+// ── 1. Set initial theme (run as early as possible + force reflow) ────────
+function applyInitialTheme() {
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  if (saved === 'dark' || (!saved && prefersDark)) {
+    html.classList.add('dark');
+  } else {
+    html.classList.remove('dark');
+  }
+
+  // Force Tailwind dark: variants to re-evaluate (critical after local build)
+  void html.offsetHeight;
+  void document.body.offsetHeight;
+}
+
+// Run immediately
+applyInitialTheme();
+
+// Run again after DOM is fully ready (covers async CSS load on GitHub Pages)
+document.addEventListener('DOMContentLoaded', applyInitialTheme);
+
+// ── 2. Set correct icon right after initial class is set ────────────────
 if (toggle) {
-  const html = document.documentElement;
-  // Set initial icon based on current mode
-  const isDark = html.classList.contains('dark');
-  toggle.textContent = isDark ? '☀️' : '🌙';
-  // Toggle on click
+  toggle.textContent = html.classList.contains('dark') ? '☀️' : '🌙';
+}
+
+// ── 3. Manual toggle handler ────────────────────────────────────────────
+if (toggle) {
   toggle.addEventListener('click', () => {
     html.classList.toggle('dark');
+    
     const isDarkNow = html.classList.contains('dark');
-    localStorage.theme = isDarkNow ? 'dark' : 'light';
+    localStorage.setItem('theme', isDarkNow ? 'dark' : 'light');
+    
     toggle.textContent = isDarkNow ? '☀️' : '🌙';
+    
+    // Extra reflow after toggle (helps stubborn elements)
+    void html.offsetHeight;
   });
 }
 
