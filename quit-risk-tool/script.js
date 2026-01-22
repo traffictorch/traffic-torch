@@ -570,13 +570,13 @@ return `
     document.getElementById('loading').classList.remove('hidden');
     const progressText = document.getElementById('progressText');
     const steps = [
-      { text: "Fetching and parsing page HTML securely...", delay: 1200 },
-      { text: "Extracting main content and text for readability analysis...", delay: 1600 },
-      { text: "Counting navigation links and menu structure...", delay: 1400 },
-      { text: "Evaluating images for accessibility signals...", delay: 1200 },
-      { text: "Checking mobile responsiveness patterns...", delay: 1000 },
-      { text: "Assessing performance proxies and asset optimization...", delay: 1400 },
-      { text: "Calculating overall usability score and quit risk...", delay: 1600 }
+      { text: "Fetching page...", delay: 1200 },
+      { text: "Extracting main content", delay: 1600 },
+      { text: "Evaluating links and menu", delay: 1400 },
+      { text: "Evaluating images", delay: 1200 },
+      { text: "Check mobile responsive", delay: 1000 },
+      { text: "Assessing performance optimization", delay: 1400 },
+      { text: "Calculating quit risk", delay: 1600 }
     ];
     let currentStep = 0;
     const runStep = () => {
@@ -585,7 +585,7 @@ return `
         currentStep++;
         setTimeout(runStep, steps[currentStep - 1].delay);
       } else {
-        progressText.textContent = "Generating detailed report...";
+        progressText.textContent = "Generating report";
         setTimeout(performAnalysis, 3000);
       }
     };

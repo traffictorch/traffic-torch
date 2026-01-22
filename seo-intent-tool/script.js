@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressText = document.getElementById('progress-text');        
 
     try {
-      progressText.textContent = "Fetching and rendering page...";
+      progressText.textContent = "Fetching page...";
       const res = await fetch("https://rendered-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable – check URL');
       const html = await res.text();
@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!hasUpdateDate) failedTrustworthiness.push("Display a last updated date");
 
       // Intent Analysis
-      progressText.textContent = "Analyzing Search Intent...";
+      progressText.textContent = "Analyzing Search Intent";
       await sleep(2000);
       const titleLower = (doc.title || '').toLowerCase();
       let intent = 'Informational';
@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const ctrBoost = isOptimal ? 0 : Math.min(30, Math.round(scoreDelta * 0.8));
       const rankingLift = isOptimal ? "Already strong" : currentScore < 60 ? "Page 2+ → Page 1 potential" : "Top 20 → Top 10 possible";
 
-      progressText.textContent = "Generating Report...";
+      progressText.textContent = "Generating Report";
       await sleep(600);
 
       // === GRADE FUNCTION ===
