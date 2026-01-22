@@ -1,51 +1,32 @@
-// main.js
-// Theme Toggle + Auto-initial setup (system preference + user override)
-const toggle = document.getElementById('themeToggle');
-const html = document.documentElement;
+// main.js Day Night Mode 
+document.addEventListener('DOMContentLoaded', () => {
+  const html = document.documentElement;
+  const toggle = document.getElementById('themeToggle');
 
-// ── 1. Set initial theme (run as early as possible + force reflow) ────────
-function applyInitialTheme() {
+  // Apply saved theme (or default to light if none)
   const saved = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-  if (saved === 'dark' || (!saved && prefersDark)) {
+  if (saved === 'dark') {
     html.classList.add('dark');
   } else {
     html.classList.remove('dark');
   }
 
-  // Force Tailwind dark: variants to re-evaluate (critical after local build)
-  void html.offsetHeight;
-  void document.body.offsetHeight;
-}
+  if (toggle) {
+    // Set icon
+    toggle.textContent = html.classList.contains('dark') ? '☀️' : '🌙';
 
-// Run immediately
-applyInitialTheme();
+    // Toggle handler
+    toggle.addEventListener('click', () => {
+      html.classList.toggle('dark');
+      const isDark = html.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      toggle.textContent = isDark ? '☀️' : '🌙';
+    });
+  }
+});
 
-// Run again after DOM is fully ready (covers async CSS load on GitHub Pages)
-document.addEventListener('DOMContentLoaded', applyInitialTheme);
 
-// ── 2. Set correct icon right after initial class is set ────────────────
-if (toggle) {
-  toggle.textContent = html.classList.contains('dark') ? '☀️' : '🌙';
-}
-
-// ── 3. Manual toggle handler ────────────────────────────────────────────
-if (toggle) {
-  toggle.addEventListener('click', () => {
-    html.classList.toggle('dark');
-    
-    const isDarkNow = html.classList.contains('dark');
-    localStorage.setItem('theme', isDarkNow ? 'dark' : 'light');
-    
-    toggle.textContent = isDarkNow ? '☀️' : '🌙';
-    
-    // Extra reflow after toggle (helps stubborn elements)
-    void html.offsetHeight;
-  });
-}
-
-// 4. PWA Install
+// PWA Install
 let deferredPrompt = null;
 
 const isInStandaloneMode = () =>
@@ -216,7 +197,7 @@ window.addEventListener('appinstalled', () => {
   deferredPrompt = null;
 });
 
-// 5. Minimal service worker registration
+// Minimal service worker registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
@@ -225,7 +206,8 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// 6. Mobile menu (unchanged – preserved exactly)
+
+// Mobile menu (unchanged – preserved exactly)
 document.addEventListener('DOMContentLoaded', () => {
   const button = document.getElementById('menuToggle');
   const menu = document.getElementById('mobileMenu');
@@ -244,7 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// 7. Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text)
+
+// Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text)
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
 const desktopMenuToggle = document.getElementById('desktopMenuToggle');
