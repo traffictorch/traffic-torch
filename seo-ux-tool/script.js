@@ -930,10 +930,6 @@ if (!hasServiceWorker) {
     return { score: Math.max(0, Math.round(score)), issues };
   }
   
-  
-  
-  
-
 function analyzePerf(html, doc) {
   let score = 100;
   const issues = [];
@@ -980,10 +976,6 @@ function analyzePerf(html, doc) {
 
   return { score: Math.max(0, Math.round(score)), issues };
 }
-  
-  
-  
-  
 
   function analyzeAccess(html, doc) {
     let score = 100;
