@@ -1,49 +1,34 @@
 // main.js
-// Theme Toggle + Auto-initial setup (system preference + user override)
-const toggle = document.getElementById('themeToggle');
-const html = document.documentElement;
+// Minimal Manual Theme Toggle – user button only
+document.addEventListener('DOMContentLoaded', () => {
+  const toggle = document.getElementById('themeToggle');
+  const html = document.documentElement;
 
-// ── 1. Set initial theme (run as early as possible + force reflow) ────────
-function applyInitialTheme() {
-  const saved = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (toggle) {
+    // Set initial icon
+    const isDark = html.classList.contains('dark');
+    toggle.textContent = isDark ? '☀️' : '🌙';
 
-  if (saved === 'dark' || (!saved && prefersDark)) {
-    html.classList.add('dark');
-  } else {
-    html.classList.remove('dark');
+    // Toggle on click
+    toggle.addEventListener('click', () => {
+      html.classList.toggle('dark');
+      const isDarkNow = html.classList.contains('dark');
+      localStorage.setItem('theme', isDarkNow ? 'dark' : 'light');
+      toggle.textContent = isDarkNow ? '☀️' : '🌙';
+    });
   }
+});
 
-  // Force Tailwind dark: variants to re-evaluate (critical after local build)
-  void html.offsetHeight;
-  void document.body.offsetHeight;
-}
-
-// Run immediately
-applyInitialTheme();
-
-// Run again after DOM is fully ready (covers async CSS load on GitHub Pages)
-document.addEventListener('DOMContentLoaded', applyInitialTheme);
-
-// ── 2. Set correct icon right after initial class is set ────────────────
-if (toggle) {
-  toggle.textContent = html.classList.contains('dark') ? '☀️' : '🌙';
-}
-
-// ── 3. Manual toggle handler ────────────────────────────────────────────
-if (toggle) {
-  toggle.addEventListener('click', () => {
-    html.classList.toggle('dark');
-    
-    const isDarkNow = html.classList.contains('dark');
-    localStorage.setItem('theme', isDarkNow ? 'dark' : 'light');
-    
-    toggle.textContent = isDarkNow ? '☀️' : '🌙';
-    
-    // Extra reflow after toggle (helps stubborn elements)
-    void html.offsetHeight;
-  });
-}
+// Optional: Apply saved theme early (reduces FOUC risk even in minimal setup)
+(function() {
+  const saved = localStorage.getItem('theme');
+  if (saved === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else if (saved === 'light') {
+    document.documentElement.classList.remove('dark');
+  }
+  // No reflow force here – keep it ultra-minimal
+})();
 
 // 4. PWA Install
 let deferredPrompt = null;
