@@ -1,34 +1,19 @@
 // main.js
-// Minimal Manual Theme Toggle – user button only
-document.addEventListener('DOMContentLoaded', () => {
-  const toggle = document.getElementById('themeToggle');
+// 1. Theme Toggle - Standard Tailwind 'dark' class
+const toggle = document.getElementById('themeToggle');
+if (toggle) {
   const html = document.documentElement;
-
-  if (toggle) {
-    // Set initial icon
-    const isDark = html.classList.contains('dark');
-    toggle.textContent = isDark ? '☀️' : '🌙';
-
-    // Toggle on click
-    toggle.addEventListener('click', () => {
-      html.classList.toggle('dark');
-      const isDarkNow = html.classList.contains('dark');
-      localStorage.setItem('theme', isDarkNow ? 'dark' : 'light');
-      toggle.textContent = isDarkNow ? '☀️' : '🌙';
-    });
-  }
-});
-
-// Optional: Apply saved theme early (reduces FOUC risk even in minimal setup)
-(function() {
-  const saved = localStorage.getItem('theme');
-  if (saved === 'dark') {
-    document.documentElement.classList.add('dark');
-  } else if (saved === 'light') {
-    document.documentElement.classList.remove('dark');
-  }
-  // No reflow force here – keep it ultra-minimal
-})();
+  // Set initial icon based on current mode
+  const isDark = html.classList.contains('dark');
+  toggle.textContent = isDark ? '☀️' : '🌙';
+  // Toggle on click
+  toggle.addEventListener('click', () => {
+    html.classList.toggle('dark');
+    const isDarkNow = html.classList.contains('dark');
+    localStorage.theme = isDarkNow ? 'dark' : 'light';
+    toggle.textContent = isDarkNow ? '☀️' : '🌙';
+  });
+}
 
 // 4. PWA Install
 let deferredPrompt = null;
