@@ -67,7 +67,7 @@ performance: {
     { name: "Font Optimization", threshold: 82, shortDesc: "...", howToFix: "Limit to 2-3 font families and essential weights, use font-display: swap to prevent invisible text, preload critical fonts, prefer system fonts where possible." },
     { name: "Lazy Loading Media", threshold: 80, shortDesc: "...", howToFix: "Add native loading='lazy' attribute to all offscreen image and iframe elements (below the fold). For videos use preload='none' or lazy-loading libraries if needed." },
     { name: "Image Optimization", threshold: 82, shortDesc: "...", howToFix: "Convert images to next-gen formats (WebP or AVIF), use proper responsive sizing with srcset/sizes, compress files without visible quality loss." },
-    { name: "Script Minification & Deferral", threshold: 85, shortDesc: "...", howToFix: "Minify all JavaScript and CSS files, add defer or async attributes to non-critical script tags, inline critical CSS above the fold, eliminate render-blocking resources." }
+	{ name: "Script Optimization", threshold: 80, shortDesc: "Minimize render-blocking CSS/JS that delay first paint. Modern best practice allows 1-3 small/optimized blocking items if critical path is short.", howToFix: "Inline or preload critical CSS, defer/async non-critical JS, minify files, remove unused code. Aim for ≤2-3 blocking resources with fast load times."},
   ],
       moduleWhat: "Performance Optimization measures loading speed and resource efficiency. It flags heavy assets, script bloat, font issues, lazy loading, and image optimization. Speed is critical for user satisfaction and rankings.",
       moduleHow: "Compress and optimize all assets. Lazy load offscreen content. Minify and defer scripts. Use modern image formats.",
@@ -325,15 +325,25 @@ performance: {
     mobileScore += Math.round(pwaScore * 0.6);
     mobileScore = Math.max(25, Math.min(98, Math.round(mobileScore)));
 
-    let speedScore = 65;
+    let speedScore = 70;
     if (data.imageCount > 60) speedScore -= 28;
     else if (data.imageCount > 35) speedScore -= 16;
     else if (data.imageCount <= 10) speedScore += 12;
     if (data.externalScripts > 15) speedScore -= 25;
     else if (data.externalScripts > 8) speedScore -= 14;
     else if (data.externalScripts <= 3) speedScore += 10;
-    if (data.hasRenderBlocking > 5) speedScore -= 18;
-    else if (data.hasRenderBlocking > 2) speedScore -= 9;
+let blockingPenalty = 0;
+if (data.hasRenderBlocking >= 8) {
+  blockingPenalty = 28; 
+} else if (data.hasRenderBlocking >= 5) {
+  blockingPenalty = 14;
+} else if (data.hasRenderBlocking >= 3) {
+  blockingPenalty = 6;
+} 
+speedScore -= blockingPenalty;
+if (data.hasLazyLoading) speedScore += 8;
+if (data.hasFontDisplaySwap) speedScore += 6;
+if (data.hasWebpOrAvif) speedScore += 5;
     if (data.fontCount > 4) speedScore -= 16;
     else if (data.fontCount > 2) speedScore -= 7;
     if (data.hasFontDisplaySwap) speedScore += 12;
