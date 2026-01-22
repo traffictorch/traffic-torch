@@ -169,12 +169,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressText = document.getElementById('progressText');
     const messages = [
       "Fetching page...",
-      "Extracting main content...",
-      "Analyzing predictability...",
-      "Measuring variation & rhythm...",
-      "Checking repetition patterns...",
-      "Evaluating structure & depth...",
-      "Assessing vocabulary richness...",
+      "Extracting main content",
+      "Analyzing predictability",
+      "Measuring variation & rhythm",
+      "Checking repetition patterns",
+      "Evaluating structure & depth",
+      "Assessing vocabulary richness",
       "Calculating final score..."
     ];
     let delay = 800;
@@ -442,7 +442,7 @@ window.scrollTo({
             </div>
 
             <div class="mt-20 space-y-8">
-              <h2 class="text-4xl md:text-5xl font-black text-center text-gray-900 dark:text-gray-100">Top 3 Priority Fixes</h2>
+              <h2 class="text-4xl md:text-5xl font-black text-center text-gray-500 dark:text-gray-100">Top 3 Priority Fixes</h2>
               ${(() => {
                 const modules = [
                   {
