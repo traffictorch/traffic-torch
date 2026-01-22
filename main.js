@@ -1,4 +1,4 @@
-n// main.js
+// main.js
 // Theme Toggle + Auto-initial setup (system preference + user override)
 const toggle = document.getElementById('themeToggle');
 const html = document.documentElement;
