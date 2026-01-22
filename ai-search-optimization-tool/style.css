@@ -170,4 +170,7 @@ html, body {
   line-height: 1 !important;
 }
 
-
+/* Dark mode body text */
+.dark body {
+  color: #686666;
+}
