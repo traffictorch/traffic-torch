@@ -8,12 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const PROXY = 'https://rendered-proxy.traffictorch.workers.dev/';
   const progressModules = [
     "Fetching page...",
-    "Analyzing meta & headings...",
-    "Checking content depth & density...",
-    "Scanning image alts...",
-    "Evaluating internal anchors...",
-    "Checking URL & schema...",
-    "Generating report..."
+    "Analyzing metadata",
+    "Content depth & density",
+    "Scanning image alts",
+    "Testing internal anchors",
+    "Checking URL & schema",
+    "Generating report"
   ];
   let currentModuleIndex = 0;
   let moduleInterval;
