@@ -270,7 +270,7 @@ details > div,
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   border: 1px solid rgba(241, 29, 29, 0.35);
   border-radius: 9999px;
-  color: #6b7280; /* gray-500 – medium gray for day mode, high contrast on light glass */
+  color: #e5e7eb !important; /* gray-200 – light gray for day mode, high contrast on black glass */
   font-weight: 700;
   font-size: 1rem;
   padding: 0.85rem 2rem;
