@@ -379,3 +379,39 @@ body, p:not([class*="bg-gradient"]), li, span:not([class*="bg-gradient"]), a:not
 .dark blockquote {
   color: #e5e7eb !important; /* gray-200 dark */
 }
+
+
+
+
+/* Flex fallback for old Safari (iOS 12) – add -webkit- prefixes + margin fallback for gap */
+.flex, nav.flex, .flex-col, .flex-row, #mobileMenu nav, #mobileMenu .flex.flex-col {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+}
+
+/* If any containers use gap, fallback to margins on children */
+@supports not (gap: 1rem) {
+  .flex.gap-4 > *, 
+  .flex.gap-2 > *, 
+  nav.flex > a + a, 
+  #mobileMenu a + a,
+  .tool-list > * + * {  /* adjust selector to match your tool icons/list */
+    margin-left: 1rem;   /* or whatever your gap was – e.g. 0.5rem / 1rem */
+    margin-top: 0.5rem;  /* for column flex */
+  }
+}
+
+/* Force min-width 0 on flex items to prevent overflow/collapse bugs */
+.flex > *, .grid > * {
+  min-width: 0;
+}
+
+/* Better height handling – old iOS hates 100vh sometimes */
+body, main, .container {
+  min-height: 100vh;
+  height: -webkit-fill-available;  /* old WebKit fallback */
+}
+
+
+
