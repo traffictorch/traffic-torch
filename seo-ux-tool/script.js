@@ -171,8 +171,6 @@ function updateScore(id, score) {
 
 progressContainer.classList.remove('hidden');
 progressText.textContent = 'Fetching page...';
-const fetchDelay = Math.floor(Math.random() * 2000) + 2000; // 2–4 seconds realistic
-await new Promise(r => setTimeout(r, fetchDelay));
 
 const originalInput = input.value.trim();  // Add this line
 const url = cleanUrl(originalInput);       // Add this line - defines 'url' properly
@@ -185,8 +183,21 @@ if (!url) {
 
 const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
 try {
-  const res = await fetch(proxyUrl);
-  if (!res.ok) throw new Error('Network response was not ok');
+// Start real fetch in background – does not block progress updates
+const fetchPromise = fetch(proxyUrl)
+  .then(res => {
+    if (!res.ok) throw new Error('Network response was not ok');
+    return res.text();
+  })
+  .then(html => {
+    // Store html for later processing
+    window.fetchedHtml = html;
+    window.fetchDone = true;
+  })
+  .catch(err => {
+    console.error('Fetch error:', err);
+    window.fetchError = err;
+  });
   const html = await res.text();
   const doc = new DOMParser().parseFromString(html, 'text/html');
   const resultsWrapper = document.getElementById('results-wrapper');
@@ -229,6 +240,28 @@ await new Promise(r => setTimeout(r, 1400)); // 1.4s readable pause
           <strong>SEO:</strong> ${info.whySeo}`;
       }
     }
+    // After modules finish, wait for real fetch if still pending, then show generating report
+progressText.textContent = 'Generating report...';
+
+// Wait for fetch to complete (or timeout after reasonable time)
+await Promise.race([
+  fetchPromise,
+  new Promise(r => setTimeout(r, 8000)) // max 8s wait if fetch hangs
+]);
+
+// If fetch errored, show message
+if (window.fetchError) {
+  alert('Failed to fetch page — try another URL');
+  progressContainer.classList.add('hidden');
+  return;
+}
+
+// Use the fetched HTML now
+const html = window.fetchedHtml;
+const doc = new DOMParser().parseFromString(html, 'text/html');
+
+// Short readable "Generating report" pause
+await new Promise(r => setTimeout(r, 1400));
     scores.push(result.score);
     updateScore(`${mod.id}-score`, result.score);
     // Add grade + emoji for each module card
