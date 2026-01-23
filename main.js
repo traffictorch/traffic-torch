@@ -133,7 +133,7 @@ function showIOSInstallInstructions() {
       </ol>
 
       <p style="margin-top: 32px; text-align: center; font-size: 14px; color: #9ca3af;">
-        PWA quick access app! 📱
+        PWA quick access apps! 📱 💻
       </p>
     </div>
   `;
