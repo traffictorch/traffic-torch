@@ -254,3 +254,6 @@ if (sidebar && (collapseBtn || desktopMenuToggle)) {
   if (sidebar.classList.contains('collapsed')) toggleSidebar();
 }
 
+
+  // Extra FOUC protection: hide title until ready
+document.body.classList.add('loaded');

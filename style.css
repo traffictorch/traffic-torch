@@ -7,6 +7,29 @@
   --track: rgba(0,0,0,0.15);
 }
 
+/* Prevent FOUC / plain text flash on gradient titles */
+#sidebarTitle,
+p.text-$$   1\.25rem   $$.font-black.bg-gradient-to-r,
+span.bg-gradient-to-r.text-transparent,
+.gradient-text,
+[class*="Traffic Torch"] {
+  color: transparent !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  visibility: visible !important; /* ensure visible but clipped */
+}
+
+/* Dark mode variant (same transparent) */
+.dark #sidebarTitle,
+.dark p.text-$$   1\.25rem   $$.font-black.bg-gradient-to-r,
+.dark span.bg-gradient-to-r.text-transparent,
+.dark .gradient-text,
+.dark [class*="Traffic Torch"] {
+  color: transparent !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+}
+
 .dark {
   --bg-gradient: linear-gradient(to bottom right, #0f172a, #020617, #000000);
   --accent: #f97316;
