@@ -206,7 +206,21 @@ performance: {
       hasServiceWorkerHint: doc.body.innerHTML.includes('serviceWorker') || doc.body.innerHTML.includes('register('),
       hasAppleTouchIcon: !!doc.querySelector('link[rel*="apple-touch-icon"]'),
       isHttps: window.location.protocol === 'https:',
-      hasLazyLoading: !!doc.querySelector('img[loading="lazy"], iframe[loading="lazy"]'),
+      hasLazyLoading: (() => {
+  const allImgs = doc.querySelectorAll('img[src]');
+  const lazyImgs = doc.querySelectorAll('img[loading="lazy"]');
+  const total = allImgs.length;
+  const lazyCount = lazyImgs.length;
+
+  if (total === 0) return false;
+
+  // Most reliable logic:
+  // - At least 40% of images use lazy loading, AND
+  // - At least 2 lazy images exist (avoids false positive on tiny pages)
+  // This ignores header logos / above-fold images while still requiring meaningful adoption
+  const percentage = (lazyCount / total) * 100;
+  return lazyCount >= 2 && percentage >= 40;
+})(),
       externalScripts: doc.querySelectorAll('script[src^="http"]').length,
       hasRenderBlocking: doc.querySelectorAll('script:not([defer]):not([async]), link[rel="stylesheet"]:not([media])').length,
       fontCount: doc.querySelectorAll('link[href*="fonts.googleapis.com"], link[href*="fonts.gstatic.com"], link[rel="stylesheet"][href*="typekit"], link[rel="stylesheet"][href*="cloud.typography"]').length || 0,
@@ -667,7 +681,12 @@ return `
                          uxData.externalScripts <= 15 ? 45 : 25,
             fontOptimization: uxData.fontCount <= 2 ? 90 : uxData.fontCount <= 4 ? 65 :
                               uxData.hasFontDisplaySwap ? 55 : 30,
-            lazyLoading: uxData.hasLazyLoading && uxData.imageCount > 10 ? 85 :
+            lazyLoading: (() => {
+  if (uxData.hasLazyLoading) return 88;           // strong – meaningful lazy adoption
+  if (uxData.imageCount <= 6) return 78;          // small page with partial/no lazy → still good
+  if (uxData.imageCount <= 12) return 65;         // medium page missing lazy → moderate penalty
+  return 45;                                      // larger page with no/very few lazy → clear fail
+})(),
                          uxData.imageCount > 15 ? 35 : 60,
             imageFormat: uxData.hasWebpOrAvif ? 90 : uxData.imageCount > 20 ? 40 : 70,
             renderBlocking: uxData.hasRenderBlocking <= 2 ? 90 : uxData.hasRenderBlocking <= 5 ? 65 : 35
