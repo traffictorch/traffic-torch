@@ -255,19 +255,14 @@ details > div,
 }
 
 /* Enforce day/night text colors site-wide */
-body, p, li, span, div, h1, h2, h3, h4, h5, h6 {
+body, p, li, span, div, {
   color: #1f2937;                    /* gray-800 light */
 }
 .dark body,
 .dark p,
 .dark li,
 .dark span,
-.dark div,
-.dark h1,
-.dark h2,
-.dark h3,
-.dark h4,
-.dark h5,
-.dark h6 {
+.dark div
+ {
   color: #e5e7eb !important;         /* gray-200 dark — override everything */
 }
