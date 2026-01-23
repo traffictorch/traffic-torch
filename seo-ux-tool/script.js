@@ -170,7 +170,7 @@ function updateScore(id, score) {
     e.preventDefault();
 
 progressContainer.classList.remove('hidden');
-progressText.textContent = 'Fetching page...';
+progressText.textContent = 'Fetching page';
 
 const originalInput = input.value.trim();  // Add this line
 const url = cleanUrl(originalInput);       // Add this line - defines 'url' properly
@@ -564,7 +564,7 @@ if (failedMetrics.length > 0) {
 }
 
 // Scroll to results from top of viewport + generous offset - always consistent
-const offset = 180; // (adjust 80–140)
+const offset = 220; // (adjust 80–140)
 
 const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset - offset;
 
