@@ -1,4 +1,4 @@
-/* Traffic Torch Global CSS – Cleaned & Optimized */
+/* Traffic Torch Global CSS – Cleaned & Fixed 2026 */
 
 /* Theme variables */
 :root {
@@ -30,18 +30,51 @@ body {
   color: #e5e7eb; /* gray-200 dark */
 }
 
-/* Preserve gradient on logo/sidebarTitle */
+/* Preserve gradient on logo/title (desktop + mobile variants) */
 #sidebarTitle,
-span[class*="bg-gradient"][class*="text-transparent"] {
+p.text-\[1\.25rem\].font-black.bg-gradient-to-r,
+span.bg-gradient-to-r.text-transparent,
+[class*="Traffic Torch"] {
   color: transparent !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
 }
 
 .dark #sidebarTitle,
-.dark span[class*="bg-gradient"][class*="text-transparent"] {
+.dark p.text-\[1\.25rem\].font-black.bg-gradient-to-r,
+.dark span.bg-gradient-to-r.text-transparent,
+.dark [class*="Traffic Torch"] {
   color: transparent !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
 }
 
-/* Targeted dark mode text overrides for key areas */
+/* Mobile menu (#mobileMenu from inspector) - day/night background + text */
+#mobileMenu {
+  background-color: #f8fafc !important; /* light mode bg */
+  color: #1f2937 !important;
+}
+
+.dark #mobileMenu {
+  background-color: #0f172a !important; /* dark mode bg */
+  color: #e5e7eb !important;
+}
+
+/* Mobile menu nav & links */
+#mobileMenu nav.flex.flex-col,
+#mobileMenu a,
+#mobileMenu .sidebar-link {
+  color: inherit !important;
+}
+
+#mobileMenu a:hover,
+#mobileMenu .sidebar-link:hover {
+  color: #fb923c !important;
+}
+
+/* Targeted dark mode text overrides */
 .dark .sidebar-link,
 .dark .tool-card p,
 .dark .author-bio p,
@@ -51,31 +84,32 @@ span[class*="bg-gradient"][class*="text-transparent"] {
   color: #e5e7eb !important;
 }
 
-/* Sidebar links - base + hover (both modes) */
+/* Sidebar links - base + stronger hover (both modes) */
 .sidebar-link {
   color: white;
-  transition: color 0.2s ease;
+  transition: color 0.3s ease;
 }
 
 .dark .sidebar-link {
-  color: #e5e7eb;
+  color: #e5e7eb !important;
 }
 
 .sidebar-link:hover,
 .sidebar-link:focus,
+nav .sidebar-link:hover,
+#mobileMenu .sidebar-link:hover,
 .dark .sidebar-link:hover,
-.dark .sidebar-link:focus {
-  color: #fb923c !important; /* orange-400 hover */
+.dark nav .sidebar-link:hover {
+  color: #fb923c !important; /* orange-400 hover - high specificity */
 }
 
-.tool-card a:hover,
-.dark .tool-card a:hover {
+/* Footer links hover (both modes) */
+footer a:hover {
   color: #fb923c !important;
 }
 
-/* Header & footer glass effect */
-header,
-footer {
+/* Header & footer glass */
+header, footer {
   backdrop-filter: blur(12px);
 }
 
@@ -110,13 +144,22 @@ footer {
   justify-content: center !important;
 }
 
-/* Mobile typography adjustments */
+/* Mobile typography */
 @media (max-width: 640px) {
   .text-5xl { font-size: 2.25rem; }
   .text-6xl { font-size: 2.5rem; }
 }
 
-/* Narrow screen header tweaks */
+/* Word break */
+#priority-fixes p,
+.details p,
+.details li {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Narrow screen header */
 @media (max-width: 420px) {
   header .flex.items-center.gap-4 p {
     font-size: 1rem !important;
@@ -126,15 +169,6 @@ footer {
   header .flex.items-center.gap-4 {
     gap: 0.5rem;
   }
-}
-
-/* Word break for long content */
-#priority-fixes p,
-.details p,
-.details li {
-  overflow-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
 }
 
 /* Reflow prevention */
@@ -283,51 +317,19 @@ details > div,
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
 }
 
-/* Enforce day/night text colors site-wide – targeted to text elements only */
-body, p, li, span, a:not(.sidebar-link):not(footer a), small, strong, em, blockquote {
+/* Enforce day/night text – targeted (exclude sidebar-link & gradient elements) */
+body, p:not([class*="bg-gradient"]), li, span:not([class*="bg-gradient"]), a:not(.sidebar-link):not(footer a), small, strong, em, blockquote {
   color: #1f2937; /* gray-800 light */
 }
 
 .dark body,
-.dark p,
+.dark p:not([class*="bg-gradient"]),
 .dark li,
-.dark span,
+.dark span:not([class*="bg-gradient"]),
 .dark a:not(.sidebar-link):not(footer a),
 .dark small,
 .dark strong,
 .dark em,
 .dark blockquote {
   color: #e5e7eb !important; /* gray-200 dark */
-}
-
-/* Mobile menu – day/night colors (update selectors with your actual mobile menu class/ID after inspecting) */
-.mobile-menu,
-#mobile-menu,
-#mobile-nav,
-.menu-open,
-aside[aria-expanded="true"],
-nav.mobile {
-  background-color: #f8fafc !important;
-  color: #1f2937 !important;
-}
-
-.dark .mobile-menu,
-.dark #mobile-menu,
-.dark #mobile-nav,
-.dark .menu-open,
-.dark aside[aria-expanded="true"],
-.dark nav.mobile {
-  background-color: #0f172a !important;
-  color: #e5e7eb !important;
-}
-
-.mobile-menu a,
-.mobile-menu .sidebar-link,
-#mobile-menu a {
-  color: inherit !important;
-}
-
-.mobile-menu a:hover,
-.mobile-menu .sidebar-link:hover {
-  color: #fb923c !important;
 }
