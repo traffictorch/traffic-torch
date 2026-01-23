@@ -182,24 +182,11 @@ if (!url) {
 }
 
 const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
-try {
-// Start real fetch in background – does not block progress updates
-const fetchPromise = fetch(proxyUrl)
-  .then(res => {
-    if (!res.ok) throw new Error('Network response was not ok');
-    return res.text();
-  })
-  .then(html => {
-    // Store html for later processing
-    window.fetchedHtml = html;
-    window.fetchDone = true;
-  })
-  .catch(err => {
-    console.error('Fetch error:', err);
-    window.fetchError = err;
-  });
-  const html = await res.text();
-  const doc = new DOMParser().parseFromString(html, 'text/html');
+progressText.textContent = 'Fetching page...';
+const res = await fetch(proxyUrl);
+if (!res.ok) throw new Error('Network response was not ok');
+const html = await res.text();
+const doc = new DOMParser().parseFromString(html, 'text/html');
   const resultsWrapper = document.getElementById('results-wrapper');
   // Final report generation step after all modules
 progressText.textContent = 'Generating report...';
@@ -240,8 +227,8 @@ await new Promise(r => setTimeout(r, 1400)); // 1.4s readable pause
           <strong>SEO:</strong> ${info.whySeo}`;
       }
     }
-    // After modules finish, wait for real fetch if still pending, then show generating report
 progressText.textContent = 'Generating report...';
+await new Promise(r => setTimeout(r, 1400)); // final compilation feel
 
 // Wait for fetch to complete (or timeout after reasonable time)
 await Promise.race([
@@ -296,6 +283,8 @@ await new Promise(r => setTimeout(r, 1400));
     });
     await new Promise(r => setTimeout(r, 600));
   }
+  progressText.textContent = 'Generating report...';
+await new Promise(r => setTimeout(r, 1400)); // final compilation feel
   const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
   updateScore('overall-score', overallScore);
 
