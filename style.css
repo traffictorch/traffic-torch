@@ -7,6 +7,17 @@
   --track: rgba(0,0,0,0.15);
 }
 
+/* Preserve gradient logo/sidebarTitle - force transparent color */
+#sidebarTitle,
+span[class*="bg-gradient"][class*="text-transparent"] {
+  color: transparent !important;               /* Critical: must be transparent for bg-clip-text */
+}
+
+.dark #sidebarTitle,
+.dark span[class*="bg-gradient"][class*="text-transparent"] {
+  color: transparent !important;
+}
+
 .dark {
   --bg-gradient: linear-gradient(to bottom right, #0f172a, #020617, #000000);
   --accent: #f97316;
@@ -79,6 +90,22 @@ header, footer {
 
 #desktopSidebar.collapsed .logo-container-or-img {
   justify-content: center !important;
+}
+
+
+/* Sidebar links - consistent base + hover */
+.sidebar-link {
+  color: white;                          /* light mode base: white/semi-transparent if /90 */
+  transition: color 0.2s ease;
+}
+
+.dark .sidebar-link {
+  color: #e5e7eb;                        /* gray-200 dark base - light text */
+}
+
+.sidebar-link:hover,
+.sidebar-link:focus {
+  color: #fb923c !important;             /* orange-400 hover - both modes */
 }
 
 /* Mobile typography */
