@@ -564,7 +564,7 @@ if (failedMetrics.length > 0) {
 }
 
 // Scroll to results from top of viewport + generous offset - always consistent
-const offset = 180; // (adjust 80–140)
+const offset = 140; // (adjust 80–140)
 
 const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset - offset;
 
