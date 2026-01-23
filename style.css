@@ -383,62 +383,74 @@ body, p:not([class*="bg-gradient"]), li, span:not([class*="bg-gradient"]), a:not
 
 
 
-/* Flex fallback for old Safari (iOS 12) – add -webkit- prefixes + margin fallback for gap */
-.flex, nav.flex, .flex-col, .flex-row, #mobileMenu nav, #mobileMenu .flex.flex-col {
+/* Old Safari flex prefixes + gap fallback – targets sidebar, tool lists, mobile nav */
+nav.flex, .flex, .flex-col, #mobileMenu nav, .tool-list, .sidebar-link-container {
   display: -webkit-box;
   display: -webkit-flex;
   display: flex;
-}
-
-/* If any containers use gap, fallback to margins on children */
-@supports not (gap: 1rem) {
-  .flex.gap-4 > *, 
-  .flex.gap-2 > *, 
-  nav.flex > a + a, 
-  #mobileMenu a + a,
-  .tool-list > * + * {  /* adjust selector to match your tool icons/list */
-    margin-left: 1rem;   /* or whatever your gap was – e.g. 0.5rem / 1rem */
-    margin-top: 0.5rem;  /* for column flex */
-  }
-}
-
-/* Force min-width 0 on flex items to prevent overflow/collapse bugs */
-.flex > *, .grid > * {
-  min-width: 0;
-}
-
-/* Better height handling – old iOS hates 100vh sometimes */
-body, main, .container {
-  min-height: 100vh;
-  height: -webkit-fill-available;  /* old WebKit fallback */
-}
-
-
-
-#mobileMenu, #mobileMenu nav.flex.flex-col {
+  -webkit-flex-direction: column; /* fallback for column */
   flex-direction: column;
-  align-items: flex-start;  /* or center if preferred */
-  gap: 1rem;                /* modern */
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
 }
 
+/* Fallback for gap in flex (unsupported pre-iOS 14.5) – use margins on direct children */
 @supports not (gap: 1rem) {
-  #mobileMenu a.sidebar-link + a.sidebar-link,
-  #mobileMenu .sidebar-link + .sidebar-link {
+  #mobileMenu a + a,
+  .sidebar-link + .sidebar-link,
+  .tool-list li + li,
+  nav a + a {
+    margin-top: 1rem !important; /* adjust to match your intended spacing, e.g. 0.75rem or 1.25rem */
+  }
+  .flex.gap-4 > * + *, .flex.gap-2 > * + * {
     margin-top: 1rem;
+    margin-left: 1rem; /* if row-like */
   }
 }
 
-/* Ensure links don't collapse */
-.sidebar-link {
+/* Prevent collapse: force items to take space, min-width 0 already in your CSS */
+.sidebar-link, nav a, .tool-list li {
+  min-width: 0;
+  width: 100%; /* forces full width in column flex to avoid squish */
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: center;
   align-items: center;
-  gap: 0.75rem;  /* emoji + text spacing */
-  padding: 0.75rem 1rem;
-  width: 100%;
+  gap: 0.75rem; /* modern emoji/text spacing */
 }
 
 @supports not (gap: 0.75rem) {
-  .sidebar-link > * + * {
-    margin-left: 0.75rem;
+  .sidebar-link > * + *,
+  nav a > * + * {
+    margin-left: 0.75rem !important;
   }
+}
+
+
+#mobileMenu, #mobileMenu nav, .sidebar-container {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  width: 100% !important; /* prevent narrow collapse */
+  padding: 1rem !important;
+  box-sizing: border-box;
+}
+
+/* Ensure links don't overlap or squish */
+.sidebar-link {
+  padding: 0.75rem 1rem;
+  justify-content: flex-start;
+  text-align: left;
+  white-space: nowrap; /* prevent wrapping emoji/text weirdly */
+}
+
+/* If tools section has bullets or icons in list */
+.tool-list, ul.tools {
+  padding-left: 1.5rem;
+  list-style: none;
+}
+
+
+body, main {
+  min-height: 100vh;
+  min-height: -webkit-fill-available; /* old Safari fallback */
 }
