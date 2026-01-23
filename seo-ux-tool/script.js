@@ -170,7 +170,9 @@ function updateScore(id, score) {
     e.preventDefault();
 
 progressContainer.classList.remove('hidden');
-progressText.textContent = 'Fetching page';
+progressText.textContent = 'Fetching page...';
+const fetchDelay = Math.floor(Math.random() * 2000) + 2000; // 2–4 seconds realistic
+await new Promise(r => setTimeout(r, fetchDelay));
 
 const originalInput = input.value.trim();  // Add this line
 const url = cleanUrl(originalInput);       // Add this line - defines 'url' properly
@@ -188,6 +190,9 @@ try {
   const html = await res.text();
   const doc = new DOMParser().parseFromString(html, 'text/html');
   const resultsWrapper = document.getElementById('results-wrapper');
+  // Final report generation step after all modules
+progressText.textContent = 'Generating report...';
+await new Promise(r => setTimeout(r, 1400)); // 1.4s readable pause
   const modules = [
     { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
     { id: 'mobile', name: 'Mobile & PWA', fn: analyzeMobile },
