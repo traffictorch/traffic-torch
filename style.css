@@ -254,15 +254,18 @@ details > div,
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
 }
 
-/* Enforce day/night text colors site-wide */
-body, p, li, span, div, {
-  color: #1f2937;                    /* gray-800 light */
+/* Enforce day/night text colors site-wide — targeted to text elements only */
+body, p, li, span, a:not(.sidebar-link):not(footer a), small, strong, em, blockquote {
+  color: #1f2937; /* gray-800 light */
 }
 .dark body,
 .dark p,
 .dark li,
 .dark span,
-.dark div
- {
-  color: #e5e7eb !important;         /* gray-200 dark — override everything */
+.dark a:not(.sidebar-link):not(footer a),
+.dark small,
+.dark strong,
+.dark em,
+.dark blockquote {
+  color: #e5e7eb !important; /* gray-200 dark — override everything */
 }
