@@ -86,38 +86,44 @@ function createInstallButton() {
 
 function showIOSInstallInstructions() {
   if (document.getElementById('ios-install-modal')) return;
+
   const modal = document.createElement('div');
   modal.id = 'ios-install-modal';
-  modal.className =
-    'fixed inset-0 bg-black/80 flex items-center justify-center ' +
-    'z-[2147483647] overflow-hidden transition-opacity duration-300 backdrop-blur-sm';
+  modal.style.position = 'fixed';
+  modal.style.inset = '0';
+  modal.style.background = 'rgba(0,0,0,0.8)';
   modal.style.display = 'flex';
   modal.style.alignItems = 'center';
   modal.style.justifyContent = 'center';
+  modal.style.zIndex = '2147483647';
+  modal.style.overflow = 'hidden';
+  modal.style.backdropFilter = 'blur(8px)';
+  modal.style.transition = 'opacity 300ms';
+
   modal.innerHTML = `
-    <div class="bg-gray-900/95 backdrop-blur-xl rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-cyan-600/40 animate-slide-up text-gray-50">
-      <div class="flex justify-between items-center mb-6">
-        <h3 class="text-2xl font-bold text-white">Install Traffic Torch</h3>
-        <button class="text-gray-400 hover:text-white text-3xl leading-none transition-colors" onclick="this.closest('#ios-install-modal').dispatchEvent(new Event('click'))">×</button>
+    <div style="background: rgba(17,24,39,0.95); backdrop-filter: blur(16px); border-radius: 24px; padding: 32px; max-width: 420px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6); border: 1px solid rgba(165,180,252,0.2); animation: slide-up 0.3s ease-out;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h3 style="font-size: 24px; font-weight: 700; color: #ffffff; margin: 0;">Install Traffic Torch</h3>
+        <button style="font-size: 32px; line-height: 1; color: #9ca3af; background: none; border: none; cursor: pointer;" onclick="this.closest('#ios-install-modal').dispatchEvent(new Event('click'))">×</button>
       </div>
-    
-      <ol class="text-gray-50 space-y-6 text-lg leading-relaxed font-medium">
-        <li class="flex items-start gap-4">
-          <span class="font-bold text-cyan-300 shrink-0">1.</span>
-          <div class="text-gray-50">
-            In Safari tap the <strong class="text-white font-semibold">Share</strong> button
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00eaff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" class="inline h-8 w-8 align-middle mx-2">
+
+      <ol style="color: #f3f4f6; margin: 0; padding-left: 20px; font-size: 18px; line-height: 1.7; font-weight: 500;">
+        <li style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px;">
+          <span style="font-weight: 700; color: #a5b4fc; flex-shrink: 0;">1.</span>
+          <div style="color: #f3f4f6;">
+            In Safari tap the <strong style="color: #ffffff; font-weight: 600;">Share</strong> button
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00eaff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="display: inline; vertical-align: middle; margin-left: 8px;">
               <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
               <path d="M12 14V1"></path>
               <path d="m8 5 4-4 4 4"></path>
             </svg>
           </div>
         </li>
-        <li class="flex items-start gap-4">
-          <span class="font-bold text-cyan-300 shrink-0">2.</span>
-          <div class="flex items-center gap-3 flex-wrap text-gray-50">
+        <li style="display: flex; align-items: flex-start; gap: 16px;">
+          <span style="font-weight: 700; color: #a5b4fc; flex-shrink: 0;">2.</span>
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; color: #f3f4f6;">
             Scroll down and tap Add to Home Screen
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00eaff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" class="inline h-8 w-8 align-middle mx-1">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00eaff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="display: inline; vertical-align: middle;">
               <rect x="3" y="3" width="18" height="18" rx="4" ry="4"></rect>
               <path d="M12 7v10"></path>
               <path d="M7 12h10"></path>
@@ -125,18 +131,21 @@ function showIOSInstallInstructions() {
           </div>
         </li>
       </ol>
-    
-      <p class="mt-8 text-center text-sm text-gray-400">
-        PWA quick access apps! 📱💻
+
+      <p style="margin-top: 32px; text-align: center; font-size: 14px; color: #9ca3af;">
+        PWA quick access app! 📱
       </p>
     </div>
   `;
+
   document.body.appendChild(modal);
+
   setTimeout(() => {
     modal.scrollIntoView({ behavior: 'instant', block: 'center', inline: 'center' });
     document.body.style.overflow = 'hidden';
     modal.focus();
   }, 80);
+
   const closeModal = (e) => {
     if (e.target === modal || e.target.closest('button')?.textContent === '×') {
       modal.remove();
@@ -147,9 +156,7 @@ function showIOSInstallInstructions() {
       document.body.style.height = '';
       document.body.style.width = '';
       document.documentElement.style.touchAction = '';
-      setTimeout(() => {
-        window.scrollTo(0, scrollY);
-      }, 0);
+      setTimeout(() => window.scrollTo(0, scrollY), 0);
     }
   };
   modal.addEventListener('click', closeModal);
