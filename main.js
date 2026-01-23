@@ -95,16 +95,16 @@ function showIOSInstallInstructions() {
   modal.style.alignItems = 'center';
   modal.style.justifyContent = 'center';
   modal.innerHTML = `
-    <div class="bg-gray-900/95 backdrop-blur-xl rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-cyan-500/30 animate-slide-up text-gray-100">
+    <div class="bg-gray-900/95 backdrop-blur-xl rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-cyan-500/30 animate-slide-up text-gray-50">
       <div class="flex justify-between items-center mb-6">
         <h3 class="text-2xl font-bold text-white">Install Traffic Torch</h3>
-        <button class="text-gray-400 hover:text-cyan-300 text-3xl leading-none transition-colors" onclick="this.closest('#ios-install-modal').dispatchEvent(new Event('click'))">×</button>
+        <button class="text-gray-300 hover:text-white text-3xl leading-none transition-colors" onclick="this.closest('#ios-install-modal').dispatchEvent(new Event('click'))">×</button>
       </div>
-     
-      <ol class="text-gray-100 space-y-6 text-lg leading-relaxed">
+    
+      <ol class="text-gray-50 space-y-6 text-lg leading-relaxed">
         <li class="flex items-start gap-3">
-          <span class="font-bold text-cyan-400 shrink-0">1.</span>
-          <div class="text-gray-100">
+          <span class="font-bold text-cyan-300 shrink-0">1.</span>
+          <div class="text-gray-50">
             In Safari tap the <strong class="text-white font-semibold">Share</strong> button
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00eaff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" class="inline h-8 w-8 align-middle mx-2">
               <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
@@ -114,8 +114,8 @@ function showIOSInstallInstructions() {
           </div>
         </li>
         <li class="flex items-start gap-3">
-          <span class="font-bold text-cyan-400 shrink-0">2.</span>
-          <div class="flex items-center gap-3 flex-wrap text-gray-100">
+          <span class="font-bold text-cyan-300 shrink-0">2.</span>
+          <div class="flex items-center gap-3 flex-wrap text-gray-50">
             Scroll down and tap Add to Home Screen
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00eaff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" class="inline h-8 w-8 align-middle mx-1">
               <rect x="3" y="3" width="18" height="18" rx="4" ry="4"></rect>
@@ -125,7 +125,7 @@ function showIOSInstallInstructions() {
           </div>
         </li>
       </ol>
-     
+    
       <p class="mt-8 text-center text-sm text-gray-300">
         PWA quick access app! 📱
       </p>
