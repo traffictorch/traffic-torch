@@ -94,13 +94,20 @@ span.bg-gradient-to-r.text-transparent,
   color: #e5e7eb !important;
 }
 
+/* Stronger sidebar hover override to beat Tailwind utilities */
+nav a.sidebar-link:hover,
+nav a.sidebar-link:focus,
 .sidebar-link:hover,
-.sidebar-link:focus,
-nav .sidebar-link:hover,
-#mobileMenu .sidebar-link:hover,
+.sidebar-link:focus {
+  color: #fb923c !important;
+  transition: color 0.2s ease !important;
+}
+
+.dark nav a.sidebar-link:hover,
+.dark nav a.sidebar-link:focus,
 .dark .sidebar-link:hover,
-.dark nav .sidebar-link:hover {
-  color: #fb923c !important; /* orange-400 hover - high specificity */
+.dark .sidebar-link:focus {
+  color: #fb923c !important;
 }
 
 /* Footer links hover (both modes) */
