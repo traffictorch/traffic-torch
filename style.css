@@ -415,3 +415,30 @@ body, main, .container {
 
 
 
+#mobileMenu, #mobileMenu nav.flex.flex-col {
+  flex-direction: column;
+  align-items: flex-start;  /* or center if preferred */
+  gap: 1rem;                /* modern */
+}
+
+@supports not (gap: 1rem) {
+  #mobileMenu a.sidebar-link + a.sidebar-link,
+  #mobileMenu .sidebar-link + .sidebar-link {
+    margin-top: 1rem;
+  }
+}
+
+/* Ensure links don't collapse */
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;  /* emoji + text spacing */
+  padding: 0.75rem 1rem;
+  width: 100%;
+}
+
+@supports not (gap: 0.75rem) {
+  .sidebar-link > * + * {
+    margin-left: 0.75rem;
+  }
+}
