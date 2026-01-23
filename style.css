@@ -270,7 +270,7 @@ details > div,
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   border: 1px solid rgba(241, 29, 29, 0.35);
   border-radius: 9999px;
-  color: #1f2937; /* gray-800 for light/day mode */
+  color: #6b7280; /* gray-500 – medium gray for day mode, high contrast on light glass */
   font-weight: 700;
   font-size: 1rem;
   padding: 0.85rem 2rem;
@@ -285,7 +285,7 @@ details > div,
 }
 
 .dark #pwa-install-btn {
-  color: #e5e7eb; /* gray-200 for dark/night mode */
+  color: #e5e7eb; /* gray-200 – light in dark mode */
   background: rgba(30, 41, 59, 0.45);
   border-color: rgba(234, 28, 28, 0.3);
   box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1);
