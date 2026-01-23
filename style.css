@@ -27,7 +27,7 @@ body {
 }
 
 .dark body {
-  color: #9E9E9E; /* gray-500 dark */
+  color: #e5e7eb;          /* standard Tailwind gray-200 — light in dark mode */
 }
 
 /* Force dark mode text on sidebar, tool cards, bio, footer – high specificity override */
@@ -37,7 +37,7 @@ body {
 .dark footer p,
 .dark footer a,
 .dark .text-center p {
-  color: #767474 !important; /* gray-500ish */
+  color: #e5e7eb !important;   /* gray-200 light in dark mode */
 }
 
 .dark .sidebar-link:hover,
@@ -252,4 +252,22 @@ details > div,
   background: rgba(30, 41, 59, 0.45);
   border-color: rgba(234, 28, 28, 0.3);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Enforce day/night text colors site-wide */
+body, p, li, span, div, h1, h2, h3, h4, h5, h6 {
+  color: #1f2937;                    /* gray-800 light */
+}
+.dark body,
+.dark p,
+.dark li,
+.dark span,
+.dark div,
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: #e5e7eb !important;         /* gray-200 dark — override everything */
 }
