@@ -7,23 +7,6 @@
   --track: rgba(0,0,0,0.15);
 }
 
-/* Extra FOUC protection: hide title until ready */
-#sidebarTitle,
-p.text-$$   1\.25rem   $$.font-black.bg-gradient-to-r,
-span.bg-gradient-to-r.text-transparent,
-.gradient-text {
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-/* Reveal after load */
-body.loaded #sidebarTitle,
-body.loaded p.text-$$   1\.25rem   $$.font-black.bg-gradient-to-r,
-body.loaded span.bg-gradient-to-r.text-transparent,
-body.loaded .gradient-text {
-  opacity: 1;
-}
-
 .dark {
   --bg-gradient: linear-gradient(to bottom right, #0f172a, #020617, #000000);
   --accent: #f97316;
