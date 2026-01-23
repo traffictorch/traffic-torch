@@ -901,7 +901,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
   container.innerHTML = `
     <div class="mt-20 max-w-5xl mx-auto px-4">
       <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
-        Recommended Plugin Solutions
+        Plugin Solutions
       </h2>
       <p class="text-center text-lg md:text-xl text-gray-400 dark:text-gray-200 max-w-3xl mx-auto mb-12">
         ${supportedMetrics.length} critical area${supportedMetrics.length > 1 ? 's need' : ' needs'} improvement.<br>
