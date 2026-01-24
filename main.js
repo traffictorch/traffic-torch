@@ -247,3 +247,9 @@ if (sidebar && (collapseBtn || desktopMenuToggle)) {
   if (sidebar.classList.contains('collapsed')) toggleSidebar();
 }
 
+
+// Hide FOUC fix - reveal content once DOM is ready
+document.addEventListener("DOMContentLoaded", () => {
+  document.documentElement.style.visibility = "visible";
+});
+
