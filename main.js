@@ -103,7 +103,7 @@ function showIOSInstallInstructions() {
   modal.innerHTML = `
     <div style="background: rgba(17,24,39,0.95); backdrop-filter: blur(16px); border-radius: 24px; padding: 32px; max-width: 420px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6); border: 1px solid rgba(165,180,252,0.2); animation: slide-up 0.3s ease-out;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-        <h3 style="font-size: 24px; font-weight: 700; color: #ffffff; margin: 0;">Install Traffic Torch</h3>
+        <h3 style="font-size: 20px; font-weight: 700; color: #ffffff; margin: 0;">Install Traffic Torch</h3>
         <button style="font-size: 32px; line-height: 1; color: #9ca3af; background: none; border: none; cursor: pointer;" onclick="this.closest('#ios-install-modal').dispatchEvent(new Event('click'))">×</button>
       </div>
 
