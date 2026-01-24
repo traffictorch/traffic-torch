@@ -248,8 +248,5 @@ if (sidebar && (collapseBtn || desktopMenuToggle)) {
 }
 
 
-// Smooth FOUC mitigation - fade in body once ready
-document.addEventListener("DOMContentLoaded", () => {
-  document.body.style.opacity = "1";
-});
+
 
