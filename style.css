@@ -263,14 +263,16 @@ details > div,
 /* PWA Install Button – Glassmorphism */
 #pwa-install-btn {
   position: fixed;
-  inset: auto 1.5rem 1.5rem auto;
+  inset: auto auto 1.5rem auto;
+  left: 50%;
+  transform: translateX(-50%) translate3d(0,0,0);
   z-index: 9999;
   background: rgba(42, 236, 15, 0.18);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   border: 1px solid rgba(241, 29, 29, 0.35);
   border-radius: 9999px;
-  color: #e5e7eb !important; /* gray-200 – light gray for day mode, high contrast on black glass */
+  color: #2568ef !important; 
   font-weight: 700;
   font-size: 1rem;
   padding: 0.85rem 2rem;
@@ -305,7 +307,9 @@ details > div,
 
 @media (max-width: 640px) {
   #pwa-install-btn {
-    inset: auto 1rem 1rem auto;
+    inset: auto auto 1rem auto;
+	left: 50%;
+	transform: translateX(-50%) translate3d(0,0,0);
     padding: 0.75rem 1.8rem;
     font-size: 0.96rem;
   }
