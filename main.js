@@ -247,6 +247,8 @@ if (sidebar && (collapseBtn || desktopMenuToggle)) {
   if (sidebar.classList.contains('collapsed')) toggleSidebar();
 }
 
-
+// Fix Sidebar title flash
+document.getElementById('sidebarTitle').classList.remove('hidden');
+document.getElementById('sidebarTitle').style.opacity = '1';
 
 
