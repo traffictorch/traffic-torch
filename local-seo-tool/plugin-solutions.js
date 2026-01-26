@@ -83,9 +83,9 @@ const pluginData = {
   'Maps & Visuals': {
     WordPress: [
       { name: "WP Go Maps", desc: "Easy Google Maps embed with markers, directions, and custom visuals. Perfect for strong local visual signals and user trust.", link: "https://wordpress.org/plugins/wp-google-maps/", homeLink: "https://www.wpgmaps.com/" },
-      { name: "MapPress Maps", desc: "Simple Google/Leaflet maps with pins, categories, and styling. Lightweight way to add location visuals.", link: "https://wordpress.org/plugins/mappress-google-maps-for-wordpress/", homeLink: "https://www.mappress.com/" },
+      { name: "MapPress Maps", desc: "Simple Google/Leaflet maps with pins, categories, and styling. Lightweight way to add location visuals.", link: "https://wordpress.org/plugins/mappress-google-maps-for-wordpress/" },
       { name: "GeoDirectory", desc: "Full location directory with maps, listings, and advanced visuals. Ideal for comprehensive local map features.", link: "https://wordpress.org/plugins/geodirectory/", homeLink: "https://wpgeodirectory.com/" },
-      { name: "Maps Widget for Google Maps", desc: "Quick thumbnail maps with markers for sidebars/footers. Simple way to boost visual local trust.", link: "https://wordpress.org/plugins/maps-widget-for-google-maps/", homeLink: "https://www.maps-widget.com/" }
+      { name: "Maps Widget for Google Maps", desc: "Quick thumbnail maps with markers for sidebars/footers. Simple way to boost visual local trust.", link: "https://wordpress.org/plugins/maps-widget-for-google-maps/" }
     ],
     Shopify: [
       { name: "Storemapper Store Locator", desc: "Interactive maps with markers and location visuals for strong signals.", link: "https://apps.shopify.com/storemapper-store-locator", homeLink: "https://www.storemapper.com/" },
