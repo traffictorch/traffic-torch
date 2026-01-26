@@ -495,8 +495,7 @@ const pluginData = {
       {
         name: "Rocket Page Speed Optimizer",
         desc: "Compresses and removes bloat for lighter pages. Targets theme and app overhead. Often reduces size by 30-50%.",
-        link: "https://apps.shopify.com/core-web-vitals-booster",
-        homeLink: "https://rocketoptimizer.com/"
+        link: "https://apps.shopify.com/core-web-vitals-booster"
       }
     ],
     Wix: [
@@ -546,8 +545,7 @@ const pluginData = {
       {
         name: "Rocket Page Speed Optimizer",
         desc: "Combines and removes requests. Targets apps and third-party scripts. Significant improvement for store speed.",
-        link: "https://apps.shopify.com/core-web-vitals-booster",
-        homeLink: "https://rocketoptimizer.com/"
+        link: "https://apps.shopify.com/core-web-vitals-booster"
       }
     ],
     Wix: [
@@ -597,8 +595,7 @@ const pluginData = {
       {
         name: "Rocket Page Speed Optimizer",
         desc: "Defers render-blocking resources. Optimizes theme and app loading order. Targets Core Web Vitals.",
-        link: "https://apps.shopify.com/core-web-vitals-booster",
-        homeLink: "https://rocketoptimizer.com/"
+        link: "https://apps.shopify.com/core-web-vitals-booster"
       }
     ],
     Wix: [
@@ -648,8 +645,7 @@ const pluginData = {
       {
         name: "Rocket Page Speed Optimizer",
         desc: "Font preload and optimization. Local hosting option available. Improves font loading speed.",
-        link: "https://apps.shopify.com/core-web-vitals-booster",
-        homeLink: "https://rocketoptimizer.com/"
+        link: "https://apps.shopify.com/core-web-vitals-booster"
       }
     ],
     Wix: [

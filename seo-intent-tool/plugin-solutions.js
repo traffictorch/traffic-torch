@@ -74,7 +74,7 @@ const pluginData = {
 
   "Update Date Shown": {
     WordPress: [
-      { name: "Post Updated Date", desc: "Simple plugin to display last updated date on posts. Customizable format and placement. Fixes missing update date visibility in themes.", link: "https://wordpress.org/plugins/post-updated-date/", homeLink: "https://wordpress.org/plugins/post-updated-date/" },
+      { name: "Post Updated Date", desc: "Simple plugin to display last updated date on posts. Customizable format and placement. Fixes missing update date visibility in themes.", link: "https://wordpress.org/plugins/post-updated-date/" },
       { name: "Display Last Modified Date", desc: "Shows last modified date in posts/pages. Theme-agnostic with shortcodes/widgets. Reliable for clear update signaling.", link: "https://wordpress.org/plugins/display-last-modified-date/" },
       { name: "Last Modified Timestamp", desc: "Adds updated timestamp with custom styling. Easy integration via shortcode. Good for visible freshness indicator.", link: "https://wordpress.org/plugins/last-modified-timestamp/" }
     ],
