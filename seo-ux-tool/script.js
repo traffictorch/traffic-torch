@@ -901,7 +901,7 @@ function analyzePerf(html, doc) {
   function analyzeAccess(html, doc) {
     let score = 100;
     const issues = [];
-    const missingAlts = Array.from(doc.querySelectorAll('img')).filter(i => !i.alt || i.alt.trim() === '');
+    const missingAlts = Array.from(doc.querySelectorAll('img')).filter(i => i.alt === null || i.alt === undefined);
     const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
     let prev = 0, skipped = false;
     headings.forEach(h => {
@@ -909,8 +909,13 @@ function analyzePerf(html, doc) {
       if (lvl > prev + 1) skipped = true;
       prev = lvl;
     });
-    const unlabeled = Array.from(doc.querySelectorAll('input, textarea, select'))
-      .filter(el => el.id && !doc.querySelector(`label[for="${el.id}"]`));
+    const unlabeled = Array.from(doc.querySelectorAll('input:not([type="hidden"]), textarea, select'))
+  .filter(el => {
+    if (el.hasAttribute('aria-label') || el.hasAttribute('aria-labelledby')) return false;
+    const hasExplicitLabel = !!doc.querySelector(`label[for="${el.id}"]`);
+    const hasImplicitLabel = el.closest('label') && el.closest('label').contains(el);
+    return !(hasExplicitLabel || hasImplicitLabel);
+  });
 
     if (missingAlts.length) {
       score -= Math.min(35, missingAlts.length * 8);
