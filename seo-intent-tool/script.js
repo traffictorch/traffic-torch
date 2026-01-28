@@ -719,7 +719,7 @@ window.scrollTo({
 
 <!-- Priority Fixes -->
    <div class="mt-20 space-y-8">
-     <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">Top 3 Priority Fixes</h2>
+     <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">Top Priority Fixes</h2>
      ${(() => {
        const priority = [
          !hasAuthorByline ? { name: 'Add Author Byline & Bio', impact: '+15–25 points', desc: 'Visible author name and detailed bio with photo establish credibility and E-E-A-T signals.' } : null,
