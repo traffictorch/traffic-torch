@@ -17,15 +17,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  const countPhrase = (text = '', phrase = '') => {
-    if (!text || !phrase) return 0;
-    const lower = text.toLowerCase();
-    const p = phrase.toLowerCase().trim();
-    let matches = (lower.match(new RegExp(p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
-    const cleanP = p.replace(/\b(in|the|a|an|of|at|on|for|and|&|near|best|top|great)\b/gi, '').trim();
-    if (cleanP.length > 4) matches += (lower.match(new RegExp(cleanP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')) || []).length;
-    return matches;
-  };
+const countPhrase = (text = '', phrase = '', isUrl = false) => {
+  if (!text || !phrase) return 0;
+  const lower = text.toLowerCase();
+  const p = phrase.toLowerCase().trim();
+
+  // Normal exact + cleaned matching
+  let matches = (lower.match(new RegExp(p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
+  const cleanP = p.replace(/\b(in|the|a|an|of|at|on|for|and|&|near|best|top|great)\b/gi, '').trim();
+  if (cleanP.length > 4) {
+    matches += (lower.match(new RegExp(cleanP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')) || []).length;
+  }
+
+  // Special forgiving mode for URLs only
+  if (isUrl) {
+    const urlWords = lower
+      .replace(/https?:\/\//gi, '')
+      .replace(/[^a-z0-9- ]/gi, ' ')
+      .replace(/-/g, ' ')
+      .split(/\s+/)
+      .filter(w => w.trim().length > 0);
+
+    const phraseWords = p.split(/\s+/).filter(w => w.trim().length > 0);
+    const cleanPhraseWords = cleanP.split(/\s+/).filter(w => w.trim().length > 0);
+
+    const matchedWords = new Set();
+    phraseWords.forEach(word => { if (urlWords.includes(word)) matchedWords.add(word); });
+    cleanPhraseWords.forEach(word => { if (urlWords.includes(word)) matchedWords.add(word); });
+
+    const required = Math.ceil(phraseWords.length / 2);
+    if (matchedWords.size >= required) {
+      matches += 1;  // count as meaningful match
+    }
+  }
+
+  return matches;
+};
 
   const getCleanContent = (doc) => {
     if (!doc?.body) return '';
@@ -35,6 +62,22 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const getWordCount = (doc) => getCleanContent(doc).split(/\s+/).filter(w => w.length > 0).length;
+  
+  const calculateContentScore = (words, density) => {
+  let wordScore = 0;
+  if (words > 0) {
+    wordScore = Math.min(50, (words / 800) * 50);
+  }
+  let densityScore = 0;
+  if (density >= 1 && density <= 2) {
+    densityScore = 50;
+  } else if (density >= 0.5 && density < 1) {
+    densityScore = 50 * ((density - 0.5) / 0.5);
+  } else if (density > 2 && density <= 3) {
+    densityScore = 50 * ((3 - density) / 1);
+  }
+  return Math.round(wordScore + densityScore);
+};
 
   const getCircleColor = (score) => score < 60 ? '#ef4444' : score < 80 ? '#fb923c' : '#22c55e';
   const getTextColorClass = (score) => score < 60 ? 'text-red-600 dark:text-red-400' : score < 80 ? 'text-orange-500 dark:text-orange-400' : 'text-green-600 dark:text-green-400';
@@ -183,12 +226,12 @@ document.addEventListener('DOMContentLoaded', () => {
       compScore += compAnchors > 0 ? 10 : 0;
       const yourSchema = !!yourDoc.querySelector('script[type="application/ld+json"]');
       const compSchema = !!compDoc.querySelector('script[type="application/ld+json"]');
-      data.urlSchema = {
-        yourUrlMatch: countPhrase(yourUrl, phrase),
-        compUrlMatch: countPhrase(compUrl, phrase),
-        yourSchema,
-        compSchema
-      };
+data.urlSchema = {
+  yourUrlMatch: countPhrase(yourUrl, phrase, true),
+  compUrlMatch: countPhrase(compUrl, phrase, true),
+  yourSchema,
+  compSchema
+};
       yourScore += data.urlSchema.yourUrlMatch > 0 ? 10 : 0;
       compScore += data.urlSchema.compUrlMatch > 0 ? 10 : 0;
       yourScore = Math.min(100, Math.round(yourScore));
@@ -365,7 +408,9 @@ window.scrollTo({
   ${[
     { name: 'Meta Title & Desc', you: data.meta.yourMatches > 0 ? 100 : 0, comp: data.meta.compMatches > 0 ? 100 : 0 },
     { name: 'H1 & Headings', you: data.headings.yourH1Match > 0 ? 100 : 0, comp: data.headings.compH1Match > 0 ? 100 : 0 },
-    { name: 'Content Density', you: parseFloat(data.content.yourDensity), comp: parseFloat(data.content.compDensity) },
+    { name: 'Content Density', 
+  you: calculateContentScore(data.content.yourWords, data.content.yourDensity), 
+  comp: calculateContentScore(data.content.compWords, data.content.compDensity) },
     { name: 'Image Alts', you: data.alts.yourPhrase > 0 ? 100 : 0, comp: data.alts.compPhrase > 0 ? 100 : 0 },
     { name: 'Anchor Text', you: data.anchors.your > 0 ? 100 : 0, comp: data.anchors.comp > 0 ? 100 : 0 },
     { name: 'URL & Schema', you: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)), comp: Math.min(100, (data.urlSchema.compUrlMatch > 0 ? 50 : 0) + (data.urlSchema.compSchema ? 50 : 0)) }
