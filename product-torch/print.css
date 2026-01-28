@@ -1,0 +1,199 @@
+@media print {
+  /* ──────────────────────────────────────────────────────────────
+     Proven cover page – unchanged & stable
+  ─────────────────────────────────────────────────────────────── */
+  body::before {
+    content: "TrafficTorch.net 🛡️\A\A Quit Risk Audit Tool ⚡\A\A Report:\A " attr(data-url);
+    display: block;
+    height: 100vh;
+    min-height: 100vh;
+    page-break-after: always;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #4b5563;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 900;
+    text-align: center;
+    padding-top: 20vh;
+    line-height: 1.4;
+    white-space: pre;
+    font-size: 3.5rem;
+    text-shadow:
+      -2px -2px 0 #fb923c,
+      2px -2px 0 #fb923c,
+      -2px 2px 0 #fb923c,
+      2px 2px 0 #fb923c,
+      -2px 0 0 #fb923c,
+      2px 0 0 #fb923c,
+      0 -2px 0 #fb923c,
+      0 2px 0 #fb923c,
+      0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  /* Report starts cleanly on next page */
+  #results-wrapper {
+    page-break-before: always;
+    margin-top: 0 !important;
+  }
+
+  /* Full-width content inside results */
+  #results-wrapper,
+  #results-wrapper .container,
+  #results-wrapper .max-w-*,
+  #results-wrapper .mx-auto {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 1cm 1.2cm !important;
+    box-sizing: border-box;
+  }
+
+  /* Prevent ugly page breaks inside modules */
+  .score-card,
+  .fixes-panel,
+  .full-details,
+  section > div,
+  .grid,
+  .flex {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Better text flow */
+  p, li, div {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Print safety basics */
+  body {
+    background: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 11pt;
+  }
+
+  /* Clean print – no shadows */
+  .shadow-lg,
+  .shadow-xl,
+  [class*="shadow"] {
+    box-shadow: none !important;
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     TARGETED HIDING – safe & specific (no :not on containers)
+  ─────────────────────────────────────────────────────────────── */
+  .max-w-4xl.mx-auto.my-16 details,               /* how/why accordions */
+  section.py-20.bg-gray-50.dark\:bg-gray-900,     /* deep dive modules */
+  #quit-risk-seo-checklist,                       /* checklist */
+  .tools-grid,
+  section.max-w-5xl.mx-auto.my-24,                /* author bio */
+  div[style*="display: flex; justify-content: center; margin: 30px 0;"],  /* share */
+  .a2a_kit,
+  div.max-w-5xl.mx-auto.px-6.py-4.text-center,    /* breadcrumbs */
+  section.bottom-banner,
+  .checklist-card,
+  .max-w-7xl.mx-auto,
+  .max-w-6xl.mx-auto {
+    display: none !important;
+  }
+
+  /* Extra safety: hide top-level details not in report */
+  details:not(.fixes-panel details, .full-details details) {
+    display: none !important;
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     Always show important report content
+  ─────────────────────────────────────────────────────────────── */
+  .fixes-panel,
+  .full-details,
+  .expand-content,
+  .hidden.mt-4,
+  .hidden.mt-6,
+  .hidden.mt-8 {
+    display: block !important;
+  }
+
+  /* Original form/header/footer hiding */
+  #keyword-form,
+  #analysis-progress,
+  header,
+  footer,
+  nav,
+  aside,
+  .no-print,
+  button,
+  details > summary {
+    display: none !important;
+  }
+
+/* Force full-width layout for Quit Risk modules in print */
+@media print {
+  /* Main report wrapper – full bleed */
+  #results,
+  #results-wrapper,
+  .max-w-7xl.mx-auto,
+  .max-w-5xl.mx-auto,
+  .px-6,
+  .grid.gap-8.my-16 {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Individual module cards – expand to full available width */
+  .module-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0.5cm 0 !important;
+    padding: 1cm !important;       /* generous internal space – looks clean */
+    box-sizing: border-box !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Grid containers inside – force single column + full width */
+  .grid.gap-8,
+  [class*="grid-cols"] {
+    display: block !important;     /* collapse multi-column grids into stacked */
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    gap: 1cm !important;
+  }
+
+  /* Override any leftover narrow containers */
+  .max-w-md,
+  .max-w-lg,
+  .mx-auto {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Make the circular score bigger and centered for better PDF look */
+  .module-card .relative.mx-auto.w-32.h-32,
+  .module-card svg {
+    width: 140px !important;
+    height: 140px !important;
+    margin: 0 auto !important;
+  }
+
+  /* Prevent tiny text in print */
+  .module-card p,
+  .module-card h3,
+  .module-card h4 {
+    font-size: 14pt !important;
+    line-height: 1.4 !important;
+  }
+
+/* Hide promotional / educational blocks via unique IDs – safe from JS class changes */
+#author-bio,
+#promo-high-impact-cards,
+#promo-old-vs-modern-seo {
+  display: none !important;
+}
+}
+}

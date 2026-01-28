@@ -1,0 +1,96 @@
+/* Only needed for the radar chart – everything else is Tailwind */
+.radar {
+  width: 200px;
+  height: 200px;
+  margin: 2rem auto;
+  display: block;
+}
+
+/* Loading Spinner */
+.animate-spin { animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* Big Score Number Color - Light Mode */
+.score-low {
+  color: #ef4444 !important; /* Red for <60 */
+}
+.score-mid {
+  color: #fb923c !important; /* Orange for 60-79 */
+}
+.score-high {
+  color: #22c55e !important; /* Green for ≥80 */
+}
+
+/* Big Score Number Color - Dark Mode Overrides */
+.dark .score-low {
+  color: #f87171 !important; /* Lighter red in dark mode */
+}
+.dark .score-mid {
+  color: #fdba74 !important; /* Lighter orange in dark mode */
+}
+.dark .score-high {
+  color: #86efac !important; /* Lighter green in dark mode */
+}
+
+/* /100 text - consistent gray in both modes */
+.score-slash {
+  color: #9ca3af !important; /* gray-400 */
+}
+.dark .score-slash {
+  color: #6b7280 !important; /* gray-500 in dark */
+}
+
+/* Mobile-friendly report - force full width and reduce padding on small screens */
+@media (max-width: 1024px) {
+  .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
+    max-width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  .p-12, .p-10, .p-8 {
+    padding: 1.5rem !important;
+  }
+  .text-5xl {
+    font-size: 2rem !important;
+    line-height: 1.1 !important;
+  }
+  .text-9xl {
+    font-size: 6rem !important;
+    line-height: 1 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .p-12, .p-10 { padding: 1.25rem !important; }
+  .text-5xl { font-size: 1.875rem !important; }
+  .text-9xl { font-size: 5.5rem !important; }
+}
+
+/* Disable horizontal rubber-band bounce on iOS Safari */
+html, body {
+  overscroll-behavior-x: none;
+}
+
+/* Safety: prevent dynamic table from causing real viewport stretch */
+#results .max-w-5xl {
+  max-width: 100% !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+#results .overflow-x-auto,
+#results table {
+  width: 100% !important;
+  max-width: 100% !important;
+  table-layout: fixed;
+  overflow-wrap: break-word;
+}
+#results table th,
+#results table td {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Smooth internal scroll */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}

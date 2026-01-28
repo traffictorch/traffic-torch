@@ -1,0 +1,1077 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ 
+  <!-- Optimized SEO Title & Description -->
+  <title>Quit Risk Tool: Bounce Rate & UX Audit | Traffic Torch</title>
+  <meta name="description" content="Predict bounce rates with UX audit for readability, accessibility, performance & navigation. Get AI-generated fixes to boost engagement & SEO." />
+  <meta name="keywords" content="quit risk tool, bounce rate predictor, UX audit tool, reduce bounce rate, usability analysis, free SEO tool, AI UX fixes, mobile optimization checker, accessibility audit" />
+ 
+  <!-- Robots & Canonical -->
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://traffictorch.net/product-torch/" />
+  
+    <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <!-- Referrer Policy (security + privacy best practice) -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/">
+ 
+  <!-- Open Graph Tags (Facebook, LinkedIn, etc.) -->
+  <meta property="og:title" content="Free Quit Risk Tool: Bounce Rate Predictor &amp; UX Health Audit | Traffic Torch" />
+  <meta property="og:description" content="Instant free UX audit &amp; bounce rate predictor: 0–100 Quit Risk Score analyzes readability, mobile/PWA readiness, performance, accessibility &amp; navigation – with AI-prioritized fixes for better engagement &amp; SEO." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://traffictorch.net/product-torch/" />
+  <meta property="og:image" content="https://traffictorch.net/product-torch/images/product-torch.webp" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="Traffic Torch" />
+ 
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free Quit Risk Tool: Bounce Rate Predictor &amp; Instant UX Audit | Traffic Torch" />
+  <meta name="twitter:description" content="Instant free UX audit &amp; bounce rate predictor: 0–100 Quit Risk Score analyzes readability, mobile/PWA readiness, performance, accessibility &amp; navigation – with AI-prioritized fixes for better engagement &amp; SEO." />
+  <meta name="twitter:image" content="https://traffictorch.net/product-torch/images/product-torch.webp" />
+  <meta name="twitter:site" content="@TrafficTorch" /> <!-- Update if you have an X handle -->
+ 
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Quit Risk & Bounce Rate Predictor Tool",
+  "description": "Instant UX & engagement health audit: Predict visitor quit risk and bounce rate through readability, mobile/PWA readiness, performance, accessibility, navigation flow, and content quality analysis.",
+  "url": "https://traffictorch.net/product-torch/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Traffic Torch Quit Risk & Bounce Rate Predictor",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "description": "Free instant UX audit tool. Calculates Quit Risk Score (bounce & exit probability), analyzes readability, mobile/PWA readiness, performance metrics, accessibility, navigation UX. Delivers 0–100 score, deep-dive modules, AI-generated fixes, competitive UX gap analysis, and engagement improvement forecasts.",
+  "url": "https://traffictorch.net/product-torch/",
+  "image": "https://traffictorch.net/product-torch/images/product-torch.webp"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is Quit Risk in website UX?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Quit Risk measures the likelihood visitors will leave your page quickly (high bounce/exit rate). Our free tool predicts it instantly by analyzing readability, load speed, mobile experience, accessibility, navigation, and content quality."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How can I lower bounce rate and quit risk?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Improve readability, ensure fast performance, make the site fully mobile/PWA-ready, fix accessibility issues, simplify navigation, and align content with user intent. Our tool provides prioritized AI-generated fixes for each area."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does better UX help SEO rankings?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — strong UX signals (low bounce rate, high engagement, fast loading, mobile-friendliness, accessibility) are key ranking factors for Google and improve visibility in AI-powered search results."
+      }
+    }
+  ]
+}
+</script>
+
+<!-- Article Schema for the main page content -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://traffictorch.net/product-torch/"
+  },
+  "headline": "Quit Risk & Bounce Rate Predictor: Optimize UX Before Visitors Leave",
+  "description": "Free instant UX audit tool. Predict bounce rate and quit risk, analyze readability, performance, accessibility, mobile readiness & navigation. Get 0–100 score, AI fixes, and engagement improvement forecasts.",
+  "image": "https://traffictorch.net/product-torch/images/product-torch.webp",
+  "author": {
+    "@type": "Person",
+    "name": "Traffic Torch Team",
+    "url": "https://traffictorch.net"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://traffictorch.net/logo-512.webp"
+    }
+  },
+  "datePublished": "2025-12-18",
+  "dateModified": "2026-01-25"
+}
+</script>
+
+<!-- Person Schema for author (linked from Article) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Ylia Callan",
+  "url": "https://yliacallan.github.io/",
+  "sameAs": [
+    "https://www.linkedin.com/in/ylia-callan-8b889976/",
+    "https://x.com/guitaralize",
+    "https://traffictorch.net/"  
+  ],
+  "image": "/images/ylia-callan-320w.webp",
+  "jobTitle": "Founder & Builder",
+  "description": "Musician, Author, Web Designer, and Creator of Privacy-First AI SEO/UX Tools like Traffic Torch",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "url": "https://traffictorch.net/" 
+  }
+}
+</script>
+
+   <!-- BreadcrumbList --> 
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://traffictorch.net/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Traffic Torch Quit Risk Audit Tool",
+      "item": "https://traffictorch.net/product-torch/"
+    }
+  ]
+}
+</script>
+ 
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Main Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://static.addtoany.com">
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/product-torch/style.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/product-torch/style.css">
+  </noscript>
+
+  <link rel="preload" as="style" href="/tailwind-local.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local.css">
+
+  <link rel="stylesheet" media="print" href="/product-torch/print.css">
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  <meta http-equiv="Content-Encoding" content="br">  
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
+        </a>
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚡</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📝</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Comp</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+        <a href="/news/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📰</span> <span class="sidebar-text hidden">News</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🛡️</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">Local SEO 📍</a>
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">SEO Intent 🎯</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">Quit Risk ⚡</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">Keywords 📝</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">Competition 🆚</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Search 🔍</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Content 🤖</a>
+            </div>
+            <a href="/about/" class="text-gray-100 hover:text-orange-400 transition">About</a>
+            <a href="/news/" class="text-gray-100 hover:text-orange-400 transition">News</a>
+          </nav>
+        </div>
+      </header>
+      
+<main class="container mx-auto px-6 py-4 max-w-5xl">
+    <div class="text-center mb-16">
+      <h1 class="text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-6">
+        Quit Risk Audit
+      </h1>
+      <p class="text-xl text-gray-600 dark:text-gray-400 mb-10 max-w-3xl mx-auto">
+        Predict bounce rates • Analyze readability • Accessibility • Performance 
+      </p>
+      
+
+      
+<form id="audit-form" class="max-w-2xl mx-auto space-y-4">
+  <div class="flex flex-col sm:flex-row gap-4">
+    <label for="url-input" class="sr-only">Enter website URL to analyze</label>
+    <input
+      type="text"
+      id="url-input"
+      placeholder="example.com/your-page"
+      aria-label="Enter website URL to analyze"
+      required
+      class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+    />
+    <button
+      type="submit"
+      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+    >
+      Analyze
+    </button>
+  </div>
+</form>
+
+    </div>
+    
+    <!-- Loading indicator - modern thick orange ring spinner matching other tools -->
+    <section id="loading" class="hidden flex flex-col items-center justify-center py-0 space-y-12">
+      <div class="w-20 h-20 rounded-full border-8 border-gray-300/50 dark:border-gray-700/50 border-t-orange-500 dark:border-t-orange-400 animate-spin"></div>
+      <div class="text-center space-y-4">
+        <p class="text-4xl font-black text-orange-500 dark:text-orange-400">Analyzing Quit Risk...</p>
+        <p id="progressText" class="text-xl font-medium text-orange-500 dark:text-orange-400 max-w-2xl px-8"></p>
+      </div>
+    </section>
+
+    <!-- Results container (JS will populate this) -->
+    <div id="results" class="hidden space-y-16 mt-16">
+      <!-- Your existing report sections go here -->
+    </div>
+
+	    <div class="center-btn-container">
+  <button
+    class="copy-link-btn"
+    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link 🔗',1600);"
+    data-text="https://traffictorch.net/product-torch/"
+  >
+    Copy Link 🔗
+  </button>
+</div>
+
+	
+<!-- How Quit Risk Works Accordion -->
+<div class="max-w-4xl mx-auto my-16">
+  <details>
+    <summary class="px-3 py-5 text-1xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
+      How the Quit Risk Tool Works?
+      <span class="text-3xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-2 py-10 bg-white dark:bg-gray-800 rounded-2xl shadow-inner space-y-10 text-gray-800 dark:text-gray-100">
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">Instant, Privacy-Safe UX Health Audit</h2>
+        <p class="leading-relaxed">
+		This bounce rate predictor performs a real-time usability analysis by securely fetching your page’s HTML via our CORS proxy and parsing the DOM entirely in your browser.
+        </p>
+        <p class="leading-relaxed">
+          No data leaves your device. Everything processes instantly and privately on-device for complete security.
+        </p> 
+      </section>
+      <section class="space-y-6">
+        <h3 class="text-xl font-bold text-indigo-600 dark:text-indigo-400">The 5 Core UX Factors Analyzed</h3>
+        <ul class="space-y-4 text-base list-disc list-inside">
+          <li><strong>Readability Scoring</strong> — Flesch Reading Ease & Kincaid grade level on main content: rewards clear, scannable writing.</li>
+          <li><strong>Navigation Clarity</strong> — Link density and menu structure evaluation to avoid cognitive overload.</li>
+          <li><strong>Accessibility Health</strong> — Proxy checks for alt-text coverage, contrast, and semantic structure (WCAG-inspired).</li>
+          <li><strong>Mobile & PWA Readiness</strong> — Viewport configuration, responsive design, touch targets, and progressive web app compliance.</li>
+          <li><strong>Performance Optimization</strong> — Asset volume flags, script/font bloat detection, lazy loading opportunities.</li>
+        </ul>
+      </section>
+      <section class="space-y-4">
+        <p class="leading-relaxed">
+          These factors combine into a 0–100 <strong>Quit Risk Score</strong> that predicts potential bounce rate ranges.
+        </p>
+        <p class="leading-relaxed font-medium">
+          You get a color-coded breakdown, AI-generated prioritized fixes ranked by impact, and predictive engagement forecasts based on proven UX-SEO correlations.
+        </p>
+      </section>
+      <section class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 p-6 rounded-xl">
+        <h3 class="text-xl font-bold mb-3">Key Insight</h3>
+        <p class="text-sm leading-relaxed">
+          High quit risk directly increases bounce rates and reduces dwell time. Sending negative behavioral signals that harm SEO rankings over time.
+        </p>
+      </section>
+    </div>
+  </details>
+</div>
+
+
+
+    
+          	<!-- AddToAny BEGIN -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+<a class="a2a_button_pinterest"></a>
+<a class="a2a_button_x"></a>
+<a class="a2a_button_reddit"></a>
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_copy_link"></a>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+</div>
+	<!-- AddToAny END -->
+	
+
+      <!-- Deep Dive into Key Modules -->
+      <section class="py-20 bg-gray-50 dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-2">
+          <h2 class="text-4xl md:text-5xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+            Deep Dive into Key Modules
+          </h2>
+          <div id="metric-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center lg:justify-start">
+            <!-- Cards generated dynamically -->
+          </div>
+        </div>
+      </section>
+      
+  
+<!-- WHAT IS QUIT RISK & WHY IT MATTERS           -->
+<section class="max-w-4xl mx-auto mt-12 mb-12 px-4 sm:px-6 lg:px-8">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    What is Quit Risk?
+  </h2>
+
+  <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-500 dark:text-gray-100">
+    <strong>Quit Risk measures how likely a visitor is to bounce in the first 10–30 seconds. Before they ever engage with your content or convert.</strong>
+  </p>
+
+  <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
+    <p>Most sites treat bounce rate as a vague vanity metric. Today it's a direct signal of failure.</p>
+    <p>High quit risk kills rankings, destroys conversions, wastes ad spend, and tells search engines your page doesn't deserve traffic.</p>
+    <p class="font-semibold text-cyan-700 dark:text-cyan-300">
+      Modern quit risk is driven by these silent killers:
+    </p>
+    <ul class="list-none space-y-3 font-medium text-gray-500 max-w-lg mx-auto">
+      <li>→ Slow load & poor Core Web Vitals.</li>
+      <li>→ Confusing or cluttered first screen.</li>
+      <li>→ No instant value or trust signals.</li>
+      <li>→ Mobile frustration & bad touch targets.</li>
+    </ul>
+    <p class="pt-4">
+      Traffic Torch Quit Risk Analyzer gives you an instant score + deep breakdown of every quit-risk factor. With prioritized fixes to turn visitors into engagers.
+    </p>
+  </div>
+</section>
+
+<!-- 5 HIGH-IMPACT MOVES TO CRUSH QUIT RISK       -->
+<div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    5 High-Impact Moves to Slash Quit Risk
+  </h2>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-900/30 dark:to-emerald-900/30 p-7 rounded-2xl border border-teal-100 dark:border-teal-800/40">
+      <span class="text-4xl flex-shrink-0">1</span>
+      <div>
+        <strong>Clear value proposition in <5 seconds</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Big headline + subhead + visual hook that answers "why should I stay?" immediately.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/30 dark:to-green-900/30 p-7 rounded-2xl border border-emerald-100 dark:border-emerald-800/40">
+      <span class="text-4xl flex-shrink-0">2</span>
+      <div>
+        <strong>Zero visual & cognitive clutter</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Massive whitespace, single-focus hero, no aggressive pop-ups or sticky bars on arrival.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-green-50 to-lime-50 dark:from-green-900/30 dark:to-lime-900/30 p-7 rounded-2xl border border-green-100 dark:border-green-800/40">
+      <span class="text-4xl flex-shrink-0">3</span>
+      <div>
+        <strong>Mobile-first perfection</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Large readable text, generous tap targets, no horizontal scroll, fast touch response.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
+      <span class="text-4xl flex-shrink-0">4</span>
+      <div>
+        <strong>Instant trust builders</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Visible author photo/bio, social proof, secure badges, clear branding. Create clear credibility.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/30 dark:to-indigo-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
+      <span class="text-4xl flex-shrink-0">5</span>
+      <div>
+        <strong>Frictionless first action path</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">One clear next step (scroll, click-to-call, form, video play) — no decision paralysis.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- COMPARISON TABLE – OLD vs MODERN QUIT RISK    -->
+<section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    Old UX Thinking vs Modern Quit-Risk 
+  </h2>
+
+  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+    <table class="w-full text-left min-w-[640px]">
+      <thead class="bg-gradient-to-r from-cyan-600 to-teal-600 text-white">
+        <tr>
+          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
+          <th class="px-6 py-5 text-lg font-semibold">Old-School UX Thinking</th>
+          <th class="px-6 py-5 text-lg font-semibold">Modern Quit-Risk Mastery Focus</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <tr>
+          <td class="px-6 py-5 font-medium">Primary Metric</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Overall bounce rate</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">First-10-second quit risk score</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Speed Priority</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Under 3–5 seconds is "fine"</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Sub-2.5s LCP required — table stakes</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium">First-Screen Focus</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Pretty hero image + logo</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Instant value + trust + clear next action</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Mobile Experience</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Responsive checkbox</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Mobile-first, touch-optimized, fast interaction</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium">Trust Signals</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Footer links & copyright</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Visible authorship, social proof, security — above fold</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Conversion Path</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Multiple CTAs & options</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Single obvious low-friction first step</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="text-center mt-10 text-lg text-gray-600 dark:text-gray-400">
+    When you eliminate quit risk, visitors stay, engage, convert — and search engines reward you with better rankings.
+  </p>
+</section>
+    
+      <!-- UX Tools Section -->
+<div class="my-16"></div>
+<div class="tools-grid max-w-7xl mx-auto px-4">
+      <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      UX Tools
+      </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+    <a href="/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all">
+        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">💡</div>
+        <h3 class="text-orange-500 dark:text-orange-300 text-2xl font-bold mb-3">SEO UX Analyzer</h3>
+        <p class="text-gray-800 dark:text-gray-100">Quick SEO + UX health check</p>
+      </div>
+    </a>
+      <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+      </div>
+    </a>
+    <a href="https://traffictorch.net/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-red-500 dark:text-red-300 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools powered by AI</p>
+      </div>
+    </a>
+  </div>
+</div>
+
+
+<section id="quit-risk-seo-checklist" class="py-16 px-3 max-w-7xl mx-auto bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
+  <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-cyan-600">
+    Ultimate Quit Risk &amp; Bounce Rate Reduction Checklist
+  </h2>
+  <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-700 dark:text-gray-300 leading-relaxed">
+    Free instant bounce rate predictor and comprehensive UX health audit. Get your Quit Risk Score with deep analysis of readability, mobile/PWA optimization, performance, accessibility, and navigation. Plus AI-prioritized fixes to lower bounce rates and boost engagement.
+  </p>
+
+  <!-- Expanding Accordion with Blue-to-Purple Button -->
+  <div class="max-w-7xl mx-auto my-10">
+    <details class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl">
+      <summary class="px-6 py-5 text-xl font-black bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-3xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300 list-none">
+        Quit Risk &amp; UX Checklist 📝
+        <span class="text-2xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
+      </summary>
+      <div class="mt-8 px-2 pb-10 space-y-10 text-gray-700 dark:text-gray-300">
+        <!-- Introductory Good & Bad Practices -->
+        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 p-2 rounded-2xl space-y-6">
+          <h3 class="text-2xl font-bold text-center text-indigo-600 dark:text-indigo-400">Key Dos &amp; Don'ts to Reduce Bounce Rates</h3>
+          <ul class="space-y-4 text-lg max-w-6xl mx-auto">
+            <li class="flex items-start gap-7"><span class="text-2xl">✅</span> <div><strong>Do</strong>: Load critical content above the fold for instant value.</div></li>
+            <li class="flex items-start gap-7"><span class="text-2xl">❌</span> <div><strong>Avoid</strong>: Pop-ups or interstitials that block main content on entry.</div></li>
+            <li class="flex items-start gap-7"><span class="text-2xl">✅</span> <div><strong>Do</strong>: Use clear, benefit-driven headlines that match user intent.</div></li>
+            <li class="flex items-start gap-7"><span class="text-2xl">❌</span> <div><strong>Avoid</strong>: Misleading titles or slow-revealing core information.</div></li>
+            <li class="flex items-start gap-7"><span class="text-2xl">✅</span> <div><strong>Do</strong>: Optimize images and enable lazy loading below fold.</div></li>
+            <li class="flex items-start gap-7"><span class="text-2xl">❌</span> <div><strong>Avoid</strong>: Heavy hero images or autoplay videos without user consent.</div></li>
+            <li class="flex items-start gap-7"><span class="text-2xl">✅</span> <div><strong>Do</strong>: Include internal links to related content for deeper engagement.</div></li>
+            <li class="flex items-start gap-7"><span class="text-2xl">❌</span> <div><strong>Avoid</strong>: Dead-end pages with no clear next steps or CTAs.</div></li>
+          </ul>
+        </div>
+
+        <!-- Cards Grid Inside Accordion -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Readability & Content -->
+          <div class="checklist-card bg-gradient-to-br from-teal-900/20 to-cyan-900/20 dark:from-teal-900/30 dark:to-cyan-900/30 rounded-2xl p-2 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+            <h3 class="text-2xl font-bold mb-8 text-green-400 flex items-center gap-4">
+              <span class="text-2xl">📖</span> Readability &amp; Content Experience
+            </h3>
+            <div class="space-y-8 text-lg">
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">😓</span>
+                <div>Complex sentences and dense text causing reader fatigue and early exits.</div>
+              </div>
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">✅</span>
+                <div><strong>Readability Scoring Tool</strong>: Flesch-Kincaid analysis, sentence length, paragraph density.</div>
+              </div>
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">👀</span>
+                <div>Walls of text reducing scannability and engagement.</div>
+              </div>
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">📑</span>
+                <div>Heading structure, lists, and visual breaks to improve flow and reduce bounce rates.</div>
+              </div>
+            </div>
+          </div>
+          <!-- Mobile & Performance -->
+          <div class="checklist-card bg-gradient-to-br from-cyan-900/20 to-blue-900/20 dark:from-cyan-900/30 dark:to-blue-900/30 rounded-2xl p-2 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+            <h3 class="text-2xl font-bold mb-8 text-orange-400 flex items-center gap-4">
+              <span class="text-3xl">📱</span> Mobile Readiness &amp; Performance Audit
+            </h3>
+            <div class="space-y-8 text-lg">
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">❌</span>
+                <div>No viewport meta or small touch targets frustrating mobile users.</div>
+              </div>
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">✅</span>
+                <div><strong>Mobile Optimization Checker</strong>: Responsive design, PWA readiness, touch-friendly layout.</div>
+              </div>
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">⏳</span>
+                <div>Heavy assets and render-blocking resources increasing load time.</div>
+              </div>
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">⚡</span>
+                <div><strong>Performance Health Analysis</strong>: Image/font optimization flags, script minimization recommendations.</div>
+              </div>
+            </div>
+          </div>
+          <!-- Accessibility & Navigation -->
+          <div class="checklist-card bg-gradient-to-br from-emerald-900/20 to-teal-900/20 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-2xl p-2 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+            <h3 class="text-2xl font-bold mb-8 text-red-400 flex items-center gap-4">
+              <span class="text-2xl">♿</span> Accessibility &amp; Navigation Flow
+            </h3>
+            <div class="space-y-8 text-lg">
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">❌</span>
+                <div>Missing alt text, poor contrast, or skipped heading levels.</div>
+              </div>
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">❤️</span>
+                <div><strong>Accessibility Audit</strong>: WCAG proxy checks for inclusivity and compliance.</div>
+              </div>
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">🗺️</span>
+                <div>Overloaded menus or unclear calls-to-action confusing visitors.</div>
+              </div>
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">🧭</span>
+                <div><strong>Navigation UX Analysis</strong>: Internal linking balance, CTA prominence scoring.</div>
+              </div>
+            </div>
+          </div>
+          <!-- Master Score & Outcomes -->
+          <div class="checklist-card bg-gradient-to-br from-cyan-900/20 to-teal-900/20 dark:from-cyan-900/30 dark:to-teal-900/30 rounded-2xl p-2 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+            <h3 class="text-2xl font-bold mb-8 text-green-400 text-center flex items-center justify-center gap-4">
+              <span class="text-2xl">📊</span> Quit Risk Score &amp; Actionable Insights
+            </h3>
+            <div class="space-y-8 text-lg">
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">🚪</span>
+                <div>No clear prediction of bounce rate risk or drop-off causes.</div>
+              </div>
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">✅</span>
+                <div><strong>Overall Quit Risk Score</strong>: 0–100 gauge with estimated bounce rate forecast.</div>
+              </div>
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">🤔</span>
+                <div>Generic advice without prioritization.</div>
+              </div>
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">🔧</span>
+                <div><strong>AI-Generated Fixes</strong>: Ranked by potential to reduce bounce rates and improve engagement.</div>
+              </div>
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">🔒</span>
+                <div>Slow, server-based tools raising privacy concerns.</div>
+              </div>
+              <div class="flex items-start gap-7">
+                <span class="text-2xl">🛡️</span>
+                <div><strong>Instant Mobile-Friendly Report</strong>: Educational insights, dark mode support, PDF export.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-12">
+          <p class="text-xl font-semibold text-gray-700 dark:text-gray-300">
+            Use this free UX health checklist to lower bounce rates, predict engagement drops, and improve SEO through better user experience.
+          </p>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- Why Usability Matters Accordion -->
+<div class="max-w-4xl mx-auto my-16">
+  <details>
+    <summary class="px-3 py-5 text-1xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
+      Why UX &amp; Quit Risk Matter?
+      <span class="text-3xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-2 py-10 bg-white dark:bg-gray-800 rounded-2xl shadow-inner space-y-10 text-gray-800 dark:text-gray-100">
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">User Experience Is a Direct Ranking Factor</h2>
+        <p class="leading-relaxed">
+    Search engines now heavily weigh real user signals: high bounce rates, short dwell time, and pogo-sticking all indicate poor experience.
+        </p>
+        <p class="leading-relaxed">
+    Pages that cause visitors to leave quickly are gradually demoted. Even with perfect technical SEO.
+        </p> 
+</section>
+      <section class="space-y-6">
+        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">What Strong UX Delivers</h3>
+        <div class="space-y-5 text-base">
+          <div class="flex gap-4">
+            <div class="text-2xl">⏱️</div>
+            <div>
+              <strong>Longer Dwell Time & Deeper Engagement</strong><br>
+              Satisfied users explore more pages and send positive quality signals.
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-2xl">📉</div>
+            <div>
+              <strong>Lower Bounce Rates</strong><br>
+              Fewer immediate exits improve perceived relevance and authority.
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-2xl">🔄</div>
+            <div>
+              <strong>Higher Return Traffic</strong><br>
+              Memorable, frictionless experiences encourage repeat visits.
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-2xl">🛡️</div>
+            <div>
+              <strong>Core Update Resilience</strong><br>
+              UX-focused sites perform better during algorithm shifts prioritizing user satisfaction.
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/30 p-6 rounded-xl">
+        <h3 class="text-xl font-bold mb-3">The Bottom Line</h3>
+        <p class="text-sm leading-relaxed">
+          Excellent usability isn’t optional — it’s a <strong>core competitive advantage</strong> in modern, user-first search algorithms.
+        </p>
+        <p class="text-sm font-medium mt-4">
+          Reduce quit risk → Lower bounce rates → Stronger behavioral signals → Higher rankings and conversions.
+        </p>
+      </section>
+      <p class="text-center text-sm italic opacity-70 mt-6">
+        Prioritizing user experience is the most sustainable SEO strategy.
+      </p>
+    </div>
+  </details>
+</div>
+
+ <!-- Author Bio -->
+<section id="author-bio" class="max-w-5xl mx-auto my-12 px-4 author-bio author-box" id="about-ylia-and-traffic-torch">
+  <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+    <!-- Hero Gradient Header: Gradient only, no solid bg -->
+    <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-6 text-center relative">
+      <div class="flex flex-col items-center gap-6 mb-6">
+        <!-- Traffic Torch Logo Only in Hero -->
+        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch: Instant 360° SEO + UX Health Analysis, Deep-Dive Reports, Competitive Gaps, AI Fixes – Privacy-First Optimization Toolkit" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
+      </div>
+      <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
+      <p class="text-lg md:text-2xl text-gray-800 dark:text-gray-200 max-w-4xl mx-auto font-medium">
+          User experience analysis and engagement optimization audit tools.
+      </p>
+    </div>
+    <!-- Main Content Area: Transparent, inherits page bg -->
+    <div class="p-6 md:p-12 space-y-10 text-center md:text-left">
+      <!-- Tool Mission Description -->
+      <div class="space-y-6">
+        <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          The Quit Risk tool is built to specialize in identifying UX friction points that cause users to leave pages quickly. This is developed through analysis of real-world pages, combining proven usability metrics with modern engagement signals used by search engines.
+        </p>
+      </div>
+      <!-- Founder Bio with Smaller Photo -->
+      <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-6 md:p-8 rounded-2xl backdrop-blur-sm">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+          <!-- Perfect circle wrapper for photo -->
+          <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
+            <img
+              src="/images/ylia-callan-320w.webp"
+              srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
+              sizes="(max-width: 768px) 96px, 128px"
+              alt="Ylia Callan: Musician, Author, Researcher, Web Designer, Founder of Traffic Torch – Bridging Creativity, Consciousness, and Cutting-Edge Web Tools"
+              class="w-full h-full object-cover object-center"
+              loading="lazy">
+          </div>
+          <div class="space-y-4 text-center md:text-left">
+            <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Lead Developer</h3>
+            <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
+              Musician • Author • Researcher • Web Designer • TAFE NSW • Creator of privacy-first AI-powered web tools. Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.
+            </p>
+            <p class="text-base text-gray-800 dark:text-gray-200 italic">
+              Explore my work - books on physics, philosophy, consciousness, music, and more – at <a href="https://yliacallan.github.io/" target="_blank" rel="noopener" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">yliacallan.github.io</a>.
+            </p>
+          </div>
+        </div>
+        <!-- Social Links -->
+        <ul class="flex flex-wrap justify-center md:justify-start gap-6 mt-6">
+          <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">LinkedIn</a></li>
+          <li><a href="https://x.com/guitaralize" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">X (Twitter)</a></li>
+        </ul>
+      </div>
+      <!-- Tech Stack for E-E-A-T -->
+      <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
+        <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Modern Stack Setup</h3>
+        <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          Traffic Torch runs on epic, scalable infrastructure: Hosted via <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub Pages</a> for blazing-fast static delivery and effortless updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance optimizations. Enhanced with intelligent insights from <a href="https://grok.x.ai/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Grok by xAI</a> for advanced analysis and fix recommendations.
+        </p>
+        <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-4 max-w-3xl mx-auto">
+            Backed by real-world expertise in UX research, engagement analytics, and search performance.
+        </p>
+          <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+          <p>Published: 2025-12-18</p>
+          <p>Last updated: 2026-01-25</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> 
+
+<!-- AddToAny BEGIN -->
+<div style="display: flex; justify-content: center; margin: 30px 0;">
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+    <script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+</div>
+<!-- AddToAny END -->
+
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+
+
+<section class="bottom-banner" aria-label="Traffic Torch visual summary">
+  <picture style="--banner-ratio: 33.33%;"> <!-- 400 / 1200 -->
+<img src="/images/tool-banners/product-torch-infographic-1200w.webp" srcset="/images/tool-banners/product-torch-infographic-480w.webp 480w, /images/tool-banners/product-torch-infographic-800w.webp 800w, /images/tool-banners/product-torch-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch Quit Risk Tool – AI-powered bounce rate risk analysis with user quit signals and UX optimization recommendations" width="1200" height="400" loading="lazy" decoding="async">
+  </picture>
+</section>
+
+</main>
+
+
+<!-- Footer -->
+<footer class="border-t border-white/10 dark:border-white/5 py-12 bg-white/5 dark:bg-black/20 backdrop-blur-xl">
+  <div class="container mx-auto px-6 max-w-7xl">
+    <!-- Main Footer Grid: 4 columns on md+, 1 column on mobile -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12 text-center md:text-left">
+      <!-- Column 1: Traffic Torch + Logo/Author -->
+      <div class="flex flex-col items-center md:items-start">
+        <a href="/" class="mb-6 inline-block">
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="80px" alt="Traffic Torch SEO • UX • AI Optimization Toolkit" class="w-20 h-20 rounded-full shadow-2xl object-cover" width="80" height="80" loading="lazy">
+        </a>
+        <h3 class="text-2xl font-black text-orange-500 hover:text-orange-600 transition mb-3">
+          Traffic Torch 🛡️
+        </h3>
+        <p class="text-gray-800 dark:text-gray-200 text-sm leading-relaxed max-w-md">
+          SEO • UX • AI Website Optimization & 360° Health Analysis Toolkit.
+        </p>
+      </div>
+
+      <!-- Column 2: Tools -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Tools</h3>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/local-seo-tool/" class="hover:text-orange-400 transition">Local SEO</a></li>
+          <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+          <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
+          <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a></li>
+          <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a></li>
+          <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
+          <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Company -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Company</h3>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
+          <li><a href="/contact/" class="hover:text-orange-400 transition">Contact</a></li>
+          <li><a href="/news/" class="hover:text-orange-400 transition">News</a></li>
+          <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
+          <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 4: Traffic Torch Quick Links -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Traffic Torch</h3>
+        <ul class="space-y-3 text-gray-500 dark:text-gray-200 text-sm">
+          <li><a href="/ai-seo-ux-tools/#seo-tools" class="hover:text-orange-400 transition">SEO Tools 🎯</a></li>
+          <li><a href="/ai-seo-ux-tools/#ux-tools" class="hover:text-orange-400 transition">UX Tools ⚡</a></li>
+          <li><a href="/ai-seo-ux-tools/#ai-tools" class="hover:text-orange-400 transition">Ai Tools 🔍</a></li>
+          <li class="mt-6 text-sm">Built with 🔥</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Copyright / Bottom Note (full width, centered) -->
+    <div class="mt-12 pt-8 border-t border-white/10 dark:border-white/5 text-center text-gray-500 dark:text-gray-200 text-sm">
+      © Traffic Torch
+    </div>
+  </div>
+</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="/main.js" type="module"></script>
+  <script src="/product-torch/plugin-solutions.js" type="module" defer></script>
+  <script src="/product-torch/metric-explanations.js" defer></script>
+  <script src="/product-torch/script.js" type="module" defer></script>
+
+
+
+</body>
+</html>
