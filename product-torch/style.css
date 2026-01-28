@@ -94,3 +94,25 @@ html, body {
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
 }
+
+/* Pro Blur */
+.pro-blur {
+  filter: blur(8px);
+  position: relative;
+  pointer-events: none;
+}
+.pro-blur::after {
+  content: "Upgrade to Pro for full Schema, Variants & Social Analysis";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.4);
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 1rem;
+  pointer-events: auto;
+}
