@@ -116,6 +116,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const getWordCount = (doc) => getCleanContent(doc).split(/\s+/).filter(w => w.length > 0).length;
   const truncate = (str, len) => str.length > len ? str.slice(0, len - 3) + '...' : str;
 
+const calculateContentScore = (content) => {
+  const words = content.words;
+  const density = parseFloat(content.density);
+  let wordScore = 0;
+  if (words > 0) {
+    wordScore = Math.min(50, (words / 800) * 50);
+  }
+  let densityScore = 0;
+  if (density >= 1 && density <= 2) {
+    densityScore = 50;
+  } else if (density >= 0.5 && density < 1) {
+    densityScore = 50 * ((density - 0.5) / 0.5);
+  } else if (density > 2 && density <= 3) {
+    densityScore = 50 * ((3 - density) / 1);
+  }
+  return Math.round(wordScore + densityScore);
+};
 
     form.addEventListener('submit', async e => {
       e.preventDefault();
@@ -227,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const modules = [
         { name: 'Meta Title & Desc', score: data.meta.yourMatches > 0 ? 100 : 0 },
         { name: 'H1 & Headings', score: data.h1.match > 0 ? 100 : 0 },
-        { name: 'Content Density', score: parseFloat(data.content.density) },
+        { name: 'Content Density', score: calculateContentScore(data.content) },
         { name: 'Image Alts', score: data.alts.phrase > 0 ? 100 : 0 },
         { name: 'Anchor Text', score: data.anchors.count > 0 ? 100 : 0 },
         { name: 'URL & Schema', score: Math.min(100, (data.urlSchema.urlMatch ? 50 : 0) + (data.urlSchema.schema ? 50 : 0)) }
@@ -348,7 +365,7 @@ window.scrollTo({
       fixEdu = data.h1.match === 0 ?
         `Your main H1 heading does not contain the target keyword. The H1 is the most important heading and tells search engines the primary topic of the page. Without the keyword here, Google may struggle to understand your page focus clearly.` : '';
     } else if (m.name === 'Content Density') {
-      score = parseFloat(data.content.density);
+  score = calculateContentScore(data.content);
       details = `
         <div class="mt-4 text-center space-y-2 text-sm">
           <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">Word count:</span> ${data.content.words}</p>
