@@ -98,15 +98,49 @@ document.addEventListener('DOMContentLoaded', () => {
       return null;
     }
   };
-  const countPhrase = (text = '', phrase = '') => {
-    if (!text || !phrase) return 0;
-    const lower = text.toLowerCase();
-    const p = phrase.toLowerCase().trim();
-    let matches = (lower.match(new RegExp(p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
-    const cleanP = p.replace(/\b(in|the|a|an|of|at|on|for|and|&|near|best|top|great)\b/gi, '').trim();
-    if (cleanP.length > 4) matches += (lower.match(new RegExp(cleanP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')) || []).length;
-    return matches;
-  };
+const countPhrase = (text = '', phrase = '', isUrl = false) => {
+  if (!text || !phrase) return 0;
+  const lower = text.toLowerCase();
+  const p = phrase.toLowerCase().trim();
+
+  // Normal mode: exact phrase + cleaned version
+  let matches = (lower.match(new RegExp(p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
+
+  const cleanP = p.replace(/\b(in|the|a|an|of|at|on|for|and|&|near|best|top|great)\b/gi, '').trim();
+  if (cleanP.length > 4) {
+    matches += (lower.match(new RegExp(cleanP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')) || []).length;
+  }
+
+  // URL-friendly mode: treat hyphens as word separators, ignore stop words, match individual terms
+  if (isUrl) {
+    const urlWords = lower
+      .replace(/https?:\/\//gi, '')           // remove protocol
+      .replace(/[^a-z0-9- ]/gi, ' ')          // replace non-alphanum except hyphen/space with space
+      .replace(/-/g, ' ')                     // turn hyphens into spaces
+      .split(/\s+/)
+      .filter(w => w.trim().length > 0);
+
+    const phraseWords = p.split(/\s+/).filter(w => w.trim().length > 0);
+    const cleanPhraseWords = cleanP.split(/\s+/).filter(w => w.trim().length > 0);
+
+    // Count how many unique words from phrase appear in URL (case-insensitive)
+    const matchedWords = new Set();
+    phraseWords.forEach(word => {
+      if (urlWords.includes(word)) matchedWords.add(word);
+    });
+    cleanPhraseWords.forEach(word => {
+      if (urlWords.includes(word)) matchedWords.add(word);
+    });
+
+    // If at least half the words (rounded up) are present → count as 1 strong match
+    const required = Math.ceil(phraseWords.length / 2);
+    if (matchedWords.size >= required) {
+      matches += 1;  // boost for partial but meaningful match
+    }
+  }
+
+  return matches;
+};
   const getCleanContent = (doc) => {
     if (!doc?.body) return '';
     const clone = doc.body.cloneNode(true);
@@ -207,7 +241,7 @@ const calculateContentScore = (content) => {
       // URL & Schema
       const schemaScript = yourDoc.querySelector('script[type="application/ld+json"]');
       const schemaPresent = !!schemaScript;
-      data.urlSchema = { urlMatch: countPhrase(fullUrl, phrase), schema: schemaPresent ? 1 : 0 };
+      data.urlSchema = { urlMatch: countPhrase(fullUrl, phrase, true), schema: schemaPresent ? 1 : 0 };
       yourScore += data.urlSchema.urlMatch > 0 ? 10 : 0;
       if (data.urlSchema.urlMatch === 0) allFixes.push({module: 'URL & Schema', issue: 'Include keyword in URL', how: 'Use a clean, hyphenated URL containing the keyword and set up redirects if changing.'});
       if (data.urlSchema.schema === 0) allFixes.push({module: 'URL & Schema', issue: 'Add structured data', how: 'Add JSON-LD schema (Article or FAQ) in the head for rich results.'});
