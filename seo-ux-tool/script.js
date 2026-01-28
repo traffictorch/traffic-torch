@@ -909,13 +909,20 @@ function analyzePerf(html, doc) {
       if (lvl > prev + 1) skipped = true;
       prev = lvl;
     });
-    const unlabeled = Array.from(doc.querySelectorAll('input:not([type="hidden"]), textarea, select'))
-  .filter(el => {
-    if (el.hasAttribute('aria-label') || el.hasAttribute('aria-labelledby')) return false;
-    const hasExplicitLabel = !!doc.querySelector(`label[for="${el.id}"]`);
-    const hasImplicitLabel = el.closest('label') && el.closest('label').contains(el);
-    return !(hasExplicitLabel || hasImplicitLabel);
-  });
+    const formControls = Array.from(doc.querySelectorAll('input:not([type="hidden"]):not([type="submit"]):not([type="image"]), textarea, select'));
+const unlabeled = formControls.filter(el => {
+  // Skip buttons/submits without need for label unless they have visible text
+  if (el.tagName === 'INPUT' && (el.type === 'button' || el.type === 'submit' || el.type === 'reset')) {
+    return !el.value.trim() && !el.hasAttribute('aria-label') && !el.hasAttribute('aria-labelledby');
+  }
+  // Require accessible name via one of: label assoc, ARIA, or implicit
+  const hasName = 
+    el.hasAttribute('aria-label') || 
+    el.hasAttribute('aria-labelledby') ||
+    (el.id && !!doc.querySelector(`label[for="${el.id}"]`)) ||
+    el.closest('label')?.contains(el);
+  return !hasName;
+});
 
     if (missingAlts.length) {
       score -= Math.min(35, missingAlts.length * 8);
@@ -950,12 +957,12 @@ function analyzePerf(html, doc) {
     }
 
     if (unlabeled.length) {
-      score -= 15;
-      issues.push({
-        issue: `${unlabeled.length} form fields without labels`,
-        fix: 'Form labels provide context for all users, especially those using screen readers. Connect labels to inputs using the for and id attributes or wrap inputs in label tags. This makes forms accessible and easier to use on all devices.'
-      });
-    }
+  score -= Math.min(25, unlabeled.length * 5);
+  issues.push({
+    issue: `${unlabeled.length} form fields lack accessible labels`,
+    fix: 'Ensure every visible form control has a programmatic name via <label for="id">, wrapping <label>, aria-label, or aria-labelledby. Placeholder alone is insufficient per WCAG 4.1.2. Hidden/submit fields often don\'t need visible labels if they have value/aria.'
+  });
+}
 
     return { score: Math.max(0, Math.round(score)), issues };
   }
