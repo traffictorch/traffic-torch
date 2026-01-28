@@ -242,7 +242,7 @@ const calculateContentScore = (content) => {
       const schemaScript = yourDoc.querySelector('script[type="application/ld+json"]');
       const schemaPresent = !!schemaScript;
       data.urlSchema = { urlMatch: countPhrase(fullUrl, phrase, true), schema: schemaPresent ? 1 : 0 };
-      yourScore += data.urlSchema.urlMatch > 0 ? 10 : 0;
+      yourScore += (data.urlSchema.urlMatch > 0 ? 10 : 0) + (data.urlSchema.schema ? 5 : 0);
       if (data.urlSchema.urlMatch === 0) allFixes.push({module: 'URL & Schema', issue: 'Include keyword in URL', how: 'Use a clean, hyphenated URL containing the keyword and set up redirects if changing.'});
       if (data.urlSchema.schema === 0) allFixes.push({module: 'URL & Schema', issue: 'Add structured data', how: 'Add JSON-LD schema (Article or FAQ) in the head for rich results.'});
 
