@@ -398,6 +398,11 @@ function buildModuleHTML(moduleName, value, moduleData, factorScores = null) {
     </div>`;
 }
 
+
+
+
+
+
 form.addEventListener('submit', async e => {
   e.preventDefault();
   let url = input.value.trim();
@@ -441,38 +446,25 @@ form.addEventListener('submit', async e => {
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
-      // Use the new SEO-focused content extractor and analyzer
       const seoData = getProductPageContent(doc, url);
       const seo = analyzeProductSEO(doc, url);
 
-      // Collect failed metrics for plugin suggestions
       const failedMetrics = [];
-      if (seo.onPage.score < 70) {
-        failedMetrics.push({ name: "On-Page SEO", grade: getPluginGrade(seo.onPage.score) });
-      }
-      if (seo.technical.score < 80) {
-        failedMetrics.push({ name: "Technical SEO", grade: getPluginGrade(seo.technical.score) });
-      }
-      if (seo.contentMedia.score < 70) {
-        failedMetrics.push({ name: "Content & Media", grade: getPluginGrade(seo.contentMedia.score) });
-      }
-      if (seo.ecommerce.score < 75) {
-        failedMetrics.push({ name: "E-Commerce Signals (Pro)", grade: getPluginGrade(seo.ecommerce.score) });
-      }
+      if (seo.onPage.score < 70) failedMetrics.push({ name: "On-Page SEO", grade: getPluginGrade(seo.onPage.score) });
+      if (seo.technical.score < 80) failedMetrics.push({ name: "Technical SEO", grade: getPluginGrade(seo.technical.score) });
+      if (seo.contentMedia.score < 70) failedMetrics.push({ name: "Content & Media", grade: getPluginGrade(seo.contentMedia.score) });
+      if (seo.ecommerce.score < 75) failedMetrics.push({ name: "E-Commerce Signals (Pro)", grade: getPluginGrade(seo.ecommerce.score) });
 
-      // Health status (replaces Quit Risk)
       const health = getHealthLabel(seo.score);
       document.getElementById('loading').classList.add('hidden');
       const safeScore = isNaN(seo.score) ? 60 : seo.score;
       const overallGrade = getGradeInfo(safeScore);
 
-      // Generate module cards using updated buildModuleHTML
       const onPageHTML = buildModuleHTML('On-Page SEO', seo.onPage.score, factorDefinitions.onPage, seo.onPage.details);
       const technicalHTML = buildModuleHTML('Technical SEO', seo.technical.score, factorDefinitions.technical, seo.technical.details);
       const contentMediaHTML = buildModuleHTML('Content & Media', seo.contentMedia.score, factorDefinitions.contentMedia, seo.contentMedia.details);
       const ecommerceHTML = buildModuleHTML('E-Commerce Specific (Pro)', seo.ecommerce.score, factorDefinitions.ecommerce, seo.ecommerce.details);
 
-      // Priority fixes – sort by lowest score first
       const modulePriority = [
         { name: 'On-Page SEO', score: seo.onPage.score, threshold: 70, data: factorDefinitions.onPage },
         { name: 'Technical SEO', score: seo.technical.score, threshold: 80, data: factorDefinitions.technical },
@@ -486,7 +478,6 @@ form.addEventListener('submit', async e => {
           priorityFixes.push({ ...mod.data.factors[0], module: mod.name, extraCount: mod.data.factors.length });
         }
       });
-      // Add second fix from worst module if needed
       if (priorityFixes.length < 3 && failedModules.length > 0) {
         const worstModule = failedModules[0];
         if (worstModule.data.factors.length >= 2) {
@@ -518,7 +509,6 @@ form.addEventListener('submit', async e => {
           </div>`;
       }
 
-      // Impact section – now SEO & conversion focused
       const failedCount = failedModules.length;
       let projectedHealth = health.text;
       let healthImprovement = '';
@@ -557,9 +547,9 @@ form.addEventListener('submit', async e => {
                 <span class="text-2xl">📈</span>
                 <div class="flex-1">
                   <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Organic CTR Lift</p>
-                  <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${failedCount === 0 ? 'Strong' : failedCount * 10 + '-' + failedCount * 20 + '%' } from rich snippets</p>
+                  <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${failedCount === 0 ? 'Strong' : failedCount * 10 + '-' + (failedCount * 20) + '%'} from rich snippets</p>
                   <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
-                    <div class="bg-purple-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 100 - failedCount * 20 + '%'}"></div>
+                    <div class="bg-purple-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 100 - (failedCount * 20) + '%'}"></div>
                   </div>
                 </div>
               </li>
@@ -569,7 +559,7 @@ form.addEventListener('submit', async e => {
                   <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Ranking Potential</p>
                   <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${failedCount === 0 ? 'Top-tier' : 'Significant climb'} after fixes</p>
                   <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
-                    <div class="bg-cyan-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 80 - failedCount * 15 + '%'}"></div>
+                    <div class="bg-cyan-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 80 - (failedCount * 15) + '%'}"></div>
                   </div>
                 </div>
               </li>
@@ -577,9 +567,9 @@ form.addEventListener('submit', async e => {
                 <span class="text-2xl">🛒</span>
                 <div class="flex-1">
                   <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Conversion Rate Lift</p>
-                  <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${failedCount === 0 ? 'Strong baseline' : failedCount * 10 + '-' + failedCount * 25 + '%' } from better UX</p>
+                  <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${failedCount === 0 ? 'Strong baseline' : failedCount * 10 + '-' + (failedCount * 25) + '%'} from better UX & trust</p>
                   <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
-                    <div class="bg-blue-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 70 - failedCount * 15 + '%'}"></div>
+                    <div class="bg-blue-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 70 - (failedCount * 15) + '%'}"></div>
                   </div>
                 </div>
               </li>
@@ -588,7 +578,6 @@ form.addEventListener('submit', async e => {
           </div>
         </div>`;
 
-      // Modules array for radar chart
       const modules = [
         { name: 'On-Page SEO', score: seo.onPage.score },
         { name: 'Technical SEO', score: seo.technical.score },
@@ -597,12 +586,10 @@ form.addEventListener('submit', async e => {
       ];
       const scores = modules.map(m => m.score);
 
-      // Scroll to results (keep consistent offset)
       const offset = 240;
       const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: targetY, behavior: 'smooth' });
 
-      // Build results HTML
       results.innerHTML = `
         <!-- Big Overall Score Card -->
         <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
@@ -662,7 +649,7 @@ form.addEventListener('submit', async e => {
           <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Analyzed ${seoData.wordCount} words + ${seoData.imageCount} images</p>
         </div>
 
-        <!-- On-Page Health Radar Chart -->
+        <!-- SEO Health Radar Chart -->
         <div class="max-w-5xl mx-auto my-16 px-4">
           <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
             <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">SEO Health Radar</h3>
@@ -714,7 +701,7 @@ form.addEventListener('submit', async e => {
         </div>
       `;
 
-      // Radar chart (update labels to new modules)
+      // Render radar chart
       setTimeout(() => {
         const canvas = document.getElementById('health-radar');
         if (!canvas) return;
@@ -763,7 +750,7 @@ form.addEventListener('submit', async e => {
         }
       }, 150);
 
-      // Plugin solutions (delayed call preserved)
+      // Plugin solutions
       if (typeof renderPluginSolutions === 'function') {
         renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
       } else {
