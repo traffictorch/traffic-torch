@@ -149,156 +149,161 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Real analyzer functions
-  function analyzeOnPageSEO(doc, data) {
-    let score = 0;
-    let details = {};
+// Real analyzer functions – fully implemented for product page SEO
 
-    // Title
-    const title = doc.title.trim();
-    const titleLength = title.length;
-    let titleScore = 0;
-    if (titleLength >= 50 && titleLength <= 60) titleScore += 40;
-    else if (titleLength >= 40 && titleLength <= 70) titleScore += 25;
-    else titleScore += 10;
-    if (title.toLowerCase().includes('headphone') || title.toLowerCase().includes('audio technica')) titleScore += 30;
-    if (title.includes('|') && title.split('|').length > 1) titleScore += 20;
-    details.title = { length: titleLength, score: titleScore };
+function analyzeOnPageSEO(doc, data) {
+  let score = 0;
+  let details = {};
 
-    // Meta Description
-    const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
-    const descLength = metaDesc.length;
-    let descScore = 0;
-    if (descLength >= 120 && descLength <= 160) descScore += 40;
-    if (descLength > 0) descScore += 20;
-    if (metaDesc.toLowerCase().includes('buy') || metaDesc.toLowerCase().includes('shop')) descScore += 20;
-    details.metaDescription = { length: descLength, score: descScore };
+  // 1. Title Tag Optimization
+  const title = doc.title.trim();
+  const titleLength = title.length;
+  let titleScore = 0;
+  if (titleLength >= 50 && titleLength <= 60) titleScore = 40;
+  else if (titleLength >= 40 && titleLength <= 70) titleScore = 25;
+  else titleScore = 10;
+  if (title.toLowerCase().includes('headphone') || title.toLowerCase().includes('audio technica') || title.toLowerCase().includes('wireless')) titleScore += 30;
+  if (title.includes('|') && title.split('|').length > 1) titleScore += 20;
+  details.title = { length: titleLength, keywordsPresent: titleScore > 40, score: titleScore };
 
-    // Headings
-    const h1Count = doc.querySelectorAll('h1').length;
-    const h2Count = doc.querySelectorAll('h2').length;
-    let headingScore = 0;
-    if (h1Count === 1) headingScore += 40;
-    if (h2Count >= 1) headingScore += 30;
-    if (data.headingCount >= 3) headingScore += 20;
-    details.headings = { h1Count, h2Count, total: data.headingCount, score: headingScore };
+  // 2. Meta Description
+  const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
+  const descLength = metaDesc.length;
+  let descScore = 0;
+  if (descLength >= 120 && descLength <= 160) descScore += 40;
+  if (descLength > 0) descScore += 20;
+  if (/buy|shop|order|add to cart/i.test(metaDesc)) descScore += 20;
+  details.metaDescription = { length: descLength, ctaPresent: /buy|shop/i.test(metaDesc), score: descScore };
 
-    // URL
-    const urlObj = new URL(data.url);
-    const path = urlObj.pathname;
-    let urlScore = 0;
-    if (!path.includes('?') && !path.includes('&')) urlScore += 40;
-    if (path.split('/').length <= 4) urlScore += 30;
-    if (path.toLowerCase().includes('wireless') || path.toLowerCase().includes('headphones')) urlScore += 20;
-    details.url = { clean: !path.includes('?'), segments: path.split('/').length, score: urlScore };
+  // 3. Heading Structure
+  const h1s = doc.querySelectorAll('h1');
+  const h2s = doc.querySelectorAll('h2');
+  let headingScore = 0;
+  if (h1s.length === 1) headingScore += 40;
+  if (h2s.length >= 1) headingScore += 30;
+  if (data.headingCount >= 3) headingScore += 20;
+  if (h1s.length > 0 && h1s[0].textContent.toLowerCase().includes('headphone') || h1s[0].textContent.toLowerCase().includes('audio technica')) headingScore += 10;
+  details.headings = { h1Count: h1s.length, h2Count: h2s.length, keywordsInH1: headingScore > 70, score: headingScore };
 
-    // Keyword density (simple)
-    const mainText = data.fullText.toLowerCase();
-    const keyword = 'headphones';
-    const keywordCount = (mainText.match(new RegExp(keyword, 'g')) || []).length;
-    const density = (keywordCount / data.wordCount) * 100;
-    let keywordScore = 0;
-    if (density >= 0.5 && density <= 2.5) keywordScore += 50;
-    if (data.fullText.slice(0, 300).toLowerCase().includes(keyword)) keywordScore += 30;
-    details.keywords = { density, frontLoaded: data.fullText.slice(0, 300).toLowerCase().includes(keyword), score: keywordScore };
+  // 4. URL Structure
+  const urlObj = new URL(data.url);
+  const path = urlObj.pathname;
+  let urlScore = 0;
+  if (!path.includes('?') && !path.includes('&')) urlScore += 40;
+  if (path.split('/').length <= 5) urlScore += 30;
+  if (/wireless|headphones|audio-technica|m50xbt/i.test(path)) urlScore += 20;
+  details.url = { clean: !path.includes('?'), keywordInSlug: /wireless|headphones/i.test(path), score: urlScore };
 
-    score = Math.round((titleScore + descScore + headingScore + urlScore + keywordScore) / 5);
-    return { score: Math.min(100, Math.max(0, score)), details };
-  }
+  // 5. Keyword Optimization (simple density + placement)
+  const mainText = data.fullText.toLowerCase();
+  const primaryKeyword = 'headphones';
+  const keywordCount = (mainText.match(new RegExp(primaryKeyword, 'g')) || []).length;
+  const density = data.wordCount > 0 ? (keywordCount / data.wordCount) * 100 : 0;
+  let keywordScore = 0;
+  if (density >= 0.5 && density <= 2.5) keywordScore += 40;
+  if (data.fullText.slice(0, 300).toLowerCase().includes(primaryKeyword)) keywordScore += 30;
+  if (keywordCount >= 3) keywordScore += 20;
+  details.keywords = { density, frontLoaded: data.fullText.slice(0, 300).toLowerCase().includes(primaryKeyword), score: keywordScore };
 
-  function analyzeTechnicalSEO(doc, data) {
-    let score = 0;
-    let details = {};
+  score = Math.round((titleScore + descScore + headingScore + urlScore + keywordScore) / 5);
+  return { score: Math.min(100, Math.max(0, score)), details };
+}
 
-    // Mobile
-    let mobileScore = data.hasViewport ? 50 : 0;
-    if (data.viewportContent.includes('initial-scale=1')) mobileScore += 30;
-    details.mobile = { viewportPresent: data.hasViewport, score: mobileScore };
+function analyzeTechnicalSEO(doc, data) {
+  let score = 0;
+  let details = {};
 
-    // HTTPS
-    const httpsScore = data.url.startsWith('https') ? 90 : 0;
-    details.https = { isHttps: data.url.startsWith('https'), score: httpsScore };
+  // Mobile-Friendliness
+  let mobileScore = data.hasViewport ? 50 : 0;
+  if (data.viewportContent.includes('initial-scale=1') && !data.viewportContent.includes('user-scalable=no')) mobileScore += 40;
+  details.mobile = { viewportPresent: data.hasViewport, scaleOk: data.viewportContent.includes('initial-scale=1'), score: mobileScore };
 
-    // Canonical
-    const canonical = doc.querySelector('link[rel="canonical"]');
-    const canonicalScore = canonical && canonical.href === data.url ? 80 : 30;
-    details.canonical = { present: !!canonical, matches: canonical?.href === data.url, score: canonicalScore };
+  // HTTPS
+  const httpsScore = data.url.startsWith('https') ? 95 : 0;
+  details.https = { isHttps: data.url.startsWith('https'), score: httpsScore };
 
-    // Meta Robots
-    const robotsMeta = doc.querySelector('meta[name="robots"]');
-    const robotsScore = !robotsMeta || !/noindex|nofollow/i.test(robotsMeta.content) ? 90 : 20;
-    details.robots = { indexable: robotsScore === 90, score: robotsScore };
+  // Canonical
+  const canonical = doc.querySelector('link[rel="canonical"]');
+  const canonicalScore = canonical && canonical.href === data.url ? 80 : 30;
+  details.canonical = { present: !!canonical, matchesUrl: canonical?.href === data.url, score: canonicalScore };
 
-    // Sitemap hint (educational)
-    const sitemapScore = data.url.includes('/products/') || data.url.includes('/collections/') ? 70 : 50;
-    details.sitemapHint = { likelyIncluded: sitemapScore >= 70, score: sitemapScore };
+  // Meta Robots
+  const robotsMeta = doc.querySelector('meta[name="robots"]');
+  const robotsScore = !robotsMeta || !/noindex|nofollow/i.test(robotsMeta.content || '') ? 90 : 20;
+  details.robots = { indexable: robotsScore === 90, score: robotsScore };
 
-    score = Math.round((mobileScore + httpsScore + canonicalScore + robotsScore + sitemapScore) / 5);
-    return { score: Math.min(100, Math.max(0, score)), details };
-  }
+  // Sitemap hint (educational)
+  const sitemapScore = /\/products|\/collections|\/item/i.test(data.url) ? 70 : 50;
+  details.sitemapHint = { likelyIncluded: sitemapScore >= 70, score: sitemapScore };
 
-  function analyzeContentMedia(doc, data) {
-    let score = 0;
-    let details = {};
+  score = Math.round((mobileScore + httpsScore + canonicalScore + robotsScore + sitemapScore) / 5);
+  return { score: Math.min(100, Math.max(0, score)), details };
+}
 
-    // Description Quality
-    const descScore = data.wordCount >= 300 ? 80 : data.wordCount >= 150 ? 50 : 20;
-    details.description = { wordCount: data.wordCount, score: descScore };
+function analyzeContentMedia(doc, data) {
+  let score = 0;
+  let details = {};
 
-    // Image Optimization
-    const imgScore = data.altData.missingCount === 0 ? 90 : data.altData.meaningfulCount > 0 && data.altData.missingCount / data.altData.meaningfulCount < 0.2 ? 70 : 40;
-    details.images = { missingAlt: data.altData.missingCount, score: imgScore };
+  // Description Quality
+  const descScore = data.wordCount >= 300 ? 80 : data.wordCount >= 150 ? 50 : 20;
+  details.description = { wordCount: data.wordCount, score: descScore };
 
-    // Video (basic)
-    const videoScore = doc.querySelector('video, iframe[src*="youtube"], iframe[src*="vimeo"]') ? 60 : 30;
-    details.video = { present: !!doc.querySelector('video, iframe'), score: videoScore };
+  // Image Optimization
+  const imgScore = data.altData.missingCount === 0 ? 90 : data.altData.meaningfulCount > 0 && (data.altData.missingCount / data.altData.meaningfulCount) < 0.2 ? 70 : 40;
+  details.images = { missingAlt: data.altData.missingCount, meaningful: data.altData.meaningfulCount, score: imgScore };
 
-    // UGC
-    const ugcScore = hasReviewSection(doc) ? 80 : 40;
-    details.ugc = { detected: ugcScore === 80, score: ugcScore };
+  // Video Embed
+  const videoElements = doc.querySelectorAll('video, iframe[src*="youtube"], iframe[src*="vimeo"]');
+  const videoScore = videoElements.length > 0 ? (doc.querySelector('track') ? 80 : 60) : 30;
+  details.video = { present: videoElements.length > 0, captions: !!doc.querySelector('track'), score: videoScore };
 
-    // Internal Linking
-    const linkScore = data.linkCount >= 5 ? 70 : data.linkCount >= 2 ? 50 : 20;
-    details.internalLinks = { count: data.linkCount, score: linkScore };
+  // UGC (Reviews)
+  const ugcScore = hasReviewSection(doc) ? 80 : 40;
+  details.ugc = { detected: ugcScore === 80, score: ugcScore };
 
-    // Breadcrumbs
-    const breadcrumbScore = doc.querySelector('[aria-label*="breadcrumb"], .breadcrumbs') ? 90 : 40;
-    details.breadcrumbs = { present: breadcrumbScore === 90, score: breadcrumbScore };
+  // Internal Linking
+  const linkScore = data.linkCount >= 5 ? 70 : data.linkCount >= 2 ? 50 : 20;
+  details.internalLinks = { count: data.linkCount, score: linkScore };
 
-    score = Math.round((descScore + imgScore + videoScore + ugcScore + linkScore + breadcrumbScore) / 6);
-    return { score: Math.min(100, Math.max(0, score)), details };
-  }
+  // Breadcrumbs
+  const breadcrumbScore = doc.querySelector('[aria-label*="breadcrumb"], .breadcrumbs, .breadcrumb, nav[aria-label="breadcrumb"]') ? 90 : 40;
+  details.breadcrumbs = { present: breadcrumbScore === 90, score: breadcrumbScore };
 
-  function analyzeEcommerceSEO(doc, data) {
-    let score = 0;
-    let details = {};
+  score = Math.round((descScore + imgScore + videoScore + ugcScore + linkScore + breadcrumbScore) / 6);
+  return { score: Math.min(100, Math.max(0, score)), details };
+}
 
-    const schemas = extractProductSchema(doc);
-    const productSchema = schemas.find(s => s['@type'] === 'Product') || {};
+function analyzeEcommerceSEO(doc, data) {
+  let score = 0;
+  let details = {};
 
-    // Schema Markup
-    const schemaScore = Object.keys(productSchema).length > 0 ? 90 : 30;
-    details.schema = { present: schemaScore === 90, score: schemaScore };
+  const schemas = extractProductSchema(doc);
+  const productSchema = schemas.find(s => s['@type'] === 'Product' || (s['@graph'] && s['@graph'].some(g => g['@type'] === 'Product'))) || {};
 
-    // Price & Availability
-    const priceScore = hasPriceMarkup(doc, productSchema) ? 85 : 40;
-    details.price = { detected: priceScore === 85, score: priceScore };
+  // Product Schema
+  const schemaScore = Object.keys(productSchema).length > 5 ? 90 : 30;
+  details.schema = { present: schemaScore === 90, fieldsCount: Object.keys(productSchema).length, score: schemaScore };
 
-    // Review Schema
-    const reviewScore = productSchema.aggregateRating ? 80 : hasReviewSection(doc) ? 60 : 20;
-    details.reviews = { aggregateRating: !!productSchema.aggregateRating, score: reviewScore };
+  // Price & Availability
+  const priceScore = hasPriceMarkup(doc, productSchema) ? 85 : 40;
+  details.priceAvailability = { detected: priceScore === 85, score: priceScore };
 
-    // Variant Handling
-    const variantScore = doc.querySelector('select[name*="variant"], input[type="radio"][name*="variant"]') ? 70 : 50;
-    details.variants = { detected: variantScore === 70, score: variantScore };
+  // Review Schema
+  const reviewScore = productSchema.aggregateRating && productSchema.aggregateRating.ratingValue ? 80 : hasReviewSection(doc) ? 60 : 20;
+  details.reviews = { aggregateRatingPresent: !!productSchema.aggregateRating, score: reviewScore };
 
-    // Social
-    const socialScore = hasSocialMeta(doc) ? 65 : 30;
-    details.social = { ogPresent: socialScore === 65, score: socialScore };
+  // Variant Handling
+  const variantSelectors = doc.querySelectorAll('select[name*="variant"], select[name*="size"], select[name*="color"], input[type="radio"][name*="variant"]');
+  const variantScore = variantSelectors.length > 0 ? 70 : 50;
+  details.variants = { detected: variantSelectors.length > 0, score: variantScore };
 
-    score = Math.round((schemaScore + priceScore + reviewScore + variantScore + socialScore) / 5);
-    return { score: Math.min(100, Math.max(0, score)), details, isPro: true };
-  }
+  // Social Sharing
+  const socialScore = hasSocialMeta(doc) ? 65 : 30;
+  details.social = { ogPresent: socialScore === 65, score: socialScore };
+
+  score = Math.round((schemaScore + priceScore + reviewScore + variantScore + socialScore) / 5);
+  return { score: Math.min(100, Math.max(0, score)), details, isPro: true };
+}
 
   // Health label, grade, plugin grade, buildModuleHTML functions (already updated in previous steps - assume they are correct)
 
