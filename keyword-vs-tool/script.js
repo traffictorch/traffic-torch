@@ -232,8 +232,8 @@ data.urlSchema = {
   yourSchema,
   compSchema
 };
-      yourScore += data.urlSchema.yourUrlMatch > 0 ? 10 : 0;
-      compScore += data.urlSchema.compUrlMatch > 0 ? 10 : 0;
+      yourScore += (data.urlSchema.urlMatch > 0 ? 10 : 0) + (data.urlSchema.schema ? 5 : 0);
+      compScore += (data.urlSchema.urlMatch > 0 ? 10 : 0) + (data.urlSchema.schema ? 5 : 0);
       yourScore = Math.min(100, Math.round(yourScore));
       compScore = Math.min(100, Math.round(compScore));
 
