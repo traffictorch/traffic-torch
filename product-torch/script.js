@@ -459,6 +459,7 @@ form.addEventListener('submit', async e => {
       document.getElementById('loading').classList.add('hidden');
       const safeScore = isNaN(seo.score) ? 60 : seo.score;
       const overallGrade = getGradeInfo(safeScore);
+      const ringColor = safeScore < 50 ? '#ef4444' : safeScore < 70 ? '#fb923c' : safeScore < 85 ? '#22c55e' : '#10b981';
 
       const onPageHTML = buildModuleHTML('On-Page SEO', seo.onPage.score, factorDefinitions.onPage, seo.onPage.details);
       const technicalHTML = buildModuleHTML('Technical SEO', seo.technical.score, factorDefinitions.technical, seo.technical.details);
@@ -772,4 +773,4 @@ form.addEventListener('submit', async e => {
     }
   }
 });
-});
+}); 
