@@ -3,97 +3,53 @@
 <head>
   <meta charset="UTF-8" />
 
-<!-- Deferred Google Analytics – loads only after interaction -->
-<script>
-  (function() {
-    // Change this to false if you want to test without loading GA
-    const enableGA = true;
-    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+<!-- Optimized SEO Title & Description -->
+<title>Product Torch: eCommerce Product Page SEO Auditor | Traffic Torch</title>
+<meta name="description" content="Instant SEO audit for eCommerce product pages: Analyze on-page optimization, technical SEO, content quality, UX elements, schema markup & more – with priority fixes, plugin solutions, AI-generated optimizations, and pro modules for competitive gaps." />
+<meta name="keywords" content="product seo tool, ecommerce seo audit, product page optimizer, shopify seo checker, woocommerce product seo, free seo audit tool, ai seo fixes, mobile product page audit, schema markup checker" />
 
-    function loadGA() {
-      // Prevent double-loading
-      if (window.gtag) return;
+<!-- Robots & Canonical -->
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://traffictorch.net/product-torch/" />
 
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
-      document.head.appendChild(script);
+<!-- Theme Color -->
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
 
-      script.onload = function() {
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', MEASUREMENT_ID);
-      };
-    }
+<!-- Referrer Policy (security + privacy best practice) -->
+<meta name="referrer" content="strict-origin-when-cross-origin">
 
-    // Trigger on first interaction (scroll, click, touch, key)
-    let fired = false;
-    function fireOnce() {
-      if (fired) return;
-      fired = true;
-      loadGA();
-      cleanup();
-    }
+<!-- security headers -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
 
-    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
-    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+<!-- hreflang -->
+<link rel="alternate" hreflang="en" href="https://traffictorch.net/">
+<link rel="alternate" hreflang="x-default" href="https://traffictorch.net/">
 
-    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
-    setTimeout(fireOnce, 4500);
+<!-- Open Graph Tags (Facebook, LinkedIn, etc.) -->
+<meta property="og:title" content="Product Torch: eCommerce Product SEO Auditor | Traffic Torch" />
+<meta property="og:description" content="Instant SEO audit for product pages: 0–100 health score analyzes on-page, technical, content, UX, eCommerce signals – with priority fixes, plugin solutions, for better rankings & conversions." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://traffictorch.net/product-torch/" />
+<meta property="og:image" content="https://traffictorch.net/product-torch/images/product-torch.webp" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="Traffic Torch" />
 
-    function cleanup() {
-      events.forEach(ev => window.removeEventListener(ev, fireOnce));
-    }
-  })();
-</script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- 
-  <!-- Optimized SEO Title & Description -->
-  <title>Quit Risk Tool: Bounce Rate & UX Audit | Traffic Torch</title>
-  <meta name="description" content="Predict bounce rates with UX audit for readability, accessibility, performance & navigation. Get AI-generated fixes to boost engagement & SEO." />
-  <meta name="keywords" content="quit risk tool, bounce rate predictor, UX audit tool, reduce bounce rate, usability analysis, free SEO tool, AI UX fixes, mobile optimization checker, accessibility audit" />
- 
-  <!-- Robots & Canonical -->
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://traffictorch.net/product-torch/" />
-  
-    <!-- Theme Color -->
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
-  <!-- Referrer Policy (security + privacy best practice) -->
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <!-- security headers -->
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Product Torch: eCommerce Product SEO Auditor | Traffic Torch" />
+<meta name="twitter:description" content="Instant SEO audit for product pages: 0–100 health score analyzes on-page, technical, content, UX, eCommerce signals – with priority fixes, plugin solutions, for better rankings & conversions." />
+<meta name="twitter:image" content="https://traffictorch.net/product-torch/images/product-torch.webp" />
+<meta name="twitter:site" content="@TrafficTorch" />
 
-  <!-- hreflang -->
-  <link rel="alternate" hreflang="en" href="https://traffictorch.net/">
-  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/">
- 
-  <!-- Open Graph Tags (Facebook, LinkedIn, etc.) -->
-  <meta property="og:title" content="Free Quit Risk Tool: Bounce Rate Predictor &amp; UX Health Audit | Traffic Torch" />
-  <meta property="og:description" content="Instant free UX audit &amp; bounce rate predictor: 0–100 Quit Risk Score analyzes readability, mobile/PWA readiness, performance, accessibility &amp; navigation – with AI-prioritized fixes for better engagement &amp; SEO." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://traffictorch.net/product-torch/" />
-  <meta property="og:image" content="https://traffictorch.net/product-torch/images/product-torch.webp" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:site_name" content="Traffic Torch" />
- 
-  <!-- Twitter Cards -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Free Quit Risk Tool: Bounce Rate Predictor &amp; Instant UX Audit | Traffic Torch" />
-  <meta name="twitter:description" content="Instant free UX audit &amp; bounce rate predictor: 0–100 Quit Risk Score analyzes readability, mobile/PWA readiness, performance, accessibility &amp; navigation – with AI-prioritized fixes for better engagement &amp; SEO." />
-  <meta name="twitter:image" content="https://traffictorch.net/product-torch/images/product-torch.webp" />
-  <meta name="twitter:site" content="@TrafficTorch" /> <!-- Update if you have an X handle -->
- 
 <!-- Structured Data (JSON-LD) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "name": "Quit Risk & Bounce Rate Predictor Tool",
-  "description": "Instant UX & engagement health audit: Predict visitor quit risk and bounce rate through readability, mobile/PWA readiness, performance, accessibility, navigation flow, and content quality analysis.",
+  "name": "Product Torch: eCommerce Product Page SEO Auditor",
+  "description": "Instant audit tool for product page SEO: Evaluate on-page elements, technical health, content/media, UX/conversion signals, schema – with educational reports and fixes.",
   "url": "https://traffictorch.net/product-torch/",
   "publisher": {
     "@type": "Organization",
@@ -106,7 +62,7 @@
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Traffic Torch Quit Risk & Bounce Rate Predictor",
+  "name": "Traffic Torch Product Torch SEO Auditor",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web Browser",
   "offers": {
@@ -114,7 +70,7 @@
     "price": "0",
     "priceCurrency": "USD"
   },
-  "description": "Free instant UX audit tool. Calculates Quit Risk Score (bounce & exit probability), analyzes readability, mobile/PWA readiness, performance metrics, accessibility, navigation UX. Delivers 0–100 score, deep-dive modules, AI-generated fixes, competitive UX gap analysis, and engagement improvement forecasts.",
+  "description": "Free instant SEO tool for eCommerce product pages. Delivers 0–100 score, analyzes on-page, technical, content, media, UX metrics. Includes priority fixes, recommended optimizations, plugin suggestions.",
   "url": "https://traffictorch.net/product-torch/",
   "image": "https://traffictorch.net/product-torch/images/product-torch.webp"
 }
@@ -127,26 +83,26 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "What is Quit Risk in website UX?",
+      "name": "What is Product Torch?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Quit Risk measures the likelihood visitors will leave your page quickly (high bounce/exit rate). Our free tool predicts it instantly by analyzing readability, load speed, mobile experience, accessibility, navigation, and content quality."
+        "text": "An instant SEO auditor for eCommerce product pages, scoring health and providing fixes to improve visibility, traffic, and sales."
       }
     },
     {
       "@type": "Question",
-      "name": "How can I lower bounce rate and quit risk?",
+      "name": "How can I optimize product pages for SEO?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Improve readability, ensure fast performance, make the site fully mobile/PWA-ready, fix accessibility issues, simplify navigation, and align content with user intent. Our tool provides prioritized AI-generated fixes for each area."
+        "text": "Focus on keyword-rich titles/descriptions, schema markup, fast loading, mobile UX, rich content. Our tool flags issues with AI fixes."
       }
     },
     {
       "@type": "Question",
-      "name": "Does better UX help SEO rankings?",
+      "name": "Does product page SEO impact eCommerce sales?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes — strong UX signals (low bounce rate, high engagement, fast loading, mobile-friendliness, accessibility) are key ranking factors for Google and improve visibility in AI-powered search results."
+        "text": "Yes – better SEO drives organic traffic, rich snippets increase CTR, strong UX reduces bounces for higher conversions."
       }
     }
   ]
@@ -162,8 +118,8 @@
     "@type": "WebPage",
     "@id": "https://traffictorch.net/product-torch/"
   },
-  "headline": "Quit Risk & Bounce Rate Predictor: Optimize UX Before Visitors Leave",
-  "description": "Free instant UX audit tool. Predict bounce rate and quit risk, analyze readability, performance, accessibility, mobile readiness & navigation. Get 0–100 score, AI fixes, and engagement improvement forecasts.",
+  "headline": "Product Torch: Optimize eCommerce Product Pages for SEO & Conversions",
+  "description": "Free instant SEO audit tool for product pages. Analyze on-page, technical, content, UX metrics with 0–100 score, priority fixes, and ranking forecasts.",
   "image": "https://traffictorch.net/product-torch/images/product-torch.webp",
   "author": {
     "@type": "Person",
@@ -178,8 +134,8 @@
       "url": "https://traffictorch.net/logo-512.webp"
     }
   },
-  "datePublished": "2025-12-18",
-  "dateModified": "2026-01-25"
+  "datePublished": "2026-01-28",
+  "dateModified": "2026-01-28"
 }
 </script>
 
@@ -193,7 +149,7 @@
   "sameAs": [
     "https://www.linkedin.com/in/ylia-callan-8b889976/",
     "https://x.com/guitaralize",
-    "https://traffictorch.net/"  
+    "https://traffictorch.net/"
   ],
   "image": "/images/ylia-callan-320w.webp",
   "jobTitle": "Founder & Builder",
@@ -201,13 +157,13 @@
   "worksFor": {
     "@type": "Organization",
     "name": "Traffic Torch",
-    "url": "https://traffictorch.net/" 
+    "url": "https://traffictorch.net/"
   }
 }
 </script>
 
-   <!-- BreadcrumbList --> 
-  <script type="application/ld+json">
+<!-- BreadcrumbList -->
+<script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
@@ -221,7 +177,7 @@
     {
       "@type": "ListItem",
       "position": 2,
-      "name": "Traffic Torch Quit Risk Audit Tool",
+      "name": "Traffic Torch Product Torch SEO Auditor",
       "item": "https://traffictorch.net/product-torch/"
     }
   ]
@@ -394,7 +350,7 @@
       type="submit"
       class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
     >
-      Analyze
+      Analyze 🎁
     </button>
   </div>
 </form>
@@ -426,45 +382,44 @@
 </div>
 
 	
-<!-- How Quit Risk Works Accordion -->
+<!-- How Product Torch Works Accordion -->
 <div class="max-w-4xl mx-auto my-16">
   <details>
     <summary class="px-3 py-5 text-1xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
-      How the Quit Risk Tool Works?
+      How the Product Torch Works?
       <span class="text-3xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
     </summary>
     <div class="mt-8 px-2 py-10 bg-white dark:bg-gray-800 rounded-2xl shadow-inner space-y-10 text-gray-800 dark:text-gray-100">
       <section class="space-y-5">
-        <h2 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">Instant, Privacy-Safe UX Health Audit</h2>
+        <h2 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">Instant, Privacy-Safe Product Page SEO Audit</h2>
         <p class="leading-relaxed">
-		This bounce rate predictor performs a real-time usability analysis by securely fetching your page’s HTML via our CORS proxy and parsing the DOM entirely in your browser.
+          Product Torch performs a real-time SEO & UX analysis of any eCommerce product page by securely fetching its HTML (via client-side fetch or CORS proxy) and parsing the DOM entirely in your browser.
         </p>
         <p class="leading-relaxed">
-          No data leaves your device. Everything processes instantly and privately on-device for complete security.
-        </p> 
+          No data leaves your device. Everything processes instantly and privately on-device for complete security and speed.
+        </p>
       </section>
       <section class="space-y-6">
-        <h3 class="text-xl font-bold text-indigo-600 dark:text-indigo-400">The 5 Core UX Factors Analyzed</h3>
+        <h3 class="text-xl font-bold text-indigo-600 dark:text-indigo-400">The 4 Core Product Page Areas Analyzed</h3>
         <ul class="space-y-4 text-base list-disc list-inside">
-          <li><strong>Readability Scoring</strong> — Flesch Reading Ease & Kincaid grade level on main content: rewards clear, scannable writing.</li>
-          <li><strong>Navigation Clarity</strong> — Link density and menu structure evaluation to avoid cognitive overload.</li>
-          <li><strong>Accessibility Health</strong> — Proxy checks for alt-text coverage, contrast, and semantic structure (WCAG-inspired).</li>
-          <li><strong>Mobile & PWA Readiness</strong> — Viewport configuration, responsive design, touch targets, and progressive web app compliance.</li>
-          <li><strong>Performance Optimization</strong> — Asset volume flags, script/font bloat detection, lazy loading opportunities.</li>
+          <li><strong>On-Page SEO Metrics</strong> — Title tag length & keywords, meta description quality, heading hierarchy & keyword placement, URL cleanliness, primary & long-tail keyword optimization.</li>
+          <li><strong>Technical SEO Metrics</strong> — Mobile-friendliness (viewport & responsive checks), HTTPS enforcement, canonical tag presence, meta robots directives, basic sitemap hints (educational only).</li>
+          <li><strong>Content and Media Metrics</strong> — Product description length & quality heuristics, image alt text & optimization, video embed best practices, user-generated content detection (reviews), internal linking count & relevance, breadcrumb structure.</li>
+          <li><strong>ECommerce-Specific SEO Metrics</strong> — Structured data (Product schema detection), price & availability markup, review/aggregateRating schema, variant handling, social sharing buttons & Open Graph tags. <span class="italic text-gray-500 dark:text-gray-400">(Pro version unlocks full deep-dive & AI fixes for this module)</span></li>
         </ul>
       </section>
       <section class="space-y-4">
         <p class="leading-relaxed">
-          These factors combine into a 0–100 <strong>Quit Risk Score</strong> that predicts potential bounce rate ranges.
+          These areas combine into a 0–100 <strong>Product Page Health Score</strong> that indicates SEO readiness, visibility potential, and conversion health for your product listing.
         </p>
         <p class="leading-relaxed font-medium">
-          You get a color-coded breakdown, AI-generated prioritized fixes ranked by impact, and predictive engagement forecasts based on proven UX-SEO correlations.
+          You receive a color-coded breakdown, priority-ranked fixes, plugin recommendations (e.g., Yoast, Rank Math, Schema Pro), AI-generated optimization suggestions, and educational explanations for every metric.
         </p>
       </section>
       <section class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 p-6 rounded-xl">
         <h3 class="text-xl font-bold mb-3">Key Insight</h3>
         <p class="text-sm leading-relaxed">
-          High quit risk directly increases bounce rates and reduces dwell time. Sending negative behavioral signals that harm SEO rankings over time.
+          Strong product page SEO directly improves organic rankings, enables rich snippets (price, reviews, images in SERPs), increases click-through rates, and boosts on-site engagement & conversions.
         </p>
       </section>
     </div>
@@ -472,8 +427,6 @@
 </div>
 
 
-
-    
           	<!-- AddToAny BEGIN -->
   <div style="display: flex; justify-content: center; margin: 30px 0;">
   <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
@@ -504,137 +457,126 @@
       </section>
       
   
-<!-- WHAT IS QUIT RISK & WHY IT MATTERS           -->
+<!-- WHAT IS PRODUCT TORCH & WHY IT MATTERS -->
 <section class="max-w-4xl mx-auto mt-12 mb-12 px-4 sm:px-6 lg:px-8">
   <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    What is Quit Risk?
+    What is Product Torch?
   </h2>
-
   <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-500 dark:text-gray-100">
-    <strong>Quit Risk measures how likely a visitor is to bounce in the first 10–30 seconds. Before they ever engage with your content or convert.</strong>
+    <strong>Product Torch scores how ready your eCommerce product page is to rank, appear in rich results, and convert visitors — before they bounce or click away.</strong>
   </p>
-
   <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
-    <p>Most sites treat bounce rate as a vague vanity metric. Today it's a direct signal of failure.</p>
-    <p>High quit risk kills rankings, destroys conversions, wastes ad spend, and tells search engines your page doesn't deserve traffic.</p>
+    <p>Most tools treat product SEO as scattered checklists. Today it's a make-or-break visibility signal.</p>
+    <p>Weak product page SEO buries listings, misses rich snippets (price, reviews, images), wastes organic traffic potential, and tells search engines your products aren't worth showing.</p>
     <p class="font-semibold text-cyan-700 dark:text-cyan-300">
-      Modern quit risk is driven by these silent killers:
+      Modern product page failure is driven by these silent killers:
     </p>
     <ul class="list-none space-y-3 font-medium text-gray-500 max-w-lg mx-auto">
-      <li>→ Slow load & poor Core Web Vitals.</li>
-      <li>→ Confusing or cluttered first screen.</li>
-      <li>→ No instant value or trust signals.</li>
-      <li>→ Mobile frustration & bad touch targets.</li>
+      <li>→ Missing or weak Product schema markup.</li>
+      <li>→ Thin / duplicate descriptions & poor headings.</li>
+      <li>→ Unoptimized images without alt text or lazy loading.</li>
+      <li>→ Mobile UX issues & slow technical signals.</li>
     </ul>
     <p class="pt-4">
-      Traffic Torch Quit Risk Analyzer gives you an instant score + deep breakdown of every quit-risk factor. With prioritized fixes to turn visitors into engagers.
+      Traffic Torch Product Torch gives you an instant 0–100 health score + deep breakdown of every critical factor. With prioritized fixes, plugin suggestions, and AI-generated optimizations to turn product pages into ranking & sales machines.
     </p>
   </div>
 </section>
 
-<!-- 5 HIGH-IMPACT MOVES TO CRUSH QUIT RISK       -->
+<!-- 5 HIGH-IMPACT MOVES TO BOOST PRODUCT PAGE SEO -->
 <div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
   <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    5 High-Impact Moves to Slash Quit Risk
+    5 High-Impact Moves to Skyrocket Product Page Performance
   </h2>
-
   <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-
     <div class="flex items-start gap-5 bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-900/30 dark:to-emerald-900/30 p-7 rounded-2xl border border-teal-100 dark:border-teal-800/40">
       <span class="text-4xl flex-shrink-0">1</span>
       <div>
-        <strong>Clear value proposition in <5 seconds</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Big headline + subhead + visual hook that answers "why should I stay?" immediately.</span>
+        <strong>Keyword-optimized, compelling title & meta</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Product name + key benefit + brand in 50–60 chars; compelling 150–160 char description with CTA.</span>
       </div>
     </div>
-
     <div class="flex items-start gap-5 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/30 dark:to-green-900/30 p-7 rounded-2xl border border-emerald-100 dark:border-emerald-800/40">
       <span class="text-4xl flex-shrink-0">2</span>
       <div>
-        <strong>Zero visual & cognitive clutter</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Massive whitespace, single-focus hero, no aggressive pop-ups or sticky bars on arrival.</span>
+        <strong>Rich, unique product description</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">300+ words of benefit-focused copy, bullet points, long-tail keywords — no manufacturer boilerplate.</span>
       </div>
     </div>
-
     <div class="flex items-start gap-5 bg-gradient-to-br from-green-50 to-lime-50 dark:from-green-900/30 dark:to-lime-900/30 p-7 rounded-2xl border border-green-100 dark:border-green-800/40">
       <span class="text-4xl flex-shrink-0">3</span>
       <div>
-        <strong>Mobile-first perfection</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Large readable text, generous tap targets, no horizontal scroll, fast touch response.</span>
+        <strong>Complete Product schema markup</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">JSON-LD with name, price, availability, images, aggregateRating — unlocks rich snippets in SERPs.</span>
       </div>
     </div>
-
     <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
       <span class="text-4xl flex-shrink-0">4</span>
       <div>
-        <strong>Instant trust builders</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Visible author photo/bio, social proof, secure badges, clear branding. Create clear credibility.</span>
+        <strong>Optimized images & media</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Descriptive alt text, <100KB files, lazy loading, zoom-enabled high-res versions.</span>
       </div>
     </div>
-
     <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/30 dark:to-indigo-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
       <span class="text-4xl flex-shrink-0">5</span>
       <div>
-        <strong>Frictionless first action path</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">One clear next step (scroll, click-to-call, form, video play) — no decision paralysis.</span>
+        <strong>Fast, mobile-first technical foundation</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Strong Core Web Vitals, responsive design, canonical tags, clean URL structure.</span>
       </div>
     </div>
-
   </div>
 </div>
 
-<!-- COMPARISON TABLE – OLD vs MODERN QUIT RISK    -->
+<!-- COMPARISON TABLE – OLD vs MODERN PRODUCT SEO -->
 <section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
   <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    Old UX Thinking vs Modern Quit-Risk 
+    Old Product SEO Thinking vs Modern Product Torch Approach
   </h2>
-
   <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
     <table class="w-full text-left min-w-[640px]">
       <thead class="bg-gradient-to-r from-cyan-600 to-teal-600 text-white">
         <tr>
           <th class="px-6 py-5 text-lg font-semibold">Factor</th>
-          <th class="px-6 py-5 text-lg font-semibold">Old-School UX Thinking</th>
-          <th class="px-6 py-5 text-lg font-semibold">Modern Quit-Risk Mastery Focus</th>
+          <th class="px-6 py-5 text-lg font-semibold">Old-School Product SEO</th>
+          <th class="px-6 py-5 text-lg font-semibold">Modern Product Torch Focus</th>
         </tr>
       </thead>
       <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
         <tr>
           <td class="px-6 py-5 font-medium">Primary Metric</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Overall bounce rate</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">First-10-second quit risk score</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Basic keyword stuffing</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">0–100 product page health score</td>
         </tr>
         <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Speed Priority</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Under 3–5 seconds is "fine"</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Sub-2.5s LCP required — table stakes</td>
+          <td class="px-6 py-5 font-medium">Schema Priority</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Optional or missing</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Full Product + Review + Offer schema required</td>
         </tr>
         <tr>
-          <td class="px-6 py-5 font-medium">First-Screen Focus</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Pretty hero image + logo</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Instant value + trust + clear next action</td>
+          <td class="px-6 py-5 font-medium">Content Focus</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Short manufacturer copy</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rich, unique, benefit-driven description + UGC</td>
         </tr>
         <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Mobile Experience</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Responsive checkbox</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Mobile-first, touch-optimized, fast interaction</td>
+          <td class="px-6 py-5 font-medium">Image Optimization</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Generic filenames</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Keyword-rich alt text, compression, lazy loading</td>
         </tr>
         <tr>
-          <td class="px-6 py-5 font-medium">Trust Signals</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Footer links & copyright</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Visible authorship, social proof, security — above fold</td>
+          <td class="px-6 py-5 font-medium">Mobile & Technical</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Responsive "enough"</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Mobile-first, fast Core Web Vitals, clean canonicals</td>
         </tr>
         <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Conversion Path</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Multiple CTAs & options</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Single obvious low-friction first step</td>
+          <td class="px-6 py-5 font-medium">Conversion Signals</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Add-to-cart button somewhere</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Prominent, frictionless path + trust elements</td>
         </tr>
       </tbody>
     </table>
   </div>
-
   <p class="text-center mt-10 text-lg text-gray-600 dark:text-gray-400">
-    When you eliminate quit risk, visitors stay, engage, convert — and search engines reward you with better rankings.
+    When you master product page SEO with Product Torch, you unlock rich results, higher CTR, more organic traffic, and better on-site conversions.
   </p>
 </section>
     
@@ -670,148 +612,146 @@
 </div>
 
 
-<section id="quit-risk-seo-checklist" class="py-16 px-3 max-w-7xl mx-auto bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
+<!-- Ultimate Product Page SEO Health Checklist -->
+<section id="product-torch-seo-checklist" class="py-16 px-3 max-w-7xl mx-auto bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
   <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-cyan-600">
-    Ultimate Quit Risk &amp; Bounce Rate Reduction Checklist
+    Ultimate Product Page SEO Health Checklist
   </h2>
   <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-700 dark:text-gray-300 leading-relaxed">
-    Free instant bounce rate predictor and comprehensive UX health audit. Get your Quit Risk Score with deep analysis of readability, mobile/PWA optimization, performance, accessibility, and navigation. Plus AI-prioritized fixes to lower bounce rates and boost engagement.
+    Free instant SEO audit for eCommerce product pages. Get your 0–100 Product Page Health Score with deep analysis of on-page elements, technical signals, content/media quality, and eCommerce-specific factors. Plus priority fixes, plugin suggestions, and AI-generated optimizations to improve rankings, rich results, and conversions.
   </p>
-
   <!-- Expanding Accordion with Blue-to-Purple Button -->
   <div class="max-w-7xl mx-auto my-10">
     <details class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl">
       <summary class="px-6 py-5 text-xl font-black bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-3xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300 list-none">
-        Quit Risk &amp; UX Checklist 📝
+        Product Page SEO Checklist 📝
         <span class="text-2xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
       </summary>
       <div class="mt-8 px-2 pb-10 space-y-10 text-gray-700 dark:text-gray-300">
         <!-- Introductory Good & Bad Practices -->
         <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 p-2 rounded-2xl space-y-6">
-          <h3 class="text-2xl font-bold text-center text-indigo-600 dark:text-indigo-400">Key Dos &amp; Don'ts to Reduce Bounce Rates</h3>
+          <h3 class="text-2xl font-bold text-center text-indigo-600 dark:text-indigo-400">Key Dos & Don'ts for Product Page SEO Success</h3>
           <ul class="space-y-4 text-lg max-w-6xl mx-auto">
-            <li class="flex items-start gap-7"><span class="text-2xl">✅</span> <div><strong>Do</strong>: Load critical content above the fold for instant value.</div></li>
-            <li class="flex items-start gap-7"><span class="text-2xl">❌</span> <div><strong>Avoid</strong>: Pop-ups or interstitials that block main content on entry.</div></li>
-            <li class="flex items-start gap-7"><span class="text-2xl">✅</span> <div><strong>Do</strong>: Use clear, benefit-driven headlines that match user intent.</div></li>
-            <li class="flex items-start gap-7"><span class="text-2xl">❌</span> <div><strong>Avoid</strong>: Misleading titles or slow-revealing core information.</div></li>
-            <li class="flex items-start gap-7"><span class="text-2xl">✅</span> <div><strong>Do</strong>: Optimize images and enable lazy loading below fold.</div></li>
-            <li class="flex items-start gap-7"><span class="text-2xl">❌</span> <div><strong>Avoid</strong>: Heavy hero images or autoplay videos without user consent.</div></li>
-            <li class="flex items-start gap-7"><span class="text-2xl">✅</span> <div><strong>Do</strong>: Include internal links to related content for deeper engagement.</div></li>
-            <li class="flex items-start gap-7"><span class="text-2xl">❌</span> <div><strong>Avoid</strong>: Dead-end pages with no clear next steps or CTAs.</div></li>
+            <li class="flex items-start gap-7"><span class="text-2xl">✅</span> <div><strong>Do</strong>: Use keyword-rich, benefit-focused product titles under 60 characters.</div></li>
+            <li class="flex items-start gap-7"><span class="text-2xl">❌</span> <div><strong>Avoid</strong>: Generic or keyword-stuffed titles that get truncated in SERPs.</div></li>
+            <li class="flex items-start gap-7"><span class="text-2xl">✅</span> <div><strong>Do</strong>: Implement full Product schema for rich snippets (price, reviews, availability).</div></li>
+            <li class="flex items-start gap-7"><span class="text-2xl">❌</span> <div><strong>Avoid</strong>: Missing or incomplete structured data that prevents rich results.</div></li>
+            <li class="flex items-start gap-7"><span class="text-2xl">✅</span> <div><strong>Do</strong>: Write unique 300+ word descriptions with bullets and long-tail keywords.</div></li>
+            <li class="flex items-start gap-7"><span class="text-2xl">❌</span> <div><strong>Avoid</strong>: Short, duplicate, or manufacturer-copy descriptions.</div></li>
+            <li class="flex items-start gap-7"><span class="text-2xl">✅</span> <div><strong>Do</strong>: Optimize images with descriptive alt text and fast-loading formats.</div></li>
+            <li class="flex items-start gap-7"><span class="text-2xl">❌</span> <div><strong>Avoid</strong>: Missing alt text or oversized images slowing page speed.</div></li>
           </ul>
         </div>
-
         <!-- Cards Grid Inside Accordion -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <!-- Readability & Content -->
+          <!-- On-Page SEO -->
           <div class="checklist-card bg-gradient-to-br from-teal-900/20 to-cyan-900/20 dark:from-teal-900/30 dark:to-cyan-900/30 rounded-2xl p-2 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
             <h3 class="text-2xl font-bold mb-8 text-green-400 flex items-center gap-4">
-              <span class="text-2xl">📖</span> Readability &amp; Content Experience
+              <span class="text-2xl">🔍</span> On-Page SEO Metrics
             </h3>
             <div class="space-y-8 text-lg">
               <div class="flex items-start gap-7">
                 <span class="text-2xl">😓</span>
-                <div>Complex sentences and dense text causing reader fatigue and early exits.</div>
+                <div>Generic titles, missing keywords, or poor meta descriptions reducing CTR.</div>
               </div>
               <div class="flex items-start gap-7">
                 <span class="text-2xl">✅</span>
-                <div><strong>Readability Scoring Tool</strong>: Flesch-Kincaid analysis, sentence length, paragraph density.</div>
+                <div><strong>Title & Meta Optimization</strong>: Length, keyword placement, compelling CTAs.</div>
               </div>
               <div class="flex items-start gap-7">
                 <span class="text-2xl">👀</span>
-                <div>Walls of text reducing scannability and engagement.</div>
+                <div>Flat or missing heading hierarchy hurting content scannability.</div>
               </div>
               <div class="flex items-start gap-7">
                 <span class="text-2xl">📑</span>
-                <div>Heading structure, lists, and visual breaks to improve flow and reduce bounce rates.</div>
+                <div><strong>Heading & Keyword Structure</strong>: Logical H1–H6, long-tail keyword integration.</div>
               </div>
             </div>
           </div>
-          <!-- Mobile & Performance -->
+          <!-- Technical SEO -->
           <div class="checklist-card bg-gradient-to-br from-cyan-900/20 to-blue-900/20 dark:from-cyan-900/30 dark:to-blue-900/30 rounded-2xl p-2 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
             <h3 class="text-2xl font-bold mb-8 text-orange-400 flex items-center gap-4">
-              <span class="text-3xl">📱</span> Mobile Readiness &amp; Performance Audit
+              <span class="text-3xl">⚙️</span> Technical SEO Metrics
             </h3>
             <div class="space-y-8 text-lg">
               <div class="flex items-start gap-7">
                 <span class="text-2xl">❌</span>
-                <div>No viewport meta or small touch targets frustrating mobile users.</div>
+                <div>Missing viewport meta or non-responsive layout hurting mobile rankings.</div>
               </div>
               <div class="flex items-start gap-7">
                 <span class="text-2xl">✅</span>
-                <div><strong>Mobile Optimization Checker</strong>: Responsive design, PWA readiness, touch-friendly layout.</div>
+                <div><strong>Mobile-Friendliness Check</strong>: Viewport, responsive elements, touch targets.</div>
               </div>
               <div class="flex items-start gap-7">
                 <span class="text-2xl">⏳</span>
-                <div>Heavy assets and render-blocking resources increasing load time.</div>
+                <div>HTTP instead of HTTPS or missing canonical tags causing duplicate issues.</div>
               </div>
               <div class="flex items-start gap-7">
                 <span class="text-2xl">⚡</span>
-                <div><strong>Performance Health Analysis</strong>: Image/font optimization flags, script minimization recommendations.</div>
+                <div><strong>Technical Health Flags</strong>: HTTPS, canonicals, meta robots, basic sitemap hints.</div>
               </div>
             </div>
           </div>
-          <!-- Accessibility & Navigation -->
+          <!-- Content & Media -->
           <div class="checklist-card bg-gradient-to-br from-emerald-900/20 to-teal-900/20 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-2xl p-2 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
             <h3 class="text-2xl font-bold mb-8 text-red-400 flex items-center gap-4">
-              <span class="text-2xl">♿</span> Accessibility &amp; Navigation Flow
+              <span class="text-2xl">🖼️</span> Content & Media Quality
             </h3>
             <div class="space-y-8 text-lg">
               <div class="flex items-start gap-7">
                 <span class="text-2xl">❌</span>
-                <div>Missing alt text, poor contrast, or skipped heading levels.</div>
+                <div>Thin descriptions or images without alt text missing SEO & accessibility value.</div>
               </div>
               <div class="flex items-start gap-7">
                 <span class="text-2xl">❤️</span>
-                <div><strong>Accessibility Audit</strong>: WCAG proxy checks for inclusivity and compliance.</div>
+                <div><strong>Content Quality Audit</strong>: Length, uniqueness, benefit-focused copy.</div>
               </div>
               <div class="flex items-start gap-7">
                 <span class="text-2xl">🗺️</span>
-                <div>Overloaded menus or unclear calls-to-action confusing visitors.</div>
+                <div>Poor internal linking or missing breadcrumbs reducing site authority flow.</div>
               </div>
               <div class="flex items-start gap-7">
                 <span class="text-2xl">🧭</span>
-                <div><strong>Navigation UX Analysis</strong>: Internal linking balance, CTA prominence scoring.</div>
+                <div><strong>Media & Linking Optimization</strong>: Alt text, lazy loading, breadcrumbs, UGC detection.</div>
               </div>
             </div>
           </div>
-          <!-- Master Score & Outcomes -->
+          <!-- ECommerce-Specific & Score -->
           <div class="checklist-card bg-gradient-to-br from-cyan-900/20 to-teal-900/20 dark:from-cyan-900/30 dark:to-teal-900/30 rounded-2xl p-2 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
             <h3 class="text-2xl font-bold mb-8 text-green-400 text-center flex items-center justify-center gap-4">
-              <span class="text-2xl">📊</span> Quit Risk Score &amp; Actionable Insights
+              <span class="text-2xl">🛒</span> ECommerce-Specific SEO & Health Score
             </h3>
             <div class="space-y-8 text-lg">
               <div class="flex items-start gap-7">
                 <span class="text-2xl">🚪</span>
-                <div>No clear prediction of bounce rate risk or drop-off causes.</div>
+                <div>No schema or incomplete markup missing rich snippet opportunities.</div>
               </div>
               <div class="flex items-start gap-7">
                 <span class="text-2xl">✅</span>
-                <div><strong>Overall Quit Risk Score</strong>: 0–100 gauge with estimated bounce rate forecast.</div>
+                <div><strong>Overall Product Page Health Score</strong>: 0–100 with visibility & conversion readiness.</div>
               </div>
               <div class="flex items-start gap-7">
                 <span class="text-2xl">🤔</span>
-                <div>Generic advice without prioritization.</div>
+                <div>Generic advice without eCommerce context (variants, reviews, pricing).</div>
               </div>
               <div class="flex items-start gap-7">
                 <span class="text-2xl">🔧</span>
-                <div><strong>AI-Generated Fixes</strong>: Ranked by potential to reduce bounce rates and improve engagement.</div>
+                <div><strong>Priority Fixes & Plugin Suggestions</strong>: Yoast, Rank Math, Schema Pro, AI-generated code snippets.</div>
               </div>
               <div class="flex items-start gap-7">
                 <span class="text-2xl">🔒</span>
-                <div>Slow, server-based tools raising privacy concerns.</div>
+                <div>Server-heavy tools compromising privacy on product data.</div>
               </div>
               <div class="flex items-start gap-7">
                 <span class="text-2xl">🛡️</span>
-                <div><strong>Instant Mobile-Friendly Report</strong>: Educational insights, dark mode support, PDF export.</div>
+                <div><strong>Instant, Privacy-First Report</strong>: Educational insights, dark mode, mobile-friendly, pro tease for advanced modules.</div>
               </div>
             </div>
           </div>
         </div>
-
         <div class="text-center mt-12">
           <p class="text-xl font-semibold text-gray-700 dark:text-gray-300">
-            Use this free UX health checklist to lower bounce rates, predict engagement drops, and improve SEO through better user experience.
+            Use this free product page SEO checklist to boost organic visibility, unlock rich results, reduce bounce rates, and increase sales conversions.
           </p>
         </div>
       </div>
@@ -819,52 +759,52 @@
   </div>
 </section>
 
-<!-- Why Usability Matters Accordion -->
+<!-- Why Product Page SEO Matters Accordion -->
 <div class="max-w-4xl mx-auto my-16">
   <details>
     <summary class="px-3 py-5 text-1xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
-      Why UX &amp; Quit Risk Matter?
+      Why Product Page SEO Matters?
       <span class="text-3xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
     </summary>
     <div class="mt-8 px-2 py-10 bg-white dark:bg-gray-800 rounded-2xl shadow-inner space-y-10 text-gray-800 dark:text-gray-100">
       <section class="space-y-5">
-        <h2 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">User Experience Is a Direct Ranking Factor</h2>
+        <h2 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">Product Page Optimization Is a Direct Ranking & Conversion Factor</h2>
         <p class="leading-relaxed">
-    Search engines now heavily weigh real user signals: high bounce rates, short dwell time, and pogo-sticking all indicate poor experience.
+          Search engines heavily weigh real user signals on product pages: high bounce rates, low dwell time, poor click-through from SERPs, and low conversion intent all indicate weak relevance and experience.
         </p>
         <p class="leading-relaxed">
-    Pages that cause visitors to leave quickly are gradually demoted. Even with perfect technical SEO.
-        </p> 
-</section>
+          Product pages that fail to engage shoppers or provide trust signals are gradually demoted — even if the rest of the site has strong technical SEO.
+        </p>
+      </section>
       <section class="space-y-6">
-        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">What Strong UX Delivers</h3>
+        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">What Strong Product Page SEO Delivers</h3>
         <div class="space-y-5 text-base">
           <div class="flex gap-4">
-            <div class="text-2xl">⏱️</div>
+            <div class="text-2xl">📈</div>
             <div>
-              <strong>Longer Dwell Time & Deeper Engagement</strong><br>
-              Satisfied users explore more pages and send positive quality signals.
+              <strong>Higher Organic Visibility & Rich Snippets</strong><br>
+              Complete schema (price, reviews, availability, images) unlocks enhanced SERP display → higher CTR.
             </div>
           </div>
           <div class="flex gap-4">
-            <div class="text-2xl">📉</div>
+            <div class="text-2xl">🛍️</div>
             <div>
-              <strong>Lower Bounce Rates</strong><br>
-              Fewer immediate exits improve perceived relevance and authority.
+              <strong>Better On-Site Engagement & Conversions</strong><br>
+              Optimized titles, descriptions, images, and UX keep shoppers browsing and adding to cart.
             </div>
           </div>
           <div class="flex gap-4">
             <div class="text-2xl">🔄</div>
             <div>
-              <strong>Higher Return Traffic</strong><br>
-              Memorable, frictionless experiences encourage repeat visits.
+              <strong>Stronger Behavioral Signals</strong><br>
+              Lower bounce rates, higher dwell time, and fewer pogo-sticks tell Google your products satisfy intent.
             </div>
           </div>
           <div class="flex gap-4">
             <div class="text-2xl">🛡️</div>
             <div>
-              <strong>Core Update Resilience</strong><br>
-              UX-focused sites perform better during algorithm shifts prioritizing user satisfaction.
+              <strong>Core Update & Competitive Resilience</strong><br>
+              Pages with excellent product SEO, schema, and UX perform better during eCommerce-focused algorithm shifts.
             </div>
           </div>
         </div>
@@ -872,20 +812,20 @@
       <section class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/30 p-6 rounded-xl">
         <h3 class="text-xl font-bold mb-3">The Bottom Line</h3>
         <p class="text-sm leading-relaxed">
-          Excellent usability isn’t optional — it’s a <strong>core competitive advantage</strong> in modern, user-first search algorithms.
+          Excellent product page SEO isn’t optional — it’s a <strong>core competitive advantage</strong> in modern, user-first and commerce-aware search algorithms.
         </p>
         <p class="text-sm font-medium mt-4">
-          Reduce quit risk → Lower bounce rates → Stronger behavioral signals → Higher rankings and conversions.
+          Optimize product pages → Unlock rich results → Improve behavioral signals → Higher rankings, traffic, and sales.
         </p>
       </section>
       <p class="text-center text-sm italic opacity-70 mt-6">
-        Prioritizing user experience is the most sustainable SEO strategy.
+        Prioritizing product page SEO is the most sustainable path to long-term eCommerce growth.
       </p>
     </div>
   </details>
 </div>
 
- <!-- Author Bio -->
+<!-- Author Bio -->
 <section id="author-bio" class="max-w-5xl mx-auto my-12 px-4 author-bio author-box" id="about-ylia-and-traffic-torch">
   <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
     <!-- Hero Gradient Header: Gradient only, no solid bg -->
@@ -896,7 +836,7 @@
       </div>
       <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
       <p class="text-lg md:text-2xl text-gray-800 dark:text-gray-200 max-w-4xl mx-auto font-medium">
-          User experience analysis and engagement optimization audit tools.
+          eCommerce SEO analysis and product page optimization audit tools.
       </p>
     </div>
     <!-- Main Content Area: Transparent, inherits page bg -->
@@ -904,7 +844,7 @@
       <!-- Tool Mission Description -->
       <div class="space-y-6">
         <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
-          The Quit Risk tool is built to specialize in identifying UX friction points that cause users to leave pages quickly. This is developed through analysis of real-world pages, combining proven usability metrics with modern engagement signals used by search engines.
+          The Product Torch tool is built to specialize in identifying SEO and UX issues on eCommerce product pages that hurt rankings, visibility, and conversions. This is developed through analysis of real-world pages, combining proven on-page, technical, content, and eCommerce-specific metrics with modern search signals.
         </p>
       </div>
       <!-- Founder Bio with Smaller Photo -->
@@ -943,16 +883,16 @@
           Traffic Torch runs on epic, scalable infrastructure: Hosted via <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub Pages</a> for blazing-fast static delivery and effortless updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance optimizations. Enhanced with intelligent insights from <a href="https://grok.x.ai/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Grok by xAI</a> for advanced analysis and fix recommendations.
         </p>
         <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-4 max-w-3xl mx-auto">
-            Backed by real-world expertise in UX research, engagement analytics, and search performance.
+            Backed by real-world expertise in SEO research, eCommerce optimization, and search performance.
         </p>
           <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
-          <p>Published: 2025-12-18</p>
-          <p>Last updated: 2026-01-25</p>
+          <p>Published: 2026-01-28</p>
+          <p>Last updated: 2026-01-28</p>
         </div>
       </div>
     </div>
   </div>
-</section> 
+</section>
 
 <!-- AddToAny BEGIN -->
 <div style="display: flex; justify-content: center; margin: 30px 0;">
