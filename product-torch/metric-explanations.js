@@ -18,7 +18,7 @@ const metricExplanations = [
     why: "Technical issues can prevent indexing, hurt mobile rankings, or cause duplicate content penalties — all block traffic."
   },
   {
-    id: "content-media",
+    id: "content-&-media",
     emoji: "🖼️",
     name: "Content & Media",
     what: "Content & Media evaluates richness, accessibility, and engagement signals that keep users on-page and build trust.",
