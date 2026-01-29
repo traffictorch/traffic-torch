@@ -1072,6 +1072,23 @@ modulesData.forEach(mod => {
             </button>
           </div>
         `;
+              } catch (err) {
+        console.error('[Analysis Error]:', err);
+        document.getElementById('loading').classList.add('hidden');
+        results.innerHTML = `
+          <div class="text-center py-16 px-6">
+            <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-6">Analysis Failed</p>
+            <p class="text-xl text-gray-700 dark:text-gray-300 mb-4">
+              ${err.message || 'Could not load or process the page'}
+            </p>
+            <p class="text-lg text-gray-600 dark:text-gray-400">
+              Try a different public product URL.<br>
+              <small class="opacity-70">(${err.message})</small>
+            </p>
+          </div>
+        `;
+        return;
+      }
 // DOM settle delay — gives browser time to insert the new HTML
 setTimeout(() => {
   console.log('[Plugin Debug] Checking renderPluginSolutions availability... typeof =', typeof renderPluginSolutions);
