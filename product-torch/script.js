@@ -1031,36 +1031,45 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         `;
 
-// Plugin check – wait for DOM to actually contain the section
+// Plugin rendering – use MutationObserver to wait for the section to exist
 setTimeout(() => {
-  const pluginSection = document.getElementById('plugin-solutions-section');
+  const targetContainer = document.getElementById('results'); // observe the results div
 
-  // Extra safety: if section still missing after first delay, try again once
-  if (!pluginSection) {
-    console.warn('[Plugin Debug] #plugin-solutions-section not found yet – retrying in 300ms');
-    setTimeout(() => {
-      const retrySection = document.getElementById('plugin-solutions-section');
-      if (!retrySection) {
-        console.error('[Plugin Debug] #plugin-solutions-section STILL missing after retry');
-        return;
-      }
-      renderIfReady(retrySection);
-    }, 300);
+  if (!targetContainer) {
+    console.error('[Plugin Debug] #results container missing – cannot observe');
     return;
   }
 
-  renderIfReady(pluginSection);
+  const observer = new MutationObserver((mutations, obs) => {
+    const section = document.getElementById('plugin-solutions-section');
+    if (section) {
+      console.log('[Plugin Debug] #plugin-solutions-section detected via observer');
+      renderIfReady(section);
+      obs.disconnect(); // stop observing once found
+    }
+  });
+
+  observer.observe(targetContainer, { childList: true, subtree: true });
+
+  // Fallback timeout in case observer misses it
+  setTimeout(() => {
+    const section = document.getElementById('plugin-solutions-section');
+    if (section) {
+      console.log('[Plugin Debug] #plugin-solutions-section found via fallback timeout');
+      renderIfReady(section);
+      observer.disconnect();
+    } else {
+      console.warn('[Plugin Debug] #plugin-solutions-section never appeared');
+    }
+  }, 2000); // 2 seconds max wait
 
   function renderIfReady(section) {
-    console.log('[Plugin Debug] Container found – typeof renderPluginSolutions =', typeof renderPluginSolutions);
-
     if (typeof renderPluginSolutions !== 'function') {
       section.innerHTML = `
         <div class="mt-16 p-10 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 rounded-3xl border border-orange-300 dark:border-orange-700 text-center shadow-lg">
-          <p class="text-2xl font-bold text-orange-700 dark:text-orange-300 mb-4">⚠️ Plugin suggestions not loaded</p>
+          <p class="text-2xl font-bold text-orange-700 dark:text-orange-300 mb-4">⚠️ Plugin suggestions unavailable</p>
           <p class="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
-            Recommendations module ready but failed to initialize.<br>
-            Refresh page or check console.
+            Module loaded but failed to initialize.
           </p>
         </div>`;
       return;
@@ -1078,11 +1087,10 @@ setTimeout(() => {
       return;
     }
 
-    // Actually render now that container exists
     renderPluginSolutions(validFactors, 'plugin-solutions-section');
-    console.log('[Plugin Debug] renderPluginSolutions called successfully');
+    console.log('[Plugin Debug] renderPluginSolutions executed successfully');
   }
-}, 1000);  // Increased from 400ms → gives more time for large innerHTML to parse & insert
+}, 800); // initial delay after innerHTML
 
         // Radar chart
         setTimeout(() => {
