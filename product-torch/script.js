@@ -522,6 +522,13 @@ function analyzeEcommerceSEO(doc, data) {
         const seo = analyzeProductSEO(doc, url);
 
         const failedMetrics = [];
+        function getPluginGrade(score) {
+  if (score >= 90) return { grade: 'Excellent', emoji: '🚀', color: 'text-green-600 dark:text-green-400' };
+  if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+  if (score >= 50) return { grade: 'Average', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
+  if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+  return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+}
         if (seo.onPage.score < 70) failedMetrics.push({ name: "On-Page SEO", grade: getPluginGrade(seo.onPage.score) });
         if (seo.technical.score < 80) failedMetrics.push({ name: "Technical SEO", grade: getPluginGrade(seo.technical.score) });
         if (seo.contentMedia.score < 70) failedMetrics.push({ name: "Content & Media", grade: getPluginGrade(seo.contentMedia.score) });
