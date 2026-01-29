@@ -1,43 +1,37 @@
+// metric-explanations.js - updated to match product-torch SEO audit modules
+
 const metricExplanations = [
   {
-    id: "readability",
-    emoji: "📖",
-    name: "Readability",
-    what: "Readability measures how easily visitors can understand and scan your content. It combines classic formulas like Flesch with modern web factors such as sentence length, paragraph structure, and visual hierarchy. High readability keeps users engaged longer and reduces bounce rates.",
-    how: "Readability is tested using Flesch Reading Ease and Flesch-Kincaid Grade Level scores, average sentence length, paragraph density, and scannability elements like bolding, lists, and subheadings. Each factor is scored individually and combined into an overall module grade.",
-    why: "Easy-to-read content reaches a wider audience, improves engagement metrics, and reduces cognitive strain. Search engines reward pages where users stay longer and interact more. Great readability is essential for modern web success."
+    id: "on-page-seo",
+    emoji: "📄",
+    name: "On-Page SEO",
+    what: "On-Page SEO evaluates title, meta, headings, URL, and keyword usage — the foundational elements that tell search engines and users what the product page is about.",
+    how: "On-Page is tested using title length & keyword inclusion, meta description relevance & CTA strength, heading hierarchy (single H1 + logical H2/H3), clean URL structure, and natural keyword placement/density in content.",
+    why: "Strong on-page signals improve relevance, click-through rates, and initial rankings. They help match user intent and reduce bounce from mismatched expectations."
   },
   {
-    id: "navigation",
-    emoji: "🧭",
-    name: "Navigation",
-    what: "Navigation Clarity evaluates how easily users can move through your site and find what they need. It examines menu structure, link density, internal linking patterns, and call-to-action visibility.",
-    how: "Navigation is tested by analyzing link density, menu organization, internal linking balance, and CTA prominence. Each factor is scored based on best practices for user flow and discoverability.",
-    why: "Intuitive navigation lowers bounce rates, increases pages per session, and helps users complete goals faster. Clear structure strengthens topical authority and sends positive user signals to search engines."
+    id: "technical-seo",
+    emoji: "🔧",
+    name: "Technical SEO",
+    what: "Technical SEO checks crawlability, mobile readiness, security, and duplicate prevention — essential for product pages to be indexed and ranked properly.",
+    how: "Technical is tested by validating viewport & mobile-friendliness, HTTPS enforcement & mixed content, correct self-referencing canonical tags, absence of noindex/nofollow directives, and likely sitemap inclusion patterns.",
+    why: "Technical issues can prevent indexing, hurt mobile rankings, or cause duplicate content penalties — all block traffic."
   },
   {
-    id: "accessibility",
-    emoji: "♿",
-    name: "Accessibility",
-    what: "Accessibility Health measures how inclusive your page is for users with disabilities. It checks alt text coverage, color contrast, semantic HTML structure, and overall WCAG alignment.",
-    how: "Accessibility is tested through alt text completeness, contrast ratios, proper heading hierarchy, landmarks, and general WCAG compliance signals. Each factor contributes to the overall score.",
-    why: "Accessible sites reach 15-20% more users, build trust, and face lower legal risk. Many accessibility improvements also enhance SEO and overall user experience for everyone."
+    id: "content-media",
+    emoji: "🖼️",
+    name: "Content & Media",
+    what: "Content & Media evaluates richness, accessibility, and engagement signals that keep users on-page and build trust.",
+    how: "Content & Media is tested by measuring description length & structure, image alt text coverage & optimization, video embed quality & captions, user-generated content (reviews), internal linking, and breadcrumb navigation presence.",
+    why: "High-quality content reduces bounce rate, improves dwell time, and strengthens topical authority — key ranking factors."
   },
   {
-    id: "mobile",
-    emoji: "📱",
-    name: "Mobile & PWA",
-    what: "Mobile & PWA Readiness checks how well your page works on phones and tablets. It evaluates viewport configuration, responsive design, touch targets, and progressive web app signals.",
-    how: "Mobile is tested by checking viewport meta tag, breakpoint behavior, touch target size, and PWA indicators like manifest and service worker presence.",
-    why: "Most users browse on mobile devices. Poor mobile experience causes immediate bounces. PWA capabilities increase return visits and engagement significantly."
-  },
-  {
-    id: "speed",
-    emoji: "⚡",
-    name: "Performance",
-    what: "Performance Optimization measures loading speed and resource efficiency. It flags heavy assets, script bloat, font issues, lazy loading, and image optimization opportunities.",
-    how: "Performance is tested through proxies for asset volume, script size, font delivery, lazy loading implementation, image formats, and render-blocking resources.",
-    why: "Fast pages keep users and reduce bounce rates. Speed is a direct ranking factor. Users perceive faster sites as higher quality and more professional."
+    id: "ecommerce-signals",
+    emoji: "🛒",
+    name: "E-Commerce Signals",
+    what: "E-Commerce Specific checks structured data, pricing, reviews, variants, and social signals — essential for rich results and conversions.",
+    how: "E-Commerce is tested for complete Product schema markup (name, image, offers, brand), price & availability in schema, aggregate rating & review schema, variant handling (single-page or canonical), and Open Graph / social sharing tags.",
+    why: "Schema enables rich snippets (price, stars, images in SERPs). Reviews add trust. Proper variants prevent duplicate content penalties."
   }
 ];
 
@@ -96,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   container.innerHTML = moduleCards + allToolsCard;
 
+  // Open panel if hash matches any module id
   openDetailsFromHash();
 });
 
