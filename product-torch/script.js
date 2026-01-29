@@ -354,11 +354,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const ringColor = value < 50 ? '#ef4444' : value < 70 ? '#fb923c' : value < 85 ? '#22c55e' : '#10b981';
     const borderClass = value < 50 ? 'border-red-500' : value < 70 ? 'border-orange-500' : value < 85 ? 'border-green-500' : 'border-emerald-500';
     const gradeInfo = getGradeInfo(value);
-    let statusMessage, statusEmoji;
-    if (value >= 85) { statusMessage = "Excellent"; statusEmoji = "🏆"; }
-    else if (value >= 70) { statusMessage = "Strong"; statusEmoji = "✅" };
-    else if (value >= 50) { statusMessage = "Needs Work"; statusEmoji = "⚠️" };
-    else { statusMessage = "Poor"; statusEmoji = "❌" };
+let statusMessage, statusEmoji;
+if (value >= 85) {
+  statusMessage = "Excellent";
+  statusEmoji = "🏆";
+} else if (value >= 70) {
+  statusMessage = "Strong";
+  statusEmoji = "✅";
+} else if (value >= 50) {
+  statusMessage = "Needs Work";
+  statusEmoji = "⚠️";
+} else {
+  statusMessage = "Poor";
+  statusEmoji = "❌";
+}
     let metricsHTML = '';
     let fixesHTML = '';
     let failedOnlyHTML = '';
