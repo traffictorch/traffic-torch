@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: "Variant Handling", key: "variants", threshold: 75, shortDesc: "Variants use single-page selectors (dropdowns/swatches) or separate URLs have self-canonical + no duplicate content.", howToFix: "Prefer single URL with JS variant switching. If separate URLs, add <link rel='canonical'> pointing to main product. Avoid thin duplicate pages per variant." },
         { name: "Social Sharing Integration", key: "social", threshold: 70, shortDesc: "Open Graph tags (og:title, og:description, og:image 1200×630+, og:url) and optionally Twitter Cards.", howToFix: "Add <meta property='og:title' content='...'> etc. in <head>. Use high-res product image for og:image. Set og:url to canonical URL. Add twitter:card if desired." }
       ],
-      moduleWhat: "E-Commerce Specific checks structured data, pricing, reviews, variants, and social signals — essential for rich results and conversions.",
+      moduleWhat: "eCommerce Signals checks structured data, pricing, reviews, variants, and social signals — essential for rich results and conversions.",
       moduleHow: "Implement complete Product + Offer + AggregateRating schema. Handle variants cleanly. Add Open Graph tags.",
       moduleWhy: "Schema enables rich snippets (price, stars, images in SERPs). Reviews add trust. Proper variants prevent duplicate content penalties."
     }
@@ -693,13 +693,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const onPageHTML = buildModuleHTML('On-Page SEO', seo.onPage.score, factorDefinitions.onPage, seo.onPage.details);
         const technicalHTML = buildModuleHTML('Technical SEO', seo.technical.score, factorDefinitions.technical, seo.technical.details);
         const contentMediaHTML = buildModuleHTML('Content & Media', seo.contentMedia.score, factorDefinitions.contentMedia, seo.contentMedia.details);
-        const ecommerceHTML = `<div class="pro-blur relative">${buildModuleHTML('E-Commerce Specific (Pro)', seo.ecommerce.score, factorDefinitions.ecommerce, seo.ecommerce.details)}</div>`;
+        const ecommerceHTML = buildModuleHTML('eCommerce Signals', seo.ecommerce.score, factorDefinitions.ecommerce, seo.ecommerce.details)}</div>`;
 
         const modulePriority = [
           { name: 'On-Page SEO', score: seo.onPage.score, threshold: 70, data: factorDefinitions.onPage },
           { name: 'Technical SEO', score: seo.technical.score, threshold: 80, data: factorDefinitions.technical },
           { name: 'Content & Media', score: seo.contentMedia.score, threshold: 70, data: factorDefinitions.contentMedia },
-          { name: 'E-Commerce Specific', score: seo.ecommerce.score, threshold: 75, data: factorDefinitions.ecommerce }
+          { name: 'eCommerce Signals', score: seo.ecommerce.score, threshold: 75, data: factorDefinitions.ecommerce }
         ];
         const failedModules = modulePriority.filter(m => m.score < m.threshold);
         const priorityFixes = [];
