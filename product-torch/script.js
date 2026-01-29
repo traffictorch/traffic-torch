@@ -693,8 +693,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const onPageHTML = buildModuleHTML('On-Page SEO', seo.onPage.score, factorDefinitions.onPage, seo.onPage.details);
         const technicalHTML = buildModuleHTML('Technical SEO', seo.technical.score, factorDefinitions.technical, seo.technical.details);
         const contentMediaHTML = buildModuleHTML('Content & Media', seo.contentMedia.score, factorDefinitions.contentMedia, seo.contentMedia.details);
-        const ecommerceHTML = buildModuleHTML('E-Commerce Signals', seo.ecommerce.score, factorDefinitions.ecommerce, seo.ecommerce.details)}</div>`;
-
+        const ecommerceHTML = buildModuleHTML('E-Commerce Signals', seo.ecommerce.score, factorDefinitions.ecommerce, seo.ecommerce.details);
+        
         const modulePriority = [
           { name: 'On-Page SEO', score: seo.onPage.score, threshold: 70, data: factorDefinitions.onPage },
           { name: 'Technical SEO', score: seo.technical.score, threshold: 80, data: factorDefinitions.technical },
@@ -929,7 +929,7 @@ try {
     </div>
   `;
 
-  console.log('[Debug] Full original template restored');
+  console.log('[Debug] Full clean template inserted');
 } catch (templateError) {
   console.error('[TEMPLATE ERROR]', templateError);
   results.innerHTML = `
@@ -942,7 +942,7 @@ try {
   return;
 }
 
-// Direct plugin render call (no delay)
+// Direct plugin render call
 if (typeof renderPluginSolutions === 'function') {
   console.log('Calling renderPluginSolutions immediately');
   renderPluginSolutions(failedFactors, 'plugin-solutions-section');
@@ -958,7 +958,7 @@ if (typeof renderPluginSolutions === 'function') {
   }, 500);
 }
 
-// Radar chart (unchanged)
+// Radar chart
 setTimeout(() => {
   const canvas = document.getElementById('health-radar');
   if (!canvas) return;
@@ -1007,7 +1007,7 @@ setTimeout(() => {
   }
 }, 150);
 
-// Button toggle (unchanged)
+// Button toggle
 document.addEventListener('click', e => {
   const target = e.target.closest('.more-details, .show-fixes');
   if (!target) return;
