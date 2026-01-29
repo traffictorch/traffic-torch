@@ -1,6 +1,8 @@
+// product-torch/script.js - Final polished version - fully generic, accurate across all eCommerce sites
+// All try/catch blocks added/fixed - should eliminate "missing catch or finally" and similar syntax errors
+
 // Dynamic import for plugin solutions
 let renderPluginSolutions = null;
-
 (async () => {
   try {
     const module = await import('./plugin-solutions.js');
@@ -8,7 +10,6 @@ let renderPluginSolutions = null;
     console.log('[Plugin] Successfully loaded renderPluginSolutions');
   } catch (err) {
     console.error('[Plugin] Failed to dynamically import plugin-solutions.js:', err);
-    // Optional: show visible fallback in UI
     const section = document.getElementById('plugin-solutions-section');
     if (section) {
       section.innerHTML = `
@@ -22,159 +23,157 @@ let renderPluginSolutions = null;
   }
 })();
 
-// product-torch/script.js - Final polished version - fully generic, accurate across all eCommerce sites
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
   const PROXY = 'https://rendered-proxy.traffictorch.workers.dev/';
-
   const factorDefinitions = {
     onPage: {
       factors: [
-  { name: "Title Tag Optimization", key: "title", threshold: 80, shortDesc: "Title length ideally 50–60 chars (max 70), includes product keywords and brand. Avoids truncation.", howToFix: "Include product name + key benefit + brand early. Target 50-60 chars. Use separator like | or -." },
-  { name: "Meta Description Relevance", key: "metaDescription", threshold: 75, shortDesc: "100–170 chars, keyword-rich, includes CTA, unique per product.", howToFix: "Write benefit-driven copy with keywords early. Add urgency or offer. Avoid duplication." },
-  { name: "Heading Structure (H1–H6)", key: "headings", threshold: 85, shortDesc: "Single H1 (product name), logical hierarchy, keywords in H1/H2.", howToFix: "Use one H1 for product name. Add H2/H3 for features, specs, benefits. Include long-tail keywords naturally." },
-  { name: "URL Structure", key: "url", threshold: 90, shortDesc: "Clean, keyword-rich slug with hyphens, no parameters, readable.", howToFix: "Use /category/product-name format. Remove session IDs. Keep readable and descriptive." },
-  { name: "Keyword Optimization", key: "keywords", threshold: 70, shortDesc: "Natural primary & long-tail keyword placement, density 0.4–3%, front-loaded.", howToFix: "Place main keywords in title, H1, first paragraph. Add long-tail variations naturally." }
-],
+        { name: "Title Tag Optimization", key: "title", threshold: 80, shortDesc: "Title length ideally 50–60 chars (max 70), includes product keywords and brand. Avoids truncation.", howToFix: "Include product name + key benefit + brand early. Target 50-60 chars. Use separator like | or -." },
+        { name: "Meta Description Relevance", key: "metaDescription", threshold: 75, shortDesc: "100–170 chars, keyword-rich, includes CTA, unique per product.", howToFix: "Write benefit-driven copy with keywords early. Add urgency or offer. Avoid duplication." },
+        { name: "Heading Structure (H1–H6)", key: "headings", threshold: 85, shortDesc: "Single H1 (product name), logical hierarchy, keywords in H1/H2.", howToFix: "Use one H1 for product name. Add H2/H3 for features, specs, benefits. Include long-tail keywords naturally." },
+        { name: "URL Structure", key: "url", threshold: 90, shortDesc: "Clean, keyword-rich slug with hyphens, no parameters, readable.", howToFix: "Use /category/product-name format. Remove session IDs. Keep readable and descriptive." },
+        { name: "Keyword Optimization", key: "keywords", threshold: 70, shortDesc: "Natural primary & long-tail keyword placement, density 0.4–3%, front-loaded.", howToFix: "Place main keywords in title, H1, first paragraph. Add long-tail variations naturally." }
+      ],
       moduleWhat: "On-Page SEO evaluates title, meta, headings, URL, and keyword usage — the foundational elements that tell search engines and users what the product page is about.",
       moduleHow: "Optimize titles and metas for CTR. Use proper heading hierarchy. Include keywords naturally in prominent places. Keep URLs clean and descriptive.",
       moduleWhy: "Strong on-page signals improve relevance, click-through rates, and initial rankings. They help match user intent and reduce bounce from mismatched expectations."
     },
-   technical: {
-  factors: [
-    { 
-      name: "Mobile-Friendliness", 
-      key: "mobile", 
-      threshold: 85, 
-      shortDesc: "Responsive + correct viewport meta + passes basic Core Web Vitals checks (no user-scalable=no).", 
-      howToFix: "Add <meta name='viewport' content='width=device-width, initial-scale=1'>. Use responsive CSS. Avoid fixed widths or user-scalable=no. Test with Google's Mobile-Friendly Test." 
+    technical: {
+      factors: [
+        {
+          name: "Mobile-Friendliness",
+          key: "mobile",
+          threshold: 85,
+          shortDesc: "Responsive + correct viewport meta + passes basic Core Web Vitals checks (no user-scalable=no).",
+          howToFix: "Add <meta name='viewport' content='width=device-width, initial-scale=1'>. Use responsive CSS. Avoid fixed widths or user-scalable=no. Test with Google's Mobile-Friendly Test."
+        },
+        {
+          name: "HTTPS Implementation",
+          key: "https",
+          threshold: 95,
+          shortDesc: "Served over HTTPS with valid cert, no mixed content (HTTP resources on HTTPS page).",
+          howToFix: "Force HTTPS redirect. Update all images/scripts/links to https://. Fix mixed content via browser dev tools console."
+        },
+        {
+          name: "Canonical Tags",
+          key: "canonical",
+          threshold: 85,
+          shortDesc: "Self-referencing canonical exists and exactly matches current URL (protocol + trailing slash).",
+          howToFix: "Add <link rel='canonical' href='https://full-current-url/'>. Ensure it matches live URL 100% (case-sensitive)."
+        },
+        {
+          name: "Meta Robots Directives",
+          key: "robots",
+          threshold: 90,
+          shortDesc: "No noindex or nofollow on live product page (unless intentional).",
+          howToFix: "Remove <meta name='robots' content='noindex'> or similar. Use robots.txt only for blocking unwanted pages, not product pages."
+        },
+        {
+          name: "Sitemap Inclusion Hints",
+          key: "sitemapHint",
+          threshold: 70,
+          shortDesc: "URL pattern matches typical product pages (suggests inclusion in sitemap.xml).",
+          howToFix: "Add this URL pattern to sitemap.xml. Submit sitemap in Google Search Console. Use dynamic sitemaps for large catalogs."
+        }
+      ],
+      moduleWhat: "Technical SEO checks crawlability, mobile readiness, security, and duplicate prevention — essential for product pages to be indexed and ranked properly.",
+      moduleHow: "Ensure HTTPS, proper viewport, canonicals, and indexable robots directives. Keep technical foundation clean.",
+      moduleWhy: "Technical issues can prevent indexing, hurt mobile rankings, or cause duplicate content penalties — all block traffic."
     },
-    { 
-      name: "HTTPS Implementation", 
-      key: "https", 
-      threshold: 95, 
-      shortDesc: "Served over HTTPS with valid cert, no mixed content (HTTP resources on HTTPS page).", 
-      howToFix: "Force HTTPS redirect. Update all images/scripts/links to https://. Fix mixed content via browser dev tools console." 
-    },
-    { 
-      name: "Canonical Tags", 
-      key: "canonical", 
-      threshold: 85, 
-      shortDesc: "Self-referencing canonical exists and exactly matches current URL (protocol + trailing slash).", 
-      howToFix: "Add <link rel='canonical' href='https://full-current-url/'>. Ensure it matches live URL 100% (case-sensitive)." 
-    },
-    { 
-      name: "Meta Robots Directives", 
-      key: "robots", 
-      threshold: 90, 
-      shortDesc: "No noindex or nofollow on live product page (unless intentional).", 
-      howToFix: "Remove <meta name='robots' content='noindex'> or similar. Use robots.txt only for blocking unwanted pages, not product pages." 
-    },
-    { 
-      name: "Sitemap Inclusion Hints", 
-      key: "sitemapHint", 
-      threshold: 70, 
-      shortDesc: "URL pattern matches typical product pages (suggests inclusion in sitemap.xml).", 
-      howToFix: "Add this URL pattern to sitemap.xml. Submit sitemap in Google Search Console. Use dynamic sitemaps for large catalogs." 
-    }
-  ],
-  moduleWhat: "Technical SEO checks crawlability, mobile readiness, security, and duplicate prevention — essential for product pages to be indexed and ranked properly.",
-  moduleHow: "Ensure HTTPS, proper viewport, canonicals, and indexable robots directives. Keep technical foundation clean.",
-  moduleWhy: "Technical issues can prevent indexing, hurt mobile rankings, or cause duplicate content penalties — all block traffic."
-},
     contentMedia: {
-  factors: [
-    { 
-      name: "Product Description Quality", 
-      key: "description", 
-      threshold: 75, 
-      shortDesc: "300+ words ideal, unique, benefit-focused, structured (bullets/headings), keyword-rich.", 
-      howToFix: "Expand to 400–800 words in competitive niches. Start with benefits, use bullets for features, add subheadings. Make it unique vs competitors." 
+      factors: [
+        {
+          name: "Product Description Quality",
+          key: "description",
+          threshold: 75,
+          shortDesc: "300+ words ideal, unique, benefit-focused, structured (bullets/headings), keyword-rich.",
+          howToFix: "Expand to 400–800 words in competitive niches. Start with benefits, use bullets for features, add subheadings. Make it unique vs competitors."
+        },
+        {
+          name: "Image Optimization",
+          key: "images",
+          threshold: 80,
+          shortDesc: "Meaningful images have descriptive keyword-rich alt text, lazy loading, responsive (srcset), <100KB.",
+          howToFix: "Add alt text like 'Santa Cruz Dreadnought Quilted Mahogany Acoustic Guitar front view'. Use loading='lazy', srcset/sizes. Compress images."
+        },
+        {
+          name: "Video Embed Quality",
+          key: "video",
+          threshold: 70,
+          shortDesc: "Relevant videos present with captions (<track>), poster thumbnail, embedded properly.",
+          howToFix: "Embed YouTube/Vimeo with captions enabled. Add <track kind='subtitles'> or use platform auto-captions. Include poster image."
+        },
+        {
+          name: "User-Generated Content (UGC)",
+          key: "ugc",
+          threshold: 70,
+          shortDesc: "Reviews/ratings visible with star aggregate and review count.",
+          howToFix: "Install review app (Judge.me, Yotpo, Loox). Display average rating + number of reviews. Encourage photo/video reviews."
+        },
+        {
+          name: "Internal Linking",
+          key: "internalLinks",
+          threshold: 70,
+          shortDesc: "3+ relevant contextual links to related products/categories/guides with descriptive anchors.",
+          howToFix: "Add 3–6 internal links in description or below (e.g. 'see matching picks', 'learn more about tonewoods'). Use keyword-rich anchors."
+        },
+        {
+          name: "Breadcrumb Navigation",
+          key: "breadcrumbs",
+          threshold: 85,
+          shortDesc: "Clear hierarchy breadcrumbs present (Home > Category > Subcategory > Product).",
+          howToFix: "Implement breadcrumbs with schema (BreadcrumbList JSON-LD). Use links like Home > Acoustic Guitars > Dreadnought > Santa Cruz Dreadnought."
+        }
+      ],
+      moduleWhat: "Content & Media evaluates richness, accessibility, and engagement signals that keep users on-page and build trust.",
+      moduleHow: "Create detailed, benefit-driven descriptions. Optimize all images/videos. Encourage reviews. Add navigation aids.",
+      moduleWhy: "High-quality content reduces bounce rate, improves dwell time, and strengthens topical authority — key ranking factors."
     },
-    { 
-      name: "Image Optimization", 
-      key: "images", 
-      threshold: 80, 
-      shortDesc: "Meaningful images have descriptive keyword-rich alt text, lazy loading, responsive (srcset), <100KB.", 
-      howToFix: "Add alt text like 'Santa Cruz Dreadnought Quilted Mahogany Acoustic Guitar front view'. Use loading='lazy', srcset/sizes. Compress images." 
-    },
-    { 
-      name: "Video Embed Quality", 
-      key: "video", 
-      threshold: 70, 
-      shortDesc: "Relevant videos present with captions (<track>), poster thumbnail, embedded properly.", 
-      howToFix: "Embed YouTube/Vimeo with captions enabled. Add <track kind='subtitles'> or use platform auto-captions. Include poster image." 
-    },
-    { 
-      name: "User-Generated Content (UGC)", 
-      key: "ugc", 
-      threshold: 70, 
-      shortDesc: "Reviews/ratings visible with star aggregate and review count.", 
-      howToFix: "Install review app (Judge.me, Yotpo, Loox). Display average rating + number of reviews. Encourage photo/video reviews." 
-    },
-    { 
-      name: "Internal Linking", 
-      key: "internalLinks", 
-      threshold: 70, 
-      shortDesc: "3+ relevant contextual links to related products/categories/guides with descriptive anchors.", 
-      howToFix: "Add 3–6 internal links in description or below (e.g. 'see matching picks', 'learn more about tonewoods'). Use keyword-rich anchors." 
-    },
-    { 
-      name: "Breadcrumb Navigation", 
-      key: "breadcrumbs", 
-      threshold: 85, 
-      shortDesc: "Clear hierarchy breadcrumbs present (Home > Category > Subcategory > Product).", 
-      howToFix: "Implement breadcrumbs with schema (BreadcrumbList JSON-LD). Use links like Home > Acoustic Guitars > Dreadnought > Santa Cruz Dreadnought." 
+    ecommerce: {
+      factors: [
+        {
+          name: "Product Schema Markup",
+          key: "schema",
+          threshold: 90,
+          shortDesc: "Valid JSON-LD Product schema with required fields (name, image, description, offers, brand, sku/mpn).",
+          howToFix: "Add complete <script type='application/ld+json'> Product schema in <head> or <body>. Include @context, @type: 'Product', name, image (array), description, brand, sku or mpn, offers."
+        },
+        {
+          name: "Price & Availability Markup",
+          key: "priceAvailability",
+          threshold: 85,
+          shortDesc: "Offers include priceCurrency, price (positive number), availability (InStock/OutOfStock/PreOrder etc.), priceValidUntil optional.",
+          howToFix: "Ensure offers.price is a string number (e.g. '1299.00'), offers.priceCurrency (e.g. 'USD'), offers.availability uses schema.org enums like 'https://schema.org/InStock'."
+        },
+        {
+          name: "Review Schema & Aggregation",
+          key: "reviews",
+          threshold: 80,
+          shortDesc: "AggregateRating present with ratingValue (1.0–5.0) and reviewCount (or ratingCount), ideally with individual Review items.",
+          howToFix: "Add AggregateRating inside Product schema: ratingValue (decimal), reviewCount (integer). Use real data from review app. Optional: add 2–5 Review objects."
+        },
+        {
+          name: "Variant Handling",
+          key: "variants",
+          threshold: 75,
+          shortDesc: "Variants use single-page selectors (dropdowns/swatches) or separate URLs have self-canonical + no duplicate content.",
+          howToFix: "Prefer single URL with JS variant switching. If separate URLs, add <link rel='canonical'> pointing to main product. Avoid thin duplicate pages per variant."
+        },
+        {
+          name: "Social Sharing Integration",
+          key: "social",
+          threshold: 70,
+          shortDesc: "Open Graph tags (og:title, og:description, og:image 1200×630+, og:url) and optionally Twitter Cards.",
+          howToFix: "Add <meta property='og:title' content='...'> etc. in <head>. Use high-res product image for og:image. Set og:url to canonical URL. Add twitter:card if desired."
+        }
+      ],
+      moduleWhat: "E-Commerce Specific checks structured data, pricing, reviews, variants, and social signals — essential for rich results and conversions.",
+      moduleHow: "Implement complete Product + Offer + AggregateRating schema. Handle variants cleanly. Add Open Graph tags.",
+      moduleWhy: "Schema enables rich snippets (price, stars, images in SERPs). Reviews add trust. Proper variants prevent duplicate content penalties."
     }
-  ],
-  moduleWhat: "Content & Media evaluates richness, accessibility, and engagement signals that keep users on-page and build trust.",
-  moduleHow: "Create detailed, benefit-driven descriptions. Optimize all images/videos. Encourage reviews. Add navigation aids.",
-  moduleWhy: "High-quality content reduces bounce rate, improves dwell time, and strengthens topical authority — key ranking factors."
-},
-ecommerce: {
-  factors: [
-    { 
-      name: "Product Schema Markup", 
-      key: "schema", 
-      threshold: 90, 
-      shortDesc: "Valid JSON-LD Product schema with required fields (name, image, description, offers, brand, sku/mpn).", 
-      howToFix: "Add complete <script type='application/ld+json'> Product schema in <head> or <body>. Include @context, @type: 'Product', name, image (array), description, brand, sku or mpn, offers." 
-    },
-    { 
-      name: "Price & Availability Markup", 
-      key: "priceAvailability", 
-      threshold: 85, 
-      shortDesc: "Offers include priceCurrency, price (positive number), availability (InStock/OutOfStock/PreOrder etc.), priceValidUntil optional.", 
-      howToFix: "Ensure offers.price is a string number (e.g. '1299.00'), offers.priceCurrency (e.g. 'USD'), offers.availability uses schema.org enums like 'https://schema.org/InStock'." 
-    },
-    { 
-      name: "Review Schema & Aggregation", 
-      key: "reviews", 
-      threshold: 80, 
-      shortDesc: "AggregateRating present with ratingValue (1.0–5.0) and reviewCount (or ratingCount), ideally with individual Review items.", 
-      howToFix: "Add AggregateRating inside Product schema: ratingValue (decimal), reviewCount (integer). Use real data from review app. Optional: add 2–5 Review objects." 
-    },
-    { 
-      name: "Variant Handling", 
-      key: "variants", 
-      threshold: 75, 
-      shortDesc: "Variants use single-page selectors (dropdowns/swatches) or separate URLs have self-canonical + no duplicate content.", 
-      howToFix: "Prefer single URL with JS variant switching. If separate URLs, add <link rel='canonical'> pointing to main product. Avoid thin duplicate pages per variant." 
-    },
-    { 
-      name: "Social Sharing Integration", 
-      key: "social", 
-      threshold: 70, 
-      shortDesc: "Open Graph tags (og:title, og:description, og:image 1200×630+, og:url) and optionally Twitter Cards.", 
-      howToFix: "Add <meta property='og:title' content='...'> etc. in <head>. Use high-res product image for og:image. Set og:url to canonical URL. Add twitter:card if desired." 
-    }
-  ],
-  moduleWhat: "E-Commerce Specific checks structured data, pricing, reviews, variants, and social signals — essential for rich results and conversions.",
-  moduleHow: "Implement complete Product + Offer + AggregateRating schema. Handle variants cleanly. Add Open Graph tags.",
-  moduleWhy: "Schema enables rich snippets (price, stars, images in SERPs). Reviews add trust. Proper variants prevent duplicate content penalties."
-}
   };
 
   // Helper functions
@@ -206,33 +205,25 @@ ecommerce: {
     return meta && /width\s*=\s*device-width/i.test(meta.content);
   }
 
-function extractProductSchema(doc) {
-  const scripts = doc.querySelectorAll('script[type="application/ld+json"]');
-  const schemas = [];
-  
-  scripts.forEach(script => {
-    if (!script.textContent?.trim()) return; // skip empty scripts
-    
-    try {
-      const data = JSON.parse(script.textContent);
-      
-      // Handle both top-level Product and @graph arrays
-      if (data['@type'] === 'Product') {
-        schemas.push(data);
-      } else if (Array.isArray(data['@graph'])) {
-        const productInGraph = data['@graph'].find(g => g['@type'] === 'Product');
-        if (productInGraph) {
-          schemas.push(productInGraph);
+  function extractProductSchema(doc) {
+    const scripts = doc.querySelectorAll('script[type="application/ld+json"]');
+    const schemas = [];
+    scripts.forEach(script => {
+      if (!script.textContent?.trim()) return;
+      try {
+        const data = JSON.parse(script.textContent);
+        if (data['@type'] === 'Product') {
+          schemas.push(data);
+        } else if (Array.isArray(data['@graph'])) {
+          const productInGraph = data['@graph'].find(g => g['@type'] === 'Product');
+          if (productInGraph) schemas.push(productInGraph);
         }
+      } catch (e) {
+        // skip invalid JSON silently
       }
-    } catch (e) {
-      // Most schema parse errors are harmless → no console noise in production
-      // console.debug('Skipped invalid schema JSON:', e.message);
-    }
-  });
-  
-  return schemas;
-}
+    });
+    return schemas;
+  }
 
   function hasReviewSection(doc) {
     const selectors = [
@@ -298,313 +289,278 @@ function extractProductSchema(doc) {
     };
   }
 
-function analyzeOnPageSEO(doc, data) {
-  let details = {};
-    // Extract primary keyword for regex (same logic as before)
-  let primaryKeyword = '';
-  const h1Text = doc.querySelector('h1')?.textContent?.trim().toLowerCase() || '';
-  const titleText = doc.title.trim().toLowerCase();
-
-  if (h1Text.length > 10) {
-    primaryKeyword = h1Text.split(' ').slice(0, 4).join(' ');
-  } else if (titleText.length > 10) {
-    const parts = titleText.split(/[\|\-–—]/)[0].trim().split(' ');
-    primaryKeyword = parts.slice(0, 4).join(' ');
-  } else {
-    const urlObj = new URL(data.url);
-    const slug = urlObj.pathname.split('/').filter(Boolean).pop() || '';
-    primaryKeyword = slug.replace(/[-_]/g, ' ').replace(/\d{4,}/g, '').trim();
-    if (primaryKeyword.length < 5) primaryKeyword = 'product';
-  }
-
-  // Remove common stop words
-  const stopWords = /^(the|a|an|best|top|new|buy|shop|order|free|sale|online|free shipping|with|for|and|in|at|to|of)$/i;
-  primaryKeyword = primaryKeyword.replace(stopWords, '').trim().replace(stopWords, '').trim();
-
-  // Create regex once — case-insensitive, whole word boundaries where possible
-  const keywordRegex = new RegExp('\\b' + primaryKeyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
-  let titleScore = 0;
-  const title = doc.title.trim();
-  const titleLength = title.length;
-  if (titleLength >= 50 && titleLength <= 60) titleScore += 50;
-  else if (titleLength >= 40 && titleLength <= 70) titleScore += 35;
-  else if (titleLength >= 30 && titleLength <= 80) titleScore += 20;
-  else titleScore += 5;
-  const separatorRegex = /[\|\-–—]/;
-  if (separatorRegex.test(title)) titleScore += 20;
-  if (keywordRegex.test(title.toLowerCase())) titleScore += 30;
-  titleScore = Math.min(100, titleScore);
-  details.title = { length: titleLength, hasSeparator: separatorRegex.test(title), hasKeyword: keywordRegex.test(title.toLowerCase()), score: titleScore };
-
-  let descScore = 0;
-  const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
-  const descLength = metaDesc.length;
-  if (descLength >= 120 && descLength <= 160) descScore += 45;
-  else if (descLength >= 100 && descLength <= 170) descScore += 35;
-  else if (descLength > 0) descScore += 15;
-  if (/buy|shop|add to cart|purchase|order|view|learn more|discover/i.test(metaDesc.toLowerCase())) descScore += 25;
-  if (keywordRegex.test(metaDesc.toLowerCase())) descScore += 30;
-  descScore = Math.min(100, descScore);
-  details.metaDescription = { length: descLength, hasCta: /buy|shop|add to/i.test(metaDesc.toLowerCase()), hasKeyword: keywordRegex.test(metaDesc.toLowerCase()), score: descScore };
-
-  let headingScore = 0;
-  const h1s = doc.querySelectorAll('h1');
-  const h2s = doc.querySelectorAll('h2');
-  if (h1s.length === 1) headingScore += 45;
-  else if (h1s.length === 0) headingScore += 20; // penalize missing
-  else headingScore += 10; // multiple H1 bad
-  if (h2s.length >= 2) headingScore += 25;
-  if (data.headingCount >= 5) headingScore += 30;
-  headingScore = Math.min(100, headingScore);
-  details.headings = { h1Count: h1s.length, h2Count: h2s.length, total: data.headingCount, score: headingScore };
-
-  let urlScore = 0;
-  const urlObj = new URL(data.url);
-  const path = urlObj.pathname;
-  if (!path.includes('?') && !path.includes('&') && !path.includes(';')) urlScore += 40;
-  if (path.split('/').length <= 5) urlScore += 30;
-  if (path.length > 15 && !/\d{8,}/.test(path)) urlScore += 30;
-  urlScore = Math.min(100, urlScore);
-  details.url = { clean: !path.includes('?'), segments: path.split('/').length, length: path.length, score: urlScore };
-
-  let keywordScore = 0;
-  const keywordCount = (data.fullText.toLowerCase().match(keywordRegex) || []).length;
-  const density = data.wordCount > 0 ? (keywordCount / data.wordCount) * 100 : 0;
-  if (density >= 0.5 && density <= 2.5) keywordScore += 40;
-  if (data.fullText.slice(0, 400).toLowerCase().match(keywordRegex)) keywordScore += 35;
-  if (keywordCount >= 3) keywordScore += 25;
-  keywordScore = Math.min(100, keywordScore);
-  details.keywords = { primaryKeyword, density, frontLoaded: !!data.fullText.slice(0, 400).toLowerCase().match(keywordRegex), count: keywordCount, score: keywordScore };
-
-  // Weighted module score (title & keywords heavier impact)
-  const score = Math.round(
-    titleScore * 0.30 +
-    descScore * 0.20 +
-    headingScore * 0.20 +
-    urlScore * 0.15 +
-    keywordScore * 0.15
-  );
-
-  return { score: Math.min(100, Math.max(0, score)), details };
-}
-
-function analyzeTechnicalSEO(doc, data) {
-  let details = {};
-
-  // Mobile-Friendliness (more reliable: penalize restrictive viewports)
-  let mobileScore = data.hasViewport ? 60 : 10;
-  if (data.viewportContent && /width\s*=\s*device-width/i.test(data.viewportContent)) {
-    mobileScore += 30;
-  }
-  if (data.viewportContent.includes('initial-scale=1')) mobileScore += 10;
-  if (!data.viewportContent.includes('user-scalable=no') && !data.viewportContent.includes('maximum-scale=1')) {
-    mobileScore += 10;
-  } else {
-    mobileScore -= 15; // restrictive = bad for UX
-  }
-  mobileScore = Math.min(100, Math.max(0, mobileScore));
-  details.mobile = { viewportPresent: data.hasViewport, score: mobileScore };
-
-  // HTTPS (strict: check protocol only — mixed content hard to detect via proxy, so proxy hint)
-  const isHttps = data.url.startsWith('https');
-  details.https = { isHttps, score: isHttps ? 95 : 0 };
-
-  // Canonical (stricter: exact match incl. protocol & trailing slash)
-  const canonical = doc.querySelector('link[rel="canonical"]');
-  let canonicalScore = 20; // default low if missing
-  if (canonical && canonical.hasAttribute('href')) {
-    const canonHref = canonical.href.trim();
-    const currentNormalized = data.url.replace(/\/$/, ''); // ignore trailing slash difference
-    const canonNormalized = canonHref.replace(/\/$/, '');
-    if (canonHref === data.url || canonHref === data.url + '/') {
-      canonicalScore = 95;
-    } else if (currentNormalized === canonNormalized) {
-      canonicalScore = 80; // close enough
+  function analyzeOnPageSEO(doc, data) {
+    let details = {};
+    let primaryKeyword = '';
+    const h1Text = doc.querySelector('h1')?.textContent?.trim().toLowerCase() || '';
+    const titleText = doc.title.trim().toLowerCase();
+    if (h1Text.length > 10) {
+      primaryKeyword = h1Text.split(' ').slice(0, 4).join(' ');
+    } else if (titleText.length > 10) {
+      const parts = titleText.split(/[\|\-–—]/)[0].trim().split(' ');
+      primaryKeyword = parts.slice(0, 4).join(' ');
     } else {
-      canonicalScore = 40; // wrong URL
+      const urlObj = new URL(data.url);
+      const slug = urlObj.pathname.split('/').filter(Boolean).pop() || '';
+      primaryKeyword = slug.replace(/[-_]/g, ' ').replace(/\d{4,}/g, '').trim();
+      if (primaryKeyword.length < 5) primaryKeyword = 'product';
     }
-  }
-  details.canonical = { 
-    present: !!canonical, 
-    matchesUrl: canonical?.href === data.url || canonical?.href === data.url + '/', 
-    score: canonicalScore 
-  };
+    const stopWords = /^(the|a|an|best|top|new|buy|shop|order|free|sale|online|free shipping|with|for|and|in|at|to|of)$/i;
+    primaryKeyword = primaryKeyword.replace(stopWords, '').trim().replace(stopWords, '').trim();
+    const keywordRegex = new RegExp('\\b' + primaryKeyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
 
-  // Robots (strict: any noindex/nofollow = fail)
-  const robotsMeta = doc.querySelector('meta[name="robots"]');
-  let robotsScore = 95;
-  if (robotsMeta) {
-    const content = (robotsMeta.content || '').toLowerCase();
-    if (/noindex/i.test(content) || /nofollow/i.test(content)) {
-      robotsScore = 15;
+    let titleScore = 0;
+    const title = doc.title.trim();
+    const titleLength = title.length;
+    if (titleLength >= 50 && titleLength <= 60) titleScore += 50;
+    else if (titleLength >= 40 && titleLength <= 70) titleScore += 35;
+    else if (titleLength >= 30 && titleLength <= 80) titleScore += 20;
+    else titleScore += 5;
+    const separatorRegex = /[\|\-–—]/;
+    if (separatorRegex.test(title)) titleScore += 20;
+    if (keywordRegex.test(title.toLowerCase())) titleScore += 30;
+    titleScore = Math.min(100, titleScore);
+    details.title = { length: titleLength, hasSeparator: separatorRegex.test(title), hasKeyword: keywordRegex.test(title.toLowerCase()), score: titleScore };
+
+    let descScore = 0;
+    const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
+    const descLength = metaDesc.length;
+    if (descLength >= 120 && descLength <= 160) descScore += 45;
+    else if (descLength >= 100 && descLength <= 170) descScore += 35;
+    else if (descLength > 0) descScore += 15;
+    if (/buy|shop|add to cart|purchase|order|view|learn more|discover/i.test(metaDesc.toLowerCase())) descScore += 25;
+    if (keywordRegex.test(metaDesc.toLowerCase())) descScore += 30;
+    descScore = Math.min(100, descScore);
+    details.metaDescription = { length: descLength, hasCta: /buy|shop|add to/i.test(metaDesc.toLowerCase()), hasKeyword: keywordRegex.test(metaDesc.toLowerCase()), score: descScore };
+
+    let headingScore = 0;
+    const h1s = doc.querySelectorAll('h1');
+    const h2s = doc.querySelectorAll('h2');
+    if (h1s.length === 1) headingScore += 45;
+    else if (h1s.length === 0) headingScore += 20;
+    else headingScore += 10;
+    if (h2s.length >= 2) headingScore += 25;
+    if (data.headingCount >= 5) headingScore += 30;
+    headingScore = Math.min(100, headingScore);
+    details.headings = { h1Count: h1s.length, h2Count: h2s.length, total: data.headingCount, score: headingScore };
+
+    let urlScore = 0;
+    const urlObj = new URL(data.url);
+    const path = urlObj.pathname;
+    if (!path.includes('?') && !path.includes('&') && !path.includes(';')) urlScore += 40;
+    if (path.split('/').length <= 5) urlScore += 30;
+    if (path.length > 15 && !/\d{8,}/.test(path)) urlScore += 30;
+    urlScore = Math.min(100, urlScore);
+    details.url = { clean: !path.includes('?'), segments: path.split('/').length, length: path.length, score: urlScore };
+
+    let keywordScore = 0;
+    const keywordCount = (data.fullText.toLowerCase().match(keywordRegex) || []).length;
+    const density = data.wordCount > 0 ? (keywordCount / data.wordCount) * 100 : 0;
+    if (density >= 0.5 && density <= 2.5) keywordScore += 40;
+    if (data.fullText.slice(0, 400).toLowerCase().match(keywordRegex)) keywordScore += 35;
+    if (keywordCount >= 3) keywordScore += 25;
+    keywordScore = Math.min(100, keywordScore);
+    details.keywords = { primaryKeyword, density, frontLoaded: !!data.fullText.slice(0, 400).toLowerCase().match(keywordRegex), count: keywordCount, score: keywordScore };
+
+    const score = Math.round(
+      titleScore * 0.30 +
+      descScore * 0.20 +
+      headingScore * 0.20 +
+      urlScore * 0.15 +
+      keywordScore * 0.15
+    );
+    return { score: Math.min(100, Math.max(0, score)), details };
+  }
+
+  function analyzeTechnicalSEO(doc, data) {
+    let details = {};
+    let mobileScore = data.hasViewport ? 60 : 10;
+    if (data.viewportContent && /width\s*=\s*device-width/i.test(data.viewportContent)) mobileScore += 30;
+    if (data.viewportContent.includes('initial-scale=1')) mobileScore += 10;
+    if (!data.viewportContent.includes('user-scalable=no') && !data.viewportContent.includes('maximum-scale=1')) {
+      mobileScore += 10;
+    } else {
+      mobileScore -= 15;
     }
+    mobileScore = Math.min(100, Math.max(0, mobileScore));
+    details.mobile = { viewportPresent: data.hasViewport, score: mobileScore };
+
+    const isHttps = data.url.startsWith('https');
+    details.https = { isHttps, score: isHttps ? 95 : 0 };
+
+    const canonical = doc.querySelector('link[rel="canonical"]');
+    let canonicalScore = 20;
+    if (canonical && canonical.hasAttribute('href')) {
+      const canonHref = canonical.href.trim();
+      const currentNormalized = data.url.replace(/\/$/, '');
+      const canonNormalized = canonHref.replace(/\/$/, '');
+      if (canonHref === data.url || canonHref === data.url + '/') {
+        canonicalScore = 95;
+      } else if (currentNormalized === canonNormalized) {
+        canonicalScore = 80;
+      } else {
+        canonicalScore = 40;
+      }
+    }
+    details.canonical = {
+      present: !!canonical,
+      matchesUrl: canonical?.href === data.url || canonical?.href === data.url + '/',
+      score: canonicalScore
+    };
+
+    const robotsMeta = doc.querySelector('meta[name="robots"]');
+    let robotsScore = 95;
+    if (robotsMeta) {
+      const content = (robotsMeta.content || '').toLowerCase();
+      if (/noindex/i.test(content) || /nofollow/i.test(content)) {
+        robotsScore = 15;
+      }
+    }
+    details.robots = { indexable: robotsScore === 95, score: robotsScore };
+
+    let sitemapScore = /\/product[s]?\/|\/item\/|\/p\/|\/shop\/|\/collections\/[^/]+\/products\//i.test(data.url) ? 80 : 45;
+    details.sitemapHint = { likelyIncluded: sitemapScore >= 70, score: sitemapScore };
+
+    const score = Math.round(
+      details.mobile.score * 0.30 +
+      details.https.score * 0.30 +
+      details.canonical.score * 0.20 +
+      details.robots.score * 0.15 +
+      details.sitemapHint.score * 0.05
+    );
+    return { score: Math.min(100, Math.max(0, score)), details };
   }
-  details.robots = { indexable: robotsScore === 95, score: robotsScore };
 
-  // Sitemap hint (pattern-based, educational)
-  let sitemapScore = /\/product[s]?\/|\/item\/|\/p\/|\/shop\/|\/collections\/[^/]+\/products\//i.test(data.url) ? 80 : 45;
-  details.sitemapHint = { likelyIncluded: sitemapScore >= 70, score: sitemapScore };
+  function analyzeContentMedia(doc, data) {
+    let details = {};
+    let descScore = 20;
+    if (data.wordCount >= 500) descScore = 90;
+    else if (data.wordCount >= 300) descScore = 75;
+    else if (data.wordCount >= 200) descScore = 55;
+    else if (data.wordCount >= 100) descScore = 35;
+    else descScore = 15;
+    const hasStructure = doc.querySelectorAll('h2,h3,ul,ol').length >= 3;
+    if (hasStructure) descScore += 15;
+    descScore = Math.min(100, descScore);
+    details.description = { wordCount: data.wordCount, hasStructure, score: descScore };
 
-  // Weighted score (HTTPS & mobile highest impact)
-  const score = Math.round(
-    details.mobile.score * 0.30 +
-    details.https.score * 0.30 +
-    details.canonical.score * 0.20 +
-    details.robots.score * 0.15 +
-    details.sitemapHint.score * 0.05
-  );
+    let imgScore = 30;
+    const { missingCount, meaningfulCount, totalImages } = data.altData;
+    if (totalImages === 0) imgScore = 40;
+    else if (meaningfulCount > 0) {
+      const altRatio = meaningfulCount > 0 ? (missingCount / meaningfulCount) : 1;
+      if (altRatio === 0) imgScore = 90;
+      else if (altRatio < 0.2) imgScore = 75;
+      else if (altRatio < 0.5) imgScore = 50;
+      else imgScore = 25;
+    }
+    details.images = { missingAlt: missingCount, meaningful: meaningfulCount, total: totalImages, score: imgScore };
 
-  return { score: Math.min(100, Math.max(0, score)), details };
-}
+    const videoElements = doc.querySelectorAll('video, iframe[src*="youtube"], iframe[src*="vimeo"], iframe[src*="youtu.be"]');
+    let videoScore = videoElements.length > 0 ? 50 : 25;
+    if (videoElements.length > 0 && doc.querySelector('track')) videoScore += 30;
+    if (videoElements.length > 1) videoScore += 10;
+    videoScore = Math.min(100, videoScore);
+    details.video = { present: videoElements.length > 0, captions: !!doc.querySelector('track'), count: videoElements.length, score: videoScore };
 
-function analyzeContentMedia(doc, data) {
-  let details = {};
+    const hasUGC = hasReviewSection(doc);
+    let ugcScore = hasUGC ? 80 : 35;
+    details.ugc = { detected: hasUGC, score: ugcScore };
 
-  // Product Description Quality (length + basic structure hint)
-  let descScore = 20;
-  if (data.wordCount >= 500) descScore = 90;
-  else if (data.wordCount >= 300) descScore = 75;
-  else if (data.wordCount >= 200) descScore = 55;
-  else if (data.wordCount >= 100) descScore = 35;
-  else descScore = 15;
-  // Bonus for likely structure (multiple headings or lists)
-  const hasStructure = doc.querySelectorAll('h2,h3,ul,ol').length >= 3;
-  if (hasStructure) descScore += 15;
-  descScore = Math.min(100, descScore);
-  details.description = { wordCount: data.wordCount, hasStructure, score: descScore };
+    let linkScore = 20;
+    if (data.linkCount >= 8) linkScore = 85;
+    else if (data.linkCount >= 5) linkScore = 70;
+    else if (data.linkCount >= 3) linkScore = 50;
+    else linkScore = 25;
+    details.internalLinks = { count: data.linkCount, score: linkScore };
 
-  // Image Optimization (alt text quality + count)
-  let imgScore = 30;
-  const { missingCount, meaningfulCount, totalImages } = data.altData;
-  if (totalImages === 0) imgScore = 40; // no images = neutral
-  else if (meaningfulCount > 0) {
-    const altRatio = meaningfulCount > 0 ? (missingCount / meaningfulCount) : 1;
-    if (altRatio === 0) imgScore = 90;
-    else if (altRatio < 0.2) imgScore = 75;
-    else if (altRatio < 0.5) imgScore = 50;
-    else imgScore = 25;
+    const breadcrumbSelectors = '[aria-label*="breadcrumb" i], .breadcrumbs, .breadcrumb, .woocommerce-breadcrumb, .yoast-breadcrumb, .site-breadcrumb, .bread-crumb, .crumbs, .pathway, [itemprop="breadcrumb"]';
+    const hasBreadcrumbs = !!doc.querySelector(breadcrumbSelectors);
+    let breadcrumbScore = hasBreadcrumbs ? 90 : 30;
+    details.breadcrumbs = { present: hasBreadcrumbs, score: breadcrumbScore };
+
+    const score = Math.round(
+      descScore * 0.30 +
+      imgScore * 0.25 +
+      videoScore * 0.10 +
+      ugcScore * 0.15 +
+      linkScore * 0.10 +
+      breadcrumbScore * 0.10
+    );
+    return { score: Math.min(100, Math.max(0, score)), details };
   }
-  details.images = { missingAlt: missingCount, meaningful: meaningfulCount, total: totalImages, score: imgScore };
-
-  // Video Embed Quality
-  const videoElements = doc.querySelectorAll('video, iframe[src*="youtube"], iframe[src*="vimeo"], iframe[src*="youtu.be"]');
-  let videoScore = videoElements.length > 0 ? 50 : 25;
-  if (videoElements.length > 0 && doc.querySelector('track')) videoScore += 30;
-  if (videoElements.length > 1) videoScore += 10;
-  videoScore = Math.min(100, videoScore);
-  details.video = { present: videoElements.length > 0, captions: !!doc.querySelector('track'), count: videoElements.length, score: videoScore };
-
-  // UGC
-  const hasUGC = hasReviewSection(doc);
-  let ugcScore = hasUGC ? 80 : 35;
-  details.ugc = { detected: hasUGC, score: ugcScore };
-
-  // Internal Linking (count + quality hint)
-  let linkScore = 20;
-  if (data.linkCount >= 8) linkScore = 85;
-  else if (data.linkCount >= 5) linkScore = 70;
-  else if (data.linkCount >= 3) linkScore = 50;
-  else linkScore = 25;
-  details.internalLinks = { count: data.linkCount, score: linkScore };
-
-  // Breadcrumb Navigation
-  const breadcrumbSelectors = '[aria-label*="breadcrumb" i], .breadcrumbs, .breadcrumb, .woocommerce-breadcrumb, .yoast-breadcrumb, .site-breadcrumb, .bread-crumb, .crumbs, .pathway, [itemprop="breadcrumb"]';
-  const hasBreadcrumbs = !!doc.querySelector(breadcrumbSelectors);
-  let breadcrumbScore = hasBreadcrumbs ? 90 : 30;
-  details.breadcrumbs = { present: hasBreadcrumbs, score: breadcrumbScore };
-
-  // Weighted module score (description + images most important)
-  const score = Math.round(
-    descScore * 0.30 +
-    imgScore * 0.25 +
-    videoScore * 0.10 +
-    ugcScore * 0.15 +
-    linkScore * 0.10 +
-    breadcrumbScore * 0.10
-  );
-
-  return { score: Math.min(100, Math.max(0, score)), details };
-}
 
   function analyzeEcommerceSEO(doc, data) {
-  let details = {};
-  const schemas = extractProductSchema(doc);
-  const productSchema = schemas.find(s => s['@type'] === 'Product' || 
-    (Array.isArray(s['@graph']) && s['@graph'].some(g => g['@type'] === 'Product'))) || {};
+    let details = {};
+    const schemas = extractProductSchema(doc);
+    const productSchema = schemas.find(s => s['@type'] === 'Product' ||
+      (Array.isArray(s['@graph']) && s['@graph'].some(g => g['@type'] === 'Product'))) || {};
 
-  // Product Schema Markup
-  let schemaScore = 20;
-  if (Object.keys(productSchema).length > 0) {
-    const requiredFields = ['name', 'image', 'description', 'offers'];
-    const presentFields = requiredFields.filter(f => productSchema[f] !== undefined && productSchema[f] !== null);
-    schemaScore = 40 + (presentFields.length / requiredFields.length) * 50;
-    if (productSchema.brand && (productSchema.brand.name || productSchema.brand['@type'] === 'Brand')) schemaScore += 10;
-    if (productSchema.sku || productSchema.mpn) schemaScore += 10;
+    let schemaScore = 20;
+    if (Object.keys(productSchema).length > 0) {
+      const requiredFields = ['name', 'image', 'description', 'offers'];
+      const presentFields = requiredFields.filter(f => productSchema[f] !== undefined && productSchema[f] !== null);
+      schemaScore = 40 + (presentFields.length / requiredFields.length) * 50;
+      if (productSchema.brand && (productSchema.brand.name || productSchema.brand['@type'] === 'Brand')) schemaScore += 10;
+      if (productSchema.sku || productSchema.mpn) schemaScore += 10;
+    }
+    schemaScore = Math.min(100, schemaScore);
+    details.schema = {
+      present: Object.keys(productSchema).length > 0,
+      fieldsCount: Object.keys(productSchema).length,
+      score: schemaScore
+    };
+
+    let priceScore = 20;
+    if (productSchema.offers) {
+      const offers = Array.isArray(productSchema.offers) ? productSchema.offers[0] : productSchema.offers;
+      if (offers && typeof offers.price === 'string' && !isNaN(parseFloat(offers.price))) priceScore += 30;
+      if (offers && offers.priceCurrency) priceScore += 20;
+      if (offers && /InStock|OutOfStock|PreOrder|https:\/\/schema\.org\/InStock/i.test(offers.availability || '')) priceScore += 25;
+    } else if (hasPriceMarkup(doc, productSchema)) {
+      priceScore = 60;
+    }
+    priceScore = Math.min(100, priceScore);
+    details.priceAvailability = { detected: priceScore >= 60, score: priceScore };
+
+    let reviewScore = 15;
+    if (productSchema.aggregateRating) {
+      const agg = productSchema.aggregateRating;
+      if (typeof agg.ratingValue === 'number' && agg.ratingValue >= 1 && agg.ratingValue <= 5) reviewScore += 40;
+      if (typeof agg.reviewCount === 'number' && agg.reviewCount > 0) reviewScore += 35;
+    } else if (hasReviewSection(doc)) {
+      reviewScore = 50;
+    }
+    reviewScore = Math.min(100, reviewScore);
+    details.reviews = {
+      aggregateRatingPresent: !!productSchema.aggregateRating,
+      score: reviewScore
+    };
+
+    const variantSelectors = doc.querySelectorAll('select[name*="variant"], select[name*="size"], select[name*="color"], select[name*="option"], input[type="radio"][name*="variant"], .variant-select, .swatch, .product-variants, [data-variant]');
+    let variantScore = variantSelectors.length > 0 ? 70 : 40;
+    const canonical = doc.querySelector('link[rel="canonical"]');
+    if (variantSelectors.length > 0 && canonical) variantScore += 20;
+    variantScore = Math.min(100, variantScore);
+    details.variants = { detected: variantSelectors.length > 0, score: variantScore };
+
+    const ogTags = doc.querySelectorAll('meta[property^="og:"]');
+    let socialScore = ogTags.length >= 3 ? 60 : 25;
+    const requiredOg = ['og:title', 'og:description', 'og:image', 'og:url'];
+    const presentOg = requiredOg.filter(p => !!doc.querySelector(`meta[property="${p}"]`));
+    if (presentOg.length === requiredOg.length) socialScore = 90;
+    else if (presentOg.length >= 3) socialScore = 70;
+    details.social = { ogPresent: presentOg.length > 0, count: presentOg.length, score: socialScore };
+
+    const score = Math.round(
+      details.schema.score * 0.35 +
+      details.priceAvailability.score * 0.25 +
+      details.reviews.score * 0.20 +
+      details.variants.score * 0.10 +
+      details.social.score * 0.10
+    );
+    return { score: Math.min(100, Math.max(0, score)), details, isPro: true };
   }
-  schemaScore = Math.min(100, schemaScore);
-  details.schema = { 
-    present: Object.keys(productSchema).length > 0, 
-    fieldsCount: Object.keys(productSchema).length, 
-    score: schemaScore 
-  };
-
-  // Price & Availability Markup
-  let priceScore = 20;
-  if (productSchema.offers) {
-    const offers = Array.isArray(productSchema.offers) ? productSchema.offers[0] : productSchema.offers;
-    if (offers && typeof offers.price === 'string' && !isNaN(parseFloat(offers.price))) priceScore += 30;
-    if (offers && offers.priceCurrency) priceScore += 20;
-    if (offers && /InStock|OutOfStock|PreOrder|https:\/\/schema\.org\/InStock/i.test(offers.availability || '')) priceScore += 25;
-  } else if (hasPriceMarkup(doc, productSchema)) {
-    priceScore = 60; // fallback if schema missing but price visible
-  }
-  priceScore = Math.min(100, priceScore);
-  details.priceAvailability = { detected: priceScore >= 60, score: priceScore };
-
-  // Review Schema & Aggregation
-  let reviewScore = 15;
-  if (productSchema.aggregateRating) {
-    const agg = productSchema.aggregateRating;
-    if (typeof agg.ratingValue === 'number' && agg.ratingValue >= 1 && agg.ratingValue <= 5) reviewScore += 40;
-    if (typeof agg.reviewCount === 'number' && agg.reviewCount > 0) reviewScore += 35;
-  } else if (hasReviewSection(doc)) {
-    reviewScore = 50; // visible reviews but no schema
-  }
-  reviewScore = Math.min(100, reviewScore);
-  details.reviews = { 
-    aggregateRatingPresent: !!productSchema.aggregateRating, 
-    score: reviewScore 
-  };
-
-  // Variant Handling
-  const variantSelectors = doc.querySelectorAll('select[name*="variant"], select[name*="size"], select[name*="color"], select[name*="option"], input[type="radio"][name*="variant"], .variant-select, .swatch, .product-variants, [data-variant]');
-  let variantScore = variantSelectors.length > 0 ? 70 : 40;
-  // Bonus if canonical exists (helps if variants have separate URLs)
-  const canonical = doc.querySelector('link[rel="canonical"]');
-  if (variantSelectors.length > 0 && canonical) variantScore += 20;
-  variantScore = Math.min(100, variantScore);
-  details.variants = { detected: variantSelectors.length > 0, score: variantScore };
-
-  // Social Sharing Integration
-  const ogTags = doc.querySelectorAll('meta[property^="og:"]');
-  let socialScore = ogTags.length >= 3 ? 60 : 25;
-  const requiredOg = ['og:title', 'og:description', 'og:image', 'og:url'];
-  const presentOg = requiredOg.filter(p => !!doc.querySelector(`meta[property="${p}"]`));
-  if (presentOg.length === requiredOg.length) socialScore = 90;
-  else if (presentOg.length >= 3) socialScore = 70;
-  details.social = { ogPresent: presentOg.length > 0, count: presentOg.length, score: socialScore };
-
-  // Weighted module score (schema + price highest for rich results)
-  const score = Math.round(
-    details.schema.score * 0.35 +
-    details.priceAvailability.score * 0.25 +
-    details.reviews.score * 0.20 +
-    details.variants.score * 0.10 +
-    details.social.score * 0.10
-  );
-
-  return { score: Math.min(100, Math.max(0, score)), details, isPro: true };
-}
 
   function getHealthLabel(score) {
     if (score >= 85) return { text: "Excellent", color: "from-green-400 to-emerald-600" };
@@ -635,34 +591,37 @@ function analyzeContentMedia(doc, data) {
     const ringColor = value < 50 ? '#ef4444' : value < 70 ? '#fb923c' : value < 85 ? '#22c55e' : '#10b981';
     const borderClass = value < 50 ? 'border-red-500' : value < 70 ? 'border-orange-500' : value < 85 ? 'border-green-500' : 'border-emerald-500';
     const gradeInfo = getGradeInfo(value);
-let statusMessage, statusEmoji;
-if (value >= 85) {
-  statusMessage = "Excellent";
-  statusEmoji = "🏆";
-} else if (value >= 70) {
-  statusMessage = "Strong";
-  statusEmoji = "✅";
-} else if (value >= 50) {
-  statusMessage = "Needs Work";
-  statusEmoji = "⚠️";
-} else {
-  statusMessage = "Poor";
-  statusEmoji = "❌";
-}
+    let statusMessage, statusEmoji;
+    if (value >= 85) {
+      statusMessage = "Excellent";
+      statusEmoji = "🏆";
+    } else if (value >= 70) {
+      statusMessage = "Strong";
+      statusEmoji = "✅";
+    } else if (value >= 50) {
+      statusMessage = "Needs Work";
+      statusEmoji = "⚠️";
+    } else {
+      statusMessage = "Poor";
+      statusEmoji = "❌";
+    }
+
     let metricsHTML = '';
-    let fixesHTML = '';
     let failedOnlyHTML = '';
     let failedCount = 0;
+
     moduleData.factors.forEach(f => {
       let individualScore = (factorScores && f.key && factorScores[f.key] && factorScores[f.key].score !== undefined)
-  ? factorScores[f.key].score
-  : value; // fallback to module avg if no detail
-let passed = individualScore >= f.threshold;
-let metricGrade = passed
-  ? { color: "text-green-600 dark:text-green-400", emoji: "✅" }
-  : (individualScore >= f.threshold - 20)
-    ? { color: "text-orange-600 dark:text-orange-400", emoji: "⚠️" }
-    : { color: "text-red-600 dark:text-red-400", emoji: "❌" };
+        ? factorScores[f.key].score
+        : value;
+
+      let passed = individualScore >= f.threshold;
+      let metricGrade = passed
+        ? { color: "text-green-600 dark:text-green-400", emoji: "✅" }
+        : (individualScore >= f.threshold - 20)
+          ? { color: "text-orange-600 dark:text-orange-400", emoji: "⚠️" }
+          : { color: "text-red-600 dark:text-red-400", emoji: "❌" };
+
       metricsHTML += `
         <div class="mb-6">
           <p class="font-medium text-xl">
@@ -670,6 +629,7 @@ let metricGrade = passed
             <span class="${metricGrade.color} font-bold">${f.name}</span>
           </p>
         </div>`;
+
       if (!passed) {
         failedOnlyHTML += `
           <div class="mb-8 p-2 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
@@ -686,6 +646,7 @@ let metricGrade = passed
         failedCount++;
       }
     });
+
     const moreDetailsHTML = `
       <div class="text-left px-4 py-6">
         <h4 class="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100 text-center">
@@ -708,6 +669,7 @@ let metricGrade = passed
           </div>
         </div>
       </div>`;
+
     const fixesPanelHTML = failedCount > 0
       ? `
         <div class="space-y-6">
@@ -720,6 +682,7 @@ let metricGrade = passed
         </p>
       `
       : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
+
     return `
       <div class="module-card text-center p-4 sm:p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
         <div class="relative mx-auto w-32 h-32">
@@ -802,45 +765,40 @@ let metricGrade = passed
         if (!res.ok) throw new Error('Page not reachable or blocked');
         const html = await res.text();
         const doc = new DOMParser().parseFromString(html, 'text/html');
-
         const seoData = getProductPageContent(doc, url);
         const seo = analyzeProductSEO(doc, url);
 
-        // Only collect failed individual metrics (factors) – no module-level suggestions
-const failedFactors = [];
-
-const modulesData = [
-  { name: "On-Page SEO", result: seo.onPage, definitions: factorDefinitions.onPage },
-  { name: "Technical SEO", result: seo.technical, definitions: factorDefinitions.technical },
-  { name: "Content & Media", result: seo.contentMedia, definitions: factorDefinitions.contentMedia },
-  { name: "E-Commerce Signals (Pro)", result: seo.ecommerce, definitions: factorDefinitions.ecommerce }
-];
-
-modulesData.forEach(mod => {
-  if (mod.result.details) {
-    mod.definitions.factors.forEach(f => {
-      const factorScore = mod.result.details[f.key]?.score;
-      if (factorScore !== undefined && factorScore < f.threshold) {
-        failedFactors.push({
-          module: mod.name,
-          name: f.name,
-          score: factorScore,
-          threshold: f.threshold,
-          grade: getPluginGrade(factorScore),
-          howToFix: f.howToFix,
-          isPro: mod.name.includes("(Pro)")
+        const failedFactors = [];
+        const modulesData = [
+          { name: "On-Page SEO", result: seo.onPage, definitions: factorDefinitions.onPage },
+          { name: "Technical SEO", result: seo.technical, definitions: factorDefinitions.technical },
+          { name: "Content & Media", result: seo.contentMedia, definitions: factorDefinitions.contentMedia },
+          { name: "E-Commerce Signals (Pro)", result: seo.ecommerce, definitions: factorDefinitions.ecommerce }
+        ];
+        modulesData.forEach(mod => {
+          if (mod.result.details) {
+            mod.definitions.factors.forEach(f => {
+              const factorScore = mod.result.details[f.key]?.score;
+              if (factorScore !== undefined && factorScore < f.threshold) {
+                failedFactors.push({
+                  module: mod.name,
+                  name: f.name,
+                  score: factorScore,
+                  threshold: f.threshold,
+                  grade: getPluginGrade(factorScore),
+                  howToFix: f.howToFix,
+                  isPro: mod.name.includes("(Pro)")
+                });
+              }
+            });
+          }
         });
-      }
-    });
-  }
-});
 
         const health = getHealthLabel(seo.score);
         document.getElementById('loading').classList.add('hidden');
         const safeScore = isNaN(seo.score) ? 60 : seo.score;
         const overallGrade = getGradeInfo(safeScore);
         const ringColor = safeScore < 50 ? '#ef4444' : safeScore < 70 ? '#fb923c' : safeScore < 85 ? '#22c55e' : '#10b981';
-
         const onPageHTML = buildModuleHTML('On-Page SEO', seo.onPage.score, factorDefinitions.onPage, seo.onPage.details);
         const technicalHTML = buildModuleHTML('Technical SEO', seo.technical.score, factorDefinitions.technical, seo.technical.details);
         const contentMediaHTML = buildModuleHTML('Content & Media', seo.contentMedia.score, factorDefinitions.contentMedia, seo.contentMedia.details);
@@ -865,7 +823,6 @@ modulesData.forEach(mod => {
             priorityFixes.push({ ...worstModule.data.factors[1], module: worstModule.name, isSecond: true, extraCount: worstModule.data.factors.length });
           }
         }
-
         let priorityFixesHTML = '';
         if (priorityFixes.length > 0) {
           priorityFixesHTML = priorityFixes.map((fix, index) => `
@@ -1072,56 +1029,42 @@ modulesData.forEach(mod => {
             </button>
           </div>
         `;
-              } catch (err) {
-        console.error('[Analysis Error]:', err);
-        document.getElementById('loading').classList.add('hidden');
-        results.innerHTML = `
-          <div class="text-center py-16 px-6">
-            <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-6">Analysis Failed</p>
-            <p class="text-xl text-gray-700 dark:text-gray-300 mb-4">
-              ${err.message || 'Could not load or process the page'}
-            </p>
-            <p class="text-lg text-gray-600 dark:text-gray-400">
-              Try a different public product URL.<br>
-              <small class="opacity-70">(${err.message})</small>
-            </p>
-          </div>
-        `;
-        return;
-      }
-// DOM settle delay — gives browser time to insert the new HTML
-setTimeout(() => {
-  console.log('[Plugin Debug] Checking renderPluginSolutions availability... typeof =', typeof renderPluginSolutions);
 
-  if (typeof renderPluginSolutions !== 'function') {
-    console.warn('[Plugin Debug] renderPluginSolutions is still not a function after delay');
-    pluginSection.innerHTML = `
-      <div class="mt-16 p-10 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 rounded-3xl border border-orange-300 dark:border-orange-700 text-center shadow-lg">
-        <p class="text-2xl font-bold text-orange-700 dark:text-orange-300 mb-4">⚠️ Plugin suggestions not loaded</p>
-        <p class="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
-          The recommendations module failed to load. This is usually a network/timing issue on first visit.<br>
-          Try refreshing the page once more.<br>
-          <small class="text-gray-500 dark:text-gray-400">(Check browser console for "[Plugin] Failed to dynamically import" errors)</small>
-        </p>
-      </div>`;
-    return;
-  }
+        // DOM settle delay for plugin rendering
+        setTimeout(() => {
+          const pluginSection = document.getElementById('plugin-solutions-section');
+          console.log('[Plugin Debug] Checking renderPluginSolutions availability... typeof =', typeof renderPluginSolutions);
 
-  const validFactors = failedFactors.filter(f => f && f.name && f.grade);
-  console.log('[Plugin Debug] Rendering with', validFactors.length, 'valid failed factors');
+          if (typeof renderPluginSolutions !== 'function') {
+            console.warn('[Plugin Debug] renderPluginSolutions is still not a function after delay');
+            pluginSection.innerHTML = `
+              <div class="mt-16 p-10 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 rounded-3xl border border-orange-300 dark:border-orange-700 text-center shadow-lg">
+                <p class="text-2xl font-bold text-orange-700 dark:text-orange-300 mb-4">⚠️ Plugin suggestions not loaded</p>
+                <p class="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
+                  The recommendations module failed to load. This is usually a network/timing issue on first visit.<br>
+                  Try refreshing the page once more.<br>
+                  <small class="text-gray-500 dark:text-gray-400">(Check browser console for "[Plugin] Failed to dynamically import" errors)</small>
+                </p>
+              </div>`;
+            return;
+          }
 
-  if (validFactors.length === 0) {
-    pluginSection.innerHTML = `
-      <div class="mt-16 p-10 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-3xl border border-green-300 dark:border-green-700 text-center shadow-lg">
-        <p class="text-3xl mb-4">🎉 All core checks passed!</p>
-        <p class="text-xl font-medium text-green-700 dark:text-green-300">No plugin recommendations needed right now.</p>
-      </div>`;
-    return;
-  }
+          const validFactors = failedFactors.filter(f => f && f.name && f.grade);
+          console.log('[Plugin Debug] Rendering with', validFactors.length, 'valid failed factors');
 
-  renderPluginSolutions(validFactors, 'plugin-solutions-section');
-}, 400);   // ← increased from 250ms to 400ms to give async import more time
+          if (validFactors.length === 0) {
+            pluginSection.innerHTML = `
+              <div class="mt-16 p-10 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-3xl border border-green-300 dark:border-green-700 text-center shadow-lg">
+                <p class="text-3xl mb-4">🎉 All core checks passed!</p>
+                <p class="text-xl font-medium text-green-700 dark:text-green-300">No plugin recommendations needed right now.</p>
+              </div>`;
+            return;
+          }
 
+          renderPluginSolutions(validFactors, 'plugin-solutions-section');
+        }, 400);
+
+        // Radar chart
         setTimeout(() => {
           const canvas = document.getElementById('health-radar');
           if (!canvas) return;
@@ -1170,20 +1113,35 @@ setTimeout(() => {
           }
         }, 150);
 
+        // Button toggle for More Details and Show Fixes (delegated)
+        document.addEventListener('click', e => {
+          const target = e.target.closest('.more-details, .show-fixes');
+          if (!target) return;
+          const card = target.closest('.module-card');
+          if (!card) return;
+          if (target.classList.contains('more-details')) {
+            const panel = card.querySelector('.more-details-panel');
+            if (panel) panel.classList.toggle('hidden');
+          } else if (target.classList.contains('show-fixes')) {
+            const panel = card.querySelector('.fixes-panel');
+            if (panel) panel.classList.toggle('hidden');
+          }
+        });
 
-
-  // Button toggle for More Details and Show Fixes (delegated)
-  document.addEventListener('click', e => {
-    const target = e.target.closest('.more-details, .show-fixes');
-    if (!target) return;
-    const card = target.closest('.module-card');
-    if (!card) return;
-    if (target.classList.contains('more-details')) {
-      const panel = card.querySelector('.more-details-panel');
-      if (panel) panel.classList.toggle('hidden');
-    } else if (target.classList.contains('show-fixes')) {
-      const panel = card.querySelector('.fixes-panel');
-      if (panel) panel.classList.toggle('hidden');
+      } catch (err) {
+        console.error('[Analysis failed]', err);
+        document.getElementById('loading').classList.add('hidden');
+        results.innerHTML = `
+          <div class="text-center py-16 px-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-red-400 dark:border-red-600 max-w-2xl mx-auto">
+            <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-6">Analysis Failed</p>
+            <p class="text-xl text-gray-700 dark:text-gray-300 mb-6">
+              ${err.message || 'Could not fetch or parse the page'}
+            </p>
+            <p class="text-lg text-gray-600 dark:text-gray-400">
+              Please try a different public product page URL.
+            </p>
+          </div>`;
+      }
     }
   });
-  });
+});
