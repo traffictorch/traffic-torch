@@ -27,18 +27,48 @@ document.addEventListener('DOMContentLoaded', () => {
       moduleHow: "Optimize titles and metas for CTR. Use proper heading hierarchy. Include keywords naturally in prominent places. Keep URLs clean and descriptive.",
       moduleWhy: "Strong on-page signals improve relevance, click-through rates, and initial rankings. They help match user intent and reduce bounce from mismatched expectations."
     },
-    technical: {
-      factors: [
-        { name: "Mobile-Friendliness", threshold: 85, shortDesc: "Viewport meta present and correct, responsive layout.", howToFix: "Add viewport meta with width=device-width. Use responsive CSS. Test on real devices." },
-        { name: "HTTPS Implementation", threshold: 95, shortDesc: "Page served over HTTPS with no mixed content.", howToFix: "Enable HTTPS via hosting provider. Update all links/scripts to HTTPS." },
-        { name: "Canonical Tags", threshold: 80, shortDesc: "Self-referencing canonical present, matches current URL.", howToFix: "Add <link rel='canonical' href='current-url'>. Ensure it matches exactly." },
-        { name: "Meta Robots Directives", threshold: 90, shortDesc: "No noindex/nofollow unless intentional.", howToFix: "Remove or correct <meta name='robots'> tags. Ensure product pages are indexable." },
-        { name: "Sitemap Inclusion Hints", threshold: 70, shortDesc: "Educational note: URL pattern suggests sitemap inclusion.", howToFix: "Add product URLs to sitemap.xml. Submit via Search Console." }
-      ],
-      moduleWhat: "Technical SEO checks crawlability, mobile readiness, security, and duplicate prevention — essential for product pages to be indexed and ranked properly.",
-      moduleHow: "Ensure HTTPS, proper viewport, canonicals, and indexable robots directives. Keep technical foundation clean.",
-      moduleWhy: "Technical issues block indexing or hurt mobile rankings. Clean technical SEO is required for rich snippets and trust signals."
+   technical: {
+  factors: [
+    { 
+      name: "Mobile-Friendliness", 
+      key: "mobile", 
+      threshold: 85, 
+      shortDesc: "Responsive + correct viewport meta + passes basic Core Web Vitals checks (no user-scalable=no).", 
+      howToFix: "Add <meta name='viewport' content='width=device-width, initial-scale=1'>. Use responsive CSS. Avoid fixed widths or user-scalable=no. Test with Google's Mobile-Friendly Test." 
     },
+    { 
+      name: "HTTPS Implementation", 
+      key: "https", 
+      threshold: 95, 
+      shortDesc: "Served over HTTPS with valid cert, no mixed content (HTTP resources on HTTPS page).", 
+      howToFix: "Force HTTPS redirect. Update all images/scripts/links to https://. Fix mixed content via browser dev tools console." 
+    },
+    { 
+      name: "Canonical Tags", 
+      key: "canonical", 
+      threshold: 85, 
+      shortDesc: "Self-referencing canonical exists and exactly matches current URL (protocol + trailing slash).", 
+      howToFix: "Add <link rel='canonical' href='https://full-current-url/'>. Ensure it matches live URL 100% (case-sensitive)." 
+    },
+    { 
+      name: "Meta Robots Directives", 
+      key: "robots", 
+      threshold: 90, 
+      shortDesc: "No noindex or nofollow on live product page (unless intentional).", 
+      howToFix: "Remove <meta name='robots' content='noindex'> or similar. Use robots.txt only for blocking unwanted pages, not product pages." 
+    },
+    { 
+      name: "Sitemap Inclusion Hints", 
+      key: "sitemapHint", 
+      threshold: 70, 
+      shortDesc: "URL pattern matches typical product pages (suggests inclusion in sitemap.xml).", 
+      howToFix: "Add this URL pattern to sitemap.xml. Submit sitemap in Google Search Console. Use dynamic sitemaps for large catalogs." 
+    }
+  ],
+  moduleWhat: "Technical SEO checks crawlability, mobile readiness, security, and duplicate prevention — essential for product pages to be indexed and ranked properly.",
+  moduleHow: "Ensure HTTPS, proper viewport, canonicals, and indexable robots directives. Keep technical foundation clean.",
+  moduleWhy: "Technical issues can prevent indexing, hurt mobile rankings, or cause duplicate content penalties — all block traffic."
+},
     contentMedia: {
       factors: [
         { name: "Product Description Quality", threshold: 75, shortDesc: "200+ words, unique, benefit-focused, structured.", howToFix: "Write unique, detailed copy highlighting benefits. Use bullets for features." },
@@ -265,39 +295,68 @@ function analyzeOnPageSEO(doc, data) {
 
 function analyzeTechnicalSEO(doc, data) {
   let details = {};
-  // Mobile-Friendliness
-  let mobileScore = data.hasViewport ? 70 : 20;
-  if (data.viewportContent.includes('initial-scale=1') && !data.viewportContent.includes('user-scalable=no')) mobileScore += 20;
-  if (data.viewportContent.includes('maximum-scale')) mobileScore -= 10; // sometimes restrictive
-  details.mobile = { viewportPresent: data.hasViewport, score: Math.min(100, mobileScore) };
 
-  // HTTPS
-  details.https = { isHttps: data.url.startsWith('https'), score: data.url.startsWith('https') ? 95 : 0 };
-
-  // Canonical
-  const canonical = doc.querySelector('link[rel="canonical"]');
-  let canonicalScore = 30;
-  if (canonical) {
-    canonicalScore = (canonical.href === data.url || canonical.href === data.url + '/') ? 90 : 40;
+  // Mobile-Friendliness (more reliable: penalize restrictive viewports)
+  let mobileScore = data.hasViewport ? 60 : 10;
+  if (data.viewportContent && /width\s*=\s*device-width/i.test(data.viewportContent)) {
+    mobileScore += 30;
   }
-  details.canonical = { present: !!canonical, matchesUrl: canonical?.href === data.url, score: canonicalScore };
+  if (data.viewportContent.includes('initial-scale=1')) mobileScore += 10;
+  if (!data.viewportContent.includes('user-scalable=no') && !data.viewportContent.includes('maximum-scale=1')) {
+    mobileScore += 10;
+  } else {
+    mobileScore -= 15; // restrictive = bad for UX
+  }
+  mobileScore = Math.min(100, Math.max(0, mobileScore));
+  details.mobile = { viewportPresent: data.hasViewport, score: mobileScore };
 
-  // Robots
+  // HTTPS (strict: check protocol only — mixed content hard to detect via proxy, so proxy hint)
+  const isHttps = data.url.startsWith('https');
+  details.https = { isHttps, score: isHttps ? 95 : 0 };
+
+  // Canonical (stricter: exact match incl. protocol & trailing slash)
+  const canonical = doc.querySelector('link[rel="canonical"]');
+  let canonicalScore = 20; // default low if missing
+  if (canonical && canonical.hasAttribute('href')) {
+    const canonHref = canonical.href.trim();
+    const currentNormalized = data.url.replace(/\/$/, ''); // ignore trailing slash difference
+    const canonNormalized = canonHref.replace(/\/$/, '');
+    if (canonHref === data.url || canonHref === data.url + '/') {
+      canonicalScore = 95;
+    } else if (currentNormalized === canonNormalized) {
+      canonicalScore = 80; // close enough
+    } else {
+      canonicalScore = 40; // wrong URL
+    }
+  }
+  details.canonical = { 
+    present: !!canonical, 
+    matchesUrl: canonical?.href === data.url || canonical?.href === data.url + '/', 
+    score: canonicalScore 
+  };
+
+  // Robots (strict: any noindex/nofollow = fail)
   const robotsMeta = doc.querySelector('meta[name="robots"]');
-  let robotsScore = 90;
-  if (robotsMeta && /noindex|nofollow/i.test(robotsMeta.content || '')) robotsScore = 20;
-  details.robots = { indexable: robotsScore === 90, score: robotsScore };
+  let robotsScore = 95;
+  if (robotsMeta) {
+    const content = (robotsMeta.content || '').toLowerCase();
+    if (/noindex/i.test(content) || /nofollow/i.test(content)) {
+      robotsScore = 15;
+    }
+  }
+  details.robots = { indexable: robotsScore === 95, score: robotsScore };
 
-  // Sitemap hint (educational, lower weight)
-  let sitemapScore = /\/product|\/products|\/item|\/p\//i.test(data.url) ? 75 : 50;
+  // Sitemap hint (pattern-based, educational)
+  let sitemapScore = /\/product[s]?\/|\/item\/|\/p\/|\/shop\/|\/collections\/[^/]+\/products\//i.test(data.url) ? 80 : 45;
   details.sitemapHint = { likelyIncluded: sitemapScore >= 70, score: sitemapScore };
 
+  // Weighted score (HTTPS & mobile highest impact)
   const score = Math.round(
     details.mobile.score * 0.30 +
-    details.https.score * 0.25 +
+    details.https.score * 0.30 +
     details.canonical.score * 0.20 +
     details.robots.score * 0.15 +
-    details.sitemapHint.score * 0.10
+    details.sitemapHint.score * 0.05
   );
 
   return { score: Math.min(100, Math.max(0, score)), details };
