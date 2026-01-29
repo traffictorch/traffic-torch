@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function hasReviewSection(doc) {
-    const selectors = ['.reviews', '.product-reviews', '#reviews', '.rating', '.yotpo', '.judge-me', '[data-reviews]', '.aggregate-rating', '.star-rating', '.customer-reviews', '[itemprop="aggregateRating"]', '[itemprop="review"], .woocommerce-product-rating, .product-reviews, .spr-reviews, .stamped-main-widget, .loox-rating, .trustpilot-widget, .trustpilot-reviews, .product-reviews-list, .reviews-list, .customer-reviews'];
+    const selectors = ['.reviews', '.product-reviews', '#reviews', '.rating', '.yotpo', '.judge-me', '[data-reviews]', '.aggregate-rating', '.star-rating', '.customer-reviews', '[itemprop="aggregateRating"]', '[itemprop="review"]'];
     return selectors.some(sel => doc.querySelector(sel));
   }
 
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getProductPageContent(doc, url) {
-    const textElements = doc.querySelectorAll('p, li, div.product-description, #product-description, .description, article, section, .woocommerce-product-details__short-description, .product-single__description, .rte, .product__description, [itemprop="description"], .product-description, .description__content, .product-details, .wysiwyg, .content, .pdp-description');
+    const textElements = doc.querySelectorAll('p, li, div.product-description, #product-description, .description, article, section, .rte, .woocommerce-product-details__short-description, .product-single__description, .product__description, [itemprop="description"]');
     let fullText = '';
     textElements.forEach(el => {
       const t = el.textContent.trim();
@@ -149,24 +149,19 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Main product SEO analyzer
   function analyzeProductSEO(doc, inputUrl) {
     const data = getProductPageContent(doc, inputUrl);
-
     const onPageResult = analyzeOnPageSEO(doc, data);
     const technicalResult = analyzeTechnicalSEO(doc, data);
     const contentMediaResult = analyzeContentMedia(doc, data);
     const ecommerceResult = analyzeEcommerceSEO(doc, data);
-
     const weights = { onPage: 0.30, technical: 0.25, contentMedia: 0.25, ecommerce: 0.20 };
-
     const overallScore = Math.round(
       (onPageResult.score * weights.onPage) +
       (technicalResult.score * weights.technical) +
       (contentMediaResult.score * weights.contentMedia) +
       (ecommerceResult.score * weights.ecommerce)
     );
-
     return {
       score: isNaN(overallScore) ? 60 : Math.min(100, Math.max(0, overallScore)),
       onPage: onPageResult,
@@ -176,102 +171,81 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Title Tag Optimization
-  const title = doc.title.trim();
-  const titleLength = title.length;
-  let titleScore = 0;
-  if (titleLength >= 40 && titleLength <= 70) titleScore += 40; // Lenient range for eCom titles with store suffix
-  else if (titleLength > 70 && titleLength <= 80) titleScore += 25;
-  else titleScore += 10;
-  if (title.includes('|') || title.includes(' - ') || title.includes(' – ')) titleScore += 20; // Common separator for product + store/brand
-  details.title = { length: titleLength, hasSeparator: title.includes('|') || title.includes(' - '), score: titleScore };
-
-  // Meta Description Relevance
-  const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
-  const descLength = metaDesc.length;
-  let descScore = 0;
-  if (descLength >= 100 && descLength <= 170) descScore += 40; // Lenient for eCom descriptions
-  if (descLength > 0) descScore += 20;
-  if (/buy|shop|order|add to cart|add to bag|purchase|view|see|learn more/i.test(metaDesc.toLowerCase())) descScore += 20;
-  details.metaDescription = { length: descLength, hasCta: /buy|shop|add to/i.test(metaDesc.toLowerCase()), score: descScore };
-
-  // Heading Structure (H1–H6)
-  const h1s = doc.querySelectorAll('h1');
-  const h2s = doc.querySelectorAll('h2');
-  let headingScore = 0;
-  if (h1s.length === 1) headingScore += 40;
-  else if (h1s.length === 0 && doc.querySelector('[role="heading"][aria-level="1"]')) headingScore += 30; // Fallback for non-semantic H1
-  if (h2s.length >= 1) headingScore += 20;
-  if (data.headingCount >= 3) headingScore += 20;
-  details.headings = { h1Count: h1s.length, h2Count: h2s.length, totalHeadings: data.headingCount, score: headingScore };
-
-  // URL Structure
-  const urlObj = new URL(data.url);
-  const path = urlObj.pathname;
-  let urlScore = 0;
-  if (!path.includes('?') && !path.includes('&') && !path.includes(';')) urlScore += 40; // No query params/session IDs
-  if (path.split('/').length <= 7) urlScore += 30; // Allow deeper paths common in eCom
-  if (path.length > 10 && !/\d{10,}/.test(path)) urlScore += 20; // Readable length, avoid very long numeric IDs
-  details.url = { clean: !path.includes('?'), segments: path.split('/').length, score: urlScore };
-
-  // Keyword Optimization (dynamic primary keyword)
-  let primaryKeyword = '';
-  const titleLower = title.toLowerCase();
-  const h1Text = doc.querySelector('h1')?.textContent?.trim().toLowerCase() || '';
-
-  // Prefer H1
-  if (h1Text.length > 10) {
-    primaryKeyword = h1Text.split(' ').slice(0, 4).join(' ');
+  function analyzeOnPageSEO(doc, data) {
+    let score = 0;
+    let details = {};
+    const title = doc.title.trim();
+    const titleLength = title.length;
+    let titleScore = 0;
+    if (titleLength >= 40 && titleLength <= 70) titleScore += 40;
+    else if (titleLength >= 30 && titleLength <= 80) titleScore += 25;
+    else titleScore += 10;
+    if (title.includes('|') || title.includes(' - ') || title.includes(' – ')) titleScore += 20;
+    details.title = { length: titleLength, hasSeparator: title.includes('|') || title.includes(' - '), score: titleScore };
+    const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
+    const descLength = metaDesc.length;
+    let descScore = 0;
+    if (descLength >= 100 && descLength <= 170) descScore += 40;
+    if (descLength > 0) descScore += 20;
+    if (/buy|shop|order|add to cart|add to bag|purchase|view|see|learn more/i.test(metaDesc.toLowerCase())) descScore += 20;
+    details.metaDescription = { length: descLength, hasCta: /buy|shop|add to/i.test(metaDesc.toLowerCase()), score: descScore };
+    const h1s = doc.querySelectorAll('h1');
+    const h2s = doc.querySelectorAll('h2');
+    let headingScore = 0;
+    if (h1s.length === 1) headingScore += 40;
+    else if (h1s.length === 0 && doc.querySelector('[role="heading"][aria-level="1"]')) headingScore += 30;
+    if (h2s.length >= 1) headingScore += 30;
+    if (data.headingCount >= 3) headingScore += 20;
+    details.headings = { h1Count: h1s.length, h2Count: h2s.length, total: data.headingCount, score: headingScore };
+    const urlObj = new URL(data.url);
+    const path = urlObj.pathname;
+    let urlScore = 0;
+    if (!path.includes('?') && !path.includes('&') && !path.includes(';')) urlScore += 40;
+    if (path.split('/').length <= 7) urlScore += 30;
+    if (path.length > 10 && !/\d{10,}/.test(path)) urlScore += 20;
+    details.url = { clean: !path.includes('?'), segments: path.split('/').length, score: urlScore };
+    let primaryKeyword = '';
+    const h1Text = doc.querySelector('h1')?.textContent?.trim().toLowerCase() || '';
+    if (h1Text.length > 10) {
+      primaryKeyword = h1Text.split(' ').slice(0, 4).join(' ');
+    } else if (title.length > 10) {
+      const parts = title.toLowerCase().split(/[\|\-–]/)[0].trim().split(' ');
+      primaryKeyword = parts.slice(0, 4).join(' ');
+    } else {
+      const slug = urlObj.pathname.split('/').filter(Boolean).pop() || '';
+      primaryKeyword = slug.replace(/[-_]/g, ' ').replace(/\d{4,}/g, '').trim();
+      if (primaryKeyword.length < 5) primaryKeyword = 'product';
+    }
+    const stopWords = /^(the|a|an|best|top|new|buy|shop|order|free|sale|online|free shipping)$/i;
+    primaryKeyword = primaryKeyword.replace(stopWords, '').trim().replace(stopWords, '').trim();
+    const keywordRegex = new RegExp(primaryKeyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    const keywordCount = (data.fullText.toLowerCase().match(keywordRegex) || []).length;
+    const density = data.wordCount > 0 ? (keywordCount / data.wordCount) * 100 : 0;
+    let keywordScore = 0;
+    if (density >= 0.4 && density <= 3.0) keywordScore += 40;
+    if (data.fullText.slice(0, 300).toLowerCase().match(keywordRegex)) keywordScore += 30;
+    if (keywordCount >= 2) keywordScore += 20;
+    details.keywords = { primaryKeyword, density, frontLoaded: !!data.fullText.slice(0, 300).toLowerCase().match(keywordRegex), score: keywordScore };
+    score = Math.round((titleScore + descScore + headingScore + urlScore + keywordScore) / 5);
+    return { score: Math.min(100, Math.max(0, score)), details };
   }
-  // Fallback to title first part
-  else if (titleLower.length > 10) {
-    const parts = titleLower.split(/[\|\-–]/)[0].trim().split(' ');
-    primaryKeyword = parts.slice(0, 4).join(' ');
-  }
-  // Ultimate fallback: URL slug last segment
-  else {
-    const slug = urlObj.pathname.split('/').filter(Boolean).pop() || '';
-    primaryKeyword = slug.replace(/[-_]/g, ' ').replace(/\d{4,}/g, '').trim();
-    if (primaryKeyword.length < 5) primaryKeyword = 'product';
-  }
-
-  // Clean stop words
-  const stopWords = /^(the|a|an|best|top|new|buy|shop|order|free|sale|online|free shipping)$/i;
-  primaryKeyword = primaryKeyword.replace(stopWords, '').trim().replace(stopWords, '').trim();
-
-  const keywordRegex = new RegExp(primaryKeyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-  const keywordCount = (data.fullText.toLowerCase().match(keywordRegex) || []).length;
-  const density = data.wordCount > 0 ? (keywordCount / data.wordCount) * 100 : 0;
-  let keywordScore = 0;
-  if (density >= 0.4 && density <= 3.0) keywordScore += 40;
-  if (data.fullText.slice(0, 300).toLowerCase().match(keywordRegex)) keywordScore += 30;
-  if (keywordCount >= 2) keywordScore += 20;
-  details.keywords = { primaryKeyword, density, frontLoaded: !!data.fullText.slice(0, 300).toLowerCase().match(keywordRegex), score: keywordScore };
-
-  score = Math.round((titleScore + descScore + headingScore + urlScore + keywordScore) / 5);
 
   function analyzeTechnicalSEO(doc, data) {
     let score = 0;
     let details = {};
-
     let mobileScore = data.hasViewport ? 50 : 0;
     if (data.viewportContent.includes('initial-scale=1') && !data.viewportContent.includes('user-scalable=no')) mobileScore += 40;
     details.mobile = { viewportPresent: data.hasViewport, scaleOk: data.viewportContent.includes('initial-scale=1'), score: mobileScore };
-
     const httpsScore = data.url.startsWith('https') ? 95 : 0;
     details.https = { isHttps: data.url.startsWith('https'), score: httpsScore };
-
     const canonical = doc.querySelector('link[rel="canonical"]');
     const canonicalScore = canonical && canonical.href === data.url ? 80 : 30;
     details.canonical = { present: !!canonical, matchesUrl: canonical?.href === data.url, score: canonicalScore };
-
     const robotsMeta = doc.querySelector('meta[name="robots"]');
     const robotsScore = !robotsMeta || !/noindex|nofollow/i.test(robotsMeta.content || '') ? 90 : 20;
     details.robots = { indexable: robotsScore === 90, score: robotsScore };
-
     const sitemapScore = /\/products|\/collections|\/item/i.test(data.url) ? 70 : 50;
     details.sitemapHint = { likelyIncluded: sitemapScore >= 70, score: sitemapScore };
-
     score = Math.round((mobileScore + httpsScore + canonicalScore + robotsScore + sitemapScore) / 5);
     return { score: Math.min(100, Math.max(0, score)), details };
   }
@@ -279,26 +253,19 @@ document.addEventListener('DOMContentLoaded', () => {
   function analyzeContentMedia(doc, data) {
     let score = 0;
     let details = {};
-
     const descScore = data.wordCount >= 300 ? 80 : data.wordCount >= 150 ? 50 : 20;
     details.description = { wordCount: data.wordCount, score: descScore };
-
     const imgScore = data.altData.missingCount === 0 ? 90 : data.altData.meaningfulCount > 0 && (data.altData.missingCount / data.altData.meaningfulCount) < 0.2 ? 70 : 40;
     details.images = { missingAlt: data.altData.missingCount, meaningful: data.altData.meaningfulCount, score: imgScore };
-
     const videoElements = doc.querySelectorAll('video, iframe[src*="youtube"], iframe[src*="vimeo"]');
     const videoScore = videoElements.length > 0 ? (doc.querySelector('track') ? 80 : 60) : 30;
     details.video = { present: videoElements.length > 0, captions: !!doc.querySelector('track'), score: videoScore };
-
     const ugcScore = hasReviewSection(doc) ? 80 : 40;
     details.ugc = { detected: ugcScore === 80, score: ugcScore };
-
     const linkScore = data.linkCount >= 5 ? 70 : data.linkCount >= 2 ? 50 : 20;
     details.internalLinks = { count: data.linkCount, score: linkScore };
-
-    const breadcrumbScore = doc.querySelector('[aria-label*="breadcrumb"], .breadcrumbs, .breadcrumb, nav[aria-label="breadcrumb"], .woocommerce-breadcrumb, .yoast-breadcrumb, .site-breadcrumb, .bread-crumb, .nav-breadcrumb, .product-breadcrumb, .breadcrumbs-nav, .crumbs, .pathway') ? 90 : 40;
+    const breadcrumbScore = doc.querySelector('[aria-label*="breadcrumb"], .breadcrumbs, .breadcrumb, nav[aria-label="breadcrumb"], .woocommerce-breadcrumb, .yoast-breadcrumb, .site-breadcrumb, .bread-crumb') ? 90 : 40;
     details.breadcrumbs = { present: breadcrumbScore === 90, score: breadcrumbScore };
-
     score = Math.round((descScore + imgScore + videoScore + ugcScore + linkScore + breadcrumbScore) / 6);
     return { score: Math.min(100, Math.max(0, score)), details };
   }
@@ -306,26 +273,19 @@ document.addEventListener('DOMContentLoaded', () => {
   function analyzeEcommerceSEO(doc, data) {
     let score = 0;
     let details = {};
-
     const schemas = extractProductSchema(doc);
     const productSchema = schemas.find(s => s['@type'] === 'Product' || (s['@graph'] && s['@graph'].some(g => g['@type'] === 'Product'))) || {};
-
     const schemaScore = Object.keys(productSchema).length > 5 ? 90 : 30;
     details.schema = { present: schemaScore === 90, fieldsCount: Object.keys(productSchema).length, score: schemaScore };
-
     const priceScore = hasPriceMarkup(doc, productSchema) ? 85 : 40;
     details.priceAvailability = { detected: priceScore === 85, score: priceScore };
-
     const reviewScore = productSchema.aggregateRating && productSchema.aggregateRating.ratingValue ? 80 : hasReviewSection(doc) ? 60 : 20;
     details.reviews = { aggregateRatingPresent: !!productSchema.aggregateRating, score: reviewScore };
-
-    const variantSelectors = doc.querySelectorAll('select[name*="variant"], select[name*="size"], select[name*="color"], input[type="radio"][name*="variant"], select[name*="option"], input[name*="option"], .variant-select, .swatch, .product-variants, [data-variant], .product-form__variants');
+    const variantSelectors = doc.querySelectorAll('select[name*="variant"], select[name*="size"], select[name*="color"], input[type="radio"][name*="variant"], select[name*="option"], .variant-select, .swatch, .product-variants, [data-variant]');
     const variantScore = variantSelectors.length > 0 ? 70 : 50;
     details.variants = { detected: variantSelectors.length > 0, score: variantScore };
-
     const socialScore = hasSocialMeta(doc) ? 65 : 30;
     details.social = { ogPresent: socialScore === 65, score: socialScore };
-
     score = Math.round((schemaScore + priceScore + reviewScore + variantScore + socialScore) / 5);
     return { score: Math.min(100, Math.max(0, score)), details, isPro: true };
   }
@@ -695,10 +655,9 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
             ${(() => {
-              const title = doc?.title || '';
-              if (!title) return '';
-              const truncated = title.length > 65 ? title.substring(0, 65) + '...' : title;
-              return `<p class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>`;
+              const pageTitle = doc?.title?.trim() || '';
+              const truncated = pageTitle.length > 65 ? pageTitle.substring(0, 65) + '...' : pageTitle;
+              return truncated ? `<p class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>` : '';
             })()}
             <div class="mt-6 text-center">
               <p class="text-6xl sm:text-5xl md:text-6xl font-bold ${overallGrade.color} drop-shadow-lg">
@@ -773,53 +732,53 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
 
-setTimeout(() => {
-  const canvas = document.getElementById('health-radar');
-  if (!canvas) return;
-  try {
-    const ctx = canvas.getContext('2d');
-    const labelColor = '#9ca3af';
-    const gridColor = 'rgba(156, 163, 175, 0.3)';
-    const borderColor = '#22c55e';
-    const fillColor = 'rgba(34, 197, 94, 0.15)';
-    window.myChart = new Chart(ctx, {
-      type: 'radar',
-      data: {
-        labels: modules.map(m => m.name),
-        datasets: [{
-          label: 'Health Score',
-          data: scores,
-          backgroundColor: fillColor,
-          borderColor: borderColor,
-          borderWidth: 4,
-          pointRadius: 8,
-          pointHoverRadius: 12,
-          pointBackgroundColor: scores.map(s => s >= 85 ? '#10b981' : s >= 70 ? '#22c55e' : s >= 50 ? '#fb923c' : '#ef4444'),
-          pointBorderColor: '#fff',
-          pointBorderWidth: 3
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          r: {
-            beginAtZero: true,
-            min: 0,
-            max: 100,
-            ticks: { stepSize: 20, color: labelColor },
-            grid: { color: gridColor },
-            angleLines: { color: gridColor },
-            pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
-          }
-        },
-        plugins: { legend: { display: false } }
-      }
-    });
-  } catch (e) {
-    console.error('Radar chart failed', e);
-  }
-}, 150);
+      setTimeout(() => {
+        const canvas = document.getElementById('health-radar');
+        if (!canvas) return;
+        try {
+          const ctx = canvas.getContext('2d');
+          const labelColor = '#9ca3af';
+          const gridColor = 'rgba(156, 163, 175, 0.3)';
+          const borderColor = '#22c55e';
+          const fillColor = 'rgba(34, 197, 94, 0.15)';
+          window.myChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+              labels: modules.map(m => m.name),
+              datasets: [{
+                label: 'Health Score',
+                data: scores,
+                backgroundColor: fillColor,
+                borderColor: borderColor,
+                borderWidth: 4,
+                pointRadius: 8,
+                pointHoverRadius: 12,
+                pointBackgroundColor: scores.map(s => s >= 85 ? '#10b981' : s >= 70 ? '#22c55e' : s >= 50 ? '#fb923c' : '#ef4444'),
+                pointBorderColor: '#fff',
+                pointBorderWidth: 3
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                r: {
+                  beginAtZero: true,
+                  min: 0,
+                  max: 100,
+                  ticks: { stepSize: 20, color: labelColor },
+                  grid: { color: gridColor },
+                  angleLines: { color: gridColor },
+                  pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
+                }
+              },
+              plugins: { legend: { display: false } }
+            }
+          });
+        } catch (e) {
+          console.error('Radar chart failed', e);
+        }
+      }, 150);
 
       if (typeof renderPluginSolutions === 'function') {
         renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
@@ -840,25 +799,19 @@ setTimeout(() => {
       `;
     }
   }
-});
 
-document.addEventListener('click', e => {
-  // More Details button
-  const moreBtn = e.target.closest('.more-details');
-  if (moreBtn) {
-    const card = moreBtn.closest('.module-card');
-    if (card) {
-      card.querySelector('.more-details-panel').classList.toggle('hidden');
+  // Button toggle for More Details and Show Fixes (delegated)
+  document.addEventListener('click', e => {
+    const target = e.target.closest('.more-details, .show-fixes');
+    if (!target) return;
+    const card = target.closest('.module-card');
+    if (!card) return;
+    if (target.classList.contains('more-details')) {
+      const panel = card.querySelector('.more-details-panel');
+      if (panel) panel.classList.toggle('hidden');
+    } else if (target.classList.contains('show-fixes')) {
+      const panel = card.querySelector('.fixes-panel');
+      if (panel) panel.classList.toggle('hidden');
     }
-  }
-
-  // Show Fixes button
-  const fixesBtn = e.target.closest('.show-fixes');
-  if (fixesBtn) {
-    const card = fixesBtn.closest('.module-card');
-    if (card) {
-      card.querySelector('.fixes-panel').classList.toggle('hidden');
-    }
-  }
-});
+  });
 });
