@@ -909,11 +909,16 @@ try {
       </div>
     </div>
 
-    <!-- Modules Grid -->
-    <div class="grid gap-8 my-16 max-w-7xl mx-auto px-4">
-      <div class="grid md:grid-cols-2 gap-8">${onPageHTML}${technicalHTML}</div>
-      <div class="grid md:grid-cols-2 gap-8">${contentMediaHTML}${ecommerceHTML}</div>
-    </div>
+<!-- Modules Grid - simplified debug -->
+<div class="grid gap-8 my-16 max-w-7xl mx-auto px-4">
+  <div class="grid md:grid-cols-2 gap-8">
+    ${onPageHTML}
+    ${technicalHTML}
+    ${contentMediaHTML}
+    <!-- Temporarily disable ecommerce to test -->
+    <!-- ${ecommerceHTML} -->
+  </div>
+</div>
 
     <!-- END MARKER B -->
   `;
