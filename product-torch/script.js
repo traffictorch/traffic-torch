@@ -118,18 +118,48 @@ document.addEventListener('DOMContentLoaded', () => {
   moduleHow: "Create detailed, benefit-driven descriptions. Optimize all images/videos. Encourage reviews. Add navigation aids.",
   moduleWhy: "High-quality content reduces bounce rate, improves dwell time, and strengthens topical authority — key ranking factors."
 },
-    ecommerce: {
-      factors: [
-        { name: "Product Schema Markup", threshold: 90, shortDesc: "JSON-LD Product schema with required fields.", howToFix: "Add full Product schema JSON-LD. Include name, image array, offers." },
-        { name: "Price & Availability Markup", threshold: 85, shortDesc: "Schema includes priceCurrency, price, availability.", howToFix: "Ensure dynamic price and stock status in schema." },
-        { name: "Review Schema & Aggregation", threshold: 80, shortDesc: "aggregateRating with ratingValue and reviewCount.", howToFix: "Add AggregateRating to Product schema. Pull real review data." },
-        { name: "Variant Handling", threshold: 70, shortDesc: "Options detected without duplication issues.", howToFix: "Use variant selectors without separate URLs or add canonicals." },
-        { name: "Social Sharing Integration", threshold: 65, shortDesc: "Open Graph meta tags and/or share buttons.", howToFix: "Add og:title, og:image, og:description. Include share buttons." }
-      ],
-      moduleWhat: "E-Commerce Specific SEO checks structured data, pricing, reviews, variants, and social signals — critical for rich results and conversions.",
-      moduleHow: "Implement complete Product schema. Include price/stock/review data. Handle variants cleanly. Add Open Graph for social shares.",
-      moduleWhy: "Schema unlocks rich snippets (price, stars, images in SERPs). Reviews build trust. Proper variants prevent duplicate content."
+ecommerce: {
+  factors: [
+    { 
+      name: "Product Schema Markup", 
+      key: "schema", 
+      threshold: 90, 
+      shortDesc: "Valid JSON-LD Product schema with required fields (name, image, description, offers, brand, sku/mpn).", 
+      howToFix: "Add complete <script type='application/ld+json'> Product schema in <head> or <body>. Include @context, @type: 'Product', name, image (array), description, brand, sku or mpn, offers." 
+    },
+    { 
+      name: "Price & Availability Markup", 
+      key: "priceAvailability", 
+      threshold: 85, 
+      shortDesc: "Offers include priceCurrency, price (positive number), availability (InStock/OutOfStock/PreOrder etc.), priceValidUntil optional.", 
+      howToFix: "Ensure offers.price is a string number (e.g. '1299.00'), offers.priceCurrency (e.g. 'USD'), offers.availability uses schema.org enums like 'https://schema.org/InStock'." 
+    },
+    { 
+      name: "Review Schema & Aggregation", 
+      key: "reviews", 
+      threshold: 80, 
+      shortDesc: "AggregateRating present with ratingValue (1.0–5.0) and reviewCount (or ratingCount), ideally with individual Review items.", 
+      howToFix: "Add AggregateRating inside Product schema: ratingValue (decimal), reviewCount (integer). Use real data from review app. Optional: add 2–5 Review objects." 
+    },
+    { 
+      name: "Variant Handling", 
+      key: "variants", 
+      threshold: 75, 
+      shortDesc: "Variants use single-page selectors (dropdowns/swatches) or separate URLs have self-canonical + no duplicate content.", 
+      howToFix: "Prefer single URL with JS variant switching. If separate URLs, add <link rel='canonical'> pointing to main product. Avoid thin duplicate pages per variant." 
+    },
+    { 
+      name: "Social Sharing Integration", 
+      key: "social", 
+      threshold: 70, 
+      shortDesc: "Open Graph tags (og:title, og:description, og:image 1200×630+, og:url) and optionally Twitter Cards.", 
+      howToFix: "Add <meta property='og:title' content='...'> etc. in <head>. Use high-res product image for og:image. Set og:url to canonical URL. Add twitter:card if desired." 
     }
+  ],
+  moduleWhat: "E-Commerce Specific checks structured data, pricing, reviews, variants, and social signals — essential for rich results and conversions.",
+  moduleHow: "Implement complete Product + Offer + AggregateRating schema. Handle variants cleanly. Add Open Graph tags.",
+  moduleWhy: "Schema enables rich snippets (price, stars, images in SERPs). Reviews add trust. Proper variants prevent duplicate content penalties."
+}
   };
 
   // Helper functions
@@ -468,31 +498,84 @@ function analyzeContentMedia(doc, data) {
 }
 
   function analyzeEcommerceSEO(doc, data) {
-    let score = 0;
-    let details = {};
+  let details = {};
+  const schemas = extractProductSchema(doc);
+  const productSchema = schemas.find(s => s['@type'] === 'Product' || 
+    (Array.isArray(s['@graph']) && s['@graph'].some(g => g['@type'] === 'Product'))) || {};
 
-    const schemas = extractProductSchema(doc);
-    const productSchema = schemas.find(s => s['@type'] === 'Product' || (s['@graph'] && s['@graph'].some(g => g['@type'] === 'Product'))) || {};
-
-    const schemaScore = Object.keys(productSchema).length > 5 ? 90 : 30;
-    details.schema = { present: schemaScore === 90, fieldsCount: Object.keys(productSchema).length, score: schemaScore };
-
-    const priceScore = hasPriceMarkup(doc, productSchema) ? 85 : 40;
-    details.priceAvailability = { detected: priceScore === 85, score: priceScore };
-
-    const reviewScore = productSchema.aggregateRating && productSchema.aggregateRating.ratingValue ? 80 : hasReviewSection(doc) ? 60 : 20;
-    details.reviews = { aggregateRatingPresent: !!productSchema.aggregateRating, score: reviewScore };
-
-    const variantSelectors = doc.querySelectorAll('select[name*="variant"], select[name*="size"], select[name*="color"], input[type="radio"][name*="variant"], select[name*="option"], .variant-select, .swatch, .product-variants, [data-variant]');
-    const variantScore = variantSelectors.length > 0 ? 70 : 50;
-    details.variants = { detected: variantSelectors.length > 0, score: variantScore };
-
-    const socialScore = hasSocialMeta(doc) ? 65 : 30;
-    details.social = { ogPresent: socialScore === 65, score: socialScore };
-
-    score = Math.round((schemaScore + priceScore + reviewScore + variantScore + socialScore) / 5);
-    return { score: Math.min(100, Math.max(0, score)), details, isPro: true };
+  // Product Schema Markup
+  let schemaScore = 20;
+  if (Object.keys(productSchema).length > 0) {
+    const requiredFields = ['name', 'image', 'description', 'offers'];
+    const presentFields = requiredFields.filter(f => productSchema[f] !== undefined && productSchema[f] !== null);
+    schemaScore = 40 + (presentFields.length / requiredFields.length) * 50;
+    if (productSchema.brand && (productSchema.brand.name || productSchema.brand['@type'] === 'Brand')) schemaScore += 10;
+    if (productSchema.sku || productSchema.mpn) schemaScore += 10;
   }
+  schemaScore = Math.min(100, schemaScore);
+  details.schema = { 
+    present: Object.keys(productSchema).length > 0, 
+    fieldsCount: Object.keys(productSchema).length, 
+    score: schemaScore 
+  };
+
+  // Price & Availability Markup
+  let priceScore = 20;
+  if (productSchema.offers) {
+    const offers = Array.isArray(productSchema.offers) ? productSchema.offers[0] : productSchema.offers;
+    if (offers && typeof offers.price === 'string' && !isNaN(parseFloat(offers.price))) priceScore += 30;
+    if (offers && offers.priceCurrency) priceScore += 20;
+    if (offers && /InStock|OutOfStock|PreOrder|https:\/\/schema\.org\/InStock/i.test(offers.availability || '')) priceScore += 25;
+  } else if (hasPriceMarkup(doc, productSchema)) {
+    priceScore = 60; // fallback if schema missing but price visible
+  }
+  priceScore = Math.min(100, priceScore);
+  details.priceAvailability = { detected: priceScore >= 60, score: priceScore };
+
+  // Review Schema & Aggregation
+  let reviewScore = 15;
+  if (productSchema.aggregateRating) {
+    const agg = productSchema.aggregateRating;
+    if (typeof agg.ratingValue === 'number' && agg.ratingValue >= 1 && agg.ratingValue <= 5) reviewScore += 40;
+    if (typeof agg.reviewCount === 'number' && agg.reviewCount > 0) reviewScore += 35;
+  } else if (hasReviewSection(doc)) {
+    reviewScore = 50; // visible reviews but no schema
+  }
+  reviewScore = Math.min(100, reviewScore);
+  details.reviews = { 
+    aggregateRatingPresent: !!productSchema.aggregateRating, 
+    score: reviewScore 
+  };
+
+  // Variant Handling
+  const variantSelectors = doc.querySelectorAll('select[name*="variant"], select[name*="size"], select[name*="color"], select[name*="option"], input[type="radio"][name*="variant"], .variant-select, .swatch, .product-variants, [data-variant]');
+  let variantScore = variantSelectors.length > 0 ? 70 : 40;
+  // Bonus if canonical exists (helps if variants have separate URLs)
+  const canonical = doc.querySelector('link[rel="canonical"]');
+  if (variantSelectors.length > 0 && canonical) variantScore += 20;
+  variantScore = Math.min(100, variantScore);
+  details.variants = { detected: variantSelectors.length > 0, score: variantScore };
+
+  // Social Sharing Integration
+  const ogTags = doc.querySelectorAll('meta[property^="og:"]');
+  let socialScore = ogTags.length >= 3 ? 60 : 25;
+  const requiredOg = ['og:title', 'og:description', 'og:image', 'og:url'];
+  const presentOg = requiredOg.filter(p => !!doc.querySelector(`meta[property="${p}"]`));
+  if (presentOg.length === requiredOg.length) socialScore = 90;
+  else if (presentOg.length >= 3) socialScore = 70;
+  details.social = { ogPresent: presentOg.length > 0, count: presentOg.length, score: socialScore };
+
+  // Weighted module score (schema + price highest for rich results)
+  const score = Math.round(
+    details.schema.score * 0.35 +
+    details.priceAvailability.score * 0.25 +
+    details.reviews.score * 0.20 +
+    details.variants.score * 0.10 +
+    details.social.score * 0.10
+  );
+
+  return { score: Math.min(100, Math.max(0, score)), details, isPro: true };
+}
 
   function getHealthLabel(score) {
     if (score >= 85) return { text: "Excellent", color: "from-green-400 to-emerald-600" };
