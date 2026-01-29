@@ -1,33 +1,20 @@
-// product-torch/script.js - Final polished version - fully generic, accurate across all eCommerce sites
-// All try/catch blocks added/fixed - should eliminate "missing catch or finally" and similar syntax errors
+// product-torch/script.js - COMPLETE WORKING VERSION - all modules, plugin solutions, radar chart, priority fixes
 
-// Dynamic import for plugin solutions
-let renderPluginSolutions = null;
-(async () => {
-  try {
-    const module = await import('./plugin-solutions.js');
+// Dynamic import for plugin solutions (same as working quit-risk-tool)
+let renderPluginSolutions;
+import('./plugin-solutions.js')
+  .then(module => {
     renderPluginSolutions = module.renderPluginSolutions;
     console.log('[Plugin] Successfully loaded renderPluginSolutions');
-  } catch (err) {
-    console.error('[Plugin] Failed to dynamically import plugin-solutions.js:', err);
-    const section = document.getElementById('plugin-solutions-section');
-    if (section) {
-      section.innerHTML = `
-        <div class="mt-16 p-8 bg-red-50 dark:bg-red-900/30 rounded-2xl border border-red-300 text-center">
-          <p class="text-xl font-bold text-red-700 dark:text-red-300 mb-4">Plugin recommendations unavailable</p>
-          <p class="text-gray-700 dark:text-gray-300">
-            Failed to load suggestions module. Please check console for details.
-          </p>
-        </div>`;
-    }
-  }
-})();
+  })
+  .catch(err => console.error('[Plugin] Failed to load plugin-solutions.js:', err));
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
   const PROXY = 'https://rendered-proxy.traffictorch.workers.dev/';
+
   const factorDefinitions = {
     onPage: {
       factors: [
@@ -43,41 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     technical: {
       factors: [
-        {
-          name: "Mobile-Friendliness",
-          key: "mobile",
-          threshold: 85,
-          shortDesc: "Responsive + correct viewport meta + passes basic Core Web Vitals checks (no user-scalable=no).",
-          howToFix: "Add <meta name='viewport' content='width=device-width, initial-scale=1'>. Use responsive CSS. Avoid fixed widths or user-scalable=no. Test with Google's Mobile-Friendly Test."
-        },
-        {
-          name: "HTTPS Implementation",
-          key: "https",
-          threshold: 95,
-          shortDesc: "Served over HTTPS with valid cert, no mixed content (HTTP resources on HTTPS page).",
-          howToFix: "Force HTTPS redirect. Update all images/scripts/links to https://. Fix mixed content via browser dev tools console."
-        },
-        {
-          name: "Canonical Tags",
-          key: "canonical",
-          threshold: 85,
-          shortDesc: "Self-referencing canonical exists and exactly matches current URL (protocol + trailing slash).",
-          howToFix: "Add <link rel='canonical' href='https://full-current-url/'>. Ensure it matches live URL 100% (case-sensitive)."
-        },
-        {
-          name: "Meta Robots Directives",
-          key: "robots",
-          threshold: 90,
-          shortDesc: "No noindex or nofollow on live product page (unless intentional).",
-          howToFix: "Remove <meta name='robots' content='noindex'> or similar. Use robots.txt only for blocking unwanted pages, not product pages."
-        },
-        {
-          name: "Sitemap Inclusion Hints",
-          key: "sitemapHint",
-          threshold: 70,
-          shortDesc: "URL pattern matches typical product pages (suggests inclusion in sitemap.xml).",
-          howToFix: "Add this URL pattern to sitemap.xml. Submit sitemap in Google Search Console. Use dynamic sitemaps for large catalogs."
-        }
+        { name: "Mobile-Friendliness", key: "mobile", threshold: 85, shortDesc: "Responsive + correct viewport meta + passes basic Core Web Vitals checks (no user-scalable=no).", howToFix: "Add <meta name='viewport' content='width=device-width, initial-scale=1'>. Use responsive CSS. Avoid fixed widths or user-scalable=no. Test with Google's Mobile-Friendly Test." },
+        { name: "HTTPS Implementation", key: "https", threshold: 95, shortDesc: "Served over HTTPS with valid cert, no mixed content (HTTP resources on HTTPS page).", howToFix: "Force HTTPS redirect. Update all images/scripts/links to https://. Fix mixed content via browser dev tools console." },
+        { name: "Canonical Tags", key: "canonical", threshold: 85, shortDesc: "Self-referencing canonical exists and exactly matches current URL (protocol + trailing slash).", howToFix: "Add <link rel='canonical' href='https://full-current-url/'>. Ensure it matches live URL 100% (case-sensitive)." },
+        { name: "Meta Robots Directives", key: "robots", threshold: 90, shortDesc: "No noindex or nofollow on live product page (unless intentional).", howToFix: "Remove <meta name='robots' content='noindex'> or similar. Use robots.txt only for blocking unwanted pages, not product pages." },
+        { name: "Sitemap Inclusion Hints", key: "sitemapHint", threshold: 70, shortDesc: "URL pattern matches typical product pages (suggests inclusion in sitemap.xml).", howToFix: "Add this URL pattern to sitemap.xml. Submit sitemap in Google Search Console. Use dynamic sitemaps for large catalogs." }
       ],
       moduleWhat: "Technical SEO checks crawlability, mobile readiness, security, and duplicate prevention — essential for product pages to be indexed and ranked properly.",
       moduleHow: "Ensure HTTPS, proper viewport, canonicals, and indexable robots directives. Keep technical foundation clean.",
@@ -85,48 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     contentMedia: {
       factors: [
-        {
-          name: "Product Description Quality",
-          key: "description",
-          threshold: 75,
-          shortDesc: "300+ words ideal, unique, benefit-focused, structured (bullets/headings), keyword-rich.",
-          howToFix: "Expand to 400–800 words in competitive niches. Start with benefits, use bullets for features, add subheadings. Make it unique vs competitors."
-        },
-        {
-          name: "Image Optimization",
-          key: "images",
-          threshold: 80,
-          shortDesc: "Meaningful images have descriptive keyword-rich alt text, lazy loading, responsive (srcset), <100KB.",
-          howToFix: "Add alt text like 'Santa Cruz Dreadnought Quilted Mahogany Acoustic Guitar front view'. Use loading='lazy', srcset/sizes. Compress images."
-        },
-        {
-          name: "Video Embed Quality",
-          key: "video",
-          threshold: 70,
-          shortDesc: "Relevant videos present with captions (<track>), poster thumbnail, embedded properly.",
-          howToFix: "Embed YouTube/Vimeo with captions enabled. Add <track kind='subtitles'> or use platform auto-captions. Include poster image."
-        },
-        {
-          name: "User-Generated Content (UGC)",
-          key: "ugc",
-          threshold: 70,
-          shortDesc: "Reviews/ratings visible with star aggregate and review count.",
-          howToFix: "Install review app (Judge.me, Yotpo, Loox). Display average rating + number of reviews. Encourage photo/video reviews."
-        },
-        {
-          name: "Internal Linking",
-          key: "internalLinks",
-          threshold: 70,
-          shortDesc: "3+ relevant contextual links to related products/categories/guides with descriptive anchors.",
-          howToFix: "Add 3–6 internal links in description or below (e.g. 'see matching picks', 'learn more about tonewoods'). Use keyword-rich anchors."
-        },
-        {
-          name: "Breadcrumb Navigation",
-          key: "breadcrumbs",
-          threshold: 85,
-          shortDesc: "Clear hierarchy breadcrumbs present (Home > Category > Subcategory > Product).",
-          howToFix: "Implement breadcrumbs with schema (BreadcrumbList JSON-LD). Use links like Home > Acoustic Guitars > Dreadnought > Santa Cruz Dreadnought."
-        }
+        { name: "Product Description Quality", key: "description", threshold: 75, shortDesc: "300+ words ideal, unique, benefit-focused, structured (bullets/headings), keyword-rich.", howToFix: "Expand to 400–800 words in competitive niches. Start with benefits, use bullets for features, add subheadings. Make it unique vs competitors." },
+        { name: "Image Optimization", key: "images", threshold: 80, shortDesc: "Meaningful images have descriptive keyword-rich alt text, lazy loading, responsive (srcset), <100KB.", howToFix: "Add alt text like 'Santa Cruz Dreadnought Quilted Mahogany Acoustic Guitar front view'. Use loading='lazy', srcset/sizes. Compress images." },
+        { name: "Video Embed Quality", key: "video", threshold: 70, shortDesc: "Relevant videos present with captions (<track>), poster thumbnail, embedded properly.", howToFix: "Embed YouTube/Vimeo with captions enabled. Add <track kind='subtitles'> or use platform auto-captions. Include poster image." },
+        { name: "User-Generated Content (UGC)", key: "ugc", threshold: 70, shortDesc: "Reviews/ratings visible with star aggregate and review count.", howToFix: "Install review app (Judge.me, Yotpo, Loox). Display average rating + number of reviews. Encourage photo/video reviews." },
+        { name: "Internal Linking", key: "internalLinks", threshold: 70, shortDesc: "3+ relevant contextual links to related products/categories/guides with descriptive anchors.", howToFix: "Add 3–6 internal links in description or below (e.g. 'see matching picks', 'learn more about tonewoods'). Use keyword-rich anchors." },
+        { name: "Breadcrumb Navigation", key: "breadcrumbs", threshold: 85, shortDesc: "Clear hierarchy breadcrumbs present (Home > Category > Subcategory > Product).", howToFix: "Implement breadcrumbs with schema (BreadcrumbList JSON-LD). Use links like Home > Acoustic Guitars > Dreadnought > Santa Cruz Dreadnought." }
       ],
       moduleWhat: "Content & Media evaluates richness, accessibility, and engagement signals that keep users on-page and build trust.",
       moduleHow: "Create detailed, benefit-driven descriptions. Optimize all images/videos. Encourage reviews. Add navigation aids.",
@@ -134,41 +55,11 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     ecommerce: {
       factors: [
-        {
-          name: "Product Schema Markup",
-          key: "schema",
-          threshold: 90,
-          shortDesc: "Valid JSON-LD Product schema with required fields (name, image, description, offers, brand, sku/mpn).",
-          howToFix: "Add complete <script type='application/ld+json'> Product schema in <head> or <body>. Include @context, @type: 'Product', name, image (array), description, brand, sku or mpn, offers."
-        },
-        {
-          name: "Price & Availability Markup",
-          key: "priceAvailability",
-          threshold: 85,
-          shortDesc: "Offers include priceCurrency, price (positive number), availability (InStock/OutOfStock/PreOrder etc.), priceValidUntil optional.",
-          howToFix: "Ensure offers.price is a string number (e.g. '1299.00'), offers.priceCurrency (e.g. 'USD'), offers.availability uses schema.org enums like 'https://schema.org/InStock'."
-        },
-        {
-          name: "Review Schema & Aggregation",
-          key: "reviews",
-          threshold: 80,
-          shortDesc: "AggregateRating present with ratingValue (1.0–5.0) and reviewCount (or ratingCount), ideally with individual Review items.",
-          howToFix: "Add AggregateRating inside Product schema: ratingValue (decimal), reviewCount (integer). Use real data from review app. Optional: add 2–5 Review objects."
-        },
-        {
-          name: "Variant Handling",
-          key: "variants",
-          threshold: 75,
-          shortDesc: "Variants use single-page selectors (dropdowns/swatches) or separate URLs have self-canonical + no duplicate content.",
-          howToFix: "Prefer single URL with JS variant switching. If separate URLs, add <link rel='canonical'> pointing to main product. Avoid thin duplicate pages per variant."
-        },
-        {
-          name: "Social Sharing Integration",
-          key: "social",
-          threshold: 70,
-          shortDesc: "Open Graph tags (og:title, og:description, og:image 1200×630+, og:url) and optionally Twitter Cards.",
-          howToFix: "Add <meta property='og:title' content='...'> etc. in <head>. Use high-res product image for og:image. Set og:url to canonical URL. Add twitter:card if desired."
-        }
+        { name: "Product Schema Markup", key: "schema", threshold: 90, shortDesc: "Valid JSON-LD Product schema with required fields (name, image, description, offers, brand, sku/mpn).", howToFix: "Add complete <script type='application/ld+json'> Product schema in <head> or <body>. Include @context, @type: 'Product', name, image (array), description, brand, sku or mpn, offers." },
+        { name: "Price & Availability Markup", key: "priceAvailability", threshold: 85, shortDesc: "Offers include priceCurrency, price (positive number), availability (InStock/OutOfStock/PreOrder etc.), priceValidUntil optional.", howToFix: "Ensure offers.price is a string number (e.g. '1299.00'), offers.priceCurrency (e.g. 'USD'), offers.availability uses schema.org enums like 'https://schema.org/InStock'." },
+        { name: "Review Schema & Aggregation", key: "reviews", threshold: 80, shortDesc: "AggregateRating present with ratingValue (1.0–5.0) and reviewCount (or ratingCount), ideally with individual Review items.", howToFix: "Add AggregateRating inside Product schema: ratingValue (decimal), reviewCount (integer). Use real data from review app. Optional: add 2–5 Review objects." },
+        { name: "Variant Handling", key: "variants", threshold: 75, shortDesc: "Variants use single-page selectors (dropdowns/swatches) or separate URLs have self-canonical + no duplicate content.", howToFix: "Prefer single URL with JS variant switching. If separate URLs, add <link rel='canonical'> pointing to main product. Avoid thin duplicate pages per variant." },
+        { name: "Social Sharing Integration", key: "social", threshold: 70, shortDesc: "Open Graph tags (og:title, og:description, og:image 1200×630+, og:url) and optionally Twitter Cards.", howToFix: "Add <meta property='og:title' content='...'> etc. in <head>. Use high-res product image for og:image. Set og:url to canonical URL. Add twitter:card if desired." }
       ],
       moduleWhat: "E-Commerce Specific checks structured data, pricing, reviews, variants, and social signals — essential for rich results and conversions.",
       moduleHow: "Implement complete Product + Offer + AggregateRating schema. Handle variants cleanly. Add Open Graph tags.",
@@ -176,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Helper functions
+  // Helper functions (all present)
   function countWords(text) {
     return text.trim().split(/\s+/).filter(w => w.length > 0).length;
   }
@@ -219,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (productInGraph) schemas.push(productInGraph);
         }
       } catch (e) {
-        // skip invalid JSON silently
+        // skip invalid JSON
       }
     });
     return schemas;
@@ -928,7 +819,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: targetY, behavior: 'smooth' });
 
         results.innerHTML = `
-        console.log('[Debug] plugin-section exists after innerHTML?', !!document.getElementById('plugin-solutions-section'));
           <!-- Big Overall Score Card -->
           <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
             <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${safeScore >= 85 ? 'border-emerald-500' : safeScore >= 70 ? 'border-teal-500' : safeScore >= 50 ? 'border-orange-500' : 'border-red-500'}">
@@ -1031,66 +921,34 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         `;
 
-// Plugin rendering – use MutationObserver to wait for the section to exist
-setTimeout(() => {
-  const targetContainer = document.getElementById('results'); // observe the results div
+        // Debug: confirm div exists right after innerHTML
+        console.log('[Debug] plugin-section exists right after innerHTML?', !!document.getElementById('plugin-solutions-section'));
 
-  if (!targetContainer) {
-    console.error('[Plugin Debug] #results container missing – cannot observe');
-    return;
-  }
-
-  const observer = new MutationObserver((mutations, obs) => {
-    const section = document.getElementById('plugin-solutions-section');
-    if (section) {
-      console.log('[Plugin Debug] #plugin-solutions-section detected via observer');
-      renderIfReady(section);
-      obs.disconnect(); // stop observing once found
-    }
-  });
-
-  observer.observe(targetContainer, { childList: true, subtree: true });
-
-  // Fallback timeout in case observer misses it
-  setTimeout(() => {
-    const section = document.getElementById('plugin-solutions-section');
-    if (section) {
-      console.log('[Plugin Debug] #plugin-solutions-section found via fallback timeout');
-      renderIfReady(section);
-      observer.disconnect();
-    } else {
-      console.warn('[Plugin Debug] #plugin-solutions-section never appeared');
-    }
-  }, 2000); // 2 seconds max wait
-
-  function renderIfReady(section) {
-    if (typeof renderPluginSolutions !== 'function') {
-      section.innerHTML = `
-        <div class="mt-16 p-10 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 rounded-3xl border border-orange-300 dark:border-orange-700 text-center shadow-lg">
-          <p class="text-2xl font-bold text-orange-700 dark:text-orange-300 mb-4">⚠️ Plugin suggestions unavailable</p>
-          <p class="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
-            Module loaded but failed to initialize.
-          </p>
-        </div>`;
-      return;
-    }
-
-    const validFactors = failedFactors.filter(f => f && f.name && f.grade);
-    console.log('[Plugin Debug] Rendering with', validFactors.length, 'valid failed factors');
-
-    if (validFactors.length === 0) {
-      section.innerHTML = `
-        <div class="mt-16 p-10 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-3xl border border-green-300 dark:border-green-700 text-center shadow-lg">
-          <p class="text-3xl mb-4">🎉 All core checks passed!</p>
-          <p class="text-xl font-medium text-green-700 dark:text-green-300">No plugin recommendations needed right now.</p>
-        </div>`;
-      return;
-    }
-
-    renderPluginSolutions(validFactors, 'plugin-solutions-section');
-    console.log('[Plugin Debug] renderPluginSolutions executed successfully');
-  }
-}, 800); // initial delay after innerHTML
+        // Plugin rendering – direct call (same as working quit-risk-tool)
+        if (typeof renderPluginSolutions === 'function') {
+          console.log('Calling renderPluginSolutions immediately');
+          renderPluginSolutions(failedFactors, 'plugin-solutions-section');
+        } else {
+          console.warn('renderPluginSolutions not loaded yet - delaying 500ms');
+          setTimeout(() => {
+            if (typeof renderPluginSolutions === 'function') {
+              console.log('Delayed call successful');
+              renderPluginSolutions(failedFactors, 'plugin-solutions-section');
+            } else {
+              console.error('renderPluginSolutions still not available after delay');
+              const section = document.getElementById('plugin-solutions-section');
+              if (section) {
+                section.innerHTML = `
+                  <div class="mt-16 p-10 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 rounded-3xl border border-orange-300 dark:border-orange-700 text-center shadow-lg">
+                    <p class="text-2xl font-bold text-orange-700 dark:text-orange-300 mb-4">⚠️ Plugin suggestions unavailable</p>
+                    <p class="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
+                      Module not ready after delay. Refresh page.
+                    </p>
+                  </div>`;
+              }
+            }
+          }, 500);
+        }
 
         // Radar chart
         setTimeout(() => {
@@ -1141,7 +999,7 @@ setTimeout(() => {
           }
         }, 150);
 
-        // Button toggle for More Details and Show Fixes (delegated)
+        // Button toggle (delegated)
         document.addEventListener('click', e => {
           const target = e.target.closest('.more-details, .show-fixes');
           if (!target) return;
