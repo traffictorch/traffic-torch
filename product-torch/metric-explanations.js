@@ -26,7 +26,7 @@ const metricExplanations = [
     why: "High-quality content reduces bounce rate, improves dwell time, and strengthens topical authority — key ranking factors."
   },
   {
-    id: "ecommerce-signals",
+    id: "e-commerce-signals",
     emoji: "🛒",
     name: "E-Commerce Signals",
     what: "E-Commerce Specific checks structured data, pricing, reviews, variants, and social signals — essential for rich results and conversions.",

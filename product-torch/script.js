@@ -664,7 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
           { name: "On-Page SEO", result: seo.onPage, definitions: factorDefinitions.onPage },
           { name: "Technical SEO", result: seo.technical, definitions: factorDefinitions.technical },
           { name: "Content & Media", result: seo.contentMedia, definitions: factorDefinitions.contentMedia },
-          { name: "eCommerce Signals", result: seo.ecommerce, definitions: factorDefinitions.ecommerce }
+          { name: "E-Commerce Signals", result: seo.ecommerce, definitions: factorDefinitions.ecommerce }
         ];
         modulesData.forEach(mod => {
           if (mod.result.details) {
@@ -693,13 +693,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const onPageHTML = buildModuleHTML('On-Page SEO', seo.onPage.score, factorDefinitions.onPage, seo.onPage.details);
         const technicalHTML = buildModuleHTML('Technical SEO', seo.technical.score, factorDefinitions.technical, seo.technical.details);
         const contentMediaHTML = buildModuleHTML('Content & Media', seo.contentMedia.score, factorDefinitions.contentMedia, seo.contentMedia.details);
-        const ecommerceHTML = buildModuleHTML('eCommerce Signals', seo.ecommerce.score, factorDefinitions.ecommerce, seo.ecommerce.details)}</div>`;
+        const ecommerceHTML = buildModuleHTML('E-Commerce Signals', seo.ecommerce.score, factorDefinitions.ecommerce, seo.ecommerce.details)}</div>`;
 
         const modulePriority = [
           { name: 'On-Page SEO', score: seo.onPage.score, threshold: 70, data: factorDefinitions.onPage },
           { name: 'Technical SEO', score: seo.technical.score, threshold: 80, data: factorDefinitions.technical },
           { name: 'Content & Media', score: seo.contentMedia.score, threshold: 70, data: factorDefinitions.contentMedia },
-          { name: 'eCommerce Signals', score: seo.ecommerce.score, threshold: 75, data: factorDefinitions.ecommerce }
+          { name: 'E-Commerce Signals', score: seo.ecommerce.score, threshold: 75, data: factorDefinitions.ecommerce }
         ];
         const failedModules = modulePriority.filter(m => m.score < m.threshold);
         const priorityFixes = [];
@@ -811,7 +811,7 @@ document.addEventListener('DOMContentLoaded', () => {
           { name: 'On-Page SEO', score: seo.onPage.score },
           { name: 'Technical SEO', score: seo.technical.score },
           { name: 'Content & Media', score: seo.contentMedia.score },
-          { name: 'E-Commerce (Pro)', score: seo.ecommerce.score }
+          { name: 'E-Commerce Signals', score: seo.ecommerce.score }
         ];
         const scores = modules.map(m => m.score);
         const offset = 240;
@@ -819,8 +819,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: targetY, behavior: 'smooth' });
 
 try {
-  // Part 1: Score Card + Verdict
-  const part1 = `
+  results.innerHTML = `
     <!-- Big Overall Score Card -->
     <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
       <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${safeScore >= 85 ? 'border-emerald-500' : safeScore >= 70 ? 'border-teal-500' : safeScore >= 50 ? 'border-orange-500' : 'border-red-500'}">
@@ -877,10 +876,7 @@ try {
       </div>
       <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Analyzed ${seoData.wordCount} words + ${seoData.imageCount} images</p>
     </div>
-  `;
 
-  // Part 2: Radar + Modules Grid
-  const part2 = `
     <!-- SEO Health Radar Chart -->
     <div class="max-w-5xl mx-auto my-16 px-4">
       <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
@@ -900,12 +896,9 @@ try {
     <!-- Modules Grid -->
     <div class="grid gap-8 my-16 max-w-7xl mx-auto px-4">
       <div class="grid md:grid-cols-2 gap-8">${onPageHTML}${technicalHTML}</div>
-       <div class="grid md:grid-cols-2 gap-8">${contentMediaHTML}${ecommerceHTML}</div>
+      <div class="grid md:grid-cols-2 gap-8">${contentMediaHTML}${ecommerceHTML}</div>
     </div>
-  `;
 
-  // Part 3: Priority Fixes + Plugin + Impact + PDF (full restore)
-  const part3 = `
     <!-- Top Priority Fixes -->
     <div class="text-center my-20">
       <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent mb-12">
@@ -936,22 +929,20 @@ try {
     </div>
   `;
 
-  // Combine all parts
-  results.innerHTML = part1 + part2 + part3;
-
+  console.log('[Debug] Full original template restored');
 } catch (templateError) {
   console.error('[TEMPLATE ERROR]', templateError);
   results.innerHTML = `
     <div class="text-center py-20 px-6">
       <p class="text-3xl font-bold text-red-600 mb-6">Report Failed</p>
       <p class="text-xl text-gray-700 dark:text-gray-300">
-        Error building report layout — check console.
+        Error building report — check console.
       </p>
     </div>`;
   return;
 }
 
-// Direct plugin render call (no delay, matches quit-risk-tool success)
+// Direct plugin render call (no delay)
 if (typeof renderPluginSolutions === 'function') {
   console.log('Calling renderPluginSolutions immediately');
   renderPluginSolutions(failedFactors, 'plugin-solutions-section');
