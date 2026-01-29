@@ -202,51 +202,128 @@ const pluginData = {
   }
 };
 
-export function renderPluginSolutions(failedFactors, containerId) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  container.innerHTML = '';
-
-  if (!Array.isArray(failedFactors) || failedFactors.length === 0) {
-    container.innerHTML = '<p class="text-center text-xl text-gray-600 dark:text-gray-300 py-12">No critical issues found — page looks well-optimized!</p>';
+function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-section') {
+  if (failedMetrics.length === 0) {
+    console.log('Plugin Solutions: No low/average metrics to show');
     return;
   }
 
-  failedFactors.forEach(factor => {
-    const plugins = pluginData[factor.metric];
-    if (!plugins) return; // skip if no data for this metric
+  console.log('Rendering Plugin Solutions for metrics:', failedMetrics.map(m => m.name));
 
-    const section = document.createElement('div');
-    section.className = 'bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 mb-10 border border-gray-200 dark:border-gray-700';
-    section.innerHTML = `
-      <h3 class="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-gray-100">
-        Fixes for: ${factor.metric} <span class="${factor.grade.color} ml-2">${factor.grade.emoji} ${factor.grade.grade}</span>
-      </h3>
-    `;
-
-    Object.entries(plugins).forEach(([platform, list]) => {
-      if (list.length === 0) return;
-      const platBlock = document.createElement('div');
-      platBlock.className = 'mb-6';
-      platBlock.innerHTML = `<h4 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">${platform}</h4>`;
-
-      list.forEach(p => {
-        platBlock.innerHTML += `
-          <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl mb-3">
-            <a href="${p.link}" target="_blank" rel="noopener" class="font-medium text-purple-600 dark:text-purple-400 hover:underline">${p.name}</a>
-            <p class="text-gray-700 dark:text-gray-300 mt-1">${p.desc}</p>
-          </div>
-        `;
-      });
-
-      section.appendChild(platBlock);
-    });
-
-    container.appendChild(section);
-  });
-
-  if (container.children.length === 0) {
-    container.innerHTML = '<p class="text-center py-10 text-lg text-gray-600 dark:text-gray-400">No plugin recommendations available for the failed metrics yet.</p>';
+  const container = document.getElementById(containerId);
+  if (!container) {
+    console.warn(`Plugin Solutions container not found: #${containerId}`);
+    return;
   }
+
+  const section = document.createElement('section');
+  section.className = 'mt-20 max-w-5xl mx-auto px-4';
+
+  section.innerHTML = `
+    <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
+      Plugin Solutions for Performance & Accessibility Issues
+    </h2>
+    <p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
+      ${failedMetrics.length} issue${failedMetrics.length > 1 ? 's need' : ' needs'} attention. 
+      Check your theme or template first — many modern themes already include some of these optimizations.
+      Expand any panel below to see top free/freemium plugins/apps that can help fix it.
+    </p>
+    <div class="space-y-6">
+      ${failedMetrics.map(m => {
+        const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
+        const g = m.grade;
+        return `
+          <details class="group bg-white dark:bg-gray-900 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <summary class="flex items-center justify-between p-6 md:p-8 cursor-pointer list-none">
+              <h3 class="text-2xl md:text-3xl font-bold ${g.color}">
+                ${g.emoji} ${m.name}
+              </h3>
+              <div class="transform transition-transform duration-300 group-open:rotate-180">
+                <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </summary>
+            <div class="px-2 md:px-8 pb-8 md:pb-10 border-t border-gray-200 dark:border-gray-700">
+              <div class="max-w-md mx-auto my-8">
+                <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-orange-300 dark:border-orange-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 outline-none transition">
+                  <option value="">Select your platform / CMS...</option>
+                  ${Object.keys(pluginData[m.name] || {}).map(cms =>
+                    `<option value="${cms}">${cms}</option>`
+                  ).join('')}
+                </select>
+              </div>
+              <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+                <!-- Plugins will be injected here -->
+              </div>
+            </div>
+          </details>
+        `;
+      }).join('')}
+    </div>
+    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-12">
+      These popular free/freemium plugins and apps can significantly improve these areas. 
+      Always test on a staging environment first and check for recent reviews/updates.
+    </p>
+  `;
+
+  container.appendChild(section);
+
+  // Attach event listeners after DOM insertion
+  setTimeout(() => {
+    failedMetrics.forEach(m => {
+      const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
+      const select = document.getElementById(`cms-select-${metricId}`);
+      const pluginsList = document.getElementById(`plugins-${metricId}`);
+
+      if (!select || !pluginsList) {
+        console.warn(`Could not find select/plugins for metric: ${m.name} (id: ${metricId})`);
+        return;
+      }
+
+      select.addEventListener('change', (e) => {
+        const selected = e.target.value;
+        pluginsList.innerHTML = '';
+        pluginsList.classList.add('hidden');
+
+        if (!selected || !pluginData[m.name]?.[selected]) {
+          console.log(`No plugins found for ${m.name} → ${selected}`);
+          return;
+        }
+
+        pluginData[m.name][selected].forEach(plugin => {
+          const card = document.createElement('div');
+          card.className = 'group relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-200 dark:border-gray-700 overflow-hidden';
+
+          card.innerHTML = `
+            <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="relative z-10">
+              <h4 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">${plugin.name}</h4>
+              <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">${plugin.desc}</p>
+              <div class="flex flex-wrap gap-4">
+                ${plugin.link ? `
+                  <a href="${plugin.link}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow hover:shadow-md transition">
+                    Plugin Library
+                  </a>
+                ` : ''}
+                ${plugin.homeLink ? `
+                  <a href="${plugin.homeLink}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-medium rounded-lg shadow hover:shadow-md transition">
+                    Plugin Website
+                  </a>
+                ` : ''}
+              </div>
+            </div>
+          `;
+
+          pluginsList.appendChild(card);
+        });
+
+        if (pluginsList.children.length > 0) {
+          pluginsList.classList.remove('hidden');
+        }
+      });
+    });
+  }, 0);
 }
+
+export { renderPluginSolutions };

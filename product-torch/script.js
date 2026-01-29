@@ -1,6 +1,6 @@
 // Dynamic import for plugin solutions
 let renderPluginSolutions;
-import('/product-torch/plugin-solutions.js')
+import('./plugin-solutions.js')
   .then(module => {
     renderPluginSolutions = module.renderPluginSolutions;
     console.log('Plugin solutions module loaded successfully');
