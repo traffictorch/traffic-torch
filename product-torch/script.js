@@ -1081,7 +1081,7 @@ setTimeout(() => {
     renderPluginSolutions(validFactors, 'plugin-solutions-section');
     console.log('[Plugin Debug] renderPluginSolutions called successfully');
   }
-}, 600);  // Increased from 400ms → gives more time for large innerHTML to parse & insert
+}, 2000);  // Increased from 400ms → gives more time for large innerHTML to parse & insert
 
         // Radar chart
         setTimeout(() => {
