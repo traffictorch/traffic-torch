@@ -777,11 +777,34 @@ let metricGrade = passed
         const seoData = getProductPageContent(doc, url);
         const seo = analyzeProductSEO(doc, url);
 
-        const failedMetrics = [];
-        if (seo.onPage.score < 70) failedMetrics.push({ name: "On-Page SEO", grade: getPluginGrade(seo.onPage.score) });
-        if (seo.technical.score < 80) failedMetrics.push({ name: "Technical SEO", grade: getPluginGrade(seo.technical.score) });
-        if (seo.contentMedia.score < 70) failedMetrics.push({ name: "Content & Media", grade: getPluginGrade(seo.contentMedia.score) });
-        if (seo.ecommerce.score < 75) failedMetrics.push({ name: "E-Commerce Signals (Pro)", grade: getPluginGrade(seo.ecommerce.score) });
+        // Only collect failed individual metrics (factors) – no module-level suggestions
+const failedFactors = [];
+
+const modulesData = [
+  { name: "On-Page SEO", result: seo.onPage, definitions: factorDefinitions.onPage },
+  { name: "Technical SEO", result: seo.technical, definitions: factorDefinitions.technical },
+  { name: "Content & Media", result: seo.contentMedia, definitions: factorDefinitions.contentMedia },
+  { name: "E-Commerce Signals (Pro)", result: seo.ecommerce, definitions: factorDefinitions.ecommerce }
+];
+
+modulesData.forEach(mod => {
+  if (mod.result.details) {
+    mod.definitions.factors.forEach(f => {
+      const factorScore = mod.result.details[f.key]?.score;
+      if (factorScore !== undefined && factorScore < f.threshold) {
+        failedFactors.push({
+          module: mod.name,
+          metric: f.name,
+          score: factorScore,
+          threshold: f.threshold,
+          grade: getPluginGrade(factorScore),
+          howToFix: f.howToFix,
+          isPro: mod.name.includes("(Pro)")
+        });
+      }
+    });
+  }
+});
 
         const health = getHealthLabel(seo.score);
         document.getElementById('loading').classList.add('hidden');
@@ -1070,14 +1093,14 @@ let metricGrade = passed
         }, 150);
 
         if (typeof renderPluginSolutions === 'function') {
-          renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
-        } else {
-          setTimeout(() => {
-            if (typeof renderPluginSolutions === 'function') {
-              renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
-            }
-          }, 500);
-        }
+  renderPluginSolutions(failedFactors, 'plugin-solutions-section');
+} else {
+  setTimeout(() => {
+    if (typeof renderPluginSolutions === 'function') {
+      renderPluginSolutions(failedFactors, 'plugin-solutions-section');
+    }
+  }, 500);
+}
       } catch (err) {
         document.getElementById('loading').classList.add('hidden');
         results.innerHTML = `
