@@ -819,8 +819,13 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: targetY, behavior: 'smooth' });
 
 try {
-  // Part 1: Score Card + Verdict
-  const scoreVerdict = `
+  // Part 1: Score Card + Verdict + Marker A
+  const part1 = `
+    <!-- START MARKER A - Score & Verdict -->
+    <div style="border: 5px solid red; padding: 20px; margin: 20px; background: #ffebee; text-align: center;">
+      <h2 style="color: red; font-size: 2.5rem;">MARKER A - If you see this → insertion reached here</h2>
+    </div>
+
     <!-- Big Overall Score Card -->
     <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
       <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${safeScore >= 85 ? 'border-emerald-500' : safeScore >= 70 ? 'border-teal-500' : safeScore >= 50 ? 'border-orange-500' : 'border-red-500'}">
@@ -877,10 +882,17 @@ try {
       </div>
       <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Analyzed ${seoData.wordCount} words + ${seoData.imageCount} images</p>
     </div>
+
+    <!-- END MARKER A -->
   `;
 
-  // Part 2: Radar + Modules Grid
-  const radarModules = `
+  // Part 2: Radar + Modules + Marker B
+  const part2 = `
+    <!-- START MARKER B - Radar & Modules -->
+    <div style="border: 5px solid blue; padding: 20px; margin: 20px; background: #e3f2fd; text-align: center;">
+      <h2 style="color: blue; font-size: 2.5rem;">MARKER B - If you see this → insertion reached radar & modules</h2>
+    </div>
+
     <!-- SEO Health Radar Chart -->
     <div class="max-w-5xl mx-auto my-16 px-4">
       <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
@@ -902,12 +914,23 @@ try {
       <div class="grid md:grid-cols-2 gap-8">${onPageHTML}${technicalHTML}</div>
       <div class="grid md:grid-cols-2 gap-8">${contentMediaHTML}${ecommerceHTML}</div>
     </div>
+
+    <!-- END MARKER B -->
   `;
 
-  // Part 3: Plugin + Impact + PDF
-  const pluginImpactPDF = `
+  // Part 3: Plugin + Impact + PDF + Marker C
+  const part3 = `
+    <!-- START MARKER C - Plugin & Impact -->
+    <div style="border: 5px solid green; padding: 20px; margin: 20px; background: #e8f5e9; text-align: center;">
+      <h2 style="color: green; font-size: 2.5rem;">MARKER C - If you see this → insertion reached plugin area</h2>
+    </div>
+
     <!-- Plugin Solutions Section -->
-    <div id="plugin-solutions-section" class="mt-16 px-4"></div>
+    <div id="plugin-solutions-section" class="mt-16 px-4 border-4 border-purple-500 min-h-[400px] bg-purple-50 dark:bg-purple-950/30 rounded-2xl">
+      <p class="text-center text-2xl font-bold text-purple-700 dark:text-purple-300 py-16">
+        PLUGIN SOLUTIONS AREA - If visible, rendering should happen here
+      </p>
+    </div>
 
     <!-- SEO & Conversion Impact -->
     ${impactHTML}
@@ -920,109 +943,22 @@ try {
         <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       </button>
     </div>
+
+    <!-- END MARKER C -->
   `;
 
-  // Combine safely
-  results.innerHTML = scoreVerdict + radarModules + pluginImpactPDF;
+  // Combine
+  results.innerHTML = part1 + part2 + part3;
 
-  console.log('[Debug] Split template inserted successfully');
+  console.log('[Debug] Split template with markers inserted');
+  console.log('[Debug] MARKER A visible?', document.body.innerHTML.includes('MARKER A'));
+  console.log('[Debug] MARKER B visible?', document.body.innerHTML.includes('MARKER B'));
+  console.log('[Debug] MARKER C visible?', document.body.innerHTML.includes('MARKER C'));
   console.log('[Debug] plugin-section exists now?', !!document.getElementById('plugin-solutions-section'));
-  console.log('[Debug] modules grid exists?', !!document.querySelector('.grid.gap-8.my-16'));
-} catch (templateError) {
-  console.error('[CRITICAL TEMPLATE ERROR]', templateError);
-  results.innerHTML = `
-    <div class="text-center py-20 px-6">
-      <p class="text-3xl font-bold text-red-600 mb-6">Report Generation Failed</p>
-      <p class="text-xl text-gray-700 dark:text-gray-300">
-        There was an error building the report layout.
-      </p>
-      <p class="text-lg text-gray-600 dark:text-gray-400 mt-4">
-        Check console for details.
-      </p>
-    </div>`;
-  return;
+} catch (e) {
+  console.error('[TEMPLATE ERROR]', e);
+  results.innerHTML = '<div class="text-center py-20 text-red-600 text-3xl">Template failed - check console</div>';
 }
-
-// Plugin rendering – direct call
-if (typeof renderPluginSolutions === 'function') {
-  console.log('Calling renderPluginSolutions immediately');
-  renderPluginSolutions(failedFactors, 'plugin-solutions-section');
-} else {
-  console.warn('renderPluginSolutions not loaded yet - delaying 500ms');
-  setTimeout(() => {
-    if (typeof renderPluginSolutions === 'function') {
-      console.log('Delayed call successful');
-      renderPluginSolutions(failedFactors, 'plugin-solutions-section');
-    } else {
-      console.error('renderPluginSolutions still not available');
-    }
-  }, 500);
-}
-
-// Radar chart (unchanged)
-setTimeout(() => {
-  const canvas = document.getElementById('health-radar');
-  if (!canvas) return;
-  try {
-    const ctx = canvas.getContext('2d');
-    const labelColor = '#9ca3af';
-    const gridColor = 'rgba(156, 163, 175, 0.3)';
-    const borderColor = '#22c55e';
-    const fillColor = 'rgba(34, 197, 94, 0.15)';
-    window.myChart = new Chart(ctx, {
-      type: 'radar',
-      data: {
-        labels: modules.map(m => m.name),
-        datasets: [{
-          label: 'Health Score',
-          data: scores,
-          backgroundColor: fillColor,
-          borderColor: borderColor,
-          borderWidth: 4,
-          pointRadius: 8,
-          pointHoverRadius: 12,
-          pointBackgroundColor: scores.map(s => s >= 85 ? '#10b981' : s >= 70 ? '#22c55e' : s >= 50 ? '#fb923c' : '#ef4444'),
-          pointBorderColor: '#fff',
-          pointBorderWidth: 3
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          r: {
-            beginAtZero: true,
-            min: 0,
-            max: 100,
-            ticks: { stepSize: 20, color: labelColor },
-            grid: { color: gridColor },
-            angleLines: { color: gridColor },
-            pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
-          }
-        },
-        plugins: { legend: { display: false } }
-      }
-    });
-    console.log('[Debug] Radar chart rendered');
-  } catch (e) {
-    console.error('Radar chart failed', e);
-  }
-}, 150);
-
-// Button toggle (unchanged)
-document.addEventListener('click', e => {
-  const target = e.target.closest('.more-details, .show-fixes');
-  if (!target) return;
-  const card = target.closest('.module-card');
-  if (!card) return;
-  if (target.classList.contains('more-details')) {
-    const panel = card.querySelector('.more-details-panel');
-    if (panel) panel.classList.toggle('hidden');
-  } else if (target.classList.contains('show-fixes')) {
-    const panel = card.querySelector('.fixes-panel');
-    if (panel) panel.classList.toggle('hidden');
-  }
-});
 
       } catch (err) {
         console.error('[Analysis failed]', err);
