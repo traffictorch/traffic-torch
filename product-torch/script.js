@@ -148,332 +148,319 @@ document.addEventListener('DOMContentLoaded', () => {
       url
     };
   }
-  
-  
-  
-  
+
   // Main product SEO analyzer
-function analyzeProductSEO(doc, inputUrl) {
-  const data = getProductPageContent(doc, inputUrl);
-
-  const onPageResult = analyzeOnPageSEO(doc, data);
-  const technicalResult = analyzeTechnicalSEO(doc, data);
-  const contentMediaResult = analyzeContentMedia(doc, data);
-  const ecommerceResult = analyzeEcommerceSEO(doc, data);
-
-  const weights = { onPage: 0.30, technical: 0.25, contentMedia: 0.25, ecommerce: 0.20 };
-
-  const overallScore = Math.round(
-    (onPageResult.score * weights.onPage) +
-    (technicalResult.score * weights.technical) +
-    (contentMediaResult.score * weights.contentMedia) +
-    (ecommerceResult.score * weights.ecommerce)
-  );
-
-  return {
-    score: isNaN(overallScore) ? 60 : Math.min(100, Math.max(0, overallScore)),
-    onPage: onPageResult,
-    technical: technicalResult,
-    contentMedia: contentMediaResult,
-    ecommerce: ecommerceResult
-  };
-}
-
-// Real analyzer functions
-function analyzeOnPageSEO(doc, data) {
-  let score = 0;
-  let details = {};
-
-  const title = doc.title.trim();
-  const titleLength = title.length;
-  let titleScore = 0;
-  if (titleLength >= 50 && titleLength <= 60) titleScore = 40;
-  else if (titleLength >= 40 && titleLength <= 70) titleScore = 25;
-  else titleScore = 10;
-  if (title.toLowerCase().includes('headphone') || title.toLowerCase().includes('audio technica') || title.toLowerCase().includes('wireless')) titleScore += 30;
-  if (title.includes('|') && title.split('|').length > 1) titleScore += 20;
-  details.title = { length: titleLength, keywordsPresent: titleScore > 40, score: titleScore };
-
-  const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
-  const descLength = metaDesc.length;
-  let descScore = 0;
-  if (descLength >= 120 && descLength <= 160) descScore += 40;
-  if (descLength > 0) descScore += 20;
-  if (/buy|shop|order|add to cart/i.test(metaDesc)) descScore += 20;
-  details.metaDescription = { length: descLength, ctaPresent: /buy|shop/i.test(metaDesc), score: descScore };
-
-  const h1s = doc.querySelectorAll('h1');
-  const h2s = doc.querySelectorAll('h2');
-  let headingScore = 0;
-  if (h1s.length === 1) headingScore += 40;
-  if (h2s.length >= 1) headingScore += 30;
-  if (data.headingCount >= 3) headingScore += 20;
-  if (h1s.length > 0 && h1s[0].textContent.toLowerCase().includes('headphone') || h1s[0].textContent.toLowerCase().includes('audio technica')) headingScore += 10;
-  details.headings = { h1Count: h1s.length, h2Count: h2s.length, keywordsInH1: headingScore > 70, score: headingScore };
-
-  const urlObj = new URL(data.url);
-  const path = urlObj.pathname;
-  let urlScore = 0;
-  if (!path.includes('?') && !path.includes('&')) urlScore += 40;
-  if (path.split('/').length <= 5) urlScore += 30;
-  if (/wireless|headphones|audio-technica|m50xbt/i.test(path)) urlScore += 20;
-  details.url = { clean: !path.includes('?'), keywordInSlug: /wireless|headphones/i.test(path), score: urlScore };
-
-  const mainText = data.fullText.toLowerCase();
-  const primaryKeyword = 'headphones';
-  const keywordCount = (mainText.match(new RegExp(primaryKeyword, 'g')) || []).length;
-  const density = data.wordCount > 0 ? (keywordCount / data.wordCount) * 100 : 0;
-  let keywordScore = 0;
-  if (density >= 0.5 && density <= 2.5) keywordScore += 40;
-  if (data.fullText.slice(0, 300).toLowerCase().includes(primaryKeyword)) keywordScore += 30;
-  if (keywordCount >= 3) keywordScore += 20;
-  details.keywords = { density, frontLoaded: data.fullText.slice(0, 300).toLowerCase().includes(primaryKeyword), score: keywordScore };
-
-  score = Math.round((titleScore + descScore + headingScore + urlScore + keywordScore) / 5);
-  return { score: Math.min(100, Math.max(0, score)), details };
-}
-
-function analyzeTechnicalSEO(doc, data) {
-  let score = 0;
-  let details = {};
-
-  let mobileScore = data.hasViewport ? 50 : 0;
-  if (data.viewportContent.includes('initial-scale=1') && !data.viewportContent.includes('user-scalable=no')) mobileScore += 40;
-  details.mobile = { viewportPresent: data.hasViewport, scaleOk: data.viewportContent.includes('initial-scale=1'), score: mobileScore };
-
-  const httpsScore = data.url.startsWith('https') ? 95 : 0;
-  details.https = { isHttps: data.url.startsWith('https'), score: httpsScore };
-
-  const canonical = doc.querySelector('link[rel="canonical"]');
-  const canonicalScore = canonical && canonical.href === data.url ? 80 : 30;
-  details.canonical = { present: !!canonical, matchesUrl: canonical?.href === data.url, score: canonicalScore };
-
-  const robotsMeta = doc.querySelector('meta[name="robots"]');
-  const robotsScore = !robotsMeta || !/noindex|nofollow/i.test(robotsMeta.content || '') ? 90 : 20;
-  details.robots = { indexable: robotsScore === 90, score: robotsScore };
-
-  const sitemapScore = /\/products|\/collections|\/item/i.test(data.url) ? 70 : 50;
-  details.sitemapHint = { likelyIncluded: sitemapScore >= 70, score: sitemapScore };
-
-  score = Math.round((mobileScore + httpsScore + canonicalScore + robotsScore + sitemapScore) / 5);
-  return { score: Math.min(100, Math.max(0, score)), details };
-}
-
-function analyzeContentMedia(doc, data) {
-  let score = 0;
-  let details = {};
-
-  const descScore = data.wordCount >= 300 ? 80 : data.wordCount >= 150 ? 50 : 20;
-  details.description = { wordCount: data.wordCount, score: descScore };
-
-  const imgScore = data.altData.missingCount === 0 ? 90 : data.altData.meaningfulCount > 0 && (data.altData.missingCount / data.altData.meaningfulCount) < 0.2 ? 70 : 40;
-  details.images = { missingAlt: data.altData.missingCount, meaningful: data.altData.meaningfulCount, score: imgScore };
-
-  const videoElements = doc.querySelectorAll('video, iframe[src*="youtube"], iframe[src*="vimeo"]');
-  const videoScore = videoElements.length > 0 ? (doc.querySelector('track') ? 80 : 60) : 30;
-  details.video = { present: videoElements.length > 0, captions: !!doc.querySelector('track'), score: videoScore };
-
-  const ugcScore = hasReviewSection(doc) ? 80 : 40;
-  details.ugc = { detected: ugcScore === 80, score: ugcScore };
-
-  const linkScore = data.linkCount >= 5 ? 70 : data.linkCount >= 2 ? 50 : 20;
-  details.internalLinks = { count: data.linkCount, score: linkScore };
-
-  const breadcrumbScore = doc.querySelector('[aria-label*="breadcrumb"], .breadcrumbs, .breadcrumb, nav[aria-label="breadcrumb"]') ? 90 : 40;
-  details.breadcrumbs = { present: breadcrumbScore === 90, score: breadcrumbScore };
-
-  score = Math.round((descScore + imgScore + videoScore + ugcScore + linkScore + breadcrumbScore) / 6);
-  return { score: Math.min(100, Math.max(0, score)), details };
-}
-
-function analyzeEcommerceSEO(doc, data) {
-  let score = 0;
-  let details = {};
-
-  const schemas = extractProductSchema(doc);
-  const productSchema = schemas.find(s => s['@type'] === 'Product' || (s['@graph'] && s['@graph'].some(g => g['@type'] === 'Product'))) || {};
-
-  const schemaScore = Object.keys(productSchema).length > 5 ? 90 : 30;
-  details.schema = { present: schemaScore === 90, fieldsCount: Object.keys(productSchema).length, score: schemaScore };
-
-  const priceScore = hasPriceMarkup(doc, productSchema) ? 85 : 40;
-  details.priceAvailability = { detected: priceScore === 85, score: priceScore };
-
-  const reviewScore = productSchema.aggregateRating && productSchema.aggregateRating.ratingValue ? 80 : hasReviewSection(doc) ? 60 : 20;
-  details.reviews = { aggregateRatingPresent: !!productSchema.aggregateRating, score: reviewScore };
-
-  const variantSelectors = doc.querySelectorAll('select[name*="variant"], select[name*="size"], select[name*="color"], input[type="radio"][name*="variant"]');
-  const variantScore = variantSelectors.length > 0 ? 70 : 50;
-  details.variants = { detected: variantSelectors.length > 0, score: variantScore };
-
-  const socialScore = hasSocialMeta(doc) ? 65 : 30;
-  details.social = { ogPresent: socialScore === 65, score: socialScore };
-
-  score = Math.round((schemaScore + priceScore + reviewScore + variantScore + socialScore) / 5);
-  return { score: Math.min(100, Math.max(0, score)), details, isPro: true };
-}
-  
-  
-  
-  
-
-// Real analyzer functions – fully implemented for product page SEO
-
-function analyzeOnPageSEO(doc, data) {
-  let score = 0;
-  let details = {};
-
-  // 1. Title Tag Optimization
-  const title = doc.title.trim();
-  const titleLength = title.length;
-  let titleScore = 0;
-  if (titleLength >= 50 && titleLength <= 60) titleScore = 40;
-  else if (titleLength >= 40 && titleLength <= 70) titleScore = 25;
-  else titleScore = 10;
-  if (title.toLowerCase().includes('headphone') || title.toLowerCase().includes('audio technica') || title.toLowerCase().includes('wireless')) titleScore += 30;
-  if (title.includes('|') && title.split('|').length > 1) titleScore += 20;
-  details.title = { length: titleLength, keywordsPresent: titleScore > 40, score: titleScore };
-
-  // 2. Meta Description
-  const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
-  const descLength = metaDesc.length;
-  let descScore = 0;
-  if (descLength >= 120 && descLength <= 160) descScore += 40;
-  if (descLength > 0) descScore += 20;
-  if (/buy|shop|order|add to cart/i.test(metaDesc)) descScore += 20;
-  details.metaDescription = { length: descLength, ctaPresent: /buy|shop/i.test(metaDesc), score: descScore };
-
-  // 3. Heading Structure
-  const h1s = doc.querySelectorAll('h1');
-  const h2s = doc.querySelectorAll('h2');
-  let headingScore = 0;
-  if (h1s.length === 1) headingScore += 40;
-  if (h2s.length >= 1) headingScore += 30;
-  if (data.headingCount >= 3) headingScore += 20;
-  if (h1s.length > 0 && h1s[0].textContent.toLowerCase().includes('headphone') || h1s[0].textContent.toLowerCase().includes('audio technica')) headingScore += 10;
-  details.headings = { h1Count: h1s.length, h2Count: h2s.length, keywordsInH1: headingScore > 70, score: headingScore };
-
-  // 4. URL Structure
-  const urlObj = new URL(data.url);
-  const path = urlObj.pathname;
-  let urlScore = 0;
-  if (!path.includes('?') && !path.includes('&')) urlScore += 40;
-  if (path.split('/').length <= 5) urlScore += 30;
-  if (/wireless|headphones|audio-technica|m50xbt/i.test(path)) urlScore += 20;
-  details.url = { clean: !path.includes('?'), keywordInSlug: /wireless|headphones/i.test(path), score: urlScore };
-
-  // 5. Keyword Optimization (simple density + placement)
-  const mainText = data.fullText.toLowerCase();
-  const primaryKeyword = 'headphones';
-  const keywordCount = (mainText.match(new RegExp(primaryKeyword, 'g')) || []).length;
-  const density = data.wordCount > 0 ? (keywordCount / data.wordCount) * 100 : 0;
-  let keywordScore = 0;
-  if (density >= 0.5 && density <= 2.5) keywordScore += 40;
-  if (data.fullText.slice(0, 300).toLowerCase().includes(primaryKeyword)) keywordScore += 30;
-  if (keywordCount >= 3) keywordScore += 20;
-  details.keywords = { density, frontLoaded: data.fullText.slice(0, 300).toLowerCase().includes(primaryKeyword), score: keywordScore };
-
-  score = Math.round((titleScore + descScore + headingScore + urlScore + keywordScore) / 5);
-  return { score: Math.min(100, Math.max(0, score)), details };
-}
-
-function analyzeTechnicalSEO(doc, data) {
-  let score = 0;
-  let details = {};
-
-  // Mobile-Friendliness
-  let mobileScore = data.hasViewport ? 50 : 0;
-  if (data.viewportContent.includes('initial-scale=1') && !data.viewportContent.includes('user-scalable=no')) mobileScore += 40;
-  details.mobile = { viewportPresent: data.hasViewport, scaleOk: data.viewportContent.includes('initial-scale=1'), score: mobileScore };
-
-  // HTTPS
-  const httpsScore = data.url.startsWith('https') ? 95 : 0;
-  details.https = { isHttps: data.url.startsWith('https'), score: httpsScore };
-
-  // Canonical
-  const canonical = doc.querySelector('link[rel="canonical"]');
-  const canonicalScore = canonical && canonical.href === data.url ? 80 : 30;
-  details.canonical = { present: !!canonical, matchesUrl: canonical?.href === data.url, score: canonicalScore };
-
-  // Meta Robots
-  const robotsMeta = doc.querySelector('meta[name="robots"]');
-  const robotsScore = !robotsMeta || !/noindex|nofollow/i.test(robotsMeta.content || '') ? 90 : 20;
-  details.robots = { indexable: robotsScore === 90, score: robotsScore };
-
-  // Sitemap hint (educational)
-  const sitemapScore = /\/products|\/collections|\/item/i.test(data.url) ? 70 : 50;
-  details.sitemapHint = { likelyIncluded: sitemapScore >= 70, score: sitemapScore };
-
-  score = Math.round((mobileScore + httpsScore + canonicalScore + robotsScore + sitemapScore) / 5);
-  return { score: Math.min(100, Math.max(0, score)), details };
-}
-
-function analyzeContentMedia(doc, data) {
-  let score = 0;
-  let details = {};
-
-  // Description Quality
-  const descScore = data.wordCount >= 300 ? 80 : data.wordCount >= 150 ? 50 : 20;
-  details.description = { wordCount: data.wordCount, score: descScore };
-
-  // Image Optimization
-  const imgScore = data.altData.missingCount === 0 ? 90 : data.altData.meaningfulCount > 0 && (data.altData.missingCount / data.altData.meaningfulCount) < 0.2 ? 70 : 40;
-  details.images = { missingAlt: data.altData.missingCount, meaningful: data.altData.meaningfulCount, score: imgScore };
-
-  // Video Embed
-  const videoElements = doc.querySelectorAll('video, iframe[src*="youtube"], iframe[src*="vimeo"]');
-  const videoScore = videoElements.length > 0 ? (doc.querySelector('track') ? 80 : 60) : 30;
-  details.video = { present: videoElements.length > 0, captions: !!doc.querySelector('track'), score: videoScore };
-
-  // UGC (Reviews)
-  const ugcScore = hasReviewSection(doc) ? 80 : 40;
-  details.ugc = { detected: ugcScore === 80, score: ugcScore };
-
-  // Internal Linking
-  const linkScore = data.linkCount >= 5 ? 70 : data.linkCount >= 2 ? 50 : 20;
-  details.internalLinks = { count: data.linkCount, score: linkScore };
-
-  // Breadcrumbs
-  const breadcrumbScore = doc.querySelector('[aria-label*="breadcrumb"], .breadcrumbs, .breadcrumb, nav[aria-label="breadcrumb"]') ? 90 : 40;
-  details.breadcrumbs = { present: breadcrumbScore === 90, score: breadcrumbScore };
-
-  score = Math.round((descScore + imgScore + videoScore + ugcScore + linkScore + breadcrumbScore) / 6);
-  return { score: Math.min(100, Math.max(0, score)), details };
-}
-
-function analyzeEcommerceSEO(doc, data) {
-  let score = 0;
-  let details = {};
-
-  const schemas = extractProductSchema(doc);
-  const productSchema = schemas.find(s => s['@type'] === 'Product' || (s['@graph'] && s['@graph'].some(g => g['@type'] === 'Product'))) || {};
-
-  // Product Schema
-  const schemaScore = Object.keys(productSchema).length > 5 ? 90 : 30;
-  details.schema = { present: schemaScore === 90, fieldsCount: Object.keys(productSchema).length, score: schemaScore };
-
-  // Price & Availability
-  const priceScore = hasPriceMarkup(doc, productSchema) ? 85 : 40;
-  details.priceAvailability = { detected: priceScore === 85, score: priceScore };
-
-  // Review Schema
-  const reviewScore = productSchema.aggregateRating && productSchema.aggregateRating.ratingValue ? 80 : hasReviewSection(doc) ? 60 : 20;
-  details.reviews = { aggregateRatingPresent: !!productSchema.aggregateRating, score: reviewScore };
-
-  // Variant Handling
-  const variantSelectors = doc.querySelectorAll('select[name*="variant"], select[name*="size"], select[name*="color"], input[type="radio"][name*="variant"]');
-  const variantScore = variantSelectors.length > 0 ? 70 : 50;
-  details.variants = { detected: variantSelectors.length > 0, score: variantScore };
-
-  // Social Sharing
-  const socialScore = hasSocialMeta(doc) ? 65 : 30;
-  details.social = { ogPresent: socialScore === 65, score: socialScore };
-
-  score = Math.round((schemaScore + priceScore + reviewScore + variantScore + socialScore) / 5);
-  return { score: Math.min(100, Math.max(0, score)), details, isPro: true };
-}
-
-  // Health label, grade, plugin grade, buildModuleHTML functions (already updated in previous steps - assume they are correct)
+  function analyzeProductSEO(doc, inputUrl) {
+    const data = getProductPageContent(doc, inputUrl);
+
+    const onPageResult = analyzeOnPageSEO(doc, data);
+    const technicalResult = analyzeTechnicalSEO(doc, data);
+    const contentMediaResult = analyzeContentMedia(doc, data);
+    const ecommerceResult = analyzeEcommerceSEO(doc, data);
+
+    const weights = { onPage: 0.30, technical: 0.25, contentMedia: 0.25, ecommerce: 0.20 };
+
+    const overallScore = Math.round(
+      (onPageResult.score * weights.onPage) +
+      (technicalResult.score * weights.technical) +
+      (contentMediaResult.score * weights.contentMedia) +
+      (ecommerceResult.score * weights.ecommerce)
+    );
+
+    return {
+      score: isNaN(overallScore) ? 60 : Math.min(100, Math.max(0, overallScore)),
+      onPage: onPageResult,
+      technical: technicalResult,
+      contentMedia: contentMediaResult,
+      ecommerce: ecommerceResult
+    };
+  }
+
+  // Analyzer implementations
+  function analyzeOnPageSEO(doc, data) {
+    let score = 0;
+    let details = {};
+
+    const title = doc.title.trim();
+    const titleLength = title.length;
+    let titleScore = 0;
+    if (titleLength >= 50 && titleLength <= 60) titleScore = 40;
+    else if (titleLength >= 40 && titleLength <= 70) titleScore = 25;
+    else titleScore = 10;
+    if (title.toLowerCase().includes('headphone') || title.toLowerCase().includes('audio technica') || title.toLowerCase().includes('wireless')) titleScore += 30;
+    if (title.includes('|') && title.split('|').length > 1) titleScore += 20;
+    details.title = { length: titleLength, keywordsPresent: titleScore > 40, score: titleScore };
+
+    const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
+    const descLength = metaDesc.length;
+    let descScore = 0;
+    if (descLength >= 120 && descLength <= 160) descScore += 40;
+    if (descLength > 0) descScore += 20;
+    if (/buy|shop|order|add to cart/i.test(metaDesc)) descScore += 20;
+    details.metaDescription = { length: descLength, ctaPresent: /buy|shop/i.test(metaDesc), score: descScore };
+
+    const h1s = doc.querySelectorAll('h1');
+    const h2s = doc.querySelectorAll('h2');
+    let headingScore = 0;
+    if (h1s.length === 1) headingScore += 40;
+    if (h2s.length >= 1) headingScore += 30;
+    if (data.headingCount >= 3) headingScore += 20;
+    if (h1s.length > 0 && h1s[0].textContent.toLowerCase().includes('headphone') || h1s[0].textContent.toLowerCase().includes('audio technica')) headingScore += 10;
+    details.headings = { h1Count: h1s.length, h2Count: h2s.length, keywordsInH1: headingScore > 70, score: headingScore };
+
+    const urlObj = new URL(data.url);
+    const path = urlObj.pathname;
+    let urlScore = 0;
+    if (!path.includes('?') && !path.includes('&')) urlScore += 40;
+    if (path.split('/').length <= 5) urlScore += 30;
+    if (/wireless|headphones|audio-technica|m50xbt/i.test(path)) urlScore += 20;
+    details.url = { clean: !path.includes('?'), keywordInSlug: /wireless|headphones/i.test(path), score: urlScore };
+
+    const mainText = data.fullText.toLowerCase();
+    const primaryKeyword = 'headphones';
+    const keywordCount = (mainText.match(new RegExp(primaryKeyword, 'g')) || []).length;
+    const density = data.wordCount > 0 ? (keywordCount / data.wordCount) * 100 : 0;
+    let keywordScore = 0;
+    if (density >= 0.5 && density <= 2.5) keywordScore += 40;
+    if (data.fullText.slice(0, 300).toLowerCase().includes(primaryKeyword)) keywordScore += 30;
+    if (keywordCount >= 3) keywordScore += 20;
+    details.keywords = { density, frontLoaded: data.fullText.slice(0, 300).toLowerCase().includes(primaryKeyword), score: keywordScore };
+
+    score = Math.round((titleScore + descScore + headingScore + urlScore + keywordScore) / 5);
+    return { score: Math.min(100, Math.max(0, score)), details };
+  }
+
+  function analyzeTechnicalSEO(doc, data) {
+    let score = 0;
+    let details = {};
+
+    let mobileScore = data.hasViewport ? 50 : 0;
+    if (data.viewportContent.includes('initial-scale=1') && !data.viewportContent.includes('user-scalable=no')) mobileScore += 40;
+    details.mobile = { viewportPresent: data.hasViewport, scaleOk: data.viewportContent.includes('initial-scale=1'), score: mobileScore };
+
+    const httpsScore = data.url.startsWith('https') ? 95 : 0;
+    details.https = { isHttps: data.url.startsWith('https'), score: httpsScore };
+
+    const canonical = doc.querySelector('link[rel="canonical"]');
+    const canonicalScore = canonical && canonical.href === data.url ? 80 : 30;
+    details.canonical = { present: !!canonical, matchesUrl: canonical?.href === data.url, score: canonicalScore };
+
+    const robotsMeta = doc.querySelector('meta[name="robots"]');
+    const robotsScore = !robotsMeta || !/noindex|nofollow/i.test(robotsMeta.content || '') ? 90 : 20;
+    details.robots = { indexable: robotsScore === 90, score: robotsScore };
+
+    const sitemapScore = /\/products|\/collections|\/item/i.test(data.url) ? 70 : 50;
+    details.sitemapHint = { likelyIncluded: sitemapScore >= 70, score: sitemapScore };
+
+    score = Math.round((mobileScore + httpsScore + canonicalScore + robotsScore + sitemapScore) / 5);
+    return { score: Math.min(100, Math.max(0, score)), details };
+  }
+
+  function analyzeContentMedia(doc, data) {
+    let score = 0;
+    let details = {};
+
+    const descScore = data.wordCount >= 300 ? 80 : data.wordCount >= 150 ? 50 : 20;
+    details.description = { wordCount: data.wordCount, score: descScore };
+
+    const imgScore = data.altData.missingCount === 0 ? 90 : data.altData.meaningfulCount > 0 && (data.altData.missingCount / data.altData.meaningfulCount) < 0.2 ? 70 : 40;
+    details.images = { missingAlt: data.altData.missingCount, meaningful: data.altData.meaningfulCount, score: imgScore };
+
+    const videoElements = doc.querySelectorAll('video, iframe[src*="youtube"], iframe[src*="vimeo"]');
+    const videoScore = videoElements.length > 0 ? (doc.querySelector('track') ? 80 : 60) : 30;
+    details.video = { present: videoElements.length > 0, captions: !!doc.querySelector('track'), score: videoScore };
+
+    const ugcScore = hasReviewSection(doc) ? 80 : 40;
+    details.ugc = { detected: ugcScore === 80, score: ugcScore };
+
+    const linkScore = data.linkCount >= 5 ? 70 : data.linkCount >= 2 ? 50 : 20;
+    details.internalLinks = { count: data.linkCount, score: linkScore };
+
+    const breadcrumbScore = doc.querySelector('[aria-label*="breadcrumb"], .breadcrumbs, .breadcrumb, nav[aria-label="breadcrumb"]') ? 90 : 40;
+    details.breadcrumbs = { present: breadcrumbScore === 90, score: breadcrumbScore };
+
+    score = Math.round((descScore + imgScore + videoScore + ugcScore + linkScore + breadcrumbScore) / 6);
+    return { score: Math.min(100, Math.max(0, score)), details };
+  }
+
+  function analyzeEcommerceSEO(doc, data) {
+    let score = 0;
+    let details = {};
+
+    const schemas = extractProductSchema(doc);
+    const productSchema = schemas.find(s => s['@type'] === 'Product' || (s['@graph'] && s['@graph'].some(g => g['@type'] === 'Product'))) || {};
+
+    const schemaScore = Object.keys(productSchema).length > 5 ? 90 : 30;
+    details.schema = { present: schemaScore === 90, fieldsCount: Object.keys(productSchema).length, score: schemaScore };
+
+    const priceScore = hasPriceMarkup(doc, productSchema) ? 85 : 40;
+    details.priceAvailability = { detected: priceScore === 85, score: priceScore };
+
+    const reviewScore = productSchema.aggregateRating && productSchema.aggregateRating.ratingValue ? 80 : hasReviewSection(doc) ? 60 : 20;
+    details.reviews = { aggregateRatingPresent: !!productSchema.aggregateRating, score: reviewScore };
+
+    const variantSelectors = doc.querySelectorAll('select[name*="variant"], select[name*="size"], select[name*="color"], input[type="radio"][name*="variant"]');
+    const variantScore = variantSelectors.length > 0 ? 70 : 50;
+    details.variants = { detected: variantSelectors.length > 0, score: variantScore };
+
+    const socialScore = hasSocialMeta(doc) ? 65 : 30;
+    details.social = { ogPresent: socialScore === 65, score: socialScore };
+
+    score = Math.round((schemaScore + priceScore + reviewScore + variantScore + socialScore) / 5);
+    return { score: Math.min(100, Math.max(0, score)), details, isPro: true };
+  }
+
+  function getHealthLabel(score) {
+    if (score >= 85) return { text: "Excellent", color: "from-green-400 to-emerald-600" };
+    if (score >= 70) return { text: "Strong", color: "from-teal-400 to-cyan-600" };
+    if (score >= 50) return { text: "Needs Work", color: "from-yellow-400 to-orange-600" };
+    return { text: "Poor", color: "from-red-500 to-pink-600" };
+  }
+
+  function getGradeInfo(score) {
+    if (score >= 90) return { grade: "A+", color: "text-green-600", emoji: "🏆" };
+    if (score >= 85) return { grade: "A", color: "text-green-600", emoji: "✅" };
+    if (score >= 80) return { grade: "B+", color: "text-green-500", emoji: "✅" };
+    if (score >= 70) return { grade: "B", color: "text-teal-500", emoji: "👍" };
+    if (score >= 60) return { grade: "C+", color: "text-yellow-600", emoji: "⚠️" };
+    if (score >= 50) return { grade: "C", color: "text-orange-600", emoji: "⚠️" };
+    return { grade: "Needs Work", color: "text-red-600", emoji: "❌" };
+  }
+
+  function getPluginGrade(score) {
+    if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+    if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+    if (score >= 50) return { grade: 'Average', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
+    if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+    return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+  }
+
+  function buildModuleHTML(moduleName, value, moduleData, factorScores = null) {
+    const ringColor = value < 50 ? '#ef4444' : value < 70 ? '#fb923c' : value < 85 ? '#22c55e' : '#10b981';
+    const borderClass = value < 50 ? 'border-red-500' : value < 70 ? 'border-orange-500' : value < 85 ? 'border-green-500' : 'border-emerald-500';
+    const gradeInfo = getGradeInfo(value);
+    let statusMessage, statusEmoji;
+    if (value >= 85) { statusMessage = "Excellent"; statusEmoji = "🏆"; }
+    else if (value >= 70) { statusMessage = "Strong"; statusEmoji = "✅"; }
+    else if (value >= 50) { statusMessage = "Needs Work"; statusEmoji = "⚠️"; }
+    else { statusMessage = "Poor"; statusEmoji = "❌"; }
+    let metricsHTML = '';
+    let fixesHTML = '';
+    let failedOnlyHTML = '';
+    let failedCount = 0;
+    moduleData.factors.forEach(f => {
+      let passed = value >= f.threshold;
+      let metricGrade = passed
+        ? { color: "text-green-600 dark:text-green-400", emoji: "✅" }
+        : (value >= f.threshold - 15)
+          ? { color: "text-orange-600 dark:text-orange-400", emoji: "⚠️" }
+          : { color: "text-red-600 dark:text-red-400", emoji: "❌" };
+      metricsHTML += `
+        <div class="mb-6">
+          <p class="font-medium text-xl">
+            <span class="${metricGrade.color} text-2xl mr-3">${metricGrade.emoji}</span>
+            <span class="${metricGrade.color} font-bold">${f.name}</span>
+          </p>
+        </div>`;
+      fixesHTML += `
+        <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
+          <p class="font-bold text-xl ${metricGrade.color} mb-3">
+            <span class="text-3xl mr-3">${metricGrade.emoji}</span>
+            ${f.name}
+          </p>
+          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+            ${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}
+          </p>
+        </div>`;
+      if (!passed) {
+        failedOnlyHTML += `
+          <div class="mb-8 p-2 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
+            <p class="font-bold text-2xl ${metricGrade.color} mb-4">
+              <span class="text-4xl">${metricGrade.emoji}</span>
+            </p>
+            <p class="font-bold text-2xl ${metricGrade.color} mb-4">
+              ${f.name}
+            </p>
+            <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+              ${f.howToFix}
+            </p>
+          </div>`;
+        failedCount++;
+      }
+    });
+    const moreDetailsHTML = `
+      <div class="text-left px-4 py-6">
+        <h4 class="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100 text-center">
+          <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase().replace(/\s+/g, '-')}';">
+            How ${moduleName} is tested?
+          </button>
+        </h4>
+        <div class="space-y-6">
+          <div>
+            <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">What it is:</strong>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleWhat}</p>
+          </div>
+          <div>
+            <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">How to Improve:</strong>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleHow}</p>
+          </div>
+          <div>
+            <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">Why it matters:</strong>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleWhy}</p>
+          </div>
+        </div>
+      </div>`;
+    const fixesPanelHTML = failedCount > 0
+      ? `
+        <div class="space-y-6">
+          ${failedOnlyHTML}
+        </div>
+        <p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">
+          <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase().replace(/\s+/g, '-')}';">
+            Learn more about ${moduleName}?
+          </button>
+        </p>
+      `
+      : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
+    return `
+      <div class="module-card text-center p-4 sm:p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
+        <div class="relative mx-auto w-32 h-32">
+          <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+            <circle cx="64" cy="64" r="56" stroke="#e5e7eb dark:stroke-gray-700" stroke-width="12" fill="none"/>
+            <circle cx="64" cy="64" r="56"
+                    stroke="${ringColor}"
+                    stroke-width="12" fill="none"
+                    stroke-dasharray="${(value / 100) * 352} 352"
+                    stroke-linecap="round"/>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${ringColor};">
+            ${value}
+          </div>
+        </div>
+        <p class="mt-4 text-2xl font-bold ${gradeInfo.color}"> ${moduleName}</p>
+        <div class="mt-4 text-center">
+          <p class="text-4xl ${gradeInfo.color}"> ${statusEmoji}</p>
+          <p class="text-3xl font-bold ${gradeInfo.color} mt-2"> ${statusMessage}</p>
+        </div>
+        <div class="mt-6 text-center metrics-list px-2 sm:px-0">
+          ${metricsHTML}
+        </div>
+        <div class="more-details-panel hidden mt-8 text-left px-2 sm:px-4">
+          ${moreDetailsHTML}
+        </div>
+        <div class="mt-6 flex gap-4 justify-center flex-wrap">
+          <button class="more-details px-6 py-3 sm:px-8 sm:py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
+            More Details
+          </button>
+          <button class="show-fixes px-6 py-3 sm:px-8 sm:py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
+            Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
+          </button>
+        </div>
+        <div class="fixes-panel hidden mt-8 text-left px-2 sm:px-4">
+          ${fixesPanelHTML}
+        </div>
+      </div>`;
+  }
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
@@ -522,13 +509,6 @@ function analyzeEcommerceSEO(doc, data) {
         const seo = analyzeProductSEO(doc, url);
 
         const failedMetrics = [];
-        function getPluginGrade(score) {
-  if (score >= 90) return { grade: 'Excellent', emoji: '🚀', color: 'text-green-600 dark:text-green-400' };
-  if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
-  if (score >= 50) return { grade: 'Average', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
-  if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
-  return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
-}
         if (seo.onPage.score < 70) failedMetrics.push({ name: "On-Page SEO", grade: getPluginGrade(seo.onPage.score) });
         if (seo.technical.score < 80) failedMetrics.push({ name: "Technical SEO", grade: getPluginGrade(seo.technical.score) });
         if (seo.contentMedia.score < 70) failedMetrics.push({ name: "Content & Media", grade: getPluginGrade(seo.contentMedia.score) });
