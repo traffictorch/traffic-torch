@@ -175,6 +175,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function analyzeOnPageSEO(doc, data) {
   let details = {};
+    // Extract primary keyword for regex (same logic as before)
+  let primaryKeyword = '';
+  const h1Text = doc.querySelector('h1')?.textContent?.trim().toLowerCase() || '';
+  const titleText = doc.title.trim().toLowerCase();
+
+  if (h1Text.length > 10) {
+    primaryKeyword = h1Text.split(' ').slice(0, 4).join(' ');
+  } else if (titleText.length > 10) {
+    const parts = titleText.split(/[\|\-–—]/)[0].trim().split(' ');
+    primaryKeyword = parts.slice(0, 4).join(' ');
+  } else {
+    const urlObj = new URL(data.url);
+    const slug = urlObj.pathname.split('/').filter(Boolean).pop() || '';
+    primaryKeyword = slug.replace(/[-_]/g, ' ').replace(/\d{4,}/g, '').trim();
+    if (primaryKeyword.length < 5) primaryKeyword = 'product';
+  }
+
+  // Remove common stop words
+  const stopWords = /^(the|a|an|best|top|new|buy|shop|order|free|sale|online|free shipping|with|for|and|in|at|to|of)$/i;
+  primaryKeyword = primaryKeyword.replace(stopWords, '').trim().replace(stopWords, '').trim();
+
+  // Create regex once — case-insensitive, whole word boundaries where possible
+  const keywordRegex = new RegExp('\\b' + primaryKeyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
   let titleScore = 0;
   const title = doc.title.trim();
   const titleLength = title.length;
