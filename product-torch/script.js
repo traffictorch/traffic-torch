@@ -1043,6 +1043,44 @@ modulesData.forEach(mod => {
             </button>
           </div>
         `;
+        // NEW: Wait briefly for browser to actually insert & parse the new HTML into DOM
+setTimeout(() => {
+  console.log('DOM settle delay finished — checking plugin section now');
+  const pluginSection = document.getElementById('plugin-solutions-section');
+  console.log('plugin-solutions-section exists?', !!pluginSection);
+
+  if (!pluginSection) {
+    console.error('CRITICAL: #plugin-solutions-section still missing from DOM after innerHTML set');
+    return;
+  }
+
+  if (typeof renderPluginSolutions !== 'function') {
+    console.error('renderPluginSolutions is not a function');
+    pluginSection.innerHTML = '<div class="text-center py-10 text-red-600 dark:text-red-400 font-medium">Plugin recommendations failed to load (script not ready).</div>';
+    return;
+  }
+
+  console.log('renderPluginSolutions ready — preparing to call with', failedFactors.length, 'factors');
+
+  // Filter out any undefined / invalid entries (prevents empty render loop)
+  const validFailedFactors = failedFactors.filter(f => {
+    if (!f || !f.metric || typeof f.metric !== 'string') {
+      console.warn('Invalid/undefined factor skipped:', f);
+      return false;
+    }
+    return true;
+  });
+
+  console.log('Valid failed factors after cleaning:', validFailedFactors.length);
+  if (validFailedFactors.length === 0) {
+    pluginSection.innerHTML = '<div class="text-center py-10 bg-green-50 dark:bg-green-900/20 rounded-2xl border border-green-200 dark:border-green-800"><p class="text-lg text-green-700 dark:text-green-300">No critical failed metrics — page looks solid!</p></div>';
+    return;
+  }
+
+  console.log('Calling renderPluginSolutions now');
+  renderPluginSolutions(validFailedFactors, 'plugin-solutions-section');
+
+}, 100);  // 100ms is usually enough; can increase to 300 if still fails
 
         setTimeout(() => {
           const canvas = document.getElementById('health-radar');
@@ -1102,22 +1140,7 @@ if (typeof renderPluginSolutions === 'function') {
 } else {
   console.warn('renderPluginSolutions not ready yet — waiting longer');
   setTimeout(() => {
-    if (typeof renderPluginSolutions === 'function') {
-      console.log('Delayed call successful — rendering now');
-      renderPluginSolutions(failedFactors, 'plugin-solutions-section');
-    } else {
-      console.error('renderPluginSolutions STILL not available after delay');
-      const container = document.getElementById('plugin-solutions-section');
-      if (container) {
-        container.innerHTML = `
-          <div class="text-center py-12 bg-red-50 dark:bg-red-900/30 rounded-2xl border border-red-300 dark:border-red-700">
-            <p class="text-xl font-bold text-red-700 dark:text-red-300 mb-4">Plugin recommendations failed to load</p>
-            <p class="text-gray-700 dark:text-gray-300">Check browser console for errors (F12 → Console). Possible causes: import failed or timing issue.</p>
-          </div>`;
-      }
-    }
-  }, 1500);  // increased from 500ms
-}
+
       } catch (err) {
         document.getElementById('loading').classList.add('hidden');
         results.innerHTML = `
