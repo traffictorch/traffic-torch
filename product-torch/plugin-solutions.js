@@ -204,10 +204,9 @@ const pluginData = {
 
 function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-section') {
   if (failedMetrics.length === 0) {
-    console.log('Plugin Solutions: No low/average metrics to show');
+    console.log('Plugin Solutions: No issues to show');
     return;
   }
-
   console.log('Rendering Plugin Solutions for metrics:', failedMetrics.map(m => m.name));
 
   const container = document.getElementById(containerId);
@@ -219,21 +218,27 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
   const section = document.createElement('section');
   section.className = 'mt-20 max-w-5xl mx-auto px-4';
 
+  // Debug banner
   section.innerHTML = `
+    <div style="background:#6b21a8; color:white; padding:16px; border-radius:12px; margin-bottom:24px; text-align:center; font-weight:bold;">
+      PLUGIN SOLUTIONS LOADED (${failedMetrics.length} issues) – panels are now OPEN by default for testing
+    </div>
+  `;
+
+  section.innerHTML += `
     <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
-      Plugin Solutions for Performance & Accessibility Issues
+      Plugin Solutions for Detected Issues
     </h2>
     <p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
-      ${failedMetrics.length} issue${failedMetrics.length > 1 ? 's need' : ' needs'} attention. 
-      Check your theme or template first — many modern themes already include some of these optimizations.
-      Expand any panel below to see top free/freemium plugins/apps that can help fix it.
+      ${failedMetrics.length} issue${failedMetrics.length > 1 ? 's' : ''} detected.
+      Expand panels (they are open by default in debug mode) to see plugin recommendations.
     </p>
     <div class="space-y-6">
       ${failedMetrics.map(m => {
         const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
-        const g = m.grade;
+        const g = m.grade || { color: 'text-gray-600', emoji: '❓' }; // fallback
         return `
-          <details class="group bg-white dark:bg-gray-900 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <details class="group bg-white dark:bg-gray-900 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden" open>
             <summary class="flex items-center justify-between p-6 md:p-8 cursor-pointer list-none">
               <h3 class="text-2xl md:text-3xl font-bold ${g.color}">
                 ${g.emoji} ${m.name}
@@ -253,8 +258,8 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
                   ).join('')}
                 </select>
               </div>
-              <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
-                <!-- Plugins will be injected here -->
+              <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Plugins injected here -->
               </div>
             </div>
           </details>
@@ -262,63 +267,37 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
       }).join('')}
     </div>
     <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-12">
-      These popular free/freemium plugins and apps can significantly improve these areas. 
-      Always test on a staging environment first and check for recent reviews/updates.
+      These plugins can help fix detected issues. Test in staging first.
     </p>
   `;
 
+  container.innerHTML = ''; // clear any old content
   container.appendChild(section);
-  
-  console.log('[Plugin Debug] Section appended to container');
-console.log('[Plugin Debug] Number of <details> created:', section.querySelectorAll('details').length);
-console.log('[Plugin Debug] Failed metrics count:', failedMetrics.length);
 
-// Force visibility of appended section
-section.style.display = 'block';
-section.style.minHeight = '400px';
-section.style.background = '#fef3ff'; // light purple highlight for debug
-section.style.border = '4px dashed #9333ea';
-section.querySelector('h2')?.scrollIntoView({ behavior: 'smooth' });
+  console.log('[Plugin Debug] Section appended – panels should be open');
 
-// Debug output in the page
-const debugDiv = document.createElement('div');
-debugDiv.style.padding = '16px';
-debugDiv.style.background = '#f3e8ff';
-debugDiv.style.borderRadius = '12px';
-debugDiv.style.marginTop = '16px';
-debugDiv.innerHTML = `
-  <p><strong>Debug Success:</strong> ${failedMetrics.length} issues detected</p>
-  <p>Rendered ${section.querySelectorAll('details').length} accordion panels</p>
-  <p>Click a panel to expand and select CMS</p>
-`;
-container.appendChild(debugDiv);
-
-  // Attach event listeners after DOM insertion
+  // Attach select listeners
   setTimeout(() => {
     failedMetrics.forEach(m => {
       const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
       const select = document.getElementById(`cms-select-${metricId}`);
       const pluginsList = document.getElementById(`plugins-${metricId}`);
-
       if (!select || !pluginsList) {
-        console.warn(`Could not find select/plugins for metric: ${m.name} (id: ${metricId})`);
+        console.warn(`Missing select/plugins for ${m.name}`);
         return;
       }
-
       select.addEventListener('change', (e) => {
         const selected = e.target.value;
+        console.log(`[Plugin Debug] CMS selected for ${m.name}: ${selected}`);
         pluginsList.innerHTML = '';
-        pluginsList.classList.add('hidden');
-
+        pluginsList.classList.remove('hidden');
         if (!selected || !pluginData[m.name]?.[selected]) {
-          console.log(`No plugins found for ${m.name} → ${selected}`);
+          pluginsList.innerHTML = '<p class="text-center text-gray-600 py-4">No plugins for this platform</p>';
           return;
         }
-
         pluginData[m.name][selected].forEach(plugin => {
           const card = document.createElement('div');
           card.className = 'group relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-200 dark:border-gray-700 overflow-hidden';
-
           card.innerHTML = `
             <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             <div class="relative z-10">
@@ -327,27 +306,21 @@ container.appendChild(debugDiv);
               <div class="flex flex-wrap gap-4">
                 ${plugin.link ? `
                   <a href="${plugin.link}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-                    Plugin Library
-                  </a>
-                ` : ''}
-                ${plugin.homeLink ? `
-                  <a href="${plugin.homeLink}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-                    Plugin Website
+                    View Plugin
                   </a>
                 ` : ''}
               </div>
             </div>
           `;
-
           pluginsList.appendChild(card);
         });
-
-        if (pluginsList.children.length > 0) {
-          pluginsList.classList.remove('hidden');
-        }
       });
+      // Auto-select first option for debug (optional)
+      if (select.options.length > 1) {
+        select.selectedIndex = 1;
+        select.dispatchEvent(new Event('change'));
+      }
     });
   }, 0);
 }
-
 export { renderPluginSolutions };
