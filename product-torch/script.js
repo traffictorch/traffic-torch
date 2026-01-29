@@ -928,6 +928,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: targetY, behavior: 'smooth' });
 
         results.innerHTML = `
+        console.log('[Debug] plugin-section exists after innerHTML?', !!document.getElementById('plugin-solutions-section'));
           <!-- Big Overall Score Card -->
           <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
             <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${safeScore >= 85 ? 'border-emerald-500' : safeScore >= 70 ? 'border-teal-500' : safeScore >= 50 ? 'border-orange-500' : 'border-red-500'}">
@@ -1081,7 +1082,7 @@ setTimeout(() => {
     renderPluginSolutions(validFactors, 'plugin-solutions-section');
     console.log('[Plugin Debug] renderPluginSolutions called successfully');
   }
-}, 2000);  // Increased from 400ms → gives more time for large innerHTML to parse & insert
+}, 1000);  // Increased from 400ms → gives more time for large innerHTML to parse & insert
 
         // Radar chart
         setTimeout(() => {
