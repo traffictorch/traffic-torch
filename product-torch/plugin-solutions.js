@@ -204,41 +204,32 @@ const pluginData = {
 
 function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-section') {
   if (failedMetrics.length === 0) {
-    console.log('Plugin Solutions: No issues to show');
+    console.log('Plugin Solutions: No low/average metrics to show');
     return;
   }
   console.log('Rendering Plugin Solutions for metrics:', failedMetrics.map(m => m.name));
-
   const container = document.getElementById(containerId);
   if (!container) {
     console.warn(`Plugin Solutions container not found: #${containerId}`);
     return;
   }
-
   const section = document.createElement('section');
   section.className = 'mt-20 max-w-5xl mx-auto px-4';
-
-  // Debug banner
   section.innerHTML = `
-    <div style="background:#6b21a8; color:white; padding:16px; border-radius:12px; margin-bottom:24px; text-align:center; font-weight:bold;">
-      PLUGIN SOLUTIONS LOADED (${failedMetrics.length} issues) – panels are now OPEN by default for testing
-    </div>
-  `;
-
-  section.innerHTML += `
     <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
-      Plugin Solutions for Detected Issues
+      Plugin Solutions for Performance & Accessibility Issues
     </h2>
     <p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
-      ${failedMetrics.length} issue${failedMetrics.length > 1 ? 's' : ''} detected.
-      Expand panels (they are open by default in debug mode) to see plugin recommendations.
+      ${failedMetrics.length} issue${failedMetrics.length > 1 ? 's need' : ' needs'} attention.
+      Check your theme or template first — many modern themes already include some of these optimizations.
+      Expand any panel below to see top free/freemium plugins/apps that can help fix it.
     </p>
     <div class="space-y-6">
       ${failedMetrics.map(m => {
         const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
-        const g = m.grade || { color: 'text-gray-600', emoji: '❓' }; // fallback
+        const g = m.grade;
         return `
-          <details class="group bg-white dark:bg-gray-900 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden" open>
+          <details class="group bg-white dark:bg-gray-900 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden">
             <summary class="flex items-center justify-between p-6 md:p-8 cursor-pointer list-none">
               <h3 class="text-2xl md:text-3xl font-bold ${g.color}">
                 ${g.emoji} ${m.name}
@@ -258,8 +249,8 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
                   ).join('')}
                 </select>
               </div>
-              <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Plugins injected here -->
+              <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+                <!-- Plugins will be injected here -->
               </div>
             </div>
           </details>
@@ -267,32 +258,28 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
       }).join('')}
     </div>
     <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-12">
-      These plugins can help fix detected issues. Test in staging first.
+      These popular free/freemium plugins and apps can significantly improve these areas.
+      Always test on a staging environment first and check for recent reviews/updates.
     </p>
   `;
-
-  container.innerHTML = ''; // clear any old content
   container.appendChild(section);
 
-  console.log('[Plugin Debug] Section appended – panels should be open');
-
-  // Attach select listeners
+  // Attach event listeners after DOM insertion
   setTimeout(() => {
     failedMetrics.forEach(m => {
       const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
       const select = document.getElementById(`cms-select-${metricId}`);
       const pluginsList = document.getElementById(`plugins-${metricId}`);
       if (!select || !pluginsList) {
-        console.warn(`Missing select/plugins for ${m.name}`);
+        console.warn(`Could not find select/plugins for metric: ${m.name} (id: ${metricId})`);
         return;
       }
       select.addEventListener('change', (e) => {
         const selected = e.target.value;
-        console.log(`[Plugin Debug] CMS selected for ${m.name}: ${selected}`);
         pluginsList.innerHTML = '';
-        pluginsList.classList.remove('hidden');
+        pluginsList.classList.add('hidden');
         if (!selected || !pluginData[m.name]?.[selected]) {
-          pluginsList.innerHTML = '<p class="text-center text-gray-600 py-4">No plugins for this platform</p>';
+          console.log(`No plugins found for ${m.name} → ${selected}`);
           return;
         }
         pluginData[m.name][selected].forEach(plugin => {
@@ -306,7 +293,12 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
               <div class="flex flex-wrap gap-4">
                 ${plugin.link ? `
                   <a href="${plugin.link}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-                    View Plugin
+                    Plugin Library
+                  </a>
+                ` : ''}
+                ${plugin.homeLink ? `
+                  <a href="${plugin.homeLink}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-medium rounded-lg shadow hover:shadow-md transition">
+                    Plugin Website
                   </a>
                 ` : ''}
               </div>
@@ -314,13 +306,12 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
           `;
           pluginsList.appendChild(card);
         });
+        if (pluginsList.children.length > 0) {
+          pluginsList.classList.remove('hidden');
+        }
       });
-      // Auto-select first option for debug (optional)
-      if (select.options.length > 1) {
-        select.selectedIndex = 1;
-        select.dispatchEvent(new Event('change'));
-      }
     });
   }, 0);
 }
+
 export { renderPluginSolutions };
