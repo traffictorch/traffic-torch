@@ -206,19 +206,33 @@ ecommerce: {
     return meta && /width\s*=\s*device-width/i.test(meta.content);
   }
 
-  function extractProductSchema(doc) {
-    const scripts = doc.querySelectorAll('script[type="application/ld+json"]');
-    const schemas = [];
-    scripts.forEach(script => {
-      try {
-        const data = JSON.parse(script.textContent);
-        if (data['@type'] === 'Product' || (Array.isArray(data['@graph']) && data['@graph'].some(g => g['@type'] === 'Product'))) {
-          schemas.push(data);
+function extractProductSchema(doc) {
+  const scripts = doc.querySelectorAll('script[type="application/ld+json"]');
+  const schemas = [];
+  
+  scripts.forEach(script => {
+    if (!script.textContent?.trim()) return; // skip empty scripts
+    
+    try {
+      const data = JSON.parse(script.textContent);
+      
+      // Handle both top-level Product and @graph arrays
+      if (data['@type'] === 'Product') {
+        schemas.push(data);
+      } else if (Array.isArray(data['@graph'])) {
+        const productInGraph = data['@graph'].find(g => g['@type'] === 'Product');
+        if (productInGraph) {
+          schemas.push(productInGraph);
         }
-      } catch (e) {}
-    });
-    return schemas;
-  }
+      }
+    } catch (e) {
+      // Most schema parse errors are harmless → no console noise in production
+      // console.debug('Skipped invalid schema JSON:', e.message);
+    }
+  });
+  
+  return schemas;
+}
 
   function hasReviewSection(doc) {
     const selectors = [
