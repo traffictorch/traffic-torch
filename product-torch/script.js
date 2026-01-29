@@ -664,7 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
           { name: "On-Page SEO", result: seo.onPage, definitions: factorDefinitions.onPage },
           { name: "Technical SEO", result: seo.technical, definitions: factorDefinitions.technical },
           { name: "Content & Media", result: seo.contentMedia, definitions: factorDefinitions.contentMedia },
-          { name: "E-Commerce Signals (Pro)", result: seo.ecommerce, definitions: factorDefinitions.ecommerce }
+          { name: "eCommerce Signals", result: seo.ecommerce, definitions: factorDefinitions.ecommerce }
         ];
         modulesData.forEach(mod => {
           if (mod.result.details) {
