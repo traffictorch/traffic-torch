@@ -866,4 +866,3 @@ document.addEventListener('click', e => {
     }
   }
 });
-});
