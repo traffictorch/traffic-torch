@@ -1011,6 +1011,7 @@ document.addEventListener('click', e => {
     if (panel) panel.classList.toggle('hidden');
   }
 });
+
       } catch (err) {
         console.error('[Analysis failed]', err);
         document.getElementById('loading').classList.add('hidden');
