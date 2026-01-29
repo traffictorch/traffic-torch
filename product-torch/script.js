@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function hasReviewSection(doc) {
-    const selectors = ['.reviews', '.product-reviews', '#reviews', '.rating', '.yotpo', '.judge-me', '[data-reviews]', '.aggregate-rating', '.star-rating', '.customer-reviews', '[itemprop="aggregateRating"]', '[itemprop="review"]'];
+    const selectors = ['.reviews', '.product-reviews', '#reviews', '.rating', '.yotpo', '.judge-me', '[data-reviews]', '.aggregate-rating', '.star-rating', '.customer-reviews', '[itemprop="aggregateRating"]', '[itemprop="review"], .woocommerce-product-rating, .product-reviews, .spr-reviews, .stamped-main-widget, .loox-rating, .trustpilot-widget, .trustpilot-reviews, .product-reviews-list, .reviews-list, .customer-reviews'];
     return selectors.some(sel => doc.querySelector(sel));
   }
 
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getProductPageContent(doc, url) {
-    const textElements = doc.querySelectorAll('p, li, div.product-description, #product-description, .description, article, section');
+    const textElements = doc.querySelectorAll('p, li, div.product-description, #product-description, .description, article, section, .woocommerce-product-details__short-description, .product-single__description, .rte, .product__description, [itemprop="description"], .product-description, .description__content, .product-details, .wysiwyg, .content, .pdp-description');
     let fullText = '';
     textElements.forEach(el => {
       const t = el.textContent.trim();
@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const linkScore = data.linkCount >= 5 ? 70 : data.linkCount >= 2 ? 50 : 20;
     details.internalLinks = { count: data.linkCount, score: linkScore };
 
-    const breadcrumbScore = doc.querySelector('[aria-label*="breadcrumb"], .breadcrumbs, .breadcrumb, nav[aria-label="breadcrumb"]') ? 90 : 40;
+    const breadcrumbScore = doc.querySelector('[aria-label*="breadcrumb"], .breadcrumbs, .breadcrumb, nav[aria-label="breadcrumb"], .woocommerce-breadcrumb, .yoast-breadcrumb, .site-breadcrumb, .bread-crumb, .nav-breadcrumb, .product-breadcrumb, .breadcrumbs-nav, .crumbs, .pathway') ? 90 : 40;
     details.breadcrumbs = { present: breadcrumbScore === 90, score: breadcrumbScore };
 
     score = Math.round((descScore + imgScore + videoScore + ugcScore + linkScore + breadcrumbScore) / 6);
@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const reviewScore = productSchema.aggregateRating && productSchema.aggregateRating.ratingValue ? 80 : hasReviewSection(doc) ? 60 : 20;
     details.reviews = { aggregateRatingPresent: !!productSchema.aggregateRating, score: reviewScore };
 
-    const variantSelectors = doc.querySelectorAll('select[name*="variant"], select[name*="size"], select[name*="color"], input[type="radio"][name*="variant"]');
+    const variantSelectors = doc.querySelectorAll('select[name*="variant"], select[name*="size"], select[name*="color"], input[type="radio"][name*="variant"], select[name*="option"], input[name*="option"], .variant-select, .swatch, .product-variants, [data-variant], .product-form__variants');
     const variantScore = variantSelectors.length > 0 ? 70 : 50;
     details.variants = { detected: variantSelectors.length > 0, score: variantScore };
 
