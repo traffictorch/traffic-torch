@@ -794,7 +794,7 @@ modulesData.forEach(mod => {
       if (factorScore !== undefined && factorScore < f.threshold) {
         failedFactors.push({
           module: mod.name,
-          metric: f.name,
+          name: f.name,
           score: factorScore,
           threshold: f.threshold,
           grade: getPluginGrade(factorScore),
@@ -1043,44 +1043,33 @@ modulesData.forEach(mod => {
             </button>
           </div>
         `;
-        // NEW: Wait briefly for browser to actually insert & parse the new HTML into DOM
+// DOM settle delay — gives browser time to insert the new HTML
 setTimeout(() => {
-  console.log('DOM settle delay finished — checking plugin section now');
+  console.log('[Plugin Debug] DOM settle complete — checking plugin section');
   const pluginSection = document.getElementById('plugin-solutions-section');
-  console.log('plugin-solutions-section exists?', !!pluginSection);
+  console.log('[Plugin Debug] #plugin-solutions-section exists?', !!pluginSection);
 
   if (!pluginSection) {
-    console.error('CRITICAL: #plugin-solutions-section still missing from DOM after innerHTML set');
+    console.error('[Plugin Debug] CRITICAL: Container missing after innerHTML');
     return;
   }
 
   if (typeof renderPluginSolutions !== 'function') {
-    console.error('renderPluginSolutions is not a function');
-    pluginSection.innerHTML = '<div class="text-center py-10 text-red-600 dark:text-red-400 font-medium">Plugin recommendations failed to load (script not ready).</div>';
+    console.error('[Plugin Debug] renderPluginSolutions missing');
+    pluginSection.innerHTML = '<div class="text-center py-12 bg-red-50 dark:bg-red-900/30 rounded-2xl p-6 border border-red-300"><p class="text-xl font-bold text-red-700">Plugin recommendations failed to load.</p></div>';
     return;
   }
 
-  console.log('renderPluginSolutions ready — preparing to call with', failedFactors.length, 'factors');
+  const validFactors = failedFactors.filter(f => f && f.name && f.grade);
+  console.log('[Plugin Debug] Valid factors count:', validFactors.length);
 
-  // Filter out any undefined / invalid entries (prevents empty render loop)
-  const validFailedFactors = failedFactors.filter(f => {
-    if (!f || !f.metric || typeof f.metric !== 'string') {
-      console.warn('Invalid/undefined factor skipped:', f);
-      return false;
-    }
-    return true;
-  });
-
-  console.log('Valid failed factors after cleaning:', validFailedFactors.length);
-  if (validFailedFactors.length === 0) {
-    pluginSection.innerHTML = '<div class="text-center py-10 bg-green-50 dark:bg-green-900/20 rounded-2xl border border-green-200 dark:border-green-800"><p class="text-lg text-green-700 dark:text-green-300">No critical failed metrics — page looks solid!</p></div>';
+  if (validFactors.length === 0) {
+    pluginSection.innerHTML = '<div class="text-center py-12 bg-green-50 dark:bg-green-900/20 rounded-2xl p-6 border border-green-300"><p class="text-xl text-green-700">No issues detected — all good!</p></div>';
     return;
   }
 
-  console.log('Calling renderPluginSolutions now');
-  renderPluginSolutions(validFailedFactors, 'plugin-solutions-section');
-
-}, 100);  // 100ms is usually enough; can increase to 300 if still fails
+  renderPluginSolutions(validFactors, 'plugin-solutions-section');
+}, 250);
 
         setTimeout(() => {
           const canvas = document.getElementById('health-radar');
@@ -1130,28 +1119,7 @@ setTimeout(() => {
           }
         }, 150);
 
-console.log('Plugin solutions check — function exists?', typeof renderPluginSolutions === 'function');
-console.log('Failed factors ready to pass:', failedFactors.length, 'items');
-console.log('Target container exists?', !!document.getElementById('plugin-solutions-section'));
 
-if (typeof renderPluginSolutions === 'function') {
-  console.log('Calling renderPluginSolutions immediately');
-  renderPluginSolutions(failedFactors, 'plugin-solutions-section');
-} else {
-  console.warn('renderPluginSolutions not ready yet — waiting longer');
-  setTimeout(() => {
-
-      } catch (err) {
-        document.getElementById('loading').classList.add('hidden');
-        results.innerHTML = `
-          <div class="text-center py-20">
-            <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
-            <p class="mt-6 text-xl text-gray-600 dark:text-gray-400">Please try a public product page URL and check your connection.</p>
-          </div>
-        `;
-      }
-    }
-  });
 
   // Button toggle for More Details and Show Fixes (delegated)
   document.addEventListener('click', e => {
