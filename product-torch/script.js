@@ -1135,3 +1135,4 @@ setTimeout(() => {
       if (panel) panel.classList.toggle('hidden');
     }
   });
+  });
