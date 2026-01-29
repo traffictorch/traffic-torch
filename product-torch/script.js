@@ -70,18 +70,54 @@ document.addEventListener('DOMContentLoaded', () => {
   moduleWhy: "Technical issues can prevent indexing, hurt mobile rankings, or cause duplicate content penalties — all block traffic."
 },
     contentMedia: {
-      factors: [
-        { name: "Product Description Quality", threshold: 75, shortDesc: "200+ words, unique, benefit-focused, structured.", howToFix: "Write unique, detailed copy highlighting benefits. Use bullets for features." },
-        { name: "Image Optimization", threshold: 80, shortDesc: "Descriptive alt text, lazy loading, responsive.", howToFix: "Add keyword-rich alt text. Use loading='lazy'. Compress and use srcset." },
-        { name: "Video Embed Quality", threshold: 70, shortDesc: "Videos have captions and proper thumbnails.", howToFix: "Add <track> for captions. Use poster attribute." },
-        { name: "User-Generated Content (UGC)", threshold: 65, shortDesc: "Reviews/ratings section detected.", howToFix: "Integrate review apps. Encourage reviews. Display stars." },
-        { name: "Internal Linking", threshold: 70, shortDesc: "Relevant internal links to related products.", howToFix: "Add contextual links to upsells/cross-sells with descriptive anchors." },
-        { name: "Breadcrumb Navigation", threshold: 85, shortDesc: "Structured breadcrumbs with hierarchy.", howToFix: "Add breadcrumb nav with schema. Use clear hierarchy." }
-      ],
-      moduleWhat: "Content & Media Quality evaluates description richness, image/video optimization, UGC presence, and navigation aids — key for engagement and trust.",
-      moduleHow: "Write detailed, benefit-driven descriptions. Optimize all media. Encourage reviews. Use breadcrumbs and internal links.",
-      moduleWhy: "Rich content keeps users on-page longer and improves trust signals. Optimized media boosts speed and accessibility. UGC adds social proof."
+  factors: [
+    { 
+      name: "Product Description Quality", 
+      key: "description", 
+      threshold: 75, 
+      shortDesc: "300+ words ideal, unique, benefit-focused, structured (bullets/headings), keyword-rich.", 
+      howToFix: "Expand to 400–800 words in competitive niches. Start with benefits, use bullets for features, add subheadings. Make it unique vs competitors." 
     },
+    { 
+      name: "Image Optimization", 
+      key: "images", 
+      threshold: 80, 
+      shortDesc: "Meaningful images have descriptive keyword-rich alt text, lazy loading, responsive (srcset), <100KB.", 
+      howToFix: "Add alt text like 'Santa Cruz Dreadnought Quilted Mahogany Acoustic Guitar front view'. Use loading='lazy', srcset/sizes. Compress images." 
+    },
+    { 
+      name: "Video Embed Quality", 
+      key: "video", 
+      threshold: 70, 
+      shortDesc: "Relevant videos present with captions (<track>), poster thumbnail, embedded properly.", 
+      howToFix: "Embed YouTube/Vimeo with captions enabled. Add <track kind='subtitles'> or use platform auto-captions. Include poster image." 
+    },
+    { 
+      name: "User-Generated Content (UGC)", 
+      key: "ugc", 
+      threshold: 70, 
+      shortDesc: "Reviews/ratings visible with star aggregate and review count.", 
+      howToFix: "Install review app (Judge.me, Yotpo, Loox). Display average rating + number of reviews. Encourage photo/video reviews." 
+    },
+    { 
+      name: "Internal Linking", 
+      key: "internalLinks", 
+      threshold: 70, 
+      shortDesc: "3+ relevant contextual links to related products/categories/guides with descriptive anchors.", 
+      howToFix: "Add 3–6 internal links in description or below (e.g. 'see matching picks', 'learn more about tonewoods'). Use keyword-rich anchors." 
+    },
+    { 
+      name: "Breadcrumb Navigation", 
+      key: "breadcrumbs", 
+      threshold: 85, 
+      shortDesc: "Clear hierarchy breadcrumbs present (Home > Category > Subcategory > Product).", 
+      howToFix: "Implement breadcrumbs with schema (BreadcrumbList JSON-LD). Use links like Home > Acoustic Guitars > Dreadnought > Santa Cruz Dreadnought." 
+    }
+  ],
+  moduleWhat: "Content & Media evaluates richness, accessibility, and engagement signals that keep users on-page and build trust.",
+  moduleHow: "Create detailed, benefit-driven descriptions. Optimize all images/videos. Encourage reviews. Add navigation aids.",
+  moduleWhy: "High-quality content reduces bounce rate, improves dwell time, and strengthens topical authority — key ranking factors."
+},
     ecommerce: {
       factors: [
         { name: "Product Schema Markup", threshold: 90, shortDesc: "JSON-LD Product schema with required fields.", howToFix: "Add full Product schema JSON-LD. Include name, image array, offers." },
@@ -362,33 +398,74 @@ function analyzeTechnicalSEO(doc, data) {
   return { score: Math.min(100, Math.max(0, score)), details };
 }
 
-  function analyzeContentMedia(doc, data) {
-    let score = 0;
-    let details = {};
+function analyzeContentMedia(doc, data) {
+  let details = {};
 
-    const descScore = data.wordCount >= 300 ? 80 : data.wordCount >= 200 ? 70 : data.wordCount >= 100 ? 50 : 20;
-    details.description = { wordCount: data.wordCount, score: descScore };
+  // Product Description Quality (length + basic structure hint)
+  let descScore = 20;
+  if (data.wordCount >= 500) descScore = 90;
+  else if (data.wordCount >= 300) descScore = 75;
+  else if (data.wordCount >= 200) descScore = 55;
+  else if (data.wordCount >= 100) descScore = 35;
+  else descScore = 15;
+  // Bonus for likely structure (multiple headings or lists)
+  const hasStructure = doc.querySelectorAll('h2,h3,ul,ol').length >= 3;
+  if (hasStructure) descScore += 15;
+  descScore = Math.min(100, descScore);
+  details.description = { wordCount: data.wordCount, hasStructure, score: descScore };
 
-    const imgScore = data.altData.missingCount === 0 ? 90 : data.altData.meaningfulCount > 0 && (data.altData.missingCount / data.altData.meaningfulCount) < 0.2 ? 75 : 40;
-    details.images = { missingAlt: data.altData.missingCount, meaningful: data.altData.meaningfulCount, score: imgScore };
-
-    const videoElements = doc.querySelectorAll('video, iframe[src*="youtube"], iframe[src*="vimeo"]');
-    const videoScore = videoElements.length > 0 ? (doc.querySelector('track') ? 80 : 60) : 30;
-    details.video = { present: videoElements.length > 0, captions: !!doc.querySelector('track'), score: videoScore };
-
-    const ugcScore = hasReviewSection(doc) ? 80 : 40;
-    details.ugc = { detected: ugcScore === 80, score: ugcScore };
-
-    const linkScore = data.linkCount >= 5 ? 70 : data.linkCount >= 2 ? 50 : 20;
-    details.internalLinks = { count: data.linkCount, score: linkScore };
-
-    const breadcrumbSelectors = '[aria-label*="breadcrumb"], .breadcrumbs, .breadcrumb, .woocommerce-breadcrumb, .yoast-breadcrumb, .site-breadcrumb, .bread-crumb, .crumbs, .pathway';
-    const breadcrumbScore = doc.querySelector(breadcrumbSelectors) ? 90 : 40;
-    details.breadcrumbs = { present: breadcrumbScore === 90, score: breadcrumbScore };
-
-    score = Math.round((descScore + imgScore + videoScore + ugcScore + linkScore + breadcrumbScore) / 6);
-    return { score: Math.min(100, Math.max(0, score)), details };
+  // Image Optimization (alt text quality + count)
+  let imgScore = 30;
+  const { missingCount, meaningfulCount, totalImages } = data.altData;
+  if (totalImages === 0) imgScore = 40; // no images = neutral
+  else if (meaningfulCount > 0) {
+    const altRatio = meaningfulCount > 0 ? (missingCount / meaningfulCount) : 1;
+    if (altRatio === 0) imgScore = 90;
+    else if (altRatio < 0.2) imgScore = 75;
+    else if (altRatio < 0.5) imgScore = 50;
+    else imgScore = 25;
   }
+  details.images = { missingAlt: missingCount, meaningful: meaningfulCount, total: totalImages, score: imgScore };
+
+  // Video Embed Quality
+  const videoElements = doc.querySelectorAll('video, iframe[src*="youtube"], iframe[src*="vimeo"], iframe[src*="youtu.be"]');
+  let videoScore = videoElements.length > 0 ? 50 : 25;
+  if (videoElements.length > 0 && doc.querySelector('track')) videoScore += 30;
+  if (videoElements.length > 1) videoScore += 10;
+  videoScore = Math.min(100, videoScore);
+  details.video = { present: videoElements.length > 0, captions: !!doc.querySelector('track'), count: videoElements.length, score: videoScore };
+
+  // UGC
+  const hasUGC = hasReviewSection(doc);
+  let ugcScore = hasUGC ? 80 : 35;
+  details.ugc = { detected: hasUGC, score: ugcScore };
+
+  // Internal Linking (count + quality hint)
+  let linkScore = 20;
+  if (data.linkCount >= 8) linkScore = 85;
+  else if (data.linkCount >= 5) linkScore = 70;
+  else if (data.linkCount >= 3) linkScore = 50;
+  else linkScore = 25;
+  details.internalLinks = { count: data.linkCount, score: linkScore };
+
+  // Breadcrumb Navigation
+  const breadcrumbSelectors = '[aria-label*="breadcrumb" i], .breadcrumbs, .breadcrumb, .woocommerce-breadcrumb, .yoast-breadcrumb, .site-breadcrumb, .bread-crumb, .crumbs, .pathway, [itemprop="breadcrumb"]';
+  const hasBreadcrumbs = !!doc.querySelector(breadcrumbSelectors);
+  let breadcrumbScore = hasBreadcrumbs ? 90 : 30;
+  details.breadcrumbs = { present: hasBreadcrumbs, score: breadcrumbScore };
+
+  // Weighted module score (description + images most important)
+  const score = Math.round(
+    descScore * 0.30 +
+    imgScore * 0.25 +
+    videoScore * 0.10 +
+    ugcScore * 0.15 +
+    linkScore * 0.10 +
+    breadcrumbScore * 0.10
+  );
+
+  return { score: Math.min(100, Math.max(0, score)), details };
+}
 
   function analyzeEcommerceSEO(doc, data) {
     let score = 0;
