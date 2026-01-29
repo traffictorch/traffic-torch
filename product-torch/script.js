@@ -821,4 +821,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+
+// Button toggle for More Details and Show Fixes (delegated to document for dynamic content)
+document.addEventListener('click', e => {
+  const target = e.target.closest('.more-details, .show-fixes');
+  if (!target) return;
+
+  const card = target.closest('.module-card');
+  if (!card) return;
+
+  if (target.classList.contains('more-details')) {
+    const panel = card.querySelector('.more-details-panel');
+    if (panel) panel.classList.toggle('hidden');
+  } else if (target.classList.contains('show-fixes')) {
+    const panel = card.querySelector('.fixes-panel');
+    if (panel) panel.classList.toggle('hidden');
+  }
+});
 });
