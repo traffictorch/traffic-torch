@@ -181,54 +181,79 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 0;
     let details = {};
 
-    const title = doc.title.trim();
-    const titleLength = title.length;
-    let titleScore = 0;
-    if (titleLength >= 50 && titleLength <= 60) titleScore = 40;
-    else if (titleLength >= 40 && titleLength <= 70) titleScore = 25;
-    else titleScore = 10;
-    if (title.toLowerCase().includes('headphone') || title.toLowerCase().includes('audio technica') || title.toLowerCase().includes('wireless')) titleScore += 30;
-    if (title.includes('|') && title.split('|').length > 1) titleScore += 20;
-    details.title = { length: titleLength, keywordsPresent: titleScore > 40, score: titleScore };
+  // Title Tag Optimization
+  const title = doc.title.trim();
+  const titleLength = title.length;
+  let titleScore = 0;
+  if (titleLength >= 40 && titleLength <= 70) titleScore += 40; // Lenient range for eCom titles with store suffix
+  else if (titleLength > 70 && titleLength <= 80) titleScore += 25;
+  else titleScore += 10;
+  if (title.includes('|') || title.includes(' - ') || title.includes(' – ')) titleScore += 20; // Common separator for product + store/brand
+  details.title = { length: titleLength, hasSeparator: title.includes('|') || title.includes(' - '), score: titleScore };
 
-    const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
-    const descLength = metaDesc.length;
-    let descScore = 0;
-    if (descLength >= 120 && descLength <= 160) descScore += 40;
-    if (descLength > 0) descScore += 20;
-    if (/buy|shop|order|add to cart/i.test(metaDesc)) descScore += 20;
-    details.metaDescription = { length: descLength, ctaPresent: /buy|shop/i.test(metaDesc), score: descScore };
+  // Meta Description Relevance
+  const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
+  const descLength = metaDesc.length;
+  let descScore = 0;
+  if (descLength >= 100 && descLength <= 170) descScore += 40; // Lenient for eCom descriptions
+  if (descLength > 0) descScore += 20;
+  if (/buy|shop|order|add to cart|add to bag|purchase|view|see|learn more/i.test(metaDesc.toLowerCase())) descScore += 20;
+  details.metaDescription = { length: descLength, hasCta: /buy|shop|add to/i.test(metaDesc.toLowerCase()), score: descScore };
 
-    const h1s = doc.querySelectorAll('h1');
-    const h2s = doc.querySelectorAll('h2');
-    let headingScore = 0;
-    if (h1s.length === 1) headingScore += 40;
-    if (h2s.length >= 1) headingScore += 30;
-    if (data.headingCount >= 3) headingScore += 20;
-    if (h1s.length > 0 && h1s[0].textContent.toLowerCase().includes('headphone') || h1s[0].textContent.toLowerCase().includes('audio technica')) headingScore += 10;
-    details.headings = { h1Count: h1s.length, h2Count: h2s.length, keywordsInH1: headingScore > 70, score: headingScore };
+  // Heading Structure (H1–H6)
+  const h1s = doc.querySelectorAll('h1');
+  const h2s = doc.querySelectorAll('h2');
+  let headingScore = 0;
+  if (h1s.length === 1) headingScore += 40;
+  else if (h1s.length === 0 && doc.querySelector('[role="heading"][aria-level="1"]')) headingScore += 30; // Fallback for non-semantic H1
+  if (h2s.length >= 1) headingScore += 20;
+  if (data.headingCount >= 3) headingScore += 20;
+  details.headings = { h1Count: h1s.length, h2Count: h2s.length, totalHeadings: data.headingCount, score: headingScore };
 
-    const urlObj = new URL(data.url);
-    const path = urlObj.pathname;
-    let urlScore = 0;
-    if (!path.includes('?') && !path.includes('&')) urlScore += 40;
-    if (path.split('/').length <= 5) urlScore += 30;
-    if (/wireless|headphones|audio-technica|m50xbt/i.test(path)) urlScore += 20;
-    details.url = { clean: !path.includes('?'), keywordInSlug: /wireless|headphones/i.test(path), score: urlScore };
+  // URL Structure
+  const urlObj = new URL(data.url);
+  const path = urlObj.pathname;
+  let urlScore = 0;
+  if (!path.includes('?') && !path.includes('&') && !path.includes(';')) urlScore += 40; // No query params/session IDs
+  if (path.split('/').length <= 7) urlScore += 30; // Allow deeper paths common in eCom
+  if (path.length > 10 && !/\d{10,}/.test(path)) urlScore += 20; // Readable length, avoid very long numeric IDs
+  details.url = { clean: !path.includes('?'), segments: path.split('/').length, score: urlScore };
 
-    const mainText = data.fullText.toLowerCase();
-    const primaryKeyword = 'headphones';
-    const keywordCount = (mainText.match(new RegExp(primaryKeyword, 'g')) || []).length;
-    const density = data.wordCount > 0 ? (keywordCount / data.wordCount) * 100 : 0;
-    let keywordScore = 0;
-    if (density >= 0.5 && density <= 2.5) keywordScore += 40;
-    if (data.fullText.slice(0, 300).toLowerCase().includes(primaryKeyword)) keywordScore += 30;
-    if (keywordCount >= 3) keywordScore += 20;
-    details.keywords = { density, frontLoaded: data.fullText.slice(0, 300).toLowerCase().includes(primaryKeyword), score: keywordScore };
+  // Keyword Optimization (dynamic primary keyword)
+  let primaryKeyword = '';
+  const titleLower = title.toLowerCase();
+  const h1Text = doc.querySelector('h1')?.textContent?.trim().toLowerCase() || '';
 
-    score = Math.round((titleScore + descScore + headingScore + urlScore + keywordScore) / 5);
-    return { score: Math.min(100, Math.max(0, score)), details };
+  // Prefer H1
+  if (h1Text.length > 10) {
+    primaryKeyword = h1Text.split(' ').slice(0, 4).join(' ');
   }
+  // Fallback to title first part
+  else if (titleLower.length > 10) {
+    const parts = titleLower.split(/[\|\-–]/)[0].trim().split(' ');
+    primaryKeyword = parts.slice(0, 4).join(' ');
+  }
+  // Ultimate fallback: URL slug last segment
+  else {
+    const slug = urlObj.pathname.split('/').filter(Boolean).pop() || '';
+    primaryKeyword = slug.replace(/[-_]/g, ' ').replace(/\d{4,}/g, '').trim();
+    if (primaryKeyword.length < 5) primaryKeyword = 'product';
+  }
+
+  // Clean stop words
+  const stopWords = /^(the|a|an|best|top|new|buy|shop|order|free|sale|online|free shipping)$/i;
+  primaryKeyword = primaryKeyword.replace(stopWords, '').trim().replace(stopWords, '').trim();
+
+  const keywordRegex = new RegExp(primaryKeyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+  const keywordCount = (data.fullText.toLowerCase().match(keywordRegex) || []).length;
+  const density = data.wordCount > 0 ? (keywordCount / data.wordCount) * 100 : 0;
+  let keywordScore = 0;
+  if (density >= 0.4 && density <= 3.0) keywordScore += 40;
+  if (data.fullText.slice(0, 300).toLowerCase().match(keywordRegex)) keywordScore += 30;
+  if (keywordCount >= 2) keywordScore += 20;
+  details.keywords = { primaryKeyword, density, frontLoaded: !!data.fullText.slice(0, 300).toLowerCase().match(keywordRegex), score: keywordScore };
+
+  score = Math.round((titleScore + descScore + headingScore + urlScore + keywordScore) / 5);
 
   function analyzeTechnicalSEO(doc, data) {
     let score = 0;
