@@ -1092,14 +1092,31 @@ modulesData.forEach(mod => {
           }
         }, 150);
 
-        if (typeof renderPluginSolutions === 'function') {
+console.log('Plugin solutions check — function exists?', typeof renderPluginSolutions === 'function');
+console.log('Failed factors ready to pass:', failedFactors.length, 'items');
+console.log('Target container exists?', !!document.getElementById('plugin-solutions-section'));
+
+if (typeof renderPluginSolutions === 'function') {
+  console.log('Calling renderPluginSolutions immediately');
   renderPluginSolutions(failedFactors, 'plugin-solutions-section');
 } else {
+  console.warn('renderPluginSolutions not ready yet — waiting longer');
   setTimeout(() => {
     if (typeof renderPluginSolutions === 'function') {
+      console.log('Delayed call successful — rendering now');
       renderPluginSolutions(failedFactors, 'plugin-solutions-section');
+    } else {
+      console.error('renderPluginSolutions STILL not available after delay');
+      const container = document.getElementById('plugin-solutions-section');
+      if (container) {
+        container.innerHTML = `
+          <div class="text-center py-12 bg-red-50 dark:bg-red-900/30 rounded-2xl border border-red-300 dark:border-red-700">
+            <p class="text-xl font-bold text-red-700 dark:text-red-300 mb-4">Plugin recommendations failed to load</p>
+            <p class="text-gray-700 dark:text-gray-300">Check browser console for errors (F12 → Console). Possible causes: import failed or timing issue.</p>
+          </div>`;
+      }
     }
-  }, 500);
+  }, 1500);  // increased from 500ms
 }
       } catch (err) {
         document.getElementById('loading').classList.add('hidden');
