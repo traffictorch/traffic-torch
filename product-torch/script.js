@@ -819,7 +819,8 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: targetY, behavior: 'smooth' });
 
 try {
-  results.innerHTML = `
+  // Part 1: Score Card + Verdict
+  const scoreVerdict = `
     <!-- Big Overall Score Card -->
     <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
       <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${safeScore >= 85 ? 'border-emerald-500' : safeScore >= 70 ? 'border-teal-500' : safeScore >= 50 ? 'border-orange-500' : 'border-red-500'}">
@@ -846,7 +847,7 @@ try {
         </div>
         ${(() => {
           const pageTitle = doc?.title?.trim() || '';
-          const truncated = pageTitle.length > 65 ? pageTitle.substring(0, 65).replace(/"/g, '&quot;') + '...' : pageTitle.replace(/"/g, '&quot;');
+          const truncated = pageTitle.length > 65 ? pageTitle.substring(0, 65) + '...' : pageTitle;
           return truncated ? `<p class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>` : '';
         })()}
         <div class="mt-6 text-center">
@@ -876,7 +877,10 @@ try {
       </div>
       <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Analyzed ${seoData.wordCount} words + ${seoData.imageCount} images</p>
     </div>
+  `;
 
+  // Part 2: Radar + Modules Grid
+  const radarModules = `
     <!-- SEO Health Radar Chart -->
     <div class="max-w-5xl mx-auto my-16 px-4">
       <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
@@ -898,14 +902,15 @@ try {
       <div class="grid md:grid-cols-2 gap-8">${onPageHTML}${technicalHTML}</div>
       <div class="grid md:grid-cols-2 gap-8">${contentMediaHTML}${ecommerceHTML}</div>
     </div>
+  `;
 
+  // Part 3: Plugin + Impact + PDF
+  const pluginImpactPDF = `
     <!-- Plugin Solutions Section -->
-    <div id="plugin-solutions-section" class="mt-16 px-4 border-2 border-purple-500/30 rounded-2xl min-h-[300px] bg-white/50 dark:bg-gray-900/50">
-      <p class="text-center text-xl text-purple-600 dark:text-purple-400 py-12">Plugin recommendations loading...</p>
-    </div>
+    <div id="plugin-solutions-section" class="mt-16 px-4"></div>
 
     <!-- SEO & Conversion Impact -->
-    ${impactHTML.replace(/"/g, '&quot;')}  <!-- escaped to prevent parsing issues -->
+    ${impactHTML}
 
     <!-- PDF Button -->
     <div class="text-center my-16">
@@ -917,25 +922,28 @@ try {
     </div>
   `;
 
-  console.log('[Debug] Full template (without priority fixes) inserted successfully');
+  // Combine safely
+  results.innerHTML = scoreVerdict + radarModules + pluginImpactPDF;
+
+  console.log('[Debug] Split template inserted successfully');
   console.log('[Debug] plugin-section exists now?', !!document.getElementById('plugin-solutions-section'));
   console.log('[Debug] modules grid exists?', !!document.querySelector('.grid.gap-8.my-16'));
 } catch (templateError) {
   console.error('[CRITICAL TEMPLATE ERROR]', templateError);
   results.innerHTML = `
     <div class="text-center py-20 px-6">
-      <p class="text-3xl font-bold text-red-600 mb-6">Report Template Failed</p>
-      <p class="text-xl text-gray-700 dark:text-gray-300 mb-4">
-        Syntax or parsing error in the report HTML.
+      <p class="text-3xl font-bold text-red-600 mb-6">Report Generation Failed</p>
+      <p class="text-xl text-gray-700 dark:text-gray-300">
+        There was an error building the report layout.
       </p>
-      <p class="text-lg text-gray-600 dark:text-gray-400">
-        Check console for [CRITICAL TEMPLATE ERROR] details.
+      <p class="text-lg text-gray-600 dark:text-gray-400 mt-4">
+        Check console for details.
       </p>
     </div>`;
   return;
 }
 
-// Plugin rendering – direct call (proven working pattern)
+// Plugin rendering – direct call
 if (typeof renderPluginSolutions === 'function') {
   console.log('Calling renderPluginSolutions immediately');
   renderPluginSolutions(failedFactors, 'plugin-solutions-section');
@@ -947,19 +955,11 @@ if (typeof renderPluginSolutions === 'function') {
       renderPluginSolutions(failedFactors, 'plugin-solutions-section');
     } else {
       console.error('renderPluginSolutions still not available');
-      const section = document.getElementById('plugin-solutions-section');
-      if (section) {
-        section.innerHTML = `
-          <div class="p-10 text-center">
-            <p class="text-2xl font-bold text-orange-600">Plugin module not ready</p>
-            <p class="mt-4 text-gray-700 dark:text-gray-300">Refresh page to retry loading.</p>
-          </div>`;
-      }
     }
   }, 500);
 }
 
-// Radar chart
+// Radar chart (unchanged)
 setTimeout(() => {
   const canvas = document.getElementById('health-radar');
   if (!canvas) return;
@@ -1009,7 +1009,7 @@ setTimeout(() => {
   }
 }, 150);
 
-// Button toggle (delegated)
+// Button toggle (unchanged)
 document.addEventListener('click', e => {
   const target = e.target.closest('.more-details, .show-fixes');
   if (!target) return;
