@@ -818,213 +818,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({ top: targetY, behavior: 'smooth' });
 
-        try {
-          results.innerHTML = `
-            <!-- Big Overall Score Card -->
-            <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
-              <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${safeScore >= 85 ? 'border-emerald-500' : safeScore >= 70 ? 'border-teal-500' : safeScore >= 50 ? 'border-orange-500' : 'border-red-500'}">
-                <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Product Page Health Score</p>
-                <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
-                  <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
-                    <circle cx="100" cy="100" r="90" stroke="#e5e7eb dark:stroke-gray-700" stroke-width="16" fill="none"/>
-                    <circle cx="100" cy="100" r="90"
-                            stroke="${ringColor}"
-                            stroke-width="16" fill="none"
-                            stroke-dasharray="${(safeScore / 100) * 565} 565"
-                            stroke-linecap="round"/>
-                  </svg>
-                  <div class="absolute inset-0 flex items-center justify-center">
-                    <div class="text-center">
-                      <div class="text-5xl sm:text-6xl font-black drop-shadow-lg" style="color: ${ringColor};">
-                        ${safeScore}
-                      </div>
-                      <div class="text-lg sm:text-xl opacity-80 -mt-1" style="color: ${ringColor};">
-                        /100
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                ${(() => {
-                  const pageTitle = doc?.title?.trim() || '';
-                  const truncated = pageTitle.length > 65 ? pageTitle.substring(0, 65) + '...' : pageTitle;
-                  return truncated ? `<p class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>` : '';
-                })()}
-                <div class="mt-6 text-center">
-                  <p class="text-6xl sm:text-5xl md:text-6xl font-bold ${overallGrade.color} drop-shadow-lg">
-                    ${overallGrade.emoji}
-                  </p>
-                  <p class="text-4xl sm:text-5xl font-bold ${overallGrade.color} mt-3 sm:mt-4">
-                    ${overallGrade.grade}
-                  </p>
-                  <p class="text-base sm:text-lg text-gray-600 dark:text-gray-400 mt-3 sm:mt-4">Product Page Health</p>
-                </div>
-              </div>
-            </div>
+try {
+  results.innerHTML = `
+    <div class="text-center py-20">
+      <h1 class="text-5xl font-bold text-green-600">TEST REPORT - SUCCESS</h1>
+      <p class="text-2xl mt-8">If you see this, innerHTML worked.</p>
+      <div id="plugin-solutions-section" class="mt-16 px-4 border-4 border-purple-500 min-h-[400px]">
+        <p class="text-3xl text-purple-600">PLUGIN SECTION PLACEHOLDER - SHOULD BE VISIBLE</p>
+      </div>
+      <div class="mt-12 p-8 bg-gray-100 dark:bg-gray-800 rounded-2xl">
+        <h2 class="text-4xl">Priority Fixes Test</h2>
+        <p class="text-xl mt-4">This section should appear if DOM insertion succeeds.</p>
+      </div>
+    </div>
+  `;
+  console.log('[DEBUG] Minimal test template inserted');
+  console.log('[DEBUG] plugin-section exists after minimal template?', !!document.getElementById('plugin-solutions-section'));
+} catch (templateError) {
+  console.error('[CRITICAL TEMPLATE ERROR] Even minimal template failed:', templateError);
+  results.innerHTML = '<p class="text-red-500 text-3xl">Template crash - check console</p>';
+  return;
+}
 
-            <!-- Health Verdict -->
-            <div class="text-center mb-12">
-              <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">Health Status:</p>
-              <div class="flex flex-col items-center gap-6">
-                <div class="flex items-center gap-6 text-4xl">
-                  <span class="${health.text === 'Excellent' ? 'text-green-600' : health.text === 'Strong' ? 'text-teal-600' : health.text === 'Needs Work' ? 'text-orange-600' : 'text-red-600'}">
-                    ${health.text === 'Excellent' ? '🏆' : health.text === 'Strong' ? '✅' : health.text === 'Needs Work' ? '⚠️' : '❌'}
-                  </span>
-                </div>
-                <p class="text-4xl font-black bg-gradient-to-r ${health.color} bg-clip-text text-transparent">
-                  ${health.text}
-                </p>
-              </div>
-              <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Analyzed ${seoData.wordCount} words + ${seoData.imageCount} images</p>
-            </div>
-
-            <!-- SEO Health Radar Chart -->
-            <div class="max-w-5xl mx-auto my-16 px-4">
-              <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
-                <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">SEO Health Radar</h3>
-                <div class="hidden md:block w-full">
-                  <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
-                </div>
-                <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">
-                  Radar chart available on desktop/tablet
-                </p>
-                <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">
-                  Visual overview of your product page across key SEO areas
-                </p>
-              </div>
-            </div>
-
-            <!-- Modules Grid -->
-            <div class="grid gap-8 my-16 max-w-7xl mx-auto px-4">
-              <div class="grid md:grid-cols-2 gap-8">${onPageHTML}${technicalHTML}</div>
-              <div class="grid md:grid-cols-2 gap-8">${contentMediaHTML}${ecommerceHTML}</div>
-            </div>
-
-            <!-- Top Priority Fixes -->
-            <div class="text-center my-20">
-              <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent mb-12">
-                Top Priority SEO Fixes
-              </h2>
-              <div class="max-w-5xl mx-auto space-y-8">
-                ${priorityFixesHTML}
-              </div>
-              ${priorityFixes.length > 0 ? `
-              <p class="mt-12 text-xl text-gray-800 dark:text-gray-200">
-                Prioritized by impact — focus on lowest-scoring areas first for biggest ranking & conversion gains.
-              </p>` : ''}
-            </div>
-
-            <!-- Plugin Solutions Section -->
-            <div id="plugin-solutions-section" class="mt-16 px-4"></div>
-
-            <!-- SEO & Conversion Impact -->
-            ${impactHTML}
-
-            <!-- PDF Button -->
-            <div class="text-center my-16">
-              <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
-                      class="group relative inline-flex items-center px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
-                <span class="flex items-center gap-6">Save Report 📄</span>
-                <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </button>
-            </div>
-          `;
-
-          console.log('[Debug] innerHTML assignment succeeded');
-          console.log('[Debug] plugin-section exists now?', !!document.getElementById('plugin-solutions-section'));
-        } catch (templateError) {
-          console.error('[CRITICAL TEMPLATE ERROR]', templateError);
-          results.innerHTML = `
-            <div class="text-center py-20 px-6">
-              <p class="text-3xl font-bold text-red-600 mb-6">Report Generation Failed</p>
-              <p class="text-xl text-gray-700 dark:text-gray-300 mb-4">
-                There is a syntax error in the report template.
-              </p>
-              <p class="text-lg text-gray-600 dark:text-gray-400">
-                Check browser console for details (look for [CRITICAL TEMPLATE ERROR]).
-              </p>
-            </div>`;
-          return;
-        }
-
-        // Plugin rendering – direct call after successful innerHTML
-        if (typeof renderPluginSolutions === 'function') {
-          console.log('Calling renderPluginSolutions immediately');
-          renderPluginSolutions(failedFactors, 'plugin-solutions-section');
-        } else {
-          console.warn('renderPluginSolutions not loaded yet - delaying 500ms');
-          setTimeout(() => {
-            if (typeof renderPluginSolutions === 'function') {
-              console.log('Delayed call successful');
-              renderPluginSolutions(failedFactors, 'plugin-solutions-section');
-            } else {
-              console.error('renderPluginSolutions still not available');
-            }
-          }, 500);
-        }
-
-        // Radar chart remains
-        setTimeout(() => {
-          const canvas = document.getElementById('health-radar');
-          if (!canvas) return;
-          try {
-            const ctx = canvas.getContext('2d');
-            const labelColor = '#9ca3af';
-            const gridColor = 'rgba(156, 163, 175, 0.3)';
-            const borderColor = '#22c55e';
-            const fillColor = 'rgba(34, 197, 94, 0.15)';
-            window.myChart = new Chart(ctx, {
-              type: 'radar',
-              data: {
-                labels: modules.map(m => m.name),
-                datasets: [{
-                  label: 'Health Score',
-                  data: scores,
-                  backgroundColor: fillColor,
-                  borderColor: borderColor,
-                  borderWidth: 4,
-                  pointRadius: 8,
-                  pointHoverRadius: 12,
-                  pointBackgroundColor: scores.map(s => s >= 85 ? '#10b981' : s >= 70 ? '#22c55e' : s >= 50 ? '#fb923c' : '#ef4444'),
-                  pointBorderColor: '#fff',
-                  pointBorderWidth: 3
-                }]
-              },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                  r: {
-                    beginAtZero: true,
-                    min: 0,
-                    max: 100,
-                    ticks: { stepSize: 20, color: labelColor },
-                    grid: { color: gridColor },
-                    angleLines: { color: gridColor },
-                    pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
-                  }
-                },
-                plugins: { legend: { display: false } }
-              }
-            });
-          } catch (e) {
-            console.error('Radar chart failed', e);
-          }
-        }, 150);
-
-        // Button toggle remains unchanged
-        document.addEventListener('click', e => {
-          const target = e.target.closest('.more-details, .show-fixes');
-          if (!target) return;
-          const card = target.closest('.module-card');
-          if (!card) return;
-          if (target.classList.contains('more-details')) {
-            const panel = card.querySelector('.more-details-panel');
-            if (panel) panel.classList.toggle('hidden');
-          } else if (target.classList.contains('show-fixes')) {
-            const panel = card.querySelector('.fixes-panel');
-            if (panel) panel.classList.toggle('hidden');
-          }
-        });
+// Plugin rendering - direct call
+if (typeof renderPluginSolutions === 'function') {
+  console.log('Calling renderPluginSolutions on minimal template');
+  renderPluginSolutions(failedFactors, 'plugin-solutions-section');
+} else {
+  console.warn('renderPluginSolutions not ready - skipping for test');
+}
 
       } catch (err) {
         console.error('[Analysis failed]', err);
