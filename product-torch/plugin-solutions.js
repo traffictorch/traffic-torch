@@ -11,194 +11,273 @@ function getPluginGrade(score) {
 const pluginData = {
   "Title Tag Optimization": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Title templates, length checker, keyword focus.", link: "https://yoast.com/wordpress/plugins/seo/" },
-      { name: "Rank Math", desc: "Advanced title optimization + AI suggestions.", link: "https://rankmath.com/" }
+      { name: "Yoast SEO", desc: "Title templates, length checker, preview, focus keyword.", linkLibrary: "https://wordpress.org/plugins/wordpress-seo/", linkWebsite: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "Advanced title optimization, AI suggestions, rich snippets.", linkLibrary: "https://wordpress.org/plugins/seo-by-rank-math/", linkWebsite: "https://rankmath.com/" },
+      { name: "SEOPress", desc: "Lightweight, fast title & meta control, dynamic variables.", linkLibrary: "https://wordpress.org/plugins/seopress/", linkWebsite: "https://www.seopress.org/" }
     ],
     Shopify: [
-      { name: "Plug in SEO", desc: "Title audits and bulk edits.", link: "https://apps.shopify.com/plug-in-seo" },
-      { name: "SEO Manager", desc: "Title templates for products.", link: "https://apps.shopify.com/seo-manager" }
+      { name: "Plug in SEO", desc: "Title audits, bulk edits, missing meta detection.", linkLibrary: "https://apps.shopify.com/plug-in-seo", linkWebsite: "https://www.plugseo.app/" },
+      { name: "SEO Manager", desc: "Title & meta templates for products, variants, collections.", linkLibrary: "https://apps.shopify.com/seo-manager", linkWebsite: "https://bloggle.app/" }
     ],
-    Wix: [{ name: "Built-in SEO Wiz", desc: "Title editing with previews.", link: "" }],
-    Squarespace: [{ name: "Built-in SEO Tools", desc: "Title length recommendations.", link: "" }]
+    Wix: [{ name: "Built-in SEO Wiz", desc: "Title editing with previews and guidance.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in SEO Tools", desc: "Title length recommendations & editing.", linkLibrary: "", linkWebsite: "" }]
   },
   "Meta Description Relevance": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Meta editor with length & CTA checks.", link: "https://yoast.com/wordpress/plugins/seo/" },
-      { name: "Rank Math", desc: "AI-generated meta descriptions.", link: "https://rankmath.com/" }
+      { name: "Yoast SEO", desc: "Meta editor with length counter, CTA suggestions, preview.", linkLibrary: "https://wordpress.org/plugins/wordpress-seo/", linkWebsite: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "AI-generated meta descriptions, snippet preview.", linkLibrary: "https://wordpress.org/plugins/seo-by-rank-math/", linkWebsite: "https://rankmath.com/" },
+      { name: "SEOPress", desc: "Meta description control with dynamic variables.", linkLibrary: "https://wordpress.org/plugins/seopress/", linkWebsite: "https://www.seopress.org/" }
     ],
-    Shopify: [{ name: "Plug in SEO", desc: "Meta description optimization.", link: "https://apps.shopify.com/plug-in-seo" }],
-    Wix: [{ name: "Built-in SEO Wiz", desc: "Meta guidance with CTA suggestions.", link: "" }],
-    Squarespace: [{ name: "Built-in Tools", desc: "Meta editing with length limits.", link: "" }]
+    Shopify: [
+      { name: "Plug in SEO", desc: "Meta description optimization, bulk edits.", linkLibrary: "https://apps.shopify.com/plug-in-seo", linkWebsite: "https://www.plugseo.app/" },
+      { name: "Smart SEO", desc: "Meta templates for products & collections.", linkLibrary: "https://apps.shopify.com/smart-seo", linkWebsite: "https://bloggle.app/" }
+    ],
+    Wix: [{ name: "Built-in SEO Wiz", desc: "Meta guidance with CTA suggestions.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Tools", desc: "Meta editing with length limits.", linkLibrary: "", linkWebsite: "" }]
   },
   "Heading Structure (H1–H6)": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Heading analysis in readability check.", link: "https://yoast.com/wordpress/plugins/seo/" },
-      { name: "Rank Math", desc: "Content AI suggests heading improvements.", link: "https://rankmath.com/" }
+      { name: "Yoast SEO", desc: "Heading analysis in readability & SEO checks.", linkLibrary: "https://wordpress.org/plugins/wordpress-seo/", linkWebsite: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "Content AI suggests heading improvements & structure.", linkLibrary: "https://wordpress.org/plugins/seo-by-rank-math/", linkWebsite: "https://rankmath.com/" },
+      { name: "SEOPress", desc: "Heading outline & hierarchy validation.", linkLibrary: "https://wordpress.org/plugins/seopress/", linkWebsite: "https://www.seopress.org/" }
     ],
-    Shopify: [{ name: "SEO Booster", desc: "Heading structure audit.", link: "https://apps.shopify.com/seo-booster" }],
-    Wix: [{ name: "Built-in Editor", desc: "Heading tags in content blocks.", link: "" }],
-    Squarespace: [{ name: "Built-in Blocks", desc: "Proper heading implementation.", link: "" }]
+    Shopify: [
+      { name: "SEO Booster", desc: "Heading structure audit & suggestions.", linkLibrary: "https://apps.shopify.com/seo-booster", linkWebsite: "https://seobooster.app/" },
+      { name: "Plug in SEO", desc: "Content & heading issue detection.", linkLibrary: "https://apps.shopify.com/plug-in-seo", linkWebsite: "https://www.plugseo.app/" }
+    ],
+    Wix: [{ name: "Built-in Editor", desc: "Heading tags in content blocks.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Blocks", desc: "Proper heading implementation.", linkLibrary: "", linkWebsite: "" }]
   },
   "URL Structure": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Slug editor + permalink optimizer.", link: "https://yoast.com/wordpress/plugins/seo/" }
+      { name: "Yoast SEO", desc: "Slug editor + permalink optimizer.", linkLibrary: "https://wordpress.org/plugins/wordpress-seo/", linkWebsite: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "Canonical & slug control.", linkLibrary: "https://wordpress.org/plugins/seo-by-rank-math/", linkWebsite: "https://rankmath.com/" },
+      { name: "Permalink Manager Lite", desc: "Advanced URL editing & redirects.", linkLibrary: "https://wordpress.org/plugins/permalink-manager/", linkWebsite: "https://permalinkmanager.pro/" }
     ],
-    Shopify: [{ name: "Smart SEO", desc: "URL cleanup & optimization.", link: "https://apps.shopify.com/smart-seo" }],
-    Wix: [{ name: "Built-in SEO Wiz", desc: "URL slug editing.", link: "" }],
-    Squarespace: [{ name: "Built-in Tools", desc: "Clean URL management.", link: "" }]
+    Shopify: [
+      { name: "Smart SEO", desc: "URL cleanup & optimization.", linkLibrary: "https://apps.shopify.com/smart-seo", linkWebsite: "https://bloggle.app/" },
+      { name: "SEO Manager", desc: "URL templates & editing.", linkLibrary: "https://apps.shopify.com/seo-manager", linkWebsite: "https://bloggle.app/" }
+    ],
+    Wix: [{ name: "Built-in SEO Wiz", desc: "URL slug editing.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Tools", desc: "Clean URL management.", linkLibrary: "", linkWebsite: "" }]
   },
   "Keyword Optimization": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Keyword density & placement analysis.", link: "https://yoast.com/wordpress/plugins/seo/" },
-      { name: "Rank Math", desc: "Keyword optimizer tool.", link: "https://rankmath.com/" }
+      { name: "Yoast SEO", desc: "Keyword density & placement analysis.", linkLibrary: "https://wordpress.org/plugins/wordpress-seo/", linkWebsite: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "Keyword optimizer tool & suggestions.", linkLibrary: "https://wordpress.org/plugins/seo-by-rank-math/", linkWebsite: "https://rankmath.com/" },
+      { name: "AIOSEO", desc: "Focus keyword tracking & optimization.", linkLibrary: "https://wordpress.org/plugins/aioseo/", linkWebsite: "https://aioseo.com/" }
     ],
-    Shopify: [{ name: "SEO Booster", desc: "Keyword suggestions & density.", link: "https://apps.shopify.com/seo-booster" }],
-    Wix: [{ name: "Built-in SEO Wiz", desc: "Keyword guidance.", link: "" }],
-    Squarespace: [{ name: "Built-in Tools", desc: "Keyword integration tips.", link: "" }]
+    Shopify: [
+      { name: "SEO Booster", desc: "Keyword suggestions & density.", linkLibrary: "https://apps.shopify.com/seo-booster", linkWebsite: "https://seobooster.app/" },
+      { name: "Plug in SEO", desc: "Keyword issue detection.", linkLibrary: "https://apps.shopify.com/plug-in-seo", linkWebsite: "https://www.plugseo.app/" }
+    ],
+    Wix: [{ name: "Built-in SEO Wiz", desc: "Keyword guidance.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Tools", desc: "Keyword integration tips.", linkLibrary: "", linkWebsite: "" }]
   },
   "Mobile-Friendliness": {
     WordPress: [
-      { name: "AMP for WP", desc: "Mobile AMP + responsive fixes.", link: "https://ampforwp.com/" },
-      { name: "WPtouch", desc: "Mobile theme switcher.", link: "https://wptouch.com/" }
+      { name: "AMP for WP", desc: "Mobile AMP pages + responsive fixes.", linkLibrary: "https://wordpress.org/plugins/accelerated-mobile-pages/", linkWebsite: "https://ampforwp.com/" },
+      { name: "WPtouch Mobile Plugin", desc: "Mobile theme switcher.", linkLibrary: "https://wordpress.org/plugins/wptouch/", linkWebsite: "https://wptouch.com/" },
+      { name: "Jetpack", desc: "Mobile theme & speed features.", linkLibrary: "https://wordpress.org/plugins/jetpack/", linkWebsite: "https://jetpack.com/" }
     ],
-    Shopify: [{ name: "Ampify", desc: "AMP pages for mobile speed.", link: "https://apps.shopify.com/ampify-me" }],
-    Wix: [{ name: "Built-in Mobile Editor", desc: "Responsive design tools.", link: "" }],
-    Squarespace: [{ name: "Built-in Responsive", desc: "Automatic mobile optimization.", link: "" }]
+    Shopify: [
+      { name: "Ampify", desc: "AMP pages for mobile speed.", linkLibrary: "https://apps.shopify.com/ampify-me", linkWebsite: "https://ampify.io/" },
+      { name: "AMP by Shop Sheriff", desc: "AMP conversion & speed.", linkLibrary: "https://apps.shopify.com/amp-by-shop-sheriff", linkWebsite: "https://shopsheriff.com/" }
+    ],
+    Wix: [{ name: "Built-in Mobile Editor", desc: "Responsive design tools.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Responsive", desc: "Automatic mobile optimization.", linkLibrary: "", linkWebsite: "" }]
   },
   "HTTPS Implementation": {
     WordPress: [
-      { name: "Really Simple SSL", desc: "Force HTTPS & fix mixed content.", link: "https://really-simple-ssl.com/" }
+      { name: "Really Simple SSL", desc: "Force HTTPS & fix mixed content.", linkLibrary: "https://wordpress.org/plugins/really-simple-ssl/", linkWebsite: "https://really-simple-ssl.com/" },
+      { name: "WP Encryption", desc: "Free SSL + HTTPS redirect.", linkLibrary: "https://wordpress.org/plugins/wp-letsencrypt-ssl/", linkWebsite: "https://wpencryption.com/" },
+      { name: "SSL Zen", desc: "Free Let's Encrypt SSL setup.", linkLibrary: "https://wordpress.org/plugins/ssl-zen/", linkWebsite: "https://sslzen.com/" }
     ],
-    Shopify: [{ name: "Built-in", desc: "Native HTTPS enforced.", link: "" }],
-    Wix: [{ name: "Built-in SSL", desc: "Automatic HTTPS.", link: "" }],
-    Squarespace: [{ name: "Built-in SSL", desc: "Free SSL certificates.", link: "" }]
+    Shopify: [{ name: "Built-in", desc: "Native HTTPS enforced.", linkLibrary: "", linkWebsite: "" }],
+    Wix: [{ name: "Built-in SSL", desc: "Automatic HTTPS.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in SSL", desc: "Free SSL certificates.", linkLibrary: "", linkWebsite: "" }]
   },
   "Canonical Tags": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Automatic canonical tags.", link: "https://yoast.com/wordpress/plugins/seo/" },
-      { name: "Rank Math", desc: "Canonical management.", link: "https://rankmath.com/" }
+      { name: "Yoast SEO", desc: "Automatic canonical tags.", linkLibrary: "https://wordpress.org/plugins/wordpress-seo/", linkWebsite: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "Canonical management.", linkLibrary: "https://wordpress.org/plugins/seo-by-rank-math/", linkWebsite: "https://rankmath.com/" },
+      { name: "SEOPress", desc: "Canonical control per page.", linkLibrary: "https://wordpress.org/plugins/seopress/", linkWebsite: "https://www.seopress.org/" }
     ],
-    Shopify: [{ name: "Plug in SEO", desc: "Canonical issue detection.", link: "https://apps.shopify.com/plug-in-seo" }],
-    Wix: [{ name: "Built-in SEO", desc: "Canonical handling.", link: "" }],
-    Squarespace: [{ name: "Built-in Tools", desc: "Automatic canonicals.", link: "" }]
+    Shopify: [
+      { name: "Plug in SEO", desc: "Canonical issue detection.", linkLibrary: "https://apps.shopify.com/plug-in-seo", linkWebsite: "https://www.plugseo.app/" },
+      { name: "Smart SEO", desc: "Canonical & duplicate handling.", linkLibrary: "https://apps.shopify.com/smart-seo", linkWebsite: "https://bloggle.app/" }
+    ],
+    Wix: [{ name: "Built-in SEO", desc: "Canonical handling.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Tools", desc: "Automatic canonicals.", linkLibrary: "", linkWebsite: "" }]
   },
   "Meta Robots Directives": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Noindex/nofollow controls per page.", link: "https://yoast.com/wordpress/plugins/seo/" }
+      { name: "Yoast SEO", desc: "Noindex/nofollow controls per page.", linkLibrary: "https://wordpress.org/plugins/wordpress-seo/", linkWebsite: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "Robots meta management.", linkLibrary: "https://wordpress.org/plugins/seo-by-rank-math/", linkWebsite: "https://rankmath.com/" },
+      { name: "SEOPress", desc: "Advanced robots.txt & meta controls.", linkLibrary: "https://wordpress.org/plugins/seopress/", linkWebsite: "https://www.seopress.org/" }
     ],
-    Shopify: [{ name: "Plug in SEO", desc: "Robots meta management.", link: "https://apps.shopify.com/plug-in-seo" }],
-    Wix: [{ name: "Built-in SEO", desc: "Index controls.", link: "" }],
-    Squarespace: [{ name: "Built-in Tools", desc: "Robots settings.", link: "" }]
+    Shopify: [
+      { name: "Plug in SEO", desc: "Robots meta management.", linkLibrary: "https://apps.shopify.com/plug-in-seo", linkWebsite: "https://www.plugseo.app/" },
+      { name: "SEO Manager", desc: "Robots & indexing controls.", linkLibrary: "https://apps.shopify.com/seo-manager", linkWebsite: "https://bloggle.app/" }
+    ],
+    Wix: [{ name: "Built-in SEO", desc: "Index controls.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Tools", desc: "Robots settings.", linkLibrary: "", linkWebsite: "" }]
   },
   "Sitemap Inclusion Hints": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Auto XML sitemap generation.", link: "https://yoast.com/wordpress/plugins/seo/" }
+      { name: "Yoast SEO", desc: "Auto XML sitemap generation.", linkLibrary: "https://wordpress.org/plugins/wordpress-seo/", linkWebsite: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "Dynamic sitemap with inclusion control.", linkLibrary: "https://wordpress.org/plugins/seo-by-rank-math/", linkWebsite: "https://rankmath.com/" },
+      { name: "XML Sitemap & Google News", desc: "Advanced sitemap customization.", linkLibrary: "https://wordpress.org/plugins/xml-sitemap-google-news/", linkWebsite: "https://www.xml-sitemaps.com/" }
     ],
-    Shopify: [{ name: "XML Sitemap", desc: "Automatic product sitemaps.", link: "https://apps.shopify.com/xml-sitemap" }],
-    Wix: [{ name: "Built-in Sitemap", desc: "Automatic generation.", link: "" }],
-    Squarespace: [{ name: "Built-in Sitemap", desc: "Native XML sitemaps.", link: "" }]
+    Shopify: [
+      { name: "XML Sitemap", desc: "Automatic product sitemaps.", linkLibrary: "https://apps.shopify.com/xml-sitemap", linkWebsite: "" },
+      { name: "Smart SEO", desc: "Sitemap & inclusion hints.", linkLibrary: "https://apps.shopify.com/smart-seo", linkWebsite: "https://bloggle.app/" }
+    ],
+    Wix: [{ name: "Built-in Sitemap", desc: "Automatic generation.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Sitemap", desc: "Native XML sitemaps.", linkLibrary: "", linkWebsite: "" }]
   },
   "Product Description Quality": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Readability & content analysis.", link: "https://yoast.com/wordpress/plugins/seo/" }
+      { name: "Yoast SEO", desc: "Readability & content analysis.", linkLibrary: "https://wordpress.org/plugins/wordpress-seo/", linkWebsite: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Rank Math", desc: "Content AI & description suggestions.", linkLibrary: "https://wordpress.org/plugins/seo-by-rank-math/", linkWebsite: "https://rankmath.com/" },
+      { name: "AIOSEO", desc: "Content scoring & optimization.", linkLibrary: "https://wordpress.org/plugins/aioseo/", linkWebsite: "https://aioseo.com/" }
     ],
-    Shopify: [{ name: "SEO Booster", desc: "Description length & keyword tips.", link: "https://apps.shopify.com/seo-booster" }],
-    Wix: [{ name: "Built-in Editor", desc: "Rich text for descriptions.", link: "" }],
-    Squarespace: [{ name: "Built-in Blocks", desc: "Structured descriptions.", link: "" }]
+    Shopify: [
+      { name: "SEO Booster", desc: "Description length & keyword tips.", linkLibrary: "https://apps.shopify.com/seo-booster", linkWebsite: "https://seobooster.app/" },
+      { name: "Smart SEO", desc: "Description optimization.", linkLibrary: "https://apps.shopify.com/smart-seo", linkWebsite: "https://bloggle.app/" }
+    ],
+    Wix: [{ name: "Built-in Editor", desc: "Rich text for descriptions.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Blocks", desc: "Structured descriptions.", linkLibrary: "", linkWebsite: "" }]
   },
   "Image Optimization": {
     WordPress: [
-      { name: "Smush", desc: "Compress + lazy load + WebP + alt suggestions.", link: "https://wpmudev.com/project/wp-smush-pro/" },
-      { name: "EWWW Image Optimizer", desc: "Bulk compress, WebP/AVIF, alt tools.", link: "https://ewww.io/" },
-      { name: "Imagify", desc: "Smart compression + next-gen formats.", link: "https://imagify.io/" }
+      { name: "Smush", desc: "Compress + lazy load + WebP + alt suggestions.", linkLibrary: "https://wordpress.org/plugins/wp-smushit/", linkWebsite: "https://wpmudev.com/project/wp-smush-pro/" },
+      { name: "EWWW Image Optimizer", desc: "Bulk compress, WebP/AVIF, alt tools.", linkLibrary: "https://wordpress.org/plugins/ewww-image-optimizer/", linkWebsite: "https://ewww.io/" },
+      { name: "Imagify", desc: "Smart compression + next-gen formats.", linkLibrary: "https://wordpress.org/plugins/imagify-webp-bulk-optimizer/", linkWebsite: "https://imagify.io/" }
     ],
     Shopify: [
-      { name: "TinyIMG", desc: "AI alt text + compression + WebP.", link: "https://tiny-img.com/" },
-      { name: "Crush.pics", desc: "Auto compress + SEO filenames/alt.", link: "https://crush.pics/" }
+      { name: "TinyIMG", desc: "AI alt text + compression + WebP.", linkLibrary: "https://apps.shopify.com/tinyimg", linkWebsite: "https://tiny-img.com/" },
+      { name: "Crush.pics", desc: "Auto compress + SEO filenames/alt.", linkLibrary: "https://apps.shopify.com/crush-pics-image-optimizer", linkWebsite: "https://crush.pics/" }
     ],
-    Wix: [{ name: "Built-in Optimizer", desc: "Auto-compress + manual alt text.", link: "" }],
-    Squarespace: [{ name: "Built-in Tools", desc: "Native compression + alt fields.", link: "" }]
+    Wix: [{ name: "Built-in Optimizer", desc: "Auto-compress + manual alt text.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Tools", desc: "Native compression + alt fields.", linkLibrary: "", linkWebsite: "" }]
   },
   "Video Embed Quality": {
     WordPress: [
-      { name: "EmbedPress", desc: "Optimized embeds with captions.", link: "https://wpdeveloper.com/plugins/embedpress/" }
+      { name: "EmbedPress", desc: "Optimized embeds with captions.", linkLibrary: "https://wordpress.org/plugins/embedpress/", linkWebsite: "https://wpdeveloper.com/plugins/embedpress/" },
+      { name: "Video Embed & Thumbnail Generator", desc: "Lazy video + thumbnails + captions.", linkLibrary: "https://wordpress.org/plugins/video-embed-thumbnail-generator/", linkWebsite: "https://www.farhatullah.com/" },
+      { name: "Lazy Load – Optimize Images", desc: "Lazy video loading support.", linkLibrary: "https://wordpress.org/plugins/rocket-lazy-load/", linkWebsite: "https://wp-rocket.me/" }
     ],
-    Shopify: [{ name: "Video Embed Optimizer", desc: "Lazy video loading.", link: "https://apps.shopify.com/video-embed-optimizer" }],
-    Wix: [{ name: "Built-in Video", desc: "Caption support.", link: "" }],
-    Squarespace: [{ name: "Built-in Video Blocks", desc: "Embed with captions.", link: "" }]
+    Shopify: [
+      { name: "Video Embed Optimizer", desc: "Lazy video loading.", linkLibrary: "https://apps.shopify.com/video-embed-optimizer", linkWebsite: "" },
+      { name: "Vitals", desc: "Video performance & lazy loading.", linkLibrary: "https://apps.shopify.com/vitals", linkWebsite: "https://vitals.co/" }
+    ],
+    Wix: [{ name: "Built-in Video", desc: "Caption support.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Video Blocks", desc: "Embed with captions.", linkLibrary: "", linkWebsite: "" }]
   },
   "User-Generated Content (UGC)": {
     WordPress: [
-      { name: "Yotpo", desc: "Reviews, photos, videos with schema.", link: "https://www.yotpo.com/" },
-      { name: "Judge.me", desc: "Product reviews with UGC.", link: "https://judge.me/" }
+      { name: "Yotpo", desc: "Reviews, photos, videos with schema.", linkLibrary: "https://wordpress.org/plugins/yotpo-social-reviews/", linkWebsite: "https://www.yotpo.com/" },
+      { name: "Judge.me", desc: "Product reviews with UGC & schema.", linkLibrary: "https://wordpress.org/plugins/judge-me-product-reviews-woocommerce/", linkWebsite: "https://judge.me/" },
+      { name: "WP Review", desc: "Review schema & aggregation.", linkLibrary: "https://wordpress.org/plugins/wp-review/", linkWebsite: "https://mythemeshop.com/plugins/wp-review-pro/" }
     ],
     Shopify: [
-      { name: "Yotpo", desc: "UGC and reviews.", link: "https://apps.shopify.com/yotpo-social-reviews" },
-      { name: "Judge.me", desc: "Photo/video reviews.", link: "https://apps.shopify.com/judgeme" }
+      { name: "Yotpo", desc: "UGC and reviews with schema.", linkLibrary: "https://apps.shopify.com/yotpo-social-reviews", linkWebsite: "https://www.yotpo.com/" },
+      { name: "Judge.me", desc: "Photo/video reviews & schema.", linkLibrary: "https://apps.shopify.com/judgeme", linkWebsite: "https://judge.me/" }
     ],
-    Wix: [{ name: "Wix Reviews", desc: "Built-in UGC.", link: "" }],
-    Squarespace: [{ name: "Built-in Comments", desc: "UGC support.", link: "" }]
+    Wix: [{ name: "Wix Reviews", desc: "Built-in UGC.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Comments", desc: "UGC support.", linkLibrary: "", linkWebsite: "" }]
   },
   "Internal Linking": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Internal link suggestions.", link: "https://yoast.com/wordpress/plugins/seo/" },
-      { name: "Link Whisper", desc: "AI-powered internal linking.", link: "https://linkwhisper.com/" }
+      { name: "Yoast SEO", desc: "Internal link suggestions.", linkLibrary: "https://wordpress.org/plugins/wordpress-seo/", linkWebsite: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Link Whisper", desc: "AI-powered internal linking.", linkLibrary: "https://wordpress.org/plugins/link-whisper/", linkWebsite: "https://linkwhisper.com/" },
+      { name: "Internal Link Juicer", desc: "Automated internal linking.", linkLibrary: "https://wordpress.org/plugins/internal-link-juicer/", linkWebsite: "https://internallinkjuicer.com/" }
     ],
-    Shopify: [{ name: "Smart SEO", desc: "Link optimization.", link: "https://apps.shopify.com/smart-seo" }],
-    Wix: [{ name: "Built-in Links", desc: "Anchor links.", link: "" }],
-    Squarespace: [{ name: "Built-in Navigation", desc: "Internal linking.", link: "" }]
+    Shopify: [
+      { name: "Smart SEO", desc: "Link optimization.", linkLibrary: "https://apps.shopify.com/smart-seo", linkWebsite: "https://bloggle.app/" },
+      { name: "SEO Manager", desc: "Internal link suggestions.", linkLibrary: "https://apps.shopify.com/seo-manager", linkWebsite: "https://bloggle.app/" }
+    ],
+    Wix: [{ name: "Built-in Links", desc: "Anchor links.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Navigation", desc: "Internal linking.", linkLibrary: "", linkWebsite: "" }]
   },
   "Breadcrumb Navigation": {
     WordPress: [
-      { name: "Yoast SEO", desc: "Breadcrumb schema.", link: "https://yoast.com/wordpress/plugins/seo/" },
-      { name: "Breadcrumb NavXT", desc: "Custom breadcrumbs.", link: "https://mtekk.us/code/breadcrumb-navxt/" }
+      { name: "Yoast SEO", desc: "Breadcrumb schema.", linkLibrary: "https://wordpress.org/plugins/wordpress-seo/", linkWebsite: "https://yoast.com/wordpress/plugins/seo/" },
+      { name: "Breadcrumb NavXT", desc: "Custom breadcrumbs.", linkLibrary: "https://wordpress.org/plugins/breadcrumb-navxt/", linkWebsite: "https://mtekk.us/code/breadcrumb-navxt/" },
+      { name: "Rank Math", desc: "Breadcrumb support.", linkLibrary: "https://wordpress.org/plugins/seo-by-rank-math/", linkWebsite: "https://rankmath.com/" }
     ],
-    Shopify: [{ name: "Breadcrumb App", desc: "Custom breadcrumbs.", link: "https://apps.shopify.com/breadcrumbs" }],
-    Wix: [{ name: "Built-in Breadcrumbs", desc: "Native support.", link: "" }],
-    Squarespace: [{ name: "Built-in Navigation", desc: "Breadcrumb tools.", link: "" }]
+    Shopify: [
+      { name: "Breadcrumb App", desc: "Custom breadcrumbs.", linkLibrary: "https://apps.shopify.com/breadcrumbs", linkWebsite: "" },
+      { name: "Smart SEO", desc: "Breadcrumb markup.", linkLibrary: "https://apps.shopify.com/smart-seo", linkWebsite: "https://bloggle.app/" }
+    ],
+    Wix: [{ name: "Built-in Breadcrumbs", desc: "Native support.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Navigation", desc: "Breadcrumb tools.", linkLibrary: "", linkWebsite: "" }]
   },
   "Product Schema Markup": {
     WordPress: [
-      { name: "Schema Pro", desc: "Full Product schema generator.", link: "https://wpschema.com/" },
-      { name: "Rank Math", desc: "Built-in product schema.", link: "https://rankmath.com/" }
+      { name: "Schema & Structured Data for WP", desc: "Best free option – full Product schema, rich snippets.", linkLibrary: "https://wordpress.org/plugins/schema-and-structured-data-for-wp/", linkWebsite: "https://wpschema.com/" },
+      { name: "Rank Math", desc: "Built-in product schema, offers, reviews.", linkLibrary: "https://wordpress.org/plugins/seo-by-rank-math/", linkWebsite: "https://rankmath.com/" },
+      { name: "AIOSEO", desc: "Schema generator for products.", linkLibrary: "https://wordpress.org/plugins/aioseo/", linkWebsite: "https://aioseo.com/" }
     ],
-    Shopify: [{ name: "Schema Plus", desc: "Advanced schema.", link: "https://apps.shopify.com/schema-plus-for-seo" }],
-    Wix: [{ name: "Built-in Structured Data", desc: "Product markup.", link: "" }],
-    Squarespace: [{ name: "Built-in Schema", desc: "Native support.", link: "" }]
+    Shopify: [
+      { name: "Schema Plus", desc: "Advanced product schema.", linkLibrary: "https://apps.shopify.com/schema-plus-for-seo", linkWebsite: "" },
+      { name: "SEO Manager", desc: "Product schema & rich results.", linkLibrary: "https://apps.shopify.com/seo-manager", linkWebsite: "https://bloggle.app/" }
+    ],
+    Wix: [{ name: "Built-in Structured Data", desc: "Product markup.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Schema", desc: "Native support.", linkLibrary: "", linkWebsite: "" }]
   },
   "Price & Availability Markup": {
     WordPress: [
-      { name: "Schema Pro", desc: "Offer and price schema.", link: "https://wpschema.com/" }
+      { name: "Schema & Structured Data for WP", desc: "Offer & price schema support.", linkLibrary: "https://wordpress.org/plugins/schema-and-structured-data-for-wp/", linkWebsite: "https://wpschema.com/" },
+      { name: "Rank Math", desc: "Price & availability in schema.", linkLibrary: "https://wordpress.org/plugins/seo-by-rank-math/", linkWebsite: "https://rankmath.com/" },
+      { name: "AIOSEO", desc: "Offer markup for products.", linkLibrary: "https://wordpress.org/plugins/aioseo/", linkWebsite: "https://aioseo.com/" }
     ],
-    Shopify: [{ name: "Schema Plus", desc: "Price markup.", link: "https://apps.shopify.com/schema-plus-for-seo" }],
-    Wix: [{ name: "Built-in", desc: "Price schema.", link: "" }],
-    Squarespace: [{ name: "Built-in", desc: "Availability markup.", link: "" }]
+    Shopify: [
+      { name: "Schema Plus", desc: "Price markup.", linkLibrary: "https://apps.shopify.com/schema-plus-for-seo", linkWebsite: "" },
+      { name: "SEO Manager", desc: "Price & stock schema.", linkLibrary: "https://apps.shopify.com/seo-manager", linkWebsite: "https://bloggle.app/" }
+    ],
+    Wix: [{ name: "Built-in", desc: "Price schema.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in", desc: "Availability markup.", linkLibrary: "", linkWebsite: "" }]
   },
   "Review Schema & Aggregation": {
     WordPress: [
-      { name: "WP Review Pro", desc: "Review schema.", link: "https://mythemeshop.com/plugins/wp-review-pro/" },
-      { name: "Rank Math", desc: "Aggregate rating schema.", link: "https://rankmath.com/" }
+      { name: "Yotpo", desc: "Review schema & UGC.", linkLibrary: "https://wordpress.org/plugins/yotpo-social-reviews/", linkWebsite: "https://www.yotpo.com/" },
+      { name: "Judge.me", desc: "Aggregate rating schema.", linkLibrary: "https://wordpress.org/plugins/judge-me-product-reviews-woocommerce/", linkWebsite: "https://judge.me/" },
+      { name: "WP Review", desc: "Review schema & aggregation.", linkLibrary: "https://wordpress.org/plugins/wp-review/", linkWebsite: "https://mythemeshop.com/plugins/wp-review-pro/" }
     ],
-    Shopify: [{ name: "Yotpo", desc: "Review schema.", link: "https://apps.shopify.com/yotpo-social-reviews" }],
-    Wix: [{ name: "Built-in Reviews", desc: "Schema support.", link: "" }],
-    Squarespace: [{ name: "Built-in", desc: "Review markup.", link: "" }]
+    Shopify: [
+      { name: "Yotpo", desc: "Review schema.", linkLibrary: "https://apps.shopify.com/yotpo-social-reviews", linkWebsite: "https://www.yotpo.com/" },
+      { name: "Judge.me", desc: "Photo/video reviews & schema.", linkLibrary: "https://apps.shopify.com/judgeme", linkWebsite: "https://judge.me/" }
+    ],
+    Wix: [{ name: "Built-in Reviews", desc: "Schema support.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in", desc: "Review markup.", linkLibrary: "", linkWebsite: "" }]
   },
   "Variant Handling": {
     WordPress: [
-      { name: "WooCommerce", desc: "Built-in variant management.", link: "https://woocommerce.com/" }
+      { name: "WooCommerce", desc: "Built-in variant management.", linkLibrary: "https://wordpress.org/plugins/woocommerce/", linkWebsite: "https://woocommerce.com/" },
+      { name: "YITH WooCommerce Product Add-ons", desc: "Advanced variant & option handling.", linkLibrary: "https://wordpress.org/plugins/yith-woocommerce-product-add-ons/", linkWebsite: "https://yithemes.com/" },
+      { name: "Variation Swatches for WooCommerce", desc: "Visual variant swatches.", linkLibrary: "https://wordpress.org/plugins/variation-swatches-for-woocommerce/", linkWebsite: "https://getwooplugins.com/" }
     ],
-    Shopify: [{ name: "Built-in Variants", desc: "Native handling.", link: "" }],
-    Wix: [{ name: "Built-in Store", desc: "Variant tools.", link: "" }],
-    Squarespace: [{ name: "Built-in Commerce", desc: "Variants.", link: "" }]
+    Shopify: [
+      { name: "Built-in Variants", desc: "Native handling.", linkLibrary: "", linkWebsite: "https://help.shopify.com/" },
+      { name: "Infinite Options", desc: "Advanced variant options.", linkLibrary: "https://apps.shopify.com/custom-options", linkWebsite: "https://infiniteoptions.com/" }
+    ],
+    Wix: [{ name: "Built-in Store", desc: "Variant tools.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Commerce", desc: "Variants.", linkLibrary: "", linkWebsite: "" }]
   },
   "Social Sharing Integration": {
     WordPress: [
-      { name: "Monarch", desc: "Social sharing with OG tags.", link: "https://www.elegantthemes.com/plugins/monarch/" },
-      { name: "AddToAny", desc: "Sharing buttons.", link: "https://www.addtoany.com/" }
+      { name: "Monarch", desc: "Social sharing with OG tags.", linkLibrary: "https://www.elegantthemes.com/plugins/monarch/", linkWebsite: "https://www.elegantthemes.com/plugins/monarch/" },
+      { name: "AddToAny Share Buttons", desc: "Sharing with Open Graph.", linkLibrary: "https://wordpress.org/plugins/add-to-any/", linkWebsite: "https://www.addtoany.com/" },
+      { name: "Social Warfare", desc: "Beautiful sharing & OG control.", linkLibrary: "https://wordpress.org/plugins/social-warfare/", linkWebsite: "https://warfareplugins.com/" }
     ],
-    Shopify: [{ name: "Social Share Buttons", desc: "OG integration.", link: "https://apps.shopify.com/social-share-buttons" }],
-    Wix: [{ name: "Built-in Social", desc: "Sharing tools.", link: "" }],
-    Squarespace: [{ name: "Built-in Sharing", desc: "Social buttons.", link: "" }]
+    Shopify: [
+      { name: "Social Share Buttons", desc: "OG integration.", linkLibrary: "https://apps.shopify.com/social-share-buttons", linkWebsite: "" },
+      { name: "AddToAny Share", desc: "Universal sharing with meta tags.", linkLibrary: "https://apps.shopify.com/addtoany-share-buttons", linkWebsite: "https://www.addtoany.com/" }
+    ],
+    Wix: [{ name: "Built-in Social", desc: "Sharing tools.", linkLibrary: "", linkWebsite: "" }],
+    Squarespace: [{ name: "Built-in Sharing", desc: "Social buttons.", linkLibrary: "", linkWebsite: "" }]
   }
 };
 
