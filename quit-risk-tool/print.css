@@ -3,7 +3,7 @@
      Proven cover page – unchanged & stable
   ─────────────────────────────────────────────────────────────── */
   body::before {
-    content: "TrafficTorch.net 🛡️\A\A Quit Risk Audit Tool ⚡\A\A Report:\A " attr(data-url);
+    content: "TrafficTorch.net ⚖️\A\A Quit Risk Audit Tool ⚡\A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
     min-height: 100vh;
