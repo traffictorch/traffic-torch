@@ -1030,39 +1030,58 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         `;
 
-        // DOM settle delay for plugin rendering
-        setTimeout(() => {
-          const pluginSection = document.getElementById('plugin-solutions-section');
-          console.log('[Plugin Debug] Checking renderPluginSolutions availability... typeof =', typeof renderPluginSolutions);
+// Plugin check – wait for DOM to actually contain the section
+setTimeout(() => {
+  const pluginSection = document.getElementById('plugin-solutions-section');
 
-          if (typeof renderPluginSolutions !== 'function') {
-            console.warn('[Plugin Debug] renderPluginSolutions is still not a function after delay');
-            pluginSection.innerHTML = `
-              <div class="mt-16 p-10 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 rounded-3xl border border-orange-300 dark:border-orange-700 text-center shadow-lg">
-                <p class="text-2xl font-bold text-orange-700 dark:text-orange-300 mb-4">⚠️ Plugin suggestions not loaded</p>
-                <p class="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
-                  The recommendations module failed to load. This is usually a network/timing issue on first visit.<br>
-                  Try refreshing the page once more.<br>
-                  <small class="text-gray-500 dark:text-gray-400">(Check browser console for "[Plugin] Failed to dynamically import" errors)</small>
-                </p>
-              </div>`;
-            return;
-          }
+  // Extra safety: if section still missing after first delay, try again once
+  if (!pluginSection) {
+    console.warn('[Plugin Debug] #plugin-solutions-section not found yet – retrying in 300ms');
+    setTimeout(() => {
+      const retrySection = document.getElementById('plugin-solutions-section');
+      if (!retrySection) {
+        console.error('[Plugin Debug] #plugin-solutions-section STILL missing after retry');
+        return;
+      }
+      renderIfReady(retrySection);
+    }, 300);
+    return;
+  }
 
-          const validFactors = failedFactors.filter(f => f && f.name && f.grade);
-          console.log('[Plugin Debug] Rendering with', validFactors.length, 'valid failed factors');
+  renderIfReady(pluginSection);
 
-          if (validFactors.length === 0) {
-            pluginSection.innerHTML = `
-              <div class="mt-16 p-10 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-3xl border border-green-300 dark:border-green-700 text-center shadow-lg">
-                <p class="text-3xl mb-4">🎉 All core checks passed!</p>
-                <p class="text-xl font-medium text-green-700 dark:text-green-300">No plugin recommendations needed right now.</p>
-              </div>`;
-            return;
-          }
+  function renderIfReady(section) {
+    console.log('[Plugin Debug] Container found – typeof renderPluginSolutions =', typeof renderPluginSolutions);
 
-          renderPluginSolutions(validFactors, 'plugin-solutions-section');
-        }, 400);
+    if (typeof renderPluginSolutions !== 'function') {
+      section.innerHTML = `
+        <div class="mt-16 p-10 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 rounded-3xl border border-orange-300 dark:border-orange-700 text-center shadow-lg">
+          <p class="text-2xl font-bold text-orange-700 dark:text-orange-300 mb-4">⚠️ Plugin suggestions not loaded</p>
+          <p class="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
+            Recommendations module ready but failed to initialize.<br>
+            Refresh page or check console.
+          </p>
+        </div>`;
+      return;
+    }
+
+    const validFactors = failedFactors.filter(f => f && f.name && f.grade);
+    console.log('[Plugin Debug] Rendering with', validFactors.length, 'valid failed factors');
+
+    if (validFactors.length === 0) {
+      section.innerHTML = `
+        <div class="mt-16 p-10 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-3xl border border-green-300 dark:border-green-700 text-center shadow-lg">
+          <p class="text-3xl mb-4">🎉 All core checks passed!</p>
+          <p class="text-xl font-medium text-green-700 dark:text-green-300">No plugin recommendations needed right now.</p>
+        </div>`;
+      return;
+    }
+
+    // Actually render now that container exists
+    renderPluginSolutions(validFactors, 'plugin-solutions-section');
+    console.log('[Plugin Debug] renderPluginSolutions called successfully');
+  }
+}, 600);  // Increased from 400ms → gives more time for large innerHTML to parse & insert
 
         // Radar chart
         setTimeout(() => {
