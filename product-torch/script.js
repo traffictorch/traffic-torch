@@ -773,53 +773,53 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
 
-      setTimeout(() => {
-        const canvas = document.getElementById('health-radar');
-        if (!canvas) return;
-        try {
-          const ctx = canvas.getContext('2d');
-          const labelColor = '#9ca3af';
-          const gridColor = 'rgba(156, 163, 175, 0.3)';
-          const borderColor = '#22c55e';
-          const fillColor = 'rgba(34, 197, 94, 0.15)';
-          window.myChart = new Chart(ctx, {
-            type: 'radar',
-            data: {
-              labels: modules.map(m => m.name),
-              datasets: [{
-                label: 'Health Score',
-                data: scores,
-                backgroundColor: fillColor,
-                borderColor: borderColor,
-                borderWidth: 4,
-                pointRadius: 8,
-                pointHoverRadius: 12,
-                pointBackgroundColor: scores.map(s => s >= 85 ? '#10b981' : s >= 70 ? '#22c55e' : s >= 50 ? '#fb923c' : '#ef4444'),
-                pointBorderColor: '#fff',
-                pointBorderWidth: 3
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                r: {
-                  beginAtZero: true,
-                  min: 0,
-                  max: 100,
-                  ticks: { stepSize: 20, color: labelColor },
-                  grid: { color: gridColor },
-                  angleLines: { color: gridColor },
-                  pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
-                }
-              },
-              plugins: { legend: { display: false } }
-            }
-          });
-        } catch (e) {
-          console.error('Radar chart failed', e);
-        }
-      }, 150);
+setTimeout(() => {
+  const canvas = document.getElementById('health-radar');
+  if (!canvas) return;
+  try {
+    const ctx = canvas.getContext('2d');
+    const labelColor = '#9ca3af';
+    const gridColor = 'rgba(156, 163, 175, 0.3)';
+    const borderColor = '#22c55e';
+    const fillColor = 'rgba(34, 197, 94, 0.15)';
+    window.myChart = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: modules.map(m => m.name),
+        datasets: [{
+          label: 'Health Score',
+          data: scores,
+          backgroundColor: fillColor,
+          borderColor: borderColor,
+          borderWidth: 4,
+          pointRadius: 8,
+          pointHoverRadius: 12,
+          pointBackgroundColor: scores.map(s => s >= 85 ? '#10b981' : s >= 70 ? '#22c55e' : s >= 50 ? '#fb923c' : '#ef4444'),
+          pointBorderColor: '#fff',
+          pointBorderWidth: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            beginAtZero: true,
+            min: 0,
+            max: 100,
+            ticks: { stepSize: 20, color: labelColor },
+            grid: { color: gridColor },
+            angleLines: { color: gridColor },
+            pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
+          }
+        },
+        plugins: { legend: { display: false } }
+      }
+    });
+  } catch (e) {
+    console.error('Radar chart failed', e);
+  }
+}, 150);
 
       if (typeof renderPluginSolutions === 'function') {
         renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
