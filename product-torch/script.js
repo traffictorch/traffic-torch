@@ -17,12 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const factorDefinitions = {
     onPage: {
       factors: [
-        { name: "Title Tag Optimization", threshold: 80, shortDesc: "Title length 40–70 chars ideal, includes product keywords and brand. Avoids truncation in SERPs.", howToFix: "Include product name + key benefit + brand. Keep under 70 chars for best display." },
-        { name: "Meta Description Relevance", threshold: 75, shortDesc: "100–170 chars, keyword-rich, includes CTA, unique per product.", howToFix: "Write benefit-driven copy with keywords early. Add urgency or offer. Avoid duplication." },
-        { name: "Heading Structure (H1–H6)", threshold: 85, shortDesc: "Single H1 (product name), logical hierarchy, keywords in H1/H2.", howToFix: "Use one H1 for product name. Add H2/H3 for features, specs, benefits. Include long-tail keywords naturally." },
-        { name: "URL Structure", threshold: 90, shortDesc: "Clean, keyword-rich slug with hyphens, no parameters, readable.", howToFix: "Use /category/product-name format. Remove session IDs. Keep readable and descriptive." },
-        { name: "Keyword Optimization", threshold: 70, shortDesc: "Natural primary & long-tail keyword placement, density 0.4–3%, front-loaded.", howToFix: "Place main keywords in title, H1, first paragraph. Add long-tail variations naturally." }
-      ],
+  { name: "Title Tag Optimization", key: "title", threshold: 80, shortDesc: "Title length ideally 50–60 chars (max 70), includes product keywords and brand. Avoids truncation.", howToFix: "Include product name + key benefit + brand early. Target 50-60 chars. Use separator like | or -." },
+  { name: "Meta Description Relevance", key: "metaDescription", threshold: 75, shortDesc: "100–170 chars, keyword-rich, includes CTA, unique per product.", howToFix: "Write benefit-driven copy with keywords early. Add urgency or offer. Avoid duplication." },
+  { name: "Heading Structure (H1–H6)", key: "headings", threshold: 85, shortDesc: "Single H1 (product name), logical hierarchy, keywords in H1/H2.", howToFix: "Use one H1 for product name. Add H2/H3 for features, specs, benefits. Include long-tail keywords naturally." },
+  { name: "URL Structure", key: "url", threshold: 90, shortDesc: "Clean, keyword-rich slug with hyphens, no parameters, readable.", howToFix: "Use /category/product-name format. Remove session IDs. Keep readable and descriptive." },
+  { name: "Keyword Optimization", key: "keywords", threshold: 70, shortDesc: "Natural primary & long-tail keyword placement, density 0.4–3%, front-loaded.", howToFix: "Place main keywords in title, H1, first paragraph. Add long-tail variations naturally." }
+],
       moduleWhat: "On-Page SEO evaluates title, meta, headings, URL, and keyword usage — the foundational elements that tell search engines and users what the product page is about.",
       moduleHow: "Optimize titles and metas for CTR. Use proper heading hierarchy. Include keywords naturally in prominent places. Keep URLs clean and descriptive.",
       moduleWhy: "Strong on-page signals improve relevance, click-through rates, and initial rankings. They help match user intent and reduce bounce from mismatched expectations."
@@ -173,102 +173,112 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  function analyzeOnPageSEO(doc, data) {
-    let score = 0;
-    let details = {};
+function analyzeOnPageSEO(doc, data) {
+  let details = {};
+  let titleScore = 0;
+  const title = doc.title.trim();
+  const titleLength = title.length;
+  if (titleLength >= 50 && titleLength <= 60) titleScore += 50;
+  else if (titleLength >= 40 && titleLength <= 70) titleScore += 35;
+  else if (titleLength >= 30 && titleLength <= 80) titleScore += 20;
+  else titleScore += 5;
+  const separatorRegex = /[\|\-–—]/;
+  if (separatorRegex.test(title)) titleScore += 20;
+  if (keywordRegex.test(title.toLowerCase())) titleScore += 30;
+  titleScore = Math.min(100, titleScore);
+  details.title = { length: titleLength, hasSeparator: separatorRegex.test(title), hasKeyword: keywordRegex.test(title.toLowerCase()), score: titleScore };
 
-    // Title Tag Optimization
-    const title = doc.title.trim();
-    const titleLength = title.length;
-    let titleScore = 0;
-    if (titleLength >= 40 && titleLength <= 70) titleScore += 40;
-    else if (titleLength >= 30 && titleLength <= 80) titleScore += 25;
-    else titleScore += 10;
-    if (title.includes('|') || title.includes(' - ') || title.includes(' – ') || title.includes(' — ')) titleScore += 20;
-    details.title = { length: titleLength, hasSeparator: title.includes('|') || title.includes(' - '), score: titleScore };
+  let descScore = 0;
+  const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
+  const descLength = metaDesc.length;
+  if (descLength >= 120 && descLength <= 160) descScore += 45;
+  else if (descLength >= 100 && descLength <= 170) descScore += 35;
+  else if (descLength > 0) descScore += 15;
+  if (/buy|shop|add to cart|purchase|order|view|learn more|discover/i.test(metaDesc.toLowerCase())) descScore += 25;
+  if (keywordRegex.test(metaDesc.toLowerCase())) descScore += 30;
+  descScore = Math.min(100, descScore);
+  details.metaDescription = { length: descLength, hasCta: /buy|shop|add to/i.test(metaDesc.toLowerCase()), hasKeyword: keywordRegex.test(metaDesc.toLowerCase()), score: descScore };
 
-    // Meta Description Relevance
-    const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
-    const descLength = metaDesc.length;
-    let descScore = 0;
-    if (descLength >= 100 && descLength <= 170) descScore += 40;
-    if (descLength > 0) descScore += 20;
-    if (/buy|shop|order|add to cart|add to bag|purchase|view|see|learn more/i.test(metaDesc.toLowerCase())) descScore += 20;
-    details.metaDescription = { length: descLength, hasCta: /buy|shop|add to/i.test(metaDesc.toLowerCase()), score: descScore };
+  let headingScore = 0;
+  const h1s = doc.querySelectorAll('h1');
+  const h2s = doc.querySelectorAll('h2');
+  if (h1s.length === 1) headingScore += 45;
+  else if (h1s.length === 0) headingScore += 20; // penalize missing
+  else headingScore += 10; // multiple H1 bad
+  if (h2s.length >= 2) headingScore += 25;
+  if (data.headingCount >= 5) headingScore += 30;
+  headingScore = Math.min(100, headingScore);
+  details.headings = { h1Count: h1s.length, h2Count: h2s.length, total: data.headingCount, score: headingScore };
 
-    // Heading Structure (H1–H6)
-    const h1s = doc.querySelectorAll('h1');
-    const h2s = doc.querySelectorAll('h2');
-    let headingScore = 0;
-    if (h1s.length === 1) headingScore += 40;
-    else if (h1s.length === 0) headingScore += 30; // Allow missing H1 if product name is in title
-    if (h2s.length >= 1) headingScore += 30;
-    if (data.headingCount >= 3) headingScore += 20;
-    details.headings = { h1Count: h1s.length, h2Count: h2s.length, total: data.headingCount, score: headingScore };
+  let urlScore = 0;
+  const urlObj = new URL(data.url);
+  const path = urlObj.pathname;
+  if (!path.includes('?') && !path.includes('&') && !path.includes(';')) urlScore += 40;
+  if (path.split('/').length <= 5) urlScore += 30;
+  if (path.length > 15 && !/\d{8,}/.test(path)) urlScore += 30;
+  urlScore = Math.min(100, urlScore);
+  details.url = { clean: !path.includes('?'), segments: path.split('/').length, length: path.length, score: urlScore };
 
-    // URL Structure
-    const urlObj = new URL(data.url);
-    const path = urlObj.pathname;
-    let urlScore = 0;
-    if (!path.includes('?') && !path.includes('&') && !path.includes(';')) urlScore += 40;
-    if (path.split('/').length <= 7) urlScore += 30;
-    if (path.length > 10 && !/\d{10,}/.test(path)) urlScore += 20;
-    details.url = { clean: !path.includes('?'), segments: path.split('/').length, score: urlScore };
+  let keywordScore = 0;
+  const keywordCount = (data.fullText.toLowerCase().match(keywordRegex) || []).length;
+  const density = data.wordCount > 0 ? (keywordCount / data.wordCount) * 100 : 0;
+  if (density >= 0.5 && density <= 2.5) keywordScore += 40;
+  if (data.fullText.slice(0, 400).toLowerCase().match(keywordRegex)) keywordScore += 35;
+  if (keywordCount >= 3) keywordScore += 25;
+  keywordScore = Math.min(100, keywordScore);
+  details.keywords = { primaryKeyword, density, frontLoaded: !!data.fullText.slice(0, 400).toLowerCase().match(keywordRegex), count: keywordCount, score: keywordScore };
 
-    // Keyword Optimization (dynamic)
-    let primaryKeyword = '';
-    const h1Text = doc.querySelector('h1')?.textContent?.trim().toLowerCase() || '';
-    if (h1Text.length > 10) {
-      primaryKeyword = h1Text.split(' ').slice(0, 4).join(' ');
-    } else if (title.length > 10) {
-      const parts = title.toLowerCase().split(/[\|\-–]/)[0].trim().split(' ');
-      primaryKeyword = parts.slice(0, 4).join(' ');
-    } else {
-      const slug = urlObj.pathname.split('/').filter(Boolean).pop() || '';
-      primaryKeyword = slug.replace(/[-_]/g, ' ').replace(/\d{4,}/g, '').trim();
-      if (primaryKeyword.length < 5) primaryKeyword = 'product';
-    }
-    const stopWords = /^(the|a|an|best|top|new|buy|shop|order|free|sale|online|free shipping)$/i;
-    primaryKeyword = primaryKeyword.replace(stopWords, '').trim().replace(stopWords, '').trim();
+  // Weighted module score (title & keywords heavier impact)
+  const score = Math.round(
+    titleScore * 0.30 +
+    descScore * 0.20 +
+    headingScore * 0.20 +
+    urlScore * 0.15 +
+    keywordScore * 0.15
+  );
 
-    const keywordRegex = new RegExp(primaryKeyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-    const keywordCount = (data.fullText.toLowerCase().match(keywordRegex) || []).length;
-    const density = data.wordCount > 0 ? (keywordCount / data.wordCount) * 100 : 0;
-    let keywordScore = 0;
-    if (density >= 0.4 && density <= 3.0) keywordScore += 40;
-    if (data.fullText.slice(0, 300).toLowerCase().match(keywordRegex)) keywordScore += 30;
-    if (keywordCount >= 2) keywordScore += 20;
-    details.keywords = { primaryKeyword, density, frontLoaded: !!data.fullText.slice(0, 300).toLowerCase().match(keywordRegex), score: keywordScore };
+  return { score: Math.min(100, Math.max(0, score)), details };
+}
 
-    score = Math.round((titleScore + descScore + headingScore + urlScore + keywordScore) / 5);
-    return { score: Math.min(100, Math.max(0, score)), details };
+function analyzeTechnicalSEO(doc, data) {
+  let details = {};
+  // Mobile-Friendliness
+  let mobileScore = data.hasViewport ? 70 : 20;
+  if (data.viewportContent.includes('initial-scale=1') && !data.viewportContent.includes('user-scalable=no')) mobileScore += 20;
+  if (data.viewportContent.includes('maximum-scale')) mobileScore -= 10; // sometimes restrictive
+  details.mobile = { viewportPresent: data.hasViewport, score: Math.min(100, mobileScore) };
+
+  // HTTPS
+  details.https = { isHttps: data.url.startsWith('https'), score: data.url.startsWith('https') ? 95 : 0 };
+
+  // Canonical
+  const canonical = doc.querySelector('link[rel="canonical"]');
+  let canonicalScore = 30;
+  if (canonical) {
+    canonicalScore = (canonical.href === data.url || canonical.href === data.url + '/') ? 90 : 40;
   }
+  details.canonical = { present: !!canonical, matchesUrl: canonical?.href === data.url, score: canonicalScore };
 
-  function analyzeTechnicalSEO(doc, data) {
-    let score = 0;
-    let details = {};
+  // Robots
+  const robotsMeta = doc.querySelector('meta[name="robots"]');
+  let robotsScore = 90;
+  if (robotsMeta && /noindex|nofollow/i.test(robotsMeta.content || '')) robotsScore = 20;
+  details.robots = { indexable: robotsScore === 90, score: robotsScore };
 
-    let mobileScore = data.hasViewport ? 85 : 30;
-    if (data.viewportContent.includes('initial-scale=1') && !data.viewportContent.includes('user-scalable=no')) mobileScore += 10;
-    details.mobile = { viewportPresent: data.hasViewport, score: mobileScore };
+  // Sitemap hint (educational, lower weight)
+  let sitemapScore = /\/product|\/products|\/item|\/p\//i.test(data.url) ? 75 : 50;
+  details.sitemapHint = { likelyIncluded: sitemapScore >= 70, score: sitemapScore };
 
-    const httpsScore = data.url.startsWith('https') ? 95 : 0;
-    details.https = { isHttps: data.url.startsWith('https'), score: httpsScore };
+  const score = Math.round(
+    details.mobile.score * 0.30 +
+    details.https.score * 0.25 +
+    details.canonical.score * 0.20 +
+    details.robots.score * 0.15 +
+    details.sitemapHint.score * 0.10
+  );
 
-    const canonical = doc.querySelector('link[rel="canonical"]');
-    const canonicalScore = canonical && canonical.href === data.url ? 80 : 30;
-    details.canonical = { present: !!canonical, matchesUrl: canonical?.href === data.url, score: canonicalScore };
-
-    const robotsMeta = doc.querySelector('meta[name="robots"]');
-    const robotsScore = !robotsMeta || !/noindex|nofollow/i.test(robotsMeta.content || '') ? 90 : 20;
-    details.robots = { indexable: robotsScore === 90, score: robotsScore };
-
-    const sitemapScore = /\/products|\/collections|\/shop|\/category/i.test(data.url) ? 70 : 50;
-    details.sitemapHint = { likelyIncluded: sitemapScore >= 70, score: sitemapScore };
-
-    score = Math.round((mobileScore + httpsScore + canonicalScore + robotsScore + sitemapScore) / 5);
-    return { score: Math.min(100, Math.max(0, score)), details };
-  }
+  return { score: Math.min(100, Math.max(0, score)), details };
+}
 
   function analyzeContentMedia(doc, data) {
     let score = 0;
@@ -373,12 +383,15 @@ if (value >= 85) {
     let failedOnlyHTML = '';
     let failedCount = 0;
     moduleData.factors.forEach(f => {
-      let passed = value >= f.threshold;
-      let metricGrade = passed
-        ? { color: "text-green-600 dark:text-green-400", emoji: "✅" }
-        : (value >= f.threshold - 15)
-          ? { color: "text-orange-600 dark:text-orange-400", emoji: "⚠️" }
-          : { color: "text-red-600 dark:text-red-400", emoji: "❌" };
+      let individualScore = (factorScores && f.key && factorScores[f.key] && factorScores[f.key].score !== undefined)
+  ? factorScores[f.key].score
+  : value; // fallback to module avg if no detail
+let passed = individualScore >= f.threshold;
+let metricGrade = passed
+  ? { color: "text-green-600 dark:text-green-400", emoji: "✅" }
+  : (individualScore >= f.threshold - 20)
+    ? { color: "text-orange-600 dark:text-orange-400", emoji: "⚠️" }
+    : { color: "text-red-600 dark:text-red-400", emoji: "❌" };
       metricsHTML += `
         <div class="mb-6">
           <p class="font-medium text-xl">
