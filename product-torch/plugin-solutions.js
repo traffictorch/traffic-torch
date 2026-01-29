@@ -268,6 +268,30 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
   `;
 
   container.appendChild(section);
+  
+  console.log('[Plugin Debug] Section appended to container');
+console.log('[Plugin Debug] Number of <details> created:', section.querySelectorAll('details').length);
+console.log('[Plugin Debug] Failed metrics count:', failedMetrics.length);
+
+// Force visibility of appended section
+section.style.display = 'block';
+section.style.minHeight = '400px';
+section.style.background = '#fef3ff'; // light purple highlight for debug
+section.style.border = '4px dashed #9333ea';
+section.querySelector('h2')?.scrollIntoView({ behavior: 'smooth' });
+
+// Debug output in the page
+const debugDiv = document.createElement('div');
+debugDiv.style.padding = '16px';
+debugDiv.style.background = '#f3e8ff';
+debugDiv.style.borderRadius = '12px';
+debugDiv.style.marginTop = '16px';
+debugDiv.innerHTML = `
+  <p><strong>Debug Success:</strong> ${failedMetrics.length} issues detected</p>
+  <p>Rendered ${section.querySelectorAll('details').length} accordion panels</p>
+  <p>Click a panel to expand and select CMS</p>
+`;
+container.appendChild(debugDiv);
 
   // Attach event listeners after DOM insertion
   setTimeout(() => {

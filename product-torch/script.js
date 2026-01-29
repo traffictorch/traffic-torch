@@ -930,12 +930,16 @@ try {
       <h2 style="color: green; font-size: 2.5rem;">MARKER C - If you see this → insertion reached plugin area</h2>
     </div>
 
-    <!-- Plugin Solutions Section -->
-    <div id="plugin-solutions-section" class="mt-16 px-4 border-4 border-purple-500 min-h-[400px] bg-purple-50 dark:bg-purple-950/30 rounded-2xl">
-      <p class="text-center text-2xl font-bold text-purple-700 dark:text-purple-300 py-16">
-        PLUGIN SOLUTIONS AREA - If visible, rendering should happen here
-      </p>
-    </div>
+<!-- Plugin Solutions Section – forced visible + debug -->
+<div id="plugin-solutions-section" class="mt-16 px-4 border-4 border-purple-600 bg-purple-50 dark:bg-purple-950/50 rounded-2xl min-h-[600px] p-8">
+  <p class="text-3xl font-bold text-purple-700 dark:text-purple-300 text-center mb-8">
+    PLUGIN SOLUTIONS (Debug Mode)
+  </p>
+  <div id="plugin-debug-output" class="bg-white dark:bg-gray-800 p-6 rounded-xl mb-8 border border-purple-300 dark:border-purple-700">
+    <p class="text-lg font-medium">Debug: Waiting for renderPluginSolutions to fill this area...</p>
+  </div>
+  <!-- The real content will be appended here -->
+</div>
 
     <!-- SEO & Conversion Impact -->
     ${impactHTML}
