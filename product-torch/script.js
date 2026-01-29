@@ -1,11 +1,26 @@
 // Dynamic import for plugin solutions
-let renderPluginSolutions;
-import('./plugin-solutions.js')
-  .then(module => {
+let renderPluginSolutions = null;
+
+(async () => {
+  try {
+    const module = await import('./plugin-solutions.js');
     renderPluginSolutions = module.renderPluginSolutions;
-    console.log('Plugin solutions module loaded successfully');
-  })
-  .catch(err => console.error('Failed to load plugin-solutions.js:', err));
+    console.log('[Plugin] Successfully loaded renderPluginSolutions');
+  } catch (err) {
+    console.error('[Plugin] Failed to dynamically import plugin-solutions.js:', err);
+    // Optional: show visible fallback in UI
+    const section = document.getElementById('plugin-solutions-section');
+    if (section) {
+      section.innerHTML = `
+        <div class="mt-16 p-8 bg-red-50 dark:bg-red-900/30 rounded-2xl border border-red-300 text-center">
+          <p class="text-xl font-bold text-red-700 dark:text-red-300 mb-4">Plugin recommendations unavailable</p>
+          <p class="text-gray-700 dark:text-gray-300">
+            Failed to load suggestions module. Please check console for details.
+          </p>
+        </div>`;
+    }
+  }
+})();
 
 // product-torch/script.js - Final polished version - fully generic, accurate across all eCommerce sites
 document.addEventListener('DOMContentLoaded', () => {
@@ -1045,31 +1060,36 @@ modulesData.forEach(mod => {
         `;
 // DOM settle delay — gives browser time to insert the new HTML
 setTimeout(() => {
-  console.log('[Plugin Debug] DOM settle complete — checking plugin section');
-  const pluginSection = document.getElementById('plugin-solutions-section');
-  console.log('[Plugin Debug] #plugin-solutions-section exists?', !!pluginSection);
-
-  if (!pluginSection) {
-    console.error('[Plugin Debug] CRITICAL: Container missing after innerHTML');
-    return;
-  }
+  console.log('[Plugin Debug] Checking renderPluginSolutions availability... typeof =', typeof renderPluginSolutions);
 
   if (typeof renderPluginSolutions !== 'function') {
-    console.error('[Plugin Debug] renderPluginSolutions missing');
-    pluginSection.innerHTML = '<div class="text-center py-12 bg-red-50 dark:bg-red-900/30 rounded-2xl p-6 border border-red-300"><p class="text-xl font-bold text-red-700">Plugin recommendations failed to load.</p></div>';
+    console.warn('[Plugin Debug] renderPluginSolutions is still not a function after delay');
+    pluginSection.innerHTML = `
+      <div class="mt-16 p-10 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 rounded-3xl border border-orange-300 dark:border-orange-700 text-center shadow-lg">
+        <p class="text-2xl font-bold text-orange-700 dark:text-orange-300 mb-4">⚠️ Plugin suggestions not loaded</p>
+        <p class="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
+          The recommendations module failed to load. This is usually a network/timing issue on first visit.<br>
+          Try refreshing the page once more.<br>
+          <small class="text-gray-500 dark:text-gray-400">(Check browser console for "[Plugin] Failed to dynamically import" errors)</small>
+        </p>
+      </div>`;
     return;
   }
 
   const validFactors = failedFactors.filter(f => f && f.name && f.grade);
-  console.log('[Plugin Debug] Valid factors count:', validFactors.length);
+  console.log('[Plugin Debug] Rendering with', validFactors.length, 'valid failed factors');
 
   if (validFactors.length === 0) {
-    pluginSection.innerHTML = '<div class="text-center py-12 bg-green-50 dark:bg-green-900/20 rounded-2xl p-6 border border-green-300"><p class="text-xl text-green-700">No issues detected — all good!</p></div>';
+    pluginSection.innerHTML = `
+      <div class="mt-16 p-10 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-3xl border border-green-300 dark:border-green-700 text-center shadow-lg">
+        <p class="text-3xl mb-4">🎉 All core checks passed!</p>
+        <p class="text-xl font-medium text-green-700 dark:text-green-300">No plugin recommendations needed right now.</p>
+      </div>`;
     return;
   }
 
   renderPluginSolutions(validFactors, 'plugin-solutions-section');
-}, 250);
+}, 400);   // ← increased from 250ms to 400ms to give async import more time
 
         setTimeout(() => {
           const canvas = document.getElementById('health-radar');
