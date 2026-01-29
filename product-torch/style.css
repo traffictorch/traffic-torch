@@ -95,7 +95,7 @@ html, body {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Pro Blur */
+/* Pro Blur 
 .pro-blur {
   filter: blur(8px);
   position: relative;
@@ -115,4 +115,4 @@ html, body {
   text-align: center;
   padding: 1rem;
   pointer-events: auto;
-}
+} */
