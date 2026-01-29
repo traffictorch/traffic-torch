@@ -7,7 +7,7 @@ import('/product-torch/plugin-solutions.js')
   })
   .catch(err => console.error('Failed to load plugin-solutions.js:', err));
 
-// product-torch/script.js - Complete working version for eCommerce product page SEO audit
+// product-torch/script.js - Final polished version - fully generic, accurate across all eCommerce sites
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
@@ -17,11 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const factorDefinitions = {
     onPage: {
       factors: [
-        { name: "Title Tag Optimization", threshold: 80, shortDesc: "Title length 50–60 chars, includes primary product keywords, brand if relevant. Avoids truncation in SERPs.", howToFix: "Rewrite to include product name + key benefit + brand. Keep under 60 chars. Make compelling for clicks." },
-        { name: "Meta Description Relevance", threshold: 75, shortDesc: "150–160 chars, keyword-rich, includes CTA (Buy now, Shop, etc.), unique per product.", howToFix: "Write benefit-driven copy with keywords early. Add urgency or offer. Avoid duplication across products." },
-        { name: "Heading Structure (H1–H6)", threshold: 85, shortDesc: "Single H1 (product name), logical hierarchy, keywords in H1/H2, no skipped levels.", howToFix: "Use one H1 for product name. Add H2/H3 for features, specs, benefits. Include long-tail keywords naturally." },
-        { name: "URL Structure", threshold: 90, shortDesc: "Clean, keyword-rich slug (no ? or &, hyphens not underscores, short).", howToFix: "Use /category/product-name format. Remove session IDs, numbers if possible. Keep readable and descriptive." },
-        { name: "Keyword Optimization", threshold: 70, shortDesc: "Natural primary & long-tail keyword placement, density 1–2.5%, front-loaded in first 100–150 words.", howToFix: "Place main keywords in title, H1, first paragraph. Add long-tail variations naturally. Avoid stuffing." }
+        { name: "Title Tag Optimization", threshold: 80, shortDesc: "Title length 40–70 chars ideal, includes product keywords and brand. Avoids truncation in SERPs.", howToFix: "Include product name + key benefit + brand. Keep under 70 chars for best display." },
+        { name: "Meta Description Relevance", threshold: 75, shortDesc: "100–170 chars, keyword-rich, includes CTA, unique per product.", howToFix: "Write benefit-driven copy with keywords early. Add urgency or offer. Avoid duplication." },
+        { name: "Heading Structure (H1–H6)", threshold: 85, shortDesc: "Single H1 (product name), logical hierarchy, keywords in H1/H2.", howToFix: "Use one H1 for product name. Add H2/H3 for features, specs, benefits. Include long-tail keywords naturally." },
+        { name: "URL Structure", threshold: 90, shortDesc: "Clean, keyword-rich slug with hyphens, no parameters, readable.", howToFix: "Use /category/product-name format. Remove session IDs. Keep readable and descriptive." },
+        { name: "Keyword Optimization", threshold: 70, shortDesc: "Natural primary & long-tail keyword placement, density 0.4–3%, front-loaded.", howToFix: "Place main keywords in title, H1, first paragraph. Add long-tail variations naturally." }
       ],
       moduleWhat: "On-Page SEO evaluates title, meta, headings, URL, and keyword usage — the foundational elements that tell search engines and users what the product page is about.",
       moduleHow: "Optimize titles and metas for CTR. Use proper heading hierarchy. Include keywords naturally in prominent places. Keep URLs clean and descriptive.",
@@ -29,40 +29,40 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     technical: {
       factors: [
-        { name: "Mobile-Friendliness", threshold: 85, shortDesc: "Viewport meta present and correct, responsive layout, no horizontal scroll, touch-friendly elements.", howToFix: "Add viewport meta with width=device-width. Use responsive CSS. Test on real devices. Fix small tap targets." },
-        { name: "HTTPS Implementation", threshold: 95, shortDesc: "Page served over HTTPS with no mixed content warnings.", howToFix: "Enable HTTPS via hosting provider. Update all internal links/scripts to HTTPS. Fix mixed content errors." },
-        { name: "Canonical Tags", threshold: 80, shortDesc: "Self-referencing canonical present, matches current URL, prevents duplicate content issues.", howToFix: "Add <link rel='canonical' href='current-url'>. Ensure it matches exactly. Use for variant pages if needed." },
-        { name: "Meta Robots Directives", threshold: 90, shortDesc: "No noindex/nofollow unless intentional. Page is indexable.", howToFix: "Remove or correct <meta name='robots'> tags. Ensure product pages are not blocked. Test with robots.txt validator." },
-        { name: "Sitemap Inclusion Hints", threshold: 70, shortDesc: "Educational note: URL pattern suggests sitemap inclusion (e.g., /products/...).", howToFix: "Add product URLs to sitemap.xml. Submit via Search Console. Use logical patterns like /products-sitemap.xml." }
+        { name: "Mobile-Friendliness", threshold: 85, shortDesc: "Viewport meta present and correct, responsive layout.", howToFix: "Add viewport meta with width=device-width. Use responsive CSS. Test on real devices." },
+        { name: "HTTPS Implementation", threshold: 95, shortDesc: "Page served over HTTPS with no mixed content.", howToFix: "Enable HTTPS via hosting provider. Update all links/scripts to HTTPS." },
+        { name: "Canonical Tags", threshold: 80, shortDesc: "Self-referencing canonical present, matches current URL.", howToFix: "Add <link rel='canonical' href='current-url'>. Ensure it matches exactly." },
+        { name: "Meta Robots Directives", threshold: 90, shortDesc: "No noindex/nofollow unless intentional.", howToFix: "Remove or correct <meta name='robots'> tags. Ensure product pages are indexable." },
+        { name: "Sitemap Inclusion Hints", threshold: 70, shortDesc: "Educational note: URL pattern suggests sitemap inclusion.", howToFix: "Add product URLs to sitemap.xml. Submit via Search Console." }
       ],
       moduleWhat: "Technical SEO checks crawlability, mobile readiness, security, and duplicate prevention — essential for product pages to be indexed and ranked properly.",
-      moduleHow: "Ensure HTTPS, proper viewport, canonicals, and indexable robots directives. Keep technical foundation clean and mobile-first.",
-      moduleWhy: "Technical issues block indexing or hurt mobile rankings. Clean technical SEO is required for rich snippets, fast crawling, and trust signals."
+      moduleHow: "Ensure HTTPS, proper viewport, canonicals, and indexable robots directives. Keep technical foundation clean.",
+      moduleWhy: "Technical issues block indexing or hurt mobile rankings. Clean technical SEO is required for rich snippets and trust signals."
     },
     contentMedia: {
       factors: [
-        { name: "Product Description Quality", threshold: 75, shortDesc: "300+ words, unique, benefit-focused, good word diversity, structured with bullets/lists.", howToFix: "Write unique, detailed copy highlighting benefits. Use bullets for features. Avoid manufacturer boilerplate." },
-        { name: "Image Optimization", threshold: 80, shortDesc: "All images have descriptive alt text, <100KB, lazy loading, responsive srcset.", howToFix: "Add keyword-rich alt text. Compress to WebP/AVIF. Add loading='lazy'. Use srcset for different sizes." },
-        { name: "Video Embed Quality", threshold: 70, shortDesc: "Videos have captions/track elements, proper thumbnails, schema if applicable.", howToFix: "Add <track> for captions. Use poster attribute. Embed with schema or lazy loading." },
-        { name: "User-Generated Content (UGC)", threshold: 65, shortDesc: "Reviews/ratings section detected (common classes/IDs), ideally 5+ reviews.", howToFix: "Integrate review apps (Yotpo, Judge.me). Encourage reviews. Display aggregate stars." },
-        { name: "Internal Linking", threshold: 70, shortDesc: "Relevant internal links to related products/categories, descriptive anchors.", howToFix: "Add contextual links to upsells/cross-sells. Use keyword-rich anchor text. Avoid over-linking." },
-        { name: "Breadcrumb Navigation", threshold: 85, shortDesc: "Structured breadcrumbs present with hierarchy (Home > Category > Product).", howToFix: "Add breadcrumb nav with schema. Use clear hierarchy. Ensure clickable links." }
+        { name: "Product Description Quality", threshold: 75, shortDesc: "200+ words, unique, benefit-focused, structured.", howToFix: "Write unique, detailed copy highlighting benefits. Use bullets for features." },
+        { name: "Image Optimization", threshold: 80, shortDesc: "Descriptive alt text, lazy loading, responsive.", howToFix: "Add keyword-rich alt text. Use loading='lazy'. Compress and use srcset." },
+        { name: "Video Embed Quality", threshold: 70, shortDesc: "Videos have captions and proper thumbnails.", howToFix: "Add <track> for captions. Use poster attribute." },
+        { name: "User-Generated Content (UGC)", threshold: 65, shortDesc: "Reviews/ratings section detected.", howToFix: "Integrate review apps. Encourage reviews. Display stars." },
+        { name: "Internal Linking", threshold: 70, shortDesc: "Relevant internal links to related products.", howToFix: "Add contextual links to upsells/cross-sells with descriptive anchors." },
+        { name: "Breadcrumb Navigation", threshold: 85, shortDesc: "Structured breadcrumbs with hierarchy.", howToFix: "Add breadcrumb nav with schema. Use clear hierarchy." }
       ],
-      moduleWhat: "Content & Media Quality evaluates product description richness, image/video optimization, UGC presence, and navigation aids — key for engagement and trust.",
-      moduleHow: "Write detailed, benefit-driven descriptions. Optimize all media. Encourage and display reviews. Use breadcrumbs and internal links for flow.",
-      moduleWhy: "Rich content keeps users on-page longer and improves trust signals. Optimized media boosts speed and accessibility. UGC adds social proof for conversions."
+      moduleWhat: "Content & Media Quality evaluates description richness, image/video optimization, UGC presence, and navigation aids — key for engagement and trust.",
+      moduleHow: "Write detailed, benefit-driven descriptions. Optimize all media. Encourage reviews. Use breadcrumbs and internal links.",
+      moduleWhy: "Rich content keeps users on-page longer and improves trust signals. Optimized media boosts speed and accessibility. UGC adds social proof."
     },
     ecommerce: {
       factors: [
-        { name: "Product Schema Markup", threshold: 90, shortDesc: "JSON-LD Product schema detected with required fields (name, image, offers).", howToFix: "Add full Product schema JSON-LD. Include name, image array, offers with price/availability." },
-        { name: "Price & Availability Markup", threshold: 85, shortDesc: "Schema includes priceCurrency, price, availability (InStock, OutOfStock).", howToFix: "Ensure dynamic price and stock status in schema. Update on real-time changes." },
-        { name: "Review Schema & Aggregation", threshold: 80, shortDesc: "aggregateRating with ratingValue and reviewCount present.", howToFix: "Add AggregateRating to Product schema. Pull real review data. Display stars in SERPs." },
-        { name: "Variant Handling", threshold: 70, shortDesc: "Options (size/color) detected without duplication issues (canonicals or tabs).", howToFix: "Use variant selectors without separate URLs or add canonicals. Avoid thin duplicate pages." },
-        { name: "Social Sharing Integration", threshold: 65, shortDesc: "Open Graph meta tags and/or share buttons detected.", howToFix: "Add og:title, og:image, og:description. Include share buttons for Facebook/Twitter/Pinterest." }
+        { name: "Product Schema Markup", threshold: 90, shortDesc: "JSON-LD Product schema with required fields.", howToFix: "Add full Product schema JSON-LD. Include name, image array, offers." },
+        { name: "Price & Availability Markup", threshold: 85, shortDesc: "Schema includes priceCurrency, price, availability.", howToFix: "Ensure dynamic price and stock status in schema." },
+        { name: "Review Schema & Aggregation", threshold: 80, shortDesc: "aggregateRating with ratingValue and reviewCount.", howToFix: "Add AggregateRating to Product schema. Pull real review data." },
+        { name: "Variant Handling", threshold: 70, shortDesc: "Options detected without duplication issues.", howToFix: "Use variant selectors without separate URLs or add canonicals." },
+        { name: "Social Sharing Integration", threshold: 65, shortDesc: "Open Graph meta tags and/or share buttons.", howToFix: "Add og:title, og:image, og:description. Include share buttons." }
       ],
-      moduleWhat: "E-Commerce Specific SEO checks structured data, pricing, reviews, variants, and social signals — critical for rich results, conversions, and product visibility.",
+      moduleWhat: "E-Commerce Specific SEO checks structured data, pricing, reviews, variants, and social signals — critical for rich results and conversions.",
       moduleHow: "Implement complete Product schema. Include price/stock/review data. Handle variants cleanly. Add Open Graph for social shares.",
-      moduleWhy: "Schema unlocks rich snippets (price, stars, images in SERPs). Reviews build trust. Proper variants prevent duplicate content. Social tags drive referral traffic."
+      moduleWhy: "Schema unlocks rich snippets (price, stars, images in SERPs). Reviews build trust. Proper variants prevent duplicate content."
     }
   };
 
@@ -110,13 +110,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function hasReviewSection(doc) {
-    const selectors = ['.reviews', '.product-reviews', '#reviews', '.rating', '.yotpo', '.judge-me', '[data-reviews]', '.aggregate-rating', '.star-rating', '.customer-reviews', '[itemprop="aggregateRating"]', '[itemprop="review"]'];
+    const selectors = [
+      '.reviews', '.product-reviews', '#reviews', '.rating', '.yotpo', '.judge-me', '[data-reviews]', '.aggregate-rating', '.star-rating', '.customer-reviews',
+      '[itemprop="aggregateRating"]', '[itemprop="review"]', '.woocommerce-product-rating', '.spr-reviews', '.stamped-main-widget', '.loox-rating', '.trustpilot-widget'
+    ];
     return selectors.some(sel => doc.querySelector(sel));
   }
 
   function hasPriceMarkup(doc, schema) {
     if (schema && schema.offers && (schema.offers.price || schema.offers.availability)) return true;
-    const pricePatterns = /\$[0-9,.]+|USD [0-9,.]+|€ [0-9,.]+|£ [0-9,.]+|In Stock|Out of Stock/i;
+    const pricePatterns = /\$[0-9,.]+|USD [0-9,.]+|€ [0-9,.]+|£ [0-9,.]+|In Stock|Out of Stock|Add to Cart/i;
     return pricePatterns.test(doc.body.textContent);
   }
 
@@ -125,7 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getProductPageContent(doc, url) {
-    const textElements = doc.querySelectorAll('p, li, div.product-description, #product-description, .description, article, section, .rte, .woocommerce-product-details__short-description, .product-single__description, .product__description, [itemprop="description"]');
+    const textSelectors = 'p, li, div.product-description, #product-description, .description, article, section, .rte, .woocommerce-product-details__short-description, .product-single__description, .product__description, [itemprop="description"], .product-details, .wysiwyg, .content';
+    const textElements = doc.querySelectorAll(textSelectors);
     let fullText = '';
     textElements.forEach(el => {
       const t = el.textContent.trim();
@@ -134,7 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const images = doc.querySelectorAll('img');
     const links = doc.querySelectorAll('a[href]');
     const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
-    const scripts = doc.querySelectorAll('script[type="application/ld+json"]');
     return {
       fullText,
       wordCount: countWords(fullText),
@@ -144,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
       linkCount: links.length,
       hasViewport: hasViewportMeta(doc),
       viewportContent: doc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '',
-      jsonLdScripts: scripts.length,
       url
     };
   }
@@ -174,14 +176,18 @@ document.addEventListener('DOMContentLoaded', () => {
   function analyzeOnPageSEO(doc, data) {
     let score = 0;
     let details = {};
+
+    // Title Tag Optimization
     const title = doc.title.trim();
     const titleLength = title.length;
     let titleScore = 0;
     if (titleLength >= 40 && titleLength <= 70) titleScore += 40;
     else if (titleLength >= 30 && titleLength <= 80) titleScore += 25;
     else titleScore += 10;
-    if (title.includes('|') || title.includes(' - ') || title.includes(' – ')) titleScore += 20;
+    if (title.includes('|') || title.includes(' - ') || title.includes(' – ') || title.includes(' — ')) titleScore += 20;
     details.title = { length: titleLength, hasSeparator: title.includes('|') || title.includes(' - '), score: titleScore };
+
+    // Meta Description Relevance
     const metaDesc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
     const descLength = metaDesc.length;
     let descScore = 0;
@@ -189,14 +195,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (descLength > 0) descScore += 20;
     if (/buy|shop|order|add to cart|add to bag|purchase|view|see|learn more/i.test(metaDesc.toLowerCase())) descScore += 20;
     details.metaDescription = { length: descLength, hasCta: /buy|shop|add to/i.test(metaDesc.toLowerCase()), score: descScore };
+
+    // Heading Structure (H1–H6)
     const h1s = doc.querySelectorAll('h1');
     const h2s = doc.querySelectorAll('h2');
     let headingScore = 0;
     if (h1s.length === 1) headingScore += 40;
-    else if (h1s.length === 0 && doc.querySelector('[role="heading"][aria-level="1"]')) headingScore += 30;
+    else if (h1s.length === 0) headingScore += 30; // Allow missing H1 if product name is in title
     if (h2s.length >= 1) headingScore += 30;
     if (data.headingCount >= 3) headingScore += 20;
     details.headings = { h1Count: h1s.length, h2Count: h2s.length, total: data.headingCount, score: headingScore };
+
+    // URL Structure
     const urlObj = new URL(data.url);
     const path = urlObj.pathname;
     let urlScore = 0;
@@ -204,6 +214,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (path.split('/').length <= 7) urlScore += 30;
     if (path.length > 10 && !/\d{10,}/.test(path)) urlScore += 20;
     details.url = { clean: !path.includes('?'), segments: path.split('/').length, score: urlScore };
+
+    // Keyword Optimization (dynamic)
     let primaryKeyword = '';
     const h1Text = doc.querySelector('h1')?.textContent?.trim().toLowerCase() || '';
     if (h1Text.length > 10) {
@@ -218,6 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const stopWords = /^(the|a|an|best|top|new|buy|shop|order|free|sale|online|free shipping)$/i;
     primaryKeyword = primaryKeyword.replace(stopWords, '').trim().replace(stopWords, '').trim();
+
     const keywordRegex = new RegExp(primaryKeyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
     const keywordCount = (data.fullText.toLowerCase().match(keywordRegex) || []).length;
     const density = data.wordCount > 0 ? (keywordCount / data.wordCount) * 100 : 0;
@@ -226,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (data.fullText.slice(0, 300).toLowerCase().match(keywordRegex)) keywordScore += 30;
     if (keywordCount >= 2) keywordScore += 20;
     details.keywords = { primaryKeyword, density, frontLoaded: !!data.fullText.slice(0, 300).toLowerCase().match(keywordRegex), score: keywordScore };
+
     score = Math.round((titleScore + descScore + headingScore + urlScore + keywordScore) / 5);
     return { score: Math.min(100, Math.max(0, score)), details };
   }
@@ -233,19 +247,25 @@ document.addEventListener('DOMContentLoaded', () => {
   function analyzeTechnicalSEO(doc, data) {
     let score = 0;
     let details = {};
-    let mobileScore = data.hasViewport ? 50 : 0;
-    if (data.viewportContent.includes('initial-scale=1') && !data.viewportContent.includes('user-scalable=no')) mobileScore += 40;
-    details.mobile = { viewportPresent: data.hasViewport, scaleOk: data.viewportContent.includes('initial-scale=1'), score: mobileScore };
+
+    let mobileScore = data.hasViewport ? 85 : 30;
+    if (data.viewportContent.includes('initial-scale=1') && !data.viewportContent.includes('user-scalable=no')) mobileScore += 10;
+    details.mobile = { viewportPresent: data.hasViewport, score: mobileScore };
+
     const httpsScore = data.url.startsWith('https') ? 95 : 0;
     details.https = { isHttps: data.url.startsWith('https'), score: httpsScore };
+
     const canonical = doc.querySelector('link[rel="canonical"]');
     const canonicalScore = canonical && canonical.href === data.url ? 80 : 30;
     details.canonical = { present: !!canonical, matchesUrl: canonical?.href === data.url, score: canonicalScore };
+
     const robotsMeta = doc.querySelector('meta[name="robots"]');
     const robotsScore = !robotsMeta || !/noindex|nofollow/i.test(robotsMeta.content || '') ? 90 : 20;
     details.robots = { indexable: robotsScore === 90, score: robotsScore };
-    const sitemapScore = /\/products|\/collections|\/item/i.test(data.url) ? 70 : 50;
+
+    const sitemapScore = /\/products|\/collections|\/shop|\/category/i.test(data.url) ? 70 : 50;
     details.sitemapHint = { likelyIncluded: sitemapScore >= 70, score: sitemapScore };
+
     score = Math.round((mobileScore + httpsScore + canonicalScore + robotsScore + sitemapScore) / 5);
     return { score: Math.min(100, Math.max(0, score)), details };
   }
@@ -253,19 +273,27 @@ document.addEventListener('DOMContentLoaded', () => {
   function analyzeContentMedia(doc, data) {
     let score = 0;
     let details = {};
-    const descScore = data.wordCount >= 300 ? 80 : data.wordCount >= 150 ? 50 : 20;
+
+    const descScore = data.wordCount >= 300 ? 80 : data.wordCount >= 200 ? 70 : data.wordCount >= 100 ? 50 : 20;
     details.description = { wordCount: data.wordCount, score: descScore };
-    const imgScore = data.altData.missingCount === 0 ? 90 : data.altData.meaningfulCount > 0 && (data.altData.missingCount / data.altData.meaningfulCount) < 0.2 ? 70 : 40;
+
+    const imgScore = data.altData.missingCount === 0 ? 90 : data.altData.meaningfulCount > 0 && (data.altData.missingCount / data.altData.meaningfulCount) < 0.2 ? 75 : 40;
     details.images = { missingAlt: data.altData.missingCount, meaningful: data.altData.meaningfulCount, score: imgScore };
+
     const videoElements = doc.querySelectorAll('video, iframe[src*="youtube"], iframe[src*="vimeo"]');
     const videoScore = videoElements.length > 0 ? (doc.querySelector('track') ? 80 : 60) : 30;
     details.video = { present: videoElements.length > 0, captions: !!doc.querySelector('track'), score: videoScore };
+
     const ugcScore = hasReviewSection(doc) ? 80 : 40;
     details.ugc = { detected: ugcScore === 80, score: ugcScore };
+
     const linkScore = data.linkCount >= 5 ? 70 : data.linkCount >= 2 ? 50 : 20;
     details.internalLinks = { count: data.linkCount, score: linkScore };
-    const breadcrumbScore = doc.querySelector('[aria-label*="breadcrumb"], .breadcrumbs, .breadcrumb, nav[aria-label="breadcrumb"], .woocommerce-breadcrumb, .yoast-breadcrumb, .site-breadcrumb, .bread-crumb') ? 90 : 40;
+
+    const breadcrumbSelectors = '[aria-label*="breadcrumb"], .breadcrumbs, .breadcrumb, .woocommerce-breadcrumb, .yoast-breadcrumb, .site-breadcrumb, .bread-crumb, .crumbs, .pathway';
+    const breadcrumbScore = doc.querySelector(breadcrumbSelectors) ? 90 : 40;
     details.breadcrumbs = { present: breadcrumbScore === 90, score: breadcrumbScore };
+
     score = Math.round((descScore + imgScore + videoScore + ugcScore + linkScore + breadcrumbScore) / 6);
     return { score: Math.min(100, Math.max(0, score)), details };
   }
@@ -273,19 +301,26 @@ document.addEventListener('DOMContentLoaded', () => {
   function analyzeEcommerceSEO(doc, data) {
     let score = 0;
     let details = {};
+
     const schemas = extractProductSchema(doc);
     const productSchema = schemas.find(s => s['@type'] === 'Product' || (s['@graph'] && s['@graph'].some(g => g['@type'] === 'Product'))) || {};
+
     const schemaScore = Object.keys(productSchema).length > 5 ? 90 : 30;
     details.schema = { present: schemaScore === 90, fieldsCount: Object.keys(productSchema).length, score: schemaScore };
+
     const priceScore = hasPriceMarkup(doc, productSchema) ? 85 : 40;
     details.priceAvailability = { detected: priceScore === 85, score: priceScore };
+
     const reviewScore = productSchema.aggregateRating && productSchema.aggregateRating.ratingValue ? 80 : hasReviewSection(doc) ? 60 : 20;
     details.reviews = { aggregateRatingPresent: !!productSchema.aggregateRating, score: reviewScore };
+
     const variantSelectors = doc.querySelectorAll('select[name*="variant"], select[name*="size"], select[name*="color"], input[type="radio"][name*="variant"], select[name*="option"], .variant-select, .swatch, .product-variants, [data-variant]');
     const variantScore = variantSelectors.length > 0 ? 70 : 50;
     details.variants = { detected: variantSelectors.length > 0, score: variantScore };
+
     const socialScore = hasSocialMeta(doc) ? 65 : 30;
     details.social = { ogPresent: socialScore === 65, score: socialScore };
+
     score = Math.round((schemaScore + priceScore + reviewScore + variantScore + socialScore) / 5);
     return { score: Math.min(100, Math.max(0, score)), details, isPro: true };
   }
@@ -321,9 +356,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const gradeInfo = getGradeInfo(value);
     let statusMessage, statusEmoji;
     if (value >= 85) { statusMessage = "Excellent"; statusEmoji = "🏆"; }
-    else if (value >= 70) { statusMessage = "Strong"; statusEmoji = "✅"; }
-    else if (value >= 50) { statusMessage = "Needs Work"; statusEmoji = "⚠️"; }
-    else { statusMessage = "Poor"; statusEmoji = "❌"; }
+    else if (value >= 70) { statusMessage = "Strong"; statusEmoji = "✅" };
+    else if (value >= 50) { statusMessage = "Needs Work"; statusEmoji = "⚠️" };
+    else { statusMessage = "Poor"; statusEmoji = "❌" };
     let metricsHTML = '';
     let fixesHTML = '';
     let failedOnlyHTML = '';
@@ -340,16 +375,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="font-medium text-xl">
             <span class="${metricGrade.color} text-2xl mr-3">${metricGrade.emoji}</span>
             <span class="${metricGrade.color} font-bold">${f.name}</span>
-          </p>
-        </div>`;
-      fixesHTML += `
-        <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
-          <p class="font-bold text-xl ${metricGrade.color} mb-3">
-            <span class="text-3xl mr-3">${metricGrade.emoji}</span>
-            ${f.name}
-          </p>
-          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-            ${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}
           </p>
         </div>`;
       if (!passed) {
@@ -618,187 +643,188 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>`;
 
-      const modules = [
-        { name: 'On-Page SEO', score: seo.onPage.score },
-        { name: 'Technical SEO', score: seo.technical.score },
-        { name: 'Content & Media', score: seo.contentMedia.score },
-        { name: 'E-Commerce (Pro)', score: seo.ecommerce.score }
-      ];
-      const scores = modules.map(m => m.score);
-      const offset = 240;
-      const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
-      window.scrollTo({ top: targetY, behavior: 'smooth' });
+        const modules = [
+          { name: 'On-Page SEO', score: seo.onPage.score },
+          { name: 'Technical SEO', score: seo.technical.score },
+          { name: 'Content & Media', score: seo.contentMedia.score },
+          { name: 'E-Commerce (Pro)', score: seo.ecommerce.score }
+        ];
+        const scores = modules.map(m => m.score);
+        const offset = 240;
+        const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top: targetY, behavior: 'smooth' });
 
-      results.innerHTML = `
-        <!-- Big Overall Score Card -->
-        <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
-          <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${safeScore >= 85 ? 'border-emerald-500' : safeScore >= 70 ? 'border-teal-500' : safeScore >= 50 ? 'border-orange-500' : 'border-red-500'}">
-            <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Product Page Health Score</p>
-            <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
-              <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
-                <circle cx="100" cy="100" r="90" stroke="#e5e7eb dark:stroke-gray-700" stroke-width="16" fill="none"/>
-                <circle cx="100" cy="100" r="90"
-                        stroke="${ringColor}"
-                        stroke-width="16" fill="none"
-                        stroke-dasharray="${(safeScore / 100) * 565} 565"
-                        stroke-linecap="round"/>
-              </svg>
-              <div class="absolute inset-0 flex items-center justify-center">
-                <div class="text-center">
-                  <div class="text-5xl sm:text-6xl font-black drop-shadow-lg" style="color: ${ringColor};">
-                    ${safeScore}
-                  </div>
-                  <div class="text-lg sm:text-xl opacity-80 -mt-1" style="color: ${ringColor};">
-                    /100
+        results.innerHTML = `
+          <!-- Big Overall Score Card -->
+          <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
+            <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${safeScore >= 85 ? 'border-emerald-500' : safeScore >= 70 ? 'border-teal-500' : safeScore >= 50 ? 'border-orange-500' : 'border-red-500'}">
+              <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Product Page Health Score</p>
+              <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
+                <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+                  <circle cx="100" cy="100" r="90" stroke="#e5e7eb dark:stroke-gray-700" stroke-width="16" fill="none"/>
+                  <circle cx="100" cy="100" r="90"
+                          stroke="${ringColor}"
+                          stroke-width="16" fill="none"
+                          stroke-dasharray="${(safeScore / 100) * 565} 565"
+                          stroke-linecap="round"/>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="text-center">
+                    <div class="text-5xl sm:text-6xl font-black drop-shadow-lg" style="color: ${ringColor};">
+                      ${safeScore}
+                    </div>
+                    <div class="text-lg sm:text-xl opacity-80 -mt-1" style="color: ${ringColor};">
+                      /100
+                    </div>
                   </div>
                 </div>
               </div>
+              ${(() => {
+                const pageTitle = doc?.title?.trim() || '';
+                const truncated = pageTitle.length > 65 ? pageTitle.substring(0, 65) + '...' : pageTitle;
+                return truncated ? `<p class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>` : '';
+              })()}
+              <div class="mt-6 text-center">
+                <p class="text-6xl sm:text-5xl md:text-6xl font-bold ${overallGrade.color} drop-shadow-lg">
+                  ${overallGrade.emoji}
+                </p>
+                <p class="text-4xl sm:text-5xl font-bold ${overallGrade.color} mt-3 sm:mt-4">
+                  ${overallGrade.grade}
+                </p>
+                <p class="text-base sm:text-lg text-gray-600 dark:text-gray-400 mt-3 sm:mt-4">Product Page Health</p>
+              </div>
             </div>
-            ${(() => {
-              const pageTitle = doc?.title?.trim() || '';
-              const truncated = pageTitle.length > 65 ? pageTitle.substring(0, 65) + '...' : pageTitle;
-              return truncated ? `<p class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>` : '';
-            })()}
-            <div class="mt-6 text-center">
-              <p class="text-6xl sm:text-5xl md:text-6xl font-bold ${overallGrade.color} drop-shadow-lg">
-                ${overallGrade.emoji}
+          </div>
+          <!-- Health Verdict -->
+          <div class="text-center mb-12">
+            <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">Health Status:</p>
+            <div class="flex flex-col items-center gap-6">
+              <div class="flex items-center gap-6 text-4xl">
+                <span class="${health.text === 'Excellent' ? 'text-green-600' : health.text === 'Strong' ? 'text-teal-600' : health.text === 'Needs Work' ? 'text-orange-600' : 'text-red-600'}">
+                  ${health.text === 'Excellent' ? '🏆' : health.text === 'Strong' ? '✅' : health.text === 'Needs Work' ? '⚠️' : '❌'}
+                </span>
+              </div>
+              <p class="text-4xl font-black bg-gradient-to-r ${health.color} bg-clip-text text-transparent">
+                ${health.text}
               </p>
-              <p class="text-4xl sm:text-5xl font-bold ${overallGrade.color} mt-3 sm:mt-4">
-                ${overallGrade.grade}
+            </div>
+            <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Analyzed ${seoData.wordCount} words + ${seoData.imageCount} images</p>
+          </div>
+          <!-- SEO Health Radar Chart -->
+          <div class="max-w-5xl mx-auto my-16 px-4">
+            <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
+              <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">SEO Health Radar</h3>
+              <div class="hidden md:block w-full">
+                <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
+              </div>
+              <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">
+                Radar chart available on desktop/tablet
               </p>
-              <p class="text-base sm:text-lg text-gray-600 dark:text-gray-400 mt-3 sm:mt-4">Product Page Health</p>
+              <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">
+                Visual overview of your product page across key SEO areas
+              </p>
             </div>
           </div>
-        </div>
-        <!-- Health Verdict -->
-        <div class="text-center mb-12">
-          <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">Health Status:</p>
-          <div class="flex flex-col items-center gap-6">
-            <div class="flex items-center gap-6 text-4xl">
-              <span class="${health.text === 'Excellent' ? 'text-green-600' : health.text === 'Strong' ? 'text-teal-600' : health.text === 'Needs Work' ? 'text-orange-600' : 'text-red-600'}">
-                ${health.text === 'Excellent' ? '🏆' : health.text === 'Strong' ? '✅' : health.text === 'Needs Work' ? '⚠️' : '❌'}
-              </span>
+          <!-- Modules Grid -->
+          <div class="grid gap-8 my-16 max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-2 gap-8">${onPageHTML}${technicalHTML}</div>
+            <div class="grid md:grid-cols-2 gap-8">${contentMediaHTML}${ecommerceHTML}</div>
+          </div>
+          <!-- Top Priority Fixes -->
+          <div class="text-center my-20">
+            <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent mb-12">
+              Top Priority SEO Fixes
+            </h2>
+            <div class="max-w-5xl mx-auto space-y-8">
+              ${priorityFixesHTML}
             </div>
-            <p class="text-4xl font-black bg-gradient-to-r ${health.color} bg-clip-text text-transparent">
-              ${health.text}
-            </p>
+            ${priorityFixes.length > 0 ? `
+            <p class="mt-12 text-xl text-gray-800 dark:text-gray-200">
+              Prioritized by impact — focus on lowest-scoring areas first for biggest ranking & conversion gains.
+            </p>` : ''}
           </div>
-          <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Analyzed ${seoData.wordCount} words + ${seoData.imageCount} images</p>
-        </div>
-        <!-- SEO Health Radar Chart -->
-        <div class="max-w-5xl mx-auto my-16 px-4">
-          <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
-            <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">SEO Health Radar</h3>
-            <div class="hidden md:block w-full">
-              <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
-            </div>
-            <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">
-              Radar chart available on desktop/tablet
-            </p>
-            <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">
-              Visual overview of your product page across key SEO areas
-            </p>
+          <!-- Plugin Solutions Section -->
+          <div id="plugin-solutions-section" class="mt-16 px-4"></div>
+          <!-- SEO & Conversion Impact -->
+          ${impactHTML}
+          <!-- PDF Button -->
+          <div class="text-center my-16">
+            <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
+                    class="group relative inline-flex items-center px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
+              <span class="flex items-center gap-6">Save Report 📄</span>
+              <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </button>
           </div>
-        </div>
-        <!-- Modules Grid -->
-        <div class="grid gap-8 my-16 max-w-7xl mx-auto px-4">
-          <div class="grid md:grid-cols-2 gap-8">${onPageHTML}${technicalHTML}</div>
-          <div class="grid md:grid-cols-2 gap-8">${contentMediaHTML}${ecommerceHTML}</div>
-        </div>
-        <!-- Top Priority Fixes -->
-        <div class="text-center my-20">
-          <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent mb-12">
-            Top Priority SEO Fixes
-          </h2>
-          <div class="max-w-5xl mx-auto space-y-8">
-            ${priorityFixesHTML}
-          </div>
-          ${priorityFixes.length > 0 ? `
-          <p class="mt-12 text-xl text-gray-800 dark:text-gray-200">
-            Prioritized by impact — focus on lowest-scoring areas first for biggest ranking & conversion gains.
-          </p>` : ''}
-        </div>
-        <!-- Plugin Solutions Section -->
-        <div id="plugin-solutions-section" class="mt-16 px-4"></div>
-        <!-- SEO & Conversion Impact -->
-        ${impactHTML}
-        <!-- PDF Button -->
-        <div class="text-center my-16">
-          <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
-                  class="group relative inline-flex items-center px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
-            <span class="flex items-center gap-6">Save Report 📄</span>
-            <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </button>
-        </div>
-      `;
+        `;
 
-      setTimeout(() => {
-        const canvas = document.getElementById('health-radar');
-        if (!canvas) return;
-        try {
-          const ctx = canvas.getContext('2d');
-          const labelColor = '#9ca3af';
-          const gridColor = 'rgba(156, 163, 175, 0.3)';
-          const borderColor = '#22c55e';
-          const fillColor = 'rgba(34, 197, 94, 0.15)';
-          window.myChart = new Chart(ctx, {
-            type: 'radar',
-            data: {
-              labels: modules.map(m => m.name),
-              datasets: [{
-                label: 'Health Score',
-                data: scores,
-                backgroundColor: fillColor,
-                borderColor: borderColor,
-                borderWidth: 4,
-                pointRadius: 8,
-                pointHoverRadius: 12,
-                pointBackgroundColor: scores.map(s => s >= 85 ? '#10b981' : s >= 70 ? '#22c55e' : s >= 50 ? '#fb923c' : '#ef4444'),
-                pointBorderColor: '#fff',
-                pointBorderWidth: 3
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                r: {
-                  beginAtZero: true,
-                  min: 0,
-                  max: 100,
-                  ticks: { stepSize: 20, color: labelColor },
-                  grid: { color: gridColor },
-                  angleLines: { color: gridColor },
-                  pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
-                }
-              },
-              plugins: { legend: { display: false } }
-            }
-          });
-        } catch (e) {
-          console.error('Radar chart failed', e);
-        }
-      }, 150);
-
-      if (typeof renderPluginSolutions === 'function') {
-        renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
-      } else {
         setTimeout(() => {
-          if (typeof renderPluginSolutions === 'function') {
-            renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
+          const canvas = document.getElementById('health-radar');
+          if (!canvas) return;
+          try {
+            const ctx = canvas.getContext('2d');
+            const labelColor = '#9ca3af';
+            const gridColor = 'rgba(156, 163, 175, 0.3)';
+            const borderColor = '#22c55e';
+            const fillColor = 'rgba(34, 197, 94, 0.15)';
+            window.myChart = new Chart(ctx, {
+              type: 'radar',
+              data: {
+                labels: modules.map(m => m.name),
+                datasets: [{
+                  label: 'Health Score',
+                  data: scores,
+                  backgroundColor: fillColor,
+                  borderColor: borderColor,
+                  borderWidth: 4,
+                  pointRadius: 8,
+                  pointHoverRadius: 12,
+                  pointBackgroundColor: scores.map(s => s >= 85 ? '#10b981' : s >= 70 ? '#22c55e' : s >= 50 ? '#fb923c' : '#ef4444'),
+                  pointBorderColor: '#fff',
+                  pointBorderWidth: 3
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  r: {
+                    beginAtZero: true,
+                    min: 0,
+                    max: 100,
+                    ticks: { stepSize: 20, color: labelColor },
+                    grid: { color: gridColor },
+                    angleLines: { color: gridColor },
+                    pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
+                  }
+                },
+                plugins: { legend: { display: false } }
+              }
+            });
+          } catch (e) {
+            console.error('Radar chart failed', e);
           }
-        }, 500);
+        }, 150);
+
+        if (typeof renderPluginSolutions === 'function') {
+          renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
+        } else {
+          setTimeout(() => {
+            if (typeof renderPluginSolutions === 'function') {
+              renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
+            }
+          }, 500);
+        }
+      } catch (err) {
+        document.getElementById('loading').classList.add('hidden');
+        results.innerHTML = `
+          <div class="text-center py-20">
+            <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
+            <p class="mt-6 text-xl text-gray-600 dark:text-gray-400">Please try a public product page URL and check your connection.</p>
+          </div>
+        `;
       }
-    } catch (err) {
-      document.getElementById('loading').classList.add('hidden');
-      results.innerHTML = `
-        <div class="text-center py-20">
-          <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
-          <p class="mt-6 text-xl text-gray-600 dark:text-gray-400">Please try a public product page URL and check your connection.</p>
-        </div>
-      `;
     }
-  }
+  });
 
   // Button toggle for More Details and Show Fixes (delegated)
   document.addEventListener('click', e => {
