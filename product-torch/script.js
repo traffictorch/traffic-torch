@@ -176,11 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Analyzer implementations
-  function analyzeOnPageSEO(doc, data) {
-    let score = 0;
-    let details = {};
-
   // Title Tag Optimization
   const title = doc.title.trim();
   const titleLength = title.length;
@@ -865,4 +860,5 @@ document.addEventListener('click', e => {
       card.querySelector('.fixes-panel').classList.toggle('hidden');
     }
   }
+});
 });
