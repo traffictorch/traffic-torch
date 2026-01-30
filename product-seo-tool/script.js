@@ -575,7 +575,7 @@ document.addEventListener('DOMContentLoaded', () => {
       : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
 
     return `
-      <div class="module-card text-center p-4 sm:p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
+      <div class="module-card text-center p-0 sm:p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
   <circle cx="64" cy="64" r="56" stroke="#f3f4f6" stroke-width="12" fill="none"/>
@@ -710,7 +710,7 @@ const priorityFixes = failedFactors
 let priorityFixesHTML = '';
 if (priorityFixes.length > 0) {
   priorityFixesHTML = priorityFixes.map((fix, index) => `
-    <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-purple-600/10 to-cyan-600/10 rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all">
+    <div class="flex items-start gap-4 p-1 bg-gradient-to-r from-purple-600/10 to-cyan-600/10 rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all">
       <div class="text-5xl font-black text-purple-600">${index + 1}</div>
       <div class="flex-1">
         <p class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
@@ -849,8 +849,8 @@ wrapper.className = 'container mx-auto px-4 py-8';
 const scoreCard = document.createElement('div');
 scoreCard.innerHTML = `
   <!-- Big Overall Score Card -->
-  <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
-    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${safeScore >= 85 ? 'border-emerald-500' : safeScore >= 70 ? 'border-teal-500' : safeScore >= 50 ? 'border-orange-500' : 'border-red-500'}">
+  <div class="flex justify-center my-8 sm:my-12 px-0 sm:px-6">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-2 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${safeScore >= 85 ? 'border-emerald-500' : safeScore >= 70 ? 'border-teal-500' : safeScore >= 50 ? 'border-orange-500' : 'border-red-500'}">
       <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Product Page Health Score</p>
       <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
         <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
@@ -938,7 +938,7 @@ wrapper.appendChild(radarSection);
 
 // Append Modules Grid
 const modulesGrid = document.createElement('div');
-modulesGrid.className = 'grid gap-8 my-16 max-w-7xl mx-auto px-4';
+modulesGrid.className = 'grid gap-8 my-16 max-w-7xl mx-auto px-0';
 modulesGrid.innerHTML = `
   <div class="grid md:grid-cols-2 gap-8">${onPageHTML}${technicalHTML}</div>
   <div class="grid md:grid-cols-2 gap-8">${contentMediaHTML}${ecommerceHTML}</div>
@@ -976,7 +976,7 @@ wrapper.appendChild(impactSection);
 // Append Plugin Section (empty div)
 const pluginSection = document.createElement('div');
 pluginSection.id = 'plugin-solutions-section';
-pluginSection.className = 'mt-16 px-4';
+pluginSection.className = 'mt-16 px-1';
 wrapper.appendChild(pluginSection);
 
 // Append PDF Button
