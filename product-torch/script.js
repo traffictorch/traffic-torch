@@ -454,10 +454,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getHealthLabel(score) {
-    if (score >= 85) return { text: "Excellent", color: "from-green-400 to-emerald-600" };
-    if (score >= 70) return { text: "Strong", color: "from-teal-400 to-cyan-600" };
-    if (score >= 50) return { text: "Needs Work", color: "from-yellow-400 to-orange-600" };
-    return { text: "Poor", color: "from-red-500 to-pink-600" };
+    if (score >= 85) return { text: "Excellent", color: "from-green-400 to-green-600" };
+    if (score >= 70) return { text: "Very Good", color: "from-green-200 to-green-400" };
+    if (score >= 50) return { text: "Needs Improvement", color: "from-orange-400 to-orange-600" };
+    return { text: "Needs Work", color: "from-red-400 to-red-600" };
   }
 
   function getGradeInfo(score) {
@@ -467,15 +467,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (score >= 70) return { grade: "B", color: "text-teal-500", emoji: "👍" };
     if (score >= 60) return { grade: "C+", color: "text-yellow-600", emoji: "⚠️" };
     if (score >= 50) return { grade: "C", color: "text-orange-600", emoji: "⚠️" };
-    return { grade: "Needs Work", color: "text-red-600", emoji: "❌" };
+    return { grade: "Needs Improvement", color: "text-red-600", emoji: "❌" };
   }
 
   function getPluginGrade(score) {
     if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
-    if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
-    if (score >= 50) return { grade: 'Average', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
+    if (score >= 70) return { grade: 'Very Good', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+    if (score >= 50) return { grade: 'Needs Improvement', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
     if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
-    return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+    return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
   }
 
   function buildModuleHTML(moduleName, value, moduleData, factorScores = null) {
@@ -487,13 +487,13 @@ document.addEventListener('DOMContentLoaded', () => {
       statusMessage = "Excellent";
       statusEmoji = "🏆";
     } else if (value >= 70) {
-      statusMessage = "Strong";
+      statusMessage = "Very Good";
       statusEmoji = "✅";
     } else if (value >= 50) {
-      statusMessage = "Needs Work";
+      statusMessage = "Needs Improvement";
       statusEmoji = "⚠️";
     } else {
-      statusMessage = "Poor";
+      statusMessage = "Needs Work";
       statusEmoji = "❌";
     }
 
@@ -734,18 +734,18 @@ if (priorityFixes.length > 0) {
         let projectedHealth = health.text;
         let healthImprovement = '';
         if (failedCount >= 3) {
-          projectedHealth = 'Strong';
-          healthImprovement = 'Poor → Strong';
+          projectedHealth = 'Very Good';
+          healthImprovement = 'Needs Work → Very Good';
         } else if (failedCount === 2) {
-          projectedHealth = health.text === 'Poor' ? 'Needs Work' : 'Strong';
-          healthImprovement = health.text === 'Poor' ? 'Poor → Needs Work' : 'Needs Work → Strong';
+          projectedHealth = health.text === 'Needs Work' ? 'Needs Work' : 'Very Good';
+          healthImprovement = health.text === 'Needs Work' ? 'Needs Work → Needs Improvement' : 'Needs Work → Very Good';
         } else if (failedCount === 1) {
           healthImprovement = 'Moderate improvement';
         } else {
           healthImprovement = 'Already strong';
         }
-        const projectedColor = projectedHealth === 'Strong' ? 'from-green-400 to-emerald-600' :
-                               projectedHealth === 'Needs Work' ? 'from-yellow-400 to-orange-600' : 'from-red-500 to-pink-600';
+        const projectedColor = projectedHealth === 'Very Good' ? 'from-green-400 to-green-600' :
+                               projectedHealth === 'Needs Work' ? 'from-orange-400 to-orange-600' : 'from-red-400 to-red-600';
 
         let impactHTML = `
           <div class="grid md:grid-cols-2 gap-8 my-20">
@@ -768,7 +768,7 @@ if (priorityFixes.length > 0) {
                   <span class="text-2xl">📈</span>
                   <div class="flex-1">
                     <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Organic CTR Lift</p>
-                    <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${failedCount === 0 ? 'Strong' : failedCount * 10 + '-' + failedCount * 20 + '%'} from rich snippets</p>
+                    <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${failedCount === 0 ? 'Very Good' : failedCount * 10 + '-' + failedCount * 20 + '%'} from rich snippets</p>
                     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
                       <div class="bg-purple-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 100 - failedCount * 20 + '%'}"></div>
                     </div>
@@ -866,8 +866,8 @@ scoreCard.innerHTML = `
     <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">Health Status:</p>
     <div class="flex flex-col items-center gap-6">
       <div class="flex items-center gap-6 text-4xl">
-        <span class="${health.text === 'Excellent' ? 'text-green-600' : health.text === 'Strong' ? 'text-teal-600' : health.text === 'Needs Work' ? 'text-orange-600' : 'text-red-600'}">
-          ${health.text === 'Excellent' ? '🏆' : health.text === 'Strong' ? '✅' : health.text === 'Needs Work' ? '⚠️' : '❌'}
+        <span class="${health.text === 'Excellent' ? 'text-green-600' : health.text === 'Very Good' ? 'text-teal-600' : health.text === 'Needs Work' ? 'text-orange-600' : 'text-red-600'}">
+          ${health.text === 'Excellent' ? '🏆' : health.text === 'Very Good' ? '✅' : health.text === 'Needs Work' ? '⚠️' : '❌'}
         </span>
       </div>
       <p class="text-4xl font-black bg-gradient-to-r ${health.color} bg-clip-text text-transparent">

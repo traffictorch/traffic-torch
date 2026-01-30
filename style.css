@@ -363,5 +363,20 @@ details > div,
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* Enforce day/night text – targeted (exclude sidebar-link & gradient elements) */
+body, p:not([class*="bg-gradient"]), li, span:not([class*="bg-gradient"]), a:not(.sidebar-link):not(footer a), small, strong, em, blockquote {
+  color: #1f2937; /* gray-800 light */
+}
 
+.dark body,
+.dark p:not([class*="bg-gradient"]),
+.dark li,
+.dark span:not([class*="bg-gradient"]),
+.dark a:not(.sidebar-link):not(footer a),
+.dark small,
+.dark strong,
+.dark em,
+.dark blockquote {
+  color: #e5e7eb !important; /* gray-200 dark */
+}
 
