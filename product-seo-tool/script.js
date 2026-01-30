@@ -810,7 +810,7 @@ const projectedColor = projectedHealth === 'Very Good' ? 'from-green-200 to-gree
           { name: 'E-Commerce Signals', score: seo.ecommerce.score }
         ];
         const scores = modules.map(m => m.score);
-        const offset = 240;
+        const offset = 140;
         const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({ top: targetY, behavior: 'smooth' });
 
@@ -870,13 +870,19 @@ scoreCard.innerHTML = `
     <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">Health Status:</p>
     <div class="flex flex-col items-center gap-6">
       <div class="flex items-center gap-6 text-4xl">
-  <span class="${health.text === 'Excellent' ? 'text-green-600' : health.text === 'Very Good' ? 'text-green-400' : health.text === 'Needs Improvement' ? 'text-orange-600' : 'text-red-600'}">
-    ${health.text === 'Excellent' ? '🏆' : health.text === 'Very Good' ? '✅' : health.text === 'Needs Improvement' ? '⚠️' : '❌'}
-  </span>
-</div>
-<p class="text-4xl font-black bg-gradient-to-r ${health.color} bg-clip-text text-transparent">
-  ${health.text}
-</p>
+        <span class="${health.text === 'Excellent' ? 'text-emerald-600 dark:text-emerald-400' :
+                      health.text === 'Very Good' ? 'text-green-600 dark:text-green-400' :
+                      health.text === 'Needs Improvement' ? 'text-orange-600 dark:text-orange-400' :
+                      'text-red-600 dark:text-red-400'}">
+          ${health.text === 'Excellent' ? '🏆' : health.text === 'Very Good' ? '✅' : health.text === 'Needs Improvement' ? '⚠️' : '❌'}
+        </span>
+      </div>
+      <p class="${health.text === 'Excellent' ? 'text-emerald-600 dark:text-emerald-400' :
+                 health.text === 'Very Good' ? 'text-green-600 dark:text-green-400' :
+                 health.text === 'Needs Improvement' ? 'text-orange-600 dark:text-orange-400' :
+                 'text-red-600 dark:text-red-400'} text-4xl font-black">
+        ${health.text}
+      </p>
     </div>
     <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Analyzed ${seoData.wordCount} words + ${seoData.imageCount} images</p>
   </div>
