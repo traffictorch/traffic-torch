@@ -731,22 +731,18 @@ if (priorityFixes.length > 0) {
 }
 
         const failedCount = failedModules.length;
-        let projectedHealth;
-let healthImprovement = '';
+        let projectedHealth = health.text;
+let healthImprovement = 'Already strong – excellent baseline';
 
 if (failedCount >= 3) {
   projectedHealth = 'Very Good';
-  healthImprovement = `${health.text} → Very Good`;
+  healthImprovement = `${health.text} → Very Good (major lift expected)`;
 } else if (failedCount === 2) {
-  projectedHealth = (health.text === 'Needs Work' || health.text === 'Needs Improvement') ? 'Needs Improvement' : 'Very Good';
+  projectedHealth = health.text === 'Needs Work' ? 'Needs Improvement' : 'Very Good';
   healthImprovement = `${health.text} → ${projectedHealth}`;
 } else if (failedCount === 1) {
-  projectedHealth = health.text; // minor lift expected
   healthImprovement = 'Moderate improvement expected';
-} else {
-  projectedHealth = health.text;
-  healthImprovement = 'Already strong – excellent baseline';
-}
+} // else remains 'Already strong...'
 const projectedColor = projectedHealth === 'Very Good' ? 'from-green-200 to-green-400' :
                        projectedHealth === 'Needs Improvement' ? 'from-orange-400 to-orange-600' :
                        projectedHealth === 'Needs Work' ? 'from-red-400 to-red-600' : 'from-green-400 to-emerald-600';
@@ -761,7 +757,7 @@ const projectedColor = projectedHealth === 'Very Good' ? 'from-green-200 to-gree
                         health.text === 'Very Good' ? 'text-green-600' :
                         health.text === 'Needs Improvement' ? 'text-orange-600' :
                         'text-red-600'}">${health.text}</span>
-          <span class="text-purple-600">→</span>
+          <span class="text-purple-600 text-4xl font-black">→</span>
           <span class="${projectedHealth === 'Excellent' ? 'text-emerald-600' :
                         projectedHealth === 'Very Good' ? 'text-green-600' :
                         projectedHealth === 'Needs Improvement' ? 'text-orange-600' :
