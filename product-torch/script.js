@@ -455,9 +455,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function getHealthLabel(score) {
   if (score >= 85) return { text: "Excellent", color: "from-green-400 to-emerald-600" };
-  if (score >= 70) return { text: "Very Good", color: "from-green-200 to-green-400" }; 
-  if (score >= 50) return { text: "Needs Improvement", color: "from-orange-400 to-orange-600" }; 
-  return { text: "Needs Work", color: "from-red-400 to-red-600" }; 
+  if (score >= 70) return { text: "Very Good", color: "from-green-200 to-green-400" };
+  if (score >= 50) return { text: "Needs Improvement", color: "from-orange-400 to-orange-600" };
+  return { text: "Needs Work", color: "from-red-400 to-red-600" };
 }
 
   function getGradeInfo(score) {
