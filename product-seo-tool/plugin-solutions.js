@@ -2,10 +2,10 @@
 
 function getPluginGrade(score) {
   if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
-  if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
-  if (score >= 50) return { grade: 'Average', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
+  if (score >= 70) return { grade: 'Very Good', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+  if (score >= 50) return { grade: 'Needs Improvement', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
   if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
-  return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+  return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
 }
 
 const pluginData = {
