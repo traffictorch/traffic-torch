@@ -1,4 +1,4 @@
-// product-torch/script.js - COMPLETE WORKING VERSION - all modules, plugin solutions, radar chart, priority fixes
+// product-seo-tool/script.js - COMPLETE WORKING VERSION - all modules, plugin solutions, radar chart, priority fixes
 
 // Dynamic import for plugin solutions (same as working quit-risk-tool)
 let renderPluginSolutions;
@@ -933,16 +933,16 @@ prioritySection.innerHTML = `
 `;
 wrapper.appendChild(prioritySection);
 
+// Append Impact Grid
+const impactSection = document.createElement('div');
+impactSection.innerHTML = impactHTML;
+wrapper.appendChild(impactSection);
+
 // Append Plugin Section (empty div)
 const pluginSection = document.createElement('div');
 pluginSection.id = 'plugin-solutions-section';
 pluginSection.className = 'mt-16 px-4';
 wrapper.appendChild(pluginSection);
-
-// Append Impact Grid
-const impactSection = document.createElement('div');
-impactSection.innerHTML = impactHTML;
-wrapper.appendChild(impactSection);
 
 // Append PDF Button
 const pdfSection = document.createElement('div');
