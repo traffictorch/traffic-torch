@@ -92,7 +92,7 @@ span.bg-gradient-to-r.text-transparent,
   overscroll-behavior-y: contain;
   transform: translateX(100%);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); /* smoother slide feel */
-  padding: 5rem 1.25rem 2rem;         /* more top padding = safe space for close button + status bar */
+  padding: 2rem 0.25rem 2rem;         /* more top padding = safe space for close button + status bar */
 }
 
 /* When open (remove .hidden or add .open class – but since you use .hidden, override */
