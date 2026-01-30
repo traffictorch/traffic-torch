@@ -749,56 +749,56 @@ const projectedColor = projectedHealth === 'Very Good' ? 'from-green-200 to-gree
                        projectedHealth === 'Needs Work' ? 'from-red-400 to-red-600' : 'from-green-400 to-emerald-600';
 
         let impactHTML = `
-          <div class="grid md:grid-cols-2 gap-8 my-20">
-            <div class="p-8 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-3xl border border-purple-400/30">
-              <h3 class="text-3xl font-black mb-8 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent text-center">SEO Health Improvement</h3>
-              <div class="text-center mb-8">
-                <div class="flex items-center justify-center gap-8 text-4xl font-black mb-6">
-                  <span class="bg-gradient-to-r ${health.color} bg-clip-text text-transparent">${health.text}</span>
-                  <span class="text-purple-600">→</span>
-                  <span class="bg-gradient-to-r ${projectedColor} bg-clip-text text-transparent">${projectedHealth}</span>
-                </div>
-                <p class="text-xl text-gray-800 dark:text-gray-200">${healthImprovement}</p>
-              </div>
-              <p class="text-center text-lg text-gray-500 dark:text-gray-200 mt-6">Fixing top issues can significantly boost rankings, rich snippet eligibility, and CTR.</p>
+  <div class="grid md:grid-cols-2 gap-8 my-20">
+    <div class="p-8 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-3xl border border-purple-400/30">
+      <h3 class="text-3xl font-black mb-8 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent text-center">SEO Health Improvement</h3>
+      <div class="text-center mb-8">
+        <div class="flex items-center justify-center gap-8 text-4xl font-black mb-6">
+          <span class="bg-gradient-to-r ${health.color} bg-clip-text text-transparent">${health.text}</span>
+          <span class="text-purple-600">→</span>
+          <span class="bg-gradient-to-r ${projectedColor} bg-clip-text text-transparent">${projectedHealth}</span>
+        </div>
+        <p class="text-xl text-gray-800 dark:text-gray-200">${healthImprovement}</p>
+      </div>
+      <p class="text-center text-lg text-gray-500 dark:text-gray-200 mt-6">Fixing top issues can significantly boost rankings, rich snippet eligibility, and CTR.</p>
+    </div>
+    <div class="p-8 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-3xl border border-cyan-400/30">
+      <h3 class="text-3xl font-black mb-8 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent text-center">Potential Gains</h3>
+      <ul class="space-y-8">
+        <li class="flex items-center gap-6">
+          <span class="text-2xl">📈</span>
+          <div class="flex-1">
+            <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Organic CTR Lift</p>
+            <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${failedCount === 0 ? 'Very Good' : failedCount * 10 + '-' + failedCount * 20 + '%'} from rich snippets</p>
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
+              <div class="bg-purple-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 100 - failedCount * 20 + '%'}"></div>
             </div>
-            <div class="p-8 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-3xl border border-cyan-400/30">
-              <h3 class="text-3xl font-black mb-8 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent text-center">Potential Gains</h3>
-              <ul class="space-y-8">
-                <li class="flex items-center gap-6">
-                  <span class="text-2xl">📈</span>
-                  <div class="flex-1">
-                    <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Organic CTR Lift</p>
-                    <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${failedCount === 0 ? 'Very Good' : failedCount * 10 + '-' + failedCount * 20 + '%'} from rich snippets</p>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
-                      <div class="bg-purple-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 100 - failedCount * 20 + '%'}"></div>
-                    </div>
-                  </div>
-                </li>
-                <li class="flex items-center gap-6">
-                  <span class="text-2xl">🔍</span>
-                  <div class="flex-1">
-                    <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Ranking Potential</p>
-                    <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${failedCount === 0 ? 'Top-tier' : 'Significant climb'} after fixes</p>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
-                      <div class="bg-cyan-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 80 - failedCount * 15 + '%'}"></div>
-                    </div>
-                  </div>
-                </li>
-                <li class="flex items-center gap-6">
-                  <span class="text-2xl">🛒</span>
-                  <div class="flex-1">
-                    <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Conversion Rate Lift</p>
-                    <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${failedCount === 0 ? 'Strong baseline' : failedCount * 10 + '-' + failedCount * 25 + '%'} from better UX</p>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
-                      <div class="bg-blue-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 70 - failedCount * 15 + '%'}"></div>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-              <p class="text-sm text-gray-500 dark:text-gray-200 mt-8 text-center">Estimates based on eCommerce SEO benchmarks. Schema and content fixes often yield the biggest CTR gains.</p>
+          </div>
+        </li>
+        <li class="flex items-center gap-6">
+          <span class="text-2xl">🔍</span>
+          <div class="flex-1">
+            <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Ranking Potential</p>
+            <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${failedCount === 0 ? 'Top-tier' : 'Significant climb'} after fixes</p>
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
+              <div class="bg-cyan-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 80 - failedCount * 15 + '%'}"></div>
             </div>
-          </div>`;
+          </div>
+        </li>
+        <li class="flex items-center gap-6">
+          <span class="text-2xl">🛒</span>
+          <div class="flex-1">
+            <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Conversion Rate Lift</p>
+            <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${failedCount === 0 ? 'Strong baseline' : failedCount * 10 + '-' + failedCount * 25 + '%'} from better UX</p>
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
+              <div class="bg-blue-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 70 - failedCount * 15 + '%'}"></div>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <p class="text-sm text-gray-500 dark:text-gray-200 mt-8 text-center">Estimates based on eCommerce SEO benchmarks. Schema and content fixes often yield the biggest CTR gains.</p>
+    </div>
+  </div>`;
 
         const modules = [
           { name: 'On-Page SEO', score: seo.onPage.score },
