@@ -281,30 +281,75 @@ document.addEventListener('DOMContentLoaded', () => {
     details.https = { isHttps, score: isHttps ? 95 : 0 };
 
     const canonical = doc.querySelector('link[rel="canonical"]');
-    let canonicalScore = 20;
-    if (canonical && canonical.hasAttribute('href')) {
-      const canonHref = canonical.href.trim();
-const normalizeUrl = (u) => {
-  try {
-    const urlObj = new URL(u);
-    return urlObj.origin.toLowerCase() + urlObj.pathname.toLowerCase().replace(/\/$/, '') + urlObj.search + urlObj.hash;
-  } catch { return u.toLowerCase().replace(/\/$/, ''); }
-};
-const currentNorm = normalizeUrl(data.url);
-const canonNorm = normalizeUrl(canonHref);
-if (canonHref === data.url || canonHref === data.url + '/' || currentNorm === canonNorm) {
-  canonicalScore = 95;
-} else if (currentNorm === canonNorm) {
-  canonicalScore = 80;
-} else {
-  canonicalScore = 40;
-}
+let canonicalScore = 20;
+let canonDetails = { present: !!canonical, href: '', normalized: '', requestedNormalized: '', matchType: 'none' };
+
+if (canonical && canonical.hasAttribute('href')) {
+  const canonHref = canonical.href.trim();
+  canonDetails.href = canonHref;
+
+  // Robust normalization function
+  const normalizeUrl = (urlStr) => {
+    try {
+      const url = new URL(urlStr);
+      let path = url.pathname.toLowerCase().replace(/\/$/, ''); // remove trailing slash
+      let hostname = url.hostname.toLowerCase().replace(/^www\./, ''); // ignore www
+      let protocol = url.protocol.toLowerCase(); // but we ignore protocol diff later
+      let search = url.search.toLowerCase(); // keep query for now
+
+      // Remove common tracking/session params (optional but improves accuracy)
+      const ignoreParams = ['session_id', 'sid', 'utm_source', 'utm_medium', 'utm_campaign', 'fbclid', '_ga'];
+      const params = new URLSearchParams(search);
+      ignoreParams.forEach(p => params.delete(p));
+      search = params.toString() ? '?' + params.toString() : '';
+
+      return `${hostname}${path}${search}`;
+    } catch (e) {
+      // Fallback for malformed URLs
+      return urlStr.toLowerCase().replace(/\/$/, '').replace(/^https?:\/\//, '').replace(/^www\./, '');
     }
-    details.canonical = {
-      present: !!canonical,
-      matchesUrl: canonical?.href === data.url || canonical?.href === data.url + '/',
-      score: canonicalScore
-    };
+  };
+
+  const requestedNorm = normalizeUrl(data.url);
+  const canonNorm = normalizeUrl(canonHref);
+  canonDetails.normalized = canonNorm;
+  canonDetails.requestedNormalized = requestedNorm;
+
+  if (canonHref === data.url || canonHref === data.url + '/' || canonHref === data.url.replace(/\/$/, '')) {
+    canonicalScore = 95;
+    canonDetails.matchType = 'exact';
+  } else if (requestedNorm === canonNorm) {
+    canonicalScore = 90; // still excellent — minor diff like www or protocol
+    canonDetails.matchType = 'normalized';
+  } else if (canonNorm.includes(requestedNorm) || requestedNorm.includes(canonNorm)) {
+    canonicalScore = 75; // partial path match (lenient for sub-path issues)
+    canonDetails.matchType = 'partial';
+  } else {
+    canonicalScore = 30; // real mismatch — different page/domain
+    canonDetails.matchType = 'mismatch';
+  }
+} else {
+  // No canonical tag or empty href
+  canonicalScore = 15;
+  canonDetails.matchType = 'missing';
+}
+
+details.canonical = {
+  present: canonDetails.present,
+  href: canonDetails.href,
+  normalizedMatch: canonDetails.normalized === canonDetails.requestedNormalized,
+  score: canonicalScore
+};
+
+// Optional: temporary debug (remove after testing)
+console.log('[Canonical Debug]', {
+  requested: data.url,
+  canonicalHref: canonDetails.href,
+  requestedNorm: canonDetails.requestedNormalized,
+  canonNorm: canonDetails.normalized,
+  matchType: canonDetails.matchType,
+  score: canonicalScore
+});
 
     const robotsMeta = doc.querySelector('meta[name="robots"]');
     let robotsScore = 95;
