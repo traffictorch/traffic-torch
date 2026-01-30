@@ -77,23 +77,22 @@ span.bg-gradient-to-r.text-transparent,
 
 
 
-/* Mobile menu – right-side slide-in overlay, scrollable, dark/light friendly */
+/* Mobile menu – full-height right-side drawer, scrollable content, modern mobile standard */
 #mobileMenu {
   position: fixed;
-  top: 0;
-  right: 0;                       /* ← anchors to right side */
-  bottom: 0;
-  width: 80%;                     /* typical mobile drawer width; adjust to 100% for full if preferred */
-  max-width: 320px;               /* cap for larger phones */
-  z-index: 999;                   /* high so overlays header/content */
-  background-color: #f8fafc;      /* light bg */
-  color: #1f2937;                 /* gray-800 base text light mode – ensures visibility */
+  inset: 0 0 0 auto;                  /* top/right/bottom/left = full height, right-anchored */
+  height: 100dvh;                     /* 100% dynamic viewport height – best for mobile (addresses address bar issues) */
+  width: 85vw;                        /* wide enough to show most links without too much scroll */
+  max-width: 380px;                   /* comfortable max on larger phones */
+  z-index: 999;
+  background-color: #f8fafc;
+  color: #1f2937;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior-y: contain; /* better mobile feel */
-  transform: translateX(100%);    /* hidden off-screen right by default */
-  transition: transform 0.3s ease-in-out;
-  padding: 4rem 1rem 2rem;        /* top padding for close button + header overlap safety */
+  overscroll-behavior-y: contain;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); /* smoother slide feel */
+  padding: 5rem 1.25rem 2rem;         /* more top padding = safe space for close button + status bar */
 }
 
 /* When open (remove .hidden or add .open class – but since you use .hidden, override */
