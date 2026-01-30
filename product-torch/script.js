@@ -454,21 +454,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getHealthLabel(score) {
-    if (score >= 85) return { text: "Excellent", color: "from-green-400 to-green-600" };
-    if (score >= 70) return { text: "Very Good", color: "from-green-200 to-green-400" };
-    if (score >= 50) return { text: "Needs Improvement", color: "from-orange-400 to-orange-600" };
-    return { text: "Needs Work", color: "from-red-400 to-red-600" };
-  }
+  if (score >= 85) return { text: "Excellent", color: "from-green-400 to-emerald-600" };
+  if (score >= 70) return { text: "Very Good", color: "from-green-200 to-green-400" }; 
+  if (score >= 50) return { text: "Needs Improvement", color: "from-orange-400 to-orange-600" }; 
+  return { text: "Needs Work", color: "from-red-400 to-red-600" }; 
+}
 
   function getGradeInfo(score) {
-    if (score >= 90) return { grade: "A+", color: "text-green-600", emoji: "🏆" };
-    if (score >= 85) return { grade: "A", color: "text-green-600", emoji: "✅" };
-    if (score >= 80) return { grade: "B+", color: "text-green-500", emoji: "✅" };
-    if (score >= 70) return { grade: "B", color: "text-teal-500", emoji: "👍" };
-    if (score >= 60) return { grade: "C+", color: "text-yellow-600", emoji: "⚠️" };
-    if (score >= 50) return { grade: "C", color: "text-orange-600", emoji: "⚠️" };
-    return { grade: "Needs Improvement", color: "text-red-600", emoji: "❌" };
-  }
+  if (score >= 90) return { grade: "A+", color: "text-green-600", emoji: "🏆" };
+  if (score >= 85) return { grade: "A", color: "text-green-600", emoji: "✅" };
+  if (score >= 80) return { grade: "B+", color: "text-green-500", emoji: "✅" };
+  if (score >= 70) return { grade: "B", color: "text-teal-500", emoji: "👍" };
+  if (score >= 60) return { grade: "C+", color: "text-yellow-600", emoji: "⚠️" };
+  if (score >= 50) return { grade: "C", color: "text-orange-600", emoji: "⚠️" };
+  return { grade: "Needs Work", color: "text-red-600", emoji: "❌" };
+}
 
   function getPluginGrade(score) {
     if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
@@ -732,20 +732,21 @@ if (priorityFixes.length > 0) {
 
         const failedCount = failedModules.length;
         let projectedHealth = health.text;
-        let healthImprovement = '';
-        if (failedCount >= 3) {
-          projectedHealth = 'Very Good';
-          healthImprovement = 'Needs Work → Very Good';
-        } else if (failedCount === 2) {
-          projectedHealth = health.text === 'Needs Work' ? 'Needs Work' : 'Very Good';
-          healthImprovement = health.text === 'Needs Work' ? 'Needs Work → Needs Improvement' : 'Needs Work → Very Good';
-        } else if (failedCount === 1) {
-          healthImprovement = 'Moderate improvement';
-        } else {
-          healthImprovement = 'Already strong';
-        }
-        const projectedColor = projectedHealth === 'Very Good' ? 'from-green-400 to-green-600' :
-                               projectedHealth === 'Needs Work' ? 'from-orange-400 to-orange-600' : 'from-red-400 to-red-600';
+let healthImprovement = '';
+if (failedCount >= 3) {
+  projectedHealth = 'Very Good';
+  healthImprovement = 'Needs Work → Very Good';
+} else if (failedCount === 2) {
+  projectedHealth = health.text === 'Needs Work' ? 'Needs Improvement' : 'Very Good';
+  healthImprovement = health.text === 'Needs Work' ? 'Needs Work → Needs Improvement' : 'Needs Work → Very Good';
+} else if (failedCount === 1) {
+  healthImprovement = 'Moderate improvement';
+} else {
+  healthImprovement = 'Already strong';
+}
+const projectedColor = projectedHealth === 'Very Good' ? 'from-green-200 to-green-400' :
+                       projectedHealth === 'Needs Improvement' ? 'from-orange-400 to-orange-600' :
+                       projectedHealth === 'Needs Work' ? 'from-red-400 to-red-600' : 'from-green-400 to-emerald-600';
 
         let impactHTML = `
           <div class="grid md:grid-cols-2 gap-8 my-20">
@@ -866,13 +867,13 @@ scoreCard.innerHTML = `
     <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">Health Status:</p>
     <div class="flex flex-col items-center gap-6">
       <div class="flex items-center gap-6 text-4xl">
-        <span class="${health.text === 'Excellent' ? 'text-green-600' : health.text === 'Very Good' ? 'text-teal-600' : health.text === 'Needs Work' ? 'text-orange-600' : 'text-red-600'}">
-          ${health.text === 'Excellent' ? '🏆' : health.text === 'Very Good' ? '✅' : health.text === 'Needs Work' ? '⚠️' : '❌'}
-        </span>
-      </div>
-      <p class="text-4xl font-black bg-gradient-to-r ${health.color} bg-clip-text text-transparent">
-        ${health.text}
-      </p>
+  <span class="${health.text === 'Excellent' ? 'text-green-600' : health.text === 'Very Good' ? 'text-green-400' : health.text === 'Needs Improvement' ? 'text-orange-600' : 'text-red-600'}">
+    ${health.text === 'Excellent' ? '🏆' : health.text === 'Very Good' ? '✅' : health.text === 'Needs Improvement' ? '⚠️' : '❌'}
+  </span>
+</div>
+<p class="text-4xl font-black bg-gradient-to-r ${health.color} bg-clip-text text-transparent">
+  ${health.text}
+</p>
     </div>
     <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Analyzed ${seoData.wordCount} words + ${seoData.imageCount} images</p>
   </div>
