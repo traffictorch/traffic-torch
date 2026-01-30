@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     ecommerce: {
       factors: [
-        { name: "Product Schema Markup", key: "schema", threshold: 90, shortDesc: "Valid JSON-LD Product schema with required fields (name, image, description, offers, brand, sku/mpn).", howToFix: "Add complete <script type='application/ld+json'> Product schema in <head> or <body>. Include @context, @type: 'Product', name, image (array), description, brand, sku or mpn, offers." },
+		{ name: "Product Schema Markup", key: "schema", threshold: 90, shortDesc: "Valid JSON-LD Product schema with required fields (name, image, description, offers, brand, sku/mpn).", howToFix: "Add full Product schema using JSON-LD in a <script type=\"application/ld+json\"> tag (place in <head> or <body>). Must include: @context: \"https://schema.org\", @type: \"Product\", name, image (array recommended), description, brand: {name: \"YourBrand\"}, sku or mpn, offers: {price, priceCurrency, availability (use full schema.org URL like https://schema.org/InStock), seller}. Validate with Google's Rich Results Test." },
         { name: "Price & Availability Markup", key: "priceAvailability", threshold: 85, shortDesc: "Offers include priceCurrency, price (positive number), availability (InStock/OutOfStock/PreOrder etc.), priceValidUntil optional.", howToFix: "Ensure offers.price is a string number (e.g. '1299.00'), offers.priceCurrency (e.g. 'USD'), offers.availability uses schema.org enums like 'https://schema.org/InStock'." },
         { name: "Review Schema & Aggregation", key: "reviews", threshold: 80, shortDesc: "AggregateRating present with ratingValue (1.0–5.0) and reviewCount (or ratingCount), ideally with individual Review items.", howToFix: "Add AggregateRating inside Product schema: ratingValue (decimal), reviewCount (integer). Use real data from review app. Optional: add 2–5 Review objects." },
         { name: "Variant Handling", key: "variants", threshold: 75, shortDesc: "Variants use single-page selectors (dropdowns/swatches) or separate URLs have self-canonical + no duplicate content.", howToFix: "Prefer single URL with JS variant switching. If separate URLs, add <link rel='canonical'> pointing to main product. Avoid thin duplicate pages per variant." },
@@ -767,7 +767,7 @@ const projectedColor = projectedHealth === 'Excellent' ? 'from-green-400 to-emer
 
         let impactHTML = `
   <div class="max-w-5xl mx-auto my-20 px-4">
-    <div class="p-8 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-3xl border border-cyan-400/30">
+    <div class="p-2 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-3xl border border-cyan-400/30">
       <h3 class="text-3xl md:text-4xl font-black mb-10 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent text-center">
         Potential Gains After Fixes
       </h3>
