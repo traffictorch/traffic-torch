@@ -770,19 +770,20 @@ const projectedColor = projectedHealth === 'Excellent' ? 'from-green-400 to-emer
     <div class="p-8 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-3xl border border-purple-400/30">
       <h3 class="text-3xl font-black mb-8 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent text-center">SEO Health Improvement</h3>
       <div class="text-center mb-8">
-        <div class="flex items-center justify-center gap-8 text-1xl font-black mb-6">
-  <span class="${health.text === 'Excellent' ? 'text-emerald-600' :
-                health.text === 'Very Good' ? 'text-green-600' :
-                health.text === 'Needs Improvement' ? 'text-orange-600' :
-                'text-red-600'}">${health.text}</span>
-  <span class="text-purple-600 text-4xl font-black">→</span>
-  <span class="${projectedHealth === 'Excellent' ? 'text-emerald-600' :
-                projectedHealth === 'Very Good' ? 'text-green-600' :
-                projectedHealth === 'Needs Improvement' ? 'text-orange-600' :
-                'text-red-600'}">${projectedHealth}</span>
+  <div class="flex items-center justify-center gap-6 text-3xl font-bold mb-4">
+    <span class="${health.text === 'Excellent' ? 'text-green-800' :
+                  health.text === 'Very Good' ? 'text-green-600' :
+                  health.text === 'Needs Improvement' ? 'text-orange-600' :
+                  'text-red-600'}">${health.text}</span>
+    <span class="text-purple-600 text-3xl font-black">→</span>
+    <span class="${projectedHealth === 'Excellent' ? 'text-green-800' :
+                  projectedHealth === 'Very Good' ? 'text-green-600' :
+                  projectedHealth === 'Needs Improvement' ? 'text-orange-600' :
+                  'text-red-600'}">${projectedHealth}</span>
+  </div>
+  <!-- Only show explanation if it's meaningful (no arrow repetition) -->
+  <p class="text-lg text-gray-700">${healthImprovement.includes('→') ? healthImprovement.split('→')[1].trim() : healthImprovement}</p>
 </div>
-        <p class="text-xl text-gray-800">${healthImprovement}</p>
-      </div>
       <p class="text-center text-lg text-gray-500 mt-6">Fixing top issues can significantly boost rankings, rich snippet eligibility, and CTR.</p>
     </div>
     <div class="p-8 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-3xl border border-cyan-400/30">
