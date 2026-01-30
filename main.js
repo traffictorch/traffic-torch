@@ -199,25 +199,24 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Mobile menu (updated – close button + scroll lock)
+// Mobile menu – with close button + body scroll lock
 document.addEventListener('DOMContentLoaded', () => {
-  const button    = document.getElementById('menuToggle');
-  const menu      = document.getElementById('mobileMenu');
-  const closeBtn  = document.getElementById('close-mobile-menu');
+  const button   = document.getElementById('menuToggle');
+  const menu     = document.getElementById('mobileMenu');
+  const closeBtn = document.getElementById('close-mobile-menu');
 
-  // Exit early if elements missing (safe on non-standard pages)
   if (!button || !menu) return;
 
-  // Open menu
+  // Open / toggle
   button.addEventListener('click', () => {
     menu.classList.toggle('hidden');
-    document.body.classList.toggle('overflow-hidden'); // lock body scroll
+    document.body.classList.toggle('overflow-hidden');
 
     const expanded = button.getAttribute('aria-expanded') === 'true';
     button.setAttribute('aria-expanded', !expanded);
   });
 
-  // Close via close button
+  // Close via × button
   if (closeBtn) {
     closeBtn.addEventListener('click', () => {
       menu.classList.add('hidden');
@@ -226,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Close when clicking any link inside menu (already had this – kept)
+  // Close on link click (you already had this)
   menu.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', () => {
       menu.classList.add('hidden');
