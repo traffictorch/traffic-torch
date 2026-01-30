@@ -850,13 +850,15 @@ scoreCard.innerHTML = `
       <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Product Page Health Score</p>
       <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
         <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
-          <circle cx="100" cy="100" r="90" stroke="#e5e7eb dark:stroke-gray-700" stroke-width="16" fill="none"/>
-          <circle cx="100" cy="100" r="90"
-                  stroke="${ringColor}"
-                  stroke-width="16" fill="none"
-                  stroke-dasharray="${(safeScore / 100) * 565} 565"
-                  stroke-linecap="round"/>
-        </svg>
+  <!-- Light grey inlay background circle (unfilled part) -->
+  <circle cx="100" cy="100" r="90" stroke="#f3f4f6" stroke-width="16" fill="none"/>
+  <!-- Progress ring -->
+  <circle cx="100" cy="100" r="90"
+          stroke="${ringColor}"
+          stroke-width="16" fill="none"
+          stroke-dasharray="${(safeScore / 100) * 565} 565"
+          stroke-linecap="round"/>
+</svg>
         <div class="absolute inset-0 flex items-center justify-center">
           <div class="text-center">
             <div class="text-5xl sm:text-6xl font-black drop-shadow-lg" style="color: ${ringColor};">
