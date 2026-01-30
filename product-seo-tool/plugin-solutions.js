@@ -1,6 +1,6 @@
 // product-seo-tool/plugin-solutions.js - Updated to match current Traffic Torch metrics
 
-JavaScriptfunction getPluginGrade(score) {
+function getPluginGrade(score) {
   if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
   if (score >= 70) return { grade: 'Very Good', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
   if (score >= 50) return { grade: 'Needs Improvement', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
@@ -285,14 +285,18 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
     console.log('Plugin Solutions: No low/average metrics to show');
     return;
   }
+
   console.log('Rendering Plugin Solutions for metrics:', failedMetrics.map(m => m.name));
+
   const container = document.getElementById(containerId);
   if (!container) {
     console.warn(`Plugin Solutions container not found: #${containerId}`);
     return;
   }
+
   const section = document.createElement('section');
   section.className = 'mt-20 max-w-5xl mx-auto px-4';
+
   section.innerHTML = `
     <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
       Plugin Solutions for Product SEO
@@ -305,7 +309,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
     <div class="space-y-6">
       ${failedMetrics.map(m => {
         const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
-        const g = m.grade;
+        const g = getPluginGrade(m.score); // Use updated grade function
         return `
           <details class="group bg-white dark:bg-gray-900 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden">
             <summary class="flex items-center justify-between p-6 md:p-8 cursor-pointer list-none">
@@ -340,50 +344,50 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
       Always test on a staging environment first and check for recent reviews/updates.
     </p>
   `;
+
   container.appendChild(section);
 
-  // Attach event listeners after DOM insertion
+  // Attach event listeners
   setTimeout(() => {
     failedMetrics.forEach(m => {
       const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
       const select = document.getElementById(`cms-select-${metricId}`);
       const pluginsList = document.getElementById(`plugins-${metricId}`);
-      if (!select || !pluginsList) {
-        console.warn(`Could not find select/plugins for metric: ${m.name} (id: ${metricId})`);
-        return;
-      }
+
+      if (!select || !pluginsList) return;
+
       select.addEventListener('change', (e) => {
         const selected = e.target.value;
         pluginsList.innerHTML = '';
         pluginsList.classList.add('hidden');
-        if (!selected || !pluginData[m.name]?.[selected]) {
-          console.log(`No plugins found for ${m.name} → ${selected}`);
-          return;
-        }
+
+        if (!selected || !pluginData[m.name]?.[selected]) return;
+
         pluginData[m.name][selected].forEach(plugin => {
           const card = document.createElement('div');
           card.className = 'group relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-200 dark:border-gray-700 overflow-hidden';
           card.innerHTML = `
-  <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-  <div class="relative z-10">
-    <h4 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">${plugin.name}</h4>
-    <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">${plugin.desc}</p>
-    <div class="flex flex-wrap gap-4">
-      ${plugin.linkLibrary ? `
-        <a href="${plugin.linkLibrary}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-          Plugin Library
-        </a>
-      ` : ''}
-      ${plugin.linkWebsite ? `
-        <a href="${plugin.linkWebsite}" target="_blank" rel="noopener" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-          Plugin Website
-        </a>
-      ` : ''}
-    </div>
-  </div>
-`;
+            <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="relative z-10">
+              <h4 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">${plugin.name}</h4>
+              <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">${plugin.desc}</p>
+              <div class="flex flex-wrap gap-4">
+                ${plugin.linkLibrary ? `
+                  <a href="${plugin.linkLibrary}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow hover:shadow-md transition">
+                    Plugin Library
+                  </a>
+                ` : ''}
+                ${plugin.linkWebsite ? `
+                  <a href="${plugin.linkWebsite}" target="_blank" rel="noopener" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-medium rounded-lg shadow hover:shadow-md transition">
+                    Plugin Website
+                  </a>
+                ` : ''}
+              </div>
+            </div>
+          `;
           pluginsList.appendChild(card);
         });
+
         if (pluginsList.children.length > 0) {
           pluginsList.classList.remove('hidden');
         }
