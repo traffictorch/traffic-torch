@@ -757,13 +757,19 @@ const projectedColor = projectedHealth === 'Very Good' ? 'from-green-200 to-gree
       <h3 class="text-3xl font-black mb-8 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent text-center">SEO Health Improvement</h3>
       <div class="text-center mb-8">
         <div class="flex items-center justify-center gap-8 text-4xl font-black mb-6">
-          <span class="bg-gradient-to-r ${health.color} bg-clip-text text-transparent">${health.text}</span>
+          <span class="${health.text === 'Excellent' ? 'text-emerald-600' :
+                        health.text === 'Very Good' ? 'text-green-600' :
+                        health.text === 'Needs Improvement' ? 'text-orange-600' :
+                        'text-red-600'}">${health.text}</span>
           <span class="text-purple-600">→</span>
-          <span class="bg-gradient-to-r ${projectedColor} bg-clip-text text-transparent">${projectedHealth}</span>
+          <span class="${projectedHealth === 'Excellent' ? 'text-emerald-600' :
+                        projectedHealth === 'Very Good' ? 'text-green-600' :
+                        projectedHealth === 'Needs Improvement' ? 'text-orange-600' :
+                        'text-red-600'}">${projectedHealth}</span>
         </div>
-        <p class="text-xl text-gray-800 dark:text-gray-200">${healthImprovement}</p>
+        <p class="text-xl text-gray-800">${healthImprovement}</p>
       </div>
-      <p class="text-center text-lg text-gray-500 dark:text-gray-200 mt-6">Fixing top issues can significantly boost rankings, rich snippet eligibility, and CTR.</p>
+      <p class="text-center text-lg text-gray-500 mt-6">Fixing top issues can significantly boost rankings, rich snippet eligibility, and CTR.</p>
     </div>
     <div class="p-8 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-3xl border border-cyan-400/30">
       <h3 class="text-3xl font-black mb-8 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent text-center">Potential Gains</h3>
@@ -771,9 +777,9 @@ const projectedColor = projectedHealth === 'Very Good' ? 'from-green-200 to-gree
         <li class="flex items-center gap-6">
           <span class="text-2xl">📈</span>
           <div class="flex-1">
-            <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Organic CTR Lift</p>
-            <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${failedCount === 0 ? 'Very Good' : failedCount * 10 + '-' + failedCount * 20 + '%'} from rich snippets</p>
-            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
+            <p class="font-bold text-xl text-gray-500">Organic CTR Lift</p>
+            <p class="text-lg text-gray-500">Potential ${failedCount === 0 ? 'Very Good' : failedCount * 10 + '-' + failedCount * 20 + '%'} from rich snippets</p>
+            <div class="w-full bg-gray-200 rounded-full h-4 mt-2">
               <div class="bg-purple-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 100 - failedCount * 20 + '%'}"></div>
             </div>
           </div>
@@ -781,9 +787,9 @@ const projectedColor = projectedHealth === 'Very Good' ? 'from-green-200 to-gree
         <li class="flex items-center gap-6">
           <span class="text-2xl">🔍</span>
           <div class="flex-1">
-            <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Ranking Potential</p>
-            <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${failedCount === 0 ? 'Top-tier' : 'Significant climb'} after fixes</p>
-            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
+            <p class="font-bold text-xl text-gray-500">Ranking Potential</p>
+            <p class="text-lg text-gray-500">Potential ${failedCount === 0 ? 'Top-tier' : 'Significant climb'} after fixes</p>
+            <div class="w-full bg-gray-200 rounded-full h-4 mt-2">
               <div class="bg-cyan-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 80 - failedCount * 15 + '%'}"></div>
             </div>
           </div>
@@ -791,15 +797,15 @@ const projectedColor = projectedHealth === 'Very Good' ? 'from-green-200 to-gree
         <li class="flex items-center gap-6">
           <span class="text-2xl">🛒</span>
           <div class="flex-1">
-            <p class="font-bold text-xl text-gray-500 dark:text-gray-200">Conversion Rate Lift</p>
-            <p class="text-lg text-gray-500 dark:text-gray-200">Potential ${failedCount === 0 ? 'Strong baseline' : failedCount * 10 + '-' + failedCount * 25 + '%'} from better UX</p>
-            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2">
+            <p class="font-bold text-xl text-gray-500">Conversion Rate Lift</p>
+            <p class="text-lg text-gray-500">Potential ${failedCount === 0 ? 'Strong baseline' : failedCount * 10 + '-' + failedCount * 25 + '%'} from better UX</p>
+            <div class="w-full bg-gray-200 rounded-full h-4 mt-2">
               <div class="bg-blue-600 h-4 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 70 - failedCount * 15 + '%'}"></div>
             </div>
           </div>
         </li>
       </ul>
-      <p class="text-sm text-gray-500 dark:text-gray-200 mt-8 text-center">Estimates based on eCommerce SEO benchmarks. Schema and content fixes often yield the biggest CTR gains.</p>
+      <p class="text-sm text-gray-500 mt-8 text-center">Estimates based on eCommerce SEO benchmarks. Schema and content fixes often yield the biggest CTR gains.</p>
     </div>
   </div>`;
 
@@ -867,24 +873,24 @@ scoreCard.innerHTML = `
 
   <!-- Health Verdict -->
   <div class="text-center mb-12">
-    <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">Health Status:</p>
+    <p class="text-4xl font-bold text-gray-800 mb-8">Health Status:</p>
     <div class="flex flex-col items-center gap-6">
       <div class="flex items-center gap-6 text-4xl">
-        <span class="${health.text === 'Excellent' ? 'text-emerald-600 dark:text-emerald-400' :
-                      health.text === 'Very Good' ? 'text-green-600 dark:text-green-400' :
-                      health.text === 'Needs Improvement' ? 'text-orange-600 dark:text-orange-400' :
-                      'text-red-600 dark:text-red-400'}">
+        <span class="${health.text === 'Excellent' ? 'text-emerald-600' :
+                      health.text === 'Very Good' ? 'text-green-600' :
+                      health.text === 'Needs Improvement' ? 'text-orange-600' :
+                      'text-red-600'}">
           ${health.text === 'Excellent' ? '🏆' : health.text === 'Very Good' ? '✅' : health.text === 'Needs Improvement' ? '⚠️' : '❌'}
         </span>
       </div>
-      <p class="${health.text === 'Excellent' ? 'text-emerald-600 dark:text-emerald-400' :
-                 health.text === 'Very Good' ? 'text-green-600 dark:text-green-400' :
-                 health.text === 'Needs Improvement' ? 'text-orange-600 dark:text-orange-400' :
-                 'text-red-600 dark:text-red-400'} text-4xl font-black">
+      <p class="${health.text === 'Excellent' ? 'text-emerald-600' :
+                 health.text === 'Very Good' ? 'text-green-600' :
+                 health.text === 'Needs Improvement' ? 'text-orange-600' :
+                 'text-red-600'} text-4xl font-black">
         ${health.text}
       </p>
     </div>
-    <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Analyzed ${seoData.wordCount} words + ${seoData.imageCount} images</p>
+    <p class="text-xl text-gray-800 mt-10">Analyzed ${seoData.wordCount} words + ${seoData.imageCount} images</p>
   </div>
 `;
 wrapper.appendChild(scoreCard);
