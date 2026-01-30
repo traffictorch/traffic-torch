@@ -118,9 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function hasReviewSection(doc) {
     const selectors = [
-      '.reviews', '.product-reviews', '#reviews', '.rating', '.yotpo', '.judge-me', '[data-reviews]', '.aggregate-rating', '.star-rating', '.customer-reviews',
-      '[itemprop="aggregateRating"]', '[itemprop="review"]', '.woocommerce-product-rating', '.spr-reviews', '.stamped-main-widget', '.loox-rating', '.trustpilot-widget'
-    ];
+  '.reviews', '.product-reviews', '#reviews', '.rating', '.yotpo', '.judge-me', '.loox', '.stamped', '.trustpilot',
+  '[itemprop="aggregateRating"]', '[itemprop="review"]', '.woocommerce-product-rating', '.spr-reviews', 
+  '.product-single__reviews', '.shopify-section--product-reviews', '.rating-stars', '.product-reviews__container'
+];
     return selectors.some(sel => doc.querySelector(sel));
   }
 
@@ -283,15 +284,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let canonicalScore = 20;
     if (canonical && canonical.hasAttribute('href')) {
       const canonHref = canonical.href.trim();
-      const currentNormalized = data.url.replace(/\/$/, '');
-      const canonNormalized = canonHref.replace(/\/$/, '');
-      if (canonHref === data.url || canonHref === data.url + '/') {
-        canonicalScore = 95;
-      } else if (currentNormalized === canonNormalized) {
-        canonicalScore = 80;
-      } else {
-        canonicalScore = 40;
-      }
+const normalizeUrl = (u) => {
+  try {
+    const urlObj = new URL(u);
+    return urlObj.origin.toLowerCase() + urlObj.pathname.toLowerCase().replace(/\/$/, '') + urlObj.search + urlObj.hash;
+  } catch { return u.toLowerCase().replace(/\/$/, ''); }
+};
+const currentNorm = normalizeUrl(data.url);
+const canonNorm = normalizeUrl(canonHref);
+if (canonHref === data.url || canonHref === data.url + '/' || currentNorm === canonNorm) {
+  canonicalScore = 95;
+} else if (currentNorm === canonNorm) {
+  canonicalScore = 80;
+} else {
+  canonicalScore = 40;
+}
     }
     details.canonical = {
       present: !!canonical,
