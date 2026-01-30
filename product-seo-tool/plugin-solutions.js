@@ -1,4 +1,4 @@
-// product-torch/plugin-solutions.js - Updated to match current Traffic Torch metrics
+// product-seo-tool/plugin-solutions.js - Updated to match current Traffic Torch metrics
 
 function getPluginGrade(score) {
   if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };

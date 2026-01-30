@@ -1,4 +1,4 @@
-// metric-explanations.js - updated to match product-torch SEO audit modules
+// metric-explanations.js - updated to match product-seo-tool SEO audit modules
 
 const metricExplanations = [
   {
