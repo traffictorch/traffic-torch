@@ -578,13 +578,13 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="module-card text-center p-4 sm:p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-            <circle cx="64" cy="64" r="56" stroke="#e5e7eb dark:stroke-gray-700" stroke-width="12" fill="none"/>
-            <circle cx="64" cy="64" r="56"
-                    stroke="${ringColor}"
-                    stroke-width="12" fill="none"
-                    stroke-dasharray="${(value / 100) * 352} 352"
-                    stroke-linecap="round"/>
-          </svg>
+  <circle cx="64" cy="64" r="56" stroke="#f3f4f6" stroke-width="12" fill="none"/>
+  <circle cx="64" cy="64" r="56"
+          stroke="${ringColor}"
+          stroke-width="12" fill="none"
+          stroke-dasharray="${(value / 100) * 352} 352"
+          stroke-linecap="round"/>
+</svg>
           <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${ringColor};">
             ${value}
           </div>
@@ -770,7 +770,7 @@ const projectedColor = projectedHealth === 'Excellent' ? 'from-green-400 to-emer
     <div class="p-8 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-3xl border border-purple-400/30">
       <h3 class="text-3xl font-black mb-8 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent text-center">SEO Health Improvement</h3>
       <div class="text-center mb-8">
-        <div class="flex items-center justify-center gap-8 text-4xl font-black mb-6">
+        <div class="flex items-center justify-center gap-8 text-1xl font-black mb-6">
   <span class="${health.text === 'Excellent' ? 'text-emerald-600' :
                 health.text === 'Very Good' ? 'text-green-600' :
                 health.text === 'Needs Improvement' ? 'text-orange-600' :
