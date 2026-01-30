@@ -313,9 +313,9 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
         return `
           <details class="group bg-white dark:bg-gray-900 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden">
             <summary class="flex items-center justify-between p-6 md:p-8 cursor-pointer list-none">
-              <h3 class="text-2xl md:text-3xl font-bold ${g.color}">
-                ${g.emoji} ${m.name}
-              </h3>
+              <h3 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200">
+  				${m.name}
+				</h3>
               <div class="transform transition-transform duration-300 group-open:rotate-180">
                 <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/>
