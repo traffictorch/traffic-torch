@@ -914,7 +914,7 @@ const prioritySection = document.createElement('div');
 prioritySection.className = 'text-center my-20';
 prioritySection.innerHTML = `
   <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent mb-12">
-    Top Priority SEO Fixes
+    Top Priority Fixes
   </h2>
   <div class="max-w-5xl mx-auto space-y-8">
     ${priorityFixesHTML || `

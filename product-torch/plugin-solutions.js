@@ -296,7 +296,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
   section.className = 'mt-20 max-w-5xl mx-auto px-4';
   section.innerHTML = `
     <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
-      Plugin Solutions for Performance & Accessibility Issues
+      Plugin Solutions for Product SEO
     </h2>
     <p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
       ${failedMetrics.length} issue${failedMetrics.length > 1 ? 's need' : ' needs'} attention.
@@ -365,24 +365,24 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
           const card = document.createElement('div');
           card.className = 'group relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-200 dark:border-gray-700 overflow-hidden';
           card.innerHTML = `
-            <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div class="relative z-10">
-              <h4 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">${plugin.name}</h4>
-              <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">${plugin.desc}</p>
-              <div class="flex flex-wrap gap-4">
-                ${plugin.link ? `
-                  <a href="${plugin.link}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-                    Plugin Library
-                  </a>
-                ` : ''}
-                ${plugin.homeLink ? `
-                  <a href="${plugin.homeLink}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-medium rounded-lg shadow hover:shadow-md transition">
-                    Plugin Website
-                  </a>
-                ` : ''}
-              </div>
-            </div>
-          `;
+  <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+  <div class="relative z-10">
+    <h4 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">${plugin.name}</h4>
+    <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">${plugin.desc}</p>
+    <div class="flex flex-wrap gap-4">
+      ${plugin.linkLibrary ? `
+        <a href="${plugin.linkLibrary}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow hover:shadow-md transition">
+          Plugin Library
+        </a>
+      ` : ''}
+      ${plugin.linkWebsite ? `
+        <a href="${plugin.linkWebsite}" target="_blank" rel="noopener" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-medium rounded-lg shadow hover:shadow-md transition">
+          Plugin Website
+        </a>
+      ` : ''}
+    </div>
+  </div>
+`;
           pluginsList.appendChild(card);
         });
         if (pluginsList.children.length > 0) {
