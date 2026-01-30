@@ -74,11 +74,16 @@ span.bg-gradient-to-r.text-transparent,
 
 /* Mobile menu (#mobileMenu from inspector) - day/night background + text */
 #mobileMenu {
-  overflow-y: auto;          /* ← add this */
-  -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
-  overscroll-behavior: contain;
   background-color: #f8fafc !important; /* light mode bg */
   color: #1f2937 !important;
+  overflow-y: auto;                  /* enables scrolling */
+  -webkit-overflow-scrolling: touch; /* smooth iOS scrolling */
+  max-height: 100vh;                 /* ← important: constrain to viewport height */
+}
+
+body.overflow-hidden {
+  overflow: hidden;
+  height: 100vh; /* optional extra safety */
 }
 
 .dark #mobileMenu {
