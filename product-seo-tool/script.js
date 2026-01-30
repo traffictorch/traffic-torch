@@ -731,8 +731,8 @@ if (priorityFixes.length > 0) {
 }
 
         const failedCount = failedModules.length;
-        let projectedHealth = health.text;
-let healthImprovement = 'Already strong – excellent baseline';
+        let projectedHealth;
+let healthImprovement = '';
 
 if (failedCount >= 3) {
   projectedHealth = 'Very Good';
@@ -741,11 +741,29 @@ if (failedCount >= 3) {
   projectedHealth = health.text === 'Needs Work' ? 'Needs Improvement' : 'Very Good';
   healthImprovement = `${health.text} → ${projectedHealth}`;
 } else if (failedCount === 1) {
+  projectedHealth = health.text;
   healthImprovement = 'Moderate improvement expected';
-} // else remains 'Already strong...'
-const projectedColor = projectedHealth === 'Very Good' ? 'from-green-200 to-green-400' :
+} else if (failedCount === 0) {
+  if (health.text === 'Excellent') {
+    projectedHealth = 'Excellent';
+    healthImprovement = 'Already at peak performance – maintain it!';
+  } else if (health.text === 'Very Good') {
+    projectedHealth = 'Excellent';
+    healthImprovement = 'Strong foundation – push to Excellent with minor tweaks';
+  } else if (health.text === 'Needs Improvement') {
+    projectedHealth = 'Very Good';
+    healthImprovement = 'Needs Improvement → Very Good (realistic next step)';
+  } else { // Needs Work
+    projectedHealth = 'Needs Improvement';
+    healthImprovement = 'Needs Work → Needs Improvement (first realistic step)';
+  }
+}
+
+// Set color based on the final projectedHealth value
+const projectedColor = projectedHealth === 'Excellent' ? 'from-green-400 to-emerald-600' :
+                       projectedHealth === 'Very Good' ? 'from-green-200 to-green-400' :
                        projectedHealth === 'Needs Improvement' ? 'from-orange-400 to-orange-600' :
-                       projectedHealth === 'Needs Work' ? 'from-red-400 to-red-600' : 'from-green-400 to-emerald-600';
+                       'from-red-400 to-red-600';
 
         let impactHTML = `
   <div class="grid md:grid-cols-2 gap-8 my-20">
@@ -753,16 +771,16 @@ const projectedColor = projectedHealth === 'Very Good' ? 'from-green-200 to-gree
       <h3 class="text-3xl font-black mb-8 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent text-center">SEO Health Improvement</h3>
       <div class="text-center mb-8">
         <div class="flex items-center justify-center gap-8 text-4xl font-black mb-6">
-          <span class="${health.text === 'Excellent' ? 'text-emerald-600' :
-                        health.text === 'Very Good' ? 'text-green-600' :
-                        health.text === 'Needs Improvement' ? 'text-orange-600' :
-                        'text-red-600'}">${health.text}</span>
-          <span class="text-purple-600 text-4xl font-black">→</span>
-          <span class="${projectedHealth === 'Excellent' ? 'text-emerald-600' :
-                        projectedHealth === 'Very Good' ? 'text-green-600' :
-                        projectedHealth === 'Needs Improvement' ? 'text-orange-600' :
-                        'text-red-600'}">${projectedHealth}</span>
-        </div>
+  <span class="${health.text === 'Excellent' ? 'text-emerald-600' :
+                health.text === 'Very Good' ? 'text-green-600' :
+                health.text === 'Needs Improvement' ? 'text-orange-600' :
+                'text-red-600'}">${health.text}</span>
+  <span class="text-purple-600 text-4xl font-black">→</span>
+  <span class="${projectedHealth === 'Excellent' ? 'text-emerald-600' :
+                projectedHealth === 'Very Good' ? 'text-green-600' :
+                projectedHealth === 'Needs Improvement' ? 'text-orange-600' :
+                'text-red-600'}">${projectedHealth}</span>
+</div>
         <p class="text-xl text-gray-800">${healthImprovement}</p>
       </div>
       <p class="text-center text-lg text-gray-500 mt-6">Fixing top issues can significantly boost rankings, rich snippet eligibility, and CTR.</p>
