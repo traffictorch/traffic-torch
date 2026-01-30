@@ -731,18 +731,21 @@ if (priorityFixes.length > 0) {
 }
 
         const failedCount = failedModules.length;
-        let projectedHealth = health.text;
+        let projectedHealth;
 let healthImprovement = '';
+
 if (failedCount >= 3) {
   projectedHealth = 'Very Good';
-  healthImprovement = 'Needs Work → Very Good';
+  healthImprovement = `${health.text} → Very Good`;
 } else if (failedCount === 2) {
-  projectedHealth = health.text === 'Needs Work' ? 'Needs Improvement' : 'Very Good';
-  healthImprovement = health.text === 'Needs Work' ? 'Needs Work → Needs Improvement' : 'Needs Work → Very Good';
+  projectedHealth = (health.text === 'Needs Work' || health.text === 'Needs Improvement') ? 'Needs Improvement' : 'Very Good';
+  healthImprovement = `${health.text} → ${projectedHealth}`;
 } else if (failedCount === 1) {
-  healthImprovement = 'Moderate improvement';
+  projectedHealth = health.text; // minor lift expected
+  healthImprovement = 'Moderate improvement expected';
 } else {
-  healthImprovement = 'Already strong';
+  projectedHealth = health.text;
+  healthImprovement = 'Already strong – excellent baseline';
 }
 const projectedColor = projectedHealth === 'Very Good' ? 'from-green-200 to-green-400' :
                        projectedHealth === 'Needs Improvement' ? 'from-orange-400 to-orange-600' :
