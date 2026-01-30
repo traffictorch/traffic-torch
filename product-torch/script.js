@@ -702,41 +702,33 @@ document.addEventListener('DOMContentLoaded', () => {
           { name: 'E-Commerce Signals', score: seo.ecommerce.score, threshold: 75, data: factorDefinitions.ecommerce }
         ];
         const failedModules = modulePriority.filter(m => m.score < m.threshold);
-        const priorityFixes = [];
-        failedModules.forEach(mod => {
-          if (mod.data.factors.length > 0) {
-            priorityFixes.push({ ...mod.data.factors[0], module: mod.name, extraCount: mod.data.factors.length });
-          }
-        });
-        if (priorityFixes.length < 3 && failedModules.length > 0) {
-          const worstModule = failedModules[0];
-          if (worstModule.data.factors.length >= 2) {
-            priorityFixes.push({ ...worstModule.data.factors[1], module: worstModule.name, isSecond: true, extraCount: worstModule.data.factors.length });
-          }
-        }
-        let priorityFixesHTML = '';
-        if (priorityFixes.length > 0) {
-          priorityFixesHTML = priorityFixes.map((fix, index) => `
-            <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-purple-600/10 to-cyan-600/10 rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all">
-              <div class="text-5xl font-black text-purple-600">${index + 1}</div>
-              <div class="flex-1">
-                <p class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
-                  ${fix.module} → ${fix.name}
-                  ${fix.isSecond ? `<span class="text-sm font-normal text-purple-600 dark:text-purple-400 ml-3">(${fix.extraCount}/${fix.extraCount} failed)</span>` : ''}
-                </p>
-                <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200">${fix.howToFix}</p>
-              </div>
-            </div>
-          `).join('');
-        } else {
-          priorityFixesHTML = `
-            <div class="p-12 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-3xl border border-green-500/50 text-center">
-              <p class="text-5xl mb-6">🎉</p>
-              <p class="text-4xl font-black text-green-600 dark:text-green-400 mb-4">Strong Product Page SEO!</p>
-              <p class="text-2xl text-gray-800 dark:text-gray-200">Your page is well-optimized across all checked areas. No critical issues detected.</p>
-              <p class="text-lg text-gray-500 dark:text-gray-200 mt-6">Keep monitoring — ongoing tweaks can still lift rankings and conversions.</p>
-            </div>`;
-        }
+// Priority fixes at METRIC level (all failed factors, sorted by lowest score first)
+const priorityFixes = failedFactors
+  .sort((a, b) => a.score - b.score) // lowest score first
+  .slice(0, 3); // limit to top 3 worst metrics
+
+let priorityFixesHTML = '';
+if (priorityFixes.length > 0) {
+  priorityFixesHTML = priorityFixes.map((fix, index) => `
+    <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-purple-600/10 to-cyan-600/10 rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all">
+      <div class="text-5xl font-black text-purple-600">${index + 1}</div>
+      <div class="flex-1">
+        <p class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+          ${fix.module} → ${fix.name}
+          <span class="text-sm font-normal text-purple-600 dark:text-purple-400 ml-3">(${Math.round(fix.score)}/${fix.threshold})</span>
+        </p>
+        <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200">${fix.howToFix}</p>
+      </div>
+    </div>
+  `).join('');
+} else {
+  priorityFixesHTML = `
+    <div class="p-12 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-3xl border border-green-500/50 text-center">
+      <p class="text-5xl mb-6">🎉</p>
+      <p class="text-4xl font-black text-green-600 dark:text-green-400 mb-4">Strong Product Page SEO!</p>
+      <p class="text-2xl text-gray-800 dark:text-gray-200">No critical metric failures detected.</p>
+    </div>`;
+}
 
         const failedCount = failedModules.length;
         let projectedHealth = health.text;
@@ -917,7 +909,7 @@ modulesGrid.innerHTML = `
 `;
 wrapper.appendChild(modulesGrid);
 
-// Append Priority Fixes
+// Append Priority Fixes 
 const prioritySection = document.createElement('div');
 prioritySection.className = 'text-center my-20';
 prioritySection.innerHTML = `
@@ -925,7 +917,13 @@ prioritySection.innerHTML = `
     Top Priority SEO Fixes
   </h2>
   <div class="max-w-5xl mx-auto space-y-8">
-    ${priorityFixesHTML}
+    ${priorityFixesHTML || `
+      <div class="p-12 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-3xl border border-green-500/50 text-center">
+        <p class="text-5xl mb-6">🎉</p>
+        <p class="text-4xl font-black text-green-600 dark:text-green-400 mb-4">Strong Product Page SEO!</p>
+        <p class="text-2xl text-gray-800 dark:text-gray-200">No critical issues detected.</p>
+      </div>
+    `}
   </div>
   ${priorityFixes.length > 0 ? `
   <p class="mt-12 text-xl text-gray-800 dark:text-gray-200">
