@@ -72,6 +72,11 @@ span.bg-gradient-to-r.text-transparent,
   -webkit-text-fill-color: transparent !important;
 }
 
+
+
+
+
+
 /* Mobile menu – right-side slide-in overlay, scrollable, dark/light friendly */
 #mobileMenu {
   position: fixed;
@@ -82,11 +87,13 @@ span.bg-gradient-to-r.text-transparent,
   max-width: 320px;               /* cap for larger phones */
   z-index: 999;                   /* high so overlays header/content */
   background-color: #f8fafc;      /* light bg */
+  color: #1f2937;                 /* gray-800 base text light mode – ensures visibility */
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain; /* better mobile feel */
   transform: translateX(100%);    /* hidden off-screen right by default */
   transition: transform 0.3s ease-in-out;
+  padding: 4rem 1rem 2rem;        /* top padding for close button + header overlap safety */
 }
 
 /* When open (remove .hidden or add .open class – but since you use .hidden, override */
@@ -97,7 +104,7 @@ span.bg-gradient-to-r.text-transparent,
 /* Dark mode */
 .dark #mobileMenu {
   background-color: #0f172a;
-  color: #e5e7eb;
+  color: #e5e7eb;                 /* gray-200 base text dark mode */
 }
 
 /* Close button – visible, touch-friendly */
@@ -135,17 +142,28 @@ body.overflow-hidden {
   width: 100%;
 }
 
-/* Mobile menu nav & links */
+/* Mobile menu nav & links – force visible colors overriding Tailwind text-gray-100 */
 #mobileMenu nav.flex.flex-col,
 #mobileMenu a,
 #mobileMenu .sidebar-link {
-  color: inherit !important;
+  color: #1f2937 !important;      /* gray-800 light – visible on light bg */
+}
+
+.dark #mobileMenu nav.flex.flex-col,
+.dark #mobileMenu a,
+.dark #mobileMenu .sidebar-link {
+  color: #e5e7eb !important;      /* gray-200 dark – visible on dark bg */
 }
 
 #mobileMenu a:hover,
 #mobileMenu .sidebar-link:hover {
-  color: #fb923c !important;
+  color: #fb923c !important;      /* orange hover */
 }
+
+
+
+
+
 
 /* Targeted dark mode text overrides */
 .dark .sidebar-link,
