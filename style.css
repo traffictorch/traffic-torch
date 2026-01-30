@@ -72,23 +72,67 @@ span.bg-gradient-to-r.text-transparent,
   -webkit-text-fill-color: transparent !important;
 }
 
-/* Mobile menu (#mobileMenu from inspector) - day/night background + text */
+/* Mobile menu – right-side slide-in overlay, scrollable, dark/light friendly */
 #mobileMenu {
-  background-color: #f8fafc !important; /* light mode bg */
-  color: #1f2937 !important;
-  overflow-y: auto;                  /* enables scrolling */
-  -webkit-overflow-scrolling: touch; /* smooth iOS scrolling */
-  max-height: 100vh;                 /* ← important: constrain to viewport height */
+  position: fixed;
+  top: 0;
+  right: 0;                       /* ← anchors to right side */
+  bottom: 0;
+  width: 80%;                     /* typical mobile drawer width; adjust to 100% for full if preferred */
+  max-width: 320px;               /* cap for larger phones */
+  z-index: 999;                   /* high so overlays header/content */
+  background-color: #f8fafc;      /* light bg */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain; /* better mobile feel */
+  transform: translateX(100%);    /* hidden off-screen right by default */
+  transition: transform 0.3s ease-in-out;
 }
 
+/* When open (remove .hidden or add .open class – but since you use .hidden, override */
+#mobileMenu:not(.hidden) {
+  transform: translateX(0);       /* slide in from right */
+}
+
+/* Dark mode */
+.dark #mobileMenu {
+  background-color: #0f172a;
+  color: #e5e7eb;
+}
+
+/* Close button – visible, touch-friendly */
+#close-mobile-menu {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  color: #111827;                 /* gray-900 light mode */
+  font-size: 2.5rem;
+  font-weight: 300;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0.75rem;
+  line-height: 1;
+  border-radius: 9999px;
+}
+
+.dark #close-mobile-menu {
+  color: #f3f4f6;                 /* gray-100 dark mode */
+}
+
+#close-mobile-menu:hover,
+#close-mobile-menu:focus {
+  background: rgba(0,0,0,0.1);
+  opacity: 0.9;
+}
+
+html.overflow-hidden,
 body.overflow-hidden {
   overflow: hidden;
-  height: 100vh; /* optional extra safety */
-}
-
-.dark #mobileMenu {
-  background-color: #0f172a !important; /* dark mode bg */
-  color: #e5e7eb !important;
+  height: 100%;
+  position: fixed;                /* extra iOS fix if needed */
+  width: 100%;
 }
 
 /* Mobile menu nav & links */
