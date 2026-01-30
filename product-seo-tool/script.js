@@ -843,13 +843,6 @@ document.getElementById('loading').classList.add('hidden');
 
 // Create main wrapper (instead of innerHTML dump)
 const wrapper = document.createElement('div');
-
-// Add URL to print title
-const printTitle = document.createElement('h1');
-printTitle.className = 'text-4xl font-black text-center text-gray-900 mb-6 print-only';
-printTitle.innerHTML = `Product SEO Audit<br><span class="text-xl text-gray-600">${url}</span>`;
-wrapper.prepend(printTitle);
-
 wrapper.className = 'container mx-auto px-4 py-8';
 
 // Append Score Card + Verdict

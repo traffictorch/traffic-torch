@@ -3,13 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   
-  <!-- Deferred Google Analytics – loads only after interaction -->
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
 
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
 
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
 
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
 
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
 
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
 
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <!-- Optimized SEO Title & Description -->
 <title>Product SEO: eCommerce Product Page Auditor | Traffic Torch</title>
@@ -255,11 +294,17 @@
       </div>
 <!-- Menu Items -->
       <nav class="p-6 space-y-4 flex-1">
+        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
+        </a>
         <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
           <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
         </a>
         <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
           <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎁</span> <span class="sidebar-text hidden">Product SEO</span>
         </a>
         <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
           <span class="text-2xl">⚡</span> <span class="sidebar-text hidden">Quit Risk</span>
@@ -275,9 +320,6 @@
         </a>
         <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
           <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
-        </a>
-        <a href="/news/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">📰</span> <span class="sidebar-text hidden">News</span>
         </a>
       </nav>
       <!-- Collapse/Expand Button - Always visible -->
@@ -316,18 +358,18 @@
         <!-- Mobile Menu Dropdown (unchanged) -->
         <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
           <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
-            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools ⚖️</a>
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
             <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/" class="text-gray-100 hover:text-orange-400 transition">SEO + UX ⚖️</a>
               <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">Local SEO 📍</a>
               <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">SEO Intent 🎯</a>
+              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">Product SEO 🎁</a>
               <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">Quit Risk ⚡</a>
               <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">Keywords 📝</a>
               <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">Competition 🆚</a>
               <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Search 🔍</a>
               <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">Ai Content 🤖</a>
             </div>
-            <a href="/about/" class="text-gray-100 hover:text-orange-400 transition">About</a>
-            <a href="/news/" class="text-gray-100 hover:text-orange-400 transition">News</a>
           </nav>
         </div>
       </header>
@@ -972,11 +1014,13 @@
       <div>
         <h3 class="text-xl font-bold text-orange-400 mb-6">Tools</h3>
         <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/" class="hover:text-orange-400 transition">SEO + UX</a></li>
           <li><a href="/local-seo-tool/" class="hover:text-orange-400 transition">Local SEO</a></li>
           <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+          <li><a href="/product-seo-tool/" class="hover:text-orange-400 transition">Product SEO</a></li>
           <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
           <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a></li>
-          <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">VS</a></li>
+          <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">Competition</a></li>
           <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
           <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a></li>
         </ul>
