@@ -279,25 +279,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const isHttps = data.url.startsWith('https');
     details.https = { isHttps, score: isHttps ? 95 : 0 };
+    
+    
+    
 
-    const canonical = doc.querySelector('link[rel="canonical"]');
+const canonical = doc.querySelector('link[rel="canonical"]');
 let canonicalScore = 20;
-let canonDetails = { present: !!canonical, href: '', normalized: '', requestedNormalized: '', matchType: 'none' };
+let canonDetails = { present: !!canonical, href: '', absoluteHref: '', normalized: '', requestedNormalized: '', matchType: 'none' };
 
 if (canonical && canonical.hasAttribute('href')) {
-  const canonHref = canonical.href.trim();
-  canonDetails.href = canonHref;
+  const rawHref = canonical.getAttribute('href').trim();
+  canonDetails.href = rawHref;
 
-  // Robust normalization function
+  // Resolve relative to absolute using the fetched URL as base
+  let absoluteCanon;
+  try {
+    absoluteCanon = new URL(rawHref, data.url).toString();
+  } catch (e) {
+    absoluteCanon = rawHref; // Fallback if invalid
+  }
+  canonDetails.absoluteHref = absoluteCanon;
+
+  // Robust normalization function (ignores protocol, www, trailing slash, case, common tracking params)
   const normalizeUrl = (urlStr) => {
     try {
       const url = new URL(urlStr);
       let path = url.pathname.toLowerCase().replace(/\/$/, ''); // remove trailing slash
       let hostname = url.hostname.toLowerCase().replace(/^www\./, ''); // ignore www
-      let protocol = url.protocol.toLowerCase(); // but we ignore protocol diff later
       let search = url.search.toLowerCase(); // keep query for now
 
-      // Remove common tracking/session params (optional but improves accuracy)
+      // Remove common tracking/session params
       const ignoreParams = ['session_id', 'sid', 'utm_source', 'utm_medium', 'utm_campaign', 'fbclid', '_ga'];
       const params = new URLSearchParams(search);
       ignoreParams.forEach(p => params.delete(p));
@@ -311,21 +322,24 @@ if (canonical && canonical.hasAttribute('href')) {
   };
 
   const requestedNorm = normalizeUrl(data.url);
-  const canonNorm = normalizeUrl(canonHref);
+  const canonNorm = normalizeUrl(absoluteCanon);
   canonDetails.normalized = canonNorm;
   canonDetails.requestedNormalized = requestedNorm;
 
-  if (canonHref === data.url || canonHref === data.url + '/' || canonHref === data.url.replace(/\/$/, '')) {
+  if (absoluteCanon === data.url || absoluteCanon === data.url + '/' || absoluteCanon === data.url.replace(/\/$/, '')) {
     canonicalScore = 95;
     canonDetails.matchType = 'exact';
   } else if (requestedNorm === canonNorm) {
     canonicalScore = 90; // still excellent — minor diff like www or protocol
     canonDetails.matchType = 'normalized';
+  } else if (requestedNorm === canonNorm + '/' || requestedNorm + '/' === canonNorm) {
+    canonicalScore = 85; // extra tolerance for trailing slash in norm
+    canonDetails.matchType = 'normalized_slash';
   } else if (canonNorm.includes(requestedNorm) || requestedNorm.includes(canonNorm)) {
-    canonicalScore = 75; // partial path match (lenient for sub-path issues)
+    canonicalScore = 75; // partial path match
     canonDetails.matchType = 'partial';
   } else {
-    canonicalScore = 30; // real mismatch — different page/domain
+    canonicalScore = 30; // real mismatch
     canonDetails.matchType = 'mismatch';
   }
 } else {
@@ -337,19 +351,25 @@ if (canonical && canonical.hasAttribute('href')) {
 details.canonical = {
   present: canonDetails.present,
   href: canonDetails.href,
+  absoluteHref: canonDetails.absoluteHref,
   normalizedMatch: canonDetails.normalized === canonDetails.requestedNormalized,
   score: canonicalScore
 };
 
-// Optional: temporary debug (remove after testing)
+// Debug logging
 console.log('[Canonical Debug]', {
   requested: data.url,
-  canonicalHref: canonDetails.href,
+  rawHref: canonDetails.href,
+  absoluteHref: canonDetails.absoluteHref,
   requestedNorm: canonDetails.requestedNormalized,
   canonNorm: canonDetails.normalized,
   matchType: canonDetails.matchType,
   score: canonicalScore
 });
+
+
+
+
 
     const robotsMeta = doc.querySelector('meta[name="robots"]');
     let robotsScore = 95;
