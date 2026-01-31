@@ -96,25 +96,50 @@ document.addEventListener('DOMContentLoaded', () => {
     return meta && /width\s*=\s*device-width/i.test(meta.content);
   }
 
-  function extractProductSchema(doc) {
-    const scripts = doc.querySelectorAll('script[type="application/ld+json"]');
-    const schemas = [];
-    scripts.forEach(script => {
-      if (!script.textContent?.trim()) return;
-      try {
-        const data = JSON.parse(script.textContent);
-        if (data['@type'] === 'Product') {
-          schemas.push(data);
-        } else if (Array.isArray(data['@graph'])) {
-          const productInGraph = data['@graph'].find(g => g['@type'] === 'Product');
-          if (productInGraph) schemas.push(productInGraph);
-        }
-      } catch (e) {
-        // skip invalid JSON
+function extractProductSchema(doc) {
+  const scripts = doc.querySelectorAll('script[type="application/ld+json"]');
+  const schemas = [];
+  scripts.forEach(script => {
+    const text = script.textContent?.trim();
+    if (!text) return;
+    try {
+      const data = JSON.parse(text);
+      // Direct Product
+      if (data['@type'] === 'Product') {
+        schemas.push(data);
       }
-    });
-    return schemas;
-  }
+      // Product inside @graph array (common on Shopify)
+      if (Array.isArray(data['@graph'])) {
+        data['@graph'].forEach(item => {
+          if (item['@type'] === 'Product') {
+            schemas.push(item);
+          }
+        });
+      }
+      // Product as part of other nested structures (fallback)
+      if (Array.isArray(data['@graph']) || typeof data === 'object') {
+        // Recurse one level deeper if needed (handles wrapped graphs)
+        Object.values(data).forEach(value => {
+          if (Array.isArray(value)) {
+            value.forEach(sub => {
+              if (sub && sub['@type'] === 'Product') schemas.push(sub);
+            });
+          } else if (value && value['@type'] === 'Product') {
+            schemas.push(value);
+          }
+        });
+      }
+    } catch (e) {
+      console.warn('[Schema Extract] Invalid JSON-LD skipped:', e.message.substring(0, 100));
+    }
+  });
+  // Dedupe by simple string comparison if multiples (rare)
+  const uniqueSchemas = schemas.filter((s, i, arr) => 
+    i === arr.findIndex(t => JSON.stringify(t) === JSON.stringify(s))
+  );
+  console.log('[Schema Extract Debug]', { count: uniqueSchemas.length, schemas: uniqueSchemas });
+  return uniqueSchemas;
+}
 
   function hasReviewSection(doc) {
     const selectors = [
@@ -470,8 +495,11 @@ console.log('[Canonical Debug]', {
   function analyzeEcommerceSEO(doc, data) {
     let details = {};
     const schemas = extractProductSchema(doc);
-    const productSchema = schemas.find(s => s['@type'] === 'Product' ||
-      (Array.isArray(s['@graph']) && s['@graph'].some(g => g['@type'] === 'Product'))) || {};
+    let productSchema = schemas.find(s => s['@type'] === 'Product') || {};
+if (!Object.keys(productSchema).length && schemas.length > 0) {
+  // Fallback: take first valid-looking schema if no direct Product found
+  productSchema = schemas[0];
+}
 
     let schemaScore = 20;
     if (Object.keys(productSchema).length > 0) {
