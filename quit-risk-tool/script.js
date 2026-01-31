@@ -1014,14 +1014,16 @@ window.scrollTo({
           ${impactHTML}
 
           <!-- PDF Button -->
-          <div class="text-center my-16">
-            <button onclick="document.querySelectorAll('.hidden').forEach(el => el.classList.remove('hidden')); window.print();"
-                    class="group relative inline-flex items-center px-16 py-7 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-black text-2xl md:text-3xl rounded-3xl shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
-              <span class="flex items-center gap-6">Save Report 📄</span>
-              <div class="absolute inset-0 bg-white/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </button>
-          </div>
-        `;
+      <div class="text-center my-16 px-4">
+        <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
+                class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl md:text-3xl font-bold rounded-2xl shadow-lg hover:opacity-90 transition transform hover:scale-105">
+          Save Report 📄
+        </button>
+        <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+          This will expand all sections for a complete printable report
+        </p>
+      </div>
+    `;
 
         console.log('Container AFTER HTML set:', !!document.getElementById('plugin-solutions-section'));
         if (typeof renderPluginSolutions === 'function') {
