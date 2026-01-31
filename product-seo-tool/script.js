@@ -335,29 +335,33 @@ if (canonical && canonical.hasAttribute('href')) {
   } else if (requestedNorm === canonNorm + '/' || requestedNorm + '/' === canonNorm) {
     canonicalScore = 85; // extra tolerance for trailing slash in norm
     canonDetails.matchType = 'normalized_slash';
-  } else {
-    // Special handling for eCommerce patterns like Shopify collection canonical to base product (/collections/category/products/slug → /products/slug)
-    let requestedPath, canonPath, requestedHost, canonHost;
-    try {
-      requestedPath = new URL(data.url).pathname.toLowerCase().replace(/\/$/, '');
-      canonPath = new URL(absoluteCanon).pathname.toLowerCase().replace(/\/$/, '');
-      requestedHost = new URL(data.url).hostname.toLowerCase().replace(/^www\./, '');
-      canonHost = new URL(absoluteCanon).hostname.toLowerCase().replace(/^www\./, '');
-    } catch (e) {
-      requestedPath = ''; canonPath = ''; requestedHost = ''; canonHost = '';
-    }
+} else {
+  // Special handling for eCommerce patterns like Shopify collection canonical to base product
+  let requestedPath = '';
+  let canonPath = '';
+  let requestedHost = '';
+  let canonHost = '';
 
-    if (requestedHost === canonHost && requestedPath.endsWith(canonPath)) {
-      canonicalScore = 85;
-      canonDetails.matchType = 'path_suffix';
-    } else if (canonNorm.includes(requestedNorm) || requestedNorm.includes(canonNorm)) {
-      canonicalScore = 75; // general partial match
-      canonDetails.matchType = 'partial';
-    } else {
-      canonicalScore = 30; // real mismatch
-      canonDetails.matchType = 'mismatch';
-    }
+  try {
+    requestedPath = new URL(data.url).pathname.toLowerCase().replace(/\/$/, '');
+    canonPath = new URL(absoluteCanon).pathname.toLowerCase().replace(/\/$/, '');
+    requestedHost = new URL(data.url).hostname.toLowerCase().replace(/^www\./, '');
+    canonHost = new URL(absoluteCanon).hostname.toLowerCase().replace(/^www\./, '');
+  } catch (e) {
+    // leave as empty strings on parse failure
   }
+
+  if (requestedHost === canonHost && requestedPath.endsWith(canonPath)) {
+    canonicalScore = 85;
+    canonDetails.matchType = 'path_suffix';
+  } else if (canonNorm.includes(requestedNorm) || requestedNorm.includes(canonNorm)) {
+    canonicalScore = 75; // general partial match fallback
+    canonDetails.matchType = 'partial';
+  } else {
+    canonicalScore = 30; // real mismatch
+    canonDetails.matchType = 'mismatch';
+  }
+}
 } else {
   // No canonical tag or empty href
   canonicalScore = 15;
