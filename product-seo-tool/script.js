@@ -285,39 +285,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const canonical = doc.querySelector('link[rel="canonical"]');
 let canonicalScore = 20;
-let canonDetails = { present: !!canonical, href: '', absoluteHref: '', normalized: '', requestedNormalized: '', matchType: 'none' };
+let canonDetails = {
+  present: !!canonical,
+  href: '',
+  absoluteHref: '',
+  normalized: '',
+  requestedNormalized: '',
+  matchType: 'none'
+};
 
 if (canonical && canonical.hasAttribute('href')) {
   const rawHref = canonical.getAttribute('href').trim();
   canonDetails.href = rawHref;
 
-  // Resolve relative to absolute using the fetched URL as base
-  let absoluteCanon;
+  // Resolve relative href to absolute using the fetched page URL as base
+  let absoluteCanon = rawHref;
   try {
-    absoluteCanon = new URL(rawHref, data.url).toString();
+    absoluteCanon = new URL(rawHref, data.url).href;
   } catch (e) {
-    absoluteCanon = rawHref; // Fallback if invalid
+    console.warn('[Canonical] Failed to resolve relative href:', rawHref, e);
   }
   canonDetails.absoluteHref = absoluteCanon;
 
-  // Robust normalization function (ignores protocol, www, trailing slash, case, common tracking params)
+  // Robust normalization: ignore protocol, www, trailing slash, case, common tracking params
   const normalizeUrl = (urlStr) => {
     try {
       const url = new URL(urlStr);
-      let path = url.pathname.toLowerCase().replace(/\/$/, ''); // remove trailing slash
-      let hostname = url.hostname.toLowerCase().replace(/^www\./, ''); // ignore www
-      let search = url.search.toLowerCase(); // keep query for now
+      let hostname = url.hostname.toLowerCase().replace(/^www\./, '');
+      let path = url.pathname.toLowerCase().replace(/\/$/, '');
+      let search = url.search.toLowerCase();
 
-      // Remove common tracking/session params
-      const ignoreParams = ['session_id', 'sid', 'utm_source', 'utm_medium', 'utm_campaign', 'fbclid', '_ga'];
+      // Strip common tracking/session params
+      const ignoreParams = ['session_id', 'sid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'fbclid', '_ga', '_gl', 'gclid'];
       const params = new URLSearchParams(search);
       ignoreParams.forEach(p => params.delete(p));
       search = params.toString() ? '?' + params.toString() : '';
 
       return `${hostname}${path}${search}`;
     } catch (e) {
-      // Fallback for malformed URLs
-      return urlStr.toLowerCase().replace(/\/$/, '').replace(/^https?:\/\//, '').replace(/^www\./, '');
+      // Fallback for invalid URLs
+      return urlStr.toLowerCase()
+        .replace(/^https?:\/\//, '')
+        .replace(/^www\./, '')
+        .replace(/\/$/, '');
     }
   };
 
@@ -326,44 +336,28 @@ if (canonical && canonical.hasAttribute('href')) {
   canonDetails.normalized = canonNorm;
   canonDetails.requestedNormalized = requestedNorm;
 
+  // Scoring logic
   if (absoluteCanon === data.url || absoluteCanon === data.url + '/' || absoluteCanon === data.url.replace(/\/$/, '')) {
     canonicalScore = 95;
     canonDetails.matchType = 'exact';
   } else if (requestedNorm === canonNorm) {
-    canonicalScore = 90; // still excellent — minor diff like www or protocol
+    canonicalScore = 90;
     canonDetails.matchType = 'normalized';
   } else if (requestedNorm === canonNorm + '/' || requestedNorm + '/' === canonNorm) {
-    canonicalScore = 85; // extra tolerance for trailing slash in norm
-    canonDetails.matchType = 'normalized_slash';
-} else {
-  // Special handling for eCommerce patterns like Shopify collection canonical to base product
-  let requestedPath = '';
-  let canonPath = '';
-  let requestedHost = '';
-  let canonHost = '';
-
-  try {
-    requestedPath = new URL(data.url).pathname.toLowerCase().replace(/\/$/, '');
-    canonPath = new URL(absoluteCanon).pathname.toLowerCase().replace(/\/$/, '');
-    requestedHost = new URL(data.url).hostname.toLowerCase().replace(/^www\./, '');
-    canonHost = new URL(absoluteCanon).hostname.toLowerCase().replace(/^www\./, '');
-  } catch (e) {
-    // leave as empty strings on parse failure
-  }
-
-  if (requestedHost === canonHost && requestedPath.endsWith(canonPath)) {
     canonicalScore = 85;
-    canonDetails.matchType = 'path_suffix';
-  } else if (canonNorm.includes(requestedNorm) || requestedNorm.includes(canonNorm)) {
-    canonicalScore = 75; // general partial match fallback
-    canonDetails.matchType = 'partial';
+    canonDetails.matchType = 'normalized_slash';
   } else {
-    canonicalScore = 30; // real mismatch
-    canonDetails.matchType = 'mismatch';
+    // General partial match fallback (covers many real-world minor variations)
+    if (canonNorm.includes(requestedNorm) || requestedNorm.includes(canonNorm)) {
+      canonicalScore = 75;
+      canonDetails.matchType = 'partial';
+    } else {
+      canonicalScore = 30;
+      canonDetails.matchType = 'mismatch';
+    }
   }
-}
 } else {
-  // No canonical tag or empty href
+  // Missing or empty canonical
   canonicalScore = 15;
   canonDetails.matchType = 'missing';
 }
@@ -376,17 +370,13 @@ details.canonical = {
   score: canonicalScore
 };
 
-// Debug logging
+// Debug logging (remove or comment out after testing)
 console.log('[Canonical Debug]', {
   requested: data.url,
   rawHref: canonDetails.href,
   absoluteHref: canonDetails.absoluteHref,
   requestedNorm: canonDetails.requestedNormalized,
   canonNorm: canonDetails.normalized,
-  requestedPath: requestedPath || 'n/a',
-  canonPath: canonPath || 'n/a',
-  requestedHost: requestedHost || 'n/a',
-  canonHost: canonHost || 'n/a',
   matchType: canonDetails.matchType,
   score: canonicalScore
 });
