@@ -688,6 +688,7 @@ console.log('[Canonical Debug]', {
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
+    results.innerHTML = '';
     let url = input.value.trim();
     if (!url) {
       results.innerHTML = `<div class="text-center py-20"><p class="text-3xl text-red-500 font-bold">Please enter a product page URL</p></div>`;
