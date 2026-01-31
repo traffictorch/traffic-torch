@@ -43,11 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
     contentMedia: {
       factors: [
         { name: "Product Description Quality", key: "description", threshold: 75, shortDesc: "300+ words ideal, unique, benefit-focused, structured (bullets/headings), keyword-rich.", howToFix: "Expand to 400–800 words in competitive niches. Start with benefits, use bullets for features, add subheadings. Make it unique vs competitors." },
-        { name: "Image Optimization", key: "images", threshold: 80, shortDesc: "Meaningful images have descriptive keyword-rich alt text, lazy loading, responsive (srcset), <100KB.", howToFix: "Add alt text like 'Santa Cruz Dreadnought Quilted Mahogany Acoustic Guitar front view'. Use loading='lazy', srcset/sizes. Compress images." },
+        { name: "Image Optimization", key: "images", threshold: 80, shortDesc: "Meaningful images have descriptive keyword-rich alt text, lazy loading, responsive (srcset), <100KB.", howToFix: "Add alt text like 'Item Brand Item Name Item Description Item Specifics front view'. Use loading='lazy', srcset/sizes. Compress images." },
         { name: "Video Embed Quality", key: "video", threshold: 70, shortDesc: "Relevant videos present with captions (<track>), poster thumbnail, embedded properly.", howToFix: "Embed YouTube/Vimeo with captions enabled. Add <track kind='subtitles'> or use platform auto-captions. Include poster image." },
         { name: "User-Generated Content (UGC)", key: "ugc", threshold: 70, shortDesc: "Reviews/ratings visible with star aggregate and review count.", howToFix: "Install review app (Judge.me, Yotpo, Loox). Display average rating + number of reviews. Encourage photo/video reviews." },
         { name: "Internal Linking", key: "internalLinks", threshold: 70, shortDesc: "3+ relevant contextual links to related products/categories/guides with descriptive anchors.", howToFix: "Add 3–6 internal links in description or below (e.g. 'see matching picks', 'learn more about tonewoods'). Use keyword-rich anchors." },
-        { name: "Breadcrumb Navigation", key: "breadcrumbs", threshold: 85, shortDesc: "Clear hierarchy breadcrumbs present (Home > Category > Subcategory > Product).", howToFix: "Implement breadcrumbs with schema (BreadcrumbList JSON-LD). Use links like Home > Acoustic Guitars > Dreadnought > Santa Cruz Dreadnought." }
+        { name: "Breadcrumb Navigation", key: "breadcrumbs", threshold: 85, shortDesc: "Clear hierarchy breadcrumbs present (Home > Category > Subcategory > Product).", howToFix: "Implement breadcrumbs with schema (BreadcrumbList JSON-LD). Use links like Home > Category page > Product page." }
       ],
       moduleWhat: "Content & Media evaluates richness, accessibility, and engagement signals that keep users on-page and build trust.",
       moduleHow: "Create detailed, benefit-driven descriptions. Optimize all images/videos. Encourage reviews. Add navigation aids.",
@@ -335,12 +335,28 @@ if (canonical && canonical.hasAttribute('href')) {
   } else if (requestedNorm === canonNorm + '/' || requestedNorm + '/' === canonNorm) {
     canonicalScore = 85; // extra tolerance for trailing slash in norm
     canonDetails.matchType = 'normalized_slash';
-  } else if (canonNorm.includes(requestedNorm) || requestedNorm.includes(canonNorm)) {
-    canonicalScore = 75; // partial path match
-    canonDetails.matchType = 'partial';
   } else {
-    canonicalScore = 30; // real mismatch
-    canonDetails.matchType = 'mismatch';
+    // Special handling for eCommerce patterns like Shopify collection canonical to base product (/collections/category/products/slug → /products/slug)
+    let requestedPath, canonPath, requestedHost, canonHost;
+    try {
+      requestedPath = new URL(data.url).pathname.toLowerCase().replace(/\/$/, '');
+      canonPath = new URL(absoluteCanon).pathname.toLowerCase().replace(/\/$/, '');
+      requestedHost = new URL(data.url).hostname.toLowerCase().replace(/^www\./, '');
+      canonHost = new URL(absoluteCanon).hostname.toLowerCase().replace(/^www\./, '');
+    } catch (e) {
+      requestedPath = ''; canonPath = ''; requestedHost = ''; canonHost = '';
+    }
+
+    if (requestedHost === canonHost && requestedPath.endsWith(canonPath)) {
+      canonicalScore = 85;
+      canonDetails.matchType = 'path_suffix';
+    } else if (canonNorm.includes(requestedNorm) || requestedNorm.includes(canonNorm)) {
+      canonicalScore = 75; // general partial match
+      canonDetails.matchType = 'partial';
+    } else {
+      canonicalScore = 30; // real mismatch
+      canonDetails.matchType = 'mismatch';
+    }
   }
 } else {
   // No canonical tag or empty href
@@ -363,6 +379,10 @@ console.log('[Canonical Debug]', {
   absoluteHref: canonDetails.absoluteHref,
   requestedNorm: canonDetails.requestedNormalized,
   canonNorm: canonDetails.normalized,
+  requestedPath: requestedPath || 'n/a',
+  canonPath: canonPath || 'n/a',
+  requestedHost: requestedHost || 'n/a',
+  canonHost: canonHost || 'n/a',
   matchType: canonDetails.matchType,
   score: canonicalScore
 });
