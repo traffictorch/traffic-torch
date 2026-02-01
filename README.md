@@ -55,6 +55,17 @@ Live site: https://traffictorch.net
 
 MIT © traffictorch 2026  
 
+## 🐛 Reporting Bugs or Issues
+
+Found a bug in analysis results, mobile rendering, dark mode glitch, wrong score, etc.?
+
+→ Open a **Bug Report** using our template:  
+[Bug Report](https://github.com/traffictorch/traffic-torch/blob/main/.github/ISSUE_TEMPLATE/bug_report.md)
+
+This guides you to include steps, URLs, and screenshots so we can fix it fast.
+
+For questions, ideas, or general feedback → use [Discussions](https://github.com/traffictorch/traffic-torch/discussions/) instead.
+
 Star ⭐ if this helps your SEO/UX workflow — feedback welcome via issues.
 
 Made in Australia with ❤️ for site owners, indie devs, and SEOs who want fast, honest, private audits. PRO version coming soon (",)
