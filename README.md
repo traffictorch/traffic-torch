@@ -40,6 +40,11 @@ Live site: https://traffictorch.net
 - Shareable report links / visuals
 - Modular tools structure (separate deep-dive views for keyword, local SEO, intent, etc.)
 
+  ## Screenshots
+![SEO UX Dashboard](https://traffictorch.net/blog/images/traffic-torch-seo-ux-analysis-tool-build/seo-ux-analysis-modules-800x482px.webp)  
+
+![SEO Health Radar ](https://traffictorch.net/blog/images/traffic-torch-seo-ux-analysis-tool-build/360-health-radar-chart-800x408px.webp)
+
 ## 🛠 Tech Stack (latest 2025–2026 client-side focus)
 
 | Layer              | Technology              | Purpose                              |
