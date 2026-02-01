@@ -25,7 +25,7 @@ Live site: https://traffictorch.net
 
 - Enter any URL → get instant client-side audit (no backend needed)
 - **SEO & UX score** (0–100) with breakdowns:
-  - Core Web Vitals (LCP, FID/INP, CLS)
+  - Performance
   - On-page SEO signals
   - Mobile usability & accessibility
   - AI-generated content probability (via TensorFlow.js models)
