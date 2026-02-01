@@ -1,7 +1,7 @@
 # Traffic Torch 🔥
 
 **Instant 360° SEO + UX Health Scanner**  
-Fast, fully client-side tool that analyzes any website for SEO health, Core Web Vitals, UX frustration signals, AI-content probability, E-E-A-T signals, intent alignment, topical authority gaps, predictive rank health, and more — with educational metric explanations and shareable results.
+Fast, fully client-side tool that analyzes any website for SEO health, Performance, UX frustration signals, AI-content probability, E-E-A-T signals, intent alignment, topical authority gaps, predictive rank health, and more — with educational metric explanations, plugin solutions and shareable results.
 
 Live site: https://traffictorch.net  
 
