@@ -4,7 +4,6 @@
 Fast, fully client-side tool that analyzes any website for SEO health, Core Web Vitals, UX frustration signals, AI-content probability, E-E-A-T signals, intent alignment, topical authority gaps, predictive rank health, and more — with educational metric explanations and shareable results.
 
 Live site: https://traffictorch.net  
-(also mirrored / deployable via Cloudflare Pages at traffictorch.pages.dev)
 
 <p align="center">
   <img src="https://img.shields.io/badge/built%20with-Vite-%23646CFF?style=flat&logo=vite&logoColor=white" alt="Vite">
