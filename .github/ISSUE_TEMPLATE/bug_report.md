@@ -16,22 +16,19 @@ Example: "SEO Health Score shows 78 but Lighthouse gives 92 — missing accessib
 
 **Steps to Reproduce**  
 Numbered steps to recreate the issue. Include the exact domain/URL/tool used.  
-1. Go to https://traffic-torch.pages.dev/  
+1. Go to https://traffictorch.net/  
 2. Enter domain: example.com  
-3. Select [which module/tool, e.g. Local SEO Tool]  
+3. Select [which tool, e.g. Local SEO Tool]  
 4. Click Analyze  
 5. See [describe the error/wrong data/glitch]  
-
-**Report URL (if generated)**  
-Paste the full browser URL of the report page if one was created (helps recreate exactly):  
-https://traffic-torch.pages.dev/report/...
 
 **Affected Module/Tool**  
 Which part of Traffic Torch has the issue?  
 - Instant 360° SEO & UX Health Score  
-- Deep-dive Modules (Core Web Vitals, Accessibility, etc.)  
+- Deep-dive Modules (Performance, Accessibility, etc.)
+- Plugin Solutions
 - Competitive Gap Analysis  
-- AI-Generated Fixes  
+- Priority Fixes  
 - Predictive Rank Forecasting  
 - Day/Night Mode or UI elements  
 - Mobile / PWA Check  
