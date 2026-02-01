@@ -60,7 +60,9 @@ Live site: https://traffictorch.net
 
 MIT © traffictorch 2026  
 
-## 🐛 Reporting Bugs or Issues
+## 🐛 Contributing, Reporting Bugs or Issues
+
+Keen to improve Traffic Torch? See our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on bugs, features, code, docs, and more!
 
 Found a bug in analysis results, mobile rendering, dark mode glitch, wrong score, etc.?
 
