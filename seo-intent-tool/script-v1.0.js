@@ -1,4 +1,4 @@
-import { renderPluginSolutions } from './plugin-solutions.js';
+import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // === STEP 1: CENTRAL CONFIG OBJECT + PARSING VARIABLES ===

@@ -1,5 +1,5 @@
-import { renderPriorityAndGains } from './priority-gains.js';
-import { renderPluginSolutions } from './plugin-solutions.js';
+import { renderPriorityAndGains } from './priority-gains-v1.0.js';
+import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 
 const moduleInfo = {
   seo: {

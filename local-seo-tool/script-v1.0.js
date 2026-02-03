@@ -1,6 +1,6 @@
 // script.js
-import { renderPluginSolutions } from './plugin-solutions.js';
-import { moduleFixes } from './fixes.js';
+import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
+import { moduleFixes } from './fixes-v1.0.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');

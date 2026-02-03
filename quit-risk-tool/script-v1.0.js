@@ -1,11 +1,11 @@
 // Dynamic import for better GitHub Pages compatibility
 let renderPluginSolutions;
-import('/quit-risk-tool/plugin-solutions.js')
+import('/quit-risk-tool/plugin-solutions-v1.0.js')
   .then(module => {
     renderPluginSolutions = module.renderPluginSolutions;
     console.log('Plugin solutions module loaded successfully');
   })
-  .catch(err => console.error('Failed to load plugin-solutions.js:', err));
+  .catch(err => console.error('Failed to load plugin-solutions-v1.0.js:', err));
 
 // quit-risk-tool/script.js - full complete epic perfect version with realistic metrics
 document.addEventListener('DOMContentLoaded', () => {

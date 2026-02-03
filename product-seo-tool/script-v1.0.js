@@ -2,12 +2,12 @@
 
 // Dynamic import for plugin solutions
 let renderPluginSolutions;
-import('./plugin-solutions.js')
+import('./plugin-solutions-v1.0.js')
   .then(module => {
     renderPluginSolutions = module.renderPluginSolutions;
     console.log('[Plugin] Successfully loaded renderPluginSolutions');
   })
-  .catch(err => console.error('[Plugin] Failed to load plugin-solutions.js:', err));
+  .catch(err => console.error('[Plugin] Failed to load plugin-solutions-v1.0.js:', err));
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
