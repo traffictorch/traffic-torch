@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const text = getVisibleText(doc.body) || '';
-      
+      const cleanedText = text.replace(/\s+/g, ' ').trim();
 
       progressText.textContent = "Analyzing E-E-A-T Signals...";
       await sleep(2000);
@@ -203,13 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const sch = analyzeSchema(doc);
       const normalizeSchema = sch.normalized;
       
-      const experienceScore = exp.score;
-      const experienceMetrics = exp.metrics;
-
-      const expertiseMetrics = expModule.metrics;
-
-      const authoritativenessMetrics = auth.metrics;
-      const trustworthinessMetrics = trust.metrics;
 
       // Intent Analysis
       progressText.textContent = "Analyzing Search Intent";
@@ -283,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return { text, emoji, color };
       }
       
-// === RADAR CHART DATA ===
+      // RADAR CHART DATA – use already normalized values from modules
       const modules = [
         { name: 'Experience',       score: experienceScore },
         { name: 'Expertise',        score: expertiseScore },
