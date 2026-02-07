@@ -294,8 +294,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Schema',           score: normalizeSchema }
       ];
       const scores = modules.map(m => m.score);
-
-      const scores = modules.map(m => m.score);
       
 // Scroll to results from top of viewport + generous offset - always consistent
 const offset = 240; // (adjust 80–340)
