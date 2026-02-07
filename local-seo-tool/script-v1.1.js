@@ -1,12 +1,12 @@
 // script-v1.1.js
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 import { moduleFixes } from './fixes-v1.0.js';
-import { analyzeNapContact } from './module-nap-contact.js';
-import { analyzeKeywordsTitles } from './module-keywords-titles.js';
-import { analyzeContentRelevance } from './module-content-relevance.js';
-import { analyzeMapsVisuals } from './module-maps-visuals.js';
-import { analyzeStructuredData } from './module-structured-data.js';
-import { analyzeReviewsStructure } from './module-reviews-structure.js';
+import { analyzeNapContact } from './modules/nap-contact.js';
+import { analyzeKeywordsTitles } from './modules/keywords-titles.js';
+import { analyzeContentRelevance } from './modules/content-relevance.js';
+import { analyzeMapsVisuals } from './modules/maps-visuals.js';
+import { analyzeStructuredData } from './modules/structured-data.js';
+import { analyzeReviewsStructure } from './modules/reviews-structure.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');

@@ -1,13 +1,13 @@
 import { renderPriorityAndGains } from './priority-gains-v1.0.js';
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
-import { analyzeSEO } from './analyze-seo-v1.0.js';
-import { analyzeMobile } from './analyze-mobile-v1.0.js';
-import { analyzePerf } from './analyze-perf-v1.0.js';
-import { analyzeAccess } from './analyze-access-v1.0.js';
-import { analyzeContentQuality } from './analyze-content-v1.0.js';
-import { analyzeUXDesign } from './analyze-ux-v1.0.js';
-import { analyzeSecurity } from './analyze-security-v1.0.js';
-import { analyzeIndexability } from './analyze-indexability-v1.0.js';
+import { analyzeSEO } from './modules/analyze-seo-v1.0.js';
+import { analyzeMobile } from './modules/analyze-mobile-v1.0.js';
+import { analyzePerf } from './modules/analyze-perf-v1.0.js';
+import { analyzeAccess } from './modules/analyze-access-v1.0.js';
+import { analyzeContentQuality } from './modules/analyze-content-v1.0.js';
+import { analyzeUXDesign } from './modules/analyze-ux-v1.0.js';
+import { analyzeSecurity } from './modules/analyze-security-v1.0.js';
+import { analyzeIndexability } from './modules/analyze-indexability-v1.0.js';
 
 const moduleInfo = {
   seo: {

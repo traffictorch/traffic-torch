@@ -1,4 +1,11 @@
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
+import { analyzeExperience }      from './modules/experience.js';
+import { analyzeExpertise }       from './modules/expertise.js';
+import { analyzeAuthoritativeness } from './modules/authoritativeness.js';
+import { analyzeTrustworthiness }   from './modules/trustworthiness.js';
+import { analyzeDepth }           from './modules/depth.js';
+import { analyzeReadability }     from './modules/readability.js';
+import { analyzeSchema }          from './modules/schema.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // === STEP 1: CENTRAL CONFIG OBJECT + PARSING VARIABLES ===
@@ -151,108 +158,54 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const text = getVisibleText(doc.body) || '';
-      const cleanedText = text.replace(/\s+/g, ' ').trim();
-      const words = cleanedText ? cleanedText.split(' ').filter(w => w.length > 0).length : 0;
-      const sentences = cleanedText ? (cleanedText.match(/[.!?]+/g) || []).length || 1 : 1;
-      const syllables = cleanedText ? cleanedText.split(' ').reduce((acc, word) => {
-        const vowelGroups = (word.toLowerCase().match(/[aeiouy]+/g) || []).length;
-        return acc + Math.max(vowelGroups, 1);
-      }, 0) : 0;
-      const readability = Math.round(206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words));
+      
 
       progressText.textContent = "Analyzing E-E-A-T Signals...";
       await sleep(2000);
 
-      // === EXPERIENCE ===
-      const firstPersonCount = (cleanedText.match(/\b(I|we|my|our|I've|we've|me|us|myself|ourselves)\b/gi) || []).length;
-      const anecdotePhrases = (cleanedText.match(/\b(in my experience|I tested|we found that|from my trials|I tried|we tried|my results|our case study|in practice|hands-on|real-world|based on my|after testing|client case|personal review)\b/gi) || []).length;
-      const timelineMentions = (cleanedText.match(/\b(last year|in 20\d{2}|this year|over the past \d+|since \d{4}|in \d{4}|during \d{4}|recently|within the last|for \d+ years?|after \d+ months?|as of \d{4}|updated (on|in) \d{4}|published (on|in) \d{4}|20\d{2}|202\d)\b.*\b(I|we|my|our)\b/gi) || []).length;
-      const personalMedia = !!doc.querySelector('img[alt*="my" i], img[alt*="our" i], video caption, figure figcaption');
-      const experienceMetrics = {
-        firstPerson: firstPersonCount > 15 ? 100 : firstPersonCount > 5 ? 60 : 20,
-        anecdotes: anecdotePhrases > 2 ? 100 : anecdotePhrases > 0 ? 60 : 20,
-        timelines: timelineMentions > 1 ? 100 : timelineMentions > 0 ? 70 : 20,
-        personalMedia: personalMedia ? 100 : 20
-      };
-      const experienceScore = Math.round(Object.values(experienceMetrics).reduce((a, b) => a + b) / 4);
-      const failedExperience = [];
-      if (experienceMetrics.firstPerson < 80) failedExperience.push("Add more first-person language (“I/we/my/our”) throughout the content");
-      if (experienceMetrics.anecdotes < 80) failedExperience.push("Include personal anecdotes or real-world examples");
-      if (experienceMetrics.timelines < 80) failedExperience.push("Mention specific timelines or dates from your experience");
-      if (experienceMetrics.personalMedia < 80) failedExperience.push("Add original photos/videos with personal captions");
+      const exp = analyzeExperience(cleanedText, doc);
+      const expScore = exp.score;
+      const failedExperience = exp.failed;
 
-      // === EXPERTISE ===
-      const hasAuthorByline = !!doc.querySelector(config.parsing.authorBylineSelectors.join(', '));
-      const hasAuthorBio = !!doc.querySelector(config.parsing.authorBioSelectors.join(', '));
-	  const credentialKeywords = (cleanedText.match(/\b(PhD|MD|doctor|Dr\.?|certified|licensed|years? of experience|expert in|specialist|award-winning|published in|fellow|board-certified|certificate|diploma|qualification|accredited|professional membership|industry leader|renowned|distinguished|master'?s degree|bachelor'?s degree|MBA|CPA|CFA|PMP|JD|LLB|engineer|architect|scientist|professor|consultant|coach|trainer|instructor|15\+ years?|10\+ years?|veteran|authority|thought leader)\b/gi) || []).length;
-      const hasCitations = !!doc.querySelector('cite, .references, .sources, a[href*="doi.org"], a[href*="pubmed"], a[href*="researchgate"], footer a[href*="/references"]');
-      const expertiseMetrics = {
-        byline: hasAuthorByline ? 100 : 20,
-        bio: hasAuthorBio ? 100 : 20,
-        credentials: credentialKeywords > 2 ? 100 : credentialKeywords > 0 ? 60 : 20,
-        citations: hasCitations ? 100 : 20
-      };
-      const expertiseScore = Math.round(Object.values(expertiseMetrics).reduce((a, b) => a + b) / 4);
-      const failedExpertise = [];
-      if (!hasAuthorByline) failedExpertise.push("Add a visible author byline/name");
-      if (!hasAuthorBio) failedExpertise.push("Create an author bio section with photo and background");
-      if (credentialKeywords <= 2) failedExpertise.push("Mention relevant qualifications, certifications, or years of experience");
-      if (!hasCitations) failedExpertise.push("Include citations or links to supporting sources");
+      const expModule = analyzeExpertise(doc, cleanedText, config);
+      const expertiseScore = expModule.score;
+      const failedExpertise = expModule.failed;
+      const hasAuthorByline = expModule.hasAuthorByline;
+      const hasAuthorBio    = expModule.hasAuthorBio;
 
-      // === AUTHORITATIVENESS ===
-      const schemaTypes = [];
-      doc.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
-        try {
-          const json = JSON.parse(s.textContent);
-          const types = Array.isArray(json) ? json.map(i => i['@type']) : [json['@type']];
-          schemaTypes.push(...types.filter(Boolean));
-        } catch {}
-      });
-      const hasAwards = !!cleanedText.match(/\b(award|winner|awarded|featured in|as seen on|recognized by|endorsed by|endorsement|best|top|honored|accolade|prize|nominee|finalist|ranked|trusted by|partnered with|collaborated with|official|certified by|accredited by|recommended by|highly rated|testimonials?|client success|case study success|media mention|press coverage)\b/gi);
-      const aboutLinkElements = doc.querySelectorAll('a[href*="/about" i], a[href*="/team" i]');
-      const hasAboutLinks = aboutLinkElements.length > 0 ||
-        Array.from(doc.querySelectorAll('nav a')).some(a => a.textContent.toLowerCase().includes('about'));
-      const authoritativenessMetrics = {
-        schema: schemaTypes.length > 1 ? 100 : schemaTypes.length > 0 ? 70 : 20,
-        awards: hasAwards ? 100 : 20,
-        aboutLinks: hasAboutLinks ? 100 : 20
-      };
-      const authoritativenessScore = Math.round(Object.values(authoritativenessMetrics).reduce((a, b) => a + b) / 3);
-      const failedAuthoritativeness = [];
-      if (schemaTypes.length < 2) failedAuthoritativeness.push("Implement relevant JSON-LD schema (Article, Person, Organization)");
-      if (!hasAwards) failedAuthoritativeness.push("Mention any awards, endorsements, or media features");
-      if (!hasAboutLinks) failedAuthoritativeness.push("Add links to an About or Team page");
+      const auth = analyzeAuthoritativeness(doc, cleanedText);   // adapt parameters as needed
+      const authoritativenessScore = auth.score;
+      const failedAuthoritativeness = auth.failed;
+      const schemaTypes = auth.schemaTypes || [];                // if moved here
 
-      // === TRUSTWORTHINESS ===
-      const isHttps = url.startsWith('https');
-      const contactLinkElements = doc.querySelectorAll(config.parsing.contactLinkSelectors.join(', ') + ', a[href*="contact"], a[href*="/contact"], [class*="contact" i], [id*="contact" i]');
-	  const footerContactText = Array.from(doc.querySelectorAll('footer a, footer span, footer div, footer p, .contact-info, .get-in-touch')).some(el =>
- 	  el.textContent.toLowerCase().includes('contact') ||
- 	  el.textContent.toLowerCase().includes('get in touch') ||
- 	  /\b(email|phone|tel|call|message|reach us|say hello)\b/i.test(el.textContent)
-		);
-	  const hasContact = contactLinkElements.length > 0 || footerContactText;
-	  const policyLinkElements = doc.querySelectorAll(config.parsing.policyLinkSelectors.join(', ') + ', a[href*="/policy" i], a[href*="/cookie" i], a[href*="/gdpr" i], a[href*="/legal" i]');
-	  const footerPolicyText = Array.from(doc.querySelectorAll('footer a, footer span, footer div, footer p')).some(el =>
-	   /privacy|terms|cookie|gdpr|legal|disclaimer|imprint/i.test(el.textContent.toLowerCase())
-		);
-	  const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
-      const updateDateElement = doc.querySelector(config.parsing.updateDateSelectors.join(', '));
-      const hasUpdateDate = !!updateDateElement ||
-        cleanedText.match(/\b(Updated|Last updated|Published|Modified on)[\s:]*\w+/gi);
+      const trust = analyzeTrustworthiness(url, doc, config);
+      const trustworthinessScore = trust.score;
+      const failedTrustworthiness = trust.failed;
+      const hasContact   = trust.hasContact;
+      const hasPolicies  = trust.hasPolicies;
+      const hasUpdateDate = trust.hasUpdateDate;
+      const hasAboutLinks = auth.hasAboutLinks;                  // adjust as needed
 
-      const trustworthinessMetrics = {
-        https: isHttps ? 100 : 20,
-        contact: hasContact ? 100 : 20,
-        policies: hasPolicies ? 100 : 20,
-        updateDate: hasUpdateDate ? 100 : 20
-      };
-      const trustworthinessScore = Math.round(Object.values(trustworthinessMetrics).reduce((a, b) => a + b) / 4);
-      const failedTrustworthiness = [];
-      if (!isHttps) failedTrustworthiness.push("Switch to HTTPS");
-      if (!hasContact) failedTrustworthiness.push("Add a visible Contact page or contact details");
-      if (!hasPolicies) failedTrustworthiness.push("Include links to Privacy Policy and/or Terms");
-      if (!hasUpdateDate) failedTrustworthiness.push("Display a last updated date");
+      // Depth & Readability (non-EEAT but used in overall & radar)
+      const depth = analyzeDepth(cleanedText);
+      const words = depth.words;
+      const normalizeDepth = depth.normalized;
+
+      const read = analyzeReadability(cleanedText);
+      const readability = read.score;
+      const normalizeReadability = read.normalized;
+
+      // Schema already partially in authoritativeness – or keep separate
+      const sch = analyzeSchema(doc);
+      const normalizeSchema = sch.normalized;
+      
+      const experienceScore = exp.score;
+      const experienceMetrics = exp.metrics;
+
+      const expertiseMetrics = expModule.metrics;
+
+      const authoritativenessMetrics = auth.metrics;
+      const trustworthinessMetrics = trust.metrics;
 
       // Intent Analysis
       progressText.textContent = "Analyzing Search Intent";
@@ -327,19 +280,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
 // === RADAR CHART DATA ===
-      const normalizeDepth = words >= 1500 ? 100 : words >= 800 ? 75 : words >= 400 ? 50 : 20;
-      const normalizeReadability = readability >= 60 && readability <= 70 ? 100 : (readability >= 50 && readability <= 80) ? 75 : 40;
-      const normalizeSchema = schemaTypes.length >= 3 ? 100 : schemaTypes.length >= 2 ? 95 : schemaTypes.length === 1 ? 65 : 20;
-
       const modules = [
-        { name: 'Experience', score: experienceScore },
-        { name: 'Expertise', score: expertiseScore },
-        { name: 'Authoritativeness', score: authoritativenessScore },
-        { name: 'Trustworthiness', score: trustworthinessScore },
-        { name: 'Content Depth', score: normalizeDepth },
-        { name: 'Readability', score: normalizeReadability },
-        { name: 'Schema', score: normalizeSchema }
+        { name: 'Experience',       score: experienceScore },
+        { name: 'Expertise',        score: expertiseScore },
+        { name: 'Authoritativeness',score: authoritativenessScore },
+        { name: 'Trustworthiness',  score: trustworthinessScore },
+        { name: 'Content Depth',    score: normalizeDepth },
+        { name: 'Readability',      score: normalizeReadability },
+        { name: 'Schema',           score: normalizeSchema }
       ];
+      const scores = modules.map(m => m.score);
 
       const scores = modules.map(m => m.score);
       
