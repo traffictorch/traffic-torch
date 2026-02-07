@@ -163,28 +163,32 @@ document.addEventListener('DOMContentLoaded', () => {
       progressText.textContent = "Analyzing E-E-A-T Signals...";
       await sleep(2000);
 
+      // Experience
       const exp = analyzeExperience(cleanedText, doc);
       const expScore = exp.score;
       const failedExperience = exp.failed;
-
+      
+      // Expertise
       const expModule = analyzeExpertise(doc, cleanedText, config);
       const expertiseScore = expModule.score;
       const failedExpertise = expModule.failed;
       const hasAuthorByline = expModule.hasAuthorByline;
       const hasAuthorBio    = expModule.hasAuthorBio;
 
-      const auth = analyzeAuthoritativeness(doc, cleanedText);   // adapt parameters as needed
+      // Authoritativeness
+      const auth = analyzeAuthoritativeness(doc, cleanedText);
       const authoritativenessScore = auth.score;
       const failedAuthoritativeness = auth.failed;
-      const schemaTypes = auth.schemaTypes || [];                // if moved here
+      const schemaTypes = auth.schemaTypes;
+      const hasAboutLinks = auth.hasAboutLinks;
 
+      // Trustworthiness
       const trust = analyzeTrustworthiness(url, doc, config);
       const trustworthinessScore = trust.score;
       const failedTrustworthiness = trust.failed;
-      const hasContact   = trust.hasContact;
-      const hasPolicies  = trust.hasPolicies;
-      const hasUpdateDate = trust.hasUpdateDate;
-      const hasAboutLinks = auth.hasAboutLinks;                  // adjust as needed
+      const hasContact     = trust.hasContact;
+      const hasPolicies    = trust.hasPolicies;
+      const hasUpdateDate  = trust.hasUpdateDate;
 
       // Depth & Readability (non-EEAT but used in overall & radar)
       const depth = analyzeDepth(cleanedText);
