@@ -1,11 +1,11 @@
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
-import { analyzeExperience }      from './modules/experience.js';
-import { analyzeExpertise }       from './modules/expertise.js';
+import { analyzeExperience } from './modules/experience.js';
+import { analyzeExpertise } from './modules/expertise.js';
 import { analyzeAuthoritativeness } from './modules/authoritativeness.js';
-import { analyzeTrustworthiness }   from './modules/trustworthiness.js';
-import { analyzeDepth }           from './modules/depth.js';
-import { analyzeReadability }     from './modules/readability.js';
-import { analyzeSchema }          from './modules/schema.js';
+import { analyzeTrustworthiness } from './modules/trustworthiness.js';
+import { analyzeDepth } from './modules/depth.js';
+import { analyzeReadability } from './modules/readability.js';
+import { analyzeSchema } from './modules/schema.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // === STEP 1: CENTRAL CONFIG OBJECT + PARSING VARIABLES ===
@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ]
     }
   };
+
   let config = { ...defaultConfig };
   const urlParams = new URLSearchParams(window.location.search);
   const configParam = urlParams.get('config');
@@ -83,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.warn('Invalid config URL parameter');
     }
   }
+
   function deepMerge(target, source) {
     for (const key in source) {
       if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
@@ -96,9 +98,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
+
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
   function cleanUrl(u) {
     const trimmed = u.trim();
     if (!trimmed) return '';
@@ -130,7 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
     results.classList.remove('hidden');
-    const progressText = document.getElementById('progress-text');        
+
+    const progressText = document.getElementById('progress-text');
 
     try {
       progressText.textContent = "Fetching page...";
@@ -164,20 +169,23 @@ document.addEventListener('DOMContentLoaded', () => {
       await sleep(2000);
 
       // Experience
-      const exp = analyzeExperience(cleanedText, doc);
-      const expScore = exp.score;
-      const failedExperience = exp.failed;
-      
+      const expResult = analyzeExperience(cleanedText, doc);
+      const experienceScore = expResult.score;
+      const experienceMetrics = expResult.metrics;
+      const failedExperience = expResult.failed;
+
       // Expertise
-      const expModule = analyzeExpertise(doc, cleanedText, config);
-      const expertiseScore = expModule.score;
-      const failedExpertise = expModule.failed;
-      const hasAuthorByline = expModule.hasAuthorByline;
-      const hasAuthorBio    = expModule.hasAuthorBio;
+      const expertiseResult = analyzeExpertise(doc, cleanedText, config);
+      const expertiseScore = expertiseResult.score;
+      const expertiseMetrics = expertiseResult.metrics;
+      const failedExpertise = expertiseResult.failed;
+      const hasAuthorByline = expertiseResult.hasAuthorByline;
+      const hasAuthorBio = expertiseResult.hasAuthorBio;
 
       // Authoritativeness
       const auth = analyzeAuthoritativeness(doc, cleanedText);
       const authoritativenessScore = auth.score;
+      const authoritativenessMetrics = auth.metrics;
       const failedAuthoritativeness = auth.failed;
       const schemaTypes = auth.schemaTypes;
       const hasAboutLinks = auth.hasAboutLinks;
@@ -185,12 +193,13 @@ document.addEventListener('DOMContentLoaded', () => {
       // Trustworthiness
       const trust = analyzeTrustworthiness(url, doc, config);
       const trustworthinessScore = trust.score;
+      const trustworthinessMetrics = trust.metrics;
       const failedTrustworthiness = trust.failed;
-      const hasContact     = trust.hasContact;
-      const hasPolicies    = trust.hasPolicies;
-      const hasUpdateDate  = trust.hasUpdateDate;
+      const hasContact = trust.hasContact;
+      const hasPolicies = trust.hasPolicies;
+      const hasUpdateDate = trust.hasUpdateDate;
 
-      // Depth & Readability (non-EEAT but used in overall & radar)
+      // Depth & Readability
       const depth = analyzeDepth(cleanedText);
       const words = depth.words;
       const normalizeDepth = depth.normalized;
@@ -199,10 +208,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const readability = read.score;
       const normalizeReadability = read.normalized;
 
-      // Schema already partially in authoritativeness – or keep separate
+      // Schema (already in authoritativeness, but keeping separate normalize for radar)
       const sch = analyzeSchema(doc);
       const normalizeSchema = sch.normalized;
-      
 
       // Intent Analysis
       progressText.textContent = "Analyzing Search Intent";
@@ -237,6 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const scoreDelta = Math.round(projectedScore - currentScore);
       const isOptimal = scoreDelta <= 5;
+
       const priorityFixes = [];
       if (!hasAuthorByline) priorityFixes.push({text: "Add visible author byline & bio", impact: "+15–25 points"});
       if (words < 1500) priorityFixes.push({text: "Expand content depth (>1,500 words)", impact: "+12–20 points"});
@@ -246,6 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (failedExpertise.length > 0) priorityFixes.push({text: "Add credentials & citations", impact: "+10–18 points"});
       }
       const topFixes = priorityFixes.slice(0, 3);
+
       const trafficUplift = isOptimal ? 0 : Math.round(scoreDelta * 1.8);
       const ctrBoost = isOptimal ? 0 : Math.min(30, Math.round(scoreDelta * 0.8));
       const rankingLift = isOptimal ? "Already strong" : currentScore < 60 ? "Page 2+ → Page 1 potential" : "Top 20 → Top 10 possible";
@@ -275,8 +285,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return { text, emoji, color };
       }
-      
-      // RADAR CHART DATA – use already normalized values from modules
+
+      // === RADAR CHART DATA ===
       const modules = [
         { name: 'Experience',       score: experienceScore },
         { name: 'Expertise',        score: expertiseScore },
@@ -287,25 +297,17 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Schema',           score: normalizeSchema }
       ];
       const scores = modules.map(m => m.score);
-      
-// Scroll to results from top of viewport + generous offset - always consistent
-const offset = 240; // (adjust 80–340)
 
-const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
+      // Scroll to results
+      const offset = 240;
+      const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
 
-window.scrollTo({
-  top: targetY,
-  behavior: 'smooth'
-});
-      
       results.innerHTML = `
 <!-- Overall Score Card (SEO Intent) -->
 <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${overall >= 80 ? 'border-green-500' : overall >= 60 ? 'border-orange-400' : 'border-red-500'}">
-    
     <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall SEO Intent Score</p>
-    
-    <!-- Responsive SVG wrapper -->
     <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
       <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
         <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
@@ -328,21 +330,18 @@ window.scrollTo({
         </div>
       </div>
     </div>
-
     ${(() => {
       const title = (doc.title || '').trim();
       if (!title) return '';
       const truncated = title.length > 65 ? title.substring(0, 65) : title;
       return `<p class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>`;
     })()}
-
     ${(() => {
       const g = getGrade(overall);
       return `<p class="${g.color} text-4xl sm:text-5xl font-bold text-center mt-4 sm:mt-6 drop-shadow-lg">${g.emoji} ${g.text}</p>`;
     })()}
   </div>
 </div>
-
 
 <!-- On-Page Health Radar Chart -->
 <div class="max-w-5xl mx-auto my-16 px-4">
@@ -359,6 +358,7 @@ window.scrollTo({
     </p>
   </div>
 </div>
+
 <!-- Intent -->
 <div class="text-center mb-12">
   <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">
@@ -380,6 +380,7 @@ window.scrollTo({
     </div>
   </div>
 </div>
+
 <!-- E-E-A-T Breakdown with ✅/❌ signals -->
 <div class="grid md:grid-cols-4 gap-6 my-16">
   ${[
@@ -544,6 +545,7 @@ window.scrollTo({
     </div>`;
   }).join('')}
 </div>
+
 <!-- Content Depth + Readability + Schema Detected -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
   <!-- Content Depth Card -->
@@ -582,6 +584,7 @@ window.scrollTo({
       })()}
     </div>
   </div>
+
   <!-- Readability Card -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${readability >= 60 && readability <= 70 ? 'border-green-500' : (readability >= 50 && readability <= 80) ? 'border-orange-400' : 'border-red-500'}">
     <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Readability</h3>
@@ -618,6 +621,7 @@ window.scrollTo({
       })()}
     </div>
   </div>
+
   <!-- Schema Detected Card -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${schemaTypes.length >= 2 ? 'border-green-500' : schemaTypes.length === 1 ? 'border-orange-400' : 'border-red-500'}">
     <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Schema Detected</h3>
@@ -660,52 +664,45 @@ window.scrollTo({
   </div>
 </div>
 
-
-
 <!-- Priority Fixes -->
-   <div class="mt-20 space-y-8">
-     <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">Top Priority Fixes</h2>
-     ${(() => {
-       const priority = [
-         !hasAuthorByline ? { name: 'Add Author Byline & Bio', impact: '+15–25 points', desc: 'Visible author name and detailed bio with photo establish credibility and E-E-A-T signals.' } : null,
-         words < 1500 ? { name: 'Expand Content Depth', impact: '+12–20 points', desc: 'Aim for >1,500 words with examples, stats, case studies, and deeper coverage to fully satisfy search intent.' } : null,
-         schemaTypes.length < 2 ? { name: 'Add Relevant Schema Markup', impact: '+10–18 points', desc: 'Implement JSON-LD for Article, Person, FAQPage, etc. to unlock rich results and boost authority.' } : null
-       ].filter(Boolean);
-
-       const remaining = topFixes.filter(f => 
-         !priority.some(p => p && f.text.includes(p.name.split(' ')[1] ?? p.name))
-       ).slice(0, 3 - priority.length);
-
-       const finalPriority = [...priority, ...remaining.map(f => ({ name: f.text, impact: f.impact, desc: 'Strong on-page improvement with high ranking impact.' }))].slice(0, 3);
-
-       if (finalPriority.length === 0) {
-         return `
-           <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-3xl p-10 md:p-14 shadow-2xl border-l-8 border-green-500">
-             <h3 class="text-4xl font-black text-green-600 dark:text-green-400 mb-6 text-center">🎉 No Major Fixes Needed!</h3>
-             <p class="text-xl text-center text-gray-800 dark:text-gray-200 leading-relaxed">Your page is exceptionally optimized. All key on-page signals are strong.<br>Focus next on building high-authority backlinks and fresh content.</p>
-           </div>`;
-       }
-
-       return finalPriority.map((fix, i) => `
-         <div class="group relative bg-white dark:bg-gray-900 rounded-3xl p-8 md:p-10 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-200 dark:border-gray-700 overflow-hidden">
-           <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-           <div class="relative flex items-start gap-6">
-             <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center text-white text-3xl font-black shadow-xl">
-               ${i + 1}
-             </div>
-             <div class="flex-1">
-               <h3 class="text-2xl md:text-3xl font-black text-gray-900 dark:text-gray-100 mb-3">${fix.name}</h3>
-               <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-4">${fix.desc}</p>
-               <div class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-full shadow-lg">
-                 ${fix.impact}
-               </div>
-             </div>
-           </div>
-         </div>
-       `).join('');
-     })()}
-   </div>
-
+<div class="mt-20 space-y-8">
+  <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">Top Priority Fixes</h2>
+  ${(() => {
+    const priority = [
+      !hasAuthorByline ? { name: 'Add Author Byline & Bio', impact: '+15–25 points', desc: 'Visible author name and detailed bio with photo establish credibility and E-E-A-T signals.' } : null,
+      words < 1500 ? { name: 'Expand Content Depth', impact: '+12–20 points', desc: 'Aim for >1,500 words with examples, stats, case studies, and deeper coverage to fully satisfy search intent.' } : null,
+      schemaTypes.length < 2 ? { name: 'Add Relevant Schema Markup', impact: '+10–18 points', desc: 'Implement JSON-LD for Article, Person, FAQPage, etc. to unlock rich results and boost authority.' } : null
+    ].filter(Boolean);
+    const remaining = topFixes.filter(f =>
+      !priority.some(p => p && f.text.includes(p.name.split(' ')[1] ?? p.name))
+    ).slice(0, 3 - priority.length);
+    const finalPriority = [...priority, ...remaining.map(f => ({ name: f.text, impact: f.impact, desc: 'Strong on-page improvement with high ranking impact.' }))].slice(0, 3);
+    if (finalPriority.length === 0) {
+      return `
+        <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-3xl p-10 md:p-14 shadow-2xl border-l-8 border-green-500">
+          <h3 class="text-4xl font-black text-green-600 dark:text-green-400 mb-6 text-center">🎉 No Major Fixes Needed!</h3>
+          <p class="text-xl text-center text-gray-800 dark:text-gray-200 leading-relaxed">Your page is exceptionally optimized. All key on-page signals are strong.<br>Focus next on building high-authority backlinks and fresh content.</p>
+        </div>`;
+    }
+    return finalPriority.map((fix, i) => `
+      <div class="group relative bg-white dark:bg-gray-900 rounded-3xl p-8 md:p-10 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div class="relative flex items-start gap-6">
+          <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center text-white text-3xl font-black shadow-xl">
+            ${i + 1}
+          </div>
+          <div class="flex-1">
+            <h3 class="text-2xl md:text-3xl font-black text-gray-900 dark:text-gray-100 mb-3">${fix.name}</h3>
+            <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-4">${fix.desc}</p>
+            <div class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-full shadow-lg">
+              ${fix.impact}
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  })()}
+</div>
 
 <!-- Score Improvement & Potential Ranking Gains -->
 <div class="max-w-5xl mx-auto mt-20 grid md:grid-cols-2 gap-8">
@@ -791,7 +788,6 @@ window.scrollTo({
   </div>
 </div>
 
-
 <!-- PDF Button -->
 <div class="text-center my-16">
   <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
@@ -800,61 +796,44 @@ window.scrollTo({
   </button>
 </div>
       `;
-      
-      
-// Create placeholder for Plugin Solutions
-const pluginSection = document.createElement('div');
-pluginSection.id = 'plugin-solutions-section';
-pluginSection.className = 'mt-20';
-results.appendChild(pluginSection);
 
-// Collect only real failed/display metrics that plugins can fix
-const failedMetrics = [];
+      // Create placeholder for Plugin Solutions
+      const pluginSection = document.createElement('div');
+      pluginSection.id = 'plugin-solutions-section';
+      pluginSection.className = 'mt-20';
+      results.appendChild(pluginSection);
 
-// Schema Markup (already detected)
-const schemaGrade = getGrade(schemaTypes.length, 'schema');
-if (schemaGrade.text !== 'Excellent') {
-  failedMetrics.push({ name: "Schema Markup", grade: schemaGrade });
-}
+      // Collect failed metrics for plugins
+      const failedMetrics = [];
+      const schemaGrade = getGrade(schemaTypes.length, 'schema');
+      if (schemaGrade.text !== 'Excellent') {
+        failedMetrics.push({ name: "Schema Markup", grade: schemaGrade });
+      }
+      if (!hasAuthorByline) {
+        failedMetrics.push({ name: "Author Byline Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+      if (!hasAuthorBio) {
+        failedMetrics.push({ name: "Author Bio Section", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+      if (!hasUpdateDate) {
+        failedMetrics.push({ name: "Update Date Shown", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+      if (!hasContact) {
+        failedMetrics.push({ name: "Contact Info Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+      if (!hasPolicies) {
+        failedMetrics.push({ name: "Privacy & Terms Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+      if (!hasAboutLinks) {
+        failedMetrics.push({ name: "About/Team Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
 
-// Author byline present (use original variable)
-if (!hasAuthorByline) {
-  failedMetrics.push({ name: "Author Byline Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-}
+      if (failedMetrics.length > 0) {
+        renderPluginSolutions(failedMetrics);
+      }
 
-// Author bio section (use original variable)
-if (!hasAuthorBio) {
-  failedMetrics.push({ name: "Author Bio Section", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-}
-
-// Update date shown (use original variable)
-if (!hasUpdateDate) {
-  failedMetrics.push({ name: "Update Date Shown", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-}
-
-// Contact info present (use original variable)
-if (!hasContact) {
-  failedMetrics.push({ name: "Contact Info Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-}
-
-// Privacy/Terms links (use original variable)
-if (!hasPolicies) {
-  failedMetrics.push({ name: "Privacy & Terms Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-}
-
-// About/Team links (use original variable)
-if (!hasAboutLinks) {
-  failedMetrics.push({ name: "About/Team Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-}
-
-// Render only if we have real fixes
-if (failedMetrics.length > 0) {
-  renderPluginSolutions(failedMetrics);
-}
-      
-      
       // === RADAR CHART INITIALIZATION ===
-            setTimeout(() => {
+      setTimeout(() => {
         const canvas = document.getElementById('health-radar');
         if (!canvas) {
           console.warn('Canvas #health-radar not found');
@@ -862,11 +841,10 @@ if (failedMetrics.length > 0) {
         }
         try {
           const ctx = canvas.getContext('2d');
-          const labelColor = '#9ca3af'; // gray-400 — works perfectly day/night
+          const labelColor = '#9ca3af';
           const gridColor = 'rgba(156, 163, 175, 0.3)';
           const borderColor = '#fb923c';
           const fillColor = 'rgba(251, 146, 60, 0.15)';
-
           window.myChart = new Chart(ctx, {
             type: 'radar',
             data: {
@@ -905,7 +883,6 @@ if (failedMetrics.length > 0) {
           console.error('Chart init failed', e);
         }
       }, 150);
-      
 
       // Event delegation for fixes toggles
       results.addEventListener('click', (e) => {
@@ -924,8 +901,9 @@ if (failedMetrics.length > 0) {
       });
     } catch (err) {
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
+      console.error(err);
     }
-    
+
     // Clean URL for PDF cover
     let fullUrl = document.getElementById('url-input').value.trim();
     let displayUrl = 'traffictorch.net';
@@ -943,5 +921,3 @@ if (failedMetrics.length > 0) {
     document.body.setAttribute('data-url', displayUrl);
   });
 });
-
-
