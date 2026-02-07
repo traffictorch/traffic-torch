@@ -684,7 +684,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ================== ANALYSIS FUNCTIONS ==================
+  // ================== ANALYSIS FUNCTIONS (now import export to individual js files) ==================
 
   });
 
