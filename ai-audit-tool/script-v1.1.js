@@ -1,3 +1,9 @@
+import { computePerplexity } from './modules/perplexity.js';
+import { computeBurstiness } from './modules/burstiness.js';
+import { computeRepetition } from './modules/repetition.js';
+import { computeSentenceLength } from './modules/sentenceLength.js';
+import { computeVocabulary } from './modules/vocabulary.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
@@ -39,68 +45,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const words = text.split(/\s+/).filter(w => w.length > 0);
     wordCount = words.length;
 
-    function entropy(counts, total) {
-      return -Object.values(counts).reduce((sum, c) => {
-        const p = c / total;
-        return sum + (p > 0 ? p * Math.log2(p) : 0);
-      }, 0);
-    }
-
-    // Perplexity
-    const bigrams = {};
-    for (let i = 0; i < words.length - 1; i++) {
-      const gram = words[i] + ' ' + words[i + 1];
-      bigrams[gram] = (bigrams[gram] || 0) + 1;
-    }
-    const bigramEntropy = words.length > 1 ? entropy(bigrams, words.length - 1) : 6;
-    const trigrams = {};
-    for (let i = 0; i < words.length - 2; i++) {
-      const gram = words.slice(i, i + 3).join(' ');
-      trigrams[gram] = (trigrams[gram] || 0) + 1;
-    }
-    const trigramEntropy = words.length > 2 ? entropy(trigrams, words.length - 2) : 6;
-    const perplexityScore1 = trigramEntropy >= 7.5 ? 10 : 0;
-    const perplexityScore2 = bigramEntropy >= 7.0 ? 10 : 0;
-    const perplexityModule = perplexityScore1 + perplexityScore2;
-
-    // Burstiness
-    const sentenceLengths = sentences.map(s => s.split(/\s+/).filter(w => w.length).length);
-    const avgSentLen = sentenceLengths.reduce((a, b) => a + b, 0) / sentenceLengths.length || 20;
-    const sentVariance = sentenceLengths.reduce((sum, len) => sum + Math.pow(len - avgSentLen, 2), 0) / sentenceLengths.length;
-    const sentBurstiness = Math.sqrt(sentVariance);
-    const wordLengths = words.map(w => w.length);
-    const avgWordLen = wordLengths.reduce((a, b) => a + b, 0) / wordLengths.length || 6;
-    const wordVariance = wordLengths.reduce((sum, len) => sum + Math.pow(len - avgWordLen, 2), 0) / wordLengths.length;
-    const wordBurstiness = Math.sqrt(wordVariance);
-    const burstinessScore1 = sentBurstiness >= 4.5 ? 10 : 0;
-    const burstinessScore2 = wordBurstiness >= 2.0 ? 10 : 0;
-    const burstinessModule = burstinessScore1 + burstinessScore2;
-
-    // Repetition
-    const maxBigram = Math.max(...Object.values(bigrams || {1:1}), 1);
-    const maxTrigram = Math.max(...Object.values(trigrams || {1:1}), 1);
-    const repetitionScore1 = maxBigram <= 3 ? 10 : 0;
-    const repetitionScore2 = maxTrigram <= 2 ? 10 : 0;
-    const repetitionModule = repetitionScore1 + repetitionScore2;
-
-    // Sentence Length
-    const sentLenInRange = avgSentLen >= 15 && avgSentLen <= 23;
-    const sentLenScore = sentLenInRange ? 10 : 0;
-    const commaCounts = sentences.map(s => (s.match(/,/g) || []).length);
-    const avgCommas = commaCounts.reduce((a, b) => a + b, 0) / commaCounts.length || 0;
-    const complexityScore = avgCommas >= 1.0 ? 10 : 0;
-    const sentenceLengthModule = sentLenScore + complexityScore;
-
-    // Vocabulary
-    const uniqueWords = new Set(words).size;
-    const vocabDiversity = wordCount > 0 ? (uniqueWords / wordCount) * 100 : 50;
-    const wordFreq = {};
-    words.forEach(w => wordFreq[w] = (wordFreq[w] || 0) + 1);
-    const hapax = Object.values(wordFreq).filter(c => c === 1).length;
-    const rareWordRatio = wordCount > 0 ? (hapax / wordCount) * 100 : 10;
-    const vocabScore = vocabDiversity >= 65 ? 10 : 0;
-    const rareScore = rareWordRatio >= 15 ? 10 : 0;
-    const vocabularyModule = vocabScore + rareScore;
+    const perplexity = computePerplexity(words);
+const burstiness = computeBurstiness(sentences, words);
+const repetition = computeRepetition(words);
+const sentenceLength = computeSentenceLength(sentences);
+const vocabulary = computeVocabulary(words, wordCount);
+const moduleScores = [perplexity.moduleScore, burstiness.moduleScore, repetition.moduleScore, sentenceLength.moduleScore, vocabulary.moduleScore];
+const totalScore = moduleScores.reduce((a, b) => a + b, 0);
+return {
+  moduleScores,
+  totalScore,
+  details: {
+    perplexity: perplexity.details,
+    burstiness: burstiness.details,
+    repetition: repetition.details,
+    sentenceLength: sentenceLength.details,
+    vocabulary: vocabulary.details
+  }
+};
 
     const moduleScores = [perplexityModule, burstinessModule, repetitionModule, sentenceLengthModule, vocabularyModule];
     const totalScore = moduleScores.reduce((a, b) => a + b, 0);
