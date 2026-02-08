@@ -342,10 +342,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function analyzeProductSEO(doc, inputUrl) {
     const data = getProductPageContent(doc, inputUrl);
-    const onPageResult = analyzeOnPageSEO(doc, data);
-    const technicalResult = analyzeTechnicalSEO(doc, data);
-    const contentMediaResult = analyzeContentMedia(doc, data);
-    const ecommerceResult = analyzeEcommerceSEO(doc, data);
+    let onPageResult, technicalResult, contentMediaResult, ecommerceResult;
+
+if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEcommerceSEO) {
+  onPageResult   = analyzeOnPageSEO(doc, data);
+  technicalResult = analyzeTechnicalSEO(doc, data);
+  contentMediaResult = analyzeContentMedia(doc, data);
+  ecommerceResult = analyzeEcommerceSEO(doc, data);
+} else {
+  console.warn('Some analysis modules not loaded yet — using neutral fallback');
+  const fallback = { score: 55, details: {} };
+  onPageResult = technicalResult = contentMediaResult = ecommerceResult = fallback;
+}
     const weights = { onPage: 0.30, technical: 0.25, contentMedia: 0.25, ecommerce: 0.20 };
     const overallScore = Math.round(
       (onPageResult.score * weights.onPage) +

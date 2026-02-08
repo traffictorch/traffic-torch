@@ -123,3 +123,5 @@
     );
     return { score: Math.min(100, Math.max(0, score)), details };
   }
+  
+  export { analyzeTechnicalSEO };
