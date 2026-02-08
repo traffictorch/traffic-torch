@@ -1,6 +1,12 @@
-// script.js
+// script-v1.1.js
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 import { moduleFixes } from './fixes-v1.0.js';
+import { analyzeNapContact } from './modules/nap-contact.js';
+import { analyzeKeywordsTitles } from './modules/keywords-titles.js';
+import { analyzeContentRelevance } from './modules/content-relevance.js';
+import { analyzeMapsVisuals } from './modules/maps-visuals.js';
+import { analyzeStructuredData } from './modules/structured-data.js';
+import { analyzeReviewsStructure } from './modules/reviews-structure.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
@@ -8,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const locationInput = document.getElementById('location');
   const results = document.getElementById('results');
   const PROXY = 'https://rendered-proxy.traffictorch.workers.dev/';
-
   const progressModules = [
     "Fetching page...",
     "Scanning NAP & contact",
@@ -19,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
     "Evaluating reviews & links",
     "Generating local report"
   ];
-
   let currentModuleIndex = 0;
   let moduleInterval;
 
@@ -57,15 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
         fill: '#f59e0b'
       };
     }
-return {
-  grade: score >= 30 ? 'Needs Work' : 'Needs Work',  // fixed: added missing :
-  emoji: '🔴',
-  color: '#dc2626',
-  border: 'border-red-600',
-  text: 'text-red-700 dark:text-red-300',
-  bgLight: 'bg-red-50 dark:bg-red-950/30',
-  fill: '#dc2626'
-};
+    return {
+      grade: 'Needs Work',
+      emoji: '🔴',
+      color: '#dc2626',
+      border: 'border-red-600',
+      text: 'text-red-700 dark:text-red-300',
+      bgLight: 'bg-red-50 dark:bg-red-950/30',
+      fill: '#dc2626'
+    };
   };
 
   const moduleHashes = {
@@ -75,6 +79,15 @@ return {
     'Maps & Visuals': 'maps-visuals',
     'Structured Data': 'structured-data',
     'Reviews & Structure': 'reviews-structure'
+  };
+
+  const moduleWeights = {
+    'NAP & Contact': 22,
+    'Local Keywords & Titles': 18,
+    'Local Content & Relevance': 20,
+    'Maps & Visuals': 12,
+    'Structured Data': 18,
+    'Reviews & Structure': 10
   };
 
   function startSpinnerLoader() {
@@ -111,23 +124,23 @@ return {
     }
   };
 
-const hasLocalIntent = (text = '', city = '') => {
-  if (!text || !city) return false;
-  const lower = text.toLowerCase();
-  const cityLower = city.toLowerCase();
-  const patterns = [
-    'near me',
-    `in ${cityLower}`,
-    `near ${cityLower}`,
-    `${cityLower} near me`,
-    'local ',
-    cityLower,                    // exact city name
-    `${cityLower} area`,
-    `${cityLower} suburbs`,
-    `${cityLower} cbd`,           // common AU variation
-  ];
-  return patterns.some(p => lower.includes(p));
-};
+  const hasLocalIntent = (text = '', city = '') => {
+    if (!text || !city) return false;
+    const lower = text.toLowerCase();
+    const cityLower = city.toLowerCase();
+    const patterns = [
+      'near me',
+      `in ${cityLower}`,
+      `near ${cityLower}`,
+      `${cityLower} near me`,
+      'local ',
+      cityLower,
+      `${cityLower} area`,
+      `${cityLower} suburbs`,
+      `${cityLower} cbd`,
+    ];
+    return patterns.some(p => lower.includes(p));
+  };
 
   const getCleanContent = (doc) => {
     if (!doc?.body) return '';
@@ -138,29 +151,22 @@ const hasLocalIntent = (text = '', city = '') => {
 
   // ── FORM SUBMIT HANDLER ───────────────────────────────────────────────────────
   form.addEventListener('submit', async e => {
-    e.preventDefault(); // Prevents page reload – this must be first!
-
+    e.preventDefault();
     const yourUrl = pageUrlInput.value.trim();
     const location = locationInput.value.trim();
-
     if (!yourUrl || !location) {
       results.innerHTML = '<p class="text-red-500 text-center text-xl p-10">Please enter both URL and location.</p>';
       results.classList.remove('hidden');
       return;
     }
-
     let fullUrl = yourUrl;
     if (!/^https?:\/\//i.test(yourUrl)) {
       fullUrl = 'https://' + yourUrl;
       pageUrlInput.value = fullUrl;
     }
-
     const city = location.split(',')[0].trim().toLowerCase();
-
     startSpinnerLoader();
-
     let yourDoc = await fetchPage(fullUrl);
-
     if (!yourDoc) {
       stopSpinnerLoader();
       results.innerHTML = `
@@ -174,7 +180,6 @@ const hasLocalIntent = (text = '', city = '') => {
         </div>
       `;
       results.classList.remove('hidden');
-
       document.getElementById('analyze-paste')?.addEventListener('click', () => {
         const pasted = document.getElementById('paste-html').value.trim();
         if (!pasted) return;
@@ -187,7 +192,6 @@ const hasLocalIntent = (text = '', city = '') => {
       });
       return;
     }
-
     analyzePage(yourDoc, city, fullUrl, location);
   });
 
@@ -196,215 +200,51 @@ const hasLocalIntent = (text = '', city = '') => {
     const allFixes = [];
     const passFail = (condition) => condition ? { status: '✅', color: 'text-green-600' } : { status: '❌', color: 'text-red-600' };
 
-    // 1. NAP & Contact
-    const addressEl = doc.querySelector('address, [itemprop="address"], [itemtype*="PostalAddress"], .address, footer, .contact, .location');
-    const phoneEl = doc.querySelector('a[href^="tel:"], [itemprop="telephone"]');
-    const napPresent = !!(addressEl && addressEl.textContent.trim().toLowerCase().includes(city) && phoneEl);
-    const footerNap = !!doc.querySelector('footer')?.textContent.toLowerCase().includes(city) ||
-                      !!doc.querySelector('footer address');
-    const contactComplete = napPresent && (doc.querySelector('[itemprop="openingHours"], [itemprop="openingHoursSpecification"], time, .hours, .opening-hours'));
-    data.nap = { present: napPresent, footer: footerNap, complete: contactComplete };
-    if (!napPresent) allFixes.push({ module: 'NAP & Contact', sub: 'NAP Present', ...moduleFixes['NAP & Contact']['NAP Present'] });
-    if (!footerNap) allFixes.push({ module: 'NAP & Contact', sub: 'Footer NAP', ...moduleFixes['NAP & Contact']['Footer NAP'] });
-    if (!contactComplete) allFixes.push({ module: 'NAP & Contact', sub: 'Contact Complete', ...moduleFixes['NAP & Contact']['Contact Complete'] });
-    const napScore = (napPresent ? 8 : 0) + (footerNap ? 5 : 0) + (contactComplete ? 5 : 0);
+    // Run all 6 modular analyzers
+    const napResult       = analyzeNapContact(doc, city);
+    const keywordsResult  = analyzeKeywordsTitles(doc, city, hasLocalIntent);
+    const contentResult   = analyzeContentRelevance(doc, city, getCleanContent, hasLocalIntent);
+    const mapsResult      = analyzeMapsVisuals(doc, city, hasLocalIntent);
+    const schemaResult    = analyzeStructuredData(doc);
+    const reviewsResult   = analyzeReviewsStructure(doc, fullUrl, city, schemaResult.data);
 
-    // 2. Local Keywords & Titles
-    const titleText = doc.querySelector('title')?.textContent.trim() || '';
-    const metaDesc = doc.querySelector('meta[name="description"]')?.content.trim() || '';
-    const titleLocal = hasLocalIntent(titleText, city);
-    const metaLocal = hasLocalIntent(metaDesc, city);
-const headingsLocal = Array.from(doc.querySelectorAll('h1, h2, h3')).some(h => hasLocalIntent(h.textContent, city));
-    data.keywords = { title: titleLocal, meta: metaLocal, headings: headingsLocal };
-const keywordsScore = (titleLocal ? 7 : 0) + (metaLocal ? 4 : 0) + (headingsLocal ? 5 : 0);
-// Push fixes for failed Local Keywords & Titles metrics
-if (!titleLocal) {
-  allFixes.push({ module: 'Local Keywords & Titles', sub: 'Title Local', ...moduleFixes['Local Keywords & Titles']['Title Local'] });
-}
-if (!metaLocal) {
-  allFixes.push({ module: 'Local Keywords & Titles', sub: 'Meta Local', ...moduleFixes['Local Keywords & Titles']['Meta Local'] });
-}
-if (!headingsLocal) {
-  allFixes.push({ module: 'Local Keywords & Titles', sub: 'Headings Local', ...moduleFixes['Local Keywords & Titles']['Headings Local'] });
-}
+    // Collect all fixes from modules
+    allFixes.push(
+      ...napResult.fixes,
+      ...keywordsResult.fixes,
+      ...contentResult.fixes,
+      ...mapsResult.fixes,
+      ...schemaResult.fixes,
+      ...reviewsResult.fixes
+    );
 
-    // 3. Local Content & Relevance
-    const cleanContent = getCleanContent(doc);
-    const bodyLocalKeywords = hasLocalIntent(cleanContent, city) ? 1 : 0;
-    const intentPatterns = (cleanContent.match(/near me|nearby|local(ly)?\s|in the area|close to|in my area|areas? we serve/gi) || []).length > 1 ? 1 : 0;
-    const locationMentionsCount = (cleanContent.match(new RegExp(city, 'gi')) || []).length;
-    const locationMentions = locationMentionsCount > 2 ? 1 : 0;
-    data.content = { localKeywords: bodyLocalKeywords, intentPatterns, locationMentions };
-    let contentScore = (bodyLocalKeywords * 8) + (intentPatterns * 6) + (locationMentions * 6);
-    if (locationMentionsCount >= 5) contentScore += 4;
-    contentScore = Math.min(20, contentScore);
-    if (!bodyLocalKeywords) {
-  allFixes.push({ module: 'Local Content & Relevance', sub: 'Body Keywords', ...moduleFixes['Local Content & Relevance']['Body Keywords'] });
-}
-if (!intentPatterns) {
-  allFixes.push({ module: 'Local Content & Relevance', sub: 'Intent Patterns', ...moduleFixes['Local Content & Relevance']['Intent Patterns'] });
-}
-if (!locationMentions) {
-  allFixes.push({ module: 'Local Content & Relevance', sub: 'Location Mentions', ...moduleFixes['Local Content & Relevance']['Location Mentions'] });
-}
-
-    // 4. Maps & Visuals
-    const mapIframe = doc.querySelector('iframe[src*="maps.google"], [src*="google.com/maps"]');
-    const images = doc.querySelectorAll('img');
-    const localAltImages = Array.from(images).filter(img => hasLocalIntent(img.alt || '', city));
-    const localAlts = localAltImages.length >= 2;
-
-    // ── FIX: remove small bonus that pushes score > 100 ────────────────────────────────
-    // const strongLocalAlts = localAltImages.length >= 4 ? 2 : 0;
-    const strongLocalAlts = 0;
-
-    data.maps = { embedded: !!mapIframe, localAlt: localAlts };
-    const mapsScore = (mapIframe ? 8 : 0) + (localAlts ? 8 : 0) + strongLocalAlts;
-    // ───────────────────────────────────────────────────────────────────────────────
-
-    if (!mapIframe) {
-      allFixes.push({ module: 'Maps & Visuals', sub: 'Map Embedded', ...moduleFixes['Maps & Visuals']['Map Embedded'] });
-    }
-    if (!localAlts) {
-      allFixes.push({ module: 'Maps & Visuals', sub: 'Local Alt Text', ...moduleFixes['Maps & Visuals']['Local Alt Text'] });
-    }
-
-    // 5. Structured Data
-const schemaScripts = doc.querySelectorAll('script[type="application/ld+json"]');
-let schemaData = null;
-
-const findLocalBusiness = (obj) => {
-  if (!obj) return null;
-  if (obj['@type'] === 'LocalBusiness') return obj;
-  // Support common subtypes that behave like LocalBusiness
-  if (['ProfessionalService', 'Store', 'Restaurant', 'Dentist', 'VeterinaryCare', 'LocalBusiness'].includes(obj['@type']) && obj.address) {
-    return obj;
-  }
-  // Check @graph array
-  if (obj['@graph'] && Array.isArray(obj['@graph'])) {
-    for (const item of obj['@graph']) {
-      const found = findLocalBusiness(item);
-      if (found) return found;
-    }
-  }
-  // Check nested (e.g. Organization contains department LocalBusiness)
-  if (obj.department && Array.isArray(obj.department)) {
-    for (const dep of obj.department) {
-      const found = findLocalBusiness(dep);
-      if (found) return found;
-    }
-  }
-  return null;
-};
-
-for (const script of schemaScripts) {
-  try {
-    const parsed = JSON.parse(script.textContent);
-    const candidate = findLocalBusiness(parsed);
-    if (candidate) {
-      schemaData = candidate;
-      break; // take the first valid one
-    }
-  } catch {}
-}
-
-const localSchemaPresent = !!schemaData;
-    const geoCoords = !!schemaData?.geo?.latitude && !!schemaData?.geo?.longitude;
-    const hoursPresent = !!schemaData?.openingHoursSpecification || !!schemaData?.openingHours;
-    data.schema = { localPresent: localSchemaPresent, geoCoords, hours: hoursPresent };
-    if (!localSchemaPresent) allFixes.push({ module: 'Structured Data', sub: 'Local Schema', ...moduleFixes['Structured Data']['Local Schema'] });
-    if (!geoCoords) allFixes.push({ module: 'Structured Data', sub: 'Geo Coords', ...moduleFixes['Structured Data']['Geo Coords'] });
-    if (!hoursPresent) allFixes.push({ module: 'Structured Data', sub: 'Opening Hours', ...moduleFixes['Structured Data']['Opening Hours'] });
-    const schemaScore = (localSchemaPresent ? 8 : 0) + (geoCoords ? 5 : 0) + (hoursPresent ? 5 : 0);
-
-    // 6. Reviews & Structure
-    // Helper to find aggregateRating anywhere in the schema object
-const findAggregateRating = (obj) => {
-  if (!obj) return null;
-  if (obj.aggregateRating?.ratingValue) return obj.aggregateRating.ratingValue;
-  // Check @graph
-  if (obj['@graph'] && Array.isArray(obj['@graph'])) {
-    for (const item of obj['@graph']) {
-      const found = findAggregateRating(item);
-      if (found) return found;
-    }
-  }
-  // Check common nesting (e.g. inside Review)
-  if (obj.review && Array.isArray(obj.review)) {
-    for (const review of obj.review) {
-      if (review.author && review.reviewRating?.ratingValue) {
-        return review.reviewRating.ratingValue; // fallback to individual if no aggregate
-      }
-    }
-  }
-  return null;
-};
-
-const aggregateRating = findAggregateRating(schemaData);
-    const canonical = doc.querySelector('link[rel="canonical"]')?.href === fullUrl;
-const locationPagesPatterns = [
-  /\/(contact|locations?|branches|stores?|offices?|areas|service-?areas?|cities|suburbs?|near-me)/i,
-  new RegExp(city, 'i') // URL contains city name
-];
-
-const geoAnchorPatterns = [
-  /in\s+[\w\s]+/i, /near\s+[\w\s]+/i, /areas?\s+we\s+serve/i, /service\s+areas?/i,
-  new RegExp(`\\b${city}\\b`, 'i')
-];
-
-const internalGeoLinks = Array.from(doc.querySelectorAll('a')).some(a => {
-  const href = a.href.toLowerCase();
-  const text = (a.textContent || '').trim().toLowerCase();
-
-  const hasLocationPath = locationPagesPatterns.some(p => p.test(href));
-  const hasGeoText = geoAnchorPatterns.some(p => p.test(text));
-
-  return (hasLocationPath && (text.length > 5)) || (hasGeoText && hasLocationPath);
-});
-    data.reviews = { schema: !!aggregateRating, canonical, internalLinks: internalGeoLinks };
-    if (!aggregateRating) allFixes.push({ module: 'Reviews & Structure', sub: 'Review Schema', ...moduleFixes['Reviews & Structure']['Review Schema'] });
-    if (!canonical) allFixes.push({ module: 'Reviews & Structure', sub: 'Canonical Tag', ...moduleFixes['Reviews & Structure']['Canonical Tag'] });
-    if (!internalGeoLinks) allFixes.push({ module: 'Reviews & Structure', sub: 'Internal Geo Links', ...moduleFixes['Reviews & Structure']['Internal Geo Links'] });
-    const reviewsScore = (aggregateRating ? 7 : 0) + (canonical ? 5 : 0) + (internalGeoLinks ? 5 : 0);
+    // Build data object (still used in modules array sub checks)
+    data.nap       = napResult.data;
+    data.keywords  = keywordsResult.data;
+    data.content   = contentResult.data;
+    data.maps      = mapsResult.data;
+    data.schema    = schemaResult.data;
+    data.reviews   = reviewsResult.data;
 
     // ── Weighted Normalized Scoring ───────────────────────────────────────────────
-    const moduleWeights = {
-      'NAP & Contact': 22,
-      'Local Keywords & Titles': 18,
-      'Local Content & Relevance': 20,
-      'Maps & Visuals': 12,
-      'Structured Data': 18,
-      'Reviews & Structure': 10
-    };
-
-    const moduleMaxRaw = {
-      'NAP & Contact': 18,
-      'Local Keywords & Titles': 17,
-      'Local Content & Relevance': 20,
-      'Maps & Visuals': 16,
-      'Structured Data': 18,
-      'Reviews & Structure': 17
-    };
-
     const normalizedModuleScores = {};
     let overallScore = 0;
 
+    const moduleResults = {
+      'NAP & Contact': napResult,
+      'Local Keywords & Titles': keywordsResult,
+      'Local Content & Relevance': contentResult,
+      'Maps & Visuals': mapsResult,
+      'Structured Data': schemaResult,
+      'Reviews & Structure': reviewsResult
+    };
+
     Object.keys(moduleWeights).forEach(mod => {
-      const rawScore = {
-        'NAP & Contact': napScore,
-        'Local Keywords & Titles': keywordsScore,
-        'Local Content & Relevance': contentScore,
-        'Maps & Visuals': mapsScore,
-        'Structured Data': schemaScore,
-        'Reviews & Structure': reviewsScore
-      }[mod];
-
-      const maxRaw = moduleMaxRaw[mod];
-      const weight = moduleWeights[mod];
-
+      const result = moduleResults[mod];
+      const rawScore = result.score;
+      const maxRaw   = result.maxRaw;
       const percentage = maxRaw > 0 ? (rawScore / maxRaw) * 100 : 0;
-      const weighted = (percentage / 100) * weight;
-
+      const weighted = (percentage / 100) * moduleWeights[mod];
       normalizedModuleScores[mod] = Math.round(percentage);
       overallScore += weighted;
     });
@@ -470,88 +310,103 @@ const internalGeoLinks = Array.from(doc.querySelectorAll('a')).some(a => {
     const bigGrade = getGrade(yourScore);
 
     const modules = [
-      { name: 'NAP & Contact', score: normalizedModuleScores['NAP & Contact'], sub: [
-        { label: 'NAP Present', ...passFail(napPresent) },
-        { label: 'Footer NAP', ...passFail(footerNap) },
-        { label: 'Contact Complete', ...passFail(contactComplete) }
-      ]},
-      { name: 'Local Keywords & Titles', score: normalizedModuleScores['Local Keywords & Titles'], sub: [
-        { label: 'Title Local', ...passFail(titleLocal) },
-        { label: 'Meta Local', ...passFail(metaLocal) },
-        { label: 'Headings Local', ...passFail(headingsLocal) }
-      ]},
-      { name: 'Local Content & Relevance', score: normalizedModuleScores['Local Content & Relevance'], sub: [
-        { label: 'Body Keywords', ...passFail(bodyLocalKeywords) },
-        { label: 'Intent Patterns', ...passFail(intentPatterns) },
-        { label: 'Location Mentions', ...passFail(locationMentions) }
-      ]},
-      { name: 'Maps & Visuals', score: normalizedModuleScores['Maps & Visuals'], sub: [
-        { label: 'Map Embedded', ...passFail(!!mapIframe) },
-        { label: 'Local Alt Text', ...passFail(localAlts) }
-      ]},
-      { name: 'Structured Data', score: normalizedModuleScores['Structured Data'], sub: [
-        { label: 'Local Schema', ...passFail(localSchemaPresent) },
-        { label: 'Geo Coords', ...passFail(geoCoords) },
-        { label: 'Opening Hours', ...passFail(hoursPresent) }
-      ]},
-      { name: 'Reviews & Structure', score: normalizedModuleScores['Reviews & Structure'], sub: [
-        { label: 'Review Schema', ...passFail(!!aggregateRating) },
-        { label: 'Canonical Tag', ...passFail(canonical) },
-        { label: 'Internal Geo Links', ...passFail(internalGeoLinks) }
-      ]}
+      {
+        name: 'NAP & Contact',
+        score: normalizedModuleScores['NAP & Contact'],
+        sub: [
+          { label: 'NAP Present', ...passFail(napResult.data.present) },
+          { label: 'Footer NAP', ...passFail(napResult.data.footer) },
+          { label: 'Contact Complete', ...passFail(napResult.data.complete) }
+        ]
+      },
+      {
+        name: 'Local Keywords & Titles',
+        score: normalizedModuleScores['Local Keywords & Titles'],
+        sub: [
+          { label: 'Title Local', ...passFail(keywordsResult.data.title) },
+          { label: 'Meta Local', ...passFail(keywordsResult.data.meta) },
+          { label: 'Headings Local', ...passFail(keywordsResult.data.headings) }
+        ]
+      },
+      {
+        name: 'Local Content & Relevance',
+        score: normalizedModuleScores['Local Content & Relevance'],
+        sub: [
+          { label: 'Body Keywords', ...passFail(contentResult.data.localKeywords) },
+          { label: 'Intent Patterns', ...passFail(contentResult.data.intentPatterns) },
+          { label: 'Location Mentions', ...passFail(contentResult.data.locationMentions) }
+        ]
+      },
+      {
+        name: 'Maps & Visuals',
+        score: normalizedModuleScores['Maps & Visuals'],
+        sub: [
+          { label: 'Map Embedded', ...passFail(mapsResult.data.embedded) },
+          { label: 'Local Alt Text', ...passFail(mapsResult.data.localAlt) }
+        ]
+      },
+      {
+        name: 'Structured Data',
+        score: normalizedModuleScores['Structured Data'],
+        sub: [
+          { label: 'Local Schema', ...passFail(schemaResult.data.localPresent) },
+          { label: 'Geo Coords', ...passFail(schemaResult.data.geoCoords) },
+          { label: 'Opening Hours', ...passFail(schemaResult.data.hours) }
+        ]
+      },
+      {
+        name: 'Reviews & Structure',
+        score: normalizedModuleScores['Reviews & Structure'],
+        sub: [
+          { label: 'Review Schema', ...passFail(reviewsResult.data.schema) },
+          { label: 'Canonical Tag', ...passFail(reviewsResult.data.canonical) },
+          { label: 'Internal Geo Links', ...passFail(reviewsResult.data.internalLinks) }
+        ]
+      }
     ];
-    
-// Scroll to results from top of viewport + generous offset - always consistent
-const offset = 240; // (adjust 80–340)
 
-const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
-
-window.scrollTo({
-  top: targetY,
-  behavior: 'smooth'
-});
+    // Scroll to results
+    const offset = 240;
+    const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
+    window.scrollTo({
+      top: targetY,
+      behavior: 'smooth'
+    });
 
     results.innerHTML = `
-<!-- Overall Score Card -->
-<div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
-  <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${bigGrade.border} border-opacity-60">
-    
-    <!-- Responsive SVG wrapper -->
-    <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
-      <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
-        <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
-        <circle cx="100" cy="100" r="90"
-                stroke="${bigGrade.fill}"
-                stroke-width="16" fill="none"
-                stroke-dasharray="${(yourScore / 100) * 565} 565"
-                stroke-linecap="round"/>
-      </svg>
-      <div class="absolute inset-0 flex items-center justify-center">
-        <div class="text-center">
-          <div class="text-5xl sm:text-6xl font-black drop-shadow-lg ${bigGrade.text}">
-            ${yourScore}
+      <!-- Overall Score Card -->
+      <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
+        <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${bigGrade.border} border-opacity-60">
+          <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
+            <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+              <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
+              <circle cx="100" cy="100" r="90"
+                      stroke="${bigGrade.fill}"
+                      stroke-width="16" fill="none"
+                      stroke-dasharray="${(yourScore / 100) * 565} 565"
+                      stroke-linecap="round"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="text-center">
+                <div class="text-5xl sm:text-6xl font-black drop-shadow-lg ${bigGrade.text}">
+                  ${yourScore}
+                </div>
+                <div class="text-lg sm:text-xl opacity-80 -mt-1 text-gray-600 dark:text-gray-400">
+                  /100
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="text-lg sm:text-xl opacity-80 -mt-1 text-gray-600 dark:text-gray-400">
-            /100
+          <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mt-6 truncate px-3 sm:px-4" title="${pageTitle}">
+            ${truncatedTitle}
+          </p>
+          <div class="mt-4 text-center">
+            <p class="text-5xl sm:text-6xl font-bold ${bigGrade.text} drop-shadow-lg">
+              ${bigGrade.emoji} ${bigGrade.grade}
+            </p>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Title below circle (kept your truncation and title attribute) -->
-    <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mt-6 truncate px-3 sm:px-4" title="${pageTitle}">
-      ${truncatedTitle}
-    </p>
-
-    <!-- Grade/emoji section -->
-    <div class="mt-4 text-center">
-      <p class="text-5xl sm:text-6xl font-bold ${bigGrade.text} drop-shadow-lg">
-        ${bigGrade.emoji} ${bigGrade.grade}
-      </p>
-    </div>
-  </div>
-</div>
-
       <!-- Radar Chart -->
       <div class="max-w-5xl mx-auto my-16 px-4">
         <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-2xl p-8">
@@ -564,7 +419,6 @@ window.scrollTo({
           </p>
         </div>
       </div>
-
       <!-- Modern Scoring Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 w-full max-w-none mx-auto">
         ${modules.map((m, index) => {
@@ -595,9 +449,9 @@ window.scrollTo({
                 ${shortDesc}
               </p>
               <div class="px-6 pb-4">
-<button onclick="openModuleDetails('${deepDiveId}')" class="block w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl font-medium transition text-gray-900 dark:text-gray-100 shadow-sm text-center cursor-pointer">
-  More Details
-</button>
+                <button onclick="openModuleDetails('${deepDiveId}')" class="block w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl font-medium transition text-gray-900 dark:text-gray-100 shadow-sm text-center cursor-pointer">
+                  More Details
+                </button>
               </div>
               <div class="px-6 py-6 space-y-4 border-t border-gray-200 dark:border-gray-700">
                 ${m.sub.map(s => `
@@ -613,30 +467,29 @@ window.scrollTo({
                 </button>
               </div>
               <div id="fixes-${index}" class="hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">
-${allFixes.filter(f => f.module?.trim().toLowerCase() === m.name.trim().toLowerCase()).length > 0 ?
-  allFixes.filter(f => f.module?.trim().toLowerCase() === m.name.trim().toLowerCase()).map(f => `
-    <div class="mb-5 pb-5 border-b border-gray-200 dark:border-gray-700 last:border-0 last:pb-0">
-      <div class="flex items-center gap-2 mb-2">
-        <span class="font-semibold text-orange-600">${f.sub}</span>
-        ${f.priority === 'very-high' ? '<span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">URGENT</span>' :
-          f.priority === 'high' ? '<span class="text-xs bg-orange-600 text-white px-2 py-0.5 rounded-full">HIGH</span>' : ''}
-      </div>
-      <p class="font-medium text-gray-900 dark:text-gray-100 mb-1">${f.issue}</p>
-      <p class="text-gray-700 dark:text-gray-300">${f.how}</p>
-    </div>
-  `).join('')
-: '<p class="text-green-600 dark:text-green-400 font-medium text-center">All checks passed – excellent!</p>'}
+                ${allFixes.filter(f => f.module?.trim().toLowerCase() === m.name.trim().toLowerCase()).length > 0 ?
+                  allFixes.filter(f => f.module?.trim().toLowerCase() === m.name.trim().toLowerCase()).map(f => `
+                    <div class="mb-5 pb-5 border-b border-gray-200 dark:border-gray-700 last:border-0 last:pb-0">
+                      <div class="flex items-center gap-2 mb-2">
+                        <span class="font-semibold text-orange-600">${f.sub}</span>
+                        ${f.priority === 'very-high' ? '<span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">URGENT</span>' :
+                          f.priority === 'high' ? '<span class="text-xs bg-orange-600 text-white px-2 py-0.5 rounded-full">HIGH</span>' : ''}
+                      </div>
+                      <p class="font-medium text-gray-900 dark:text-gray-100 mb-1">${f.issue}</p>
+                      <p class="text-gray-700 dark:text-gray-300">${f.how}</p>
+                    </div>
+                  `).join('')
+                : '<p class="text-green-600 dark:text-green-400 font-medium text-center">All checks passed – excellent!</p>'}
                 <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 text-center">
-<button onclick="openModuleDetails('${moduleHashes[m.name]}')" class="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:underline font-medium cursor-pointer">
-  How ${m.name} is tested? <span class="text-xl">→</span>
-</button>
+                  <button onclick="openModuleDetails('${moduleHashes[m.name]}')" class="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:underline font-medium cursor-pointer">
+                    How ${m.name} is tested? <span class="text-xl">→</span>
+                  </button>
                 </div>
               </div>
             </div>
           `;
         }).join('')}
       </div>
-
       <!-- Top Priority Fixes -->
       <div class="my-16">
         <h3 class="text-4xl font-bold text-center text-orange-600 mb-8">Top Priority Fixes</h3>
@@ -731,10 +584,8 @@ ${allFixes.filter(f => f.module?.trim().toLowerCase() === m.name.trim().toLowerC
           </p>
         ` : '<p class="text-center text-green-500 text-2xl font-bold">Strong local optimization — keep it up!</p>'}
       </div>
-
       <!-- Plugin Solutions -->
       <div id="plugin-solutions-section" class="mt-20"></div>
-
       <!-- PDF Button -->
       <div class="text-center my-16 px-4">
         <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
