@@ -1,6 +1,6 @@
 // module-keywords-titles.js
 
-import { moduleFixes } from './fixes-v1.0.js';
+import { moduleFixes } from "../fixes-v1.0.js";
 
 export function analyzeKeywordsTitles(doc, city, hasLocalIntent) {
   const fixes = [];

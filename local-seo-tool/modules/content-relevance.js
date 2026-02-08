@@ -1,6 +1,6 @@
 // module-content-relevance.js
 
-import { moduleFixes } from './fixes-v1.0.js';
+import { moduleFixes } from "../fixes-v1.0.js";
 
 export function analyzeContentRelevance(doc, city, getCleanContent, hasLocalIntent) {
   const fixes = [];
