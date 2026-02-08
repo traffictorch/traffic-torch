@@ -1,3 +1,5 @@
+ import { countMissingAlt, extractProductSchema, hasReviewSection, countWords } from './helpers.js';
+ 
   function analyzeContentMedia(doc, data) {
     let details = {};
     let descScore = 20;

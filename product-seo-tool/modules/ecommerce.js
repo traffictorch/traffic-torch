@@ -1,3 +1,5 @@
+ import { extractProductSchema, hasReviewSection, hasSocialMeta } from './helpers.js';
+ 
   function analyzeEcommerceSEO(doc, data) {
     let details = {};
     const schemas = extractProductSchema(doc);

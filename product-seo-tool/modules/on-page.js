@@ -1,3 +1,5 @@
+  import { countWords, getProductPageContent } from './helpers.js';
+  
   function analyzeOnPageSEO(doc, data) {
     let details = {};
     let primaryKeyword = '';

@@ -1,3 +1,5 @@
+  import { hasViewportMeta } from './helpers.js';
+  
   function analyzeTechnicalSEO(doc, data) {
     let details = {};
     let mobileScore = data.hasViewport ? 60 : 10;
