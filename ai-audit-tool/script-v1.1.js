@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 md:p-8 text-center border-l-4" style="border-left-color: ${gradeColor}">
         <div class="relative w-40 h-40 mx-auto">
           <svg viewBox="0 0 160 160" class="-rotate-90">
-            <circle cx="80" cy="80" r="70" stroke="#e5e7eb dark:#4b5563" stroke-width="16" fill="none"/>
+            <circle cx="80" cy="80" r="70" class="stroke-gray-200 dark:stroke-gray-600" stroke-width="16" fill="none"/>
             <circle cx="80" cy="80" r="70" stroke="${gradeColor}" stroke-width="16" fill="none"
                     stroke-dasharray="${m.score * 22} 440" stroke-linecap="round"/>
           </svg>
@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 text-center border-l-4" style="border-left-color: ${gradeColor}">
         <div class="relative w-32 h-32 mx-auto">
           <svg viewBox="0 0 128 128" class="-rotate-90">
-            <circle cx="64" cy="64" r="56" stroke="#e5e7eb dark:#4b5563" stroke-width="12" fill="none"/>
+            <circle cx="64" cy="64" r="56" class="stroke-gray-200 dark:stroke-gray-600" stroke-width="12" fill="none"/>
             <circle cx="64" cy="64" r="56" stroke="${gradeColor}" stroke-width="12" fill="none"
                     stroke-dasharray="${m.score * 17.6} 352" stroke-linecap="round"/>
           </svg>
