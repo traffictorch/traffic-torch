@@ -1,4 +1,6 @@
-// Dynamic import for better GitHub Pages compatibility
+// quit-risk-tool/script-v1.1.js - updated with modular imports
+
+// Dynamic import for plugin solutions (unchanged)
 let renderPluginSolutions;
 import('/quit-risk-tool/plugin-solutions-v1.0.js')
   .then(module => {
@@ -7,7 +9,13 @@ import('/quit-risk-tool/plugin-solutions-v1.0.js')
   })
   .catch(err => console.error('Failed to load plugin-solutions-v1.0.js:', err));
 
-// quit-risk-tool/script.js - full complete epic perfect version with realistic metrics
+// Import the new modular analysis functions
+import { calculateReadability } from './modules/readability.js';
+import { calculateNavigation } from './modules/navigation.js';
+import { calculateAccessibility } from './modules/accessibility.js';
+import { calculateMobile } from './modules/mobile.js';
+import { calculatePerformance } from './modules/performance.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
@@ -60,37 +68,26 @@ document.addEventListener('DOMContentLoaded', () => {
       moduleHow: "Implement proper viewport meta tag. Use responsive design with flexible layouts. Ensure large touch targets. Add manifest and service worker for PWA features.",
       moduleWhy: "Most users browse on mobile devices. Poor mobile experience causes immediate bounces. PWA capabilities increase return visits and engagement."
     },
-performance: {
-  factors: [
-    { name: "Asset Volume Flags", threshold: 82, shortDesc: "...", howToFix: "Compress all images aggressively (aim <100KB each), convert to WebP or AVIF, remove unused images, enable server compression (GZIP/Brotli), minify CSS/JS." },
-    { name: "Script Bloat Detection", threshold: 85, shortDesc: "...", howToFix: "Audit and remove unused JavaScript, defer or async non-critical scripts, bundle/minify all JS, replace heavy third-party scripts with lightweight alternatives." },
-    { name: "Font Optimization", threshold: 82, shortDesc: "...", howToFix: "Limit to 2-3 font families and essential weights, use font-display: swap to prevent invisible text, preload critical fonts, prefer system fonts where possible." },
-    { name: "Lazy Loading Media", threshold: 80, shortDesc: "...", howToFix: "Add native loading='lazy' attribute to all offscreen image and iframe elements (below the fold). For videos use preload='none' or lazy-loading libraries if needed." },
-    { name: "Image Optimization", threshold: 82, shortDesc: "...", howToFix: "Convert images to next-gen formats (WebP or AVIF), use proper responsive sizing with srcset/sizes, compress files without visible quality loss." },
-	{ name: "Script Optimization", threshold: 80, shortDesc: "Minimize render-blocking CSS/JS that delay first paint. Modern best practice allows 1-3 small/optimized blocking items if critical path is short.", howToFix: "Inline or preload critical CSS, defer/async non-critical JS, minify files, remove unused code. Aim for ≤2-3 blocking resources with fast load times."},
-  ],
+    performance: {
+      factors: [
+        { name: "Asset Volume Flags", threshold: 82, shortDesc: "...", howToFix: "Compress all images aggressively (aim <100KB each), convert to WebP or AVIF, remove unused images, enable server compression (GZIP/Brotli), minify CSS/JS." },
+        { name: "Script Bloat Detection", threshold: 85, shortDesc: "...", howToFix: "Audit and remove unused JavaScript, defer or async non-critical scripts, bundle/minify all JS, replace heavy third-party scripts with lightweight alternatives." },
+        { name: "Font Optimization", threshold: 82, shortDesc: "...", howToFix: "Limit to 2-3 font families and essential weights, use font-display: swap to prevent invisible text, preload critical fonts, prefer system fonts where possible." },
+        { name: "Lazy Loading Media", threshold: 80, shortDesc: "...", howToFix: "Add native loading='lazy' attribute to all offscreen image and iframe elements (below the fold). For videos use preload='none' or lazy-loading libraries if needed." },
+        { name: "Image Optimization", threshold: 82, shortDesc: "...", howToFix: "Convert images to next-gen formats (WebP or AVIF), use proper responsive sizing with srcset/sizes, compress files without visible quality loss." },
+        { name: "Script Optimization", threshold: 80, shortDesc: "Minimize render-blocking CSS/JS that delay first paint. Modern best practice allows 1-3 small/optimized blocking items if critical path is short.", howToFix: "Inline or preload critical CSS, defer/async non-critical JS, minify files, remove unused code. Aim for ≤2-3 blocking resources with fast load times."},
+      ],
       moduleWhat: "Performance Optimization measures loading speed and resource efficiency. It flags heavy assets, script bloat, font issues, lazy loading, and image optimization. Speed is critical for user satisfaction and rankings.",
       moduleHow: "Compress and optimize all assets. Lazy load offscreen content. Minify and defer scripts. Use modern image formats.",
       moduleWhy: "Fast pages keep users and reduce bounce rates. Speed is a direct ranking factor. Users perceive faster sites as higher quality."
     }
   };
 
-  // Helper functions for realistic metric calculation
+  // ────────────────────────────────────────────────
+  // Helper functions that were NOT moved to modules
+  // ────────────────────────────────────────────────
   function countWords(text) {
     return text.trim().split(/\s+/).filter(w => w.length > 0).length;
-  }
-
-  function countSyllables(word) {
-    word = word.toLowerCase();
-    if (word.length <= 3) return 1;
-    word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
-    word = word.replace(/^y/, '');
-    return (word.match(/[aeiouy]{1,2}/g) || []).length;
-  }
-
-  function countTotalSyllables(text) {
-    const words = text.trim().split(/\s+/).filter(w => w.length > 0);
-    return words.reduce((sum, w) => sum + countSyllables(w), 0);
   }
 
   function countExternalLinks(links) {
@@ -142,12 +139,6 @@ performance: {
       decorativeCount: decorative,
       totalImages: imgs.length
     };
-  }
-
-  function estimateColorContrastScore() {
-    const body = document.body;
-    const hasCustomColors = body.style.color || body.style.backgroundColor;
-    return hasCustomColors ? 78 : 72;
   }
 
   function getUXContent(doc) {
@@ -207,20 +198,14 @@ performance: {
       hasAppleTouchIcon: !!doc.querySelector('link[rel*="apple-touch-icon"]'),
       isHttps: window.location.protocol === 'https:',
       hasLazyLoading: (() => {
-  const allImgs = doc.querySelectorAll('img[src]');
-  const lazyImgs = doc.querySelectorAll('img[loading="lazy"]');
-  const total = allImgs.length;
-  const lazyCount = lazyImgs.length;
-
-  if (total === 0) return false;
-
-  // Most reliable logic:
-  // - At least 40% of images use lazy loading, AND
-  // - At least 2 lazy images exist (avoids false positive on tiny pages)
-  // This ignores header logos / above-fold images while still requiring meaningful adoption
-  const percentage = (lazyCount / total) * 100;
-  return lazyCount >= 2 && percentage >= 40;
-})(),
+        const allImgs = doc.querySelectorAll('img[src]');
+        const lazyImgs = doc.querySelectorAll('img[loading="lazy"]');
+        const total = allImgs.length;
+        const lazyCount = lazyImgs.length;
+        if (total === 0) return false;
+        const percentage = (lazyCount / total) * 100;
+        return lazyCount >= 2 && percentage >= 40;
+      })(),
       externalScripts: doc.querySelectorAll('script[src^="http"]').length,
       hasRenderBlocking: doc.querySelectorAll('script:not([defer]):not([async]), link[rel="stylesheet"]:not([media])').length,
       fontCount: doc.querySelectorAll('link[href*="fonts.googleapis.com"], link[href*="fonts.gstatic.com"], link[rel="stylesheet"][href*="typekit"], link[rel="stylesheet"][href*="cloud.typography"]').length || 0,
@@ -228,156 +213,38 @@ performance: {
                          doc.body.innerHTML.includes('font-display:swap') ||
                          doc.head.innerHTML.includes('font-display: swap') ||
                          doc.head.innerHTML.includes('font-display:swap'),
-      hasWebpOrAvif: !!doc.querySelector('img[src$=".webp"], img[src$=".avif"], source[type="image/webp"], source[type="image/avif"]')
+      hasWebpOrAvif: !!doc.querySelector('img[src$=".webp"], img[src$=".avif"], source[type="image/webp"], source[type="image/avif"]'),
+      potentialCTAs: doc.querySelectorAll(
+        'a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="trial"], a[href*="buy"], ' +
+        'a[href*="get"], a[href*="start"], button, [role="button"], .btn, .button, ' +
+        '[class*="cta"], [id*="cta"], [class*="button"], [class*="CallToAction"]'
+      ).length
     };
   }
 
   function analyzeUX(data) {
-    let readability = 55;
-    if (data.wordCount > 80) {
-      const sentenceCount = (data.fullText.match(/[.!?]+/g) || []).length || 1;
-      const avgSentenceLength = data.wordCount / sentenceCount;
-      const syllableCount = countTotalSyllables(data.fullText);
-      const avgSyllablesPerWord = syllableCount / data.wordCount;
-      const fleschEase = 206.835 - 1.015 * avgSentenceLength - 84.6 * avgSyllablesPerWord;
-      const kincaidGrade = 0.39 * avgSentenceLength + 11.8 * avgSyllablesPerWord - 15.59;
-      const paragraphCount = data.paragraphTexts.length || 1;
-      const avgWordsPerParagraph = data.wordCount / paragraphCount;
-      const scannability = Math.min(100, (data.boldCount * 5 + data.listItemCount * 3 + data.headingCount * 10) / (data.wordCount / 100 || 1));
-      let paraDensityScore = 100;
-      if (avgWordsPerParagraph > 120) paraDensityScore -= 40;
-      else if (avgWordsPerParagraph > 80) paraDensityScore -= 20;
-      let sentenceScore = 100 - (avgSentenceLength > 20 ? (avgSentenceLength - 20) * 5 : 0);
-      sentenceScore = Math.max(40, Math.min(100, sentenceScore));
-      const easeScore = Math.max(0, Math.min(100, fleschEase));
-      const gradeScore = kincaidGrade <= 8 ? 100 : Math.max(0, 100 - (kincaidGrade - 8) * 10);
-      readability = Math.round((easeScore + gradeScore + sentenceScore + paraDensityScore + scannability) / 5);
-    }
+    const readabilityResult   = calculateReadability(data);
+    const navigationResult   = calculateNavigation(data);
+    const accessibilityResult = calculateAccessibility(data);
+    const mobileResult       = calculateMobile(data);
+    const performanceResult  = calculatePerformance(data);
 
-    let navScore = 85;
-    const bodyTextLength = data.wordCount > 0 ? data.wordCount : 100;
-    const linkDensity = (data.linkCount / Math.max(1, bodyTextLength)) * 100;
+    const readability   = readabilityResult.score;
+    const nav           = navigationResult.score;
+    const accessibility = accessibilityResult.score;
+    const mobile        = mobileResult.score;
+    const speed         = performanceResult.score;
 
-    if (data.mainNav) navScore += 12;
-    if (data.hasDropdowns) navScore += 8;
-    if (data.topLevelItems > 9) navScore -= 18;
-    else if (data.topLevelItems > 7) navScore -= 8;
-    else if (data.topLevelItems <= 5 && data.topLevelItems > 0) navScore += 10;
-    if (data.hasBreadcrumb && data.wordCount > 400) navScore += 9;
-
-    if (linkDensity > 12) navScore -= Math.min(45, (linkDensity - 8) * 6);
-    else if (linkDensity > 8) navScore -= (linkDensity - 8) * 4;
-    else if (linkDensity < 2 && data.wordCount > 300) navScore -= 18;
-
-    const externalRatio = data.externalLinkCount / Math.max(1, data.linkCount);
-    if (externalRatio > 0.45) navScore -= 22;
-    else if (externalRatio > 0.30) navScore -= 12;
-
-    const contextualLinkEstimate = data.linkCount - data.topLevelItems * 2;
-    if (contextualLinkEstimate < 3 && data.wordCount > 600) navScore -= 20;
-    else if (contextualLinkEstimate > 0) navScore += Math.min(15, contextualLinkEstimate * 1.8);
-
-    const potentialCTAs = document.querySelectorAll(
-      'a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="trial"], a[href*="buy"], ' +
-      'a[href*="get"], a[href*="start"], button, [role="button"], .btn, .button, ' +
-      '[class*="cta"], [id*="cta"], [class*="button"], [class*="CallToAction"]'
-    ).length;
-
-    if (potentialCTAs >= 4) navScore += 12;
-    else if (potentialCTAs >= 2) navScore += 7;
-    else if (data.wordCount > 500 && potentialCTAs === 0) navScore -= 14;
-
-    navScore = Math.max(35, Math.min(98, Math.round(navScore)));
-
-    let accScore = 60;
-    if (data.altData) {
-      const { missingCount, meaningfulCount, totalImages } = data.altData;
-      if (totalImages === 0) {
-        accScore += 15;
-      } else {
-        const altCoverage = meaningfulCount > 0 
-          ? (meaningfulCount - missingCount) / meaningfulCount 
-          : 1;
-        if (altCoverage >= 0.98) accScore += 22;
-        else if (altCoverage >= 0.90) accScore += 14;
-        else if (altCoverage >= 0.70) accScore += 6;
-        else if (altCoverage < 0.50) accScore -= 30;
-        else accScore -= 18;
-      }
-    }
-    if (data.hasMain) accScore += 14;
-    if (data.hasArticleOrSection) accScore += 12;
-    if (data.headingCount >= 3) accScore += 10;
-    if (data.headingCount === 0 && data.wordCount > 300) accScore -= 18;
-    if (data.hasLandmarks) accScore += 10;
-    if (data.hasAriaLabels) accScore += 8;
-    const contrastProxy = estimateColorContrastScore();
-    accScore += (contrastProxy - 70) * 0.8;
-    accScore = Math.max(30, Math.min(98, Math.round(accScore)));
-
-    let mobileScore = 50;
-    const vp = (data.viewportContent || '').toLowerCase();
-    if (vp.includes('width=device-width') && vp.includes('initial-scale=1')) {
-      mobileScore += 35;
-      if (!vp.includes('maximum-scale') && !vp.includes('user-scalable=no')) {
-        mobileScore += 10;
-      }
-    } else if (vp.includes('width=device-width')) {
-      mobileScore += 18;
-    } else {
-      mobileScore -= 35;
-    }
-    if (data.hasMediaQueries) mobileScore += 18;
-    if (data.imageCount > 20 && data.imageCount < 60) mobileScore += 8;
-    if (data.hasTouchFriendly) mobileScore += 15;
-    else if (data.imageCount > 10) mobileScore -= 12;
-    let pwaScore = 0;
-    if (data.hasManifest) pwaScore += 20;
-    if (data.hasServiceWorkerHint) pwaScore += 15;
-    if (data.hasAppleTouchIcon) pwaScore += 10;
-    if (data.isHttps) pwaScore += 15;
-    mobileScore += Math.round(pwaScore * 0.6);
-    mobileScore = Math.max(25, Math.min(98, Math.round(mobileScore)));
-
-    let speedScore = 70;
-    if (data.imageCount > 60) speedScore -= 28;
-    else if (data.imageCount > 35) speedScore -= 16;
-    else if (data.imageCount <= 10) speedScore += 12;
-    if (data.externalScripts > 15) speedScore -= 25;
-    else if (data.externalScripts > 8) speedScore -= 14;
-    else if (data.externalScripts <= 3) speedScore += 10;
-let blockingPenalty = 0;
-if (data.hasRenderBlocking >= 8) {
-  blockingPenalty = 28; 
-} else if (data.hasRenderBlocking >= 5) {
-  blockingPenalty = 14;
-} else if (data.hasRenderBlocking >= 3) {
-  blockingPenalty = 6;
-} 
-speedScore -= blockingPenalty;
-if (data.hasLazyLoading) speedScore += 8;
-if (data.hasFontDisplaySwap) speedScore += 6;
-if (data.hasWebpOrAvif) speedScore += 5;
-    if (data.fontCount > 4) speedScore -= 16;
-    else if (data.fontCount > 2) speedScore -= 7;
-    if (data.hasFontDisplaySwap) speedScore += 12;
-    if (data.hasLazyLoading && data.imageCount > 10) speedScore += 18;
-    else if (data.imageCount > 15) speedScore -= 20;
-    if (data.hasWebpOrAvif) speedScore += 15;
-    else if (data.imageCount > 20) speedScore -= 12;
-    if (data.externalLinkCount > 30) speedScore -= 14;
-    speedScore = Math.max(30, Math.min(98, Math.round(speedScore)));
-
-    const scores = [readability, navScore, accScore, mobileScore, speedScore];
+    const scores = [readability, nav, accessibility, mobile, speed];
     const overall = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
 
     return {
       score: isNaN(overall) ? 60 : overall,
       readability,
-      nav: navScore,
-      accessibility: accScore,
-      mobile: mobileScore,
-      speed: speedScore
+      nav,
+      accessibility,
+      mobile,
+      speed
     };
   }
 
@@ -410,7 +277,6 @@ if (data.hasWebpOrAvif) speedScore += 5;
     const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
     const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
     const gradeInfo = getGradeInfo(value);
-
     let statusMessage, statusEmoji;
     if (value >= 85) { statusMessage = "Excellent"; statusEmoji = "🏆"; }
     else if (value >= 75) { statusMessage = "Very good"; statusEmoji = "✅"; }
@@ -422,11 +288,8 @@ if (data.hasWebpOrAvif) speedScore += 5;
     let failedOnlyHTML = '';
     let failedCount = 0;
 
-    if (!factorScores) factorScores = null;
-
     moduleData.factors.forEach(f => {
       let passed = value >= f.threshold;
-
       if (factorScores) {
         const fs = factorScores;
         if (moduleName === 'Readability') {
@@ -460,7 +323,7 @@ if (data.hasWebpOrAvif) speedScore += 5;
           else if (f.name === "Font Optimization") passed = fs.fontOptimization >= 70;
           else if (f.name === "Lazy Loading Media") passed = fs.lazyLoading >= 70;
           else if (f.name === "Image Optimization") passed = fs.imageFormat >= 70;
-          else if (f.name === "Script Minification & Deferral") passed = fs.renderBlocking >= 70;
+          else if (f.name === "Script Optimization") passed = fs.renderBlocking >= 70;
         }
       }
 
@@ -529,54 +392,54 @@ if (data.hasWebpOrAvif) speedScore += 5;
         </div>
       </div>`;
 
-const fixesPanelHTML = failedCount > 0
-  ? `
-    <div class="space-y-6">
-      ${failedOnlyHTML}
-    </div>
-    <p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">
-      <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}';">
-        Learn more about ${moduleName}?
-      </button>
-    </p>
-  `
-  : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
+    const fixesPanelHTML = failedCount > 0
+      ? `
+        <div class="space-y-6">
+          ${failedOnlyHTML}
+        </div>
+        <p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">
+          <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}';">
+            Learn more about ${moduleName}?
+          </button>
+        </p>
+      `
+      : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
 
-return `
-  <div class="module-card text-center p-4 sm:p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
-    <div class="relative mx-auto w-32 h-32">
-      <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-        <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-        <circle cx="64" cy="64" r="56" stroke="${ringColor}" stroke-width="12" fill="none"
-                stroke-dasharray="${(value / 100) * 352} 352" stroke-linecap="round"/>
-      </svg>
-      <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${ringColor};">
-        ${value}
-      </div>
-    </div>
-    <p class="mt-4 text-2xl font-bold ${gradeInfo.color}">   ${moduleName}</p>
-    <div class="mt-4 text-center">
-      <p class="text-4xl ${gradeInfo.color}">   ${statusEmoji}</p>
-      <p class="text-3xl font-bold ${gradeInfo.color} mt-2">   ${statusMessage}</p>
-    </div>
-    <div class="mt-6 text-center metrics-list px-2 sm:px-0">
-      ${metricsHTML}
-    </div>
-    <div class="more-details-panel hidden mt-8 text-left px-2 sm:px-4">
-      ${moreDetailsHTML}
-    </div>
-    <div class="mt-6 flex gap-4 justify-center flex-wrap">
-      <button class="more-details px-6 py-3 sm:px-8 sm:py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
-        More Details
-      </button>
-      <button class="show-fixes px-6 py-3 sm:px-8 sm:py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
-        Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
-      </button>
-    </div>
-    <div class="fixes-panel hidden mt-8 text-left px-2 sm:px-4">
-      ${fixesPanelHTML}
-    </div>
-  </div>`;
+    return `
+      <div class="module-card text-center p-4 sm:p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
+        <div class="relative mx-auto w-32 h-32">
+          <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+            <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
+            <circle cx="64" cy="64" r="56" stroke="${ringColor}" stroke-width="12" fill="none"
+                    stroke-dasharray="${(value / 100) * 352} 352" stroke-linecap="round"/>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${ringColor};">
+            ${value}
+          </div>
+        </div>
+        <p class="mt-4 text-2xl font-bold ${gradeInfo.color}"> ${moduleName}</p>
+        <div class="mt-4 text-center">
+          <p class="text-4xl ${gradeInfo.color}"> ${statusEmoji}</p>
+          <p class="text-3xl font-bold ${gradeInfo.color} mt-2"> ${statusMessage}</p>
+        </div>
+        <div class="mt-6 text-center metrics-list px-2 sm:px-0">
+          ${metricsHTML}
+        </div>
+        <div class="more-details-panel hidden mt-8 text-left px-2 sm:px-4">
+          ${moreDetailsHTML}
+        </div>
+        <div class="mt-6 flex gap-4 justify-center flex-wrap">
+          <button class="more-details px-6 py-3 sm:px-8 sm:py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
+            More Details
+          </button>
+          <button class="show-fixes px-6 py-3 sm:px-8 sm:py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
+            Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
+          </button>
+        </div>
+        <div class="fixes-panel hidden mt-8 text-left px-2 sm:px-4">
+          ${fixesPanelHTML}
+        </div>
+      </div>`;
   }
 
   form.addEventListener('submit', async e => {
@@ -590,8 +453,10 @@ return `
       url = 'https://' + url;
       input.value = url;
     }
+
     results.classList.remove('hidden');
     document.getElementById('loading').classList.remove('hidden');
+
     const progressText = document.getElementById('progressText');
     const steps = [
       { text: "Fetching page...", delay: 1200 },
@@ -602,6 +467,7 @@ return `
       { text: "Assessing performance optimization", delay: 1400 },
       { text: "Calculating quit risk", delay: 1600 }
     ];
+
     let currentStep = 0;
     const runStep = () => {
       if (currentStep < steps.length) {
@@ -624,72 +490,12 @@ return `
         const uxData = getUXContent(doc);
         const ux = analyzeUX(uxData);
 
-        // Calculate potentialCTAs early so it's available for factorDetails
-        const potentialCTAs = document.querySelectorAll(
-          'a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="trial"], a[href*="buy"], ' +
-          'a[href*="get"], a[href*="start"], button, [role="button"], .btn, .button, ' +
-          '[class*="cta"], [id*="cta"], [class*="button"], [class*="CallToAction"]'
-        ).length;
-
-        // Define factorDetails in the correct scope (performAnalysis)
         const factorDetails = {
-          readability: {
-            fleschEase: Math.round(
-              206.835 -
-              1.015 * (uxData.wordCount / ((uxData.fullText.match(/[.!?]+/g) || []).length || 1)) -
-              84.6 * (countTotalSyllables(uxData.fullText) / (uxData.wordCount || 1))
-            ),
-            kincaidGrade: Math.round(
-              0.39 * (uxData.wordCount / ((uxData.fullText.match(/[.!?]+/g) || []).length || 1)) +
-              11.8 * (countTotalSyllables(uxData.fullText) / (uxData.wordCount || 1)) -
-              15.59
-            ),
-            avgSentence: Math.round(uxData.wordCount / ((uxData.fullText.match(/[.!?]+/g) || []).length || 1)),
-            avgParagraph: Math.round(uxData.wordCount / (uxData.paragraphTexts.length || 1)),
-            scannability: Math.round(
-              (uxData.boldCount * 5 + uxData.listItemCount * 3 + uxData.headingCount * 10) /
-              (uxData.wordCount / 100 || 1)
-            )
-          },
-          navigation: {
-            linkDensity: Math.round((uxData.linkCount / (uxData.wordCount / 100 || 1)) * 10),
-            menuClarity: uxData.topLevelItems > 0 ? Math.max(0, 100 - (uxData.topLevelItems - 5) * 8) : 40,
-            internalBalance: Math.round((uxData.linkCount - (uxData.topLevelItems * 2)) / (uxData.wordCount / 500 || 1) * 25),
-            ctaStrength: potentialCTAs >= 4 ? 90 : potentialCTAs >= 2 ? 65 : 30
-          },
-          accessibility: {
-            altCoverage: uxData.altData && uxData.altData.meaningfulCount > 0
-              ? Math.round(((uxData.altData.meaningfulCount - uxData.altData.missingCount) / uxData.altData.meaningfulCount) * 100)
-              : (uxData.imageCount === 0 ? 100 : 30),
-            contrastProxy: estimateColorContrastScore(),
-            semanticStrength: (uxData.hasMain ? 25 : 0) + (uxData.hasArticleOrSection ? 20 : 0) +
-                             (uxData.headingCount >= 3 ? 25 : 0) + (uxData.hasLandmarks ? 20 : 0) +
-                             (uxData.hasAriaLabels ? 10 : 0)
-          },
-          mobile: {
-            viewportQuality: uxData.viewportContent.toLowerCase().includes('width=device-width') &&
-                             uxData.viewportContent.toLowerCase().includes('initial-scale=1') ? 95 : 30,
-            responsiveProxy: uxData.hasMediaQueries ? 85 : 40,
-            touchFriendly: uxData.hasTouchFriendly ? 80 : 35,
-            pwaReadiness: (uxData.hasManifest ? 25 : 0) + (uxData.hasServiceWorkerHint ? 20 : 0) +
-                          (uxData.hasAppleTouchIcon ? 15 : 0) + (uxData.isHttps ? 20 : 0)
-          },
-          performance: {
-            assetVolume: uxData.imageCount <= 10 ? 95 : uxData.imageCount <= 35 ? 70 :
-                         uxData.imageCount <= 60 ? 45 : 20,
-            scriptBloat: uxData.externalScripts <= 3 ? 90 : uxData.externalScripts <= 8 ? 70 :
-                         uxData.externalScripts <= 15 ? 45 : 25,
-            fontOptimization: uxData.fontCount <= 2 ? 90 : uxData.fontCount <= 4 ? 65 :
-                              uxData.hasFontDisplaySwap ? 55 : 30,
-lazyLoading: (() => {
-  if (uxData.hasLazyLoading) return 88;           // strong – meaningful lazy adoption
-  if (uxData.imageCount <= 6) return 78;          // small page with partial/no lazy → still good
-  if (uxData.imageCount <= 12) return 65;         // medium page missing lazy → moderate penalty
-  return 45;                                      // larger page with no/very few lazy → clear fail
-})(),
-imageFormat: uxData.hasWebpOrAvif ? 90 : uxData.imageCount > 20 ? 40 : 70,
-renderBlocking: uxData.hasRenderBlocking <= 2 ? 90 : uxData.hasRenderBlocking <= 5 ? 65 : 35
-          }
+          readability: calculateReadability(uxData).details,
+          navigation: calculateNavigation(uxData).details,
+          accessibility: calculateAccessibility(uxData).details,
+          mobile: calculateMobile(uxData).details,
+          performance: calculatePerformance(uxData).details
         };
 
         const failedMetrics = [];
@@ -718,14 +524,15 @@ renderBlocking: uxData.hasRenderBlocking <= 2 ? 90 : uxData.hasRenderBlocking <=
 
         const risk = getQuitRiskLabel(ux.score);
         document.getElementById('loading').classList.add('hidden');
+
         const safeScore = isNaN(ux.score) ? 60 : ux.score;
         const overallGrade = getGradeInfo(safeScore);
 
         const readabilityHTML = buildModuleHTML('Readability', ux.readability, factorDefinitions.readability, factorDetails.readability);
-        const navHTML = buildModuleHTML('Navigation', ux.nav, factorDefinitions.navigation, factorDetails.navigation);
-        const accessHTML = buildModuleHTML('Accessibility', ux.accessibility, factorDefinitions.accessibility, factorDetails.accessibility);
-        const mobileHTML = buildModuleHTML('Mobile', ux.mobile, factorDefinitions.mobile, factorDetails.mobile);
-        const speedHTML = buildModuleHTML('Speed', ux.speed, factorDefinitions.performance, factorDetails.performance);
+        const navHTML         = buildModuleHTML('Navigation', ux.nav, factorDefinitions.navigation, factorDetails.navigation);
+        const accessHTML      = buildModuleHTML('Accessibility', ux.accessibility, factorDefinitions.accessibility, factorDetails.accessibility);
+        const mobileHTML      = buildModuleHTML('Mobile', ux.mobile, factorDefinitions.mobile, factorDetails.mobile);
+        const speedHTML       = buildModuleHTML('Speed', ux.speed, factorDefinitions.performance, factorDetails.performance);
 
         const modulePriority = [
           { name: 'Readability', score: ux.readability, threshold: 65, data: factorDefinitions.readability },
@@ -894,24 +701,17 @@ renderBlocking: uxData.hasRenderBlocking <= 2 ? 90 : uxData.hasRenderBlocking <=
           { name: 'Performance', score: ux.speed }
         ];
         const scores = modules.map(m => m.score);
-        
-// Scroll to results from top of viewport + generous offset - always consistent
-const offset = 240; // (adjust 80–340)
 
-const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
-
-window.scrollTo({
-  top: targetY,
-  behavior: 'smooth'
-});
+        // Smooth scroll to results
+        const offset = 240;
+        const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top: targetY, behavior: 'smooth' });
 
         results.innerHTML = `
 <!-- Big Overall Score Card -->
 <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${safeScore >= 80 ? 'border-green-500' : safeScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
     <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall Usability Score</p>
-    
-    <!-- Responsive SVG wrapper -->
     <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
       <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
         <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
@@ -934,14 +734,12 @@ window.scrollTo({
         </div>
       </div>
     </div>
-
     ${(() => {
       const title = (doc?.title || '').trim();
       if (!title) return '';
       const truncated = title.length > 65 ? title.substring(0, 65) : title;
       return `<p class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>`;
     })()}
-
     <div class="mt-6 text-center">
       <p class="text-6xl sm:text-5xl md:text-6xl font-bold ${overallGrade.color} drop-shadow-lg">
         ${overallGrade.emoji}
@@ -954,78 +752,79 @@ window.scrollTo({
   </div>
 </div>
 
-          <!-- Quit Risk Verdict -->
-          <div class="text-center mb-12">
-            <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">Quit Risk:</p>
-            <div class="flex flex-col items-center gap-6">
-              <div class="flex items-center gap-6 text-4xl">
-                <span class="${risk.text === 'Low Risk' ? 'text-green-600' : risk.text === 'Moderate Risk' ? 'text-orange-600' : 'text-red-600'}">
-                  ${risk.text === 'Low Risk' ? '✅' : risk.text === 'Moderate Risk' ? '⚠️' : '❌'}
-                </span>
-              </div>
-              <p class="text-4xl font-black bg-gradient-to-r ${risk.color} bg-clip-text text-transparent">
-                ${risk.text}
-              </p>
-            </div>
-            <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Scanned ${uxData.linkCount} links + ${uxData.imageCount} images</p>
-          </div>
+<!-- Quit Risk Verdict -->
+<div class="text-center mb-12">
+  <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">Quit Risk:</p>
+  <div class="flex flex-col items-center gap-6">
+    <div class="flex items-center gap-6 text-4xl">
+      <span class="${risk.text === 'Low Risk' ? 'text-green-600' : risk.text === 'Moderate Risk' ? 'text-orange-600' : 'text-red-600'}">
+        ${risk.text === 'Low Risk' ? '✅' : risk.text === 'Moderate Risk' ? '⚠️' : '❌'}
+      </span>
+    </div>
+    <p class="text-4xl font-black bg-gradient-to-r ${risk.color} bg-clip-text text-transparent">
+      ${risk.text}
+    </p>
+  </div>
+  <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Scanned ${uxData.linkCount} links + ${uxData.imageCount} images</p>
+</div>
 
-          <!-- On-Page Health Radar Chart -->
-          <div class="max-w-5xl mx-auto my-16 px-4">
-            <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
-              <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
-              <div class="hidden md:block w-full">
-                <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
-              </div>
-              <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">
-                Radar chart available on desktop/tablet
-              </p>
-              <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">
-                Visual overview of your page performance across key SEO & UX factors
-              </p>
-            </div>
-          </div>
+<!-- On-Page Health Radar Chart -->
+<div class="max-w-5xl mx-auto my-16 px-4">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
+    <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
+    <div class="hidden md:block w-full">
+      <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
+    </div>
+    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">
+      Radar chart available on desktop/tablet
+    </p>
+    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">
+      Visual overview of your page performance across key SEO & UX factors
+    </p>
+  </div>
+</div>
 
-          <!-- Modules -->
-          <div class="grid gap-8 my-16 max-w-7xl mx-auto px-4">
-            <div class="grid md:grid-cols-1 gap-8">${readabilityHTML}</div>
-            <div class="grid md:grid-cols-2 gap-8">${navHTML}${accessHTML}</div>
-            <div class="grid md:grid-cols-2 gap-8">${mobileHTML}${speedHTML}</div>
-          </div>
+<!-- Modules -->
+<div class="grid gap-8 my-16 max-w-7xl mx-auto px-4">
+  <div class="grid md:grid-cols-1 gap-8">${readabilityHTML}</div>
+  <div class="grid md:grid-cols-2 gap-8">${navHTML}${accessHTML}</div>
+  <div class="grid md:grid-cols-2 gap-8">${mobileHTML}${speedHTML}</div>
+</div>
 
-          <!-- Top Priority Fixes -->
-          <div class="text-center my-20">
-            <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent mb-12">
-              Top Priority Fixes
-            </h2>
-            <div class="max-w-5xl mx-auto space-y-8">
-              ${priorityFixesHTML}
-            </div>
-            ${priorityFixes.length > 0 ? `
-            <p class="mt-12 text-xl text-gray-800 dark:text-gray-200">
-              Prioritized by impact — focusing on diverse modules for balanced improvements. If one module dominates failures, address it first for biggest gains.
-            </p>` : ''}
-          </div>
+<!-- Top Priority Fixes -->
+<div class="text-center my-20">
+  <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent mb-12">
+    Top Priority Fixes
+  </h2>
+  <div class="max-w-5xl mx-auto space-y-8">
+    ${priorityFixesHTML}
+  </div>
+  ${priorityFixes.length > 0 ? `
+  <p class="mt-12 text-xl text-gray-800 dark:text-gray-200">
+    Prioritized by impact — focusing on diverse modules for balanced improvements. If one module dominates failures, address it first for biggest gains.
+  </p>` : ''}
+</div>
 
-          <!-- Plugin Solutions Accordion -->
-          <div id="plugin-solutions-section" class="mt-16 px-4"></div>
+<!-- Plugin Solutions Accordion -->
+<div id="plugin-solutions-section" class="mt-16 px-4"></div>
 
-          <!-- Enhanced Quit Risk Reduction & Engagement Impact -->
-          ${impactHTML}
+<!-- Enhanced Quit Risk Reduction & Engagement Impact -->
+${impactHTML}
 
-          <!-- PDF Button -->
-      <div class="text-center my-16 px-4">
-        <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
-                class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl md:text-3xl font-bold rounded-2xl shadow-lg hover:opacity-90 transition transform hover:scale-105">
-          Save Report 📄
-        </button>
-        <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-          This will expand all sections for a complete printable report
-        </p>
-      </div>
-    `;
+<!-- PDF Button -->
+<div class="text-center my-16 px-4">
+  <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
+          class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl md:text-3xl font-bold rounded-2xl shadow-lg hover:opacity-90 transition transform hover:scale-105">
+    Save Report 📄
+  </button>
+  <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+    This will expand all sections for a complete printable report
+  </p>
+</div>
+        `;
 
         console.log('Container AFTER HTML set:', !!document.getElementById('plugin-solutions-section'));
+
         if (typeof renderPluginSolutions === 'function') {
           console.log('Calling renderPluginSolutions now');
           renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
@@ -1103,6 +902,7 @@ window.scrollTo({
           }
         }
         document.body.setAttribute('data-url', displayUrl);
+
       } catch (err) {
         document.getElementById('loading').classList.add('hidden');
         results.innerHTML = `
@@ -1115,23 +915,21 @@ window.scrollTo({
     }
   });
 
-document.addEventListener('click', e => {
-  // More Details button
-  const moreBtn = e.target.closest('.more-details');
-  if (moreBtn) {
-    const card = moreBtn.closest('.module-card');
-    if (card) {
-      card.querySelector('.more-details-panel').classList.toggle('hidden');
+  document.addEventListener('click', e => {
+    const moreBtn = e.target.closest('.more-details');
+    if (moreBtn) {
+      const card = moreBtn.closest('.module-card');
+      if (card) {
+        card.querySelector('.more-details-panel').classList.toggle('hidden');
+      }
     }
-  }
 
-  // Show Fixes button
-  const fixesBtn = e.target.closest('.show-fixes');
-  if (fixesBtn) {
-    const card = fixesBtn.closest('.module-card');
-    if (card) {
-      card.querySelector('.fixes-panel').classList.toggle('hidden');
+    const fixesBtn = e.target.closest('.show-fixes');
+    if (fixesBtn) {
+      const card = fixesBtn.closest('.module-card');
+      if (card) {
+        card.querySelector('.fixes-panel').classList.toggle('hidden');
+      }
     }
-  }
-});
+  });
 });
