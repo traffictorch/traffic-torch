@@ -82,7 +82,7 @@ const deepDiveIdMap = {
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
   // Show initial badge state
-  updateRunsBadge(null);
+  //updateRunsBadge(null);
   const form = document.getElementById('url-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
@@ -172,9 +172,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // ────────────────────────────────────────────────
   // Rate-limited analysis trigger
   // ────────────────────────────────────────────────
-  form.addEventListener('submit', async e => {
-    e.preventDefault();
-    await checkRateLimitAndRun(performSeoUxAnalysis);
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const urlInput = document.getElementById('url-input');
+  if (!urlInput.value.trim()) {
+    alert('Enter a URL first');
+    return;
+  }
+
+  await checkRateLimitAndRun(async () => {
+    await performSeoUxAnalysis();  // your original function
   });
 });
 

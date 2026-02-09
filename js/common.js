@@ -2,16 +2,69 @@
 
 export const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
-// Update runs-left badge (desktop + mobile)
+// Update badge - handle no data gracefully
 export function updateRunsBadge(remaining) {
   const desktop = document.getElementById('runs-left');
   const mobile = document.getElementById('runs-left-mobile');
-  const text = remaining === undefined ? '' : `Runs left today: ${remaining}`;
+  let text = '';
+  if (remaining !== undefined && remaining !== null) {
+    text = `Runs left today: ${remaining}`;
+  } else {
+    text = ''; // empty until first successful check
+  }
   if (desktop) {
     desktop.textContent = text;
-    if (remaining !== undefined) desktop.classList.remove('hidden');
+    desktop.classList.toggle('hidden', text === '');
   }
-  if (mobile) mobile.textContent = text;
+  if (mobile) {
+    mobile.textContent = text;
+  }
+}
+
+// Rate limit wrapper - adapted for your tool (no toolType param needed)
+export async function checkRateLimitAndRun(runFunction) {
+  const token = localStorage.getItem('torch_token');
+
+  if (!token) {
+    showLoginModal();
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE}/api/check-rate`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Rate check failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (data.error) {
+      alert(data.error);
+      if (data.error.toLowerCase().includes('login') || data.error.toLowerCase().includes('token')) {
+        localStorage.removeItem('torch_token');
+        showLoginModal();
+      }
+      return;
+    }
+
+    if (data.upgrade) {
+      showUpgradeModal(data.message || 'Upgrade for more runs', data.pro_price || '$48/year');
+      return;
+    }
+
+    if (data.allowed) {
+      await runFunction();  // run your original performSeoUxAnalysis
+      updateRunsBadge(data.remaining);
+      if (data.message) alert(data.message);
+    }
+  } catch (err) {
+    console.error('Rate limit check failed:', err);
+    alert('Could not check run limit — please try again or login.');
+  }
 }
 
 // Show login modal
