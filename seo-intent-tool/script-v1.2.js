@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const hasAboutLinks = auth.hasAboutLinks;
 
       // Trustworthiness
-      const trust = analyzeTrustworthiness(url, doc, config);
+      const trust = analyzeTrustworthiness(url, doc, config, cleanedText);
       const trustworthinessScore = trust.score;
       const trustworthinessMetrics = trust.metrics;
       const failedTrustworthiness = trust.failed;

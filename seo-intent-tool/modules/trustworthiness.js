@@ -1,4 +1,4 @@
-export function analyzeTrustworthiness(url, doc, config) {
+export function analyzeTrustworthiness(url, doc, config, cleanedText) {
   const isHttps = url.startsWith('https');
 
   // === Contact ===
