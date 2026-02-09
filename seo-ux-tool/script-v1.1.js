@@ -660,7 +660,7 @@ async function performSeoUxAnalysis() {
       console.warn('Radar chart failed (non-critical)', chartErr);
     }
 
-    try {
+     try {
       const previewIframe = document.getElementById('preview-iframe');
       const phoneFrame = document.getElementById('phone-frame');
       const viewToggle = document.getElementById('view-toggle');
@@ -686,7 +686,6 @@ async function performSeoUxAnalysis() {
     } catch (previewErr) {
       console.warn('Mobile preview failed (non-critical)', previewErr);
     }
-
   } catch (err) {
     alert('Failed to analyze — try another site or check the URL');
     console.error(err);
@@ -707,8 +706,7 @@ async function performSeoUxAnalysis() {
     }
     document.body.setAttribute('data-url', displayUrl);
   }
-}
-}
+}  // ← THIS EXTRA } CLOSES performSeoUxAnalysis() — MUST be here
 
 // Global smooth internal navigation + auto-expand for deep-dive cards
 function handleDeepDiveHash() {
