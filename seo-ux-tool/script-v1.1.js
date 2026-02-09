@@ -311,12 +311,24 @@ form.addEventListener('submit', async (e) => {
   }
 
   await checkRateLimitAndRun(async () => {
-    await performSeoUxAnalysis(); // your original full analysis function
-  });
-});
-
+    // All your original analysis code here (the try-catch-finally block)
+    const form = document.getElementById('url-form');
+    const input = document.getElementById('url-input');
+    const results = document.getElementById('results');
+    const overallContainer = document.getElementById('overall-container');
+    const progressContainer = document.getElementById('progress-container');
+    const progressText = document.getElementById('progress-text');
+    const priorityFixes = document.getElementById('priority-fixes');
+    progressContainer.classList.remove('hidden');
+    progressText.textContent = 'Fetching page...';
+    const originalInput = input.value.trim();
+    const url = cleanUrl(originalInput);
+    if (!url) {
+      alert('Please enter a valid URL');
+      progressContainer.classList.add('hidden');
+      return;
+    }
     const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
-
     try {
       const res = await fetch(proxyUrl);
       if (!res.ok) throw new Error('Network response was not ok');
