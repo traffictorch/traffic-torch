@@ -1,8 +1,7 @@
-// js/common.js – Shared Pro logic for all tools
-const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+// js/common.js – Shared Pro logic (exported for tool scripts)
+export const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
-// Update runs-left badge (desktop + mobile)
-function updateRunsBadge(remaining) {
+export function updateRunsBadge(remaining) {
   const desktop = document.getElementById('runs-left');
   const mobile = document.getElementById('runs-left-mobile');
   const text = remaining === undefined ? '' : `Runs left today: ${remaining}`;
@@ -13,8 +12,7 @@ function updateRunsBadge(remaining) {
   if (mobile) mobile.textContent = text;
 }
 
-// Login modal
-function showLoginModal() {
+export function showLoginModal() {
   const modal = document.createElement('div');
   modal.className = 'fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4';
   modal.innerHTML = `
@@ -31,7 +29,7 @@ function showLoginModal() {
   document.body.appendChild(modal);
 }
 
-async function handleAuth(mode) {
+export async function handleAuth(mode) {
   const email = document.getElementById('email')?.value.trim();
   const password = document.getElementById('password')?.value;
   if (!email || !password) return alert('Enter email and password');
@@ -55,14 +53,13 @@ async function handleAuth(mode) {
   }
 }
 
-// Upgrade modal (minimal)
-function showUpgradeModal(message = '', price = '$48/year') {
+export function showUpgradeModal(message = '', price = '$48/year') {
   const modal = document.createElement('div');
   modal.className = 'fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4';
   modal.innerHTML = `
     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl max-w-md w-full text-gray-500 dark:text-gray-300 p-6">
       <h2 class="text-xl font-bold mb-4 text-center">Upgrade to Pro</h2>
-      <p class="mb-4 text-center">${message || 'Unlock 25 runs/day + more'}</p>
+      <p class="mb-4 text-center">${message || 'Unlock 25 runs/day + advanced features'}</p>
       <p class="text-lg font-semibold text-center mb-6">${price}</p>
       <button onclick="upgradeToPro()" class="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700">Upgrade Now</button>
       <button onclick="this.closest('.fixed').remove()" class="mt-4 w-full text-sm text-gray-500 dark:text-gray-300">Close</button>
@@ -70,7 +67,7 @@ function showUpgradeModal(message = '', price = '$48/year') {
   document.body.appendChild(modal);
 }
 
-async function upgradeToPro() {
+export async function upgradeToPro() {
   const token = localStorage.getItem('torch_token');
   if (!token) return alert('Login first');
 
