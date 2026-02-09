@@ -2,16 +2,14 @@
 
 export const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
-// In common.js (keep this version - it already hides on null)
+// Update badge - hide on null/undefined (no "null" display)
 export function updateRunsBadge(remaining) {
   const desktop = document.getElementById('runs-left');
   const mobile = document.getElementById('runs-left-mobile');
   let text = '';
   if (remaining !== undefined && remaining !== null) {
     text = `Runs left today: ${remaining}`;
-  } else {
-    text = ''; // empty until first run
-  }
+  } // else empty - no text
   if (desktop) {
     desktop.textContent = text;
     desktop.classList.toggle('hidden', text === '');

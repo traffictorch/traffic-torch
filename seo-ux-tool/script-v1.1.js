@@ -186,7 +186,7 @@ form.addEventListener('submit', async (e) => {
 });
 
 // ────────────────────────────────────────────────
-// Protected main analysis function
+// Protected main analysis function 
 // ────────────────────────────────────────────────
 async function performSeoUxAnalysis() {
   const form = document.getElementById('url-form');
