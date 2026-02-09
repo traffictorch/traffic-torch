@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
-
+  
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -334,9 +334,7 @@ form.addEventListener('submit', async (e) => {
       if (!res.ok) throw new Error('Network response was not ok');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
-
       const resultsWrapper = document.getElementById('results-wrapper');
-
       const modules = [
         { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
         { id: 'mobile', name: 'Mobile & PWA', fn: analyzeMobile },
@@ -347,15 +345,12 @@ form.addEventListener('submit', async (e) => {
         { id: 'security', name: 'Security', fn: analyzeSecurity },
         { id: 'indexability', name: 'Indexability', fn: analyzeIndexability }
       ];
-
       const scores = [];
       const allIssues = [];
-
       for (const mod of modules) {
         progressText.textContent = `Analyzing ${mod.name}...`;
         const analysisUrl = mod.id === 'security' ? originalInput : url;
         const result = mod.fn(html, doc, analysisUrl);
-
         const info = moduleInfo[mod.id];
         if (info) {
           const infoDiv = document.querySelector(`#${mod.id}-score .module-info`);
@@ -375,10 +370,8 @@ form.addEventListener('submit', async (e) => {
               <strong>SEO:</strong> ${info.whySeo}`;
           }
         }
-
         scores.push(result.score);
         updateScore(`${mod.id}-score`, result.score);
-
         const moduleScore = result.score;
         const gradeElement = document.querySelector(`.module-grade[data-module="${mod.id}"]`);
         if (gradeElement) {
@@ -404,22 +397,16 @@ form.addEventListener('submit', async (e) => {
           gradeElement.classList.remove('opacity-0');
           gradeElement.classList.add('opacity-100');
         }
-
         populateIssues(`${mod.id}-issues`, result.issues);
         result.issues.forEach(iss => {
           allIssues.push({ ...iss, module: mod.name, impact: 100 - result.score });
         });
-
         await new Promise(r => setTimeout(r, 600));
       }
-
-      // Final report generation step after all modules
       progressText.textContent = 'Generating report...';
-      await new Promise(r => setTimeout(r, 1400)); // 1.4s readable pause
-
+      await new Promise(r => setTimeout(r, 1400));
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       updateScore('overall-score', overallScore);
-
       allIssues.sort((a, b) => b.impact - a.impact);
       const top3 = allIssues.slice(0, 3);
       const prioritisedFixes = top3.map(issue => ({
@@ -430,9 +417,7 @@ form.addEventListener('submit', async (e) => {
         emoji: '⚠️',
         impact: issue.impact || (100 - overallScore)
       }));
-
       const yourScore = Math.round(overallScore * 0.92);
-
       setTimeout(() => {
         if (document.getElementById('priority-cards-container')) {
           renderPriorityAndGains(prioritisedFixes, yourScore, overallScore);
@@ -440,16 +425,12 @@ form.addEventListener('submit', async (e) => {
           console.warn('Priority container not found - HTML may not be loaded yet');
         }
       }, 500);
-
-      // Display truncated page title
       const titleElement = doc.querySelector('title');
       let pageTitle = titleElement ? titleElement.textContent.trim() : 'Example Domain';
       if (pageTitle.length > 65) {
         pageTitle = pageTitle.substring(0, 62) + '...';
       }
       document.getElementById('page-title-display').textContent = pageTitle;
-
-      // Calculate and display grade + emoji
       let gradeText = '';
       let gradeEmoji = '';
       if (overallScore < 60) {
@@ -467,7 +448,6 @@ form.addEventListener('submit', async (e) => {
       }
       document.querySelector('#overall-grade .grade-text').textContent = gradeText;
       document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
-
       modules.forEach(mod => {
         const card = document.getElementById(`${mod.id}-score`);
         if (!card) return;
@@ -559,7 +539,6 @@ form.addEventListener('submit', async (e) => {
           `;
           expand.appendChild(block);
         });
-
         const learnMore = document.createElement('p');
         learnMore.className = 'mt-10 text-center';
         learnMore.innerHTML =
@@ -568,7 +547,6 @@ form.addEventListener('submit', async (e) => {
           'Learn more about ' + mod.name + '?' +
           '</a>';
         expand.appendChild(learnMore);
-
         expandBtn.className = 'expand mt-4 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full transition';
         expandBtn.textContent = 'Show Fixes';
         expandBtn.onclick = () => {
@@ -576,7 +554,6 @@ form.addEventListener('submit', async (e) => {
           expandBtn.textContent = expand.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
         };
       });
-
       allIssues.sort((a, b) => b.impact - a.impact);
       resultsWrapper.classList.remove('hidden');
       document.getElementById('radar-title').classList.remove('hidden');
@@ -588,7 +565,6 @@ form.addEventListener('submit', async (e) => {
         resultsWrapper.style.opacity = '1';
         resultsWrapper.style.transform = 'translateY(0)';
       });
-
       const pluginSection = document.getElementById('plugin-solutions-section');
       if (!pluginSection) return;
       pluginSection.innerHTML = '';
@@ -612,17 +588,14 @@ form.addEventListener('submit', async (e) => {
         "Breadcrumb navigation (on deep pages)",
         "Served over HTTPS / No mixed content"
       ];
-
       modules.forEach(mod => {
         const card = document.getElementById(`${mod.id}-score`);
         if (!card) return;
         const checklistItems = card.querySelectorAll('.checklist p');
-
         checklistItems.forEach(item => {
           const text = item.textContent.trim();
           if (text.startsWith('❌')) {
             let issueName = text.replace(/^❌\s*/, '').trim();
-
             if (issueName.includes('Title optimized')) issueName = supportedMetricNames[0];
             if (issueName.includes('Meta description')) issueName = supportedMetricNames[1];
             if (issueName.includes('Structured data')) issueName = supportedMetricNames[2];
@@ -639,7 +612,6 @@ form.addEventListener('submit', async (e) => {
             if (issueName.includes('calls-to-action')) issueName = supportedMetricNames[13];
             if (issueName.includes('Breadcrumb')) issueName = supportedMetricNames[14];
             if (issueName.includes('HTTPS') || issueName.includes('mixed content')) issueName = supportedMetricNames[15];
-
             if (supportedMetricNames.includes(issueName)) {
               failedMetrics.push({
                 name: issueName,
@@ -649,7 +621,6 @@ form.addEventListener('submit', async (e) => {
           }
         });
       });
-
       // More Details toggle for all modules
       document.querySelectorAll('.more-details').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -667,7 +638,6 @@ form.addEventListener('submit', async (e) => {
           }
         });
       });
-
       if (failedMetrics.length > 0) {
         renderPluginSolutions(failedMetrics);
       } else {
@@ -677,14 +647,12 @@ form.addEventListener('submit', async (e) => {
           </div>
         `;
       }
-
       const offset = 240;
       const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({
         top: targetY,
         behavior: 'smooth'
       });
-
       try {
         if (window.innerWidth >= 768) {
           const radarCtx = document.getElementById('health-radar').getContext('2d');
@@ -781,7 +749,6 @@ form.addEventListener('submit', async (e) => {
       } catch (chartErr) {
         console.warn('Radar chart failed (non-critical)', chartErr);
       }
-
       try {
         const previewIframe = document.getElementById('preview-iframe');
         const phoneFrame = document.getElementById('phone-frame');
@@ -813,7 +780,6 @@ form.addEventListener('submit', async (e) => {
       console.error(err);
     } finally {
       progressContainer.classList.add('hidden');
-
       let fullUrl = document.getElementById('url-input').value.trim();
       let displayUrl = 'traffictorch.net'; // fallback
       if (fullUrl) {
@@ -830,6 +796,8 @@ form.addEventListener('submit', async (e) => {
       document.body.setAttribute('data-url', displayUrl);
     }
   });
+});
+
 
   // ================== ANALYSIS FUNCTIONS (now import export to individual js files) ==================
 
