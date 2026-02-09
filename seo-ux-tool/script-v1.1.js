@@ -82,7 +82,6 @@ const deepDiveIdMap = {
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
   // Show initial badge state
-  //updateRunsBadge(null);
   const form = document.getElementById('url-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
@@ -182,7 +181,7 @@ form.addEventListener('submit', async (e) => {
   }
 
   await checkRateLimitAndRun(async () => {
-    await performSeoUxAnalysis();  // your original function
+    await performSeoUxAnalysis(); // your original function
   });
 });
 

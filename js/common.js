@@ -2,7 +2,7 @@
 
 export const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
-// Update badge - handle no data gracefully (no "null")
+// In common.js (keep this version - it already hides on null)
 export function updateRunsBadge(remaining) {
   const desktop = document.getElementById('runs-left');
   const mobile = document.getElementById('runs-left-mobile');
@@ -10,7 +10,7 @@ export function updateRunsBadge(remaining) {
   if (remaining !== undefined && remaining !== null) {
     text = `Runs left today: ${remaining}`;
   } else {
-    text = ''; // empty until first successful check
+    text = ''; // empty until first run
   }
   if (desktop) {
     desktop.textContent = text;
