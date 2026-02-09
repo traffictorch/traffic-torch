@@ -1,5 +1,4 @@
 // js/common.js – Shared Pro rate limiting & auth logic for all tools
-
 export const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
 // Update badge - handle no data gracefully
@@ -18,52 +17,6 @@ export function updateRunsBadge(remaining) {
   }
   if (mobile) {
     mobile.textContent = text;
-  }
-}
-
-// Rate limit wrapper - adapted for your tool (no toolType param needed)
-export async function checkRateLimitAndRun(runFunction) {
-  const token = localStorage.getItem('torch_token');
-
-  if (!token) {
-    showLoginModal();
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_BASE}/api/check-rate`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-
-    if (!response.ok) {
-      throw new Error(`Rate check failed: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    if (data.error) {
-      alert(data.error);
-      if (data.error.toLowerCase().includes('login') || data.error.toLowerCase().includes('token')) {
-        localStorage.removeItem('torch_token');
-        showLoginModal();
-      }
-      return;
-    }
-
-    if (data.upgrade) {
-      showUpgradeModal(data.message || 'Upgrade for more runs', data.pro_price || '$48/year');
-      return;
-    }
-
-    if (data.allowed) {
-      await runFunction();  // run your original performSeoUxAnalysis
-      updateRunsBadge(data.remaining);
-      if (data.message) alert(data.message);
-    }
-  } catch (err) {
-    console.error('Rate limit check failed:', err);
-    alert('Could not check run limit — please try again or login.');
   }
 }
 
@@ -90,7 +43,6 @@ export async function handleAuth(mode) {
   const email = document.getElementById('email')?.value.trim();
   const password = document.getElementById('password')?.value;
   if (!email || !password) return alert('Enter email and password');
-
   try {
     const res = await fetch(`${API_BASE}/api/${mode}`, {
       method: 'POST',
@@ -129,7 +81,6 @@ export function showUpgradeModal(message = '', price = '$48/year') {
 export async function upgradeToPro() {
   const token = localStorage.getItem('torch_token');
   if (!token) return alert('Login first');
-
   try {
     const res = await fetch(`${API_BASE}/api/upgrade`, {
       method: 'POST',
@@ -144,43 +95,40 @@ export async function upgradeToPro() {
 }
 
 // Rate limit check wrapper (call this instead of direct analysis run)
-export async function checkRateLimitAndRun(toolType, runFunction) {
+export async function checkRateLimitAndRun(runFunction) {
   const token = localStorage.getItem('torch_token');
-
   if (!token) {
     showLoginModal();
     return;
   }
-
   try {
     const response = await fetch(`${API_BASE}/api/check-rate`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` }
     });
+    if (!response.ok) {
+      throw new Error(`Rate check failed: ${response.status}`);
+    }
     const data = await response.json();
-
     if (data.error) {
       alert(data.error);
       if (data.error.toLowerCase().includes('login') || data.error.toLowerCase().includes('token')) {
+        localStorage.removeItem('torch_token');
         showLoginModal();
       }
       return;
     }
-
     if (data.upgrade) {
-      showUpgradeModal(data.message, data.pro_price || '$48/year');
+      showUpgradeModal(data.message || 'Upgrade for more runs', data.pro_price || '$48/year');
       return;
     }
-
     if (data.allowed) {
-      // Run the actual tool analysis
-      await runFunction(toolType);
-
+      await runFunction(); // run your original performSeoUxAnalysis
       updateRunsBadge(data.remaining);
-
       if (data.message) alert(data.message);
     }
   } catch (err) {
-    alert('Rate check failed: ' + err.message);
+    console.error('Rate limit check failed:', err);
+    alert('Could not check run limit — please try again or login.');
   }
 }
