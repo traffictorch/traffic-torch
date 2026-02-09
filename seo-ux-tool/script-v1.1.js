@@ -1,136 +1,3 @@
-// Pro rate limiting & auth logic (self-contained in this tool)
-const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
-
-// Update badge - hide on null/undefined (no "null" display)
-function updateRunsBadge(remaining) {
-  const desktop = document.getElementById('runs-left');
-  const mobile = document.getElementById('runs-left-mobile');
-  let text = '';
-  if (remaining !== undefined && remaining !== null) {
-    text = `Runs left today: ${remaining}`;
-  }
-  if (desktop) {
-    desktop.textContent = text;
-    desktop.classList.toggle('hidden', text === '');
-  }
-  if (mobile) {
-    mobile.textContent = text;
-  }
-}
-
-// Show login modal
-function showLoginModal() {
-  const modal = document.createElement('div');
-  modal.className = 'fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4';
-  modal.innerHTML = `
-    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl max-w-md w-full text-gray-800 dark:text-gray-200 p-6">
-      <h2 class="text-xl font-bold mb-4 text-center">Login or Register</h2>
-      <input id="email" type="email" placeholder="Email" class="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200">
-      <input id="password" type="password" placeholder="Password" class="w-full p-3 mb-6 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200">
-      <div class="flex gap-4">
-        <button onclick="handleAuth('login')" class="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">Login</button>
-        <button onclick="handleAuth('register')" class="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700">Register</button>
-      </div>
-      <button onclick="this.closest('.fixed').remove()" class="mt-4 w-full text-sm text-gray-800 dark:text-gray-200">Close</button>
-    </div>`;
-  document.body.appendChild(modal);
-}
-
-// Handle auth (login/register)
-async function handleAuth(mode) {
-  const email = document.getElementById('email')?.value.trim();
-  const password = document.getElementById('password')?.value;
-  if (!email || !password) return alert('Enter email and password');
-  try {
-    const res = await fetch(`${API_BASE}/api/${mode}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    const data = await res.json();
-    if (res.ok && data.token) {
-      localStorage.setItem('torch_token', data.token);
-      alert(mode === 'login' ? 'Logged in!' : 'Registered!');
-      document.querySelector('.fixed')?.remove();
-    } else {
-      alert(data.error || 'Error');
-    }
-  } catch (err) {
-    alert('Connection error');
-  }
-}
-
-// Show upgrade modal
-function showUpgradeModal(message = '', price = '$48/year') {
-  const modal = document.createElement('div');
-  modal.className = 'fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4';
-  modal.innerHTML = `
-    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl max-w-md w-full text-gray-800 dark:text-gray-200 p-6">
-      <h2 class="text-xl font-bold mb-4 text-center">Upgrade to Pro</h2>
-      <p class="mb-4 text-center">${message || 'Unlock 25 runs/day + advanced features'}</p>
-      <p class="text-lg font-semibold text-center mb-6">${price}</p>
-      <button onclick="upgradeToPro()" class="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700">Upgrade Now</button>
-      <button onclick="this.closest('.fixed').remove()" class="mt-4 w-full text-sm text-gray-800 dark:text-gray-200">Close</button>
-    </div>`;
-  document.body.appendChild(modal);
-}
-
-// Trigger Stripe upgrade
-async function upgradeToPro() {
-  const token = localStorage.getItem('torch_token');
-  if (!token) return alert('Login first');
-  try {
-    const res = await fetch(`${API_BASE}/api/upgrade`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const data = await res.json();
-    if (data.url) window.location.href = data.url;
-    else alert(data.error || 'Upgrade failed');
-  } catch (err) {
-    alert('Error');
-  }
-}
-
-// Rate limit check wrapper - call this to run analysis safely
-async function checkRateLimitAndRun(runFunction) {
-  const token = localStorage.getItem('torch_token');
-  if (!token) {
-    showLoginModal();
-    return;
-  }
-  try {
-    const response = await fetch(`${API_BASE}/api/check-rate`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (!response.ok) {
-      throw new Error(`Rate check failed: ${response.status}`);
-    }
-    const data = await response.json();
-    if (data.error) {
-      alert(data.error);
-      if (data.error.toLowerCase().includes('login') || data.error.toLowerCase().includes('token')) {
-        localStorage.removeItem('torch_token');
-        showLoginModal();
-      }
-      return;
-    }
-    if (data.upgrade) {
-      showUpgradeModal(data.message || 'Upgrade for more runs', data.pro_price || '$48/year');
-      return;
-    }
-    if (data.allowed) {
-      await runFunction();
-      updateRunsBadge(data.remaining);
-      if (data.message) alert(data.message);
-    }
-  } catch (err) {
-    console.error('Rate limit check failed:', err);
-    alert('Could not check run limit — please try again or login.');
-  }
-}
-
 import { renderPriorityAndGains } from './priority-gains-v1.0.js';
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 import { analyzeSEO } from './modules/analyze-seo-v1.0.js';
@@ -298,27 +165,13 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
-  
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
 
-  const urlInput = document.getElementById('url-input');
-  if (!urlInput.value.trim()) {
-    alert('Enter a URL first');
-    return;
-  }
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
 
-  await checkRateLimitAndRun(async () => {
-    // Your original analysis code (the try-catch-finally block)
-    const form = document.getElementById('url-form');
-    const input = document.getElementById('url-input');
-    const results = document.getElementById('results');
-    const overallContainer = document.getElementById('overall-container');
-    const progressContainer = document.getElementById('progress-container');
-    const progressText = document.getElementById('progress-text');
-    const priorityFixes = document.getElementById('priority-fixes');
     progressContainer.classList.remove('hidden');
     progressText.textContent = 'Fetching page...';
+
     const originalInput = input.value.trim();
     const url = cleanUrl(originalInput);
     if (!url) {
@@ -326,13 +179,17 @@ form.addEventListener('submit', async (e) => {
       progressContainer.classList.add('hidden');
       return;
     }
+
     const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
+
     try {
       const res = await fetch(proxyUrl);
       if (!res.ok) throw new Error('Network response was not ok');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
+
       const resultsWrapper = document.getElementById('results-wrapper');
+
       const modules = [
         { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
         { id: 'mobile', name: 'Mobile & PWA', fn: analyzeMobile },
@@ -343,12 +200,15 @@ form.addEventListener('submit', async (e) => {
         { id: 'security', name: 'Security', fn: analyzeSecurity },
         { id: 'indexability', name: 'Indexability', fn: analyzeIndexability }
       ];
+
       const scores = [];
       const allIssues = [];
+
       for (const mod of modules) {
         progressText.textContent = `Analyzing ${mod.name}...`;
         const analysisUrl = mod.id === 'security' ? originalInput : url;
         const result = mod.fn(html, doc, analysisUrl);
+
         const info = moduleInfo[mod.id];
         if (info) {
           const infoDiv = document.querySelector(`#${mod.id}-score .module-info`);
@@ -368,8 +228,10 @@ form.addEventListener('submit', async (e) => {
               <strong>SEO:</strong> ${info.whySeo}`;
           }
         }
+
         scores.push(result.score);
         updateScore(`${mod.id}-score`, result.score);
+
         const moduleScore = result.score;
         const gradeElement = document.querySelector(`.module-grade[data-module="${mod.id}"]`);
         if (gradeElement) {
@@ -395,16 +257,22 @@ form.addEventListener('submit', async (e) => {
           gradeElement.classList.remove('opacity-0');
           gradeElement.classList.add('opacity-100');
         }
+
         populateIssues(`${mod.id}-issues`, result.issues);
         result.issues.forEach(iss => {
           allIssues.push({ ...iss, module: mod.name, impact: 100 - result.score });
         });
+
         await new Promise(r => setTimeout(r, 600));
       }
+
+      // Final report generation step after all modules
       progressText.textContent = 'Generating report...';
-      await new Promise(r => setTimeout(r, 1400));
+      await new Promise(r => setTimeout(r, 1400)); // 1.4s readable pause
+
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       updateScore('overall-score', overallScore);
+
       allIssues.sort((a, b) => b.impact - a.impact);
       const top3 = allIssues.slice(0, 3);
       const prioritisedFixes = top3.map(issue => ({
@@ -415,7 +283,9 @@ form.addEventListener('submit', async (e) => {
         emoji: '⚠️',
         impact: issue.impact || (100 - overallScore)
       }));
+
       const yourScore = Math.round(overallScore * 0.92);
+
       setTimeout(() => {
         if (document.getElementById('priority-cards-container')) {
           renderPriorityAndGains(prioritisedFixes, yourScore, overallScore);
@@ -423,12 +293,16 @@ form.addEventListener('submit', async (e) => {
           console.warn('Priority container not found - HTML may not be loaded yet');
         }
       }, 500);
+
+      // Display truncated page title
       const titleElement = doc.querySelector('title');
       let pageTitle = titleElement ? titleElement.textContent.trim() : 'Example Domain';
       if (pageTitle.length > 65) {
         pageTitle = pageTitle.substring(0, 62) + '...';
       }
       document.getElementById('page-title-display').textContent = pageTitle;
+
+      // Calculate and display grade + emoji
       let gradeText = '';
       let gradeEmoji = '';
       if (overallScore < 60) {
@@ -446,6 +320,7 @@ form.addEventListener('submit', async (e) => {
       }
       document.querySelector('#overall-grade .grade-text').textContent = gradeText;
       document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
+
       modules.forEach(mod => {
         const card = document.getElementById(`${mod.id}-score`);
         if (!card) return;
@@ -537,6 +412,7 @@ form.addEventListener('submit', async (e) => {
           `;
           expand.appendChild(block);
         });
+
         const learnMore = document.createElement('p');
         learnMore.className = 'mt-10 text-center';
         learnMore.innerHTML =
@@ -545,6 +421,7 @@ form.addEventListener('submit', async (e) => {
           'Learn more about ' + mod.name + '?' +
           '</a>';
         expand.appendChild(learnMore);
+
         expandBtn.className = 'expand mt-4 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full transition';
         expandBtn.textContent = 'Show Fixes';
         expandBtn.onclick = () => {
@@ -552,6 +429,7 @@ form.addEventListener('submit', async (e) => {
           expandBtn.textContent = expand.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
         };
       });
+
       allIssues.sort((a, b) => b.impact - a.impact);
       resultsWrapper.classList.remove('hidden');
       document.getElementById('radar-title').classList.remove('hidden');
@@ -563,6 +441,7 @@ form.addEventListener('submit', async (e) => {
         resultsWrapper.style.opacity = '1';
         resultsWrapper.style.transform = 'translateY(0)';
       });
+
       const pluginSection = document.getElementById('plugin-solutions-section');
       if (!pluginSection) return;
       pluginSection.innerHTML = '';
@@ -586,14 +465,17 @@ form.addEventListener('submit', async (e) => {
         "Breadcrumb navigation (on deep pages)",
         "Served over HTTPS / No mixed content"
       ];
+
       modules.forEach(mod => {
         const card = document.getElementById(`${mod.id}-score`);
         if (!card) return;
         const checklistItems = card.querySelectorAll('.checklist p');
+
         checklistItems.forEach(item => {
           const text = item.textContent.trim();
           if (text.startsWith('❌')) {
             let issueName = text.replace(/^❌\s*/, '').trim();
+
             if (issueName.includes('Title optimized')) issueName = supportedMetricNames[0];
             if (issueName.includes('Meta description')) issueName = supportedMetricNames[1];
             if (issueName.includes('Structured data')) issueName = supportedMetricNames[2];
@@ -610,6 +492,7 @@ form.addEventListener('submit', async (e) => {
             if (issueName.includes('calls-to-action')) issueName = supportedMetricNames[13];
             if (issueName.includes('Breadcrumb')) issueName = supportedMetricNames[14];
             if (issueName.includes('HTTPS') || issueName.includes('mixed content')) issueName = supportedMetricNames[15];
+
             if (supportedMetricNames.includes(issueName)) {
               failedMetrics.push({
                 name: issueName,
@@ -619,6 +502,7 @@ form.addEventListener('submit', async (e) => {
           }
         });
       });
+
       // More Details toggle for all modules
       document.querySelectorAll('.more-details').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -636,6 +520,7 @@ form.addEventListener('submit', async (e) => {
           }
         });
       });
+
       if (failedMetrics.length > 0) {
         renderPluginSolutions(failedMetrics);
       } else {
@@ -645,12 +530,14 @@ form.addEventListener('submit', async (e) => {
           </div>
         `;
       }
+
       const offset = 240;
       const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({
         top: targetY,
         behavior: 'smooth'
       });
+
       try {
         if (window.innerWidth >= 768) {
           const radarCtx = document.getElementById('health-radar').getContext('2d');
@@ -747,6 +634,7 @@ form.addEventListener('submit', async (e) => {
       } catch (chartErr) {
         console.warn('Radar chart failed (non-critical)', chartErr);
       }
+
       try {
         const previewIframe = document.getElementById('preview-iframe');
         const phoneFrame = document.getElementById('phone-frame');
@@ -778,6 +666,7 @@ form.addEventListener('submit', async (e) => {
       console.error(err);
     } finally {
       progressContainer.classList.add('hidden');
+
       let fullUrl = document.getElementById('url-input').value.trim();
       let displayUrl = 'traffictorch.net'; // fallback
       if (fullUrl) {
@@ -794,8 +683,6 @@ form.addEventListener('submit', async (e) => {
       document.body.setAttribute('data-url', displayUrl);
     }
   });
-});
-
 
   // ================== ANALYSIS FUNCTIONS (now import export to individual js files) ==================
 
