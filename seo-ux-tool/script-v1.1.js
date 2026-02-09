@@ -1,3 +1,5 @@
+// seo-ux-tool/script-v1.1.js
+
 import { renderPriorityAndGains } from './priority-gains-v1.0.js';
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 import { analyzeSEO } from './modules/analyze-seo-v1.0.js';
@@ -8,6 +10,13 @@ import { analyzeContentQuality } from './modules/analyze-content-v1.0.js';
 import { analyzeUXDesign } from './modules/analyze-ux-v1.0.js';
 import { analyzeSecurity } from './modules/analyze-security-v1.0.js';
 import { analyzeIndexability } from './modules/analyze-indexability-v1.0.js';
+
+// ────────────────────────────────────────────────
+//  Rate limiting & auth utilities
+// ────────────────────────────────────────────────
+import { checkRateLimitAndRun, showLoginModal, showUpgradeModal, updateRunsBadge } from '../js/common.js';
+
+const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
 const moduleInfo = {
   seo: {
@@ -74,6 +83,9 @@ const deepDiveIdMap = {
 
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
+
+  // Show initial badge state
+  updateRunsBadge(null);
 
   const form = document.getElementById('url-form');
   const input = document.getElementById('url-input');
@@ -166,572 +178,572 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ────────────────────────────────────────────────
+  // Rate-limited analysis trigger
+  // ────────────────────────────────────────────────
   form.addEventListener('submit', async e => {
     e.preventDefault();
+    await checkRateLimitAndRun(performSeoUxAnalysis);
+  });
+});
 
-    progressContainer.classList.remove('hidden');
-    progressText.textContent = 'Fetching page...';
+// ────────────────────────────────────────────────
+// Protected main analysis function
+// ────────────────────────────────────────────────
+async function performSeoUxAnalysis() {
+  const form = document.getElementById('url-form');
+  const input = document.getElementById('url-input');
+  const results = document.getElementById('results');
+  const overallContainer = document.getElementById('overall-container');
+  const progressContainer = document.getElementById('progress-container');
+  const progressText = document.getElementById('progress-text');
+  const priorityFixes = document.getElementById('priority-fixes');
 
-    const originalInput = input.value.trim();
-    const url = cleanUrl(originalInput);
-    if (!url) {
-      alert('Please enter a valid URL');
-      progressContainer.classList.add('hidden');
-      return;
+  progressContainer.classList.remove('hidden');
+  progressText.textContent = 'Fetching page...';
+
+  const originalInput = input.value.trim();
+  const url = cleanUrl(originalInput);
+  if (!url) {
+    alert('Please enter a valid URL');
+    progressContainer.classList.add('hidden');
+    return;
+  }
+
+  const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
+
+  try {
+    const res = await fetch(proxyUrl);
+    if (!res.ok) throw new Error('Network response was not ok');
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    const resultsWrapper = document.getElementById('results-wrapper');
+    const modules = [
+      { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
+      { id: 'mobile', name: 'Mobile & PWA', fn: analyzeMobile },
+      { id: 'perf', name: 'Performance', fn: analyzePerf },
+      { id: 'access', name: 'Accessibility', fn: analyzeAccess },
+      { id: 'content', name: 'Content Quality', fn: analyzeContentQuality },
+      { id: 'ux', name: 'UX Design', fn: analyzeUXDesign },
+      { id: 'security', name: 'Security', fn: analyzeSecurity },
+      { id: 'indexability', name: 'Indexability', fn: analyzeIndexability }
+    ];
+
+    const scores = [];
+    const allIssues = [];
+
+    for (const mod of modules) {
+      progressText.textContent = `Analyzing ${mod.name}...`;
+      const analysisUrl = mod.id === 'security' ? originalInput : url;
+      const result = mod.fn(html, doc, analysisUrl);
+      const info = moduleInfo[mod.id];
+
+      if (info) {
+        const infoDiv = document.querySelector(`#${mod.id}-score .module-info`);
+        if (infoDiv) {
+          const howTested = document.createElement('p');
+          howTested.className = 'mb-8 text-center';
+          howTested.innerHTML =
+            '<a href="#' + deepDiveIdMap[mod.id] + '" ' +
+            'class="inline-block text-blue-600 dark:text-blue-400 font-bold text-xl hover:underline">' +
+            'How ' + mod.name + ' is tested?' +
+            '</a>';
+          infoDiv.prepend(howTested);
+          infoDiv.querySelector('.what').innerHTML = `<strong class="text-cyan-400">What is it?</strong><br>${info.what}`;
+          infoDiv.querySelector('.how').innerHTML = `<strong class="text-blue-400">How to improve overall:</strong><br>${info.how}`;
+          infoDiv.querySelector('.why').innerHTML = `<strong class="text-purple-400">Why it matters:</strong><br>
+            <strong>UX:</strong> ${info.whyUx}<br>
+            <strong>SEO:</strong> ${info.whySeo}`;
+        }
+      }
+
+      scores.push(result.score);
+      updateScore(`${mod.id}-score`, result.score);
+
+      const moduleScore = result.score;
+      const gradeElement = document.querySelector(`.module-grade[data-module="${mod.id}"]`);
+      if (gradeElement) {
+        let gradeText = '';
+        let gradeEmoji = '';
+        let colorClass = '';
+        if (moduleScore < 60) {
+          gradeText = 'Needs Work';
+          gradeEmoji = '❌';
+          colorClass = 'text-red-500';
+        } else if (moduleScore < 80) {
+          gradeText = 'Needs Improvement';
+          gradeEmoji = '⚠️';
+          colorClass = 'text-orange-500';
+        } else {
+          gradeText = 'Excellent';
+          gradeEmoji = '🟢';
+          colorClass = 'text-green-500';
+        }
+        gradeElement.querySelector('.grade-text').textContent = gradeText;
+        gradeElement.querySelector('.grade-emoji').textContent = gradeEmoji;
+        gradeElement.classList.add(colorClass);
+        gradeElement.classList.remove('opacity-0');
+        gradeElement.classList.add('opacity-100');
+      }
+
+      populateIssues(`${mod.id}-issues`, result.issues);
+      result.issues.forEach(iss => {
+        allIssues.push({ ...iss, module: mod.name, impact: 100 - result.score });
+      });
+
+      await new Promise(r => setTimeout(r, 600));
     }
 
-    const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
+    progressText.textContent = 'Generating report...';
+    await new Promise(r => setTimeout(r, 1400));
 
-    try {
-      const res = await fetch(proxyUrl);
-      if (!res.ok) throw new Error('Network response was not ok');
-      const html = await res.text();
-      const doc = new DOMParser().parseFromString(html, 'text/html');
+    const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+    updateScore('overall-score', overallScore);
 
-      const resultsWrapper = document.getElementById('results-wrapper');
+    allIssues.sort((a, b) => b.impact - a.impact);
+    const top3 = allIssues.slice(0, 3);
 
-      const modules = [
-        { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
-        { id: 'mobile', name: 'Mobile & PWA', fn: analyzeMobile },
-        { id: 'perf', name: 'Performance', fn: analyzePerf },
-        { id: 'access', name: 'Accessibility', fn: analyzeAccess },
-        { id: 'content', name: 'Content Quality', fn: analyzeContentQuality },
-        { id: 'ux', name: 'UX Design', fn: analyzeUXDesign },
-        { id: 'security', name: 'Security', fn: analyzeSecurity },
-        { id: 'indexability', name: 'Indexability', fn: analyzeIndexability }
-      ];
+    const prioritisedFixes = top3.map(issue => ({
+      title: issue.issue,
+      how: issue.fix,
+      what: `Failing metric: ${issue.issue.toLowerCase().split('(')[0].trim()}`,
+      why: 'Improving this metric strengthens on-page signals, crawlability, or user experience.',
+      emoji: '⚠️',
+      impact: issue.impact || (100 - overallScore)
+    }));
 
-      const scores = [];
-      const allIssues = [];
+    const yourScore = Math.round(overallScore * 0.92);
 
-      for (const mod of modules) {
-        progressText.textContent = `Analyzing ${mod.name}...`;
-        const analysisUrl = mod.id === 'security' ? originalInput : url;
-        const result = mod.fn(html, doc, analysisUrl);
-
-        const info = moduleInfo[mod.id];
-        if (info) {
-          const infoDiv = document.querySelector(`#${mod.id}-score .module-info`);
-          if (infoDiv) {
-            const howTested = document.createElement('p');
-            howTested.className = 'mb-8 text-center';
-            howTested.innerHTML =
-              '<a href="#' + deepDiveIdMap[mod.id] + '" ' +
-              'class="inline-block text-blue-600 dark:text-blue-400 font-bold text-xl hover:underline">' +
-              'How ' + mod.name + ' is tested?' +
-              '</a>';
-            infoDiv.prepend(howTested);
-            infoDiv.querySelector('.what').innerHTML = `<strong class="text-cyan-400">What is it?</strong><br>${info.what}`;
-            infoDiv.querySelector('.how').innerHTML = `<strong class="text-blue-400">How to improve overall:</strong><br>${info.how}`;
-            infoDiv.querySelector('.why').innerHTML = `<strong class="text-purple-400">Why it matters:</strong><br>
-              <strong>UX:</strong> ${info.whyUx}<br>
-              <strong>SEO:</strong> ${info.whySeo}`;
-          }
-        }
-
-        scores.push(result.score);
-        updateScore(`${mod.id}-score`, result.score);
-
-        const moduleScore = result.score;
-        const gradeElement = document.querySelector(`.module-grade[data-module="${mod.id}"]`);
-        if (gradeElement) {
-          let gradeText = '';
-          let gradeEmoji = '';
-          let colorClass = '';
-          if (moduleScore < 60) {
-            gradeText = 'Needs Work';
-            gradeEmoji = '❌';
-            colorClass = 'text-red-500';
-          } else if (moduleScore < 80) {
-            gradeText = 'Needs Improvement';
-            gradeEmoji = '⚠️';
-            colorClass = 'text-orange-500';
-          } else {
-            gradeText = 'Excellent';
-            gradeEmoji = '🟢';
-            colorClass = 'text-green-500';
-          }
-          gradeElement.querySelector('.grade-text').textContent = gradeText;
-          gradeElement.querySelector('.grade-emoji').textContent = gradeEmoji;
-          gradeElement.classList.add(colorClass);
-          gradeElement.classList.remove('opacity-0');
-          gradeElement.classList.add('opacity-100');
-        }
-
-        populateIssues(`${mod.id}-issues`, result.issues);
-        result.issues.forEach(iss => {
-          allIssues.push({ ...iss, module: mod.name, impact: 100 - result.score });
-        });
-
-        await new Promise(r => setTimeout(r, 600));
-      }
-
-      // Final report generation step after all modules
-      progressText.textContent = 'Generating report...';
-      await new Promise(r => setTimeout(r, 1400)); // 1.4s readable pause
-
-      const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
-      updateScore('overall-score', overallScore);
-
-      allIssues.sort((a, b) => b.impact - a.impact);
-      const top3 = allIssues.slice(0, 3);
-      const prioritisedFixes = top3.map(issue => ({
-        title: issue.issue,
-        how: issue.fix,
-        what: `Failing metric: ${issue.issue.toLowerCase().split('(')[0].trim()}`,
-        why: 'Improving this metric strengthens on-page signals, crawlability, or user experience.',
-        emoji: '⚠️',
-        impact: issue.impact || (100 - overallScore)
-      }));
-
-      const yourScore = Math.round(overallScore * 0.92);
-
-      setTimeout(() => {
-        if (document.getElementById('priority-cards-container')) {
-          renderPriorityAndGains(prioritisedFixes, yourScore, overallScore);
-        } else {
-          console.warn('Priority container not found - HTML may not be loaded yet');
-        }
-      }, 500);
-
-      // Display truncated page title
-      const titleElement = doc.querySelector('title');
-      let pageTitle = titleElement ? titleElement.textContent.trim() : 'Example Domain';
-      if (pageTitle.length > 65) {
-        pageTitle = pageTitle.substring(0, 62) + '...';
-      }
-      document.getElementById('page-title-display').textContent = pageTitle;
-
-      // Calculate and display grade + emoji
-      let gradeText = '';
-      let gradeEmoji = '';
-      if (overallScore < 60) {
-        gradeText = 'Needs Work';
-        gradeEmoji = '❌';
-        document.getElementById('overall-grade').className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-red-500';
-      } else if (overallScore < 80) {
-        gradeText = 'Needs Improvement';
-        gradeEmoji = '⚠️';
-        document.getElementById('overall-grade').className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-orange-500';
+    setTimeout(() => {
+      if (document.getElementById('priority-cards-container')) {
+        renderPriorityAndGains(prioritisedFixes, yourScore, overallScore);
       } else {
-        gradeText = 'Excellent';
-        gradeEmoji = '🟢';
-        document.getElementById('overall-grade').className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-green-500';
+        console.warn('Priority container not found - HTML may not be loaded yet');
       }
-      document.querySelector('#overall-grade .grade-text').textContent = gradeText;
-      document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
+    }, 500);
 
-      modules.forEach(mod => {
-        const card = document.getElementById(`${mod.id}-score`);
-        if (!card) return;
-        const expandBtn = card.querySelector('.expand');
-        if (!expandBtn) return;
-        const analysisUrl = mod.id === 'security' ? originalInput : url;
-        const { issues: modIssues } = mod.fn(html, doc, analysisUrl);
-        let checks = [];
-        if (mod.id === 'seo') {
-          checks = [
-            { text: 'Title optimized (30–65 chars, keyword early)', passed: !modIssues.some(i => i.issue.toLowerCase().includes('title')) },
-            { text: 'Meta description present & optimal', passed: !modIssues.some(i => i.issue.toLowerCase().includes('meta description')) },
-            { text: 'Main heading includes keyword', passed: !modIssues.some(i => i.issue.toLowerCase().includes('main heading') || i.issue.toLowerCase().includes('keyword')) },
-            { text: 'Structured data (schema) detected', passed: !modIssues.some(i => i.issue.toLowerCase().includes('schema') || i.issue.toLowerCase().includes('structured data')) },
-            { text: 'All images have meaningful alt text', passed: !modIssues.some(i => i.issue.toLowerCase().includes('alt text')) }
-          ];
-        } else if (mod.id === 'mobile') {
-          checks = [
-            { text: 'Viewport meta tag correct', passed: !modIssues.some(i => i.issue.includes('Viewport')) },
-            { text: 'Web app manifest linked', passed: !modIssues.some(i => i.issue.includes('manifest')) },
-            { text: 'Homescreen icons (192px+) provided', passed: !modIssues.some(i => i.issue.includes('homescreen') || i.issue.includes('icon')) },
-            { text: 'Service worker', passed: !modIssues.some(i => i.issue.includes('service worker')) }
-          ];
-        } else if (mod.id === 'perf') {
-          checks = [
-            { text: 'Page weight reasonable (<300KB HTML)', passed: !modIssues.some(i => i.issue.includes('Page weight')) },
-            { text: 'Number of HTTP requests', passed: !modIssues.some(i => i.issue.includes('HTTP requests')) },
-            { text: 'Render-blocking resources', passed: !modIssues.some(i => i.issue.includes('render-blocking')) },
-            { text: 'Web fonts optimized', passed: !modIssues.some(i => i.issue.includes('web font') || i.issue.includes('font')) }
-          ];
-        } else if (mod.id === 'access') {
-          checks = [
-            { text: 'All images have alt text', passed: !modIssues.some(i => i.issue.includes('alt text')) },
-            { text: 'Lang attribute on <html>', passed: !modIssues.some(i => i.issue.includes('lang attribute')) },
-            { text: 'Main landmark present', passed: !modIssues.some(i => i.issue.includes('main landmark')) },
-            { text: 'Proper heading hierarchy', passed: !modIssues.some(i => i.issue.includes('Heading order')) },
-            { text: 'Form fields properly labeled', passed: !modIssues.some(i => i.issue.includes('form fields') || i.issue.includes('labels')) }
-          ];
-        } else if (mod.id === 'content') {
-          checks = [
-            { text: 'Sufficient unique content depth', passed: !modIssues.some(i => i.issue.includes('Thin content')) },
-            { text: 'Readability (short sentences)', passed: !modIssues.some(i => i.issue.includes('Readability')) },
-            { text: 'Strong heading structure', passed: !modIssues.some(i => i.issue.includes('heading structure')) },
-            { text: 'Uses lists for better scannability', passed: !modIssues.some(i => i.issue.includes('lists')) }
-          ];
-        } else if (mod.id === 'ux') {
-          checks = [
-            { text: 'Clear primary calls-to-action', passed: !modIssues.some(i => i.issue.includes('calls-to-action')) },
-            { text: 'Breadcrumb navigation (on deep pages)', passed: !modIssues.some(i => i.issue.includes('breadcrumb')) }
-          ];
-        } else if (mod.id === 'security') {
-          checks = [
-            { text: 'Served over HTTPS', passed: !modIssues.some(i => i.issue.includes('HTTPS')) },
-            { text: 'No mixed content', passed: !modIssues.some(i => i.issue.includes('mixed content')) }
-          ];
-        } else if (mod.id === 'indexability') {
-          checks = [
-            { text: 'No noindex tag', passed: !modIssues.some(i => i.issue.includes('noindex')) },
-            { text: 'Canonical tag present', passed: !modIssues.some(i => i.issue.includes('canonical')) }
-          ];
-        }
-        let checklist = card.querySelector('.checklist');
-        if (!checklist) {
-          checklist = document.createElement('div');
-          checklist.className = 'checklist mt-4 px-2 space-y-1 text-left text-gray-200 text-sm';
-          expandBtn.parentNode.insertBefore(checklist, expandBtn);
-        }
-        checklist.innerHTML = checks.map(c => `
-          <p class="${c.passed ? 'text-green-400' : 'text-red-400'} font-medium">
-            ${c.passed ? '✅' : '❌'} ${c.text}
+    const titleElement = doc.querySelector('title');
+    let pageTitle = titleElement ? titleElement.textContent.trim() : 'Example Domain';
+    if (pageTitle.length > 65) {
+      pageTitle = pageTitle.substring(0, 62) + '...';
+    }
+    document.getElementById('page-title-display').textContent = pageTitle;
+
+    let gradeText = '';
+    let gradeEmoji = '';
+    if (overallScore < 60) {
+      gradeText = 'Needs Work';
+      gradeEmoji = '❌';
+      document.getElementById('overall-grade').className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-red-500';
+    } else if (overallScore < 80) {
+      gradeText = 'Needs Improvement';
+      gradeEmoji = '⚠️';
+      document.getElementById('overall-grade').className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-orange-500';
+    } else {
+      gradeText = 'Excellent';
+      gradeEmoji = '🟢';
+      document.getElementById('overall-grade').className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-green-500';
+    }
+    document.querySelector('#overall-grade .grade-text').textContent = gradeText;
+    document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
+
+    modules.forEach(mod => {
+      const card = document.getElementById(`${mod.id}-score`);
+      if (!card) return;
+      const expandBtn = card.querySelector('.expand');
+      if (!expandBtn) return;
+      const analysisUrl = mod.id === 'security' ? originalInput : url;
+      const { issues: modIssues } = mod.fn(html, doc, analysisUrl);
+      let checks = [];
+      if (mod.id === 'seo') {
+        checks = [
+          { text: 'Title optimized (30–65 chars, keyword early)', passed: !modIssues.some(i => i.issue.toLowerCase().includes('title')) },
+          { text: 'Meta description present & optimal', passed: !modIssues.some(i => i.issue.toLowerCase().includes('meta description')) },
+          { text: 'Main heading includes keyword', passed: !modIssues.some(i => i.issue.toLowerCase().includes('main heading') || i.issue.toLowerCase().includes('keyword')) },
+          { text: 'Structured data (schema) detected', passed: !modIssues.some(i => i.issue.toLowerCase().includes('schema') || i.issue.toLowerCase().includes('structured data')) },
+          { text: 'All images have meaningful alt text', passed: !modIssues.some(i => i.issue.toLowerCase().includes('alt text')) }
+        ];
+      } else if (mod.id === 'mobile') {
+        checks = [
+          { text: 'Viewport meta tag correct', passed: !modIssues.some(i => i.issue.includes('Viewport')) },
+          { text: 'Web app manifest linked', passed: !modIssues.some(i => i.issue.includes('manifest')) },
+          { text: 'Homescreen icons (192px+) provided', passed: !modIssues.some(i => i.issue.includes('homescreen') || i.issue.includes('icon')) },
+          { text: 'Service worker', passed: !modIssues.some(i => i.issue.includes('service worker')) }
+        ];
+      } else if (mod.id === 'perf') {
+        checks = [
+          { text: 'Page weight reasonable (<300KB HTML)', passed: !modIssues.some(i => i.issue.includes('Page weight')) },
+          { text: 'Number of HTTP requests', passed: !modIssues.some(i => i.issue.includes('HTTP requests')) },
+          { text: 'Render-blocking resources', passed: !modIssues.some(i => i.issue.includes('render-blocking')) },
+          { text: 'Web fonts optimized', passed: !modIssues.some(i => i.issue.includes('web font') || i.issue.includes('font')) }
+        ];
+      } else if (mod.id === 'access') {
+        checks = [
+          { text: 'All images have alt text', passed: !modIssues.some(i => i.issue.includes('alt text')) },
+          { text: 'Lang attribute on <html>', passed: !modIssues.some(i => i.issue.includes('lang attribute')) },
+          { text: 'Main landmark present', passed: !modIssues.some(i => i.issue.includes('main landmark')) },
+          { text: 'Proper heading hierarchy', passed: !modIssues.some(i => i.issue.includes('Heading order')) },
+          { text: 'Form fields properly labeled', passed: !modIssues.some(i => i.issue.includes('form fields') || i.issue.includes('labels')) }
+        ];
+      } else if (mod.id === 'content') {
+        checks = [
+          { text: 'Sufficient unique content depth', passed: !modIssues.some(i => i.issue.includes('Thin content')) },
+          { text: 'Readability (short sentences)', passed: !modIssues.some(i => i.issue.includes('Readability')) },
+          { text: 'Strong heading structure', passed: !modIssues.some(i => i.issue.includes('heading structure')) },
+          { text: 'Uses lists for better scannability', passed: !modIssues.some(i => i.issue.includes('lists')) }
+        ];
+      } else if (mod.id === 'ux') {
+        checks = [
+          { text: 'Clear primary calls-to-action', passed: !modIssues.some(i => i.issue.includes('calls-to-action')) },
+          { text: 'Breadcrumb navigation (on deep pages)', passed: !modIssues.some(i => i.issue.includes('breadcrumb')) }
+        ];
+      } else if (mod.id === 'security') {
+        checks = [
+          { text: 'Served over HTTPS', passed: !modIssues.some(i => i.issue.includes('HTTPS')) },
+          { text: 'No mixed content', passed: !modIssues.some(i => i.issue.includes('mixed content')) }
+        ];
+      } else if (mod.id === 'indexability') {
+        checks = [
+          { text: 'No noindex tag', passed: !modIssues.some(i => i.issue.includes('noindex')) },
+          { text: 'Canonical tag present', passed: !modIssues.some(i => i.issue.includes('canonical')) }
+        ];
+      }
+
+      let checklist = card.querySelector('.checklist');
+      if (!checklist) {
+        checklist = document.createElement('div');
+        checklist.className = 'checklist mt-4 px-2 space-y-1 text-left text-gray-200 text-sm';
+        expandBtn.parentNode.insertBefore(checklist, expandBtn);
+      }
+      checklist.innerHTML = checks.map(c => `
+        <p class="${c.passed ? 'text-green-400' : 'text-red-400'} font-medium">
+          ${c.passed ? '✅' : '❌'} ${c.text}
+        </p>
+      `).join('');
+
+      let expand = card.querySelector('.expand-content');
+      if (!expand) {
+        expand = document.createElement('div');
+        expand.className = 'expand-content hidden mt-6 px-2 space-y-8 pb-6';
+        card.appendChild(expand);
+      }
+      expand.innerHTML = '';
+      modIssues.forEach(iss => {
+        const block = document.createElement('div');
+        block.className = 'p-2 bg-white/5 backdrop-blur rounded-xl border border-white/10';
+        block.innerHTML = `
+          <strong class="text-xl block mb-4 text-orange-500">${iss.issue}</strong>
+          <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+            <span class="font-bold text-green-400">How to fix:</span><br>
+            ${iss.fix}
           </p>
-        `).join('');
-        let expand = card.querySelector('.expand-content');
-        if (!expand) {
-          expand = document.createElement('div');
-          expand.className = 'expand-content hidden mt-6 px-2 space-y-8 pb-6';
-          card.appendChild(expand);
-        }
-        expand.innerHTML = '';
-        modIssues.forEach(iss => {
-          const block = document.createElement('div');
-          block.className = 'p-2 bg-white/5 backdrop-blur rounded-xl border border-white/10';
-          block.innerHTML = `
-            <strong class="text-xl block mb-4 text-orange-500">${iss.issue}</strong>
-            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
-              <span class="font-bold text-green-400">How to fix:</span><br>
-              ${iss.fix}
-            </p>
-          `;
-          expand.appendChild(block);
-        });
-
-        const learnMore = document.createElement('p');
-        learnMore.className = 'mt-10 text-center';
-        learnMore.innerHTML =
-          '<a href="#' + deepDiveIdMap[mod.id] + '" ' +
-          'class="inline-block text-blue-600 dark:text-blue-400 font-bold text-xl hover:underline">' +
-          'Learn more about ' + mod.name + '?' +
-          '</a>';
-        expand.appendChild(learnMore);
-
-        expandBtn.className = 'expand mt-4 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full transition';
-        expandBtn.textContent = 'Show Fixes';
-        expandBtn.onclick = () => {
-          expand.classList.toggle('hidden');
-          expandBtn.textContent = expand.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
-        };
+        `;
+        expand.appendChild(block);
       });
 
-      allIssues.sort((a, b) => b.impact - a.impact);
-      resultsWrapper.classList.remove('hidden');
-      document.getElementById('radar-title').classList.remove('hidden');
-      document.getElementById('copy-badge').classList.remove('hidden');
-      resultsWrapper.style.opacity = '0';
-      resultsWrapper.style.transform = 'translateY(40px)';
-      resultsWrapper.style.transition = 'opacity 1.2s ease, transform 1.2s ease';
-      requestAnimationFrame(() => {
-        resultsWrapper.style.opacity = '1';
-        resultsWrapper.style.transform = 'translateY(0)';
-      });
+      const learnMore = document.createElement('p');
+      learnMore.className = 'mt-10 text-center';
+      learnMore.innerHTML =
+        '<a href="#' + deepDiveIdMap[mod.id] + '" ' +
+        'class="inline-block text-blue-600 dark:text-blue-400 font-bold text-xl hover:underline">' +
+        'Learn more about ' + mod.name + '?' +
+        '</a>';
+      expand.appendChild(learnMore);
 
-      const pluginSection = document.getElementById('plugin-solutions-section');
-      if (!pluginSection) return;
-      pluginSection.innerHTML = '';
-      pluginSection.classList.remove('hidden');
-      const failedMetrics = [];
-      const supportedMetricNames = [
-        "Title optimized (30–65 chars, keyword early)",
-        "Meta description present & optimal",
-        "Structured data (schema) detected",
-        "Canonical tag present",
-        "All images have meaningful alt text",
-        "Web app manifest linked",
-        "Homescreen icons (192px+) provided",
-        "Service worker",
-        "Page weight reasonable (<300KB HTML)",
-        "Number of HTTP requests",
-        "Render-blocking resources",
-        "Web fonts optimized",
-        "Form fields properly labeled",
-        "Clear primary calls-to-action",
-        "Breadcrumb navigation (on deep pages)",
-        "Served over HTTPS / No mixed content"
-      ];
+      expandBtn.className = 'expand mt-4 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full transition';
+      expandBtn.textContent = 'Show Fixes';
+      expandBtn.onclick = () => {
+        expand.classList.toggle('hidden');
+        expandBtn.textContent = expand.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
+      };
+    });
 
-      modules.forEach(mod => {
-        const card = document.getElementById(`${mod.id}-score`);
-        if (!card) return;
-        const checklistItems = card.querySelectorAll('.checklist p');
+    allIssues.sort((a, b) => b.impact - a.impact);
+    resultsWrapper.classList.remove('hidden');
+    document.getElementById('radar-title').classList.remove('hidden');
+    document.getElementById('copy-badge').classList.remove('hidden');
 
-        checklistItems.forEach(item => {
-          const text = item.textContent.trim();
-          if (text.startsWith('❌')) {
-            let issueName = text.replace(/^❌\s*/, '').trim();
+    resultsWrapper.style.opacity = '0';
+    resultsWrapper.style.transform = 'translateY(40px)';
+    resultsWrapper.style.transition = 'opacity 1.2s ease, transform 1.2s ease';
+    requestAnimationFrame(() => {
+      resultsWrapper.style.opacity = '1';
+      resultsWrapper.style.transform = 'translateY(0)';
+    });
 
-            if (issueName.includes('Title optimized')) issueName = supportedMetricNames[0];
-            if (issueName.includes('Meta description')) issueName = supportedMetricNames[1];
-            if (issueName.includes('Structured data')) issueName = supportedMetricNames[2];
-            if (issueName.includes('Canonical tag')) issueName = supportedMetricNames[3];
-            if (issueName.includes('alt text')) issueName = supportedMetricNames[4];
-            if (issueName.includes('manifest')) issueName = supportedMetricNames[5];
-            if (issueName.includes('homescreen') || issueName.includes('icon')) issueName = supportedMetricNames[6];
-            if (issueName.includes('service worker')) issueName = supportedMetricNames[7];
-            if (issueName.includes('Page weight')) issueName = supportedMetricNames[8];
-            if (issueName.includes('HTTP requests')) issueName = supportedMetricNames[9];
-            if (issueName.includes('Render-blocking')) issueName = supportedMetricNames[10];
-            if (issueName.includes('Web fonts')) issueName = supportedMetricNames[11];
-            if (issueName.includes('Form fields')) issueName = supportedMetricNames[12];
-            if (issueName.includes('calls-to-action')) issueName = supportedMetricNames[13];
-            if (issueName.includes('Breadcrumb')) issueName = supportedMetricNames[14];
-            if (issueName.includes('HTTPS') || issueName.includes('mixed content')) issueName = supportedMetricNames[15];
+    const pluginSection = document.getElementById('plugin-solutions-section');
+    if (!pluginSection) return;
+    pluginSection.innerHTML = '';
+    pluginSection.classList.remove('hidden');
 
-            if (supportedMetricNames.includes(issueName)) {
-              failedMetrics.push({
-                name: issueName,
-                grade: { emoji: '🔴', color: 'text-red-400' }
-              });
-            }
-          }
-        });
-      });
+    const failedMetrics = [];
+    const supportedMetricNames = [
+      "Title optimized (30–65 chars, keyword early)",
+      "Meta description present & optimal",
+      "Structured data (schema) detected",
+      "Canonical tag present",
+      "All images have meaningful alt text",
+      "Web app manifest linked",
+      "Homescreen icons (192px+) provided",
+      "Service worker",
+      "Page weight reasonable (<300KB HTML)",
+      "Number of HTTP requests",
+      "Render-blocking resources",
+      "Web fonts optimized",
+      "Form fields properly labeled",
+      "Clear primary calls-to-action",
+      "Breadcrumb navigation (on deep pages)",
+      "Served over HTTPS / No mixed content"
+    ];
 
-      // More Details toggle for all modules
-      document.querySelectorAll('.more-details').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const card = btn.closest('.score-card');
-          const infoDiv = card.querySelector('.module-info');
-          const isHidden = infoDiv.classList.contains('hidden');
-          infoDiv.classList.toggle('hidden');
-          btn.textContent = isHidden ? 'Hide Details' : 'More Details';
-          if (isHidden) {
-            infoDiv.style.opacity = '0';
-            infoDiv.classList.remove('hidden');
-            requestAnimationFrame(() => {
-              infoDiv.style.opacity = '1';
+    modules.forEach(mod => {
+      const card = document.getElementById(`${mod.id}-score`);
+      if (!card) return;
+      const checklistItems = card.querySelectorAll('.checklist p');
+      checklistItems.forEach(item => {
+        const text = item.textContent.trim();
+        if (text.startsWith('❌')) {
+          let issueName = text.replace(/^❌\s*/, '').trim();
+          if (issueName.includes('Title optimized')) issueName = supportedMetricNames[0];
+          if (issueName.includes('Meta description')) issueName = supportedMetricNames[1];
+          if (issueName.includes('Structured data')) issueName = supportedMetricNames[2];
+          if (issueName.includes('Canonical tag')) issueName = supportedMetricNames[3];
+          if (issueName.includes('alt text')) issueName = supportedMetricNames[4];
+          if (issueName.includes('manifest')) issueName = supportedMetricNames[5];
+          if (issueName.includes('homescreen') || issueName.includes('icon')) issueName = supportedMetricNames[6];
+          if (issueName.includes('service worker')) issueName = supportedMetricNames[7];
+          if (issueName.includes('Page weight')) issueName = supportedMetricNames[8];
+          if (issueName.includes('HTTP requests')) issueName = supportedMetricNames[9];
+          if (issueName.includes('Render-blocking')) issueName = supportedMetricNames[10];
+          if (issueName.includes('Web fonts')) issueName = supportedMetricNames[11];
+          if (issueName.includes('Form fields')) issueName = supportedMetricNames[12];
+          if (issueName.includes('calls-to-action')) issueName = supportedMetricNames[13];
+          if (issueName.includes('Breadcrumb')) issueName = supportedMetricNames[14];
+          if (issueName.includes('HTTPS') || issueName.includes('mixed content')) issueName = supportedMetricNames[15];
+          if (supportedMetricNames.includes(issueName)) {
+            failedMetrics.push({
+              name: issueName,
+              grade: { emoji: '🔴', color: 'text-red-400' }
             });
           }
-        });
+        }
       });
+    });
 
-      if (failedMetrics.length > 0) {
-        renderPluginSolutions(failedMetrics);
-      } else {
-        pluginSection.innerHTML = `
-          <div class="mt-20 text-center">
-            <p class="text-xl text-gray-400">No issues found among the 16 supported areas that need plugin fixes.</p>
-          </div>
-        `;
-      }
-
-      const offset = 240;
-      const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset - offset;
-      window.scrollTo({
-        top: targetY,
-        behavior: 'smooth'
+    document.querySelectorAll('.more-details').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.score-card');
+        const infoDiv = card.querySelector('.module-info');
+        const isHidden = infoDiv.classList.contains('hidden');
+        infoDiv.classList.toggle('hidden');
+        btn.textContent = isHidden ? 'Hide Details' : 'More Details';
+        if (isHidden) {
+          infoDiv.style.opacity = '0';
+          infoDiv.classList.remove('hidden');
+          requestAnimationFrame(() => {
+            infoDiv.style.opacity = '1';
+          });
+        }
       });
+    });
 
-      try {
-        if (window.innerWidth >= 768) {
-          const radarCtx = document.getElementById('health-radar').getContext('2d');
-          const isDark = document.documentElement.classList.contains('dark');
-          const gridColor = isDark ? 'rgba(156, 163, 175, 0.5)' : 'rgba(0, 0, 0, 0.2)';
-          const labelColor = '#9ca3af';
-          const lineColor = '#9ca3af';
-          const fillColor = isDark ? 'rgba(156, 163, 175, 0.25)' : 'rgba(156, 163, 175, 0.1)';
-          const radarLabels = modules.map(m => m.name);
-          const chart = new Chart(radarCtx, {
-            type: 'radar',
-            data: {
-              labels: radarLabels,
-              datasets: [{
-                label: 'Health Score',
-                data: scores,
-                backgroundColor: fillColor,
-                borderColor: lineColor,
-                borderWidth: 4,
-                pointRadius: 9,
-                pointHoverRadius: 14,
-                pointBackgroundColor: (ctx) => {
-                  const v = ctx.parsed?.r ?? 0;
-                  if (v < 60) return '#f87171';
-                  if (v < 80) return '#fb923c';
-                  return '#34d399';
-                },
-                pointHoverBackgroundColor: (ctx) => {
-                  const v = ctx.parsed?.r ?? 0;
-                  if (v < 60) return '#ef4444';
-                  if (v < 80) return '#f97316';
-                  return '#10b981';
-                }
-              }]
+    if (failedMetrics.length > 0) {
+      renderPluginSolutions(failedMetrics);
+    } else {
+      pluginSection.innerHTML = `
+        <div class="mt-20 text-center">
+          <p class="text-xl text-gray-400">No issues found among the 16 supported areas that need plugin fixes.</p>
+        </div>
+      `;
+    }
+
+    const offset = 240;
+    const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset - offset;
+    window.scrollTo({
+      top: targetY,
+      behavior: 'smooth'
+    });
+
+    try {
+      if (window.innerWidth >= 768) {
+        const radarCtx = document.getElementById('health-radar').getContext('2d');
+        const isDark = document.documentElement.classList.contains('dark');
+        const gridColor = isDark ? 'rgba(156, 163, 175, 0.5)' : 'rgba(0, 0, 0, 0.2)';
+        const labelColor = '#9ca3af';
+        const lineColor = '#9ca3af';
+        const fillColor = isDark ? 'rgba(156, 163, 175, 0.25)' : 'rgba(156, 163, 175, 0.1)';
+
+        const radarLabels = modules.map(m => m.name);
+        const chart = new Chart(radarCtx, {
+          type: 'radar',
+          data: {
+            labels: radarLabels,
+            datasets: [{
+              label: 'Health Score',
+              data: scores,
+              backgroundColor: fillColor,
+              borderColor: lineColor,
+              borderWidth: 4,
+              pointRadius: 9,
+              pointHoverRadius: 14,
+              pointBackgroundColor: (ctx) => {
+                const v = ctx.parsed?.r ?? 0;
+                if (v < 60) return '#f87171';
+                if (v < 80) return '#fb923c';
+                return '#34d399';
+              },
+              pointHoverBackgroundColor: (ctx) => {
+                const v = ctx.parsed?.r ?? 0;
+                if (v < 60) return '#ef4444';
+                if (v < 80) return '#f97316';
+                return '#10b981';
+              }
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              intersect: true,
+              mode: 'point'
             },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              interaction: {
-                intersect: true,
-                mode: 'point'
-              },
-              scales: {
-                r: {
-                  beginAtZero: true,
-                  min: 0,
-                  max: 100,
-                  ticks: {
-                    stepSize: 20,
-                    color: labelColor,
-                    backdropColor: 'transparent',
-                    callback: (value) => value
-                  },
-                  grid: { color: 'rgb(156, 163, 175)' },
-                  angleLines: { color: 'rgb(156, 163, 175)' },
-                  pointLabels: {
-                    color: labelColor,
-                    font: { size: 14, weight: 'bold' }
-                  }
+            scales: {
+              r: {
+                beginAtZero: true,
+                min: 0,
+                max: 100,
+                ticks: {
+                  stepSize: 20,
+                  color: labelColor,
+                  backdropColor: 'transparent',
+                  callback: (value) => value
+                },
+                grid: { color: 'rgb(156, 163, 175)' },
+                angleLines: { color: 'rgb(156, 163, 175)' },
+                pointLabels: {
+                  color: labelColor,
+                  font: { size: 14, weight: 'bold' }
                 }
-              },
-              plugins: {
-                legend: { display: false },
-                tooltip: {
-                  callbacks: {
-                    title: (ctx) => ctx[0].label,
-                    label: (ctx) => {
-                      const value = Math.round(ctx.parsed.r);
-                      let grade = '';
-                      if (value < 20) grade = 'Very Poor';
-                      else if (value < 40) grade = 'Poor';
-                      else if (value < 60) grade = 'Fair (major issues)';
-                      else if (value < 80) grade = 'Good (room for improvement)';
-                      else grade = 'Excellent';
-                      const lines = [
-                        `Score: ${value}/100`,
-                        `Grade: ${grade}`,
-                        ''
-                      ];
-                      if (value < 100) {
-                        lines.push('How to Improve:');
-                        lines.push('Click "Show Fixes" in the module below for detailed recommendations');
-                      } else {
-                        lines.push('Strong performance – keep it up!');
-                      }
-                      return lines;
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  title: (ctx) => ctx[0].label,
+                  label: (ctx) => {
+                    const value = Math.round(ctx.parsed.r);
+                    let grade = '';
+                    if (value < 20) grade = 'Very Poor';
+                    else if (value < 40) grade = 'Poor';
+                    else if (value < 60) grade = 'Fair (major issues)';
+                    else if (value < 80) grade = 'Good (room for improvement)';
+                    else grade = 'Excellent';
+                    const lines = [
+                      `Score: ${value}/100`,
+                      `Grade: ${grade}`,
+                      ''
+                    ];
+                    if (value < 100) {
+                      lines.push('How to Improve:');
+                      lines.push('Click "Show Fixes" in the module below for detailed recommendations');
+                    } else {
+                      lines.push('Strong performance – keep it up!');
                     }
+                    return lines;
                   }
                 }
               }
             }
-          });
-        }
-      } catch (chartErr) {
-        console.warn('Radar chart failed (non-critical)', chartErr);
-      }
-
-      try {
-        const previewIframe = document.getElementById('preview-iframe');
-        const phoneFrame = document.getElementById('phone-frame');
-        const viewToggle = document.getElementById('view-toggle');
-        const deviceToggle = document.getElementById('device-toggle');
-        const highlightOverlays = document.getElementById('highlight-overlays');
-        previewIframe.src = url;
-        let isMobile = true;
-        let isIphone = true;
-        viewToggle.addEventListener('click', () => {
-          isMobile = !isMobile;
-          phoneFrame.style.width = isMobile ? '375px' : 'min(100%, 1280px)';
-          phoneFrame.style.height = isMobile ? '812px' : 'min(90vh, 900px)';
-          phoneFrame.style.margin = isMobile ? '0 auto' : '0';
-          phoneFrame.style.transform = isMobile ? 'scale(1)' : 'scale(1)';
-          viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
+          }
         });
-        deviceToggle.addEventListener('click', () => {
-          isIphone = !isIphone;
-          phoneFrame.classList.toggle('iphone-frame', isIphone);
-          phoneFrame.classList.toggle('android-frame', !isIphone);
-          deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
-        });
-      } catch (previewErr) {
-        console.warn('Mobile preview failed (non-critical)', previewErr);
       }
-    } catch (err) {
-      alert('Failed to analyze — try another site or check the URL');
-      console.error(err);
-    } finally {
-      progressContainer.classList.add('hidden');
-
-      let fullUrl = document.getElementById('url-input').value.trim();
-      let displayUrl = 'traffictorch.net'; // fallback
-      if (fullUrl) {
-        let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
-        const firstSlash = cleaned.indexOf('/');
-        if (firstSlash !== -1) {
-          const domain = cleaned.slice(0, firstSlash);
-          const path = cleaned.slice(firstSlash);
-          displayUrl = domain + '\n' + path;
-        } else {
-          displayUrl = cleaned;
-        }
-      }
-      document.body.setAttribute('data-url', displayUrl);
+    } catch (chartErr) {
+      console.warn('Radar chart failed (non-critical)', chartErr);
     }
-  });
 
-  // ================== ANALYSIS FUNCTIONS (now import export to individual js files) ==================
+    try {
+      const previewIframe = document.getElementById('preview-iframe');
+      const phoneFrame = document.getElementById('phone-frame');
+      const viewToggle = document.getElementById('view-toggle');
+      const deviceToggle = document.getElementById('device-toggle');
+      const highlightOverlays = document.getElementById('highlight-overlays');
+      previewIframe.src = url;
+      let isMobile = true;
+      let isIphone = true;
+      viewToggle.addEventListener('click', () => {
+        isMobile = !isMobile;
+        phoneFrame.style.width = isMobile ? '375px' : 'min(100%, 1280px)';
+        phoneFrame.style.height = isMobile ? '812px' : 'min(90vh, 900px)';
+        phoneFrame.style.margin = isMobile ? '0 auto' : '0';
+        phoneFrame.style.transform = isMobile ? 'scale(1)' : 'scale(1)';
+        viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
+      });
+      deviceToggle.addEventListener('click', () => {
+        isIphone = !isIphone;
+        phoneFrame.classList.toggle('iphone-frame', isIphone);
+        phoneFrame.classList.toggle('android-frame', !isIphone);
+        deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
+      });
+    } catch (previewErr) {
+      console.warn('Mobile preview failed (non-critical)', previewErr);
+    }
 
-  });
+  } catch (err) {
+    alert('Failed to analyze — try another site or check the URL');
+    console.error(err);
+  } finally {
+    progressContainer.classList.add('hidden');
+    let fullUrl = document.getElementById('url-input').value.trim();
+    let displayUrl = 'traffictorch.net'; // fallback
+    if (fullUrl) {
+      let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
+      const firstSlash = cleaned.indexOf('/');
+      if (firstSlash !== -1) {
+        const domain = cleaned.slice(0, firstSlash);
+        const path = cleaned.slice(firstSlash);
+        displayUrl = domain + '\n' + path;
+      } else {
+        displayUrl = cleaned;
+      }
+    }
+    document.body.setAttribute('data-url', displayUrl);
+  }
+}
 
 // Global smooth internal navigation + auto-expand for deep-dive cards
 function handleDeepDiveHash() {
   if (!window.location.hash) return;
-
   const targetId = window.location.hash.substring(1);
   const targetElement = document.getElementById(targetId);
-
   if (targetElement) {
-    // Auto-open the <details> element inside the deep-dive card
     const detailsElement = targetElement.querySelector('details');
     if (detailsElement) {
       detailsElement.open = true;
     }
-
-    // Smooth scroll with better centering
     setTimeout(() => {
       targetElement.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
         inline: 'nearest'
       });
-    }, 100); // small delay helps after details open
+    }, 100);
   }
 }
 
-// Trigger on page load
 document.addEventListener('DOMContentLoaded', () => {
   handleDeepDiveHash();
 });
 
-// Trigger on hash change (back/forward button, manual hash)
 window.addEventListener('hashchange', handleDeepDiveHash);
 
-// Intercept clicks on ALL internal # links (prevents default jump)
 document.addEventListener('click', function(event) {
   const clickedLink = event.target.closest('a[href^="#"]');
-
   if (clickedLink && clickedLink.getAttribute('href') !== '#') {
-    event.preventDefault(); // stop normal jump
-
+    event.preventDefault();
     const targetHash = clickedLink.getAttribute('href');
-    history.replaceState(null, null, targetHash); // update URL
-
-    // Trigger our custom handler
+    history.replaceState(null, null, targetHash);
     window.dispatchEvent(new HashChangeEvent('hashchange'));
   }
-}, { passive: false }); // passive:false needed for preventDefault to work in some browsers
+}, { passive: false });

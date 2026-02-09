@@ -1,3 +1,5 @@
+const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+
 // main.js Day Night Mode 
 document.addEventListener('DOMContentLoaded', () => {
   const html = document.documentElement;
@@ -265,3 +267,102 @@ if (sidebar && (collapseBtn || desktopMenuToggle)) {
 
 
 
+// Login/Register Modal (mobile-first, Tailwind, dark mode)
+function showLoginModal() {
+  const modal = document.createElement('div');
+  modal.className = 'fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4';
+  modal.innerHTML = `
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl max-w-md w-full text-gray-800 dark:text-gray-200">
+      <div class="p-6">
+        <h2 class="text-2xl font-bold mb-6 text-center">Login or Register</h2>
+        <input id="email" type="email" placeholder="Email" class="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <input id="password" type="password" placeholder="Password" class="w-full p-3 mb-6 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button onclick="handleAuth('login')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition">Login</button>
+          <button onclick="handleAuth('register')" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition">Register</button>
+        </div>
+        <button onclick="this.closest('.fixed').remove()" class="mt-6 text-center w-full text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400">Close</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+async function handleAuth(mode) {
+  const email = document.getElementById('email')?.value.trim();
+  const password = document.getElementById('password')?.value;
+  if (!email || !password) return alert('Please enter email and password');
+
+  try {
+    const response = await fetch(`${API_BASE}/api/${mode}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await response.json();
+
+    if (response.ok && data.token) {
+      localStorage.setItem('torch_token', data.token);
+      alert(mode === 'login' ? 'Logged in successfully!' : 'Registered & logged in!');
+      document.querySelector('.fixed')?.remove();
+    } else {
+      alert(data.error || 'Authentication failed');
+    }
+  } catch (err) {
+    alert('Connection error: ' + err.message);
+  }
+}
+
+// Upgrade Modal
+function showUpgradeModal(message = 'Upgrade to unlock more runs and advanced features.', price = '$48/year') {
+  const modal = document.createElement('div');
+  modal.className = 'fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4';
+  modal.innerHTML = `
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl max-w-md w-full text-gray-800 dark:text-gray-200">
+      <div class="p-6">
+        <h2 class="text-2xl font-bold mb-4 text-center">Upgrade to Pro</h2>
+        <p class="mb-6 text-center">${message}</p>
+        <p class="text-xl font-semibold text-center mb-6">${price} (billed yearly)</p>
+        <button onclick="upgradeToPro()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-4 px-6 rounded-lg transition mb-4">Upgrade Now</button>
+        <p class="text-sm text-center text-gray-500 dark:text-gray-400">Pro unlocks 25 daily runs, deeper SEO/UX insights, AI-generated fixes, competitive gap analysis, and predictive rank forecasting.</p>
+        <button onclick="this.closest('.fixed').remove()" class="mt-4 text-center w-full text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400">Close</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+async function upgradeToPro() {
+  const token = localStorage.getItem('torch_token');
+  if (!token) return alert('Please login first');
+
+  try {
+    const response = await fetch(`${API_BASE}/api/upgrade`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await response.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert(data.error || 'Could not start upgrade');
+    }
+  } catch (err) {
+    alert('Upgrade error: ' + err.message);
+  }
+}
+
+
+function updateRunsBadge(remaining) {
+  const desktopBadge = document.getElementById('runs-left');
+  const mobileBadge = document.getElementById('runs-left-mobile');
+
+  const text = remaining === undefined ? '' : `Runs left today: ${remaining}`;
+
+  if (desktopBadge) {
+    desktopBadge.textContent = text;
+    if (remaining !== undefined) desktopBadge.classList.remove('hidden');
+  }
+
+  if (mobileBadge) {
+    mobileBadge.textContent = text;
+  }
+}
