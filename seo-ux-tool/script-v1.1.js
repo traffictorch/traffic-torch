@@ -693,10 +693,13 @@ function handleDeepDiveHash() {
     }, 100);
   }
 }
+
 document.addEventListener('DOMContentLoaded', () => {
   handleDeepDiveHash();
 });
+
 window.addEventListener('hashchange', handleDeepDiveHash);
+
 document.addEventListener('click', function(event) {
   const clickedLink = event.target.closest('a[href^="#"]');
   if (clickedLink && clickedLink.getAttribute('href') !== '#') {

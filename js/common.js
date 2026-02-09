@@ -1,7 +1,8 @@
 // js/common.js – Shared Pro rate limiting & auth logic for all tools
+
 export const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
-// Update badge - handle no data gracefully
+// Update badge - handle no data gracefully (no "null")
 export function updateRunsBadge(remaining) {
   const desktop = document.getElementById('runs-left');
   const mobile = document.getElementById('runs-left-mobile');
