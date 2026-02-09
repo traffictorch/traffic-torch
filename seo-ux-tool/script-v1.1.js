@@ -1,15 +1,13 @@
-// Pro rate limiting & auth logic for this tool (no common.js)
+// Pro rate limiting & auth logic (self-contained in this tool)
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
-// Update badge - handle no data gracefully (text-gray-800 dark:text-gray-200)
+// Update badge - hide on null/undefined (no "null" display)
 function updateRunsBadge(remaining) {
   const desktop = document.getElementById('runs-left');
   const mobile = document.getElementById('runs-left-mobile');
   let text = '';
   if (remaining !== undefined && remaining !== null) {
     text = `Runs left today: ${remaining}`;
-  } else {
-    text = ''; // empty until first successful check
   }
   if (desktop) {
     desktop.textContent = text;
@@ -20,7 +18,7 @@ function updateRunsBadge(remaining) {
   }
 }
 
-// Show login modal (mobile-friendly, text-gray-800 dark:text-gray-200)
+// Show login modal
 function showLoginModal() {
   const modal = document.createElement('div');
   modal.className = 'fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4';
@@ -62,7 +60,7 @@ async function handleAuth(mode) {
   }
 }
 
-// Show upgrade modal (mobile-friendly, text-gray-800 dark:text-gray-200)
+// Show upgrade modal
 function showUpgradeModal(message = '', price = '$48/year') {
   const modal = document.createElement('div');
   modal.className = 'fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4';
@@ -94,7 +92,7 @@ async function upgradeToPro() {
   }
 }
 
-// Rate limit check wrapper (call this instead of direct analysis run)
+// Rate limit check wrapper - call this to run analysis safely
 async function checkRateLimitAndRun(runFunction) {
   const token = localStorage.getItem('torch_token');
   if (!token) {
@@ -123,7 +121,7 @@ async function checkRateLimitAndRun(runFunction) {
       return;
     }
     if (data.allowed) {
-      await runFunction(); // run your original performSeoUxAnalysis
+      await runFunction();
       updateRunsBadge(data.remaining);
       if (data.message) alert(data.message);
     }
@@ -311,7 +309,7 @@ form.addEventListener('submit', async (e) => {
   }
 
   await checkRateLimitAndRun(async () => {
-    // All your original analysis code here (the try-catch-finally block)
+    // Your original analysis code (the try-catch-finally block)
     const form = document.getElementById('url-form');
     const input = document.getElementById('url-input');
     const results = document.getElementById('results');
