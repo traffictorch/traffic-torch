@@ -14,9 +14,7 @@ import { analyzeIndexability } from './modules/analyze-indexability-v1.0.js';
 // ────────────────────────────────────────────────
 //  Rate limiting & auth utilities
 // ────────────────────────────────────────────────
-import { checkRateLimitAndRun, showLoginModal, showUpgradeModal, updateRunsBadge } from '../js/common.js';
-
-const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+import { checkRateLimitAndRun, showLoginModal, showUpgradeModal, updateRunsBadge } from '/js/common.js';
 
 const moduleInfo = {
   seo: {
@@ -181,9 +179,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // ────────────────────────────────────────────────
   // Rate-limited analysis trigger
   // ────────────────────────────────────────────────
-  form.addEventListener('submit', async e => {
-    e.preventDefault();
-    await checkRateLimitAndRun(performSeoUxAnalysis);
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  await checkRateLimitAndRun(async () => {
+    await performSeoUxAnalysis();
   });
 });
 

@@ -1,6 +1,8 @@
-// js/common.js – Shared Pro logic (exported for tool scripts)
+// js/common.js – Shared Pro rate limiting & auth logic for all tools
+
 export const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
+// Update runs-left badge (desktop + mobile)
 export function updateRunsBadge(remaining) {
   const desktop = document.getElementById('runs-left');
   const mobile = document.getElementById('runs-left-mobile');
@@ -12,6 +14,7 @@ export function updateRunsBadge(remaining) {
   if (mobile) mobile.textContent = text;
 }
 
+// Show login modal
 export function showLoginModal() {
   const modal = document.createElement('div');
   modal.className = 'fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4';
@@ -29,6 +32,7 @@ export function showLoginModal() {
   document.body.appendChild(modal);
 }
 
+// Handle auth (login/register)
 export async function handleAuth(mode) {
   const email = document.getElementById('email')?.value.trim();
   const password = document.getElementById('password')?.value;
@@ -53,6 +57,7 @@ export async function handleAuth(mode) {
   }
 }
 
+// Show upgrade modal
 export function showUpgradeModal(message = '', price = '$48/year') {
   const modal = document.createElement('div');
   modal.className = 'fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4';
@@ -67,6 +72,7 @@ export function showUpgradeModal(message = '', price = '$48/year') {
   document.body.appendChild(modal);
 }
 
+// Trigger Stripe upgrade
 export async function upgradeToPro() {
   const token = localStorage.getItem('torch_token');
   if (!token) return alert('Login first');
@@ -81,5 +87,47 @@ export async function upgradeToPro() {
     else alert(data.error || 'Upgrade failed');
   } catch (err) {
     alert('Error');
+  }
+}
+
+// Rate limit check wrapper (call this instead of direct analysis run)
+export async function checkRateLimitAndRun(toolType, runFunction) {
+  const token = localStorage.getItem('torch_token');
+
+  if (!token) {
+    showLoginModal();
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE}/api/check-rate`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await response.json();
+
+    if (data.error) {
+      alert(data.error);
+      if (data.error.toLowerCase().includes('login') || data.error.toLowerCase().includes('token')) {
+        showLoginModal();
+      }
+      return;
+    }
+
+    if (data.upgrade) {
+      showUpgradeModal(data.message, data.pro_price || '$48/year');
+      return;
+    }
+
+    if (data.allowed) {
+      // Run the actual tool analysis
+      await runFunction(toolType);
+
+      updateRunsBadge(data.remaining);
+
+      if (data.message) alert(data.message);
+    }
+  } catch (err) {
+    alert('Rate check failed: ' + err.message);
   }
 }
