@@ -708,6 +708,7 @@ async function performSeoUxAnalysis() {
     document.body.setAttribute('data-url', displayUrl);
   }
 }
+}
 
 // Global smooth internal navigation + auto-expand for deep-dive cards
 function handleDeepDiveHash() {
