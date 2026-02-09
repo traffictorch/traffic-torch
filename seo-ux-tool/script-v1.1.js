@@ -181,9 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ────────────────────────────────────────────────
 form.addEventListener('submit', async e => {
   e.preventDefault();
-  await checkRateLimitAndRun(async () => {
-    await performSeoUxAnalysis();
-  });
+  await checkRateLimitAndRun(performSeoUxAnalysis);
 });
 
 // ────────────────────────────────────────────────
