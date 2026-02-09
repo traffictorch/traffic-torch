@@ -164,6 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const text = getVisibleText(doc.body) || '';
       const cleanedText = text.replace(/\s+/g, ' ').trim();
+      console.log('cleanedText created successfully, length:', cleanedText.length);
 
       progressText.textContent = "Analyzing E-E-A-T Signals...";
       await sleep(2000);
