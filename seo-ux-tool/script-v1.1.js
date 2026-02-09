@@ -12,7 +12,7 @@ import { analyzeSecurity } from './modules/analyze-security-v1.0.js';
 import { analyzeIndexability } from './modules/analyze-indexability-v1.0.js';
 
 // ────────────────────────────────────────────────
-//  Rate limiting & auth utilities
+// Rate limiting & auth utilities
 // ────────────────────────────────────────────────
 import { checkRateLimitAndRun, showLoginModal, showUpgradeModal, updateRunsBadge } from '/js/common.js';
 
@@ -81,10 +81,8 @@ const deepDiveIdMap = {
 
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
-
   // Show initial badge state
   updateRunsBadge(null);
-
   const form = document.getElementById('url-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
@@ -93,14 +91,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressText = document.getElementById('progress-text');
   const priorityFixes = document.getElementById('priority-fixes');
   const copyBadgeBtn = document.getElementById('copy-badge');
-
   function cleanUrl(u) {
     const trimmed = u.trim();
     if (!trimmed) return '';
     if (/^https?:\/\//i.test(trimmed)) return trimmed;
     return 'https://' + trimmed;
   }
-
   function updateScore(id, score) {
     const circle = document.querySelector('#' + id + ' .score-circle');
     const card = circle?.closest('.score-card');
@@ -133,7 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (card) card.classList.add(colorClass);
   }
-
   function populateIssues(id, issues) {
     const ul = document.getElementById(id);
     if (!ul) return;
@@ -152,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ul.appendChild(li);
     });
   }
-
   if (copyBadgeBtn) {
     copyBadgeBtn.addEventListener('click', () => {
       const badgeHtml = `
@@ -175,13 +169,13 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
-
   // ────────────────────────────────────────────────
   // Rate-limited analysis trigger
   // ────────────────────────────────────────────────
-form.addEventListener('submit', async e => {
-  e.preventDefault();
-  await checkRateLimitAndRun(performSeoUxAnalysis);
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    await checkRateLimitAndRun(performSeoUxAnalysis);
+  });
 });
 
 // ────────────────────────────────────────────────
@@ -195,10 +189,8 @@ async function performSeoUxAnalysis() {
   const progressContainer = document.getElementById('progress-container');
   const progressText = document.getElementById('progress-text');
   const priorityFixes = document.getElementById('priority-fixes');
-
   progressContainer.classList.remove('hidden');
   progressText.textContent = 'Fetching page...';
-
   const originalInput = input.value.trim();
   const url = cleanUrl(originalInput);
   if (!url) {
@@ -206,15 +198,12 @@ async function performSeoUxAnalysis() {
     progressContainer.classList.add('hidden');
     return;
   }
-
   const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
-
   try {
     const res = await fetch(proxyUrl);
     if (!res.ok) throw new Error('Network response was not ok');
     const html = await res.text();
     const doc = new DOMParser().parseFromString(html, 'text/html');
-
     const resultsWrapper = document.getElementById('results-wrapper');
     const modules = [
       { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
@@ -226,16 +215,13 @@ async function performSeoUxAnalysis() {
       { id: 'security', name: 'Security', fn: analyzeSecurity },
       { id: 'indexability', name: 'Indexability', fn: analyzeIndexability }
     ];
-
     const scores = [];
     const allIssues = [];
-
     for (const mod of modules) {
       progressText.textContent = `Analyzing ${mod.name}...`;
       const analysisUrl = mod.id === 'security' ? originalInput : url;
       const result = mod.fn(html, doc, analysisUrl);
       const info = moduleInfo[mod.id];
-
       if (info) {
         const infoDiv = document.querySelector(`#${mod.id}-score .module-info`);
         if (infoDiv) {
@@ -254,10 +240,8 @@ async function performSeoUxAnalysis() {
             <strong>SEO:</strong> ${info.whySeo}`;
         }
       }
-
       scores.push(result.score);
       updateScore(`${mod.id}-score`, result.score);
-
       const moduleScore = result.score;
       const gradeElement = document.querySelector(`.module-grade[data-module="${mod.id}"]`);
       if (gradeElement) {
@@ -283,24 +267,18 @@ async function performSeoUxAnalysis() {
         gradeElement.classList.remove('opacity-0');
         gradeElement.classList.add('opacity-100');
       }
-
       populateIssues(`${mod.id}-issues`, result.issues);
       result.issues.forEach(iss => {
         allIssues.push({ ...iss, module: mod.name, impact: 100 - result.score });
       });
-
       await new Promise(r => setTimeout(r, 600));
     }
-
     progressText.textContent = 'Generating report...';
     await new Promise(r => setTimeout(r, 1400));
-
     const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
     updateScore('overall-score', overallScore);
-
     allIssues.sort((a, b) => b.impact - a.impact);
     const top3 = allIssues.slice(0, 3);
-
     const prioritisedFixes = top3.map(issue => ({
       title: issue.issue,
       how: issue.fix,
@@ -309,9 +287,7 @@ async function performSeoUxAnalysis() {
       emoji: '⚠️',
       impact: issue.impact || (100 - overallScore)
     }));
-
     const yourScore = Math.round(overallScore * 0.92);
-
     setTimeout(() => {
       if (document.getElementById('priority-cards-container')) {
         renderPriorityAndGains(prioritisedFixes, yourScore, overallScore);
@@ -319,14 +295,12 @@ async function performSeoUxAnalysis() {
         console.warn('Priority container not found - HTML may not be loaded yet');
       }
     }, 500);
-
     const titleElement = doc.querySelector('title');
     let pageTitle = titleElement ? titleElement.textContent.trim() : 'Example Domain';
     if (pageTitle.length > 65) {
       pageTitle = pageTitle.substring(0, 62) + '...';
     }
     document.getElementById('page-title-display').textContent = pageTitle;
-
     let gradeText = '';
     let gradeEmoji = '';
     if (overallScore < 60) {
@@ -344,7 +318,6 @@ async function performSeoUxAnalysis() {
     }
     document.querySelector('#overall-grade .grade-text').textContent = gradeText;
     document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
-
     modules.forEach(mod => {
       const card = document.getElementById(`${mod.id}-score`);
       if (!card) return;
@@ -406,7 +379,6 @@ async function performSeoUxAnalysis() {
           { text: 'Canonical tag present', passed: !modIssues.some(i => i.issue.includes('canonical')) }
         ];
       }
-
       let checklist = card.querySelector('.checklist');
       if (!checklist) {
         checklist = document.createElement('div');
@@ -418,7 +390,6 @@ async function performSeoUxAnalysis() {
           ${c.passed ? '✅' : '❌'} ${c.text}
         </p>
       `).join('');
-
       let expand = card.querySelector('.expand-content');
       if (!expand) {
         expand = document.createElement('div');
@@ -438,7 +409,6 @@ async function performSeoUxAnalysis() {
         `;
         expand.appendChild(block);
       });
-
       const learnMore = document.createElement('p');
       learnMore.className = 'mt-10 text-center';
       learnMore.innerHTML =
@@ -447,7 +417,6 @@ async function performSeoUxAnalysis() {
         'Learn more about ' + mod.name + '?' +
         '</a>';
       expand.appendChild(learnMore);
-
       expandBtn.className = 'expand mt-4 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full transition';
       expandBtn.textContent = 'Show Fixes';
       expandBtn.onclick = () => {
@@ -455,12 +424,10 @@ async function performSeoUxAnalysis() {
         expandBtn.textContent = expand.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
       };
     });
-
     allIssues.sort((a, b) => b.impact - a.impact);
     resultsWrapper.classList.remove('hidden');
     document.getElementById('radar-title').classList.remove('hidden');
     document.getElementById('copy-badge').classList.remove('hidden');
-
     resultsWrapper.style.opacity = '0';
     resultsWrapper.style.transform = 'translateY(40px)';
     resultsWrapper.style.transition = 'opacity 1.2s ease, transform 1.2s ease';
@@ -468,12 +435,10 @@ async function performSeoUxAnalysis() {
       resultsWrapper.style.opacity = '1';
       resultsWrapper.style.transform = 'translateY(0)';
     });
-
     const pluginSection = document.getElementById('plugin-solutions-section');
     if (!pluginSection) return;
     pluginSection.innerHTML = '';
     pluginSection.classList.remove('hidden');
-
     const failedMetrics = [];
     const supportedMetricNames = [
       "Title optimized (30–65 chars, keyword early)",
@@ -493,7 +458,6 @@ async function performSeoUxAnalysis() {
       "Breadcrumb navigation (on deep pages)",
       "Served over HTTPS / No mixed content"
     ];
-
     modules.forEach(mod => {
       const card = document.getElementById(`${mod.id}-score`);
       if (!card) return;
@@ -527,7 +491,6 @@ async function performSeoUxAnalysis() {
         }
       });
     });
-
     document.querySelectorAll('.more-details').forEach(btn => {
       btn.addEventListener('click', () => {
         const card = btn.closest('.score-card');
@@ -544,7 +507,6 @@ async function performSeoUxAnalysis() {
         }
       });
     });
-
     if (failedMetrics.length > 0) {
       renderPluginSolutions(failedMetrics);
     } else {
@@ -554,14 +516,12 @@ async function performSeoUxAnalysis() {
         </div>
       `;
     }
-
     const offset = 240;
     const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset - offset;
     window.scrollTo({
       top: targetY,
       behavior: 'smooth'
     });
-
     try {
       if (window.innerWidth >= 768) {
         const radarCtx = document.getElementById('health-radar').getContext('2d');
@@ -570,7 +530,6 @@ async function performSeoUxAnalysis() {
         const labelColor = '#9ca3af';
         const lineColor = '#9ca3af';
         const fillColor = isDark ? 'rgba(156, 163, 175, 0.25)' : 'rgba(156, 163, 175, 0.1)';
-
         const radarLabels = modules.map(m => m.name);
         const chart = new Chart(radarCtx, {
           type: 'radar',
@@ -659,8 +618,7 @@ async function performSeoUxAnalysis() {
     } catch (chartErr) {
       console.warn('Radar chart failed (non-critical)', chartErr);
     }
-
-     try {
+    try {
       const previewIframe = document.getElementById('preview-iframe');
       const phoneFrame = document.getElementById('phone-frame');
       const viewToggle = document.getElementById('view-toggle');
@@ -706,7 +664,7 @@ async function performSeoUxAnalysis() {
     }
     document.body.setAttribute('data-url', displayUrl);
   }
-}  // ← THIS EXTRA } CLOSES performSeoUxAnalysis() — MUST be here
+}  // ← THIS IS THE CRITICAL CLOSING BRACE — added to close performSeoUxAnalysis()
 
 // Global smooth internal navigation + auto-expand for deep-dive cards
 function handleDeepDiveHash() {
@@ -727,13 +685,10 @@ function handleDeepDiveHash() {
     }, 100);
   }
 }
-
 document.addEventListener('DOMContentLoaded', () => {
   handleDeepDiveHash();
 });
-
 window.addEventListener('hashchange', handleDeepDiveHash);
-
 document.addEventListener('click', function(event) {
   const clickedLink = event.target.closest('a[href^="#"]');
   if (clickedLink && clickedLink.getAttribute('href') !== '#') {
