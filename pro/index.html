@@ -50,7 +50,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
  
 <!-- Optimized SEO Title & Description -->
-<title>Upgrade to Traffic Torch Pro – Unlock 25 Daily Runs + Advanced Features</title>
+<title>Upgrade to Traffic Torch Pro – Unlock 25 Daily Analysis Audits</title>
 <meta name="description" content="Upgrade to Traffic Torch Pro for 25 daily SEO UX & AI analysis audits. Secure login and Stripe payment. Privacy-first." />
 <!-- Robots & Canonical -->
 <meta name="robots" content="index, follow" />
@@ -294,8 +294,53 @@
   <form id="login-form" class="space-y-4">
     <input type="text" placeholder="Username or Email" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
     <input type="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+    <div id="login-status" class="text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]"></div>
     <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">Login</button>
   </form>
+<script>
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const status = document.getElementById('login-status');
+    status.textContent = 'Logging in...';
+    status.className = 'text-center text-sm text-gray-600 dark:text-gray-400 min-h-[1.25rem]';
+
+    const email = e.target.querySelector('input[type="text"]').value.trim();
+    const password = e.target.querySelector('input[type="password"]').value;
+
+    if (!email || !password) {
+      status.textContent = 'Please fill in both fields';
+      status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+      return;
+    }
+
+    try {
+      const response = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.token) {
+        localStorage.setItem('traffic_torch_jwt', data.token);
+        status.textContent = 'Logged in successfully!';
+        status.className = 'text-center text-sm text-green-600 dark:text-green-400 min-h-[1.25rem]';
+        setTimeout(() => {
+          window.location.href = '/ai-audit-tool/';
+        }, 1500); // brief delay to show success message
+      } else {
+        status.textContent = data.error || 'Invalid credentials – please try again';
+        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      status.textContent = 'Login failed – please check your connection and try again';
+      status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+    }
+  });
+</script>
 </div>
 
 <!-- Register + Upgrade form -->
@@ -304,9 +349,71 @@
   <form id="register-upgrade-form" class="space-y-4">
     <input type="email" placeholder="Email" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70">
     <input type="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70">
+    <div id="register-status" class="text-center text-sm text-gray-600 dark:text-gray-400 min-h-[1.25rem] mt-2"></div>
     <button type="submit" class="w-full py-3 bg-white text-orange-600 font-bold rounded-lg hover:bg-gray-100 transition">Upgrade to Pro ($48/year)</button>
   </form>
-  <p class="text-center text-sm mt-4 opacity-90">Secure payment via Stripe • Cancel anytime</p>
+  <script>
+  document.getElementById('register-upgrade-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const status = document.getElementById('register-status');
+    status.id = 'register-status';
+    status.className = 'text-center text-sm text-gray-600 dark:text-gray-400 min-h-[1.25rem] mt-2';
+    e.target.appendChild(status);
+    status.textContent = 'Creating account...';
+
+    const email = e.target.querySelector('input[type="email"]').value.trim();
+    const password = e.target.querySelector('input[type="password"]').value;
+
+    if (!email || !password) {
+      status.textContent = 'Please fill in both email and password';
+      status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem] mt-2';
+      return;
+    }
+
+    try {
+      const regResponse = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const regData = await regResponse.json();
+
+      if (!regResponse.ok) {
+        status.textContent = regData.error || 'Registration failed – email may already exist';
+        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem] mt-2';
+        return;
+      }
+
+      // Auto-login after register success
+      const loginResponse = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const loginData = await loginResponse.json();
+
+      if (loginResponse.ok && loginData.token) {
+        localStorage.setItem('traffic_torch_jwt', loginData.token);
+        status.textContent = 'Account created & logged in! Redirecting...';
+        status.className = 'text-center text-sm text-green-600 dark:text-green-400 min-h-[1.25rem] mt-2';
+        setTimeout(() => {
+          window.location.href = '/ai-audit-tool/';
+        }, 1500);
+      } else {
+        status.textContent = 'Account created but login failed – please login manually';
+        status.className = 'text-center text-sm text-orange-600 dark:text-orange-400 min-h-[1.25rem] mt-2';
+      }
+    } catch (err) {
+      console.error('Register error:', err);
+      status.textContent = 'Registration failed – check connection and try again';
+      status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem] mt-2';
+    }
+  });
+</script>
+  <p class="text-center text-sm mt-4 opacity-90">Secure payment via Stripe</p>
 </div>
 
      
