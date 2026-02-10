@@ -158,6 +158,7 @@
   <!-- Tailwind output – comes last so utilities can override -->
   <link rel="stylesheet" href="/tailwind-local-v1.0.css">
 
+<script src="https://js.stripe.com/v3/"></script>
 
 <script>
     // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
@@ -191,6 +192,9 @@
       </div>
 <!-- Menu Items -->
       <nav class="p-6 space-y-4 flex-1">
+        <a href="/pro/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🪪</span> <span class="sidebar-text hidden">Pro Login</span>
+        </a>
         <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
           <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
         </a>
@@ -217,9 +221,6 @@
         </a>
         <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
           <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
-        </a>
-        <a href="/pro/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🪪</span> <span class="sidebar-text hidden">Pro Login</span>
         </a>
       </nav>
       <!-- Collapse/Expand Button - Always visible -->
@@ -261,7 +262,8 @@
 			  ×
 			</button>
           <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
-            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
+          <a href="/pro/" class="text-gray-100 hover:text-orange-400 transition">🪪 Pro Login</a>
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">🚦 Tools</a>
             <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
               <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
               <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
@@ -272,7 +274,6 @@
               <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
               <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
               <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
-              <a href="/pro/" class="text-gray-100 hover:text-orange-400 transition">🪪 Pro Login</a>
             </div>
           </nav>
         </div>
@@ -345,13 +346,24 @@
 
 <!-- Register + Upgrade form -->
 <div class="bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl p-8 max-w-md mx-auto">
-  <h3 class="text-2xl font-bold text-center mb-6">New? Create Account & Upgrade</h3>
-  <form id="register-upgrade-form" class="space-y-4">
-    <input type="email" placeholder="Email" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70">
-    <input type="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70">
-    <div id="register-status" class="text-center text-sm text-gray-600 dark:text-gray-400 min-h-[1.25rem] mt-2"></div>
-    <button type="submit" class="w-full py-3 bg-white text-orange-600 font-bold rounded-lg hover:bg-gray-100 transition">Upgrade to Pro ($48/year)</button>
+  <h3 class="text-2xl font-bold text-center mb-6">Create Account & Upgrade to Pro</h3>
+  <form id="register-upgrade-form" class="space-y-6">
+    <input type="email" placeholder="Email" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
+    <input type="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
+    
+    <!-- Stripe Card Element container -->
+    <div id="card-element" class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white focus:outline-none focus:border-white">
+      <!-- Stripe will mount the card input here -->
+    </div>
+    
+    <div id="card-errors" class="text-center text-sm text-red-300 min-h-[1.25rem]" role="alert"></div>
+    
+    <button type="submit" id="submit-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
+      Create Account & Pay $48/year
+    </button>
   </form>
+  <p class="mt-4 text-center text-sm opacity-90">Secure payment via Stripe • No data collection</p>
+</div>
   <script>
   document.getElementById('register-upgrade-form').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -413,9 +425,117 @@
     }
   });
 </script>
-  <p class="text-center text-sm mt-4 opacity-90">Secure payment via Stripe</p>
-</div>
 
+<script>
+  // Initialize Stripe (use your live or test publishable key from Stripe Dashboard → Developers → API keys)
+  const stripe = Stripe('pk_live_51SyjNi35Al6CUgc4jAcWAszElUF4iMpBZOj5UGM9gk7KZKxBSlDGP06S9S0kv7mlkUfZa7yTgFtP6PBEl39b5dKt00hzl1NEgr'); // ← replace with your pk_live_... key
+
+  // Create Elements instance
+  const elements = stripe.elements();
+
+  // Create and mount the card Element
+  const card = elements.create('card', {
+    style: {
+      base: {
+        color: '#ffffff',
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSmoothing: 'antialiased',
+        fontSize: '16px',
+        '::placeholder': { color: '#ffffff80' },
+      },
+      invalid: { color: '#ff4d4d' }
+    }
+  });
+  card.mount('#card-element');
+
+  // Handle real-time validation errors
+  card.on('change', (event) => {
+    const displayError = document.getElementById('card-errors');
+    if (event.error) {
+      displayError.textContent = event.error.message;
+    } else {
+      displayError.textContent = '';
+    }
+  });
+
+  // Form submit handler
+  document.getElementById('register-upgrade-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Processing...';
+
+    const email = e.target.querySelector('input[type="email"]').value.trim();
+    const password = e.target.querySelector('input[type="password"]').value;
+
+    if (!email || !password) {
+      document.getElementById('card-errors').textContent = 'Please fill email and password';
+      btn.disabled = false;
+      btn.textContent = 'Create Account & Pay $48/year';
+      return;
+    }
+
+    try {
+      // Step 1: Create PaymentMethod from card
+      const { paymentMethod, error } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: card,
+        billing_details: { email }
+      });
+
+      if (error) {
+        document.getElementById('card-errors').textContent = error.message;
+        btn.disabled = false;
+        btn.textContent = 'Create Account & Pay $48/year';
+        return;
+      }
+
+      // Step 2: Send PaymentMethod + credentials to Worker
+      const response = await fetch(API_BASE + '/api/create-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          password,
+          payment_method: paymentMethod.id
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        document.getElementById('card-errors').textContent = data.error || 'Subscription failed';
+        btn.disabled = false;
+        btn.textContent = 'Create Account & Pay $48/year';
+        return;
+      }
+
+      // Step 3: Confirm payment client-side (handles 3DS if needed)
+      const { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
+
+      if (confirmError) {
+        document.getElementById('card-errors').textContent = confirmError.message;
+        btn.disabled = false;
+        btn.textContent = 'Create Account & Pay $48/year';
+        return;
+      }
+
+      // Success
+      document.getElementById('card-errors').textContent = 'Success! You're now Pro – redirecting...';
+      document.getElementById('card-errors').className = 'text-center text-sm text-green-300 min-h-[1.25rem]';
+      setTimeout(() => {
+        window.location.href = '/ai-audit-tool/';
+      }, 2000);
+
+    } catch (err) {
+      console.error('Payment error:', err);
+      document.getElementById('card-errors').textContent = 'Payment failed – try again';
+      btn.disabled = false;
+      btn.textContent = 'Create Account & Pay $48/year';
+    }
+  });
+</script>
      
 <!-- AddToAny BEGIN -->
 <div style="display: flex; justify-content: center; margin: 30px 0;">
