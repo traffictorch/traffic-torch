@@ -9,8 +9,8 @@ import { computeVocabulary } from './modules/vocabulary.js';
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 const STORAGE_KEY = 'traffic_torch_ai_audit_usage';
-const FREE_LIMIT = 3;
-const PRO_LIMIT = 5;
+const FREE_LIMIT = 1;
+const PRO_LIMIT = 2;
 
 function getToday() {
   return new Date().toISOString().split('T')[0];
