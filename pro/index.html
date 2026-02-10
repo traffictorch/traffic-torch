@@ -158,8 +158,6 @@
   <!-- Tailwind output – comes last so utilities can override -->
   <link rel="stylesheet" href="/tailwind-local-v1.0.css">
 
-<script src="https://js.stripe.com/v3/"></script>
-
 <script>
     // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
     (function() {
@@ -174,6 +172,8 @@
   </script>
     <link rel="preconnect" href="https://traffictorch.net" crossorigin>
   <meta http-equiv="Content-Encoding" content="br">  
+  
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
 
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
@@ -286,7 +286,7 @@
     Upgrade to Traffic Torch Pro
   </h1>
 <p class="text-gray-800 dark:text-gray-200 mb-12 text-center max-w-3xl mx-auto leading-relaxed">
-  Unlock 25 daily AI UX % SEO audit tool runs. Secure login required. Powered by Stripe – privacy-first, no data collection.
+  Unlock 25 daily AI UX & SEO audit tool runs. Secure login required. Powered by Stripe – privacy-first, no data collection.
 </p>
    
 <!-- Login form -->
@@ -329,7 +329,7 @@
         status.textContent = 'Logged in successfully!';
         status.className = 'text-center text-sm text-green-600 dark:text-green-400 min-h-[1.25rem]';
         setTimeout(() => {
-          window.location.href = '/ai-audit-tool/';
+          window.location.href = '/';
         }, 1500); // brief delay to show success message
       } else {
         status.textContent = data.error || 'Invalid credentials – please try again';
@@ -412,7 +412,7 @@
         status.textContent = 'Account created & logged in! Redirecting...';
         status.className = 'text-center text-sm text-green-600 dark:text-green-400 min-h-[1.25rem] mt-2';
         setTimeout(() => {
-          window.location.href = '/ai-audit-tool/';
+          window.location.href = '/';
         }, 1500);
       } else {
         status.textContent = 'Account created but login failed – please login manually';
@@ -472,7 +472,7 @@
     if (!email || !password) {
       document.getElementById('card-errors').textContent = 'Please fill email and password';
       btn.disabled = false;
-      btn.textContent = 'Create Account & Pay $48/year';
+      btn.textContent = 'Create Account & Pay $1/year';
       return;
     }
 
@@ -487,7 +487,7 @@
       if (error) {
         document.getElementById('card-errors').textContent = error.message;
         btn.disabled = false;
-        btn.textContent = 'Create Account & Pay $48/year';
+        btn.textContent = 'Create Account & Pay $1/year';
         return;
       }
 
@@ -507,7 +507,7 @@
       if (!response.ok) {
         document.getElementById('card-errors').textContent = data.error || 'Subscription failed';
         btn.disabled = false;
-        btn.textContent = 'Create Account & Pay $48/year';
+        btn.textContent = 'Create Account & Pay $1/year';
         return;
       }
 
@@ -517,7 +517,7 @@
       if (confirmError) {
         document.getElementById('card-errors').textContent = confirmError.message;
         btn.disabled = false;
-        btn.textContent = 'Create Account & Pay $48/year';
+        btn.textContent = 'Create Account & Pay $1/year';
         return;
       }
 
@@ -525,14 +525,14 @@
       document.getElementById('card-errors').textContent = 'Success! You're now Pro – redirecting...';
       document.getElementById('card-errors').className = 'text-center text-sm text-green-300 min-h-[1.25rem]';
       setTimeout(() => {
-        window.location.href = '/ai-audit-tool/';
+        window.location.href = '/';
       }, 2000);
 
     } catch (err) {
       console.error('Payment error:', err);
       document.getElementById('card-errors').textContent = 'Payment failed – try again';
       btn.disabled = false;
-      btn.textContent = 'Create Account & Pay $48/year';
+      btn.textContent = 'Create Account & Pay $1/year';
     }
   });
 </script>
