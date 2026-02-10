@@ -6,6 +6,34 @@ import { computeRepetition } from './modules/repetition.js';
 import { computeSentenceLength } from './modules/sentenceLength.js';
 import { computeVocabulary } from './modules/vocabulary.js';
 
+const STORAGE_KEY = 'traffic_torch_ai_audit_usage';
+const FREE_LIMIT = 5;
+const PRO_LIMIT = 25;
+
+function getToday() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function checkUsageLimit() {
+  const today = getToday();
+  let usage = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+
+  if (usage.date !== today) {
+    usage = { date: today, count: 0 };
+  }
+
+  const limit = usage.isPro ? PRO_LIMIT : FREE_LIMIT; // isPro flag can be set later via login/upgrade
+
+  if (usage.count >= limit) {
+    document.getElementById('upgradeModal').classList.remove('hidden');
+    return false;
+  }
+
+  usage.count += 1;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(usage));
+  return true;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
@@ -108,8 +136,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const url = input.value.trim();
+  e.preventDefault();
+
+  if (!checkUsageLimit()) return;  // stops if limit hit, shows modal
+
+  const url = input.value.trim();
     let normalizedUrl = url;
     if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
       normalizedUrl = 'https://' + normalizedUrl;

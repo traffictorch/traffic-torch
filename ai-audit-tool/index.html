@@ -1007,6 +1007,21 @@
   <script src="/main-v1.1.js" type="module"></script>
   <script src="/ai-audit-tool/metric-explanations-v1.0.js" type="module" defer></script>
   <script src="/ai-audit-tool/script-v1.2.js" type="module" defer></script>
+  
+<div id="upgradeModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+  <div class="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-md w-full text-center text-gray-800 dark:text-gray-200 shadow-xl">
+    <h2 class="text-xl font-bold mb-4">Free Daily Limit Reached</h2>
+    <p class="mb-6">You've used your 5 free AI audits today. Upgrade to Pro for 25 daily runs + advanced features.</p>
+    <a href="https://traffic-torch-api.traffictorch.workers.dev/upgrade" 
+       class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition">
+      Upgrade to Pro
+    </a>
+    <button onclick="document.getElementById('upgradeModal').classList.add('hidden')" 
+            class="mt-4 text-gray-600 dark:text-gray-400 underline hover:text-gray-800 dark:hover:text-gray-200">
+      Close
+    </button>
+  </div>
+</div>
 
 
 </body>
