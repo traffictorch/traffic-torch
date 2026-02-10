@@ -426,118 +426,7 @@
   });
 </script>
 
-<script>
-  // Initialize Stripe (use your live or test publishable key from Stripe Dashboard → Developers → API keys)
-  const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
-  const stripe = Stripe('pk_live_51SyjNi35Al6CUgc4jAcWAszElUF4iMpBZOj5UGM9gk7KZKxBSlDGP06S9S0kv7mlkUfZa7yTgFtP6PBEl39b5dKt00hzl1NEgr'); // ← replace with your pk_live_... key
 
-  // Create Elements instance
-  const elements = stripe.elements();
-
-  // Create and mount the card Element
-  const card = elements.create('card', {
-    style: {
-      base: {
-        color: '#ffffff',
-        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-        fontSmoothing: 'antialiased',
-        fontSize: '16px',
-        '::placeholder': { color: '#ffffff80' },
-      },
-      invalid: { color: '#ff4d4d' }
-    }
-  });
-  card.mount('#card-element');
-  console.log('Stripe card element mounted');
-
-  // Handle real-time validation errors
-  card.on('change', (event) => {
-    const displayError = document.getElementById('card-errors');
-    if (event.error) {
-      displayError.textContent = event.error.message;
-    } else {
-      displayError.textContent = '';
-    }
-  });
-
-  // Form submit handler
-  document.getElementById('register-upgrade-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const btn = document.getElementById('submit-btn');
-    btn.disabled = true;
-    btn.textContent = 'Processing...';
-
-    const email = e.target.querySelector('input[type="email"]').value.trim();
-    const password = e.target.querySelector('input[type="password"]').value;
-
-    if (!email || !password) {
-      document.getElementById('card-errors').textContent = 'Please fill email and password';
-      btn.disabled = false;
-      btn.textContent = 'Create Account & Pay $1/year';
-      return;
-    }
-
-    try {
-      // Step 1: Create PaymentMethod from card
-      const { paymentMethod, error } = await stripe.createPaymentMethod({
-        type: 'card',
-        card: card,
-        billing_details: { email }
-      });
-
-      if (error) {
-        document.getElementById('card-errors').textContent = error.message;
-        btn.disabled = false;
-        btn.textContent = 'Create Account & Pay $1/year';
-        return;
-      }
-
-      // Step 2: Send PaymentMethod + credentials to Worker
-      const response = await fetch(API_BASE + '/api/create-subscription', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          password,
-          payment_method: paymentMethod.id
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        document.getElementById('card-errors').textContent = data.error || 'Subscription failed';
-        btn.disabled = false;
-        btn.textContent = 'Create Account & Pay $1/year';
-        return;
-      }
-
-      // Step 3: Confirm payment client-side (handles 3DS if needed)
-      const { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
-
-      if (confirmError) {
-        document.getElementById('card-errors').textContent = confirmError.message;
-        btn.disabled = false;
-        btn.textContent = 'Create Account & Pay $1/year';
-        return;
-      }
-
-      // Success
-      document.getElementById('card-errors').textContent = 'Success! You\'re now Pro - redirecting...';
-      document.getElementById('card-errors').className = 'text-center text-sm text-green-300 min-h-[1.25rem]';
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 2000);
-
-    } catch (err) {
-      console.error('Payment error:', err);
-      document.getElementById('card-errors').textContent = 'Payment failed – try again';
-      btn.disabled = false;
-      btn.textContent = 'Create Account & Pay $1/year';
-    }
-  });
-</script>
      
 <!-- AddToAny BEGIN -->
 <div style="display: flex; justify-content: center; margin: 30px 0;">
@@ -659,5 +548,119 @@
 
   <!-- Load JS last for speed -->
   <script src="/main-v1.1.js" type="module"></script>
+  
+  <script>
+  // Initialize Stripe (use your live or test publishable key from Stripe Dashboard → Developers → API keys)
+  const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+  const stripe = Stripe('pk_live_51SyjNi35Al6CUgc4jAcWAszElUF4iMpBZOj5UGM9gk7KZKxBSlDGP06S9S0kv7mlkUfZa7yTgFtP6PBEl39b5dKt00hzl1NEgr'); // ← replace with your pk_live_... key
+
+  // Create Elements instance
+  const elements = stripe.elements();
+
+  // Create and mount the card Element
+  const card = elements.create('card', {
+    style: {
+      base: {
+        color: '#ffffff',
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSmoothing: 'antialiased',
+        fontSize: '16px',
+        '::placeholder': { color: '#ffffff80' },
+      },
+      invalid: { color: '#ff4d4d' }
+    }
+  });
+  card.mount('#card-element');
+  console.log('Stripe card element mounted');
+
+  // Handle real-time validation errors
+  card.on('change', (event) => {
+    const displayError = document.getElementById('card-errors');
+    if (event.error) {
+      displayError.textContent = event.error.message;
+    } else {
+      displayError.textContent = '';
+    }
+  });
+
+  // Form submit handler
+  document.getElementById('register-upgrade-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Processing...';
+
+    const email = e.target.querySelector('input[type="email"]').value.trim();
+    const password = e.target.querySelector('input[type="password"]').value;
+
+    if (!email || !password) {
+      document.getElementById('card-errors').textContent = 'Please fill email and password';
+      btn.disabled = false;
+      btn.textContent = 'Create Account & Pay $1/year';
+      return;
+    }
+
+    try {
+      // Step 1: Create PaymentMethod from card
+      const { paymentMethod, error } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: card,
+        billing_details: { email }
+      });
+
+      if (error) {
+        document.getElementById('card-errors').textContent = error.message;
+        btn.disabled = false;
+        btn.textContent = 'Create Account & Pay $1/year';
+        return;
+      }
+
+      // Step 2: Send PaymentMethod + credentials to Worker
+      const response = await fetch(API_BASE + '/api/create-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          password,
+          payment_method: paymentMethod.id
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        document.getElementById('card-errors').textContent = data.error || 'Subscription failed';
+        btn.disabled = false;
+        btn.textContent = 'Create Account & Pay $1/year';
+        return;
+      }
+
+      // Step 3: Confirm payment client-side (handles 3DS if needed)
+      const { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
+
+      if (confirmError) {
+        document.getElementById('card-errors').textContent = confirmError.message;
+        btn.disabled = false;
+        btn.textContent = 'Create Account & Pay $1/year';
+        return;
+      }
+
+      // Success
+      document.getElementById('card-errors').textContent = 'Success! You\'re now Pro - redirecting...';
+      document.getElementById('card-errors').className = 'text-center text-sm text-green-300 min-h-[1.25rem]';
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 2000);
+
+    } catch (err) {
+      console.error('Payment error:', err);
+      document.getElementById('card-errors').textContent = 'Payment failed – try again';
+      btn.disabled = false;
+      btn.textContent = 'Create Account & Pay $1/year';
+    }
+  });
+</script>
+  
 </body>
 </html>
