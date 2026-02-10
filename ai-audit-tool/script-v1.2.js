@@ -7,7 +7,7 @@ import { computeSentenceLength } from './modules/sentenceLength.js';
 import { computeVocabulary } from './modules/vocabulary.js';
 
 const STORAGE_KEY = 'traffic_torch_ai_audit_usage';
-const FREE_LIMIT = 5;
+const FREE_LIMIT = 3;
 const PRO_LIMIT = 25;
 
 function getToday() {
@@ -19,13 +19,18 @@ function checkUsageLimit() {
   let usage = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
 
   if (usage.date !== today) {
-    usage = { date: today, count: 0 };
+    usage = { date: today, count: 0, isPro: false }; // reset + default isPro false
   }
 
-  const limit = usage.isPro ? PRO_LIMIT : FREE_LIMIT; // isPro flag can be set later via login/upgrade
+  const limit = usage.isPro ? PRO_LIMIT : FREE_LIMIT;
 
   if (usage.count >= limit) {
-    document.getElementById('upgradeModal').classList.remove('hidden');
+    const modal = document.getElementById('upgradeModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+    } else {
+      console.warn('Upgrade modal not found – check index.html ID');
+    }
     return false;
   }
 
