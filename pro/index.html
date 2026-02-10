@@ -447,6 +447,7 @@
     }
   });
   card.mount('#card-element');
+  console.log('Stripe card element mounted');
 
   // Handle real-time validation errors
   card.on('change', (event) => {
@@ -522,7 +523,7 @@
       }
 
       // Success
-      document.getElementById('card-errors').textContent = 'Success! You're now Pro – redirecting...';
+      document.getElementById('card-errors').textContent = 'Success! You\'re now Pro - redirecting...';
       document.getElementById('card-errors').className = 'text-center text-sm text-green-300 min-h-[1.25rem]';
       setTimeout(() => {
         window.location.href = '/';
