@@ -301,7 +301,7 @@ async function handleAuth(mode) {
     const data = await response.json();
 
     if (response.ok && data.token) {
-      localStorage.setItem('torch_token', data.token);
+      localStorage.setItem('authToken', data.token);  // match /pro/ page usage
       alert(mode === 'login' ? 'Logged in successfully!' : 'Registered & logged in!');
       document.querySelector('.fixed')?.remove();
     } else {

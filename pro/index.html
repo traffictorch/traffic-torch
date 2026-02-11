@@ -19,32 +19,34 @@
 
       <!-- Login form – unchanged -->
 
-      <!-- Upgrade Section -->
-      <div class="bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl p-8 max-w-md mx-auto">
-        <h3 id="section-title" class="text-2xl font-bold text-center mb-6">Create Account & Upgrade to Pro</h3>
+    <!-- Unified section – form and upgrade separate to stop bubbling -->
+<div class="bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl p-8 max-w-md mx-auto">
+  <h3 id="section-title" class="text-2xl font-bold text-center mb-6">Create Account & Upgrade to Pro</h3>
 
-        <!-- Signup form for new users -->
-        <form id="signup-form" class="space-y-6">
-          <input type="email" id="email" placeholder="Email" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
-          <input type="password" id="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
-          <button type="submit" id="submit-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
-            Create Account & Pay $48/year
-          </button>
-        </form>
+  <!-- Signup form – closed before upgrade -->
+  <form id="signup-form" class="space-y-6">
+    <input type="email" id="email" placeholder="Email" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
+    <input type="password" id="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
+    <button type="submit" id="submit-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
+      Create Account & Pay $48/year
+    </button>
+  </form>
 
-        <!-- Logged-in upgrade button – OUTSIDE form -->
-        <div id="pro-upgrade-section" class="hidden mt-8">
-          <button type="button" id="upgrade-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
-            Upgrade to Pro – $48/year
-          </button>
-        </div>
+  <!-- Upgrade for logged-in users – NO form nesting -->
+  <div id="pro-upgrade-section" class="hidden mt-8">
+    <button type="button" id="upgrade-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
+      Upgrade to Pro – $48/year
+    </button>
+  </div>
 
-        <!-- Single checkout container -->
-        <div id="checkout-container" class="mt-6 min-h-[400px] rounded-lg border border-white/30 bg-white/10 hidden"></div>
-        <div id="checkout-errors" class="text-center text-sm text-red-300 min-h-[1.25rem]" role="alert"></div>
+  <!-- Shared containers – outside form -->
+  <div id="checkout-container" class="mt-6 min-h-[400px] rounded-lg border border-white/30 bg-white/10 hidden"></div>
+  <div id="checkout-errors" class="text-center text-sm text-red-300 min-h-[1.25rem]" role="alert"></div>
 
-        <p class="mt-4 text-center text-sm opacity-90">Secure payment via Stripe • Cancel anytime</p>
-      </div>
+  <p class="mt-4 text-center text-sm opacity-90">Secure payment via Stripe • Cancel anytime</p>
+</div>
+      
+      
     </header>
 
     <!-- Your AddToAny, breadcrumbs, last update, back button, footer – unchanged -->
@@ -65,43 +67,49 @@
       }
       console.log('Upgrade button found');
 
-      upgradeBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('Upgrade clicked');
+upgradeBtn.addEventListener('click', async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  e.stopImmediatePropagation();  // strongest stop
+  console.log('Upgrade button CLICKED – event fully stopped');
 
-        const btn = e.target;
-        btn.disabled = true;
-        btn.textContent = 'Loading...';
+  const btn = e.target;
+  btn.disabled = true;
+  btn.textContent = 'Loading...';
 
-        try {
-          const token = localStorage.getItem('authToken');
-          console.log('Token:', token ? 'exists' : 'missing');
-          if (!token) throw new Error('Login required');
+  const token = localStorage.getItem('authToken');
+  console.log('Token check:', token ? 'exists' : 'missing');
 
-          const res = await fetch(API_BASE + '/api/upgrade', {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-          console.log('API status:', res.status);
+  if (!token) {
+    document.getElementById('checkout-errors').textContent = 'Login required – please log in first';
+    btn.disabled = false;
+    btn.textContent = 'Upgrade to Pro – $48/year';
+    return;
+  }
 
-          if (!res.ok) throw new Error(await res.text());
+  try {
+    const res = await fetch(API_BASE + '/api/upgrade', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    console.log('API status:', res.status);
 
-          const { client_secret } = await res.json();
-          console.log('Client secret OK');
+    if (!res.ok) throw new Error(await res.text());
 
-          const container = document.getElementById('checkout-container');
-          container.classList.remove('hidden');
-          const checkout = await stripe.initEmbeddedCheckout({ clientSecret: client_secret });
-          checkout.mount('#checkout-container');
-          console.log('Form mounted');
-        } catch (err) {
-          console.error(err);
-          document.getElementById('checkout-errors').textContent = err.message;
-          btn.disabled = false;
-          btn.textContent = 'Upgrade to Pro – $48/year';
-        }
-      });
+    const { client_secret } = await res.json();
+    console.log('Client secret received');
+
+    document.getElementById('checkout-container').classList.remove('hidden');
+    const embeddedCheckout = await stripe.initEmbeddedCheckout({ clientSecret: client_secret });
+    embeddedCheckout.mount('#checkout-container');
+    console.log('Stripe form mounted');
+  } catch (err) {
+    console.error('Error:', err.message);
+    document.getElementById('checkout-errors').textContent = err.message;
+    btn.disabled = false;
+    btn.textContent = 'Upgrade to Pro – $48/year';
+  }
+});
 
       async function showUpgradeButton() {
         const token = localStorage.getItem('authToken');
