@@ -481,9 +481,11 @@
   <script src="/main-v1.1.js" type="module"></script>
   
 
-
-window.addEventListener('DOMContentLoaded', () => {
   <script>
+window.addEventListener('DOMContentLoaded', () => {
+
+const stripe = Stripe('pk_test_51SyjNi35Al6CUgc4F7ASfuA6j5PTrD6bYzeiLSaN8kiFqe3Dx1bEzmR5GjyFmGvqWBu2am8GjFnOgO7WNIno6kdN00jnVWUo9M'); 
+
   const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
   document.getElementById('signup-form').addEventListener('submit', async (e) => {
@@ -540,9 +542,9 @@ window.addEventListener('DOMContentLoaded', () => {
       btn.textContent = 'Create Account & Pay $48/year';
     }
   });
-</script>
+
 });
-  
+</script>  
   
 </body>
 </html>
