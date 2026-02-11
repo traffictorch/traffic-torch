@@ -512,32 +512,45 @@
   }
 
   document.getElementById('upgrade-btn')?.addEventListener('click', async (e) => {
+    e.preventDefault(); // extra safety against any form bubbling
+    console.log('Upgrade button clicked – starting process');
+
     const btn = e.target;
     btn.disabled = true;
     btn.textContent = 'Loading...';
 
     try {
       const token = localStorage.getItem('authToken');
+      console.log('Token found:', !!token);
+
       const res = await fetch(API_BASE + '/api/upgrade', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      if (!res.ok) throw new Error(await res.text());
+
+      console.log('API response status:', res.status);
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('API error:', errorText);
+        throw new Error(errorText);
+      }
 
       const { client_secret } = await res.json();
+      console.log('Client secret received – mounting form');
 
       document.getElementById('checkout-container').classList.remove('hidden');
       const embeddedCheckout = await stripe.initEmbeddedCheckout({ clientSecret: client_secret });
       embeddedCheckout.mount('#checkout-container');
+
+      console.log('Embedded Checkout mounted');
     } catch (err) {
-      document.getElementById('checkout-errors').textContent = err.message;
+      console.error('Upgrade error:', err);
+      document.getElementById('checkout-errors').textContent = err.message || 'Failed to start checkout';
       btn.disabled = false;
       btn.textContent = 'Upgrade to Pro – $48/year';
     }
   });
-
-  // Run on page load
-  showUpgradeButton();
 </script>
 
 <script>
