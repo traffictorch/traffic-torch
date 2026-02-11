@@ -360,43 +360,13 @@
   <p class="mt-4 text-center text-sm opacity-90">Secure payment via Stripe • Cancel anytime</p>
 </div>
 
-<!-- Near upgrade button -->
-<button id="upgrade-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50">Upgrade to Pro</button>
-<div id="checkout-placeholder" class="mt-6 w-full max-w-lg mx-auto hidden"></div> <!-- Hidden until mounted -->
-
-<script>
-  const stripe = Stripe('pk_test_...'); // Your publishable key
-
-  document.getElementById('upgrade-btn').addEventListener('click', async (e) => {
-    const btn = e.target;
-    btn.disabled = true;
-    btn.textContent = 'Loading...';
-
-    try {
-      const token = localStorage.getItem('authToken');
-      if (!token) throw new Error('Not authenticated');
-
-      const res = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/upgrade', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (!res.ok) throw new Error(await res.text());
-
-      const { client_secret } = await res.json();
-
-      const checkout = await stripe.initEmbeddedCheckout({ clientSecret: client_secret });
-      document.getElementById('checkout-placeholder').classList.remove('hidden');
-      checkout.mount('#checkout-placeholder');
-
-    } catch (err) {
-      console.error(err);
-      alert('Failed to start checkout: ' + err.message);
-      btn.disabled = false;
-      btn.textContent = 'Upgrade to Pro';
-    }
-  });
-</script>
+<div id="pro-upgrade-section" class="hidden mt-8">
+  <button id="upgrade-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
+    Upgrade to Pro – $48/year
+  </button>
+  <div id="checkout-container" class="mt-6 min-h-[400px] rounded-lg border border-white/30 bg-white/10 hidden"></div>
+  <div id="checkout-errors" class="text-center text-sm text-red-300 min-h-[1.25rem]" role="alert"></div>
+</div>
 
      
 <!-- AddToAny BEGIN -->
@@ -519,85 +489,54 @@
 
   <!-- Load JS last for speed -->
   <script src="/main-v1.1.js" type="module"></script>
-  
 
 <script>
-  // Wait for DOM + Stripe.js to load
-  window.addEventListener('DOMContentLoaded', () => {
-    if (typeof Stripe === 'undefined') {
-      console.error('Stripe.js not loaded – check <script src="https://js.stripe.com/v3/">');
-      document.getElementById('checkout-errors').textContent = 'Payment system failed to load – refresh page';
-      return;
-    }
+  const stripe = Stripe('pk_test_51SyjNi35Al6CUgc4F7ASfuA6j5PTrD6bYzeiLSaN8kiFqe3Dx1bEzmR5GjyFmGvqWBu2am8GjFnOgO7WNIno6kdN00jnVWUo9M');
+  const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
-    const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+  async function showUpgradeButton() {
+    const token = localStorage.getItem('authToken');
+    if (!token) return;
 
-    document.getElementById('signup-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const btn = document.getElementById('submit-btn');
-      btn.disabled = true;
-      btn.textContent = 'Processing...';
-
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-
-      if (!email || !password) {
-        document.getElementById('checkout-errors').textContent = 'Please fill email and password';
-        btn.disabled = false;
-        btn.textContent = 'Create Account & Pay $48/year';
-        return;
-      }
-
-      try {
-        const response = await fetch(API_BASE + '/api/create-checkout-session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-
-        let data;
-try {
-  data = await response.json();
-} catch (jsonErr) {
-  const text = await response.text();
-  console.error('JSON parse failed, raw response:', text);
-  document.getElementById('checkout-errors').textContent = 'Server error – invalid response. Try again.';
-  btn.disabled = false;
-  btn.textContent = 'Create Account & Pay $48/year';
-  return;
-}
-
-        if (!response.ok) {
-          document.getElementById('checkout-errors').textContent = data.error || 'Failed to start upgrade';
-          btn.disabled = false;
-          btn.textContent = 'Create Account & Pay $48/year';
-          return;
-        }
-
-        // Mount Embedded Checkout
-        const { client_secret } = data;
-        const embeddedCheckout = await Stripe('pk_test_51SyjNi35Al6CUgc4F7ASfuA6j5PTrD6bYzeiLSaN8kiFqe3Dx1bEzmR5GjyFmGvqWBu2am8GjFnOgO7WNIno6kdN00jnVWUo9M')
-          .initEmbeddedCheckout({
-            fetchClientSecret: async () => client_secret,
-            onComplete: () => {
-              document.getElementById('checkout-errors').textContent = 'Success! You\'re now Pro. Redirecting...';
-              setTimeout(() => {
-                window.location.href = '/';
-              }, 2000);
-            }
-          });
-
-        embeddedCheckout.mount('#checkout-container');
-      } catch (err) {
-        console.error('Error:', err);
-        document.getElementById('checkout-errors').textContent = 'Failed – try again';
-        btn.disabled = false;
-        btn.textContent = 'Create Account & Pay $48/year';
-      }
+    const res = await fetch(API_BASE + '/api/user-status', {
+      headers: { 'Authorization': `Bearer ${token}` }
     });
+    if (!res.ok) return;
+
+    const { isPro } = await res.json();
+    if (!isPro) {
+      document.getElementById('pro-upgrade-section').classList.remove('hidden');
+    }
+  }
+
+  document.getElementById('upgrade-btn')?.addEventListener('click', async (e) => {
+    const btn = e.target;
+    btn.disabled = true;
+    btn.textContent = 'Loading...';
+
+    try {
+      const token = localStorage.getItem('authToken');
+      const res = await fetch(API_BASE + '/api/upgrade', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error(await res.text());
+
+      const { client_secret } = await res.json();
+
+      document.getElementById('checkout-container').classList.remove('hidden');
+      const embeddedCheckout = await stripe.initEmbeddedCheckout({ clientSecret: client_secret });
+      embeddedCheckout.mount('#checkout-container');
+    } catch (err) {
+      document.getElementById('checkout-errors').textContent = err.message;
+      btn.disabled = false;
+      btn.textContent = 'Upgrade to Pro – $48/year';
+    }
   });
-</script> 
+
+  // Run on page load
+  showUpgradeButton();
+</script>
   
 </body>
 </html>

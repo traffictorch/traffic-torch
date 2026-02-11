@@ -4,20 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment Confirmation - Traffic Torch Pro</title>
-  <link href="/style-v1.0.css" rel="stylesheet"> <!-- Consistent global styles -->
+  <link href="/style-v1.0.css" rel="stylesheet">
   <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen flex items-center justify-center">
   <div class="text-center p-6 max-w-md mx-auto">
     <h1 id="status-heading" class="text-2xl font-bold mb-4">Processing your subscription...</h1>
-    <p id="status-message">Please wait while we confirm your payment.</p>
+    <p id="status-message">Please wait...</p>
   </div>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
     if (!sessionId) {
       document.getElementById('status-heading').textContent = 'Error';
-      document.getElementById('status-message').textContent = 'No session ID found. Please try again.';
+      document.getElementById('status-message').textContent = 'No session found.';
       return;
     }
 
@@ -27,21 +27,21 @@
         const heading = document.getElementById('status-heading');
         const msg = document.getElementById('status-message');
         if (data.status === 'complete') {
-          heading.textContent = 'Subscription Activated!';
-          msg.textContent = 'Welcome to Traffic Torch Pro! Enjoy full access.';
-          // Optional: update local UI or redirect to dashboard
+          heading.textContent = 'Welcome to Pro!';
+          msg.innerHTML = 'Your subscription is active.<br>Enjoy full access – redirecting to dashboard...';
+          setTimeout(() => window.location.href = '/', 2000);
         } else if (data.status === 'open') {
           heading.textContent = 'Payment Pending';
-          msg.textContent = 'Redirecting back to checkout...';
+          msg.innerHTML = 'Redirecting back to upgrade...';
           setTimeout(() => window.location.href = '/pro/', 3000);
         } else {
-          heading.textContent = 'Payment Issue';
-          msg.textContent = 'Something went wrong. Please try again or contact support.';
+          heading.textContent = 'Issue with Payment';
+          msg.textContent = 'Please try again or contact support.';
         }
       })
       .catch(() => {
         document.getElementById('status-heading').textContent = 'Error';
-        document.getElementById('status-message').textContent = 'Failed to verify payment status.';
+        document.getElementById('status-message').textContent = 'Failed to verify.';
       });
   </script>
 </body>
