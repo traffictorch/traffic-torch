@@ -374,158 +374,151 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded – initializing Stripe & auth');
+
+    // Safety: force signup visible on every load
+    document.getElementById('signup-form').classList.remove('hidden');
+    document.getElementById('pro-upgrade-section').classList.add('hidden');
+
     const stripe = Stripe('pk_test_51SyjNi35Al6CUgc4F7ASfuA6j5PTrD6bYzeiLSaN8kiFqe3Dx1bEzmR5GjyFmGvqWBu2am8GjFnOgO7WNIno6kdN00jnVWUo9M');
     const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
-    // Signup form handler
+    // Signup form handler (unchanged)
     document.getElementById('signup-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
       const errors = document.getElementById('checkout-errors');
-
       if (!email || !password) {
         errors.textContent = 'Please fill email and password';
         return;
       }
-
       try {
         const res = await fetch(API_BASE + '/api/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
-
         if (!res.ok) {
-  const err = await res.json();
-  throw new Error(err.error || 'Signup failed');
-}
-const { token } = await res.json();
-localStorage.setItem('authToken', token);
-console.log('Registered & logged in – showing upgrade UI');
-errors.textContent = 'Account created! Ready to upgrade – click below';
-// Instead of reload, force show upgrade section immediately
-document.getElementById('signup-form').classList.add('hidden');
-document.getElementById('pro-upgrade-section').classList.remove('hidden');
-document.getElementById('section-title').textContent = 'Upgrade to Pro';
-// Re-run updateUI to confirm token works (optional safety)
-updateUI();
+          const err = await res.json();
+          throw new Error(err.error || 'Signup failed');
+        }
+        const { token } = await res.json();
+        localStorage.setItem('authToken', token);
+        console.log('Registered & logged in – showing upgrade UI');
+        errors.textContent = 'Account created! Ready to upgrade – click below';
+        document.getElementById('signup-form').classList.add('hidden');
+        document.getElementById('pro-upgrade-section').classList.remove('hidden');
+        document.getElementById('section-title').textContent = 'Upgrade to Pro';
+        updateUI(); // confirm
       } catch (err) {
         console.error('Signup error:', err);
         errors.textContent = err.message;
       }
     });
 
-    // Upgrade button handler
+    // Upgrade button handler (unchanged)
     const upgradeBtn = document.getElementById('upgrade-btn');
     if (upgradeBtn) {
       console.log('Upgrade button found');
-upgradeBtn.addEventListener('click', async (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  e.stopImmediatePropagation();
-  console.log('Upgrade clicked');
-  const btn = e.target;
-  btn.disabled = true;
-  btn.textContent = 'Loading...';
-  const token = localStorage.getItem('authToken');
-  console.log('Token:', token ? 'exists' : 'missing');
-  if (!token) {
-    document.getElementById('checkout-errors').textContent = 'Login required – please log in first';
-    btn.disabled = false;
-    btn.textContent = 'Upgrade to Pro – $48/year';
-    return;
-  }
-  try {
-    document.getElementById('checkout-container').classList.remove('hidden');
-
-    const fetchClientSecret = async () => {
-      const res = await fetch(API_BASE + '/api/upgrade', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+      upgradeBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        console.log('Upgrade clicked');
+        const btn = e.target;
+        btn.disabled = true;
+        btn.textContent = 'Loading...';
+        const token = localStorage.getItem('authToken');
+        console.log('Token:', token ? 'exists' : 'missing');
+        if (!token) {
+          document.getElementById('checkout-errors').textContent = 'Login required – please log in first';
+          btn.disabled = false;
+          btn.textContent = 'Upgrade to Pro – $48/year';
+          return;
+        }
+        try {
+          document.getElementById('checkout-container').classList.remove('hidden');
+          const fetchClientSecret = async () => {
+            const res = await fetch(API_BASE + '/api/upgrade', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            });
+            console.log('API status:', res.status);
+            if (!res.ok) {
+              const errText = await res.text();
+              throw new Error(errText || 'Failed to create session');
+            }
+            const data = await res.json();
+            if (!data.clientSecret) throw new Error('No clientSecret in response');
+            console.log('Client secret received');
+            return data.clientSecret;
+          };
+          const embeddedCheckout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
+          embeddedCheckout.mount('#checkout-container');
+          console.log('Stripe form mounted');
+        } catch (err) {
+          console.error('Error:', err.message);
+          document.getElementById('checkout-errors').textContent = err.message;
+          btn.disabled = false;
+          btn.textContent = 'Upgrade to Pro – $48/year';
+          document.getElementById('checkout-container').classList.add('hidden');
         }
       });
-      console.log('API status:', res.status);
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || 'Failed to create session');
-      }
-      const data = await res.json();
-      if (!data.clientSecret) throw new Error('No clientSecret in response');
-      console.log('Client secret received');
-      return data.clientSecret;
-    };
-
-    const embeddedCheckout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
-    embeddedCheckout.mount('#checkout-container');
-    console.log('Stripe form mounted');
-
-  } catch (err) {
-    console.error('Error:', err.message);
-    document.getElementById('checkout-errors').textContent = err.message;
-    btn.disabled = false;
-    btn.textContent = 'Upgrade to Pro – $48/year';
-    document.getElementById('checkout-container').classList.add('hidden');
-  }
-});
     }
 
-    // Show/hide upgrade section & update title
-async function updateUI() {
-  const token = localStorage.getItem('authToken');
-  const signupForm = document.getElementById('signup-form');
-  const upgradeSection = document.getElementById('pro-upgrade-section');
-  const sectionTitle = document.getElementById('section-title');
-  const errors = document.getElementById('checkout-errors');
+    // Updated updateUI
+    async function updateUI() {
+      const token = localStorage.getItem('authToken');
+      const signupForm = document.getElementById('signup-form');
+      const upgradeSection = document.getElementById('pro-upgrade-section');
+      const sectionTitle = document.getElementById('section-title');
+      const errors = document.getElementById('checkout-errors');
 
-  // Default: show signup if no token
-  if (!token) {
-    console.log('No token → showing signup form');
-    signupForm.classList.remove('hidden');
-    upgradeSection.classList.add('hidden');
-    sectionTitle.textContent = 'Create Account & Upgrade to Pro';
-    return;
-  }
-
-  console.log('Token exists → checking user status');
-  try {
-    const res = await fetch(API_BASE + '/api/user-status', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    console.log('User-status status:', res.status);
-
-    if (!res.ok) {
-      console.warn('Invalid/expired token → treat as logged out');
-      localStorage.removeItem('authToken'); // clean up bad token
       signupForm.classList.remove('hidden');
       upgradeSection.classList.add('hidden');
       sectionTitle.textContent = 'Create Account & Upgrade to Pro';
-      errors.textContent = 'Session expired – please log in or register again';
-      return;
+
+      if (!token) {
+        console.log('No token → signup form visible (default state)');
+        return;
+      }
+
+      console.log('Token found → validating user status');
+      try {
+        const res = await fetch(API_BASE + '/api/user-status', {
+          headers: { 'Authorization': `Bearer ${token}` },
+          cache: 'no-store'
+        });
+        console.log('user-status response status:', res.status);
+
+        if (!res.ok) {
+          console.warn('Token invalid/expired → clearing and showing signup');
+          localStorage.removeItem('authToken');
+          errors.textContent = 'Session expired – please register or log in';
+          return;
+        }
+
+        const { isPro } = await res.json();
+        console.log('User pro status:', isPro);
+
+        if (isPro) {
+          sectionTitle.textContent = 'You are already Pro!';
+          signupForm.classList.add('hidden');
+          upgradeSection.classList.add('hidden');
+        } else {
+          sectionTitle.textContent = 'Upgrade to Pro';
+          signupForm.classList.add('hidden');
+          upgradeSection.classList.remove('hidden');
+        }
+      } catch (err) {
+        console.error('updateUI error:', err.message);
+        errors.textContent = 'Could not check status – please try registering';
+      }
     }
 
-    const { isPro } = await res.json();
-    console.log('User isPro:', isPro);
-
-    if (isPro) {
-      sectionTitle.textContent = 'You are already Pro!';
-      signupForm.classList.add('hidden');
-      upgradeSection.classList.add('hidden');
-    } else {
-      sectionTitle.textContent = 'Upgrade to Pro';
-      signupForm.classList.add('hidden');       // hide signup after register/login
-      upgradeSection.classList.remove('hidden'); // show upgrade button
-    }
-  } catch (err) {
-    console.error('updateUI failed:', err);
-    // Fallback: show signup if anything breaks
-    signupForm.classList.remove('hidden');
-    upgradeSection.classList.add('hidden');
-    sectionTitle.textContent = 'Create Account & Upgrade to Pro';
-  }
-}
     updateUI();
   });
 </script>
