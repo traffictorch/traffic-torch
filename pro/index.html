@@ -349,14 +349,7 @@
   <form id="register-upgrade-form" class="space-y-6">
     <input type="email" placeholder="Email" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
     <input type="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
-    <input type="text" id="postal-code" placeholder="Postal Code (required)" required class="...">
-    <!-- Stripe Card Element container -->
-    <div id="card-element" class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white focus:outline-none focus:border-white">
-      <!-- Stripe will mount the card input here -->
-    </div>
-    
-    <div id="card-errors" class="text-center text-sm text-red-300 min-h-[1.25rem]" role="alert"></div>
-    
+   
     <button type="submit" id="submit-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
       Create Account & Pay $48/year
     </button>
@@ -367,60 +360,62 @@
   document.getElementById('register-upgrade-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const status = document.getElementById('register-status');
-    status.id = 'register-status';
-    status.className = 'text-center text-sm text-gray-600 dark:text-gray-400 min-h-[1.25rem] mt-2';
-    e.target.appendChild(status);
-    status.textContent = 'Creating account...';
-
     const email = e.target.querySelector('input[type="email"]').value.trim();
     const password = e.target.querySelector('input[type="password"]').value;
 
     if (!email || !password) {
-      status.textContent = 'Please fill in both email and password';
-      status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem] mt-2';
+      alert('Please fill email and password');
       return;
     }
 
     try {
+      // Step 1: Register
       const regResponse = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
-
       const regData = await regResponse.json();
 
       if (!regResponse.ok) {
-        status.textContent = regData.error || 'Registration failed – email may already exist';
-        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem] mt-2';
+        alert(regData.error || 'Registration failed – email may exist');
         return;
       }
 
-      // Auto-login after register success
+      // Step 2: Auto-login
       const loginResponse = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
-
       const loginData = await loginResponse.json();
 
-      if (loginResponse.ok && loginData.token) {
-        localStorage.setItem('traffic_torch_jwt', loginData.token);
-        status.textContent = 'Account created & logged in! Redirecting...';
-        status.className = 'text-center text-sm text-green-600 dark:text-green-400 min-h-[1.25rem] mt-2';
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 1500);
-      } else {
-        status.textContent = 'Account created but login failed – please login manually';
-        status.className = 'text-center text-sm text-orange-600 dark:text-orange-400 min-h-[1.25rem] mt-2';
+      if (!loginResponse.ok || !loginData.token) {
+        alert('Registration succeeded but login failed – please login manually');
+        return;
       }
+
+      localStorage.setItem('traffic_torch_jwt', loginData.token);
+
+      // Step 3: Trigger /api/upgrade with token
+      const upgradeResponse = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/upgrade', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${loginData.token}`
+        }
+      });
+      const upgradeData = await upgradeResponse.json();
+
+      if (!upgradeResponse.ok || !upgradeData.url) {
+        alert(upgradeData.error || 'Upgrade failed – try again');
+        return;
+      }
+
+      window.location.href = upgradeData.url; // redirect to Stripe Checkout
     } catch (err) {
-      console.error('Register error:', err);
-      status.textContent = 'Registration failed – check connection and try again';
-      status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem] mt-2';
+      console.error('Error:', err);
+      alert('Failed – check connection and try again');
     }
   });
 </script>
@@ -548,132 +543,6 @@
   <!-- Load JS last for speed -->
   <script src="/main-v1.1.js" type="module"></script>
   
-    <script src="https://js.stripe.com/v3/"></script>
-
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-// Initialize Stripe (use your live or test publishable key from Stripe Dashboard → Developers → API keys)
-  const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
-  const stripe = Stripe('pk_test_51SyjNi35Al6CUgc4F7ASfuA6j5PTrD6bYzeiLSaN8kiFqe3Dx1bEzmR5GjyFmGvqWBu2am8GjFnOgO7WNIno6kdN00jnVWUo9M'); // ← replace with your pk_live_... key
-
-  // Create Elements instance
-  const elements = stripe.elements();
-
-  // Create and mount the card Element
-  const card = elements.create('card', {
-    style: {
-      base: {
-        color: '#ffffff',
-        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-        fontSmoothing: 'antialiased',
-        fontSize: '16px',
-        '::placeholder': { color: '#ffffff80' },
-      },
-      invalid: { color: '#ff4d4d' }
-    }
-  });
-  card.mount('#card-element');
-  console.log('Stripe card element mounted');
-
-  // Handle real-time validation errors
-  card.on('change', (event) => {
-    const displayError = document.getElementById('card-errors');
-    if (event.error) {
-      displayError.textContent = event.error.message;
-    } else {
-      displayError.textContent = '';
-    }
-  });
-
-  // Form submit handler
-  document.getElementById('register-upgrade-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const btn = document.getElementById('submit-btn');
-    btn.disabled = true;
-    btn.textContent = 'Processing...';
-
-    const email = e.target.querySelector('input[type="email"]').value.trim();
-    const password = e.target.querySelector('input[type="password"]').value;
-
-    if (!email || !password) {
-      document.getElementById('card-errors').textContent = 'Please fill email and password';
-      btn.disabled = false;
-      btn.textContent = 'Create Account & Pay $1/year';
-      return;
-    }
-
-    try {
-const postalCode = document.getElementById('postal-code')?.value.trim();
-if (!postalCode || postalCode.length < 4) {
-  document.getElementById('card-errors').textContent = 'Postal code must be at least 4 digits';
-  btn.disabled = false;
-  btn.textContent = 'Create Account & Pay $1/year';
-  return;
-}
-      // Step 1: Create PaymentMethod from card
-      const { paymentMethod, error } = await stripe.createPaymentMethod({
-        type: 'card',
-        card: card,
-        billing_details: {
-  email,
-  address: { postal_code: postalCode }
-}
-      });
-
-      if (error) {
-        document.getElementById('card-errors').textContent = error.message;
-        btn.disabled = false;
-        btn.textContent = 'Create Account & Pay $1/year';
-        return;
-      }
-
-      // Step 2: Send PaymentMethod + credentials to Worker
-      const response = await fetch(API_BASE + '/api/create-subscription', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          password,
-          payment_method: paymentMethod.id
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        document.getElementById('card-errors').textContent = data.error || 'Subscription failed';
-        btn.disabled = false;
-        btn.textContent = 'Create Account & Pay $1/year';
-        return;
-      }
-
-      // Step 3: Confirm payment client-side (handles 3DS if needed)
-      const { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
-
-      if (confirmError) {
-        document.getElementById('card-errors').textContent = confirmError.message;
-        btn.disabled = false;
-        btn.textContent = 'Create Account & Pay $1/year';
-        return;
-      }
-
-      // Success
-      document.getElementById('card-errors').textContent = 'Success! You\'re now Pro - redirecting...';
-      document.getElementById('card-errors').className = 'text-center text-sm text-green-300 min-h-[1.25rem]';
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 2000);
-
-    } catch (err) {
-      console.error('Payment error:', err);
-      document.getElementById('card-errors').textContent = 'Payment failed – try again';
-      btn.disabled = false;
-      btn.textContent = 'Create Account & Pay $1/year';
-    }
-  });
-});
-</script>
   
 </body>
 </html>
