@@ -360,6 +360,44 @@
   <p class="mt-4 text-center text-sm opacity-90">Secure payment via Stripe • Cancel anytime</p>
 </div>
 
+<!-- Near upgrade button -->
+<button id="upgrade-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50">Upgrade to Pro</button>
+<div id="checkout-placeholder" class="mt-6 w-full max-w-lg mx-auto hidden"></div> <!-- Hidden until mounted -->
+
+<script>
+  const stripe = Stripe('pk_test_...'); // Your publishable key
+
+  document.getElementById('upgrade-btn').addEventListener('click', async (e) => {
+    const btn = e.target;
+    btn.disabled = true;
+    btn.textContent = 'Loading...';
+
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) throw new Error('Not authenticated');
+
+      const res = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/upgrade', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!res.ok) throw new Error(await res.text());
+
+      const { client_secret } = await res.json();
+
+      const checkout = await stripe.initEmbeddedCheckout({ clientSecret: client_secret });
+      document.getElementById('checkout-placeholder').classList.remove('hidden');
+      checkout.mount('#checkout-placeholder');
+
+    } catch (err) {
+      console.error(err);
+      alert('Failed to start checkout: ' + err.message);
+      btn.disabled = false;
+      btn.textContent = 'Upgrade to Pro';
+    }
+  });
+</script>
+
      
 <!-- AddToAny BEGIN -->
 <div style="display: flex; justify-content: center; margin: 30px 0;">

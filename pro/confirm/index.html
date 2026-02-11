@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Confirmation - Traffic Torch Pro</title>
+  <link href="/style-v1.0.css" rel="stylesheet"> <!-- Consistent global styles -->
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen flex items-center justify-center">
+  <div class="text-center p-6 max-w-md mx-auto">
+    <h1 id="status-heading" class="text-2xl font-bold mb-4">Processing your subscription...</h1>
+    <p id="status-message">Please wait while we confirm your payment.</p>
+  </div>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    if (!sessionId) {
+      document.getElementById('status-heading').textContent = 'Error';
+      document.getElementById('status-message').textContent = 'No session ID found. Please try again.';
+      return;
+    }
+
+    fetch(`https://traffic-torch-api.traffictorch.workers.dev/api/session-status?session_id=${sessionId}`)
+      .then(res => res.json())
+      .then(data => {
+        const heading = document.getElementById('status-heading');
+        const msg = document.getElementById('status-message');
+        if (data.status === 'complete') {
+          heading.textContent = 'Subscription Activated!';
+          msg.textContent = 'Welcome to Traffic Torch Pro! Enjoy full access.';
+          // Optional: update local UI or redirect to dashboard
+        } else if (data.status === 'open') {
+          heading.textContent = 'Payment Pending';
+          msg.textContent = 'Redirecting back to checkout...';
+          setTimeout(() => window.location.href = '/pro/', 3000);
+        } else {
+          heading.textContent = 'Payment Issue';
+          msg.textContent = 'Something went wrong. Please try again or contact support.';
+        }
+      })
+      .catch(() => {
+        document.getElementById('status-heading').textContent = 'Error';
+        document.getElementById('status-message').textContent = 'Failed to verify payment status.';
+      });
+  </script>
+</body>
+</html>
