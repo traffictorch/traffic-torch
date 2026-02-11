@@ -171,7 +171,9 @@
     })();
   </script>
     <link rel="preconnect" href="https://traffictorch.net" crossorigin>
-  <meta http-equiv="Content-Encoding" content="br">  
+  <meta http-equiv="Content-Encoding" content="br"> 
+  
+  <script src="https://js.stripe.com/v3/"></script> 
   
 </head>
 
@@ -481,70 +483,73 @@
   <script src="/main-v1.1.js" type="module"></script>
   
 
-  <script>
-window.addEventListener('DOMContentLoaded', () => {
-
-const stripe = Stripe('pk_test_51SyjNi35Al6CUgc4F7ASfuA6j5PTrD6bYzeiLSaN8kiFqe3Dx1bEzmR5GjyFmGvqWBu2am8GjFnOgO7WNIno6kdN00jnVWUo9M'); 
-
-  const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
-
-  document.getElementById('signup-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const btn = document.getElementById('submit-btn');
-    btn.disabled = true;
-    btn.textContent = 'Processing...';
-
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-
-    if (!email || !password) {
-      document.getElementById('checkout-errors').textContent = 'Please fill email and password';
-      btn.disabled = false;
-      btn.textContent = 'Create Account & Pay $48/year';
+<script>
+  // Wait for DOM + Stripe.js to load
+  window.addEventListener('DOMContentLoaded', () => {
+    if (typeof Stripe === 'undefined') {
+      console.error('Stripe.js not loaded – check <script src="https://js.stripe.com/v3/">');
+      document.getElementById('checkout-errors').textContent = 'Payment system failed to load – refresh page';
       return;
     }
 
-    try {
-      const response = await fetch(API_BASE + '/api/create-checkout-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
+    const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
-      const data = await response.json();
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-      if (!response.ok) {
-        document.getElementById('checkout-errors').textContent = data.error || 'Failed to start upgrade';
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        document.getElementById('checkout-errors').textContent = 'Please fill email and password';
         btn.disabled = false;
         btn.textContent = 'Create Account & Pay $48/year';
         return;
       }
 
-      // Mount Embedded Checkout
-      const { client_secret } = data;
-      const embeddedCheckout = await stripe.initEmbeddedCheckout({
-        fetchClientSecret: async () => client_secret,
-        onComplete: () => {
-          // Payment success – webhook will update D1
-          document.getElementById('checkout-errors').textContent = 'Success! You\'re now Pro. Redirecting...';
-          setTimeout(() => {
-            window.location.href = '/';
-          }, 2000);
+      try {
+        const response = await fetch(API_BASE + '/api/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          document.getElementById('checkout-errors').textContent = data.error || 'Failed to start upgrade';
+          btn.disabled = false;
+          btn.textContent = 'Create Account & Pay $48/year';
+          return;
         }
-      });
 
-      embeddedCheckout.mount('#checkout-container');
-    } catch (err) {
-      console.error('Error:', err);
-      document.getElementById('checkout-errors').textContent = 'Failed – try again';
-      btn.disabled = false;
-      btn.textContent = 'Create Account & Pay $48/year';
-    }
+        // Mount Embedded Checkout
+        const { client_secret } = data;
+        const embeddedCheckout = await Stripe('pk_test_51SyjNi35Al6CUgc4F7ASfuA6j5PTrD6bYzeiLSaN8kiFqe3Dx1bEzmR5GjyFmGvqWBu2am8GjFnOgO7WNIno6kdN00jnVWUo9M')
+          .initEmbeddedCheckout({
+            fetchClientSecret: async () => client_secret,
+            onComplete: () => {
+              document.getElementById('checkout-errors').textContent = 'Success! You\'re now Pro. Redirecting...';
+              setTimeout(() => {
+                window.location.href = '/';
+              }, 2000);
+            }
+          });
+
+        embeddedCheckout.mount('#checkout-container');
+      } catch (err) {
+        console.error('Error:', err);
+        document.getElementById('checkout-errors').textContent = 'Failed – try again';
+        btn.disabled = false;
+        btn.textContent = 'Create Account & Pay $48/year';
+      }
+    });
   });
-
-});
-</script>  
+</script> 
   
 </body>
 </html>
