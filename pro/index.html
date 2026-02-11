@@ -522,7 +522,7 @@
         fetchClientSecret: async () => client_secret,
         onComplete: () => {
           // Payment success – webhook will update D1
-          document.getElementById('checkout-errors').textContent = 'Success! You're now Pro. Redirecting...';
+          document.getElementById('checkout-errors').textContent = 'Success! You\'re now Pro. Redirecting...';
           setTimeout(() => {
             window.location.href = '/';
           }, 2000);
