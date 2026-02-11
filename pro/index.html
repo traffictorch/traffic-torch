@@ -548,9 +548,10 @@
 
   <!-- Load JS last for speed -->
   <script src="/main-v1.1.js" type="module"></script>
-  
-  <script>
-  // Initialize Stripe (use your live or test publishable key from Stripe Dashboard → Developers → API keys)
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+// Initialize Stripe (use your live or test publishable key from Stripe Dashboard → Developers → API keys)
   const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
   const stripe = Stripe('pk_test_51SyjNi35Al6CUgc4F7ASfuA6j5PTrD6bYzeiLSaN8kiFqe3Dx1bEzmR5GjyFmGvqWBu2am8GjFnOgO7WNIno6kdN00jnVWUo9M'); // ← replace with your pk_live_... key
 
@@ -660,6 +661,7 @@
       btn.textContent = 'Create Account & Pay $1/year';
     }
   });
+});
 </script>
   
 </body>
