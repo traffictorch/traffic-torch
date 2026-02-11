@@ -346,80 +346,17 @@
 <!-- Register + Upgrade form -->
 <div class="bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl p-8 max-w-md mx-auto">
   <h3 class="text-2xl font-bold text-center mb-6">Create Account & Upgrade to Pro</h3>
-  <form id="register-upgrade-form" class="space-y-6">
-    <input type="email" placeholder="Email" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
-    <input type="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
-   
+  <form id="signup-form" class="space-y-6">
+    <input type="email" id="email" placeholder="Email" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
+    <input type="password" id="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
+    <div id="checkout-container" class="min-h-[400px] rounded-lg border border-white/30 bg-white/10"></div>
+    <div id="checkout-errors" class="text-center text-sm text-red-300 min-h-[1.25rem]" role="alert"></div>
     <button type="submit" id="submit-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
       Create Account & Pay $48/year
     </button>
   </form>
-  <p class="mt-4 text-center text-sm opacity-90">Secure payment via Stripe • No data collection</p>
+  <p class="mt-4 text-center text-sm opacity-90">Secure payment via Stripe • Cancel anytime</p>
 </div>
-  <script>
-  document.getElementById('register-upgrade-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const email = e.target.querySelector('input[type="email"]').value.trim();
-    const password = e.target.querySelector('input[type="password"]').value;
-
-    if (!email || !password) {
-      alert('Please fill email and password');
-      return;
-    }
-
-    try {
-      // Step 1: Register
-      const regResponse = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const regData = await regResponse.json();
-
-      if (!regResponse.ok) {
-        alert(regData.error || 'Registration failed – email may exist');
-        return;
-      }
-
-      // Step 2: Auto-login
-      const loginResponse = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const loginData = await loginResponse.json();
-
-      if (!loginResponse.ok || !loginData.token) {
-        alert('Registration succeeded but login failed – please login manually');
-        return;
-      }
-
-      localStorage.setItem('traffic_torch_jwt', loginData.token);
-
-      // Step 3: Trigger /api/upgrade with token
-      const upgradeResponse = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/upgrade', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${loginData.token}`
-        }
-      });
-      const upgradeData = await upgradeResponse.json();
-
-      if (!upgradeResponse.ok || !upgradeData.url) {
-        alert(upgradeData.error || 'Upgrade failed – try again');
-        return;
-      }
-
-      window.location.href = upgradeData.url; // redirect to Stripe Checkout
-    } catch (err) {
-      console.error('Error:', err);
-      alert('Failed – check connection and try again');
-    }
-  });
-</script>
-
 
      
 <!-- AddToAny BEGIN -->
@@ -542,6 +479,65 @@
 
   <!-- Load JS last for speed -->
   <script src="/main-v1.1.js" type="module"></script>
+  
+  <script>
+  const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+
+  document.getElementById('signup-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Processing...';
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!email || !password) {
+      document.getElementById('checkout-errors').textContent = 'Please fill email and password';
+      btn.disabled = false;
+      btn.textContent = 'Create Account & Pay $48/year';
+      return;
+    }
+
+    try {
+      const response = await fetch(API_BASE + '/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        document.getElementById('checkout-errors').textContent = data.error || 'Failed to start upgrade';
+        btn.disabled = false;
+        btn.textContent = 'Create Account & Pay $48/year';
+        return;
+      }
+
+      // Mount Embedded Checkout
+      const { client_secret } = data;
+      const embeddedCheckout = await stripe.initEmbeddedCheckout({
+        fetchClientSecret: async () => client_secret,
+        onComplete: () => {
+          // Payment success – webhook will update D1
+          document.getElementById('checkout-errors').textContent = 'Success! You're now Pro. Redirecting...';
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 2000);
+        }
+      });
+
+      embeddedCheckout.mount('#checkout-container');
+    } catch (err) {
+      console.error('Error:', err);
+      document.getElementById('checkout-errors').textContent = 'Failed – try again';
+      btn.disabled = false;
+      btn.textContent = 'Create Account & Pay $48/year';
+    }
+  });
+</script>
   
   
 </body>
