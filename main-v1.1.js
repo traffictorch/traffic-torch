@@ -331,44 +331,49 @@ function showUpgradeModal(message = 'Upgrade to unlock more runs and advanced fe
 }
 
 async function upgradeToPro() {
-  const token = localStorage.getItem('authToken') || localStorage.getItem('torch_token'); // support both keys during transition
+  const token = localStorage.getItem('authToken') || localStorage.getItem('torch_token');
   if (!token) return alert('Please login first');
 
   try {
-    const response = await fetch(`${API_BASE}/api/upgrade`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
+    const container = document.getElementById('checkout-container');
+    if (!container) throw new Error('Checkout container not found – add <div id="checkout-container"> to the page');
 
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(error || 'Upgrade request failed');
-    }
+    container.classList.remove('hidden');
 
-    const data = await response.json();
+    const stripe = Stripe('pk_test_51SyjNi35Al6CUgc4F7ASfuA6j5PTrD6bYzeiLSaN8kiFqe3Dx1bEzmR5GjyFmGvqWBu2am8GjFnOgO7WNIno6kdN00jnVWUo9M');
 
-    if (data.client_secret) {
-      // Embedded Checkout mode
-      console.log('Embedded mode – mounting Stripe form');
-      const stripe = Stripe('pk_test_51SyjNi35Al6CUgc4F7ASfuA6j5PTrD6bYzeiLSaN8kiFqe3Dx1bEzmR5GjyFmGvqWBu2am8GjFnOgO7WNIno6kdN00jnVWUo9M');
-      const container = document.getElementById('checkout-container');
-      if (!container) throw new Error('Checkout container not found on page');
+    const fetchClientSecret = async () => {
+      const response = await fetch(`${API_BASE}/api/upgrade`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
-      container.classList.remove('hidden');
-      const embeddedCheckout = await stripe.initEmbeddedCheckout({ clientSecret: data.client_secret });
-      embeddedCheckout.mount('#checkout-container');
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(errText || 'Failed to create checkout session');
+      }
 
-      // Optional: close modal if in one
-      document.querySelector('.fixed')?.remove();
-    } else if (data.url) {
-      // Fallback to hosted redirect (if Worker ever reverts)
-      window.location.href = data.url;
-    } else {
-      throw new Error('Invalid response from server');
-    }
+      const data = await response.json();
+      if (!data.clientSecret) throw new Error('No clientSecret returned from server');
+
+      return data.clientSecret;
+    };
+
+    console.log('Initializing Embedded Checkout...');
+    const checkout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
+
+    console.log('Mounting checkout...');
+    checkout.mount('#checkout-container');
+
+    document.querySelector('.fixed')?.remove();
+
   } catch (err) {
     console.error('Upgrade error:', err);
     alert('Upgrade failed: ' + err.message);
+    document.getElementById('checkout-container')?.classList.add('hidden');
   }
 }
 
