@@ -547,6 +547,8 @@
 
   <!-- Load JS last for speed -->
   <script src="/main-v1.1.js" type="module"></script>
+  
+    <script src="https://js.stripe.com/v3/"></script>
 
 <script>
   window.addEventListener('DOMContentLoaded', () => {
@@ -602,9 +604,9 @@
     }
 
     try {
-    const postalCode = document.getElementById('postal-code').value.trim();
-if (!postalCode) {
-  document.getElementById('card-errors').textContent = 'Please enter postal code';
+const postalCode = document.getElementById('postal-code')?.value.trim();
+if (!postalCode || postalCode.length < 4) {
+  document.getElementById('card-errors').textContent = 'Postal code must be at least 4 digits';
   btn.disabled = false;
   btn.textContent = 'Create Account & Pay $1/year';
   return;
@@ -672,8 +674,6 @@ if (!postalCode) {
   });
 });
 </script>
-
-  <script src="https://js.stripe.com/v3/"></script>
   
 </body>
 </html>
