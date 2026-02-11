@@ -1,48 +1,71 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment Confirmation - Traffic Torch Pro</title>
-  <link href="/style-v1.0.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Subscription Confirmed - Traffic Torch Pro</title>
+  <link rel="stylesheet" href="/style-v1.0.css"/> <!-- or your main Tailwind CSS -->
   <script src="https://js.stripe.com/v3/"></script>
+  <script src="/main-v1.1.js" type="module" defer></script>
 </head>
-<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen flex items-center justify-center">
-  <div class="text-center p-6 max-w-md mx-auto">
-    <h1 id="status-heading" class="text-2xl font-bold mb-4">Processing your subscription...</h1>
-    <p id="status-message">Please wait...</p>
+<body class="bg-gray-900 text-gray-200 min-h-screen flex items-center justify-center p-4">
+  <div class="max-w-md w-full text-center space-y-6">
+    <h1 class="text-3xl font-bold text-purple-400">Processing your subscription...</h1>
+    <p id="status-message" class="text-lg">Please wait while we verify your Pro upgrade.</p>
+    <div id="loader" class="animate-spin inline-block w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full"></div>
+    <p id="error-message" class="text-red-400 hidden"></p>
   </div>
-  <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const sessionId = urlParams.get('session_id');
-    if (!sessionId) {
-      document.getElementById('status-heading').textContent = 'Error';
-      document.getElementById('status-message').textContent = 'No session found.';
-      return;
-    }
 
-    fetch(`https://traffic-torch-api.traffictorch.workers.dev/api/session-status?session_id=${sessionId}`)
-      .then(res => res.json())
-      .then(data => {
-        const heading = document.getElementById('status-heading');
-        const msg = document.getElementById('status-message');
-        if (data.status === 'complete') {
-          heading.textContent = 'Welcome to Pro!';
-          msg.innerHTML = 'Your subscription is active.<br>Enjoy full access – redirecting to dashboard...';
-          setTimeout(() => window.location.href = '/', 2000);
-        } else if (data.status === 'open') {
-          heading.textContent = 'Payment Pending';
-          msg.innerHTML = 'Redirecting back to upgrade...';
-          setTimeout(() => window.location.href = '/pro/', 3000);
-        } else {
-          heading.textContent = 'Issue with Payment';
-          msg.textContent = 'Please try again or contact support.';
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get('session_id');
+
+      if (!sessionId) {
+        document.getElementById('status-message').textContent = 'No session information found.';
+        document.getElementById('loader').classList.add('hidden');
+        return;
+      }
+
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        document.getElementById('status-message').textContent = 'Please log in again to complete verification.';
+        document.getElementById('loader').classList.add('hidden');
+        return;
+      }
+
+      try {
+        const res = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/session-status?session_id=' + sessionId, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to verify session');
         }
-      })
-      .catch(() => {
-        document.getElementById('status-heading').textContent = 'Error';
-        document.getElementById('status-message').textContent = 'Failed to verify.';
-      });
+
+        const session = await res.json();
+
+        document.getElementById('loader').classList.add('hidden');
+
+        if (session.status === 'complete') {
+          document.getElementById('status-message').innerHTML = `
+            <span class="text-green-400 text-2xl font-bold">Success!</span><br>
+            You're now Traffic Torch Pro.<br>
+            ${session.customer_email ? `Confirmation sent to ${session.customer_email}` : ''}
+          `;
+          // Optional: refresh parent window or redirect to dashboard
+          setTimeout(() => {
+            window.location.href = '/pro';
+          }, 4000);
+        } else {
+          document.getElementById('status-message').textContent = 'Payment not completed yet – please check back.';
+        }
+      } catch (err) {
+        document.getElementById('loader').classList.add('hidden');
+        document.getElementById('error-message').textContent = err.message;
+        document.getElementById('error-message').classList.remove('hidden');
+      }
+    });
   </script>
 </body>
 </html>
