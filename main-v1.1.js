@@ -331,7 +331,7 @@ function showUpgradeModal(message = 'Upgrade to unlock more runs and advanced fe
 }
 
 async function upgradeToPro() {
-  const token = localStorage.getItem('torch_token');
+  const token = localStorage.getItem('authToken') || localStorage.getItem('torch_token'); // support both keys during transition
   if (!token) return alert('Please login first');
 
   try {
@@ -339,14 +339,36 @@ async function upgradeToPro() {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` }
     });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(error || 'Upgrade request failed');
+    }
+
     const data = await response.json();
-    if (data.url) {
+
+    if (data.client_secret) {
+      // Embedded Checkout mode
+      console.log('Embedded mode – mounting Stripe form');
+      const stripe = Stripe('pk_test_51SyjNi35Al6CUgc4F7ASfuA6j5PTrD6bYzeiLSaN8kiFqe3Dx1bEzmR5GjyFmGvqWBu2am8GjFnOgO7WNIno6kdN00jnVWUo9M');
+      const container = document.getElementById('checkout-container');
+      if (!container) throw new Error('Checkout container not found on page');
+
+      container.classList.remove('hidden');
+      const embeddedCheckout = await stripe.initEmbeddedCheckout({ clientSecret: data.client_secret });
+      embeddedCheckout.mount('#checkout-container');
+
+      // Optional: close modal if in one
+      document.querySelector('.fixed')?.remove();
+    } else if (data.url) {
+      // Fallback to hosted redirect (if Worker ever reverts)
       window.location.href = data.url;
     } else {
-      alert(data.error || 'Could not start upgrade');
+      throw new Error('Invalid response from server');
     }
   } catch (err) {
-    alert('Upgrade error: ' + err.message);
+    console.error('Upgrade error:', err);
+    alert('Upgrade failed: ' + err.message);
   }
 }
 
