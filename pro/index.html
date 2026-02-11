@@ -518,7 +518,17 @@
           body: JSON.stringify({ email, password })
         });
 
-        const data = await response.json();
+        let data;
+try {
+  data = await response.json();
+} catch (jsonErr) {
+  const text = await response.text();
+  console.error('JSON parse failed, raw response:', text);
+  document.getElementById('checkout-errors').textContent = 'Server error – invalid response. Try again.';
+  btn.disabled = false;
+  btn.textContent = 'Create Account & Pay $48/year';
+  return;
+}
 
         if (!response.ok) {
           document.getElementById('checkout-errors').textContent = data.error || 'Failed to start upgrade';
