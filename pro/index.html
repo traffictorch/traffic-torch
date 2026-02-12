@@ -312,6 +312,14 @@
 </style>
 
 <div class="form-container px-4">
+  <!-- Logged-in section with logout (hidden by default) -->
+  <div id="logged-in-section" class="hidden text-center mb-8 w-full">
+    <p class="text-lg font-semibold text-green-600 dark:text-green-400 mb-4">You're logged in</p>
+    <button id="logout-btn" class="py-3 px-8 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition">
+      Logout
+    </button>
+  </div>
+
   <!-- Login form -->
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
     <h3 class="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-gray-200">Login</h3>
@@ -361,7 +369,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded – initializing Stripe & auth');
 
-    // Safety: force signup visible on load
+    // Safety: force forms visible on load
     document.getElementById('signup-form')?.classList.remove('hidden');
     document.getElementById('pro-upgrade-section')?.classList.add('hidden');
 
@@ -413,10 +421,9 @@
       }
     });
 
-    // Upgrade button handler (unchanged from previous)
+    // Upgrade button handler (unchanged)
     const upgradeBtn = document.getElementById('upgrade-btn');
     if (upgradeBtn) {
-      console.log('Upgrade button found');
       upgradeBtn.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -425,8 +432,7 @@
         const btn = e.target;
         btn.disabled = true;
         btn.textContent = 'Loading...';
-        const token = localStorage.getItem('authToken');
-        console.log('Token:', token ? 'exists' : 'missing');
+        const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
         if (!token) {
           document.getElementById('checkout-errors').textContent = 'Login required – please log in first';
           btn.disabled = false;
@@ -443,19 +449,16 @@
                 'Content-Type': 'application/json'
               }
             });
-            console.log('API status:', res.status);
             if (!res.ok) {
               const errText = await res.text();
               throw new Error(errText || 'Failed to create session');
             }
             const data = await res.json();
             if (!data.clientSecret) throw new Error('No clientSecret in response');
-            console.log('Client secret received');
             return data.clientSecret;
           };
           const embeddedCheckout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
           embeddedCheckout.mount('#checkout-container');
-          console.log('Stripe form mounted');
         } catch (err) {
           console.error('Error:', err.message);
           document.getElementById('checkout-errors').textContent = err.message;
@@ -466,18 +469,31 @@
       });
     }
 
-    // Updated updateUI (hides login & signup when logged in)
+    // Logout handler
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('traffic_torch_jwt');
+        alert('Logged out successfully!');
+        window.location.reload();
+      });
+    }
+
+    // Updated updateUI: hide forms when logged in, show logout
     async function updateUI() {
       const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
       const signupForm = document.getElementById('signup-form');
       const loginFormContainer = document.querySelector('.bg-white.dark\\:bg-gray-800.rounded-3xl'); // login parent
       const upgradeSection = document.getElementById('pro-upgrade-section');
+      const loggedInSection = document.getElementById('logged-in-section');
       const sectionTitle = document.getElementById('section-title');
       const errors = document.getElementById('checkout-errors');
 
       signupForm?.classList.remove('hidden');
       loginFormContainer?.classList.remove('hidden');
       upgradeSection?.classList.add('hidden');
+      loggedInSection?.classList.add('hidden');
       sectionTitle.textContent = 'Create Account & Upgrade to Pro';
 
       if (!token) {
@@ -504,9 +520,11 @@
         const { isPro } = await res.json();
         console.log('User pro status:', isPro);
 
-        // Hide both forms when logged in
+        // Hide forms when logged in
         signupForm?.classList.add('hidden');
         loginFormContainer?.classList.add('hidden');
+
+        loggedInSection?.classList.remove('hidden');
 
         if (isPro) {
           sectionTitle.textContent = 'You are already Pro!';
