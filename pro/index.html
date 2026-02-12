@@ -193,7 +193,7 @@
 <!-- Menu Items -->
       <nav class="p-6 space-y-4 flex-1">
         <a href="/pro/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🪪</span> <span class="sidebar-text hidden">Pro Login</span>
+          <span class="text-2xl">🪪</span> <span class="sidebar-text hidden">Pro Traffic</span>
         </a>
         <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
           <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
@@ -262,7 +262,7 @@
 			  ×
 			</button>
           <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
-          <a href="/pro/" class="text-gray-100 hover:text-orange-400 transition">🪪 Pro Login</a>
+          <a href="/pro/" class="text-gray-100 hover:text-orange-400 transition">🪪 Pro Traffic</a>
             <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">🚦 Tools</a>
             <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
               <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
@@ -312,8 +312,8 @@
 </style>
 
 <div class="form-container px-4">
-  <!-- Logged-in section with logout (hidden by default) -->
-  <div id="logged-in-section" class="hidden text-center mb-8 w-full">
+  <!-- Logged-in section with logout (shown only when authenticated) -->
+  <div id="logged-in-section" class="hidden w-full text-center mb-8">
     <p class="text-lg font-semibold text-green-600 dark:text-green-400 mb-4">You're logged in</p>
     <button id="logout-btn" class="py-3 px-8 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition">
       Logout
@@ -335,7 +335,7 @@
   <div class="bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl p-8">
     <h3 id="section-title" class="text-2xl font-bold text-center mb-6">Create Account & Upgrade to Pro</h3>
 
-    <!-- Signup form for new users -->
+    <!-- Signup form -->
     <form id="signup-form" class="space-y-6">
       <input type="email" id="email" placeholder="Email" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
       <input type="password" id="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
@@ -358,7 +358,7 @@
       </button>
     </div>
 
-    <!-- Shared payment & error display -->
+    <!-- Payment & error display -->
     <div id="checkout-container" class="mt-6 min-h-[400px] rounded-lg border border-white/30 bg-white/10 hidden"></div>
     <div id="checkout-errors" class="text-center text-sm text-red-300 min-h-[1.25rem]" role="alert"></div>
     <p class="mt-4 text-center text-sm opacity-90">Secure payment via Stripe • Cancel anytime</p>
@@ -369,14 +369,15 @@
   document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded – initializing Stripe & auth');
 
-    // Safety: force forms visible on load
+    // Safety reset
     document.getElementById('signup-form')?.classList.remove('hidden');
     document.getElementById('pro-upgrade-section')?.classList.add('hidden');
+    document.getElementById('logged-in-section')?.classList.add('hidden');
 
     const stripe = Stripe('pk_test_51SyjNi35Al6CUgc4F7ASfuA6j5PTrD6bYzeiLSaN8kiFqe3Dx1bEzmR5GjyFmGvqWBu2am8GjFnOgO7WNIno6kdN00jnVWUo9M');
     const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
-    // Signup form handler with math check
+    // Signup handler with math check
     document.getElementById('signup-form')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('email')?.value.trim();
@@ -390,7 +391,7 @@
       }
 
       if (mathAnswer !== '12') {
-        errors.textContent = 'Incorrect anti-spam answer. Please try again.';
+        errors.textContent = 'Incorrect anti-spam answer.';
         document.getElementById('math-answer').classList.add('math-error');
         return;
       } else {
@@ -409,7 +410,6 @@
         }
         const { token } = await res.json();
         localStorage.setItem('authToken', token);
-        console.log('Registered & logged in – showing upgrade UI');
         errors.textContent = 'Account created! Click Upgrade to Pro';
         document.getElementById('signup-form').classList.add('hidden');
         document.getElementById('pro-upgrade-section').classList.remove('hidden');
@@ -421,6 +421,47 @@
       }
     });
 
+    // Login handler with reload
+    document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const status = document.getElementById('login-status');
+      status.textContent = 'Logging in...';
+      status.className = 'text-center text-sm text-gray-600 dark:text-gray-400 min-h-[1.25rem]';
+      const email = e.target.querySelector('input[type="text"]').value.trim();
+      const password = e.target.querySelector('input[type="password"]').value;
+
+      if (!email || !password) {
+        status.textContent = 'Please fill in both fields';
+        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+        return;
+      }
+
+      try {
+        const response = await fetch(API_BASE + '/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
+        if (response.ok && data.token) {
+          localStorage.setItem('authToken', data.token);
+          localStorage.removeItem('traffic_torch_jwt'); // cleanup
+          status.textContent = 'Logged in successfully!';
+          status.className = 'text-center text-sm text-green-600 dark:text-green-400 min-h-[1.25rem]';
+          setTimeout(() => {
+            window.location.reload(); // reload /pro to trigger updateUI
+          }, 1500);
+        } else {
+          status.textContent = data.error || 'Invalid credentials – please try again';
+          status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+        }
+      } catch (err) {
+        console.error('Login error:', err);
+        status.textContent = 'Login failed – please check your connection';
+        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+      }
+    });
+
     // Upgrade button handler (unchanged)
     const upgradeBtn = document.getElementById('upgrade-btn');
     if (upgradeBtn) {
@@ -428,13 +469,12 @@
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
-        console.log('Upgrade clicked');
         const btn = e.target;
         btn.disabled = true;
         btn.textContent = 'Loading...';
-        const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+        const token = localStorage.getItem('authToken');
         if (!token) {
-          document.getElementById('checkout-errors').textContent = 'Login required – please log in first';
+          document.getElementById('checkout-errors').textContent = 'Login required';
           btn.disabled = false;
           btn.textContent = 'Upgrade to Pro – $48/year';
           return;
@@ -449,18 +489,15 @@
                 'Content-Type': 'application/json'
               }
             });
-            if (!res.ok) {
-              const errText = await res.text();
-              throw new Error(errText || 'Failed to create session');
-            }
+            if (!res.ok) throw new Error(await res.text());
             const data = await res.json();
-            if (!data.clientSecret) throw new Error('No clientSecret in response');
+            if (!data.clientSecret) throw new Error('No clientSecret');
             return data.clientSecret;
           };
           const embeddedCheckout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
           embeddedCheckout.mount('#checkout-container');
         } catch (err) {
-          console.error('Error:', err.message);
+          console.error('Upgrade error:', err);
           document.getElementById('checkout-errors').textContent = err.message;
           btn.disabled = false;
           btn.textContent = 'Upgrade to Pro – $48/year';
@@ -470,60 +507,48 @@
     }
 
     // Logout handler
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('traffic_torch_jwt');
-        alert('Logged out successfully!');
-        window.location.reload();
-      });
-    }
+    document.getElementById('logout-btn')?.addEventListener('click', () => {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('traffic_torch_jwt');
+      alert('Logged out successfully!');
+      window.location.reload();
+    });
 
-    // Updated updateUI: hide forms when logged in, show logout
+    // updateUI - hides forms when logged in, shows logout
     async function updateUI() {
       const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
       const signupForm = document.getElementById('signup-form');
-      const loginFormContainer = document.querySelector('.bg-white.dark\\:bg-gray-800.rounded-3xl'); // login parent
+      const loginContainer = document.querySelector('.bg-white.dark\\:bg-gray-800.rounded-3xl');
       const upgradeSection = document.getElementById('pro-upgrade-section');
       const loggedInSection = document.getElementById('logged-in-section');
       const sectionTitle = document.getElementById('section-title');
       const errors = document.getElementById('checkout-errors');
 
       signupForm?.classList.remove('hidden');
-      loginFormContainer?.classList.remove('hidden');
+      loginContainer?.classList.remove('hidden');
       upgradeSection?.classList.add('hidden');
       loggedInSection?.classList.add('hidden');
       sectionTitle.textContent = 'Create Account & Upgrade to Pro';
 
-      if (!token) {
-        console.log('No token → showing login & signup');
-        return;
-      }
+      if (!token) return;
 
-      console.log('Token found → validating user status');
       try {
         const res = await fetch(API_BASE + '/api/user-status', {
           headers: { 'Authorization': `Bearer ${token}` },
           cache: 'no-store'
         });
-        console.log('user-status status:', res.status);
 
         if (!res.ok) {
-          console.warn('Invalid token → clearing');
           localStorage.removeItem('authToken');
           localStorage.removeItem('traffic_torch_jwt');
-          errors.textContent = 'Session expired – please log in or register';
+          errors.textContent = 'Session expired – please log in';
           return;
         }
 
         const { isPro } = await res.json();
-        console.log('User pro status:', isPro);
 
-        // Hide forms when logged in
         signupForm?.classList.add('hidden');
-        loginFormContainer?.classList.add('hidden');
-
+        loginContainer?.classList.add('hidden');
         loggedInSection?.classList.remove('hidden');
 
         if (isPro) {
@@ -533,8 +558,7 @@
           upgradeSection?.classList.remove('hidden');
         }
       } catch (err) {
-        console.error('updateUI error:', err.message);
-        errors.textContent = 'Could not check status – please try logging in';
+        console.error('updateUI error:', err);
       }
     }
 
@@ -644,7 +668,7 @@
       <div>
         <h3 class="text-xl font-bold text-orange-400 mb-6">Traffic Torch</h3>
         <ul class="space-y-3 text-gray-500 dark:text-gray-200 text-sm">
-          <li><a href="/pro/" class="hover:text-orange-400 transition">Pro Login 🪪</a></li>
+          <li><a href="/pro/" class="hover:text-orange-400 transition">Pro Traffic 🪪</a></li>
           <li><a href="/ai-seo-ux-tools/#seo-tools" class="hover:text-orange-400 transition">SEO Tools 🎯</a></li>
           <li><a href="/ai-seo-ux-tools/#ux-tools" class="hover:text-orange-400 transition">UX Tools ⚡</a></li>
           <li><a href="/ai-seo-ux-tools/#ai-tools" class="hover:text-orange-400 transition">Ai Tools 🤖</a></li>
