@@ -312,13 +312,16 @@
 </style>
 
 <div class="form-container px-0">
-  <!-- Logged-in section with logout (shown only when authenticated) -->
-  <div id="logged-in-section" class="hidden w-full text-center mb-8">
-    <p class="text-lg font-semibold text-green-600 dark:text-green-400 mb-4">You're logged in</p>
-    <button id="logout-btn" class="py-3 px-8 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition">
-      Logout
-    </button>
-  </div>
+<!-- Logged-in card (matches upgrade card style) -->
+<div id="logged-in-section" class="hidden bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl p-8">
+  <h3 class="text-2xl font-bold text-center mb-6">You're Logged In</h3>
+  <p class="text-center text-lg mb-8 opacity-90">
+    Ready to unlock Pro Traffic.
+  </p>
+  <button id="logout-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition">
+    Logout
+  </button>
+</div>
 
   <!-- Login form -->
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-1">
@@ -552,7 +555,7 @@
         loggedInSection?.classList.remove('hidden');
 
         if (isPro) {
-          sectionTitle.textContent = 'You are already Pro!';
+          sectionTitle.textContent = 'You are Pro Traffic!';
         } else {
           sectionTitle.textContent = 'Upgrade to Pro';
           upgradeSection?.classList.remove('hidden');
