@@ -314,21 +314,25 @@ async function handleAuth(mode) {
 
 // Upgrade Modal
 function showUpgradeModal(message = 'Upgrade to unlock more runs and advanced features.', price = '$48/year') {
+  const existing = document.querySelector('.upgrade-modal');
+  if (existing) existing.remove(); // avoid duplicates
+
   const modal = document.createElement('div');
-  modal.className = 'fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4';
+  modal.className = 'upgrade-modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4';
   modal.innerHTML = `
-    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl max-w-md w-full text-gray-800 dark:text-gray-200">
-      <div class="p-6">
-        <h2 class="text-2xl font-bold mb-4 text-center">Daily Limit Reached</h2>
-        <p class="mb-6 text-center">${message}</p>
-        <p class="text-xl font-semibold text-center mb-6">${price} (billed yearly)</p>
-        <a href="/pro" class="block w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-4 px-6 rounded-lg transition text-center">
-          Upgrade to Pro Now
-        </a>
-        <button onclick="this.closest('.fixed').remove()" class="mt-4 text-center w-full text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400">
-          Close
-        </button>
-      </div>
+    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full p-8 text-center relative">
+      <button onclick="this.closest('.upgrade-modal').remove()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 text-2xl">
+        ×
+      </button>
+      <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-200">Daily Limit Reached</h2>
+      <p class="text-lg mb-8 text-gray-700 dark:text-gray-300">${message}</p>
+      <p class="text-xl font-semibold mb-6 text-purple-600">${price} (billed yearly)</p>
+      <a href="/pro" class="inline-block w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-xl transition">
+        Upgrade to Pro Now
+      </a>
+      <button onclick="this.closest('.upgrade-modal').remove()" class="mt-6 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 underline">
+        Close
+      </button>
     </div>`;
   document.body.appendChild(modal);
 }
@@ -406,34 +410,39 @@ export async function canRunTool(toolName = 'default') {
     const res = await fetch(API_BASE + '/api/check-rate', {
       method: 'POST',
       headers: {
-        'Authorization': token ? `Bearer ${token}` : '',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})  // only add header if token exists
       }
     });
 
     if (!res.ok) {
-      console.error('Check-rate failed:', res.status, await res.text());
-      showUpgradeModal('Could not check run limit – please try again or log in.');
+      console.error('Check-rate HTTP error:', res.status, await res.text());
+      showUpgradeModal('Could not verify run limit – please try again or log in to continue.');
       return false;
     }
 
     const data = await res.json();
 
-    if (data.allowed) {
-      // Optional: update remaining runs badge if you have UI for it
+    console.log('Check-rate response:', data); // debug: see what Worker actually returns
+
+    if (data.allowed === true) {
+      // Success - update UI badge if exists
       if (data.remaining !== undefined) {
         updateRunsBadge?.(data.remaining);
       }
       return true;
     }
 
-    // Limit reached → show upgrade modal with Worker's message
-    showUpgradeModal(data.message || `You've reached your daily limit. Upgrade to Pro for more runs.`);
+    // Explicitly handle limit reached (allowed: false)
+    showUpgradeModal(
+      data.message || 
+      `You've reached your daily limit (${data.limit || 'unknown'} runs). Upgrade to Pro for 25 daily runs!`
+    );
     return false;
 
   } catch (err) {
-    console.error('Rate limit check failed:', err);
-    showUpgradeModal('Could not check run limit – please try again.');
+    console.error('canRunTool failed:', err);
+    showUpgradeModal('Connection error – unable to check run limit. Please try again.');
     return false;
   }
 }
