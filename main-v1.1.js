@@ -319,12 +319,15 @@ function showUpgradeModal(message = 'Upgrade to unlock more runs and advanced fe
   modal.innerHTML = `
     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl max-w-md w-full text-gray-800 dark:text-gray-200">
       <div class="p-6">
-        <h2 class="text-2xl font-bold mb-4 text-center">Upgrade to Pro</h2>
+        <h2 class="text-2xl font-bold mb-4 text-center">Daily Limit Reached</h2>
         <p class="mb-6 text-center">${message}</p>
         <p class="text-xl font-semibold text-center mb-6">${price} (billed yearly)</p>
-        <button onclick="upgradeToPro()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-4 px-6 rounded-lg transition mb-4">Upgrade Now</button>
-        <p class="text-sm text-center text-gray-500 dark:text-gray-400">Pro unlocks 25 daily runs, deeper SEO/UX insights, AI-generated fixes, competitive gap analysis, and predictive rank forecasting.</p>
-        <button onclick="this.closest('.fixed').remove()" class="mt-4 text-center w-full text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400">Close</button>
+        <a href="/pro" class="block w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-4 px-6 rounded-lg transition text-center">
+          Upgrade to Pro Now
+        </a>
+        <button onclick="this.closest('.fixed').remove()" class="mt-4 text-center w-full text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400">
+          Close
+        </button>
       </div>
     </div>`;
   document.body.appendChild(modal);
@@ -408,17 +411,23 @@ export async function canRunTool(toolName = 'default') {
       }
     });
 
+    if (!res.ok) {
+      console.error('Check-rate failed:', res.status, await res.text());
+      showUpgradeModal('Could not check run limit – please try again or log in.');
+      return false;
+    }
+
     const data = await res.json();
 
     if (data.allowed) {
-      // Optional: update UI badge if you have one
+      // Optional: update remaining runs badge if you have UI for it
       if (data.remaining !== undefined) {
-        updateRunsBadge?.(data.remaining); // if function exists
+        updateRunsBadge?.(data.remaining);
       }
       return true;
     }
 
-    // Limit reached → show upgrade modal
+    // Limit reached → show upgrade modal with Worker's message
     showUpgradeModal(data.message || `You've reached your daily limit. Upgrade to Pro for more runs.`);
     return false;
 
