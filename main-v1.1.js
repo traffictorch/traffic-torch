@@ -393,3 +393,38 @@ function updateRunsBadge(remaining) {
     mobileBadge.textContent = text;
   }
 }
+
+// Centralized rate limits
+export async function canRunTool(toolName = 'default') {
+  const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+  const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+
+  try {
+    const res = await fetch(API_BASE + '/api/check-rate', {
+      method: 'POST',
+      headers: {
+        'Authorization': token ? `Bearer ${token}` : '',
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const data = await res.json();
+
+    if (data.allowed) {
+      // Optional: update UI badge if you have one
+      if (data.remaining !== undefined) {
+        updateRunsBadge?.(data.remaining); // if function exists
+      }
+      return true;
+    }
+
+    // Limit reached → show upgrade modal
+    showUpgradeModal(data.message || `You've reached your daily limit. Upgrade to Pro for more runs.`);
+    return false;
+
+  } catch (err) {
+    console.error('Rate limit check failed:', err);
+    showUpgradeModal('Could not check run limit – please try again.');
+    return false;
+  }
+}

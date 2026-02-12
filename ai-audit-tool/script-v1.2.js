@@ -5,66 +5,16 @@ import { computeBurstiness } from './modules/burstiness.js';
 import { computeRepetition } from './modules/repetition.js';
 import { computeSentenceLength } from './modules/sentenceLength.js';
 import { computeVocabulary } from './modules/vocabulary.js';
+import { canRunTool } from '/main-v1.1.js';
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 const STORAGE_KEY = 'traffic_torch_ai_audit_usage';
-const FREE_LIMIT = 1;
-const PRO_LIMIT = 2;
+const FREE_LIMIT = 3;
+const PRO_LIMIT = 25;
 
 function getToday() {
   return new Date().toISOString().split('T')[0];
-}
-
-async function getUserLimit() {
-  const token = localStorage.getItem(TOKEN_KEY);
-  if (!token) return FREE_LIMIT; // anonymous = free limit
-
-  try {
-    const response = await fetch(API_BASE + '/api/user-status', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-
-    if (!response.ok) {
-      console.warn('User status fetch failed:', response.status);
-      localStorage.removeItem(TOKEN_KEY); // clear invalid token
-      return FREE_LIMIT;
-    }
-
-    const data = await response.json();
-    return data.isPro ? PRO_LIMIT : FREE_LIMIT;
-  } catch (err) {
-    console.error('Failed to fetch user status:', err);
-    return FREE_LIMIT; // fallback to free
-  }
-}
-
-async function checkUsageLimit() {
-  const today = getToday();
-  let usage = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-
-  if (usage.date !== today) {
-    usage = { date: today, count: 0 };
-  }
-
-  const limit = await getUserLimit(); // now uses real server limit (5 or 25)
-
-  if (usage.count >= limit) {
-    const modal = document.getElementById('upgradeModal');
-    if (modal) {
-      modal.classList.remove('hidden');
-    } else {
-      console.warn('Upgrade modal not found – check index.html ID');
-    }
-    return false;
-  }
-
-  usage.count += 1;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(usage));
-  return true;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -171,7 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  if (!await checkUsageLimit()) return;
+  const canProceed = await canRunTool('ai-audit');
+  if (!canProceed) return;
 
   const url = input.value.trim();
     let normalizedUrl = url;
