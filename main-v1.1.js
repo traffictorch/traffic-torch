@@ -23,6 +23,36 @@ document.addEventListener('DOMContentLoaded', () => {
       const isDark = html.classList.contains('dark');
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
       toggle.textContent = isDark ? '☀️' : '🌙';
+      
+        // Auto-activate Pro after upgrade payment (checks every 5s for 60s)
+  let refreshAttempts = 0;
+  const refreshInterval = setInterval(async () => {
+    refreshAttempts++;
+    const currentToken = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+    if (!currentToken) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/api/refresh-token`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${currentToken}` }
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.token) {
+          localStorage.setItem('authToken', data.token);
+          console.log('Pro token auto-refreshed globally – active now');
+          clearInterval(refreshInterval);
+          // Optional: update UI or show success
+          alert('Pro activated! You now have 25 daily runs.');
+        }
+      }
+    } catch (err) {
+      console.warn('Global refresh attempt failed:', err);
+    }
+
+    if (refreshAttempts > 12) clearInterval(refreshInterval); // stop after ~1 min
+  }, 5000);
     });
   }
 });
@@ -361,36 +391,7 @@ async function upgradeToPro() {
     console.log('Mounting checkout...');
     checkout.mount('#checkout-container');
 
-    // Auto-refresh token after payment (waits for webhook)
-    setTimeout(async () => {
-      const currentToken = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
-      if (!currentToken) return;
 
-      try {
-        const res = await fetch(`${API_BASE}/api/refresh-token`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${currentToken}` }
-        });
-
-        if (!res.ok) throw new Error('Refresh failed');
-
-        const data = await res.json();
-        if (data.token) {
-          localStorage.setItem('authToken', data.token);
-          console.log('Pro token auto-refreshed – active now');
-          document.querySelector('.upgrade-modal, .fixed')?.remove();
-          alert('Pro activated! You now have 25 daily runs.');
-        }
-      } catch (err) {
-        console.warn('Auto-refresh failed:', err);
-        setTimeout(() => {
-          if (confirm('Upgrade complete! Please log in again to activate Pro.')) {
-            localStorage.removeItem('authToken');
-            showLoginModal();
-          }
-        }, 15000);
-      }
-    }, 12000);  // 12 seconds delay
 
   } catch (err) {
     console.error('Upgrade error:', err);
