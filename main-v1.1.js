@@ -350,6 +350,15 @@ async function upgradeToPro() {
 
     console.log('Mounting checkout...');
     checkout.mount('#checkout-container');
+    
+    // Start polling session status (Stripe Embedded gives sessionId in URL or from init)
+const urlParams = new URLSearchParams(window.location.search);
+const sessionId = urlParams.get('session_id');
+if (sessionId) {
+  pollForProUpgrade(sessionId);
+} else {
+  console.warn('No session_id in URL – polling may not work');
+}
 
     document.querySelector('.fixed')?.remove();
 
@@ -440,4 +449,34 @@ export async function canRunTool(toolName = 'default') {
     showUpgradeModal('Connection error – please try again.');
     return false;
   }
+}
+
+// Poll for webhook completion & replace token automatically
+async function pollForProUpgrade(sessionId) {
+  const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+  if (!token) return;
+
+  const interval = setInterval(async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/session-status?session_id=${sessionId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+
+      if (data.status === 'complete') {
+        // Session complete → assume webhook ran, force refresh token via login or direct replace
+        // For simplicity: remove old token and prompt re-login (or implement /api/refresh)
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('traffic_torch_jwt');
+        alert('Upgrade successful! Logging you back in with Pro access...');
+        showLoginModal(); // or auto-re-auth if you store credentials (not recommended)
+        clearInterval(interval);
+      }
+    } catch (err) {
+      console.error('Session status poll error:', err);
+    }
+  }, 5000); // every 5s
+
+  // Stop polling after 5 min max
+  setTimeout(() => clearInterval(interval), 300000);
 }
