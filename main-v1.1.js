@@ -406,7 +406,7 @@ export async function canRunTool(toolName = 'default') {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
   const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
-  // Generate or reuse anonymous ID (persists for the day)
+  // Generate persistent anonymous ID (lasts until storage cleared)
   let anonId = localStorage.getItem('anon_session_id');
   if (!anonId) {
     anonId = 'anon-' + Math.random().toString(36).slice(2) + Date.now();
@@ -420,30 +420,30 @@ export async function canRunTool(toolName = 'default') {
         'Content-Type': 'application/json',
         ...(token ? { 'Authorization': `Bearer ${token}` } : {})
       },
-      body: JSON.stringify({ anonId, toolName })  // send anon ID in body
+      body: JSON.stringify({ anonId, toolName })   // send anon ID
     });
 
     if (!res.ok) {
-      console.error('Check-rate error:', res.status);
+      console.error('Check-rate HTTP error:', res.status);
       showUpgradeModal('Could not check run limit – please log in or try again.');
       return false;
     }
 
     const data = await res.json();
-    console.log('Check-rate response:', data); // keep for debugging
+    console.log('Check-rate response:', data);   // keep for debugging
 
     if (data.allowed === true) {
       if (data.remaining !== undefined) updateRunsBadge?.(data.remaining);
       return true;
     }
 
-    // Limit hit → show modal with Worker's message
+    // Limit hit
     showUpgradeModal(data.message || `You've reached your daily limit. Upgrade to Pro for 25 runs/day!`);
     return false;
 
   } catch (err) {
     console.error('canRunTool failed:', err);
-    showUpgradeModal('Connection error – please try again.');
+    showUpgradeModal('Connection error – unable to check run limit. Please try again.');
     return false;
   }
 }
