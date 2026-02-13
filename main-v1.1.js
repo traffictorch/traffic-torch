@@ -406,31 +406,28 @@ export async function canRunTool(toolName = 'default') {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
   const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
-  // Generate persistent anonymous ID (lasts until storage cleared)
+  // Persistent anon ID (stored in localStorage, survives reloads)
   let anonId = localStorage.getItem('anon_session_id');
   if (!anonId) {
-    anonId = 'anon-' + Math.random().toString(36).slice(2) + Date.now();
+    anonId = 'anon-' + crypto.randomUUID(); // modern secure ID
     localStorage.setItem('anon_session_id', anonId);
   }
 
   try {
     const res = await fetch(API_BASE + '/api/check-rate', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-      },
-      body: JSON.stringify({ anonId, toolName })   // send anon ID
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, anonId, toolName }) // send both
     });
 
     if (!res.ok) {
-      console.error('Check-rate HTTP error:', res.status);
+      console.error('Check-rate error:', res.status, await res.text());
       showUpgradeModal('Could not check run limit – please log in or try again.');
       return false;
     }
 
     const data = await res.json();
-    console.log('Check-rate response:', data);   // keep for debugging
+    console.log('Check-rate response:', data); // keep debug
 
     if (data.allowed === true) {
       if (data.remaining !== undefined) updateRunsBadge?.(data.remaining);
@@ -438,12 +435,12 @@ export async function canRunTool(toolName = 'default') {
     }
 
     // Limit hit
-    showUpgradeModal(data.message || `You've reached your daily limit. Upgrade to Pro for 25 runs/day!`);
+    showUpgradeModal(data.message || `You've reached your daily limit (${data.limit || 'unknown'} runs). Upgrade to Pro!`);
     return false;
 
   } catch (err) {
     console.error('canRunTool failed:', err);
-    showUpgradeModal('Connection error – unable to check run limit. Please try again.');
+    showUpgradeModal('Connection error – please try again.');
     return false;
   }
 }
