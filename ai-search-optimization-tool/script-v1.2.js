@@ -77,7 +77,7 @@ const initTool = (form, results, progressContainer) => {
     const interval = setInterval(updateProgress, 2000);
 
     try {
-      const res = await fetch("https://rendered-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
+      const res = await fetch("https://rendered-proxy-basic.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable – check URL or try HTTPS');
 
       const html = await res.text();

@@ -24,7 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
       toggle.textContent = isDark ? '☀️' : '🌙';
       
-        // Auto-activate Pro after upgrade payment (checks every 5s for 60s)
+    });
+  }
+  
+          // Auto-activate Pro after upgrade payment (checks every 5s for 60s)
   let refreshAttempts = 0;
   const refreshInterval = setInterval(async () => {
     refreshAttempts++;
@@ -53,8 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (refreshAttempts > 12) clearInterval(refreshInterval); // stop after ~1 min
   }, 5000);
-    });
-  }
 });
 
 

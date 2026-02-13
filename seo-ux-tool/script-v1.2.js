@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const proxyUrl = 'https://rendered-proxy.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
+    const proxyUrl = 'https://rendered-proxy-basic.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
 
     try {
       const res = await fetch(proxyUrl);

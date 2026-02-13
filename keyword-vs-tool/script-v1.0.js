@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const compInput = document.getElementById('competitor-url');
   const phraseInput = document.getElementById('target-phrase');
   const results = document.getElementById('results');
-  const PROXY = 'https://rendered-proxy.traffictorch.workers.dev/';
+  const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
 
   const fetchPage = async (url) => {
     try {

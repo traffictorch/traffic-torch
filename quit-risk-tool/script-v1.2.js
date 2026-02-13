@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
-  const PROXY = 'https://rendered-proxy.traffictorch.workers.dev/';
+  const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
 
   const factorDefinitions = {
     readability: {

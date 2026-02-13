@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const pageUrlInput = document.getElementById('page-url');
   const locationInput = document.getElementById('location');
   const results = document.getElementById('results');
-  const PROXY = 'https://rendered-proxy.traffictorch.workers.dev/';
+  const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
   const progressModules = [
     "Fetching page...",
     "Scanning NAP & contact",
