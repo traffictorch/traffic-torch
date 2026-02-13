@@ -9,13 +9,7 @@ import { canRunTool } from '/main-v1.1.js';
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
-const STORAGE_KEY = 'traffic_torch_ai_audit_usage';
-const FREE_LIMIT = 3;
-const PRO_LIMIT = 25;
 
-function getToday() {
-  return new Date().toISOString().split('T')[0];
-}
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
@@ -121,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const canProceed = await canRunTool('ai-audit');
+  const canProceed = await canRunTool('traffic-audit');
   if (!canProceed) return;
 
   const url = input.value.trim();

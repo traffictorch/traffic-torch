@@ -10,17 +10,8 @@ import { computeConversational } from './modules/conversationalTone.js';
 import { computeReadability } from './modules/readability.js';
 import { computeUniqueInsights } from './modules/uniqueInsights.js';
 import { computeAntiAiSafety } from './modules/antiAiSafety.js';
-import { canRunTool } from '/main-v1.1.js';
 
-const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
-const TOKEN_KEY = 'traffic_torch_jwt';
-const STORAGE_KEY = 'traffic_torch_ai_audit_usage';
-const FREE_LIMIT = 3;
-const PRO_LIMIT = 25;
 
-function getToday() {
-  return new Date().toISOString().split('T')[0];
-}
 
 // Wait for required elements to exist before attaching listeners
 const waitForElements = () => {
@@ -39,9 +30,6 @@ const initTool = (form, results, progressContainer) => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-      const canProceed = await canRunTool('ai-audit');
-  if (!canProceed) return;
 
     let inputUrl = document.getElementById('url-input').value.trim();
     if (!inputUrl) {
