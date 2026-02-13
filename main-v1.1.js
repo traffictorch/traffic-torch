@@ -351,6 +351,32 @@ async function upgradeToPro() {
     console.log('Mounting checkout...');
     checkout.mount('#checkout-container');
     
+    // Auto-refresh token after ~10s (webhook delay)
+setTimeout(async () => {
+  const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+  if (!token) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/refresh-token`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (res.ok && data.token) {
+      localStorage.setItem('authToken', data.token);
+      console.log('Pro token refreshed automatically');
+      // Optional: close modal or notify user
+    } else {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('traffic_torch_jwt');
+      alert('Upgrade complete – please log in again');
+      showLoginModal();
+    }
+  } catch (err) {
+    console.error('Auto-refresh failed:', err);
+  }
+}, 12000); // 12 seconds – enough for webhook
+    
     // Start polling session status (Stripe Embedded gives sessionId in URL or from init)
 const urlParams = new URLSearchParams(window.location.search);
 const sessionId = urlParams.get('session_id');
