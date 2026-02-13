@@ -328,7 +328,6 @@ async function handleAuth(mode) {
   }
 }
 
-
 async function upgradeToPro() {
   const token = localStorage.getItem('authToken') || localStorage.getItem('torch_token');
   if (!token) return alert('Please login first');
@@ -362,7 +361,7 @@ async function upgradeToPro() {
     console.log('Mounting checkout...');
     checkout.mount('#checkout-container');
 
-    // Single reliable auto-refresh after upgrade (waits for webhook)
+    // Auto-refresh token after payment (waits for webhook)
     setTimeout(async () => {
       const currentToken = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
       if (!currentToken) return;
@@ -379,7 +378,6 @@ async function upgradeToPro() {
         if (data.token) {
           localStorage.setItem('authToken', data.token);
           console.log('Pro token auto-refreshed – active now');
-          // Clean up any leftover modals
           document.querySelector('.upgrade-modal, .fixed')?.remove();
           alert('Pro activated! You now have 25 daily runs.');
         }
@@ -392,7 +390,7 @@ async function upgradeToPro() {
           }
         }, 15000);
       }
-    }, 12000);
+    }, 12000);  // 12 seconds delay
 
   } catch (err) {
     console.error('Upgrade error:', err);
@@ -400,7 +398,6 @@ async function upgradeToPro() {
     document.getElementById('checkout-container')?.classList.add('hidden');
   }
 }
-
 
 function updateRunsBadge(remaining) {
   const desktopBadge = document.getElementById('runs-left');
