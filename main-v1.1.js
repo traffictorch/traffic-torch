@@ -446,10 +446,13 @@ export async function canRunTool(toolName = 'default') {
   }
 
   try {
-    const res = await fetch(API_BASE + '/api/check-rate', {
+        const res = await fetch(API_BASE + '/api/check-rate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token, anonId, toolName }) // send both
+      headers: { 
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` })
+      },
+      body: JSON.stringify({ anonId, toolName })   // token no longer needed in body
     });
 
     if (!res.ok) {
