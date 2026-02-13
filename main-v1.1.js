@@ -377,29 +377,25 @@ function updateRunsBadge(remaining) {
   }
 }
 
-// Upgrade Modal
-function showUpgradeModal(message = 'Upgrade to unlock more runs and advanced features.', price = '$48/year') {
-  const existing = document.querySelector('.upgrade-modal');
-  if (existing) existing.remove(); // avoid duplicates
+// Upgrade Modal – uses existing #upgradeModal in HTML
+function showUpgradeModal(message = "You've reached your daily limit. Upgrade to Pro for more runs.") {
+  const modal = document.getElementById('upgradeModal');
+  if (!modal) {
+    console.warn('#upgradeModal not found in DOM – check HTML');
+    return;
+  }
 
-  const modal = document.createElement('div');
-  modal.className = 'upgrade-modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4';
-  modal.innerHTML = `
-    <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full p-8 text-center relative">
-      <button onclick="this.closest('.upgrade-modal').remove()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 text-2xl">
-        ×
-      </button>
-      <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-200">Daily Limit Reached</h2>
-      <p class="text-lg mb-8 text-gray-700 dark:text-gray-300">${message}</p>
-      <p class="text-xl font-semibold mb-6 text-purple-600">${price} (billed yearly)</p>
-      <a href="/pro" class="inline-block w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-xl transition">
-        Upgrade to Pro Now
-      </a>
-      <button onclick="this.closest('.upgrade-modal').remove()" class="mt-6 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 underline">
-        Close
-      </button>
-    </div>`;
-  document.body.appendChild(modal);
+  // Update message (keep price/default text if needed)
+  const p = modal.querySelector('p.mb-6');
+  if (p) {
+    p.textContent = message;
+  }
+
+  // Show it
+  modal.classList.remove('hidden');
+
+  // Optional: scroll to top of modal on mobile
+  modal.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // Centralized rate limits
