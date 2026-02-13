@@ -300,8 +300,24 @@ async function handleAuth(mode) {
     });
     const data = await response.json();
 
-    if (response.ok && data.token) {
-      localStorage.setItem('authToken', data.token);  // match /pro/ page usage
+        if (response.ok && data.token) {
+      localStorage.setItem('authToken', data.token);
+      
+      // Refresh token to pull latest subscription_status from DB
+      try {
+        const refreshRes = await fetch(`${API_BASE}/api/refresh-token`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${data.token}` }
+        });
+        const refreshData = await refreshRes.json();
+        if (refreshRes.ok && refreshData.token) {
+          localStorage.setItem('authToken', refreshData.token);
+          console.log('Token refreshed with latest Pro status');
+        }
+      } catch (refreshErr) {
+        console.warn('Token refresh failed after login:', refreshErr);
+      }
+
       alert(mode === 'login' ? 'Logged in successfully!' : 'Registered & logged in!');
       document.querySelector('.fixed')?.remove();
     } else {
@@ -376,6 +392,25 @@ setTimeout(async () => {
     console.error('Auto-refresh failed:', err);
   }
 }, 12000); // 12 seconds – enough for webhook
+
+async function refreshToken() {
+  const oldToken = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+  if (!oldToken) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/refresh-token`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${oldToken}` }
+    });
+    const data = await res.json();
+    if (res.ok && data.token) {
+      localStorage.setItem('authToken', data.token);
+      console.log('Token refreshed with current Pro status');
+    }
+  } catch (err) {
+    console.error('Token refresh failed:', err);
+  }
+}
     
     // Start polling session status (Stripe Embedded gives sessionId in URL or from init)
 const urlParams = new URLSearchParams(window.location.search);
