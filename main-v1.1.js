@@ -336,6 +336,7 @@ async function upgradeToPro() {
   try {
     const container = document.getElementById('checkout-container');
     if (!container) throw new Error('Checkout container not found – add <div id="checkout-container"> to the page');
+
     container.classList.remove('hidden');
 
     const stripe = Stripe('pk_test_51SyjNi35Al6CUgc4F7ASfuA6j5PTrD6bYzeiLSaN8kiFqe3Dx1bEzmR5GjyFmGvqWBu2am8GjFnOgO7WNIno6kdN00jnVWUo9M');
@@ -348,58 +349,74 @@ async function upgradeToPro() {
           'Content-Type': 'application/json'
         }
       });
+
       if (!response.ok) {
         const errText = await response.text();
         throw new Error(errText || 'Failed to create checkout session');
       }
+
       const data = await response.json();
       if (!data.clientSecret) throw new Error('No clientSecret returned from server');
+
       return data.clientSecret;
     };
 
     console.log('Initializing Embedded Checkout...');
     const checkout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
+
     console.log('Mounting checkout...');
     checkout.mount('#checkout-container');
+    
+    // Auto-refresh token after upgrade (webhook delay ~5-15s)
+setTimeout(async () => {
+  const currentToken = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+  if (!currentToken) return;
 
-    // Single auto-refresh after upgrade (wait for webhook ~12s)
-    setTimeout(async () => {
-      const currentToken = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
-      if (!currentToken) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/refresh-token`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${currentToken}` }
+    });
 
-      try {
-        const res = await fetch(`${API_BASE}/api/refresh-token`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${currentToken}` }
-        });
+    if (!res.ok) throw new Error('Refresh failed');
 
-        if (!res.ok) throw new Error('Refresh failed');
-
-        const data = await res.json();
-        if (data.token) {
-          localStorage.setItem('authToken', data.token);
-          console.log('Pro token auto-refreshed – active now');
-          // Clean up: close any upgrade modal
-          document.querySelector('.upgrade-modal')?.remove();
-          alert('Pro activated! You now have 25 daily runs.');
-        }
-      } catch (err) {
-        console.warn('Auto token refresh failed:', err);
-        // Fallback: prompt re-login only if needed
-        setTimeout(() => {
-          if (confirm('Upgrade complete! Please log in again to activate Pro.')) {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('traffic_torch_jwt');
-            showLoginModal();
-          }
-        }, 15000);
-      }
-    }, 12000); // 12 seconds delay for webhook
-
+    const data = await res.json();
+    if (data.token) {
+      localStorage.setItem('authToken', data.token);
+      console.log('Pro token auto-refreshed – active now');
+      // Optional: close upgrade modal or show success toast
+      document.querySelector('.upgrade-modal')?.remove();
+      alert('Pro activated! You now have 25 daily runs.');
+    }
   } catch (err) {
-    console.error('Upgrade error:', err);
-    alert('Upgrade failed: ' + err.message);
-    document.getElementById('checkout-container')?.classList.add('hidden');
+    console.warn('Auto token refresh failed:', err);
+    // Fallback: prompt re-login only if needed
+    setTimeout(() => {
+      if (confirm('Upgrade complete! Please log in again to activate Pro.')) {
+        localStorage.removeItem('authToken');
+        showLoginModal();
+      }
+    }, 15000);
+  }
+}, 12000);  // wait 12 seconds for webhook to finish
+    
+
+async function refreshToken() {
+  const oldToken = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+  if (!oldToken) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/refresh-token`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${oldToken}` }
+    });
+    const data = await res.json();
+    if (res.ok && data.token) {
+      localStorage.setItem('authToken', data.token);
+      console.log('Token refreshed with current Pro status');
+    }
+  } catch (err) {
+    console.error('Token refresh failed:', err);
   }
 }
     
