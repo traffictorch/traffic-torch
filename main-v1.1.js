@@ -406,43 +406,44 @@ export async function canRunTool(toolName = 'default') {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
   const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
+  // Generate or reuse anonymous ID (persists for the day)
+  let anonId = localStorage.getItem('anon_session_id');
+  if (!anonId) {
+    anonId = 'anon-' + Math.random().toString(36).slice(2) + Date.now();
+    localStorage.setItem('anon_session_id', anonId);
+  }
+
   try {
     const res = await fetch(API_BASE + '/api/check-rate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(token ? { 'Authorization': `Bearer ${token}` } : {})  // only add header if token exists
-      }
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+      },
+      body: JSON.stringify({ anonId, toolName })  // send anon ID in body
     });
 
     if (!res.ok) {
-      console.error('Check-rate HTTP error:', res.status, await res.text());
-      showUpgradeModal('Could not verify run limit – please try again or log in to continue.');
+      console.error('Check-rate error:', res.status);
+      showUpgradeModal('Could not check run limit – please log in or try again.');
       return false;
     }
 
     const data = await res.json();
-
-    console.log('Check-rate response:', data); // debug: see what Worker actually returns
+    console.log('Check-rate response:', data); // keep for debugging
 
     if (data.allowed === true) {
-      // Success - update UI badge if exists
-      if (data.remaining !== undefined) {
-        updateRunsBadge?.(data.remaining);
-      }
+      if (data.remaining !== undefined) updateRunsBadge?.(data.remaining);
       return true;
     }
 
-    // Explicitly handle limit reached (allowed: false)
-    showUpgradeModal(
-      data.message || 
-      `You've reached your daily limit (${data.limit || 'unknown'} runs). Upgrade to Pro for 25 daily runs!`
-    );
+    // Limit hit → show modal with Worker's message
+    showUpgradeModal(data.message || `You've reached your daily limit. Upgrade to Pro for 25 runs/day!`);
     return false;
 
   } catch (err) {
     console.error('canRunTool failed:', err);
-    showUpgradeModal('Connection error – unable to check run limit. Please try again.');
+    showUpgradeModal('Connection error – please try again.');
     return false;
   }
 }
