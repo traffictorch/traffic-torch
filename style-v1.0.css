@@ -1,21 +1,21 @@
 /* Traffic Torch Global CSS – Cleaned & Fixed 2026 */
 
 /* Prevent FOUC / plain text flash on gradient titles – earliest possible */
+/* Light mode (default) */
 #sidebarTitle,
-p.text-$$   1\.25rem   $$.font-black.bg-gradient-to-r,
+p.text-1\.25rem.font-black.bg-gradient-to-r,
 span.bg-gradient-to-r.text-transparent,
-.gradient-text,
-[class*="Traffic Torch"] {
+.gradient-text {
   color: transparent !important;
   background-clip: text !important;
   -webkit-background-clip: text !important;
 }
 
+/* Dark mode — only if you change gradient colors; otherwise remove this block */
 .dark #sidebarTitle,
-.dark p.text-$$   1\.25rem   $$.font-black.bg-gradient-to-r,
+.dark p.text-1\.25rem.font-black.bg-gradient-to-r,
 .dark span.bg-gradient-to-r.text-transparent,
-.dark .gradient-text,
-.dark [class*="Traffic Torch"] {
+.dark .gradient-text {
   color: transparent !important;
   background-clip: text !important;
   -webkit-background-clip: text !important;
