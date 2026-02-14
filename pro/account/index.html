@@ -263,7 +263,66 @@
   <!-- Your existing header remains here -->
   
 
+<div class="text-center py-12 px-6 max-w-2xl mx-auto">
+  <h1 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200">Traffic Torch Pro Account</h1>
+  <p class="text-lg mb-8 text-gray-600 dark:text-gray-400">
+    Manage your subscription securely with Stripe.
+  </p>
 
+  <button id="manage-sub-btn"
+          class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-10 rounded-lg text-xl shadow-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+    Manage Subscription
+  </button>
+
+  <p id="status-msg" class="mt-6 text-sm text-gray-500 dark:text-gray-400 hidden">
+    Loading portal...
+  </p>
+</div>
+
+<script>
+  document.getElementById('manage-sub-btn').addEventListener('click', async () => {
+    const token = localStorage.getItem('authToken');
+    const msgEl = document.getElementById('status-msg');
+
+    if (!token) {
+      msgEl.textContent = 'Please log in first.';
+      msgEl.classList.remove('hidden');
+      setTimeout(() => { window.location.href = '/pro/'; }, 2000);
+      return;
+    }
+
+    msgEl.textContent = 'Loading your Stripe portal...';
+    msgEl.classList.remove('hidden');
+    msgEl.classList.add('text-blue-600', 'dark:text-blue-400');
+
+    try {
+      const response = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/portal', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to load portal');
+      }
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('No portal URL received');
+      }
+    } catch (err) {
+      msgEl.textContent = err.message.includes('No Stripe customer') 
+        ? 'No active subscription found. Upgrade to Pro to get started.'
+        : `Error: ${err.message}. Please try again or contact support.`;
+      msgEl.classList.remove('text-blue-600', 'dark:text-blue-400');
+      msgEl.classList.add('text-red-600', 'dark:text-red-400');
+    }
+  });
+</script>
  
 
    
