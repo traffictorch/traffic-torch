@@ -50,11 +50,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
  
 <!-- Optimized SEO Title & Description -->
-<title>Upgrade to Traffic Torch Pro – Unlock 25 Daily Analysis Audits</title>
-<meta name="description" content="Upgrade to Traffic Torch Pro for 25 daily SEO UX & AI analysis audits. Secure login and Stripe payment. Privacy-first." />
+<title>Traffic Torch Pro Account & Subscription Management</title>
+<meta name="description" content="Manage your Traffic Torch Pro subscription: view plans, update payment method, see billing history, or cancel. Privacy-first SEO & UX tools." />
+
 <!-- Robots & Canonical -->
-<meta name="robots" content="index, follow" />
-<link rel="canonical" href="https://traffictorch.net/pro/" />
+<meta name="robots" content="noindex, nofollow" />
+<link rel="canonical" href="https://traffictorch.net/pro/account/" />
 
 <!-- Theme Color -->
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
@@ -71,10 +72,10 @@
 <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/">
 
 <!-- Open Graph Tags -->
-<meta property="og:title" content="Upgrade to Traffic Torch Pro – AI SEO & UX Tools" />
-<meta property="og:description" content="Upgrade to Traffic Torch Pro for 25 daily SEO UX & AI analysis audits. Secure login and Stripe payment. Privacy-first." />
+<meta property="og:title" content="Traffic Torch Pro Account & Subscription Management" />
+<meta property="og:description" content="Manage your Traffic Torch Pro subscription: view plans, update payment method, see billing history, or cancel. Privacy-first SEO & UX tools." />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://traffictorch.net/pro/" />
+<meta property="og:url" content="https://traffictorch.net/pro/account/" />
 <meta property="og:image" content="https://traffictorch.net/images/traffic-torch.webp" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -82,22 +83,21 @@
 
 <!-- Twitter Cards -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Upgrade to Traffic Torch Pro – AI SEO & UX Tools" />
-<meta name="twitter:description" content="Upgrade to Traffic Torch Pro for 25 daily SEO UX & AI analysis audits. Secure login and Stripe payment. Privacy-first." />
+<meta name="twitter:title" content="Traffic Torch Pro Account & Subscription Management" />
+<meta name="twitter:description" content="Manage your Traffic Torch Pro subscription: view plans, update payment method, see billing history, or cancel. Privacy-first SEO & UX tools." />
 <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch.webp" />
 <meta name="twitter:site" content="@Guitaralize" />
 
-<!-- Structured Data (JSON-LD) – changed from ContactPage to WebPage -->
+<!-- Structured Data (JSON-LD) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "name": "Upgrade to Traffic Torch Pro",
-  "description": "Upgrade to Traffic Torch Pro for 25 daily SEO UX & AI analysis audits. Secure login and Stripe payment. Privacy-first.",
-  "url": "https://traffictorch.net/pro/"
+  "name": "Traffic Torch Pro Account",
+  "description": "Manage your Traffic Torch Pro subscription: view plans, update payment method, see billing history, or cancel. Privacy-first SEO & UX tools.",
+  "url": "https://traffictorch.net/pro/account/"
 }
 </script>
-
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -112,27 +112,7 @@
 }
 </script>
 
-<!-- BreadcrumbList -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://traffictorch.net/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Pro Upgrade",
-      "item": "https://traffictorch.net/pro/"
-    }
-  ]
-}
-</script>
+
  
   <meta name="color-scheme" content="dark light">
   <link rel="icon" href="/favicon.ico" />
@@ -142,16 +122,15 @@
   <meta name="apple-mobile-web-app-title" content="Torch">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
   <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
   <link rel="manifest" href="/manifest.json" />
  
   <!-- Preload critical CSS -->
   <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" as="style" href="/pro/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
     <link rel="stylesheet" href="/style-v1.0.css">
-    <link rel="stylesheet" href="/pro/style-v1.0.css">
   </noscript>
 
 <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
@@ -172,7 +151,8 @@
   </script>
     <link rel="preconnect" href="https://traffictorch.net" crossorigin>
   <meta http-equiv="Content-Encoding" content="br"> 
-
+  
+  <script src="https://js.stripe.com/v3/"></script> 
   
 </head>
 
@@ -193,7 +173,7 @@
 <!-- Menu Items -->
       <nav class="p-6 space-y-4 flex-1">
         <a href="/pro/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🪪</span> <span class="sidebar-text hidden">Pro Traffic</span>
+          <span class="text-2xl">🪪</span> <span class="sidebar-text hidden">Pro Login</span>
         </a>
         <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
           <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
@@ -262,7 +242,7 @@
 			  ×
 			</button>
           <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
-          <a href="/pro/" class="text-gray-100 hover:text-orange-400 transition">🪪 Pro Traffic</a>
+          <a href="/pro/" class="text-gray-100 hover:text-orange-400 transition">🪪 Pro Login</a>
             <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">🚦 Tools</a>
             <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
               <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
@@ -279,341 +259,13 @@
         </div>
       </header>
  
-  <div class="container mx-auto px-0 py-4 max-w-4xl">
-    <header class="text-center mb-16">
-<section class="py-1 px-1 max-w-4xl mx-auto">
-  <h1 class="text-3xl md:text-3xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-    Upgrade to Traffic Torch Pro
-  </h1>
-<p class="text-gray-800 dark:text-gray-200 mb-12 text-center max-w-3xl mx-auto leading-relaxed">
-  Unlock 25 daily AI UX & SEO audit tool runs. Secure login required. Powered by Stripe – privacy-first, no data collection.
-</p>
+<body class="min-h-screen bg-gradient-to-b from-gray-950 via-indigo-950 to-purple-950 text-gray-100 flex flex-col">
+  <!-- Your existing header remains here -->
+  
 
-<style>
-  .form-container {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    max-width: 5xl;
-    margin: 0 auto;
-  }
-  @media (min-width: 768px) {
-    .form-container {
-      flex-direction: row;
-    }
-    .form-container > div {
-      flex: 1;
-      max-width: none;
-    }
-  }
-  .math-error {
-    border-color: #ef4444 !important;
-  }
-</style>
 
-<div class="form-container px-0">
-<!-- Logged-in card (matches upgrade card style) -->
-<div id="logged-in-section" class="hidden bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl p-8">
-  <h3 class="text-2xl font-bold text-center mb-6">You're Logged In</h3>
-  <p class="text-center text-lg mb-8 opacity-90">
-    Ready to unlock Pro Traffic.
-  </p>
-  <button id="logout-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition">
-    Logout
-  </button>
-</div>
 
-  <!-- Login form -->
-  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6">
-    <h3 class="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-gray-200">Login</h3>
-    <form id="login-form" class="space-y-4">
-      <input type="text" placeholder="Username or Email" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-      <input type="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-      <div id="login-status" class="text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]"></div>
-      <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">Login</button>
-    </form>
-  </div>
 
-  <!-- Unified Account Creation & Upgrade Section -->
-  <div class="bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl p-8">
-    <h3 id="section-title" class="text-2xl font-bold text-center mb-6">Create Account & Upgrade to Pro</h3>
-
-    <!-- Signup form -->
-    <form id="signup-form" class="space-y-6">
-      <input type="email" id="email" placeholder="Email" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
-      <input type="password" id="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
-
-      <!-- Math verification -->
-      <div class="flex items-center gap-4">
-        <label for="math-answer" class="text-sm font-medium text-white/90">What is 7 + 5? (anti-spam)</label>
-        <input type="number" id="math-answer" required placeholder="?" class="w-20 p-2 rounded-lg border border-white/30 bg-white/10 text-white focus:outline-none focus:border-white">
-      </div>
-
-      <button type="submit" id="submit-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
-        Create Account & Pay $48/year
-      </button>
-    </form>
-
-    <!-- Logged-in upgrade button -->
-    <div id="pro-upgrade-section" class="hidden mt-8">
-      <button type="button" id="upgrade-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
-        Upgrade to Pro – $48/year
-      </button>
-    </div>
-
-    <!-- Payment & error display -->
-    <div id="checkout-container" class="mt-6 min-h-[400px] rounded-lg border border-white/30 bg-white/10 hidden"></div>
-    <div id="checkout-errors" class="text-center text-sm text-red-300 min-h-[1.25rem]" role="alert"></div>
-    <p class="mt-4 text-center text-sm opacity-90">Secure payment via Stripe • Cancel anytime</p>
-  </div>
-</div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded – initializing Stripe & auth');
-
-    // Safety reset
-    document.getElementById('signup-form')?.classList.remove('hidden');
-    document.getElementById('pro-upgrade-section')?.classList.add('hidden');
-    document.getElementById('logged-in-section')?.classList.add('hidden');
-
-    const stripe = Stripe('pk_live_51SyjNi35Al6CUgc4jAcWAszElUF4iMpBZOj5UGM9gk7KZKxBSlDGP06S9S0kv7mlkUfZa7yTgFtP6PBEl39b5dKt00hzl1NEgr');
-    const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
-
-    // Signup handler with math check
-    document.getElementById('signup-form')?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email')?.value.trim();
-      const password = document.getElementById('password')?.value;
-      const mathAnswer = document.getElementById('math-answer')?.value.trim();
-      const errors = document.getElementById('checkout-errors');
-
-      if (!email || !password) {
-        errors.textContent = 'Please fill email and password';
-        return;
-      }
-
-      if (mathAnswer !== '12') {
-        errors.textContent = 'Incorrect anti-spam answer.';
-        document.getElementById('math-answer').classList.add('math-error');
-        return;
-      } else {
-        document.getElementById('math-answer').classList.remove('math-error');
-      }
-
-      try {
-        const res = await fetch(API_BASE + '/api/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.error || 'Signup failed');
-        }
-        const { token } = await res.json();
-        localStorage.setItem('authToken', token);
-        errors.textContent = 'Account created! Click Upgrade to Pro';
-        document.getElementById('signup-form').classList.add('hidden');
-        document.getElementById('pro-upgrade-section').classList.remove('hidden');
-        document.getElementById('section-title').textContent = 'Upgrade to Pro';
-        updateUI();
-      } catch (err) {
-        console.error('Signup error:', err);
-        errors.textContent = err.message;
-      }
-    });
-
-    // Login handler with reload
-    document.getElementById('login-form')?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const status = document.getElementById('login-status');
-      status.textContent = 'Logging in...';
-      status.className = 'text-center text-sm text-gray-600 dark:text-gray-400 min-h-[1.25rem]';
-      const email = e.target.querySelector('input[type="text"]').value.trim();
-      const password = e.target.querySelector('input[type="password"]').value;
-
-      if (!email || !password) {
-        status.textContent = 'Please fill in both fields';
-        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
-        return;
-      }
-
-      try {
-        const response = await fetch(API_BASE + '/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        const data = await response.json();
-        if (response.ok && data.token) {
-          localStorage.setItem('authToken', data.token);
-          localStorage.removeItem('traffic_torch_jwt'); // cleanup
-          status.textContent = 'Logged in successfully!';
-          status.className = 'text-center text-sm text-green-600 dark:text-green-400 min-h-[1.25rem]';
-          setTimeout(() => {
-            window.location.reload(); // reload /pro to trigger updateUI
-          }, 1500);
-        } else {
-          status.textContent = data.error || 'Invalid credentials – please try again';
-          status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
-        }
-      } catch (err) {
-        console.error('Login error:', err);
-        status.textContent = 'Login failed – please check your connection';
-        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
-      }
-    });
-
-    // Upgrade button handler (unchanged)
-    const upgradeBtn = document.getElementById('upgrade-btn');
-    if (upgradeBtn) {
-      upgradeBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        const btn = e.target;
-        btn.disabled = true;
-        btn.textContent = 'Loading...';
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-          document.getElementById('checkout-errors').textContent = 'Login required';
-          btn.disabled = false;
-          btn.textContent = 'Upgrade to Pro – $48/year';
-          return;
-        }
-        try {
-          document.getElementById('checkout-container').classList.remove('hidden');
-          const fetchClientSecret = async () => {
-            const res = await fetch(API_BASE + '/api/upgrade', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              }
-            });
-            if (!res.ok) throw new Error(await res.text());
-            const data = await res.json();
-            if (!data.clientSecret) throw new Error('No clientSecret');
-            return data.clientSecret;
-          };
-          const embeddedCheckout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
-          embeddedCheckout.mount('#checkout-container');
-        } catch (err) {
-          console.error('Upgrade error:', err);
-          document.getElementById('checkout-errors').textContent = err.message;
-          btn.disabled = false;
-          btn.textContent = 'Upgrade to Pro – $48/year';
-          document.getElementById('checkout-container').classList.add('hidden');
-        }
-      });
-    }
-
-    // Logout handler
-    document.getElementById('logout-btn')?.addEventListener('click', () => {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('traffic_torch_jwt');
-      alert('Logged out successfully!');
-      window.location.reload();
-    });
-
-    // updateUI - hides forms when logged in, shows logout
-    async function updateUI() {
-      const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
-      const signupForm = document.getElementById('signup-form');
-      const loginContainer = document.querySelector('.bg-white.dark\\:bg-gray-800.rounded-3xl');
-      const upgradeSection = document.getElementById('pro-upgrade-section');
-      const loggedInSection = document.getElementById('logged-in-section');
-      const sectionTitle = document.getElementById('section-title');
-      const errors = document.getElementById('checkout-errors');
-
-      signupForm?.classList.remove('hidden');
-      loginContainer?.classList.remove('hidden');
-      upgradeSection?.classList.add('hidden');
-      loggedInSection?.classList.add('hidden');
-      sectionTitle.textContent = 'Create Account & Upgrade to Pro';
-
-      if (!token) return;
-
-      try {
-        const res = await fetch(API_BASE + '/api/user-status', {
-          headers: { 'Authorization': `Bearer ${token}` },
-          cache: 'no-store'
-        });
-
-        if (!res.ok) {
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('traffic_torch_jwt');
-          errors.textContent = 'Session expired – please log in';
-          return;
-        }
-
-        const { isPro } = await res.json();
-
-        signupForm?.classList.add('hidden');
-        loginContainer?.classList.add('hidden');
-        loggedInSection?.classList.remove('hidden');
-
-        if (isPro) {
-          sectionTitle.textContent = 'You are Pro Traffic!';
-        } else {
-          sectionTitle.textContent = 'Upgrade to Pro';
-          upgradeSection?.classList.remove('hidden');
-        }
-      } catch (err) {
-        console.error('updateUI error:', err);
-      }
-    }
-
-    updateUI();
-  });
-</script>
-     
-  <!-- share buttons, breadcrumbs and footer go here -->
-  <!-- AddToAny BEGIN -->
-<div style="display: flex; justify-content: center; margin: 30px 0;">
-  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
-    <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
-      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-      <a class="a2a_button_pinterest"></a>
-      <a class="a2a_button_x"></a>
-      <a class="a2a_button_reddit"></a>
-      <a class="a2a_button_facebook"></a>
-      <a class="a2a_button_copy_link"></a>
-    </div>
-    <script defer src="https://static.addtoany.com/menu/page.js"></script>
-  </div>
-</div>
-<!-- AddToAny END -->
-
-<!-- Breadcrumbs – semantic & detectable by analyzer -->
-<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
-  <div class="inline-block">
-    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
-      <a href="/">Traffic Torch</a>
-    </p>
-    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
-      <span id="page-name"></span>
-    </p>
-  </div>
-</nav>
-
-<script>
-  // Set page name (unchanged)
-  document.getElementById('page-name').textContent = document.title
-    .replace('Traffic Torch – ', '')
-    .replace(' | Traffic Torch', '')
-    .replace(' Tool', '')
-    .trim();
-</script>
-
-<!-- Last Update Date -->
-<div class="max-w-5xl mx-auto px-6 py-4 text-center">
-  <p class="text-sm text-gray-500 dark:text-gray-400">
-    Last updated: <span>2026-02-12</span>
-  </p>
-</div>
-    </div>
    
 <!-- Footer -->
 <footer class="border-t border-white/10 dark:border-white/5 py-12 bg-white/5 dark:bg-black/20 backdrop-blur-xl">
@@ -665,7 +317,7 @@
       <div>
         <h3 class="text-xl font-bold text-orange-400 mb-6">Traffic Torch</h3>
         <ul class="space-y-3 text-gray-500 dark:text-gray-200 text-sm">
-          <li><a href="/pro/" class="hover:text-orange-400 transition">Pro Traffic 🪪</a></li>
+          <li><a href="/pro/" class="hover:text-orange-400 transition">Pro Login 🪪</a></li>
           <li><a href="/ai-seo-ux-tools/#seo-tools" class="hover:text-orange-400 transition">SEO Tools 🎯</a></li>
           <li><a href="/ai-seo-ux-tools/#ux-tools" class="hover:text-orange-400 transition">UX Tools ⚡</a></li>
           <li><a href="/ai-seo-ux-tools/#ai-tools" class="hover:text-orange-400 transition">Ai Tools 🤖</a></li>
@@ -680,11 +332,11 @@
     </div>
   </div>
 </footer>
-  
+
 
   <!-- Load JS last for speed -->
   <script src="/main-v1.1.js" type="module"></script>
-  <script src="https://js.stripe.com/v3/"></script> 
+
 
   
 </body>
