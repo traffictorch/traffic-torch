@@ -259,72 +259,152 @@
         </div>
       </header>
  
-<body class="min-h-screen bg-gradient-to-b from-gray-950 via-indigo-950 to-purple-950 text-gray-100 flex flex-col">
-  <!-- Your existing header remains here -->
-  
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen px-4 py-12 transition-colors duration-300">
+  <div class="max-w-2xl mx-auto space-y-8">
+    <!-- Header -->
+    <h1 class="text-3xl font-bold text-center text-gray-800 dark:text-gray-200">Traffic Torch Pro Account</h1>
+    <p class="text-center text-gray-600 dark:text-gray-400">Your privacy-first SEO & UX dashboard</p>
 
-<div class="text-center py-12 px-6 max-w-2xl mx-auto">
-  <h1 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200">Traffic Torch Pro Account</h1>
-  <p class="text-lg mb-8 text-gray-600 dark:text-gray-400">
-    Manage your subscription securely with Stripe.
-  </p>
+    <!-- Status Card -->
+    <div id="status-card" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-xl font-semibold" id="tier-text">Loading...</h2>
+        <span id="since-text" class="text-sm text-gray-500 dark:text-gray-400"></span>
+      </div>
+      <div id="upgrade-nudge" class="hidden">
+        <a href="/pro/" class="inline-block w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg text-center hover:opacity-90 transition">
+          Upgrade to Pro – 25 daily audits
+        </a>
+      </div>
+    </div>
 
-  <button id="manage-sub-btn"
-          class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-10 rounded-lg text-xl shadow-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
-    Manage Subscription
-  </button>
+    <!-- Usage Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-4">
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Daily Audits</h3>
+      <div class="flex items-center justify-between">
+        <span class="text-3xl font-bold" id="usage-text">— / —</span>
+        <span class="text-sm text-gray-500 dark:text-gray-400">Resets at midnight UTC</span>
+      </div>
+      <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
+        <div id="usage-bar" class="bg-gradient-to-r from-orange-500 to-pink-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+      </div>
+    </div>
 
-  <p id="status-msg" class="mt-6 text-sm text-gray-500 dark:text-gray-400 hidden">
-    Loading portal...
-  </p>
-</div>
+    <!-- Account Basics + Logout -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-4">
+      <div class="flex justify-between items-center flex-wrap gap-4">
+        <div>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Logged in as</p>
+          <p class="font-medium text-gray-900 dark:text-gray-100" id="email-text">—</p>
+        </div>
+        <button id="logout-btn" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition">
+          Log Out
+        </button>
+      </div>
+    </div>
 
-<script>
-  document.getElementById('manage-sub-btn').addEventListener('click', async () => {
-    const token = localStorage.getItem('authToken');
-    const msgEl = document.getElementById('status-msg');
+    <!-- Manage Subscription -->
+    <div class="text-center mt-8">
+      <button id="manage-sub-btn" class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-10 rounded-lg text-xl shadow-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+        Manage Subscription
+      </button>
+      <p id="status-msg" class="mt-4 text-sm min-h-[1.25rem] hidden"></p>
+    </div>
 
-    if (!token) {
-      msgEl.textContent = 'Please log in first.';
-      msgEl.classList.remove('hidden');
-      setTimeout(() => { window.location.href = '/pro/'; }, 2000);
-      return;
-    }
+    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-8">
+      Privacy-first • Secure via Stripe • Questions? Contact support
+    </p>
+  </div>
 
-    msgEl.textContent = 'Loading your Stripe portal...';
-    msgEl.classList.remove('hidden');
-    msgEl.classList.add('text-blue-600', 'dark:text-blue-400');
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        window.location.href = '/pro/';
+        return;
+      }
 
-    try {
-      const response = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/portal', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
+      const statusMsg = document.getElementById('status-msg');
+
+      // Load dashboard data
+      async function loadAccountInfo() {
+        try {
+          const res = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/account-info', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+
+          if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.error || 'Failed to load account info');
+          }
+
+          const data = await res.json();
+
+          // Tier & since
+          document.getElementById('tier-text').textContent = data.isPro ? 'Pro Member' : 'Free Plan';
+          document.getElementById('since-text').textContent = data.proSince ? `since ${data.proSince}` : '';
+          if (!data.isPro) {
+            document.getElementById('upgrade-nudge').classList.remove('hidden');
+          }
+
+          // Usage
+          document.getElementById('usage-text').textContent = `${data.dailyUsed} / ${data.dailyLimit} used`;
+          const percent = (data.dailyUsed / data.dailyLimit) * 100;
+          document.getElementById('usage-bar').style.width = `${Math.min(percent, 100)}%`;
+
+          // Email
+          document.getElementById('email-text').textContent = data.email || '—';
+
+        } catch (err) {
+          console.error(err);
+          document.getElementById('status-card').innerHTML += '<p class="text-red-600 dark:text-red-400 mt-4 text-center">Could not load account info. Please refresh or log in again.</p>';
+        }
+      }
+
+      // Manage Subscription
+      document.getElementById('manage-sub-btn').addEventListener('click', async () => {
+        statusMsg.textContent = 'Loading your Stripe portal...';
+        statusMsg.classList.remove('hidden');
+        statusMsg.classList.add('text-blue-600', 'dark:text-blue-400');
+
+        try {
+          const response = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/portal', {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Failed to load portal');
+          }
+
+          if (data.url) {
+            window.location.href = data.url;
+          } else {
+            throw new Error('No portal URL received');
+          }
+        } catch (err) {
+          let msg = `Error: ${err.message}. Please try again or contact support.`;
+          if (err.message.includes('No Stripe customer') || err.message.includes('No active subscription')) {
+            msg = 'No active subscription found. Upgrade to Pro to get started.';
+          }
+          statusMsg.textContent = msg;
+          statusMsg.classList.remove('text-blue-600', 'dark:text-blue-400');
+          statusMsg.classList.add('text-red-600', 'dark:text-red-400');
         }
       });
 
-      const data = await response.json();
+      // Logout
+      document.getElementById('logout-btn')?.addEventListener('click', () => {
+        localStorage.removeItem('authToken');
+        window.location.href = '/pro/';
+      });
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to load portal');
-      }
-
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error('No portal URL received');
-      }
-    } catch (err) {
-      msgEl.textContent = err.message.includes('No Stripe customer') 
-        ? 'No active subscription found. Upgrade to Pro to get started.'
-        : `Error: ${err.message}. Please try again or contact support.`;
-      msgEl.classList.remove('text-blue-600', 'dark:text-blue-400');
-      msgEl.classList.add('text-red-600', 'dark:text-red-400');
-    }
-  });
-</script>
- 
-
+      // Load on page open
+      loadAccountInfo();
+    });
+  </script>
    
 <!-- Footer -->
 <footer class="border-t border-white/10 dark:border-white/5 py-12 bg-white/5 dark:bg-black/20 backdrop-blur-xl">
