@@ -526,3 +526,45 @@ async function pollForProUpgrade(sessionId) {
   // Stop polling after 5 min max
   setTimeout(() => clearInterval(interval), 300000);
 }
+
+// Conditional Pro menu link update
+document.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem('authToken');
+  const links = document.querySelectorAll('.pro-menu-link');
+
+  links.forEach(link => {
+    const emojiSpan = link.querySelector('span.text-2xl') || link.firstChild; // desktop emoji or mobile text node
+    const textSpan = link.querySelector('.sidebar-text') || link.lastChild;   // desktop hidden text or mobile full text
+
+    if (token) {
+      // Logged in: Pro Dashboard + green dot badge after text
+      if (textSpan) {
+        textSpan.textContent = 'Pro Dashboard';
+      } else {
+        // Mobile fallback: replace full text
+        link.innerHTML = '🪪 Pro Dashboard';
+      }
+      link.href = '/pro/account/';
+
+      // Add green dot badge after text
+      const badge = document.createElement('span');
+      badge.className = 'inline-block w-2.5 h-2.5 bg-green-500 rounded-full ml-2';
+      if (textSpan) {
+        textSpan.parentNode.insertBefore(badge, textSpan.nextSibling);
+      } else {
+        link.appendChild(badge);
+      }
+    } else {
+      // Logged out: reset to default
+      if (textSpan) {
+        textSpan.textContent = 'Pro Traffic';
+      } else {
+        link.innerHTML = '🪪 Pro Traffic';
+      }
+      link.href = '/pro/';
+      // Remove badge if exists
+      const existingBadge = link.querySelector('span.w-2.5.h-2.5');
+      if (existingBadge) existingBadge.remove();
+    }
+  });
+});

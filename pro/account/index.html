@@ -122,7 +122,6 @@
   <meta name="apple-mobile-web-app-title" content="Torch">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
   <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
   <link rel="manifest" href="/manifest.json" />
@@ -172,9 +171,10 @@
       </div>
 <!-- Menu Items -->
       <nav class="p-6 space-y-4 flex-1">
-        <a href="/pro/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🪪</span> <span class="sidebar-text hidden">Pro Login</span>
-        </a>
+        <a href="/pro/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition pro-menu-link">
+		  <span class="text-2xl">🪪</span> 
+		  <span class="sidebar-text hidden">Pro Traffic</span>
+		</a>
         <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
           <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
         </a>
@@ -242,7 +242,7 @@
 			  ×
 			</button>
           <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
-          <a href="/pro/" class="text-gray-100 hover:text-orange-400 transition">🪪 Pro Login</a>
+          <a href="/pro/" class="text-gray-100 hover:text-orange-400 transition pro-menu-link">🪪 Pro Traffic</a>
             <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">🚦 Tools</a>
             <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
               <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
@@ -260,58 +260,79 @@
       </header>
  
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen px-4 py-12 transition-colors duration-300">
-  <div class="max-w-2xl mx-auto space-y-8">
+  <div class="max-w-2xl mx-auto space-y-10">
     <!-- Header -->
-    <h1 class="text-3xl font-bold text-center text-gray-800 dark:text-gray-200">Traffic Torch Pro Account</h1>
-    <p class="text-center text-gray-600 dark:text-gray-400">Your privacy-first SEO & UX dashboard</p>
+    <div class="text-center">
+      <h1 class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+        Traffic Torch Pro Account
+      </h1>
+      <p class="mt-3 text-lg text-gray-600 dark:text-gray-400">
+        Your privacy-first SEO & UX dashboard
+      </p>
+    </div>
 
     <!-- Status Card -->
-    <div id="status-card" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-4">
-      <div class="flex justify-between items-center">
-        <h2 class="text-xl font-semibold" id="tier-text">Loading...</h2>
-        <span id="since-text" class="text-sm text-gray-500 dark:text-gray-400"></span>
+    <div id="status-card" class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-6">
+        <div class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-xl rounded-full shadow-lg" id="tier-text">
+          Loading...
+        </div>
+        <span id="since-text" class="text-base font-medium text-gray-600 dark:text-gray-300"></span>
       </div>
-      <div id="upgrade-nudge" class="hidden">
-        <a href="/pro/" class="inline-block w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg text-center hover:opacity-90 transition">
+      <div id="upgrade-nudge" class="hidden mt-6">
+        <a href="/pro/" class="inline-block w-full py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-lg rounded-xl text-center hover:opacity-90 hover:scale-105 transition-all duration-300 shadow-md">
           Upgrade to Pro – 25 daily audits
         </a>
       </div>
     </div>
 
     <!-- Usage Card -->
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-4">
-      <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Daily Audits</h3>
-      <div class="flex items-center justify-between">
-        <span class="text-3xl font-bold" id="usage-text">— / —</span>
-        <span class="text-sm text-gray-500 dark:text-gray-400">Resets at midnight UTC</span>
+    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
+      <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 flex items-center gap-3 mb-6">
+        <svg class="w-7 h-7 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        Daily Audits
+      </h3>
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <span class="text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100" id="usage-text">— / —</span>
+        <div class="text-right">
+          <span id="remaining-text" class="block text-2xl font-bold"></span>
+          <span class="text-sm text-gray-500 dark:text-gray-400">Resets at midnight UTC</span>
+        </div>
       </div>
-      <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
-        <div id="usage-bar" class="bg-gradient-to-r from-orange-500 to-pink-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+      <div class="mt-6 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+        <div id="usage-bar" class="bg-gradient-to-r from-orange-500 to-pink-600 h-3 rounded-full transition-all duration-700" style="width: 0%"></div>
       </div>
     </div>
 
     <!-- Account Basics + Logout -->
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-4">
-      <div class="flex justify-between items-center flex-wrap gap-4">
-        <div>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Logged in as</p>
-          <p class="font-medium text-gray-900 dark:text-gray-100" id="email-text">—</p>
+    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-6">
+        <div class="flex items-center gap-3">
+          <svg class="w-7 h-7 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Logged in as</p>
+            <p class="text-lg font-semibold text-gray-900 dark:text-gray-100" id="email-text">—</p>
+          </div>
         </div>
-        <button id="logout-btn" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition">
+        <button id="logout-btn" class="px-8 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg">
           Log Out
         </button>
       </div>
     </div>
 
     <!-- Manage Subscription -->
-    <div class="text-center mt-8">
-      <button id="manage-sub-btn" class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-10 rounded-lg text-xl shadow-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+    <div class="text-center mt-10">
+      <button id="manage-sub-btn" class="inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-5 px-12 rounded-2xl text-2xl shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
         Manage Subscription
       </button>
-      <p id="status-msg" class="mt-4 text-sm min-h-[1.25rem] hidden"></p>
+      <p id="status-msg" class="mt-5 text-base min-h-[1.5rem] hidden"></p>
     </div>
 
-    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-8">
+    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12">
       Privacy-first • Secure via Stripe • Questions? Contact support
     </p>
   </div>
@@ -326,7 +347,6 @@
 
       const statusMsg = document.getElementById('status-msg');
 
-      // Load dashboard data
       async function loadAccountInfo() {
         try {
           const res = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/account-info', {
@@ -340,24 +360,37 @@
 
           const data = await res.json();
 
-          // Tier & since
+          // Tier & since (pill badge already styled)
           document.getElementById('tier-text').textContent = data.isPro ? 'Pro Member' : 'Free Plan';
           document.getElementById('since-text').textContent = data.proSince ? `since ${data.proSince}` : '';
+
           if (!data.isPro) {
             document.getElementById('upgrade-nudge').classList.remove('hidden');
           }
 
-          // Usage
-          document.getElementById('usage-text').textContent = `${data.dailyUsed} / ${data.dailyLimit} used`;
+          // Usage + remaining label
+          document.getElementById('usage-text').textContent = `${data.dailyUsed} / ${data.dailyLimit}`;
           const percent = (data.dailyUsed / data.dailyLimit) * 100;
           document.getElementById('usage-bar').style.width = `${Math.min(percent, 100)}%`;
+
+          const remainingEl = document.getElementById('remaining-text');
+          const rem = data.dailyRemaining;
+          remainingEl.textContent = `${rem} remaining today`;
+          remainingEl.classList.remove('text-green-600', 'dark:text-green-400', 'text-orange-600', 'dark:text-orange-400', 'text-red-600', 'dark:text-red-400');
+          if (rem <= 3) {
+            remainingEl.classList.add('text-red-600', 'dark:text-red-400');
+          } else if (rem <= 8) {
+            remainingEl.classList.add('text-orange-600', 'dark:text-orange-400');
+          } else {
+            remainingEl.classList.add('text-green-600', 'dark:text-green-400');
+          }
 
           // Email
           document.getElementById('email-text').textContent = data.email || '—';
 
         } catch (err) {
           console.error(err);
-          document.getElementById('status-card').innerHTML += '<p class="text-red-600 dark:text-red-400 mt-4 text-center">Could not load account info. Please refresh or log in again.</p>';
+          document.getElementById('status-card').innerHTML += '<p class="text-red-600 dark:text-red-400 mt-6 text-center font-medium">Could not load account info. Please refresh or log in again.</p>';
         }
       }
 
@@ -386,7 +419,7 @@
           }
         } catch (err) {
           let msg = `Error: ${err.message}. Please try again or contact support.`;
-          if (err.message.includes('No Stripe customer') || err.message.includes('No active subscription')) {
+          if (err.message.toLowerCase().includes('no stripe customer') || err.message.toLowerCase().includes('no active subscription')) {
             msg = 'No active subscription found. Upgrade to Pro to get started.';
           }
           statusMsg.textContent = msg;
@@ -401,10 +434,10 @@
         window.location.href = '/pro/';
       });
 
-      // Load on page open
       loadAccountInfo();
     });
   </script>
+</body>
    
 <!-- Footer -->
 <footer class="border-t border-white/10 dark:border-white/5 py-12 bg-white/5 dark:bg-black/20 backdrop-blur-xl">
