@@ -341,6 +341,7 @@
 
     <!-- Signup form -->
     <form id="signup-form" class="space-y-6">
+      <input type="text" id="name" placeholder="Full Name" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
       <input type="email" id="email" placeholder="Email" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
       <input type="password" id="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
 
@@ -382,48 +383,51 @@
     const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
     // Signup handler with math check
-    document.getElementById('signup-form')?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email')?.value.trim();
-      const password = document.getElementById('password')?.value;
-      const mathAnswer = document.getElementById('math-answer')?.value.trim();
-      const errors = document.getElementById('checkout-errors');
+document.getElementById('signup-form')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name     = document.getElementById('name')?.value.trim();
+  const email    = document.getElementById('email')?.value.trim();
+  const password = document.getElementById('password')?.value;
+  const mathAnswer = document.getElementById('math-answer')?.value.trim();
+  const errors = document.getElementById('checkout-errors');
 
-      if (!email || !password) {
-        errors.textContent = 'Please fill email and password';
-        return;
-      }
+  if (!name || !email || !password) {
+    errors.textContent = 'Please fill name, email and password';
+    return;
+  }
 
-      if (mathAnswer !== '12') {
-        errors.textContent = 'Incorrect anti-spam answer.';
-        document.getElementById('math-answer').classList.add('math-error');
-        return;
-      } else {
-        document.getElementById('math-answer').classList.remove('math-error');
-      }
+  if (mathAnswer !== '12') {
+    errors.textContent = 'Incorrect anti-spam answer.';
+    document.getElementById('math-answer').classList.add('math-error');
+    return;
+  } else {
+    document.getElementById('math-answer').classList.remove('math-error');
+  }
 
-      try {
-        const res = await fetch(API_BASE + '/api/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.error || 'Signup failed');
-        }
-        const { token } = await res.json();
-        localStorage.setItem('authToken', token);
-        errors.textContent = 'Account created! Click Upgrade to Pro';
-        document.getElementById('signup-form').classList.add('hidden');
-        document.getElementById('pro-upgrade-section').classList.remove('hidden');
-        document.getElementById('section-title').textContent = 'Upgrade to Pro';
-        updateUI();
-      } catch (err) {
-        console.error('Signup error:', err);
-        errors.textContent = err.message;
-      }
+  try {
+    const res = await fetch(API_BASE + '/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
     });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Signup failed');
+    }
+
+    const { token } = await res.json();
+    localStorage.setItem('authToken', token);
+    errors.textContent = 'Account created! Click Upgrade to Pro';
+    document.getElementById('signup-form').classList.add('hidden');
+    document.getElementById('pro-upgrade-section').classList.remove('hidden');
+    document.getElementById('section-title').textContent = 'Upgrade to Pro';
+    updateUI();
+  } catch (err) {
+    console.error('Signup error:', err);
+    errors.textContent = err.message;
+  }
+});
 
     // Login handler with reload
     document.getElementById('login-form')?.addEventListener('submit', async (e) => {
