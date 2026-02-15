@@ -1,34 +1,37 @@
 export async function onRequestPost(context) {
   const formData = await context.request.formData();
   const name = formData.get('name')?.toString() || 'Anonymous';
-  const email = formData.get('email')?.toString() || 'No email';
-  const message = formData.get('message')?.toString() || 'No message';
+  const email = formData.get('email')?.toString() || 'No email provided';
+  const message = formData.get('message')?.toString() || '(empty message)';
 
   const timestamp = new Date().toISOString();
 
-  const discordPayload = {
-    embeds: [{
-      title: "New Contact Form Submission",
-      color: 0xff6b00, // orange accent
-      fields: [
-        { name: "Name", value: name, inline: true },
-        { name: "Email", value: email, inline: true },
-        { name: "Message", value: message || '(empty)', inline: false }
-      ],
-      footer: { text: `Submitted: ${timestamp} | Traffic Torch` },
-      timestamp: timestamp
-    }]
-  };
-
   try {
-    const response = await fetch(context.env.DISCORD_WEBHOOK_URL, {
+    const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(discordPayload)
+      headers: {
+        'Authorization': `Bearer ${context.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: 'Traffic Torch <support@traffictorch.net>', // your verified domain
+        to: 'traffictorch@gmail.com', // your Gmail
+        reply_to: email, // this sets Reply-To header so Gmail auto-replies to user's email
+        subject: `New Contact Form Submission - ${timestamp}`,
+        html: `
+          <h2>New message from Traffic Torch contact form</h2>
+          <p><strong>From:</strong> ${name} &lt;${email}&gt;</p>
+          <p><strong>Message:</strong></p>
+          <pre style="white-space: pre-wrap;">${message}</pre>
+          <p><small>Sent: ${timestamp}</small></p>
+        `,
+        text: `New message from ${name} <${email}>\n\n${message}\n\nSent: ${timestamp}`
+      })
     });
 
-    if (!response.ok) {
-      throw new Error(`Discord webhook failed: ${response.status}`);
+    if (!res.ok) {
+      const error = await res.text();
+      throw new Error(`Resend failed: ${error}`);
     }
 
     return new Response(JSON.stringify({ success: true }), {
