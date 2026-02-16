@@ -333,25 +333,41 @@
   </button>
 </div>
 
+<div class="form-container px-0">
+  <!-- Logged-in card (matches upgrade card style) -->
+  <div id="logged-in-section" class="hidden bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl p-8">
+    <h3 class="text-2xl font-bold text-center mb-6">You're Logged In</h3>
+    <p class="text-center text-lg mb-8 opacity-90">
+      Ready to unlock Pro Traffic.
+    </p>
+    <button id="logout-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition">
+      Logout
+    </button>
+  </div>
+
   <!-- Login form -->
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6">
     <h3 class="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-gray-200">Login</h3>
     <form id="login-form" class="space-y-4">
       <input type="text" placeholder="Username or Email" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-<div class="relative">
-  <input type="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 pr-12">
-  <button type="button" class="absolute inset-y-0 right-0 w-12 flex items-center justify-center text-gray-700 hover:text-black dark:text-gray-200 dark:hover:text-white toggle-password bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-r-lg">
-    <svg class="h-6 w-6 eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-    </svg>
-  </button>
-</div>
-      <a href="#" id="forgot-password-link" class="text-sm text-orange-500 hover:text-orange-600 block text-right mt-1">Forgot password?</a>
+
+      <!-- Password with eye INSIDE the field -->
+      <div class="relative">
+        <input type="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 pr-14">
+        <button type="button" class="absolute inset-y-0 right-0 w-14 flex items-center justify-center text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white toggle-password hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+          <svg class="h-6 w-6 eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </button>
+      </div>
+
+      <a href="#" id="forgot-password-link" class="text-sm text-orange-500 hover:text-orange-600 block text-center mt-2">Forgot password?</a>
       <div id="login-status" class="text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]"></div>
       <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">Login</button>
     </form>
-        <div id="forgot-password-form" class="hidden mt-6">
+
+    <div id="forgot-password-form" class="hidden mt-6">
       <h4 class="text-xl font-bold text-center mb-4 text-gray-800 dark:text-gray-200">Reset Password</h4>
       <form id="reset-request-form" class="space-y-4">
         <input type="email" id="reset-email" placeholder="Your email" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
@@ -361,57 +377,61 @@
       <button id="back-to-login" class="mt-4 text-sm text-orange-500 hover:text-orange-600 block mx-auto">Back to Login</button>
     </div>
   </div>
-  
-      <div id="reset-password-form" class="hidden mt-6">
-      <h4 class="text-xl font-bold text-center mb-4 text-gray-800 dark:text-gray-200">Set New Password</h4>
-      <form id="reset-password-submit" class="space-y-4">
-<div class="relative">
-  <input type="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 pr-12">
-  <button type="button" class="absolute inset-y-0 right-0 w-12 flex items-center justify-center text-gray-700 hover:text-black dark:text-gray-200 dark:hover:text-white toggle-password bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-r-lg">
-    <svg class="h-6 w-6 eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-    </svg>
-  </button>
-</div>
-<div class="relative">
-  <input type="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 pr-12">
-  <button type="button" class="absolute inset-y-0 right-0 w-12 flex items-center justify-center text-gray-700 hover:text-black dark:text-gray-200 dark:hover:text-white toggle-password bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 rounded-r-lg">
-    <svg class="h-6 w-6 eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-    </svg>
-  </button>
-</div>
-       <div id="reset-password-status" class="text-center text-sm min-h-[1.25rem] text-red-600 dark:text-red-400"></div>
-        <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">Update Password</button>
-      </form>
-      <button id="cancel-reset" class="mt-4 text-sm text-orange-500 hover:text-orange-600 block mx-auto">Cancel</button>
-    </div>
+
+  <!-- Reset Password Form -->
+  <div id="reset-password-form" class="hidden mt-6">
+    <h4 class="text-xl font-bold text-center mb-4 text-gray-800 dark:text-gray-200">Set New Password</h4>
+    <form id="reset-password-submit" class="space-y-4">
+      <div class="relative">
+        <input type="password" id="new-password" placeholder="New Password" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 pr-14">
+        <button type="button" class="absolute inset-y-0 right-0 w-14 flex items-center justify-center text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white toggle-password hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+          <svg class="h-6 w-6 eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="relative">
+        <input type="password" id="confirm-password" placeholder="Confirm New Password" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 pr-14">
+        <button type="button" class="absolute inset-y-0 right-0 w-14 flex items-center justify-center text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white toggle-password hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+          <svg class="h-6 w-6 eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </button>
+      </div>
+
+      <div id="reset-password-status" class="text-center text-sm min-h-[1.25rem] text-red-600 dark:text-red-400"></div>
+      <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">Update Password</button>
+    </form>
+    <button id="cancel-reset" class="mt-4 text-sm text-orange-500 hover:text-orange-600 block mx-auto">Cancel</button>
+  </div>
 
   <!-- Unified Account Creation & Upgrade Section -->
   <div class="bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl p-8">
     <h3 id="section-title" class="text-2xl font-bold text-center mb-6">Create Account & Upgrade to Pro</h3>
-
     <!-- Signup form -->
     <form id="signup-form" class="space-y-6">
       <input type="text" id="name" placeholder="Full Name" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
       <input type="email" id="email" placeholder="Email" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
-<div class="relative">
-  <input type="password" id="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white pr-12">
-  <button type="button" class="absolute inset-y-0 right-0 w-12 flex items-center justify-center text-white/90 hover:text-white toggle-password bg-transparent hover:bg-white/10 rounded-r-lg">
-    <svg class="h-6 w-6 eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-    </svg>
-  </button>
-</div>
+
+      <!-- Password with eye INSIDE the field -->
+      <div class="relative">
+        <input type="password" id="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white pr-14">
+        <button type="button" class="absolute inset-y-0 right-0 w-14 flex items-center justify-center text-white/90 hover:text-white toggle-password bg-transparent hover:bg-white/10 rounded-r-lg">
+          <svg class="h-6 w-6 eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </button>
+      </div>
+
       <!-- Math verification -->
       <div class="flex items-center gap-4">
         <label for="math-answer" class="text-sm font-medium text-white/90">What is 7 + 5? (anti-spam)</label>
         <input type="number" id="math-answer" required placeholder="?" class="w-20 p-2 rounded-lg border border-white/30 bg-white/10 text-white focus:outline-none focus:border-white">
       </div>
-
       <button type="submit" id="submit-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
         Create Account & Pay $48/year
       </button>
