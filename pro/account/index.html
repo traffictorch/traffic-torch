@@ -336,6 +336,35 @@
       Privacy-first • Secure via Stripe • Questions? Contact support
     </p>
   </div>
+  
+  <!-- Delete Account Section (only visible when logged in) -->
+<div id="delete-account-section" class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+  <h3 class="text-xl font-bold text-red-600 dark:text-red-400 mb-4">Delete Account</h3>
+  <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+    This will permanently delete your account, all audit history, and usage data. This action cannot be undone.
+  </p>
+  <button id="delete-account-btn" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition disabled:opacity-50">
+    Delete My Account
+  </button>
+</div>
+
+<!-- Confirmation Modal (hidden by default) -->
+<div id="delete-confirm-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl">
+    <h4 class="text-xl font-bold text-red-600 dark:text-red-400 mb-4">Confirm Account Deletion</h4>
+    <p class="text-gray-700 dark:text-gray-300 mb-6">
+      Are you sure? This will delete your account and all associated data permanently.
+    </p>
+    <div class="flex gap-4 justify-end">
+      <button id="cancel-delete" class="px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg transition">
+        Cancel
+      </button>
+      <button id="confirm-delete" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">
+        Yes, Delete Permanently
+      </button>
+    </div>
+  </div>
+</div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -418,6 +447,53 @@
 
       loadAccountInfo();
     });
+  </script>
+  
+  <script>
+  // Delete account handler (only runs if button exists)
+const deleteBtn = document.getElementById('delete-account-btn');
+if (deleteBtn) {
+  deleteBtn.addEventListener('click', () => {
+    document.getElementById('delete-confirm-modal').classList.remove('hidden');
+  });
+
+  document.getElementById('cancel-delete')?.addEventListener('click', () => {
+    document.getElementById('delete-confirm-modal').classList.add('hidden');
+  });
+
+  document.getElementById('confirm-delete')?.addEventListener('click', async () => {
+    const status = document.getElementById('delete-account-btn');
+    status.disabled = true;
+    status.textContent = 'Deleting...';
+
+    try {
+      const token = localStorage.getItem('authToken');
+      const res = await fetch(API_BASE + '/api/delete-account', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (res.ok) {
+        localStorage.removeItem('authToken');
+        alert('Account deleted successfully. You are now logged out.');
+        window.location.href = 'https://traffictorch.net/pro/';
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to delete account. Try again later.');
+      }
+    } catch (err) {
+      console.error('Delete error:', err);
+      alert('Network error – please try again');
+    } finally {
+      status.disabled = false;
+      status.textContent = 'Delete My Account';
+      document.getElementById('delete-confirm-modal').classList.add('hidden');
+    }
+  });
+}
   </script>
 
 
