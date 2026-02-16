@@ -1,3 +1,8 @@
+import { canRunTool } from '/main-v1.1.js';
+
+const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+const TOKEN_KEY = 'traffic_torch_jwt';
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const yourInput = document.getElementById('your-url');
@@ -101,6 +106,10 @@ const countPhrase = (text = '', phrase = '', isUrl = false) => {
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
+    
+  //const canProceed = await canRunTool('limit-audit-id');
+  //if (!canProceed) return;
+  
     let yourUrl = yourInput.value.trim();
     let compUrl = compInput.value.trim();
     const phrase = phraseInput.value.trim();

@@ -9,6 +9,11 @@ import('./plugin-solutions-v1.0.js')
   })
   .catch(err => console.error('[Plugin] Failed to load plugin-solutions-v1.0.js:', err));
   
+  import { canRunTool } from '/main-v1.1.js';
+
+const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+const TOKEN_KEY = 'traffic_torch_jwt';
+  
   // ────────────────────────────────────────────────
 // Dynamic imports for core analysis modules
 // ────────────────────────────────────────────────
@@ -551,6 +556,10 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
+    
+  //const canProceed = await canRunTool('limit-audit-id');
+  //if (!canProceed) return;
+  
     results.innerHTML = '';
     let url = input.value.trim();
     if (!url) {

@@ -8,6 +8,10 @@ import { analyzeContentQuality } from './modules/analyze-content-v1.0.js';
 import { analyzeUXDesign } from './modules/analyze-ux-v1.0.js';
 import { analyzeSecurity } from './modules/analyze-security-v1.0.js';
 import { analyzeIndexability } from './modules/analyze-indexability-v1.0.js';
+import { canRunTool } from '/main-v1.1.js';
+
+const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+const TOKEN_KEY = 'traffic_torch_jwt';
 
 const moduleInfo = {
   seo: {
@@ -168,6 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
+    
+  //const canProceed = await canRunTool('limit-audit-id');
+  //if (!canProceed) return;
 
     progressContainer.classList.remove('hidden');
     progressText.textContent = 'Fetching page...';

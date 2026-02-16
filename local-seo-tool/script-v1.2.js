@@ -7,6 +7,10 @@ import { analyzeContentRelevance } from './modules/content-relevance.js';
 import { analyzeMapsVisuals } from './modules/maps-visuals.js';
 import { analyzeStructuredData } from './modules/structured-data.js';
 import { analyzeReviewsStructure } from './modules/reviews-structure.js';
+import { canRunTool } from '/main-v1.1.js';
+
+const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+const TOKEN_KEY = 'traffic_torch_jwt';
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
@@ -152,6 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── FORM SUBMIT HANDLER ───────────────────────────────────────────────────────
   form.addEventListener('submit', async e => {
     e.preventDefault();
+    
+  //const canProceed = await canRunTool('limit-audit-id');
+  //if (!canProceed) return;
+  
     const yourUrl = pageUrlInput.value.trim();
     const location = locationInput.value.trim();
     if (!yourUrl || !location) {

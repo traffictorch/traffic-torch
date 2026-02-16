@@ -10,7 +10,10 @@ import { computeConversational } from './modules/conversationalTone.js';
 import { computeReadability } from './modules/readability.js';
 import { computeUniqueInsights } from './modules/uniqueInsights.js';
 import { computeAntiAiSafety } from './modules/antiAiSafety.js';
+import { canRunTool } from '/main-v1.1.js';
 
+const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+const TOKEN_KEY = 'traffic_torch_jwt';
 
 
 // Wait for required elements to exist before attaching listeners
@@ -30,6 +33,9 @@ const initTool = (form, results, progressContainer) => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+  //const canProceed = await canRunTool('limit-audit-id');
+  //if (!canProceed) return;
 
     let inputUrl = document.getElementById('url-input').value.trim();
     if (!inputUrl) {

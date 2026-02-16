@@ -6,6 +6,10 @@ import { analyzeTrustworthiness } from './modules/trustworthiness.js';
 import { analyzeDepth } from './modules/depth.js';
 import { analyzeReadability } from './modules/readability.js';
 import { analyzeSchema } from './modules/schema.js';
+import { canRunTool } from '/main-v1.1.js';
+
+const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+const TOKEN_KEY = 'traffic_torch_jwt';
 
 document.addEventListener('DOMContentLoaded', () => {
   // === STEP 1: CENTRAL CONFIG OBJECT + PARSING VARIABLES ===
@@ -115,6 +119,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+  //const canProceed = await canRunTool('limit-audit-id');
+  //if (!canProceed) return;
+  
     const inputValue = document.getElementById('url-input').value;
     const url = cleanUrl(inputValue);
     console.log('Input:', inputValue);
