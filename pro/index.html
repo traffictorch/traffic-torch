@@ -419,10 +419,12 @@
     });
 
     // Reset password flow: detect ?reset_token in URL on page load
+    let resetToken = null; // Declare outside so submit handler can use it
+
     try {
       console.log('Attempting reset_token detection');
       const urlParams = new URLSearchParams(window.location.search);
-      const resetToken = urlParams.get('reset_token');
+      resetToken = urlParams.get('reset_token'); // Assign here
       console.log('resetToken found:', resetToken ? 'yes' : 'no');
 
       if (resetToken) {
