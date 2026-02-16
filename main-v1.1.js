@@ -492,7 +492,7 @@ export async function canRunTool(toolName = 'default') {
       return true;
     }
     // Limit hit
-    showUpgradeModal(data.message || 'Upgrade to Pro $48 per/year for 25 runs/day.');
+    showUpgradeModal(data.message || 'Upgrade to Traffic Torch Pro - USD $48 per/year for 25 runs/day.');
     return false;
   } catch (err) {
     console.error('canRunTool failed:', err);

@@ -115,8 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const canProceed = await canRunTool('traffic-audit');
-  if (!canProceed) return;
+  //const canProceed = await canRunTool('limit-audit-id');
+  //if (!canProceed) return;
 
   const url = input.value.trim();
     let normalizedUrl = url;

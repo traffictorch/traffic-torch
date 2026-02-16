@@ -416,14 +416,14 @@
       </div>
 
       <button type="submit" id="submit-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
-        Create Account & Pay $48/year
+        Create Account & Pay USD $48/year
       </button>
     </form>
 
     <!-- Logged-in upgrade button -->
     <div id="pro-upgrade-section" class="hidden mt-8">
       <button type="button" id="upgrade-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
-        Upgrade to Pro – $48/year
+        Upgrade to Pro – USD $48/year
       </button>
     </div>
 
@@ -700,7 +700,7 @@
         if (!token) {
           document.getElementById('checkout-errors').textContent = 'Login required';
           btn.disabled = false;
-          btn.textContent = 'Upgrade to Pro – $48/year';
+          btn.textContent = 'Upgrade to Pro – USD $48/year';
           return;
         }
 
@@ -725,7 +725,7 @@
           console.error('Upgrade error:', err);
           document.getElementById('checkout-errors').textContent = err.message;
           btn.disabled = false;
-          btn.textContent = 'Upgrade to Pro – $48/year';
+          btn.textContent = 'Upgrade to Pro – USD $48/year';
           document.getElementById('checkout-container').classList.add('hidden');
         }
       });
