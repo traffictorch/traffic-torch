@@ -42,16 +42,16 @@ const metricExplanations = [
   {
     id: "ai-content-overview",
     emoji: "🤖",
-    name: "AI Content",
-    what: 'Full guide to detecting and humanizing AI-generated content in 2026 — the 5 key metrics, how Traffic Torch tests them, why they matter for SEO/UX, and practical fixes. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Read the complete deep-dive →</a>',
-    how: '',
-    why: ''
+    name: "AI Content Detection",
+    what: 'Complete 2026 guide: the 5 metrics Traffic Torch uses to detect AI-generated content, exact testing logic, why each matters for SEO/UX, history, fixes and more.',
+    how: '',   // intentionally empty — not used in rendering
+    why: ''    // intentionally empty — not used in rendering
   }
 ];
 
 function openDetailsFromHash() {
   if (window.location.hash) {
-    const hash = window.location.hash.substring(1); // remove #
+    const hash = window.location.hash.substring(1);
     const target = document.getElementById(hash);
     if (target) {
       const details = target.querySelector('details');
@@ -67,35 +67,53 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('metric-cards-container');
   if (!container) return;
 
-  container.innerHTML = metricExplanations.map(m => `
-    <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center">
-      <div class="text-6xl mb-6">${m.emoji}</div>
-      <div class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-8">${m.name}</div>
-      <details class="group">
-        <summary class="cursor-pointer text-orange-700 dark:text-orange-300 font-bold hover:underline inline-flex items-center justify-center gap-2 whitespace-nowrap">
-          Learn More <span class="text-2xl group-open:rotate-180 transition-transform">↓</span>
-        </summary>
-        <div class="mt-6 space-y-6 text-left max-w-lg mx-auto text-gray-600 dark:text-gray-400 leading-relaxed">
-          <div>
-            <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">What is ${m.name}?</p>
-            <p>${m.what}</p>
-          </div>
-          <div>
-            <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">How is ${m.name} tested?</p>
-            <p>${m.how}</p>
-          </div>
-          <div>
-            <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">Why does ${m.name} matter?</p>
-            <p>${m.why}</p>
-          </div>
+  container.innerHTML = metricExplanations.map(m => {
+    // Special full-guide overview card
+    if (m.id === "ai-content-overview") {
+      return `
+        <div id="${m.id}" class="col-span-1 md:col-span-2 lg:col-span-3 bg-gradient-to-br from-pink-50 to-orange-50 dark:from-pink-950/40 dark:to-orange-950/30 rounded-3xl shadow-2xl p-10 md:p-16 text-center border-2 border-pink-500 dark:border-pink-600">
+          <div class="text-9xl mb-8">${m.emoji}</div>
+          <h3 class="text-5xl md:text-6xl font-black text-pink-600 dark:text-pink-400 mb-8">${m.name}</h3>
+          <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed max-w-4xl mx-auto mb-12">
+            ${m.what}
+          </p>
+          <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide" 
+             class="inline-flex items-center px-12 py-6 bg-gradient-to-r from-pink-500 to-orange-600 text-white text-2xl md:text-3xl font-bold rounded-2xl shadow-xl hover:scale-105 hover:shadow-pink-500/50 transition duration-300">
+            Read the Complete 2026 Guide →
+          </a>
         </div>
-      </details>
-    </div>
-  `).join('');
+      `;
+    }
 
-  // Open on initial load if hash present
+    // Normal metric cards (with inline Learn more links)
+    return `
+      <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center">
+        <div class="text-6xl mb-6">${m.emoji}</div>
+        <div class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-8">${m.name}</div>
+        <details class="group">
+          <summary class="cursor-pointer text-orange-700 dark:text-orange-300 font-bold hover:underline inline-flex items-center justify-center gap-2 whitespace-nowrap">
+            Quick explanation <span class="text-2xl group-open:rotate-180 transition-transform">↓</span>
+          </summary>
+          <div class="mt-6 space-y-8 text-left max-w-lg mx-auto text-gray-600 dark:text-gray-400 leading-relaxed">
+            <div>
+              <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">What is ${m.name}?</p>
+              <p>${m.what}</p>
+            </div>
+            <div>
+              <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">How is ${m.name} tested?</p>
+              <p>${m.how}</p>
+            </div>
+            <div>
+              <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">Why does ${m.name} matter?</p>
+              <p>${m.why}</p>
+            </div>
+          </div>
+        </details>
+      </div>
+    `;
+  }).join('');
+
   openDetailsFromHash();
 });
 
-// Open on hash change (e.g., when clicking internal links)
 window.addEventListener('hashchange', openDetailsFromHash);
