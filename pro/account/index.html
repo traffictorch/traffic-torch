@@ -337,13 +337,13 @@
     </p>
   </div>
   
-  <!-- Delete Account Section (only visible when logged in) -->
-<div id="delete-account-section" class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+<!-- Delete Account Section (only visible when logged in) -->
+<div id="delete-account-section" class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 text-center">
   <h3 class="text-xl font-bold text-red-600 dark:text-red-400 mb-4">Delete Account</h3>
-  <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+  <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
     This will permanently delete your account, all audit history, and usage data. This action cannot be undone.
   </p>
-  <button id="delete-account-btn" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition disabled:opacity-50">
+  <button id="delete-account-btn" class="mx-auto px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition disabled:opacity-50 shadow-lg">
     Delete My Account
   </button>
 </div>
@@ -368,6 +368,7 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+    const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
       const token = localStorage.getItem('authToken');
       if (!token) {
         window.location.href = '/pro/';
@@ -447,9 +448,7 @@
 
       loadAccountInfo();
     });
-  </script>
-  
-  <script>
+
   // Delete account handler (only runs if button exists)
 const deleteBtn = document.getElementById('delete-account-btn');
 if (deleteBtn) {
