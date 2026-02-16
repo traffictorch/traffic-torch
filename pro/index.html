@@ -407,14 +407,91 @@
       document.querySelector('#login-form').classList.add('hidden');
       document.getElementById('forgot-password-form').classList.remove('hidden');
       document.getElementById('reset-status').textContent = '';
-    });
+    }); 
 
-    // Back to login
+    // Back to login (only toggles forgot password form)
     document.getElementById('back-to-login')?.addEventListener('click', () => {
       document.getElementById('forgot-password-form').classList.add('hidden');
       document.querySelector('#login-form').classList.remove('hidden');
       document.getElementById('login-status').textContent = '';
     });
+
+    // Reset password flow: detect ?reset_token in URL on page load
+    const urlParams = new URLSearchParams(window.location.search);
+    const resetToken = urlParams.get('reset_token');
+
+    if (resetToken) {
+      // Hide login, forgot, signup, upgrade, logged-in sections
+      document.querySelector('#login-form').classList.add('hidden');
+      document.getElementById('forgot-password-form')?.classList.add('hidden');
+      document.getElementById('signup-form')?.classList.add('hidden');
+      document.getElementById('pro-upgrade-section')?.classList.add('hidden');
+      document.getElementById('logged-in-section')?.classList.add('hidden');
+      // Show reset form
+      document.getElementById('reset-password-form').classList.remove('hidden');
+      // Update main title
+      document.getElementById('section-title')?.textContent = 'Set New Password';
+    }
+
+    // Reset password form submit handler
+    document.getElementById('reset-password-submit')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const status = document.getElementById('reset-password-status');
+      const password = document.getElementById('new-password')?.value;
+      const confirm = document.getElementById('confirm-password')?.value;
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+
+      if (!password || password.length < 8) {
+        status.textContent = 'Password must be at least 8 characters';
+        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+        return;
+      }
+
+      if (password !== confirm) {
+        status.textContent = 'Passwords do not match';
+        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+        return;
+      }
+
+      status.textContent = 'Updating password...';
+      status.className = 'text-center text-sm text-gray-600 dark:text-gray-400 min-h-[1.25rem]';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Updating...';
+
+      try {
+        const res = await fetch(API_BASE + '/api/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: resetToken, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          status.textContent = 'Password updated! Redirecting to login...';
+          status.className = 'text-center text-sm text-green-600 dark:text-green-400 min-h-[1.25rem]';
+          setTimeout(() => {
+            window.location.href = 'https://traffictorch.net/pro/';
+          }, 2500);
+        } else {
+          status.textContent = data.error || 'Failed to reset password';
+          status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+        }
+      } catch (err) {
+        console.error('Reset password error:', err);
+        status.textContent = 'Network error – please try again';
+        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Update Password';
+      }
+    });
+
+    // Cancel button – back to login
+    document.getElementById('cancel-reset')?.addEventListener('click', () => {
+      window.location.href = 'https://traffictorch.net/pro/';
+    });
+    
         // Forgot password form submit – send reset email request
     document.getElementById('reset-request-form')?.addEventListener('submit', async (e) => {
       e.preventDefault();
