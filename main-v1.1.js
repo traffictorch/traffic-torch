@@ -563,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       link.href = '/pro/';
       // Remove badge if exists
-      const existingBadge = link.querySelector('span.w-2.5.h-2.5');
+      const existingBadge = link.querySelector('span.w-2\\.5.h-2\\.5');
       if (existingBadge) existingBadge.remove();
     }
   });
