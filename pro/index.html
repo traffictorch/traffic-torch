@@ -404,6 +404,51 @@
       document.querySelector('#login-form').classList.remove('hidden');
       document.getElementById('login-status').textContent = '';
     });
+        // Forgot password form submit – send reset email request
+    document.getElementById('reset-request-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const status = document.getElementById('reset-status');
+      const emailInput = document.getElementById('reset-email');
+      const email = emailInput?.value.trim();
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+
+      if (!email || !email.includes('@')) {
+        status.textContent = 'Please enter a valid email';
+        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+        return;
+      }
+
+      status.textContent = 'Sending reset link...';
+      status.className = 'text-center text-sm text-gray-600 dark:text-gray-400 min-h-[1.25rem]';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      try {
+        const res = await fetch(API_BASE + '/api/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          status.textContent = 'Reset link sent! Check your email (may be in spam).';
+          status.className = 'text-center text-sm text-green-600 dark:text-green-400 min-h-[1.25rem]';
+          emailInput.value = ''; // clear field
+        } else {
+          status.textContent = data.error || 'Failed to send reset link – try again later';
+          status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+        }
+      } catch (err) {
+        console.error('Reset request error:', err);
+        status.textContent = 'Network error – please check connection';
+        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Reset Link';
+      }
+    });
     const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 
     // Signup handler with math check
