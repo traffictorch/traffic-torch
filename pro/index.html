@@ -782,11 +782,19 @@
 
     updateUI();
 
-    // Show/hide password toggle – works even for dynamically shown forms
+    // Show/hide password toggle – robust for dynamic forms + click target debug
     function togglePassword(button) {
-      console.log('Eye toggle clicked'); // debug
+      console.log('Eye toggle clicked on button:', button);
       const input = button.previousElementSibling;
+      if (!input || input.tagName !== 'INPUT' || input.type !== 'password' && input.type !== 'text') {
+        console.warn('No valid password input found next to button');
+        return;
+      }
       const icon = button.querySelector('.eye-icon');
+      if (!icon) {
+        console.warn('No eye-icon SVG found in button');
+        return;
+      }
 
       if (input.type === 'password') {
         input.type = 'text';
@@ -802,19 +810,25 @@
       }
     }
 
-    // Delegate clicks to any .toggle-password (even added later)
+    // Improved delegation – capture click on button or its children (SVG)
     document.addEventListener('click', (e) => {
-      const button = e.target.closest('.toggle-password');
+      console.log('Global click detected – target:', e.target.tagName, e.target.className);
+      let button = e.target.closest('.toggle-password');
+      if (!button && e.target.tagName === 'svg' || e.target.tagName === 'path') {
+        button = e.target.closest('.toggle-password');
+      }
       if (button) {
+        e.preventDefault(); // prevent form submit on click
         togglePassword(button);
       }
-    });
+    }, { capture: true }); // capture phase to catch early
 
-    // Re-attach if forms become visible (e.g. reset form shown)
+    // Observer for dynamic forms (already good)
     const observer = new MutationObserver(() => {
       console.log('DOM changed – checking for new toggle buttons');
       document.querySelectorAll('.toggle-password:not([data-toggle-attached])').forEach(button => {
-        button.dataset.toggleAttached = 'true'; // mark as attached
+        button.dataset.toggleAttached = 'true';
+        console.log('New toggle button attached:', button);
       });
     });
     observer.observe(document.body, { childList: true, subtree: true });
