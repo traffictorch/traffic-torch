@@ -3,41 +3,49 @@ const metricExplanations = [
     id: "perplexity",
     emoji: "🧠",
     name: "Perplexity",
-    what: "The degree to which your text uses unpredictable and varied word sequences rather than common, formulaic patterns. Human writers naturally create surprise and diversity in phrasing, while AI often relies on statistically probable combinations that feel repetitive and robotic.",
-    how: "Calculates bigram and trigram entropy to measure how surprising word pairings are. Higher entropy indicates more creative, human-like flow; low entropy reveals predictable patterns typical of AI generation.",
-    why: "Search engines and AI detectors increasingly penalize predictable text. High perplexity signals authentic human creativity, boosts engagement, and reduces the risk of being flagged as AI-generated content."
+    what: 'The degree to which your text uses unpredictable and varied word sequences rather than common, formulaic patterns. Human writers naturally create surprise and diversity in phrasing, while AI often relies on statistically probable combinations that feel repetitive and robotic. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#perplexity-what" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Learn more →</a>',
+    how: 'Calculates bigram and trigram entropy to measure how surprising word pairings are. Higher entropy indicates more creative, human-like flow; low entropy reveals predictable patterns typical of AI generation. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#perplexity-how" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Learn more →</a>',
+    why: 'Search engines and AI detectors increasingly penalize predictable text. High perplexity signals authentic human creativity, boosts engagement, and reduces the risk of being flagged as AI-generated content. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#perplexity-why" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Learn more →</a>'
   },
   {
     id: "burstiness",
     emoji: "📏",
     name: "Burstiness",
-    what: "The natural variation in sentence and word lengths that creates rhythm and emphasis in writing. Human text has bursts of short, punchy sentences mixed with longer, flowing ones, while AI often produces uniform lengths for consistency.",
-    how: "Measures statistical variance in both sentence length (words) and word length (characters). Significant deviation from the average indicates natural human rhythm rather than mechanical uniformity.",
-    why: "Readers engage more with text that has natural flow and emphasis. Search engines favor content that mirrors human writing patterns, improving dwell time, trust signals, and overall ranking potential."
+    what: 'The natural variation in sentence and word lengths that creates rhythm and emphasis in writing. Human text has bursts of short, punchy sentences mixed with longer, flowing ones, while AI often produces uniform lengths for consistency. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#burstiness-what" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Learn more →</a>',
+    how: 'Measures statistical variance in both sentence length (words) and word length (characters). Significant deviation from the average indicates natural human rhythm rather than mechanical uniformity. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#burstiness-how" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Learn more →</a>',
+    why: 'Readers engage more with text that has natural flow and emphasis. Search engines favor content that mirrors human writing patterns, improving dwell time, trust signals, and overall ranking potential. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#burstiness-why" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Learn more →</a>'
   },
   {
     id: "repetition",
     emoji: "🔁",
     name: "Repetition",
-    what: "The frequency with which exact phrases (bigrams and trigrams) repeat throughout the text. Humans instinctively vary expression, while AI models often reuse high-probability phrases to stay safe and coherent.",
-    how: "Tracks the maximum occurrences of any two-word or three-word sequence. Low repetition of exact phrases indicates diverse, natural expression rather than pattern reliance.",
-    why: "Excessive phrase repetition makes content feel robotic and reduces perceived originality. Varied expression improves readability, authority, and helps avoid AI detection flags in modern search algorithms."
+    what: 'The frequency with which exact phrases (bigrams and trigrams) repeat throughout the text. Humans instinctively vary expression, while AI models often reuse high-probability phrases to stay safe and coherent. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#repetition-what" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Learn more →</a>',
+    how: 'Tracks the maximum occurrences of any two-word or three-word sequence. Low repetition of exact phrases indicates diverse, natural expression rather than pattern reliance. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#repetition-how" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Learn more →</a>',
+    why: 'Excessive phrase repetition makes content feel robotic and reduces perceived originality. Varied expression improves readability, authority, and helps avoid AI detection flags in modern search algorithms. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#repetition-why" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Learn more →</a>'
   },
   {
     id: "sentence-length",
     emoji: "📝",
     name: "Sentence Length",
-    what: "The balance between average sentence length and structural complexity that creates readable, sophisticated prose. Human writers mix concise statements with layered ideas, while AI often defaults to either overly simple or convoluted structures.",
-    how: "Combines average sentence word count (ideal 15–23) with comma usage as a proxy for clauses and complexity. Balanced length and moderate complexity reflect natural human thought patterns.",
-    why: "Optimal sentence variety enhances readability and comprehension. Search engines prioritize content that feels natural and authoritative, improving user satisfaction signals and ranking performance."
+    what: 'The balance between average sentence length and structural complexity that creates readable, sophisticated prose. Human writers mix concise statements with layered ideas, while AI often defaults to either overly simple or convoluted structures. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#sentencelength-what" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Learn more →</a>',
+    how: 'Combines average sentence word count (ideal 15–23) with comma usage as a proxy for clauses and complexity. Balanced length and moderate complexity reflect natural human thought patterns. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#sentencelength-how" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Learn more →</a>',
+    why: 'Optimal sentence variety enhances readability and comprehension. Search engines prioritize content that feels natural and authoritative, improving user satisfaction signals and ranking performance. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#sentencelength-why" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Learn more →</a>'
   },
   {
     id: "vocabulary",
     emoji: "📚",
     name: "Vocabulary",
-    what: "The richness and diversity of word choice, including unique terms and rare words that demonstrate depth of knowledge. Human experts naturally use specialized, context-specific vocabulary, while AI tends toward safe, common words.",
-    how: "Measures unique word ratio and frequency of hapax legomena (words appearing only once). High diversity and rare word usage indicate genuine expertise rather than generic output.",
-    why: "Rich vocabulary signals authority and depth to both readers and search engines. It creates authentic expert tone, improves topical authority signals, and helps content stand out as genuinely human-written."
+    what: 'The richness and diversity of word choice, including unique terms and rare words that demonstrate depth of knowledge. Human experts naturally use specialized, context-specific vocabulary, while AI tends toward safe, common words. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#vocabulary-what" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Learn more →</a>',
+    how: 'Measures unique word ratio and frequency of hapax legomena (words appearing only once). High diversity and rare word usage indicate genuine expertise rather than generic output. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#vocabulary-how" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Learn more →</a>',
+    why: 'Rich vocabulary signals authority and depth to both readers and search engines. It creates authentic expert tone, improves topical authority signals, and helps content stand out as genuinely human-written. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#vocabulary-why" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Learn more →</a>'
+  },
+  {
+    id: "ai-content-overview",
+    emoji: "🤖",
+    name: "AI Content",
+    what: 'Full guide to detecting and humanizing AI-generated content in 2026 — the 5 key metrics, how Traffic Torch tests them, why they matter for SEO/UX, and practical fixes. <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide" class="text-orange-600 dark:text-orange-400 font-medium hover:underline ml-1">Read the complete deep-dive →</a>',
+    how: '',
+    why: ''
   }
 ];
 
