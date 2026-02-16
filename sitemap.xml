@@ -53,11 +53,6 @@
 
   <!-- Static & info pages -->
   <url>
-    <loc>https://traffictorch.net/news/</loc>
-    <lastmod>2026-01-30</lastmod>
-  </url>
-
-  <url>
     <loc>https://traffictorch.net/ai-seo-ux-tools/</loc>
     <lastmod>2026-01-30</lastmod>
   </url>
@@ -81,8 +76,18 @@
     <loc>https://traffictorch.net/terms/</loc>
     <lastmod>2026-01-30</lastmod>
   </url>
+  
+  <url>
+    <loc>https://traffictorch.net/news/</loc>
+    <lastmod>2026-02-17</lastmod>
+  </url>
 
   <!-- Blog posts - lower implicit importance -->
+  <url>
+    <loc>https://traffictorch.net/blog/posts/ai-content-detection-guide/</loc>
+    <lastmod>2026-02-17</lastmod>
+  </url>
+  
   <url>
     <loc>https://traffictorch.net/blog/posts/developing-traffic-torch-tools/</loc>
     <lastmod>2026-01-30</lastmod>

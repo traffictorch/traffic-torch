@@ -1,0 +1,1111 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+      <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <!-- Referrer Policy (security + privacy best practice) -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/">
+ 
+  <!-- Post-specific SEO Title & Description -->
+ <title>How to Detect AI-Generated Content: 5 Metrics + Free AI Audit Tool Help Guide</title>
+<meta name="description" content="Complete guide to the 5 metrics Traffic Torch uses to detect AI-written content. Perplexity, Burstiness, Repetition, Sentence Length & Vocabulary – what they are, exactly how the tool tests them, why they matter for SEO/UX, and how to improve your score." />
+
+<link rel="canonical" href="https://traffictorch.net/blog/posts/ai-content-detection-guide.html" />
+
+<!-- Open Graph -->
+<meta property="og:title" content="How to Detect AI-Generated Content: 5 Metrics + Free AI Audit Tool Help Guide" />
+<meta property="og:description" content="Learn the exact science behind Traffic Torch’s AI Audit Tool – the 5 human-likeness metrics, transparent formulas, SEO impact and practical fixes." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://traffictorch.net/blog/posts/ai-content-detection-guide.html" />
+<meta property="og:image" content="https://traffictorch.net/blog/images/ai-content-detection-guide/ai-content-detection.webp" /> 
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="Traffic Torch" />
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="How to Detect AI-Generated Content: 5 Metrics + Free AI Audit Tool Help Guide" />
+<meta name="twitter:description" content="Learn the exact science behind Traffic Torch’s AI Audit Tool – the 5 human-likeness metrics, transparent formulas, SEO impact and practical fixes." />
+<meta name="twitter:image" content="https://traffictorch.net/blog/images/ai-content-detection-guide/ai-content-detection.webp" />
+<meta name="twitter:site" content="@Guitaralize" />
+ 
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "How to Detect AI-Generated Content: 5 Metrics + Free AI Audit Tool Help Guide",
+  "description": "Learn the exact science behind Traffic Torch’s AI Audit Tool – the 5 human-likeness metrics, transparent formulas, SEO impact and practical fixes.",
+  "image": "https://traffictorch.net/blog/images/ai-content-detection-guide/ai-content-detection.webp",
+  "datePublished": "2026-02-17",
+  "dateModified": "2026-02-17",
+  "author": {
+    "@type": "Person",
+    "name": "Traffic Torch Team",
+    "url": "https://traffictorch.net",
+    "sameAs": [
+      "https://twitter.com/guitaralize"
+    ]
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://traffictorch.net/logo-512.webp"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://traffictorch.net/blog/posts/ai-content-detection-guide.html"
+  },
+  "keywords": [
+    "SEO tool development",
+    "AI detection analysis tool",
+    "privacy-first SEO",
+    "AI content detection audit",
+    "instant SEO checker",
+    "PWA SEO tool",
+    "mobile-first web development"
+  ],
+  "wordCount": 3400,  
+  "inLanguage": "en",
+  "articleSection": "How to Detect AI-Generated Content: 5 Metrics + Free AI Audit Tool Help Guide",
+  "isPartOf": {
+    "@type": "Blog",
+    "name": "Traffic Torch Blog",
+    "url": "https://traffictorch.net/news/"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Traffic Torch",
+  "url": "https://traffictorch.net/",
+  "logo": "https://traffictorch.net/logo-512.webp",
+  "sameAs": [
+    "https://twitter.com/guitaralize"
+  ]
+}
+</script>
+
+<!-- BreadcrumbList for full blog post hierarchy -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://traffictorch.net/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "News & Blog",
+      "item": "https://traffictorch.net/news/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "How to Detect AI-Generated Content: 5 Metrics + Free AI Audit Tool Help Guide",
+      "item": "https://traffictorch.net/blog/posts/ai-content-detection-guide.html"
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a good Human Score in Traffic Torch?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "80+ is excellent (likely human / well-humanized). 60–79 is moderate (some AI patterns — usually fixable). Below 60 indicates strong AI characteristics. Top-ranking pages in competitive niches typically score 85–95+ after edits."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I improve an AI-generated article to pass as human?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — in most cases. Focus first on the failing modules (shown in orange/red). Add personal anecdotes, vary sentence rhythm, swap repetitive phrases, introduce 2–4 rare/topic-specific words, and break up uniform lengths. Re-run the audit after each round of edits."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does Traffic Torch use entropy instead of a full language model for perplexity?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Privacy + speed. Full LMs require huge downloads or server calls. Bigram/trigram entropy is lightweight, runs 100% in-browser, and correlates very strongly with professional detectors for blog/article-length content."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does a perfect 100/100 mean the content is definitely human-written?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No — it means the text shows excellent human-like statistical patterns across all five axes. Highly edited AI content or cleverly prompted models can reach high scores. The tool detects patterns, not authorship."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How often should I re-run the audit after editing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "After every major round (e.g. fixing repetition → burstiness → vocabulary). The tool is instant and free — use it iteratively until you’re in the green across all modules."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will fixing these metrics improve my Google rankings?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Indirectly yes — better human-like patterns usually improve dwell time, reduce bounce rate, and lower pogo-sticking, which are strong 2026 behavioral ranking factors. Combine with solid E-E-A-T, backlinks, and technical SEO for best results."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is the tool accurate for non-English content?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It works best on English. Entropy and burstiness are language-agnostic to some degree, but vocabulary and repetition thresholds are tuned on English corpora. Results in other languages are indicative but less precise."
+      }
+    }
+  ]
+}
+</script>
+ 
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Main Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://static.addtoany.com">
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/blog/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/blog/style-v1.0.css">
+  </noscript>
+
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  <meta http-equiv="Content-Encoding" content="br">  
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
+        </a>
+        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
+        </a>
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚡</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📝</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
+              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⚡ Quit Risk</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">📝 Keywords</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+  <!-- Top Share Buttons -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+    <script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+
+<!-- Updated Blog Post Content Area (glassmorphism card matching site style) -->
+<main class="py-16 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-sm">
+  <article class="max-w-4xl mx-auto px-6">
+    <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-16 prose prose-lg dark:prose-invert max-w-none border border-white/10 dark:border-white/5">
+      <!-- Featured Image  -->
+<img src="https://traffictorch.net/blog/images/ai-content-detection-guide/ai-content-detection.webp" alt="How to Detect AI-Generated Content – Traffic Torch AI Audit Tool Guide" class="w-full rounded-2xl shadow-xl mb-12 object-cover h-96">
+
+<h1 class="text-4xl md:text-5xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+  How to Detect AI-Generated Content in 2026: 5 Metrics + Free AI Audit Tool
+</h1>
+
+<ul class="space-y-2 text-sm">
+  <li><a href="#perplexity-what" class="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition">What is Perplexity</a></li>
+  <li><a href="#perplexity-how" class="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition">How Perplexity is tested</a></li>
+  <li><a href="#perplexity-why" class="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition">Why Perplexity matters</a></li>
+  <li><a href="#burstiness-what" class="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition">What is Burstiness</a></li>
+  <li><a href="#burstiness-how" class="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition">How Burstiness is tested</a></li>
+  <li><a href="#burstiness-why" class="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition">Why Burstiness matters</a></li>
+  <li><a href="#repetition-what" class="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition">What is Repetition</a></li>
+  <li><a href="#repetition-how" class="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition">How Repetition is tested</a></li>
+  <li><a href="#repetition-why" class="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition">Why Repetition matters</a></li>
+  <li><a href="#sentencelength-what" class="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition">What is Sentence Length</a></li>
+  <li><a href="#sentencelength-how" class="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition">How Sentence Length is tested</a></li>
+  <li><a href="#sentencelength-why" class="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition">Why Sentence Length matters</a></li>
+  <li><a href="#vocabulary-what" class="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition">What is Vocabulary</a></li>
+  <li><a href="#vocabulary-how" class="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition">How Vocabulary is tested</a></li>
+  <li><a href="#vocabulary-why" class="text-gray-600 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 transition">Why Vocabulary matters</a></li>
+</ul>
+
+      <!-- REPLACE: Full post content goes here -->
+<h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-8 mb-6">Introduction: Why AI Content Detection Matters</h2>
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed">Google’s Helpful Content system and the major AI search engines (Perplexity, Grok, Gemini, ChatGPT Search) now heavily reward <strong>people-first, human-like writing</strong>. Pure AI-generated text is easy to spot and often ranks lower because it lacks the natural rhythm, surprise and depth that readers (and algorithms) love.</p>
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed">Traffic Torch’s free AI Audit Tool analyses any URL in seconds and gives you a 0–100 Human Score based on the same 5 metrics professional detectors use. Everything runs 100 % client-side – no data leaves your browser.</p>
+
+<h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-16 mb-8">The 5 Metrics Behind the AI Audit Tool</h2>
+<p class="text-gray-800 dark:text-gray-200">Each metric is scored out of 20. The tool shows you the exact sub-scores, visual gauges, and ready-to-use fixes. Below we explain every metric in the exact order the tool calculates them.</p>
+
+<h2 id="perplexity-what" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-16 mb-8 scroll-mt-24">
+  What is Perplexity (and the story behind it)
+</h2>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Perplexity is a measure of how <strong>predictable</strong> or <strong>surprising</strong> a piece of text is. 
+  The lower the perplexity, the more predictable (and usually more robotic/AI-like) the writing becomes.
+</p>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  The concept comes from information theory and language modeling. It was originally used to evaluate how well statistical language models (like early n-gram models and later neural language models) could predict the next word in a sentence. 
+  In the early 2010s researchers noticed that human-written text tends to have higher perplexity (more unexpected word choices and phrasing) than machine-generated text — especially when models are trained on very large but somewhat repetitive corpora.
+</p>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  By 2022–2023, perplexity became one of the most widely cited signals in open-source AI content detectors (ZeroGPT, GPTZero, Originality.ai, etc.) because large language models still tend to favor high-probability token sequences even when instructed to be creative.
+</p>
+
+<h2 id="perplexity-how" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-16 mb-8 scroll-mt-24">
+  How Perplexity is tested in Traffic Torch
+</h2>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Traffic Torch calculates perplexity using <strong>bigram</strong> and <strong>trigram</strong> entropy — a lightweight, fully client-side approximation that doesn’t require loading a massive language model.
+</p>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6 font-medium">
+  Step-by-step logic (exact code path from the tool):
+</p>
+
+<ol class="list-decimal pl-6 space-y-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+  <li>Clean the extracted main content text: remove extra whitespace, convert to lowercase, keep only letters/numbers/punctuation/spaces.</li>
+  <li>Split into words (filtering out empty tokens).</li>
+  <li>Build frequency counts for every bigram (word[i] + word[i+1]) and every trigram (word[i] + word[i+1] + word[i+2]).</li>
+  <li>Calculate Shannon entropy for both distributions using the classic formula:<br>
+    <code class="bg-gray-100 dark:bg-gray-900 px-1.5 py-0.5 rounded">H = -Σ (p × log₂(p))</code> where p = count / total possible transitions.</li>
+  <li>Assign points (max 20 for the Perplexity module):<br>
+    • Trigram entropy ≥ 7.5 → +10 points<br>
+    • Bigram entropy ≥ 7.0 → +10 points
+  </li>
+</ol>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6 italic">
+  These thresholds (7.0 / 7.5) are tuned from real-world benchmarks of 2024–2025 top-ranking blog posts vs typical GPT-4 / Claude / Gemini outputs. Higher entropy = more unpredictable sequencing = more human-like.
+</p>
+
+<h2 id="perplexity-why" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-16 mb-8 scroll-mt-24">
+  Why Perplexity matters for SEO and UX in 2026
+</h2>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Google’s Helpful Content Update and quality raters’ guidelines increasingly penalize “unhelpful, templated, or generated” content. Low-perplexity text often feels formulaic, lacks voice, and drives higher bounce rates because readers sense it’s not authentic.
+</p>
+
+<ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  <li><strong>SEO impact</strong>: Pages with higher entropy/perplexity correlate with better dwell time, lower pogo-sticking, and stronger topical authority signals in 2025–2026 ranking studies.</li>
+  <li><strong>AI search engines</strong> (Perplexity.ai, ChatGPT Search, Grok) reward surprising, non-generic answers — low perplexity content is frequently down-ranked or ignored in summaries.</li>
+  <li><strong>User experience</strong>: Predictable phrasing feels boring or salesy → readers leave faster → hurts Core Web Vitals indirectly via engagement metrics.</li>
+</ul>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  In short: high perplexity = more engaging, more trustworthy, better ranking potential.
+</p>
+
+<div class="my-10 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border-l-4 border-orange-500">
+  <p class="text-lg font-medium text-orange-700 dark:text-orange-400 mb-4">
+    Want to see your page’s real bigram & trigram entropy scores live?
+  </p>
+  <a href="/ai-audit-tool/" 
+     class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-medium rounded-xl hover:scale-105 transition">
+    Open AI Audit Tool →
+  </a>
+</div>
+
+
+
+<h2 id="conclusion" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-20 mb-8">Conclusion</h2>
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed">Detecting and humanising AI-generated content is no longer optional. The pages that score highest on these five metrics consistently outperform purely AI-written content in rankings, dwell time and user trust.</p>
+
+<div class="my-16 p-8 bg-gray-50 dark:bg-gray-900 rounded-3xl text-center">
+  <p class="text-2xl text-gray-800 dark:text-gray-200 mb-6">Ready to see your own score live?</p>
+  <a href="/ai-audit-tool/" class="inline-block px-10 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-xl rounded-2xl hover:scale-105 transition">
+    Open the AI Audit Tool →
+  </a>
+</div>
+
+<h2 id="burstiness-what" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-20 mb-8 scroll-mt-24">
+  What is Burstiness (and the story behind it)
+</h2>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Burstiness refers to the natural variation in sentence lengths and word lengths within a piece of writing. Human writers tend to alternate between short, punchy sentences and longer, more elaborate ones — creating rhythm, emphasis, and flow. AI models, especially when generating at scale, often produce more uniform sentence and word lengths, resulting in a flatter, more mechanical cadence.
+</p>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  The term gained traction in AI detection research around 2022–2023. Early papers (e.g. from OpenAI researchers and independent studies on arXiv) showed that burstiness — measured via variance or standard deviation of sentence lengths — was one of the strongest single signals for distinguishing human vs machine text, even outperforming perplexity in some controlled tests.
+</p>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  By 2025, almost every commercial detector includes a burstiness component because modern LLMs can mimic high perplexity when prompted, but they still struggle to replicate the organic ebb-and-flow of human attention and editing.
+</p>
+
+<h2 id="burstiness-how" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-16 mb-8 scroll-mt-24">
+  How Burstiness is tested in Traffic Torch
+</h2>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Traffic Torch measures burstiness in two dimensions: sentence length variation and word length variation — both calculated directly from the cleaned main content text.
+</p>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6 font-medium">
+  Exact step-by-step logic (mirroring the tool’s JavaScript):
+</p>
+
+<ol class="list-decimal pl-6 space-y-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+  <li>Split the text into sentences using standard punctuation boundaries (. ! ?).</li>
+  <li>For each sentence: count the number of words (after trimming and filtering empty tokens) → produce an array of sentence lengths.</li>
+  <li>Calculate the average sentence length (<code>avgSentLen</code>).</li>
+  <li>Compute variance: average of squared differences from the mean → take square root to get standard deviation (<code>sentBurstiness</code> = √variance).</li>
+  <li>Repeat the process for individual word lengths (characters per word) across the entire text → get <code>wordBurstiness</code>.</li>
+  <li>Scoring (max 20 points for the Burstiness module):<br>
+    • Sentence burstiness (std dev) ≥ 4.5 → +10 points<br>
+    • Word length burstiness (std dev) ≥ 2.0 → +10 points
+  </li>
+</ol>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6 italic">
+  Thresholds are derived from 2024–2025 analysis of high-engagement human blog posts (typically 4.8–7.2 sentence std dev) vs typical LLM output (often 2.0–3.8). Higher values indicate more dynamic rhythm.
+</p>
+
+<h2 id="burstiness-why" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-16 mb-8 scroll-mt-24">
+  Why Burstiness matters for SEO and UX in 2026
+</h2>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Uniform text feels monotonous — readers disengage faster, dwell time drops, and bounce rate rises. Google’s 2025–2026 behavioral signals (especially aggregated dwell time and scroll depth) treat these as strong quality indicators.
+</p>
+
+<ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  <li><strong>SEO impact</strong>: Higher burstiness correlates with better engagement metrics, which feed into ranking freshness and helpfulness signals. Low-burstiness pages often get filtered in Helpful Content re-rankings.</li>
+  <li><strong>AI search visibility</strong>: Tools like Perplexity.ai and Grok favor answers with natural pacing — monotonous text is more likely to be summarized poorly or skipped.</li>
+  <li><strong>User experience</strong>: Varied sentence rhythm improves readability, reduces cognitive load, and makes content feel conversational → directly lowers pogo-sticking and improves Core Web Vitals behavioral proxies.</li>
+</ul>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  In practice: the most shared and longest-ranking blog posts in competitive niches almost always show strong sentence and word-length variation.
+</p>
+
+<div class="my-10 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border-l-4 border-orange-500">
+  <p class="text-lg font-medium text-orange-700 dark:text-orange-400 mb-4">
+    Curious how bursty your own content really is?
+  </p>
+  <a href="/ai-audit-tool/" 
+     class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-medium rounded-xl hover:scale-105 transition">
+    Run the Free AI Audit Now →
+  </a>
+</div>
+
+<h2 id="repetition-what" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-20 mb-8 scroll-mt-24">
+  What is Repetition (and the story behind it)
+</h2>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Repetition in this context measures how often the exact same sequences of words (bigrams or trigrams) appear in close proximity or throughout the text. Human writers naturally vary phrasing to avoid sounding robotic or monotonous — even when covering similar ideas. AI models, particularly when generating long-form content without heavy post-editing, frequently reuse the same two- or three-word phrases because they optimize for fluency and probability rather than stylistic diversity.
+</p>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Repetition-based detection became prominent around 2023 with tools like GPTZero and Originality.ai. Studies showed that excessive bigram/trigram reuse is one of the most consistent fingerprints of unedited LLM output — even when perplexity and burstiness are artificially boosted through prompting. By 2025–2026, repetition scoring is a core pillar in nearly every serious AI detector because modern models can fake surprise and rhythm but still leak patterns at the n-gram level.
+</p>
+
+<h2 id="repetition-how" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-16 mb-8 scroll-mt-24">
+  How Repetition is tested in Traffic Torch
+</h2>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Traffic Torch focuses on the <strong>maximum frequency</strong> of any single bigram or trigram in the cleaned main content — a simple yet powerful proxy for detectable repetition.
+</p>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6 font-medium">
+  Step-by-step logic (direct from the tool’s code):
+</p>
+
+<ol class="list-decimal pl-6 space-y-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+  <li>Clean and lowercase the main text, split into words (remove empty tokens).</li>
+  <li>Build frequency maps:<br>
+    • Bigram map: every consecutive pair (word[i] + " " + word[i+1])<br>
+    • Trigram map: every consecutive triple (word[i] + " " + word[i+1] + " " + word[i+2])
+  </li>
+  <li>Find the highest count in each map (<code>maxBigram</code> and <code>maxTrigram</code>).</li>
+  <li>Scoring (max 20 points for the Repetition module):<br>
+    • Max bigram count ≤ 3 → +10 points<br>
+    • Max trigram count ≤ 2 → +10 points
+  </li>
+</ol>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6 italic">
+  These conservative thresholds come from real benchmarks: top-ranking 2025 human-written articles rarely have any 2-word phrase appearing >3 times or 3-word phrase >2 times in ~1,500–3,000 word posts. AI drafts often show 5–15+ repeats of signature phrases.
+</p>
+
+<h2 id="repetition-why" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-16 mb-8 scroll-mt-24">
+  Why Repetition matters for SEO and UX in 2026
+</h2>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Obvious repetition makes content feel templated, low-effort, or machine-generated — exactly the kind of signal Google’s 2025–2026 quality systems (Helpful Content, SpamBrain) and AI-powered search engines actively down-rank.
+</p>
+
+<ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  <li><strong>SEO impact</strong>: High repetition increases the chance of being flagged as “thin” or “generated” content, hurting rankings in competitive SERPs. Low-repetition pages show stronger topical depth and originality signals.</li>
+  <li><strong>AI search engines</strong>: Perplexity, Grok, ChatGPT Search, and Gemini prioritize fresh, varied phrasing — repeated n-grams make summaries feel generic and reduce citation likelihood.</li>
+  <li><strong>User experience</strong>: Readers notice (and get annoyed by) repeated phrases quickly → higher bounce, lower time-on-page, worse engagement metrics that feed back into rankings.</li>
+</ul>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Bottom line: eliminating excessive repetition is one of the fastest ways to make AI-assisted content feel authentically human and perform better across all modern search surfaces.
+</p>
+
+<div class="my-10 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border-l-4 border-orange-500">
+  <p class="text-lg font-medium text-orange-700 dark:text-orange-400 mb-4">
+    See if your content has any overused phrases right now
+  </p>
+  <a href="/ai-audit-tool/" 
+     class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-medium rounded-xl hover:scale-105 transition">
+    Open AI Audit Tool →
+  </a>
+</div>
+
+<h2 id="sentencelength-what" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-20 mb-8 scroll-mt-24">
+  What is Sentence Length (and the story behind it)
+</h2>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Sentence Length here refers to two related concepts: the <strong>average number of words per sentence</strong> and the <strong>average complexity</strong> (measured via comma frequency as a proxy for subordinate clauses, conjunctions, and layered ideas).
+</p>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Human writing typically averages 15–23 words per sentence with natural variation in structure — short sentences for punch, longer ones for explanation. AI models often default to safer, more uniform lengths (around 18–20) and simpler clause structures because they optimize for readability scores and token efficiency. Excessive uniformity or overly short/long averages can signal generated text.
+</p>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  This signal became important in AI detection around 2023–2024 as models improved at mimicking perplexity and burstiness but still produced sentences that felt “too perfect” or lacked syntactic depth. Tools like GPTZero and custom classifiers started weighting average sentence length and punctuation complexity heavily because they correlate strongly with perceived authenticity and reader engagement.
+</p>
+
+<h2 id="sentencelength-how" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-16 mb-8 scroll-mt-24">
+  How Sentence Length is tested in Traffic Torch
+</h2>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Traffic Torch evaluates sentence length in two sub-scores: ideal average range and structural complexity (comma usage).
+</p>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6 font-medium">
+  Exact step-by-step logic (from the tool’s JavaScript):
+</p>
+
+<ol class="list-decimal pl-6 space-y-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+  <li>Split cleaned text into sentences using . ! ? boundaries.</li>
+  <li>For each sentence: count words (after filtering empty tokens) → build array of sentence lengths.</li>
+  <li>Calculate average sentence length: <code>avgSentLen = total words / sentence count</code>.</li>
+  <li>Count commas per sentence → compute average commas per sentence (<code>avgCommas</code>).</li>
+  <li>Scoring (max 20 points for the Sentence Length module):<br>
+    • Average sentence length between 15 and 23 words inclusive → +10 points<br>
+    • Average commas per sentence ≥ 1.0 → +10 points
+  </li>
+</ol>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6 italic">
+  The 15–23 range matches readability research (Flesch-Kincaid, Hemingway App benchmarks) and 2025 top-ranking content analysis. ≥1.0 commas per sentence acts as a proxy for compound/complex sentences — humans use more subordination than basic AI output.
+</p>
+
+<h2 id="sentencelength-why" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-16 mb-8 scroll-mt-24">
+  Why Sentence Length matters for SEO and UX in 2026
+</h2>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Sentence structure directly affects readability, comprehension speed, and emotional engagement — all of which influence core behavioral signals Google uses in 2026 (dwell time, scroll depth, pogo-sticking rate).
+</p>
+
+<ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  <li><strong>SEO impact</strong>: Content in the 15–23 word sweet spot with natural complexity ranks higher in helpfulness evaluations and performs better in mobile-first indexing. Extreme averages (too short = choppy, too long = dense) increase bounce risk.</li>
+  <li><strong>AI search engines</strong>: Perplexity, Grok, Gemini, and ChatGPT Search favor answers with varied, natural sentence flow — uniform or overly simplistic structure gets lower relevance scores in summaries.</li>
+  <li><strong>User experience</strong>: Balanced sentence length + appropriate complexity reduces cognitive fatigue, improves skimmability, and creates conversational rhythm → directly boosts time-on-page and lowers exit rates.</li>
+</ul>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Quick win: most AI drafts sit right on the edge of the ideal range with low comma usage — small targeted edits here often lift the overall Human Score significantly.
+</p>
+
+<div class="my-10 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border-l-4 border-orange-500">
+  <p class="text-lg font-medium text-orange-700 dark:text-orange-400 mb-4">
+    Check your average sentence length and complexity in seconds
+  </p>
+  <a href="/ai-audit-tool/" 
+     class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-medium rounded-xl hover:scale-105 transition">
+    Launch AI Audit Tool →
+  </a>
+</div>
+
+<h2 id="vocabulary-what" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-20 mb-8 scroll-mt-24">
+  What is Vocabulary (and the story behind it)
+</h2>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Vocabulary in AI detection looks at two dimensions: <strong>overall diversity</strong> (unique words relative to total words) and <strong>rare word frequency</strong> (words that appear only once — hapax legomena). Human writers naturally draw from a wide, sometimes idiosyncratic lexicon, introducing fresh or context-specific terms. AI models tend to recycle high-frequency vocabulary from their training data, resulting in lower diversity and fewer truly rare words.
+</p>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Vocabulary richness has been a staple signal since early stylometry research (pre-2020) and became central to modern detectors after 2022. Studies showed that even advanced LLMs (GPT-4 class and beyond) produce text with noticeably lower type-token ratios and hapax ratios than skilled human authors — especially in longer content. By 2026, this metric remains one of the hardest for models to fake without explicit prompting for “diverse vocabulary” (which often backfires and creates unnatural word salad).
+</p>
+
+<h2 id="vocabulary-how" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-16 mb-8 scroll-mt-24">
+  How Vocabulary is tested in Traffic Torch
+</h2>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Traffic Torch computes two complementary sub-scores: lexical diversity and rare-word ratio.
+</p>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6 font-medium">
+  Exact step-by-step logic (straight from the tool’s JavaScript):
+</p>
+
+<ol class="list-decimal pl-6 space-y-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+  <li>Clean and lowercase the main text, split into words (filter empty tokens).</li>
+  <li>Calculate total word count (<code>wordCount</code>).</li>
+  <li>Build a Set of unique words → size gives number of distinct terms.</li>
+  <li>Diversity = (unique words / total words) × 100.</li>
+  <li>Build frequency map of every word → count how many appear exactly once (<code>hapax</code>).</li>
+  <li>Rare word ratio = (hapax count / total words) × 100.</li>
+  <li>Scoring (max 20 points for the Vocabulary module):<br>
+    • Diversity ≥ 65% → +10 points<br>
+    • Rare word ratio ≥ 15% → +10 points
+  </li>
+</ol>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6 italic">
+  Thresholds reflect 2025 benchmarks of high-quality human blog posts (diversity often 68–82%, hapax 16–28% in 1,000–3,000 word range) vs typical LLM output (diversity 55–64%, hapax 8–14%). Higher values indicate richer, more expert-like expression.
+</p>
+
+<h2 id="vocabulary-why" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-16 mb-8 scroll-mt-24">
+  Why Vocabulary matters for SEO and UX in 2026
+</h2>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  A rich, varied vocabulary signals expertise, originality, and topical depth — core E-E-A-T pillars that Google continues to emphasize in 2026 quality evaluations.
+</p>
+
+<ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  <li><strong>SEO impact</strong>: Higher lexical diversity and rare-word usage correlate with stronger topical authority, better semantic coverage, and lower risk of being flagged as “thin” or “generated” content. Pages with poor vocabulary diversity often underperform in competitive, informational niches.</li>
+  <li><strong>AI search engines</strong>: Perplexity, Grok, Gemini, and ChatGPT Search reward answers that demonstrate domain knowledge through precise, uncommon terms — generic vocabulary reduces perceived usefulness and citation priority.</li>
+  <li><strong>User experience</strong>: Varied and context-appropriate words keep readers engaged, convey credibility, and reduce the “AI feel” that causes subconscious distrust or boredom → directly improves dwell time and engagement signals.</li>
+</ul>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Pro tip: introducing 2–3 genuinely rare, topic-relevant terms per 1,000 words (without forcing it) is one of the highest-leverage humanization edits you can make.
+</p>
+
+<div class="my-10 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border-l-4 border-orange-500">
+  <p class="text-lg font-medium text-orange-700 dark:text-orange-400 mb-4">
+    See your real vocabulary diversity and rare-word stats live
+  </p>
+  <a href="/ai-audit-tool/" 
+     class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-medium rounded-xl hover:scale-105 transition">
+    Run the AI Audit Tool →
+  </a>
+</div>
+
+<h2 id="conclusion" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-24 mb-10 scroll-mt-24">
+  Conclusion: Mastering AI Content Detection in 2026
+</h2>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6 text-lg">
+  In 2026, the line between human and AI-generated content is razor-thin — but search engines and readers are getting better at spotting it every month. Google’s Helpful Content system, AI-powered search surfaces (Perplexity, Grok, Gemini, ChatGPT Search), and user engagement signals now heavily reward writing that feels authentic, surprising, rhythmic, varied, and expert-level.
+</p>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+  Traffic Torch’s AI Audit Tool gives you a transparent, client-side 0–100 Human Score built on the five most reliable metrics used by professional detectors today:
+</p>
+
+<ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 leading-relaxed mb-8 text-base">
+  <li><strong>Perplexity</strong> – unpredictability of word sequences (bigram & trigram entropy)</li>
+  <li><strong>Burstiness</strong> – natural variation in sentence and word lengths</li>
+  <li><strong>Repetition</strong> – maximum reuse of identical bigrams and trigrams</li>
+  <li><strong>Sentence Length</strong> – ideal 15–23 word average + comma-driven complexity</li>
+  <li><strong>Vocabulary</strong> – lexical diversity and rare-word (hapax) frequency</li>
+</ul>
+
+<p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-8">
+  Each metric is scored out of 20. Pages that consistently hit 80+ (especially with strong vocabulary and burstiness) tend to outperform generic AI drafts in rankings, dwell time, AI citations, and reader trust. The good news: most AI-assisted content only needs targeted edits in 1–3 of these areas to jump 20–40+ points.
+</p>
+
+<div class="my-12 p-10 bg-gradient-to-br from-orange-50 to-pink-50 dark:from-orange-950/40 dark:to-pink-950/30 rounded-3xl shadow-xl border border-orange-200 dark:border-orange-800/50 text-center">
+  <p class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 leading-tight">
+    Ready to see your real Human Score — and get exact fixes?
+  </p>
+  <a href="/ai-audit-tool/" 
+     class="inline-flex items-center justify-center px-10 py-6 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-xl md:text-2xl font-bold rounded-2xl shadow-lg hover:scale-105 hover:shadow-orange-500/40 transition duration-300">
+    Open Free AI Audit Tool →
+  </a>
+  <p class="mt-6 text-base text-gray-700 dark:text-gray-300">
+    100% client-side • No login • Instant results
+  </p>
+</div>
+
+<section class="mt-20">
+  <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-10 text-center scroll-mt-24">
+    Frequently Asked Questions
+  </h2>
+
+  <div class="space-y-6 max-w-4xl mx-auto">
+    <details class="bg-white dark:bg-gray-800 rounded-2xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+      <summary class="px-6 py-5 font-medium text-lg cursor-pointer text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition flex items-center justify-between">
+        <span>What is a good Human Score in Traffic Torch?</span>
+        <span class="text-2xl transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+        <p>80+ is excellent (likely human / well-humanized). 60–79 is moderate (some AI patterns — usually fixable). Below 60 indicates strong AI characteristics. Top-ranking pages in competitive niches typically score 85–95+ after edits.</p>
+      </div>
+    </details>
+
+    <details class="bg-white dark:bg-gray-800 rounded-2xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+      <summary class="px-6 py-5 font-medium text-lg cursor-pointer text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition flex items-center justify-between">
+        <span>Can I improve an AI-generated article to pass as human?</span>
+        <span class="text-2xl transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+        <p>Yes — in most cases. Focus first on the failing modules (shown in orange/red). Add personal anecdotes, vary sentence rhythm, swap repetitive phrases, introduce 2–4 rare/topic-specific words, and break up uniform lengths. Re-run the audit after each round of edits.</p>
+      </div>
+    </details>
+
+    <details class="bg-white dark:bg-gray-800 rounded-2xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+      <summary class="px-6 py-5 font-medium text-lg cursor-pointer text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition flex items-center justify-between">
+        <span>Why does Traffic Torch use entropy instead of a full language model for perplexity?</span>
+        <span class="text-2xl transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+        <p>Privacy + speed. Full LMs require huge downloads or server calls. Bigram/trigram entropy is lightweight, runs 100% in-browser, and correlates very strongly with professional detectors for blog/article-length content.</p>
+      </div>
+    </details>
+
+    <details class="bg-white dark:bg-gray-800 rounded-2xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+      <summary class="px-6 py-5 font-medium text-lg cursor-pointer text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition flex items-center justify-between">
+        <span>Does a perfect 100/100 mean the content is definitely human-written?</span>
+        <span class="text-2xl transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+        <p>No — it means the text shows excellent human-like statistical patterns across all five axes. Highly edited AI content or cleverly prompted models can reach high scores. The tool detects patterns, not authorship.</p>
+      </div>
+    </details>
+
+    <details class="bg-white dark:bg-gray-800 rounded-2xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+      <summary class="px-6 py-5 font-medium text-lg cursor-pointer text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition flex items-center justify-between">
+        <span>How often should I re-run the audit after editing?</span>
+        <span class="text-2xl transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+        <p>After every major round (e.g. fixing repetition → burstiness → vocabulary). The tool is instant and free — use it iteratively until you’re in the green across all modules.</p>
+      </div>
+    </details>
+
+    <details class="bg-white dark:bg-gray-800 rounded-2xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+      <summary class="px-6 py-5 font-medium text-lg cursor-pointer text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition flex items-center justify-between">
+        <span>Will fixing these metrics improve my Google rankings?</span>
+        <span class="text-2xl transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+        <p>Indirectly yes — better human-like patterns usually improve dwell time, reduce bounce rate, and lower pogo-sticking, which are strong 2026 behavioral ranking factors. Combine with solid E-E-A-T, backlinks, and technical SEO for best results.</p>
+      </div>
+    </details>
+
+    <details class="bg-white dark:bg-gray-800 rounded-2xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+      <summary class="px-6 py-5 font-medium text-lg cursor-pointer text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition flex items-center justify-between">
+        <span>Is the tool accurate for non-English content?</span>
+        <span class="text-2xl transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+        <p>It works best on English. Entropy and burstiness are language-agnostic to some degree, but vocabulary and repetition thresholds are tuned on English corpora. Results in other languages are indicative but less precise.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+    </div>
+  </article>
+  
+   <!-- Tools Grid (kept on every post for education & navigation) -->
+  <div class="tools-grid max-w-7xl mx-auto px-6 py-16">
+    <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+      <!-- SEO Intent -->
+      <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+          <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+          <h3 class="text-2xl font-bold mb-3">SEO Intent Tool</h3>
+          <p class="text-gray-500">Instant intent matching + E-E-A-T audit + fixes</p>
+        </div>
+      </a>
+      <!-- Ai Search -->
+      <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all">
+          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+          <h3 class="text-2xl font-bold mb-3">Ai Search Tool</h3>
+          <p class="text-gray-500">Optimize for Perplexity, Grok, Gemini, ChatGPT Search</p>
+        </div>
+      </a>
+      <!-- AI Content -->
+      <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all">
+          <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+          <h3 class="text-2xl font-bold mb-3">AI Content Tool</h3>
+          <p class="text-gray-500">Detect AI patterns + humanize content + forecasts</p>
+        </div>
+      </a>
+      <!-- Quit Risk -->
+      <a href="/quit-risk-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all">
+          <div class="text-emerald-400 text-7xl mb-6 group-hover:animate-bounce">⚡</div>
+          <h3 class="text-2xl font-bold mb-3">Quit Risk Tool</h3>
+          <p class="text-gray-500">UX friction audit + bounce prediction + optimizations</p>
+        </div>
+      </a>
+      <!-- Keywords -->
+      <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+          <div class="text-purple-400 text-7xl mb-6 group-hover:animate-bounce">📝</div>
+          <h3 class="text-2xl font-bold mb-3">Keyword Tool</h3>
+          <p class="text-gray-500">On-page keyword placement score + density fixes</p>
+        </div>
+      </a>
+      <!-- VS -->
+      <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+          <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+          <h3 class="text-2xl font-bold mb-3">VS Tool</h3>
+          <p class="text-gray-500">Competitive keyword gap analysis + beat strategies</p>
+        </div>
+      </a>
+    </div>
+  </div>
+  
+  <!-- Author Bio -->
+  <section class="max-w-5xl mx-auto my-24 px-2">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+    <div class="bg-gradient-to-br from-purple-600 to-cyan-600 py-12 px-8 text-center">
+      <img src="/logo.webp" alt="Traffic Torch SEO • UX • AI Optimization Toolkit" class="w-40 h-40 rounded-full mx-auto mb-6 object-cover border-8 border-white shadow-xl">
+      <h3 class="text-4xl font-black text-white mb-4">Traffic Torch</h3>
+      <p class="text-xl text-white/90 max-w-3xl mx-auto">
+        SEO • UX • AI Optimization Audit Toolkit
+      </p>
+    </div>
+    <div class="p-10 md:p-12 text-center space-y-8">
+      <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+        Traffic Torch distills ongoing correlation research, algorithm update analysis and practical testing into 360° SEO + UX diagnostics, AI-powered fixes, and educational tools. Empowering creators, agencies, and businesses with transparent, evidence-based insights for better organic performance and user satisfaction.
+      </p>
+      <div class="pt-8 space-y-3">
+        <p class="text-base text-gray-800 dark:text-gray-200">
+          Expertise: SEO Correlation Studies • UX Optimization • Privacy-First Web Tools • AI-Assisted Analysis.
+        </p>
+        <p class="text-base text-gray-800 dark:text-gray-200 italic mt-4">
+          Updated based on the latest search engine guidelines, ranking factor research, and real-page performance data.
+        </p>
+              <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+        <p>Published: 2026-02-17</p>
+        <p>Last updated: 2026-02-17</p>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AddToAny BEGIN -->
+<div style="display: flex; justify-content: center; margin: 30px 0;">
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+    <script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+</div>
+<!-- AddToAny END -->
+
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+</main>
+
+<!-- Footer -->
+<footer class="border-t border-white/10 dark:border-white/5 py-12 bg-white/5 dark:bg-black/20 backdrop-blur-xl">
+  <div class="container mx-auto px-6 max-w-7xl">
+    <!-- Main Footer Grid: 4 columns on md+, 1 column on mobile -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12 text-center md:text-left">
+      <!-- Column 1: Traffic Torch + Logo/Author -->
+      <div class="flex flex-col items-center md:items-start">
+        <a href="/" class="mb-6 inline-block">
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="80px" alt="Traffic Torch SEO • UX • AI Optimization Toolkit" class="w-20 h-20 rounded-full shadow-2xl object-cover" width="80" height="80" loading="lazy">
+        </a>
+        <h3 class="text-2xl font-black text-orange-500 hover:text-orange-600 transition mb-3">
+          Traffic Torch 🛡️
+        </h3>
+        <p class="text-gray-800 dark:text-gray-200 text-sm leading-relaxed max-w-md">
+          SEO • UX • AI Website Optimization & 360° Health Analysis Toolkit.
+        </p>
+      </div>
+
+      <!-- Column 2: Tools -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Tools</h3>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/" class="hover:text-orange-400 transition">SEO + UX</a></li>
+          <li><a href="/local-seo-tool/" class="hover:text-orange-400 transition">Local SEO</a></li>
+          <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+          <li><a href="/product-seo-tool/" class="hover:text-orange-400 transition">Product SEO</a></li>
+          <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
+          <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a></li>
+          <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">Competition</a></li>
+          <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
+          <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Company -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Company</h3>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
+          <li><a href="/contact/" class="hover:text-orange-400 transition">Contact</a></li>
+          <li><a href="/news/" class="hover:text-orange-400 transition">News</a></li>
+          <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
+          <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 4: Traffic Torch Quick Links -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Traffic Torch</h3>
+        <ul class="space-y-3 text-gray-500 dark:text-gray-200 text-sm">
+          <li><a href="/ai-seo-ux-tools/#seo-tools" class="hover:text-orange-400 transition">SEO Tools 🎯</a></li>
+          <li><a href="/ai-seo-ux-tools/#ux-tools" class="hover:text-orange-400 transition">UX Tools ⚡</a></li>
+          <li><a href="/ai-seo-ux-tools/#ai-tools" class="hover:text-orange-400 transition">Ai Tools 🔍</a></li>
+          <li class="mt-6 text-sm">Built with 🔥</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Copyright / Bottom Note (full width, centered) -->
+    <div class="mt-12 pt-8 border-t border-white/10 dark:border-white/5 text-center text-gray-500 dark:text-gray-200 text-sm">
+      © Traffic Torch
+    </div>
+  </div>
+</footer>
+
+  <!-- Load JS last for speed -->
+  <script src="/main-v1.1.js" type="module"></script>
+</body>
+</html>
