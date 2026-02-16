@@ -344,6 +344,17 @@
       <button id="back-to-login" class="mt-4 text-sm text-orange-500 hover:text-orange-600 block mx-auto">Back to Login</button>
     </div>
   </div>
+  
+      <div id="reset-password-form" class="hidden mt-6">
+      <h4 class="text-xl font-bold text-center mb-4 text-gray-800 dark:text-gray-200">Set New Password</h4>
+      <form id="reset-password-submit" class="space-y-4">
+        <input type="password" id="new-password" placeholder="New Password" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+        <input type="password" id="confirm-password" placeholder="Confirm New Password" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+        <div id="reset-password-status" class="text-center text-sm min-h-[1.25rem] text-red-600 dark:text-red-400"></div>
+        <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">Update Password</button>
+      </form>
+      <button id="cancel-reset" class="mt-4 text-sm text-orange-500 hover:text-orange-600 block mx-auto">Cancel</button>
+    </div>
 
   <!-- Unified Account Creation & Upgrade Section -->
   <div class="bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl p-8">
