@@ -79,8 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('Rendering special overview card');
       return `
         <div id="${m.id}" class="bg-gradient-to-br from-pink-50 to-orange-50 dark:from-pink-950/30 dark:to-orange-950/20 rounded-3xl shadow-xl p-8 md:p-12 text-center border-2 border-pink-400 dark:border-pink-600">
-          <div class="text-8xl mb-6">${m.emoji}</div>
-          <h3 class="text-4xl md:text-5xl font-black text-pink-600 dark:text-pink-400 mb-6">${m.name}</h3>
+          <div class="text-6xl mb-6">${m.emoji}</div>
+          <h3 class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-6">${m.name}</h3>
           <p class="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto mb-8">
             ${m.what}
           </p>
