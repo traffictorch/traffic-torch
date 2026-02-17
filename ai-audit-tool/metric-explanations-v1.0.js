@@ -42,8 +42,8 @@ const metricExplanations = [
   {
     id: "ai-content-overview",
     emoji: "🤖",
-    name: "AI Content Detection",
-    what: "Complete 2026 guide: the 5 metrics Traffic Torch uses to detect AI-generated content, exact testing logic, why each matters for SEO/UX, history, fixes and more.",
+    name: "AI Detection",
+    what: "",
     how: "",
     why: ""
   }
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </p>
           <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide" 
              class="inline-flex items-center px-10 py-5 bg-gradient-to-r from-pink-500 to-orange-600 text-white text-xl font-bold rounded-2xl shadow-lg hover:scale-105 hover:shadow-pink-500/40 transition duration-300">
-            Read the Full 2026 Guide →
+            Full Guide →
           </a>
         </div>
       `;
