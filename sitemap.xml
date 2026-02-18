@@ -79,10 +79,15 @@
   
   <url>
     <loc>https://traffictorch.net/news/</loc>
-    <lastmod>2026-02-17</lastmod>
+    <lastmod>2026-02-18</lastmod>
   </url>
 
   <!-- Blog posts - lower implicit importance -->
+    <url>
+    <loc>https://traffictorch.net/blog/posts/seo-keyword-competition-help-guide/</loc>
+    <lastmod>2026-02-18</lastmod>
+    </url>
+  
     <url>
     <loc>https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/</loc>
     <lastmod>2026-02-18</lastmod>
