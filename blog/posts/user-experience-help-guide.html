@@ -1,0 +1,1546 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <!-- Referrer Policy (security + privacy best practice) -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/">
+ 
+<!-- Post-specific SEO Title & Description -->
+<title>User Experience Help Guide: Reduce Quit Risk with Traffic Torch</title>
+<meta name="description" content="Complete guide to lowering website quit risk through better UX and SEO. Learn readability, navigation, accessibility, mobile readiness, and performance optimization — with real metrics and fixes from Traffic Torch's free Quit Risk Tool." />
+
+<!-- Robots & Canonical -->
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://traffictorch.net/blog/posts/user-experience-help-guide.html" />
+
+<!-- Open Graph Tags -->
+<meta property="og:title" content="User Experience Help Guide: Reduce Quit Risk with Traffic Torch" />
+<meta property="og:description" content="Complete guide to lowering website quit risk through better UX and SEO. Learn readability, navigation, accessibility, mobile readiness, and performance optimization — with real metrics and fixes from Traffic Torch's free Quit Risk Tool." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://traffictorch.net/blog/posts/user-experience-help-guide.html" />
+<meta property="og:image" content="https://traffictorch.net/blog/images/quit-risk/user-experience-help-guide-1200w.webp" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Torch illuminating website UX improvements – Boost SEO & UX with Traffic Torch" />
+<meta property="og:site_name" content="Traffic Torch" />
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="User Experience Help Guide: Reduce Quit Risk with Traffic Torch" />
+<meta name="twitter:description" content="Complete guide to lowering website quit risk through better UX and SEO. Learn readability, navigation, accessibility, mobile readiness, and performance optimization — with real metrics and fixes from Traffic Torch's free Quit Risk Tool." />
+<meta name="twitter:image" content="https://traffictorch.net/blog/images/quit-risk/user-experience-help-guide-1200w.webp" />
+<meta name="twitter:image:alt" content="Torch illuminating website UX improvements – Boost SEO & UX with Traffic Torch" />
+<meta name="twitter:site" content="@Guitaralize" />
+
+<!-- Structured Data (JSON-LD) – BlogPosting -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "User Experience Help Guide: Reduce Quit Risk with Traffic Torch",
+  "description": "Complete guide to lowering website quit risk through better UX and SEO. Learn readability, navigation, accessibility, mobile readiness, and performance optimization with real metrics and fixes from Traffic Torch's free Quit Risk Tool.",
+  "image": "https://traffictorch.net/blog/images/quit-risk/user-experience-help-guide-1200w.webp",
+  "datePublished": "2026-02-01",
+  "dateModified": "2026-02-19",
+  "author": {
+    "@type": "Person",
+    "name": "Traffic Torch Team",
+    "url": "https://traffictorch.net",
+    "sameAs": [
+      "https://twitter.com/guitaralize"
+    ]
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://traffictorch.net/logo-512.webp",
+      "width": 512,
+      "height": 512
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://traffictorch.net/blog/posts/user-experience-help-guide.html"
+  },
+  "keywords": [
+    "quit risk",
+    "user experience guide",
+    "reduce bounce rate",
+    "SEO UX optimization",
+    "website readability",
+    "web accessibility",
+    "mobile readiness",
+    "performance optimization",
+    "Traffic Torch tool"
+  ],
+  "wordCount": 3200,
+  "inLanguage": "en",
+  "articleSection": "UX & SEO Guides",
+  "isPartOf": {
+    "@type": "Blog",
+    "name": "Traffic Torch Blog",
+    "url": "https://traffictorch.net/news/"
+  }
+}
+</script>
+
+<!-- Organization Schema (can be kept in head or moved to global if already present) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Traffic Torch",
+  "url": "https://traffictorch.net/",
+  "logo": "https://traffictorch.net/logo-512.webp",
+  "sameAs": [
+    "https://twitter.com/guitaralize"
+  ]
+}
+</script>
+
+<!-- BreadcrumbList -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://traffictorch.net/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "News & Blog",
+      "item": "https://traffictorch.net/news/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "User Experience Help Guide: Reduce Quit Risk",
+      "item": "https://traffictorch.net/blog/posts/user-experience-help-guide.html"
+    }
+  ]
+}
+</script>
+
+ 
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Main Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/blog/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/blog/style-v1.0.css">
+  </noscript>
+
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  <meta http-equiv="Content-Encoding" content="br">  
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
+        </a>
+        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
+        </a>
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚡</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📝</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
+              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⚡ Quit Risk</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">📝 Keywords</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+<!-- Updated Blog Post Content Area (glassmorphism card matching site style) -->
+<main class="py-16 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-sm">
+  <article class="max-w-4xl mx-auto px-6">
+    <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-10 prose prose-lg dark:prose-invert max-w-none border border-white/10 dark:border-white/5">
+      
+      <!-- REPLACE: Featured Image -->
+<picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/blog/images/quit-risk/user-experience-help-guide-640w.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/blog/images/quit-risk/user-experience-help-guide-1200w.webp">
+  <img 
+    src="/blog/images/quit-risk/user-experience-help-guide-1200w.webp" 
+    alt="Complete guide to lowering website quit risk through better UX and SEO" 
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="eager"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+</picture>
+
+      <!-- Post Title -->
+      <h1 class="text-2xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        User Experience Help Guide: How to Slash Quit Risk & Keep Visitors Longer
+      </h1>
+
+      <!-- Full post content goes here -->
+      <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Discover the exact UX and SEO factors that make users bounce in seconds — and learn step-by-step fixes using Traffic Torch’s free Quit Risk Tool.</p>
+
+<div class="mt-8 prose prose-lg dark:prose-invert max-w-3xl mx-auto md:mx-0 text-gray-800 dark:text-gray-200 leading-relaxed">
+  <p class="text-lg md:text-xl">
+    <strong>Quit risk</strong> is the silent reason most websites lose visitors within the first 10–15 seconds. Poor readability, confusing navigation, mobile frustration, accessibility barriers, or slow performance — any one of these can trigger an instant bounce. In 2025–2026, Google treats user behavior signals (time on page, bounce rate, pogo-sticking) as powerful ranking clues. If people leave fast, rankings suffer.
+  </p>
+
+  <p class="mt-5">
+    Traffic Torch’s <strong>Quit Risk Tool</strong> gives you an instant 0–100 usability health score by analyzing five critical modules: readability, navigation, accessibility, mobile & PWA readiness, and performance. More importantly, it shows you <em>exactly</em> what to fix — with realistic metrics, priority-ranked solutions, and estimated impact on bounce rate and engagement.
+  </p>
+
+  <p class="mt-5 font-medium">
+    In this complete help guide you’ll learn what each module really measures, how the tool calculates scores, why it matters for modern SEO + UX, and the fastest fixes that deliver the biggest wins. Ready to turn leavers into loyal readers and buyers?
+  </p>
+</div>
+
+<!-- Table of Contents – 4-column table (sticky-friendly, mobile-scrollable) -->
+<nav id="toc" class="bg-white dark:bg-gray-900 p-6 mt-10 rounded-2xl shadow-lg mb-12 border border-gray-200 dark:border-gray-700">
+  <h2 class="text-2xl md:text-3xl font-black text-center text-gray-800 dark:text-gray-100 mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Table of Contents
+  </h2>
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse min-w-[800px]">
+      <thead>
+        <tr class="bg-gray-100 dark:bg-gray-800">
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Module</th>
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 text-center">What is it?</th>
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 text-center">How it's tested?</th>
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 text-center">Why it matters?</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-800 dark:text-gray-200">
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#readability" class="text-orange-600 dark:text-orange-400 hover:underline">Readability Module</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#readability-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#readability-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#readability-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#navigation" class="text-orange-600 dark:text-orange-400 hover:underline">Navigation Module</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#navigation-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#navigation-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#navigation-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#accessibility" class="text-orange-600 dark:text-orange-400 hover:underline">Accessibility Module</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#accessibility-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#accessibility-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#accessibility-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#mobile" class="text-orange-600 dark:text-orange-400 hover:underline">Mobile & PWA Readiness Module</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#mobile-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#mobile-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#mobile-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#performance" class="text-orange-600 dark:text-orange-400 hover:underline">Performance Module</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#performance-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#performance-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#performance-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+    <a href="#conclusion" class="text-orange-600 dark:text-orange-400 hover:underline">Conclusion & Next Steps</a> •
+    <a href="#faq" class="text-orange-600 dark:text-orange-400 hover:underline">Frequently Asked Questions</a>
+  </div>
+</nav>
+
+
+  <!-- Share Buttons -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+    <script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+
+<section id="readability" class="my-20 scroll-mt-28">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent text-center mb-10">
+      Readability Module
+    </h2>
+
+    <!-- What -->
+    <div id="readability-what" class="scroll-mt-24">
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        What is Readability?
+      </h3>
+      <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>
+          Readability measures how easily visitors can understand and scan your content on any device. It combines classic formulas (Flesch Reading Ease, Flesch-Kincaid) with modern web scannability signals: short sentences, concise paragraphs, bold text, lists, subheadings and visual hierarchy.
+        </p>
+        <p class="mt-4">
+          <strong>High readability keeps people reading longer</strong> — low readability causes almost immediate bounces, especially on mobile where most traffic arrives.
+        </p>
+        <p class="mt-4">
+          Traffic Torch's Readability score gives you one clear 0–100 health rating that blends all these factors into actionable insight.
+        </p>
+      </div>
+    </div>
+
+    <!-- How -->
+    <div id="readability-how" class="scroll-mt-24 mt-16">
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        How does Traffic Torch measure Readability?
+      </h3>
+      <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>
+          The tool parses your page content and runs industry-standard calculations on real extracted text:
+        </p>
+        <ul class="mt-5 space-y-4 list-disc pl-6">
+          <li><strong>Flesch Reading Ease Score</strong><br>
+            Formula: 206.835 − (1.015 × avg sentence length) − (84.6 × avg syllables per word).<br>
+            Target: 60–70+ for general web audiences (higher = easier to read).</li>
+          <li><strong>Flesch-Kincaid Grade Level</strong><br>
+            Estimates U.S. school grade needed to understand the text.<br>
+            Target: Grade 8 or lower (most top-ranking content aims for 7–9).</li>
+          <li><strong>Average Sentence Length</strong><br>
+            Ideal: under 20 words. Sentences consistently over 25 words lower the score.</li>
+          <li><strong>Paragraph Density & Length</strong><br>
+            Flags walls of text. Best practice: 3–4 sentences max per paragraph on mobile.</li>
+          <li><strong>Overall Text Scannability</strong><br>
+            Counts use of <strong>bold/strong</strong>, bullet/numbered lists, descriptive subheadings relative to total word count. Strong hierarchy boosts the final score significantly.</li>
+        </ul>
+        <p class="mt-6 italic text-gray-600 dark:text-gray-400">
+          Passing threshold in Traffic Torch: 65+. The module weights each factor realistically to reflect actual user behavior on modern websites.
+        </p>
+      </div>
+    </div>
+
+    <!-- Why -->
+    <div id="readability-why" class="scroll-mt-24 mt-16">
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        Why does Readability matter for SEO & UX?
+      </h3>
+      <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>
+          <strong>Poor readability is one of the fastest ways to trigger a bounce</strong>. In 2025–2026 users decide to stay or leave in under 10 seconds — dense text loses almost everyone on mobile.
+        </p>
+        <p class="mt-4">
+          Google’s people-first content update and tightened E-E-A-T guidelines reward clear, approachable writing. Readable pages deliver:
+        </p>
+        <ul class="mt-5 space-y-3">
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">↑</span>
+            <span>30–50% longer session duration (Nielsen Norman benchmarks)</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">↓</span>
+            <span>20–40% bounce rate reduction after fixes</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">→</span>
+            <span>Wider audience reach (≈50% of adults read below grade 8 level)</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">★</span>
+            <span>Stronger E-E-A-T signals = better trust & ranking potential</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">📱</span>
+            <span>Improved mobile engagement & voice-search compatibility</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Quick Wins + CTA -->
+    <div class="mt-16 p-8 bg-gradient-to-br from-purple-50 to-cyan-50 dark:from-purple-950/30 dark:to-cyan-950/20 rounded-3xl border border-purple-200 dark:border-purple-800">
+      <h4 class="text-2xl font-bold text-purple-700 dark:text-purple-300 mb-6 text-center">
+        Quick Wins Checklist
+      </h4>
+      <ul class="space-y-4 text-lg text-gray-800 dark:text-gray-200">
+        <li>• Target grade 7–8 reading level.</li>
+        <li>• Keep average sentence length under 20 words.</li>
+        <li>• Limit paragraphs to 3–4 sentences max.</li>
+        <li>• Use bold for key phrases and bullets for lists.</li>
+        <li>• Front-load the most important information (inverted pyramid).</li>
+        <li>• Prefer active voice and short, common words.</li>
+      </ul>
+
+      <div class="mt-10 text-center">
+        <a href="https://traffictorch.net/quit-risk-tool/"
+           class="inline-block px-10 py-5 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold text-xl rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+          Scan Your Readability Score Free Now
+        </a>
+        <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+          No login • Instant results • See your exact score & fixes
+        </p>
+      </div>
+    </div>
+
+    <p class="mt-12 text-center text-gray-500 dark:text-gray-400 italic">
+      Next: <a href="#navigation" class="text-purple-600 dark:text-purple-400 hover:underline font-medium">Navigation Module</a> → how clear menus and internal links stop users from leaving.
+    </p>
+
+  </div>
+</section>
+
+<!-- ===================== NAVIGATION MODULE ===================== -->
+
+<section id="navigation" class="my-20 scroll-mt-28">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent text-center mb-10">
+      Navigation Module
+    </h2>
+
+    <!-- What -->
+    <div id="navigation-what" class="scroll-mt-24">
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        What is Navigation Clarity?
+      </h3>
+      <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>
+          Navigation Clarity evaluates how easily visitors can find what they need and move through your site without frustration. It looks at menu structure, link density, internal linking patterns, call-to-action visibility and overall logical flow.
+        </p>
+        <p class="mt-4">
+          <strong>Good navigation feels intuitive</strong> — poor navigation creates confusion, choice overload or dead ends, causing users to leave quickly.
+        </p>
+        <p class="mt-4">
+          Traffic Torch combines these signals into one 0–100 Navigation health score that highlights the biggest barriers to user flow.
+        </p>
+      </div>
+    </div>
+
+    <!-- How -->
+    <div id="navigation-how" class="scroll-mt-24 mt-16">
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        How does Traffic Torch measure Navigation?
+      </h3>
+      <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>
+          The tool analyzes your page’s DOM structure and link patterns with these key checks:
+        </p>
+        <ul class="mt-5 space-y-4 list-disc pl-6">
+          <li><strong>Link Density Evaluation</strong><br>
+            Counts total links relative to content length. Too many links (especially >12 per 100 words) create decision fatigue and dilute focus.<br>
+            Target: balanced density that guides without overwhelming.</li>
+          <li><strong>Menu Structure Clarity</strong><br>
+            Measures top-level items (ideal 5–7), label descriptiveness, logical hierarchy and presence of dropdowns or breadcrumbs.<br>
+            Clear, user-need-focused menus score highest.</li>
+          <li><strong>Internal Linking Balance</strong><br>
+            Checks contextual links from body content to related pages. Good distribution spreads page authority and helps users discover more.<br>
+            Isolated pages or missing related links lower the score.</li>
+          <li><strong>CTA Prominence & Visibility</strong><br>
+            Detects primary calls-to-action (buttons, forms, strong anchor text). Evaluates contrast, size, placement (above the fold preferred) and action-oriented wording.<br>
+            Prominent, contrasting CTAs significantly boost the score.</li>
+        </ul>
+        <p class="mt-6 italic text-gray-600 dark:text-gray-400">
+          Passing threshold in Traffic Torch: 78+. Scores reflect real user navigation behavior on modern sites.
+        </p>
+      </div>
+    </div>
+
+    <!-- Why -->
+    <div id="navigation-why" class="scroll-mt-24 mt-16">
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        Why does Navigation matter for SEO & UX?
+      </h3>
+      <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>
+          <strong>Confusing navigation is a top reason people bounce within seconds</strong>. Baymard Institute studies consistently show poor menu structure causes 30–40% of early exits.
+        </p>
+        <p class="mt-4">
+          Google values intuitive site architecture because it improves crawl efficiency and user signals (pages per session, time on site, low pogo-sticking). Strong navigation delivers:
+        </p>
+        <ul class="mt-5 space-y-3">
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">↑</span>
+            <span>25–40% more pages per session</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">↓</span>
+            <span>Significant bounce rate reduction (often 20–35%)</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">→</span>
+            <span>Better topical authority through strategic internal linking</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">★</span>
+            <span>Faster goal completion = higher conversion rates</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">🔍</span>
+            <span>Improved crawlability and indexation signals for Google</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Quick Wins + CTA -->
+    <div class="mt-16 p-8 bg-gradient-to-br from-purple-50 to-cyan-50 dark:from-purple-950/30 dark:to-cyan-950/20 rounded-3xl border border-purple-200 dark:border-purple-800">
+      <h4 class="text-2xl font-bold text-purple-700 dark:text-purple-300 mb-6 text-center">
+        Quick Wins Checklist
+      </h4>
+      <ul class="space-y-4 text-lg text-gray-800 dark:text-gray-200">
+        <li>• Limit top-level menu items to 5–7 maximum.</li>
+        <li>• Use clear, goal-oriented labels (avoid jargon).</li>
+        <li>• Add contextual internal links from body content to related pages.</li>
+        <li>• Make primary CTAs large, contrasting and above the fold.</li>
+        <li>• Include breadcrumbs on deeper pages.</li>
+        <li>• Remove or hide low-value / redundant links.</li>
+      </ul>
+
+      <div class="mt-10 text-center">
+        <a href="https://traffictorch.net/quit-risk-tool/"
+           class="inline-block px-10 py-5 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold text-xl rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+          Scan Your Navigation Health Free Now
+        </a>
+        <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+          No login • Instant results • See exact issues & priority fixes
+        </p>
+      </div>
+    </div>
+
+    <p class="mt-12 text-center text-gray-500 dark:text-gray-400 italic">
+      Next: <a href="#accessibility" class="text-purple-600 dark:text-purple-400 hover:underline font-medium">Accessibility Module</a> → how inclusive design reaches more users and boosts SEO signals.
+    </p>
+
+  </div>
+</section>
+
+<!-- ===================== ACCESSIBILITY MODULE ===================== -->
+
+<section id="accessibility" class="my-20 scroll-mt-28">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent text-center mb-10">
+      Accessibility Module
+    </h2>
+
+    <!-- What -->
+    <div id="accessibility-what" class="scroll-mt-24">
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        What is Accessibility Health?
+      </h3>
+      <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>
+          Accessibility Health measures how inclusive your website is for people with disabilities. It checks whether screen readers, keyboard navigation, color-blind users, low-vision users and motor-impaired visitors can use your page effectively.
+        </p>
+        <p class="mt-4">
+          <strong>Good accessibility serves 15–20% of the population</strong> that live with some form of impairment — and many accessibility improvements also boost SEO and general user experience.
+        </p>
+        <p class="mt-4">
+          Traffic Torch provides a single 0–100 accessibility score that highlights critical barriers and celebrates strong inclusive practices.
+        </p>
+      </div>
+    </div>
+
+    <!-- How -->
+    <div id="accessibility-how" class="scroll-mt-24 mt-16">
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        How does Traffic Torch measure Accessibility?
+      </h3>
+      <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>
+          The tool scans your page DOM and styles for WCAG 2.2 AA compliance signals:
+        </p>
+        <ul class="mt-5 space-y-4 list-disc pl-6">
+          <li><strong>Alt Text Coverage</strong><br>
+            Counts meaningful images without descriptive alt text. Decorative images should have alt="" or role="presentation".<br>
+            Target: 100% coverage on informative images; missing alts heavily penalize the score.</li>
+          <li><strong>Color Contrast Ratios</strong><br>
+            Estimates text/background contrast (normal text ≥4.5:1, large text ≥3:1 per WCAG AA).<br>
+            Low contrast fails both readability and accessibility — the tool flags risky combinations.</li>
+          <li><strong>Semantic HTML Structure</strong><br>
+            Checks for proper use of <main>, <article>, <section>, <nav>, <header>, <footer>, heading hierarchy (one H1, logical order).<br>
+            Semantic markup helps screen readers and search engines understand page structure.</li>
+          <li><strong>Overall WCAG Compliance Indicators</strong><br>
+            Looks for ARIA labels, keyboard-focusable elements, landmark roles and common failure patterns.<br>
+            Combines automated signals into a realistic compliance estimate (full manual testing still recommended for perfection).</li>
+        </ul>
+        <p class="mt-6 italic text-gray-600 dark:text-gray-400">
+          Passing threshold in Traffic Torch: 78+. Scores prioritize high-impact issues that affect real users the most.
+        </p>
+      </div>
+    </div>
+
+    <!-- Why -->
+    <div id="accessibility-why" class="scroll-mt-24 mt-16">
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        Why does Accessibility matter for SEO & UX?
+      </h3>
+      <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>
+          <strong>Inaccessible sites exclude millions of potential visitors — and increasingly face legal risk</strong>. In 2025–2026 accessibility lawsuits continue to rise globally.
+        </p>
+        <p class="mt-4">
+          Google explicitly states that accessibility helps SEO: semantic structure improves crawlability, better contrast aids readability signals, and inclusive experiences reduce bounce rates while increasing dwell time. Strong accessibility delivers:
+        </p>
+        <ul class="mt-5 space-y-3">
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">↑</span>
+            <span>Reach to 15–20% more users (people with disabilities)</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">↓</span>
+            <span>Lower bounce rates from frustrated users</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">→</span>
+            <span>Stronger semantic signals → better topical understanding by Google</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">★</span>
+            <span>Improved E-E-A-T perception (expertise, experience, authoritativeness, trustworthiness)</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">🛡️</span>
+            <span>Reduced legal/compliance risk in many countries</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Quick Wins + CTA -->
+    <div class="mt-16 p-8 bg-gradient-to-br from-purple-50 to-cyan-50 dark:from-purple-950/30 dark:to-cyan-950/20 rounded-3xl border border-purple-200 dark:border-purple-800">
+      <h4 class="text-2xl font-bold text-purple-700 dark:text-purple-300 mb-6 text-center">
+        Quick Wins Checklist
+      </h4>
+      <ul class="space-y-4 text-lg text-gray-800 dark:text-gray-200">
+        <li>• Add meaningful alt text to every informative image (concise & descriptive).</li>
+        <li>• Ensure text contrast meets at least 4.5:1 for normal text.</li>
+        <li>• Use semantic HTML: one <h1>, logical heading order, <main>, <nav>, <article>.</li>
+        <li>• Add ARIA labels where native semantics are missing (e.g., icons, custom buttons).</li>
+        <li>• Make all interactive elements keyboard-focusable and visible on focus.</li>
+        <li>• Test with free tools like WAVE or Lighthouse regularly.</li>
+      </ul>
+
+      <div class="mt-10 text-center">
+        <a href="https://traffictorch.net/quit-risk-tool/"
+           class="inline-block px-10 py-5 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold text-xl rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+          Scan Your Accessibility Score Free Now
+        </a>
+        <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+          No login • Instant results • See critical barriers & easy fixes
+        </p>
+      </div>
+    </div>
+
+    <p class="mt-12 text-center text-gray-500 dark:text-gray-400 italic">
+      Next: <a href="#mobile" class="text-purple-600 dark:text-purple-400 hover:underline font-medium">Mobile & PWA Readiness Module</a> → how well your site performs on phones and enables app-like experiences.
+    </p>
+
+  </div>
+</section>
+
+<!-- ===================== MOBILE & PWA READINESS MODULE ===================== -->
+
+<section id="mobile" class="my-20 scroll-mt-28">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent text-center mb-10">
+      Mobile & PWA Readiness Module
+    </h2>
+
+    <!-- What -->
+    <div id="mobile-what" class="scroll-mt-24">
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        What is Mobile & PWA Readiness?
+      </h3>
+      <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>
+          Mobile & PWA Readiness checks how well your page performs and adapts on smartphones and tablets. It evaluates viewport setup, responsive design quality, touch-friendliness, and progressive web app features that make sites feel more like native apps.
+        </p>
+        <p class="mt-4">
+          <strong>Mobile is no longer optional — it is the majority of web traffic</strong>. Poor mobile experience causes instant bounces, while strong mobile + PWA signals improve engagement, return visits and SEO rankings.
+        </p>
+        <p class="mt-4">
+          Traffic Torch delivers one unified 0–100 score that highlights mobile friction points and PWA opportunities in seconds.
+        </p>
+      </div>
+    </div>
+
+    <!-- How -->
+    <div id="mobile-how" class="scroll-mt-24 mt-16">
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        How does Traffic Torch measure Mobile & PWA Readiness?
+      </h3>
+      <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>
+          The tool inspects meta tags, CSS behavior, element sizes and PWA manifest signals:
+        </p>
+        <ul class="mt-5 space-y-4 list-disc pl-6">
+          <li><strong>Viewport Configuration</strong><br>
+            Checks for the correct meta tag: <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code>.<br>
+            Missing or incorrect viewport forces zoomed-out desktop view on phones — a major fail.</li>
+          <li><strong>Responsive Breakpoints & Layout</strong><br>
+            Detects horizontal scrolling, fixed-width elements or content overflow on narrow screens.<br>
+            Flexible grids, relative units (%, vw, rem) and media queries earn high points.</li>
+          <li><strong>Touch Target Size</strong><br>
+            Measures interactive elements (links, buttons). WCAG and Apple recommend ≥44×44 pixels with adequate spacing.<br>
+            Small targets cause mis-taps and frustration — especially on mobile.</li>
+          <li><strong>PWA Readiness Indicators</strong><br>
+            Looks for valid web app manifest (name, icons, theme color), HTTPS, service worker registration hints and installability signals.<br>
+            Strong PWA features enable add-to-home-screen prompts and offline potential.</li>
+        </ul>
+        <p class="mt-6 italic text-gray-600 dark:text-gray-400">
+          Passing threshold in Traffic Torch: 80+. Scores heavily weight viewport and touch usability as they cause the most immediate user pain.
+        </p>
+      </div>
+    </div>
+
+    <!-- Why -->
+    <div id="mobile-why" class="scroll-mt-24 mt-16">
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        Why does Mobile & PWA Readiness matter for SEO & UX?
+      </h3>
+      <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>
+          <strong>Mobile issues remain one of the highest quit-risk factors in 2026</strong>. Google has used mobile-first indexing since 2019 — if your site fails on phones, rankings suffer across all devices.
+        </p>
+        <p class="mt-4">
+          Core Web Vitals, page experience signals and user behavior metrics all favor fast, touch-friendly, installable experiences. Excellent mobile & PWA readiness delivers:
+        </p>
+        <ul class="mt-5 space-y-3">
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">↑</span>
+            <span>30–60% longer sessions on mobile devices</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">↓</span>
+            <span>Significant bounce rate drop (often 25–50% after fixes)</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">→</span>
+            <span>Mobile-first indexing advantage + better Core Web Vitals scores</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">★</span>
+            <span>Higher return visits via PWA install prompts (up to 36% more engagement per Google studies)</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">📱</span>
+            <span>Stronger user trust and perceived site quality</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Quick Wins + CTA -->
+    <div class="mt-16 p-8 bg-gradient-to-br from-purple-50 to-cyan-50 dark:from-purple-950/30 dark:to-cyan-950/20 rounded-3xl border border-purple-200 dark:border-purple-800">
+      <h4 class="text-2xl font-bold text-purple-700 dark:text-purple-300 mb-6 text-center">
+        Quick Wins Checklist
+      </h4>
+      <ul class="space-y-4 text-lg text-gray-800 dark:text-gray-200">
+        <li>• Add or fix the viewport meta tag exactly: width=device-width, initial-scale=1.</li>
+        <li>• Use mobile-first CSS with relative units and proper media queries.</li>
+        <li>• Ensure buttons and links are at least 44×44 pixels with 8px+ spacing.</li>
+        <li>• Create a valid manifest.json with name, short_name, icons and theme_color.</li>
+        <li>• Register a basic service worker (even minimal caching improves perceived speed).</li>
+        <li>• Test on real phones — avoid relying only on browser dev tools.</li>
+      </ul>
+
+      <div class="mt-10 text-center">
+        <a href="https://traffictorch.net/quit-risk-tool/"
+           class="inline-block px-10 py-5 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold text-xl rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+          Scan Your Mobile & PWA Score Free Now
+        </a>
+        <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+          No login • Instant results • See mobile blockers & PWA opportunities
+        </p>
+      </div>
+    </div>
+
+    <p class="mt-12 text-center text-gray-500 dark:text-gray-400 italic">
+      Next: <a href="#performance" class="text-purple-600 dark:text-purple-400 hover:underline font-medium">Performance Module</a> → how loading speed and resource efficiency keep users from leaving.
+    </p>
+
+  </div>
+</section>
+
+<!-- ===================== PERFORMANCE MODULE ===================== -->
+
+<section id="performance" class="my-20 scroll-mt-28">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent text-center mb-10">
+      Performance Module
+    </h2>
+
+    <!-- What -->
+    <div id="performance-what" class="scroll-mt-24">
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        What is Performance Health?
+      </h3>
+      <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>
+          Performance Health measures how fast and efficiently your page loads and renders. It flags heavy assets, render-blocking resources, unoptimized images, bloated scripts, font issues and missing lazy-loading — all factors that directly affect user patience and perceived quality.
+        </p>
+        <p class="mt-4">
+          <strong>Speed is a top quit-risk trigger</strong>. Even one extra second of load time can increase bounce rates by 32% (Google data still valid in 2026).
+        </p>
+        <p class="mt-4">
+          Traffic Torch gives you a unified 0–100 performance score focused on real-user impact rather than just lab numbers.
+        </p>
+      </div>
+    </div>
+
+    <!-- How -->
+    <div id="performance-how" class="scroll-mt-24 mt-16">
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        How does Traffic Torch measure Performance?
+      </h3>
+      <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>
+          The tool audits visible resource patterns and best-practice adoption on your live page:
+        </p>
+        <ul class="mt-5 space-y-4 list-disc pl-6">
+          <li><strong>Asset Volume & Optimization Flags</strong><br>
+            Counts images, scripts, stylesheets. Flags excessive total requests or large unoptimized files.<br>
+            Targets: aggressive compression, next-gen formats (WebP/AVIF), server compression (Brotli/GZIP).</li>
+          <li><strong>Script Bloat & Render-Blocking Detection</strong><br>
+            Identifies large or unused JavaScript, synchronous scripts in <head>.<br>
+            Best practice: defer/async non-critical JS, minify/bundle, remove dead code — aim for ≤2–3 small blocking resources.</li>
+          <li><strong>Font Optimization</strong><br>
+            Checks number of font families/weights and font-display strategy.<br>
+            Ideal: ≤2–3 families, font-display: swap, preload critical fonts, prefer system fonts when possible.</li>
+          <li><strong>Lazy Loading & Image Optimization</strong><br>
+            Verifies native loading="lazy" on offscreen <img> and <iframe>, responsive srcset/sizes, modern formats.<br>
+            Missing lazy-loading or oversized images heavily penalize the score.</li>
+        </ul>
+        <p class="mt-6 italic text-gray-600 dark:text-gray-400">
+          Passing threshold in Traffic Torch: 82+. The module emphasizes issues that most directly cause early user abandonment.
+        </p>
+      </div>
+    </div>
+
+    <!-- Why -->
+    <div id="performance-why" class="scroll-mt-24 mt-16">
+      <h3 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+        Why does Performance matter for SEO & UX?
+      </h3>
+      <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>
+          <strong>Slow pages are the #1 technical reason users quit</strong>. Google’s Core Web Vitals (LCP, INP, CLS) remain ranking factors in 2026, and real-user speed strongly influences behavioral signals (bounce rate, dwell time, pogo-sticking).
+        </p>
+        <p class="mt-4">
+          Faster sites feel more professional, keep users engaged longer, and convert better. Excellent performance delivers:
+        </p>
+        <ul class="mt-5 space-y-3">
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">↑</span>
+            <span>20–50% longer average session duration</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">↓</span>
+            <span>Up to 32% bounce rate reduction per second saved (Google benchmarks)</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">→</span>
+            <span>Direct positive impact on Core Web Vitals rankings</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">★</span>
+            <span>Higher conversion rates (often 7–20% lift per second faster load)</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-green-600 dark:text-green-400 text-xl font-bold">📈</span>
+            <span>Stronger mobile rankings and overall perceived site quality</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Quick Wins + CTA -->
+    <div class="mt-16 p-8 bg-gradient-to-br from-purple-50 to-cyan-50 dark:from-purple-950/30 dark:to-cyan-950/20 rounded-3xl border border-purple-200 dark:border-purple-800">
+      <h4 class="text-2xl font-bold text-purple-700 dark:text-purple-300 mb-6 text-center">
+        Quick Wins Checklist
+      </h4>
+      <ul class="space-y-4 text-lg text-gray-800 dark:text-gray-200">
+        <li>• Convert images to WebP or AVIF and compress aggressively (<100 KB ideal per image).</li>
+        <li>• Add loading="lazy" to all offscreen images and iframes.</li>
+        <li>• Defer or async non-critical JavaScript; minify and bundle JS/CSS.</li>
+        <li>• Limit font families to 2–3 and use font-display: swap.</li>
+        <li>• Preload critical fonts and hero images with <link rel="preload">.</li>
+        <li>• Enable Brotli or GZIP compression on your server/CDN.</li>
+      </ul>
+
+      <div class="mt-10 text-center">
+        <a href="https://traffictorch.net/quit-risk-tool/"
+           class="inline-block px-10 py-5 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold text-xl rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+          Scan Your Performance Score Free Now
+        </a>
+        <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+          No login • Instant results • See speed blockers & optimization priorities
+        </p>
+      </div>
+    </div>
+
+    <p class="mt-12 text-center text-gray-500 dark:text-gray-400 italic">
+      That completes all five Quit Risk modules: Readability, Navigation, Accessibility, Mobile & PWA, and Performance.
+    </p>
+
+  </div>
+</section>
+
+<!--  CONCLUSION  -->
+
+<section class="my-20 scroll-mt-28">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Conclusion -->
+    <div class="text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent mb-8">
+        Putting It All Together: Lower Quit Risk Today
+      </h2>
+
+      <div class="prose prose-lg dark:prose-invert max-w-3xl mx-auto text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>
+          Quit risk is not a mystery — it is the combined effect of five clear areas: readability, navigation, accessibility, mobile readiness, and performance. When any one of these drops, users leave fast. When all five improve, engagement soars, bounce rates fall, and Google rewards the better user experience with stronger rankings.
+        </p>
+        <p class="mt-6">
+          The best part? You do not need expensive audits or months of work. Traffic Torch’s free Quit Risk Tool gives you an instant 360° health score across every module — with realistic metrics, prioritized fixes, and estimated impact on bounce rate and conversions.
+        </p>
+        <p class="mt-6 font-semibold">
+          Start small: fix one high-impact issue from any module. Track the change in Google Analytics (exit rate, session duration, pages per session). Most sites see noticeable gains within 1–4 weeks.
+        </p>
+        <p class="mt-6">
+          Your visitors deserve a fast, clear, inclusive, and mobile-friendly experience. Give it to them — and watch retention and rankings climb.
+        </p>
+      </div>
+
+      <div class="mt-12">
+        <a href="https://traffictorch.net/quit-risk-tool/"
+           class="inline-block px-12 py-6 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold text-2xl rounded-3xl shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300">
+          Scan Your Site Free Right Now
+        </a>
+        <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">
+          No login • Instant full report • Actionable fixes in seconds
+        </p>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div id="faq" class="scroll-mt-24 mt-20">
+      <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent text-center mb-10">
+        Frequently Asked Questions
+      </h2>
+
+      <div class="space-y-10">
+        <details class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+          <summary class="px-6 py-5 text-xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer flex justify-between items-center">
+            What exactly is "quit risk"?
+            <span class="text-purple-600 dark:text-purple-400 text-2xl">+</span>
+          </summary>
+          <div class="px-6 pb-6 pt-2 prose dark:prose-invert text-gray-800 dark:text-gray-200">
+            <p>Quit risk estimates how likely visitors are to leave your page quickly (usually within 10–30 seconds) due to UX or technical friction. Traffic Torch calculates it from real behavioral patterns tied to readability, navigation, accessibility, mobile experience, and speed.</p>
+          </div>
+        </details>
+
+        <details class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+          <summary class="px-6 py-5 text-xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer flex justify-between items-center">
+            How accurate is the Traffic Torch Quit Risk Tool?
+            <span class="text-purple-600 dark:text-purple-400 text-2xl">+</span>
+          </summary>
+          <div class="px-6 pb-6 pt-2 prose dark:prose-invert text-gray-800 dark:text-gray-200">
+            <p>It uses industry-standard metrics (Flesch formulas, WCAG 2.2 AA signals, Core Web Vitals patterns, touch-target guidelines) combined with realistic thresholds derived from analyzing thousands of live pages. While not a full Lighthouse audit, it delivers highly actionable insights focused on quit-risk triggers.</p>
+          </div>
+        </details>
+
+        <details class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+          <summary class="px-6 py-5 text-xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer flex justify-between items-center">
+            Is the tool really free? Any hidden costs?
+            <span class="text-purple-600 dark:text-purple-400 text-2xl">+</span>
+          </summary>
+          <div class="px-6 pb-6 pt-2 prose dark:prose-invert text-gray-800 dark:text-gray-200">
+            <p>Completely free. No login, no credit card, no usage limits. Built and hosted on GitHub + Cloudflare Pages for maximum accessibility and speed.</p>
+          </div>
+        </details>
+
+        <details class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+          <summary class="px-6 py-5 text-xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer flex justify-between items-center">
+            Can it help e-commerce or lead-generation sites?
+            <span class="text-purple-600 dark:text-purple-400 text-2xl">+</span>
+          </summary>
+          <div class="px-6 pb-6 pt-2 prose dark:prose-invert text-gray-800 dark:text-gray-200">
+            <p>Yes — especially. It flags CTA visibility, mobile touch targets, load speed, and navigation flow — all critical for conversions. Many e-commerce sites see immediate bounce-rate drops after fixing the top-priority issues the tool highlights.</p>
+          </div>
+        </details>
+
+        <details class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+          <summary class="px-6 py-5 text-xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer flex justify-between items-center">
+            How soon will I see results after making fixes?
+            <span class="text-purple-600 dark:text-purple-400 text-2xl">+</span>
+          </summary>
+          <div class="px-6 pb-6 pt-2 prose dark:prose-invert text-gray-800 dark:text-gray-200">
+            <p>Most sites notice better engagement metrics (lower bounce, higher time on page) within 1–4 weeks, depending on traffic volume. Core ranking improvements usually appear in 4–12 weeks once Google recrawls and re-evaluates behavioral signals.</p>
+          </div>
+        </details>
+      </div>
+
+      <!-- FAQ Schema (place this in <head> or at bottom of body) -->
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What exactly is \"quit risk\"?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Quit risk estimates how likely visitors are to leave your page quickly (usually within 10–30 seconds) due to UX or technical friction. Traffic Torch calculates it from real behavioral patterns tied to readability, navigation, accessibility, mobile experience, and speed."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How accurate is the Traffic Torch Quit Risk Tool?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "It uses industry-standard metrics (Flesch formulas, WCAG 2.2 AA signals, Core Web Vitals patterns, touch-target guidelines) combined with realistic thresholds derived from analyzing thousands of live pages. While not a full Lighthouse audit, it delivers highly actionable insights focused on quit-risk triggers."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is the tool really free? Any hidden costs?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Completely free. No login, no credit card, no usage limits. Built and hosted on GitHub + Cloudflare Pages for maximum accessibility and speed."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can it help e-commerce or lead-generation sites?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes — especially. It flags CTA visibility, mobile touch targets, load speed, and navigation flow — all critical for conversions. Many e-commerce sites see immediate bounce-rate drops after fixing the top-priority issues the tool highlights."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How soon will I see results after making fixes?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Most sites notice better engagement metrics (lower bounce, higher time on page) within 1–4 weeks, depending on traffic volume. Core ranking improvements usually appear in 4–12 weeks once Google recrawls and re-evaluates behavioral signals."
+            }
+          }
+        ]
+      }
+      </script>
+
+      <!-- Final strong CTA after FAQ -->
+      <div class="mt-16 text-center">
+        <p class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">
+          Ready to slash quit risk and keep more visitors?
+        </p>
+        <a href="https://traffictorch.net/quit-risk-tool/"
+           class="inline-block px-12 py-6 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold text-2xl rounded-3xl shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300">
+          Run Your Free Quit Risk Scan Now
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+  
+</article>
+  
+<!-- Tools Grid (Creative) -->
+      <h2 class="text-4xl md:text-4xl font-black text-center mt-10 mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      SEO - UX - AI Tools
+      </h2>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+  <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+
+    <!-- New First Card: Local SEO -->
+    <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-green-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-green-500/30 group-hover:border-green-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
+          <h3 class="text-green-400 text-2xl font-bold mb-3">Local SEO Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">On-page local audit + NAP, schema, map signals + fixes</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- SEO Intent -->
+    <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+          <h3 class="text-cyan-400 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Intent matching + E-E-A-T audit + fixes</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- Product SEO Tool -->
+    <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🛒</div>
+          <h3 class="text-orange-400 text-2xl font-bold mb-3">Product SEO Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Product page audit + eCommerce signals</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- Quit Risk -->
+    <a href="/quit-risk-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-emerald-400 text-7xl mb-6 group-hover:animate-bounce">⚡</div>
+          <h3 class="text-emerald-400 text-2xl font-bold mb-3">Quit Risk Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">UX friction audit + bounce prediction + optimizations</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- Keywords -->
+    <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-purple-400 text-7xl mb-6 group-hover:animate-bounce">📝</div>
+          <h3 class="text-purple-400 text-2xl font-bold mb-3">Keyword Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">On-page keyword placement score + density fixes</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- VS -->
+    <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+          <h3 class="text-red-400 text-2xl font-bold mb-3">VS Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Competitive keyword gap analysis + beat strategies</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+    
+        <!-- Ai Search -->
+    <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+          <h3 class="text-orange-400 text-2xl font-bold mb-3">Ai Search Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Optimize for Perplexity, Grok, Gemini, ChatGPT Search</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- AI Content -->
+    <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+          <h3 class="text-pink-400 text-2xl font-bold mb-3">AI Content Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Detect AI patterns + humanize content + forecasts</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- New Last Card: All Tools -->
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-indigo-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-indigo-500/30 group-hover:border-indigo-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-indigo-400 text-7xl mb-6 group-hover:animate-bounce">🧰</div>
+          <h3 class="text-indigo-400 text-2xl font-bold mb-3">All Tools</h3>
+          <p class="text-gray-800 dark:text-gray-100">Complete suite — instant audits, gaps, fixes & forecasts</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Explore All →
+        </span>
+      </div>
+    </a>
+
+  </div>
+</div>
+  
+  <!-- Author Bio -->
+  <section class="max-w-5xl mx-auto my-24 px-2">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+    <div class="bg-gradient-to-br from-purple-600 to-cyan-600 py-12 px-8 text-center">
+      <img src="/logo.webp" alt="Traffic Torch SEO • UX • AI Optimization Toolkit" class="w-40 h-40 rounded-full mx-auto mb-6 object-cover border-8 border-white shadow-xl">
+      <h3 class="text-4xl font-black text-white mb-4">Traffic Torch</h3>
+      <p class="text-xl text-white/90 max-w-3xl mx-auto">
+        SEO • UX • AI Optimization Audit Toolkit
+      </p>
+    </div>
+    <div class="p-10 md:p-12 text-center space-y-8">
+      <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+        Traffic Torch distills ongoing correlation research, algorithm update analysis and practical testing into 360° SEO + UX diagnostics, AI-powered fixes, and educational tools. Empowering creators, agencies, and businesses with transparent, evidence-based insights for better organic performance and user satisfaction.
+      </p>
+      <div class="pt-8 space-y-3">
+        <p class="text-base text-gray-800 dark:text-gray-200">
+          Expertise: SEO Correlation Studies • UX Optimization • Privacy-First Web Tools • AI-Assisted Analysis.
+        </p>
+        <p class="text-base text-gray-800 dark:text-gray-200 italic mt-4">
+          Updated based on the latest search engine guidelines, ranking factor research, and real-page performance data.
+        </p>
+              <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+        <p>Published: 2026-02-17</p>
+        <p>Last updated: 2026-02-17</p>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AddToAny BEGIN -->
+<div style="display: flex; justify-content: center; margin: 30px 0;">
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+    <script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+</div>
+<!-- AddToAny END -->
+
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+</main>
+ 
+<!-- Footer -->
+<footer class="border-t border-white/10 dark:border-white/5 py-12 bg-white/5 dark:bg-black/20 backdrop-blur-xl">
+  <div class="container mx-auto px-6 max-w-7xl">
+    <!-- Main Footer Grid: 4 columns on md+, 1 column on mobile -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12 text-center md:text-left">
+      <!-- Column 1: Traffic Torch + Logo/Author -->
+      <div class="flex flex-col items-center md:items-start">
+        <a href="/" class="mb-6 inline-block">
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="80px" alt="Traffic Torch SEO • UX • AI Optimization Toolkit" class="w-20 h-20 rounded-full shadow-2xl object-cover" width="80" height="80" loading="lazy">
+        </a>
+        <h3 class="text-2xl font-black text-orange-500 hover:text-orange-600 transition mb-3">
+          Traffic Torch 🛡️
+        </h3>
+        <p class="text-gray-800 dark:text-gray-200 text-sm leading-relaxed max-w-md">
+          SEO • UX • AI Website Optimization & 360° Health Analysis Toolkit.
+        </p>
+      </div>
+
+      <!-- Column 2: Tools -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Tools</h3>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/" class="hover:text-orange-400 transition">SEO + UX</a></li>
+          <li><a href="/local-seo-tool/" class="hover:text-orange-400 transition">Local SEO</a></li>
+          <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+          <li><a href="/product-seo-tool/" class="hover:text-orange-400 transition">Product SEO</a></li>
+          <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
+          <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a></li>
+          <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">Competition</a></li>
+          <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
+          <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Company -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Company</h3>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
+          <li><a href="/contact/" class="hover:text-orange-400 transition">Contact</a></li>
+          <li><a href="/news/" class="hover:text-orange-400 transition">News</a></li>
+          <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
+          <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 4: Traffic Torch Quick Links -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Traffic Torch</h3>
+        <ul class="space-y-3 text-gray-500 dark:text-gray-200 text-sm">
+          <li><a href="/ai-seo-ux-tools/#seo-tools" class="hover:text-orange-400 transition">SEO Tools 🎯</a></li>
+          <li><a href="/ai-seo-ux-tools/#ux-tools" class="hover:text-orange-400 transition">UX Tools ⚡</a></li>
+          <li><a href="/ai-seo-ux-tools/#ai-tools" class="hover:text-orange-400 transition">Ai Tools 🔍</a></li>
+          <li class="mt-6 text-sm">Built with 🔥</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Copyright / Bottom Note (full width, centered) -->
+    <div class="mt-12 pt-8 border-t border-white/10 dark:border-white/5 text-center text-gray-500 dark:text-gray-200 text-sm">
+      © Traffic Torch
+    </div>
+  </div>
+</footer>
+
+  <!-- Load JS last for speed -->
+  <script src="/main-v1.1.js" type="module"></script>
+</body>
+</html>
