@@ -449,6 +449,97 @@
   </div>
 </nav>
 
+<section id="meta-title-desc" class="scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mt-16 mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Meta Title & Description
+  </h2>
+
+  <div class="prose prose-lg dark:prose-invert max-w-none">
+    <h3 id="what-meta-title-desc" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-6">
+      What is Meta Title & Description and Its History
+    </h3>
+    <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+      The <strong>meta title</strong> (the clickable blue link in Google results) and <strong>meta description</strong> (the short summary text below it) are the first things searchers see about your page.
+    </p>
+    <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+      <strong>Bold fact:</strong> These two elements still drive ~30–50% of click-through rates in 2026, even with AI Overviews rewriting snippets more often.
+    </p>
+    <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+      History in brief:
+    </p>
+    <ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 mb-8">
+      <li>1990s: Early search engines used &lt;title&gt; as the main display label</li>
+      <li>2004–2010: Meta description became critical for CTR after Google started showing it prominently</li>
+      <li>2012–2014: Google began auto-rewriting poor titles/descriptions → forced SEOs to write better</li>
+      <li>2023–2026: With SGE/AI Overviews, Google rewrites ~60–80% of descriptions, but strong keyword-front-loaded titles still win</li>
+    </ul>
+
+    <h3 id="how-meta-title-desc" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-6">
+      How Meta Title & Description is Tested in Keyword VS Tool
+    </h3>
+    <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+      The tool uses client-side JavaScript to fetch both pages via a privacy-preserving proxy, then parses:
+    </p>
+    <ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 mb-6">
+      <li>&lt;title&gt; tag content</li>
+      <li>&lt;meta name="description" content="..."&gt;</li>
+    </ul>
+    <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-4 font-semibold">
+      Scoring logic (from current script-v1.0.js):
+    </p>
+    <ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 mb-8">
+      <li>Combines title + description text into one string</li>
+      <li>Counts <strong>exact matches</strong> of the target phrase (case-insensitive)</li>
+      <li>Also counts <strong>cleaned matches</strong> (removes common stop words like "the", "a", "in", "best", "top")</li>
+      <li><strong>Full 25 points</strong> added to total score if ≥1 match is found (either exact or cleaned)</li>
+      <li>0 points if phrase is completely missing from both title and description</li>
+      <li>Direct side-by-side comparison: your page vs competitor</li>
+    </ul>
+    <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+      → This mirrors Google's continued emphasis on keyword presence in title as a strong topical signal (even post-Helpful Content & AI updates).
+    </p>
+
+    <h3 id="why-meta-title-desc" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-6">
+      Why Meta Title & Description Still Matters for SEO and UX in 2026
+    </h3>
+    <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+      <strong>Even with AI rewriting snippets, the original title remains one of the strongest ranking signals.</strong>
+    </p>
+    <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
+      Key reasons:
+    </p>
+    <ul class="list-disc pl-6 space-y-4 text-gray-800 dark:text-gray-200 mb-8">
+      <li><strong>Relevance signal</strong>: Google uses title keywords heavily to understand page topic</li>
+      <li><strong>CTR impact</strong>: Keyword in first 3–5 words + compelling benefit can increase clicks 20–40%</li>
+      <li><strong>Mobile SERP real estate</strong>: Titles truncate at ~60 characters — front-load your main phrase</li>
+      <li><strong>AI Overview eligibility</strong>: Strong titles help Google decide whether to cite your page</li>
+      <li><strong>User trust & expectation</strong>: Accurate, keyword-rich titles reduce bounce rate</li>
+    </ul>
+
+    <div class="bg-orange-50 dark:bg-orange-950/30 border-l-4 border-orange-500 p-6 rounded-xl my-10">
+      <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-4">
+        Quick Wins Checklist
+      </p>
+      <ul class="list-check space-y-2 text-gray-800 dark:text-gray-200">
+        <li>Keep title under 60 characters</li>
+        <li>Place target keyword as early as possible (ideally first 2–3 words)</li>
+        <li>Meta description: 120–155 characters, include keyword naturally + strong CTA</li>
+        <li>Avoid clickbait — match user intent exactly</li>
+      </ul>
+    </div>
+
+    <div class="mt-10 text-center md:text-left">
+      <a href="https://traffictorch.net/keyword-vs-tool/" 
+         class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-pink-500/40 transform hover:scale-105 transition-all duration-300">
+        Check Meta Title & Description - SEO Competition Tool →
+      </a>
+      <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+        See your score vs competitor in <60 seconds — no login required
+      </p>
+    </div>
+  </div>
+</section>
+
 
 <section id="h1-headings" class="scroll-mt-20">
   <h2 class="text-3xl md:text-4xl font-black mt-16 mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
@@ -714,7 +805,7 @@
     <div class="mt-10 text-center md:text-left">
       <a href="https://traffictorch.net/keyword-vs-tool/" 
          class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-pink-500/40 transform hover:scale-105 transition-all duration-300">
-        Check Image Alt Text Now → Free Keyword VS Tool
+        Check Image Alt Text - Free Keyword Tool →
       </a>
       <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
         See how many images use your target phrase — compare vs competitor instantly
@@ -803,7 +894,7 @@
     <div class="mt-10 text-center md:text-left">
       <a href="https://traffictorch.net/keyword-vs-tool/" 
          class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-pink-500/40 transform hover:scale-105 transition-all duration-300">
-        Check for Anchor Text Usage - VS Tool →
+        Check for Anchor Text Usage - SEO Tool →
       </a>
       <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
         See how many internal links use your target phrase — instant comparison vs competitor
@@ -902,7 +993,7 @@
     <div class="mt-10 text-center md:text-left">
       <a href="https://traffictorch.net/keyword-vs-tool/" 
          class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-pink-500/40 transform hover:scale-105 transition-all duration-300">
-        Check URL & Schema Signals - Keyword Competition Tool →
+        Check URL & Schema Signals - Keyword Tool →
       </a>
       <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
         See if your URL contains the phrase and if schema markup is detected — instant gap analysis
