@@ -3,41 +3,41 @@ const metricExplanations = [
     id: "readability",
     emoji: "📖",
     name: "Readability",
-    what: "Readability measures how easily visitors can understand and scan your content. It combines classic formulas like Flesch with modern web factors such as sentence length, paragraph structure, and visual hierarchy. High readability keeps users engaged longer and reduces bounce rates.",
-    how: "Readability is tested using Flesch Reading Ease and Flesch-Kincaid Grade Level scores, average sentence length, paragraph density, and scannability elements like bolding, lists, and subheadings. Each factor is scored individually and combined into an overall module grade.",
-    why: "Easy-to-read content reaches a wider audience, improves engagement metrics, and reduces cognitive strain. Search engines reward pages where users stay longer and interact more. Great readability is essential for modern web success."
+    what: "Readability measures how easily visitors can understand and scan your content. It combines classic formulas like Flesch with modern web factors such as sentence length, paragraph structure, and visual hierarchy. High readability keeps users engaged longer and reduces bounce rates. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#readability-what' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Readability is tested using Flesch Reading Ease and Flesch-Kincaid Grade Level scores, average sentence length, paragraph density, and scannability elements like bolding, lists, and subheadings. Each factor is scored individually and combined into an overall module grade. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#readability-how' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    why: "Easy-to-read content reaches a wider audience, improves engagement metrics, and reduces cognitive strain. Search engines reward pages where users stay longer and interact more. Great readability is essential for modern web success. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#readability-why' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
     id: "navigation",
     emoji: "🧭",
     name: "Navigation",
-    what: "Navigation Clarity evaluates how easily users can move through your site and find what they need. It examines menu structure, link density, internal linking patterns, and call-to-action visibility.",
-    how: "Navigation is tested by analyzing link density, menu organization, internal linking balance, and CTA prominence. Each factor is scored based on best practices for user flow and discoverability.",
-    why: "Intuitive navigation lowers bounce rates, increases pages per session, and helps users complete goals faster. Clear structure strengthens topical authority and sends positive user signals to search engines."
+    what: "Navigation Clarity evaluates how easily users can move through your site and find what they need. It examines menu structure, link density, internal linking patterns, and call-to-action visibility. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#navigation-what' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Navigation is tested by analyzing link density, menu organization, internal linking balance, and CTA prominence. Each factor is scored based on best practices for user flow and discoverability. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#navigation-how' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    why: "Intuitive navigation lowers bounce rates, increases pages per session, and helps users complete goals faster. Clear structure strengthens topical authority and sends positive user signals to search engines. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#navigation-why' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
     id: "accessibility",
     emoji: "♿",
     name: "Accessibility",
-    what: "Accessibility Health measures how inclusive your page is for users with disabilities. It checks alt text coverage, color contrast, semantic HTML structure, and overall WCAG alignment.",
-    how: "Accessibility is tested through alt text completeness, contrast ratios, proper heading hierarchy, landmarks, and general WCAG compliance signals. Each factor contributes to the overall score.",
-    why: "Accessible sites reach 15-20% more users, build trust, and face lower legal risk. Many accessibility improvements also enhance SEO and overall user experience for everyone."
+    what: "Accessibility Health measures how inclusive your page is for users with disabilities. It checks alt text coverage, color contrast, semantic HTML structure, and overall WCAG alignment. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#accessibility-what' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Accessibility is tested through alt text completeness, contrast ratios, proper heading hierarchy, landmarks, and general WCAG compliance signals. Each factor contributes to the overall score. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#accessibility-how' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    why: "Accessible sites reach 15-20% more users, build trust, and face lower legal risk. Many accessibility improvements also enhance SEO and overall user experience for everyone. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#accessibility-why' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
     id: "mobile",
     emoji: "📱",
     name: "Mobile & PWA",
-    what: "Mobile & PWA Readiness checks how well your page works on phones and tablets. It evaluates viewport configuration, responsive design, touch targets, and progressive web app signals.",
-    how: "Mobile is tested by checking viewport meta tag, breakpoint behavior, touch target size, and PWA indicators like manifest and service worker presence.",
-    why: "Most users browse on mobile devices. Poor mobile experience causes immediate bounces. PWA capabilities increase return visits and engagement significantly."
+    what: "Mobile & PWA Readiness checks how well your page works on phones and tablets. It evaluates viewport configuration, responsive design, touch targets, and progressive web app signals. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#mobile-what' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Mobile is tested by checking viewport meta tag, breakpoint behavior, touch target size, and PWA indicators like manifest and service worker presence. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#mobile-how' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    why: "Most users browse on mobile devices. Poor mobile experience causes immediate bounces. PWA capabilities increase return visits and engagement significantly. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#mobile-why' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
     id: "speed",
     emoji: "⚡",
     name: "Performance",
-    what: "Performance Optimization measures loading speed and resource efficiency. It flags heavy assets, script bloat, font issues, lazy loading, and image optimization opportunities.",
-    how: "Performance is tested through proxies for asset volume, script size, font delivery, lazy loading implementation, image formats, and render-blocking resources.",
-    why: "Fast pages keep users and reduce bounce rates. Speed is a direct ranking factor. Users perceive faster sites as higher quality and more professional."
+    what: "Performance Optimization measures loading speed and resource efficiency. It flags heavy assets, script bloat, font issues, lazy loading, and image optimization opportunities. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#performance-what' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Performance is tested through proxies for asset volume, script size, font delivery, lazy loading implementation, image formats, and render-blocking resources. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#performance-how' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    why: "Fast pages keep users and reduce bounce rates. Speed is a direct ranking factor. Users perceive faster sites as higher quality and more professional. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#performance-why' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>"
   }
 ];
 
