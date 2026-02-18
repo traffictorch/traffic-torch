@@ -329,7 +329,7 @@
 <!-- Updated Blog Post Content Area (glassmorphism card matching site style) -->
 <main class="py-16 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-sm">
   <article class="max-w-4xl mx-auto px-6">
-    <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-16 prose prose-lg dark:prose-invert max-w-none border border-white/10 dark:border-white/5">
+    <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-10 prose prose-lg dark:prose-invert max-w-none border border-white/10 dark:border-white/5">
       
       <!-- REPLACE: Featured Image -->
 <picture class="mb-12 block">
@@ -475,201 +475,809 @@
   </div>
 </nav>
     
-    <!-- Module 1: Meta Title & Desc -->
-    <section id="meta-title-desc">
-      <h2 class="text-3xl font-bold mb-4">Meta Title & Description</h2>
-      
-      <h3 id="meta-title-desc-what" class="text-2xl font-bold mb-3">What It Is and Its History</h3>
-      <p>Meta titles and descriptions are HTML elements that appear in SERPs. Titles summarize the page; descriptions entice clicks.</p>
-      <p>Originating in HTML 1.0 (1991), they became crucial post-Google's 2009 update emphasizing user-focused snippets.</p>
-      <p><strong>Metrics include</strong>: Keyword presence in title (under 60 chars) and description (under 155 chars).</p>
-      
-      <h3 id="meta-title-desc-how" class="text-2xl font-bold mb-3">How It's Tested</h3>
-      <p>Our tool fetches the page via proxy, parses the DOM, and counts exact keyword matches (case-insensitive) in title and meta description text.</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li>Exact phrase match plus cleaned version (removing stop words like "the", "a").</li>
-        <li>If no matches, score drops; partial matches boost if natural.</li>
-        <li>Truncates long text for display.</li>
+<!-- Meta Title & Description Module -->
+<section id="meta-title-desc" class="scroll-mt-20">
+  <div class="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl p-6 md:p-10 shadow-xl border border-orange-200/50 dark:border-orange-800/30 mb-12">
+    <div class="flex items-center gap-4 mb-6">
+      <span class="text-5xl">📝</span>
+      <h2 class="text-3xl md:text-4xl font-black text-orange-700 dark:text-orange-400">
+        Meta Title & Description
+      </h2>
+    </div>
+
+    <!-- Answer-first paragraph (great for featured snippets & AI overviews) -->
+    <p class="text-xl leading-relaxed mb-8 font-medium text-gray-800 dark:text-gray-200">
+      <strong>Yes — including your target keyword naturally in both the page title (under 60 characters) and meta description (under 155 characters) is still one of the strongest on-page SEO signals in 2026.</strong> 
+      Google continues to use these elements heavily for ranking relevance and displaying results. Optimized titles & descriptions can increase click-through rates by 20–40% and help pages rank higher for exact-match and related queries.
+    </p>
+
+    <!-- What It Is + History -->
+    <h3 id="meta-title-desc-what" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-10 mb-4 flex items-center gap-3">
+      <span class="text-orange-500">What It Is & Its Evolution</span>
+      <a href="https://traffictorch.net/blog/posts/seo-keyword-help-guide/#toc" class="text-sm text-gray-500 dark:text-gray-400 hover:text-orange-600 ml-auto">↑ Back to TOC</a>
+    </h3>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      The <strong>meta title</strong> (the &lt;title&gt; tag) is the clickable blue headline users see in Google search results. The <strong>meta description</strong> is the short summary paragraph displayed below it.
+    </p>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      These elements have been fundamental since the earliest search engines. In 1993–1996 they were heavily abused (keyword stuffing), but after Google’s rise and multiple algorithm updates — especially the 2009 “title & snippet rewrite” shift and Helpful Content updates (2022–2025) — the focus moved to <strong>user-first relevance</strong> and natural language.
+    </p>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6 font-medium">
+      Today they serve three masters:
+    </p>
+    <ul class="list-disc pl-6 space-y-3 text-gray-700 dark:text-gray-300 mb-8">
+      <li><strong>Search engines</strong> — primary relevance signal for the query</li>
+      <li><strong>Users</strong> — decide whether to click based on title + description</li>
+      <li><strong>AI overviews & voice search</strong> — often pull directly from optimized snippets</li>
+    </ul>
+
+    <!-- How It's Tested (Traffic Torch logic) -->
+    <h3 id="meta-title-desc-how" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-4">
+      How Traffic Torch Tests It
+    </h3>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      Our tool fetches your live page through a privacy-respecting proxy, parses the real DOM, and performs the following checks:
+    </p>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 mb-8">
+      <ul class="space-y-4 text-gray-800 dark:text-gray-200">
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Exact phrase match</strong> — counts full keyword appearances (case-insensitive)
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Cleaned variant match</strong> — removes common stop words (the, a, an, in, of…) and still awards partial credit if core terms appear
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Length awareness</strong> — flags titles >60 chars and descriptions >155 chars (even if keyword present)
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-amber-500 mt-1">⚠</span>
+          <div>
+            <strong>Truncation preview</strong> — shows how Google is likely to display your title & description on desktop & mobile
+          </div>
+        </li>
       </ul>
-      <p>Based on logic from <a href="https://web.dev/learn/seo/meta-tags/" target="_blank" rel="noopener noreferrer" class="text-orange-600 hover:underline">Web.dev meta tags guide</a>.</p>
-      
-      <h3 id="meta-title-desc-why" class="text-2xl font-bold mb-3">Why It Matters for SEO and UX</h3>
-      <p><strong>SEO boost</strong>: Keyword in title signals relevance, improving rankings per Google's docs.</p>
-      <p><strong>UX win</strong>: Compelling descriptions increase CTR by 20-30%, reducing bounce rates.</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li>Builds trust: Matches user query expectations.</li>
-        <li>Accessibility: Screen readers use them for navigation.</li>
-      </ul>
-      <p class="bg-orange-100 dark:bg-orange-900/20 p-4 rounded-lg text-center font-bold">CTA: <a href="https://traffictorch.net/keyword-tool/" class="text-orange-600 hover:underline">Test your meta tags now with Traffic Torch</a> for quick fixes.</p>
-    </section>
+    </div>
+    <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+      Methodology inspired by <a href="https://developers.google.com/search/docs/appearance/title-link" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">Google’s official title link documentation</a> and <a href="https://web.dev/articles/seo-meta-tags" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">web.dev best practices</a>.
+    </p>
+
+    <!-- Why It Matters -->
+    <h3 id="meta-title-desc-why" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-4">
+      Why It Matters for SEO & User Experience in 2026
+    </h3>
+    <div class="grid md:grid-cols-2 gap-8 mb-10">
+      <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
+        <h4 class="text-xl font-bold text-green-700 dark:text-green-300 mb-4">SEO Impact</h4>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200">
+          <li><strong>Primary ranking signal</strong> — keyword in title remains one of top 3 on-page factors (Ahrefs, Semrush studies 2024–2025)</li>
+          <li><strong>Exact & semantic match</strong> — helps rank for long-tail and voice queries</li>
+          <li><strong>Rich results eligibility</strong> — clean titles feed sitelinks, featured snippets, AI overviews</li>
+        </ul>
+      </div>
+      <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
+        <h4 class="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">UX & Business Impact</h4>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200">
+          <li><strong>CTR lift</strong> — 20–40% higher clicks when keyword + benefit appear early</li>
+          <li><strong>Lower bounce rate</strong> — sets accurate expectations → better user satisfaction</li>
+          <li><strong>Brand trust</strong> — professional, keyword-relevant snippets look more authoritative</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Strong CTA Buttons -->
+    <div class="flex flex-col sm:flex-row gap-6 justify-center mt-12">
+      <a href="https://traffictorch.net/keyword-tool/" 
+         class="inline-flex items-center justify-center px-8 py-5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold text-xl rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-300">
+        Test Your Title & Meta Description →
+      </a>
+    </div>
+  </div>
+</section>
     
-    <!-- Module 2: H1 & Headings -->
-    <section id="h1-headings">
-      <h2 class="text-3xl font-bold mb-4">H1 & Headings</h2>
-      
-      <h3 id="h1-headings-what" class="text-2xl font-bold mb-3">What It Is and Its History</h3>
-      <p>Headings (H1-H6) structure content like chapter titles. H1 is the main topic signal.</p>
-      <p>Evolved from HTML's 1993 spec; Google's 2012 Knowledge Graph made semantic headings key for understanding intent.</p>
-      <p><strong>Metrics</strong>: Keyword match in H1 and up to 5 headings.</p>
-      
-      <h3 id="h1-headings-how" class="text-2xl font-bold mb-3">How It's Tested</h3>
-      <p>Tool queries headings from DOM, counts keyword phrases in text (exact + variants).</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li>Focus on H1 match; scores 100 if present, 0 otherwise.</li>
-        <li>Displays tag, text, and match status.</li>
+<!-- H1 & Headings Module -->
+<section id="h1-headings" class="scroll-mt-20">
+  <div class="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl p-6 md:p-10 shadow-xl border border-orange-200/50 dark:border-orange-800/30 mb-12">
+    <div class="flex items-center gap-4 mb-6">
+      <span class="text-5xl">🔤</span>
+      <h2 class="text-3xl md:text-4xl font-black text-orange-700 dark:text-orange-400">
+        H1 & Headings
+      </h2>
+    </div>
+
+    <!-- Answer-first paragraph – optimized for featured snippets & AI overviews -->
+    <p class="text-xl leading-relaxed mb-8 font-medium text-gray-800 dark:text-gray-200">
+      <strong>Yes — placing your primary target keyword naturally in the H1 heading remains one of the most powerful on-page SEO signals in 2026.</strong> 
+      Google still heavily weighs the H1 (and to a lesser extent H2–H6) for understanding page topic and hierarchy. A keyword-optimized H1 helps pages rank higher, appear in featured snippets more often, and improves user orientation — especially on mobile.
+    </p>
+
+    <!-- What It Is + History -->
+    <h3 id="h1-headings-what" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-10 mb-4 flex items-center gap-3">
+      <span class="text-orange-500">What It Is & Its Evolution</span>
+      <a href="https://traffictorch.net/blog/posts/seo-keyword-help-guide/#toc" class="text-sm text-gray-500 dark:text-gray-400 hover:text-orange-600 ml-auto">↑ Back to TOC</a>
+    </h3>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      The <strong>H1 heading</strong> is the main title of your page content — usually the largest, most prominent text block right below the navigation. Secondary headings (H2, H3, etc.) break content into logical sections.
+    </p>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      Headings originated in HTML 1.0 (1991–1993) purely for document structure. They became a ranking factor with Google’s early algorithms (2000s), gained semantic importance after the 2011 Panda update, and became even more critical with:
+    </p>
+    <ul class="list-disc pl-6 space-y-3 text-gray-700 dark:text-gray-300 mb-6">
+      <li>2018–2019 BERT & MUM updates (better understanding of intent & hierarchy)</li>
+      <li>2021–2025 Helpful Content & Core Web Vitals emphasis on scannability</li>
+      <li>2024–2026 AI Overviews that frequently pull answers directly from well-structured headings</li>
+    </ul>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
+      Today headings serve three key roles:
+    </p>
+    <ul class="list-disc pl-6 space-y-3 text-gray-700 dark:text-gray-300 mb-8">
+      <li><strong>SEO</strong> — strongest topical relevance signal after title</li>
+      <li><strong>UX</strong> — makes long-form content scannable in <4 seconds</li>
+      <li><strong>Accessibility</strong> — screen readers use heading levels to navigate</li>
+    </ul>
+
+    <!-- How It's Tested (Traffic Torch logic) -->
+    <h3 id="h1-headings-how" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-4">
+      How Traffic Torch Tests It
+    </h3>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      The tool performs a clean, client-side DOM analysis of your live page:
+    </p>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 mb-8">
+      <ul class="space-y-4 text-gray-800 dark:text-gray-200">
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>H1 priority check</strong> — exact or close-match keyword count in the first &lt;h1&gt; tag (usually only one per page)
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Secondary headings scan</strong> — looks at up to the first 5 H2–H6 tags for keyword presence or strong semantic relevance
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Variant matching</strong> — awards credit for exact phrase + cleaned version (stop-word removed)
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-amber-500 mt-1">⚠</span>
+          <div>
+            <strong>Multiple H1 warning</strong> — flags pages with >1 H1 (still common but not ideal)
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-amber-500 mt-1">⚠</span>
+          <div>
+            <strong>Visual preview</strong> — shows heading hierarchy as it appears to users & crawlers
+          </div>
+        </li>
       </ul>
-      <p>Aligns with <a href="https://developers.google.com/search/docs/appearance/heading-tags" target="_blank" rel="noopener noreferrer" class="text-orange-600 hover:underline">Google's heading tags advice</a>.</p>
-      
-      <h3 id="h1-headings-why" class="text-2xl font-bold mb-3">Why It Matters for SEO and UX</h3>
-      <p><strong>SEO impact</strong>: Keyword-rich H1 strengthens topical authority, aiding rankings.</p>
-      <p><strong>UX benefit</strong>: Clear hierarchy improves scannability, boosting dwell time.</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li>Featured snippets: Often pull from headings.</li>
-        <li>Mobile UX: Helps quick navigation.</li>
-      </ul>
-      <p class="bg-orange-100 dark:bg-orange-900/20 p-4 rounded-lg text-center font-bold">CTA: <a href="https://traffictorch.net/keyword-tool/" class="text-orange-600 hover:underline">Scan your headings free with Traffic Torch</a> today.</p>
-    </section>
+    </div>
+    <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+      Aligned with <a href="https://developers.google.com/search/docs/appearance/structured-data/article" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">Google’s heading guidance</a> and <a href="https://web.dev/articles/heading-structure" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">web.dev accessibility recommendations</a>.
+    </p>
+
+    <!-- Why It Matters -->
+    <h3 id="h1-headings-why" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-4">
+      Why It Matters for SEO & User Experience in 2026
+    </h3>
+    <div class="grid md:grid-cols-2 gap-8 mb-10">
+      <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
+        <h4 class="text-xl font-bold text-green-700 dark:text-green-300 mb-4">SEO Impact</h4>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200">
+          <li><strong>Top 5 on-page factor</strong> — H1 keyword match correlates strongly with higher rankings (large-scale 2024–2025 studies)</li>
+          <li><strong>Featured snippets & AI overviews</strong> — many answers pulled directly from H2/H3 subheadings</li>
+          <li><strong>Topical authority</strong> — clear hierarchy helps Google map entity relationships</li>
+        </ul>
+      </div>
+      <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
+        <h4 class="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">UX & Business Impact</h4>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200">
+          <li><strong>Scannability</strong> — 80%+ of users scan before reading; good headings reduce bounce by 20–35%</li>
+          <li><strong>Dwell time boost</strong> — logical structure keeps visitors longer → stronger behavioral signals</li>
+          <li><strong>Accessibility win</strong> — proper heading levels improve WCAG compliance and screen-reader UX</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Strong CTA Buttons -->
+    <div class="flex flex-col sm:flex-row gap-6 justify-center mt-12">
+      <a href="https://traffictorch.net/keyword-tool/" 
+         class="inline-flex items-center justify-center px-8 py-5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold text-xl rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-300">
+        H1 & Headings Audit Tool →
+      </a>
+    </div>
+  </div>
+</section>
     
-    <!-- Module 3: Content Density -->
-    <section id="content-density">
-      <h2 class="text-3xl font-bold mb-4">Content Density</h2>
-      
-      <h3 id="content-density-what" class="text-2xl font-bold mb-3">What It Is and Its History</h3>
-      <p>Measures keyword frequency vs. word count for relevance without stuffing.</p>
-      <p>Post-2011 Panda update penalized thin content; E-E-A-T (2022) emphasizes depth.</p>
-      <p><strong>Metrics</strong>: Word count (800+ ideal), mentions, density (1-2%).</p>
-      
-      <h3 id="content-density-how" class="text-2xl font-bold mb-3">How It's Tested</h3>
-      <p>Cleans body text (removes nav/footer), counts words and keyword matches (exact + cleaned).</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li>Density = (matches / words) * 100; scores based on ranges (e.g., 50 for 1-2%).</li>
-        <li>Word score caps at 50 for 800+ words.</li>
+<!-- Content Density Module -->
+<section id="content-density" class="scroll-mt-20">
+  <div class="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl p-6 md:p-10 shadow-xl border border-orange-200/50 dark:border-orange-800/30 mb-12">
+    <div class="flex items-center gap-4 mb-6">
+      <span class="text-5xl">📄</span>
+      <h2 class="text-3xl md:text-4xl font-black text-orange-700 dark:text-orange-400">
+        Content Density & Depth
+      </h2>
+    </div>
+
+    <!-- Answer-first paragraph – optimized for featured snippets, AI overviews & voice search -->
+    <p class="text-xl leading-relaxed mb-8 font-medium text-gray-800 dark:text-gray-200">
+      <strong>Yes — in 2026, aiming for 800–2,500+ words with natural keyword density between 0.8–2.2% still strongly correlates with higher rankings, especially for competitive and informational queries.</strong> 
+      Google rewards comprehensive, user-satisfying content that fully answers search intent. Traffic Torch measures both total word count (depth) and keyword density to help you hit the sweet spot without stuffing.
+    </p>
+
+    <!-- What It Is + History -->
+    <h3 id="content-density-what" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-10 mb-4 flex items-center gap-3">
+      <span class="text-orange-500">What It Is & Its Evolution</span>
+      <a href="https://traffictorch.net/blog/posts/seo-keyword-help-guide/#toc" class="text-sm text-gray-500 dark:text-gray-400 hover:text-orange-600 ml-auto">↑ Back to TOC</a>
+    </h3>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      <strong>Content density</strong> is the percentage of your target keyword (or close variants) appearing in the main visible text of the page. <strong>Content depth</strong> refers to total word count after removing boilerplate (nav, footer, sidebars, scripts).
+    </p>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      Keyword density was heavily manipulated in the early 2000s. Google’s 2011 Panda update began punishing thin or over-optimized content. The shift accelerated with:
+    </p>
+    <ul class="list-disc pl-6 space-y-3 text-gray-700 dark:text-gray-300 mb-6">
+      <li>2013–2015 Hummingbird & RankBrain → focus on semantic relevance & user intent</li>
+      <li>2022 Helpful Content Update → emphasis on “people-first” depth & expertise</li>
+      <li>2024–2026 AI Overviews & Search Generative Experience → long, comprehensive answers frequently win position zero</li>
+    </ul>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed font-medium mb-8">
+      Modern best practice: write for humans first — aim for depth that fully satisfies the query, then let natural keyword usage fall into the 0.8–2.2% range.
+    </p>
+
+    <!-- How It's Tested (Traffic Torch logic) -->
+    <h3 id="content-density-how" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-4">
+      How Traffic Torch Tests It
+    </h3>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      The tool uses a clean, client-side content extraction pipeline:
+    </p>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 mb-8">
+      <ul class="space-y-4 text-gray-800 dark:text-gray-200">
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Main content extraction</strong> — removes nav, header, footer, sidebars, scripts, styles, ads, popups, cookie banners
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Word count</strong> — splits cleaned text into words (filtering short tokens), counts total meaningful words
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Keyword mentions</strong> — counts exact phrase + cleaned variant matches (stop-word removed)
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Density formula</strong> — (keyword mentions ÷ total words) × 100 → scored optimally at 1–2%, partial credit 0.5–1% and 2–3%
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-amber-500 mt-1">⚠</span>
+          <div>
+            <strong>Depth scoring</strong> — 50 points max for ≥800 words, scaled linearly below that
+          </div>
+        </li>
       </ul>
-      <p>From <a href="https://ahrefs.com/blog/on-page-seo/" target="_blank" rel="noopener noreferrer" class="text-orange-600 hover:underline">Ahrefs on-page SEO study</a>.</p>
-      
-      <h3 id="content-density-why" class="text-2xl font-bold mb-3">Why It Matters for SEO and UX</h3>
-      <p><strong>SEO value</strong>: Balanced density signals expertise, outranking thin pages.</p>
-      <p><strong>UX gain</strong>: In-depth content satisfies queries, reducing pogo-sticking.</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li>Longer dwell time improves behavioral signals.</li>
-        <li>AI overviews favor comprehensive answers.</li>
-      </ul>
-      <p class="bg-orange-100 dark:bg-orange-900/20 p-4 rounded-lg text-center font-bold">CTA: <a href="https://traffictorch.net/keyword-tool/" class="text-orange-600 hover:underline">Check your content density instantly</a> with Traffic Torch.</p>
-    </section>
+    </div>
+    <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+      Extraction logic follows <a href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">Google’s Helpful Content guidelines</a> and readability best practices from <a href="https://web.dev/articles/content-best-practices" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">web.dev</a>.
+    </p>
+
+    <!-- Why It Matters -->
+    <h3 id="content-density-why" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-4">
+      Why It Matters for SEO & User Experience in 2026
+    </h3>
+    <div class="grid md:grid-cols-2 gap-8 mb-10">
+      <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
+        <h4 class="text-xl font-bold text-green-700 dark:text-green-300 mb-4">SEO Impact</h4>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200">
+          <li><strong>Top ranking correlate</strong> — pages with 1,500+ words & balanced density consistently outrank thin content (2024–2025 Backlinko, Semrush, Ahrefs studies)</li>
+          <li><strong>AI Overview dominance</strong> — comprehensive answers are far more likely to be quoted</li>
+          <li><strong>Behavioral signals</strong> — longer dwell time & lower pogo-sticking from satisfying content</li>
+        </ul>
+      </div>
+      <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
+        <h4 class="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">UX & Business Impact</h4>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200">
+          <li><strong>User satisfaction</strong> — complete answers reduce bounce rate by 25–45%</li>
+          <li><strong>Authority & trust</strong> — in-depth content positions you as the go-to expert</li>
+          <li><strong>Conversion lift</strong> — readers who find value stay longer → higher chance of sign-ups, purchases, shares</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Strong CTA Buttons -->
+    <div class="flex flex-col sm:flex-row gap-6 justify-center mt-12">
+      <a href="https://traffictorch.net/keyword-tool/" 
+         class="inline-flex items-center justify-center px-8 py-5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold text-xl rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-300">
+        Analyze Your Content Depth & Density →
+      </a>
+    </div>
+  </div>
+</section>
     
-    <!-- Module 4: Image Alts -->
-    <section id="image-alts">
-      <h2 class="text-3xl font-bold mb-4">Image Alts</h2>
-      
-      <h3 id="image-alts-what" class="text-2xl font-bold mb-3">What It Is and Its History</h3>
-      <p>Alt text describes images for accessibility and search.</p>
-      <p>WCAG guidelines (1999) mandated it; Google's Image SEO (2007) made it a ranking factor.</p>
-      <p><strong>Metrics</strong>: Total images, keyword matches in alts (up to 5 displayed).</p>
-      
-      <h3 id="image-alts-how" class="text-2xl font-bold mb-3">How It's Tested</h3>
-      <p>Queries all img tags, counts keyword in alt attributes (exact + variants).</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li>Scores 100 if any match; 0 if none and images exist.</li>
-        <li>Truncates alts for display.</li>
+<!-- Image Alts Module -->
+<section id="image-alts" class="scroll-mt-20">
+  <div class="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl p-6 md:p-10 shadow-xl border border-orange-200/50 dark:border-orange-800/30 mb-12">
+    <div class="flex items-center gap-4 mb-6">
+      <span class="text-5xl">🖼️</span>
+      <h2 class="text-3xl md:text-4xl font-black text-orange-700 dark:text-orange-400">
+        Image Alt Text
+      </h2>
+    </div>
+
+    <!-- Answer-first paragraph – optimized for featured snippets, AI overviews & voice search -->
+    <p class="text-xl leading-relaxed mb-8 font-medium text-gray-800 dark:text-gray-200">
+      <strong>Yes — adding descriptive, keyword-relevant alt text to your important images is still a meaningful ranking factor in 2026, especially for Google Images traffic, accessibility compliance, and overall page topical relevance.</strong> 
+      While alt text is no longer a massive ranking booster like it was pre-2018, well-optimized alts can drive 10–30% additional organic traffic from image search and help pages appear in multimodal AI results.
+    </p>
+
+    <!-- What It Is + History -->
+    <h3 id="image-alts-what" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-10 mb-4 flex items-center gap-3">
+      <span class="text-orange-500">What It Is & Its Evolution</span>
+      <a href="https://traffictorch.net/blog/posts/seo-keyword-help-guide/#toc" class="text-sm text-gray-500 dark:text-gray-400 hover:text-orange-600 ml-auto">↑ Back to TOC</a>
+    </h3>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      The <strong>alt attribute</strong> (alternative text) is a short description added to every <code>&lt;img&gt;</code> tag. It tells search engines and screen readers what the image shows when the image itself cannot be displayed or seen.
+    </p>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      Alt text became mandatory for accessibility with WCAG 1.0 in 1999. Google started treating it as an image SEO signal around 2007–2008 (post-Universal Search launch). Key evolution milestones:
+    </p>
+    <ul class="list-disc pl-6 space-y-3 text-gray-700 dark:text-gray-300 mb-6">
+      <li>2010–2015 — alt text with exact keywords was heavily weighted for image rankings</li>
+      <li>2018–2020 — Google shifted emphasis to visual understanding via neural networks (less keyword stuffing tolerance)</li>
+      <li>2022–2026 — Helpful Content + multimodal AI updates → descriptive, natural alt text now supports both accessibility and contextual relevance in Google Lens, AI Overviews, and image packs</li>
+    </ul>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed font-medium mb-8">
+      Today alt text serves three primary purposes:
+    </p>
+    <ul class="list-disc pl-6 space-y-3 text-gray-700 dark:text-gray-300 mb-8">
+      <li><strong>Accessibility</strong> — WCAG 2.2 AA compliance (screen readers)</li>
+      <li><strong>SEO</strong> — contextual signal + Google Images traffic</li>
+      <li><strong>UX fallback</strong> — shows when images fail to load (slow connections, data saver mode)</li>
+    </ul>
+
+    <!-- How It's Tested (Traffic Torch logic) -->
+    <h3 id="image-alts-how" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-4">
+      How Traffic Torch Tests It
+    </h3>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      The tool performs a fast, client-side scan of your live page:
+    </p>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 mb-8">
+      <ul class="space-y-4 text-gray-800 dark:text-gray-200">
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Total image count</strong> — identifies all <code>&lt;img&gt;</code> elements on the page
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Keyword presence</strong> — checks alt attributes for exact phrase or cleaned variant matches
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Relevance filter</strong> — shows up to 5 matching alts + highlights important images (those with width/height ≥ 100px or in main content)
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-amber-500 mt-1">⚠</span>
+          <div>
+            <strong>Missing alt warning</strong> — flags images without alt or with empty alt="" on meaningful images
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-amber-500 mt-1">⚠</span>
+          <div>
+            <strong>Decorative vs content images</strong> — notes best-practice alt="" for purely decorative images
+          </div>
+        </li>
       </ul>
-      <p>See <a href="https://developers.google.com/search/docs/appearance/google-images" target="_blank" rel="noopener noreferrer" class="text-orange-600 hover:underline">Google Images best practices</a>.</p>
-      
-      <h3 id="image-alts-why" class="text-2xl font-bold mb-3">Why It Matters for SEO and UX</h3>
-      <p><strong>SEO perk</strong>: Drives image search traffic, enhancing overall visibility.</p>
-      <p><strong>UX essential</strong>: Aids visually impaired users, improving inclusivity.</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li>Contextual relevance boosts page authority.</li>
-        <li>Reduces load issues for slow connections.</li>
-      </ul>
-      <p class="bg-orange-100 dark:bg-orange-900/20 p-4 rounded-lg text-center font-bold">CTA: <a href="https://traffictorch.net/keyword-tool/" class="text-orange-600 hover:underline">Audit your image alts</a> with Traffic Torch for free.</p>
-    </section>
+    </div>
+    <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+      Testing follows <a href="https://developers.google.com/search/docs/appearance/google-images" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">Google Images SEO best practices</a> and <a href="https://www.w3.org/WAI/tutorials/images/" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">W3C/WAI alt text guidance</a>.
+    </p>
+
+    <!-- Why It Matters -->
+    <h3 id="image-alts-why" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-4">
+      Why It Matters for SEO & User Experience in 2026
+    </h3>
+    <div class="grid md:grid-cols-2 gap-8 mb-10">
+      <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
+        <h4 class="text-xl font-bold text-green-700 dark:text-green-300 mb-4">SEO Impact</h4>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200">
+          <li><strong>Google Images traffic</strong> — optimized alts can drive 10–30% extra organic visits (especially visual niches)</li>
+          <li><strong>Page relevance signal</strong> — helps Google understand image context in multimodal search</li>
+          <li><strong>AI Overview inclusion</strong> — descriptive alts improve chances of images being referenced</li>
+        </ul>
+      </div>
+      <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
+        <h4 class="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">UX & Business Impact</h4>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200">
+          <li><strong>Accessibility compliance</strong> — WCAG requirement → avoids legal risk & improves inclusivity</li>
+          <li><strong>Slow-connection fallback</strong> — meaningful alts shown when images don’t load (huge in mobile-first markets)</li>
+          <li><strong>Trust & professionalism</strong> — polished sites with proper alts appear more credible</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Strong CTA Buttons -->
+    <div class="flex flex-col sm:flex-row gap-6 justify-center mt-12">
+      <a href="https://traffictorch.net/keyword-tool/" 
+         class="inline-flex items-center justify-center px-8 py-5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold text-xl rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-300">
+        Audit Your Image Alt Text →
+      </a>
+    </div>
+  </div>
+</section>
     
-    <!-- Module 5: Anchor Text -->
-    <section id="anchor-text">
-      <h2 class="text-3xl font-bold mb-4">Anchor Text</h2>
-      
-      <h3 id="anchor-text-what" class="text-2xl font-bold mb-3">What It Is and Its History</h3>
-      <p>Clickable link text that describes the destination.</p>
-      <p>PageRank (1998) used anchors for authority; 2012 Penguin penalized over-optimization.</p>
-      <p><strong>Metrics</strong>: Internal anchors with keyword (up to 5, with href).</p>
-      
-      <h3 id="anchor-text-how" class="text-2xl font-bold mb-3">How It's Tested</h3>
-      <p>Scans all <a> tags, counts keyword in text (exact + variants).</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li>Scores 100 if any; focuses on internal links.</li>
-        <li>Displays text and href truncated.</li>
+<!-- Anchor Text Module -->
+<section id="anchor-text" class="scroll-mt-20">
+  <div class="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl p-6 md:p-10 shadow-xl border border-orange-200/50 dark:border-orange-800/30 mb-12">
+    <div class="flex items-center gap-4 mb-6">
+      <span class="text-5xl">🔗</span>
+      <h2 class="text-3xl md:text-4xl font-black text-orange-700 dark:text-orange-400">
+        Anchor Text
+      </h2>
+    </div>
+
+    <!-- Answer-first paragraph – optimized for featured snippets, AI overviews & voice search -->
+    <p class="text-xl leading-relaxed mb-8 font-medium text-gray-800 dark:text-gray-200">
+      <strong>Yes — using your target keyword (or close natural variations) in internal anchor text remains an important on-page and site architecture signal in 2026.</strong> 
+      Descriptive, keyword-relevant anchor text helps Google understand page relationships, strengthens topical clusters, and improves crawl efficiency. Well-optimized internal links can lift site-wide authority flow and user navigation, indirectly supporting higher rankings.
+    </p>
+
+    <!-- What It Is + History -->
+    <h3 id="anchor-text-what" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-10 mb-4 flex items-center gap-3">
+      <span class="text-orange-500">What It Is & Its Evolution</span>
+      <a href="https://traffictorch.net/blog/posts/seo-keyword-help-guide/#toc" class="text-sm text-gray-500 dark:text-gray-400 hover:text-orange-600 ml-auto">↑ Back to TOC</a>
+    </h3>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      <strong>Anchor text</strong> is the visible, clickable text inside an <code>&lt;a&gt;</code> tag that users see and click. For internal links (same domain), it tells both users and search engines what the linked page is about.
+    </p>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      Anchor text became a core ranking factor with Google’s original PageRank algorithm (1998). It was heavily abused in the 2000s (exact-match over-optimization), leading to major crackdowns:
+    </p>
+    <ul class="list-disc pl-6 space-y-3 text-gray-700 dark:text-gray-300 mb-6">
+      <li>2012 Penguin update → penalized aggressive exact-match anchor text</li>
+      <li>2016–2019 → shift toward natural, branded, and partial-match anchors</li>
+      <li>2022–2026 → Helpful Content + entity-based ranking → focus on semantic relevance, topical clusters, and user-first linking</li>
+    </ul>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed font-medium mb-8">
+      Modern philosophy: internal anchor text should be descriptive, natural, and helpful — ideally containing the target keyword or strong semantic variant when contextually appropriate.
+    </p>
+
+    <!-- How It's Tested (Traffic Torch logic) -->
+    <h3 id="anchor-text-how" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-4">
+      How Traffic Torch Tests It
+    </h3>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      The tool scans your live page DOM for internal linking patterns:
+    </p>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 mb-8">
+      <ul class="space-y-4 text-gray-800 dark:text-gray-200">
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Internal link detection</strong> — identifies <code>&lt;a&gt;</code> tags where href starts with same domain or relative path
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Anchor text analysis</strong> — checks visible text for exact keyword phrase or cleaned variant matches
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Display sample</strong> — shows up to 5 matching anchors with truncated text and href for context
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-amber-500 mt-1">⚠</span>
+          <div>
+            <strong>Zero matches warning</strong> — flags when no internal anchors use the keyword (missed opportunity for relevance reinforcement)
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-amber-500 mt-1">⚠</span>
+          <div>
+            <strong>Over-optimization check</strong> — notes suspiciously high density of exact-match anchors (rare but still flagged)
+          </div>
+        </li>
       </ul>
-      <p>Per <a href="https://moz.com/learn/seo/anchor-text" target="_blank" rel="noopener noreferrer" class="text-orange-600 hover:underline">Moz anchor text guide</a>.</p>
-      
-      <h3 id="anchor-text-why" class="text-2xl font-bold mb-3">Why It Matters for SEO and UX</h3>
-      <p><strong>SEO advantage</strong>: Distributes link equity, reinforcing site structure.</p>
-      <p><strong>UX improvement</strong>: Descriptive text guides navigation intuitively.</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li>Topical clusters for better crawling.</li>
-        <li>Lowers exit rates via relevant links.</li>
-      </ul>
-      <p class="bg-orange-100 dark:bg-orange-900/20 p-4 rounded-lg text-center font-bold">CTA: <a href="https://traffictorch.net/keyword-tool/" class="text-orange-600 hover:underline">Analyze your anchors</a> using Traffic Torch.</p>
-    </section>
+    </div>
+    <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+      Methodology aligns with <a href="https://developers.google.com/search/docs/crawling-indexing/links-crawlable" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">Google’s internal linking guidance</a> and <a href="https://moz.com/learn/seo/internal-link" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">Moz’s internal linking best practices</a>.
+    </p>
+
+    <!-- Why It Matters -->
+    <h3 id="anchor-text-why" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-4">
+      Why It Matters for SEO & User Experience in 2026
+    </h3>
+    <div class="grid md:grid-cols-2 gap-8 mb-10">
+      <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
+        <h4 class="text-xl font-bold text-green-700 dark:text-green-300 mb-4">SEO Impact</h4>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200">
+          <li><strong>Topical cluster reinforcement</strong> — keyword anchors help Google map site architecture and entity relationships</li>
+          <li><strong>Link equity distribution</strong> — passes contextual relevance signals between related pages</li>
+          <li><strong>Crawl efficiency</strong> — descriptive anchors guide crawlers to important content faster</li>
+        </ul>
+      </div>
+      <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
+        <h4 class="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">UX & Business Impact</h4>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200">
+          <li><strong>Intuitive navigation</strong> — clear anchor text reduces clicks to wrong pages → lower bounce rate</li>
+          <li><strong>Dwell time improvement</strong> — users follow relevant links → stronger behavioral ranking signals</li>
+          <li><strong>Conversion path support</strong> — strategic internal linking guides visitors toward key actions</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Strong CTA Buttons -->
+    <div class="flex flex-col sm:flex-row gap-6 justify-center mt-12">
+      <a href="https://traffictorch.net/keyword-tool/" 
+         class="inline-flex items-center justify-center px-8 py-5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold text-xl rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-300">
+        Scan Your Internal Anchor Text →
+      </a>
+    </div>
+  </div>
+</section>
     
-    <!-- Module 6: URL & Schema -->
-    <section id="url-schema">
-      <h2 class="text-3xl font-bold mb-4">URL & Schema</h2>
-      
-      <h3 id="url-schema-what" class="text-2xl font-bold mb-3">What It Is and Its History</h3>
-      <p>URLs are page addresses; schema is structured data for rich results.</p>
-      <p>URLs standardized in 1994; Schema.org (2011) by Google/Bing enabled enhanced SERPs.</p>
-      <p><strong>Metrics</strong>: Keyword in URL, presence of JSON-LD script.</p>
-      
-      <h3 id="url-schema-how" class="text-2xl font-bold mb-3">How It's Tested</h3>
-      <p>Counts keyword in URL (hyphen as space, partial matches if 50%+ words).</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li>Checks for application/ld+json script.</li>
-        <li>Scores: 50 for URL match, 50 for schema.</li>
+<!-- URL & Schema Module -->
+<section id="url-schema" class="scroll-mt-20">
+  <div class="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl p-6 md:p-10 shadow-xl border border-orange-200/50 dark:border-orange-800/30 mb-12">
+    <div class="flex items-center gap-4 mb-6">
+      <span class="text-5xl">🌐</span>
+      <h2 class="text-3xl md:text-4xl font-black text-orange-700 dark:text-orange-400">
+        URL & Schema Markup
+      </h2>
+    </div>
+
+    <!-- Answer-first paragraph – optimized for featured snippets, AI overviews & voice search -->
+    <p class="text-xl leading-relaxed mb-8 font-medium text-gray-800 dark:text-gray-200">
+      <strong>Yes — including your target keyword in a clean, readable URL (hyphen-separated) and implementing structured data (JSON-LD schema) are still high-impact on-page signals in 2026.</strong> 
+      Keyword-rich URLs improve perceived relevance and CTR from SERPs, while schema enables rich results (stars, FAQs, carousels), boosting visibility by 20–50% in many niches. Traffic Torch checks both to help you capture these easy wins.
+    </p>
+
+    <!-- What It Is + History -->
+    <h3 id="url-schema-what" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-10 mb-4 flex items-center gap-3">
+      <span class="text-orange-500">What It Is & Its Evolution</span>
+      <a href="https://traffictorch.net/blog/posts/seo-keyword-help-guide/#toc" class="text-sm text-gray-500 dark:text-gray-400 hover:text-orange-600 ml-auto">↑ Back to TOC</a>
+    </h3>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      The <strong>URL</strong> is the unique web address of your page. <strong>Schema markup</strong> (usually JSON-LD) is structured data embedded in the <code>&lt;head&gt;</code> or <code>&lt;body&gt;</code> that helps search engines understand content type, entities, ratings, FAQs, products, articles, and more.
+    </p>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      Clean URLs became important with Google’s early indexing (2000s). Keyword inclusion in URLs was a strong signal until ~2012. Schema.org launched in 2011 (joint effort by Google, Bing, Yahoo), and rich snippets exploded after 2015–2016.
+    </p>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      Key modern milestones:
+    </p>
+    <ul class="list-disc pl-6 space-y-3 text-gray-700 dark:text-gray-300 mb-6">
+      <li>2017–2020 — mobile-first indexing → short, readable URLs became even more critical</li>
+      <li>2021–2023 — Passage Indexing & MUM → schema helps identify entity-rich passages</li>
+      <li>2024–2026 — AI Overviews, rich results expansion, zero-click SERPs → schema is now essential for visibility in carousels, knowledge panels, and generative answers</li>
+    </ul>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed font-medium mb-8">
+      Best practice today: keyword-focused slugs + relevant schema (Article, FAQPage, HowTo, Product, LocalBusiness, etc.) for maximum SERP real estate.
+    </p>
+
+    <!-- How It's Tested (Traffic Torch logic) -->
+    <h3 id="url-schema-how" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-4">
+      How Traffic Torch Tests It
+    </h3>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+      The tool evaluates both signals with lightweight, client-side checks:
+    </p>
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 mb-8">
+      <ul class="space-y-4 text-gray-800 dark:text-gray-200">
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>URL keyword match</strong> — splits URL path by hyphens/spaces, counts exact phrase + cleaned variant (stop-word removed); partial credit if ≥50% of key terms appear
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Schema detection</strong> — searches for <code>&lt;script type="application/ld+json"&gt;</code> tags anywhere in the document
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-green-500 mt-1">✓</span>
+          <div>
+            <strong>Schema validity hint</strong> — basic presence check (full validation would require external API call; we keep it instant)
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-amber-500 mt-1">⚠</span>
+          <div>
+            <strong>No keyword in URL</strong> — common on migrated or legacy sites; flags opportunity
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-xl text-amber-500 mt-1">⚠</span>
+          <div>
+            <strong>No schema detected</strong> — misses rich results; suggests Article/FAQPage as starting point
+          </div>
+        </li>
       </ul>
-      <p>From <a href="https://schema.org/" target="_blank" rel="noopener noreferrer" class="text-orange-600 hover:underline">Schema.org docs</a>.</p>
-      
-      <h3 id="url-schema-why" class="text-2xl font-bold mb-3">Why It Matters for SEO and UX</h3>
-      <p><strong>SEO edge</strong>: Clean URLs improve CTR; schema enables stars/FAQs in results.</p>
-      <p><strong>UX plus</strong>: Intuitive URLs build trust; rich snippets provide quick info.</p>
-      <ul class="list-disc pl-6 mb-4">
-        <li>Increased visibility in voice search.</li>
-        <li>Better mobile experience with previews.</li>
-      </ul>
-      <p class="bg-orange-100 dark:bg-orange-900/20 p-4 rounded-lg text-center font-bold">CTA: <a href="https://traffictorch.net/keyword-tool/" class="text-orange-600 hover:underline">Verify your URL & schema</a> with Traffic Torch.</p>
-    </section>
+    </div>
+    <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+      Aligned with <a href="https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">Google’s structured data intro</a> and <a href="https://developers.google.com/search/docs/appearance/specialty" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">specialty search appearance docs</a>.
+    </p>
+
+    <!-- Why It Matters -->
+    <h3 id="url-schema-why" class="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-12 mb-4">
+      Why It Matters for SEO & User Experience in 2026
+    </h3>
+    <div class="grid md:grid-cols-2 gap-8 mb-10">
+      <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
+        <h4 class="text-xl font-bold text-green-700 dark:text-green-300 mb-4">SEO Impact</h4>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200">
+          <li><strong>CTR from SERPs</strong> — keyword in URL + rich snippets = 20–50% higher click-through in many verticals</li>
+          <li><strong>Rich results eligibility</strong> — schema unlocks stars, FAQs, how-tos, carousels, knowledge panels</li>
+          <li><strong>Entity & topical clarity</strong> — clean URLs + schema reinforce page intent for AI-driven ranking</li>
+        </ul>
+      </div>
+      <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
+        <h4 class="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">UX & Business Impact</h4>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200">
+          <li><strong>Trust & expectation</strong> — descriptive URLs reduce hesitation before clicking</li>
+          <li><strong>Enhanced SERP visibility</strong> — rich results take more screen space → higher brand exposure</li>
+          <li><strong>Voice & mobile search</strong> — schema helps appear in spoken answers and mobile carousels</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Strong CTA Buttons -->
+    <div class="flex flex-col sm:flex-row gap-6 justify-center mt-12">
+      <a href="https://traffictorch.net/keyword-tool/" 
+         class="inline-flex items-center justify-center px-8 py-5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold text-xl rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-300">
+        Check Your URL & Schema →
+      </a>
+    </div>
+  </div>
+</section>
     
-    <!-- Conclusion -->
-    <section id="conclusion">
-      <h2 class="text-3xl font-bold mb-4">Conclusion: Level Up Your Keyword Game</h2>
-      <p>Keyword optimization blends history with modern AI-driven SEO. Master these modules to climb SERPs sustainably.</p>
-      <p><strong>Next steps</strong>: Implement fixes, monitor in Google Search Console, and iterate.</p>
-      <p>Explore more: <a href="https://traffictorch.net/keyword-tool/" class="text-orange-600 hover:underline">Keyword Tool</a>, <a href="https://traffictorch.net/blog/posts/advanced-seo-strategies/" class="text-orange-600 hover:underline">Advanced SEO Strategies</a>.</p>
-    </section>
-    
-    <!-- FAQ Section -->
-    <section id="faq">
-      <h2 class="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
-      <details class="mb-4">
-        <summary class="cursor-pointer font-bold">What is keyword optimization in SEO?</summary>
-        <p class="mt-2">Keyword optimization involves strategically placing target keywords in key page elements like titles, headings, and content to improve search engine relevance and rankings.</p>
+<!-- Conclusion -->
+<section id="conclusion" class="scroll-mt-20 mt-16">
+  <div class="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl p-8 md:p-12 shadow-2xl border border-orange-200/50 dark:border-orange-800/30">
+    <h2 class="text-4xl md:text-5xl font-black text-center text-orange-700 dark:text-orange-400 mb-8">
+      Master On-Page Keyword Optimization in 2026
+    </h2>
+
+    <p class="text-xl leading-relaxed mb-8 text-center font-medium text-gray-800 dark:text-gray-200 max-w-3xl mx-auto">
+      Keyword optimization is no longer about stuffing — it’s about creating relevance, satisfying user intent, and delivering exceptional experiences. The six modules covered here — Meta Title & Description, H1 & Headings, Content Density, Image Alts, Anchor Text, and URL & Schema — represent the highest-leverage on-page factors still driving rankings today.
+    </p>
+
+    <div class="grid md:grid-cols-2 gap-8 mb-12">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+        <h3 class="text-2xl font-bold text-orange-600 dark:text-orange-400 mb-4">Key Takeaways</h3>
+        <ul class="space-y-3 text-gray-700 dark:text-gray-300">
+          <li><strong>Natural & user-first</strong> — prioritize clarity over exact-match density</li>
+          <li><strong>Holistic signals</strong> — all six elements work together to reinforce topical authority</li>
+          <li><strong>Measurable wins</strong> — fixing these often yields 20–60% CTR and ranking improvements</li>
+          <li><strong>Ongoing process</strong> — audit regularly, especially after content updates or algorithm shifts</li>
+        </ul>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+        <h3 class="text-2xl font-bold text-orange-600 dark:text-orange-400 mb-4">Next Steps</h3>
+        <ul class="space-y-3 text-gray-700 dark:text-gray-300">
+          <li>Run a free audit on your most important page</li>
+          <li>Implement the top-priority fixes shown in your report</li>
+          <li>Monitor changes in Google Search Console (CTR, impressions, position)</li>
+          <li>Re-audit after 2–4 weeks to track progress</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-16 text-center text-gray-600 dark:text-gray-400 text-sm">
+      <p>Related reading:</p>
+      <p class="mt-2">
+        <a href="https://traffictorch.net/blog/posts/seo-keyword-competition-help-guide/" class="text-orange-600 dark:text-orange-400 hover:underline mx-2">Keyword Competition Tutorial</a> •
+        <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide.html" class="text-orange-600 dark:text-orange-400 hover:underline mx-2">AI Search Optimization Guide</a> •
+        <a href="https://traffictorch.net/news/" class="text-orange-600 dark:text-orange-400 hover:underline mx-2">All Traffic Torch Blog Posts</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section id="faq" class="scroll-mt-20 mt-20">
+  <div class="bg-white dark:bg-gray-900 rounded-3xl p-8 md:p-12 shadow-2xl border border-gray-200 dark:border-gray-700">
+    <h2 class="text-4xl md:text-5xl font-black text-center text-orange-700 dark:text-orange-400 mb-10">
+      Frequently Asked Questions
+    </h2>
+
+    <div class="space-y-6">
+      <details class="group bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+        <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+          <span>What is the ideal keyword placement strategy in 2026?</span>
+          <span class="group-open:rotate-180 transition-transform">▼</span>
+        </summary>
+        <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+          <p>Focus on natural integration: primary keyword in meta title (front-loaded), H1, first 100–150 words, image alts (main visuals), and 1–2 strategic internal anchors. Support with secondary terms in subheadings and body. Aim for comprehensive depth (800–2,500+ words) over forced density.</p>
+        </div>
       </details>
-      <details class="mb-4">
-        <summary class="cursor-pointer font-bold">How do I test my page's keyword density?</summary>
-        <p class="mt-2">Use tools like Traffic Torch's Keyword Tool to analyze word count, keyword mentions, and density. Aim for 1-2% density with 800+ words for depth.</p>
+
+      <details class="group bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+        <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+          <span>How important is keyword density today?</span>
+          <span class="group-open:rotate-180 transition-transform">▼</span>
+        </summary>
+        <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+          <p>Density matters less than depth and intent satisfaction. Target 0.8–2.2% naturally. Pages with 1,500+ high-quality words and balanced keyword usage consistently outperform thin content — especially for competitive queries and AI overviews.</p>
+        </div>
       </details>
-      <details class="mb-4">
-        <summary class="cursor-pointer font-bold">Why is schema markup important for keywords?</summary>
-        <p class="mt-2">Schema helps search engines understand content context, enabling rich snippets that boost CTR and visibility in SERPs.</p>
+
+      <details class="group bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+        <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+          <span>Does schema markup still help rankings in 2026?</span>
+          <span class="group-open:rotate-180 transition-transform">▼</span>
+        </summary>
+        <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+          <p>Indirectly — yes. Schema doesn’t directly boost core rankings, but it unlocks rich results (stars, FAQs, carousels) that dramatically increase CTR and visibility in zero-click SERPs and AI-generated answers. Article, FAQPage, and HowTo schemas are the most impactful for blog/content pages.</p>
+        </div>
       </details>
-      <details class="mb-4">
-        <summary class="cursor-pointer font-bold">Can image alt text affect SEO rankings?</summary>
-        <p class="mt-2">Yes, descriptive alt text with keywords improves accessibility, image search traffic, and overall page relevance signals.</p>
+
+      <details class="group bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+        <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+          <span>Should I put the keyword in the URL?</span>
+          <span class="group-open:rotate-180 transition-transform">▼</span>
+        </summary>
+        <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+          <p>Yes — if it’s natural and doesn’t require breaking existing URLs. A clean, keyword-containing URL (e.g. /best-seo-tools-2026) improves CTR from SERPs and reinforces topical relevance. If changing URLs, use 301 redirects and update internal links/sitemap.</p>
+        </div>
       </details>
-      <details class="mb-4">
-        <summary class="cursor-pointer font-bold">How often should I update my meta descriptions?</summary>
-        <p class="mt-2">Update them whenever content changes or to test CTR improvements. Include keywords naturally for better search result appeal.</p>
+
+      <details class="group bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+        <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+          <span>How often should I re-audit my pages?</span>
+          <span class="group-open:rotate-180 transition-transform">▼</span>
+        </summary>
+        <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+          <p>Every time you significantly update content, after major Google core updates, or quarterly for high-traffic pages. Use Traffic Torch’s instant audit to track progress after fixes — most noticeable CTR and position changes appear within 7–30 days post-reindexing.</p>
+        </div>
       </details>
-    </section>
+    </div>
+
+    <!-- Final CTA under FAQ -->
+    <div class="text-center mt-12">
+      <a href="https://traffictorch.net/keyword-tool/" 
+         class="inline-flex items-center justify-center px-10 py-6 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-black text-2xl rounded-3xl shadow-2xl transform hover:scale-105 transition-all duration-300">
+        Get Your Free On-Page Keyword Audit Here →
+      </a>
+    </div>
+  </div>
+</section>
+
   </article>
     
 
@@ -846,8 +1454,8 @@
           Updated based on the latest search engine guidelines, ranking factor research, and real-page performance data.
         </p>
               <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
-        <p>Published: 2026-02-17</p>
-        <p>Last updated: 2026-02-17</p>
+        <p>Published: 2026-02-18</p>
+        <p>Last updated: 2026-02-18</p>
       </div>
       </div>
     </div>
