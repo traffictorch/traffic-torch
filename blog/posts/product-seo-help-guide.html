@@ -1,0 +1,1593 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <!-- Referrer Policy (security + privacy best practice) -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/">
+ 
+<!-- Post-specific SEO Title & Description -->
+<title>Product SEO Help Guide: Optimize Ecommerce Pages – Traffic Torch</title>
+<meta name="description" content="Complete 2026 guide to product page SEO: on-page, technical, content & media, ecommerce signals. Learn testing logic, why each metric matters, and fast fixes to boost rankings and conversions with Traffic Torch." />
+
+<!-- Robots & Canonical -->
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://traffictorch.net/blog/posts/product-seo-help-guide/" />
+
+<!-- Open Graph Tags -->
+<meta property="og:title" content="Product SEO Help Guide: Optimize Ecommerce Pages – Traffic Torch" />
+<meta property="og:description" content="Complete 2026 guide to product page SEO: on-page, technical, content & media, ecommerce signals. Learn testing logic, why each metric matters, and fast fixes to boost rankings and conversions with Traffic Torch." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://traffictorch.net/blog/posts/product-seo-help-guide/" />
+<meta property="og:image" content="https://traffictorch.net/blog/images/product-seo/product-seo-help-guide-1200w.webp" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="Traffic Torch" />
+
+<!-- Twitter / X Cards -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Product SEO Help Guide: Optimize Ecommerce Pages – Traffic Torch" />
+<meta name="twitter:description" content="Complete 2026 guide to product page SEO: on-page, technical, content & media, ecommerce signals. Learn testing logic, why each metric matters, and fast fixes to boost rankings and conversions with Traffic Torch." />
+<meta name="twitter:image" content="https://traffictorch.net/blog/images/product-seo/product-seo-help-guide-1200w.webp" />
+<meta name="twitter:site" content="@Guitaralize" />
+
+<!-- Structured Data (JSON-LD) - BlogPosting -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Product SEO Help Guide: Optimize Your Ecommerce Pages for Higher Rankings and Conversions",
+  "description": "In-depth 2026 guide explaining Traffic Torch's product SEO modules: on-page, technical, content & media, and ecommerce signals. Covers exact testing logic from the tool's JS, why each metric drives SEO + UX results, and prioritized fixes for real gains.",
+  "image": "https://traffictorch.net/blog/images/product-seo/product-seo-help-guide-1200w.webp",
+  "datePublished": "2026-02-19",
+  "dateModified": "2026-02-19",
+  "author": {
+    "@type": "Person",
+    "name": "Traffic Torch Team",
+    "url": "https://traffictorch.net",
+    "sameAs": [
+      "https://twitter.com/guitaralize"
+    ]
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://traffictorch.net/logo-512.webp"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://traffictorch.net/blog/posts/product-seo-help-guide/"
+  },
+  "keywords": [
+    "product SEO guide",
+    "ecommerce SEO optimization",
+    "product page SEO",
+    "SEO health score",
+    "structured data for products",
+    "on-page SEO metrics",
+    "technical SEO for ecommerce",
+    "Traffic Torch tool"
+  ],
+  "wordCount": 3200,
+  "inLanguage": "en",
+  "articleSection": "SEO Guides",
+  "isPartOf": {
+    "@type": "Blog",
+    "name": "Traffic Torch Blog",
+    "url": "https://traffictorch.net/news/"
+  }
+}
+</script>
+
+<!-- Organization Schema (site-wide, keep if not duplicated elsewhere) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Traffic Torch",
+  "url": "https://traffictorch.net/",
+  "logo": "https://traffictorch.net/logo-512.webp",
+  "sameAs": [
+    "https://twitter.com/guitaralize"
+  ]
+}
+</script>
+
+<!-- BreadcrumbList -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://traffictorch.net/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "News & Blog",
+      "item": "https://traffictorch.net/news/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Product SEO Help Guide: Optimize Your Ecommerce Pages",
+      "item": "https://traffictorch.net/blog/posts/product-seo-help-guide/"
+    }
+  ]
+}
+</script>
+ 
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Main Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/blog/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/blog/style-v1.0.css">
+  </noscript>
+
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  <meta http-equiv="Content-Encoding" content="br">  
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
+        </a>
+        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
+        </a>
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚡</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📝</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
+              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⚡ Quit Risk</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">📝 Keywords</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+<!-- Updated Blog Post Content Area (glassmorphism card matching site style) -->
+<main class="py-16 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-sm">
+  <article class="max-w-4xl mx-auto px-6">
+    <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-10 prose prose-lg dark:prose-invert max-w-none border border-white/10 dark:border-white/5">
+      
+      <!-- Hero - Featured Image -->
+      <picture class="mb-12 block">
+  <source
+    media="(max-width: 640px)"
+    srcset="/blog/images/product-seo/product-seo-help-guide-640w.webp">
+  <source
+    media="(min-width: 641px)"
+    srcset="/blog/images/product-seo/product-seo-help-guide-1200w.webp">
+  <img
+    src="/blog/images/product-seo/product-seo-help-guide-1200w.webp"
+    alt="Complete guide to product page SEO optimization for better rankings and conversions"
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="eager"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+</picture>
+
+      <!-- REPLACE: Post Title -->
+      <h1 class="text-2xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        How Traffic Torch Was Built
+      </h1>
+
+      <!-- REPLACE: Full post content goes here -->
+      <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Your full article content starts here. Use standard HTML with Tailwind classes or just write clean markdown-style HTML — Tailwind’s <code>prose</code> handles beautiful, responsive typography automatically.</p>
+
+<!-- H1 + Subtitle + Introduction – Mobile-first, SEO-optimized, day/night ready -->
+<section class="pt-8 pb-12 md:pt-12 md:pb-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+  <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-center mb-6 
+             bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 
+             bg-clip-text text-transparent leading-tight tracking-tight">
+    Product SEO Help Guide 2026
+  </h1>
+
+  <p class="text-xl sm:text-2xl md:text-3xl font-semibold text-center 
+            text-gray-800 dark:text-gray-200 mb-10 max-w-4xl mx-auto leading-relaxed">
+    The complete, up-to-date guide to mastering ecommerce product page SEO – 
+    explained using the exact logic inside Traffic Torch’s free 360° analysis tool
+  </p>
+
+  <div class="prose prose-lg sm:prose-xl dark:prose-invert mx-auto 
+              text-gray-800 dark:text-gray-200 leading-relaxed">
+    <p class="text-center md:text-left">
+      Want higher Google rankings, more organic clicks, and better conversions on your product pages?
+      <strong class="font-bold text-orange-600 dark:text-orange-400">
+        Start here.
+      </strong>
+    </p>
+
+    <p>
+      This 2026 guide walks you through <strong>every single metric</strong> that Traffic Torch measures — 
+      from title tag optimization and mobile viewport checks to Product schema validation, image alt quality, 
+      and review aggregation. You’ll see:
+    </p>
+
+    <ul class="list-disc pl-6 space-y-3 mt-6">
+      <li><strong>What</strong> each module actually evaluates (and its history in modern SEO)</li>
+      <li><strong>How</strong> Traffic Torch tests it — pulled directly from the live JavaScript logic</li>
+      <li><strong>Why</strong> it drives rankings, UX, dwell time, CTR and revenue</li>
+      <li>Fast, prioritized fixes you can implement today</li>
+    </ul>
+
+    <p class="mt-8 font-medium text-lg">
+      Whether you’re fixing a single product page or optimizing thousands, this is the most practical, 
+      tool-backed ecommerce SEO education available in 2026.
+    </p>
+
+    <p class="mt-6 text-center md:text-left">
+      <span class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 
+                   text-white font-bold rounded-xl shadow-lg transform hover:scale-105 transition">
+        Ready? Scroll to audit your first page → <a href="https://traffictorch.net/product-seo-tool/" 
+        class="underline hover:no-underline">Launch Traffic Torch Tool</a>
+      </span>
+    </p>
+  </div>
+</section>
+
+<!-- Table of Contents – 4-column table (sticky-friendly, mobile-scrollable) -->
+<nav id="toc" class="bg-white dark:bg-gray-900 p-6 mt-10 rounded-2xl shadow-lg mb-12 border border-gray-200 dark:border-gray-700">
+  <h2 class="text-2xl md:text-3xl font-black text-center text-gray-800 dark:text-gray-100 mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Table of Contents
+  </h2>
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse min-w-[800px]">
+      <thead>
+        <tr class="bg-gray-100 dark:bg-gray-800">
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Module</th>
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 text-center">What is it?</th>
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 text-center">How it's tested?</th>
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 text-center">Why it matters?</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-800 dark:text-gray-200">
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#onpage" class="text-orange-600 dark:text-orange-400 hover:underline">On-Page SEO</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#onpage-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#onpage-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#onpage-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#technical" class="text-orange-600 dark:text-orange-400 hover:underline">Technical SEO</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#technical-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#technical-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#technical-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#contentmedia" class="text-orange-600 dark:text-orange-400 hover:underline">Content & Media</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#contentmedia-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#contentmedia-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#contentmedia-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#ecommerce" class="text-orange-600 dark:text-orange-400 hover:underline">E-Commerce Signals</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#ecommerce-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#ecommerce-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#ecommerce-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+    <a href="#conclusion" class="text-orange-600 dark:text-orange-400 hover:underline">Conclusion & Next Steps</a> •
+    <a href="#faq" class="text-orange-600 dark:text-orange-400 hover:underline">Frequently Asked Questions</a>
+  </div>
+</nav>
+
+<!-- On-Page SEO Pillar Section -->
+<section id="onpage" class="py-12 md:py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto border-t border-gray-200 dark:border-gray-700">
+  <div class="text-center mb-10">
+    <h2 class="text-4xl sm:text-5xl font-black mb-4 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+      On-Page SEO
+    </h2>
+    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+      The foundational layer — what search engines and users first see and understand about your product.
+    </p>
+  </div>
+
+  <!-- What -->
+  <div id="onpage-what" class="scroll-mt-20 mb-16">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3">
+      <span class="text-4xl">🔍</span> What is On-Page SEO?
+    </h3>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
+      On-Page SEO evaluates the visible, crawlable elements on the product page itself — title tag, meta description, headings, URL structure, and keyword placement. These are the signals that tell Google and users exactly what the page is selling and why it matters.
+    </p>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6 font-medium">
+      <strong>History snapshot:</strong> On-page factors were king in the early 2000s (keyword stuffing worked). After Google’s Panda (2011) and Hummingbird (2013) updates, the focus shifted to natural language, user intent, and semantic relevance. Today in 2026, on-page is still critical — but it must feel helpful, not manipulative.
+    </p>
+
+    <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 mt-8">
+      <p class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Traffic Torch measures five core on-page factors:</p>
+      <ul class="space-y-4 text-gray-800 dark:text-gray-200">
+        <li><strong>Title Tag Optimization</strong> — length, keyword placement, brand inclusion, truncation risk</li>
+        <li><strong>Meta Description Relevance</strong> — length, CTA, keyword front-loading, uniqueness</li>
+        <li><strong>Heading Structure (H1–H6)</strong> — single H1, logical hierarchy, keyword usage</li>
+        <li><strong>URL Structure</strong> — clean, keyword-rich, hyphen-separated, no parameters</li>
+        <li><strong>Keyword Optimization</strong> — natural density, front-loading, long-tail integration</li>
+      </ul>
+    </div>
+
+    <p class="mt-8 text-right">
+      <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+        ↑ Return to Table of Contents
+      </a>
+    </p>
+  </div>
+
+  <!-- How -->
+  <div id="onpage-how" class="scroll-mt-20 mb-16">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3">
+      <span class="text-4xl">🛠️</span> How On-Page SEO is Tested in Traffic Torch
+    </h3>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
+      Traffic Torch parses the live DOM (via proxy-fetched rendered HTML) and runs precise checks against best-practice thresholds.
+    </p>
+
+    <div class="space-y-6">
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">Title Tag Optimization</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>Optimal length: 50–60 characters → 100 points</li>
+          <li>Deducts for <30 or >70 chars</li>
+          <li>Bonuses: primary keyword near start, brand at end, no all-caps or emoji spam</li>
+          <li>Penalty: risk of truncation in SERPs (checked via pixel-width estimation)</li>
+        </ul>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">Meta Description Relevance</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>Ideal: 100–170 characters</li>
+          <li>Bonus: main keyword in first 30–40 chars, includes CTA or benefit</li>
+          <li>Penalty: duplicate across site, generic (“Shop now…”), or missing</li>
+        </ul>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">Heading Structure</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>Exactly one H1 (usually product name)</li>
+          <li>Logical flow: H2 → H3 (features, specs, FAQs)</li>
+          <li>Keyword presence in H1 and top H2s</li>
+        </ul>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">URL Structure & Keyword Optimization</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>URL: /category/product-name (hyphens, no ?id= or session IDs)</li>
+          <li>Keyword density: 0.4–3%, front-loaded in first 100–150 words</li>
+          <li>Natural long-tail variations detected (no stuffing penalty if density <4%)</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="mt-8 text-lg font-medium italic text-gray-700 dark:text-gray-300">
+      Module score = weighted average of the five factors (title & meta carry slightly more weight).
+    </p>
+
+    <p class="mt-8 text-right">
+      <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+        ↑ Return to Table of Contents
+      </a>
+    </p>
+  </div>
+
+  <!-- Why -->
+  <div id="onpage-why" class="scroll-mt-20 mb-16">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3">
+      <span class="text-4xl">🎯</span> Why On-Page SEO Matters for Rankings & UX
+    </h3>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
+      <strong class="text-xl block mb-2">Strong on-page = instant relevance signal.</strong> Google uses title, headings, and early content to decide if your page matches the search intent. Poor on-page = low CTR and high bounce — both ranking killers in 2026.
+    </p>
+
+    <ul class="space-y-4 text-lg text-gray-800 dark:text-gray-200 mb-8">
+      <li><strong>CTR lift:</strong> Optimized titles + metas → 20–35% higher click-through (Moz, Backlinko studies)</li>
+      <li><strong>Bounce rate drop:</strong> Clear H1 + keyword match → users stay longer</li>
+      <li><strong>Topical authority:</strong> Natural keyword use in headings reinforces what the page is about</li>
+      <li><strong>Mobile UX:</strong> Clean URLs and scannable structure = better experience on phones (50%+ of ecommerce traffic)</li>
+    </ul>
+
+    <div class="bg-gradient-to-br from-orange-50 to-pink-50 dark:from-orange-950/30 dark:to-pink-950/30 p-8 rounded-2xl border border-orange-200 dark:border-orange-800/50">
+      <p class="text-xl font-bold mb-4 text-orange-700 dark:text-orange-300">
+        Quick win example
+      </p>
+      <p class="text-lg">
+        Change “Product – MyStore” to “Santa Cruz Dreadnought Quilted Mahogany Acoustic Guitar | Warm Tone & Projection – MyStore” → better CTR + keyword relevance.
+      </p>
+    </div>
+
+    <p class="mt-10 text-center">
+      <a href="https://traffictorch.net/product-seo-tool/" 
+         class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-xl rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition transform">
+        Audit Your Product Page Now → See Your On-Page Score
+      </a>
+    </p>
+
+    <p class="mt-8 text-right">
+      <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+        ↑ Return to Table of Contents
+      </a>
+    </p>
+  </div>
+</section>
+
+<!-- Technical SEO Pillar Section -->
+<section id="technical" class="py-12 md:py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto border-t border-gray-200 dark:border-gray-700">
+  <div class="text-center mb-10">
+    <h2 class="text-4xl sm:text-5xl font-black mb-4 bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent">
+      Technical SEO
+    </h2>
+    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+      The invisible foundation — crawlability, security, mobile readiness, and duplicate prevention.
+    </p>
+  </div>
+
+  <!-- What -->
+  <div id="technical-what" class="scroll-mt-20 mb-16">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3">
+      <span class="text-4xl">🛡️</span> What is Technical SEO?
+    </h3>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
+      Technical SEO ensures search engines can find, crawl, render, and index your product page without barriers. It includes mobile compatibility, security (HTTPS), canonical signals to prevent duplicate content penalties, proper robots directives, and hints for sitemap inclusion.
+    </p>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6 font-medium">
+      <strong>History snapshot:</strong> HTTPS became a ranking signal in 2014. Mobilegeddon (2015) penalized non-mobile-friendly pages. Mobile-first indexing rolled out fully by 2021. In 2026, technical health is non-negotiable — especially for ecommerce where one blocked or penalized page can mean lost revenue.
+    </p>
+
+    <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 mt-8">
+      <p class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Traffic Torch checks five critical technical factors:</p>
+      <ul class="space-y-4 text-gray-800 dark:text-gray-200">
+        <li><strong>Mobile-Friendliness</strong> — responsive design, viewport meta, no blocking directives</li>
+        <li><strong>HTTPS Implementation</strong> — secure connection, valid certificate, no mixed content</li>
+        <li><strong>Canonical Tags</strong> — self-referencing and exact URL match</li>
+        <li><strong>Meta Robots Directives</strong> — no accidental noindex/nofollow on live pages</li>
+        <li><strong>Sitemap Inclusion Hints</strong> — URL pattern suggests it belongs in sitemap.xml</li>
+      </ul>
+    </div>
+
+    <p class="mt-8 text-right">
+      <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+        ↑ Return to Table of Contents
+      </a>
+    </p>
+  </div>
+
+  <!-- How -->
+  <div id="technical-how" class="scroll-mt-20 mb-16">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3">
+      <span class="text-4xl">🔧</span> How Technical SEO is Tested in Traffic Torch
+    </h3>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
+      Traffic Torch fetches the fully rendered page (via secure proxy) and inspects both headers and DOM for strict compliance.
+    </p>
+
+    <div class="space-y-6">
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">Mobile-Friendliness</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>Presence of <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code></li>
+          <li>No <code>user-scalable=no</code> or maximum-scale restrictions</li>
+          <li>Basic checks for fixed-width elements or overflow issues in rendered view</li>
+          <li>High score requires clean responsive behavior</li>
+        </ul>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">HTTPS Implementation</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>Page served over https://</li>
+          <li>Valid SSL certificate (no expired/wrong-domain warnings)</li>
+          <li>No mixed content: all images, scripts, styles, iframes use https:// or protocol-relative</li>
+        </ul>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">Canonical Tags</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>Exactly one <code>&lt;link rel="canonical"&gt;</code> tag</li>
+          <li>Canonical href matches current URL 100% (protocol, domain, path, trailing slash, case-sensitive)</li>
+        </ul>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">Meta Robots & Sitemap Hints</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>No <code>&lt;meta name="robots" content="noindex"&gt;</code> or <code>nofollow</code> (unless intentional)</li>
+          <li>URL pattern recognition: /product/ or /sku/ slugs score higher for sitemap inclusion likelihood</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="mt-8 text-lg font-medium italic text-gray-700 dark:text-gray-300">
+      Module score = average across factors (HTTPS and canonical carry heavier weight due to direct indexing impact).
+    </p>
+
+    <p class="mt-8 text-right">
+      <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+        ↑ Return to Table of Contents
+      </a>
+    </p>
+  </div>
+
+  <!-- Why -->
+  <div id="technical-why" class="scroll-mt-20 mb-16">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3">
+      <span class="text-4xl">📈</span> Why Technical SEO Matters for Rankings & UX
+    </h3>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
+      <strong class="text-xl block mb-2">Technical issues are silent traffic killers.</strong> A page that can’t be crawled or indexed never ranks — no matter how great the content is.
+    </p>
+
+    <ul class="space-y-4 text-lg text-gray-800 dark:text-gray-200 mb-8">
+      <li><strong>Indexing & crawl budget:</strong> Clean technical setup = more pages indexed faster</li>
+      <li><strong>Mobile rankings:</strong> Since mobile-first indexing, poor mobile = severe ranking drop</li>
+      <li><strong>Trust & conversions:</strong> HTTPS reduces cart abandonment (studies show ~5–10% lift)</li>
+      <li><strong>Duplicate content protection:</strong> Proper canonicals prevent self-competition penalties</li>
+    </ul>
+
+    <div class="bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950/30 dark:to-blue-950/30 p-8 rounded-2xl border border-cyan-200 dark:border-cyan-800/50">
+      <p class="text-xl font-bold mb-4 text-cyan-700 dark:text-cyan-300">
+        Quick win example
+      </p>
+      <p class="text-lg">
+        Fix missing viewport meta + force HTTPS redirect → often jumps mobile usability score from red to green and improves Core Web Vitals indirectly.
+      </p>
+    </div>
+
+    <p class="mt-10 text-center">
+      <a href="https://traffictorch.net/product-seo-tool/" 
+         class="inline-block px-8 py-5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-xl rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition transform">
+        Scan Your Page for Technical Issues → Get Fixes Now
+      </a>
+    </p>
+
+    <p class="mt-8 text-right">
+      <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+        ↑ Return to Table of Contents
+      </a>
+    </p>
+  </div>
+</section>
+
+<!-- Content & Media Pillar Section -->
+<section id="contentmedia" class="py-12 md:py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto border-t border-gray-200 dark:border-gray-700">
+  <div class="text-center mb-10">
+    <h2 class="text-4xl sm:text-5xl font-black mb-4 bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">
+      Content & Media
+    </h2>
+    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+      The engagement engine — rich, accessible, trust-building elements that keep users reading and buying.
+    </p>
+  </div>
+
+  <!-- What -->
+  <div id="contentmedia-what" class="scroll-mt-20 mb-16">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3">
+      <span class="text-4xl">📝</span> What is Content & Media?
+    </h3>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
+      Content & Media evaluates how rich, helpful, and user-friendly the on-page experience is — from detailed product descriptions and optimized images to videos, reviews, internal links, and breadcrumb navigation. These elements directly influence dwell time, trust signals, and topical depth.
+    </p>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6 font-medium">
+      <strong>History snapshot:</strong> Post-Penguin (2012) and Helpful Content updates (2022–2025), thin or duplicate content gets deprioritized. In 2026, Google heavily weighs user engagement signals (dwell time, scroll depth, pogo-sticking) and E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness). Rich media + UGC = stronger trust and ranking potential.
+    </p>
+
+    <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 mt-8">
+      <p class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Traffic Torch assesses six key content & media factors:</p>
+      <ul class="space-y-4 text-gray-800 dark:text-gray-200">
+        <li><strong>Product Description Quality</strong> — length, uniqueness, structure, benefit focus</li>
+        <li><strong>Image Optimization</strong> — alt text quality, lazy loading, responsive srcset, file size</li>
+        <li><strong>Video Embed Quality</strong> — captions, poster thumbnail, proper embedding</li>
+        <li><strong>User-Generated Content (UGC)</strong> — visible reviews, star rating, review count</li>
+        <li><strong>Internal Linking</strong> — relevant contextual links with descriptive anchors</li>
+        <li><strong>Breadcrumb Navigation</strong> — clear hierarchy with schema markup</li>
+      </ul>
+    </div>
+
+    <p class="mt-8 text-right">
+      <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+        ↑ Return to Table of Contents
+      </a>
+    </p>
+  </div>
+
+  <!-- How -->
+  <div id="contentmedia-how" class="scroll-mt-20 mb-16">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3">
+      <span class="text-4xl">📸</span> How Content & Media is Tested in Traffic Torch
+    </h3>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
+      Traffic Torch deeply inspects the DOM and classifies elements using smart heuristics pulled straight from the live JavaScript logic.
+    </p>
+
+    <div class="space-y-6">
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">Product Description Quality</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>Word count: 300+ ideal (400–800 for competitive niches) → higher score</li>
+          <li>Structure bonus: bullets, subheadings (H2/H3), tables</li>
+          <li>Penalty: <100 words, duplicate boilerplate, keyword stuffing</li>
+          <li>Benefit-focused language detected via keyword patterns</li>
+        </ul>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">Image Optimization</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>Classifies images: decorative vs meaningful (ignores icons, spacers, logos)</li>
+          <li>Alt text scoring: descriptive & keyword-rich = high points; missing/filename-only = penalties</li>
+          <li>Checks: loading="lazy", srcset/sizes present, file size hints (<100KB ideal)</li>
+        </ul>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">Video, UGC, Internal Links & Breadcrumbs</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>Video: YouTube/Vimeo embeds with <track> captions or auto-captions detected</li>
+          <li>UGC: searches common review widget classes + schema AggregateRating</li>
+          <li>Internal links: counts 3+ contextual links with descriptive, keyword-rich anchors</li>
+          <li>Breadcrumbs: detects hierarchy selectors + BreadcrumbList JSON-LD</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="mt-8 text-lg font-medium italic text-gray-700 dark:text-gray-300">
+      Module score = weighted average (description & images carry the most weight due to direct UX/ranking impact).
+    </p>
+
+    <p class="mt-8 text-right">
+      <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+        ↑ Return to Table of Contents
+      </a>
+    </p>
+  </div>
+
+  <!-- Why -->
+  <div id="contentmedia-why" class="scroll-mt-20 mb-16">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3">
+      <span class="text-4xl">⏱️</span> Why Content & Media Matters for Rankings & UX
+    </h3>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
+      <strong class="text-xl block mb-2">Rich content = longer dwell time = stronger ranking signal.</strong> Google’s 2024–2026 Helpful Content & Core Web Vitals updates reward pages that keep users engaged and reduce pogo-sticking.
+    </p>
+
+    <ul class="space-y-4 text-lg text-gray-800 dark:text-gray-200 mb-8">
+      <li><strong>Dwell time & engagement:</strong> Detailed descriptions + visuals → users stay 2–4× longer</li>
+      <li><strong>Trust & conversions:</strong> Reviews/UGC increase purchase intent by 4× (multiple studies)</li>
+      <li><strong>Image SEO & accessibility:</strong> Good alts improve image search traffic + screen-reader UX</li>
+      <li><strong>Site architecture:</strong> Internal links & breadcrumbs distribute authority and help navigation</li>
+    </ul>
+
+    <div class="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 p-8 rounded-2xl border border-emerald-200 dark:border-emerald-800/50">
+      <p class="text-xl font-bold mb-4 text-emerald-700 dark:text-emerald-300">
+        Quick win example
+      </p>
+      <p class="text-lg">
+        Add 400-word benefit-focused description with bullets + 5 descriptive image alts + 3 internal links → often lifts on-page time and topical relevance score dramatically.
+      </p>
+    </div>
+
+    <p class="mt-10 text-center">
+      <a href="https://traffictorch.net/product-seo-tool/" 
+         class="inline-block px-8 py-5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-xl rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition transform">
+        Check Your Content & Media Score → Get Actionable Fixes
+      </a>
+    </p>
+
+    <p class="mt-8 text-right">
+      <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+        ↑ Return to Table of Contents
+      </a>
+    </p>
+  </div>
+</section>
+
+<!-- Content & Media Pillar Section -->
+<section id="contentmedia" class="py-12 md:py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto border-t border-gray-200 dark:border-gray-700">
+  <div class="text-center mb-10">
+    <h2 class="text-4xl sm:text-5xl font-black mb-4 bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">
+      Content & Media
+    </h2>
+    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+      The engagement & trust layer — rich, accessible, user-focused elements that keep visitors on-page longer.
+    </p>
+  </div>
+
+  <!-- What -->
+  <div id="contentmedia-what" class="scroll-mt-20 mb-16">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3">
+      <span class="text-4xl">📝</span> What is Content & Media?
+    </h3>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
+      Content & Media evaluates how valuable, structured, and engaging the on-page experience is for both users and search engines. It covers product descriptions, image & video optimization, user-generated content (reviews), internal linking, and breadcrumb navigation — all signals that build trust, reduce bounce rate, and strengthen topical authority.
+    </p>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6 font-medium">
+      <strong>History snapshot:</strong> After Google’s Penguin update (2012) penalized thin content, and especially after the Helpful Content updates (2022–2025), shallow or AI-generated filler text started hurting rankings. In 2026, dwell time, scroll depth, and E-E-A-T signals (Experience, Expertise, Authoritativeness, Trustworthiness) heavily influence product page performance. Rich media + authentic UGC = major ranking & conversion advantage.
+    </p>
+
+    <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 mt-8">
+      <p class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Traffic Torch evaluates six core content & media factors:</p>
+      <ul class="space-y-4 text-gray-800 dark:text-gray-200">
+        <li><strong>Product Description Quality</strong> — word count, uniqueness, benefit orientation, structure (bullets/headings)</li>
+        <li><strong>Image Optimization</strong> — meaningful alt text, lazy loading, responsive srcset, compression</li>
+        <li><strong>Video Embed Quality</strong> — captions/subtitles, poster image, proper embedding</li>
+        <li><strong>User-Generated Content (UGC)</strong> — visible reviews, star aggregate, review count</li>
+        <li><strong>Internal Linking</strong> — relevant, contextual links with descriptive keyword-rich anchors</li>
+        <li><strong>Breadcrumb Navigation</strong> — hierarchical path with schema markup</li>
+      </ul>
+    </div>
+
+    <p class="mt-8 text-right">
+      <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+        ↑ Return to Table of Contents
+      </a>
+    </p>
+  </div>
+
+  <!-- How -->
+  <div id="contentmedia-how" class="scroll-mt-20 mb-16">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3">
+      <span class="text-4xl">🔍</span> How Content & Media is Tested in Traffic Torch
+    </h3>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
+      Traffic Torch performs a detailed DOM inspection using the exact logic from the live JavaScript — classifying elements, counting words, scoring alt quality, and detecting structured patterns.
+    </p>
+
+    <div class="space-y-6">
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">Product Description Quality</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>Target: 300+ words (400–800 ideal in competitive niches)</li>
+          <li>Bonuses: bullets, subheadings, tables, benefit-first language</li>
+          <li>Penalties: <100 words, repetitive boilerplate, obvious keyword stuffing</li>
+        </ul>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">Image Optimization</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>Separates decorative (icons, spacers) from meaningful images</li>
+          <li>Alt scoring: descriptive + keyword-rich = high points; missing / filename-only / generic = heavy penalty</li>
+          <li>Technical checks: loading="lazy", srcset/sizes attributes, image size hints</li>
+        </ul>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">Video, UGC, Internal Links & Breadcrumbs</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>Video: detects embeds + caption <track> or platform auto-captions</li>
+          <li>UGC: scans common review widget selectors + AggregateRating in schema</li>
+          <li>Internal links: requires 3+ contextual, descriptive anchors (not just “click here”)</li>
+          <li>Breadcrumbs: looks for visual hierarchy + BreadcrumbList JSON-LD</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="mt-8 text-lg font-medium italic text-gray-700 dark:text-gray-300">
+      Module score = weighted average (description length & image alt quality usually carry the heaviest weight).
+    </p>
+
+    <p class="mt-8 text-right">
+      <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+        ↑ Return to Table of Contents
+      </a>
+    </p>
+  </div>
+
+  <!-- Why -->
+  <div id="contentmedia-why" class="scroll-mt-20 mb-16">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3">
+      <span class="text-4xl">❤️</span> Why Content & Media Matters for Rankings & UX
+    </h3>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
+      <strong class="text-xl block mb-2">High-quality content & media = dramatically better user signals.</strong> Google now ranks pages that users actually enjoy — longer time on page, deeper scrolls, lower bounce, fewer pogo-sticks.
+    </p>
+
+    <ul class="space-y-4 text-lg text-gray-800 dark:text-gray-200 mb-8">
+      <li><strong>Dwell time boost:</strong> Rich descriptions + visuals → 2–5× longer sessions</li>
+      <li><strong>Conversion lift:</strong> Reviews & UGC increase trust → purchase rates up to 4× higher (2025–2026 ecommerce benchmarks)</li>
+      <li><strong>Image & video SEO:</strong> Descriptive alts + captions = extra traffic from Google Images / video results</li>
+      <li><strong>Site authority flow:</strong> Smart internal links & breadcrumbs improve crawl depth and user navigation</li>
+    </ul>
+
+    <div class="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 p-8 rounded-2xl border border-emerald-200 dark:border-emerald-800/50">
+      <p class="text-xl font-bold mb-4 text-emerald-700 dark:text-emerald-300">
+        Quick win example
+      </p>
+      <p class="text-lg">
+        Upgrade a 120-word generic description to 550-word benefit-driven copy with bullets + add 4–6 keyword-rich image alts + enable visible star ratings → often transforms “Needs Improvement” → “Very Good” in one pass.
+      </p>
+    </div>
+
+    <p class="mt-10 text-center">
+      <a href="https://traffictorch.net/product-seo-tool/" 
+         class="inline-block px-8 py-5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-xl rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition transform">
+        Analyze Your Content & Media Now → Unlock Easy Wins
+      </a>
+    </p>
+
+    <p class="mt-8 text-right">
+      <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+        ↑ Return to Table of Contents
+      </a>
+    </p>
+  </div>
+</section>
+
+<!-- E-Commerce Signals Pillar Section -->
+<section id="ecommerce" class="py-12 md:py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto border-t border-gray-200 dark:border-gray-700">
+  <div class="text-center mb-10">
+    <h2 class="text-4xl sm:text-5xl font-black mb-4 bg-gradient-to-r from-purple-500 to-indigo-600 bg-clip-text text-transparent">
+      E-Commerce Signals
+    </h2>
+    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+      The rich results & conversion layer — structured data, pricing, reviews, variants, and social sharing that power SERP visibility and trust.
+    </p>
+  </div>
+
+  <!-- What -->
+  <div id="ecommerce-what" class="scroll-mt-20 mb-16">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3">
+      <span class="text-4xl">🛍️</span> What is E-Commerce Signals?
+    </h3>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
+      E-Commerce Signals focus on structured data (schema.org), pricing/availability markup, review aggregation, variant handling, and social sharing tags. These elements enable rich snippets (stars, price, images in SERPs), prevent duplicate content issues, and boost click-through rates and conversions.
+    </p>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6 font-medium">
+      <strong>History snapshot:</strong> Schema.org launched in 2011; Google started showing rich results (price, stars, availability) shortly after. Merchant Center integration and variant handling became critical with mobile shopping growth. In 2026, complete Product + Offer + AggregateRating schema is almost mandatory for competitive ecommerce SERPs — missing it often means no rich snippet advantage.
+    </p>
+
+    <div class="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 mt-8">
+      <p class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Traffic Torch evaluates five essential e-commerce factors:</p>
+      <ul class="space-y-4 text-gray-800 dark:text-gray-200">
+        <li><strong>Product Schema Markup</strong> — valid JSON-LD with required fields (name, image, offers, brand, sku/mpn)</li>
+        <li><strong>Price & Availability Markup</strong> — correct offers.price, priceCurrency, availability enums</li>
+        <li><strong>Review Schema & Aggregation</strong> — AggregateRating with ratingValue and reviewCount</li>
+        <li><strong>Variant Handling</strong> — single-page selectors or proper canonicals on variant URLs</li>
+        <li><strong>Social Sharing Integration</strong> — Open Graph tags (title, description, image 1200×630, url)</li>
+      </ul>
+    </div>
+
+    <p class="mt-8 text-right">
+      <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+        ↑ Return to Table of Contents
+      </a>
+    </p>
+  </div>
+
+  <!-- How -->
+  <div id="ecommerce-how" class="scroll-mt-20 mb-16">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3">
+      <span class="text-4xl">📊</span> How E-Commerce Signals is Tested in Traffic Torch
+    </h3>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
+      Traffic Torch extracts and parses all JSON-LD scripts, validates against schema.org specs, and checks social meta tags — using the exact logic from the current JavaScript file.
+    </p>
+
+    <div class="space-y-6">
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">Product Schema Markup</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>Finds <code>@type: "Product"</code> in JSON-LD scripts</li>
+          <li>Required fields checked: name, image (array preferred), description, brand.name, sku or mpn, offers</li>
+          <li>Heavy penalty for missing/invalid required fields</li>
+        </ul>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">Price & Availability + Review Schema</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>offers: price (positive number string), priceCurrency (ISO 4217), availability (full schema.org URL e.g. https://schema.org/InStock)</li>
+          <li>AggregateRating: ratingValue (1.0–5.0 decimal), reviewCount or ratingCount (integer)</li>
+          <li>Bonus for 2–5 individual Review objects</li>
+        </ul>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold mb-3">Variant Handling & Social Tags</h4>
+        <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+          <li>Variants: prefers single URL with JS switching; separate URLs must have self-canonical</li>
+          <li>Open Graph: og:title, og:description, og:image (1200×630+), og:url present and matching canonical</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="mt-8 text-lg font-medium italic text-gray-700 dark:text-gray-300">
+      Module score = weighted average (Product schema completeness and offers/review markup carry the most weight due to rich result eligibility).
+    </p>
+
+    <p class="mt-8 text-right">
+      <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+        ↑ Return to Table of Contents
+      </a>
+    </p>
+  </div>
+
+  <!-- Why -->
+  <div id="ecommerce-why" class="scroll-mt-20 mb-16">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3">
+      <span class="text-4xl">⭐</span> Why E-Commerce Signals Matters for Rankings & UX
+    </h3>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
+      <strong class="text-xl block mb-2">Rich snippets = massive CTR advantage.</strong> Pages with stars, price, and availability in search results often see 20–35% higher click-through rates (2025–2026 ecommerce SERP studies).
+    </p>
+
+    <ul class="space-y-4 text-lg text-gray-800 dark:text-gray-200 mb-8">
+      <li><strong>Visibility boost:</strong> Schema enables price, stars, images, stock status in SERPs</li>
+      <li><strong>Trust & conversions:</strong> Visible reviews + accurate pricing reduce hesitation → higher add-to-cart rates</li>
+      <li><strong>Duplicate protection:</strong> Proper variant canonicals avoid self-competition penalties</li>
+      <li><strong>Social amplification:</strong> Strong OG tags = better-looking shares on Facebook, LinkedIn, X → more referral traffic</li>
+    </ul>
+
+    <div class="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/30 dark:to-indigo-950/30 p-8 rounded-2xl border border-purple-200 dark:border-purple-800/50">
+      <p class="text-xl font-bold mb-4 text-purple-700 dark:text-purple-300">
+        Quick win example
+      </p>
+      <p class="text-lg">
+        Add complete Product schema with offers and AggregateRating → frequently turns a plain blue link into a rich result with stars and price, lifting CTR significantly in one update.
+      </p>
+    </div>
+
+    <p class="mt-10 text-center">
+      <a href="https://traffictorch.net/product-seo-tool/" 
+         class="inline-block px-8 py-5 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-bold text-xl rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition transform">
+        Test Your E-Commerce Signals → Enable Rich Results Today
+      </a>
+    </p>
+
+    <p class="mt-8 text-right">
+      <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+        ↑ Return to Table of Contents
+      </a>
+    </p>
+  </div>
+</section>
+
+<!-- Conclusion Section -->
+<section class="py-16 md:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto border-t border-gray-200 dark:border-gray-700 bg-gradient-to-b from-transparent via-gray-50/50 to-transparent dark:via-gray-900/30">
+  <div class="text-center">
+    <h2 class="text-4xl sm:text-5xl font-black mb-8 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 bg-clip-text text-transparent">
+      Master Product SEO in 2026 — Start Today
+    </h2>
+
+    <p class="text-xl leading-relaxed text-gray-800 dark:text-gray-200 max-w-4xl mx-auto mb-10">
+      Product page SEO is no longer about tricks — it’s about delivering <strong>fast, mobile-first, trustworthy, rich experiences</strong> that match searcher intent and keep buyers engaged.
+    </p>
+
+    <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 max-w-4xl mx-auto mb-12">
+      Traffic Torch gives you the complete 360° picture in seconds: on-page foundations, technical reliability, content depth, and e-commerce rich-result power. Fix the lowest-hanging fruit first (usually schema + title/meta + mobile viewport + description length), then layer in reviews, internal links, and image alts for compounding gains.
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12">
+      <a href="https://traffictorch.net/product-seo-tool/" 
+         class="inline-block px-10 py-6 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-xl rounded-2xl shadow-2xl hover:shadow-3xl hover:scale-105 transition transform">
+        Launch Traffic Torch → Get Your Free Product Page Audit
+      </a>
+      
+      <a href="https://traffictorch.net/news/" 
+         class="inline-block px-8 py-5 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-semibold text-lg rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+        Read More SEO Guides →
+      </a>
+    </div>
+
+    <p class="text-lg italic text-gray-600 dark:text-gray-400">
+      Every fix you make moves the needle — better rankings, higher CTR, longer dwell time, more trust, and ultimately more revenue. The tools and knowledge are free. The only question is: which product page will you optimize first?
+    </p>
+  </div>
+</section>
+
+<!-- FAQ Section with Schema -->
+<section id="faq" class="py-16 md:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto border-t border-gray-200 dark:border-gray-700">
+  <h2 class="text-4xl sm:text-5xl font-black text-center mb-12 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+    Frequently Asked Questions
+  </h2>
+
+  <div class="space-y-10">
+    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+        What is a good Product Page Health Score in Traffic Torch?
+        <span class="group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-lg text-gray-700 dark:text-gray-300">
+        <p>Aim for <strong>85+</strong> for “Excellent” status — you’ll usually see strong rankings and CTR in competitive niches. <strong>70–84</strong> = “Very Good” (solid but room to grow). <strong>50–69</strong> = “Needs Improvement” (fix technical + schema first). Below 50 = urgent red flags (noindex, no HTTPS, missing viewport, etc.).</p>
+      </div>
+    </details>
+
+    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+        How much does adding Product schema really help rankings?
+        <span class="group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-lg text-gray-700 dark:text-gray-300">
+        <p>Directly? Not always a huge ranking boost. <strong>Indirectly</strong>? Massive. Rich snippets (stars, price, availability) increase CTR by 20–35% in most ecommerce SERP studies (2025–2026 data). Higher CTR → more clicks → better engagement signals → improved rankings over time. It’s one of the fastest “win-win” fixes.</p>
+      </div>
+    </details>
+
+    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+        Why is mobile-friendliness still so important in 2026?
+        <span class="group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-lg text-gray-700 dark:text-gray-300">
+        <p>Google has used mobile-first indexing since 2019–2021. In 2026, 55–70% of ecommerce traffic is mobile (depending on niche). Poor mobile UX = higher bounce, worse Core Web Vitals, lower rankings. A missing viewport meta or fixed-width layout can drop your entire page’s visibility on mobile SERPs.</p>
+      </div>
+    </details>
+
+    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+        How often should I re-audit my product pages?
+        <span class="group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-lg text-gray-700 dark:text-gray-300">
+        <p>Best practice: audit after any major template change, CMS update, or migration. For live stores: re-scan top 20–50 revenue pages every 1–2 months, and spot-check new or low-performing pages weekly. Traffic Torch is free and instant — there’s no reason not to check regularly.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- FAQPage Structured Data (Google loves this for rich results & AI Overviews) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is a good Product Page Health Score in Traffic Torch?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Aim for 85+ for “Excellent” status — you’ll usually see strong rankings and CTR in competitive niches. 70–84 = “Very Good” (solid but room to grow). 50–69 = “Needs Improvement” (fix technical + schema first). Below 50 = urgent red flags (noindex, no HTTPS, missing viewport, etc.)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How much does adding Product schema really help rankings?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Directly? Not always a huge ranking boost. Indirectly? Massive. Rich snippets (stars, price, availability) increase CTR by 20–35% in most ecommerce SERP studies (2025–2026 data). Higher CTR → more clicks → better engagement signals → improved rankings over time. It’s one of the fastest “win-win” fixes."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is mobile-friendliness still so important in 2026?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Google has used mobile-first indexing since 2019–2021. In 2026, 55–70% of ecommerce traffic is mobile (depending on niche). Poor mobile UX = higher bounce, worse Core Web Vitals, lower rankings. A missing viewport meta or fixed-width layout can drop your entire page’s visibility on mobile SERPs."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How often should I re-audit my product pages?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Best practice: audit after any major template change, CMS update, or migration. For live stores: re-scan top 20–50 revenue pages every 1–2 months, and spot-check new or low-performing pages weekly. Traffic Torch is free and instant — there’s no reason not to check regularly."
+        }
+      }
+    ]
+  }
+  </script>
+</section>
+
+
+  <!-- Top Share Buttons -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+    <script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+  
+
+  
+<!-- Tools Grid (Creative) -->
+      <h2 class="text-4xl md:text-4xl font-black text-center mt-10 mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      SEO - UX - AI Tools
+      </h2>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+  <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+
+    <!-- New First Card: Local SEO -->
+    <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-green-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-green-500/30 group-hover:border-green-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
+          <h3 class="text-green-400 text-2xl font-bold mb-3">Local SEO Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">On-page local audit + NAP, schema, map signals + fixes</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- SEO Intent -->
+    <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+          <h3 class="text-cyan-400 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Intent matching + E-E-A-T audit + fixes</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- Product SEO Tool -->
+    <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🛒</div>
+          <h3 class="text-orange-400 text-2xl font-bold mb-3">Product SEO Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Product page audit + eCommerce signals</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- Quit Risk -->
+    <a href="/quit-risk-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-emerald-400 text-7xl mb-6 group-hover:animate-bounce">⚡</div>
+          <h3 class="text-emerald-400 text-2xl font-bold mb-3">Quit Risk Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">UX friction audit + bounce prediction + optimizations</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- Keywords -->
+    <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-purple-400 text-7xl mb-6 group-hover:animate-bounce">📝</div>
+          <h3 class="text-purple-400 text-2xl font-bold mb-3">Keyword Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">On-page keyword placement score + density fixes</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- VS -->
+    <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+          <h3 class="text-red-400 text-2xl font-bold mb-3">VS Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Competitive keyword gap analysis + beat strategies</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+    
+        <!-- Ai Search -->
+    <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+          <h3 class="text-orange-400 text-2xl font-bold mb-3">Ai Search Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Optimize for Perplexity, Grok, Gemini, ChatGPT Search</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- AI Content -->
+    <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+          <h3 class="text-pink-400 text-2xl font-bold mb-3">AI Content Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Detect AI patterns + humanize content + forecasts</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- New Last Card: All Tools -->
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-indigo-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-indigo-500/30 group-hover:border-indigo-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-indigo-400 text-7xl mb-6 group-hover:animate-bounce">🧰</div>
+          <h3 class="text-indigo-400 text-2xl font-bold mb-3">All Tools</h3>
+          <p class="text-gray-800 dark:text-gray-100">Complete suite — instant audits, gaps, fixes & forecasts</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Explore All →
+        </span>
+      </div>
+    </a>
+
+  </div>
+</div>
+  
+  <!-- Author Bio -->
+  <section class="max-w-5xl mx-auto my-24 px-2">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+    <div class="bg-gradient-to-br from-purple-600 to-cyan-600 py-12 px-8 text-center">
+      <img src="/logo.webp" alt="Traffic Torch SEO • UX • AI Optimization Toolkit" class="w-40 h-40 rounded-full mx-auto mb-6 object-cover border-8 border-white shadow-xl">
+      <h3 class="text-4xl font-black text-white mb-4">Traffic Torch</h3>
+      <p class="text-xl text-white/90 max-w-3xl mx-auto">
+        SEO • UX • AI Optimization Audit Toolkit
+      </p>
+    </div>
+    <div class="p-10 md:p-12 text-center space-y-8">
+      <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+        Traffic Torch distills ongoing correlation research, algorithm update analysis and practical testing into 360° SEO + UX diagnostics, AI-powered fixes, and educational tools. Empowering creators, agencies, and businesses with transparent, evidence-based insights for better organic performance and user satisfaction.
+      </p>
+      <div class="pt-8 space-y-3">
+        <p class="text-base text-gray-800 dark:text-gray-200">
+          Expertise: SEO Correlation Studies • UX Optimization • Privacy-First Web Tools • AI-Assisted Analysis.
+        </p>
+        <p class="text-base text-gray-800 dark:text-gray-200 italic mt-4">
+          Updated based on the latest search engine guidelines, ranking factor research, and real-page performance data.
+        </p>
+              <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+        <p>Published: 2026-02-19</p>
+        <p>Last updated: 2026-02-19</p>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AddToAny BEGIN -->
+<div style="display: flex; justify-content: center; margin: 30px 0;">
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+    <script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+</div>
+<!-- AddToAny END -->
+
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+</main>
+ 
+<!-- Footer -->
+<footer class="border-t border-white/10 dark:border-white/5 py-12 bg-white/5 dark:bg-black/20 backdrop-blur-xl">
+  <div class="container mx-auto px-6 max-w-7xl">
+    <!-- Main Footer Grid: 4 columns on md+, 1 column on mobile -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12 text-center md:text-left">
+      <!-- Column 1: Traffic Torch + Logo/Author -->
+      <div class="flex flex-col items-center md:items-start">
+        <a href="/" class="mb-6 inline-block">
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="80px" alt="Traffic Torch SEO • UX • AI Optimization Toolkit" class="w-20 h-20 rounded-full shadow-2xl object-cover" width="80" height="80" loading="lazy">
+        </a>
+        <h3 class="text-2xl font-black text-orange-500 hover:text-orange-600 transition mb-3">
+          Traffic Torch 🛡️
+        </h3>
+        <p class="text-gray-800 dark:text-gray-200 text-sm leading-relaxed max-w-md">
+          SEO • UX • AI Website Optimization & 360° Health Analysis Toolkit.
+        </p>
+      </div>
+
+      <!-- Column 2: Tools -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Tools</h3>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/" class="hover:text-orange-400 transition">SEO + UX</a></li>
+          <li><a href="/local-seo-tool/" class="hover:text-orange-400 transition">Local SEO</a></li>
+          <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+          <li><a href="/product-seo-tool/" class="hover:text-orange-400 transition">Product SEO</a></li>
+          <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
+          <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a></li>
+          <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">Competition</a></li>
+          <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
+          <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Company -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Company</h3>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
+          <li><a href="/contact/" class="hover:text-orange-400 transition">Contact</a></li>
+          <li><a href="/news/" class="hover:text-orange-400 transition">News</a></li>
+          <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
+          <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 4: Traffic Torch Quick Links -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Traffic Torch</h3>
+        <ul class="space-y-3 text-gray-500 dark:text-gray-200 text-sm">
+          <li><a href="/ai-seo-ux-tools/#seo-tools" class="hover:text-orange-400 transition">SEO Tools 🎯</a></li>
+          <li><a href="/ai-seo-ux-tools/#ux-tools" class="hover:text-orange-400 transition">UX Tools ⚡</a></li>
+          <li><a href="/ai-seo-ux-tools/#ai-tools" class="hover:text-orange-400 transition">Ai Tools 🔍</a></li>
+          <li class="mt-6 text-sm">Built with 🔥</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Copyright / Bottom Note (full width, centered) -->
+    <div class="mt-12 pt-8 border-t border-white/10 dark:border-white/5 text-center text-gray-500 dark:text-gray-200 text-sm">
+      © Traffic Torch
+    </div>
+  </div>
+</footer>
+
+  <!-- Load JS last for speed -->
+  <script src="/main-v1.1.js" type="module"></script>
+</body>
+</html>

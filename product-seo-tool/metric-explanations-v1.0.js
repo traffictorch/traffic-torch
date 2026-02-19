@@ -5,33 +5,33 @@ const metricExplanations = [
     id: "on-page-seo",
     emoji: "📄",
     name: "On-Page SEO",
-    what: "On-Page SEO evaluates title, meta, headings, URL, and keyword usage — the foundational elements that tell search engines and users what the product page is about.",
-    how: "On-Page is tested using title length & keyword inclusion, meta description relevance & CTA strength, heading hierarchy (single H1 + logical H2/H3), clean URL structure, and natural keyword placement/density in content.",
-    why: "Strong on-page signals improve relevance, click-through rates, and initial rankings. They help match user intent and reduce bounce from mismatched expectations."
+    what: "On-Page SEO evaluates title, meta, headings, URL, and keyword usage — the foundational elements that tell search engines and users what the product page is about. <a href='https://traffictorch.net/blog/posts/product-seo-help-guide/#onpage-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "On-Page is tested using title length & keyword inclusion, meta description relevance & CTA strength, heading hierarchy (single H1 + logical H2/H3), clean URL structure, and natural keyword placement/density in content. <a href='https://traffictorch.net/blog/posts/product-seo-help-guide/#onpage-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    why: "Strong on-page signals improve relevance, click-through rates, and initial rankings. They help match user intent and reduce bounce from mismatched expectations. <a href='https://traffictorch.net/blog/posts/product-seo-help-guide/#onpage-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
     id: "technical-seo",
     emoji: "🔧",
     name: "Technical SEO",
-    what: "Technical SEO checks crawlability, mobile readiness, security, and duplicate prevention — essential for product pages to be indexed and ranked properly.",
-    how: "Technical is tested by validating viewport & mobile-friendliness, HTTPS enforcement & mixed content, correct self-referencing canonical tags, absence of noindex/nofollow directives, and likely sitemap inclusion patterns.",
-    why: "Technical issues can prevent indexing, hurt mobile rankings, or cause duplicate content penalties — all block traffic."
+    what: "Technical SEO checks crawlability, mobile readiness, security, and duplicate prevention — essential for product pages to be indexed and ranked properly. <a href='https://traffictorch.net/blog/posts/product-seo-help-guide/#technical-what' class='text-cyan-600 dark:text-cyan-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Technical is tested by validating viewport & mobile-friendliness, HTTPS enforcement & mixed content, correct self-referencing canonical tags, absence of noindex/nofollow directives, and likely sitemap inclusion patterns. <a href='https://traffictorch.net/blog/posts/product-seo-help-guide/#technical-how' class='text-cyan-600 dark:text-cyan-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    why: "Technical issues can prevent indexing, hurt mobile rankings, or cause duplicate content penalties — all block traffic. <a href='https://traffictorch.net/blog/posts/product-seo-help-guide/#technical-why' class='text-cyan-600 dark:text-cyan-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
     id: "content-&-media",
     emoji: "🖼️",
     name: "Content & Media",
-    what: "Content & Media evaluates richness, accessibility, and engagement signals that keep users on-page and build trust.",
-    how: "Content & Media is tested by measuring description length & structure, image alt text coverage & optimization, video embed quality & captions, user-generated content (reviews), internal linking, and breadcrumb navigation presence.",
-    why: "High-quality content reduces bounce rate, improves dwell time, and strengthens topical authority — key ranking factors."
+    what: "Content & Media evaluates richness, accessibility, and engagement signals that keep users on-page and build trust. <a href='https://traffictorch.net/blog/posts/product-seo-help-guide/#contentmedia-what' class='text-emerald-600 dark:text-emerald-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Content & Media is tested by measuring description length & structure, image alt text coverage & optimization, video embed quality & captions, user-generated content (reviews), internal linking, and breadcrumb navigation presence. <a href='https://traffictorch.net/blog/posts/product-seo-help-guide/#contentmedia-how' class='text-emerald-600 dark:text-emerald-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    why: "High-quality content reduces bounce rate, improves dwell time, and strengthens topical authority — key ranking factors. <a href='https://traffictorch.net/blog/posts/product-seo-help-guide/#contentmedia-why' class='text-emerald-600 dark:text-emerald-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
     id: "e-commerce-signals",
     emoji: "🛒",
     name: "E-Commerce Signals",
-    what: "E-Commerce Specific checks structured data, pricing, reviews, variants, and social signals — essential for rich results and conversions.",
-    how: "E-Commerce is tested for complete Product schema markup (name, image, offers, brand), price & availability in schema, aggregate rating & review schema, variant handling (single-page or canonical), and Open Graph / social sharing tags.",
-    why: "Schema enables rich snippets (price, stars, images in SERPs). Reviews add trust. Proper variants prevent duplicate content penalties."
+    what: "E-Commerce Specific checks structured data, pricing, reviews, variants, and social signals — essential for rich results and conversions. <a href='https://traffictorch.net/blog/posts/product-seo-help-guide/#ecommerce-what' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "E-Commerce is tested for complete Product schema markup (name, image, offers, brand), price & availability in schema, aggregate rating & review schema, variant handling (single-page or canonical), and Open Graph / social sharing tags. <a href='https://traffictorch.net/blog/posts/product-seo-help-guide/#ecommerce-how' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    why: "Schema enables rich snippets (price, stars, images in SERPs). Reviews add trust. Proper variants prevent duplicate content penalties. <a href='https://traffictorch.net/blog/posts/product-seo-help-guide/#ecommerce-why' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>"
   }
 ];
 
