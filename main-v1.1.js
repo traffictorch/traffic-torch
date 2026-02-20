@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Help Guides accordion – Desktop
   const helpToggleDesktop = document.getElementById('helpGuidesToggle');
-  const helpListDesktop   = document.getElementById('helpGuidesList');
+  const helpListDesktop = document.getElementById('helpGuidesList');
   if (helpToggleDesktop && helpListDesktop) {
     helpToggleDesktop.addEventListener('click', () => {
       helpListDesktop.classList.toggle('hidden');
@@ -295,13 +295,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Help Guides accordion – Mobile
   const helpToggleMobile = document.getElementById('mobileHelpGuidesToggle');
-  const helpListMobile   = document.getElementById('mobileHelpGuidesList');
+  const helpListMobile = document.getElementById('mobileHelpGuidesList');
   if (helpToggleMobile && helpListMobile) {
     helpToggleMobile.addEventListener('click', () => {
       helpListMobile.classList.toggle('hidden');
     });
   }
-});
 
 // Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text)
 const sidebar = document.getElementById('desktopSidebar');
