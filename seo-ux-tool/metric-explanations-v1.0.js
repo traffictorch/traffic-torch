@@ -63,7 +63,7 @@ const metricExplanations = [
     how: "We check robots.txt, meta robots, canonical links, XML sitemap references, and render-blocking issues. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#indexability-how\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
     why: "Proper indexability is foundational — if search engines can't access or understand your page, it won't rank. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#indexability-why\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>"
   }
-];
+]; 
 
 function openDetailsFromHash() {
   if (!window.location.hash) return;
