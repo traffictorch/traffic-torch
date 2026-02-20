@@ -3,65 +3,65 @@ const metricExplanations = [
     id: "on-page-seo",
     emoji: "🔍",
     name: "On-Page SEO",
-    what: "On-Page SEO evaluates title tags, meta descriptions, header structure, keyword usage, internal linking, and semantic optimization directly on your page.",
-    how: "We scan HTML structure, analyze keyword placement and density, check schema markup, and assess E-E-A-T signals against best practices.",
-    why: "Strong on-page SEO helps search engines understand your content, improves crawl efficiency, and directly impacts rankings and click-through rates."
+    what: "On-Page SEO evaluates title tags, meta descriptions, header structure, keyword usage, internal linking, and semantic optimization directly on your page. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#on-page-seo\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    how: "We scan HTML structure, analyze keyword placement and density, check schema markup, and assess E-E-A-T signals against best practices. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#on-page-seo-how\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    why: "Strong on-page SEO helps search engines understand your content, improves crawl efficiency, and directly impacts rankings and click-through rates. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#on-page-seo-why\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>"
   },
   {
     id: "mobile-pwa",
     emoji: "📱",
     name: "Mobile & PWA",
-    what: "Mobile & PWA checks mobile-friendliness, viewport configuration, touch targets, and Progressive Web App installability features.",
-    how: "We test responsiveness, simulate mobile rendering, evaluate manifest and service worker potential, and measure tap target sizing.",
-    why: "With mobile traffic dominating, excellent mobile experience reduces bounce rates, boosts engagement, and is a key ranking factor."
+    what: "Mobile & PWA checks mobile-friendliness, viewport configuration, touch targets, and Progressive Web App installability features. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#mobile-pwa\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    how: "We test responsiveness, simulate mobile rendering, evaluate manifest and service worker potential, and measure tap target sizing. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#mobile-pwa-how\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    why: "With mobile traffic dominating, excellent mobile experience reduces bounce rates, boosts engagement, and is a key ranking factor. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#mobile-pwa-why\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>"
   },
   {
     id: "performance",
     emoji: "⚡",
     name: "Performance",
-    what: "Performance measures loading speed, Core Web Vitals (LCP, FID, CLS), resource optimization, and server response times.",
-    how: "We analyze paint timings, resource sizes, render-blocking assets, and provide lab-based simulations of real-user metrics.",
-    why: "Fast sites improve user satisfaction, lower bounce rates, and are heavily weighted in search rankings."
+    what: "Performance measures loading speed, Core Web Vitals (LCP, FID, CLS), resource optimization, and server response times. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#performance\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    how: "We analyze paint timings, resource sizes, render-blocking assets, and provide lab-based simulations of real-user metrics. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#performance-how\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    why: "Fast sites improve user satisfaction, lower bounce rates, and are heavily weighted in search rankings. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#performance-why\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>"
   },
   {
     id: "accessibility",
     emoji: "♿",
     name: "Accessibility",
-    what: "Accessibility ensures your site is usable by everyone, including color contrast, ARIA labels, keyboard navigation, and alt text.",
-    how: "We run automated checks against WCAG guidelines, flag contrast issues, missing landmarks, and form labeling errors.",
-    why: "Accessible sites reach wider audiences, reduce legal risk, and contribute to better overall UX and SEO."
+    what: "Accessibility ensures your site is usable by everyone, including color contrast, ARIA labels, keyboard navigation, and alt text. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#accessibility\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    how: "We run automated checks against WCAG guidelines, flag contrast issues, missing landmarks, and form labeling errors. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#accessibility-how\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    why: "Accessible sites reach wider audiences, reduce legal risk, and contribute to better overall UX and SEO. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#accessibility-why\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>"
   },
   {
     id: "content-quality",
     emoji: "📝",
     name: "Content Quality",
-    what: "Content Quality assesses readability, depth, originality, E-E-A-T signals, and alignment with search intent.",
-    how: "We evaluate Flesch reading ease, topic coverage, duplicate content risks, and authority indicators like author markup.",
-    why: "High-quality, helpful content builds trust with users and search engines, driving sustained traffic and authority."
+    what: "Content Quality assesses readability, depth, originality, E-E-A-T signals, and alignment with search intent. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#content-quality\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    how: "We evaluate Flesch reading ease, topic coverage, duplicate content risks, and authority indicators like author markup. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#content-quality-how\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    why: "High-quality, helpful content builds trust with users and search engines, driving sustained traffic and authority. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#content-quality-why\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>"
   },
   {
     id: "ux-design",
     emoji: "🎨",
     name: "UX Design",
-    what: "UX Design reviews visual hierarchy, navigation clarity, call-to-action placement, and psychological friction points.",
-    how: "We analyze layout flow, whitespace usage, intrusive elements, and user journey signals to predict quit risk.",
-    why: "Superior UX keeps visitors engaged longer, increases conversions, and indirectly boosts SEO through better behavioral metrics."
+    what: "UX Design reviews visual hierarchy, navigation clarity, call-to-action placement, and psychological friction points. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#ux-design\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    how: "We analyze layout flow, whitespace usage, intrusive elements, and user journey signals to predict quit risk. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#ux-design-how\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    why: "Superior UX keeps visitors engaged longer, increases conversions, and indirectly boosts SEO through better behavioral metrics. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#ux-design-why\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>"
   },
   {
     id: "security",
     emoji: "🔒",
     name: "Security",
-    what: "Security checks for HTTPS implementation, mixed content, secure headers, and vulnerability indicators.",
-    how: "We verify certificate validity, scan for HTTP resources on HTTPS pages, and evaluate security headers like HSTS and CSP.",
-    why: "Secure sites build user trust, avoid browser warnings, and are required for modern web features and ranking preferences."
+    what: "Security checks for HTTPS implementation, mixed content, secure headers, and vulnerability indicators. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#security\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    how: "We verify certificate validity, scan for HTTP resources on HTTPS pages, and evaluate security headers like HSTS and CSP. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#security-how\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    why: "Secure sites build user trust, avoid browser warnings, and are required for modern web features and ranking preferences. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#security-why\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>"
   },
   {
     id: "indexability",
     emoji: "🤖",
     name: "Indexability",
-    what: "Indexability ensures search engines can crawl and index your page properly via robots directives, sitemap, and canonical tags.",
-    how: "We check robots.txt, meta robots, canonical links, XML sitemap references, and render-blocking issues.",
-    why: "Proper indexability is foundational — if search engines can't access or understand your page, it won't rank."
+    what: "Indexability ensures search engines can crawl and index your page properly via robots directives, sitemap, and canonical tags. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#indexability\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    how: "We check robots.txt, meta robots, canonical links, XML sitemap references, and render-blocking issues. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#indexability-how\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    why: "Proper indexability is foundational — if search engines can't access or understand your page, it won't rank. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#indexability-why\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>"
   }
 ];
 

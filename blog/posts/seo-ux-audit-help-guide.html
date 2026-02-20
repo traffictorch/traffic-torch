@@ -1,0 +1,1532 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <!-- Referrer Policy (security + privacy best practice) -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/">
+ 
+<!-- Post-specific SEO Title & Description -->
+<title>The Ultimate SEO & UX Guide 2026: What Really Matters for Rankings & User Experience</title>
+<meta name="description" content="Complete 2026+ guide to modern SEO and UX auditing. Learn exactly what top tools measure (on-page SEO, Core Web Vitals, mobile readiness, accessibility, content quality, security & more), why each factor still drives Google rankings and conversions today." />
+
+<!-- Robots & Canonical -->
+<meta name="robots" content="index, follow, max-image-preview:large" />
+<link rel="canonical" href="https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/" />
+
+<!-- Open Graph Tags (optimized for 1200×630 display + dark mode friendly contrast) -->
+<meta property="og:title" content="The Ultimate SEO & UX Audit Guide 2026: What Really Matters for Rankings & User Experience" />
+<meta property="og:description" content="Master modern SEO + UX auditing in 2026 and beyond. Deep dive into the 8 key pillars every serious tool evaluates — how they’re tested, why they influence Google rankings and user retention, and actionable fixes to boost traffic and conversions." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/" />
+<meta property="og:image" content="https://traffictorch.net/blog/images/seo-ux/seo-ux-audit-help-guide-1200w.webp" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Torch illuminating SEO & UX audit dashboard showing score circles for SEO, UX, Mobile, Performance and Accessibility" />
+<meta property="og:site_name" content="Traffic Torch" />
+<meta property="article:published_time" content="2026-02-20T15:55:00+11:00" /> <!-- adjust to your actual publish date/time in Sydney/AEDT -->
+<meta property="article:modified_time" content="2026-02-20T16:30:00+11:00" />
+<meta property="article:author" content="Traffic Torch Team" />
+
+<!-- Twitter Cards (X) – summary_large_image for maximum engagement -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="The Ultimate SEO & UX Audit Guide 2026: What Really Matters for Rankings & User Experience" />
+<meta name="twitter:description" content="2026+ breakdown of what top SEO & UX audit tools actually measure — and why it still drives rankings, traffic & conversions today. Perfect for site owners, marketers & SEOs." />
+<meta name="twitter:image" content="https://traffictorch.net/blog/images/seo-ux/seo-ux-audit-help-guide-1200w.webp" />
+<meta name="twitter:image:alt" content="Torch illuminating SEO & UX audit dashboard showing score circles for SEO, UX, Mobile, Performance and Accessibility" />
+<meta name="twitter:site" content="@Guitaralize" />
+<meta name="twitter:creator" content="@Guitaralize" />
+
+<!-- Structured Data (JSON-LD) – BlogPosting + FAQPage ready (add FAQ schema later in body if including FAQ section) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "The Ultimate SEO & UX Audit Guide 2026: What Really Matters for Rankings & User Experience",
+  "description": "Timeless educational deep-dive into modern SEO and UX auditing pillars: on-page SEO, mobile & PWA, Core Web Vitals & performance, accessibility, content quality, UX design, security, and indexability. Explains how leading tools test each factor, why they influence Google rankings and user satisfaction in 2026 and beyond, and the most impactful fixes.",
+  "image": "https://traffictorch.net/blog/images/seo-ux/seo-ux-audit-help-guide-1200w.webp",
+  "datePublished": "2026-02-01T10:00:00+11:00",
+  "dateModified": "2026-02-20T15:00:00+11:00",
+  "author": {
+    "@type": "Person",
+    "name": "Traffic Torch Team",
+    "url": "https://traffictorch.net",
+    "sameAs": ["https://twitter.com/guitaralize"]
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://traffictorch.net/logo-512.webp",
+      "width": 512,
+      "height": 512
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/"
+  },
+  "keywords": [
+    "SEO audit guide 2026",
+    "UX audit explained",
+    "Core Web Vitals 2026",
+    "mobile-first indexing",
+    "accessibility SEO impact",
+    "content quality ranking factors",
+    "site security HTTPS",
+    "indexability canonical noindex"
+  ],
+  "wordCount": 3200,
+  "inLanguage": "en-AU",
+  "articleSection": "SEO & UX Guides",
+  "isPartOf": {
+    "@type": "Blog",
+    "name": "Traffic Torch Blog",
+    "url": "https://traffictorch.net/news/"
+  }
+}
+</script>
+
+<!-- Organization schema (global, usually in head of every page – keep if not already present site-wide) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Traffic Torch",
+  "url": "https://traffictorch.net/",
+  "logo": "https://traffictorch.net/logo-512.webp",
+  "sameAs": ["https://twitter.com/guitaralize"]
+}
+</script>
+
+<!-- BreadcrumbList – improves rich results & internal linking clarity -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://traffictorch.net/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://traffictorch.net/news/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "The Ultimate SEO & UX Audit Guide 2026",
+      "item": "https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/"
+    }
+  ]
+}
+</script>
+ 
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Main Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/blog/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/blog/style-v1.0.css">
+  </noscript>
+
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  <meta http-equiv="Content-Encoding" content="br">  
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+<nav class="p-6 space-y-4 flex-1">
+  <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+    <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
+  </a>
+  <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+    <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
+  </a>
+  <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+    <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+  </a>
+  <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+    <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
+  </a>
+  <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+    <span class="text-2xl">⚡</span> <span class="sidebar-text hidden">Quit Risk</span>
+  </a>
+  <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+    <span class="text-2xl">📝</span> <span class="sidebar-text hidden">Keywords</span>
+  </a>
+  <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+    <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
+  </a>
+  <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+    <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+  </a>
+  <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+    <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+  </a>
+
+  <!-- New: Help Guides Accordion -->
+  <div class="space-y-2">
+    <button id="helpGuidesToggle" class="w-full flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition focus:outline-none">
+      <span class="text-2xl">📋</span> 
+      <span class="sidebar-text hidden">Help Guides +</span>
+    </button>
+    <div id="helpGuidesList" class="hidden pl-8 md:pl-10 space-y-3 text-base text-gray-600 dark:text-gray-300">
+      <a href="https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/" class="hover:text-orange-400 transition">⚖️ SEO + UX</a>
+      <a href="https://traffictorch.net/blog/posts/local-seo-help-guide" class="hover:text-orange-400 transition">📍 Local SEO</a>
+      <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/" class="hover:text-orange-400 transition">🎯 SEO Intent</a>
+      <a href="https://traffictorch.net/blog/posts/product-seo-help-guide/" class="hover:text-orange-400 transition">🛒 Product SEO</a>
+      <a href="https://traffictorch.net/blog/posts/user-experience-help-guide/" class="hover:text-orange-400 transition">⚡ Quit Risk</a>
+      <a href="https://traffictorch.net/blog/posts/seo-keyword-help-guide/" class="hover:text-orange-400 transition">📝 Keywords</a>
+      <a href="https://traffictorch.net/blog/posts/seo-keyword-competition-help-guide/" class="hover:text-orange-400 transition">🆚 Competition</a>
+      <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide.html" class="hover:text-orange-400 transition">🔍 Ai Search</a>
+      <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide.html" class="hover:text-orange-400 transition">🤖 Ai Content</a>
+    </div>
+  </div>
+</nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+   </button>
+<nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+  <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
+  <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+    <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+    <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
+    <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
+    <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
+    <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⚡ Quit Risk</a>
+    <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">📝 Keywords</a>
+    <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+    <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
+    <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+
+    <!-- New: Help Guides Accordion for Mobile -->
+    <button id="mobileHelpGuidesToggle" class="text-gray-100 hover:text-orange-400 transition text-left flex items-center gap-3">
+      📋 Help Guides +
+    </button>
+    <div id="mobileHelpGuidesList" class="hidden pl-8 flex flex-col gap-3 text-base opacity-90">
+      <a href="https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+      <a href="https://traffictorch.net/blog/posts/local-seo-help-guide" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
+      <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
+      <a href="https://traffictorch.net/blog/posts/product-seo-help-guide/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
+      <a href="https://traffictorch.net/blog/posts/user-experience-help-guide/" class="text-gray-100 hover:text-orange-400 transition">⚡ Quit Risk</a>
+      <a href="https://traffictorch.net/blog/posts/seo-keyword-help-guide/" class="text-gray-100 hover:text-orange-400 transition">📝 Keywords</a>
+      <a href="https://traffictorch.net/blog/posts/seo-keyword-competition-help-guide/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+      <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide.html" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
+      <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide.html" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+    </div>
+  </div>
+</nav>
+</div>
+</header>
+
+<!-- Updated Blog Post Content Area (glassmorphism card matching site style) -->
+<main class="py-16 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-sm">
+  <article class="max-w-4xl mx-auto px-2">
+    <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl p-2 md:p-4 prose prose-lg dark:prose-invert max-w-none border border-white/10 dark:border-white/5">
+      
+      <!-- REPLACE: Featured Image -->
+    <picture class="mb-12 block">
+      <source
+        media="(max-width: 640px)"
+        srcset="/blog/images/seo-ux/seo-ux-audit-help-guide-640w.webp">
+      <source
+        media="(min-width: 641px)"
+        srcset="/blog/images/seo-ux/seo-ux-audit-help-guide-1200w.webp">
+      <img
+        src="/blog/images/seo-ux/seo-ux-audit-help-guide-1200w.webp"
+        alt="SEO & UX Audit Help Guide: Master On-Page, Mobile, Performance, Accessibility & More – Traffic Torch"
+        class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+        width="1200"
+        height="630">
+    </picture>
+
+<!-- Post Hero Title -->
+<h1 class="text-3xl md:text-4xl lg:text-5xl font-black mb-5 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">
+  Traffic Torch SEO & UX Audit Guide
+</h1>
+
+<!-- Subtitle / Hook -->
+<p class="text-xl md:text-2xl font-medium text-gray-700 dark:text-gray-300 mb-10 leading-relaxed max-w-3xl">
+  What top tools really measure in 2026 and beyond. How each factor is tested, why it still moves the needle for Google rankings and user experience, and the highest-impact fixes you can apply today.
+</p>
+
+<!-- Introduction – Answer-first for featured snippets & AI Overviews -->
+<div class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12">
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg">
+    <strong>In 2026, Google still rewards sites that deliver fast, accessible, relevant, and secure experiences — but the bar keeps rising.</strong> Modern SEO and UX audits go far beyond keyword stuffing or mobile checkboxes. Today’s best tools evaluate eight core pillars: on-page SEO signals, mobile & PWA readiness, Core Web Vitals & performance, accessibility, content quality & structure, intuitive UX design, full HTTPS security, and proper indexability.
+  </p>
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg mt-6">
+    This guide explains <strong>exactly</strong> what serious audit tools (including Traffic Torch) measure in each area, how they test it using real client-side analysis, why each factor influences rankings and conversions in 2026+, and the most practical fixes ranked by impact. Whether you're optimizing your own site, helping clients, or just want to understand why some pages rank and others don’t — you’ll finish this post with a clear, actionable roadmap.
+  </p>
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg mt-6 font-medium">
+    Ready to see where your site stands? <a href="https://traffictorch.net/" class="text-orange-500 hover:text-orange-400 underline font-semibold">Run your free instant 360° SEO + UX audit now</a> — no login, no tracking, results in seconds.
+  </p>
+</div>
+
+
+<!-- Table of Contents - 4-column table (sticky-friendly, mobile-scrollable) -->
+<nav id="table-of-contents" class="bg-white dark:bg-gray-900 p-6 mt-10 rounded-2xl shadow-lg mb-12 border border-gray-200 dark:border-gray-700 sticky top-4 z-10">
+  <h2 class="text-2xl md:text-3xl font-black text-center text-gray-800 dark:text-gray-100 mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Table of Contents
+  </h2>
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse min-w-[800px]">
+      <thead>
+        <tr class="bg-gray-100 dark:bg-gray-800">
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Module</th>
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 text-center">What is it?</th>
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 text-center">How it's tested?</th>
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 text-center">Why it matters?</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-800 dark:text-gray-200">
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#on-page-seo" class="text-orange-600 dark:text-orange-400 hover:underline">On-Page SEO</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#on-page-seo-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#on-page-seo-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#on-page-seo-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#mobile-pwa" class="text-orange-600 dark:text-orange-400 hover:underline">Mobile & PWA</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#mobile-pwa-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#mobile-pwa-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#mobile-pwa-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#performance" class="text-orange-600 dark:text-orange-400 hover:underline">Performance</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#performance-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#performance-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#performance-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#accessibility" class="text-orange-600 dark:text-orange-400 hover:underline">Accessibility</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#accessibility-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#accessibility-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#accessibility-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#content-quality" class="text-orange-600 dark:text-orange-400 hover:underline">Content Quality</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#content-quality-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#content-quality-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#content-quality-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#ux-design" class="text-orange-600 dark:text-orange-400 hover:underline">UX Design</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#ux-design-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#ux-design-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#ux-design-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#security" class="text-orange-600 dark:text-orange-400 hover:underline">Security</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#security-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#security-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#security-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#indexability" class="text-orange-600 dark:text-orange-400 hover:underline">Indexability</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#indexability-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#indexability-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#indexability-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+    <a href="#conclusion" class="text-orange-600 dark:text-orange-400 hover:underline">Conclusion & Next Steps</a> •
+    <a href="#faq" class="text-orange-600 dark:text-orange-400 hover:underline">Frequently Asked Questions</a>
+  </div>
+</nav>
+
+<!-- On-Page SEO Module Section -->
+<section id="on-page-seo" class="mb-20 scroll-mt-24">
+  <h2 class="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200">
+    On-Page SEO
+  </h2>
+
+  <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+    <!-- What -->
+    <h3 id="on-page-seo-what" class="text-2xl font-semibold mt-8 text-gray-800 dark:text-gray-200">
+      What is On-Page SEO?
+    </h3>
+    <p>On-Page SEO includes every optimization you control directly on the individual webpage to help search engines understand the topic, relevance, and value of the content. The main elements are the title tag, meta description, heading structure (H1 to H6), keyword usage in natural context, image alt attributes, internal links, and structured data (schema markup).</p>
+    <p>This area of SEO began with simple keyword placement in the late 1990s. It advanced significantly with Google's semantic shift via Hummingbird in 2013, intent understanding through RankBrain in 2015, and the strong focus on helpful, people-first content from updates that continued through 2025. In 2026 On-Page SEO is still a core direct ranking factor. It tells search engines exactly what the page offers and how well it matches user intent.</p>
+
+    <!-- How -->
+    <h3 id="on-page-seo-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+      How is On-Page SEO tested in modern audits?
+    </h3>
+    <p>Modern client-side audit tools load the rendered HTML and perform these specific checks:</p>
+    <ul class="list-disc pl-6 space-y-3 mt-4">
+      <li>Title tag exists, is unique, stays between 50 and 65 characters, and places the primary keyword early in the string.</li>
+      <li>Meta description is present, engaging, and falls within the optimal 120 to 158 character range.</li>
+      <li>H1 heading includes the main keyword or a close semantic match and clearly defines the page's primary topic.</li>
+      <li>Structured data (JSON-LD schema) is detected and correctly matches the content type such as Article, Product, or FAQPage.</li>
+      <li>Every non-decorative image has meaningful alt text that describes its purpose or content.</li>
+    </ul>
+    <p class="mt-4">The score begins at 100. Points are deducted for missing elements, incorrect lengths, poor keyword placement, or absent schema. The largest deductions occur when critical pieces like the title or meta description are completely missing.</p>
+
+    <!-- Why -->
+    <h3 id="on-page-seo-why" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+      Why does On-Page SEO matter for rankings and user experience?
+    </h3>
+    <p><strong>SEO impact.</strong> Well-optimized on-page elements serve as primary signals for Google to determine topical relevance, trigger rich results (star ratings, FAQs, product cards), and improve click-through rates from search results pages. Pages with strong titles, schema, and alt text tend to earn more impressions and higher positions even in competitive niches in 2026.</p>
+    <p><strong>User experience impact.</strong> A keyword-accurate title and benefit-focused meta description set realistic expectations before the click. This reduces immediate bounces. Descriptive alt text makes images accessible to screen readers and supports image search traffic. These improvements build trust, increase time on page, and lower bounce rates. All of these metrics feed back into Google's ranking signals.</p>
+
+    <!-- CTA Box -->
+    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-left">
+      <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
+        See your exact On-Page SEO score in seconds.
+      </p>
+      <p class="mb-4">
+        Run a free instant audit with Traffic Torch. No signup. No tracking. Fully client-side analysis.
+      </p>
+      <a href="https://traffictorch.net/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition text-lg shadow-lg">
+        Run Free SEO + UX Audit Now →
+      </a>
+    </div>
+
+    <!-- Fixes -->
+    <h3 class="text-2xl font-semibold mt-12 text-gray-800 dark:text-gray-200">
+      Quick high-impact fixes for On-Page SEO
+    </h3>
+    <ol class="list-decimal pl-6 space-y-4 font-medium mt-4">
+      <li>Rewrite the title tag to start with the primary keyword. Keep it under 60 characters. Make it compelling for clicks.</li>
+      <li>Create a unique meta description between 120 and 158 characters. Include the keyword naturally. End with a clear benefit or call-to-action.</li>
+      <li>Align the H1 tag with the title and user intent. Use only one H1 per page.</li>
+      <li>Add JSON-LD structured data for the main content type. Validate it with Google's Rich Results Test.</li>
+      <li>Review every image. Write concise, descriptive alt text that helps both users and search engines. Avoid keyword stuffing.</li>
+    </ol>
+  </div>
+
+  <!-- Return to TOC – only at the bottom -->
+  <div class="mt-12 text-center">
+    <a href="#table-of-contents" class="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
+      ↑ Return to Table of Contents
+    </a>
+  </div>
+</section>
+
+<!-- Mobile & PWA Module Section -->
+<section id="mobile-pwa" class="mb-20 scroll-mt-24">
+  <h2 class="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200">
+    Mobile & PWA
+  </h2>
+
+  <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+    <!-- What -->
+    <h3 id="mobile-pwa-what" class="text-2xl font-semibold mt-8 text-gray-800 dark:text-gray-200">
+      What is Mobile & PWA readiness?
+    </h3>
+    <p>Mobile & PWA readiness checks whether your website delivers a flawless experience on smartphones and tablets and whether it qualifies to be installed as a Progressive Web App. This includes responsive design foundations, viewport configuration, touch-friendly elements, and PWA features such as a web app manifest, installable icons, and service worker registration.</p>
+    <p>Mobile-first indexing became Google's default in 2019. By 2026 it is non-negotiable. Google crawls, indexes, and ranks primarily using the mobile version of every page. Progressive Web Apps gained mainstream traction around 2018–2020 and continue to grow in importance because they offer app-like experiences (offline support, home screen installation, push notifications) without requiring native app store distribution.</p>
+
+    <!-- How -->
+    <h3 id="mobile-pwa-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+      How is Mobile & PWA tested in modern audits?
+    </h3>
+    <p>Client-side audit tools inspect the HTML and linked resources with these targeted checks:</p>
+    <ul class="list-disc pl-6 space-y-3 mt-4">
+      <li>A correct viewport meta tag exists with content including width=device-width and initial-scale=1.</li>
+      <li>A web app manifest file is linked via <link rel="manifest"> in the document head.</li>
+      <li>High-resolution homescreen icons are provided (at minimum 192×192 pixels, ideally also 512×512, in PNG or WebP format).</li>
+      <li>A service worker registration is detected in JavaScript (tools look for navigator.serviceWorker.register patterns in inline or external scripts).</li>
+    </ul>
+    <p class="mt-4">Scoring starts at 100. Heavy penalties apply for missing viewport (breaks responsive layout) or no manifest (prevents installability). Smaller deductions occur for missing large icons or undetected service workers (detection can miss dynamic registrations in minified code).</p>
+
+    <!-- Why -->
+    <h3 id="mobile-pwa-why" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+      Why does Mobile & PWA readiness matter for rankings and user experience?
+    </h3>
+    <p><strong>SEO impact.</strong> Google applies mobile-first indexing exclusively in 2026. Pages that fail mobile usability tests receive lower rankings across all devices. PWA features (manifest and service worker) improve perceived performance through caching and enable install prompts. This increases engagement signals that influence rankings indirectly.</p>
+    <p><strong>User experience impact.</strong> A proper viewport prevents awkward zooming and horizontal scrolling on phones. Installable PWAs let users add the site to their home screen for quick access like a native app. Service workers enable faster repeat visits and limited offline functionality. These improvements reduce frustration, lower bounce rates, and boost session duration significantly on mobile traffic (which dominates most sites in 2026).</p>
+
+    <!-- CTA Box -->
+    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-left">
+      <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
+        Check your Mobile & PWA score in seconds.
+      </p>
+      <p class="mb-4">
+        Run a free instant audit with Traffic Torch. No signup. No tracking. Fully client-side analysis.
+      </p>
+      <a href="https://traffictorch.net/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition text-lg shadow-lg">
+        Run Free SEO + UX Audit Now →
+      </a>
+    </div>
+
+    <!-- Fixes -->
+    <h3 class="text-2xl font-semibold mt-12 text-gray-800 dark:text-gray-200">
+      Quick high-impact fixes for Mobile & PWA
+    </h3>
+    <ol class="list-decimal pl-6 space-y-4 font-medium mt-4">
+      <li>Add or correct the viewport meta tag in the <head>: <meta name="viewport" content="width=device-width, initial-scale=1">. Place it early.</li>
+      <li>Create a manifest.json file with name, short_name, icons (at least 192 and 512 pixels), start_url, display: standalone, and theme/background colors. Link it with <link rel="manifest" href="/manifest.json"></li>
+      <li>Provide high-resolution PNG or WebP icons (192×192 and 512×512 minimum). Link them as apple-touch-icon and in the manifest.</li>
+      <li>Register a service worker with a simple caching strategy (even a basic one improves repeat visits). Use <code>if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }</code> in your main script.</li>
+      <li>Test installability with Chrome DevTools (Application tab → Manifest) and Lighthouse in incognito mode.</li>
+    </ol>
+  </div>
+
+  <!-- Return to TOC – only at the bottom -->
+  <div class="mt-12 text-center">
+    <a href="#table-of-contents" class="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
+      ↑ Return to Table of Contents
+    </a>
+  </div>
+</section>
+
+<!-- Performance Module Section -->
+<section id="performance" class="mb-20 scroll-mt-24">
+  <h2 class="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200">
+    Performance
+  </h2>
+
+  <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+    <!-- What -->
+    <h3 id="performance-what" class="text-2xl font-semibold mt-8 text-gray-800 dark:text-gray-200">
+      What is Performance in SEO and UX audits?
+    </h3>
+    <p>Performance measures how quickly and efficiently a page loads and becomes interactive for real users. Key factors include total page weight, number of requests, render-blocking resources, image optimization, font loading strategy, and adherence to Core Web Vitals (Largest Contentful Paint, First Input Delay/Interaction to Next Paint, Cumulative Layout Shift).</p>
+    <p>Core Web Vitals became official ranking factors in 2021. By 2026 they remain critical because Google continues to prioritize real-user experience over lab data alone. Slow sites lose visitors quickly, increase bounce rates, and receive lower rankings in mobile-first indexing environments.</p>
+
+    <!-- How -->
+    <h3 id="performance-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+      How is Performance tested in modern audits?
+    </h3>
+    <p>Client-side audit tools analyze the HTML payload and resource references with these specific checks:</p>
+    <ul class="list-disc pl-6 space-y-3 mt-4">
+      <li>HTML payload size stays reasonable (ideally under 120 KB after minification and compression).</li>
+      <li>Render-blocking external CSS and synchronous JavaScript requests are minimized (focus on files loaded in <head> without async or defer).</li>
+      <li>Number of external font requests remains low (ideally 1–2 families) and uses font-display: swap or preloading.</li>
+      <li>Page weight indicators flag excessive inline styles, scripts, or unoptimized markup that inflate the initial HTML.</li>
+    </ul>
+    <p class="mt-4">Scoring starts at 100. Deductions scale with severity. Large HTML payloads, many render-blocking resources, and multiple font requests receive the heaviest penalties because they delay First Contentful Paint and Largest Contentful Paint.</p>
+
+    <!-- Why -->
+    <h3 id="performance-why" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+      Why does Performance matter for rankings and user experience?
+    </h3>
+    <p><strong>SEO impact.</strong> Core Web Vitals are direct ranking signals in 2026. Pages that pass the good thresholds for LCP (under 2.5 s), INP (under 200 ms), and CLS (under 0.1) gain advantages in mobile search results. Fast sites also improve crawl budget efficiency and reduce server load signals that influence indexing priority.</p>
+    <p><strong>User experience impact.</strong> Quick-loading pages keep visitors engaged. Each extra second of load time increases bounce probability significantly on mobile. Optimized performance reduces frustration, supports longer sessions, and improves conversion rates. These engagement metrics feed back into Google's quality evaluation.</p>
+
+    <!-- CTA Box -->
+    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-left">
+      <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
+        Discover your Performance score in seconds.
+      </p>
+      <p class="mb-4">
+        Run a free instant audit with Traffic Torch. No signup. No tracking. Fully client-side analysis.
+      </p>
+      <a href="https://traffictorch.net/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition text-lg shadow-lg">
+        Run Free SEO + UX Audit Now →
+      </a>
+    </div>
+
+    <!-- Fixes -->
+    <h3 class="text-2xl font-semibold mt-12 text-gray-800 dark:text-gray-200">
+      Quick high-impact fixes for Performance
+    </h3>
+    <ol class="list-decimal pl-6 space-y-4 font-medium mt-4">
+      <li>Minify HTML, CSS, and JavaScript. Remove unused code and whitespace. Use tools like HTMLMinifier or build-step processors.</li>
+      <li>Inline critical above-the-fold CSS and defer non-critical CSS with <link rel="stylesheet" media="print" onload="this.media='all'"> or async loading.</li>
+      <li>Add defer or async attributes to non-critical <script> tags. Move them to the end of <body> when possible.</li>
+      <li>Limit web fonts to 1–2 families. Apply font-display: swap. Preload important font files with <link rel="preload" as="font">.</li>
+      <li>Compress images to WebP or AVIF format. Implement lazy loading with loading="lazy" on below-the-fold images.</li>
+    </ol>
+  </div>
+
+  <!-- Return to TOC – only at the bottom -->
+  <div class="mt-12 text-center">
+    <a href="#table-of-contents" class="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
+      ↑ Return to Table of Contents
+    </a>
+  </div>
+</section>
+
+<!-- Accessibility Module Section -->
+<section id="accessibility" class="mb-20 scroll-mt-24">
+  <h2 class="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200">
+    Accessibility
+  </h2>
+
+  <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+    <!-- What -->
+    <h3 id="accessibility-what" class="text-2xl font-semibold mt-8 text-gray-800 dark:text-gray-200">
+      What is Accessibility in web audits?
+    </h3>
+    <p>Accessibility ensures that a website can be used effectively by everyone, including people with visual, auditory, motor, or cognitive impairments. Core checks cover meaningful alt text for images, proper semantic HTML structure (headings, landmarks, lists), form field labeling, sufficient color contrast, keyboard navigation, and language declaration.</p>
+    <p>Accessibility standards evolved from WCAG 1.0 in 1999 to WCAG 2.1 (2018) and WCAG 2.2 (2023). In 2026 Google increasingly treats strong accessibility as a quality signal. Poor accessibility can lead to legal risks under laws such as the ADA and EU Accessibility Act while also harming user trust and reach.</p>
+
+    <!-- How -->
+    <h3 id="accessibility-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+      How is Accessibility tested in modern audits?
+    </h3>
+    <p>Client-side audit tools scan the parsed DOM and run these targeted checks:</p>
+    <ul class="list-disc pl-6 space-y-3 mt-4">
+      <li>All images have appropriate alt attributes (descriptive for content images, empty for decorative ones).</li>
+      <li>The <html> element includes a valid lang attribute (for example lang="en").</li>
+      <li>A main landmark exists (<main> tag or role="main").</li>
+      <li>Heading order is logical without skips (H1 → H2 → H3 etc. without jumping levels).</li>
+      <li>Form controls (inputs, textareas, selects) have programmatically associated labels (via for/id, wrapping label, aria-label, or aria-labelledby).</li>
+    </ul>
+    <p class="mt-4">Scoring starts at 100. Deductions increase with the number of violations. Missing alt text, lang attribute, or landmarks receive significant penalties because they break core screen reader functionality.</p>
+
+    <!-- Why -->
+    <h3 id="accessibility-why" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+      Why does Accessibility matter for rankings and user experience?
+    </h3>
+    <p><strong>SEO impact.</strong> Google has stated since 2020 that accessibility improvements often align with better SEO. In 2026 it serves as an indirect quality signal. Accessible sites tend to have better structure, more descriptive content, and higher engagement from all users. This leads to stronger behavioral metrics that influence rankings.</p>
+    <p><strong>User experience impact.</strong> Good accessibility broadens your audience to include the 15–20% of people with disabilities. Keyboard navigation and screen reader support make the site usable without a mouse or sight. Proper contrast and clear labels reduce cognitive load for everyone. These changes lower frustration, increase time on site, and improve conversion rates across all visitors.</p>
+
+    <!-- CTA Box -->
+    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-left">
+      <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
+        Find your Accessibility score in seconds.
+      </p>
+      <p class="mb-4">
+        Run a free instant audit with Traffic Torch. No signup. No tracking. Fully client-side analysis.
+      </p>
+      <a href="https://traffictorch.net/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition text-lg shadow-lg">
+        Run Free SEO + UX Audit Now →
+      </a>
+    </div>
+
+    <!-- Fixes -->
+    <h3 class="text-2xl font-semibold mt-12 text-gray-800 dark:text-gray-200">
+      Quick high-impact fixes for Accessibility
+    </h3>
+    <ol class="list-decimal pl-6 space-y-4 font-medium mt-4">
+      <li>Add descriptive alt text to every meaningful image. Use alt="" for purely decorative images.</li>
+      <li>Set the correct language on the root element: <html lang="en"> or your site's primary language.</li>
+      <li>Wrap main content in a <main> tag or add role="main" to the primary container.</li>
+      <li>Ensure headings follow a logical hierarchy. Avoid skipping levels (no H1 to H3 without H2).</li>
+      <li>Associate every visible form field with a label (use for/id pairs, wrapping labels, or ARIA attributes). Avoid relying on placeholders alone.</li>
+    </ol>
+  </div>
+
+  <!-- Return to TOC – only at the bottom -->
+  <div class="mt-12 text-center">
+    <a href="#table-of-contents" class="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
+      ↑ Return to Table of Contents
+    </a>
+  </div>
+</section>
+
+<!-- Content Quality Module Section -->
+<section id="content-quality" class="mb-20 scroll-mt-24">
+  <h2 class="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200">
+    Content Quality
+  </h2>
+
+  <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+    <!-- What -->
+    <h3 id="content-quality-what" class="text-2xl font-semibold mt-8 text-gray-800 dark:text-gray-200">
+      What is Content Quality in audits?
+    </h3>
+    <p>Content Quality evaluates how well the page satisfies user intent through depth, readability, structure, originality, and scannability. It looks at word count, sentence and paragraph length, Flesch readability score, heading usage, list and table presence, and overall helpfulness of the information provided.</p>
+    <p>Content evaluation shifted dramatically after Google's Helpful Content Update (2022 onward) and continued emphasis on E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) through 2025–2026. In 2026 shallow or poorly structured content is heavily demoted. High-quality content ranks better because it keeps users engaged and answers questions comprehensively.</p>
+
+    <!-- How -->
+    <h3 id="content-quality-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+      How is Content Quality tested in modern audits?
+    </h3>
+    <p>Client-side audit tools extract and analyze the visible body text with these precise checks:</p>
+    <ul class="list-disc pl-6 space-y-3 mt-4">
+      <li>Main content word count reaches a healthy threshold (typically 300+ words for most topics, higher for competitive queries).</li>
+      <li>Readability metrics (Flesch-Kincaid score) stay above 60 (indicating reasonably easy reading level).</li>
+      <li>Heading structure includes multiple descriptive H2 and H3 tags to break up long text.</li>
+      <li>Lists (bulleted or numbered) and tables appear where appropriate to improve scannability.</li>
+      <li>Content avoids excessive complexity (long sentences, high syllable counts) that hurts mobile reading.</li>
+    </ul>
+    <p class="mt-4">Scoring starts at 100. Significant penalties apply for thin content (under 300 words) or very low readability. Smaller deductions occur for missing structure or lack of lists/tables on longer pages.</p>
+
+    <!-- Why -->
+    <h3 id="content-quality-why" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+      Why does Content Quality matter for rankings and user experience?
+    </h3>
+    <p><strong>SEO impact.</strong> In 2026 Google prioritizes content that demonstrates real value and satisfies search intent. High-quality, well-structured pages earn more featured snippets, People Also Ask placements, and higher dwell time. These engagement signals strengthen topical authority and help pages rank for broader keyword clusters.</p>
+    <p><strong>User experience impact.</strong> Scannable content with short paragraphs, headings, and lists lets users find answers quickly on mobile. Readable language reduces cognitive effort. Comprehensive yet focused depth builds trust and encourages shares and return visits. Poor content drives immediate exits and hurts conversion rates.</p>
+
+    <!-- CTA Box -->
+    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-left">
+      <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
+        See your Content Quality score in seconds.
+      </p>
+      <p class="mb-4">
+        Run a free instant audit with Traffic Torch. No signup. No tracking. Fully client-side analysis.
+      </p>
+      <a href="https://traffictorch.net/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition text-lg shadow-lg">
+        Run Free SEO + UX Audit Now →
+      </a>
+    </div>
+
+    <!-- Fixes -->
+    <h3 class="text-2xl font-semibold mt-12 text-gray-800 dark:text-gray-200">
+      Quick high-impact fixes for Content Quality
+    </h3>
+    <ol class="list-decimal pl-6 space-y-4 font-medium mt-4">
+      <li>Expand thin pages to at least 800–1200 words for competitive topics while staying focused on user intent.</li>
+      <li>Shorten average sentence length to 15–20 words. Use active voice and common words to improve Flesch score above 60.</li>
+      <li>Add descriptive H2 and H3 headings every 300–400 words to create clear sections and improve scannability.</li>
+      <li>Convert key points, steps, comparisons, or features into bulleted/numbered lists. Use tables for data-heavy sections.</li>
+      <li>Remove fluff. Focus on original insights, examples, data, or unique angles that genuinely help the reader.</li>
+    </ol>
+  </div>
+
+  <!-- Return to TOC – only at the bottom -->
+  <div class="mt-12 text-center">
+    <a href="#table-of-contents" class="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
+      ↑ Return to Table of Contents
+    </a>
+  </div>
+</section>
+
+<!-- UX Design Module Section -->
+<section id="ux-design" class="mb-20 scroll-mt-24">
+  <h2 class="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200">
+    UX Design
+  </h2>
+
+  <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+    <!-- What -->
+    <h3 id="ux-design-what" class="text-2xl font-semibold mt-8 text-gray-800 dark:text-gray-200">
+      What is UX Design in audits?
+    </h3>
+    <p>UX Design assesses how intuitive, clear, and goal-oriented the page feels to visitors. It examines primary call-to-action prominence, navigation clarity, visual hierarchy, link density, mobile touch targets, and overall flow that guides users toward desired actions without confusion or friction.</p>
+    <p>User experience signals gained ranking weight after Google's page experience update (2021) and remain important in 2026. Core Web Vitals cover speed aspects. UX design focuses on behavioral outcomes: whether users understand what to do next, stay engaged, and complete goals. Poor UX increases bounce rates and reduces conversions even on fast pages.</p>
+
+    <!-- How -->
+    <h3 id="ux-design-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+      How is UX Design tested in modern audits?
+    </h3>
+    <p>Client-side audit tools evaluate interactive and structural elements with these checks:</p>
+    <ul class="list-disc pl-6 space-y-3 mt-4">
+      <li>Number of visible interactive elements (links, buttons, form fields) stays reasonable (typically under 80 to avoid choice overload).</li>
+      <li>Primary calls-to-action are visually prominent (contrast, size, placement above the fold where relevant).</li>
+      <li>Breadcrumb navigation exists on deeper pages (pages with more than ~2000 words or multiple hierarchy levels).</li>
+      <li>Link density and button spacing avoid overwhelming users with too many competing options.</li>
+    </ul>
+    <p class="mt-4">Scoring starts at 100. Larger penalties apply to excessive interactive elements (decision paralysis) or missing breadcrumbs on complex pages. Smaller deductions occur for suboptimal CTA visibility or cluttered layouts.</p>
+
+    <!-- Why -->
+    <h3 id="ux-design-why" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+      Why does UX Design matter for rankings and user experience?
+    </h3>
+    <p><strong>SEO impact.</strong> In 2026 Google uses aggregated user behavior signals (bounce rate, dwell time, pogo-sticking, conversion proxies) as quality indicators. Clean, intuitive UX improves these metrics. This indirectly boosts rankings by demonstrating that the page satisfies searchers. Well-designed pages also earn more shares and backlinks naturally.</p>
+    <p><strong>User experience impact.</strong> Clear visual hierarchy and focused CTAs help visitors complete tasks faster. Reduced cognitive load prevents frustration. Breadcrumbs on deep pages orient users within the site structure. These improvements increase satisfaction, session depth, and goal completion rates across desktop and mobile visitors.</p>
+
+    <!-- CTA Box -->
+    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-left">
+      <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
+        Check your UX Design score in seconds.
+      </p>
+      <p class="mb-4">
+        Run a free instant audit with Traffic Torch. No signup. No tracking. Fully client-side analysis.
+      </p>
+      <a href="https://traffictorch.net/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition text-lg shadow-lg">
+        Run Free SEO + UX Audit Now →
+      </a>
+    </div>
+
+    <!-- Fixes -->
+    <h3 class="text-2xl font-semibold mt-12 text-gray-800 dark:text-gray-200">
+      Quick high-impact fixes for UX Design
+    </h3>
+    <ol class="list-decimal pl-6 space-y-4 font-medium mt-4">
+      <li>Reduce visible links and buttons to 1–3 primary CTAs per section. Use strong contrast, large touch targets (minimum 44×44 pixels), and action-oriented text.</li>
+      <li>Highlight the most important call-to-action with color, size, and placement above the fold when it matches user intent.</li>
+      <li>Add breadcrumb navigation on pages deeper than the homepage: Home > Category > Subcategory > Current Page.</li>
+      <li>Group related actions together. Move secondary links to footer, sidebar, or dropdown menus to avoid clutter.</li>
+      <li>Test mobile flow with real devices. Ensure tap targets do not overlap and text remains readable without zooming.</li>
+    </ol>
+  </div>
+
+  <!-- Return to TOC – only at the bottom -->
+  <div class="mt-12 text-center">
+    <a href="#table-of-contents" class="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
+      ↑ Return to Table of Contents
+    </a>
+  </div>
+</section>
+
+<!-- Security Module Section -->
+<section id="security" class="mb-20 scroll-mt-24">
+  <h2 class="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200">
+    Security
+  </h2>
+
+  <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+    <!-- What -->
+    <h3 id="security-what" class="text-2xl font-semibold mt-8 text-gray-800 dark:text-gray-200">
+      What is Security in web audits?
+    </h3>
+    <p>Security verifies that the page is served over a valid HTTPS connection and contains no mixed content issues. This includes checking the protocol of the main URL, all embedded resources (images, scripts, stylesheets, iframes), and the presence of a valid SSL/TLS certificate without warnings.</p>
+    <p>HTTPS became a ranking signal in 2014. By 2026 it is a baseline expectation. Browsers display "Not Secure" warnings on HTTP pages. Mixed content on HTTPS sites blocks resources and triggers warnings. These issues damage trust, increase bounce rates, and negatively affect rankings and user retention.</p>
+
+    <!-- How -->
+    <h3 id="security-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+      How is Security tested in modern audits?
+    </h3>
+    <p>Client-side audit tools inspect the protocol and resource URLs with these checks:</p>
+    <ul class="list-disc pl-6 space-y-3 mt-4">
+      <li>The page URL uses https:// (not http://).</li>
+      <li>No resources (images, scripts, stylesheets, iframes, fonts) load over http:// when the main page is https://.</li>
+      <li>No insecure redirects or certificate errors are detected in the initial load context.</li>
+    </ul>
+    <p class="mt-4">Scoring starts at 100. A missing HTTPS protocol receives the largest penalty. Mixed content issues trigger additional deductions because they break secure contexts and prevent features like service workers or payment APIs from working.</p>
+
+    <!-- Why -->
+    <h3 id="security-why" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+      Why does Security matter for rankings and user experience?
+    </h3>
+    <p><strong>SEO impact.</strong> Google has confirmed HTTPS as a ranking factor since 2014. In 2026 pages without HTTPS are deprioritized in search results. Secure sites also support progressive enhancement features (PWA, secure cookies, payment requests) that improve engagement metrics and indirectly boost rankings.</p>
+    <p><strong>User experience impact.</strong> HTTPS removes the scary "Not Secure" label in browser address bars. It protects user data from interception. Eliminating mixed content prevents broken images, blocked scripts, and console errors. These changes build visitor confidence, reduce immediate exits, and support trust-dependent actions such as form submissions or purchases.</p>
+
+    <!-- CTA Box -->
+    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-left">
+      <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
+        Verify your Security score in seconds.
+      </p>
+      <p class="mb-4">
+        Run a free instant audit with Traffic Torch. No signup. No tracking. Fully client-side analysis.
+      </p>
+      <a href="https://traffictorch.net/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition text-lg shadow-lg">
+        Run Free SEO + UX Audit Now →
+      </a>
+    </div>
+
+    <!-- Fixes -->
+    <h3 class="text-2xl font-semibold mt-12 text-gray-800 dark:text-gray-200">
+      Quick high-impact fixes for Security
+    </h3>
+    <ol class="list-decimal pl-6 space-y-4 font-medium mt-4">
+      <li>Install a free SSL/TLS certificate through Let's Encrypt, Cloudflare, or your host. Redirect all HTTP traffic to HTTPS with a 301 permanent redirect.</li>
+      <li>Update every resource URL in the HTML to use https:// or relative paths (// or /). Search for http:// in the source code and replace it.</li>
+      <li>Fix mixed content warnings in browser console. Replace any remaining http:// links in scripts, images, iframes, or third-party embeds.</li>
+      <li>Enable HTTP Strict Transport Security (HSTS) with a header: Strict-Transport-Security: max-age=31536000; includeSubDomains; preload.</li>
+      <li>Test the site with SSL Labs (ssllabs.com) or Why No Padlock? to confirm a clean A+ grade and no mixed content.</li>
+    </ol>
+  </div>
+
+  <!-- Return to TOC – only at the bottom -->
+  <div class="mt-12 text-center">
+    <a href="#table-of-contents" class="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
+      ↑ Return to Table of Contents
+    </a>
+  </div>
+</section>
+
+<!-- Indexability Module Section -->
+<section id="indexability" class="mb-20 scroll-mt-24">
+  <h2 class="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200">
+    Indexability
+  </h2>
+
+  <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+    <!-- What -->
+    <h3 id="indexability-what" class="text-2xl font-semibold mt-8 text-gray-800 dark:text-gray-200">
+      What is Indexability in audits?
+    </h3>
+    <p>Indexability confirms that search engines are allowed and technically able to include the page in their search results. It checks for the absence of blocking directives (noindex meta tags, robots.txt disallows), the presence of a preferred canonical URL, and other crawl directives that could prevent visibility in organic search.</p>
+    <p>Indexability has been a core requirement since search engines began. In 2026 it remains essential because even perfectly optimized pages are invisible if they carry a noindex tag or lack a canonical signal. Google may also choose not to index thin, duplicate, or low-value pages even without explicit blocks.</p>
+
+    <!-- How -->
+    <h3 id="indexability-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+      How is Indexability tested in modern audits?
+    </h3>
+    <p>Client-side audit tools parse the <head> section and meta tags with these checks:</p>
+    <ul class="list-disc pl-6 space-y-3 mt-4">
+      <li>No meta name="robots" tag contains noindex (case-insensitive).</li>
+      <li>A canonical link tag (<link rel="canonical">) exists and points to the preferred version of the URL.</li>
+      <li>No other directives (such as x-robots-tag headers) are assumed to block indexing in the client-side context.</li>
+    </ul>
+    <p class="mt-4">Scoring starts at 100. A noindex directive receives the heaviest penalty because it explicitly removes the page from search results. Missing canonical tag deducts points due to potential duplicate content confusion.</p>
+
+    <!-- Why -->
+    <h3 id="indexability-why" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+      Why does Indexability matter for rankings and user experience?
+    </h3>
+    <p><strong>SEO impact.</strong> A page that cannot be indexed receives zero organic traffic from search engines. In 2026 correct canonical tags consolidate ranking signals across similar URLs (parameterized, mobile/desktop, www/non-www). Removing accidental noindex tags is one of the fastest ways to recover lost visibility after site migrations or staging errors.</p>
+    <p><strong>User experience impact.</strong> Indexability has no direct effect on visitors who reach the page. However it determines whether the page can be discovered organically in the first place. Properly indexed pages reach more users through search. This indirectly improves overall site reach and brand exposure without any on-page UX change.</p>
+
+    <!-- CTA Box -->
+    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-left">
+      <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
+        Confirm your Indexability score in seconds.
+      </p>
+      <p class="mb-4">
+        Run a free instant audit with Traffic Torch. No signup. No tracking. Fully client-side analysis.
+      </p>
+      <a href="https://traffictorch.net/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition text-lg shadow-lg">
+        Run Free SEO + UX Audit Now →
+      </a>
+    </div>
+
+    <!-- Fixes -->
+    <h3 class="text-2xl font-semibold mt-12 text-gray-800 dark:text-gray-200">
+      Quick high-impact fixes for Indexability
+    </h3>
+    <ol class="list-decimal pl-6 space-y-4 font-medium mt-4">
+      <li>Remove any <meta name="robots" content="noindex"> tag from production pages unless the page is intentionally private.</li>
+      <li>Add a self-referencing canonical tag in the <head>: <link rel="canonical" href="https://example.com/current-page/">. Use the exact preferred URL.</li>
+      <li>Check robots.txt (via yoursite.com/robots.txt) to ensure the page path is not disallowed for User-agent: * or Googlebot.</li>
+      <li>After fixes request indexing in Google Search Console using the URL Inspection tool.</li>
+      <li>Audit staging, development, or parameter URLs to prevent accidental indexing of duplicates.</li>
+    </ol>
+  </div>
+
+  <!-- Return to TOC – only at the bottom -->
+  <div class="mt-12 text-center">
+    <a href="#table-of-contents" class="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
+      ↑ Return to Table of Contents
+    </a>
+  </div>
+</section>
+
+<!-- Conclusion Section -->
+<section class="mb-20 scroll-mt-24">
+  <h2 class="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200">
+    Final Thoughts: Your Path to Better SEO & UX in 2026 and Beyond
+  </h2>
+
+  <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+    <p>The eight pillars covered in this guide — On-Page SEO, Mobile & PWA, Performance, Accessibility, Content Quality, UX Design, Security, and Indexability — form the foundation of what modern search engines and real users reward. In 2026 Google continues to blend technical excellence with genuine user satisfaction. Sites that score highly across these areas consistently achieve better rankings, lower bounce rates, higher conversions, and stronger brand trust.</p>
+    <p>No single fix transforms everything overnight. Start with the highest-impact items: fix HTTPS and noindex issues first (they can hide your pages completely), then tackle Core Web Vitals and mobile readiness (direct ranking factors), and finally refine content and on-page elements for long-term authority.</p>
+    <p>The beauty of these audits lies in actionability. Each pillar gives you clear, testable signals and practical steps. Regular checks help you catch regressions early and stay ahead as algorithms evolve.</p>
+
+    <div class="mt-12 p-8 bg-gradient-to-br from-orange-50 to-pink-50 dark:from-orange-950/40 dark:to-pink-950/40 rounded-3xl border border-orange-200 dark:border-orange-800 text-center">
+      <p class="text-2xl font-bold text-orange-700 dark:text-orange-300 mb-4">
+        Ready to see your site's real health score?
+      </p>
+      <p class="text-lg mb-6 text-gray-700 dark:text-gray-300">
+        Run your free instant 360° SEO + UX audit today. Results appear in seconds. No login. No tracking. Fully client-side and privacy-first.
+      </p>
+      <a href="https://traffictorch.net/" class="inline-block px-10 py-5 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 text-white font-bold text-xl rounded-2xl hover:brightness-110 hover:scale-105 transition shadow-2xl">
+        Start Free Audit Now →
+      </a>
+    </div>
+
+    <p class="mt-10 text-center text-gray-600 dark:text-gray-400 italic">
+      Bookmark this guide. Revisit it after major site changes or quarterly. Consistent improvement across these pillars builds compounding gains in traffic, rankings, and user loyalty.
+    </p>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="mb-20 scroll-mt-24">
+  <h2 class="text-3xl md:text-4xl font-bold mb-10 text-gray-800 dark:text-gray-200 text-center">
+    Frequently Asked Questions
+  </h2>
+
+  <div class="prose prose-lg prose-orange dark:prose-invert max-w-4xl mx-auto space-y-6">
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        What are the most important SEO ranking factors in 2026?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Core Web Vitals (especially Largest Contentful Paint and Interaction to Next Paint), mobile-first indexing, helpful and original content quality, HTTPS security, strong on-page signals (title, meta description, schema), and user experience metrics (low bounce rate, high dwell time) remain the biggest drivers. Google continues to reward pages that genuinely satisfy search intent while delivering fast, accessible, and secure experiences.</p>
+      </div>
+    </details>
+
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Does accessibility really affect SEO rankings?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Yes — indirectly but meaningfully. Google has repeatedly stated that accessibility improvements often overlap with better SEO (clean semantic structure, descriptive alt text, logical headings). In 2026 accessible sites tend to have stronger engagement signals, lower bounce rates, and higher crawl efficiency, all of which feed positively into ranking algorithms. It also helps avoid legal risks under laws like the ADA and EU Accessibility Act.</p>
+      </div>
+    </details>
+
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Why is HTTPS still required even for informational sites with no forms?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Modern browsers label HTTP pages as “Not Secure”, which causes immediate user distrust and higher bounce rates. HTTPS has been a confirmed lightweight ranking factor since 2014 and is now table stakes in 2026. It also enables modern web features (service workers, PWAs, secure contexts) and prevents mixed content warnings that break page functionality even on content-only sites.</p>
+      </div>
+    </details>
+
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        How often should I run an SEO + UX audit on my site?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Run a full audit after any major change (redesign, CMS migration, new theme, large content additions). For active sites do a quick check monthly. For most businesses quarterly deep audits are sufficient. Tools like Traffic Torch make this process instant and free, so there is no reason not to monitor regularly.</p>
+      </div>
+    </details>
+
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Can one big fix dramatically improve my rankings?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Sometimes yes — especially if you discover and remove an accidental noindex tag, fix HTTPS + mixed content, or dramatically improve Core Web Vitals. These technical blockers can hide pages or tank rankings fast. For most sites though consistent small wins across multiple pillars (performance, content depth, mobile readiness, UX clarity) create compounding gains over weeks and months.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Optional return to top for very long posts -->
+  <div class="mt-16 text-center">
+    <a href="#" class="inline-block px-8 py-4 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
+      ↑ Back to Top
+    </a>
+  </div>
+</section>
+
+<!-- FAQPage Structured Data – keep this in <head> or before </body> -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What are the most important SEO ranking factors in 2026?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Core Web Vitals (especially Largest Contentful Paint and Interaction to Next Paint), mobile-first indexing, helpful and original content quality, HTTPS security, strong on-page signals (title, meta description, schema), and user experience metrics (low bounce rate, high dwell time) remain the biggest drivers. Google continues to reward pages that genuinely satisfy search intent while delivering fast, accessible, and secure experiences."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does accessibility really affect SEO?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — indirectly but meaningfully. Google has repeatedly stated that accessibility improvements often overlap with better SEO (clean semantic structure, descriptive alt text, logical headings). In 2026 accessible sites tend to have stronger engagement signals, lower bounce rates, and higher crawl efficiency, all of which feed positively into ranking algorithms. It also helps avoid legal risks under laws like the ADA and EU Accessibility Act."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why is HTTPS still required even for informational sites with no forms?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Modern browsers label HTTP pages as “Not Secure”, which causes immediate user distrust and higher bounce rates. HTTPS has been a confirmed lightweight ranking factor since 2014 and is now table stakes in 2026. It also enables modern web features (service workers, PWAs, secure contexts) and prevents mixed content warnings that break page functionality even on content-only sites."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How often should I run an SEO + UX audit on my site?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Run a full audit after any major change (redesign, CMS migration, new theme, large content additions). For active sites do a quick check monthly. For most businesses quarterly deep audits are sufficient. Tools like Traffic Torch make this process instant and free, so there is no reason not to monitor regularly."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can one big fix dramatically improve my rankings?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sometimes yes — especially if you discover and remove an accidental noindex tag, fix HTTPS + mixed content, or dramatically improve Core Web Vitals. These technical blockers can hide pages or tank rankings fast. For most sites though consistent small wins across multiple pillars (performance, content depth, mobile readiness, UX clarity) create compounding gains over weeks and months."
+      }
+    }
+  ]
+}
+</script>
+
+
+
+
+
+
+  <!-- Top Share Buttons -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+    <script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+  
+
+  
+<!-- Tools Grid (Creative) -->
+      <h2 class="text-4xl md:text-4xl font-black text-center mt-10 mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      SEO - UX - AI Tools
+      </h2>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+  <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+
+    <!-- New First Card: Local SEO -->
+    <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-green-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-green-500/30 group-hover:border-green-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
+          <h3 class="text-green-400 text-2xl font-bold mb-3">Local SEO Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">On-page local audit + NAP, schema, map signals + fixes</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- SEO Intent -->
+    <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+          <h3 class="text-cyan-400 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Intent matching + E-E-A-T audit + fixes</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- Product SEO Tool -->
+    <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🛒</div>
+          <h3 class="text-orange-400 text-2xl font-bold mb-3">Product SEO Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Product page audit + eCommerce signals</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- Quit Risk -->
+    <a href="/quit-risk-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-emerald-400 text-7xl mb-6 group-hover:animate-bounce">⚡</div>
+          <h3 class="text-emerald-400 text-2xl font-bold mb-3">Quit Risk Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">UX friction audit + bounce prediction + optimizations</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- Keywords -->
+    <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-purple-400 text-7xl mb-6 group-hover:animate-bounce">📝</div>
+          <h3 class="text-purple-400 text-2xl font-bold mb-3">Keyword Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">On-page keyword placement score + density fixes</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- VS -->
+    <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+          <h3 class="text-red-400 text-2xl font-bold mb-3">VS Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Competitive keyword gap analysis + beat strategies</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+    
+        <!-- Ai Search -->
+    <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+          <h3 class="text-orange-400 text-2xl font-bold mb-3">Ai Search Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Optimize for Perplexity, Grok, Gemini, ChatGPT Search</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- AI Content -->
+    <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+          <h3 class="text-pink-400 text-2xl font-bold mb-3">AI Content Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Detect AI patterns + humanize content + forecasts</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- New Last Card: All Tools -->
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-indigo-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-indigo-500/30 group-hover:border-indigo-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-indigo-400 text-7xl mb-6 group-hover:animate-bounce">🧰</div>
+          <h3 class="text-indigo-400 text-2xl font-bold mb-3">All Tools</h3>
+          <p class="text-gray-800 dark:text-gray-100">Complete suite — instant audits, gaps, fixes & forecasts</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Explore All →
+        </span>
+      </div>
+    </a>
+
+  </div>
+</div>
+  
+  <!-- Author Bio -->
+  <section class="max-w-5xl mx-auto my-24 px-2">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+    <div class="bg-gradient-to-br from-purple-600 to-cyan-600 py-12 px-8 text-center">
+      <img src="/logo.webp" alt="Traffic Torch SEO • UX • AI Optimization Toolkit" class="w-40 h-40 rounded-full mx-auto mb-6 object-cover border-8 border-white shadow-xl">
+      <h3 class="text-4xl font-black text-white mb-4">Traffic Torch</h3>
+      <p class="text-xl text-white/90 max-w-3xl mx-auto">
+        SEO • UX • AI Optimization Audit Toolkit
+      </p>
+    </div>
+    <div class="p-2 md:p-4 text-center space-y-8">
+      <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+        Traffic Torch distills ongoing correlation research, algorithm update analysis and practical testing into 360° SEO + UX diagnostics, AI-powered fixes, and educational tools. Empowering creators, agencies, and businesses with transparent, evidence-based insights for better organic performance and user satisfaction.
+      </p>
+      <div class="pt-8 space-y-3">
+        <p class="text-base text-gray-800 dark:text-gray-200">
+          Expertise: SEO Correlation Studies • UX Optimization • Privacy-First Web Tools • AI-Assisted Analysis.
+        </p>
+        <p class="text-base text-gray-800 dark:text-gray-200 italic mt-4">
+          Updated based on the latest search engine guidelines, ranking factor research, and real-page performance data.
+        </p>
+              <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+        <p>Published: 2026-02-20</p>
+        <p>Last updated: 2026-02-20</p>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AddToAny BEGIN -->
+<div style="display: flex; justify-content: center; margin: 30px 0;">
+  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+    <script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+</div>
+<!-- AddToAny END -->
+
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+</main>
+ 
+<!-- Footer -->
+<footer class="border-t border-white/10 dark:border-white/5 py-12 bg-white/5 dark:bg-black/20 backdrop-blur-xl">
+  <div class="container mx-auto px-6 max-w-7xl">
+    <!-- Main Footer Grid: 4 columns on md+, 1 column on mobile -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12 text-center md:text-left">
+      <!-- Column 1: Traffic Torch + Logo/Author -->
+      <div class="flex flex-col items-center md:items-start">
+        <a href="/" class="mb-6 inline-block">
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="80px" alt="Traffic Torch SEO • UX • AI Optimization Toolkit" class="w-20 h-20 rounded-full shadow-2xl object-cover" width="80" height="80" loading="lazy">
+        </a>
+        <h3 class="text-2xl font-black text-orange-500 hover:text-orange-600 transition mb-3">
+          Traffic Torch 🛡️
+        </h3>
+        <p class="text-gray-800 dark:text-gray-200 text-sm leading-relaxed max-w-md">
+          SEO • UX • AI Website Optimization & 360° Health Analysis Toolkit.
+        </p>
+      </div>
+
+      <!-- Column 2: Tools -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Tools</h3>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/" class="hover:text-orange-400 transition">SEO + UX</a></li>
+          <li><a href="/local-seo-tool/" class="hover:text-orange-400 transition">Local SEO</a></li>
+          <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition">SEO Intent</a></li>
+          <li><a href="/product-seo-tool/" class="hover:text-orange-400 transition">Product SEO</a></li>
+          <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition">Quit Risk</a></li>
+          <li><a href="/keyword-tool/" class="hover:text-orange-400 transition">Keywords</a></li>
+          <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition">Competition</a></li>
+          <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition">Ai Search</a></li>
+          <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition">Ai Content</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Company -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Company</h3>
+        <ul class="space-y-3 text-gray-800 dark:text-gray-200 text-sm">
+          <li><a href="/community/" class="hover:text-orange-400 transition">Community</a></li>
+          <li><a href="/contact/" class="hover:text-orange-400 transition">Contact</a></li>
+          <li><a href="/about/" class="hover:text-orange-400 transition">About</a></li>
+          <li><a href="/news/" class="hover:text-orange-400 transition">News</a></li>    
+          <li><a href="/terms/" class="hover:text-orange-400 transition">Terms</a></li>
+          <li><a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 4: Traffic Torch Quick Links -->
+      <div>
+        <h3 class="text-xl font-bold text-orange-400 mb-6">Traffic Torch</h3>
+        <ul class="space-y-3 text-gray-500 dark:text-gray-200 text-sm">
+          <li><a href="/ai-seo-ux-tools/#seo-tools" class="hover:text-orange-400 transition">SEO Tools 🎯</a></li>
+          <li><a href="/ai-seo-ux-tools/#ux-tools" class="hover:text-orange-400 transition">UX Tools ⚡</a></li>
+          <li><a href="/ai-seo-ux-tools/#ai-tools" class="hover:text-orange-400 transition">Ai Tools 🔍</a></li>
+          <li class="mt-6 text-sm">Built with 🔥</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Copyright / Bottom Note (full width, centered) -->
+    <div class="mt-12 pt-8 border-t border-white/10 dark:border-white/5 text-center text-gray-500 dark:text-gray-200 text-sm">
+      © Traffic Torch
+    </div>
+  </div>
+</footer>
+
+  <!-- Load JS last for speed -->
+  <script src="/main-v1.1.js" type="module"></script>
+</body>
+</html>

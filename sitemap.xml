@@ -90,18 +90,28 @@
   <!-- Blog posts - lower implicit importance -->
   
     <url>
+    <loc>https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/</loc>
+    <lastmod>2026-02-20</lastmod>
+    </url>
+    
+    <url>
+    <loc>https://traffictorch.net/blog/posts/local-seo-help-guide/</loc>
+    <lastmod>2026-02-20</lastmod>
+    </url>
+  
+    <url>
     <loc>https://traffictorch.net/blog/posts/seo-intent-help-guide/</loc>
-    <lastmod>2026-02-18</lastmod>
+    <lastmod>2026-02-20</lastmod>
     </url>
     
     <url>
     <loc>https://traffictorch.net/blog/posts/product-seo-help-guide/</loc>
-    <lastmod>2026-02-18</lastmod>
+    <lastmod>2026-02-19</lastmod>
     </url>
   
     <url>
     <loc>https://traffictorch.net/blog/posts/user-experience-help-guide/</loc>
-    <lastmod>2026-02-18</lastmod>
+    <lastmod>2026-02-19</lastmod>
     </url>
     
     <url>
