@@ -81,8 +81,29 @@
     <loc>https://traffictorch.net/news/</loc>
     <lastmod>2026-02-18</lastmod>
   </url>
+  
+  <url>
+    <loc>https://traffictorch.net/community/</loc>
+    <lastmod>2026-02-20</lastmod>
+  </url>
 
   <!-- Blog posts - lower implicit importance -->
+  
+    <url>
+    <loc>https://traffictorch.net/blog/posts/seo-intent-help-guide/</loc>
+    <lastmod>2026-02-18</lastmod>
+    </url>
+    
+    <url>
+    <loc>https://traffictorch.net/blog/posts/product-seo-help-guide/</loc>
+    <lastmod>2026-02-18</lastmod>
+    </url>
+  
+    <url>
+    <loc>https://traffictorch.net/blog/posts/user-experience-help-guide/</loc>
+    <lastmod>2026-02-18</lastmod>
+    </url>
+    
     <url>
     <loc>https://traffictorch.net/blog/posts/seo-keyword-help-guide/</loc>
     <lastmod>2026-02-18</lastmod>
