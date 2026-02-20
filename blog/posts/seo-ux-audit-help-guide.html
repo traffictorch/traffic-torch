@@ -402,9 +402,6 @@
   <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg mt-6">
     This guide explains <strong>exactly</strong> what serious audit tools (including Traffic Torch) measure in each area, how they test it using real client-side analysis, why each factor influences rankings and conversions in 2026+, and the most practical fixes ranked by impact. Whether you're optimizing your own site, helping clients, or just want to understand why some pages rank and others don’t — you’ll finish this post with a clear, actionable roadmap.
   </p>
-  <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg mt-6 font-medium">
-    Ready to see where your site stands? <a href="https://traffictorch.net/" class="text-orange-500 hover:text-orange-400 underline font-semibold">Run your free instant 360° SEO + UX audit now</a> — no login, no tracking, results in seconds.
-  </p>
 </div>
 
 
@@ -559,29 +556,41 @@
     <p>On-Page SEO includes every optimization you control directly on the individual webpage to help search engines understand the topic, relevance, and value of the content. The main elements are the title tag, meta description, heading structure (H1 to H6), keyword usage in natural context, image alt attributes, internal links, and structured data (schema markup).</p>
     <p>This area of SEO began with simple keyword placement in the late 1990s. It advanced significantly with Google's semantic shift via Hummingbird in 2013, intent understanding through RankBrain in 2015, and the strong focus on helpful, people-first content from updates that continued through 2025. In 2026 On-Page SEO is still a core direct ranking factor. It tells search engines exactly what the page offers and how well it matches user intent.</p>
 
-    <!-- How -->
-    <h3 id="on-page-seo-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
-      How is On-Page SEO tested in modern audits?
-    </h3>
-    <p>Modern client-side audit tools load the rendered HTML and perform these specific checks:</p>
-    <ul class="list-disc pl-6 space-y-3 mt-4">
-      <li>Title tag exists, is unique, stays between 50 and 65 characters, and places the primary keyword early in the string.</li>
-      <li>Meta description is present, engaging, and falls within the optimal 120 to 158 character range.</li>
-      <li>H1 heading includes the main keyword or a close semantic match and clearly defines the page's primary topic.</li>
-      <li>Structured data (JSON-LD schema) is detected and correctly matches the content type such as Article, Product, or FAQPage.</li>
-      <li>Every non-decorative image has meaningful alt text that describes its purpose or content.</li>
-    </ul>
-    <p class="mt-4">The score begins at 100. Points are deducted for missing elements, incorrect lengths, poor keyword placement, or absent schema. The largest deductions occur when critical pieces like the title or meta description are completely missing.</p>
+<!-- How -->
+<h3 id="on-page-seo-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+  How it's tested
+</h3>
+<p>Traffic Torch parses the rendered HTML and evaluates these exact on-page elements in real time:</p>
+<ul class="list-disc pl-6 space-y-3 mt-4">
+  <li>Title tag exists, is unique, falls between 50–65 characters, and places the primary keyword early (ideally in the first 3–5 words).</li>
+  <li>Meta description is present, unique, and sits in the ideal 120–158 character range for full display in SERPs.</li>
+  <li>H1 heading is present, includes the target keyword or strong semantic match, and clearly states the page's main topic (only one H1 allowed).</li>
+  <li>Structured data (JSON-LD preferred) is detected and valid for the page type (Article, WebPage, Product, FAQPage, etc.).</li>
+  <li>Every meaningful (non-decorative) image has descriptive alt text that conveys purpose or content — decorative images use alt="".</li>
+</ul>
+<p class="mt-4">Scoring starts at 100. The biggest point losses come from complete absences (no title, no meta description, no schema, missing alt text on many images). Graduated penalties apply for suboptimal length, keyword placement, or weak schema implementation.</p>
 
-    <!-- Why -->
-    <h3 id="on-page-seo-why" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
-      Why does On-Page SEO matter for rankings and user experience?
-    </h3>
-    <p><strong>SEO impact.</strong> Well-optimized on-page elements serve as primary signals for Google to determine topical relevance, trigger rich results (star ratings, FAQs, product cards), and improve click-through rates from search results pages. Pages with strong titles, schema, and alt text tend to earn more impressions and higher positions even in competitive niches in 2026.</p>
-    <p><strong>User experience impact.</strong> A keyword-accurate title and benefit-focused meta description set realistic expectations before the click. This reduces immediate bounces. Descriptive alt text makes images accessible to screen readers and supports image search traffic. These improvements build trust, increase time on page, and lower bounce rates. All of these metrics feed back into Google's ranking signals.</p>
+<!-- Why – split into two cards -->
+<div class="grid md:grid-cols-2 gap-6 mt-10">
+  <!-- SEO Impact Card -->
+  <div class="p-6 bg-green-50 dark:bg-green-950/30 rounded-2xl border border-green-200 dark:border-green-800 shadow-sm">
+    <h4 class="text-xl font-bold text-green-700 dark:text-green-300 mb-4">
+      SEO Impact
+    </h4>
+    <p>Strong on-page SEO remains one of the most direct ranking factors in 2026. Optimized titles, meta descriptions, headings, schema, and alt text help Google understand topic relevance, trigger rich results (star ratings, FAQs, image carousels), and improve click-through rates from SERPs.</p>
+  </div>
+
+  <!-- UX & Business Impact Card -->
+  <div class="p-6 bg-blue-50 dark:bg-blue-950/30 rounded-2xl border border-blue-200 dark:border-blue-800 shadow-sm">
+    <h4 class="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">
+      UX & Business Impact
+    </h4>
+    <p>A keyword-rich, accurate title sets clear expectations before the click — reducing pogo-sticking. Compelling meta descriptions act like free ad copy in search results. Descriptive alt text improves accessibility for screen-reader users and boosts image search traffic. Together these elements lower bounce rates, increase time-on-page, and build user trust.</p>
+  </div>
+</div>
 
     <!-- CTA Box -->
-    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-left">
+    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-center">
       <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
         See your exact On-Page SEO score in seconds.
       </p>
@@ -609,7 +618,7 @@
   <!-- Return to TOC – only at the bottom -->
   <div class="mt-12 text-center">
     <a href="#table-of-contents" class="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
-      ↑ Return to Table of Contents
+      ↑ Return to TOC
     </a>
   </div>
 </section>
@@ -628,28 +637,40 @@
     <p>Mobile & PWA readiness checks whether your website delivers a flawless experience on smartphones and tablets and whether it qualifies to be installed as a Progressive Web App. This includes responsive design foundations, viewport configuration, touch-friendly elements, and PWA features such as a web app manifest, installable icons, and service worker registration.</p>
     <p>Mobile-first indexing became Google's default in 2019. By 2026 it is non-negotiable. Google crawls, indexes, and ranks primarily using the mobile version of every page. Progressive Web Apps gained mainstream traction around 2018–2020 and continue to grow in importance because they offer app-like experiences (offline support, home screen installation, push notifications) without requiring native app store distribution.</p>
 
-    <!-- How -->
-    <h3 id="mobile-pwa-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
-      How is Mobile & PWA tested in modern audits?
-    </h3>
-    <p>Client-side audit tools inspect the HTML and linked resources with these targeted checks:</p>
-    <ul class="list-disc pl-6 space-y-3 mt-4">
-      <li>A correct viewport meta tag exists with content including width=device-width and initial-scale=1.</li>
-      <li>A web app manifest file is linked via <link rel="manifest"> in the document head.</li>
-      <li>High-resolution homescreen icons are provided (at minimum 192×192 pixels, ideally also 512×512, in PNG or WebP format).</li>
-      <li>A service worker registration is detected in JavaScript (tools look for navigator.serviceWorker.register patterns in inline or external scripts).</li>
-    </ul>
-    <p class="mt-4">Scoring starts at 100. Heavy penalties apply for missing viewport (breaks responsive layout) or no manifest (prevents installability). Smaller deductions occur for missing large icons or undetected service workers (detection can miss dynamic registrations in minified code).</p>
+<!-- How -->
+<h3 id="mobile-pwa-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+  How it's tested
+</h3>
+<p>Traffic Torch performs these exact client-side checks on the rendered HTML and linked resources:</p>
+<ul class="list-disc pl-6 space-y-3 mt-4">
+  <li>A viewport meta tag is present in <head> with content="width=device-width, initial-scale=1" (or equivalent responsive settings) to ensure proper mobile scaling.</li>
+  <li>A web app manifest is linked via <link rel="manifest" href="..."> pointing to a valid manifest.json file.</li>
+  <li>High-resolution homescreen icons are provided — minimum 192×192 pixels, ideally also 512×512, in PNG or WebP format (checked via manifest icons array and apple-touch-icon links).</li>
+  <li>A service worker registration is detected — looks for navigator.serviceWorker.register() calls in inline or external JavaScript.</li>
+</ul>
+<p class="mt-4">Scoring starts at 100. The heaviest penalties apply for missing viewport tag (breaks responsive layout) or absent manifest (prevents installability). Smaller deductions occur for missing larger icons or undetected service worker (detection can miss dynamic registrations in minified/obfuscated code).</p>
 
-    <!-- Why -->
-    <h3 id="mobile-pwa-why" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
-      Why does Mobile & PWA readiness matter for rankings and user experience?
-    </h3>
-    <p><strong>SEO impact.</strong> Google applies mobile-first indexing exclusively in 2026. Pages that fail mobile usability tests receive lower rankings across all devices. PWA features (manifest and service worker) improve perceived performance through caching and enable install prompts. This increases engagement signals that influence rankings indirectly.</p>
-    <p><strong>User experience impact.</strong> A proper viewport prevents awkward zooming and horizontal scrolling on phones. Installable PWAs let users add the site to their home screen for quick access like a native app. Service workers enable faster repeat visits and limited offline functionality. These improvements reduce frustration, lower bounce rates, and boost session duration significantly on mobile traffic (which dominates most sites in 2026).</p>
+<!-- Why – split into two cards like other posts -->
+<div class="grid md:grid-cols-2 gap-6 mt-10">
+  <!-- SEO Impact Card -->
+  <div class="p-6 bg-green-50 dark:bg-green-950/30 rounded-2xl border border-green-200 dark:border-green-800 shadow-sm">
+    <h4 class="text-xl font-bold text-green-700 dark:text-green-300 mb-4">
+      SEO Impact
+    </h4>
+    <p>Google uses mobile-first indexing exclusively in 2026. Pages that fail mobile usability tests receive lower rankings across all devices. PWA features (manifest and service worker) improve perceived performance through caching and enable install prompts, increasing engagement signals that influence rankings indirectly.</p>
+  </div>
+
+  <!-- UX & Business Impact Card -->
+  <div class="p-6 bg-blue-50 dark:bg-blue-950/30 rounded-2xl border border-blue-200 dark:border-blue-800 shadow-sm">
+    <h4 class="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">
+      UX & Business Impact
+    </h4>
+    <p>A proper viewport prevents awkward zooming and horizontal scrolling on phones. Installable PWAs let users add the site to their home screen for quick access like a native app. Service workers enable faster repeat visits and limited offline functionality. These improvements reduce frustration, lower bounce rates, and boost session duration significantly on mobile traffic (which dominates most sites in 2026).</p>
+  </div>
+</div>
 
     <!-- CTA Box -->
-    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-left">
+    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-center">
       <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
         Check your Mobile & PWA score in seconds.
       </p>
@@ -677,7 +698,7 @@
   <!-- Return to TOC – only at the bottom -->
   <div class="mt-12 text-center">
     <a href="#table-of-contents" class="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
-      ↑ Return to Table of Contents
+      ↑ Return to TOC
     </a>
   </div>
 </section>
@@ -696,28 +717,40 @@
     <p>Performance measures how quickly and efficiently a page loads and becomes interactive for real users. Key factors include total page weight, number of requests, render-blocking resources, image optimization, font loading strategy, and adherence to Core Web Vitals (Largest Contentful Paint, First Input Delay/Interaction to Next Paint, Cumulative Layout Shift).</p>
     <p>Core Web Vitals became official ranking factors in 2021. By 2026 they remain critical because Google continues to prioritize real-user experience over lab data alone. Slow sites lose visitors quickly, increase bounce rates, and receive lower rankings in mobile-first indexing environments.</p>
 
-    <!-- How -->
-    <h3 id="performance-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
-      How is Performance tested in modern audits?
-    </h3>
-    <p>Client-side audit tools analyze the HTML payload and resource references with these specific checks:</p>
-    <ul class="list-disc pl-6 space-y-3 mt-4">
-      <li>HTML payload size stays reasonable (ideally under 120 KB after minification and compression).</li>
-      <li>Render-blocking external CSS and synchronous JavaScript requests are minimized (focus on files loaded in <head> without async or defer).</li>
-      <li>Number of external font requests remains low (ideally 1–2 families) and uses font-display: swap or preloading.</li>
-      <li>Page weight indicators flag excessive inline styles, scripts, or unoptimized markup that inflate the initial HTML.</li>
-    </ul>
-    <p class="mt-4">Scoring starts at 100. Deductions scale with severity. Large HTML payloads, many render-blocking resources, and multiple font requests receive the heaviest penalties because they delay First Contentful Paint and Largest Contentful Paint.</p>
+<!-- How -->
+<h3 id="performance-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+  How it's tested
+</h3>
+<p>Traffic Torch analyzes the initial HTML payload and resource references with these exact client-side checks:</p>
+<ul class="list-disc pl-6 space-y-3 mt-4">
+  <li>HTML payload size (after minification and compression) — ideally under 120 KB to avoid bloating the initial download.</li>
+  <li>Render-blocking resources count — focuses on external CSS files in <head> and synchronous (non-defer/async) JavaScript; flags when >6 as they delay First Contentful Paint.</li>
+  <li>External font requests — counts how many font families are loaded (Google Fonts or similar); penalizes >3 as they cause FOIT/FOUT and delay text rendering.</li>
+  <li>Page weight contributors — detects excessive inline styles, large inline scripts, or unoptimized markup that inflates the HTML and slows parsing/rendering.</li>
+</ul>
+<p class="mt-4">Scoring starts at 100. Deductions are severity-based: heavy penalties for >12 render-blocking resources or very large payloads (>200 KB), medium for 7–12 render-blocking or 4+ fonts, and smaller for suboptimal font handling (no font-display: swap or preload). This mirrors real-world Core Web Vitals delays caused by these factors.</p>
 
-    <!-- Why -->
-    <h3 id="performance-why" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
-      Why does Performance matter for rankings and user experience?
-    </h3>
-    <p><strong>SEO impact.</strong> Core Web Vitals are direct ranking signals in 2026. Pages that pass the good thresholds for LCP (under 2.5 s), INP (under 200 ms), and CLS (under 0.1) gain advantages in mobile search results. Fast sites also improve crawl budget efficiency and reduce server load signals that influence indexing priority.</p>
-    <p><strong>User experience impact.</strong> Quick-loading pages keep visitors engaged. Each extra second of load time increases bounce probability significantly on mobile. Optimized performance reduces frustration, supports longer sessions, and improves conversion rates. These engagement metrics feed back into Google's quality evaluation.</p>
+<!-- Why – split into two cards like other posts -->
+<div class="grid md:grid-cols-2 gap-6 mt-10">
+  <!-- SEO Impact Card -->
+  <div class="p-6 bg-green-50 dark:bg-green-950/30 rounded-2xl border border-green-200 dark:border-green-800 shadow-sm">
+    <h4 class="text-xl font-bold text-green-700 dark:text-green-300 mb-4">
+      SEO Impact
+    </h4>
+    <p>Core Web Vitals (LCP, INP, CLS) are direct ranking signals in 2026. Pages that pass good thresholds (LCP <2.5s, INP <200ms, CLS <0.1) gain advantages in mobile search results. Fast performance also improves crawl budget efficiency and reduces server load signals that influence indexing priority.</p>
+  </div>
+
+  <!-- UX & Business Impact Card -->
+  <div class="p-6 bg-blue-50 dark:bg-blue-950/30 rounded-2xl border border-blue-200 dark:border-blue-800 shadow-sm">
+    <h4 class="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">
+      UX & Business Impact
+    </h4>
+    <p>Quick-loading pages keep visitors engaged — each extra second increases bounce probability significantly on mobile. Optimized performance reduces frustration, supports longer sessions, lowers cart abandonment, and improves conversion rates. These engagement metrics feed back into Google's quality evaluation and build user trust.</p>
+  </div>
+</div>
 
     <!-- CTA Box -->
-    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-left">
+    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-center">
       <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
         Discover your Performance score in seconds.
       </p>
@@ -745,7 +778,7 @@
   <!-- Return to TOC – only at the bottom -->
   <div class="mt-12 text-center">
     <a href="#table-of-contents" class="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
-      ↑ Return to Table of Contents
+      ↑ Return to TOC
     </a>
   </div>
 </section>
@@ -764,29 +797,41 @@
     <p>Accessibility ensures that a website can be used effectively by everyone, including people with visual, auditory, motor, or cognitive impairments. Core checks cover meaningful alt text for images, proper semantic HTML structure (headings, landmarks, lists), form field labeling, sufficient color contrast, keyboard navigation, and language declaration.</p>
     <p>Accessibility standards evolved from WCAG 1.0 in 1999 to WCAG 2.1 (2018) and WCAG 2.2 (2023). In 2026 Google increasingly treats strong accessibility as a quality signal. Poor accessibility can lead to legal risks under laws such as the ADA and EU Accessibility Act while also harming user trust and reach.</p>
 
-    <!-- How -->
-    <h3 id="accessibility-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
-      How is Accessibility tested in modern audits?
-    </h3>
-    <p>Client-side audit tools scan the parsed DOM and run these targeted checks:</p>
-    <ul class="list-disc pl-6 space-y-3 mt-4">
-      <li>All images have appropriate alt attributes (descriptive for content images, empty for decorative ones).</li>
-      <li>The <html> element includes a valid lang attribute (for example lang="en").</li>
-      <li>A main landmark exists (<main> tag or role="main").</li>
-      <li>Heading order is logical without skips (H1 → H2 → H3 etc. without jumping levels).</li>
-      <li>Form controls (inputs, textareas, selects) have programmatically associated labels (via for/id, wrapping label, aria-label, or aria-labelledby).</li>
-    </ul>
-    <p class="mt-4">Scoring starts at 100. Deductions increase with the number of violations. Missing alt text, lang attribute, or landmarks receive significant penalties because they break core screen reader functionality.</p>
+ <!-- How -->
+<h3 id="accessibility-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+  How it's tested
+</h3>
+<p>Traffic Torch scans the parsed DOM and runs these exact automated checks against WCAG guidelines:</p>
+<ul class="list-disc pl-6 space-y-3 mt-4">
+  <li>All images have appropriate alt attributes — descriptive for content images (convey purpose/content), empty alt="" for purely decorative ones.</li>
+  <li>The root <html> element includes a valid lang attribute (e.g. lang="en" or lang="en-AU") for correct language processing by screen readers and browsers.</li>
+  <li>A main landmark exists — either a <main> tag or role="main" on the primary content container to help assistive tech jump to core content.</li>
+  <li>Heading order is logical without skips — checks sequential hierarchy (H1 → H2 → H3 etc.) and flags jumps like H1 to H3 without H2.</li>
+  <li>Form controls (visible inputs, textareas, selects) have programmatically associated labels — via for/id pairing, wrapping <label>, aria-label, or aria-labelledby (placeholders alone do not count).</li>
+</ul>
+<p class="mt-4">Scoring starts at 100. Deductions scale with violation count and severity: heaviest penalties for missing alt text on many images, absent lang attribute, or no main landmark (breaks core screen reader navigation). Medium penalties for skipped heading levels or unlabeled form fields.</p>
 
-    <!-- Why -->
-    <h3 id="accessibility-why" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
-      Why does Accessibility matter for rankings and user experience?
-    </h3>
-    <p><strong>SEO impact.</strong> Google has stated since 2020 that accessibility improvements often align with better SEO. In 2026 it serves as an indirect quality signal. Accessible sites tend to have better structure, more descriptive content, and higher engagement from all users. This leads to stronger behavioral metrics that influence rankings.</p>
-    <p><strong>User experience impact.</strong> Good accessibility broadens your audience to include the 15–20% of people with disabilities. Keyboard navigation and screen reader support make the site usable without a mouse or sight. Proper contrast and clear labels reduce cognitive load for everyone. These changes lower frustration, increase time on site, and improve conversion rates across all visitors.</p>
+<!-- Why – split into two cards like other posts -->
+<div class="grid md:grid-cols-2 gap-6 mt-10">
+  <!-- SEO Impact Card -->
+  <div class="p-6 bg-green-50 dark:bg-green-950/30 rounded-2xl border border-green-200 dark:border-green-800 shadow-sm">
+    <h4 class="text-xl font-bold text-green-700 dark:text-green-300 mb-4">
+      SEO Impact
+    </h4>
+    <p>Google has stated since 2020 that accessibility improvements often align with better SEO. In 2026 it serves as an indirect quality signal. Accessible sites tend to have cleaner semantic structure, more descriptive content, and higher engagement from all users — leading to stronger behavioral metrics (lower bounce, higher dwell time) that influence rankings.</p>
+  </div>
+
+  <!-- UX & Business Impact Card -->
+  <div class="p-6 bg-blue-50 dark:bg-blue-950/30 rounded-2xl border border-blue-200 dark:border-blue-800 shadow-sm">
+    <h4 class="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">
+      UX & Business Impact
+    </h4>
+    <p>Good accessibility broadens your audience to include the 15–20% of people with disabilities worldwide. Keyboard navigation and screen reader support make the site usable without a mouse or sight. Proper contrast, labels, and landmarks reduce cognitive load for everyone — lowering frustration, increasing time on site, improving conversions, and building trust across all visitors.</p>
+  </div>
+</div>
 
     <!-- CTA Box -->
-    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-left">
+    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-center">
       <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
         Find your Accessibility score in seconds.
       </p>
@@ -804,8 +849,8 @@
     </h3>
     <ol class="list-decimal pl-6 space-y-4 font-medium mt-4">
       <li>Add descriptive alt text to every meaningful image. Use alt="" for purely decorative images.</li>
-      <li>Set the correct language on the root element: <html lang="en"> or your site's primary language.</li>
-      <li>Wrap main content in a <main> tag or add role="main" to the primary container.</li>
+      <li>Set the correct language on the root element: html lang="en"> or your site's primary language.</li>
+      <li>Wrap main content in a main tag or add role="main" to the primary container.</li>
       <li>Ensure headings follow a logical hierarchy. Avoid skipping levels (no H1 to H3 without H2).</li>
       <li>Associate every visible form field with a label (use for/id pairs, wrapping labels, or ARIA attributes). Avoid relying on placeholders alone.</li>
     </ol>
@@ -814,7 +859,7 @@
   <!-- Return to TOC – only at the bottom -->
   <div class="mt-12 text-center">
     <a href="#table-of-contents" class="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
-      ↑ Return to Table of Contents
+      ↑ Return to TOC
     </a>
   </div>
 </section>
@@ -833,29 +878,41 @@
     <p>Content Quality evaluates how well the page satisfies user intent through depth, readability, structure, originality, and scannability. It looks at word count, sentence and paragraph length, Flesch readability score, heading usage, list and table presence, and overall helpfulness of the information provided.</p>
     <p>Content evaluation shifted dramatically after Google's Helpful Content Update (2022 onward) and continued emphasis on E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) through 2025–2026. In 2026 shallow or poorly structured content is heavily demoted. High-quality content ranks better because it keeps users engaged and answers questions comprehensively.</p>
 
-    <!-- How -->
-    <h3 id="content-quality-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
-      How is Content Quality tested in modern audits?
-    </h3>
-    <p>Client-side audit tools extract and analyze the visible body text with these precise checks:</p>
-    <ul class="list-disc pl-6 space-y-3 mt-4">
-      <li>Main content word count reaches a healthy threshold (typically 300+ words for most topics, higher for competitive queries).</li>
-      <li>Readability metrics (Flesch-Kincaid score) stay above 60 (indicating reasonably easy reading level).</li>
-      <li>Heading structure includes multiple descriptive H2 and H3 tags to break up long text.</li>
-      <li>Lists (bulleted or numbered) and tables appear where appropriate to improve scannability.</li>
-      <li>Content avoids excessive complexity (long sentences, high syllable counts) that hurts mobile reading.</li>
-    </ul>
-    <p class="mt-4">Scoring starts at 100. Significant penalties apply for thin content (under 300 words) or very low readability. Smaller deductions occur for missing structure or lack of lists/tables on longer pages.</p>
+ <!-- How -->
+<h3 id="content-quality-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+  How it's tested
+</h3>
+<p>Traffic Torch extracts the visible body text and runs these exact client-side checks:</p>
+<ul class="list-disc pl-6 space-y-3 mt-4">
+  <li>Main content word count — flags thin content if under 300 words (heavier penalty if under 100 words) as it often fails to satisfy user intent.</li>
+  <li>Readability via Flesch reading ease score — calculated from average sentence length and syllable count per word; penalizes scores below 60 (hard to read on mobile).</li>
+  <li>Heading structure — checks for sufficient H2/H3 usage (ideally every 300–400 words) and logical hierarchy without skips.</li>
+  <li>Scannability elements — detects presence of bulleted/numbered lists and tables; flags long-form pages (>500 words) without them as harder to digest.</li>
+  <li>Complexity indicators — measures average sentence length and syllable density to catch excessive complexity that hurts mobile reading and comprehension.</li>
+</ul>
+<p class="mt-4">Scoring starts at 100. Significant penalties apply for thin content (<300 words) or very low readability (Flesch <60). Smaller deductions occur for insufficient headings, no lists/tables on longer pages, or overly complex language.</p>
 
-    <!-- Why -->
-    <h3 id="content-quality-why" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
-      Why does Content Quality matter for rankings and user experience?
-    </h3>
-    <p><strong>SEO impact.</strong> In 2026 Google prioritizes content that demonstrates real value and satisfies search intent. High-quality, well-structured pages earn more featured snippets, People Also Ask placements, and higher dwell time. These engagement signals strengthen topical authority and help pages rank for broader keyword clusters.</p>
-    <p><strong>User experience impact.</strong> Scannable content with short paragraphs, headings, and lists lets users find answers quickly on mobile. Readable language reduces cognitive effort. Comprehensive yet focused depth builds trust and encourages shares and return visits. Poor content drives immediate exits and hurts conversion rates.</p>
+<!-- Why – split into two cards like other posts -->
+<div class="grid md:grid-cols-2 gap-6 mt-10">
+  <!-- SEO Impact Card -->
+  <div class="p-6 bg-green-50 dark:bg-green-950/30 rounded-2xl border border-green-200 dark:border-green-800 shadow-sm">
+    <h4 class="text-xl font-bold text-green-700 dark:text-green-300 mb-4">
+      SEO Impact
+    </h4>
+    <p>In 2026 Google prioritizes content that demonstrates real value and satisfies search intent. High-quality, well-structured pages earn more featured snippets, People Also Ask placements, and higher dwell time. These engagement signals strengthen topical authority and help pages rank for broader keyword clusters.</p>
+  </div>
+
+  <!-- UX & Business Impact Card -->
+  <div class="p-6 bg-blue-50 dark:bg-blue-950/30 rounded-2xl border border-blue-200 dark:border-blue-800 shadow-sm">
+    <h4 class="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">
+      UX & Business Impact
+    </h4>
+    <p>Scannable content with short paragraphs, headings, and lists lets users find answers quickly on mobile. Readable language reduces cognitive effort. Comprehensive yet focused depth builds trust and encourages shares and return visits. Poor content drives immediate exits and hurts conversion rates.</p>
+  </div>
+</div>
 
     <!-- CTA Box -->
-    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-left">
+    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-center">
       <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
         See your Content Quality score in seconds.
       </p>
@@ -883,7 +940,7 @@
   <!-- Return to TOC – only at the bottom -->
   <div class="mt-12 text-center">
     <a href="#table-of-contents" class="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
-      ↑ Return to Table of Contents
+      ↑ Return to TOC
     </a>
   </div>
 </section>
@@ -902,28 +959,40 @@
     <p>UX Design assesses how intuitive, clear, and goal-oriented the page feels to visitors. It examines primary call-to-action prominence, navigation clarity, visual hierarchy, link density, mobile touch targets, and overall flow that guides users toward desired actions without confusion or friction.</p>
     <p>User experience signals gained ranking weight after Google's page experience update (2021) and remain important in 2026. Core Web Vitals cover speed aspects. UX design focuses on behavioral outcomes: whether users understand what to do next, stay engaged, and complete goals. Poor UX increases bounce rates and reduces conversions even on fast pages.</p>
 
-    <!-- How -->
-    <h3 id="ux-design-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
-      How is UX Design tested in modern audits?
-    </h3>
-    <p>Client-side audit tools evaluate interactive and structural elements with these checks:</p>
-    <ul class="list-disc pl-6 space-y-3 mt-4">
-      <li>Number of visible interactive elements (links, buttons, form fields) stays reasonable (typically under 80 to avoid choice overload).</li>
-      <li>Primary calls-to-action are visually prominent (contrast, size, placement above the fold where relevant).</li>
-      <li>Breadcrumb navigation exists on deeper pages (pages with more than ~2000 words or multiple hierarchy levels).</li>
-      <li>Link density and button spacing avoid overwhelming users with too many competing options.</li>
-    </ul>
-    <p class="mt-4">Scoring starts at 100. Larger penalties apply to excessive interactive elements (decision paralysis) or missing breadcrumbs on complex pages. Smaller deductions occur for suboptimal CTA visibility or cluttered layouts.</p>
+<!-- How -->
+<h3 id="ux-design-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+  How it's tested
+</h3>
+<p>Traffic Torch evaluates interactive and structural elements with these exact client-side checks:</p>
+<ul class="list-disc pl-6 space-y-3 mt-4">
+  <li>Number of visible interactive elements (links, buttons, submit inputs, role="button") — flags when >80 as it creates choice overload and decision paralysis.</li>
+  <li>Primary calls-to-action prominence — checks contrast ratio, button size, and placement (ideally above the fold or in clear visual hierarchy) to ensure they stand out.</li>
+  <li>Breadcrumb navigation presence — required on deeper pages (>2000 words or multi-level hierarchy) to show users their location and reduce disorientation.</li>
+  <li>Link density and spacing — penalizes excessive competing links/buttons or poor touch target spacing that overwhelms users or causes mis-taps on mobile.</li>
+</ul>
+<p class="mt-4">Scoring starts at 100. Larger penalties apply to excessive interactive elements (>80) or missing breadcrumbs on complex/long pages. Smaller deductions occur for suboptimal CTA visibility, cluttered layouts, or insufficient spacing that increases friction.</p>
 
-    <!-- Why -->
-    <h3 id="ux-design-why" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
-      Why does UX Design matter for rankings and user experience?
-    </h3>
-    <p><strong>SEO impact.</strong> In 2026 Google uses aggregated user behavior signals (bounce rate, dwell time, pogo-sticking, conversion proxies) as quality indicators. Clean, intuitive UX improves these metrics. This indirectly boosts rankings by demonstrating that the page satisfies searchers. Well-designed pages also earn more shares and backlinks naturally.</p>
-    <p><strong>User experience impact.</strong> Clear visual hierarchy and focused CTAs help visitors complete tasks faster. Reduced cognitive load prevents frustration. Breadcrumbs on deep pages orient users within the site structure. These improvements increase satisfaction, session depth, and goal completion rates across desktop and mobile visitors.</p>
+<!-- Why – split into two cards like other posts -->
+<div class="grid md:grid-cols-2 gap-6 mt-10">
+  <!-- SEO Impact Card -->
+  <div class="p-6 bg-green-50 dark:bg-green-950/30 rounded-2xl border border-green-200 dark:border-green-800 shadow-sm">
+    <h4 class="text-xl font-bold text-green-700 dark:text-green-300 mb-4">
+      SEO Impact
+    </h4>
+    <p>In 2026 Google uses aggregated user behavior signals (bounce rate, dwell time, pogo-sticking, conversion proxies) as quality indicators. Clean, intuitive UX improves these metrics and demonstrates the page satisfies searchers. Well-designed pages also earn more shares and backlinks naturally, boosting indirect ranking signals.</p>
+  </div>
+
+  <!-- UX & Business Impact Card -->
+  <div class="p-6 bg-blue-50 dark:bg-blue-950/30 rounded-2xl border border-blue-200 dark:border-blue-800 shadow-sm">
+    <h4 class="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">
+      UX & Business Impact
+    </h4>
+    <p>Clear visual hierarchy and focused CTAs help visitors complete tasks faster with less confusion. Reduced cognitive load prevents frustration. Breadcrumbs on deep pages orient users within the site structure. These improvements increase satisfaction, session depth, goal completion rates, and conversions across desktop and mobile visitors.</p>
+  </div>
+</div>
 
     <!-- CTA Box -->
-    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-left">
+    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-center">
       <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
         Check your UX Design score in seconds.
       </p>
@@ -951,7 +1020,7 @@
   <!-- Return to TOC – only at the bottom -->
   <div class="mt-12 text-center">
     <a href="#table-of-contents" class="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
-      ↑ Return to Table of Contents
+      ↑ Return to TOC
     </a>
   </div>
 </section>
@@ -970,27 +1039,39 @@
     <p>Security verifies that the page is served over a valid HTTPS connection and contains no mixed content issues. This includes checking the protocol of the main URL, all embedded resources (images, scripts, stylesheets, iframes), and the presence of a valid SSL/TLS certificate without warnings.</p>
     <p>HTTPS became a ranking signal in 2014. By 2026 it is a baseline expectation. Browsers display "Not Secure" warnings on HTTP pages. Mixed content on HTTPS sites blocks resources and triggers warnings. These issues damage trust, increase bounce rates, and negatively affect rankings and user retention.</p>
 
-    <!-- How -->
-    <h3 id="security-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
-      How is Security tested in modern audits?
-    </h3>
-    <p>Client-side audit tools inspect the protocol and resource URLs with these checks:</p>
-    <ul class="list-disc pl-6 space-y-3 mt-4">
-      <li>The page URL uses https:// (not http://).</li>
-      <li>No resources (images, scripts, stylesheets, iframes, fonts) load over http:// when the main page is https://.</li>
-      <li>No insecure redirects or certificate errors are detected in the initial load context.</li>
-    </ul>
-    <p class="mt-4">Scoring starts at 100. A missing HTTPS protocol receives the largest penalty. Mixed content issues trigger additional deductions because they break secure contexts and prevent features like service workers or payment APIs from working.</p>
+ <!-- How -->
+<h3 id="security-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+  How it's tested
+</h3>
+<p>Traffic Torch inspects the protocol and all resource URLs with these exact client-side checks:</p>
+<ul class="list-disc pl-6 space-y-3 mt-4">
+  <li>The main page URL uses https:// (not http://) — flags full HTTP pages as insecure.</li>
+  <li>No mixed content — scans all embedded resources (images src, scripts src, link href, iframes, fonts) for http:// when the main page is https://.</li>
+  <li>No insecure redirects or certificate errors — checks the initial load context for broken HTTPS chains or invalid certificates (via browser-reported status).</li>
+</ul>
+<p class="mt-4">Scoring starts at 100. The largest penalty applies to missing HTTPS (full HTTP protocol). Additional deductions trigger for any mixed content (breaks secure context, blocks features like service workers). Smaller penalties occur for redirect issues or certificate warnings that degrade trust signals.</p>
 
-    <!-- Why -->
-    <h3 id="security-why" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
-      Why does Security matter for rankings and user experience?
-    </h3>
-    <p><strong>SEO impact.</strong> Google has confirmed HTTPS as a ranking factor since 2014. In 2026 pages without HTTPS are deprioritized in search results. Secure sites also support progressive enhancement features (PWA, secure cookies, payment requests) that improve engagement metrics and indirectly boost rankings.</p>
-    <p><strong>User experience impact.</strong> HTTPS removes the scary "Not Secure" label in browser address bars. It protects user data from interception. Eliminating mixed content prevents broken images, blocked scripts, and console errors. These changes build visitor confidence, reduce immediate exits, and support trust-dependent actions such as form submissions or purchases.</p>
+<!-- Why – split into two cards like other posts -->
+<div class="grid md:grid-cols-2 gap-6 mt-10">
+  <!-- SEO Impact Card -->
+  <div class="p-6 bg-green-50 dark:bg-green-950/30 rounded-2xl border border-green-200 dark:border-green-800 shadow-sm">
+    <h4 class="text-xl font-bold text-green-700 dark:text-green-300 mb-4">
+      SEO Impact
+    </h4>
+    <p>Google has confirmed HTTPS as a ranking factor since 2014. In 2026 pages without HTTPS are deprioritized in search results. Secure sites support progressive features (PWA, secure cookies, payment requests) that improve engagement metrics and indirectly boost rankings.</p>
+  </div>
+
+  <!-- UX & Business Impact Card -->
+  <div class="p-6 bg-blue-50 dark:bg-blue-950/30 rounded-2xl border border-blue-200 dark:border-blue-800 shadow-sm">
+    <h4 class="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">
+      UX & Business Impact
+    </h4>
+    <p>HTTPS removes the scary "Not Secure" label in browser address bars. It protects user data from interception. Eliminating mixed content prevents broken images, blocked scripts, and console errors. These changes build visitor confidence, reduce immediate exits, and support trust-dependent actions such as form submissions or purchases.</p>
+  </div>
+</div>
 
     <!-- CTA Box -->
-    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-left">
+    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-center">
       <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
         Verify your Security score in seconds.
       </p>
@@ -1018,7 +1099,7 @@
   <!-- Return to TOC – only at the bottom -->
   <div class="mt-12 text-center">
     <a href="#table-of-contents" class="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
-      ↑ Return to Table of Contents
+      ↑ Return to TOC
     </a>
   </div>
 </section>
@@ -1037,27 +1118,39 @@
     <p>Indexability confirms that search engines are allowed and technically able to include the page in their search results. It checks for the absence of blocking directives (noindex meta tags, robots.txt disallows), the presence of a preferred canonical URL, and other crawl directives that could prevent visibility in organic search.</p>
     <p>Indexability has been a core requirement since search engines began. In 2026 it remains essential because even perfectly optimized pages are invisible if they carry a noindex tag or lack a canonical signal. Google may also choose not to index thin, duplicate, or low-value pages even without explicit blocks.</p>
 
-    <!-- How -->
-    <h3 id="indexability-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
-      How is Indexability tested in modern audits?
-    </h3>
-    <p>Client-side audit tools parse the <head> section and meta tags with these checks:</p>
-    <ul class="list-disc pl-6 space-y-3 mt-4">
-      <li>No meta name="robots" tag contains noindex (case-insensitive).</li>
-      <li>A canonical link tag (<link rel="canonical">) exists and points to the preferred version of the URL.</li>
-      <li>No other directives (such as x-robots-tag headers) are assumed to block indexing in the client-side context.</li>
-    </ul>
-    <p class="mt-4">Scoring starts at 100. A noindex directive receives the heaviest penalty because it explicitly removes the page from search results. Missing canonical tag deducts points due to potential duplicate content confusion.</p>
+<!-- How -->
+<h3 id="indexability-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
+  How it's tested
+</h3>
+<p>Traffic Torch parses the <head> section and meta tags with these exact client-side checks:</p>
+<ul class="list-disc pl-6 space-y-3 mt-4">
+  <li>No meta name="robots" tag contains "noindex" (checked case-insensitive in content attribute) — flags any noindex directive that hides the page from search results.</li>
+  <li>A canonical link tag exists (<link rel="canonical" href="...">) and points to the preferred/preferred URL version — verifies self-referencing or correct consolidation.</li>
+  <li>No other obvious blocking directives — notes that client-side analysis cannot fully detect server-side x-robots-tag headers or robots.txt disallows, but flags potential issues in visible HTML.</li>
+</ul>
+<p class="mt-4">Scoring starts at 100. The heaviest penalty applies to a present noindex directive (explicitly removes page from search). Deductions trigger for missing canonical tag (risks duplicate content confusion and split authority). Smaller penalties apply to ambiguous or incomplete signals that could affect crawlability.</p>
 
-    <!-- Why -->
-    <h3 id="indexability-why" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
-      Why does Indexability matter for rankings and user experience?
-    </h3>
-    <p><strong>SEO impact.</strong> A page that cannot be indexed receives zero organic traffic from search engines. In 2026 correct canonical tags consolidate ranking signals across similar URLs (parameterized, mobile/desktop, www/non-www). Removing accidental noindex tags is one of the fastest ways to recover lost visibility after site migrations or staging errors.</p>
-    <p><strong>User experience impact.</strong> Indexability has no direct effect on visitors who reach the page. However it determines whether the page can be discovered organically in the first place. Properly indexed pages reach more users through search. This indirectly improves overall site reach and brand exposure without any on-page UX change.</p>
+<!-- Why – split into two cards like other posts -->
+<div class="grid md:grid-cols-2 gap-6 mt-10">
+  <!-- SEO Impact Card -->
+  <div class="p-6 bg-green-50 dark:bg-green-950/30 rounded-2xl border border-green-200 dark:border-green-800 shadow-sm">
+    <h4 class="text-xl font-bold text-green-700 dark:text-green-300 mb-4">
+      SEO Impact
+    </h4>
+    <p>A page that cannot be indexed receives zero organic traffic from search engines. In 2026 correct canonical tags consolidate ranking signals across similar URLs (parameterized, mobile/desktop, www/non-www variations). Removing accidental noindex tags is one of the fastest ways to recover lost visibility after site migrations, staging errors, or plugin misconfigurations.</p>
+  </div>
+
+  <!-- UX & Business Impact Card -->
+  <div class="p-6 bg-blue-50 dark:bg-blue-950/30 rounded-2xl border border-blue-200 dark:border-blue-800 shadow-sm">
+    <h4 class="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">
+      UX & Business Impact
+    </h4>
+    <p>Indexability has no direct effect on visitors who already reach the page. However it determines whether the page can be discovered organically through search in the first place. Properly indexed pages reach far more users via Google. This indirectly improves overall site reach, brand exposure, and traffic potential without any on-page UX change.</p>
+  </div>
+</div>
 
     <!-- CTA Box -->
-    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-left">
+    <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-center">
       <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
         Confirm your Indexability score in seconds.
       </p>
@@ -1085,7 +1178,7 @@
   <!-- Return to TOC – only at the bottom -->
   <div class="mt-12 text-center">
     <a href="#table-of-contents" class="inline-block px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
-      ↑ Return to Table of Contents
+      ↑ Return to TOC
     </a>
   </div>
 </section>
@@ -1119,72 +1212,6 @@
   </div>
 </section>
 
-<!-- FAQ Section -->
-<section class="mb-20 scroll-mt-24">
-  <h2 class="text-3xl md:text-4xl font-bold mb-10 text-gray-800 dark:text-gray-200 text-center">
-    Frequently Asked Questions
-  </h2>
-
-  <div class="prose prose-lg prose-orange dark:prose-invert max-w-4xl mx-auto space-y-6">
-    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden">
-      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
-        What are the most important SEO ranking factors in 2026?
-        <span class="text-orange-500 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
-        <p>Core Web Vitals (especially Largest Contentful Paint and Interaction to Next Paint), mobile-first indexing, helpful and original content quality, HTTPS security, strong on-page signals (title, meta description, schema), and user experience metrics (low bounce rate, high dwell time) remain the biggest drivers. Google continues to reward pages that genuinely satisfy search intent while delivering fast, accessible, and secure experiences.</p>
-      </div>
-    </details>
-
-    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden">
-      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
-        Does accessibility really affect SEO rankings?
-        <span class="text-orange-500 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
-        <p>Yes — indirectly but meaningfully. Google has repeatedly stated that accessibility improvements often overlap with better SEO (clean semantic structure, descriptive alt text, logical headings). In 2026 accessible sites tend to have stronger engagement signals, lower bounce rates, and higher crawl efficiency, all of which feed positively into ranking algorithms. It also helps avoid legal risks under laws like the ADA and EU Accessibility Act.</p>
-      </div>
-    </details>
-
-    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden">
-      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
-        Why is HTTPS still required even for informational sites with no forms?
-        <span class="text-orange-500 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
-        <p>Modern browsers label HTTP pages as “Not Secure”, which causes immediate user distrust and higher bounce rates. HTTPS has been a confirmed lightweight ranking factor since 2014 and is now table stakes in 2026. It also enables modern web features (service workers, PWAs, secure contexts) and prevents mixed content warnings that break page functionality even on content-only sites.</p>
-      </div>
-    </details>
-
-    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden">
-      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
-        How often should I run an SEO + UX audit on my site?
-        <span class="text-orange-500 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
-        <p>Run a full audit after any major change (redesign, CMS migration, new theme, large content additions). For active sites do a quick check monthly. For most businesses quarterly deep audits are sufficient. Tools like Traffic Torch make this process instant and free, so there is no reason not to monitor regularly.</p>
-      </div>
-    </details>
-
-    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden">
-      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
-        Can one big fix dramatically improve my rankings?
-        <span class="text-orange-500 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
-        <p>Sometimes yes — especially if you discover and remove an accidental noindex tag, fix HTTPS + mixed content, or dramatically improve Core Web Vitals. These technical blockers can hide pages or tank rankings fast. For most sites though consistent small wins across multiple pillars (performance, content depth, mobile readiness, UX clarity) create compounding gains over weeks and months.</p>
-      </div>
-    </details>
-  </div>
-
-  <!-- Optional return to top for very long posts -->
-  <div class="mt-16 text-center">
-    <a href="#" class="inline-block px-8 py-4 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full text-gray-800 dark:text-gray-200 font-medium transition">
-      ↑ Back to Top
-    </a>
-  </div>
-</section>
-
 <!-- FAQPage Structured Data – keep this in <head> or before </body> -->
 <script type="application/ld+json">
 {
@@ -1193,51 +1220,47 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "What are the most important SEO ranking factors in 2026?",
+      "name": "What are the most important ranking factors for SEO in 2026?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Core Web Vitals (especially Largest Contentful Paint and Interaction to Next Paint), mobile-first indexing, helpful and original content quality, HTTPS security, strong on-page signals (title, meta description, schema), and user experience metrics (low bounce rate, high dwell time) remain the biggest drivers. Google continues to reward pages that genuinely satisfy search intent while delivering fast, accessible, and secure experiences."
+        "text": "Core Web Vitals (LCP, INP, CLS), mobile-first indexing, helpful content quality (E-E-A-T signals), HTTPS security, strong on-page elements (title, headings, schema), and user engagement metrics (low bounce rate, high dwell time) remain the biggest drivers. Tools like Traffic Torch score these in real time to show your site's exact health."
       }
     },
     {
       "@type": "Question",
-      "name": "Does accessibility really affect SEO?",
+      "name": "Does accessibility still affect SEO rankings in 2026?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes — indirectly but meaningfully. Google has repeatedly stated that accessibility improvements often overlap with better SEO (clean semantic structure, descriptive alt text, logical headings). In 2026 accessible sites tend to have stronger engagement signals, lower bounce rates, and higher crawl efficiency, all of which feed positively into ranking algorithms. It also helps avoid legal risks under laws like the ADA and EU Accessibility Act."
+        "text": "Yes — indirectly but significantly. Google treats accessibility as a quality signal. Accessible pages often have better semantic structure, descriptive content, and higher engagement from all users, which feeds stronger behavioral ranking signals. Traffic Torch flags missing alt text, lang attributes, landmarks, heading skips, and unlabeled forms to help you improve both accessibility and SEO."
       }
     },
     {
       "@type": "Question",
-      "name": "Why is HTTPS still required even for informational sites with no forms?",
+      "name": "Why is HTTPS still required even for informational pages with no forms?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Modern browsers label HTTP pages as “Not Secure”, which causes immediate user distrust and higher bounce rates. HTTPS has been a confirmed lightweight ranking factor since 2014 and is now table stakes in 2026. It also enables modern web features (service workers, PWAs, secure contexts) and prevents mixed content warnings that break page functionality even on content-only sites."
+        "text": "Modern browsers label HTTP pages as “Not Secure”, causing user distrust and higher bounce rates. HTTPS has been a confirmed ranking factor since 2014 and is now table stakes in 2026. It also enables PWA features and secure contexts. Traffic Torch penalizes full HTTP pages heavily and flags mixed content (http resources on https pages) that breaks functionality."
       }
     },
     {
       "@type": "Question",
-      "name": "How often should I run an SEO + UX audit on my site?",
+      "name": "How often should I audit my site's SEO and UX?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Run a full audit after any major change (redesign, CMS migration, new theme, large content additions). For active sites do a quick check monthly. For most businesses quarterly deep audits are sufficient. Tools like Traffic Torch make this process instant and free, so there is no reason not to monitor regularly."
+        "text": "Run a full audit after major changes (redesigns, migrations, new content). For active sites, check monthly. Quarterly deep audits are usually enough for most businesses. Traffic Torch makes this instant and free — no login, no tracking, fully client-side — so there's no reason not to monitor regularly."
       }
     },
     {
       "@type": "Question",
-      "name": "Can one big fix dramatically improve my rankings?",
+      "name": "Can fixing one thing dramatically boost my rankings?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Sometimes yes — especially if you discover and remove an accidental noindex tag, fix HTTPS + mixed content, or dramatically improve Core Web Vitals. These technical blockers can hide pages or tank rankings fast. For most sites though consistent small wins across multiple pillars (performance, content depth, mobile readiness, UX clarity) create compounding gains over weeks and months."
+        "text": "Yes — especially technical blockers like accidental noindex tags, full HTTP pages, or severe Core Web Vitals issues. These can hide your page or tank rankings fast. For most sites, consistent improvements across multiple pillars (performance, content depth, mobile readiness, UX clarity) create the biggest compounding gains over time. Traffic Torch shows you priority fixes ranked by impact."
       }
     }
   ]
 }
 </script>
-
-
-
-
 
 
   <!-- Top Share Buttons -->
@@ -1464,7 +1487,7 @@
 <footer class="border-t border-white/10 dark:border-white/5 py-12 bg-white/5 dark:bg-black/20 backdrop-blur-xl">
   <div class="container mx-auto px-6 max-w-7xl">
     <!-- Main Footer Grid: 4 columns on md+, 1 column on mobile -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12 text-center md:text-left">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12 text-center md:text-center">
       <!-- Column 1: Traffic Torch + Logo/Author -->
       <div class="flex flex-col items-center md:items-start">
         <a href="/" class="mb-6 inline-block">
