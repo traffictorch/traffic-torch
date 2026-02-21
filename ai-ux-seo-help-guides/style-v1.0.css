@@ -1,9 +1,2 @@
 /* SEO Help guides CSS Tweaks */
 
-img[loading="lazy"] {
-  opacity: 0;
-  transition: opacity 0.4s ease-in;
-}
-img[loading="lazy"].loaded {
-  opacity: 1;
-}
