@@ -12,8 +12,8 @@
 
 main {
     min-height: 100vh; /* Ensures full height if needed */
-    padding-top: 4rem;
-    padding-bottom: 4rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }
 
 @media (max-width: 768px) {
