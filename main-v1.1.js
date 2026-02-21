@@ -97,22 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
       toggle.textContent = isDark ? '☀️' : '🌙';
     });
   }
-    // Help Guides toggle (desktop + mobile)
-  const helpToggleDesktop = document.getElementById('helpGuidesToggle');
-  const helpListDesktop   = document.getElementById('helpGuidesList');
-  if (helpToggleDesktop && helpListDesktop) {
-    helpToggleDesktop.addEventListener('click', () => {
-      helpListDesktop.classList.toggle('hidden');
-    });
-  }
-
-  const helpToggleMobile = document.getElementById('mobileHelpGuidesToggle');
-  const helpListMobile   = document.getElementById('mobileHelpGuidesList');
-  if (helpToggleMobile && helpListMobile) {
-    helpToggleMobile.addEventListener('click', () => {
-      helpListMobile.classList.toggle('hidden');
-    });
-  }
 });
 
 // PWA Install
