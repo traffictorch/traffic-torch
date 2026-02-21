@@ -334,316 +334,237 @@
     </p>
 
     <div class="grid gap-8 md:gap-12 grid-cols-1 md:grid-cols-2">
-    
 
-      <!-- Latest Guides -->
-      
-      <!-- Article 1: Eager load (always visible first on mobile & desktop top-left) -->
-<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
-  <a href="/blog/posts/seo-ux-audit-help-guide/" class="block">
-    <picture class="block">
-      <source
-        media="(max-width: 640px)"
-        srcset="/blog/images/seo-ux/seo-ux-audit-help-guide-640w.webp">
-      <source
-        media="(min-width: 641px)"
-        srcset="/blog/images/seo-ux/seo-ux-audit-help-guide-1200w.webp">
-      <img
-        src="/blog/images/seo-ux/seo-ux-audit-help-guide-640w.webp"
-        alt="SEO & UX Audit Help Guide: Master On-Page, Mobile, Performance, Accessibility & More – Traffic Torch"
-        class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
-        loading="eager"
-        decoding="async"
-        width="640"
-        height="336">
-    </picture>
-    <div class="p-6">
-      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-        The Ultimate SEO & UX Audit Guide: What Traffic Torch Actually Measures & Why It Matters?
-      </h2>
-      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-        Get a complete breakdown of how Traffic Torch delivers your instant 360° SEO + UX health score. Explore each of the 8 core modules (On-Page SEO, Mobile & PWA, Performance, Accessibility, Content Quality, UX Design, Security, Indexability).
-      </p>
-    </div>
-  </a>
-</article>
+      <!-- Article 1: No lazy/async/priority (above-fold + hero exists) -->
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="/blog/posts/seo-ux-audit-help-guide/" class="block">
+          <img
+            src="/blog/images/seo-ux/seo-ux-audit-help-guide-640w.webp"
+            alt="SEO & UX Audit Help Guide: Master On-Page, Mobile, Performance, Accessibility & More – Traffic Torch"
+            class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
+            width="640"
+            height="336"
+            sizes="(max-width: 767px) 100vw, 50vw">
+          <div class="p-6">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              The Ultimate SEO & UX Audit Guide: What Traffic Torch Actually Measures & Why It Matters?
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              Get a complete breakdown of how Traffic Torch delivers your instant 360° SEO + UX health score. Explore each of the 8 core modules (On-Page SEO, Mobile & PWA, Performance, Accessibility, Content Quality, UX Design, Security, Indexability).
+            </p>
+          </div>
+        </a>
+      </article>
 
-<!-- Article 2: Lazy load (second on mobile, top-right on desktop) -->
-<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
-  <a href="/blog/posts/user-experience-help-guide/" class="block">
-    <picture class="block">
-      <source
-        media="(max-width: 640px)"
-        srcset="/blog/images/quit-risk/user-experience-help-guide-640w.webp">
-      <source
-        media="(min-width: 641px)"
-        srcset="/blog/images/quit-risk/user-experience-help-guide-1200w.webp">
-      <img
-        src="/blog/images/quit-risk/user-experience-help-guide-640w.webp"
-        alt="Complete guide to lowering website quit risk through better UX and SEO"
-        class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
-        loading="lazy"
-        decoding="async"
-        width="640"
-        height="336">
-    </picture>
-    <div class="p-6">
-      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-        User Experience Help Guide: How to Slash Quit Risk & Keep Visitors Longer
-      </h2>
-      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-        In this complete help guide you’ll learn what each module really measures, how the tool calculates scores, why it matters for modern SEO + UX, and the fastest fixes that deliver the biggest wins. Ready to turn leavers into loyal readers and buyers?
-      </p>
-    </div>
-  </a>
-</article>
-      
-      
-     <!-- Article: Local SEO Mastery -->
-<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
-  <a href="/blog/posts/local-seo-help-guide/" class="block">
-    <picture class="block">
-      <source
-        media="(max-width: 640px)"
-        srcset="/blog/images/local-seo/local-seo-help-guide-640w.webp">
-      <source
-        media="(min-width: 641px)"
-        srcset="/blog/images/local-seo/local-seo-help-guide-1200w.webp">
-      <img
-        src="/blog/images/local-seo/local-seo-help-guide-640w.webp"
-        alt="The Ultimate Guide to Local SEO: NAP, Keywords, Schema, Maps, Reviews & Structure – Traffic Torch Help Guide"
-        class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
-        loading="lazy"
-        decoding="async"
-        width="640"
-        height="336">
-    </picture>
-    <div class="p-6">
-      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-        Local SEO Mastery: NAP, Keywords, Schema & More – Full Help Guide
-      </h2>
-      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-        Discover exactly how Traffic Torch audits your local SEO health in seconds. Learn what each module tests (NAP consistency, local keywords & titles, content relevance, maps & visuals, structured data, reviews & site structure), why these signals matter for Google’s local pack rankings in 2026. Perfect for local businesses and SEOs.
-      </p>
-    </div>
-  </a>
-</article>
+      <!-- Article 2 -->
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="/blog/posts/user-experience-help-guide/" class="block">
+          <img
+            src="/blog/images/quit-risk/user-experience-help-guide-640w.webp"
+            alt="Complete guide to lowering website quit risk through better UX and SEO"
+            class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
+            loading="lazy"
+            decoding="async"
+            width="640"
+            height="336"
+            sizes="(max-width: 767px) 100vw, 50vw">
+          <div class="p-6">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              User Experience Help Guide: How to Slash Quit Risk & Keep Visitors Longer
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              In this complete help guide you’ll learn what each module really measures, how the tool calculates scores, why it matters for modern SEO + UX, and the fastest fixes that deliver the biggest wins. Ready to turn leavers into loyal readers and buyers?
+            </p>
+          </div>
+        </a>
+      </article>
 
-<!-- Article: Mastering SEO Intent -->
-<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
-  <a href="/blog/posts/seo-intent-help-guide/" class="block">
-    <picture class="block">
-      <source
-        media="(max-width: 640px)"
-        srcset="/blog/images/seo-intent/seo-intent-help-guide-640w.webp">
-      <source
-        media="(min-width: 641px)"
-        srcset="/blog/images/seo-intent/seo-intent-help-guide-1200w.webp">
-      <img
-        src="/blog/images/seo-intent/seo-intent-help-guide-640w.webp"
-        alt="Mastering SEO Intent: E-E-A-T, Content Depth, Readability & Schema – Complete Help Guide"
-        class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
-        loading="lazy"
-        decoding="async"
-        width="640"
-        height="336">
-    </picture>
-    <div class="p-6">
-      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-        Mastering SEO Intent: E-E-A-T, Depth, Readability & Schema – Full Help Guide
-      </h2>
-      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-        Discover exactly how Traffic Torch measures search intent alignment. Learn what each module tests (E-E-A-T signals, content depth, readability, schema), why these factors drive rankings in 2026, and the highest-impact fixes to boost your positions and traffic. Perfect for anyone serious about modern SEO.
-      </p>
-    </div>
-  </a>
-</article>
-      
-<!-- Article: Product SEO Help Guide -->
-<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
-  <a href="/blog/posts/product-seo-help-guide/" class="block">
-    <picture class="block">
-      <source
-        media="(max-width: 640px)"
-        srcset="/blog/images/product-seo/product-seo-help-guide-640w.webp">
-      <source
-        media="(min-width: 641px)"
-        srcset="/blog/images/product-seo/product-seo-help-guide-1200w.webp">
-      <img
-        src="/blog/images/product-seo/product-seo-help-guide-640w.webp"
-        alt="Complete guide to product page SEO optimization for better rankings and conversions – Traffic Torch"
-        class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
-        loading="lazy"
-        decoding="async"
-        width="640"
-        height="336">
-    </picture>
-    <div class="p-6">
-      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-        Product SEO Help Guide: Boost Rankings & Sales for Your Ecommerce Pages
-      </h2>
-      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-        In this complete help guide you’ll learn what each module really measures, how the tool calculates scores, why it matters for modern SEO + UX, and the fastest fixes that deliver the biggest wins. Ready to turn your product pages into traffic magnets?
-      </p>
-    </div>
-  </a>
-</article>
+      <!-- Article: Local SEO Mastery -->
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="/blog/posts/local-seo-help-guide/" class="block">
+          <img
+            src="/blog/images/local-seo/local-seo-help-guide-640w.webp"
+            alt="The Ultimate Guide to Local SEO: NAP, Keywords, Schema, Maps, Reviews & Structure – Traffic Torch Help Guide"
+            class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
+            loading="lazy"
+            decoding="async"
+            width="640"
+            height="336"
+            sizes="(max-width: 767px) 100vw, 50vw">
+          <div class="p-6">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Local SEO Mastery: NAP, Keywords, Schema & More – Full Help Guide
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              Discover exactly how Traffic Torch audits your local SEO health in seconds. Learn what each module tests (NAP consistency, local keywords & titles, content relevance, maps & visuals, structured data, reviews & site structure), why these signals matter for Google’s local pack rankings in 2026. Perfect for local businesses and SEOs.
+            </p>
+          </div>
+        </a>
+      </article>
 
-<!-- Article: SEO Keyword Help Guide -->
-<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
-  <a href="/blog/posts/seo-keyword-help-guide/" class="block">
-    <picture class="block">
-      <source
-        media="(max-width: 640px)"
-        srcset="/blog/images/seo-keywords/seo-keyword-help-guide-640w.webp">
-      <source
-        media="(min-width: 641px)"
-        srcset="/blog/images/seo-keywords/seo-keyword-help-guide-1200w.webp">
-      <img
-        src="/blog/images/seo-keywords/seo-keyword-help-guide-640w.webp"
-        alt="How to Master SEO Keywords - In-depth educational guide covering the six core on-page keyword factors analyzed by Traffic Torch"
-        class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
-        loading="lazy"
-        decoding="async"
-        width="640"
-        height="336">
-    </picture>
-    <div class="p-6">
-      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-        SEO Keyword Help Guide: Optimize Your Page for Better Rankings
-      </h2>
-      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-        Struggling to rank higher in search results? Keyword optimization is key: strategically place your target keyword in meta titles, headings, content, images, anchors, and URLs to signal relevance to Google. This guide explains each factor—what it is, how it's tested, and why it matters for SEO and UX.
-      </p>
-    </div>
-  </a>
-</article>
+      <!-- Article: Mastering SEO Intent -->
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="/blog/posts/seo-intent-help-guide/" class="block">
+          <img
+            src="/blog/images/seo-intent/seo-intent-help-guide-640w.webp"
+            alt="Mastering SEO Intent: E-E-A-T, Content Depth, Readability & Schema – Complete Help Guide"
+            class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
+            loading="lazy"
+            decoding="async"
+            width="640"
+            height="336"
+            sizes="(max-width: 767px) 100vw, 50vw">
+          <div class="p-6">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Mastering SEO Intent: E-E-A-T, Depth, Readability & Schema – Full Help Guide
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              Discover exactly how Traffic Torch measures search intent alignment. Learn what each module tests (E-E-A-T signals, content depth, readability, schema), why these factors drive rankings in 2026, and the highest-impact fixes to boost your positions and traffic. Perfect for anyone serious about modern SEO.
+            </p>
+          </div>
+        </a>
+      </article>
 
-<!-- Article: AI Search Optimization Help Guide -->
-<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
-  <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide.html" class="block">
-    <picture class="block">
-      <source
-        media="(max-width: 640px)"
-        srcset="/blog/images/ai-search-optimization-help-guide/ai-search-help-guide-640w.webp">
-      <source
-        media="(min-width: 641px)"
-        srcset="/blog/images/ai-search-optimization-help-guide/ai-search-help-guide-1200w.webp">
-      <img
-        src="/blog/images/ai-search-optimization-help-guide/ai-search-help-guide-640w.webp"
-        alt="AI search optimization guide banner with Traffic Torch illuminating SEO strategies: Answerability, EEAT, Structured Data, Scannability, Conversational Tone, Readability, Unique Insights & Anti-AI Safety"
-        class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
-        loading="lazy"
-        decoding="async"
-        width="640"
-        height="336">
-    </picture>
-    <div class="p-6">
-      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-        Ultimate AI Search Optimization Help Guide: Boost Your SEO with Traffic Torch
-      </h2>
-      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-        AI search optimization is the key to getting your content featured in AI-generated overviews and boosting organic traffic. In this guide, you'll learn how Traffic Torch analyzes your pages across 8 critical metrics to improve visibility in tools like Google's Search Generative Experience (SGE).
-      </p>
-    </div>
-  </a>
-</article>
+      <!-- Article: Product SEO Help Guide -->
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="/blog/posts/product-seo-help-guide/" class="block">
+          <img
+            src="/blog/images/product-seo/product-seo-help-guide-640w.webp"
+            alt="Complete guide to product page SEO optimization for better rankings and conversions – Traffic Torch"
+            class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
+            loading="lazy"
+            decoding="async"
+            width="640"
+            height="336"
+            sizes="(max-width: 767px) 100vw, 50vw">
+          <div class="p-6">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Product SEO Help Guide: Boost Rankings & Sales for Your Ecommerce Pages
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              In this complete help guide you’ll learn what each module really measures, how the tool calculates scores, why it matters for modern SEO + UX, and the fastest fixes that deliver the biggest wins. Ready to turn your product pages into traffic magnets?
+            </p>
+          </div>
+        </a>
+      </article>
 
-<!-- Article: AI Content Detection Help Guide -->
-<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
-  <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide.html" class="block">
-    <picture class="block">
-      <source
-        media="(max-width: 640px)"
-        srcset="/blog/images/ai-content-detection-guide/ai-content-detection-640w.webp">
-      <source
-        media="(min-width: 641px)"
-        srcset="/blog/images/ai-content-detection-guide/ai-content-detection-1200w.webp">
-      <img
-        src="/blog/images/ai-content-detection-guide/ai-content-detection-640w.webp"
-        alt="2026 AI Content Detection Guide – Human vs AI Writing Patterns: Perplexity, Burstiness, Repetition, Sentence Length, Vocabulary – Traffic Torch"
-        class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
-        loading="lazy"
-        decoding="async"
-        width="640"
-        height="336">
-    </picture>
-    <div class="p-6">
-      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-        How to Detect AI-Generated Content: 5 Metrics + Free AI Audit Tool Help Guide
-      </h2>
-      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-        Complete guide to the 5 metrics Traffic Torch uses to detect AI-written content. Perplexity, Burstiness, Repetition, Sentence Length & Vocabulary – what they are, exactly how the tool tests them, why they matter for SEO/UX, and how to improve your score.
-      </p>
-    </div>
-  </a>
-</article>
+      <!-- Article: SEO Keyword Help Guide -->
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="/blog/posts/seo-keyword-help-guide/" class="block">
+          <img
+            src="/blog/images/seo-keywords/seo-keyword-help-guide-640w.webp"
+            alt="How to Master SEO Keywords - In-depth educational guide covering the six core on-page keyword factors analyzed by Traffic Torch"
+            class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
+            loading="lazy"
+            decoding="async"
+            width="640"
+            height="336"
+            sizes="(max-width: 767px) 100vw, 50vw">
+          <div class="p-6">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              SEO Keyword Help Guide: Optimize Your Page for Better Rankings
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              Struggling to rank higher in search results? Keyword optimization is key: strategically place your target keyword in meta titles, headings, content, images, anchors, and URLs to signal relevance to Google. This guide explains each factor—what it is, how it's tested, and why it matters for SEO and UX.
+            </p>
+          </div>
+        </a>
+      </article>
 
+      <!-- Article: AI Search Optimization Help Guide -->
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide.html" class="block">
+          <img
+            src="/blog/images/ai-search-optimization-help-guide/ai-search-help-guide-640w.webp"
+            alt="AI search optimization guide banner with Traffic Torch illuminating SEO strategies: Answerability, EEAT, Structured Data, Scannability, Conversational Tone, Readability, Unique Insights & Anti-AI Safety"
+            class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
+            loading="lazy"
+            decoding="async"
+            width="640"
+            height="336"
+            sizes="(max-width: 767px) 100vw, 50vw">
+          <div class="p-6">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Ultimate AI Search Optimization Help Guide: Boost Your SEO with Traffic Torch
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              AI search optimization is the key to getting your content featured in AI-generated overviews and boosting organic traffic. In this guide, you'll learn how Traffic Torch analyzes your pages across 8 critical metrics to improve visibility in tools like Google's Search Generative Experience (SGE).
+            </p>
+          </div>
+        </a>
+      </article>
 
-<!-- Last Article: Keyword Competition Help Guide -->
-<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
-  <a href="/blog/posts/seo-keyword-competition-help-guide/" class="block">
-    <picture class="block">
-      <source
-        media="(max-width: 640px)"
-        srcset="/blog/images/seo-keyword-competition-help-guide/seo-keyword-competition-help-guide-640w.webp">
-      <source
-        media="(min-width: 641px)"
-        srcset="/blog/images/seo-keyword-competition-help-guide/seo-keyword-competition-help-guide-1200w.webp">
-      <img
-        src="/blog/images/seo-keyword-competition-help-guide/seo-keyword-competition-help-guide-640w.webp"
-        alt="2026 Complete educational guide to Traffic Torch's Keyword VS Tool. Explains scoring logic for meta titles, H1 headings, content density, image alt text, anchor text, URL & schema"
-        class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
-        loading="lazy"
-        decoding="async"
-        width="640"
-        height="336">
-    </picture>
-    <div class="p-6">
-      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-        Ultimate Guide to Beating Competitors in On-Page SEO 2026
-      </h2>
-      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-        Complete educational guide to Traffic Torch's Keyword VS Tool. Explains scoring logic for meta titles, H1 headings, content density, image alt text, anchor text, URL & schema — with history, testing methods, SEO/UX importance and fixes.
-      </p>
-    </div>
-  </a>
-</article>
+      <!-- Article: AI Content Detection Help Guide -->
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide.html" class="block">
+          <img
+            src="/blog/images/ai-content-detection-guide/ai-content-detection-640w.webp"
+            alt="2026 AI Content Detection Guide – Human vs AI Writing Patterns: Perplexity, Burstiness, Repetition, Sentence Length, Vocabulary – Traffic Torch"
+            class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
+            loading="lazy"
+            decoding="async"
+            width="640"
+            height="336"
+            sizes="(max-width: 767px) 100vw, 50vw">
+          <div class="p-6">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              How to Detect AI-Generated Content: 5 Metrics + Free AI Audit Tool Help Guide
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              Complete guide to the 5 metrics Traffic Torch uses to detect AI-written content. Perplexity, Burstiness, Repetition, Sentence Length & Vocabulary – what they are, exactly how the tool tests them, why they matter for SEO/UX, and how to improve your score.
+            </p>
+          </div>
+        </a>
+      </article>
 
-<!-- All Tools Article Card – now matches full article style with your toolkit images -->
-<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
-  <a href="/ai-seo-ux-tools/" class="block">
-    <picture class="block">
-      <source
-        media="(max-width: 640px)"
-        srcset="/images/traffic-torch-toolkit-640w.webp">
-      <source
-        media="(min-width: 641px)"
-        srcset="/images/traffic-torch-toolkit-1200w.webp">
-      <img
-        src="/images/traffic-torch-toolkit-640w.webp"
-        alt="Traffic Torch Toolkit – Complete suite of instant 360° SEO & UX audits, competitive gap analysis, AI-powered fixes, and predictive rank forecasting tools"
-        class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
-        loading="lazy"
-        decoding="async"
-        width="640"
-        height="336">
-    </picture>
-    <div class="p-6">
-      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-        All Tools: Your Complete AI-Powered SEO & UX Toolkit
-      </h2>
-      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-        Explore the full Traffic Torch suite in one place. Instant 360° health score audits across 8+ tools, plugin solutions, high-impact fixes, predictive rank forecasting based on current signals and real-time diagnostics for modern search. 
-      </p>
-    </div>
-  </a>
-</article>
-      
+      <!-- Last Article: Keyword Competition Help Guide -->
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="/blog/posts/seo-keyword-competition-help-guide/" class="block">
+          <img
+            src="/blog/images/seo-keyword-competition-help-guide/seo-keyword-competition-help-guide-640w.webp"
+            alt="2026 Complete educational guide to Traffic Torch's Keyword VS Tool. Explains scoring logic for meta titles, H1 headings, content density, image alt text, anchor text, URL & schema"
+            class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
+            loading="lazy"
+            decoding="async"
+            width="640"
+            height="336"
+            sizes="(max-width: 767px) 100vw, 50vw">
+          <div class="p-6">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Ultimate Guide to Beating Competitors in On-Page SEO 2026
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              Complete educational guide to Traffic Torch's Keyword VS Tool. Explains scoring logic for meta titles, H1 headings, content density, image alt text, anchor text, URL & schema — with history, testing methods, SEO/UX importance and fixes.
+            </p>
+          </div>
+        </a>
+      </article>
 
-</div>
+      <!-- All Tools Article Card -->
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="/ai-seo-ux-tools/" class="block">
+          <img
+            src="/images/traffic-torch-toolkit-640w.webp"
+            alt="Traffic Torch Toolkit – Complete suite of instant 360° SEO & UX audits, competitive gap analysis, AI-powered fixes, and predictive rank forecasting tools"
+            class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
+            loading="lazy"
+            decoding="async"
+            width="640"
+            height="336"
+            sizes="(max-width: 767px) 100vw, 50vw">
+          <div class="p-6">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              All Tools: Your Complete AI-Powered SEO & UX Toolkit
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              Explore the full Traffic Torch suite in one place. Instant 360° health score audits across 8+ tools, plugin solutions, high-impact fixes, predictive rank forecasting based on current signals and real-time diagnostics for modern search.
+            </p>
+          </div>
+        </a>
+      </article>
+
     </div>
-    
+  </div>
 </section>
 
 <!-- Author Bio -->
