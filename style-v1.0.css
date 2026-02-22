@@ -450,20 +450,18 @@ body, p:not([class*="bg-gradient"]), li, span:not([class*="bg-gradient"]), a:not
 }
 
 /*  Paragraph spacing – readable + accessible */
-p {
-  margin-top: 0;           /* reset top to prevent collapse surprises */
-  margin-bottom: 1.25rem;  /* ≈20px at default 16px root – sweet spot */
+.prose p:not([class*="bg-gradient"]) {
+  margin-top: 0;
+  margin-bottom: 1.25rem !important;  /* 20px at 16px root – your preferred value */
 }
 
-/* Optional override if using Tailwind prose or similar class */
-.prose p:not(:last-child),
-article p:not(:last-child),
-.blog-post p:not(:last-child) {
-  margin-bottom: 1.25rem !important;
+/* Prevent margin on the very last paragraph in the block */
+.prose p:last-child {
+  margin-bottom: 0 !important;
 }
 
-/* Keep line height comfortable (WCAG-friendly) */
-p {
-  line-height: 1.625;      /* 1.6–1.7 is gold standard for long-form reading */
+/* Keep WCAG-friendly line height consistent */
+.prose p {
+  line-height: 1.625 !important;
 }
 
