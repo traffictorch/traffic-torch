@@ -450,7 +450,24 @@ body, p:not([class*="bg-gradient"]), li, span:not([class*="bg-gradient"]), a:not
 }
 
 /*  Paragraph spacing – readable + accessible */
-p:not([class*="bg-gradient"]) {
-  margin-bottom: 1.25rem !important;
+.prose p:not([class*="bg-gradient"]):not(:last-child) {
+  margin-top: 0 !important;
+  margin-bottom: 1.25rem !important;  /* 20px at 16px root – your sweet spot */
+}
+
+/* No trailing margin after last paragraph (mimics Typography smart logic) */
+.prose p:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Force line-height for readability/WCAG too */
+.prose p {
+  line-height: 1.625 !important;
+}
+
+/* If you use prose-lg / prose-xl variants (common in your classes) */
+.prose-lg p:not([class*="bg-gradient"]):not(:last-child),
+.prose-xl p:not([class*="bg-gradient"]):not(:last-child) {
+  margin-bottom: 1.5rem !important;  /* Slightly larger for bigger text scales */
 }
 

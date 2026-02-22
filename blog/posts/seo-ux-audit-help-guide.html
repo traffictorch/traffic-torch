@@ -130,7 +130,7 @@
     "accessibility SEO impact",
     "content quality ranking factors",
     "site security HTTPS",
-    "indexability canonical noindex"
+    "indexability canonical"
   ],
   "wordCount": 3200,
   "inLanguage": "en-AU",
@@ -226,7 +226,7 @@
       "name": "Can fixing one thing dramatically boost my rankings?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes — especially technical blockers like accidental noindex tags, full HTTP pages, or severe Performance issues. These can hide your page or tank rankings fast. For most sites, consistent improvements across multiple pillars (performance, content depth, mobile readiness, UX clarity) create the biggest compounding gains over time. Traffic Torch shows you priority fixes ranked by impact."
+        "text": "Yes — especially technical blockers like accidental no index tags, full HTTP pages, or severe Performance issues. These can hide your page or tank rankings fast. For most sites, consistent improvements across multiple pillars (performance, content depth, mobile readiness, UX clarity) create the biggest compounding gains over time. Traffic Torch shows you priority fixes ranked by impact."
       }
     }
   ]
@@ -640,7 +640,7 @@
         <span class="text-orange-500 group-open:rotate-180 transition-transform">▼</span>
       </summary>
       <div class="px-6 pb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
-        <p>Yes — especially technical blockers like accidental noindex tags, full HTTP pages, or severe Performance issues. These can hide your page or tank rankings fast. For most sites, consistent improvements across multiple pillars (performance, content depth, mobile readiness, UX clarity) create the biggest compounding gains over time. Traffic Torch shows you priority fixes ranked by impact.</p>
+        <p>Yes — especially technical blockers like accidental no index tags, full HTTP pages, or severe Performance issues. These can hide your page or tank rankings fast. For most sites, consistent improvements across multiple pillars (performance, content depth, mobile readiness, UX clarity) create the biggest compounding gains over time. Traffic Torch shows you priority fixes ranked by impact.</p>
       </div>
     </details>
   </div>
@@ -1195,8 +1195,8 @@
     <h3 id="indexability-what" class="text-2xl font-semibold mt-8 text-gray-800 dark:text-gray-200">
       What is Webpage Indexability?
     </h3>
-    <p>Indexability confirms that search engines are allowed and technically able to include the page in their search results. It checks for the absence of blocking directives (noindex meta tags, robots.txt disallows), the presence of a preferred canonical URL, and other crawl directives that could prevent visibility in organic search.</p>
-    <p>Indexability has been a core requirement since search engines began. In 2026 it remains essential because even perfectly optimized pages are invisible if they carry a noindex tag or lack a canonical signal. Google may also choose not to index thin, duplicate, or low-value pages even without explicit blocks.</p>
+    <p>Indexability confirms that search engines are allowed and technically able to include the page in their search results. It checks for the absence of blocking directives (no index meta tags, robots.txt disallows), the presence of a preferred canonical URL, and other crawl directives that could prevent visibility in organic search.</p>
+    <p>Indexability has been a core requirement since search engines began. In 2026 it remains essential because even perfectly optimized pages are invisible if they carry a no index tag or lack a canonical signal. Google may also choose not to index thin, duplicate, or low-value pages even without explicit blocks.</p>
 
 <!-- How -->
 <h3 id="indexability-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
@@ -1204,11 +1204,11 @@
 </h3>
 <p>Traffic Torch parses the <head> section and meta tags with these exact client-side checks:</p>
 <ul class="list-disc pl-6 space-y-3 mt-4">
-  <li>No meta name="robots" tag contains "noindex" (checked case-insensitive in content attribute): Flags any noindex directive that hides the page from search results.</li>
+  <li>No meta name="robots" tag contains "no index" (checked case-insensitive in content attribute): Flags any no index directive that hides the page from search results.</li>
   <li>A canonical link tag exists (<link rel="canonical" href="...">) and points to the preferred/preferred URL version: Verifies self-referencing or correct consolidation.</li>
   <li>No other obvious blocking directives: Notes that client-side analysis cannot fully detect server-side x-robots-tag headers or robots.txt disallows, but flags potential issues in visible HTML.</li>
 </ul>
-<p class="mt-4">Scoring starts at 0-100. The heaviest penalty applies to a present noindex directive (explicitly removes page from search). Deductions trigger for missing canonical tag (risks duplicate content confusion and split authority). Smaller penalties apply to ambiguous or incomplete signals that could affect crawlability.</p>
+<p class="mt-4">Scoring starts at 0-100. The heaviest penalty applies to a present no index directive (explicitly removes page from search). Deductions trigger for missing canonical tag (risks duplicate content confusion and split authority). Smaller penalties apply to ambiguous or incomplete signals that could affect crawlability.</p>
 
 <!-- Why – split into two cards like other posts -->
 <div id="indexability-why" class="grid md:grid-cols-2 gap-6 mt-10">
@@ -1217,7 +1217,7 @@
     <h4 class="text-xl font-bold text-green-700 dark:text-green-300 mb-4">
       SEO Impact
     </h4>
-    <p>A page that cannot be indexed receives zero organic traffic from search engines. In 2026 correct canonical tags consolidate ranking signals across similar URLs (parameterized, mobile/desktop, www/non-www variations). Removing accidental noindex tags is one of the fastest ways to recover lost visibility after site migrations, staging errors, or plugin misconfigurations.</p>
+    <p>A page that cannot be indexed receives zero organic traffic from search engines. In 2026 correct canonical tags consolidate ranking signals across similar URLs (parameterized, mobile/desktop, www/non-www variations). Removing accidental no index tags is one of the fastest ways to recover lost visibility after site migrations, staging errors, or plugin misconfigurations.</p>
   </div>
 
   <!-- UX & Business Impact Card -->
@@ -1230,7 +1230,7 @@
 </div>
 
 <p class="mt-8 text-gray-700 dark:text-gray-300">
-  Google’s robots meta tag and canonical URL documentation covers noindex, canonical, and crawl control.
+  Google’s robots meta tag and canonical URL documentation covers no index, canonical, and crawl control.
   <a href="https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium ml-1">See Google’s Robots meta tag & canonical guide →</a>
 </p>
 
@@ -1239,7 +1239,7 @@
       Quick high-impact fixes for Indexability
     </h3>
     <ol class="list-decimal pl-6 space-y-4 font-medium mt-4">
-      <li>Remove any <meta name="robots" content="noindex"> tag from production pages unless the page is intentionally private.</li>
+      <li>Remove any <meta name="robots" content="no index"> tag from production pages unless the page is intentionally private.</li>
       <li>Add a self-referencing canonical tag in the <head>: <link rel="canonical" href="https: //example.com/current-page/">. Use the exact preferred URL.</li>
       <li>Check robots.txt (via yoursite.com/robots.txt) to ensure the page path is not disallowed for User-agent: * or Googlebot.</li>
       <li>After fixes request indexing in Google Search Console using the URL Inspection tool.</li>
@@ -1278,7 +1278,7 @@
 
   <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
     <p>The eight pillars covered in this guide — On-Page SEO, Mobile & PWA, Performance, Accessibility, Content Quality, UX Design, Security, and Indexability — form the foundation of what modern search engines and real users reward. In 2026 Google continues to blend technical excellence with genuine user satisfaction. Sites that score highly across these areas consistently achieve better rankings, lower bounce rates, higher conversions, and stronger brand trust.</p>
-    <p>No single fix transforms everything overnight. Start with the highest-impact items: fix HTTPS and noindex issues first (they can hide your pages completely), then tackle Performance and mobile readiness (direct ranking factors), and finally refine content and on-page elements for long-term authority.</p>
+    <p>No single fix transforms everything overnight. Start with the highest-impact items: fix HTTPS and no index issues first (they can hide your pages completely), then tackle Performance and mobile readiness (direct ranking factors), and finally refine content and on-page elements for long-term authority.</p>
     <p>The beauty of these audits lies in actionability. Each pillar gives you clear, testable signals and practical steps. Regular checks help you catch regressions early and stay ahead as algorithms evolve.</p>
 
     <div class="mt-12 p-2 rounded-3xl border border-orange-200 dark:border-orange-800 text-center">
