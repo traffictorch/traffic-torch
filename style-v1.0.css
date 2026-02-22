@@ -450,18 +450,22 @@ body, p:not([class*="bg-gradient"]), li, span:not([class*="bg-gradient"]), a:not
 }
 
 /*  Paragraph spacing – readable + accessible */
-.prose p:not([class*="bg-gradient"]) {
-  margin-top: 0;
-  margin-bottom: 1.25rem !important;  /* 20px at 16px root – your preferred value */
+.prose p {
+  margin-bottom: 1.25rem !important;  /* 20px equivalent at 16px root */
 }
 
-/* Prevent margin on the very last paragraph in the block */
+/* Mimic Typography's no-trailing-margin logic */
 .prose p:last-child {
   margin-bottom: 0 !important;
 }
 
-/* Keep WCAG-friendly line height consistent */
+/* If line-height is also collapsed/reset, force it */
 .prose p {
   line-height: 1.625 !important;
+}
+
+/* Extra high-specificity safety net matching your working pattern */
+.prose p:not([class*="bg-gradient"]) {
+  margin-bottom: 1.25rem !important;
 }
 
