@@ -416,10 +416,10 @@
 <!-- Introduction – Answer-first for featured snippets & AI Overviews -->
 <div class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12">
   <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg">
-    <strong>In 2026, Google still rewards sites that deliver fast, accessible, relevant, and secure experiences — but the bar keeps rising.</strong> Modern SEO and UX audits go far beyond keyword stuffing or mobile checkboxes. Today’s best tools evaluate eight core pillars: on-page SEO signals, mobile & PWA readiness, performance, accessibility, content quality & structure, intuitive UX design, full HTTPS security, and proper indexability.
+    <strong>In 2026, Google still rewards sites that deliver fast, accessible, relevant, and secure experiences, but the bar keeps rising.</strong> Modern SEO and UX audits go far beyond keyword stuffing or mobile checkboxes. Traffic Torch SEO UX tool evaluates eight core pillars: on-page SEO signals, mobile & PWA readiness, performance, accessibility, content quality & structure, intuitive UX design, full HTTPS security, and proper indexability.
   </p>
   <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg mt-6">
-    This guide explains <strong>exactly</strong> what serious audit tools (including Traffic Torch) measure in each area, how they test it using real client-side analysis, why each factor influences rankings and conversions in 2026+, and the most practical fixes ranked by impact. Whether you're optimizing your own site, helping clients, or just want to understand why some pages rank and others don’t — you’ll finish this post with a clear, actionable roadmap.
+    This guide explains <strong>exactly</strong> what audit tools including Traffic Torch measure in each area, how we test it,and why each factor influences rankings and conversions in 2026+. If you're optimizing your own site, helping clients, or just want to understand why some pages rank and others don’t, you’ll finish this post with a clear, actionable roadmap.
   </p>
 </div>
 
@@ -672,7 +672,7 @@
   <li>Structured data (JSON-LD preferred) is detected and valid for the page type (Article, WebPage, Product, FAQPage, etc.).</li>
   <li>Every meaningful (non-decorative) image has descriptive alt text that conveys purpose or content — decorative images use alt="".</li>
 </ul>
-<p class="mt-4">Scoring starts at 100. The biggest point losses come from complete absences (no title, no meta description, no schema, missing alt text on many images). Graduated penalties apply for suboptimal length, keyword placement, or weak schema implementation.</p>
+<p class="mt-4">Scoring starts at 0-100. The biggest point losses come from complete absences (no title, no meta description, no schema, missing alt text on many images). Graduated penalties apply for suboptimal length, keyword placement, or weak schema implementation.</p>
 
 <!-- Why – split into two cards -->
 <div id="on-page-seo-why" class="grid md:grid-cols-2 gap-6 mt-10">
@@ -744,7 +744,7 @@
   <li>High-resolution homescreen icons are provided — minimum 192×192 pixels, ideally also 512×512, in PNG or WebP format (checked via manifest icons array and apple-touch-icon links).</li>
   <li>A service worker registration is detected — looks for navigator.serviceWorker.register() calls in inline or external JavaScript.</li>
 </ul>
-<p class="mt-4">Scoring starts at 100. The heaviest penalties apply for missing viewport tag (breaks responsive layout) or absent manifest (prevents installability). Smaller deductions occur for missing larger icons or undetected service worker (detection can miss dynamic registrations in minified/obfuscated code).</p>
+<p class="mt-4">Scoring starts at 0-100. The heaviest penalties apply for missing viewport tag (breaks responsive layout) or absent manifest (prevents installability). Smaller deductions occur for missing larger icons or undetected service worker (detection can miss dynamic registrations in minified/obfuscated code).</p>
 
 <!-- Why – split into two cards like other posts -->
 <div id="mobile-pwa-why" class="grid md:grid-cols-2 gap-6 mt-10">
@@ -800,7 +800,7 @@
   <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
     <!-- What -->
     <h3 id="performance-what" class="text-2xl font-semibold mt-8 text-gray-800 dark:text-gray-200">
-      What is Performance in SEO and UX audits?
+      What is Performance regarding SEO and UX?
     </h3>
     <p>Performance measures how quickly and efficiently a page loads and becomes interactive for real users. Key factors include total page weight, number of requests, render-blocking resources, image optimization, font loading strategy.</p>
     <p>Core Web Vitals became official ranking factors in 2021. By 2026 they remain critical because Google continues to prioritize real-user experience over lab data alone. Slow sites lose visitors quickly, increase bounce rates, and receive lower rankings in mobile-first indexing environments.</p>
@@ -816,7 +816,7 @@
   <li>External font requests: Counts how many font families are loaded (Google Fonts or similar); penalizes >3 as they cause FOIT/FOUT and delay text rendering.</li>
   <li>Page weight contributors: Detects excessive inline styles, large inline scripts, or unoptimized markup that inflates the HTML and slows parsing/rendering.</li>
 </ul>
-<p class="mt-4">Scoring starts at 100. Deductions are severity-based: heavy penalties for >12 render-blocking resources or very large payloads (>200 KB), medium for 7–12 render-blocking or 4+ fonts, and smaller for suboptimal font handling (no font-display: swap or preload).</p>
+<p class="mt-4">Scoring starts at 0-100. Deductions are severity-based: heavy penalties for >12 render-blocking resources or very large payloads (>200 KB), medium for 7–12 render-blocking or 4+ fonts, and smaller for suboptimal font handling (no font-display: swap or preload).</p>
 
 <!-- Why – split into two cards like other posts -->
 <div id="performance-why" class="grid md:grid-cols-2 gap-6 mt-10">
@@ -876,7 +876,7 @@
   <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
     <!-- What -->
     <h3 id="accessibility-what" class="text-2xl font-semibold mt-8 text-gray-800 dark:text-gray-200">
-      What is Accessibility in web audits?
+      What is Webpage Accessibility?
     </h3>
     <p>Accessibility ensures that a website can be used effectively by everyone, including people with visual, auditory, motor, or cognitive impairments. Core checks cover meaningful alt text for images, proper semantic HTML structure (headings, landmarks, lists), form field labeling, sufficient color contrast, keyboard navigation, and language declaration.</p>
     <p>Accessibility standards evolved from WCAG 1.0 in 1999 to WCAG 2.1 (2018) and WCAG 2.2 (2023). In 2026 Google increasingly treats strong accessibility as a quality signal. Poor accessibility can lead to legal risks under laws such as the ADA and EU Accessibility Act while also harming user trust and reach.</p>
@@ -893,7 +893,7 @@
   <li>Heading order is logical without skips: Checks sequential hierarchy (H1 → H2 → H3 etc.) and flags jumps like H1 to H3 without H2.</li>
   <li>Form controls (visible inputs, textareas, selects) have programmatically associated labels: Via for/id pairing, wrapping label, aria-label, or aria-labelledby (placeholders alone do not count).</li>
 </ul>
-<p class="mt-4">Scoring starts at 100. Deductions scale with violation count and severity: heaviest penalties for missing alt text on many images, absent lang attribute, or no main landmark (breaks core screen reader navigation). Medium penalties for skipped heading levels or unlabeled form fields.</p>
+<p class="mt-4">Scoring starts at 0-100. Deductions scale with violation count and severity: heaviest penalties for missing alt text on many images, absent lang attribute, or no main landmark (breaks core screen reader navigation). Medium penalties for skipped heading levels or unlabeled form fields.</p>
 
 <!-- Why – split into two cards like other posts -->
 <div id="accessibility-why" class="grid md:grid-cols-2 gap-6 mt-10">
@@ -977,7 +977,7 @@
   <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
     <!-- What -->
     <h3 id="content-quality-what" class="text-2xl font-semibold mt-8 text-gray-800 dark:text-gray-200">
-      What is Content Quality in audits?
+      What is Content Quality?
     </h3>
     <p>Content Quality evaluates how well the page satisfies user intent through depth, readability, structure, originality, and scannability. It looks at word count, sentence and paragraph length, Flesch readability score, heading usage, list and table presence, and overall helpfulness of the information provided.</p>
     <p>Content evaluation shifted dramatically after Google's Helpful Content Update (2022 onward) and continued emphasis on E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) through 2025–2026. In 2026 shallow or poorly structured content is heavily demoted. High-quality content ranks better because it keeps users engaged and answers questions comprehensively.</p>
@@ -994,7 +994,7 @@
   <li>Scannability elements: Detects presence of bulleted/numbered lists and tables; flags long-form pages (>500 words) without them as harder to digest.</li>
   <li>Complexity indicators: Measures average sentence length and syllable density to catch excessive complexity that hurts mobile reading and comprehension.</li>
 </ul>
-<p class="mt-4">Scoring starts at 100. Significant penalties apply for thin content (<300 words) or very low readability (Flesch <60). Smaller deductions occur for insufficient headings, no lists/tables on longer pages, or overly complex language.</p>
+<p class="mt-4">Scoring starts at 0-100. Significant penalties apply for thin content (<300 words) or very low readability (Flesch <60). Smaller deductions occur for insufficient headings, no lists/tables on longer pages, or overly complex language.</p>
 
 <!-- Why – split into two cards like other posts -->
 <div id="content-quality-why" class="grid md:grid-cols-2 gap-6 mt-10">
@@ -1050,7 +1050,7 @@
   <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
     <!-- What -->
     <h3 id="ux-design-what" class="text-2xl font-semibold mt-8 text-gray-800 dark:text-gray-200">
-      What is UX Design in audits?
+      What is UX Design?
     </h3>
     <p>UX Design assesses how intuitive, clear, and goal-oriented the page feels to visitors. It examines primary call-to-action prominence, navigation clarity, visual hierarchy, link density, mobile touch targets, and overall flow that guides users toward desired actions without confusion or friction.</p>
     <p>User experience signals gained ranking weight after Google's page experience update (2021) and remain important in 2026. UX design focuses on behavioral outcomes: whether users understand what to do next, stay engaged, and complete goals. Poor UX increases bounce rates and reduces conversions even on fast pages.</p>
@@ -1066,7 +1066,7 @@
   <li>Breadcrumb navigation presence: Required on deeper pages (>2000 words or multi-level hierarchy) to show users their location and reduce disorientation.</li>
   <li>Link density and spacing: Penalizes excessive competing links/buttons or poor touch target spacing that overwhelms users or causes mis-taps on mobile.</li>
 </ul>
-<p class="mt-4">Scoring starts at 100. Larger penalties apply to excessive interactive elements (>80) or missing breadcrumbs on complex/long pages. Smaller deductions occur for suboptimal CTA visibility, cluttered layouts, or insufficient spacing that increases friction.</p>
+<p class="mt-4">Scoring starts at 0-100. Larger penalties apply to excessive interactive elements (>80) or missing breadcrumbs on complex/long pages. Smaller deductions occur for suboptimal CTA visibility, cluttered layouts, or insufficient spacing that increases friction.</p>
 
 <!-- Why – split into two cards like other posts -->
 <div id="ux-design-why"  class="grid md:grid-cols-2 gap-6 mt-10">
@@ -1122,7 +1122,7 @@
   <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
     <!-- What -->
     <h3 id="security-what" class="text-2xl font-semibold mt-8 text-gray-800 dark:text-gray-200">
-      What is Security in web audits?
+      What is Website Security?
     </h3>
     <p>Security verifies that the page is served over a valid HTTPS connection and contains no mixed content issues. This includes checking the protocol of the main URL, all embedded resources (images, scripts, stylesheets, iframes), and the presence of a valid SSL/TLS certificate without warnings.</p>
     <p>HTTPS became a ranking signal in 2014. By 2026 it is a baseline expectation. Browsers display "Not Secure" warnings on HTTP pages. Mixed content on HTTPS sites blocks resources and triggers warnings. These issues damage trust, increase bounce rates, and negatively affect rankings and user retention.</p>
@@ -1137,7 +1137,7 @@
   <li>No mixed content: Scans all embedded resources (images src, scripts src, link href, iframes, fonts) for http:// when the main page is https://.</li>
   <li>No insecure redirects or certificate errors: Checks the initial load context for broken HTTPS chains or invalid certificates (via browser-reported status).</li>
 </ul>
-<p class="mt-4">Scoring starts at 100. The largest penalty applies to missing HTTPS (full HTTP protocol). Additional deductions trigger for any mixed content (breaks secure context, blocks features like service workers). Smaller penalties occur for redirect issues or certificate warnings that degrade trust signals.</p>
+<p class="mt-4">Scoring starts at 0-100. The largest penalty applies to missing HTTPS (full HTTP protocol). Additional deductions trigger for any mixed content (breaks secure context, blocks features like service workers). Smaller penalties occur for redirect issues or certificate warnings that degrade trust signals.</p>
 
 <!-- Why – split into two cards like other posts -->
 <div id="security-why" class="grid md:grid-cols-2 gap-6 mt-10">
@@ -1193,7 +1193,7 @@
   <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
     <!-- What -->
     <h3 id="indexability-what" class="text-2xl font-semibold mt-8 text-gray-800 dark:text-gray-200">
-      What is Indexability in audits?
+      What is Webpage Indexability?
     </h3>
     <p>Indexability confirms that search engines are allowed and technically able to include the page in their search results. It checks for the absence of blocking directives (noindex meta tags, robots.txt disallows), the presence of a preferred canonical URL, and other crawl directives that could prevent visibility in organic search.</p>
     <p>Indexability has been a core requirement since search engines began. In 2026 it remains essential because even perfectly optimized pages are invisible if they carry a noindex tag or lack a canonical signal. Google may also choose not to index thin, duplicate, or low-value pages even without explicit blocks.</p>
@@ -1208,7 +1208,7 @@
   <li>A canonical link tag exists (<link rel="canonical" href="...">) and points to the preferred/preferred URL version: Verifies self-referencing or correct consolidation.</li>
   <li>No other obvious blocking directives: Notes that client-side analysis cannot fully detect server-side x-robots-tag headers or robots.txt disallows, but flags potential issues in visible HTML.</li>
 </ul>
-<p class="mt-4">Scoring starts at 100. The heaviest penalty applies to a present noindex directive (explicitly removes page from search). Deductions trigger for missing canonical tag (risks duplicate content confusion and split authority). Smaller penalties apply to ambiguous or incomplete signals that could affect crawlability.</p>
+<p class="mt-4">Scoring starts at 0-100. The heaviest penalty applies to a present noindex directive (explicitly removes page from search). Deductions trigger for missing canonical tag (risks duplicate content confusion and split authority). Smaller penalties apply to ambiguous or incomplete signals that could affect crawlability.</p>
 
 <!-- Why – split into two cards like other posts -->
 <div id="indexability-why" class="grid md:grid-cols-2 gap-6 mt-10">
