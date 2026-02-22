@@ -185,6 +185,65 @@
   ]
 }
 </script>
+
+
+  <!-- FAQPage JSON-LD Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What exactly does the Keyword VS Tool compare?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It compares your target page against any competitor page for a specific keyword/phrase across 6 core on-page signals: Meta Title & Description presence, H1 heading match, Content depth & keyword density, Image alt text containing the phrase, Anchor text usage in links, URL keyword relevance + schema markup detection. You get instant visual scores, gap analysis, priority fixes, and projected uplift - all client-side and private."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How accurate is the content density calculation?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Very focused on real main content: removes nav, header, footer, sidebars, scripts, styles, cookie banners. Counts exact + cleaned (stop-word removed) matches of your phrase. Calculates density as (matches ÷ total clean words) × 100. Scores best at 1–2%, with partial credit 0.5–1% and tapering penalty >2–3%. Mirrors current Google Helpful Content guidelines."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does the tool work on mobile pages or just desktop?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Fully mobile-first. Fetches the live rendered page, so it sees exactly what Googlebot and mobile users see - including responsive content, mobile-specific headings, alts, etc. The interface is responsive, PWA-ready, and works great on phones/tablets."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why only these 6 modules - aren’t there more on-page factors?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "These 6 cover ~80% of controllable on-page relevance signals that consistently correlate with rankings (based on 2025–2026 studies from Google docs, Ahrefs, Semrush). Other factors (speed, mobile usability, HTTPS) are important but either technical or harder to compare client-side. Keyword VS focuses on what you can fix today to close competitive gaps for a target phrase."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long until I see ranking improvements after fixing these?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Typical timeline (real-world 2025–2026 data): Meta title/desc + H1 fixes → 1–4 weeks. Content expansion + density tweaks → 4–12 weeks. Image alts + internal anchors → 2–8 weeks. URL/schema improvements → 2–6 weeks (especially rich results). Faster with moderate competition and good domain authority."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use this for local SEO or e-commerce product pages?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes - very effectively. For local: compare vs top-ranking local competitors using geo-specific phrases. For e-commerce: test product pages vs category leaders using exact product keywords. Schema detection is especially valuable for Product, LocalBusiness, FAQPage rich results."
+        }
+      }
+    ]
+  }
+  </script>
  
   <meta name="color-scheme" content="dark light">
   <link rel="icon" href="/favicon.ico" />
@@ -337,7 +396,7 @@
   <article class="max-w-4xl mx-auto px-2">
     <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl p-2 md:p-4 prose prose-lg dark:prose-invert max-w-none border border-white/10 dark:border-white/5">
       
-      <!-- REPLACE: Featured Image -->
+      <!-- Featured Image -->
 <picture class="mb-12 block">
   <source 
     media="(max-width: 640px)" 
@@ -453,6 +512,132 @@
   </div>
 </nav>
 
+    <!-- CTA Box -->
+    <div class="mt-12 p-2 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-center">
+      <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
+        Test your keyword competition score.
+      </p>
+      <p class="mb-4">
+        Run an instant analysis with Traffic Torch. 
+      </p>
+      <a href="https://traffictorch.net/keyword-vs-tool/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition text-lg shadow-lg">
+         Audit SEO Keywords score vs competitor →
+      </a>
+    </div>
+    
+      <!-- Top Share Buttons -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+    <script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+    
+    <section id="faq" class="scroll-mt-20 my-20">
+  <h2 class="text-4xl md:text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Frequently Asked Questions
+  </h2>
+
+  <div class="max-w-4xl mx-auto space-y-10">
+    <!-- FAQ Item 1 -->
+    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+        What exactly does the Keyword VS Tool compare?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>It compares your target page against any competitor page for a specific keyword/phrase across 6 core on-page signals:</p>
+        <ul class="list-disc pl-6 mt-4 space-y-2">
+          <li>Meta Title & Description presence.</li>
+          <li>H1 heading match.</li>
+          <li>Content depth (word count) & keyword density.</li>
+          <li>Image alt text containing the phrase.</li>
+          <li>Anchor text usage in links.</li>
+          <li>URL keyword relevance + schema markup detection.</li>
+        </ul>
+        <p class="mt-4">You get instant visual scores, gap analysis, priority fixes, and projected uplift.</p>
+      </div>
+    </details>
+
+    <!-- FAQ Item 2 -->
+    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+        How accurate is the content density calculation?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>Very focused on real main content:</p>
+        <ul class="list-disc pl-6 mt-4 space-y-2">
+          <li>Removes nav, header, footer, sidebars, scripts, styles, cookie banners.</li>
+          <li>Counts exact + cleaned (stop-word removed) matches of your phrase.</li>
+          <li>Calculates density as (matches ÷ total clean words) × 100.</li>
+          <li>Scores best at 1–2%, with partial credit 0.5–1% and tapering penalty >2–3%.</li>
+        </ul>
+        <p class="mt-4">This mirrors current Google Helpful Content guidelines. Depth + natural usage over mechanical stuffing.</p>
+      </div>
+    </details>
+
+    <!-- FAQ Item 3 -->
+    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+        Does the tool work on mobile pages or just desktop?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>Yes - fully mobile-first.</p>
+        <p class="mt-4">The analysis fetches the live rendered page (via proxy), so it sees exactly what Googlebot and mobile users see. This includes responsive content, mobile-specific headings, alts, etc. The interface itself is responsive, PWA-ready, and works great on phones/tablets.</p>
+      </div>
+    </details>
+
+    <!-- FAQ Item 4 -->
+    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+        Why only these 6 modules, aren’t there more on-page factors?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>These 6 cover ~80% of controllable on-page relevance signals that consistently correlate with rankings (based on 2025–2026 studies from Google docs, Ahrefs, Semrush, Search Engine Journal).</p>
+        <p class="mt-4">Other factors (page speed, mobile usability, HTTPS, internal link structure depth) are important but either technical (not keyword-specific) or harder to compare client-side. Keyword VS focuses on what you can fix today to close competitive gaps for a target phrase.</p>
+      </div>
+    </details>
+
+    <!-- FAQ Item 5 -->
+    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+        How long until I see ranking improvements after fixing these?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>Typical timeline (real-world 2025–2026 data):</p>
+        <ul class="list-disc pl-6 mt-4 space-y-2">
+          <li>Meta title/desc + H1 fixes → 1–4 weeks.</li>
+          <li>Content expansion + density tweaks → 4–12 weeks.</li>
+          <li>Image alts + internal anchors → 2–8 weeks.</li>
+          <li>URL/schema improvements → 2–6 weeks (especially rich results).</li>
+        </ul>
+        <p class="mt-4">Faster if competition is moderate and your domain has decent authority. Combine with fresh content and crawl requests in Google Search Console for quickest results.</p>
+      </div>
+    </details>
+
+    <!-- FAQ Item 6 -->
+    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+        Can I use this for local SEO or e-commerce product pages?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p>Yes - very effectively.</p>
+        <p class="mt-4">For local: compare vs top-ranking local competitors using geo-specific phrases (“best coffee Sydney”). For e-commerce: test product pages vs category leaders using exact product keywords. Schema detection is especially valuable for Product, LocalBusiness, FAQPage rich results.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
 <section id="meta-title-desc" class="scroll-mt-20">
   <h2 class="text-3xl md:text-4xl font-black mt-16 mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
     Meta Title & Description
@@ -529,8 +714,14 @@
       <li><strong>AI Overview eligibility</strong>: Strong titles help Google decide whether to cite your page.</li>
       <li><strong>User trust & expectation</strong>: Accurate, keyword-rich titles reduce bounce rate.</li>
     </ul>
+    
+    <p class="text-gray-700 dark:text-gray-300 text-center md:text-left mb-8">
+  Google recommends keeping titles under 60 characters and descriptions under 155–160 characters for best display — see the latest guidance on 
+  <a href="https://developers.google.com/search/docs/appearance/title-link" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">title links</a> and 
+  <a href="https://developers.google.com/search/docs/appearance/snippet" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">snippets</a>.
+</p>
 
-    <div class="bg-orange-50 dark:bg-orange-950/30 border-l-4 border-orange-500 p-6 rounded-xl my-10">
+    <div class="border-l-4 border-orange-500 p-6 rounded-xl my-10">
       <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-4">
         Quick Wins Checklist
       </p>
@@ -543,13 +734,6 @@
     </div>
 
     <div class="mt-10 text-center md:text-center">
-      <a href="https://traffictorch.net/keyword-vs-tool/" 
-         class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-pink-500/40 transform hover:scale-105 transition-all duration-300">
-        Check Meta Title & Description - SEO Competition Tool →
-      </a>
-      <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-        See your score vs competitor in <60 seconds.
-      </p>
       <p class="mt-8 text-center">
       <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
         ↑ Return to TOC
@@ -634,7 +818,7 @@
       <li><strong>Accessibility win</strong>: Screen readers announce H1 first → huge for inclusive design.</li>
     </ul>
 
-    <div class="bg-orange-50 dark:bg-orange-950/30 border-l-4 border-orange-500 p-6 rounded-xl my-10">
+    <div class="border-l-4 border-orange-500 p-6 rounded-xl my-10">
       <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-4">
         Quick Optimization Checklist
       </p>
@@ -648,13 +832,6 @@
     </div>
 
     <div class="mt-10 text-center md:text-center">
-      <a href="https://traffictorch.net/keyword-vs-tool/" 
-         class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-pink-500/40 transform hover:scale-105 transition-all duration-300">
-        Scan for H1 Keywords → Free SEO Competition Tool
-      </a>
-      <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-        See if your H1 beats the competitor.
-      </p>
       <p class="mt-8 text-center">
       <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
         ↑ Return to TOC
@@ -743,8 +920,14 @@
       <li><strong>Reduces pogo-sticking</strong>: Users stay when content fully answers their query.</li>
       <li><strong>Mobile UX</strong>: Well-structured long content with subheadings performs better on small screens.</li>
     </ul>
+    
+    <p class="text-gray-700 dark:text-gray-300 text-center md:text-left mb-8">
+  Use a single H1 per page and structure subheadings logically — Google’s official advice on 
+  <a href="https://developers.google.com/search/docs/appearance/heading-tags" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">heading tags</a> and 
+  <a href="https://web.dev/articles/heading-structure" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">web.dev heading best practices</a> still applies in 2026.
+</p>
 
-    <div class="bg-orange-50 dark:bg-orange-950/30 border-l-4 border-orange-500 p-6 rounded-xl my-10">
+    <div class="border-l-4 border-orange-500 p-6 rounded-xl my-10">
       <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-4">
         Quick Wins Checklist for 2026
       </p>
@@ -758,13 +941,6 @@
     </div>
 
     <div class="mt-10 text-center md:text-center">
-      <a href="https://traffictorch.net/keyword-vs-tool/" 
-         class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-pink-500/40 transform hover:scale-105 transition-all duration-300">
-        Analyze WebPages for Content Depth & Density → 
-      </a>
-      <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-        Get exact word count, phrase matches, density % and gap analysis vs competitor.
-      </p>
       <p class="mt-8 text-center">
       <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
         ↑ Return to TOC
@@ -773,6 +949,36 @@
     </div>
   </div>
 </section>
+
+  <!-- Full Competition Ladder -->
+  <figure class="overflow-hidden p-6 rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
+    <img
+      src="/keyword-vs-tool/images/keyword-competition-infographic-800w.webp"
+      alt="Keyword Placement Channels Infographic – Image Alts, Anchor Text, URL & Schema Optimization for Competition"
+      class="w-full h-auto object-cover"
+      width="800"
+      height="1200"
+      loading="lazy"
+      decoding="async"
+      sizes="(max-width: 767px) 100vw, 50vw">
+    <figcaption class="p-5 text-center text-sm text-gray-800 dark:text-gray-200">
+   The Top 3 Levers Ladder: Meta, H1 and Content.    
+   </figcaption>
+  </figure>
+
+
+    <!-- CTA Box -->
+    <div class="mt-12 p-2 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-center">
+      <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
+        Check your SEO keywords vs competition.
+      </p>
+      <p class="mb-4">
+        Run an instant analysis on Traffic Torch. 
+      </p>
+      <a href="https://traffictorch.net/keyword-vs-tool/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition text-lg shadow-lg">
+         Free SEO Keywords competition auditor →
+      </a>
+    </div>
 
 <section id="image-alts" class="scroll-mt-20">
   <h2 class="text-3xl md:text-4xl font-black mt-16 mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
@@ -847,8 +1053,14 @@
       <li><strong>Fallback UX</strong>: Displays when images fail to load (slow connections, ad blockers).</li>
       <li><strong>Relevance reinforcement</strong>: Adds keyword context without visible text stuffing.</li>
     </ul>
+    
+    <p class="text-gray-700 dark:text-gray-300 text-center md:text-left mb-8">
+  Write descriptive alt text for meaningful images and use empty alt="" for decorative ones — follow Google’s 
+  <a href="https://developers.google.com/search/docs/appearance/google-images" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">Google Images SEO best practices</a> and the 
+  <a href="https://www.w3.org/WAI/tutorials/images/" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">W3C alt text tutorial</a>.
+</p>
 
-    <div class="bg-orange-50 dark:bg-orange-950/30 border-l-4 border-orange-500 p-6 rounded-xl my-10">
+    <div class="border-l-4 border-orange-500 p-6 rounded-xl my-10">
       <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-4">
         Quick Wins Checklist for 2026
       </p>
@@ -862,13 +1074,6 @@
     </div>
 
     <div class="mt-10 text-center md:text-center">
-      <a href="https://traffictorch.net/keyword-vs-tool/" 
-         class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-pink-500/40 transform hover:scale-105 transition-all duration-300">
-        Check Image Alt Text - Free Keyword Tool →
-      </a>
-      <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-        See how many images use your target phrase - compare vs competitor!
-      </p>
       <p class="mt-8 text-center">
       <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
         ↑ Return to TOC
@@ -951,8 +1156,13 @@
       <li><strong>Crawl budget optimization</strong>: Clear anchors help bots discover and prioritize important content.</li>
       <li><strong>AI site understanding</strong>: Supports Gemini / SGE in mapping site structure for better answers.</li>
     </ul>
+    
+    <p class="text-gray-700 dark:text-gray-300 text-center md:text-left mb-8">
+  Use descriptive, natural anchor text for internal links to help both users and crawlers — see Google’s latest recommendations on 
+  <a href="https://developers.google.com/search/docs/crawling-indexing/links-crawlable" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">crawlable links</a>.
+</p>
 
-    <div class="bg-orange-50 dark:bg-orange-950/30 border-l-4 border-orange-500 p-6 rounded-xl my-10">
+    <div class="border-l-4 border-orange-500 p-6 rounded-xl my-10">
       <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-4">
         Quick Wins Checklist for 2026
       </p>
@@ -966,13 +1176,6 @@
     </div>
 
     <div class="mt-10 text-center md:text-center">
-      <a href="https://traffictorch.net/keyword-vs-tool/" 
-         class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-pink-500/40 transform hover:scale-105 transition-all duration-300">
-        Check for Anchor Text Usage - SEO Tool →
-      </a>
-      <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-        See how many internal links use your target phrase!
-      </p>
       <p class="mt-8 text-center">
       <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
         ↑ Return to TOC
@@ -1065,8 +1268,14 @@
       <li><strong>AI & voice search</strong>: Structured data feeds entity graphs used in Gemini / SGE answers.</li>
       <li><strong>User experience</strong>: Clean URLs are easier to share, remember, and trust on mobile.</li>
     </ul>
+    
+    <p class="text-gray-700 dark:text-gray-300 text-center md:text-left mb-8">
+  Keep URLs short, readable and keyword-relevant where possible, and add JSON-LD schema for rich results — check Google’s 
+  <a href="https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">structured data introduction</a> and the official 
+  <a href="https://schema.org/" target="_blank" class="text-orange-600 dark:text-orange-400 hover:underline">Schema.org documentation</a>.
+</p>
 
-    <div class="bg-orange-50 dark:bg-orange-950/30 border-l-4 border-orange-500 p-6 rounded-xl my-10">
+    <div class="border-l-4 border-orange-500 p-6 rounded-xl my-10">
       <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-4">
         Quick Wins Checklist for 2026
       </p>
@@ -1080,13 +1289,6 @@
     </div>
 
     <div class="mt-10 text-center md:text-center">
-      <a href="https://traffictorch.net/keyword-vs-tool/" 
-         class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-pink-500/40 transform hover:scale-105 transition-all duration-300">
-        Check URL & Schema Signals - Keyword Tool →
-      </a>
-      <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-        See if your URL contains the phrase and if schema markup is detected.
-      </p>
       <p class="mt-8 text-center">
       <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
         ↑ Return to TOC
@@ -1168,7 +1370,7 @@
          class="block p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-shadow border border-gray-200 dark:border-gray-700">
         <span class="text-xl font-bold text-orange-600 dark:text-orange-400">Re-read This Guide</span>
       </a>
-      <a href="/news/" 
+      <a href="/ai-ux-seo-help-guides/" 
          class="block p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-shadow border border-gray-200 dark:border-gray-700">
         <span class="text-xl font-bold text-orange-600 dark:text-orange-400">More SEO & UX Guides</span>
       </a>
@@ -1181,184 +1383,34 @@
   </div>
 </section>
 
-<section id="faq" class="scroll-mt-20 my-20">
-  <h2 class="text-4xl md:text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-    Frequently Asked Questions
-  </h2>
+  <!-- Keyword Placement Channels (Image Alts, Anchor Text, URL & Schema focus) -->
+  <figure class="overflow-hidden p-6 rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
+    <img
+      src="/keyword-vs-tool/images/keyword-placement-infographic-800w.webp"
+      alt="Keyword Competition Ladder Infographic – Climb past competitors with 6 on-page levers"
+      class="w-full h-auto object-cover"
+      width="800"
+      height="1200"
+      loading="lazy"
+      decoding="async"
+      sizes="(max-width: 767px) 100vw, 50vw">
+    <figcaption class="p-5 text-center text-sm text-gray-800 dark:text-gray-200">
+      The 3 Levers Ladder: Image Alts, Anchors, URL/Schema.
+    </figcaption>
+  </figure>
 
-  <div class="max-w-4xl mx-auto space-y-10">
-    <!-- FAQ Item 1 -->
-    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
-        What exactly does the Keyword VS Tool compare?
-        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
-      </summary>
-      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200 leading-relaxed">
-        <p>It compares your target page against any competitor page for a specific keyword/phrase across 6 core on-page signals:</p>
-        <ul class="list-disc pl-6 mt-4 space-y-2">
-          <li>Meta Title & Description presence.</li>
-          <li>H1 heading match.</li>
-          <li>Content depth (word count) & keyword density.</li>
-          <li>Image alt text containing the phrase.</li>
-          <li>Anchor text usage in links.</li>
-          <li>URL keyword relevance + schema markup detection.</li>
-        </ul>
-        <p class="mt-4">You get instant visual scores, gap analysis, priority fixes, and projected uplift.</p>
-      </div>
-    </details>
-
-    <!-- FAQ Item 2 -->
-    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
-        How accurate is the content density calculation?
-        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
-      </summary>
-      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200 leading-relaxed">
-        <p>Very focused on real main content:</p>
-        <ul class="list-disc pl-6 mt-4 space-y-2">
-          <li>Removes nav, header, footer, sidebars, scripts, styles, cookie banners.</li>
-          <li>Counts exact + cleaned (stop-word removed) matches of your phrase.</li>
-          <li>Calculates density as (matches ÷ total clean words) × 100.</li>
-          <li>Scores best at 1–2%, with partial credit 0.5–1% and tapering penalty >2–3%.</li>
-        </ul>
-        <p class="mt-4">This mirrors current Google Helpful Content guidelines. Depth + natural usage over mechanical stuffing.</p>
-      </div>
-    </details>
-
-    <!-- FAQ Item 3 -->
-    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
-        Does the tool work on mobile pages or just desktop?
-        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
-      </summary>
-      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200 leading-relaxed">
-        <p>Yes - fully mobile-first.</p>
-        <p class="mt-4">The analysis fetches the live rendered page (via proxy), so it sees exactly what Googlebot and mobile users see. This includes responsive content, mobile-specific headings, alts, etc. The interface itself is responsive, PWA-ready, and works great on phones/tablets.</p>
-      </div>
-    </details>
-
-    <!-- FAQ Item 4 -->
-    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
-        Why only these 6 modules, aren’t there more on-page factors?
-        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
-      </summary>
-      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200 leading-relaxed">
-        <p>These 6 cover ~80% of controllable on-page relevance signals that consistently correlate with rankings (based on 2025–2026 studies from Google docs, Ahrefs, Semrush, Search Engine Journal).</p>
-        <p class="mt-4">Other factors (page speed, mobile usability, HTTPS, internal link structure depth) are important but either technical (not keyword-specific) or harder to compare client-side. Keyword VS focuses on what you can fix today to close competitive gaps for a target phrase.</p>
-      </div>
-    </details>
-
-    <!-- FAQ Item 5 -->
-    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
-        Is the tool really free - no catch?
-        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
-      </summary>
-      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200 leading-relaxed">
-        <p>100% free. No sign-up, no email, no credit card needed.</p>
-        <p class="mt-4">Built on GitHub + Cloudflare Pages, open-source friendly, privacy-first, runs entirely in your browser (client-side JS + proxy fetch for rendering accuracy).</p>
-      </div>
-    </details>
-
-    <!-- FAQ Item 6 -->
-    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
-        How long until I see ranking improvements after fixing these?
-        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
-      </summary>
-      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200 leading-relaxed">
-        <p>Typical timeline (real-world 2025–2026 data):</p>
-        <ul class="list-disc pl-6 mt-4 space-y-2">
-          <li>Meta title/desc + H1 fixes → 1–4 weeks.</li>
-          <li>Content expansion + density tweaks → 4–12 weeks.</li>
-          <li>Image alts + internal anchors → 2–8 weeks.</li>
-          <li>URL/schema improvements → 2–6 weeks (especially rich results).</li>
-        </ul>
-        <p class="mt-4">Faster if competition is moderate and your domain has decent authority. Combine with fresh content and crawl requests in Google Search Console for quickest results.</p>
-      </div>
-    </details>
-
-    <!-- FAQ Item 7 -->
-    <details class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <summary class="flex justify-between items-center cursor-pointer p-6 text-xl font-bold text-gray-900 dark:text-gray-100 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
-        Can I use this for local SEO or e-commerce product pages?
-        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
-      </summary>
-      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200 leading-relaxed">
-        <p>Yes - very effectively.</p>
-        <p class="mt-4">For local: compare vs top-ranking local competitors using geo-specific phrases (“best coffee Sydney”). For e-commerce: test product pages vs category leaders using exact product keywords. Schema detection is especially valuable for Product, LocalBusiness, FAQPage rich results.</p>
-      </div>
-    </details>
-  </div>
-
-  <!-- FAQPage JSON-LD Schema -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What exactly does the Keyword VS Tool compare?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "It compares your target page against any competitor page for a specific keyword/phrase across 6 core on-page signals: Meta Title & Description presence, H1 heading match, Content depth & keyword density, Image alt text containing the phrase, Anchor text usage in links, URL keyword relevance + schema markup detection. You get instant visual scores, gap analysis, priority fixes, and projected uplift - all client-side and private."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How accurate is the content density calculation?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Very focused on real main content: removes nav, header, footer, sidebars, scripts, styles, cookie banners. Counts exact + cleaned (stop-word removed) matches of your phrase. Calculates density as (matches ÷ total clean words) × 100. Scores best at 1–2%, with partial credit 0.5–1% and tapering penalty >2–3%. Mirrors current Google Helpful Content guidelines."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does the tool work on mobile pages or just desktop?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Fully mobile-first. Fetches the live rendered page, so it sees exactly what Googlebot and mobile users see - including responsive content, mobile-specific headings, alts, etc. The interface is responsive, PWA-ready, and works great on phones/tablets."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Why only these 6 modules - aren’t there more on-page factors?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "These 6 cover ~80% of controllable on-page relevance signals that consistently correlate with rankings (based on 2025–2026 studies from Google docs, Ahrefs, Semrush). Other factors (speed, mobile usability, HTTPS) are important but either technical or harder to compare client-side. Keyword VS focuses on what you can fix today to close competitive gaps for a target phrase."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is the tool really free - no catch?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "100% free. No sign-up, no email, no credit card. Built on GitHub + Cloudflare Pages - open-source friendly, privacy-first, runs entirely in your browser (client-side JS + proxy fetch)."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How long until I see ranking improvements after fixing these?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Typical timeline (real-world 2025–2026 data): Meta title/desc + H1 fixes → 1–4 weeks. Content expansion + density tweaks → 4–12 weeks. Image alts + internal anchors → 2–8 weeks. URL/schema improvements → 2–6 weeks (especially rich results). Faster with moderate competition and good domain authority."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I use this for local SEO or e-commerce product pages?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes - very effectively. For local: compare vs top-ranking local competitors using geo-specific phrases. For e-commerce: test product pages vs category leaders using exact product keywords. Schema detection is especially valuable for Product, LocalBusiness, FAQPage rich results."
-        }
-      }
-    ]
-  }
-  </script>
-
-</section>
+    <!-- CTA Box -->
+    <div class="mt-12 p-2 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-center">
+      <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
+        Find your SEO keywords vs your competition.
+      </p>
+      <p class="mb-4">
+        Run an instant SEO audit on Traffic Torch. 
+      </p>
+      <a href="https://traffictorch.net/keyword-vs-tool/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition text-lg shadow-lg">
+         Online SEO Keywords competition Tool →
+      </a>
+    </div>
 
   <!-- Top Share Buttons -->
   <div style="display: flex; justify-content: center; margin: 30px 0;">

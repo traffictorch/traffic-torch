@@ -172,6 +172,48 @@
   ]
 }
 </script>
+
+  <!-- FAQPage JSON-LD Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does Traffic Torch only work for blog posts or can it analyze product pages too?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It works on any public URL — blog posts, service pages, product descriptions, category pages, homepages. Schema detection adapts to context (e.g. Product schema on e-commerce, Article on blogs)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long until I see ranking or traffic improvements after fixing these signals?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Typically 1–4 weeks after Google re-crawls and indexes changes (faster for frequently crawled pages). Use Search Console to request indexing. Biggest jumps often come from E-E-A-T + schema fixes."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is schema markup still important even if I already rank well?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes — it’s one of the few ways to stand out in crowded SERPs with rich results, AI Overviews, and voice answers. Even top-ranking pages gain 20–50%+ CTR from proper schema."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I fix everything just by adding more words and first-person language?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No — depth without E-E-A-T or trust signals can still underperform. The tool shows balanced gaps so you prioritize the highest-impact fixes first (often trust + schema + author byline)."
+        }
+      }
+    ]
+  }
+  </script>
  
   <meta name="color-scheme" content="dark light">
   <link rel="icon" href="/favicon.ico" />
@@ -494,6 +536,76 @@
   </div>
 </nav>
 
+    <!-- CTA Box -->
+    <div class="mt-12 p-2 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-center">
+      <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
+        Test your SEO Intent and EEAT score in seconds.
+      </p>
+      <p class="mb-4">
+        Run an instant analysis with Traffic Torch. No signup. No tracking. Fully client-side analysis.
+      </p>
+      <a href="https://traffictorch.net/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition text-lg shadow-lg">
+        Run Free SEO Intent Audit →
+      </a>
+    </div>
+    
+          <!-- Top Share Buttons -->
+  <div style="display: flex; justify-content: center; margin: 30px 0;">
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+    <script defer src="https://static.addtoany.com/menu/page.js"></script>
+  </div>
+    
+    <!-- FAQ Section with FAQPage Schema -->
+<section id="faq" class="mb-24 scroll-mt-24">
+  <h2 class="text-3xl md:text-4xl font-black mb-10 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent text-center">
+    Frequently Asked Questions
+  </h2>
+
+  <div class="space-y-6 max-w-4xl mx-auto">
+    <details class="bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <summary class="p-6 font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-950/20 transition">
+        Does Traffic Torch only work for blog posts or can it analyze product pages too?
+      </summary>
+      <div class="px-6 pb-6 prose prose-sm dark:prose-invert">
+        <p>It works on any public URL — blog posts, service pages, product descriptions, category pages, homepages. Schema detection adapts to context (e.g. Product schema on e-commerce, Article on blogs).</p>
+      </div>
+    </details>
+
+    <details class="bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <summary class="p-6 font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-950/20 transition">
+        How long until I see ranking or traffic improvements after fixing these signals?
+      </summary>
+      <div class="px-6 pb-6 prose prose-sm dark:prose-invert">
+        <p>Typically 1–4 weeks after Google re-crawls and indexes changes (faster for frequently crawled pages). Use Search Console to request indexing. Biggest jumps often come from E-E-A-T + schema fixes.</p>
+      </div>
+    </details>
+
+    <details class="bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <summary class="p-6 font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-950/20 transition">
+        Is schema markup still important even if I already rank well?
+      </summary>
+      <div class="px-6 pb-6 prose prose-sm dark:prose-invert">
+        <p>Yes — it’s one of the few ways to stand out in crowded SERPs with rich results, AI Overviews, and voice answers. Even top-ranking pages gain 20–50%+ CTR from proper schema.</p>
+      </div>
+    </details>
+
+    <details class="bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <summary class="p-6 font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-950/20 transition">
+        Can I fix everything just by adding more words and first-person language?
+      </summary>
+      <div class="px-6 pb-6 prose prose-sm dark:prose-invert">
+        <p>No — depth without E-E-A-T or trust signals can still underperform. The tool shows balanced gaps so you prioritize the highest-impact fixes first (often trust + schema + author byline).</p>
+      </div>
+    </details>
+  </div>
+
 <!-- Module 1: Experience -->
 <section id="experience" class="mb-20 scroll-mt-24">
   <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent" id="experience-heading">
@@ -542,9 +654,13 @@
     <p class="mt-6 font-medium">
       Bottom line: Experience turns generic info into trustworthy guidance, the difference between page 1 and page 3 in 2026.
     </p>
+    
+    <p class="mb-4 text-sm text-gray-700 dark:text-gray-300">
+  Google emphasizes first-hand, real-world experience in content — see the updated <a href="https://developers.google.com/search/docs/appearance/google-e-e-a-t" class="text-orange-600 dark:text-orange-400 hover:underline" target="_blank" rel="noopener">E-E-A-T section in Search Central</a>.
+</p>
 
-    <!-- Quick Fixes Box + CTA -->
-    <div class="mt-10 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800">
+    <!-- Quick Fixes Box + -->
+    <div class="mt-10 p-6 rounded-2xl border border-orange-200 dark:border-orange-800">
       <h4 class="text-xl font-bold mb-4 text-orange-700 dark:text-orange-300">
         Quick High-Impact Fixes for Experience
       </h4>
@@ -556,12 +672,6 @@
         <li>Re-run Traffic Torch after changes to see the Experience score and projected uplift improve.</li>
       </ul>
 
-      <div class="mt-8 text-center">
-        <a href="https://traffictorch.net/seo-intent-tool/" 
-           class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:opacity-90 transition">
-          Check Your Page’s Experience Score →
-        </a>
-      </div>
     </div>
 
     <p class="text-center mt-12 text-sm">
@@ -621,9 +731,13 @@
     <p class="mt-6 font-medium">
       In short: Expertise builds trust fast, turning visitors into readers and readers into loyal audiences.
     </p>
+    
+    <p class="mb-4 text-sm text-gray-700 dark:text-gray-300">
+  Demonstrating true expertise is a core quality signal — read more in Google’s <a href="https://developers.google.com/search/docs/appearance/google-e-e-a-t" class="text-orange-600 dark:text-orange-400 hover:underline" target="_blank" rel="noopener">Search Quality Rater Guidelines overview</a>.
+</p>
 
-    <!-- Quick Fixes Box + CTA -->
-    <div class="mt-10 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800">
+    <!-- Quick Fixes Box + -->
+    <div class="mt-10 p-6 rounded-2xl border border-orange-200 dark:border-orange-800">
       <h4 class="text-xl font-bold mb-4 text-orange-700 dark:text-orange-300">
         Quick High-Impact Fixes for Expertise
       </h4>
@@ -635,12 +749,6 @@
         <li>Re-scan with Traffic Torch to watch the Expertise score rise and see estimated ranking/traffic uplift.</li>
       </ul>
 
-      <div class="mt-8 text-center">
-        <a href="https://traffictorch.net/seo-intent-tool/" 
-           class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:opacity-90 transition">
-          Audit Your Page’s Expertise Signals →
-        </a>
-      </div>
     </div>
 
     <p class="text-center mt-12 text-sm">
@@ -700,9 +808,13 @@
     <p class="mt-6 font-medium">
       Authoritativeness is what separates “good enough” content from the pages that dominate year after year.
     </p>
+    
+    <p class="mb-4 text-sm text-gray-700 dark:text-gray-300">
+  Topical authority and recognition as a leading source are heavily weighted — explained in Google’s <a href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content" class="text-orange-600 dark:text-orange-400 hover:underline" target="_blank" rel="noopener">Creating Helpful, Reliable, People-First Content guide</a>.
+</p>
 
-    <!-- Quick Fixes Box + CTA -->
-    <div class="mt-10 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800">
+    <!-- Quick Fixes Box -->
+    <div class="mt-10 p-6 rounded-2xl border border-orange-200 dark:border-orange-800">
       <h4 class="text-xl font-bold mb-4 text-orange-700 dark:text-orange-300">
         Quick High-Impact Fixes for Authoritativeness
       </h4>
@@ -714,12 +826,6 @@
         <li>Re-analyze with Traffic Torch to track Authoritativeness score improvement and projected ranking lift.</li>
       </ul>
 
-      <div class="mt-8 text-center">
-        <a href="https://traffictorch.net/seo-intent-tool/" 
-           class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:opacity-90 transition">
-          Test Your Page’s Authoritativeness Score →
-        </a>
-      </div>
     </div>
 
     <p class="text-center mt-12 text-sm">
@@ -729,6 +835,32 @@
     </p>
   </div>
 </section>
+
+  <!-- Cyber-Futuristic E-E-A-T variant -->
+  <figure class="overflow-hidden p-6 rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10 transition-all hover:shadow-orange-500/30">
+    <img
+      src="/seo-intent-tool/images/seo-eeat-infographic-800w.webp"
+      alt="SEO E-E-A-T Infographic – Neon Cyber Grid showing Experience, Expertise, Authoritativeness, Trustworthiness pillars"
+      class="w-full h-auto object-cover"
+      width="800"
+      height="1200"
+      loading="lazy"
+      decoding="async"
+      sizes="(max-width: 767px) 100vw, 50vw">
+    <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
+      E-E-A-T at a Glance: The 4 pillars powering modern SEO rankings.
+    </figcaption>
+  </figure>
+
+    <!-- CTA Box -->
+    <div class="mt-12 p-2 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-center">
+      <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
+        Check your SEO Intent and EEAT score.
+      </p>
+      <a href="https://traffictorch.net/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition text-lg shadow-lg">
+        SEO Intent Audit Tool →
+      </a>
+    </div>
 
 <!-- Module 4: Trustworthiness -->
 <section id="trustworthiness" class="mb-20 scroll-mt-24">
@@ -779,9 +911,13 @@
     <p class="mt-6 font-medium">
       Without clear trust elements, even excellent content can underperform, users (and Google) simply move on to more transparent sites.
     </p>
+    
+    <p class="mb-4 text-sm text-gray-700 dark:text-gray-300">
+  Transparency, security (HTTPS), and clear contact info are foundational trust signals — detailed in Google’s <a href="https://developers.google.com/search/docs/appearance/site-security" class="text-orange-600 dark:text-orange-400 hover:underline" target="_blank" rel="noopener">Site Security & HTTPS guidelines</a> and <a href="https://developers.google.com/search/docs/appearance/google-e-e-a-t" class="text-orange-600 dark:text-orange-400 hover:underline" target="_blank" rel="noopener">E-E-A-T documentation</a>.
+</p>
 
-    <!-- Quick Fixes Box + CTA -->
-    <div class="mt-10 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800">
+    <!-- Quick Fixes Box -->
+    <div class="mt-10 p-6 rounded-2xl border border-orange-200 dark:border-orange-800">
       <h4 class="text-xl font-bold mb-4 text-orange-700 dark:text-orange-300">
         Quick High-Impact Fixes for Trustworthiness
       </h4>
@@ -793,12 +929,6 @@
         <li>Re-scan with Traffic Torch after updates to see the Trust score increase and projected traffic/engagement gains.</li>
       </ul>
 
-      <div class="mt-8 text-center">
-        <a href="https://traffictorch.net/seo-intent-tool/" 
-           class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:opacity-90 transition">
-          Check Your Page’s Trust Signals →
-        </a>
-      </div>
     </div>
 
     <p class="text-center mt-12 text-sm">
@@ -858,9 +988,13 @@
     <p class="mt-6 font-medium">
       Depth isn’t about word count alone: It’s about delivering complete value so users don’t need to search again.
     </p>
+    
+    <p class="mb-4 text-sm text-gray-700 dark:text-gray-300">
+  Comprehensive, in-depth content that fully satisfies intent ranks highest — see Google’s official <a href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content" class="text-orange-600 dark:text-orange-400 hover:underline" target="_blank" rel="noopener">helpful content guidance</a>.
+</p>
 
-    <!-- Quick Fixes Box + CTA -->
-    <div class="mt-10 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800">
+    <!-- Quick Fixes Box -->
+    <div class="mt-10 p-6 rounded-2xl border border-orange-200 dark:border-orange-800">
       <h4 class="text-xl font-bold mb-4 text-orange-700 dark:text-orange-300">
         Quick High-Impact Fixes for Content Depth
       </h4>
@@ -872,12 +1006,6 @@
         <li>Re-run Traffic Torch to track the depth/readability improvement and see projected traffic uplift.</li>
       </ul>
 
-      <div class="mt-8 text-center">
-        <a href="https://traffictorch.net/seo-intent-tool/" 
-           class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:opacity-90 transition">
-          Analyze Your Content Depth Score →
-        </a>
-      </div>
     </div>
 
     <p class="text-center mt-12 text-sm">
@@ -940,9 +1068,13 @@
     <p class="mt-6 font-medium">
       Readable content keeps users happy, and happy users tell Google your page is worth ranking higher.
     </p>
+    
+    <p class="mb-4 text-sm text-gray-700 dark:text-gray-300">
+  Clear, scannable, and accessible text improves user experience and engagement — aligned with Google’s <a href="https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data" class="text-orange-600 dark:text-orange-400 hover:underline" target="_blank" rel="noopener">people-first content principles</a> and <a href="https://web.dev/learn/design/accessibility" class="text-orange-600 dark:text-orange-400 hover:underline" target="_blank" rel="noopener">web.dev accessibility best practices</a>.
+</p>
 
-    <!-- Quick Fixes Box + CTA -->
-    <div class="mt-10 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800">
+    <!-- Quick Fixes Box + -->
+    <div class="mt-10 p-6 rounded-2xl border border-orange-200 dark:border-orange-800">
       <h4 class="text-xl font-bold mb-4 text-orange-700 dark:text-orange-300">
         Quick High-Impact Fixes for Readability
       </h4>
@@ -954,12 +1086,6 @@
         <li>Re-analyze with Traffic Torch after edits — aim for 60+ Flesch score and watch UX signals improve.</li>
       </ul>
 
-      <div class="mt-8 text-center">
-        <a href="https://traffictorch.net/seo-intent-tool/" 
-           class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:opacity-90 transition">
-          Audit Your Page Readability Score →
-        </a>
-      </div>
     </div>
 
     <p class="text-center mt-12 text-sm">
@@ -1019,9 +1145,13 @@
     <p class="mt-6 font-medium">
       Schema turns plain blue links into eye-catching, interactive results. Stealing traffic from competitors who skip it.
     </p>
+    
+    <p class="mb-4 text-sm text-gray-700 dark:text-gray-300">
+  Structured data powers rich results and better understanding — official documentation is at <a href="https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data" class="text-orange-600 dark:text-orange-400 hover:underline" target="_blank" rel="noopener">Google’s Structured Data Intro</a> and <a href="https://schema.org/" class="text-orange-600 dark:text-orange-400 hover:underline" target="_blank" rel="noopener">schema.org</a>.
+</p>
 
-    <!-- Quick Fixes Box + CTA -->
-    <div class="mt-10 p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800">
+    <!-- Quick Fixes Box + -->
+    <div class="mt-10 p-6 rounded-2xl border border-orange-200 dark:border-orange-800">
       <h4 class="text-xl font-bold mb-4 text-orange-700 dark:text-orange-300">
         Quick High-Impact Fixes for Schema Markup
       </h4>
@@ -1033,12 +1163,6 @@
         <li>Re-scan with Traffic Torch to see schema grade jump to Excellent and projected CTR/rich result gains.</li>
       </ul>
 
-      <div class="mt-8 text-center">
-        <a href="https://traffictorch.net/seo-intent-tool/" 
-           class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:opacity-90 transition">
-          Test Schema & Rich Results →
-        </a>
-      </div>
     </div>
 
     <p class="text-center mt-12 text-sm">
@@ -1070,95 +1194,36 @@
     </p>
   </div>
 </section>
+  
+  <!-- Journey Style SEO Intent variant -->
+  <figure class="overflow-hidden p-6 rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10 transition-all hover:shadow-orange-500/30">
+    <img
+      src="/seo-intent-tool/images/seo-intent-infographic-800w.webp"
+      alt="SEO Intent Journey Infographic – Vertical flow from Content Depth → Readability → Schema Markup for better rankings and user satisfaction"
+      class="w-full h-auto object-cover"
+      width="800"
+      height="1200"
+      loading="lazy"
+      decoding="async"
+      sizes="(max-width: 767px) 100vw, 50vw">
+    <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
+      The SEO Intent Journey: Build depth, readability, and schema step-by-step for 2026 success.
+    </figcaption>
+  </figure>
 
-<!-- FAQ Section with FAQPage Schema -->
-<section id="faq" class="mb-24 scroll-mt-24">
-  <h2 class="text-3xl md:text-4xl font-black mb-10 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent text-center">
-    Frequently Asked Questions
-  </h2>
+    <!-- CTA Box -->
+    <div class="mt-12 p-2 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-center">
+      <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
+        Audit your SEO Intent and EEAT scores.
+      </p>
+      <a href="https://traffictorch.net/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition text-lg shadow-lg">
+        Free SEO Intent Checker Tool →
+      </a>
+    </div>
 
-  <div class="space-y-6 max-w-4xl mx-auto">
-    <details class="bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <summary class="p-6 font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-950/20 transition">
-        Does Traffic Torch only work for blog posts or can it analyze product pages too?
-      </summary>
-      <div class="px-6 pb-6 prose prose-sm dark:prose-invert">
-        <p>It works on any public URL — blog posts, service pages, product descriptions, category pages, homepages. Schema detection adapts to context (e.g. Product schema on e-commerce, Article on blogs).</p>
-      </div>
-    </details>
-
-    <details class="bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <summary class="p-6 font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-950/20 transition">
-        How long until I see ranking or traffic improvements after fixing these signals?
-      </summary>
-      <div class="px-6 pb-6 prose prose-sm dark:prose-invert">
-        <p>Typically 1–4 weeks after Google re-crawls and indexes changes (faster for frequently crawled pages). Use Search Console to request indexing. Biggest jumps often come from E-E-A-T + schema fixes.</p>
-      </div>
-    </details>
-
-    <details class="bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <summary class="p-6 font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-950/20 transition">
-        Is schema markup still important even if I already rank well?
-      </summary>
-      <div class="px-6 pb-6 prose prose-sm dark:prose-invert">
-        <p>Yes — it’s one of the few ways to stand out in crowded SERPs with rich results, AI Overviews, and voice answers. Even top-ranking pages gain 20–50%+ CTR from proper schema.</p>
-      </div>
-    </details>
-
-    <details class="bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <summary class="p-6 font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-orange-950/20 transition">
-        Can I fix everything just by adding more words and first-person language?
-      </summary>
-      <div class="px-6 pb-6 prose prose-sm dark:prose-invert">
-        <p>No — depth without E-E-A-T or trust signals can still underperform. The tool shows balanced gaps so you prioritize the highest-impact fixes first (often trust + schema + author byline).</p>
-      </div>
-    </details>
-  </div>
-
-  <!-- FAQPage JSON-LD Schema -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Does Traffic Torch only work for blog posts or can it analyze product pages too?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "It works on any public URL — blog posts, service pages, product descriptions, category pages, homepages. Schema detection adapts to context (e.g. Product schema on e-commerce, Article on blogs)."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How long until I see ranking or traffic improvements after fixing these signals?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Typically 1–4 weeks after Google re-crawls and indexes changes (faster for frequently crawled pages). Use Search Console to request indexing. Biggest jumps often come from E-E-A-T + schema fixes."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is schema markup still important even if I already rank well?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes — it’s one of the few ways to stand out in crowded SERPs with rich results, AI Overviews, and voice answers. Even top-ranking pages gain 20–50%+ CTR from proper schema."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I fix everything just by adding more words and first-person language?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No — depth without E-E-A-T or trust signals can still underperform. The tool shows balanced gaps so you prioritize the highest-impact fixes first (often trust + schema + author byline)."
-        }
-      }
-    ]
-  }
-  </script>
 </section>
 
-  <!-- Top Share Buttons -->
+  <!-- Share Buttons -->
   <div style="display: flex; justify-content: center; margin: 30px 0;">
     <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
       <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
