@@ -120,11 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function stopSpinnerLoader() {
   clearInterval(moduleInterval);
   const loader = document.getElementById('loader');
-  if (loader) {
-    loader.style.transition = 'opacity 0.4s ease-out';
-    loader.style.opacity = '0';
-    setTimeout(() => loader.remove(), 400);
-  }
+  if (loader) loader.remove(); 
 }
 
   const fetchPage = async (url) => {
