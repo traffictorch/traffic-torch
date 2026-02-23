@@ -449,7 +449,7 @@ const initTool = (form, results, progressContainer) => {
 
       results.innerHTML = `
         <!-- Overall Score Card (AI Search) -->
-        <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
+        <div class="flex justify-center my-8 sm:my-12 px-0 sm:px-6">
           <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
             <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall AI Search Score</p>
             <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
@@ -505,7 +505,7 @@ const initTool = (form, results, progressContainer) => {
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 my-12 px-4 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 my-12 px-0 max-w-7xl mx-auto">
           ${modules.map(m => {
             const grade = getGradeInfo(m.score);
             const moduleTests = tests.filter(t => moduleKeywords[m.name].some(kw => t.text.includes(kw)));
@@ -591,7 +591,7 @@ const initTool = (form, results, progressContainer) => {
             <h3 class="text-3xl font-black text-center mb-8 text-blue-800 dark:text-blue-200">Top Priority Fixes (Highest Impact First)</h3>
           </div>
           ${prioritisedFixes.map(fix => `
-            <div class="mx-4 p-8 bg-gradient-to-r ${fix.gradient} border-l-8 rounded-r-2xl">
+            <div class="mx-4 p-0 bg-gradient-to-r ${fix.gradient} border-l-8 rounded-r-2xl">
               <div class="flex gap-4">
                 <div class="text-2xl">${fix.emoji}</div>
                 <div class="flex-1">
@@ -607,7 +607,7 @@ const initTool = (form, results, progressContainer) => {
 
         <div class="mt-20 px-2 max-w-6xl mx-auto">
           <div class="grid md:grid-cols-2 gap-8">
-            <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl">
+            <div class="p-1 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl">
               <h3 class="text-3xl font-black text-center mb-8 text-gray-800 dark:text-gray-200">AI Search Score Improvement</h3>
               <div class="flex justify-center gap-8 mb-12">
                 <div class="text-center">
@@ -651,7 +651,7 @@ const initTool = (form, results, progressContainer) => {
               </details>
             </div>
 
-            <div class="p-8 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-3xl shadow-2xl">
+            <div class="p-2 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-3xl shadow-2xl">
               <h3 class="text-3xl font-black text-center mb-8">Potential Visibility & Traffic Gains</h3>
               ${prioritisedFixes.length > 0 ? `
                 <div class="space-y-6">
