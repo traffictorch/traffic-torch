@@ -1,4 +1,4 @@
-// script-v1.1.js
+// script-v1.2.js
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 import { moduleFixes } from './fixes-v1.0.js';
 import { analyzeNapContact } from './modules/nap-contact.js';
@@ -103,19 +103,29 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     results.classList.remove('hidden');
     document.getElementById('module-text').textContent = progressModules[0];
-    currentModuleIndex = 1;
+        let currentModuleIndex = 0;
+    document.getElementById('module-text').textContent = progressModules[currentModuleIndex];
+
     moduleInterval = setInterval(() => {
-      if (currentModuleIndex < progressModules.length) {
-        document.getElementById('module-text').textContent = progressModules[currentModuleIndex++];
+      currentModuleIndex++;
+      if (currentModuleIndex < progressModules.length - 1) {
+        document.getElementById('module-text').textContent = progressModules[currentModuleIndex];
+      } else {
+        document.getElementById('module-text').textContent = progressModules[progressModules.length - 1];
+        clearInterval(moduleInterval);  // lock on "Generating local report"
       }
     }, 600);
   }
 
   function stopSpinnerLoader() {
-    clearInterval(moduleInterval);
-    const loader = document.getElementById('loader');
-    if (loader) loader.remove();
+  clearInterval(moduleInterval);
+  const loader = document.getElementById('loader');
+  if (loader) {
+    loader.style.transition = 'opacity 0.4s ease-out';
+    loader.style.opacity = '0';
+    setTimeout(() => loader.remove(), 400);
   }
+}
 
   const fetchPage = async (url) => {
     try {
@@ -296,7 +306,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const truncatedTitle = pageTitle.length > 65 ? pageTitle.substring(0, 62) + '...' : pageTitle;
 
     stopSpinnerLoader();
+    
+    const analysisEndTime = Date.now();
+    const minTotalMs = 5800;
 
+    if (Date.now() - analysisEndTime < minTotalMs) {
+      await new Promise(resolve => {
+        setTimeout(resolve, minTotalMs - (Date.now() - analysisEndTime));
+      });
+    }
     const moduleOrder = [
       'NAP & Contact', 'Local Keywords & Titles', 'Local Content & Relevance',
       'Maps & Visuals', 'Structured Data', 'Reviews & Structure'
