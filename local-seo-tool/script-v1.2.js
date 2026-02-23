@@ -299,18 +299,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreDelta = projectedScore - yourScore;
 
     const pageTitle = doc.querySelector('title')?.textContent?.trim() || 'Your Page';
-    const truncatedTitle = pageTitle.length > 65 ? pageTitle.substring(0, 62) + '...' : pageTitle;
+        const truncatedTitle = pageTitle.length > 65 ? pageTitle.substring(0, 62) + '...' : pageTitle;
+
+    const analysisStartForMin = Date.now();  
+    const minVisibleMs = 5800;
+
+    await new Promise(resolve => {
+      const elapsed = Date.now() - analysisStartForMin;
+      const remaining = minVisibleMs - elapsed;
+      if (remaining > 0) {
+        setTimeout(resolve, remaining);
+      } else {
+        resolve();
+      }
+    });
 
     stopSpinnerLoader();
     
-    const analysisEndTime = Date.now();
-    const minTotalMs = 5800;
-
-    if (Date.now() - analysisEndTime < minTotalMs) {
-      await new Promise(resolve => {
-        setTimeout(resolve, minTotalMs - (Date.now() - analysisEndTime));
-      });
-    }
     const moduleOrder = [
       'NAP & Contact', 'Local Keywords & Titles', 'Local Content & Relevance',
       'Maps & Visuals', 'Structured Data', 'Reviews & Structure'
