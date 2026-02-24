@@ -82,6 +82,7 @@
   <meta name="twitter:description" content="Audit webpages instantly for local SEO: NAP, schema, geo-keywords, headings, images. Priority fixes and ranking forecasts for better map pack performance." />
   <meta name="twitter:image" content="https://traffictorch.net/local-seo-tool/images/local-seo-torch-tool.webp" />
   <meta name="twitter:site" content="@Guitaralize" /> 
+
 <!-- Structured Data (JSON-LD) -->
 <script type="application/ld+json">
 {
@@ -148,7 +149,7 @@
 }
 </script>
 
-<!-- Article Schema for the main page content -->
+<!-- Article Schema for the main page content – with multiple ImageObjects (featured toolkit first + banner + infographics) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -159,7 +160,41 @@
   },
   "headline": "Free Local SEO On-Page Checker: Boost Your Local Rankings",
   "description": "Free instant local SEO audit tool. Analyze NAP, schema, geo-signals, content structure & images. Get 0–100 score, Priority fixes, competitive gaps, and local rank improvement forecasts.",
-  "image": "https://traffictorch.net/local-seo-tool/images/local-seo-torch-tool.webp",
+  "url": "https://traffictorch.net/local-seo-tool/",
+  "image": [
+    {
+      "@type": "ImageObject",
+      "url": "https://traffictorch.net/local-seo-tool/images/local-seo-torch-tool.webp",
+      "contentUrl": "https://traffictorch.net/local-seo-tool/images/local-seo-torch-tool.webp",
+      "width": 1200,
+      "height": 630,
+      "caption": "Traffic Torch Local SEO Tool dashboard: Instant NAP consistency checker, schema markup validator, reviews & structure analysis, geo-signals audit with 0–100 score and priority fixes"
+    },
+    {
+      "@type": "ImageObject",
+      "url": "https://traffictorch.net/images/tool-banners/local-seo-tool-infographic-1200w.webp",
+      "contentUrl": "https://traffictorch.net/images/tool-banners/local-seo-tool-infographic-1200w.webp",
+      "width": 1200,
+      "height": 430,
+      "caption": "Traffic Torch Local SEO Tool overview: On-page local signals audit, NAP consistency checker, schema markup validation, Google Business Profile optimization insights and rich results unlock"
+    },
+    {
+      "@type": "ImageObject",
+      "url": "https://traffictorch.net/local-seo-tool/images/local-seo-optimizations-infographic-800w.webp",
+      "contentUrl": "https://traffictorch.net/local-seo-tool/images/local-seo-optimizations-infographic-800w.webp",
+      "width": 800,
+      "height": 1200,
+      "caption": "Local SEO Optimizations Infographic: Core on-page signals Traffic Torch audits for better Local Pack visibility – NAP & Contact, Local Keywords & Titles, Local Content & Relevance"
+    },
+    {
+      "@type": "ImageObject",
+      "url": "https://traffictorch.net/local-seo-tool/images/local-maps-schema-infographic-800w.webp",
+      "contentUrl": "https://traffictorch.net/local-seo-tool/images/local-maps-schema-infographic-800w.webp",
+      "width": 800,
+      "height": 1200,
+      "caption": "Local Maps and Schema Infographic: Visual, schema & trust signals Traffic Torch checks to unlock rich results and build trust – Maps & Visuals, Structured Data, Reviews & Structure"
+    }
+  ],
   "author": {
     "@type": "Person",
     "name": "Traffic Torch Team",
