@@ -465,12 +465,7 @@ function showUpgradeModal(message = "You've reached your daily limit. Upgrade to
 export async function canRunTool(toolName = 'default') {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
   const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
-  // Persistent anon ID (stored in localStorage, survives reloads)
-  // let anonId = localStorage.getItem('anon_session_id');
-  // if (!anonId) {
-   // anonId = 'anon-' + crypto.randomUUID(); // modern secure ID
-   // localStorage.setItem('anon_session_id', anonId);
-  }
+
   try {
     const res = await fetch(API_BASE + '/api/check-rate', {
       method: 'POST',
@@ -478,19 +473,23 @@ export async function canRunTool(toolName = 'default') {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })
       },
-      body: JSON.stringify({ toolName }) // token no longer needed in body
+      body: JSON.stringify({ toolName }) // No anonId sent → server will use IP
     });
+
     if (!res.ok) {
       console.error('Check-rate error:', res.status, await res.text());
       showUpgradeModal('Could not check run limit – please log in or try again.');
       return false;
     }
+
     const data = await res.json();
-    console.log('Check-rate response:', data); // keep debug
+    console.log('Check-rate response:', data);
+
     if (data.allowed === true) {
       if (data.remaining !== undefined) updateRunsBadge?.(data.remaining);
       return true;
     }
+
     // Limit hit
     showUpgradeModal(data.message || 'Upgrade to Traffic Torch Pro - $48 USD per/year for 25 runs/day.');
     return false;
