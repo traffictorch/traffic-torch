@@ -466,10 +466,10 @@ export async function canRunTool(toolName = 'default') {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
   const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
   // Persistent anon ID (stored in localStorage, survives reloads)
-  let anonId = localStorage.getItem('anon_session_id');
-  if (!anonId) {
-    anonId = 'anon-' + crypto.randomUUID(); // modern secure ID
-    localStorage.setItem('anon_session_id', anonId);
+  // let anonId = localStorage.getItem('anon_session_id');
+  // if (!anonId) {
+   // anonId = 'anon-' + crypto.randomUUID(); // modern secure ID
+   // localStorage.setItem('anon_session_id', anonId);
   }
   try {
     const res = await fetch(API_BASE + '/api/check-rate', {
@@ -478,7 +478,7 @@ export async function canRunTool(toolName = 'default') {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })
       },
-      body: JSON.stringify({ anonId, toolName }) // token no longer needed in body
+      body: JSON.stringify({ toolName }) // token no longer needed in body
     });
     if (!res.ok) {
       console.error('Check-rate error:', res.status, await res.text());
@@ -492,7 +492,7 @@ export async function canRunTool(toolName = 'default') {
       return true;
     }
     // Limit hit
-    showUpgradeModal(data.message || 'Upgrade to Traffic Torch Pro - USD $48 per/year for 25 runs/day.');
+    showUpgradeModal(data.message || 'Upgrade to Traffic Torch Pro - $48 USD per/year for 25 runs/day.');
     return false;
   } catch (err) {
     console.error('canRunTool failed:', err);
