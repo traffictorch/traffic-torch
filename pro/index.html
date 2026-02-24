@@ -648,46 +648,69 @@
     });
 
     // Login handler with reload
-    document.getElementById('login-form')?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const status = document.getElementById('login-status');
-      status.textContent = 'Logging in...';
-      status.className = 'text-center text-sm text-gray-600 dark:text-gray-400 min-h-[1.25rem]';
-      const email = e.target.querySelector('input[type="text"]').value.trim();
-      const password = e.target.querySelector('input[type="password"]').value;
+document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-      if (!email || !password) {
-        status.textContent = 'Please fill in both fields';
-        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
-        return;
-      }
+  const status = document.getElementById('login-status');
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  const originalBtnText = submitBtn?.textContent || 'Login';
 
-      try {
-        const response = await fetch(API_BASE + '/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        const data = await response.json();
+  status.textContent = 'Logging in...';
+  status.className = 'text-center text-sm text-gray-600 dark:text-gray-400 min-h-[1.25rem]';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Logging in...';
+  }
 
-        if (response.ok && data.token) {
-          localStorage.setItem('authToken', data.token);
-          localStorage.removeItem('traffic_torch_jwt'); // cleanup
-          status.textContent = 'Logged in successfully!';
-          status.className = 'text-center text-sm text-green-600 dark:text-green-400 min-h-[1.25rem]';
-          setTimeout(() => {
-            window.location.reload(); // reload /pro to trigger updateUI
-          }, 1500);
-        } else {
-          status.textContent = data.error || 'Invalid credentials – please try again';
-          status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
-        }
-      } catch (err) {
-        console.error('Login error:', err);
-        status.textContent = 'Login failed – please check your connection';
-        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
-      }
+  // Safe field access using IDs (matches your HTML)
+  const emailInput = document.getElementById('email'); // or whatever ID your email input has
+  const passwordInput = document.getElementById('password');
+
+  const email = emailInput?.value?.trim();
+  const password = passwordInput?.value;
+
+  if (!email || !password) {
+    status.textContent = 'Please fill in both fields';
+    status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalBtnText;
+    }
+    return;
+  }
+
+  try {
+    const response = await fetch(API_BASE + '/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
     });
+
+    const data = await response.json();
+
+    if (response.ok && data.token) {
+      localStorage.setItem('authToken', data.token);
+      localStorage.removeItem('traffic_torch_jwt'); // cleanup
+      status.textContent = 'Logged in successfully!';
+      status.className = 'text-center text-sm text-green-600 dark:text-green-400 min-h-[1.25rem]';
+      setTimeout(() => {
+        window.location.reload(); // reload /pro to trigger updateUI
+      }, 1500);
+    } else {
+      status.textContent = data.error || 'Invalid credentials – please try again';
+      status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+    }
+  } catch (err) {
+    console.error('Login error:', err);
+    status.textContent = 'Login failed – please check your connection or credentials';
+    status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalBtnText;
+    }
+  }
+});
 
     // Upgrade button handler
     const upgradeBtn = document.getElementById('upgrade-btn');
