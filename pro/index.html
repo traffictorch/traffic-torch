@@ -608,7 +608,7 @@
       e.preventDefault();
       const name = document.getElementById('name')?.value.trim();
       const email = document.getElementById('email')?.value.trim();
-      const password = document.getElementById('password')?.value;
+      const password = document.querySelector('#signup-form .password-with-eye input')?.value;
       const mathAnswer = document.getElementById('math-answer')?.value.trim();
       const errors = document.getElementById('checkout-errors');
 
@@ -666,8 +666,8 @@ document.getElementById('login-form')?.addEventListener('submit', async (e) => {
 
   // Use correct selectors based on your HTML (email is type="email", not "text")
   const emailInput = e.target.querySelector('input[type="text"]') || document.getElementById('email');
-  const passwordInput = e.target.querySelector('input[type="password"]') || document.getElementById('password');
-
+  const passwordInput = e.target.querySelector('.password-with-eye input');
+  
   const email = emailInput?.value?.trim();
   const password = passwordInput?.value;
 
