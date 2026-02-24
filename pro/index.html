@@ -665,7 +665,7 @@ document.getElementById('login-form')?.addEventListener('submit', async (e) => {
   }
 
   // Use correct selectors based on your HTML (email is type="email", not "text")
-  const emailInput = e.target.querySelector('input[type="email"]') || document.getElementById('email');
+  const emailInput = e.target.querySelector('input[type="text"]') || document.getElementById('email');
   const passwordInput = e.target.querySelector('input[type="password"]') || document.getElementById('password');
 
   const email = emailInput?.value?.trim();
