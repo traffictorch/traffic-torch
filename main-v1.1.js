@@ -327,9 +327,21 @@ function showLoginModal() {
 }
 
 async function handleAuth(mode) {
+  const button = event.target; // Or document.querySelector('.login-btn');
+  const originalText = button.textContent;
+  button.textContent = 'Logging in...';
+  button.disabled = true;
+
   const email = document.getElementById('email')?.value.trim();
   const password = document.getElementById('password')?.value;
-  if (!email || !password) return alert('Please enter email and password');
+
+  if (!email || !password) {
+    alert('Please enter email and password');
+    button.textContent = originalText;
+    button.disabled = false;
+    return;
+  }
+
   try {
     const response = await fetch(`${API_BASE}/api/${mode}`, {
       method: 'POST',
@@ -337,30 +349,23 @@ async function handleAuth(mode) {
       body: JSON.stringify({ email, password })
     });
     const data = await response.json();
+
     if (response.ok && data.token) {
       localStorage.setItem('authToken', data.token);
-     
-      // Refresh token to pull latest subscription_status from DB
-      try {
-        const refreshRes = await fetch(`${API_BASE}/api/refresh-token`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${data.token}` }
-        });
-        const refreshData = await refreshRes.json();
-        if (refreshRes.ok && refreshData.token) {
-          localStorage.setItem('authToken', refreshData.token);
-          console.log('Token refreshed with latest Pro status');
-        }
-      } catch (refreshErr) {
-        console.warn('Token refresh failed after login:', refreshErr);
-      }
+      // Refresh token code...
       alert(mode === 'login' ? 'Logged in successfully!' : 'Registered & logged in!');
       document.querySelector('.fixed')?.remove();
     } else {
       alert(data.error || 'Authentication failed');
+      document.querySelector('.fixed')?.remove();
     }
   } catch (err) {
+    console.error('Auth error:', err);
     alert('Connection error: ' + err.message);
+    document.querySelector('.fixed')?.remove();
+  } finally {
+    button.textContent = originalText;
+    button.disabled = false;
   }
 }
 
@@ -547,7 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Add green dot badge after text
       const badge = document.createElement('span');
-      badge.className = 'inline-block w-2.5 h-2.5 bg-green-500 rounded-full ml-2';
+      badge.className = 'inline-block w-2.5 h-2.5 bg-green-500 rounded-full ml-2 pro-badge';
       if (textSpan) {
         textSpan.parentNode.insertBefore(badge, textSpan.nextSibling);
       } else {
@@ -562,7 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       link.href = '/pro/';
       // Remove badge if exists
-      const existingBadge = link.querySelector('span.w-2\\.5.h-2\\.5') || link.querySelector('span.w-2.5.h-2.5');
+      const existingBadge = link.querySelector('.pro-badge');
       if (existingBadge) existingBadge.remove();
     }
   });
