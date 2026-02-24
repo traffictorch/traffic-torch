@@ -11,8 +11,8 @@ body { transition: background-color 0.3s ease; }
 @media (max-width: 1024px) {
   .container, .max-w-5xl, .max-w-3xl, .max-w-4xl {
     max-width: 100% !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
   }
   .p-12, .p-10, .p-8 {
     padding: 1.5rem !important;
