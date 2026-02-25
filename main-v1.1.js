@@ -531,6 +531,16 @@ async function pollForProUpgrade(sessionId) {
   setTimeout(() => clearInterval(interval), 300000);
 }
 
+// Shared Footer File
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('/footer.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('footer-placeholder').innerHTML = data;
+    })
+    .catch(error => console.error('Error loading footer:', error));
+});
+
 // Conditional Pro menu link update
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('authToken');
