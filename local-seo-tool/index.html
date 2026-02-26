@@ -473,10 +473,10 @@
     <div class="center-btn-container mt-12">
   <button
     class="copy-link-btn"
-    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link 🔗',1600);"
+    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
     data-text="https://traffictorch.net/local-seo-tool/"
   >
-    Copy Link 🔗
+    Copy Link? 🔗
   </button>
 </div>
    
@@ -526,19 +526,24 @@
   </details>
 </div>
        <!-- AddToAny BEGIN -->
-  <div style="display: flex; justify-content: center; margin: 30px 0;">
-  <div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="line-height: 32px;">
-<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
-<a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-<a class="a2a_button_pinterest"></a>
-<a class="a2a_button_x"></a>
-<a class="a2a_button_reddit"></a>
-<a class="a2a_button_facebook"></a>
-<a class="a2a_button_copy_link"></a>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </h3>
+
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
   </div>
 </div>
+
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
 <!-- AddToAny END -->
 
 
