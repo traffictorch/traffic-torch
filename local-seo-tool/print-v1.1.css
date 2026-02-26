@@ -107,12 +107,20 @@
   }
   
 /* Hide upgrade modal and share section in print */
-#upgradeModal,
-div.py-8.text-center:has(> div.flex.flex-col.items-center.gap-4 > strong:text("Share?")),
-.a2a_kit,
-.a2a_default_style {
-  display: none !important;
-}
+  #upgradeModal,
+  .py-8.text-center,
+  .a2a_kit,
+  .a2a_default_style,
+  .a2a_kit_size_32,
+  [class*="a2a_"] {
+    display: none !important;
+  }
+
+  /* Extra insurance for modal visibility tricks */
+  #upgradeModal[style*="display: block"],
+  #upgradeModal:not(.hidden) {
+    display: none !important;
+  }
 
   /* Extra safety: hide top-level details not in report */
   details:not(.fixes-panel details, .full-details details) {
