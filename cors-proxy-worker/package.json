@@ -11,6 +11,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@cloudflare/puppeteer": "^1.0.4"
+    "@cloudflare/puppeteer": "^1.0.4",
+    "basic-ftp": "5.2.0"
   }
 }
