@@ -105,11 +105,20 @@
   .max-w-6xl.mx-auto {
     display: none !important;
   }
+  
+  /* Hide upgrade modal and share section in print — compatibility version */
+#upgradeModal,
+div.py-8.text-center,
+.a2a_kit,
+.a2a_default_style {
+  display: none !important;
+}
 
   /* Extra safety: hide top-level details not in report */
   details:not(.fixes-panel details, .full-details details) {
     display: none !important;
   }
+  
 
   /* ──────────────────────────────────────────────────────────────
      Always show important report content
