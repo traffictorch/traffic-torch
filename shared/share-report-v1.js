@@ -51,23 +51,40 @@ export function initShareReport(resultsContainer) {
       const element = document.getElementById('results');
       if (!element) throw new Error('Results container not found');
 
-      // Generate high-res PNG using html-to-image
+      // Lower resolution to avoid jsPDF 14400 limit and reduce blob size
+      const scale = 1.5; // was 3 → much smaller file
+      const maxDimension = 12000; // safety margin under 14400
+
+      let canvasWidth = element.offsetWidth * scale;
+      let canvasHeight = element.offsetHeight * scale;
+
+      // Clamp dimensions if too large
+      const aspectRatio = canvasWidth / canvasHeight;
+      if (canvasWidth > maxDimension) {
+        canvasWidth = maxDimension;
+        canvasHeight = maxDimension / aspectRatio;
+      }
+      if (canvasHeight > maxDimension) {
+        canvasHeight = maxDimension;
+        canvasWidth = maxDimension * aspectRatio;
+      }
+
       const dataUrl = await htmlToImage.toPng(element, {
-        quality: 1.0,
+        quality: 0.92, // slight compression
         backgroundColor: '#ffffff',
-        pixelRatio: 3,
-        canvasWidth: element.offsetWidth * 3,
-        canvasHeight: element.offsetHeight * 3,
+        pixelRatio: scale,
+        canvasWidth: canvasWidth,
+        canvasHeight: canvasHeight,
         fontEmbedCSS: true,
         includeQueryParams: true,
         imagePlaceholder: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='
       });
 
-      // Restore original theme and form visibility
+      // Restore theme and form
       if (originalTheme) document.documentElement.classList.add('dark');
       if (!wasHidden) formContainer.classList.remove('hidden');
 
-      // Convert PNG to PDF blob using jsPDF
+      // Create PDF with clamped dimensions
       const imgProps = await new Promise(resolve => {
         const img = new Image();
         img.onload = () => resolve({ width: img.width, height: img.height });
@@ -76,15 +93,16 @@ export function initShareReport(resultsContainer) {
 
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({
-        orientation: 'portrait',
+        orientation: imgProps.width > imgProps.height ? 'landscape' : 'portrait',
         unit: 'px',
-        format: [imgProps.width, imgProps.height]
+        format: [imgProps.width, imgProps.height],
+        compress: true // enable compression
       });
 
       pdf.addImage(dataUrl, 'PNG', 0, 0, imgProps.width, imgProps.height);
       pdfBlob = pdf.output('blob');
 
-      // Prepare and send FormData
+      // Send
       const formData = new FormData();
       formData.append('recipient_email', email);
       formData.append('name', 'Traffic Torch User');
