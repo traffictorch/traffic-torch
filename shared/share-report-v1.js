@@ -40,69 +40,69 @@ export function initShareReport(resultsContainer) {
 
     let pdfBlob;
     try {
-      // Hide share form for clean capture
       const wasHidden = formContainer.classList.contains('hidden');
       if (!wasHidden) formContainer.classList.add('hidden');
 
-      // Temporarily switch to light mode for consistent PDF colors
       const originalTheme = document.documentElement.classList.contains('dark');
       if (originalTheme) document.documentElement.classList.remove('dark');
 
       const element = document.getElementById('results');
       if (!element) throw new Error('Results container not found');
 
-      // Lower resolution to avoid jsPDF 14400 limit and reduce blob size
-      const scale = 1.5; // was 3 → much smaller file
-      const maxDimension = 12000; // safety margin under 14400
+      // Aggressive size control to stay under jsPDF 14400 limit
+      const maxDimension = 12000;
+      const scale = 1.2; // lowered from 1.5 to ensure safety + smaller file
 
-      let canvasWidth = element.offsetWidth * scale;
-      let canvasHeight = element.offsetHeight * scale;
+      let targetWidth = Math.min(element.offsetWidth * scale, maxDimension);
+      let targetHeight = Math.min(element.offsetHeight * scale, maxDimension);
 
-      // Clamp dimensions if too large
-      const aspectRatio = canvasWidth / canvasHeight;
-      if (canvasWidth > maxDimension) {
-        canvasWidth = maxDimension;
-        canvasHeight = maxDimension / aspectRatio;
+      // Maintain aspect ratio if one dimension hits limit
+      const aspect = element.offsetWidth / element.offsetHeight;
+      if (targetWidth === maxDimension) {
+        targetHeight = maxDimension / aspect;
+      } else if (targetHeight === maxDimension) {
+        targetWidth = maxDimension * aspect;
       }
-      if (canvasHeight > maxDimension) {
-        canvasHeight = maxDimension;
-        canvasWidth = maxDimension * aspectRatio;
-      }
+
+      console.log('Generating PDF at:', targetWidth, 'x', targetHeight);
 
       const dataUrl = await htmlToImage.toPng(element, {
-        quality: 0.92, // slight compression
+        quality: 0.85,
         backgroundColor: '#ffffff',
         pixelRatio: scale,
-        canvasWidth: canvasWidth,
-        canvasHeight: canvasHeight,
+        canvasWidth: targetWidth,
+        canvasHeight: targetHeight,
         fontEmbedCSS: true,
         includeQueryParams: true,
         imagePlaceholder: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='
       });
 
-      // Restore theme and form
       if (originalTheme) document.documentElement.classList.add('dark');
       if (!wasHidden) formContainer.classList.remove('hidden');
 
-      // Create PDF with clamped dimensions
       const imgProps = await new Promise(resolve => {
         const img = new Image();
         img.onload = () => resolve({ width: img.width, height: img.height });
         img.src = dataUrl;
       });
 
+      console.log('Final image size:', imgProps.width, 'x', imgProps.height);
+
+      if (imgProps.width > 14400 || imgProps.height > 14400) {
+        throw new Error('Image still exceeds jsPDF max dimension after clamping');
+      }
+
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({
         orientation: imgProps.width > imgProps.height ? 'landscape' : 'portrait',
         unit: 'px',
         format: [imgProps.width, imgProps.height],
-        compress: true // enable compression
+        compress: true
       });
 
       pdf.addImage(dataUrl, 'PNG', 0, 0, imgProps.width, imgProps.height);
       pdfBlob = pdf.output('blob');
 
-      // Send
       const formData = new FormData();
       formData.append('recipient_email', email);
       formData.append('name', 'Traffic Torch User');
