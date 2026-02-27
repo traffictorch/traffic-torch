@@ -39,11 +39,50 @@ shareForm.addEventListener('submit', async (e) => {
 
   let pdfBlob;
   try {
-    // Hide form for clean PDF capture (avoids including input fields in PDF)
+
+    // Hide share form and any dynamic/hover elements for clean capture
     const wasHidden = formContainer.classList.contains('hidden');
-    if (!wasHidden) {
-      formContainer.classList.add('hidden');
-    }
+    if (!wasHidden) formContainer.classList.add('hidden');
+
+    // Temporarily force light mode for consistent PDF colors (remove if you prefer dark)
+    const originalTheme = document.documentElement.classList.contains('dark');
+    if (originalTheme) document.documentElement.classList.remove('dark');
+
+    const element = document.getElementById('results');
+    if (!element) throw new Error('Results container not found');
+
+    // Use html-to-image to get high-quality PNG canvas
+    const dataUrl = await htmlToImage.toPng(element, {
+      quality: 1.0,
+      backgroundColor: '#ffffff',          // White bg to avoid transparency issues
+      pixelRatio: 3,                       // Higher res for sharp text/SVGs
+      canvasWidth: element.offsetWidth * 3,
+      canvasHeight: element.offsetHeight * 3,
+      fontEmbedCSS: true,
+      includeQueryParams: true,
+      imagePlaceholder: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='
+    });
+
+    // Restore theme
+    if (originalTheme) document.documentElement.classList.add('dark');
+    if (!wasHidden) formContainer.classList.remove('hidden');
+
+    // Convert PNG → PDF using jsPDF
+    const imgProps = await new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => resolve({ width: img.width, height: img.height });
+      img.src = dataUrl;
+    });
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'px',
+      format: [imgProps.width, imgProps.height]
+    });
+
+    pdf.addImage(dataUrl, 'PNG', 0, 0, imgProps.width, imgProps.height);
+    const pdfBlob = pdf.output('blob');
 
     const element = document.getElementById('results');
     if (!element) throw new Error('Results container not found');
