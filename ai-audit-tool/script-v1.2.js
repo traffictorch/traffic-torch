@@ -600,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     <button id="feedback-btn"
             class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Submit Feedback 📝
+      Submit Feedback 💬
     </button>
   </div>
 
@@ -636,7 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
       <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
-        Feedback for AI Audit Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
+        Feedback for AI Audit Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed url'}</strong>
       </p>
 
       <form id="feedback-form" class="space-y-6">

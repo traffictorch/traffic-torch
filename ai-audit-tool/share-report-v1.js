@@ -127,6 +127,7 @@ Thank you for using Traffic Torch!
       formData.append('recipient_email', recipientEmail);
       formData.append('name', name);
       formData.append('email', senderEmail);
+      formData.append('title', title);
       formData.append('message', reportSummary);
 
       const res = await fetch('/api/share-report', {
