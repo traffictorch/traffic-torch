@@ -41,71 +41,55 @@ export function initShareReport(resultsContainer) {
     try {
       const analyzedUrl = document.body.getAttribute('data-url') || 'unknown';
 
-      const overallScoreEl = document.querySelector('.text-5xl.sm\\:text-6xl.font-black.drop-shadow-lg, .text-5xl.font-black.drop-shadow-lg');
+      const overallScoreEl = document.querySelector('[style*="color:"].text-5xl.sm\\:text-6xl.font-black.drop-shadow-lg');
       const overallScore = overallScoreEl ? overallScoreEl.textContent.trim() : 'N/A';
 
-      const verdictEl = document.querySelector('.text-4xl.sm\\:text-5xl.font-bold.text-center.mt-4.sm\\:mt-6.drop-shadow-lg, .text-4xl.font-bold.text-center.mt-4.drop-shadow-lg');
+      const verdictEl = document.querySelector('.text-4xl.sm\\:text-5xl.font-bold.text-center.mt-4.sm\\:mt-6.drop-shadow-lg');
       const verdict = verdictEl ? verdictEl.textContent.trim() : 'N/A';
 
-      // More precise selector for all module cards (both full-width Perplexity and grid others)
+      // Better selector: all cards with border-l-4 and rounded-2xl shadow-md
       const moduleCards = document.querySelectorAll(
-        'div.bg-white.dark\\:bg-gray-800.rounded-2xl.shadow-md.p-6.md\\:p-8.text-center.border-l-4, ' +
-        'div.max-w-2xl.mx-auto > div.bg-white.dark\\:bg-gray-800.rounded-2xl.shadow-md.p-6.md\\:p-8.text-center.border-l-4'
+        '.bg-white.dark\\:bg-gray-800.rounded-2xl.shadow-md.p-6.text-center.border-l-4, ' +
+        '.max-w-2xl.mx-auto .bg-white.dark\\:bg-gray-800.rounded-2xl.shadow-md.p-6.text-center.border-l-4'
       );
 
       let moduleSummary = '';
 
-      moduleCards.forEach((card, index) => {
-        // Module name
-        const nameEl = card.querySelector('p.mt-6.text-2xl.font-bold, p.mt-4.text-xl.font-bold, p.text-xl.font-bold');
-        const name = nameEl ? nameEl.textContent.trim() : `Module ${index + 1}`;
+      moduleCards.forEach(card => {
+        // Name (usually p.mt-6 or mt-4 with text-2xl or text-xl font-bold)
+        const nameEl = card.querySelector('p.mt-6.text-2xl.font-bold, p.mt-4.text-xl.font-bold, p.mt-4.text-xl.font-bold');
+        const name = nameEl ? nameEl.textContent.trim() : 'Unknown Module';
 
-        // Score
-        const scoreEl = card.querySelector('.text-5xl.font-bold, .text-3xl.font-bold');
+        // Score (big number in center of svg)
+        const scoreEl = card.querySelector('div.text-5xl.font-bold, div.text-3xl.font-bold');
         const scoreText = scoreEl ? scoreEl.textContent.trim() : 'N/A';
 
-        // Pass/fail
-        const scoreNum = parseInt(scoreText.split('/')[0]) || 0;
+        const scoreNum = parseInt(scoreText) || 0;
         const emoji = scoreNum === 20 ? '✅' : scoreNum >= 10 ? '⚠️' : '❌';
 
-        moduleSummary += `${name}: ${scoreText} ${emoji}\n`;
+        moduleSummary += `${name}: ${scoreText}/20 ${emoji}\n`;
 
-        // Fix suggestions if failed
+        // Fixes if failed
         if (scoreNum < 20) {
-          // Look for the fixes section (hidden by default, but we can access it)
-          const fixesButtons = card.querySelectorAll('button');
-          let fixesSection = null;
-
-          // Find the "Show Fixes" button and its next sibling (the fixes div)
-          for (const btn of fixesButtons) {
-            if (btn.textContent.includes('Show Fixes')) {
-              fixesSection = btn.nextElementSibling;
-              break;
-            }
-          }
-
-          if (fixesSection && !fixesSection.classList.contains('hidden')) {
-            // Already open → grab fixes
-            const fixParagraphs = fixesSection.querySelectorAll('p.text-gray-700.dark\\:text-gray-300');
-            if (fixParagraphs.length > 0) {
+          // Click simulation not possible, so look for already-rendered or fallback to priority fixes
+          const fixesDiv = card.querySelector('div.hidden.mt-6.space-y-8, div.hidden.mt-4.space-y-8');
+          if (fixesDiv) {
+            const fixPs = fixesDiv.querySelectorAll('p.text-gray-700.dark\\:text-gray-300.max-w-lg.mx-auto, p.text-gray-700.dark\\:text-gray-300.max-w-md.mx-auto');
+            if (fixPs.length > 0) {
               moduleSummary += 'Fix suggestions:\n';
-              fixParagraphs.forEach(p => {
-                const fixText = p.textContent.trim();
-                if (fixText && fixText.length > 20) {
-                  moduleSummary += `- ${fixText}\n`;
+              fixPs.forEach(p => {
+                let fix = p.textContent.trim();
+                if (fix.length > 20) {
+                  moduleSummary += `- ${fix}\n`;
                 }
               });
               moduleSummary += '\n';
             }
           } else {
-            // If hidden, try priority fixes block as fallback
-            const priorityFixes = document.querySelectorAll('.bg-orange-50.dark\\:bg-orange-900\\/20.rounded-3xl.p-8.md\\:p-10.shadow-lg.border-l-8.border-orange-500 p.font-bold.mb-2');
-            if (priorityFixes.length > 0) {
-              moduleSummary += 'Priority fixes:\n';
-              priorityFixes.forEach(el => {
-                moduleSummary += `- ${el.textContent.trim()}\n`;
-              });
-              moduleSummary += '\n';
+            // Fallback: priority fixes section
+            const priorityFix = document.querySelector('.bg-orange-50.dark\\:bg-orange-900\\/20.rounded-3xl.p-8.md\\:p-10 p.text-lg.text-gray-800.dark\\:text-gray-200.mt-6');
+            if (priorityFix) {
+              moduleSummary += 'Priority fix suggestion:\n- ' + priorityFix.textContent.trim() + '\n\n';
             }
           }
         }
@@ -122,7 +106,7 @@ Overall AI Audit Score: ${overallScore}
 Verdict: ${verdict}
 
 Module Scores:
-${moduleSummary || '(No detailed module data found)'}
+${moduleSummary.trim() || 'No module details found'}
 
 Full interactive report: ${window.location.href}
 
