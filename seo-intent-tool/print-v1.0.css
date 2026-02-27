@@ -104,6 +104,22 @@
   .max-w-7xl.mx-auto {
     display: none !important;
   }
+  
+  /* Hide upgrade modal and share section in print */
+  #upgradeModal,
+  .py-8.text-center,
+  .a2a_kit,
+  .a2a_default_style,
+  .a2a_kit_size_32,
+  [class*="a2a_"] {
+    display: none !important;
+  }
+
+  /* Extra insurance for modal visibility tricks */
+  #upgradeModal[style*="display: block"],
+  #upgradeModal:not(.hidden) {
+    display: none !important;
+  }
 
   /* ──────────────────────────────────────────────────────────────
      Keep showing fixes & expanded content
