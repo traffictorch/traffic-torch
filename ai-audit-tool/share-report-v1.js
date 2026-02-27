@@ -69,21 +69,20 @@ export function initShareReport(resultsContainer) {
 
         moduleSummary += `${name} ${scoreText} ${gradeText}\n`;
 
-        // Sub-metrics (with emoji if present in text)
-        const subMetrics = card.querySelectorAll('.mt-3.space-y-2.text-sm p.font-medium');
-        subMetrics.forEach(sub => {
-          let subText = sub.textContent.trim();
-          // Try to include emoji from child span if present
-          const emojiSpan = sub.querySelector('span[style*="color:"]');
+        // Sub-metrics with emoji detection
+        const subLines = card.querySelectorAll('.mt-3.space-y-2.text-sm p.font-medium');
+        subLines.forEach(line => {
+          let lineText = line.textContent.trim();
+          const emojiSpan = line.querySelector('span[style*="color:"]');
           const emoji = emojiSpan ? emojiSpan.textContent.trim() : '';
-          if (emoji === '✅' || emoji === '❌') {
-            subText = subText.replace(emoji, '').trim();
-            subText = `${emoji} ${subText}`;
+          if (emoji === '✅' || emoji === '❌' || emoji === '⚠️') {
+            lineText = lineText.replace(emoji, '').trim();
+            lineText = `${emoji} ${lineText}`;
           }
-          moduleSummary += `  ${subText}\n`;
+          moduleSummary += `  ${lineText}\n`;
         });
 
-        // Fixes for failed modules
+        // Fixes
         if (scoreNum < 20) {
           const fixesDiv = card.querySelector('div.hidden.mt-4.space-y-8, div.hidden.mt-6.space-y-8');
           if (fixesDiv) {
@@ -150,7 +149,7 @@ Thank you for using Traffic Torch!
         shareBtn.classList.remove('bg-gray-500', 'hover:bg-gray-600');
         shareBtn.classList.add('from-orange-500', 'to-pink-600', 'hover:from-orange-600', 'hover:to-pink-700');
 
-        // Revert button text after 10 seconds
+        // Revert button after 10 seconds
         setTimeout(() => {
           shareBtn.textContent = 'Share Report 🔗';
         }, 10000);
