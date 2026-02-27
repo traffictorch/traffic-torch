@@ -39,20 +39,66 @@ export function initShareReport(resultsContainer) {
     }
 
     try {
-      // Collect key report data from DOM (simple text summary)
-      const overallScore = document.querySelector('.text-5xl.font-black.drop-shadow-lg')?.textContent.trim() || 'N/A';
-      const verdict = document.querySelector('.text-4xl.sm\\:text-5xl.font-bold.text-center.mt-4.sm\\:mt-6.drop-shadow-lg')?.textContent.trim() || 'N/A';
-      const urlAnalyzed = document.body.getAttribute('data-url') || 'unknown';
+      // Extract analyzed URL
+      const analyzedUrl = document.body.getAttribute('data-url') || 'unknown';
 
+      // Overall score & verdict
+      const overallScoreEl = document.querySelector('.text-5xl.sm\\:text-6xl.font-black.drop-shadow-lg');
+      const overallScore = overallScoreEl ? overallScoreEl.textContent.trim() : 'N/A';
+
+      const verdictEl = document.querySelector('.text-4xl.sm\\:text-5xl.font-bold.text-center.mt-4.sm\\:mt-6.drop-shadow-lg');
+      const verdict = verdictEl ? verdictEl.textContent.trim() : 'N/A';
+
+      // Build module summary
+      let moduleSummary = '';
+      const moduleCards = document.querySelectorAll('.bg-white.dark\\:bg-gray-800.rounded-2xl.shadow-md.p-6.md\\:p-8.text-center.border-l-4');
+
+      moduleCards.forEach(card => {
+        const nameEl = card.querySelector('p.mt-6.text-2xl.font-bold, p.mt-4.text-xl.font-bold');
+        const scoreEl = card.querySelector('.text-5xl.font-bold, .text-3xl.font-bold');
+        const name = nameEl ? nameEl.textContent.trim() : 'Unknown';
+        const scoreText = scoreEl ? scoreEl.textContent.trim() : 'N/A';
+
+        // Determine pass/fail emoji
+        const scoreNum = parseInt(scoreText.split('/')[0]) || 0;
+        const emoji = scoreNum === 20 ? '✅' : '❌';
+
+        moduleSummary += `${name}: ${scoreText} ${emoji}\n`;
+
+        // If failed, try to grab fix text
+        if (scoreNum < 20) {
+          const fixesSection = card.querySelector('.hidden.mt-6.space-y-8, .hidden.mt-4.space-y-8');
+          if (fixesSection) {
+            const fixItems = fixesSection.querySelectorAll('p.text-gray-700.dark\\:text-gray-300.max-w-lg.mx-auto, p.text-gray-700.dark\\:text-gray-300.max-w-md.mx-auto');
+            if (fixItems.length > 0) {
+              moduleSummary += 'Fix suggestions:\n';
+              fixItems.forEach(item => {
+                const fixText = item.textContent.trim();
+                if (fixText && fixText.length > 10) {
+                  moduleSummary += `- ${fixText}\n`;
+                }
+              });
+              moduleSummary += '\n';
+            }
+          }
+        }
+      });
+
+      // Full report summary text
       const reportSummary = `
 ${title}
 
 ${body}
 
+Analyzed Page: ${analyzedUrl}
+
 Overall AI Audit Score: ${overallScore}
 Verdict: ${verdict}
-Analyzed Page: ${urlAnalyzed}
-Full report link: ${window.location.href}
+
+Module Scores:
+${moduleSummary}
+
+Full interactive report: ${window.location.href}
 
 Thank you for using Traffic Torch!
 `;
@@ -63,7 +109,7 @@ Thank you for using Traffic Torch!
       formData.append('email', 'no-reply@traffictorch.net');
       formData.append('message', reportSummary);
 
-      const res = await fetch('/api/contact', {  // keep existing endpoint
+      const res = await fetch('/api/contact', {
         method: 'POST',
         body: formData
       });
