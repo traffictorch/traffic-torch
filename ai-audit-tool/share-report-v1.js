@@ -1,4 +1,4 @@
-// shared/share-report-v1.js
+// ai-audit-tool/share-report-v1.js
 export function initShareReport(resultsContainer) {
   const shareBtn = resultsContainer.querySelector('#share-report-btn');
   const formContainer = resultsContainer.querySelector('#share-form-container');
@@ -40,12 +40,6 @@ export function initShareReport(resultsContainer) {
       return;
     }
 
-    if (!email || !title || !body) {
-      showMessage('Please fill all fields', 'error');
-      resetButton();
-      return;
-    }
-
     try {
       const analyzedUrl = document.body.getAttribute('data-url') || 'unknown';
 
@@ -55,38 +49,32 @@ export function initShareReport(resultsContainer) {
       const verdictEl = document.querySelector('.text-4xl.sm\\:text-5xl.font-bold.text-center.mt-4.sm\\:mt-6.drop-shadow-lg');
       const verdict = verdictEl ? verdictEl.textContent.trim() : 'N/A';
 
-      // Target all module cards precisely
       const moduleCards = document.querySelectorAll(
-        '.max-w-2xl.mx-auto .bg-white.dark\\:bg-gray-800.rounded-2xl.shadow-md.p-6.md\\:p-8.text-center.border-l-4,' +
+        '.max-w-2xl.mx-auto .bg-white.dark\\:bg-gray-800.rounded-2xl.shadow-md.p-6.md\\:p-8.text-center.border-l-4, ' +
         '.grid.grid-cols-1.md\\:grid-cols-2 .bg-white.dark\\:bg-gray-800.rounded-2xl.shadow-md.p-6.text-center.border-l-4'
       );
 
       let moduleSummary = '';
 
       moduleCards.forEach(card => {
-        // Module name
         const nameEl = card.querySelector('p.mt-6.text-2xl.font-bold, p.mt-4.text-xl.font-bold');
         const name = nameEl ? nameEl.textContent.trim() : 'Unknown';
 
-        // Overall module grade & emoji
         const gradeEl = card.querySelector('p.mt-2.text-xl.flex.items-center.justify-center.gap-2');
         const gradeText = gradeEl ? gradeEl.textContent.trim().replace(/\s+/g, ' ') : '';
 
-        // Score
         const scoreEl = card.querySelector('div.text-5xl.font-bold, div.text-3xl.font-bold');
         const scoreText = scoreEl ? scoreEl.textContent.trim() : 'N/A';
         const scoreNum = parseInt(scoreText.split('/')[0]) || 0;
 
         moduleSummary += `${name} ${scoreText} ${gradeText}\n`;
 
-        // Sub-metrics
         const subMetrics = card.querySelectorAll('.mt-3.space-y-2.text-sm p.font-medium');
         subMetrics.forEach(sub => {
           const subText = sub.textContent.trim();
           moduleSummary += `  ${subText}\n`;
         });
 
-        // Fixes if failed
         if (scoreNum < 20) {
           const fixesDiv = card.querySelector('div.hidden.mt-4.space-y-8, div.hidden.mt-6.space-y-8');
           if (fixesDiv) {
@@ -137,18 +125,25 @@ Thank you for using Traffic Torch!
       });
 
       if (!res.ok) {
-        throw new Error(`Server error ${res.status}`);
+        const errText = await res.text();
+        throw new Error(`Server error ${res.status}: ${errText}`);
       }
 
       const data = await res.json();
 
       if (data.success) {
-        showMessage(`Report shared successfully! 📧 Sent to ${email}`, 'success');
-        shareForm.reset();
-        formContainer.classList.add('hidden');
-        shareBtn.textContent = 'Share Report 🔗';
+        showMessage(`Report shared successfully! 📧 Sent to ${recipientEmail}.<br>Send to someone else?`, 'success');
+        shareForm.reset(); // clear for easy re-use
+        // Keep form open
+        // Change button text
+        shareBtn.textContent = 'Send Another Report →';
         shareBtn.classList.remove('bg-gray-500', 'hover:bg-gray-600');
         shareBtn.classList.add('from-orange-500', 'to-pink-600', 'hover:from-orange-600', 'hover:to-pink-700');
+
+        // Revert button after 10 seconds
+        setTimeout(() => {
+          shareBtn.textContent = 'Share Report 🔗';
+        }, 10000);
       } else {
         throw new Error(data.error || 'Failed');
       }
