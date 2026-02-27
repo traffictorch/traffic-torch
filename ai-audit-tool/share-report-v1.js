@@ -69,12 +69,21 @@ export function initShareReport(resultsContainer) {
 
         moduleSummary += `${name} ${scoreText} ${gradeText}\n`;
 
+        // Sub-metrics (with emoji if present in text)
         const subMetrics = card.querySelectorAll('.mt-3.space-y-2.text-sm p.font-medium');
         subMetrics.forEach(sub => {
-          const subText = sub.textContent.trim();
+          let subText = sub.textContent.trim();
+          // Try to include emoji from child span if present
+          const emojiSpan = sub.querySelector('span[style*="color:"]');
+          const emoji = emojiSpan ? emojiSpan.textContent.trim() : '';
+          if (emoji === '✅' || emoji === '❌') {
+            subText = subText.replace(emoji, '').trim();
+            subText = `${emoji} ${subText}`;
+          }
           moduleSummary += `  ${subText}\n`;
         });
 
+        // Fixes for failed modules
         if (scoreNum < 20) {
           const fixesDiv = card.querySelector('div.hidden.mt-4.space-y-8, div.hidden.mt-6.space-y-8');
           if (fixesDiv) {
@@ -96,9 +105,11 @@ export function initShareReport(resultsContainer) {
       });
 
       const reportSummary = `
-${title}
+${title || 'Traffic Torch Report Shared'}
 
-${body}
+${body || ''}
+
+Sent by: ${name} (${senderEmail})
 
 Analyzed Page: ${analyzedUrl}
 
@@ -133,14 +144,13 @@ Thank you for using Traffic Torch!
 
       if (data.success) {
         showMessage(`Report shared successfully! 📧 Sent to ${recipientEmail}.<br>Send to someone else?`, 'success');
-        shareForm.reset(); // clear for easy re-use
+        shareForm.reset();
         // Keep form open
-        // Change button text
         shareBtn.textContent = 'Send Another Report →';
         shareBtn.classList.remove('bg-gray-500', 'hover:bg-gray-600');
         shareBtn.classList.add('from-orange-500', 'to-pink-600', 'hover:from-orange-600', 'hover:to-pink-700');
 
-        // Revert button after 10 seconds
+        // Revert button text after 10 seconds
         setTimeout(() => {
           shareBtn.textContent = 'Share Report 🔗';
         }, 10000);
