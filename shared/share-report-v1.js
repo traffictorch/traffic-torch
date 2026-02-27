@@ -49,25 +49,26 @@ export function initShareReport(resultsContainer) {
       const element = document.getElementById('results');
       if (!element) throw new Error('Results container not found');
 
-      // Aggressive size control to stay under jsPDF 14400 limit
-      const maxDimension = 12000;
-      const scale = 1.2; // lowered from 1.5 to ensure safety + smaller file
+      const maxPageHeight = 11000; // safe under 14400
+      const scale = 1.0; // further reduced for size
 
-      let targetWidth = Math.min(element.offsetWidth * scale, maxDimension);
-      let targetHeight = Math.min(element.offsetHeight * scale, maxDimension);
+      let targetWidth = element.offsetWidth * scale;
+      let targetHeight = element.offsetHeight * scale;
 
-      // Maintain aspect ratio if one dimension hits limit
-      const aspect = element.offsetWidth / element.offsetHeight;
-      if (targetWidth === maxDimension) {
-        targetHeight = maxDimension / aspect;
-      } else if (targetHeight === maxDimension) {
-        targetWidth = maxDimension * aspect;
+      const aspect = targetWidth / targetHeight;
+      if (targetHeight > maxPageHeight) {
+        targetHeight = maxPageHeight;
+        targetWidth = maxPageHeight * aspect;
+      }
+      if (targetWidth > maxPageHeight) {
+        targetWidth = maxPageHeight;
+        targetHeight = maxPageHeight / aspect;
       }
 
       console.log('Generating PDF at:', targetWidth, 'x', targetHeight);
 
       const dataUrl = await htmlToImage.toPng(element, {
-        quality: 0.85,
+        quality: 0.75, // aggressive compression
         backgroundColor: '#ffffff',
         pixelRatio: scale,
         canvasWidth: targetWidth,
@@ -88,20 +89,26 @@ export function initShareReport(resultsContainer) {
 
       console.log('Final image size:', imgProps.width, 'x', imgProps.height);
 
-      if (imgProps.width > 14400 || imgProps.height > 14400) {
-        throw new Error('Image still exceeds jsPDF max dimension after clamping');
-      }
-
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({
-        orientation: imgProps.width > imgProps.height ? 'landscape' : 'portrait',
+        orientation: 'portrait',
         unit: 'px',
-        format: [imgProps.width, imgProps.height],
+        format: 'a4', // standard letter size fallback
         compress: true
       });
 
-      pdf.addImage(dataUrl, 'PNG', 0, 0, imgProps.width, imgProps.height);
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      const ratio = Math.min(pageWidth / imgProps.width, pageHeight / imgProps.height);
+      const imgWidth = imgProps.width * ratio;
+      const imgHeight = imgProps.height * ratio;
+
+      pdf.addImage(dataUrl, 'PNG', (pageWidth - imgWidth) / 2, 0, imgWidth, imgHeight, undefined, 'FAST');
+
       pdfBlob = pdf.output('blob');
+
+      console.log('PDF blob size:', pdfBlob.size / 1024 / 1024, 'MB');
 
       const formData = new FormData();
       formData.append('recipient_email', email);
