@@ -14,7 +14,8 @@
     "gh-pages": "^6.3.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.17",
-    "vite": "^7.2.4"
+    "vite": "^7.2.4",
+    "wrangler": "^4.69.0"
   },
   "dependencies": {
     "@cloudflare/puppeteer": "^1.0.4",
@@ -24,5 +25,18 @@
   },
   "overrides": {
     "rollup": "4.59.0"
-  }
+  },
+  "description": "**Instant 360° SEO + UX Health Scanner**   Fast, fully client-side tool that analyzes any website for SEO health, Performance, UX frustration signals, AI-content probability, E-E-A-T signals, intent alignment, topical authority gaps, predictive rank health, and more — with educational metric explanations, plugin solutions and shareable results.",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/traffictorch/traffic-torch.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/traffictorch/traffic-torch/issues"
+  },
+  "homepage": "https://github.com/traffictorch/traffic-torch#readme"
 }
