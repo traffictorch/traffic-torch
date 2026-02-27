@@ -119,3 +119,5 @@ shareForm.addEventListener('submit', async (e) => {
     submitBtn.textContent = originalText;
   }
 });
+
+}
