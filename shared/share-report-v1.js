@@ -25,7 +25,7 @@ export function initShareReport(resultsContainer) {
     const submitBtn = shareForm.querySelector('button');
     const originalText = submitBtn.textContent;
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Generating & Sending...';
+    submitBtn.textContent = 'Sending...';
     messageDiv.classList.add('hidden');
 
     const email = shareForm.querySelector('#share-email').value.trim();
@@ -38,93 +38,38 @@ export function initShareReport(resultsContainer) {
       return;
     }
 
-    let pdfBlob;
     try {
-      const wasHidden = formContainer.classList.contains('hidden');
-      if (!wasHidden) formContainer.classList.add('hidden');
+      // Collect key report data from DOM (simple text summary)
+      const overallScore = document.querySelector('.text-5xl.font-black.drop-shadow-lg')?.textContent.trim() || 'N/A';
+      const verdict = document.querySelector('.text-4xl.sm\\:text-5xl.font-bold.text-center.mt-4.sm\\:mt-6.drop-shadow-lg')?.textContent.trim() || 'N/A';
+      const urlAnalyzed = document.body.getAttribute('data-url') || 'unknown';
 
-      const originalTheme = document.documentElement.classList.contains('dark');
-      if (originalTheme) document.documentElement.classList.remove('dark');
+      const reportSummary = `
+${title}
 
-      const element = document.getElementById('results');
-      if (!element) throw new Error('Results container not found');
+${body}
 
-      const maxPageHeight = 11000; // safe under 14400
-      const scale = 1.0; // further reduced for size
+Overall AI Audit Score: ${overallScore}
+Verdict: ${verdict}
+Analyzed Page: ${urlAnalyzed}
+Full report link: ${window.location.href}
 
-      let targetWidth = element.offsetWidth * scale;
-      let targetHeight = element.offsetHeight * scale;
-
-      const aspect = targetWidth / targetHeight;
-      if (targetHeight > maxPageHeight) {
-        targetHeight = maxPageHeight;
-        targetWidth = maxPageHeight * aspect;
-      }
-      if (targetWidth > maxPageHeight) {
-        targetWidth = maxPageHeight;
-        targetHeight = maxPageHeight / aspect;
-      }
-
-      console.log('Generating PDF at:', targetWidth, 'x', targetHeight);
-
-      const dataUrl = await htmlToImage.toPng(element, {
-        quality: 0.75, // aggressive compression
-        backgroundColor: '#ffffff',
-        pixelRatio: scale,
-        canvasWidth: targetWidth,
-        canvasHeight: targetHeight,
-        fontEmbedCSS: true,
-        includeQueryParams: true,
-        imagePlaceholder: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='
-      });
-
-      if (originalTheme) document.documentElement.classList.add('dark');
-      if (!wasHidden) formContainer.classList.remove('hidden');
-
-      const imgProps = await new Promise(resolve => {
-        const img = new Image();
-        img.onload = () => resolve({ width: img.width, height: img.height });
-        img.src = dataUrl;
-      });
-
-      console.log('Final image size:', imgProps.width, 'x', imgProps.height);
-
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'px',
-        format: 'a4', // standard letter size fallback
-        compress: true
-      });
-
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-
-      const ratio = Math.min(pageWidth / imgProps.width, pageHeight / imgProps.height);
-      const imgWidth = imgProps.width * ratio;
-      const imgHeight = imgProps.height * ratio;
-
-      pdf.addImage(dataUrl, 'PNG', (pageWidth - imgWidth) / 2, 0, imgWidth, imgHeight, undefined, 'FAST');
-
-      pdfBlob = pdf.output('blob');
-
-      console.log('PDF blob size:', pdfBlob.size / 1024 / 1024, 'MB');
+Thank you for using Traffic Torch!
+`;
 
       const formData = new FormData();
       formData.append('recipient_email', email);
       formData.append('name', 'Traffic Torch User');
       formData.append('email', 'no-reply@traffictorch.net');
-      formData.append('message', `${title}\n\n${body}\n\nReport URL: ${window.location.href}\nAnalyzed page: ${document.body.getAttribute('data-url') || 'unknown'}`);
-      formData.append('attachment', pdfBlob, 'AI-Audit-Report.pdf');
+      formData.append('message', reportSummary);
 
-      const res = await fetch('/api/contact', {
+      const res = await fetch('/api/contact', {  // keep existing endpoint
         method: 'POST',
         body: formData
       });
 
       if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || `Server error ${res.status}`);
+        throw new Error(`Server error ${res.status}`);
       }
 
       const data = await res.json();
@@ -141,7 +86,7 @@ export function initShareReport(resultsContainer) {
       }
     } catch (err) {
       console.error('Share report error:', err);
-      showMessage(`Failed to generate or send report: ${err.message || 'Unknown error'}. Try again.`, 'error');
+      showMessage(`Failed to send report: ${err.message}. Try again.`, 'error');
       formContainer.classList.remove('hidden');
     } finally {
       resetButton();
