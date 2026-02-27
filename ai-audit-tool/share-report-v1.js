@@ -69,11 +69,10 @@ export function initShareReport(resultsContainer) {
 
         moduleSummary += `${name} ${scoreText} ${gradeText}\n`;
 
-        // Broader selector for sub-metrics (covers both Perplexity and grid cards)
+        // Sub-metrics - combined selector for both card types
         const subLines = card.querySelectorAll('.space-y-3.text-base p.font-medium, .space-y-2.text-sm p.font-medium');
         subLines.forEach(line => {
           let lineText = line.textContent.trim();
-          // Extract emoji from child span text
           const emojiSpan = line.querySelector('span');
           const emoji = emojiSpan ? emojiSpan.textContent.trim() : '';
           if (emoji === '✅' || emoji === '❌' || emoji === '⚠️') {
