@@ -57,7 +57,11 @@ shareForm.addEventListener('submit', async (e) => {
       pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }  // Better handling of breaks
     };
 
-    pdfBlob = await html2pdf().set(opt).from(element).output('blob');
+    if (typeof html2pdf === 'undefined') {
+  throw new Error('html2pdf library failed to load. Check console for script errors.');
+}
+
+pdfBlob = await html2pdf().from(element).set(opt).save('dummy.pdf', false).output('blob');  // .save(false) prevents auto-download
 
     // Restore form visibility if it was open
     if (!wasHidden) {
