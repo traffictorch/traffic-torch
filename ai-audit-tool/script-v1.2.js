@@ -14,6 +14,19 @@ const TOKEN_KEY = 'traffic_torch_jwt';
 
 
 document.addEventListener('DOMContentLoaded', () => {
+// Auto-run if ?url= present (added here)
+  const params = new URLSearchParams(window.location.search);
+  const sharedUrl = params.get('url');
+  if (sharedUrl) {
+    const input = document.getElementById('url-input');
+    if (input) {
+      input.value = sharedUrl;
+      // Trigger submit (same as form submit)
+      const event = new Event('submit', { bubbles: true, cancelable: true });
+      document.getElementById('audit-form').dispatchEvent(event);
+    }
+  }
+
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
@@ -588,16 +601,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <div class="text-center my-16 px-4">
   <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
+    <!-- Share Report - Green - first -->
+    <button id="share-report-btn"
+            class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+      Share Report 🔗
+    </button>
+
+    <!-- Save Report - Orange - second -->
     <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
             class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
       Save Report 📄
     </button>
 
-    <button id="share-report-btn"
-            class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Share Report 📧
-    </button>
-
+    <!-- Submit Feedback - Blue - third -->
     <button id="feedback-btn"
             class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
       Submit Feedback 💬
@@ -636,7 +652,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
       <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
-        Feedback for AI Audit Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed url'}</strong>
+        Feedback for AI Audit Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
       </p>
 
       <form id="feedback-form" class="space-y-6">

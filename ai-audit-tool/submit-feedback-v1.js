@@ -24,14 +24,21 @@ export function initSubmitFeedback(resultsContainer) {
     feedbackBtn.classList.toggle('hover:to-indigo-700', !isHidden);
   });
 
-  // Rating buttons
-  ratingButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      ratingButtons.forEach(b => b.classList.remove('scale-125'));
-      btn.classList.add('scale-125');
-      document.getElementById('feedback-rating').value = btn.dataset.rating;
+// Rating buttons - highlight selected one
+ratingButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    // Remove active from all
+    ratingButtons.forEach(b => {
+      b.classList.remove('scale-150', 'ring-4', 'ring-blue-400', 'ring-opacity-70');
+      b.classList.add('hover:scale-125');
     });
+    // Add active to clicked
+    btn.classList.remove('hover:scale-125');
+    btn.classList.add('scale-150', 'ring-4', 'ring-blue-400', 'ring-opacity-70');
+    // Store value
+    document.getElementById('feedback-rating').value = btn.dataset.rating;
   });
+});
 
   // Show/hide email field
   replyCheckbox.addEventListener('change', () => {
