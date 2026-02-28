@@ -16,22 +16,20 @@ export function initShareReport(resultsContainer) {
       const baseUrl = window.location.origin + window.location.pathname;
       const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}`;
 
-      // Nice share text
-      const pageTitle = document.title || 'this page';
-      const shareText = `Check out ${pageTitle} on Traffic Torch AI Audit Tool:\n${shareUrl}`;
-
-      // Try native share first
+     // Nice share text – URL inline only once, reads smoothly
+      const pageTitle = document.title.trim() || 'this page';
+      const shareText = `Check out ${pageTitle} on Traffic Torch AI Audit Tool: ${shareUrl}`;
+      // Try native share first – no separate url to avoid app duplicates
       if (navigator.share) {
         await navigator.share({
           title: 'Traffic Torch AI Audit Report',
-          text: shareText,
-          url: shareUrl
+          text: shareText
         });
         showMessage('Shared successfully!', 'success');
       } else {
-        // Fallback: copy to clipboard
-        await navigator.clipboard.writeText(shareUrl);
-        showMessage('Link copied to clipboard!<br>Paste it anywhere to share the report.', 'success');
+        // Fallback: copy the full readable text (with one URL)
+        await navigator.clipboard.writeText(shareText);
+        showMessage('Full report link copied to clipboard!<br>Paste it anywhere to share.', 'success');
       }
     } catch (err) {
       console.error('Share failed:', err);

@@ -24,18 +24,34 @@ export function initSubmitFeedback(resultsContainer) {
     feedbackBtn.classList.toggle('hover:to-indigo-700', !isHidden);
   });
 
-  // Rating buttons - clear visual selection feedback
+  // Rating buttons - persistent selection feedback (ring stays after click)
   ratingButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      // Reset all ratings to default state
+      // Reset all to default (no ring, no bg, hover enabled)
       ratingButtons.forEach(b => {
-        b.classList.remove('scale-150', 'ring-4', 'ring-blue-500', 'ring-opacity-80', 'bg-blue-100', 'dark:bg-blue-900/30');
+        b.classList.remove(
+          'scale-150',
+          'ring-4',
+          'ring-blue-500',
+          'ring-opacity-80',
+          'bg-blue-100',
+          'dark:bg-blue-900/30',
+          'selected-rating'  // custom class for persistence
+        );
         b.classList.add('hover:scale-125', 'transition-all', 'duration-200');
       });
 
-      // Highlight the selected one
+      // Apply persistent selected state to clicked emoji
       btn.classList.remove('hover:scale-125');
-      btn.classList.add('scale-150', 'ring-4', 'ring-blue-500', 'ring-opacity-80', 'bg-blue-100', 'dark:bg-blue-900/30');
+      btn.classList.add(
+        'scale-150',
+        'ring-4',
+        'ring-blue-500',
+        'ring-opacity-80',
+        'bg-blue-100',
+        'dark:bg-blue-900/30',
+        'selected-rating'
+      );
 
       // Store the rating value
       document.getElementById('feedback-rating').value = btn.dataset.rating;

@@ -159,10 +159,8 @@
 }
 
 /* EACH MODULE ON ITS OWN NEW PAGE (no more squashing) */
-.flex.justify-center.my-8,           /* Overall Score Card */
 .max-w-5xl.mx-auto.my-16,            /* Radar Chart */
 .space-y-8 > div,                    /* Perplexity + the 4-metric grid */
-.mt-20.space-y-8 > div {             /* Top 3 Priority Fixes */
   page-break-before: always !important;
   break-before: page !important;
 }
@@ -174,5 +172,24 @@
 .bg-orange-50.dark\:bg-orange-900\/20 {
   break-inside: avoid !important;
   page-break-inside: avoid !important;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   FORCE “Show Fixes” expanded + “More Details”  */
+button[onclick*="More Details"] + .hidden,
+.hidden.mt-6.space-y-6,
+.hidden.mt-4.space-y-6 {
+  display: block !important;
+}
+
+button[onclick*="Show Fixes"] + .hidden,
+.hidden.mt-6.space-y-8,
+.hidden.mt-4.space-y-8 {
+  display: block !important;
+}
+
+/* Hide the toggle buttons themselves in print */
+button[onclick*="toggle('hidden')"] {
+  display: none !important;
 }
 }
