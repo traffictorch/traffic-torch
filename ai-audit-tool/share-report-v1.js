@@ -10,18 +10,17 @@ export function initShareReport(resultsContainer) {
     const baseUrl = window.location.origin + window.location.pathname;
     const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}`;
 
-    // Readable name from tested URL (domain + path)
-    let pageName = 'this page';
-    try {
-      const urlObj = new URL(inputUrl.startsWith('http') ? inputUrl : 'https://' + inputUrl);
-      pageName = urlObj.hostname.replace(/^www\./i, '') +
-                 (urlObj.pathname !== '/' && urlObj.pathname ? ' › ' + urlObj.pathname.slice(1).replace(/\//g, ' › ') : '');
-    } catch {
-      pageName = inputUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
+    // Use the exact same tested page title as shown in the score card (from data-title or document.title override)
+    let pageTitle = document.querySelector('#results .text-center.text-lg.sm\\:text-xl.font-medium')?.textContent.trim() || 
+                    document.title.trim() || 
+                    'this page';
+
+    // Clean up if it's still the tool's title
+    if (pageTitle.includes('Traffic Torch') || pageTitle === 'AI Content Detector Tool – Perplex & Burst Checker | Traffic Torch') {
+      pageTitle = 'this page';
     }
 
-    // Clean text: tested page + tool + single URL (no colon break, no duplicate feel)
-    const shareText = `Check out ${pageName} on Traffic Torch AI Audit Tool ${shareUrl}`;
+    const shareText = `Check out ${pageTitle} on Traffic Torch AI Audit Tool ${shareUrl}`;
 
     try {
       if (navigator.share) {

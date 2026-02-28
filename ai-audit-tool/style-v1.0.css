@@ -152,7 +152,7 @@ html, body {
 /* Feedback rating emojis */
 [data-rating] {
   transition: all 0.2s ease;
-  padding: 0.5rem;
+  padding: 0.0rem;
   border-radius: 9999px; /* fully round for nice ring effect */
 }
 [data-rating]:hover {
