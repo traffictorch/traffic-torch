@@ -7,6 +7,8 @@ import { analyzeDepth } from './modules/depth.js';
 import { analyzeReadability } from './modules/readability.js';
 import { analyzeSchema } from './modules/schema.js';
 import { canRunTool } from '/main-v1.1.js';
+import { initShareReport } from './share-report-v1.js';
+import { initSubmitFeedback } from './submit-feedback-v1.js';
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -343,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const title = (doc.title || '').trim();
       if (!title) return '';
       const truncated = title.length > 65 ? title.substring(0, 65) : title;
-      return `<p class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>`;
+      return `<p id="analyzed-page-title" class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>`;
     })()}
     ${(() => {
       const g = getGrade(overall);
@@ -797,12 +799,96 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-<!-- PDF Button -->
-<div class="text-center my-16">
-  <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
-       class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90">
-    Save Report 📄
-  </button>
+<!-- PDF Share Feedback Buttons -->
+<div class="text-center my-16 px-4">
+  <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
+    <!-- Share Report - Green - first -->
+    <button id="share-report-btn"
+            class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+      Share Report ↗️
+    </button>
+    <!-- Save Report - Orange - second -->
+    <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
+            class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+      Save Report 📥
+    </button>
+    <!-- Submit Feedback - Blue - third -->
+    <button id="feedback-btn"
+            class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+     Submit Feedback 💬
+    </button>
+  </div>
+
+  <!-- Share message - placed directly below buttons, always visible when triggered -->
+  <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
+
+  <!-- Share Report Form (still hidden/expandable) -->
+  <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
+    <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
+      <div>
+        <label for="share-name" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Name</label>
+        <input id="share-name" type="text" required placeholder="Your name" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+      </div>
+      <div>
+        <label for="share-sender-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email (for replies)</label>
+        <input id="share-sender-email" type="email" required placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+      </div>
+      <div>
+        <label for="share-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Recipient Email</label>
+        <input id="share-email" type="email" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+      </div>
+      <div>
+        <label for="share-title" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Email Title</label>
+        <input id="share-title" type="text" required placeholder="Traffic Torch SEO Intent Report" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+      </div>
+      <div>
+        <label for="share-body" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Message</label>
+        <textarea id="share-body" required rows="5" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-orange-500"></textarea>
+      </div>
+      <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
+    </form>
+  </div>
+
+  <!-- Feedback Form (unchanged) -->
+  <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
+    <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
+      <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
+        Feedback for SEO Intent Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
+      </p>
+      <form id="feedback-form" class="space-y-6">
+        <div>
+          <label for="feedback-rating" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
+          <div class="flex gap-3 text-3xl justify-center sm:justify-start">
+            <button type="button" data-rating="1" class="hover:scale-125 transition">😞</button>
+            <button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button>
+            <button type="button" data-rating="3" class="hover:scale-125 transition">😐</button>
+            <button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button>
+            <button type="button" data-rating="5" class="hover:scale-125 transition">😍</button>
+          </div>
+          <input type="hidden" id="feedback-rating" name="rating">
+        </div>
+        <div>
+          <label class="flex items-center gap-2 justify-center sm:justify-start">
+            <input type="checkbox" id="reply-requested" class="w-5 h-5">
+            <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span>
+          </label>
+        </div>
+        <div id="email-group" class="hidden">
+          <label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label>
+          <input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label>
+          <textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center sm:text-left">
+            <span id="char-count">0</span>/1000 characters
+          </p>
+        </div>
+        <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
+      </form>
+      <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
+    </div>
+  </div>
 </div>
       `;
 
@@ -892,6 +978,9 @@ document.addEventListener('DOMContentLoaded', () => {
           console.error('Chart init failed', e);
         }
       }, 150);
+      
+        initShareReport(results);
+        initSubmitFeedback(results);       
 
       // Event delegation for fixes toggles
       results.addEventListener('click', (e) => {
