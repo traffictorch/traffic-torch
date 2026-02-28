@@ -8,8 +8,12 @@ import { analyzeMapsVisuals } from './modules/maps-visuals.js';
 import { analyzeStructuredData } from './modules/structured-data.js';
 import { analyzeReviewsStructure } from './modules/reviews-structure.js';
 import { canRunTool } from '/main-v1.1.js';
-import { initShareReport } from './share-report-v1.js';
-import { initSubmitFeedback } from './submit-feedback-v1.js';
+// Use absolute path from root – very reliable on Cloudflare Pages
+import { initShareReport } from '/local-seo-tool/share-report-v1.js';
+import { initSubmitFeedback } from '/local-seo-tool/submit-feedback-v1.js';
+
+// Temporary debug – add right after imports
+console.log("Main script-v1.2.js loaded – attempting to import share-report");
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -755,8 +759,18 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }, 150);
     
-        initShareReport(results);
-        initSubmitFeedback(results); 
+console.log("About to call initShareReport – is it defined?", typeof initShareReport);
+
+if (typeof initShareReport === 'function') {
+  initShareReport(results);
+  console.log("initShareReport executed successfully");
+} else {
+  console.error("initShareReport is NOT a function – import failed");
+}
+
+if (typeof initSubmitFeedback === 'function') {
+  initSubmitFeedback(results);
+}
     
   }
 });
