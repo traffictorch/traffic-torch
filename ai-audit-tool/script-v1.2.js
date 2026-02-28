@@ -616,15 +616,13 @@ const urlParams = new URLSearchParams(window.location.search);
     <!-- Share Report - Green - first -->
     <button id="share-report-btn"
             class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Share Report 🔗
+      Share Report ↗️
     </button>
-
     <!-- Save Report - Orange - second -->
     <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
             class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Save Report 📄
+      Save Report 📥
     </button>
-
     <!-- Submit Feedback - Blue - third -->
     <button id="feedback-btn"
             class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
@@ -632,7 +630,10 @@ const urlParams = new URLSearchParams(window.location.search);
     </button>
   </div>
 
-  <!-- Share Report Form -->
+  <!-- Share message - placed directly below buttons, always visible when triggered -->
+  <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
+
+  <!-- Share Report Form (still hidden/expandable) -->
   <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
       <div>
@@ -657,16 +658,14 @@ const urlParams = new URLSearchParams(window.location.search);
       </div>
       <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
     </form>
-    <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
   </div>
 
-  <!-- Feedback Form -->
+  <!-- Feedback Form (unchanged) -->
   <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
       <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
         Feedback for AI Audit Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
       </p>
-
       <form id="feedback-form" class="space-y-6">
         <div>
           <label for="feedback-rating" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
@@ -679,19 +678,16 @@ const urlParams = new URLSearchParams(window.location.search);
           </div>
           <input type="hidden" id="feedback-rating" name="rating">
         </div>
-
         <div>
           <label class="flex items-center gap-2 justify-center sm:justify-start">
             <input type="checkbox" id="reply-requested" class="w-5 h-5">
             <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Reply requested</span>
           </label>
         </div>
-
         <div id="email-group" class="hidden">
           <label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label>
           <input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500">
         </div>
-
         <div>
           <label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label>
           <textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea>
@@ -699,10 +695,8 @@ const urlParams = new URLSearchParams(window.location.search);
             <span id="char-count">0</span>/1000 characters
           </p>
         </div>
-
         <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
       </form>
-
       <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
     </div>
   </div>

@@ -39,14 +39,18 @@ export function initShareReport(resultsContainer) {
     }
   });
 
-  function showMessage(text, type) {
-    const messageDiv = resultsContainer.querySelector('#share-message') || document.createElement('div');
-    messageDiv.id = 'share-message';
+function showMessage(text, type) {
+    const messageDiv = document.getElementById('share-message');
+    if (!messageDiv) return;
+
     messageDiv.innerHTML = type === 'success' ? `✅ ${text}` : `❌ ${text}`;
     messageDiv.className = `mt-4 p-4 rounded-2xl text-center font-medium ${
-      type === 'success' ? 'text-green-400 bg-green-900/20' : 'text-red-400 bg-red-900/20'
-    } dark:text-gray-200`;
-    resultsContainer.appendChild(messageDiv);
-    setTimeout(() => messageDiv.remove(), 8000);
-  }
+      type === 'success' ? 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-200' : 'text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-200'
+    }`;
+    messageDiv.classList.remove('hidden');
+
+    setTimeout(() => {
+        messageDiv.classList.add('hidden');
+    }, 8000);
+}
 }

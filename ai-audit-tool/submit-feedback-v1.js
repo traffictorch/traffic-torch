@@ -24,21 +24,23 @@ export function initSubmitFeedback(resultsContainer) {
     feedbackBtn.classList.toggle('hover:to-indigo-700', !isHidden);
   });
 
-// Rating buttons - highlight selected one
-ratingButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    // Remove active from all
-    ratingButtons.forEach(b => {
-      b.classList.remove('scale-150', 'ring-4', 'ring-blue-400', 'ring-opacity-70');
-      b.classList.add('hover:scale-125');
+  // Rating buttons - clear visual selection feedback
+  ratingButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Reset all ratings to default state
+      ratingButtons.forEach(b => {
+        b.classList.remove('scale-150', 'ring-4', 'ring-blue-500', 'ring-opacity-80', 'bg-blue-100', 'dark:bg-blue-900/30');
+        b.classList.add('hover:scale-125', 'transition-all', 'duration-200');
+      });
+
+      // Highlight the selected one
+      btn.classList.remove('hover:scale-125');
+      btn.classList.add('scale-150', 'ring-4', 'ring-blue-500', 'ring-opacity-80', 'bg-blue-100', 'dark:bg-blue-900/30');
+
+      // Store the rating value
+      document.getElementById('feedback-rating').value = btn.dataset.rating;
     });
-    // Add active to clicked
-    btn.classList.remove('hover:scale-125');
-    btn.classList.add('scale-150', 'ring-4', 'ring-blue-400', 'ring-opacity-70');
-    // Store value
-    document.getElementById('feedback-rating').value = btn.dataset.rating;
   });
-});
 
   // Show/hide email field
   replyCheckbox.addEventListener('change', () => {
