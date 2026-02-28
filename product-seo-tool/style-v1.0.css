@@ -95,24 +95,17 @@ html, body {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Pro Blur 
-.pro-blur {
-  filter: blur(8px);
-  position: relative;
-  pointer-events: none;
+/* Feedback rating emojis */
+[data-rating] {
+  transition: all 0.2s ease;
+  padding: 0.0rem;
+  border-radius: 9999px; /* fully round for nice ring effect */
 }
-.pro-blur::after {
-  content: "Upgrade to Pro for full Schema, Variants & Social Analysis";
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.4);
-  color: white;
-  font-weight: bold;
-  font-size: 1.2rem;
-  text-align: center;
-  padding: 1rem;
-  pointer-events: auto;
-} */
+[data-rating]:hover {
+  background-color: rgba(59, 130, 246, 0.1); /* light blue hover */
+}
+
+[data-rating].selected-rating:hover {
+  scale: 1.5 !important;          /* keep enlarged on hover too */
+  background-color: rgba(59, 130, 246, 0.2) !important; /* slightly stronger blue */
+}

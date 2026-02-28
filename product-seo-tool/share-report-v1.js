@@ -23,14 +23,14 @@ export function initShareReport(resultsContainer) {
     }
 
     // Remove any leftover tool name if needed
-    pageTitle = pageTitle.replace(/AI Content Detector Tool – Perplex & Burst Checker | Traffic Torch/gi, '').trim() || 'this page';
+    pageTitle = pageTitle.replace(/Product SEO: eCommerce Product Page Auditor | Traffic Torch/gi, '').trim() || 'this page';
 
-    const shareText = `Check out ${pageTitle} on Traffic Torch AI Audit Tool ${shareUrl}`;
+    const shareText = `Check out ${pageTitle} on Traffic Torch Product SEO Tool ${shareUrl}`;
 
     try {
       if (navigator.share) {
         await navigator.share({
-          title: 'Traffic Torch AI Audit Report',
+          title: 'Traffic Torch Product SEO Report',
           text: shareText
         });
         showMessage('Shared successfully!', 'success');

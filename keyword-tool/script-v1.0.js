@@ -676,7 +676,7 @@ return `
     </div>
   </div>
 </div>
-<!-- PDF Button -->
+<!-- PDF Share Feedback Buttons -->
 <div class="text-center my-16 px-4">
   <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
     <!-- Share Report - Green - first -->
@@ -847,6 +847,9 @@ if (failedMetrics.length > 0) {
           console.error('Radar chart failed', e);
         }
       }, 150);
+      
+        initShareReport(results);
+        initSubmitFeedback(results);
       
       
   });

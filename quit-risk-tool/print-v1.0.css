@@ -16,7 +16,7 @@
     padding-top: 20vh;
     line-height: 1.4;
     white-space: pre;
-    font-size: 3.5rem;
+    font-size: 2rem;
     text-shadow:
       -2px -2px 0 #fb923c,
       2px -2px 0 #fb923c,
@@ -205,10 +205,55 @@
     line-height: 1.4 !important;
   }
 
-/* Hide promotional / educational blocks via unique IDs – safe from JS class changes */
+/* Hide promotional / educational blocks + share/feedback + AI Content Audit explanation section */
 #author-bio,
 #promo-high-impact-cards,
-#promo-old-vs-modern-seo {
+#promo-old-vs-modern-seo,
+#share-form-container,
+#feedback-form-container,
+#share-message,
+#feedback-message,
+#share-report-btn ~ div[id*="form"],
+#feedback-btn ~ div[id*="form"],
+.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8,  /* the entire What is AI Content Audit section */
+.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 h2,  /* title */
+.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 p,     /* paragraphs */
+.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 div.text-xl.leading-relaxed.text-center {
+  display: none !important;
+}
+
+/* EACH MODULE ON ITS OWN NEW PAGE (no more squashing) */
+.max-w-5xl.mx-auto.my-16,            /* Radar Chart */
+.space-y-8 > div,                    /* Perplexity + the 4-metric grid */
+  page-break-before: always !important;
+  break-before: page !important;
+}
+
+/* Keep important content together but never split cards */
+.score-card,
+.metric-card,
+.bg-white.dark\:bg-gray-800.rounded-2xl,
+.bg-orange-50.dark\:bg-orange-900\/20 {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   FORCE “Show Fixes” expanded + “More Details”  */
+button[onclick*="More Details"] + .hidden,
+.hidden.mt-6.space-y-6,
+.hidden.mt-4.space-y-6 {
+  display: block !important;
+}
+
+button[onclick*="Show Fixes"] + .hidden,
+.hidden.mt-6.space-y-8,
+.hidden.mt-4.space-y-8 {
+  display: block !important;
+}
+
+/* Hide the toggle buttons themselves in print */
+button[onclick*="toggle('hidden')"] {
   display: none !important;
 }
 }
