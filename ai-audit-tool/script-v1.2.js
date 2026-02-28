@@ -265,7 +265,7 @@ const urlParams = new URLSearchParams(window.location.search);
       const title = (doc?.title || '').trim();
       if (!title) return '';
       const truncated = title.length > 65 ? title.substring(0, 65) : title;
-      return `<p class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>`;
+      return `<p id="analyzed-page-title" class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>`;
     })()}
     ${(() => {
       const gradeText = yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Needs Improvement' : 'Needs Work';

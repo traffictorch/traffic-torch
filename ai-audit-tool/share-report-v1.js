@@ -10,15 +10,20 @@ export function initShareReport(resultsContainer) {
     const baseUrl = window.location.origin + window.location.pathname;
     const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}`;
 
-    // Use the exact same tested page title as shown in the score card (from data-title or document.title override)
-    let pageTitle = document.querySelector('#results .text-center.text-lg.sm\\:text-xl.font-medium')?.textContent.trim() || 
-                    document.title.trim() || 
-                    'this page';
-
-    // Clean up if it's still the tool's title
-    if (pageTitle.includes('Traffic Torch') || pageTitle === 'AI Content Detector Tool – Perplex & Burst Checker | Traffic Torch') {
-      pageTitle = 'this page';
+    // Get the tested page title directly from the visible element in the score card
+    let pageTitle = 'this page';
+    const titleElement = document.getElementById('analyzed-page-title');
+    if (titleElement) {
+      pageTitle = titleElement.textContent.trim();
+    } else {
+      // Fallback if ID not found (e.g. old deploy)
+      pageTitle = document.querySelector('.bg-white.dark\\:bg-gray-800.rounded-3xl.shadow-2xl.p-6.sm\\:p-8.md\\:p-10 p.mt-6.text-base.sm\\:text-lg')?.textContent.trim() ||
+                  document.title.trim() ||
+                  'this page';
     }
+
+    // Remove any leftover tool name if needed
+    pageTitle = pageTitle.replace(/Traffic Torch|AI Content Detector Tool|Perplex & Burst Checker/gi, '').trim() || 'this page';
 
     const shareText = `Check out ${pageTitle} on Traffic Torch AI Audit Tool ${shareUrl}`;
 
