@@ -26,12 +26,11 @@ export function initShareReport(resultsContainer) {
 
     try {
       if (navigator.share) {
-        await navigator.share({
-          title: 'Traffic Torch Local SEO Report',
-          text: shareText
-          // No url: property — this is the key difference that works in your other tools
-        });
-        showMessage('Shared successfully!', 'success');
+  await navigator.share({
+    text: shareText
+    // title removed — this stops the share sheet from showing a second header line
+  });
+  showMessage('Shared successfully!', 'success');
       } else {
         await navigator.clipboard.writeText(shareText);
         showMessage('Report link copied!<br>Paste anywhere to share.', 'success');
