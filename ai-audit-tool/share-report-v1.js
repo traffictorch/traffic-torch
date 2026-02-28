@@ -31,7 +31,10 @@ export function initShareReport(resultsContainer) {
         await navigator.clipboard.writeText(shareText);
         showMessage('Full report link copied to clipboard!<br>Paste it anywhere to share.', 'success');
       }
-    } 
+    } catch (err) {
+      console.error('Share failed:', err);
+      showMessage('Failed to share. Try copying the link manually.', 'error');
+    }
   });
 
 function showMessage(text, type) {
