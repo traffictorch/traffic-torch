@@ -52,4 +52,4 @@ export function initShareReport(resultsContainer) {
     messageDiv.classList.remove('hidden');
     setTimeout(() => messageDiv.classList.add('hidden'), 8000);
   }
-}
+} 
