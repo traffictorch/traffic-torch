@@ -107,3 +107,18 @@ html, body { overscroll-behavior-x: none; }
 #results .overflow-x-auto, #results table { width: 100% !important; max-width: 100% !important; table-layout: fixed; overflow-wrap: break-word; }
 #results table th, #results table td { word-break: break-word; overflow-wrap: anywhere; }
 .overflow-x-auto { -webkit-overflow-scrolling: touch; }
+
+/* Feedback rating emojis */
+[data-rating] {
+  transition: all 0.2s ease;
+  padding: 0.0rem;
+  border-radius: 9999px; /* fully round for nice ring effect */
+}
+[data-rating]:hover {
+  background-color: rgba(59, 130, 246, 0.1); /* light blue hover */
+}
+
+[data-rating].selected-rating:hover {
+  scale: 1.5 !important;          /* keep enlarged on hover too */
+  background-color: rgba(59, 130, 246, 0.2) !important; /* slightly stronger blue */
+}

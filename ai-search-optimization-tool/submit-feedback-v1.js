@@ -15,7 +15,7 @@ export function initSubmitFeedback(resultsContainer) {
   feedbackBtn.addEventListener('click', () => {
     const isHidden = formContainer.classList.contains('hidden');
     formContainer.classList.toggle('hidden');
-    feedbackBtn.textContent = isHidden ? 'Cancel Feedback ✕' : 'Submit Feedback 📝';
+    feedbackBtn.textContent = isHidden ? 'Cancel Feedback ✕' : 'Submit Feedback 💬';
     feedbackBtn.classList.toggle('bg-gray-500', isHidden);
     feedbackBtn.classList.toggle('hover:bg-gray-600', isHidden);
     feedbackBtn.classList.toggle('from-blue-500', !isHidden);

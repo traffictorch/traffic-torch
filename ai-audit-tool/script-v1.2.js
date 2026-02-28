@@ -601,7 +601,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <!-- Submit Feedback - Blue - third -->
     <button id="feedback-btn"
             class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Feedback 💬
+     Submit Feedback 💬
     </button>
   </div>
 
