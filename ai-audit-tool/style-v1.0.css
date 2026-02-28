@@ -148,3 +148,13 @@ html, body {
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
 }
+
+/* Feedback rating emojis */
+[data-rating] {
+  transition: all 0.2s ease;
+  padding: 0.5rem;
+  border-radius: 9999px; /* fully round for nice ring effect */
+}
+[data-rating]:hover {
+  background-color: rgba(59, 130, 246, 0.1); /* light blue hover */
+}

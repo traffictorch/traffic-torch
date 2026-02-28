@@ -145,10 +145,34 @@
     display: none !important;
   }
 
-/* Hide promotional / educational blocks via unique IDs – safe from JS class changes */
+/* Hide promotional / educational blocks + NEW share/feedback elements (old form no longer shows) */
 #author-bio,
 #promo-high-impact-cards,
-#promo-old-vs-modern-seo {
+#promo-old-vs-modern-seo,
+#share-form-container,
+#feedback-form-container,
+#share-message,
+#feedback-message,
+#share-report-btn ~ div[id*="form"],
+#feedback-btn ~ div[id*="form"] {
   display: none !important;
+}
+
+/* EACH MODULE ON ITS OWN NEW PAGE (no more squashing) */
+.flex.justify-center.my-8,           /* Overall Score Card */
+.max-w-5xl.mx-auto.my-16,            /* Radar Chart */
+.space-y-8 > div,                    /* Perplexity + the 4-metric grid */
+.mt-20.space-y-8 > div {             /* Top 3 Priority Fixes */
+  page-break-before: always !important;
+  break-before: page !important;
+}
+
+/* Keep important content together but never split cards */
+.score-card,
+.metric-card,
+.bg-white.dark\:bg-gray-800.rounded-2xl,
+.bg-orange-50.dark\:bg-orange-900\/20 {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
 }
 }

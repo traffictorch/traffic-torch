@@ -681,7 +681,7 @@ const urlParams = new URLSearchParams(window.location.search);
         <div>
           <label class="flex items-center gap-2 justify-center sm:justify-start">
             <input type="checkbox" id="reply-requested" class="w-5 h-5">
-            <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Reply requested</span>
+            <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span>
           </label>
         </div>
         <div id="email-group" class="hidden">
