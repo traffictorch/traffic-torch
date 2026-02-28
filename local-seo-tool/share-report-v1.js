@@ -1,54 +1,54 @@
 export function initShareReport(resultsContainer) {
   const shareBtn = resultsContainer.querySelector('#share-report-btn');
-  if (!shareBtn) {
-    console.warn('[ShareReport] Button #share-report-btn not found');
-    return;
-  }
+  if (!shareBtn) return;
 
   shareBtn.addEventListener('click', async () => {
+    // Use the correct input ID from your form (page-url, not url-input)
     const pageUrlInput = document.getElementById('page-url');
     const inputUrl = pageUrlInput?.value.trim() || '';
 
-    const baseUrl = window.location.origin + window.location.pathname;
-    const shareUrl = inputUrl 
-      ? `${baseUrl}?url=${encodeURIComponent(inputUrl)}` 
-      : baseUrl;
+    if (!inputUrl) return; // silent fail if no URL
 
+    // Build clean deep link
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}`;
+
+    // Get page title from the score card element
     let pageTitle = 'this page';
     const titleElement = document.getElementById('analyzed-page-title');
     if (titleElement) {
       pageTitle = titleElement.textContent.trim();
     } else {
-      pageTitle = document.title.trim() || 'this page';
+      // Fallback (robust selector from your HTML structure)
+      pageTitle = document.querySelector('#analyzed-page-title')?.textContent.trim() ||
+                  document.title.trim() ||
+                  'this page';
     }
 
+    // Clean up any leftover branding if present
     pageTitle = pageTitle
       .replace(/Local SEO On-Page Checker – Audit Tool | Traffic Torch/gi, '')
       .trim() || 'this page';
 
-    // ── FINAL DESIRED FORMAT ─────────────────────────────────────────────────────
-    // Short description without URL (mobile share sheet adds link preview)
-    const shareText = `Check out ${pageTitle} local SEO report on Traffic Torch`;
-
-    // Full version for clipboard (desktop/fallback)
-    const clipboardText = `${shareText} ${shareUrl}`;
+    // Final clean single-line text (exactly what you want)
+    const shareText = `Check out ${pageTitle} local SEO report on Traffic Torch ${shareUrl}`;
 
     try {
       if (navigator.share) {
-        // Mobile: no URL in text → platform adds clean preview only once
+        // Mobile: send short text without URL + explicit url to avoid duplication
         await navigator.share({
           title: 'Traffic Torch Local SEO Report',
-          text: shareText,
+          text: `Check out ${pageTitle} local SEO report on Traffic Torch`,
           url: shareUrl
         });
         showMessage('Shared successfully!', 'success');
       } else {
-        // Desktop: copy full clean line
-        await navigator.clipboard.writeText(clipboardText);
-        showMessage('Link copied to clipboard!<br>Paste anywhere to share.', 'success');
+        // Desktop/fallback: copy the exact desired line
+        await navigator.clipboard.writeText(shareText);
+        showMessage('Report link copied!<br>Paste anywhere to share.', 'success');
       }
     } catch (err) {
-      console.error('[ShareReport] Share/clipboard failed:', err);
+      console.error('Share failed:', err);
       showMessage('Could not share or copy. Please copy manually.', 'error');
     }
   });
@@ -57,17 +57,13 @@ export function initShareReport(resultsContainer) {
     const messageDiv = document.getElementById('share-message');
     if (!messageDiv) return;
 
-    messageDiv.innerHTML = type === 'success' 
-      ? `✅ ${text}` 
-      : `❌ ${text}`;
-
+    messageDiv.innerHTML = type === 'success' ? `✅ ${text}` : `❌ ${text}`;
     messageDiv.className = `mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto ${
-      type === 'success'
-        ? 'text-green-700 bg-green-100 dark:bg-green-900/40 dark:text-green-200 border border-green-300'
-        : 'text-red-700 bg-red-100 dark:bg-red-900/40 dark:text-red-200 border border-red-300'
+      type === 'success' 
+        ? 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-200 border border-green-300' 
+        : 'text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-200 border border-red-300'
     }`;
-
     messageDiv.classList.remove('hidden');
-    setTimeout(() => messageDiv.classList.add('hidden'), 6000);
+    setTimeout(() => messageDiv.classList.add('hidden'), 8000);
   }
 }
