@@ -763,8 +763,10 @@ window.scrollTo({
   </div>
 </div>
       `;
-        initShareReport(results);
-        initSubmitFeedback(results);
+
+      // Initialize share and feedback AFTER results HTML is set
+      initShareReport(results);
+      initSubmitFeedback(results);
     };
   });
 });
