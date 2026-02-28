@@ -16,10 +16,23 @@ export function initShareReport(resultsContainer) {
       const baseUrl = window.location.origin + window.location.pathname;
       const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}`;
 
-      // Minimal clean share text: only tool name + one URL (no page name, no visual duplicate)
-      const shareText = `Traffic Torch AI Audit Tool: ${shareUrl}`;
+      // Clean share text: use readable name from the tested/analyzed URL + single inline URL
+      let pageName = 'this page';
+      const inputUrl = document.getElementById('url-input')?.value.trim() || '';
       
-      // Try native share first – no separate url to avoid app duplicates
+      if (inputUrl) {
+        try {
+          const urlObj = new URL(inputUrl.startsWith('http') ? inputUrl : 'https://' + inputUrl);
+          pageName = urlObj.hostname.replace(/^www\./i, '') + 
+                     (urlObj.pathname !== '/' && urlObj.pathname ? ' ' + urlObj.pathname.slice(1).replace(/\//g, ' › ') : '');
+        } catch {
+          pageName = inputUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
+        }
+      }
+
+      const shareText = `Check out ${pageName} on Traffic Torch AI Audit Tool: ${shareUrl}`;
+      
+      // Native share: only text with inline URL (no separate url param)
       if (navigator.share) {
         await navigator.share({
           title: 'Traffic Torch AI Audit Report',
@@ -27,9 +40,9 @@ export function initShareReport(resultsContainer) {
         });
         showMessage('Shared successfully!', 'success');
       } else {
-        // Fallback: copy the full readable text (with one URL)
+        // Fallback: copy only the clean single-line text with one URL
         await navigator.clipboard.writeText(shareText);
-        showMessage('Full report link copied to clipboard!<br>Paste it anywhere to share.', 'success');
+        showMessage('Report link copied!<br>Paste anywhere to share.', 'success');
       }
     } catch (err) {
       console.error('Share failed:', err);
