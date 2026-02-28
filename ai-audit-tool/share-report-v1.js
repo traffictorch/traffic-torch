@@ -16,9 +16,24 @@ export function initShareReport(resultsContainer) {
       const baseUrl = window.location.origin + window.location.pathname;
       const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}`;
 
-     // Nice share text – URL inline only once, reads smoothly
-      const pageTitle = document.title.trim() || 'this page';
+      // Use the actual title of the tested/analyzed page (from document.title set during analysis)
+      let pageTitle = document.title.trim() || 'this page';
+      
+      // Fallback if title is still TrafficTorch (means analysis didn't override it)
+      if (pageTitle.includes('Traffic Torch') || pageTitle === 'AI Content Detector Tool – Perplex & Burst Checker | Traffic Torch') {
+        const inputUrl = document.getElementById('url-input')?.value.trim() || '';
+        if (inputUrl) {
+          // Extract domain + path as fallback readable name
+          try {
+            const urlObj = new URL(inputUrl.startsWith('http') ? inputUrl : 'https://' + inputUrl);
+            pageTitle = urlObj.hostname.replace(/^www\./i, '') + 
+                        (urlObj.pathname !== '/' ? urlObj.pathname.replace(/\//g, ' › ') : '');
+          } catch {}
+        }
+      }
+
       const shareText = `Check out ${pageTitle} on Traffic Torch AI Audit Tool: ${shareUrl}`;
+      
       // Try native share first – no separate url to avoid app duplicates
       if (navigator.share) {
         await navigator.share({
