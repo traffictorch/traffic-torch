@@ -25,7 +25,7 @@ export function initShareReport(resultsContainer) {
     // Remove any leftover tool name if needed
     pageTitle = pageTitle.replace(/Local SEO On-Page Checker – Audit Tool | Traffic Torch/gi, '').trim() || 'this page';
 
-    const shareText = `Check out ${pageTitle} on Traffic Torch AI Audit Tool ${shareUrl}`;
+    const shareText = `Check out ${pageTitle} on Traffic Torch Local SEO Tool ${shareUrl}`;
 
     try {
       if (navigator.share) {
