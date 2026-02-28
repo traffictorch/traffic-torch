@@ -81,6 +81,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let config = { ...defaultConfig };
   const urlParams = new URLSearchParams(window.location.search);
+  // ── Auto-fill URL from share link ?url= ──────────────────────────────
+const sharedUrlParam = urlParams.get('url');
+if (sharedUrlParam) {
+  try {
+    const decoded = decodeURIComponent(sharedUrlParam);
+    const input = document.getElementById('url-input');
+    if (input) {
+      input.value = decoded;
+      
+      // Optional but strongly recommended: trigger analysis automatically
+      // (most users expect the report to appear instantly when opening a shared link)
+      setTimeout(() => {
+        if (input.value.trim() && !document.getElementById('results')?.classList.contains('hidden')) {
+          form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+        }
+      }, 300); // small delay so DOM is ready
+    }
+  } catch (e) {
+    console.warn('Invalid shared URL parameter', e);
+  }
+}
   const configParam = urlParams.get('config');
   if (configParam) {
     try {
