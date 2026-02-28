@@ -844,6 +844,9 @@ const initTool = (form, results, progressContainer) => {
           console.error('Radar chart failed', e);
         }
       }, 150);
+      
+        initShareReport(results);
+        initSubmitFeedback(results);
 
       let fullUrl = document.getElementById('url-input').value.trim();
       let displayUrl = 'traffictorch.net';
