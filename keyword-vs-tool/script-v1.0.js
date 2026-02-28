@@ -764,9 +764,11 @@ window.scrollTo({
 </div>
       `;
 
-      // Initialize share and feedback AFTER results HTML is set
-      initShareReport(results);
-      initSubmitFeedback(results);
+      // Small delay to ensure buttons are in DOM before attaching listeners
+      setTimeout(() => {
+        initShareReport(results);
+        initSubmitFeedback(results);
+      }, 50);
     };
   });
 });
