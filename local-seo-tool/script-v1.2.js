@@ -759,18 +759,23 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }, 150);
     
-console.log("About to call initShareReport – is it defined?", typeof initShareReport);
+// Give the browser one event loop cycle to apply the new innerHTML
+setTimeout(() => {
+  console.log("[TIMING FIX] Delayed init call after results.innerHTML update");
 
-if (typeof initShareReport === 'function') {
-  initShareReport(results);
-  console.log("initShareReport executed successfully");
-} else {
-  console.error("initShareReport is NOT a function – import failed");
-}
+  console.log("About to call initShareReport – is it defined?", typeof initShareReport);
+  if (typeof initShareReport === 'function') {
+    initShareReport(results);
+    console.log("initShareReport executed successfully");
+  } else {
+    console.error("initShareReport is NOT a function – import failed");
+  }
 
-if (typeof initSubmitFeedback === 'function') {
-  initSubmitFeedback(results);
-}
+  if (typeof initSubmitFeedback === 'function') {
+    initSubmitFeedback(results);
+    console.log("initSubmitFeedback executed successfully");
+  }
+}, 0);
     
   }
 });
