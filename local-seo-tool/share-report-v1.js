@@ -26,11 +26,13 @@ export function initShareReport(resultsContainer) {
       .replace(/Local SEO On-Page Checker – Audit Tool | Traffic Torch/gi, '')
       .trim() || 'this page';
 
-    // Final desired format – title + "Local SEO Report" + URL all in one line
+    // ── FINAL CLEAN FORMAT ───────────────────────────────────────────────────────
+    // No line breaks, no extra spacing, URL only once at the end
     const shareText = `Check out ${pageTitle} local SEO report on Traffic Torch Local SEO Report ${shareUrl}`;
 
     try {
       if (navigator.share) {
+        // Web Share API: explicit url property prevents most platforms from adding extra URL
         await navigator.share({
           title: 'Traffic Torch Local SEO Report',
           text: shareText,
@@ -38,7 +40,7 @@ export function initShareReport(resultsContainer) {
         });
         showMessage('Shared successfully!', 'success');
       } else {
-        // Clipboard gets the same clean text
+        // Clipboard fallback: same clean single-line text
         await navigator.clipboard.writeText(shareText);
         showMessage('Link copied to clipboard!<br>Paste anywhere to share.', 'success');
       }
