@@ -12,6 +12,20 @@ import('./plugin-solutions-v1.0.js')
   import { canRunTool } from '/main-v1.1.js';
   import { initShareReport } from './share-report-v1.js';
   import { initSubmitFeedback } from './submit-feedback-v1.js';
+  
+  function autoFillFromQueryParam() {
+  const params = new URLSearchParams(window.location.search);
+  const sharedUrl = params.get('url');
+  if (sharedUrl) {
+    const input = document.getElementById('url-input');
+    if (input) {
+      let clean = sharedUrl.trim()
+        .replace(/^https?:\/\//i, '')
+        .replace(/\/$/, '');
+      input.value = clean;
+    }
+  }
+}
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -56,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
+  autoFillFromQueryParam();
   const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
 
   const factorDefinitions = {

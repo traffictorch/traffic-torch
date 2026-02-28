@@ -30,7 +30,6 @@ export function initShareReport(resultsContainer) {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: 'Traffic Torch SEO Intent Report',
           text: shareText
         });
         showMessage('Shared successfully!', 'success');
