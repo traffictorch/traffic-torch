@@ -174,3 +174,18 @@ html, body {
 .dark body {
   color: #686666;
 }
+
+/* Feedback rating emojis */
+[data-rating] {
+  transition: all 0.2s ease;
+  padding: 0.0rem;
+  border-radius: 9999px; /* fully round for nice ring effect */
+}
+[data-rating]:hover {
+  background-color: rgba(59, 130, 246, 0.1); /* light blue hover */
+}
+
+[data-rating].selected-rating:hover {
+  scale: 1.5 !important;          /* keep enlarged on hover too */
+  background-color: rgba(59, 130, 246, 0.2) !important; /* slightly stronger blue */
+}

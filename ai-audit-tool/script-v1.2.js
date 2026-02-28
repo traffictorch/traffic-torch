@@ -14,31 +14,6 @@ const TOKEN_KEY = 'traffic_torch_jwt';
 
 
 document.addEventListener('DOMContentLoaded', () => {
-// Auto-run if ?url= present (added here)
-const urlParams = new URLSearchParams(window.location.search);
-    let targetUrl = urlParams.get('url');
-    if (targetUrl) {
-        targetUrl = decodeURIComponent(targetUrl);
-        console.log('%c🚀 TrafficTorch Auto-running audit for deep link:', 'color: #f97316; font-weight: bold;', targetUrl);
-
-        // Auto-fill input field (change ID only if yours is different)
-        const urlInput = document.getElementById('url-input'); // ← most common; if yours is 'audit-url', 'website', or 'target-url' just replace this line
-        if (urlInput) urlInput.value = targetUrl;
-
-        // Trigger the audit (pick the correct one for your code — only one will run)
-        if (typeof runAudit === 'function') {
-            runAudit(targetUrl);
-        } else if (typeof performAudit === 'function') {
-            performAudit();
-        } else if (typeof startAnalysis === 'function') {
-            startAnalysis();
-        } else {
-            // Fallback: click the Analyze button (change ID if needed)
-            const analyzeBtn = document.getElementById('analyze-button');
-            if (analyzeBtn) analyzeBtn.click();
-        }
-    }
-
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
@@ -626,7 +601,7 @@ const urlParams = new URLSearchParams(window.location.search);
     <!-- Submit Feedback - Blue - third -->
     <button id="feedback-btn"
             class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Submit Feedback 💬
+      Feedback 💬
     </button>
   </div>
 
