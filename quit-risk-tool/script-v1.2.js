@@ -27,6 +27,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
+// Auto-fill URL from shared link (?url= parameter)
+const urlParams = new URLSearchParams(window.location.search);
+const sharedUrl = urlParams.get('url');
+
+if (sharedUrl) {
+  try {
+    let cleanUrl = decodeURIComponent(sharedUrl).trim();
+    
+    if (!/^https?:\/\//i.test(cleanUrl)) {
+      cleanUrl = 'https://' + cleanUrl;
+    }
+    
+    input.value = cleanUrl;
+    
+  } catch (err) {
+    console.warn('Invalid shared URL parameter:', err);
+  }
+}
   const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
 
   const factorDefinitions = {
