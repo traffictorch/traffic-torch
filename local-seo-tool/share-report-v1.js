@@ -26,23 +26,25 @@ export function initShareReport(resultsContainer) {
       .replace(/Local SEO On-Page Checker – Audit Tool | Traffic Torch/gi, '')
       .trim() || 'this page';
 
-    // ── CLEAN SINGLE-LINE TEXT ────────────────────────────────────────────────
-    // No second title, no extra line breaks, URL only once at the end
-    const shareText = `Check out ${pageTitle} local SEO report on Traffic Torch ${shareUrl}`;
+    // ── FINAL DESIRED FORMAT ─────────────────────────────────────────────────────
+    // Short description without URL (mobile share sheet adds link preview)
+    const shareText = `Check out ${pageTitle} local SEO report on Traffic Torch`;
+
+    // Full version for clipboard (desktop/fallback)
+    const clipboardText = `${shareText} ${shareUrl}`;
 
     try {
       if (navigator.share) {
-        // Mobile share: short text without URL + explicit url property
-        // This combination usually prevents platforms from adding a second URL line
+        // Mobile: no URL in text → platform adds clean preview only once
         await navigator.share({
           title: 'Traffic Torch Local SEO Report',
-          text: `Check out ${pageTitle} local SEO report on Traffic Torch`,
+          text: shareText,
           url: shareUrl
         });
         showMessage('Shared successfully!', 'success');
       } else {
-        // Desktop / fallback clipboard: full desired line
-        await navigator.clipboard.writeText(shareText);
+        // Desktop: copy full clean line
+        await navigator.clipboard.writeText(clipboardText);
         showMessage('Link copied to clipboard!<br>Paste anywhere to share.', 'success');
       }
     } catch (err) {
