@@ -26,7 +26,8 @@ export function initShareReport(resultsContainer) {
       .replace(/Local SEO On-Page Checker – Audit Tool | Traffic Torch/gi, '')
       .trim() || 'this page';
 
-    const shareText = `Check out ${pageTitle} local SEO report on Traffic Torch: ${shareUrl}`;
+    // Text without URL (prevents platform duplication; URL handled separately)
+    const shareText = `Check out ${pageTitle} local SEO report on Traffic Torch`;
 
     try {
       if (navigator.share) {
@@ -37,7 +38,8 @@ export function initShareReport(resultsContainer) {
         });
         showMessage('Shared successfully!', 'success');
       } else {
-        await navigator.clipboard.writeText(shareUrl);
+        // Clipboard: include text + URL for full context
+        await navigator.clipboard.writeText(`${shareText}: ${shareUrl}`);
         showMessage('Link copied to clipboard!<br>Paste anywhere to share.', 'success');
       }
     } catch (err) {
