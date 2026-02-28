@@ -23,6 +23,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const pageUrlInput = document.getElementById('page-url');
   const locationInput = document.getElementById('location');
   const results = document.getElementById('results');
+  
+  // Auto-fill the URL input if coming from a shared link (?url=...)
+const urlParams = new URLSearchParams(window.location.search);
+const sharedUrl = urlParams.get('url');
+
+if (sharedUrl) {
+  try {
+    const decodedUrl = decodeURIComponent(sharedUrl);
+    pageUrlInput.value = decodedUrl;
+    
+    // Optional: trigger form submission automatically (uncomment if desired)
+    // form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    
+    console.log('[Auto-fill] Pre-filled shared URL:', decodedUrl);
+  } catch (err) {
+    console.warn('[Auto-fill] Invalid shared URL param:', err);
+  }
+}
+  
   const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
   const progressModules = [
     "Fetching page...",
