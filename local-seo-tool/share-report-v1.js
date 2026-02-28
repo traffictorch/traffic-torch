@@ -3,16 +3,13 @@ export function initShareReport(resultsContainer) {
   if (!shareBtn) return;
 
   shareBtn.addEventListener('click', async () => {
-    // Use correct input ID from your form
     const pageUrlInput = document.getElementById('page-url');
     const inputUrl = pageUrlInput?.value.trim() || '';
-    if (!inputUrl) return; // silent fail
+    if (!inputUrl) return;
 
-    // Build clean deep link
     const baseUrl = window.location.origin + window.location.pathname;
     const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}`;
 
-    // Get title from visible element
     let pageTitle = 'this page';
     const titleElement = document.getElementById('analyzed-page-title');
     if (titleElement) {
@@ -21,12 +18,10 @@ export function initShareReport(resultsContainer) {
       pageTitle = document.title.trim() || 'this page';
     }
 
-    // Clean any leftover branding
     pageTitle = pageTitle
       .replace(/Local SEO On-Page Checker – Audit Tool | Traffic Torch/gi, '')
       .trim() || 'this page';
 
-    // Exact format from your other tools — URL at end, no extra title
     const shareText = `Check out ${pageTitle} local SEO report on Traffic Torch ${shareUrl}`;
 
     try {
@@ -34,7 +29,7 @@ export function initShareReport(resultsContainer) {
         await navigator.share({
           title: 'Traffic Torch Local SEO Report',
           text: shareText
-          // NO url: property here — this matches your working tools and prevents top URL line
+          // No url: property — this is the key difference that works in your other tools
         });
         showMessage('Shared successfully!', 'success');
       } else {
@@ -51,7 +46,7 @@ export function initShareReport(resultsContainer) {
     if (!messageDiv) return;
     messageDiv.innerHTML = type === 'success' ? `✅ ${text}` : `❌ ${text}`;
     messageDiv.className = `mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto ${
-      type === 'success' ? 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-200 border border-green-300' 
+      type === 'success' ? 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-200 border border-green-300'
                          : 'text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-200 border border-red-300'
     }`;
     messageDiv.classList.remove('hidden');
