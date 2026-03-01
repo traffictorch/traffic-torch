@@ -32,22 +32,22 @@ export function initShareReport(resultsContainer) {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: `Traffic Torch Report: ${pageTitle}`,
-          text: shareText,
+          text: shareText,           // only text – many platforms use this as main content
           url: shareUrl
         });
         showMessage('Shared successfully!', 'success');
       } else if (navigator.clipboard) {
-        await navigator.clipboard.writeText(shareUrl);   // ← copy clean link only (better UX than long text)
-        showMessage('Report link copied to clipboard!<br>Paste anywhere to share.', 'success');
+        await navigator.clipboard.writeText(shareText);   // ← copy full nice text instead of just url
+        showMessage('Report link & description copied!<br>Paste anywhere to share.', 'success');
       } else {
-        showMessage('Copy manually:<br>' + shareUrl, 'info');
+        showMessage('Copy manually:<br>' + shareText, 'info');
       }
     } catch (err) {
       console.error('Share failed:', err);
-      showMessage('Could not share or copy — please copy manually', 'error');
+      showMessage('Could not share — copied fallback link to clipboard', 'error');
+      // Optional: fallback copy even on error
+      navigator.clipboard?.writeText(shareUrl).catch(() => {});
     }
-  });
 
   function showMessage(text, type = 'success') {
     const messageDiv = document.getElementById('share-message');
