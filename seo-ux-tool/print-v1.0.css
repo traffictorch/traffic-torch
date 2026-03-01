@@ -177,6 +177,21 @@
   page-break-inside: avoid !important;
 }
 
+/* Force each major module/score-card onto its own page in print */
+#results .score-card {
+  page-break-before: always !important;
+  break-before: page !important;
+  margin-top: 1cm !important;     /* breathing room at top of new page */
+  padding-top: 0.5cm !important;
+}
+
+/* But cancel the forced break on the VERY FIRST card so it starts immediately after cover */
+#results .score-card:first-child {
+  page-break-before: auto !important;
+  break-before: auto !important;
+  margin-top: 0 !important;
+}
+
 /* ──────────────────────────────────────────────────────────────
    FORCE “Show Fixes” expanded + “More Details”  */
 button[onclick*="More Details"] + .hidden,
