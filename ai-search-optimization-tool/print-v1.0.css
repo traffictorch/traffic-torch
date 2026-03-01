@@ -1,26 +1,22 @@
 @media print {
-  /* Cover page – full viewport height, always page break after */
+  /* Cover page full height, force new page after */
   body::before {
-    content: "TrafficTorch.net ⚖️\A\A AI Optimization Audit Tool 🔍\A\A Report:\A " attr(data-url);
+    content: "TrafficTorch.net ⚖️\A\A AI Search Optimization Audit Tool 🔍\A\A Report for:\A " attr(data-url);
     display: block;
-    height: 100vh;
-    min-height: 100vh;
-    page-break-after: always;
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: #111827;
-    font-family: system-ui, -apple-system, sans-serif;
-    font-weight: 900;
-    text-align: center;
-    padding-top: 20vh;
-    line-height: 1.4;
-    white-space: pre;
-    font-size: 2.2rem;
-    text-shadow:
-      -2px -2px 0 #fb923c,
-      2px -2px 0 #fb923c,
-      -2px 2px 0 #fb923c,
-      2px 2px 0 #fb923c,
-      0 10px 30px rgba(0,0,0,0.4);
+    height: 100vh !important;
+    min-height: 100vh !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    color: #111827 !important;
+    font-family: system-ui, sans-serif !important;
+    font-weight: 900 !important;
+    text-align: center !important;
+    padding-top: 25vh !important;
+    line-height: 1.5 !important;
+    white-space: pre !important;
+    font-size: 2.4rem !important;
+    text-shadow: 0 0 20px rgba(0,0,0,0.3) !important;
   }
 
   body {
@@ -28,129 +24,104 @@
     color: black !important;
     margin: 0 !important;
     padding: 0 !important;
-    font-size: 11pt;
-    line-height: 1.45;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
   }
 
-  /* Start real content after cover */
+  /* Start report content after cover */
   #results {
-    page-break-before: always;
+    page-break-before: always !important;
+    break-before: page !important;
     margin-top: 0 !important;
   }
 
-  /* Full bleed layout */
-  #results,
-  #results .max-w-*, 
-  #results .mx-auto,
-  .grid,
-  .container {
-    max-width: 100% !important;
+  /* Linearize ALL grids/flex to single column, full width */
+  .grid, .flex, .container, .max-w-*, .mx-auto, .grid-cols-*, .md\:grid-cols-4, .md\:grid-cols-2 {
+    display: block !important;
+    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
     width: 100% !important;
+    max-width: none !important;
     margin: 0 !important;
     padding: 1.2cm 1.5cm !important;
-    box-sizing: border-box;
+    box-sizing: border-box !important;
   }
 
-  /* Each score card starts on a NEW PAGE */
+  /* Each score card on its OWN new page */
   .score-card {
     display: block !important;
     page-break-before: always !important;
     break-before: page !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-    margin: 0 0 2cm 0 !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+    margin: 2cm 0 1cm 0 !important;
     padding: 1.5cm !important;
     width: 100% !important;
-    max-width: none !important;
-    border: 1px solid #e5e7eb !important;
+    border: 1px solid #d1d5db !important;
     background: white !important;
+    box-shadow: none !important;
   }
 
-  /* Make score circles bigger & centered in print */
-  .score-card .relative.w-32.h-32,
-  .score-card svg {
-    width: 180px !important;
-    height: 180px !important;
-    margin: 0 auto 1.2cm !important;
+  /* Enlarge scores for readability */
+  .score-card .relative.aspect-square, .score-card svg {
+    width: 200px !important;
+    height: 200px !important;
+    margin: 0 auto 1.5cm !important;
   }
 
-  .score-card .text-5xl,
-  .score-card .text-4xl {
-    font-size: 4.5rem !important;
+  .score-card .text-5xl, .score-card .text-6xl {
+    font-size: 5rem !important;
   }
 
-  .score-card p,
-  .score-card h3,
-  .score-card .text-xl,
-  .score-card .text-base,
-  .score-card .text-sm {
+  .score-card p, .score-card h3, .score-card .text-xl, .score-card .text-base, .score-card .text-sm {
     font-size: 13pt !important;
-    line-height: 1.5 !important;
+    line-height: 1.6 !important;
   }
 
-  /* Force expanded sections visible */
-  .fixes-panel,
-  .full-details,
-  .hidden.mt-4,
-  .hidden.mt-6,
-  .hidden.mt-8,
-  .space-y-6,
-  .space-y-8 {
+  /* Force expand fixes/details panels */
+  .fixes-panel, .full-details, .hidden.mt-4, .hidden.mt-6, .hidden.mt-8, .space-y-4, .space-y-6, .space-y-8 {
     display: block !important;
+    visibility: visible !important;
   }
 
-  /* Hide toggle buttons in print */
-  .more-details-toggle,
-  .fixes-toggle,
-  button[onclick*="toggle"],
-  button[onclick*="hidden"] {
+  /* Hide toggle buttons */
+  .more-details-toggle, .fixes-toggle, button[onclick*="toggle"], button[onclick*="hidden"] {
     display: none !important;
   }
 
-  /* Hide everything non-report */
-  header,
-  footer,
-  nav,
-  aside,
-  button:not(.fixes-toggle):not(.more-details-toggle),
+  /* Hide non-essential sections completely */
   #analysis-progress,
-  #share-report-btn,
-  #feedback-btn,
-  #save-report-btn,
-  #share-form-container,
-  #feedback-form-container,
-  #share-message,
-  #feedback-message,
-  .max-w-5xl.mx-auto.my-16,               /* radar chart section */
-  .mt-20.px-2.max-w-6xl.mx-auto,          /* improvement + gains grid */
-  .text-center.my-16.px-4,                /* share/save/feedback buttons */
+  header, footer, nav, aside, button:not(.print-button),
+  #share-report-btn, #feedback-btn, #save-report-btn,
+  #share-form-container, #feedback-form-container, #share-message, #feedback-message,
+  .max-w-5xl.mx-auto.my-16,              /* radar chart */
+  .mt-20.px-2.max-w-6xl.mx-auto,         /* improvement/gains grid */
+  .text-center.my-16.px-4,               /* share/save/feedback row */
+  .mt-16.px-4 h3, .mt-16.px-4 > div.bg-gradient-to-r,  /* priority fixes if too long - optional hide */
   details:not(.fixes-panel details, .full-details details),
-  #upgradeModal,
-  .a2a_kit,
-  [class*="a2a_"],
-  .no-print,
-  .hidden:not(.fixes-panel, .full-details, .mt-4, .mt-6, .mt-8) {
+  #upgradeModal, .a2a_kit, [class*="a2a_"],
+  .no-print, .hidden:not(.fixes-panel, .full-details, .mt-4, .mt-6, .mt-8) {
     display: none !important;
   }
 
-  /* Text flow control */
-  p, li, div, h1, h2, h3, h4 {
-    orphans: 3;
-    widows: 3;
-    page-break-inside: avoid;
+  /* Better text orphans/widows control */
+  p, li, h1, h2, h3, h4, div {
+    orphans: 4 !important;
+    widows: 4 !important;
+    page-break-inside: avoid !important;
   }
 
-  /* No shadows, no gradients in print */
-  [class*="shadow"],
-  .bg-gradient-*,
-  .bg-white.dark\:bg-gray-800,
-  .dark\:bg-* {
+  /* Clean backgrounds, no shadows/gradients */
+  [class*="shadow"], .bg-gradient-*, .bg-white.dark\:bg-gray-*, .dark\:bg-* {
     box-shadow: none !important;
     background: white !important;
+    background-image: none !important;
   }
 
   a {
-    text-decoration: underline;
-    color: #1e40af !important;
+    color: #1d4ed8 !important;
+    text-decoration: underline !important;
   }
 }
