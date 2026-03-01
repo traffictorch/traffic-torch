@@ -76,6 +76,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
   autoFillFromQueryParam();
+
+  // Auto-submit only after form listener is attached (safe timing)
+  setTimeout(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('url') && input.value.trim()) {
+      console.log('[Deep link] Auto-triggering analysis for:', input.value);
+      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    }
+  }, 50);   // tiny delay – enough for addEventListener('submit') to have run
+  
   const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
 
   const factorDefinitions = {

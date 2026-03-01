@@ -92,10 +92,10 @@ if (sharedUrlParam) {
       
       // Optional trigger analysis automatically
       setTimeout(() => {
-        if (input.value.trim() && !document.getElementById('results')?.classList.contains('hidden')) {
+        if (input.value.trim()) {  // just check there's a URL – that's enough
           form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
         }
-      }, 300); // small delay so DOM is ready
+      }, 500);  // increased slightly to 500ms – gives DOM + any other init more time
     }
   } catch (e) {
     console.warn('Invalid shared URL parameter', e);
