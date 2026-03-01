@@ -695,6 +695,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       document.body.setAttribute('data-url', displayUrl);
     }
+  });
           // Auto-analyze from shared deep link (?url=...) – placed after form listener
       const urlParams = new URLSearchParams(window.location.search);
       const sharedUrl = urlParams.get('url');
@@ -714,7 +715,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
       }
-  });
+
 
   // ================== ANALYSIS FUNCTIONS (now import export to individual js files) ==================
 
