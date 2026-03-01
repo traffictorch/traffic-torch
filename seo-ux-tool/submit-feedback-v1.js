@@ -1,4 +1,4 @@
-// ai-audit-tool/submit-feedback-v1.js
+// seo-ux-tool/submit-feedback-v1.js
 export function initSubmitFeedback(resultsContainer) {
   const feedbackBtn = resultsContainer.querySelector('#feedback-btn');
   const formContainer = resultsContainer.querySelector('#feedback-form-container');
@@ -94,9 +94,9 @@ export function initSubmitFeedback(resultsContainer) {
       const formData = new FormData();
       formData.append('name', name || 'Anonymous');
       formData.append('email', email || 'no-reply@traffictorch.net');
-      formData.append('message', `Feedback for AI Audit Tool on ${document.body.getAttribute('data-url') || 'unknown'}\nRating: ${rating || 'None'}\n\n${feedbackText}`);
+      formData.append('message', `Feedback for SEO UX Tool on ${document.body.getAttribute('data-url') || 'unknown'}\nRating: ${rating || 'None'}\n\n${feedbackText}`);
 
-      const res = await fetch('/api/contact', {  // or /api/share-report if preferred
+      const res = await fetch('/api/contact', {  
         method: 'POST',
         body: formData
       });
