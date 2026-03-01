@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let config = { ...defaultConfig };
   const urlParams = new URLSearchParams(window.location.search);
-  // ── Auto-fill URL from share link ?url= ──────────────────────────────
+  // ── Auto-fill URL from share link ?url= 
 const sharedUrlParam = urlParams.get('url');
 if (sharedUrlParam) {
   try {
@@ -90,8 +90,7 @@ if (sharedUrlParam) {
     if (input) {
       input.value = decoded;
       
-      // Optional but strongly recommended: trigger analysis automatically
-      // (most users expect the report to appear instantly when opening a shared link)
+      // Optional trigger analysis automatically
       setTimeout(() => {
         if (input.value.trim() && !document.getElementById('results')?.classList.contains('hidden')) {
           form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));

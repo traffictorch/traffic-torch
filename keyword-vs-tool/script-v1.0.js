@@ -51,6 +51,12 @@ document.addEventListener('DOMContentLoaded', () => {
       console.warn('Invalid shared keyword:', e);
     }
   }
+  
+  // Optional: auto-analyze if all three fields are filled from share link
+     if (sharedYourUrl && sharedCompUrl && sharedKeyword) {
+     form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+   }
+   
   const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
 
   const fetchPage = async (url) => {

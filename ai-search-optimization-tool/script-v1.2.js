@@ -32,12 +32,18 @@ const waitForElements = () => {
 
 const initTool = (form, results, progressContainer) => {
   const progressText = document.getElementById('progress-text');
-  const urlParams = new URLSearchParams(window.location.search);
-  const sharedUrl = urlParams.get('url');
-  if (sharedUrl) {
-    const input = document.getElementById('url-input');
-    if (input) input.value = decodeURIComponent(sharedUrl);
-  }
+     const urlParams = new URLSearchParams(window.location.search);
+     const sharedUrl = urlParams.get('url');
+     if (sharedUrl) {
+       const input = document.getElementById('url-input');
+       if (input) {
+         input.value = decodeURIComponent(sharedUrl);
+         // Auto-submit form to run analysis immediately on shared link load
+         setTimeout(() => {
+           form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+         }, 300); // small delay to ensure DOM/input is ready
+       }
+     }
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     

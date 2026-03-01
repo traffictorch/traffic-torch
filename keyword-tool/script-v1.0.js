@@ -38,6 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
       console.warn('Invalid shared keyword param:', e);
     }
   }
+  
+  // Optional: auto-submit form to run analysis immediately on shared link load
+    if (sharedUrl && sharedKeyword) {
+    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  }
+  
   const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
   const progressModules = [
     "Fetching page...",

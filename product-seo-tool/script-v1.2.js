@@ -13,16 +13,21 @@ import('./plugin-solutions-v1.0.js')
   import { initShareReport } from './share-report-v1.js';
   import { initSubmitFeedback } from './submit-feedback-v1.js';
   
-  function autoFillFromQueryParam() {
+function autoFillFromQueryParam() {
   const params = new URLSearchParams(window.location.search);
   const sharedUrl = params.get('url');
   if (sharedUrl) {
     const input = document.getElementById('url-input');
     if (input) {
+      // Clean up common junk that might come from copy-paste
       let clean = sharedUrl.trim()
         .replace(/^https?:\/\//i, '')
-        .replace(/\/$/, '');
+        .replace(/\/$/, ''); // remove trailing slash if present
       input.value = clean;
+      
+      // Optional: trigger analysis automatically 
+      const form = document.getElementById('audit-form');
+      if (form) form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     }
   }
 }
