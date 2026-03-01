@@ -32,8 +32,7 @@ export function initShareReport(resultsContainer) {
     try {
       if (navigator.share) {
         await navigator.share({
-          text: shareText,
-          url: shareUrl
+          text: shareText
         });
         showMessage('Shared successfully!', 'success');
       } else if (navigator.clipboard) {
@@ -44,7 +43,7 @@ export function initShareReport(resultsContainer) {
       }
     } catch (err) {
       console.error('Share failed:', err);
-      showMessage('Could not share — copied fallback link to clipboard', 'error');
+      // Silent fallback — no visible message on cancel/close/error
       navigator.clipboard?.writeText(shareUrl).catch(() => {});
     }
   });
