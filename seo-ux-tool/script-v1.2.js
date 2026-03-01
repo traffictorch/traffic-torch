@@ -83,20 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const form = document.getElementById('url-form');
   const input = document.getElementById('url-input');
-    // Auto-analyze from shared deep link (?url=...)
-  const urlParams = new URLSearchParams(window.location.search);
-  const sharedUrl = urlParams.get('url');
-  if (sharedUrl) {
-    // Clean and decode
-    let cleanUrl = decodeURIComponent(sharedUrl.trim());
-    if (!/^https?:\/\//i.test(cleanUrl)) {
-      cleanUrl = 'https://' + cleanUrl;
-    }
-    // Fill the input field
-    input.value = cleanUrl;
-    // Trigger form submission automatically
-    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-  }
   const results = document.getElementById('results');
   const overallContainer = document.getElementById('overall-container');
   const progressContainer = document.getElementById('progress-container');
@@ -709,6 +695,25 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       document.body.setAttribute('data-url', displayUrl);
     }
+          // Auto-analyze from shared deep link (?url=...) – placed after form listener
+      const urlParams = new URLSearchParams(window.location.search);
+      const sharedUrl = urlParams.get('url');
+      if (sharedUrl && input && form) {
+        let cleanUrl = decodeURIComponent(sharedUrl.trim());
+        if (!/^https?:\/\//i.test(cleanUrl)) {
+          cleanUrl = 'https://' + cleanUrl;
+        }
+        input.value = cleanUrl;
+
+        const progressContainer = document.getElementById('progress-container');
+        if (progressContainer) {
+          progressContainer.classList.remove('hidden');
+          const progressText = document.getElementById('progress-text');
+          if (progressText) progressText.textContent = 'Loading shared report...';
+        }
+
+        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      }
   });
 
   // ================== ANALYSIS FUNCTIONS (now import export to individual js files) ==================
