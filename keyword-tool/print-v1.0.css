@@ -105,17 +105,47 @@
     display: none !important;
   }
 
-  /* ──────────────────────────────────────────────────────────────
-     Always show important report content
-  ─────────────────────────────────────────────────────────────── */
-  .fixes-panel,
-  .full-details,
-  .expand-content,
-  .hidden.mt-4,
-  .hidden.mt-6,
-  .hidden.mt-8 {
-    display: block !important;
-  }
+/* ──────────────────────────────────────────────────────────────
+   Always show important report content + FORCE expand all panels
+─────────────────────────────────────────────────────────────── */
+.fixes-panel,
+.full-details,
+.expand-content,
+.hidden.mt-4,
+.hidden.mt-6,
+.hidden.mt-8,
+button[onclick*="Show Fixes"] + .hidden,
+button[onclick*="More Details"] + .hidden,
+.fixes-panel.hidden,
+.mt-6.space-y-6.hidden,
+.mt-4.space-y-6.hidden,
+.mt-6.space-y-8.hidden,
+.mt-4.space-y-8.hidden {
+  display: block !important;
+  visibility: visible !important;
+  height: auto !important;
+  max-height: none !important;
+  opacity: 1 !important;
+}
+
+/* Hide the actual toggle buttons in print (clean look) */
+button[onclick*="Show Fixes"],
+button[onclick*="More Details"],
+button[onclick*="classList.toggle"] {
+  display: none !important;
+}
+
+/* Prevent expanded panels from breaking awkwardly across pages */
+.fixes-panel,
+.mt-6.space-y-6,
+.mt-4.space-y-6,
+.mt-6.space-y-8,
+.mt-4.space-y-8 {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+  margin-top: 0.5cm !important;
+  margin-bottom: 1cm !important;
+}
 
   #keyword-form,
   #analysis-progress,
