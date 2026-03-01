@@ -11,6 +11,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const pageUrlInput = document.getElementById('page-url');
   const targetKeywordInput = document.getElementById('target-keyword');
   const results = document.getElementById('results');
+    // Auto-fill from shared link query params (?url=...)
+  const urlParams = new URLSearchParams(window.location.search);
+  const sharedUrl = urlParams.get('url');
+  if (sharedUrl) {
+    try {
+      // Decode and set — also add https:// if missing (same logic as submit)
+      let decodedUrl = decodeURIComponent(sharedUrl);
+      if (!/^https?:\/\//i.test(decodedUrl)) {
+        decodedUrl = 'https://' + decodedUrl;
+      }
+      pageUrlInput.value = decodedUrl;
+
+      // Optional: trigger analysis automatically if you want instant load on shared link
+      // form.dispatchEvent(new Event('submit'));  // ← uncomment only if you want auto-analyze
+    } catch (e) {
+      console.warn('Invalid shared URL param:', e);
+    }
+  }
   const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
   const progressModules = [
     "Fetching page...",
