@@ -1,7 +1,5 @@
 @media print {
-  /* ──────────────────────────────────────────────────────────────
-     Proven cover page – unchanged & stable
-  ─────────────────────────────────────────────────────────────── */
+  /* Cover page – stable across Chrome/Safari/Firefox */
   body::before {
     content: "TrafficTorch.net ⚖️\A\A SEO UX Audit Tool \A\A Report:\A " attr(data-url);
     display: block;
@@ -29,15 +27,14 @@
       0 10px 30px rgba(0,0,0,0.5);
   }
 
-  /* Report starts cleanly on next page */
+  /* Results start on new page */
   #results-wrapper {
     page-break-before: always;
     margin-top: 0 !important;
   }
 
-  /* Full-width content inside results */
+  /* Full-width clean layout */
   #results-wrapper,
-  #results-wrapper .container,
   #results-wrapper .max-w-*,
   #results-wrapper .mx-auto {
     max-width: none !important;
@@ -47,24 +44,57 @@
     box-sizing: border-box;
   }
 
-  /* Prevent ugly page breaks inside modules */
-  .score-card,
-  .fixes-panel,
-  .full-details,
-  section > div,
-  .grid,
-  .flex {
-    page-break-inside: avoid;
-    break-inside: avoid;
+  /* EACH MODULE ON ITS OWN PAGE – no squashing or overlapping */
+  .score-card {
+    page-break-before: always !important;
+    break-before: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    margin-bottom: 2cm !important;
   }
 
-  /* Better text flow */
-  p, li, div {
-    orphans: 3;
-    widows: 3;
+  /* Priority fixes & plugin solutions get their own pages */
+  #priority-gains-section,
+  #plugin-solutions-section {
+    page-break-before: always !important;
+    break-before: page !important;
   }
 
-  /* Print safety basics */
+  /* FORCE SHOW FIXES + MORE DETAILS EXPANDED */
+  .module-info,
+  .details,
+  .expand-content,
+  .checklist {
+    display: block !important;
+  }
+
+  /* Hide the toggle buttons themselves */
+  .more-details,
+  .expand {
+    display: none !important;
+  }
+
+  /* Hide everything that should not appear in PDF */
+  #mobile-preview,
+  #health-radar,
+  #radar-title,
+  .text-center.my-16.px-4, /* share/save/feedback buttons */
+  #share-form-container,
+  #feedback-form-container,
+  #share-message,
+  #feedback-message,
+  #score-badge,
+  .center-btn-container,
+  header,
+  footer,
+  nav,
+  button,
+  .no-print,
+  details > summary {
+    display: none !important;
+  }
+
+  /* Print safety */
   body {
     background: white !important;
     color: black !important;
@@ -72,82 +102,13 @@
     padding: 0 !important;
     font-size: 11pt;
   }
-
-  /* Clean print – no shadows */
   .shadow-lg,
   .shadow-xl,
   [class*="shadow"] {
     box-shadow: none !important;
   }
-
-  /* ──────────────────────────────────────────────────────────────
-     TARGETED HIDING – safe & specific (no :not breakage)
-  ─────────────────────────────────────────────────────────────── */
-  .max-w-4xl.mx-auto.my-20 details,               /* how/why accordions */
-  section.py-20.bg-gray-50.dark\:bg-gray-900,     /* deep dive modules */
-  #seo-ux-checklist,                              /* SEO & UX checklist */
-  .tools-grid,
-  section.max-w-5xl.mx-auto.my-24,                /* author bio */
-  div[style*="display: flex; justify-content: center; margin: 30px 0;"],  /* share blocks */
-  .a2a_kit,
-  div.max-w-5xl.mx-auto.px-6.py-4.text-center,    /* breadcrumbs */
-  section.bottom-banner,
-  .checklist-card,
-  .max-w-7xl.mx-auto,
-  .max-w-6xl.mx-auto {
-    display: none !important;
+  p, li, div {
+    orphans: 3;
+    widows: 3;
   }
-  
-  /* Hide upgrade modal and share section in print */
-  #upgradeModal,
-  .py-8.text-center,
-  .a2a_kit,
-  .a2a_default_style,
-  .a2a_kit_size_32,
-  [class*="a2a_"] {
-    display: none !important;
-  }
-
-  /* Extra insurance for modal visibility tricks */
-  #upgradeModal[style*="display: block"],
-  #upgradeModal:not(.hidden) {
-    display: none !important;
-  }
-
-  /* Extra safety: hide top-level details not in report */
-  details:not(.fixes-panel details, .full-details details) {
-    display: none !important;
-  }
-
-  /* ──────────────────────────────────────────────────────────────
-     Always show important report content
-  ─────────────────────────────────────────────────────────────── */
-  .fixes-panel,
-  .full-details,
-  .expand-content,
-  .hidden.mt-4,
-  .hidden.mt-6,
-  .hidden.mt-8 {
-    display: block !important;
-  }
-
-  /* Original form/header/footer hiding */
-  #keyword-form,
-  #analysis-progress,
-  header,
-  footer,
-  nav,
-  aside,
-  .no-print,
-  button,
-  details > summary {
-    display: none !important;
-  }
-  
-/* Hide promotional / educational blocks via unique IDs – safe from JS class changes */
-#author-bio,
-#promo-high-impact-cards,
-#promo-old-vs-modern-seo {
-  display: none !important;
-}
 }

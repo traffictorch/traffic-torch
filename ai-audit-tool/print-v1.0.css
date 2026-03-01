@@ -1,7 +1,9 @@
 @media print {
-  /* Cover page – stable across Chrome/Safari/Firefox */
+  /* ──────────────────────────────────────────────────────────────
+     Proven cover page – unchanged & stable
+  ─────────────────────────────────────────────────────────────── */
   body::before {
-    content: "TrafficTorch.net ⚖️\A\A SEO UX Audit Tool \A\A Report:\A " attr(data-url);
+    content: "TrafficTorch.net ⚖️\A\A Ai Content Audit Tool 🤖\A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
     min-height: 100vh;
@@ -14,7 +16,7 @@
     padding-top: 20vh;
     line-height: 1.4;
     white-space: pre;
-    font-size: 2.5rem;
+    font-size: 2rem;
     text-shadow:
       -2px -2px 0 #fb923c,
       2px -2px 0 #fb923c,
@@ -27,14 +29,15 @@
       0 10px 30px rgba(0,0,0,0.5);
   }
 
-  /* Results start on new page */
+  /* Report starts cleanly on next page */
   #results-wrapper {
     page-break-before: always;
     margin-top: 0 !important;
   }
 
-  /* Full-width clean layout */
+  /* Full-width content inside results */
   #results-wrapper,
+  #results-wrapper .container,
   #results-wrapper .max-w-*,
   #results-wrapper .mx-auto {
     max-width: none !important;
@@ -44,57 +47,24 @@
     box-sizing: border-box;
   }
 
-  /* EACH MODULE ON ITS OWN PAGE – no squashing or overlapping */
-  .score-card {
-    page-break-before: always !important;
-    break-before: page !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-    margin-bottom: 2cm !important;
+  /* Prevent ugly page breaks inside modules */
+  .score-card,
+  .fixes-panel,
+  .full-details,
+  section > div,
+  .grid,
+  .flex {
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 
-  /* Priority fixes & plugin solutions get their own pages */
-  #priority-gains-section,
-  #plugin-solutions-section {
-    page-break-before: always !important;
-    break-before: page !important;
+  /* Better text flow */
+  p, li, div {
+    orphans: 3;
+    widows: 3;
   }
 
-  /* FORCE SHOW FIXES + MORE DETAILS EXPANDED */
-  .module-info,
-  .details,
-  .expand-content,
-  .checklist {
-    display: block !important;
-  }
-
-  /* Hide the toggle buttons themselves */
-  .more-details,
-  .expand {
-    display: none !important;
-  }
-
-  /* Hide everything that should not appear in PDF */
-  #mobile-preview,
-  #health-radar,
-  #radar-title,
-  .text-center.my-16.px-4, /* share/save/feedback buttons */
-  #share-form-container,
-  #feedback-form-container,
-  #share-message,
-  #feedback-message,
-  #score-badge,
-  .center-btn-container,
-  header,
-  footer,
-  nav,
-  button,
-  .no-print,
-  details > summary {
-    display: none !important;
-  }
-
-  /* Print safety */
+  /* Print safety basics */
   body {
     background: white !important;
     color: black !important;
@@ -102,13 +72,128 @@
     padding: 0 !important;
     font-size: 11pt;
   }
+
+  /* Clean print – no shadows */
   .shadow-lg,
   .shadow-xl,
   [class*="shadow"] {
     box-shadow: none !important;
   }
-  p, li, div {
-    orphans: 3;
-    widows: 3;
+
+  /* ──────────────────────────────────────────────────────────────
+     TARGETED HIDING – safe & specific (no :not breakage)
+  ─────────────────────────────────────────────────────────────── */
+  .max-w-1xl.mx-auto.my-16 details,               /* how AI detector works accordion */
+  .max-w-2xl.mx-auto.my-10 details,               /* why AI content matters accordion */
+  section.py-20.bg-gray-50.dark\:bg-gray-900,     /* metric explanations section */
+  #ai-audit-seo-checklist,                        /* ultimate audit checklist */
+  .tools-grid,
+  section.max-w-5xl.mx-auto.my-24,                /* author bio */
+  div[style*="display: flex; justify-content: center; margin: 30px 0;"],  /* share blocks */
+  .a2a_kit,
+  div.max-w-5xl.mx-auto.px-6.py-4.text-center,    /* breadcrumbs */
+  section.bottom-banner,
+  .checklist-card,
+  .max-w-7xl.mx-auto,
+  .max-w-6xl.mx-auto {
+    display: none !important;
   }
+  
+  /* Hide upgrade modal and share section in print */
+  #upgradeModal,
+  .py-8.text-center,
+  .a2a_kit,
+  .a2a_default_style,
+  .a2a_kit_size_32,
+  [class*="a2a_"] {
+    display: none !important;
+  }
+
+  /* Extra insurance for modal visibility tricks */
+  #upgradeModal[style*="display: block"],
+  #upgradeModal:not(.hidden) {
+    display: none !important;
+  }
+
+  /* Extra safety: hide top-level details not in report */
+  details:not(.fixes-panel details, .full-details details) {
+    display: none !important;
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     Always show important report content
+  ─────────────────────────────────────────────────────────────── */
+  .fixes-panel,
+  .full-details,
+  .expand-content,
+  .hidden.mt-4,
+  .hidden.mt-6,
+  .hidden.mt-8 {
+    display: block !important;
+  }
+
+  /* Original form/header/footer hiding */
+  #keyword-form,
+  #analysis-progress,
+  header,
+  footer,
+  nav,
+  aside,
+  .no-print,
+  button,
+  details > summary {
+    display: none !important;
+  }
+
+/* Hide promotional / educational blocks + share/feedback + AI Content Audit explanation section */
+#author-bio,
+#promo-high-impact-cards,
+#promo-old-vs-modern-seo,
+#share-form-container,
+#feedback-form-container,
+#share-message,
+#feedback-message,
+#share-report-btn ~ div[id*="form"],
+#feedback-btn ~ div[id*="form"],
+.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8,  /* the entire What is AI Content Audit section */
+.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 h2,  /* title */
+.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 p,     /* paragraphs */
+.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 div.text-xl.leading-relaxed.text-center {
+  display: none !important;
+}
+
+/* EACH MODULE ON ITS OWN NEW PAGE (no more squashing) */
+.max-w-5xl.mx-auto.my-16,            /* Radar Chart */
+.space-y-8 > div,                    /* Perplexity + the 4-metric grid */
+  page-break-before: always !important;
+  break-before: page !important;
+}
+
+/* Keep important content together but never split cards */
+.score-card,
+.metric-card,
+.bg-white.dark\:bg-gray-800.rounded-2xl,
+.bg-orange-50.dark\:bg-orange-900\/20 {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   FORCE “Show Fixes” expanded + “More Details”  */
+button[onclick*="More Details"] + .hidden,
+.hidden.mt-6.space-y-6,
+.hidden.mt-4.space-y-6 {
+  display: block !important;
+}
+
+button[onclick*="Show Fixes"] + .hidden,
+.hidden.mt-6.space-y-8,
+.hidden.mt-4.space-y-8 {
+  display: block !important;
+}
+
+/* Hide the toggle buttons themselves in print */
+button[onclick*="toggle('hidden')"] {
+  display: none !important;
+}
 }
