@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressContainer = document.getElementById('progress-container');
   const progressText = document.getElementById('progress-text');
   const priorityFixes = document.getElementById('priority-fixes');
+  const copyBadgeBtn = document.getElementById('copy-badge');
 
   function cleanUrl(u) {
     const trimmed = u.trim();
@@ -148,6 +149,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  if (copyBadgeBtn) {
+    copyBadgeBtn.addEventListener('click', () => {
+      const badgeHtml = `
+<!-- Traffic Torch Optimized Badge -->
+<a href="https://traffictorch.net/" target="_blank" style="display: inline-block; position: relative; font-family: system-ui, -apple-system, sans-serif; font-weight: bold; font-size: 13px; color: #969696; text-decoration: none;">
+  Traffic Torch Optimized 🛡️
+  <span style="position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 8px; padding: 8px 16px; background: #1f2937; color: white; font-size: 14px; border-radius: 8px; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10;">
+    UX, SEO & AI Optimization
+  </span>
+</a>
+<style>
+  a:hover { color: #fb923c !important; }
+  a:hover > span { opacity: 1 !important; }
+</style>
+      `.trim();
+      navigator.clipboard.writeText(badgeHtml).then(() => {
+        alert('Badge code copied! Paste anywhere on your site — fully inline, works everywhere.');
+      }).catch(() => {
+        prompt('Copy this badge code:', badgeHtml);
+      });
+    });
+  }
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
