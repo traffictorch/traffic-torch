@@ -8,7 +8,7 @@ import { analyzeContentQuality } from './modules/analyze-content-v1.0.js';
 import { analyzeUXDesign } from './modules/analyze-ux-v1.0.js';
 import { analyzeSecurity } from './modules/analyze-security-v1.0.js';
 import { analyzeIndexability } from './modules/analyze-indexability-v1.0.js';
-import { initShareReport } from './submit-share-v1.js';
+import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
 import { canRunTool } from '/main-v1.1.js';
 
