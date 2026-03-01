@@ -31,20 +31,23 @@ export function initShareReport(resultsContainer) {
 
     try {
       if (navigator.share) {
+        // Native share – no clipboard involved unless user cancels
         await navigator.share({
           text: shareText
         });
         showMessage('Shared successfully!', 'success');
       } else if (navigator.clipboard) {
+        // No share API available → fallback to clipboard (this may show prompt once)
         await navigator.clipboard.writeText(shareText);
         showMessage('Report link & description copied!<br>Paste anywhere to share.', 'success');
       } else {
+        // Very old browser – manual copy instruction
         showMessage('Copy manually:<br>' + shareText, 'info');
       }
     } catch (err) {
-      console.error('Share failed:', err);
-      // Silent fallback — no visible message on cancel/close/error
-      navigator.clipboard?.writeText(shareUrl).catch(() => {});
+      // User cancelled share sheet, permission denied, or other error → silent (no prompt, no message)
+      console.error('Share action failed or cancelled:', err);
+      // Do NOT attempt clipboard.writeText() here to avoid permission popup on cancel
     }
   });
 
