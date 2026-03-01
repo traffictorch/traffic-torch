@@ -161,6 +161,34 @@
   display: none !important;
 }
 
+/* Hide remaining promotional/summary text blocks in print */
+p:text-contains("critical areas need improvement"),
+p:text-contains("Check your theme or template for functionality first"),
+p:text-contains("All recommendations are current, free or freemium"),
+p:text-contains("Interactive preview — scroll and tap inside"),
+p:text-contains("Some sites block iframe previews"),
+button + p:text-contains("copy badge code"),
+div:text-contains("copy badge code") {
+  display: none !important;
+}
+
+/* More reliable selectors if the text is in known containers */
+#priority-gains-section p,
+#mobile-preview p,
+#mobile-preview .text-center.mt-8.text-xl.text-gray-500.opacity-80,
+div.max-w-5xl.mx-auto.my-24 p,
+div.max-w-5xl.mx-auto.my-24 .text-center.mt-8 {
+  display: none !important;
+}
+
+/* Hide any badge/copy code fragments (common in SEO tools) */
+button[aria-label*="Copy"] + span,
+span:text-contains("badge code"),
+code + button,
+pre + button {
+  display: none !important;
+}
+
 /* EACH MODULE ON ITS OWN NEW PAGE (no more squashing) */
 .max-w-5xl.mx-auto.my-16,            /* Radar Chart */
 .space-y-8 > div,                    /* Perplexity + the 4-metric grid */
