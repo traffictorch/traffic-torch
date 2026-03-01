@@ -11,21 +11,15 @@ export function initShareReport(resultsContainer) {
     const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}`;
 
     // Get the tested page title directly from the visible element in the score card
-    let pageTitle = 'this page';
-    const titleElement = document.getElementById('analyzed-page-title');
-    if (titleElement) {
-      pageTitle = titleElement.textContent.trim();
-    } else {
-      // Fallback if ID not found (e.g. old deploy)
-      pageTitle = document.querySelector('.bg-white.dark\\:bg-gray-800.rounded-3xl.shadow-2xl.p-6.sm\\:p-8.md\\:p-10 p.mt-6.text-base.sm\\:text-lg')?.textContent.trim() ||
-                  document.title.trim() ||
-                  'this page';
-    }
-
-    // Remove any leftover tool name if needed
-    pageTitle = pageTitle.replace(/Traffic Torch – Free SEO Audit Tool & AI UX SEO Toolkit/gi, '').trim() || 'this page';
-
-    const shareText = `Check out ${pageTitle} on Traffic Torch SEO UX Audit Tool ${shareUrl}`;
+let pageTitle = 'this page';
+const titleDisplay = document.getElementById('page-title-display');
+if (titleDisplay && titleDisplay.textContent.trim()) {
+  pageTitle = titleDisplay.textContent.trim();
+} else {
+  // Ultimate fallback: current document title without tool suffix
+  pageTitle = document.title.replace(/ \| Traffic Torch SEO UX Audit Tool|Traffic Torch/gi, '').trim() || 'this page';
+}
+const shareText = `Check out ${pageTitle} on Traffic Torch SEO UX Audit Tool ${shareUrl}`;
 
     try {
       if (navigator.share) {

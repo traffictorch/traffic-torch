@@ -303,13 +303,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }, 500);
 
-      // Display truncated page title
-      const titleElement = doc.querySelector('title');
-      let pageTitle = titleElement ? titleElement.textContent.trim() : 'Example Domain';
-      if (pageTitle.length > 65) {
-        pageTitle = pageTitle.substring(0, 62) + '...';
-      }
-      document.getElementById('page-title-display').textContent = pageTitle;
+// Display truncated analyzed page title using existing #page-title-display
+const titleElement = doc.querySelector('title');
+let pageTitle = titleElement ? titleElement.textContent.trim() : 'Analyzed Page';
+pageTitle = pageTitle.replace(/ \| Traffic Torch SEO UX Audit Tool|Traffic Torch/gi, '').trim();
+if (pageTitle.length > 65) {
+  pageTitle = pageTitle.substring(0, 62) + '...';
+}
+const titleDisplay = document.getElementById('page-title-display');
+if (titleDisplay) {
+  titleDisplay.textContent = pageTitle;
+} else {
+  console.warn('#page-title-display element not found');
+}
 
       // Calculate and display grade + emoji
       let gradeText = '';
