@@ -12,23 +12,6 @@ import('./plugin-solutions-v1.0.js')
   import { canRunTool } from '/main-v1.1.js';
   import { initShareReport } from './share-report-v1.js';
   import { initSubmitFeedback } from './submit-feedback-v1.js';
-  
-const params = new URLSearchParams(window.location.search);
-  const sharedUrl = params.get('url');
-
-  if (sharedUrl && input) {
-    let clean = sharedUrl.trim()
-      .replace(/^https?:\/\//i, '')
-      .replace(/\/$/, '');
-    input.value = clean;
-    console.log('[Deep link] Filled:', clean);
-
-    // Trigger analysis safely (listener is now attached)
-    if (clean) {
-      console.log('[Deep link] Auto-submitting form');
-      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    }
-  }
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -74,14 +57,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
 
-  // Auto-submit only after form listener is attached (safe timing)
-  setTimeout(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.has('url') && input.value.trim()) {
-      console.log('[Deep link] Auto-triggering analysis for:', input.value);
-      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+const urlParams = new URLSearchParams(window.location.search);
+  const sharedUrl = urlParams.get('url');
+
+  if (sharedUrl && input) {
+    const cleanUrl = sharedUrl.trim()
+      .replace(/^https?:\/\//i, '')
+      .replace(/\/$/, '');
+    
+    input.value = cleanUrl;
+    console.log('[Deep link] Filled input:', cleanUrl);
+
+    // Only auto-analyze if we actually filled something meaningful
+    if (cleanUrl && cleanUrl.length > 5) {
+      console.log('[Deep link] Auto-triggering analysis');
+      // Give the submit listener a micro-delay to be fully registered
+      setTimeout(() => {
+        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      }, 0);  // 0ms is usually enough now that we're after variable declarations
     }
-  }, 50);   // tiny delay – enough for addEventListener('submit') to have run
+  }
   
   const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
 
