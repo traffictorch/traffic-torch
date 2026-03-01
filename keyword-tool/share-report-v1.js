@@ -13,7 +13,8 @@ export function initShareReport(resultsContainer) {
     }
 
     const baseUrl = window.location.origin + window.location.pathname;
-    const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}`;
+    const inputKeyword = document.getElementById('target-keyword')?.value.trim();
+    const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}&keyword=${encodeURIComponent(inputKeyword || '')}`;
 
     let pageTitle = 'this page';
     const titleElement = document.getElementById('analyzed-page-title');
