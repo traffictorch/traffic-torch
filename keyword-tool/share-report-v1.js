@@ -1,12 +1,12 @@
 export function initShareReport(resultsContainer) {
-  const shareBtn = document.getElementById('share-report-btn');   // ← use document instead of resultsContainer
+  const shareBtn = document.getElementById('share-report-btn');
   if (!shareBtn) {
     console.warn("Share button #share-report-btn not found");
     return;
   }
 
   shareBtn.addEventListener('click', async () => {
-    const inputUrl = document.getElementById('page-url')?.value.trim();   // ← fixed id: page-url, not url-input
+    const inputUrl = document.getElementById('page-url')?.value.trim();
     if (!inputUrl) {
       showMessage('No URL entered yet', 'error');
       return;
@@ -32,12 +32,12 @@ export function initShareReport(resultsContainer) {
     try {
       if (navigator.share) {
         await navigator.share({
-          text: shareText,           // only text – many platforms use this as main content
+          text: shareText,
           url: shareUrl
         });
         showMessage('Shared successfully!', 'success');
       } else if (navigator.clipboard) {
-        await navigator.clipboard.writeText(shareText);   // ← copy full nice text instead of just url
+        await navigator.clipboard.writeText(shareText);
         showMessage('Report link & description copied!<br>Paste anywhere to share.', 'success');
       } else {
         showMessage('Copy manually:<br>' + shareText, 'info');
@@ -45,9 +45,9 @@ export function initShareReport(resultsContainer) {
     } catch (err) {
       console.error('Share failed:', err);
       showMessage('Could not share — copied fallback link to clipboard', 'error');
-      // Optional: fallback copy even on error
       navigator.clipboard?.writeText(shareUrl).catch(() => {});
     }
+  });
 
   function showMessage(text, type = 'success') {
     const messageDiv = document.getElementById('share-message');
