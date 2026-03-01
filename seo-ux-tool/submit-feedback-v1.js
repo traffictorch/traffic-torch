@@ -12,17 +12,28 @@ export function initSubmitFeedback(resultsContainer) {
 
   if (!feedbackBtn || !formContainer) return;
 
-  feedbackBtn.addEventListener('click', () => {
-    const isHidden = formContainer.classList.contains('hidden');
-    formContainer.classList.toggle('hidden');
-    feedbackBtn.textContent = isHidden ? 'Cancel Feedback ✕' : 'Submit Feedback 💬';
-    feedbackBtn.classList.toggle('bg-gray-500', isHidden);
-    feedbackBtn.classList.toggle('hover:bg-gray-600', isHidden);
-    feedbackBtn.classList.toggle('from-blue-500', !isHidden);
-    feedbackBtn.classList.toggle('to-indigo-600', !isHidden);
-    feedbackBtn.classList.toggle('hover:from-blue-600', !isHidden);
-    feedbackBtn.classList.toggle('hover:to-indigo-700', !isHidden);
-  });
+feedbackBtn.addEventListener('click', () => {
+  const isHidden = formContainer.classList.contains('hidden');
+  formContainer.classList.toggle('hidden');
+
+  // Update button text and styles
+  feedbackBtn.textContent = isHidden ? 'Cancel Feedback ✕' : 'Submit Feedback 💬';
+  feedbackBtn.classList.toggle('bg-gray-500', isHidden);
+  feedbackBtn.classList.toggle('hover:bg-gray-600', isHidden);
+  feedbackBtn.classList.toggle('from-blue-500', !isHidden);
+  feedbackBtn.classList.toggle('to-indigo-600', !isHidden);
+  feedbackBtn.classList.toggle('hover:from-blue-600', !isHidden);
+  feedbackBtn.classList.toggle('hover:to-indigo-700', !isHidden);
+
+  // Dynamically update the feedback header only when opening the form
+  if (!isHidden) {  // form is now visible (was hidden)
+    const headerP = formContainer.querySelector('p.text-lg.font-medium.mb-6');
+    if (headerP) {
+      const analyzedUrl = document.body.getAttribute('data-url') || 'the analyzed page';
+      headerP.innerHTML = `Feedback for SEO UX Tool on <strong>${analyzedUrl}</strong>`;
+    }
+  }
+});
 
   // Rating buttons - persistent selection feedback (ring stays after click)
   ratingButtons.forEach(btn => {
