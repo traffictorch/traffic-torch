@@ -34,19 +34,21 @@ const sharedUrl = urlParams.get('url');
 if (sharedUrl) {
   try {
     let cleanUrl = decodeURIComponent(sharedUrl).trim();
-    
+   
     if (!/^https?:\/\//i.test(cleanUrl)) {
       cleanUrl = 'https://' + cleanUrl;
     }
-    
-input.value = cleanUrl;
-    
+   
+    input.value = cleanUrl;
+   
     // Optional: trigger analysis automatically for shared links
-    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    
+    setTimeout(() => {
+      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    }, 500);
+   
   } catch (err) {
     console.warn('Invalid shared URL parameter:', err);
-    // silent fail — user can still edit manually
+    // silent fail – user can still edit manually
   }
 }
   const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
