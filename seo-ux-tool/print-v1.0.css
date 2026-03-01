@@ -1,169 +1,155 @@
 @media print {
-  @page {
-    size: A4 portrait;
-    margin: 1cm 1.2cm;
-  }
-
-  /* Force full-width, no default browser margins */
-  @page :first {
-    margin-top: 0;
-  }
-
-  html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    height: auto !important;
-    background: white !important;
-    color: black !important;
-    font-size: 11pt !important;
-    line-height: 1.4 !important;
-    font-family: system-ui, -apple-system, sans-serif !important;
-  }
-
-  /* Proven cover page – full A4 height */
+  /* ──────────────────────────────────────────────────────────────
+     Proven cover page – unchanged & stable
+  ─────────────────────────────────────────────────────────────── */
   body::before {
     content: "TrafficTorch.net ⚖️\A\A SEO UX Audit Tool \A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
     min-height: 100vh;
     page-break-after: always;
+    break-after: page;
     background: linear-gradient(135deg, #10b981, #059669);
     color: #111827;
+    font-family: system-ui, -apple-system, sans-serif;
     font-weight: 900;
     text-align: center;
     padding-top: 20vh;
     line-height: 1.4;
     white-space: pre;
-    font-size: 2.8rem;
-    text-shadow: 0 0 20px rgba(251, 146, 60, 0.8);
+    font-size: 2.2rem;
+    text-shadow:
+      -2px -2px 0 #fb923c,
+      2px -2px 0 #fb923c,
+      -2px 2px 0 #fb923c,
+      2px 2px 0 #fb923c,
+      0 10px 30px rgba(0,0,0,0.4);
   }
 
-  /* Start real content on next clean page */
-  #results-wrapper {
-    page-break-before: always;
+  body {
+    background: white !important;
+    color: black !important;
     margin: 0 !important;
     padding: 0 !important;
+    font-size: 11pt;
+    line-height: 1.45;
   }
 
-  /* Full-width everywhere – override Tailwind max-width */
-  #results-wrapper,
-  #results-wrapper > *,
-  .max-w-*,
-  .mx-auto,
-  .container,
-  .grid,
-  .flex {
-    max-width: 100% !important;
+  /* Force the results container to start clean */
+  #results {
+    page-break-before: always;
+    break-before: page;
+    margin-top: 0 !important;
+  }
+
+  /* Completely break the grid layout – make it vertical stack */
+  .grid.grid-cols-1.md\:grid-cols-4.my-12.px-0.max-w-7xl.mx-auto {
+    display: block !important;
+    column-count: 1 !important;
+    grid-template-columns: none !important;
+    gap: 3cm !important;               /* space between modules */
     width: 100% !important;
+    max-width: none !important;
     margin: 0 !important;
-    padding: 0.8cm 1cm !important;
-    box-sizing: border-box !important;
+    padding: 0 1.5cm !important;
   }
 
-  /* Each score-card (module) starts on its own new page */
+  /* Each individual module card gets its own page */
   .score-card {
+    display: block !important;
     page-break-before: always !important;
     break-before: page !important;
     page-break-inside: avoid !important;
     break-inside: avoid-page !important;
-    margin-bottom: 2cm !important;
-    padding-bottom: 1cm !important;
-    border-bottom: 1px solid #d1d5db !important;
+    page-break-after: avoid !important;
+    break-after: avoid-page !important;
+    margin: 0 0 1cm 0 !important;
+    padding: 1.5cm 1.5cm 2cm 1.5cm !important;
+    width: 100% !important;
+    max-width: none !important;
+    border: 1px solid #d1d5db !important;
+    background: white !important;
+    box-shadow: none !important;
   }
 
-  /* Force expanded content – show fixes & more details always */
-  .module-info,
-  .details,
-  .expand-content,
-  .checklist,
-  .hidden.mt-6,
+  /* Enlarge score display for better print legibility */
+  .score-card .relative.w-32.h-32,
+  .score-card svg {
+    width: 200px !important;
+    height: 200px !important;
+    margin: 0 auto 1.5cm !important;
+  }
+
+  .score-card .text-5xl,
+  .score-card .text-6xl {
+    font-size: 5.5rem !important;
+  }
+
+  .score-card .text-xl,
+  .score-card .text-base,
+  .score-card .text-sm,
+  .score-card p {
+    font-size: 13pt !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Ensure expanded content is visible */
+  .fixes-panel,
+  .full-details,
   .hidden.mt-4,
+  .hidden.mt-6,
   .hidden.mt-8,
-  .module-grade,
-  .short-desc,
-  .label,
-  .score-circle {
+  .space-y-4,
+  .space-y-6,
+  .space-y-8 {
     display: block !important;
     visibility: visible !important;
-    opacity: 1 !important;
   }
 
-  /* Hide toggle buttons in print */
-  .more-details,
-  .expand,
-  button.expand,
-  button.more-details {
+  /* Hide toggle buttons */
+  .more-details-toggle,
+  .fixes-toggle,
+  button[onclick*="toggle"],
+  button[onclick*="hidden"] {
     display: none !important;
   }
 
-  /* Hide non-report elements */
-  #mobile-preview,
-  #health-radar,
-  #radar-title,
-  .text-center.my-16.px-4,               /* share/save/feedback buttons */
-  #share-form-container,
-  #feedback-form-container,
-  #share-message,
-  #feedback-message,
-  #score-badge,
-  .center-btn-container,
-  header,
-  footer,
-  nav,
-  aside,
-  button,
+  /* Aggressive hiding of everything outside the report */
+  header, footer, nav, aside,
+  #analysis-progress,
+  #share-report-btn, #feedback-btn,
+  #share-form-container, #feedback-form-container,
+  #share-message, #feedback-message,
+  .max-w-5xl.mx-auto.my-16,                    /* radar chart */
+  .mt-20.px-2.max-w-6xl.mx-auto,               /* projected score + gains */
+  .text-center.my-16.px-4,                     /* share/save/feedback row */
+  .mt-16.px-4,                                 /* priority fixes header + cards */
+  details:not(.fixes-panel details, .full-details details),
+  #upgradeModal, .a2a_kit, [class*="a2a_"],
   .no-print,
-  details > summary,
-  .py-8.text-center,
-  #upgradeModal,
-  #priority-gains-section .mt-12,       /* gains summary if too long */
-  #plugin-solutions-section.hidden,
-  .a2a_kit,
-  [class*="a2a_"],
-  .max-w-5xl.mx-auto.my-24,             /* mobile preview section */
-  #priority-gains-section h2 + div:not(#priority-cards-container) {
+  .hidden:not(.fixes-panel, .full-details, .mt-4, .mt-6, .mt-8) {
     display: none !important;
   }
 
-  /* Prevent overlaps – force static positioning and block flow */
-  .score-circle,
-  svg,
-  .progress,
-  [style*="position: absolute"],
-  [style*="position: relative"] {
-    position: static !important;
-    transform: none !important;
-    float: none !important;
-  }
-
-  /* Better line/paragraph control – reduces orphans/widows */
-  p, li, div.text-gray-800, div.text-gray-200 {
+  /* Text orphans/widows and avoid breaks inside text */
+  p, li, div, h1, h2, h3, h4 {
     orphans: 4;
     widows: 4;
-    page-break-inside: avoid !important;
+    page-break-inside: avoid;
   }
 
-  /* Remove all shadows, gradients (except cover), borders if unwanted */
+  /* Clean backgrounds and shadows */
   [class*="shadow"],
-  .backdrop-blur,
-  .bg-gradient-* {
+  .bg-gradient-*,
+  .bg-white.dark\:bg-gray-800,
+  .dark\:bg-* {
     box-shadow: none !important;
     background: white !important;
-    border: 1px solid #d1d5db !important;
+    background-image: none !important;
   }
 
-  /* Clean SVG circles for print – no overlap */
-  .score-circle svg {
-    width: 120px !important;
-    height: 120px !important;
-    margin: 0 auto !important;
-    display: block !important;
-  }
-
-  /* Priority fixes cards – avoid splitting */
-  #priority-cards-container > div {
-    page-break-inside: avoid !important;
-    break-inside: avoid-page !important;
+  a {
+    color: #1d4ed8 !important;
+    text-decoration: underline !important;
   }
 }
