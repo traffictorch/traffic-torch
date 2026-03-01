@@ -3,7 +3,7 @@
      Proven cover page – unchanged & stable
   ─────────────────────────────────────────────────────────────── */
   body::before {
-    content: "TrafficTorch.net ⚖️\A\A Product SEO Audit 🎁\A\A Report:\A " attr(analyzed-page-title);
+    content: "TrafficTorch.net ⚖️\A\A Product SEO Audit 🎁\A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
     min-height: 100vh;

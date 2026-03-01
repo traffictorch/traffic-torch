@@ -161,38 +161,48 @@
   display: none !important;
 }
 
-/* EACH MODULE ON ITS OWN NEW PAGE (no more squashing) */
-.max-w-5xl.mx-auto.my-16,            /* Radar Chart */
-.space-y-8 > div,                    /* Perplexity + the 4-metric grid */
+/* ──────────────────────────────────────────────────────────────
+   FORCE EACH METRIC CARD ONTO ITS OWN PAGE
+─────────────────────────────────────────────────────────────── */
+.grid.md\:grid-cols-3.gap-8.my-16 > div {
+  /* Each small metric circle card (Meta, H1, Content, Alts, Anchor, URL) */
+  page-break-before: always !important;
+  break-before: page !important;
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+  margin-top: 1cm !important;     /* breathing room at top of new page */
+  margin-bottom: 1cm !important;
+}
+
+/* Also force Top Priority Fixes cards + big sections on new pages */
+.my-16 > h3 + .space-y-8 > div {
+  /* Each Top Priority Fix block */
+  page-break-before: always !important;
+  break-before: page !important;
+  break-inside: avoid !important;
+}
+
+.max-w-6xl.mx-auto.my-20.grid.md\:grid-cols-2.gap-8 {
+  /* The two-column "Ranking Potential + Expected Gains" grid */
   page-break-before: always !important;
   break-before: page !important;
 }
 
-/* Keep important content together but never split cards */
-.score-card,
-.metric-card,
-.bg-white.dark\:bg-gray-800.rounded-2xl,
-.bg-orange-50.dark\:bg-orange-900\/20 {
+/* Keep big score card, radar, and intro stuff together on first few pages */
+.flex.justify-center.my-8,
+.max-w-5xl.mx-auto.my-16 {   /* radar chart container */
+  page-break-inside: avoid !important;
+  break-inside: avoid-page !important;
+}
+
+/* Extra safety: never break inside any card-like element */
+[class*="rounded-2xl"],
+[class*="rounded-3xl"],
+.bg-white.dark\:bg-gray-800,
+.bg-gray-900,
+.shadow-xl,
+.border-4 {
   break-inside: avoid !important;
   page-break-inside: avoid !important;
-}
-
-/* ──────────────────────────────────────────────────────────────
-   FORCE “Show Fixes” expanded + “More Details”  */
-button[onclick*="More Details"] + .hidden,
-.hidden.mt-6.space-y-6,
-.hidden.mt-4.space-y-6 {
-  display: block !important;
-}
-
-button[onclick*="Show Fixes"] + .hidden,
-.hidden.mt-6.space-y-8,
-.hidden.mt-4.space-y-8 {
-  display: block !important;
-}
-
-/* Hide the toggle buttons themselves in print */
-button[onclick*="toggle('hidden')"] {
-  display: none !important;
 }
 }
