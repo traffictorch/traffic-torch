@@ -17,6 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
+  // Auto-fill input from shared report deep link (?url=...)
+  const urlParams = new URLSearchParams(window.location.search);
+  const sharedUrl = urlParams.get('url');
+  if (sharedUrl && input) {
+    input.value = decodeURIComponent(sharedUrl);
+  }
   const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/?url=';
   let analyzedText = '';
   let wordCount = 0;
