@@ -162,47 +162,73 @@
 }
 
 /* ──────────────────────────────────────────────────────────────
-   FORCE EACH METRIC CARD ONTO ITS OWN PAGE
+   PAGE BREAK CONTROL – clean separation without over-forcing
 ─────────────────────────────────────────────────────────────── */
-.grid.md\:grid-cols-3.gap-8.my-16 > div {
-  /* Each small metric circle card (Meta, H1, Content, Alts, Anchor, URL) */
-  page-break-before: always !important;
-  break-before: page !important;
-  break-inside: avoid !important;
-  page-break-inside: avoid !important;
-  margin-top: 1cm !important;     /* breathing room at top of new page */
-  margin-bottom: 1cm !important;
-}
 
-/* Also force Top Priority Fixes cards + big sections on new pages */
-.my-16 > h3 + .space-y-8 > div {
-  /* Each Top Priority Fix block */
-  page-break-before: always !important;
-  break-before: page !important;
-  break-inside: avoid !important;
-}
+/* Cover page already has page-break-after: always – good */
 
-.max-w-6xl.mx-auto.my-20.grid.md\:grid-cols-2.gap-8 {
-  /* The two-column "Ranking Potential + Expected Gains" grid */
-  page-break-before: always !important;
-  break-before: page !important;
-}
-
-/* Keep big score card, radar, and intro stuff together on first few pages */
-.flex.justify-center.my-8,
-.max-w-5xl.mx-auto.my-16 {   /* radar chart container */
+/* Big overall score card – keep together, avoid break inside */
+.flex.justify-center.my-8.sm\:my-12 {
   page-break-inside: avoid !important;
   break-inside: avoid-page !important;
 }
 
-/* Extra safety: never break inside any card-like element */
-[class*="rounded-2xl"],
-[class*="rounded-3xl"],
-.bg-white.dark\:bg-gray-800,
-.bg-gray-900,
-.shadow-xl,
-.border-4 {
+/* Radar chart section – give its own page if needed, but avoid splitting */
+.max-w-5xl.mx-auto.my-16 {
+  page-break-before: always !important;          /* radar starts new page */
+  page-break-inside: avoid !important;
+  break-inside: avoid-page !important;
+}
+
+/* The grid that holds the 6 metric circles */
+.grid.md\:grid-cols-3.gap-8.my-16 {
+  page-break-before: always !important;          /* whole metrics grid starts new page */
+}
+
+/* Individual metric cards – prevent splitting, but only force new page on 2nd+ */
+.grid.md\:grid-cols-3.gap-8.my-16 > div:nth-child(n+2) {
+  page-break-before: always !important;          /* 2nd, 3rd, 4th, 5th, 6th get new page */
+  break-before: page !important;
+}
+
+/* All metric cards – never break inside */
+.grid.md\:grid-cols-3.gap-8.my-16 > div {
+  page-break-inside: avoid !important;
   break-inside: avoid !important;
+  margin-top: 0.8cm !important;
+  margin-bottom: 0.8cm !important;
+}
+
+/* Top Priority Fixes heading + cards */
+.my-16 h3.text-4xl.font-bold.text-center.text-orange-600 {
+  page-break-before: always !important;
+}
+
+.my-16 > h3 + .space-y-8 > div {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+/* Ranking Potential + Expected Gains – new page */
+.max-w-6xl.mx-auto.my-20.grid.md\:grid-cols-2.gap-8 {
+  page-break-before: always !important;
   page-break-inside: avoid !important;
 }
+
+/* General safety – never break cards / panels */
+.bg-white.dark\:bg-gray-800.rounded-2xl,
+.bg-gray-900.rounded-2xl,
+.rounded-3xl.shadow-xl,
+.border-4,
+.fixes-panel,
+.p-8.bg-white,
+.p-4.bg-white {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+/* Slightly tighter body spacing for PDF */
+body {
+  font-size: 10.5pt !important;
+  line-height: 1.38 !important;
 }
