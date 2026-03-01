@@ -24,22 +24,42 @@ document.addEventListener('DOMContentLoaded', () => {
   const locationInput = document.getElementById('location');
   const results = document.getElementById('results');
   
-  // Auto-fill the URL input if coming from a shared link (?url=...)
+// Auto-fill from shared report link (?url=...&location=...)
 const urlParams = new URLSearchParams(window.location.search);
-const sharedUrl = urlParams.get('url');
 
+const sharedUrl = urlParams.get('url');
 if (sharedUrl) {
   try {
-    const decodedUrl = decodeURIComponent(sharedUrl);
+    let decodedUrl = decodeURIComponent(sharedUrl);
+    if (!/^https?:\/\//i.test(decodedUrl)) {
+      decodedUrl = 'https://' + decodedUrl;
+    }
     pageUrlInput.value = decodedUrl;
-    
-    // Optional: trigger form submission automatically (uncomment if desired)
-    // form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    
     console.log('[Auto-fill] Pre-filled shared URL:', decodedUrl);
   } catch (err) {
     console.warn('[Auto-fill] Invalid shared URL param:', err);
   }
+}
+
+const sharedLocation = urlParams.get('location');
+if (sharedLocation) {
+  try {
+    const decodedLocation = decodeURIComponent(sharedLocation).trim();
+    if (decodedLocation) {
+      locationInput.value = decodedLocation;
+      console.log('[Auto-fill] Pre-filled shared location:', decodedLocation);
+    }
+  } catch (err) {
+    console.warn('[Auto-fill] Invalid shared location param:', err);
+  }
+}
+
+// Optional: auto-analyze if both fields are filled from share link (recommended for shared reports)
+if (sharedUrl && sharedLocation) {
+  // Small delay to ensure inputs are set before submit
+  setTimeout(() => {
+    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  }, 300);
 }
   
   const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
