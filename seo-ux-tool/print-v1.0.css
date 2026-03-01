@@ -177,6 +177,42 @@
   page-break-inside: avoid !important;
 }
 
+/* ──────────────────────────────────────────────────────────────
+   Firefox grid + page-break fix: force stack + reliable breaks
+─────────────────────────────────────────────────────────────── */
+
+/* In print: override grid → make cards full-width stack (column) */
+#results.grid {
+  display: block !important;           /* or flex; block is safest */
+  column-count: 1 !important;
+}
+
+/* Ensure each card behaves as a block-level full-page unit */
+#results .score-card {
+  display: block !important;
+  width: 100% !important;
+  min-height: 95vh !important;         /* fills most of page, prevents tiny remnants */
+  margin: 1cm 0 0 0 !important;        /* top margin for breathing room */
+  padding: 1cm 0.8cm !important;
+  box-sizing: border-box !important;
+  page-break-before: always !important;
+  break-before: page !important;
+  page-break-inside: avoid !important;
+  break-inside: avoid-page !important;
+}
+
+/* NO forced break before the very first card (starts right after cover) */
+#results .score-card:first-child {
+  page-break-before: auto !important;
+  break-before: auto !important;
+  margin-top: 0 !important;
+}
+
+/* Extra safety: avoid breaks after last card if needed */
+#results .score-card:last-child {
+  page-break-after: avoid !important;
+}
+
 /* Force each major module/score-card onto its own page in print */
 #results .score-card {
   page-break-before: always !important;
