@@ -11,6 +11,46 @@ document.addEventListener('DOMContentLoaded', () => {
   const compInput = document.getElementById('competitor-url');
   const phraseInput = document.getElementById('target-phrase');
   const results = document.getElementById('results');
+    // Auto-fill from shared report link (?your-url=...&comp-url=...&keyword=...)
+  const urlParams = new URLSearchParams(window.location.search);
+
+  const sharedYourUrl = urlParams.get('your-url');
+  if (sharedYourUrl) {
+    try {
+      let decoded = decodeURIComponent(sharedYourUrl);
+      if (!/^https?:\/\//i.test(decoded)) {
+        decoded = 'https://' + decoded;
+      }
+      yourInput.value = decoded;
+    } catch (e) {
+      console.warn('Invalid shared your-url:', e);
+    }
+  }
+
+  const sharedCompUrl = urlParams.get('comp-url');
+  if (sharedCompUrl) {
+    try {
+      let decoded = decodeURIComponent(sharedCompUrl);
+      if (!/^https?:\/\//i.test(decoded)) {
+        decoded = 'https://' + decoded;
+      }
+      compInput.value = decoded;
+    } catch (e) {
+      console.warn('Invalid shared comp-url:', e);
+    }
+  }
+
+  const sharedKeyword = urlParams.get('keyword');
+  if (sharedKeyword) {
+    try {
+      const decoded = decodeURIComponent(sharedKeyword).trim();
+      if (decoded) {
+        phraseInput.value = decoded;
+      }
+    } catch (e) {
+      console.warn('Invalid shared keyword:', e);
+    }
+  }
   const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
 
   const fetchPage = async (url) => {
