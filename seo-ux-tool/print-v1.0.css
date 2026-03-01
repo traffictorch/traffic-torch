@@ -8,148 +8,191 @@
     height: 100vh;
     min-height: 100vh;
     page-break-after: always;
-    break-after: page;
     background: linear-gradient(135deg, #10b981, #059669);
-    color: #111827;
+    color: #4b5563;
     font-family: system-ui, -apple-system, sans-serif;
     font-weight: 900;
     text-align: center;
     padding-top: 20vh;
     line-height: 1.4;
     white-space: pre;
-    font-size: 2.2rem;
+    font-size: 2.5rem;
     text-shadow:
       -2px -2px 0 #fb923c,
       2px -2px 0 #fb923c,
       -2px 2px 0 #fb923c,
       2px 2px 0 #fb923c,
-      0 10px 30px rgba(0,0,0,0.4);
+      -2px 0 0 #fb923c,
+      2px 0 0 #fb923c,
+      0 -2px 0 #fb923c,
+      0 2px 0 #fb923c,
+      0 10px 30px rgba(0,0,0,0.5);
   }
 
+  /* Report starts cleanly on next page */
+  #results-wrapper {
+    page-break-before: always;
+    margin-top: 0 !important;
+  }
+
+  /* Full-width content inside results */
+  #results-wrapper,
+  #results-wrapper .container,
+  #results-wrapper .max-w-*,
+  #results-wrapper .mx-auto {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 1cm 1.2cm !important;
+    box-sizing: border-box;
+  }
+
+  /* Prevent ugly page breaks inside modules */
+  .score-card,
+  .fixes-panel,
+  .full-details,
+  section > div,
+  .grid,
+  .flex {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Better text flow */
+  p, li, div {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Print safety basics */
   body {
     background: white !important;
     color: black !important;
     margin: 0 !important;
     padding: 0 !important;
     font-size: 11pt;
-    line-height: 1.45;
   }
 
-  /* Force the results container to start clean */
-  #results {
-    page-break-before: always;
-    break-before: page;
-    margin-top: 0 !important;
-  }
-
-  /* Completely break the grid layout – make it vertical stack */
-  .grid.grid-cols-1.md\:grid-cols-4.my-12.px-0.max-w-7xl.mx-auto {
-    display: block !important;
-    column-count: 1 !important;
-    grid-template-columns: none !important;
-    gap: 3cm !important;               /* space between modules */
-    width: 100% !important;
-    max-width: none !important;
-    margin: 0 !important;
-    padding: 0 1.5cm !important;
-  }
-
-  /* Each individual module card gets its own page */
-  .score-card {
-    display: block !important;
-    page-break-before: always !important;
-    break-before: page !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid-page !important;
-    page-break-after: avoid !important;
-    break-after: avoid-page !important;
-    margin: 0 0 1cm 0 !important;
-    padding: 1.5cm 1.5cm 2cm 1.5cm !important;
-    width: 100% !important;
-    max-width: none !important;
-    border: 1px solid #d1d5db !important;
-    background: white !important;
+  /* Clean print – no shadows */
+  .shadow-lg,
+  .shadow-xl,
+  [class*="shadow"] {
     box-shadow: none !important;
   }
 
-  /* Enlarge score display for better print legibility */
-  .score-card .relative.w-32.h-32,
-  .score-card svg {
-    width: 200px !important;
-    height: 200px !important;
-    margin: 0 auto 1.5cm !important;
+  /* ──────────────────────────────────────────────────────────────
+     TARGETED HIDING – safe & specific (no :not breakage)
+  ─────────────────────────────────────────────────────────────── */
+  .max-w-4xl.mx-auto.my-20 details,               /* how/why accordions */
+  section.py-20.bg-gray-50.dark\:bg-gray-900,     /* deep dive modules */
+  #seo-ux-checklist,                              /* SEO & UX checklist */
+  .tools-grid,
+  section.max-w-5xl.mx-auto.my-24,                /* author bio */
+  div[style*="display: flex; justify-content: center; margin: 30px 0;"],  /* share blocks */
+  .a2a_kit,
+  div.max-w-5xl.mx-auto.px-6.py-4.text-center,    /* breadcrumbs */
+  section.bottom-banner,
+  .checklist-card,
+  .max-w-7xl.mx-auto,
+  .max-w-6xl.mx-auto {
+    display: none !important;
+  }
+  
+  /* Hide upgrade modal and share section in print */
+  #upgradeModal,
+  .py-8.text-center,
+  .a2a_kit,
+  .a2a_default_style,
+  .a2a_kit_size_32,
+  [class*="a2a_"] {
+    display: none !important;
   }
 
-  .score-card .text-5xl,
-  .score-card .text-6xl {
-    font-size: 5.5rem !important;
+  /* Extra insurance for modal visibility tricks */
+  #upgradeModal[style*="display: block"],
+  #upgradeModal:not(.hidden) {
+    display: none !important;
   }
 
-  .score-card .text-xl,
-  .score-card .text-base,
-  .score-card .text-sm,
-  .score-card p {
-    font-size: 13pt !important;
-    line-height: 1.6 !important;
+  /* Extra safety: hide top-level details not in report */
+  details:not(.fixes-panel details, .full-details details) {
+    display: none !important;
   }
 
-  /* Ensure expanded content is visible */
+  /* ──────────────────────────────────────────────────────────────
+     Always show important report content
+  ─────────────────────────────────────────────────────────────── */
   .fixes-panel,
   .full-details,
+  .expand-content,
   .hidden.mt-4,
   .hidden.mt-6,
-  .hidden.mt-8,
-  .space-y-4,
-  .space-y-6,
-  .space-y-8 {
+  .hidden.mt-8 {
     display: block !important;
-    visibility: visible !important;
   }
 
-  /* Hide toggle buttons */
-  .more-details-toggle,
-  .fixes-toggle,
-  button[onclick*="toggle"],
-  button[onclick*="hidden"] {
-    display: none !important;
-  }
-
-  /* Aggressive hiding of everything outside the report */
-  header, footer, nav, aside,
+  /* Original form/header/footer hiding */
+  #keyword-form,
   #analysis-progress,
-  #share-report-btn, #feedback-btn,
-  #share-form-container, #feedback-form-container,
-  #share-message, #feedback-message,
-  .max-w-5xl.mx-auto.my-16,                    /* radar chart */
-  .mt-20.px-2.max-w-6xl.mx-auto,               /* projected score + gains */
-  .text-center.my-16.px-4,                     /* share/save/feedback row */
-  .mt-16.px-4,                                 /* priority fixes header + cards */
-  details:not(.fixes-panel details, .full-details details),
-  #upgradeModal, .a2a_kit, [class*="a2a_"],
+  header,
+  footer,
+  nav,
+  aside,
   .no-print,
-  .hidden:not(.fixes-panel, .full-details, .mt-4, .mt-6, .mt-8) {
+  button,
+  details > summary {
     display: none !important;
   }
+  
+/* Hide promotional / educational blocks + share/feedback + AI Content Audit explanation section */
+#author-bio,
+#promo-high-impact-cards,
+#promo-old-vs-modern-seo,
+#share-form-container,
+#feedback-form-container,
+#share-message,
+#feedback-message,
+#share-report-btn ~ div[id*="form"],
+#feedback-btn ~ div[id*="form"],
+.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8,  /* the entire What is Modern SEO section */
+.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 h2,  /* title */
+.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 p,     /* paragraphs */
+.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 div.text-xl.leading-relaxed.text-center {
+  display: none !important;
+}
 
-  /* Text orphans/widows and avoid breaks inside text */
-  p, li, div, h1, h2, h3, h4 {
-    orphans: 4;
-    widows: 4;
-    page-break-inside: avoid;
-  }
+/* EACH MODULE ON ITS OWN NEW PAGE (no more squashing) */
+.max-w-5xl.mx-auto.my-16,            /* Radar Chart */
+.space-y-8 > div,                    /* Perplexity + the 4-metric grid */
+  page-break-before: always !important;
+  break-before: page !important;
+}
 
-  /* Clean backgrounds and shadows */
-  [class*="shadow"],
-  .bg-gradient-*,
-  .bg-white.dark\:bg-gray-800,
-  .dark\:bg-* {
-    box-shadow: none !important;
-    background: white !important;
-    background-image: none !important;
-  }
+/* Keep important content together but never split cards */
+.score-card,
+.metric-card,
+.bg-white.dark\:bg-gray-800.rounded-2xl,
+.bg-orange-50.dark\:bg-orange-900\/20 {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
 
-  a {
-    color: #1d4ed8 !important;
-    text-decoration: underline !important;
-  }
+/* ──────────────────────────────────────────────────────────────
+   FORCE “Show Fixes” expanded + “More Details”  */
+button[onclick*="More Details"] + .hidden,
+.hidden.mt-6.space-y-6,
+.hidden.mt-4.space-y-6 {
+  display: block !important;
+}
+
+button[onclick*="Show Fixes"] + .hidden,
+.hidden.mt-6.space-y-8,
+.hidden.mt-4.space-y-8 {
+  display: block !important;
+}
+
+/* Hide the toggle buttons themselves in print */
+button[onclick*="toggle('hidden')"] {
+  display: none !important;
+}
 }
