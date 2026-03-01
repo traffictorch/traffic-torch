@@ -32,7 +32,12 @@ const waitForElements = () => {
 
 const initTool = (form, results, progressContainer) => {
   const progressText = document.getElementById('progress-text');
-
+  const urlParams = new URLSearchParams(window.location.search);
+  const sharedUrl = urlParams.get('url');
+  if (sharedUrl) {
+    const input = document.getElementById('url-input');
+    if (input) input.value = decodeURIComponent(sharedUrl);
+  }
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     

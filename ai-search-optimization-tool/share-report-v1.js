@@ -23,14 +23,13 @@ export function initShareReport(resultsContainer) {
     }
 
     // Remove any leftover tool name if needed
-    pageTitle = pageTitle.replace(/Traffic Torch | AI Search Optimizer Tool/gi, '').trim() || 'this page';
+    pageTitle = pageTitle.replace(/Traffic Torch | AI Search Engine Optimization Audit Tool/gi, '').trim() || 'this page';
 
     const shareText = `Check out ${pageTitle} on Traffic Torch AI Search Optimizer Tool ${shareUrl}`;
 
     try {
       if (navigator.share) {
         await navigator.share({
-          title: 'Traffic Torch AI Search Optimizer Report',
           text: shareText
         });
         showMessage('Shared successfully!', 'success');
