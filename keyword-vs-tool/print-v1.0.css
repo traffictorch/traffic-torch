@@ -47,21 +47,9 @@
     box-sizing: border-box;
   }
 
-  /* Prevent ugly page breaks inside modules */
-  .score-card,
-  .fixes-panel,
-  .full-details,
-  section > div,
-  .grid,
-  .flex {
-    page-break-inside: avoid;
-    break-inside: avoid;
-  }
-
-  /* Better text flow */
-  p, li, div {
-    orphans: 3;
-    widows: 3;
+  @page {
+    size: A4 portrait;
+    margin: 1.5cm;
   }
 
   /* Print safety basics */
@@ -70,7 +58,8 @@
     color: black !important;
     margin: 0 !important;
     padding: 0 !important;
-    font-size: 11pt;
+    font-size: 10.5pt !important;
+    line-height: 1.38 !important;
   }
 
   /* Clean print – no shadows */
@@ -81,24 +70,23 @@
   }
 
   /* ──────────────────────────────────────────────────────────────
-     TARGETED HIDING – safe & specific (no :not on containers)
+     TARGETED HIDING – safe & specific (no :not breakage)
   ─────────────────────────────────────────────────────────────── */
-  .max-w-4xl.mx-auto.my-16 details,               /* how/why accordions */
-  section.py-20.bg-gray-50.dark\:bg-gray-900,     /* deep dive modules */
-  #keyword-gap-checklist,                         /* competitive checklist */
+  .max-w-4xl.mx-auto.my-16 details,
+  section.py-20.bg-gray-50.dark\:bg-gray-900,
+  section.py-16.px-3.max-w-6xl.mx-auto,
   .tools-grid,
-  section.max-w-5xl.mx-auto.my-24,                /* author bio */
-  div[style*="display: flex; justify-content: center; margin: 30px 0;"],  /* share blocks */
+  section.max-w-5xl.mx-auto.my-24,
+  div[style*="display: flex; justify-content: center; margin: 30px 0;"],
   .a2a_kit,
-  div.max-w-5xl.mx-auto.px-6.py-4.text-center,    /* breadcrumbs */
+  div.max-w-5xl.mx-auto.px-6.py-4.text-center,
   section.bottom-banner,
   .checklist-card,
   .max-w-7xl.mx-auto,
   .max-w-6xl.mx-auto {
     display: none !important;
   }
-  
-  /* Hide upgrade modal and share section in print */
+
   #upgradeModal,
   .py-8.text-center,
   .a2a_kit,
@@ -108,30 +96,57 @@
     display: none !important;
   }
 
-  /* Extra insurance for modal visibility tricks */
   #upgradeModal[style*="display: block"],
   #upgradeModal:not(.hidden) {
     display: none !important;
   }
 
-  /* Extra safety: hide top-level details not in report */
   details:not(.fixes-panel details, .full-details details) {
     display: none !important;
   }
 
-  /* ──────────────────────────────────────────────────────────────
-     Always show important report content
-  ─────────────────────────────────────────────────────────────── */
-  .fixes-panel,
-  .full-details,
-  .expand-content,
-  .hidden.mt-4,
-  .hidden.mt-6,
-  .hidden.mt-8 {
-    display: block !important;
-  }
+/* ──────────────────────────────────────────────────────────────
+   Always show important report content + FORCE expand all panels
+─────────────────────────────────────────────────────────────── */
+.fixes-panel,
+.full-details,
+.expand-content,
+.hidden.mt-4,
+.hidden.mt-6,
+.hidden.mt-8,
+button[onclick*="Show Fixes"] + .hidden,
+button[onclick*="More Details"] + .hidden,
+.fixes-panel.hidden,
+.mt-6.space-y-6.hidden,
+.mt-4.space-y-6.hidden,
+.mt-6.space-y-8.hidden,
+.mt-4.space-y-8.hidden {
+  display: block !important;
+  visibility: visible !important;
+  height: auto !important;
+  max-height: none !important;
+  opacity: 1 !important;
+}
 
-  /* Original form/header/footer hiding */
+/* Hide the actual toggle buttons in print (clean look) */
+button[onclick*="Show Fixes"],
+button[onclick*="More Details"],
+button[onclick*="classList.toggle"] {
+  display: none !important;
+}
+
+/* Prevent expanded panels from breaking awkwardly across pages */
+.fixes-panel,
+.mt-6.space-y-6,
+.mt-4.space-y-6,
+.mt-6.space-y-8,
+.mt-4.space-y-8 {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+  margin-top: 0.5cm !important;
+  margin-bottom: 1cm !important;
+}
+
   #keyword-form,
   #analysis-progress,
   header,
@@ -144,55 +159,100 @@
     display: none !important;
   }
 
-/* Hide promotional / educational blocks + share/feedback + AI Content Audit explanation section */
-#author-bio,
-#promo-high-impact-cards,
-#promo-old-vs-modern-seo,
-#share-form-container,
-#feedback-form-container,
-#share-message,
-#feedback-message,
-#share-report-btn ~ div[id*="form"],
-#feedback-btn ~ div[id*="form"],
-.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8,  /* the entire What is AI Content Audit section */
-.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 h2,  /* title */
-.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 p,     /* paragraphs */
-.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 div.text-xl.leading-relaxed.text-center {
-  display: none !important;
-}
+  #author-bio,
+  #promo-high-impact-cards,
+  #promo-old-vs-modern-seo,
+  #share-form-container,
+  #feedback-form-container,
+  #share-message,
+  #feedback-message,
+  #share-report-btn ~ div[id*="form"],
+  #feedback-btn ~ div[id*="form"],
+  .max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8,
+  .max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 h2,
+  .max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 p,
+  .max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 div.text-xl.leading-relaxed.text-center {
+    display: none !important;
+  }
 
-/* EACH MODULE ON ITS OWN NEW PAGE (no more squashing) */
-.max-w-5xl.mx-auto.my-16,            /* Radar Chart */
-.space-y-8 > div,                    /* Perplexity + the 4-metric grid */
-  page-break-before: always !important;
-  break-before: page !important;
-}
+  /* ──────────────────────────────────────────────────────────────
+     PAGE BREAK FIX – grid disabled + modern + legacy breaks
+     (this is the part that was causing overlap in Firefox/Chrome)
+  ─────────────────────────────────────────────────────────────── */
 
-/* Keep important content together but never split cards */
-.score-card,
-.metric-card,
-.bg-white.dark\:bg-gray-800.rounded-2xl,
-.bg-orange-50.dark\:bg-orange-900\/20 {
-  break-inside: avoid !important;
-  page-break-inside: avoid !important;
-}
+  /* Big score card + radar stay together or get clean separation */
+  .flex.justify-center.my-8.sm\:my-12,
+  .max-w-5xl.mx-auto.my-16 {
+    page-break-inside: avoid !important;
+    break-inside: avoid-page !important;
+  }
 
-/* ──────────────────────────────────────────────────────────────
-   FORCE “Show Fixes” expanded + “More Details”  */
-button[onclick*="More Details"] + .hidden,
-.hidden.mt-6.space-y-6,
-.hidden.mt-4.space-y-6 {
-  display: block !important;
-}
+  /* Radar gets its own clean page */
+  .max-w-5xl.mx-auto.my-16 {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
 
-button[onclick*="Show Fixes"] + .hidden,
-.hidden.mt-6.space-y-8,
-.hidden.mt-4.space-y-8 {
-  display: block !important;
-}
+  /* CRITICAL: Disable CSS Grid for print (grid children ignore page breaks in Firefox/Chrome) */
+  .grid.md\:grid-cols-3.gap-8.my-16 {
+    display: block !important;           /* forces normal block flow */
+    grid-template-columns: none !important;
+    gap: 0 !important;
+    page-break-before: always !important; /* whole metrics section starts new page */
+    break-before: page !important;
+  }
 
-/* Hide the toggle buttons themselves in print */
-button[onclick*="toggle('hidden')"] {
-  display: none !important;
-}
+  /* Each of the 6 metric cards – new page + never split */
+  .grid.md\:grid-cols-3.gap-8.my-16 > div {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    margin-top: 1cm !important;
+    margin-bottom: 1.5cm !important;
+    width: 100% !important;
+  }
+
+  /* Force new page on every metric card AFTER the first one */
+  .grid.md\:grid-cols-3.gap-8.my-16 > div:nth-child(n+2) {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  /* Top Priority Fixes section */
+  .my-16 h3.text-4xl.font-bold.text-center.text-orange-600 {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  .my-16 > h3 + .space-y-8 > div {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Ranking Potential + Expected Gains */
+  .max-w-6xl.mx-auto.my-20.grid.md\:grid-cols-2.gap-8 {
+    page-break-before: always !important;
+    break-before: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid-page !important;
+  }
+
+  /* Extra safety for all cards/panels */
+  [class*="rounded-2xl"],
+  [class*="rounded-3xl"],
+  .bg-white.dark\:bg-gray-800,
+  .bg-gray-900,
+  .shadow-xl,
+  .border-4,
+  .fixes-panel,
+  .p-8.bg-white,
+  .p-4.bg-white {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Better text flow */
+  p, li, div {
+    orphans: 4;
+    widows: 4;
+  }
 }
