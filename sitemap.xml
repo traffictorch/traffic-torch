@@ -8,47 +8,47 @@
   <!-- Core pages -->
   <url>
     <loc>https://traffictorch.net/</loc>
-    <lastmod>2026-02-22</lastmod>
+    <lastmod>2026-03-02</lastmod>
   </url>
 
   <url>
     <loc>https://traffictorch.net/local-seo-tool/</loc>
-    <lastmod>2026-02-22</lastmod>
+    <lastmod>2026-03-02</lastmod>
   </url>
 
   <url>
     <loc>https://traffictorch.net/seo-intent-tool/</loc>
-    <lastmod>2026-02-22</lastmod>
+    <lastmod>2026-03-02</lastmod>
   </url>
   
   <url>
     <loc>https://traffictorch.net/product-seo-tool/</loc>
-    <lastmod>2026-02-22</lastmod>
+    <lastmod>2026-03-02</lastmod>
   </url>
 
   <url>
     <loc>https://traffictorch.net/quit-risk-tool/</loc>
-    <lastmod>2026-02-22</lastmod>
+    <lastmod>2026-03-02</lastmod>
   </url>
 
   <url>
     <loc>https://traffictorch.net/keyword-tool/</loc>
-    <lastmod>2026-02-22</lastmod>
+    <lastmod>2026-03-02</lastmod>
   </url>
 
   <url>
     <loc>https://traffictorch.net/keyword-vs-tool/</loc>
-    <lastmod>2026-02-22</lastmod>
+    <lastmod>2026-03-02</lastmod>
   </url>
 
   <url>
     <loc>https://traffictorch.net/ai-search-optimization-tool/</loc>
-    <lastmod>2026-02-22</lastmod>
+    <lastmod>2026-03-02</lastmod>
   </url>
 
   <url>
     <loc>https://traffictorch.net/ai-audit-tool/</loc>
-    <lastmod>2026-02-22</lastmod>
+    <lastmod>2026-03-02</lastmod>
   </url>
 
   <!-- Static & info pages -->
@@ -69,12 +69,12 @@
 
   <url>
     <loc>https://traffictorch.net/privacy/</loc>
-    <lastmod>2026-01-30</lastmod>
+    <lastmod>2026-03-02</lastmod>
   </url>
 
   <url>
     <loc>https://traffictorch.net/terms/</loc>
-    <lastmod>2026-01-30</lastmod>
+    <lastmod>2026-03-02</lastmod>
   </url>
   
   <url>
@@ -90,6 +90,11 @@
   <url>
     <loc>https://traffictorch.net/ai-ux-seo-help-guides/</loc>
     <lastmod>2026-02-21</lastmod>
+  </url>
+  
+    <url>
+    <loc>https://traffictorch.net/pro/</loc>
+    <lastmod>2026-03-02</lastmod>
   </url>
 
   <!-- Blog posts - lower implicit importance -->
