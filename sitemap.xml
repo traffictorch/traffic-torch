@@ -97,7 +97,12 @@
     <lastmod>2026-03-02</lastmod>
   </url>
 
-  <!-- Blog posts - lower implicit importance -->
+  <!-- Blog posts -->
+  
+    <url>
+    <loc>https://traffictorch.net/blog/posts/state-of-seo-geo-2026/</loc>
+    <lastmod>2026-02-22</lastmod>
+    </url>
   
     <url>
     <loc>https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/</loc>
