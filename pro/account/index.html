@@ -274,6 +274,12 @@
         Your privacy-first SEO & UX dashboard
       </p>
     </div>
+    
+    <div class="text-center mb-8">
+  <h2 id="welcome-message" class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200">
+    Hi <span id="user-name">User</span>, Welcome to the Traffic Torch Pro Dashboard
+  </h2>
+</div>
 
     <!-- Status Card -->
     <div id="status-card" class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
@@ -507,6 +513,43 @@
       }
     });
   }
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const token = localStorage.getItem('authToken');
+  if (!token) return; // Not logged in → skip
+
+  try {
+    const res = await fetch(`${API_BASE}/api/user`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error('Failed to fetch user data');
+    const data = await res.json();
+
+    // Update welcome message
+    const nameSpan = document.getElementById('user-name');
+    if (nameSpan && data.name) {
+      // Use first name only (split on space, take first part)
+      const firstName = data.name.split(' ')[0];
+      nameSpan.textContent = firstName;
+    }
+
+    // Optional: update pro-since if you want dynamic date
+    const sinceSpan = document.getElementById('pro-since');
+    if (sinceSpan && data.pro_since) {
+      const date = new Date(data.pro_since);
+      sinceSpan.textContent = date.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    }
+  } catch (err) {
+    console.error('Failed to load user info:', err);
+    // Fallback: keep default "User"
+  }
+});
 </script>
 
 </main>

@@ -568,8 +568,6 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         link.appendChild(badge);
       }
-// TEMP DEBUG: confirm badge was added
-console.log('Green dot badge added to link:', link.href, badge);
     } else {
       // Logged out: reset to default
       if (textSpan) {
