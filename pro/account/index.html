@@ -276,7 +276,7 @@
     </div>
     
     <div class="text-center mb-8">
-  <h2 id="welcome-message" class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200">
+  <h2 id="welcome-message" class="text-2xl md:text-2xl font-bold text-gray-800 dark:text-gray-200">
     Hi <span id="user-name">User</span>, Welcome to the Traffic Torch Pro Dashboard
   </h2>
 </div>
@@ -415,23 +415,26 @@
             remainingEl.classList.add('text-green-600', 'dark:text-green-400');
           }
           document.getElementById('email-text').textContent = data.email || '—';
-// Set personalized welcome name from real DB field (already returned by /api/account-info)
+// Personalized welcome name – prioritize real DB name
 const nameSpan = document.getElementById('user-name');
 if (nameSpan) {
   let displayName = 'User';
 
-  // Prefer real name from DB if present and not empty
-  if (data.name && data.name.trim() !== '' && data.name !== 'User') {
-    // Take first name only (e.g. "Ylia Callan" → "Ylia")
+  // 1. Use real name from DB if it exists and isn't the fallback 'User'
+  if (data.name && data.name.trim() !== '' && data.name.trim() !== 'User') {
+    // Take only the first name (e.g. "Ylia Callan" → "Ylia")
     displayName = data.name.trim().split(/\s+/)[0];
-  } 
-  // Fallback: clean email prefix only if no real name
+  }
+  // 2. Fallback to cleaned email prefix ONLY if name is missing/empty/'User'
   else if (data.email && data.email !== '—') {
-    const emailPrefix = data.email.split('@')[0].split(/[\._-]/)[0]; // e.g. "yliacallan" → "ylia"
-    displayName = emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1).toLowerCase();
+    const prefix = data.email.split('@')[0].split(/[\._-]/)[0]; // e.g. "yliacallan" → "ylia"
+    displayName = prefix.charAt(0).toUpperCase() + prefix.slice(1).toLowerCase();
   }
 
   nameSpan.textContent = displayName;
+
+  // TEMP debug log – remove after confirming
+  console.log('Welcome name set to:', displayName, '(raw DB name was:', data.name || 'missing', ')');
 }
         } catch (err) {
           console.error(err);
