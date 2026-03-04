@@ -415,14 +415,23 @@
             remainingEl.classList.add('text-green-600', 'dark:text-green-400');
           }
           document.getElementById('email-text').textContent = data.email || '—';
-          const nameSpan = document.getElementById('user-name');
+// Set personalized welcome name from real DB field (already returned by /api/account-info)
+const nameSpan = document.getElementById('user-name');
 if (nameSpan) {
-  // Use real name if backend sends it, else fallback to email prefix
-  const displayName = data.name && data.name.trim() !== '' 
-    ? data.name.split(' ')[0] 
-    : (data.email ? data.email.split('@')[0].split('.')[0] : 'User');
-  
-  nameSpan.textContent = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+  let displayName = 'User';
+
+  // Prefer real name from DB if present and not empty
+  if (data.name && data.name.trim() !== '' && data.name !== 'User') {
+    // Take first name only (e.g. "Ylia Callan" → "Ylia")
+    displayName = data.name.trim().split(/\s+/)[0];
+  } 
+  // Fallback: clean email prefix only if no real name
+  else if (data.email && data.email !== '—') {
+    const emailPrefix = data.email.split('@')[0].split(/[\._-]/)[0]; // e.g. "yliacallan" → "ylia"
+    displayName = emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1).toLowerCase();
+  }
+
+  nameSpan.textContent = displayName;
 }
         } catch (err) {
           console.error(err);
