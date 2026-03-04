@@ -474,11 +474,24 @@ div.prose p {
 
 /* Pro Logged in badge */
 .pro-badge {
-  vertical-align: middle;
-  margin-left: 0.5rem !important;
+  display: inline-block !important;
+  width: 0.625rem !important;          /* 10px */
+  height: 0.625rem !important;
+  background-color: #22c55e !important; /* green-500 */
+  border-radius: 9999px !important;
+  margin-left: 0.5rem !important;       /* ml-2 */
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;            /* prevent squishing */
 }
 
+/* Brighter in dark mode for better contrast */
 .dark .pro-badge {
-  background-color: #10b981; /* brighter green in dark mode for contrast */
+  background-color: #34d399 !important; /* emerald-400, more visible on dark bg */
+}
+
+/* Force visibility if parent has overflow-hidden or low opacity */
+.sidebar-link:has(.pro-badge),
+.pro-menu-link:has(.pro-badge) {
+  overflow: visible !important;
 }
 
