@@ -518,36 +518,37 @@
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
   const token = localStorage.getItem('authToken');
-  if (!token) return; // Not logged in → skip
+  if (!token) return;
 
   try {
-    const res = await fetch(`${API_BASE}/api/user`, {
+    // Reuse your existing /api/account-info endpoint (already called in loadAccountInfo)
+    const res = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/account-info', {
       headers: { 'Authorization': `Bearer ${token}` }
     });
-    if (!res.ok) throw new Error('Failed to fetch user data');
+    if (!res.ok) throw new Error('Failed to fetch account info');
     const data = await res.json();
 
-    // Update welcome message
+    // Update name if backend returns it (you'll add this field server-side)
     const nameSpan = document.getElementById('user-name');
     if (nameSpan && data.name) {
-      // Use first name only (split on space, take first part)
-      const firstName = data.name.split(' ')[0];
+      const firstName = data.name.trim().split(/\s+/)[0]; // safe first name
       nameSpan.textContent = firstName;
     }
 
-    // Optional: update pro-since if you want dynamic date
-    const sinceSpan = document.getElementById('pro-since');
-    if (sinceSpan && data.pro_since) {
-      const date = new Date(data.pro_since);
-      sinceSpan.textContent = date.toLocaleDateString('en-US', {
+    // Optional: make "since" dynamic using proSince from same endpoint
+    const sinceSpan = document.getElementById('since-text');
+    if (sinceSpan && data.proSince) {
+      const date = new Date(data.proSince);
+      sinceSpan.textContent = `since ${date.toLocaleDateString('en-US', {
         month: 'long',
         day: 'numeric',
         year: 'numeric'
-      });
+      })}`;
     }
+
   } catch (err) {
-    console.error('Failed to load user info:', err);
-    // Fallback: keep default "User"
+    console.error('Failed to load user name:', err);
+    // Fallback remains "User"
   }
 });
 </script>
