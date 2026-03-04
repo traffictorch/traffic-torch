@@ -415,6 +415,15 @@
             remainingEl.classList.add('text-green-600', 'dark:text-green-400');
           }
           document.getElementById('email-text').textContent = data.email || '—';
+          const nameSpan = document.getElementById('user-name');
+if (nameSpan) {
+  // Use real name if backend sends it, else fallback to email prefix
+  const displayName = data.name && data.name.trim() !== '' 
+    ? data.name.split(' ')[0] 
+    : (data.email ? data.email.split('@')[0].split('.')[0] : 'User');
+  
+  nameSpan.textContent = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+}
         } catch (err) {
           console.error(err);
           document.getElementById('status-card').innerHTML += '<p class="text-red-600 dark:text-red-400 mt-6 text-center font-medium">Could not load account info. Please refresh or log in again.</p>';
@@ -516,39 +525,22 @@
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
-  const token = localStorage.getItem('authToken');
-  if (!token) return; // Not logged in → skip
-
-  try {
-    const res = await fetch(`${API_BASE}/api/user`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (!res.ok) throw new Error('Failed to fetch user data');
-    const data = await res.json();
-
-    // Update welcome message
+document.addEventListener('DOMContentLoaded', () => {
+  // Wait for loadAccountInfo() to finish (it already runs on DOMContentLoaded)
+  // Small delay ensures DOM is updated before we read
+  setTimeout(() => {
     const nameSpan = document.getElementById('user-name');
-    if (nameSpan && data.name) {
-      // Use first name only (split on space, take first part)
-      const firstName = data.name.split(' ')[0];
-      nameSpan.textContent = firstName;
-    }
+    if (!nameSpan) return;
 
-    // Optional: update pro-since if you want dynamic date
-    const sinceSpan = document.getElementById('pro-since');
-    if (sinceSpan && data.pro_since) {
-      const date = new Date(data.pro_since);
-      sinceSpan.textContent = date.toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric'
-      });
+    // Try to get name from the email-text element (fallback – shows full email)
+    const emailEl = document.getElementById('email-text');
+    if (emailEl && emailEl.textContent !== '—') {
+      // Very rough fallback: take part before @ as "name" if no real name
+      const email = emailEl.textContent.trim();
+      const fallbackName = email.split('@')[0].split('.')[0]; // e.g. "ylia" from ylia@...
+      nameSpan.textContent = fallbackName.charAt(0).toUpperCase() + fallbackName.slice(1);
     }
-  } catch (err) {
-    console.error('Failed to load user info:', err);
-    // Fallback: keep default "User"
-  }
+  }, 800); // 800ms delay – enough for loadAccountInfo to finish
 });
 </script>
 
