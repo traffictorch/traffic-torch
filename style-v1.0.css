@@ -472,3 +472,13 @@ div.prose p {
   }
 }
 
+/* Pro Logged in badge */
+.pro-badge {
+  vertical-align: middle;
+  margin-left: 0.5rem !important;
+}
+
+.dark .pro-badge {
+  background-color: #10b981; /* brighter green in dark mode for contrast */
+}
+

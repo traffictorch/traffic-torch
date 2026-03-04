@@ -543,10 +543,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Conditional Pro menu link update
 document.addEventListener('DOMContentLoaded', () => {
-console.log('Pro menu link handler running');
-const token = localStorage.getItem('authToken');
-console.log('Pro menu handler: token exists?', !!token, 'found links:', document.querySelectorAll('.pro-menu-link').length);
-
+  const token = localStorage.getItem('authToken');
   const links = document.querySelectorAll('.pro-menu-link');
 
   links.forEach(link => {
