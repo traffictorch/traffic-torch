@@ -415,27 +415,23 @@
             remainingEl.classList.add('text-green-600', 'dark:text-green-400');
           }
           document.getElementById('email-text').textContent = data.email || '—';
-// Personalized welcome name – prioritize real DB name
+// Personalized welcome – use full name from DB if available
 const nameSpan = document.getElementById('user-name');
 if (nameSpan) {
   let displayName = 'User';
 
-  // 1. Use real name from DB if it exists and isn't the fallback 'User'
+  // Prefer real full name from DB (no splitting to first name only)
   if (data.name && data.name.trim() !== '' && data.name.trim() !== 'User') {
-    // Take only the first name (e.g. "Ylia Callan" → "Ylia")
-    displayName = data.name.trim().split(/\s+/)[0];
+    displayName = data.name.trim();  // e.g. "Ylia Callan" or "Traffic Torch"
   }
-  // 2. Fallback to cleaned email prefix ONLY if name is missing/empty/'User'
+  // Optional: minimal fallback only if name is truly missing/empty
   else if (data.email && data.email !== '—') {
-    const prefix = data.email.split('@')[0].split(/[\._-]/)[0]; // e.g. "yliacallan" → "ylia"
+    // Very light fallback: capitalize email prefix as full name
+    const prefix = data.email.split('@')[0];
     displayName = prefix.charAt(0).toUpperCase() + prefix.slice(1).toLowerCase();
   }
 
   nameSpan.textContent = displayName;
-
-  // TEMP debug log – remove after confirming
-  console.log('Welcome name set to:', displayName, '(raw DB name was:', data.name || 'missing', ')');
-}
         } catch (err) {
           console.error(err);
           document.getElementById('status-card').innerHTML += '<p class="text-red-600 dark:text-red-400 mt-6 text-center font-medium">Could not load account info. Please refresh or log in again.</p>';
