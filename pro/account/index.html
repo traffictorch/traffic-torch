@@ -277,7 +277,7 @@
     
     <div class="text-center mb-8">
   <h2 id="welcome-message" class="text-2xl md:text-2xl font-bold text-gray-800 dark:text-gray-200">
-    Hi <span id="user-name">User</span>, Welcome to the Traffic Torch Pro Dashboard
+    Welcome to the Traffic Torch Pro Dashboard
   </h2>
 </div>
 
@@ -415,23 +415,6 @@
             remainingEl.classList.add('text-green-600', 'dark:text-green-400');
           }
           document.getElementById('email-text').textContent = data.email || '—';
-// Personalized welcome – use full name from DB if available
-const nameSpan = document.getElementById('user-name');
-if (nameSpan) {
-  let displayName = 'User';
-
-  // Prefer real full name from DB (no splitting to first name only)
-  if (data.name && data.name.trim() !== '' && data.name.trim() !== 'User') {
-    displayName = data.name.trim();  // e.g. "Ylia Callan" or "Traffic Torch"
-  }
-  // Optional: minimal fallback only if name is truly missing/empty
-  else if (data.email && data.email !== '—') {
-    // Very light fallback: capitalize email prefix as full name
-    const prefix = data.email.split('@')[0];
-    displayName = prefix.charAt(0).toUpperCase() + prefix.slice(1).toLowerCase();
-  }
-
-  nameSpan.textContent = displayName;
         } catch (err) {
           console.error(err);
           document.getElementById('status-card').innerHTML += '<p class="text-red-600 dark:text-red-400 mt-6 text-center font-medium">Could not load account info. Please refresh or log in again.</p>';
@@ -532,25 +515,6 @@ if (nameSpan) {
   }
 </script>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  // Wait for loadAccountInfo() to finish (it already runs on DOMContentLoaded)
-  // Small delay ensures DOM is updated before we read
-  setTimeout(() => {
-    const nameSpan = document.getElementById('user-name');
-    if (!nameSpan) return;
-
-    // Try to get name from the email-text element (fallback – shows full email)
-    const emailEl = document.getElementById('email-text');
-    if (emailEl && emailEl.textContent !== '—') {
-      // Very rough fallback: take part before @ as "name" if no real name
-      const email = emailEl.textContent.trim();
-      const fallbackName = email.split('@')[0].split('.')[0]; // e.g. "ylia" from ylia@...
-      nameSpan.textContent = fallbackName.charAt(0).toUpperCase() + fallbackName.slice(1);
-    }
-  }, 800); // 800ms delay – enough for loadAccountInfo to finish
-});
-</script>
 
 </main>
    
