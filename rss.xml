@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0">
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Traffic Torch Blog</title>
     <link>https://traffictorch.net</link>
+    <atom:link href="https://traffictorch.net/rss.xml" rel="self" type="application/rss+xml" />
     <description>Instant SEO &amp; UX health analysis deep-dives, fixes, and trends</description>
     <language>en</language>
 
@@ -20,14 +21,6 @@
       <guid isPermaLink="true">https://traffictorch.net/blog/posts/seo-ux-audit-help-guide</guid>
       <pubDate>Fri, 20 Feb 2026 00:00:00 GMT</pubDate>
       <description>Complete breakdown of Traffic Torch’s instant 360° SEO + UX health score — what each metric checks, how scores are calculated, why they matter for rankings/conversions, and fastest fixes.</description>
-    </item>
-
-    <item>
-      <title>Local SEO Mastery: NAP, Keywords, Schema &amp; More – Full Help Guide</title>
-      <link>https://traffictorch.net/blog/posts/local-seo-help-guide</link>
-      <guid isPermaLink="true">https://traffictorch.net/blog/posts/local-seo-help-guide</guid>
-      <pubDate>Sun, 17 Feb 2026 00:00:00 GMT</pubDate>
-      <description>How Traffic Torch audits local SEO health in seconds — NAP consistency, local keywords, schema markup, Google Business Profile signals, and quick wins for better local pack visibility.</description>
     </item>
 
     <item>
@@ -63,6 +56,30 @@
     </item>
 
     <item>
+      <title>Ultimate AI Search Optimization Help Guide: Boost Your SEO with Traffic Torch</title>
+      <link>https://traffictorch.net/blog/posts/ai-search-optimization-help-guide</link>
+      <guid isPermaLink="true">https://traffictorch.net/blog/posts/ai-search-optimization-help-guide</guid>
+      <pubDate>Wed, 18 Feb 2026 00:00:00 GMT</pubDate>
+      <description>Optimize for AI engines (SGE, Perplexity, etc.) — 8-key metrics from Traffic Torch: answerability, EEAT, structured data, scannability, and more for featured citations.</description>
+    </item>
+
+    <item>
+      <title>Local SEO Mastery: NAP, Keywords, Schema &amp; More – Full Help Guide</title>
+      <link>https://traffictorch.net/blog/posts/local-seo-help-guide</link>
+      <guid isPermaLink="true">https://traffictorch.net/blog/posts/local-seo-help-guide</guid>
+      <pubDate>Tue, 17 Feb 2026 00:00:00 GMT</pubDate>
+      <description>How Traffic Torch audits local SEO health in seconds — NAP consistency, local keywords, schema markup, Google Business Profile signals, and quick wins for better local pack visibility.</description>
+    </item>
+
+    <item>
+      <title>How to Detect AI-Generated Content: 5 Metrics + Free AI Audit Tool Help Guide</title>
+      <link>https://traffictorch.net/blog/posts/ai-content-detection-help-guide</link>
+      <guid isPermaLink="true">https://traffictorch.net/blog/posts/ai-content-detection-help-guide</guid>
+      <pubDate>Tue, 17 Feb 2026 00:00:00 GMT</pubDate>
+      <description>Traffic Torch’s 5 metrics for spotting AI-written content — perplexity, burstiness, repetition patterns, predictability, and how to humanize for better rankings.</description>
+    </item>
+
+    <item>
       <title>Ultimate Guide to Beating Competitors with On-Page SEO 2026</title>
       <link>https://traffictorch.net/blog/posts/on-page-competitor-guide</link>
       <guid isPermaLink="true">https://traffictorch.net/blog/posts/on-page-competitor-guide</guid>
@@ -71,26 +88,10 @@
     </item>
 
     <item>
-      <title>Ultimate AI Search Optimization Help Guide: Boost Your SEO with Traffic Torch</title>
-      <link>https://traffictorch.net/blog/posts/ai-search-optimization-help-guide</link>
-      <guid isPermaLink="true">https://traffictorch.net/blog/posts/ai-search-optimization-help-guide</guid>
-      <pubDate>Mon, 18 Feb 2026 00:00:00 GMT</pubDate>
-      <description>Optimize for AI engines (SGE, Perplexity, etc.) — 8-key metrics from Traffic Torch: answerability, EEAT, structured data, scannability, and more for featured citations.</description>
-    </item>
-
-    <item>
-      <title>How to Detect AI-Generated Content: 5 Metrics + Free AI Audit Tool Help Guide</title>
-      <link>https://traffictorch.net/blog/posts/ai-content-detection-help-guide</link>
-      <guid isPermaLink="true">https://traffictorch.net/blog/posts/ai-content-detection-help-guide</guid>
-      <pubDate>Sun, 17 Feb 2026 00:00:00 GMT</pubDate>
-      <description>Traffic Torch’s 5 metrics for spotting AI-written content — perplexity, burstiness, repetition patterns, predictability, and how to humanize for better rankings.</description>
-    </item>
-
-    <item>
       <title>Behind the Scenes: Developing Traffic Torch's AI SEO and UX Tools</title>
       <link>https://traffictorch.net/blog/posts/behind-the-scenes-ai-tools</link>
       <guid isPermaLink="true">https://traffictorch.net/blog/posts/behind-the-scenes-ai-tools</guid>
-      <pubDate>Sat, 12 Jan 2026 00:00:00 GMT</pubDate>
+      <pubDate>Mon, 12 Jan 2026 00:00:00 GMT</pubDate>
       <description>Platform updates including educational infographic banners across tools, behind-the-scenes on building instant, private, educational SEO/UX auditing.</description>
     </item>
 
