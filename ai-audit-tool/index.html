@@ -121,6 +121,7 @@
 }
 </script>
 
+<!-- Add this inside <head> for SEO-rich FAQ schema (JSON-LD) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -128,26 +129,42 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "How accurate are free AI content detectors?",
+      "name": "Why does low perplexity mean text is likely AI-generated?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Modern detectors using perplexity, burstiness, repetition, and vocabulary signals are highly reliable for identifying AI-generated text. Our tool combines multiple signals for better accuracy and includes humanizing fixes to improve authenticity."
+        "text": "Low perplexity indicates highly predictable word sequences: AI models favor statistically common, formulaic patterns learned from vast training data, making text easy for language models to “guess.” High perplexity reflects surprising, varied, less-predictable phrasing typical of human creativity. The Traffic Torch AI Audit Tool calculates perplexity using bigram and trigram entropy to quantify how surprising and diverse word pairings are."
       }
     },
     {
       "@type": "Question",
-      "name": "Will humanizing AI content help SEO?",
+      "name": "Why do AI texts have low burstiness compared to human writing?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes — making AI content more human-like (higher perplexity/burstiness, natural variation) reduces detection risk, improves E-E-A-T signals, user engagement, and helps avoid potential AI-content penalties in rankings."
+        "text": "Burstiness measures variation in sentence length and complexity. Humans naturally alternate short, punchy sentences with longer, more elaborate ones, creating dynamic rhythm (high variance — e.g., standard deviation often ~8.7 words). AI tends to generate uniform lengths (low variance — e.g., ~3.2). The Traffic Torch AI Audit Tool measures burstiness through statistical variance in both sentence length (word count) and word length (characters)."
       }
     },
     {
       "@type": "Question",
-      "name": "What is perplexity and burstiness in AI detection?",
+      "name": "Why does AI repeat phrases so much, and how can I fix it in my webpage text?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Perplexity measures how predictable the text is (AI tends to be low-perplexity). Burstiness measures variation in sentence length and complexity (humans are more bursty). Our tool scores both to detect AI patterns."
+        "text": "AI repeats phrases because it defaults to high-probability, “safe” word sequences and structures heavily reinforced in training data. It often loops ideas or echoes previous phrasing (e.g., the classic “salt, salt, salt” loop). Humans instinctively vary wording for freshness. The Traffic Torch AI Audit Tool tracks repetition by measuring the maximum occurrences of any bigram (two-word) or trigram (three-word) sequences."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does sentence length variation differ between AI and human writing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Human writing averages 14–20 words per sentence with high variation (std dev ~8.7), mixing short punchy sentences with longer complex ones for natural flow. AI often averages ~27 words with low variation (std dev ~3.2), producing uniform medium-length sentences. The Traffic Torch AI Audit Tool analyzes sentence length by combining average words per sentence (ideal 15–23) with comma usage as a proxy for structural complexity."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What vocabulary patterns give away AI-generated text on websites?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "AI overuses formal or pseudo-sophisticated words far more than humans e.g., “delve” (100–200× more frequent), “testament,” “realm,” “tapestry,” “intricate,” “elevate,” “harness,” “nuanced,” “play a significant role in shaping” (up to 182× more), and “in today’s fast-paced world.” The Traffic Torch AI Audit Tool measures vocabulary diversity through unique word ratio and frequency of hapax legomena (words appearing only once)."
       }
     }
   ]
@@ -213,8 +230,8 @@
       "url": "https://traffictorch.net/logo-512.webp"
     }
   },
-  "datePublished": "2025-01-12",
-  "dateModified": "2026-03-02"
+  "datePublished": "2025-01-12T18:12:00+11:00",
+  "dateModified": "2026-03-06T15:01:00+11:00"  
 }
 </script>
 
@@ -478,6 +495,88 @@
     Copy Link? 🔗
   </button>
 </div>
+
+<section id="faq" class="container mx-auto px-4 py-12 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    Frequently Asked Questions about AI Content Detection
+  </h2>
+  <div class="space-y-6 max-w-3xl mx-auto">
+    
+    <!-- Perplexity -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Why does low perplexity mean text is likely AI-generated?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Low perplexity indicates highly predictable word sequences: AI models favor statistically common, formulaic patterns learned from vast training data, making text easy for language models to “guess.” High perplexity reflects surprising, varied, less-predictable phrasing typical of human creativity. The Traffic Torch AI Audit Tool calculates perplexity using bigram and trigram entropy to quantify how surprising and diverse word pairings are.
+      </div>
+    </details>
+
+    <!-- Burstiness -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Why do AI texts have low burstiness compared to human writing?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Burstiness measures variation in sentence length and complexity. Humans naturally alternate short, punchy sentences with longer, more elaborate ones, creating dynamic rhythm (high variance — e.g., standard deviation often ~8.7 words). AI tends to generate uniform lengths (low variance — e.g., ~3.2). The Traffic Torch AI Audit Tool measures burstiness through statistical variance in sentence length (word count) and word length (characters).
+      </div>
+    </details>
+
+    <!-- Repetition -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Why does AI repeat phrases so much, and how can I fix it in my webpage text?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        AI repeats phrases because it defaults to high-probability, “safe” word sequences and structures heavily reinforced in training data. It often loops ideas or echoes previous phrasing (e.g., the classic “salt, salt, salt” loop). Humans instinctively vary wording for freshness. The Traffic Torch AI Audit Tool tracks repetition by measuring the maximum occurrences of any bigram (two-word) or trigram (three-word) sequences.
+      </div>
+    </details>
+
+    <!-- Sentence Length -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How does sentence length variation differ between AI and human writing?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Human writing averages 14–20 words per sentence with high variation (std dev ~8.7), mixing short punchy sentences with longer complex ones for natural flow. AI often averages ~27 words with low variation (std dev ~3.2), producing uniform medium-length sentences. The Traffic Torch AI Audit Tool analyzes sentence length by combining average words per sentence (ideal 15–23) with comma usage as a proxy for structural complexity.
+      </div>
+    </details>
+
+    <!-- Vocabulary -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What vocabulary patterns give away AI-generated text on websites?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        AI overuses formal or pseudo-sophisticated words far more than humans e.g., “delve” (100–200× more frequent), “testament,” “realm,” “tapestry,” “intricate,” “elevate,” “harness,” “nuanced,” “play a significant role in shaping” (up to 182× more), and “in today’s fast-paced world.” The Traffic Torch AI Audit Tool measures vocabulary diversity through unique word ratio and frequency of hapax legomena (words appearing only once).
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
     
     <!-- How the AI Content Detector Works Accordion -->
 <div class="max-w-1xl mx-auto my-16">
@@ -524,28 +623,11 @@
   </details>
 </div>
     
-<!-- Share Buttons -->
-<div class="py-8 text-center">
-  <div class="flex flex-col items-center gap-4">
-    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-      Share?
-    </strong>
-    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
-      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-      <a class="a2a_button_pinterest"></a>
-      <a class="a2a_button_x"></a>
-      <a class="a2a_button_reddit"></a>
-      <a class="a2a_button_facebook"></a>
-      <a class="a2a_button_copy_link"></a>
-    </div>
-  </div>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
 	
 	<!-- Metric explanations -->
 	<section class="py-20 bg-gray-50 dark:bg-gray-900">
   <div class="max-w-7xl mx-auto px-2">
-    <h2 class="text-4xl md:text-5xl font-black text-center text-gray-900 dark:text-gray-100 mb-4">
+    <h2 class="text-4xl md:text-4xl font-black text-center text-gray-900 dark:text-gray-100 mb-4">
       How We Detect AI Content
     </h2>
     <p class="text-xl text-center text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-16">
@@ -622,7 +704,7 @@
 
 <!-- 6 HIGH-IMPACT MOVES TO HUMANIZE CONTENT      -->
 <div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-  <h2 class="text-4xl md:text-5xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
     6 High-Impact Moves to Lower AI Detection Risk
   </h2>
 
@@ -768,7 +850,7 @@
 	
 
 <section id="ai-audit-seo-checklist" class="py-16 px-1 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
-  <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-pink-600">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-pink-600">
     Ultimate AI Content Audit Checklist
   </h2>
   <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-700 dark:text-gray-300">
@@ -972,7 +1054,7 @@
         </p>
           <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2026-01-12</p>
-          <p>Last updated: 2026-03-02</p>
+          <p>Last updated: 2026-03-06</p>
         </div>
       </div>
     </div>
