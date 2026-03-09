@@ -380,13 +380,28 @@ manualSelect.addEventListener('change', (e) => {
   }
 
   // v1: only FAQPage loaded; later replace with dynamic registry lookup
-  const selectedSchema = FAQPage; // When more types added: schemaRegistry[type]
+  let schema;
+switch (type) {
+  case 'FAQPage':
+    schema = FAQPage;
+    break;
+  // Add future cases here, e.g.
+  // case 'Article':
+  //   schema = Article;
+  //   break;
+  default:
+    schema = null;
+}
+if (!schema) {
+  manualEditor.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center py-6">Schema type not loaded yet – coming soon!</p>';
+  return;
+}
 
   // Clear previous editor
   manualEditor.innerHTML = '';
 
   // Render reusable editor component
-  renderSchemaEditor(selectedSchema, manualEditor, manualPreview);
+  renderSchemaEditor(schema, manualEditor, manualPreview);
 
   // Show preview and actions
   manualPreviewContainer.classList.remove('hidden');
