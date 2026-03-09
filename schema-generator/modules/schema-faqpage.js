@@ -3,6 +3,13 @@
 // Implements Schema.org FAQPage (v15+) – mainEntity as array of Question + Answer
 // Designed for dynamic form editing + real-time preview
 
+import {
+  buildJsonLdSkeleton,
+  cleanJsonLd,
+  prettyJsonLd,
+  createEducationSnippet
+} from './index.js';
+
 export const FAQPage = {
   // ──────────────────────────────────────────────
   // Metadata for UI (dropdown, cards, recommendations)
