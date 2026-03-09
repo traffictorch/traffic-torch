@@ -1,147 +1,84 @@
-// modules/schema-faqpage.js
-// FAQPage schema module for Traffic Torch Schema Generator
-// Implements Schema.org FAQPage (v15+) – mainEntity as array of Question + Answer
-// Designed for dynamic form editing + real-time preview
+// modules/faqpage-schema.js
+import { buildJsonLdSkeleton, cleanJsonLd, prettyJsonLd } from './schema-base.js';
 
-import {
-  buildJsonLdSkeleton,
-  cleanJsonLd,
-  prettyJsonLd,
-  createEducationSnippet
-} from './index.js';
+function render(editorContainer, previewEl) {
+  // Education block
+  editorContainer.innerHTML = `
+    <div class="mb-6 p-5 bg-blue-50 dark:bg-blue-900/30 rounded-xl text-sm">
+      <h5 class="font-bold mb-2">About FAQPage</h5>
+      Best for pages with Q&A sections. Enables rich FAQ snippets in Google.
+      <ul class="list-disc pl-5 mt-2 space-y-1">
+        <li>Questions must match real user searches</li>
+        <li>Answers must be visible on page</li>
+        <li>3–10 items recommended</li>
+      </ul>
+    </div>
+  `;
 
-export const FAQPage = {
-  // ──────────────────────────────────────────────
-  // Metadata for UI (dropdown, cards, recommendations)
-  // ──────────────────────────────────────────────
-  type: 'FAQPage',
-  label: 'FAQ Page',
-  description: 'Best for pages with multiple questions and direct answers. Enables expandable FAQ rich results in Google SERPs, improves voice search visibility, and helps users get quick answers without scrolling.',
-  icon: 'question-mark-circle', // Use heroicons name or SVG path later
+  // Form fields (you build whatever you want per schema)
+  const formHTML = `
+    <div class="space-y-6">
+      <div>
+        <label class="block mb-2 font-medium">Section Title (name)</label>
+        <input type="text" data-field="name" placeholder="Frequently Asked Questions" class="w-full px-4 py-3 rounded-lg border dark:bg-gray-800">
+      </div>
+      <div id="qa-container" class="space-y-6"></div>
+      <button type="button" id="add-qa" class="px-6 py-3 bg-blue-600 text-white rounded-xl">+ Add Question & Answer</button>
+    </div>
+  `;
+  editorContainer.insertAdjacentHTML('beforeend', formHTML);
 
-  // ──────────────────────────────────────────────
-  // Form configuration – used to build dynamic editor fields
-  // ──────────────────────────────────────────────
-  formFields: [
-{
-  key: 'name',
-  label: 'FAQ Section Title',
-  type: 'text',
-  placeholder: 'Frequently Asked Questions About [Your Topic]',
-  required: false,
-  help: 'This becomes the "name" property in the schema (e.g. "Frequently Asked Questions About Schema Markup"). It helps search engines label the FAQ block in results. Prefilled from page title if scanned; type your custom topic to update the preview live.'
-},
-    {
-      key: 'mainEntity',
-      label: 'Questions & Answers',
-      type: 'array',
-      minItems: 1,
-      maxItems: 12, // Google recommends not exceeding ~10-12 for best rich result display
-      itemLabel: 'Q&A Pair',
-      itemFields: [
-        {
-          key: 'question.name',
-          label: 'Question',
-          type: 'textarea',
-          rows: 2,
-          placeholder: 'What is schema markup?',
-          required: true,
-          help: 'Must be a clear, natural-language question users actually search for.'
-        },
-        {
-          key: 'acceptedAnswer.text',
-          label: 'Answer',
-          type: 'textarea',
-          rows: 5,
-          placeholder: 'Schema markup is structured data that helps search engines understand your content...',
-          required: true,
-          help: 'Provide a concise, complete answer (150–400 words ideal). Use bullet points or short paragraphs for readability.'
-        }
-      ]
-    }
-  ],
+  const qaContainer = editorContainer.querySelector('#qa-container');
+  const addBtn = editorContainer.querySelector('#add-qa');
 
-  // ──────────────────────────────────────────────
-  // Education / Tooltip content (HTML string)
-  // ──────────────────────────────────────────────
-  education: createEducationSnippet(`
-    **Best use cases**  
-    - FAQ sections on blog posts, product pages, service pages  
-    - How-to guides with embedded questions  
-    - Support/knowledge base articles  
+  function addQA() {
+    const index = qaContainer.children.length;
+    qaContainer.insertAdjacentHTML('beforeend', `
+      <div class="border dark:border-gray-600 rounded-xl p-5 bg-gray-50 dark:bg-gray-900">
+        <label class="block mb-2">Question</label>
+        <textarea data-field="mainEntity.${index}.name" rows="2" class="w-full px-4 py-3 rounded-lg border dark:bg-gray-800" placeholder="What is..."></textarea>
+        <label class="block mt-4 mb-2">Answer</label>
+        <textarea data-field="mainEntity.${index}.acceptedAnswer.text" rows="5" class="w-full px-4 py-3 rounded-lg border dark:bg-gray-800"></textarea>
+        <button type="button" class="remove-qa mt-3 text-red-500 text-sm">Remove</button>
+      </div>
+    `);
 
-    **Benefits**  
-    - Expandable rich results in SERPs (mobile + desktop)  
-    - Better voice search answers (Google Assistant, Siri)  
-    - Helps AI overviews pull direct answers from your site  
-
-    **Guidelines (2026)**  
-    - Questions should match real user search intent  
-    - Answers must be on the visible page (no hidden content)  
-    - Limit to 3–10 high-quality Q&As per page  
-    - Avoid keyword stuffing or repetitive questions  
-    - Use JSON-LD format only (preferred by Google)
-  `),
-
-  // ──────────────────────────────────────────────
-  // Generate full JSON-LD from form data
-  // ──────────────────────────────────────────────
-  generate(data = {}) {
-    // Build base skeleton
-    const base = buildJsonLdSkeleton('FAQPage', {
-      name: data.name || 'Frequently Asked Questions',
-      // Optional: add url or @id if available from page context
-    });
-
-    // Map Q&A pairs into mainEntity array
-    const mainEntity = (data.mainEntity || []).map(item => {
-      if (!item.question?.name || !item.acceptedAnswer?.text) return null;
-
-      return {
-        '@type': 'Question',
-        name: item.question.name.trim(),
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: item.acceptedAnswer.text.trim()
-        }
-      };
-    }).filter(Boolean); // remove invalid entries
-
-    const schema = {
-      ...base,
-      mainEntity: mainEntity.length > 0 ? mainEntity : undefined
+    qaContainer.lastElementChild.querySelector('.remove-qa').onclick = (e) => {
+      e.target.closest('div').remove();
+      updatePreview();
     };
 
-    // Clean and return
-    return cleanJsonLd(schema);
-  },
-
-  // ──────────────────────────────────────────────
-  // Validate the generated schema (returns { valid, errors })
-  // ──────────────────────────────────────────────
-  validate(data) {
-    const jsonLd = this.generate(data);
-
-    // Required top-level fields for FAQPage
-    const required = [
-      'mainEntity',
-      'mainEntity.0.@type',           // at least one Question
-      'mainEntity.0.name',
-      'mainEntity.0.acceptedAnswer.@type',
-      'mainEntity.0.acceptedAnswer.text'
-    ];
-
-    return validateRequiredFields(jsonLd, required);
-  },
-
-  // ──────────────────────────────────────────────
-  // Optional: Quick preview string (used in UI before full render)
-  // ──────────────────────────────────────────────
-  preview(data) {
-    const jsonLd = this.generate(data);
-    if (!jsonLd.mainEntity?.length) {
-      return '// No valid Q&A pairs yet – add at least one question and answer';
-    }
-    return prettyJsonLd(jsonLd);
+    updatePreview();
   }
-};
+
+  addBtn.onclick = addQA;
+  addQA(); // start with one
+
+  // Real-time preview
+  function updatePreview() {
+    const data = { name: '', mainEntity: [] };
+    editorContainer.querySelectorAll('[data-field]').forEach(el => {
+      const [path, ...rest] = el.dataset.field.split('.');
+      let target = data;
+      if (path === 'mainEntity') {
+        const idx = parseInt(rest[0]);
+        if (!data.mainEntity[idx]) data.mainEntity[idx] = { '@type': 'Question', acceptedAnswer: { '@type': 'Answer' } };
+        target = data.mainEntity[idx];
+        if (rest[1] === 'acceptedAnswer') target = target.acceptedAnswer;
+        target[rest[rest.length-1]] = el.value.trim();
+      } else {
+        data[path] = el.value.trim();
+      }
+    });
+
+    const json = buildJsonLdSkeleton('FAQPage', { name: data.name });
+    json.mainEntity = data.mainEntity.filter(q => q.name && q.acceptedAnswer?.text);
+
+    previewEl.textContent = prettyJsonLd(json);
+  }
+
+  editorContainer.addEventListener('input', updatePreview);
+  updatePreview();
+}
+
+export default { render };
