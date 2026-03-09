@@ -375,28 +375,26 @@ manualSelect.addEventListener('change', (e) => {
   const type = e.target.value;
   if (!type) {
     manualEditor.innerHTML = '';
-    manualPreviewContainer.classList.add('hidden');
-    manualActions.classList.add('hidden');
+    if (manualPreviewContainer) manualPreviewContainer.classList.add('hidden');
+    if (manualActions) manualActions.classList.add('hidden');
     return;
   }
 
-  // v1: only FAQPage loaded; later replace with dynamic registry lookup
   let schema;
-switch (type) {
-  case 'FAQPage':
-    schema = FAQPage;
-    break;
-  // Add future cases here, e.g.
-  // case 'Article':
-  //   schema = Article;
-  //   break;
-  default:
-    schema = null;
-}
-if (!schema) {
-  manualEditor.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center py-6">Schema type not loaded yet – coming soon!</p>';
-  return;
-}
+  switch (type) {
+    case 'FAQPage':
+      schema = FAQPage;
+      break;
+    default:
+      schema = null;
+  }
+
+  if (!schema) {
+    manualEditor.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center py-6">Schema type not loaded yet – coming soon!</p>';
+    if (manualPreviewContainer) manualPreviewContainer.classList.add('hidden');
+    if (manualActions) manualActions.classList.add('hidden');
+    return;
+  }
 
   // Clear previous editor
   manualEditor.innerHTML = '';
@@ -405,20 +403,24 @@ if (!schema) {
   renderSchemaEditor(schema, manualEditor, manualPreview);
 
   // Show preview and actions
-  manualPreviewContainer.classList.remove('hidden');
-  manualActions.classList.remove('hidden');
+  if (manualPreviewContainer) manualPreviewContainer.classList.remove('hidden');
+  if (manualActions) manualActions.classList.remove('hidden');
 });
 
 // Copy button for manual preview
-document.getElementById('manual-copy-btn').addEventListener('click', () => {
-  navigator.clipboard.writeText(manualPreview.textContent)
-    .then(() => alert('JSON-LD copied to clipboard! Paste into your <head> or GTM.'))
-    .catch(() => alert('Copy failed – select and copy manually.'));
+document.getElementById('manual-copy-btn')?.addEventListener('click', () => {
+  const previewText = document.getElementById('manual-json-preview')?.textContent || '';
+  if (previewText) {
+    navigator.clipboard.writeText(previewText)
+      .then(() => alert('JSON-LD copied to clipboard! Paste into your <head> or GTM.'))
+      .catch(() => alert('Copy failed – select and copy manually.'));
+  }
 });
 
 // Validate button for manual (opens Google's Rich Results Test with current page URL)
-document.getElementById('manual-validate-btn').addEventListener('click', () => {
-  window.open(`https://search.google.com/test/rich-results?url=${encodeURIComponent(url)}`, '_blank');
+document.getElementById('manual-validate-btn')?.addEventListener('click', () => {
+  const currentUrl = document.getElementById('url-input')?.value.trim() || window.location.href;
+  window.open(`https://search.google.com/test/rich-results?url=${encodeURIComponent(currentUrl)}`, '_blank');
 });
 
       // Init shared features
