@@ -24,13 +24,13 @@ export const FAQPage = {
   // ──────────────────────────────────────────────
   formFields: [
     {
-      key: 'name',
-      label: 'Page Name / Title (optional)',
-      type: 'text',
-      placeholder: 'Frequently Asked Questions about Schema Markup',
-      required: false,
-      help: 'Helps search engines identify the purpose of this schema block.'
-    },
+  key: 'name',
+  label: 'Schema Name / Title (recommended)',
+  type: 'text',
+  placeholder: 'Frequently Asked Questions about [Topic]',
+  required: false,
+  help: 'This appears in search results as the title for the FAQ block. Prefilled from page title if scanned, or enter manually. Use a clear, descriptive title matching user intent.'
+},
     {
       key: 'mainEntity',
       label: 'Questions & Answers',

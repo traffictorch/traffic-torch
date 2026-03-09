@@ -67,27 +67,67 @@ const initTool = (form, results, progressContainer) => {
         return;
       }
 
-      manualEditor.innerHTML = '';
-      renderSchemaEditor(schema, manualEditor, manualPreview);
-      manualPreviewContainer.classList.remove('hidden');
-      manualActions.classList.remove('hidden');
+manualEditor.innerHTML = '';
+renderSchemaEditor(schema, manualEditor, manualPreview);
+
+// Prefill title from page title (or scanned URL via document.title fallback)
+const titleInput = manualEditor.querySelector('input[data-key="name"], input[placeholder*="Frequently Asked Questions"]');
+if (titleInput) {
+  const pageTitle = document.title.trim() || 'Frequently Asked Questions';
+  titleInput.value = pageTitle;
+  // Trigger both input and change events for full preview refresh
+  titleInput.dispatchEvent(new Event('input', { bubbles: true }));
+  titleInput.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+manualPreviewContainer.classList.remove('hidden');
+manualActions.classList.remove('hidden');
     });
 
-    // Copy button for manual preview
-    document.getElementById('manual-copy-btn')?.addEventListener('click', () => {
-      const previewText = manualPreview?.textContent || '';
-      if (previewText) {
-        navigator.clipboard.writeText(previewText)
-          .then(() => alert('JSON-LD copied to clipboard!'))
-          .catch(() => alert('Copy failed – select and copy manually.'));
-      }
-    });
+// Copy button for manual preview (with optional script tag wrap)
+document.getElementById('manual-copy-btn')?.addEventListener('click', () => {
+  const previewText = manualPreview?.textContent || '';
+  if (!previewText) return;
 
-    // Validate button for manual
-    document.getElementById('manual-validate-btn')?.addEventListener('click', () => {
-      const currentUrl = document.getElementById('url-input')?.value.trim() || window.location.href;
-      window.open(`https://search.google.com/test/rich-results?url=${encodeURIComponent(currentUrl)}`, '_blank');
-    });
+  const wrapCheckbox = document.getElementById('wrap-script-tags');
+  let finalText = previewText;
+
+  if (wrapCheckbox?.checked) {
+    finalText = `<script type="application/ld+json">
+${previewText}
+</script>`;
+  }
+
+  navigator.clipboard.writeText(finalText)
+    .then(() => {
+      alert(wrapCheckbox?.checked 
+        ? 'Wrapped JSON-LD copied! Paste into your HTML <head> or body.' 
+        : 'Raw JSON-LD copied! Paste into CMS/plugin or Google test.');
+    })
+    .catch(() => alert('Copy failed – select and copy manually.'));
+});
+
+// Validate button for manual (handles no URL case with instructions)
+document.getElementById('manual-validate-btn')?.addEventListener('click', () => {
+  const urlInput = document.getElementById('url-input');
+  const currentUrl = urlInput?.value.trim();
+
+  if (currentUrl) {
+    // Use entered URL if present
+    window.open(`https://search.google.com/test/rich-results?url=${encodeURIComponent(currentUrl)}`, '_blank');
+  } else {
+    // No URL: show instructions to paste code manually
+    alert(
+      'No URL entered.\n\n' +
+      'To validate:\n' +
+      '1. Copy the JSON-LD from the preview (use "Copy JSON-LD" button).\n' +
+      '2. Go to: https://search.google.com/test/rich-results\n' +
+      '3. Click the "CODE" tab (not URL).\n' +
+      '4. Paste the copied code and click "TEST".\n\n' +
+      'This validates the generated schema directly without a live page.'
+    );
+  }
+});
   }
 
   // ──────────────────────────────────────────────
