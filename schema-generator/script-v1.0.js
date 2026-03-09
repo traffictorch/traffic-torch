@@ -118,8 +118,8 @@ const initTool = (form, results, progressContainer) => {
       // Simple heuristic: look for question-like headings + following paragraph/answer
       doc.querySelectorAll('h2, h3, h4').forEach(heading => {
         const text = heading.textContent.trim();
-        if (text.match(/^(what|how|why|when|where|who|is|does|can|should|will|are|could|would)\b/i) ||
-            text.endsWith('?')) {
+        if ((text.match(/^(what|how|why|when|where|who|is|does|can|should|will|are|could|would)\b/i) ||
+     text.endsWith('?')) && text.length > 15) {
           let answerEl = heading.nextElementSibling;
           while (answerEl && !['H1','H2','H3','H4'].includes(answerEl.tagName)) {
             if (answerEl.tagName === 'P' && answerEl.textContent.trim().length > 40) {
@@ -279,21 +279,23 @@ const initTool = (form, results, progressContainer) => {
       }
 
       function updatePreview() {
-        const questions = [];
-        editor.querySelectorAll('.qa-question').forEach((qEl, i) => {
-          const aEl = editor.querySelectorAll('.qa-answer')[i];
-          if (qEl.value.trim() && aEl.value.trim()) {
-            questions.push({
-              question: qEl.value.trim(),
-              answer: aEl.value.trim()
-            });
-          }
-        });
+  const questions = [];
+  editor.querySelectorAll('.qa-question').forEach((qEl, i) => {
+    const aEl = editor.querySelectorAll('.qa-answer')[i];
+    const qText = qEl.value.trim();
+    const aText = aEl.value.trim();
+    if (qText && aText) {
+      questions.push({
+        question: qText,
+        answer: aText
+      });
+    }
+  });
 
-        const data = { questions };
-        const jsonLd = FAQPage.generate(data);
-        previewEl.textContent = prettyJsonLd(jsonLd);
-      }
+  const data = { questions };
+  const jsonLd = FAQPage.generate(data);
+  previewEl.textContent = prettyJsonLd(jsonLd);
+}
 
       // Init with prefill
       if (initialData.questions?.length > 0) {
