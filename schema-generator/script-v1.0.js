@@ -12,6 +12,7 @@ import {
 } from './modules/index.js';
 
 import { FAQPage } from './modules/index.js';
+import { renderSchemaEditor } from './modules/index.js';
 import { canRunTool } from '/main-v1.1.js'; 
 import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
