@@ -1,0 +1,1626 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+<!-- Optimized SEO Title & Description -->
+<title>Schema Markup Generator & Detector Tool</title>
+<meta name="description" content="Free schema generator tool: Scan URLs for existing markup, detect opportunities like FAQ or HowTo, recommend enhancements, and generate JSON-LD for better SEO and rich results." />
+<!-- Robots & Canonical -->
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://traffictorch.net/schema-generator/" />
+ 
+<!-- Theme Color -->
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+<!-- Referrer Policy (security + privacy best practice) -->
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<!-- security headers -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<!-- hreflang -->
+<link rel="alternate" hreflang="en" href="https://traffictorch.net/schema-generator/">
+<link rel="alternate" hreflang="x-default" href="https://traffictorch.net/schema-generator/">
+<!-- Open Graph Tags -->
+<meta property="og:title" content="Schema Generator Tool: Detect, Enhance & Generate Markup for SEO Rich Results" />
+<meta property="og:description" content="All-in-one schema tool: Input URL to scan content, get recommendations for FAQ, HowTo, Article schemas, edit/confirm, and generate optimized JSON-LD." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://traffictorch.net/schema-generator/" />
+<meta property="og:image" content="https://traffictorch.net/schema-generator/images/schema-generator-1200w.webp" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="Traffic Torch" />
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Best Schema Markup Generator: Free Tool for Detection & Optimization" />
+<meta name="twitter:description" content="Mobile-friendly schema generator: Analyzes URLs for existing markup, suggests enhancements based on content, and outputs clean JSON-LD for improved UX and SEO." />
+<meta name="twitter:image" content="https://traffictorch.net/schema-generator/images/schema-generator-1200w.webp" />
+<meta name="twitter:site" content="@Guitaralize" />
+<!-- Structured Data (JSON-LD) - Merged Single Block -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "Schema Markup Generator & Detector Tool",
+      "description": "Free tool to generate, detect, and enhance schema markup. Scan URLs for opportunities, recommend types like FAQ or HowTo, and output optimized JSON-LD for better rich results.",
+      "url": "https://traffictorch.net/schema-generator/",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Traffic Torch Schema Generator Tool",
+      "applicationCategory": "SEO Tool",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "All-in-one schema generator: Detects existing markup, analyzes content for recommendations, allows editing, and generates JSON-LD for enhanced SEO and UX.",
+      "url": "https://traffictorch.net/schema-generator/",
+      "image": "https://traffictorch.net/schema-generator/images/schema-generator-1200w.webp"
+    },
+    {
+      "@type": "Article",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/schema-generator/"
+      },
+      "headline": "Schema Generator Tool: Detect & Generate Markup for Rich Results",
+      "description": "Free schema markup tool to scan pages, detect opportunities, recommend enhancements, and generate JSON-LD. Improves SEO visibility and user experience.",
+      "url": "https://traffictorch.net/schema-generator/",
+      "image": [
+        {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/schema-generator/images/schema-generator-1200w.webp",
+          "contentUrl": "https://traffictorch.net/schema-generator/images/schema-generator-1200w.webp",
+          "width": 1200,
+          "height": 630,
+          "caption": "Traffic Torch Schema Generator Tool dashboard: Instant URL scan for existing markup, content analysis for recommendations like FAQ or HowTo, user editing, and JSON-LD output – mobile-friendly reports with educational tips"
+        }
+      ],
+      "author": {
+        "@type": "Person",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/logo-512.webp"
+        }
+      },
+      "datePublished": "2026-03-09T10:40:00+11:00",
+      "dateModified": "2026-03-09T10:40:00+11:00"
+    },
+    {
+      "@type": "Person",
+      "name": "Ylia Callan",
+      "url": "https://yliacallan.github.io/",
+      "sameAs": [
+        "https://www.linkedin.com/in/ylia-callan-8b889976/",
+        "https://x.com/guitaralize",
+        "https://traffictorch.net/"
+      ],
+      "image": "/images/ylia-callan-320w.webp",
+      "jobTitle": "Founder & Builder",
+      "description": "Musician, Author, Web Designer, and Creator of Privacy-First AI SEO/UX Tools like Traffic Torch",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Traffic Torch",
+        "url": "https://traffictorch.net/"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://traffictorch.net/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Schema Generator",
+          "item": "https://traffictorch.net/schema-generator/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://traffictorch.net/schema-generator/#faq",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/schema-generator/"
+      },
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is schema markup and why is it important for SEO?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Schema markup is structured data that helps search engines understand your content better, leading to rich results like FAQs or carousels in SERPs. It can boost CTR by 20-30% and improves UX by clarifying entities. Traffic Torch detects existing schema and recommends additions based on your page elements."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does the schema generator detect opportunities in my content?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Input a URL, and the tool scans for existing JSON-LD, then analyzes content patterns (e.g., Q&A for FAQPage, steps for HowTo). It suggests enhancements with educational explanations, like why adding Organization schema builds trust."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which schema types should I prioritize for my website?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Start with Article for blogs, FAQPage for Q&A sections, HowTo for guides, and Product for e-commerce. These enable rich snippets and better visibility. The tool recommends based on your content and allows manual selection for custom needs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I edit recommended schemas before generating?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, after recommendations, confirm and edit pre-filled forms (e.g., add nested properties). This user-controlled flow ensures accuracy, with real-time previews and tips on best practices like using @id for entity linking."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does schema markup improve user experience (UX)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It structures content for better accessibility (e.g., voice search) and faster answers in SERPs, reducing bounce rates. Traffic Torch educates on UX ties, like how FAQ schema creates expandable sections for mobile users."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What format does the tool output, and is it Google-friendly?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Always JSON-LD, Google's preferred format per 2026 guidelines. It includes validation checks for required fields, helping avoid penalties and ensuring compatibility with mobile-first indexing."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why use nested schemas, and how does the tool handle them?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nesting (e.g., Article with embedded Review) provides richer context, improving entity recognition. The tool supports multi-select for nesting and generates clean, hierarchical JSON-LD with educational tooltips."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is this tool free and mobile-friendly?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, fully free on GitHub/Cloudflare. Designed mobile-first with responsive forms, tables, and day/night modes (gray-800/dark-gray-200 text) for easy use on any device, plus PWA-ready for quick access."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+ 
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json" />
+  
+    <!-- Main Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/schema-generator/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/schema-generator/style-v1.0.css">
+  </noscript>
+
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+
+  <link rel="stylesheet" media="print" href="/schema-generator/print-v1.0.css">
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+  
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
+        </a>
+        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
+        </a>
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⛔</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🗝️</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+        <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📋</span> <span class="sidebar-text hidden">Help Guides</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
+              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⛔ Quit Risk</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">🗝️ Keywords</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+              <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition">📋 Help Guides</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+      
+<main class="container mx-auto px-4 py-0 max-w-5xl flex-1">
+  <div class="max-w-5xl mx-auto px-6 py-8">
+    <h1 class="text-3xl md:text-4xl font-black text-center mb-6 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+      Schema Markup Generator & Detector
+    </h1>
+    <p class="text-center text-lg mb-10 max-w-3xl mx-auto opacity-80">
+      Scan any URL to detect existing schema, find missed opportunities (FAQ, HowTo, Article, etc.), edit recommendations, and generate clean JSON-LD for better SEO rich results and UX.
+    </p>
+   
+    <form id="audit-form" class="max-w-2xl mx-auto space-y-4">
+      <div class="flex flex-col sm:flex-row gap-4">
+        <label for="url-input" class="sr-only">Enter page URL to scan for schema</label>
+        <input
+          id="url-input"
+          type="text"
+          placeholder="https://example.com/blog-post"
+          aria-label="Enter page URL to scan for schema"
+          required
+          class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+        />
+        <button
+          type="submit"
+          class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+        >
+          Scan & Generate
+        </button>
+      </div>
+    </form>
+
+    <div id="analysis-progress" class="hidden mt-10 flex flex-col items-center justify-center py-8">
+      <div class="relative w-20 h-20">
+        <!-- Lazer spinner: thin orange partial ring -->
+        <div class="absolute inset-0 rounded-full border-4 border-gray-200"></div>
+        <div class="absolute inset-0 rounded-full border-4 border-orange-500 border-t-transparent animate-spin"></div>
+      </div>
+      <p id="progress-text" class="text-2xl font-medium text-center text-orange-600 dark:text-orange-400 mt-6">
+        Scanning schema & content...
+      </p>
+    </div>
+
+    <div id="results" class="hidden"></div>
+  </div>
+  
+      <div class="center-btn-container">
+  <button
+    class="copy-link-btn"
+    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
+    data-text="https://traffictorch.net/schema-generator/"
+  >
+    Copy Link? 🔗
+  </button>
+</div>
+
+<section id="faq" class="container mx-auto px-4 py-12 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    Frequently Asked Questions about Schema Markup
+  </h2>
+  <div class="space-y-6 max-w-4xl mx-auto">
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is schema markup and why should I use it?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Schema markup is structured data (usually JSON-LD) added to your HTML that helps search engines understand your content better. It enables rich results like star ratings, FAQs in SERPs, carousels, or enhanced snippets, which can improve click-through rates and make your pages more informative for users and voice search.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How does Traffic Torch detect schema opportunities on my page?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Enter a URL, and the tool fetches the page, scans for existing JSON-LD scripts, then analyzes visible content for patterns (e.g., question-answer sections for FAQPage, numbered steps for HowTo, bylines for Person). It presents clear recommendations with explanations of why each addition would help.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Which schema types give the biggest impact for most websites?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Start with Organization (for brand trust), Article/BlogPosting (for content pages), FAQPage (for Q&A), HowTo (for guides), and Product/Review (for e-commerce). These are the most commonly supported for rich results by Google and improve entity recognition across search engines.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Can I customize or edit the recommended schema before generating?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Yes – after seeing recommendations, select the ones you want, then edit pre-filled forms (add/remove properties, nest schemas like Article + FAQPage). Real-time JSON-LD preview updates as you type, with tooltips explaining required vs optional fields per Schema.org guidelines.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How does adding schema improve user experience (UX)?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Schema makes content clearer for screen readers, voice assistants, and featured snippets, helping users find answers faster without leaving search results. For example, FAQ schema creates expandable answers directly in SERPs, and HowTo schema shows steps in a structured, scannable way – both enhance mobile UX.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What format does the tool generate, and is it search-engine friendly?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>The tool always outputs JSON-LD (Google's recommended format in 2026). It follows the latest Schema.org vocabulary, includes basic validation for required properties, and provides copy-paste code ready to add to your <head> or via Google Tag Manager.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Should I use nested schemas, and how does the tool support them?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Yes – nesting (e.g., Article with embedded Review or Person author) creates richer context and stronger entity connections. The tool lets you multi-select types, auto-nests where logical, and generates clean hierarchical JSON-LD with educational notes on @id and @type best practices.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Is the Schema Generator free and fully mobile-friendly?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Completely free, hosted on GitHub + Cloudflare Pages. Built mobile-first with responsive forms, tables in accordions, touch-friendly editing, and day/night mode support (gray-800 light / gray-200 dark text). PWA-ready so you can add it to your home screen for quick access.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+  
+  <!-- How It Works Expander (simplified) -->
+   <div class="max-w-4xl mx-auto my-16"> 
+  <details class="group">
+    <summary class="px-3 py-5 text-1xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
+      <span class="flex items-center gap-4">
+        <span class="text-4xl">🤖</span> How AI Search Works?
+      </span>
+      <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-3 sm:px-8 py-8 sm:py-12 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-indigo-200 dark:border-indigo-800 space-y-12 text-gray-700 dark:text-gray-300 overflow-hidden"> <!-- Reduced mobile padding, added overflow-hidden -->
+      <!-- Overall Score Explanation -->
+      <section class="space-y-5">
+        <h2 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-4">
+          <span class="text-2xl sm:text-2xl">📊</span> Your AI Citation Potential Score
+        </h2>
+        <p class="text-lg leading-relaxed">
+          This tool predicts your page's likelihood of being <strong>cited in AI-powered search engines</strong> like Google AI Overviews, Perplexity, Grok, Gemini, and ChatGPT Search.
+        </p>
+        <p class="text-lg leading-relaxed">
+          It evaluates 8 research-backed factors for generative engine optimization. Focusing on content quality, trustworthiness, and extractability beyond traditional SEO.
+        </p>
+        <p class="text-lg mb-6">
+            We analyzed hundreds of pages that rank in AI answers. The highest-cited ones all share 8 clear patterns.
+          </p>
+          <p class="text-lg mb-6">
+            This tool instantly checks your URL against those exact patterns. No guessing, no outdated SEO myths.
+          </p>
+          <p class="text-lg font-medium">
+            You'll get a Ai citation potential score, prioritized fixes ranked by impact, and clear next steps.
+          </p>
+      </section>
+
+      <!-- The 8 Key Metrics -->
+      <section class="space-y-8">
+        <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-4">
+          <span class="text-2xl sm:text-2xl">🔑</span> The 8 Key Metrics for AI Search Optimization Explained
+        </h3>
+        <div class="grid md:grid-cols-2 gap-8 sm:gap-10"> <!-- Reduced gap on mobile -->
+          <div class="space-y-8">
+            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl w-full">
+              <span class="text-2xl sm:text-2xl flex-shrink-0">❓</span>
+              <div class="min-w-0 flex-1"> <!-- min-w-0 prevents text from forcing stretch -->
+                <h4 class="font-bold text-xl">Answerability</h4>
+                <p class="text-base leading-relaxed">Direct, bold answers early on? AI prioritizes pages with immediate, quotable facts, definitions, or step-by-step guidance for generative answers.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl w-full">
+              <span class="text-2xl sm:text-2xl flex-shrink-0">🏷️</span>
+              <div class="min-w-0 flex-1">
+                <h4 class="font-bold text-xl">Structured Data</h4>
+                <p class="text-base leading-relaxed">JSON-LD schema (Article, FAQ, HowTo) helps AI understand and extract content accurately for rich citations in AI Overviews.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-900/20 dark:to-teal-900/20 rounded-xl w-full">
+              <span class="text-2xl sm:text-2xl flex-shrink-0">🔍</span>
+              <div class="min-w-0 flex-1">
+                <h4 class="font-bold text-xl">E-E-A-T Signals</h4>
+                <p class="text-base leading-relaxed">Author bio, photo, dates, trusted links, HTTPS — proves real experience, expertise, and trustworthiness to AI evaluators.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-xl w-full">
+              <span class="text-2xl sm:text-2xl flex-shrink-0">📑</span>
+              <div class="min-w-0 flex-1">
+                <h4 class="font-bold text-xl">Scannability</h4>
+                <p class="text-base leading-relaxed">Headings, lists, tables, short paragraphs make facts instantly extractable for AI summarization and citation.</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-8">
+            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 rounded-xl w-full">
+              <span class="text-2xl sm:text-2xl flex-shrink-0">💬</span>
+              <div class="min-w-0 flex-1">
+                <h4 class="font-bold text-xl">Conversational Tone</h4>
+                <p class="text-base leading-relaxed">Using “you”, “we”, rhetorical questions creates natural language matching real user queries in AI search.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 rounded-xl w-full">
+              <span class="text-2xl sm:text-2xl flex-shrink-0">📖</span>
+              <div class="min-w-0 flex-1">
+                <h4 class="font-bold text-xl">Readability</h4>
+                <p class="text-base leading-relaxed">Simple sentences (Flesch 60–70) ensure accurate understanding and summarization by AI models.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl w-full">
+              <span class="text-2xl sm:text-2xl flex-shrink-0">💡</span>
+              <div class="min-w-0 flex-1">
+                <h4 class="font-bold text-xl">Unique Insights</h4>
+                <p class="text-base leading-relaxed">First-hand experience, case studies, original data prevent de-duplication and signal true value for AI citations.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl w-full">
+              <span class="text-2xl sm:text-2xl flex-shrink-0">🌊</span>
+              <div class="min-w-0 flex-1">
+                <h4 class="font-bold text-xl">Burstiness (Anti-AI Patterns)</h4>
+                <p class="text-base leading-relaxed">Natural sentence length variation avoids robotic repetition common in AI-generated text, boosting authenticity.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- How to Use -->
+      <section class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 p-8 sm:p-10 rounded-2xl">
+        <h3 class="text-2xl font-bold mb-8 flex items-center gap-4 sm:gap-7">
+          <span class="text-2xl">🎯</span> How to Use This AI Search Optimization Report
+        </h3>
+        <ul class="space-y-4 text-lg">
+          <li class="flex items-start gap-6 sm:gap-7">
+            <span class="text-2xl">✅</span>
+            <span>Focus on lowest-scoring modules first. Biggest potential gains in AI visibility.</span>
+          </li>
+          <li class="flex items-start gap-6 sm:gap-7">
+            <span class="text-2xl">✅</span>
+            <span>Apply prioritized fixes for fast improvements.</span>
+          </li>
+          <li class="flex items-start gap-6 sm:gap-7">
+            <span class="text-2xl">✅</span>
+            <span>Re-run the tool after updates to measure progress.</span>
+          </li>
+          <li class="flex items-start gap-6 sm:gap-7">
+            <span class="text-2xl">✅</span>
+            <span>Scores 80+ position you for top AI citations and traffic surges.</span>
+          </li>
+        </ul>
+      </section>
+
+      <p class="text-center text-xl italic opacity-80 mt-10">
+        Pages optimized for AI search often influence both traditional rankings and new generative results.
+      </p>
+    </div>
+  </details>
+</div>
+	
+<!-- 8 Module Metric Explanation Cards (1 col mobile, 4 col desktop = 2 rows) -->
+<section class="py-16 px-2 bg-gray dark:bg-gray-900">
+  <h2 class="text-4xl font-bold text-center mb-12 text-gray-800 dark:text-gray-200">AI Search Engine Metrics</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+    <!-- Answerability -->
+    <div id="answerability" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-4 text-center flex flex-col items-center justify-between h-64">
+        <div class="text-6xl mb-6">🆗</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Answerability</h3>
+        <button class="learn-more-toggle mt-auto w-full py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-orange-50 dark:bg-orange-900/20 px-4 pb-4 transition-all duration-300 ease-in-out">
+        <div class="space-y-6 text-left">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">What is Answerability?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              The degree to which your page provides direct, concise, and quotable answers right at the beginning. AI engines prioritize pages that immediately satisfy user intent with clear summaries they can cite verbatim in search results. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#answerability-what" 
+                 class="text-orange-700 dark:text-orange-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">How is Answerability tested?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Scans opening content for bold formatting, definition patterns, FAQ/HowTo schema, question-style headings, step-by-step language, and sufficient opening length. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#answerability-how" 
+                 class="text-orange-700 dark:text-orange-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400">Why does Answerability matter?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              AI-powered search engines heavily favor pages that provide immediate, quotable answers. Direct answers are the #1 factor for being cited in overviews and generative results. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#answerability-why" 
+                 class="text-orange-700 dark:text-orange-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Structured Data -->
+    <div id="structured-data" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-4 text-center flex flex-col items-center justify-between h-64">
+        <div class="text-6xl mb-6">✨</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Structured Data</h3>
+        <button class="learn-more-toggle mt-auto w-full py-4 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-purple-50 dark:bg-purple-900/20 px-4 pb-4 transition-all duration-300 ease-in-out">
+        <div class="space-y-6 text-left">
+          <div>
+            <p class="font-bold text-purple-600 dark:text-purple-400">What is Structured Data?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Machine-readable markup (JSON-LD) that explicitly tells search engines what type of content your page contains. This helps trigger rich results, better understanding, and higher likelihood of being selected as a source. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#structured-data-what" 
+                 class="text-purple-700 dark:text-purple-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+          <div>
+            <p class="font-bold text-purple-600 dark:text-purple-400">How is Structured Data tested?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Parses all JSON-LD scripts for presence and relevant types (Article/BlogPosting, FAQPage/HowTo, Person). 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#structured-data-how" 
+                 class="text-purple-700 dark:text-purple-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+          <div>
+            <p class="font-bold text-purple-600 dark:text-purple-400">Why does Structured Data matter?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Proper markup gives explicit signals that improve understanding and trigger rich features. Pages with relevant schema are significantly more likely to be selected as authoritative sources. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#structured-data-why" 
+                 class="text-purple-700 dark:text-purple-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EEAT Signals -->
+    <div id="eeat-signals" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-4 text-center flex flex-col items-center justify-between h-64">
+        <div class="text-6xl mb-6">👤</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">EEAT Signals</h3>
+        <button class="learn-more-toggle mt-auto w-full py-4 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-blue-50 dark:bg-blue-900/20 px-4 pb-4 transition-all duration-300 ease-in-out">
+        <div class="space-y-6 text-left">
+          <div>
+            <p class="font-bold text-blue-600 dark:text-blue-400">What are EEAT Signals?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Visible indicators of Expertise, Experience, Authoritativeness, and Trustworthiness. These include author information, dates, secure connection, and links to reputable sources — critical for AI trust evaluation. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#eeat-signals-what" 
+                 class="text-blue-700 dark:text-blue-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+          <div>
+            <p class="font-bold text-blue-600 dark:text-blue-400">How are EEAT Signals tested?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Detects author bylines, date elements, and HTTPS usage. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#eeat-signals-how" 
+                 class="text-blue-700 dark:text-blue-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+          <div>
+            <p class="font-bold text-blue-600 dark:text-blue-400">Why do EEAT Signals matter?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Trust is the primary deciding factor for AI citation. Clear authorship, dates, and credible references prove the content comes from a reliable, experienced source. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#eeat-signals-why" 
+                 class="text-blue-700 dark:text-blue-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scannability -->
+    <div id="scannability" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-4 text-center flex flex-col items-center justify-between h-64">
+        <div class="text-6xl mb-6">📋</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Scannability</h3>
+        <button class="learn-more-toggle mt-auto w-full py-4 bg-teal-500 hover:bg-teal-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-teal-50 dark:bg-teal-900/20 px-4 pb-4 transition-all duration-300 ease-in-out">
+        <div class="space-y-6 text-left">
+          <div>
+            <p class="font-bold text-teal-600 dark:text-teal-400">What is Scannability?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              How easily both humans and AI can quickly extract key facts from your page. Well-structured content with headings, lists, tables, and short paragraphs is far more likely to be parsed and cited. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#scannability-what" 
+                 class="text-teal-700 dark:text-teal-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+          <div>
+            <p class="font-bold text-teal-600 dark:text-teal-400">How is Scannability tested?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Counts headings, lists, tables, and short paragraphs for optimal density. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#scannability-how" 
+                 class="text-teal-700 dark:text-teal-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+          <div>
+            <p class="font-bold text-teal-600 dark:text-teal-400">Why does Scannability matter?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              AI engines prioritize content that can be quickly and accurately extracted. Well-formatted elements like lists and tables are easiest to parse and reuse in answers. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#scannability-why" 
+                 class="text-teal-700 dark:text-teal-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conversational Tone -->
+    <div id="conversational-tone" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-4 text-center flex flex-col items-center justify-between h-64">
+        <div class="text-6xl mb-6">💬</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Conversational Tone</h3>
+        <button class="learn-more-toggle mt-auto w-full py-4 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-indigo-50 dark:bg-indigo-900/20 px-4 pb-4 transition-all duration-300 ease-in-out">
+        <div class="space-y-6 text-left">
+          <div>
+            <p class="font-bold text-indigo-600 dark:text-indigo-400">What is Conversational Tone?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Writing that feels natural and human by directly addressing the reader, using personal pronouns, asking questions, and acknowledging pain points. This matches how real people search and communicate. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#conversational-tone-what" 
+                 class="text-indigo-700 dark:text-indigo-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+          <div>
+            <p class="font-bold text-indigo-600 dark:text-indigo-400">How is Conversational Tone tested?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Counts "you" addresses, personal pronouns, questions, and pain point keywords. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#conversational-tone-how" 
+                 class="text-indigo-700 dark:text-indigo-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+          <div>
+            <p class="font-bold text-indigo-600 dark:text-indigo-400">Why does Conversational Tone matter?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Natural human language closely matches real user queries. Conversational writing feels authentic and builds reader connection — both valued by modern search systems. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#conversational-tone-why" 
+                 class="text-indigo-700 dark:text-indigo-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Readability -->
+    <div id="readability" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-4 text-center flex flex-col items-center justify-between h-64">
+        <div class="text-6xl mb-6">📖</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Readability</h3>
+        <button class="learn-more-toggle mt-auto w-full py-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-green-50 dark:bg-green-900/20 px-4 pb-4 transition-all duration-300 ease-in-out">
+        <div class="space-y-6 text-left">
+          <div>
+            <p class="font-bold text-green-600 dark:text-green-400">What is Readability?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              How simple and clear your writing is to understand and summarize. High readability (good Flesch score, varied sentences, active voice, simple words) makes content easier for AI to process accurately. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#readability-what" 
+                 class="text-green-700 dark:text-green-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+          <div>
+            <p class="font-bold text-green-600 dark:text-green-400">How is Readability tested?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Calculates Flesch score, sentence variation, passive voice usage, and complex word ratio. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#readability-how" 
+                 class="text-green-700 dark:text-green-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+          <div>
+            <p class="font-bold text-green-600 dark:text-green-400">Why does Readability matter?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Clear, simple writing is easier for AI to accurately summarize and cite. High readability reduces misinterpretation and improves overall content quality perception. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#readability-why" 
+                 class="text-green-700 dark:text-green-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Unique Insights -->
+    <div id="unique-insights" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-4 text-center flex flex-col items-center justify-between h-64">
+        <div class="text-6xl mb-6">🧠</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Unique Insights</h3>
+        <button class="learn-more-toggle mt-auto w-full py-4 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-amber-50 dark:bg-amber-900/20 px-4 pb-4 transition-all duration-300 ease-in-out">
+        <div class="space-y-6 text-left">
+          <div>
+            <p class="font-bold text-amber-600 dark:text-amber-400">What are Unique Insights?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Original, first-hand information that can't be found elsewhere — personal testing, case studies, interviews, or timely observations. This prevents de-duplication and boosts perceived value. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#unique-insights-what" 
+                 class="text-amber-700 dark:text-amber-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+          <div>
+            <p class="font-bold text-amber-600 dark:text-amber-400">How are Unique Insights tested?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Scans for first-hand phrases, dated references, quotes/interviews, and content depth (word count). 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#unique-insights-how" 
+                 class="text-amber-700 dark:text-amber-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+          <div>
+            <p class="font-bold text-amber-600 dark:text-amber-400">Why do Unique Insights matter?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Original first-hand information stands out from generic content. Unique value prevents de-duplication and positions your page as an authoritative primary source. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#unique-insights-why" 
+                 class="text-amber-700 dark:text-amber-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Anti-AI Safety -->
+    <div id="anti-ai-safety" class="metric-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden flex flex-col hover:shadow-2xl transition">
+      <div class="p-4 text-center flex flex-col items-center justify-between h-64">
+        <div class="text-6xl mb-6">🔒</div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Anti-AI Safety</h3>
+        <button class="learn-more-toggle mt-auto w-full py-4 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition">
+          Learn More
+        </button>
+      </div>
+      <div class="metric-details hidden bg-red-50 dark:bg-red-900/20 px-4 pb-4 transition-all duration-300 ease-in-out">
+        <div class="space-y-6 text-left">
+          <div>
+            <p class="font-bold text-red-600 dark:text-red-400">What is Anti-AI Safety?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Subtle human writing patterns like natural sentence variation, low repetition, and unpredictable structure. These help avoid being mistakenly flagged as low-quality AI-generated content. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#anti-ai-safety-what" 
+                 class="text-red-700 dark:text-red-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+          <div>
+            <p class="font-bold text-red-600 dark:text-red-400">How is Anti-AI Safety tested?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Measures sentence variation (burstiness), word repetition, and predictable sentence starts. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#anti-ai-safety-how" 
+                 class="text-red-700 dark:text-red-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+          <div>
+            <p class="font-bold text-red-600 dark:text-red-400">Why does Anti-AI Safety matter?</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Human-like variation helps avoid accidental filtering as low-quality generated text. Natural patterns maintain visibility while preserving authentic voice. 
+              <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/#anti-ai-safety-why" 
+                 class="text-red-700 dark:text-red-300 hover:underline font-medium">
+                Learn more →
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Existing toggle + hash auto-open script (unchanged) -->
+<script>
+  // Combined: Toggle metric details + auto-open on anchor link arrival
+  const openDetailsForCard = (card) => {
+    if (!card) return;
+    const details = card.querySelector('.metric-details');
+    if (details && details.classList.contains('hidden')) {
+      document.querySelectorAll('.metric-details').forEach(d => d.classList.add('hidden'));
+      details.classList.remove('hidden');
+    }
+  };
+
+  document.addEventListener('click', (e) => {
+    if (e.target.matches('.learn-more-toggle') || e.target.closest('.learn-more-toggle')) {
+      const toggle = e.target.closest('.learn-more-toggle');
+      const card = toggle.closest('.metric-card');
+      const details = card.querySelector('.metric-details');
+      document.querySelectorAll('.metric-details').forEach(d => {
+        if (d !== details) d.classList.add('hidden');
+      });
+      details.classList.toggle('hidden');
+    }
+  });
+
+  window.addEventListener('load', () => {
+    if (window.location.hash) {
+      const targetId = window.location.hash.substring(1);
+      const targetCard = document.getElementById(targetId);
+      openDetailsForCard(targetCard);
+      if (targetCard) {
+        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  });
+
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash) {
+      const targetId = window.location.hash.substring(1);
+      const targetCard = document.getElementById(targetId);
+      openDetailsForCard(targetCard);
+    }
+  });
+</script>
+
+    
+  <!-- Strong Opening Answerability Section -->
+  <section class="max-w-4xl mx-auto mt-12 mb-8">
+    <h2 class="text-3xl md:text-4xl pt-8 font-bold font-black text-orange-700 dark:text-orange-400 text-center mb-8">What is AI Search Optimization?</h2>
+    <p class="text-2xl md:text-3xl font-bold text-gray-500 text-center mb-8">
+      <strong>AI Search Optimization means writing and structuring your page so AI engines confidently quote it in their answers.</strong>
+    </p>
+    <p class="text-xl leading-relaxed text-center mb-8 text-gray-500 dark:text-gray-300">
+      You want your content to show up directly in Google AI Overviews, Perplexity, Grok, Gemini, and ChatGPT Search. Not hidden in old-style results.
+    </p>
+    <p class="text-xl leading-relaxed text-center mb-8 text-gray-500 dark:text-gray-300">
+      Frustrated that your best articles get no traffic even when they rank well? Too many sites still focus only on classic Google. They get skipped by AI because they hide answers, lack trust, and feel hard to read.
+    </p>
+  </section>
+     
+
+  <section id="ai-search-seo-checklist" class="py-4 px-2 max-w-6xl mx-auto">
+    <h2 class="text-2xl md:text-2xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+      5 Must-Do Actions to Win AI Citations
+    </h2>
+    <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-500 dark:text-gray-300 leading-relaxed">
+      In our hands-on testing of hundreds of pages that rank in AI answers, these five changes delivered the biggest visibility jumps.
+    </p>
+    <div class="max-w-4xl mx-auto">
+      <div class="space-y-8 text-lg">
+        <div class="flex items-start gap-6 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 p-6 rounded-2xl">
+          <span class="text-2xl">1️⃣</span>
+          <div>
+            <strong>Lead with a bold, complete answer</strong><br>
+            Put the direct answer in the first 200 words. AI engines quote it verbatim in their responses.
+          </div>
+        </div>
+        <div class="flex items-start gap-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-6 rounded-2xl">
+          <span class="text-2xl">2️⃣</span>
+          <div>
+            <strong>Add visible author credentials</strong><br>
+            Include your name, photo, bio, and expertise proof. Trust is the #1 factor AI uses to choose sources.
+          </div>
+        </div>
+        <div class="flex items-start gap-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-2xl">
+          <span class="text-2xl">3️⃣</span>
+          <div>
+            <strong>Use FAQ or HowTo structured data</strong><br>
+            Machine-readable markup makes your answers instantly extractable for rich AI results.
+          </div>
+        </div>
+        <div class="flex items-start gap-6 bg-gradient-to-r from-teal-50 to-green-50 dark:from-teal-900/20 dark:to-green-900/20 p-6 rounded-2xl">
+          <span class="text-2xl">4️⃣</span>
+          <div>
+            <strong>Include original insights or data</strong><br>
+            First-hand testing, case studies, or exclusive stats prevent de-duplication and boost perceived value.
+          </div>
+        </div>
+        <div class="flex items-start gap-6 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-6 rounded-2xl">
+          <span class="text-2xl">5️⃣</span>
+          <div>
+            <strong>Write conversationally with scannable formatting</strong><br>
+            Address “you” directly, use headings, lists, tables, and short paragraphs. This makes content human and AI-friendly.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-16">
+      <p class="text-xl font-semibold max-w-3xl mx-auto text-green-800 dark:text-green-100">
+        Do these five things and watch AI engines start citing your content.
+      </p>
+    </div>
+  </section>
+
+
+
+  <div  id="promo-old-vs-modern-seo" class="max-w-5xl mx-auto mt-12">
+    <h3 class="text-3xl font-bold text-center mb-10 font-black text-orange-700 dark:text-orange-400">
+      Traditional SEO vs AI Search Optimization
+    </h3>
+    <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+      <table class="w-full text-left">
+        <thead class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+          <tr>
+            <th class="px-6 py-5 text-lg font-semibold">Factor</th>
+            <th class="px-6 py-5 text-lg font-semibold">Traditional SEO Focus</th>
+            <th class="px-6 py-5 text-lg font-semibold">AI Search Optimization Focus</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          <tr>
+            <td class="px-6 py-5 font-medium">Primary Goal:</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rank high in blue links.</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Get directly cited/quoted in AI answers.</td>
+          </tr>
+          <tr class="bg-gray-50 dark:bg-gray-900/50">
+            <td class="px-6 py-5 font-medium">Content Structure:</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Keyword density, H1–H6.</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Bold answers early, lists, tables, schema.</td>
+          </tr>
+          <tr>
+            <td class="px-6 py-5 font-medium">Trust Signals:</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Backlinks, domain authority.</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Author bio, credentials, dates, trusted links.</td>
+          </tr>
+          <tr class="bg-gray-50 dark:bg-gray-900/50">
+            <td class="px-6 py-5 font-medium">Writing Style:</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Keyword-optimized, formal.</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Conversational “you” language, natural variation.</td>
+          </tr>
+          <tr>
+            <td class="px-6 py-5 font-medium">Unique Value:</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Comprehensive coverage.</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">First-hand insights, original data, testing.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
+      AI engines reward pages that are easy to extract, trust, and quote.
+    </p>
+  </div>
+  
+  
+<!-- Ai Tools Section -->
+  <div class="my-16"></div>
+        <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      Ai Tools
+      </h2>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+  <div class="grid md:grid-cols-3 gap-8">
+    <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">AI Content Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Detect AI patterns + humanize content</p>
+      </div>
+    </a>
+    <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+        <h3 class="text-orange-400 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+      </div>
+    </a>
+    <a href="https://traffictorch.net/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-red-400 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools powered by AI</p>
+      </div>
+    </a>
+  </div>
+</div>
+
+<section id="ai-search-seo-checklist" class="py-16 px-2 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray dark:to-gray-900"">
+  <h2 class="text-2xl md:text-2xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+    Ultimate AI Search Optimization Checklist
+  </h2>
+  <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-500 dark:text-gray-300 leading-relaxed">
+    Checklist for AI-powered search results. Audit your page for Google AI Overviews, Perplexity, Grok, Gemini, ChatGPT citation potential. with deep analysis and priority fixes.
+  </p>
+
+  <!-- Good vs Bad Practices Intro Expander -->
+  <div class="max-w-4xl mx-auto mb-16">
+    <details class="group">
+      <summary class="px-6 py-5 text-1xl text-center font-black bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+        <span>AI Search Optimizations 📊</span>
+        <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+      </summary>
+      <div class="mt-8 px-2 py-10 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 space-y-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <ul class="space-y-6 text-lg list-none">
+          <li class="flex items-start gap-6"><span class="text-2xl">✅</span> <span>Add clear author bio with credentials, photo, and experience proof.</span></li>
+          <li class="flex items-start gap-6"><span class="text-2xl">✅</span> <span>Use structured data (JSON-LD FAQ, HowTo, Article schema) for easy extraction.</span></li>
+          <li class="flex items-start gap-6"><span class="text-2xl">✅</span> <span>Include unique insights, original data, case studies, or first-hand experience.</span></li>
+          <li class="flex items-start gap-6"><span class="text-2xl">✅</span> <span>Write in natural, conversational tone with varied sentence lengths.</span></li>
+          <li class="flex items-start gap-6"><span class="text-2xl">✅</span> <span>Lead with direct answers, bold key facts early in content.</span></li>
+          <li class="flex items-start gap-6"><span class="text-2xl">✅</span> <span>Use scannable formatting: headings, lists, tables, short paragraphs.</span></li>
+          <li class="flex items-start gap-6"><span class="text-2xl">❌</span> <span>Rely on thin, generic content without original value.</span></li>
+          <li class="flex items-start gap-6"><span class="text-2xl">❌</span> <span>Skip author information or E-E-A-T signals entirely.</span></li>
+          <li class="flex items-start gap-6"><span class="text-2xl">❌</span> <span>Write in robotic, repetitive AI-generated style.</span></li>
+          <li class="flex items-start gap-6"><span class="text-2xl">❌</span> <span>Use walls of text without headings or visual breaks.</span></li>
+          <li class="flex items-start gap-6"><span class="text-2xl">❌</span> <span>Ignore schema markup and semantic HTML.</span></li>
+          <li class="flex items-start gap-6"><span class="text-2xl">❌</span> <span>Bury key answers deep in long paragraphs.</span></li>
+        </ul>
+      </div>
+    </details>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-8 md:gap-10">
+    <!-- Authority & Trust -->
+    <div class="checklist-card">
+      <details class="group">
+        <summary class="px-6 py-5 text-1xl text-center font-black bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+          <span class="flex items-center gap-4">
+            <span class="text-4xl">🔍</span> Signals for AI Engines
+          </span>
+          <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+        </summary>
+        <div class="mt-8 px-2 py-10 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 space-y-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+          <div class="space-y-6 md:space-y-8 text-lg">
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">⚠️</span>
+              <div class="min-w-0">Weak or missing E-E-A-T signals causing AI models to ignore your content.</div>
+            </div>
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">🤝</span>
+              <div class="min-w-0"><strong>E-E-A-T AI Evaluation</strong>: Experience, Expertise, Authoritativeness & Trust scoring tailored to LLM source selection.</div>
+            </div>
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">👤</span>
+              <div class="min-w-0">No author credentials, citations, or external references.</div>
+            </div>
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">📚</span>
+              <div class="min-w-0">Author bio strength, internal/external linking audit, reference quality recommendations.</div>
+            </div>
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">💬</span>
+              <div class="min-w-0">Generic tone lacking authoritative voice.</div>
+            </div>
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">✍️</span>
+              <div class="min-w-0">Language naturalness, burstiness, and distinctiveness analysis for standout authority.</div>
+            </div>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- Content Structure & Depth -->
+    <div class="checklist-card">
+      <details class="group">
+        <summary class="px-6 py-5 text-1xl text-center font-black bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+          <span class="flex items-center gap-4">
+            <span class="text-4xl">🏗️</span> Content for LLMs
+          </span>
+          <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+        </summary>
+        <div class="mt-8 px-2 py-10 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 space-y-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+          <div class="space-y-6 md:space-y-8 text-lg">
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">🔀</span>
+              <div class="min-w-0">Poor heading hierarchy and semantic markup confusing AI crawlers.</div>
+            </div>
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">📑</span>
+              <div class="min-w-0">Full H1–H6 structure audit, semantic HTML usage, schema markup validation.</div>
+            </div>
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">📄</span>
+              <div class="min-w-0">Shallow content lacking unique data, stats, or insights.</div>
+            </div>
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">💡</span>
+              <div class="min-w-0">Depth & originality scoring with suggestions for statistics, quotes, and exclusive insights.</div>
+            </div>
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">🌐</span>
+              <div class="min-w-0">Weak entity recognition and topical focus.</div>
+            </div>
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">🎯</span>
+              <div class="min-w-0">Named entity strength, topic cluster alignment, and authority entity optimization.</div>
+            </div>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- Master Score & Outcomes (full width) -->
+    <div class="md:col-span-2 checklist-card">
+      <details class="group">
+        <summary class="px-6 py-5 text-1xl text-center font-black bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+          <span class="flex items-center gap-4">
+            <span class="text-4xl">⚖️</span> Actionable Outcomes
+          </span>
+          <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+        </summary>
+        <div class="mt-8 px-2 py-10 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 space-y-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+          <div class="space-y-6 md:space-y-8 text-lg max-w-4xl mx-auto">
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">👻</span>
+              <div class="min-w-0">No clear visibility forecast in AI search results.</div>
+            </div>
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">🌟</span>
+              <div class="min-w-0"><strong>Overall AI Citation Potential Score</strong>: Predictive gauge of sourcing likelihood across Google AIO, Perplexity, Grok, Gemini.</div>
+            </div>
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">😓</span>
+              <div class="min-w-0">Generic advice without prioritization or impact estimates.</div>
+            </div>
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">🔧</span>
+              <div class="min-w-0">Prioritized fixes ranked by impact + estimated visibility uplift forecasts.</div>
+            </div>
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">🔒</span>
+              <div class="min-w-0">Server-based tools risking privacy and slow results.</div>
+            </div>
+            <div class="flex items-start gap-4 md:gap-5">
+              <span class="text-2xl md:text-2xl flex-shrink-0">🛡️</span>
+              <div class="min-w-0">100% instant analysis with mobile-friendly reports, dark mode, and PDF export.</div>
+            </div>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <div class="text-center mt-16">
+    <p class="text-1xl font-semibold max-w-3xl mx-auto text-green-800 dark:text-green-100">
+      AI search optimization tool - Learn your score and how to improve your website.
+    </p>
+  </div>
+</section>
+
+
+<div class="max-w-4xl mx-auto my-16">
+  <details>
+    <summary class="px-3 py-5 text-1xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
+      Why AI Search Optimization Matters?
+      <span class="text-3xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-2 py-10 bg-white dark:bg-gray-800 rounded-2xl shadow-inner space-y-10 text-gray-700 dark:text-gray-300">
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold text-purple-600 dark:text-purple-400">The Future of Search Is AI-Powered</h2>
+        <p class="leading-relaxed">
+          Traditional Google rankings are evolving rapidly. <strong>AI search engines</strong> like Google AI Overviews, Perplexity, Grok, Gemini, ChatGPT Search, and others are becoming the primary discovery method.
+        </p>
+        <p class="leading-relaxed">
+          These systems don’t just link — they <strong>cite, quote, and summarize</strong> content directly. High-citation pages experience massive direct traffic surges.
+        </p>
+      </section>
+      <section class="space-y-8">
+        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Key Benefits of Strong AI Search Optimization</h3>
+        <div class="grid md:grid-cols-2 gap-8 text-lg">
+          <div class="flex gap-7">
+            <div class="text-4xl">📈</div>
+            <div>
+              <strong>Massive Direct Traffic Growth</strong><br>
+              Top-cited sources in AI answers receive thousands of clicks from users seeking full details.
+            </div>
+          </div>
+          <div class="flex gap-7">
+            <div class="text-4xl">🔝</div>
+            <div>
+              <strong>Higher Visibility in Traditional Search Too</strong><br>
+              Core algorithms weight EEAT, structure, and readability used in AI Overviews.
+            </div>
+          </div>
+          <div class="flex gap-7">
+            <div class="text-4xl">🛡️</div>
+            <div>
+              <strong>Future-Proof Your Content</strong><br>
+              As AI answers gain influence, citation-optimized pages remain relevant long-term.
+            </div>
+          </div>
+          <div class="flex gap-7">
+            <div class="text-4xl">💪</div>
+            <div>
+              <strong>Competitive Advantage</strong><br>
+              Most sites optimize only for classic SEO. AI-ready content out-cites generic pages.
+            </div>
+          </div>
+          <div class="flex gap-7">
+            <div class="text-4xl">🤝</div>
+            <div>
+              <strong>Better User Experience</strong><br>
+              Clear answers, scannable format, trustworthy signals boost engagement for humans and AI.
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/30 p-8 rounded-xl">
+        <h3 class="text-2xl font-bold mb-4">The Bottom Line</h3>
+        <p class="leading-relaxed">
+          High AI search optimization scores multiply organic reach across traditional and generative engines.
+        </p>
+        <p class="leading-relaxed font-medium mt-4">
+          Apply prioritized fixes → Re-run this free tool → Watch visibility and traffic grow.
+        </p>
+      </section>
+      <p class="text-center text-lg italic opacity-80 mt-8">
+        Sites adapting to AI search optimization today influence tomorrow’s results.
+      </p>
+    </div>
+  </details>
+</div>
+  
+       <!-- Author Bio -->
+<section id="author-bio" class="max-w-5xl mx-auto my-12 px-4 author-bio author-box" id="about-ylia-and-traffic-torch">
+  <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+    <!-- Hero Gradient Header: Gradient only, no solid bg -->
+    <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
+      <div class="flex flex-col items-center gap-6 mb-6">
+        <!-- Traffic Torch Logo Only in Hero -->
+        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch: Instant 360° SEO + UX Health Analysis, Deep-Dive Reports, Competitive Gaps, AI Fixes – Privacy-First Optimization Toolkit" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
+      </div>
+      <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
+      <p class="text-lg md:text-2xl text-gray-800 dark:text-gray-200 max-w-4xl mx-auto font-medium">
+       AI Search Engine Optimization Audit Tool.
+      </p>
+    </div>
+    <!-- Main Content Area: Transparent, inherits page bg -->
+    <div class="p-2 md:p-12 space-y-10 text-center md:text-left">
+      <!-- Tool Mission Description -->
+      <div class="space-y-6">
+        <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+        The AI Search Optimization Tool analyzes your content's readiness for AI-powered search engines, providing deep diagnostics, competitive insights, priority fixes, and educational guidance to improve visibility in Ai search results.
+        </p>
+      </div>
+      <!-- Founder Bio with Smaller Photo -->
+      <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-2 md:p-8 rounded-2xl backdrop-blur-sm">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+          <!-- Perfect circle wrapper for photo -->
+          <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
+            <img
+              src="/images/ylia-callan-320w.webp"
+              srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
+              sizes="(max-width: 768px) 96px, 128px"
+              alt="Ylia Callan: Musician, Author, Researcher, Web Designer, Founder of Traffic Torch – Bridging Creativity, Consciousness, and Cutting-Edge Web Tools"
+              class="w-full h-full object-cover object-center"
+              loading="lazy">
+          </div>
+          <div class="space-y-4 text-center md:text-left">
+            <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Lead Developer</h3>
+            <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
+              Musician • Author • Researcher • Web Designer • TAFE NSW • Creator of privacy-first AI-powered web tools. Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.
+            </p>
+            <p class="text-base text-gray-800 dark:text-gray-200 italic">
+              Explore my work - books on physics, philosophy, consciousness, music, and more – at <a href="https://yliacallan.github.io/" target="_blank" rel="noopener" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">yliacallan.github.io</a>.
+            </p>
+          </div>
+        </div>
+        <!-- Social Links -->
+        <ul class="flex flex-wrap justify-center md:justify-start gap-6 mt-6">
+          <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">LinkedIn</a></li>
+          <li><a href="https://x.com/guitaralize" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">X (Twitter)</a></li>
+        </ul>
+      </div>
+      <!-- Tech Stack for E-E-A-T -->
+      <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
+        <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Modern Stack Setup</h3>
+        <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          Traffic Torch runs on epic, scalable infrastructure: Hosted via <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub Pages</a> for blazing-fast static delivery and effortless updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance optimizations. 
+        </p>
+        <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-4 max-w-3xl mx-auto">
+        We help publishers and marketers adapt to AI-powered search. This tool is based on real-world testing of pages across Google AI Overviews, Perplexity, Grok, ChatGTP and Gemini.
+        </p>
+          <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+          <p>Published: 2026-01-01</p>
+          <p>Last updated: 2026-03-06</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+	
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+	
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+<section class="bottom-banner" aria-label="Traffic Torch visual summary">
+  <picture style="--banner-ratio: 28.13%;"> <!-- 360 / 1280 -->
+<img src="/images/tool-banners/ai-search-optimization-infographic-1200w.webp" srcset="/images/tool-banners/ai-search-optimization-infographic-480w.webp 480w, /images/tool-banners/ai-search-optimization-infographic-800w.webp 800w, /images/tool-banners/ai-search-optimization-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch AI Search Optimization Tool – AI-powered optimization for generative search engines, answer engine visibility, structured content and zero-click SERP strategies" width="1200" height="338" loading="lazy" decoding="async">
+  </picture>
+</section>
+  
+  </main>
+    
+    
+<!-- Footer -->
+<div id="footer-placeholder"></div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="/main-v1.1.js" type="module"></script>
+  <script src="/schema-generator/metric-explanations-v1.0.js" type="module" defer></script>
+  <script src="/schema-generator/script-v1.0.js" type="module" defer></script>
+
+</body>
+</html>
