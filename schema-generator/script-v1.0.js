@@ -400,7 +400,17 @@ manualSelect.addEventListener('change', (e) => {
   manualEditor.innerHTML = '';
 
   // Render reusable editor component
-  renderSchemaEditor(schema, manualEditor, manualPreview);
+console.log('Manual type selected:', type);
+console.log('Schema loaded:', schema ? schema.type : 'null - no schema');
+if (!schema) {
+  console.warn('No schema for type:', type);
+  manualEditor.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center py-6">Schema not available yet – try FAQPage</p>';
+  return;
+}
+console.log('Rendering editor for:', schema.label);
+manualEditor.innerHTML = ''; // clear
+renderSchemaEditor(schema, manualEditor, manualPreview);
+console.log('Editor render called');
 
   // Show preview and actions
   if (manualPreviewContainer) manualPreviewContainer.classList.remove('hidden');
