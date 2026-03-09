@@ -416,7 +416,7 @@
     <p class="text-center text-lg mb-10 max-w-3xl mx-auto opacity-80">
       Scan any URL to detect existing schema, find missed opportunities (FAQ, HowTo, Article, etc.), edit recommendations, and generate clean JSON-LD for better SEO rich results and UX.
     </p>
-   
+  
     <form id="audit-form" class="max-w-2xl mx-auto space-y-4">
       <div class="flex flex-col sm:flex-row gap-4">
         <label for="url-input" class="sr-only">Enter page URL to scan for schema</label>
@@ -437,7 +437,7 @@
       </div>
     </form>
 
-    <div id="analysis-progress" class="hidden mt-10 flex flex-col items-center justify-center py-8">
+     <div id="analysis-progress" class="hidden mt-10 flex flex-col items-center justify-center py-8">
       <div class="relative w-20 h-20">
         <!-- Lazer spinner: thin orange partial ring -->
         <div class="absolute inset-0 rounded-full border-4 border-gray-200"></div>
@@ -449,62 +449,57 @@
     </div>
 
     <div id="results" class="hidden"></div>
-    
-    <!-- Manual Schema Creation Section -->
-<div class="mt-16 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
-  <h2 class="text-3xl md:text-4xl font-black text-center mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-    Create Schema Manually
-  </h2>
-  <p class="text-center text-lg mb-10 max-w-3xl mx-auto opacity-80">
-    Select a schema type below to build it from scratch. Pre-filled values will appear when possible — review and complete before generating code.
-  </p>
 
-  <select id="manual-schema-type" class="w-full max-w-xl mx-auto block px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg">
-    <option value="">-- Select Schema Type --</option>
-    <optgroup label="Core / Foundational">
-      <option value="Organization">Organization</option>
-      <option value="Article">Article / BlogPosting</option>
-      <option value="LocalBusiness">LocalBusiness</option>
-      <option value="Person">Person</option>
-      <option value="BreadcrumbList">BreadcrumbList</option>
-    </optgroup>
-    <optgroup label="Content & Engagement">
-      <option value="FAQPage">FAQPage</option>
-      <option value="HowTo">HowTo</option>
-      <option value="VideoObject">VideoObject</option>
-      <option value="Recipe">Recipe</option>
-      <option value="Event">Event</option>
-      <option value="Review">Review / AggregateRating</option>
-    </optgroup>
-    <optgroup label="Advanced & Specialized">
-      <option value="JobPosting">JobPosting</option>
-      <option value="Course">Course</option>
-      <option value="SoftwareApplication">SoftwareApplication</option>
-      <option value="Book">Book</option>
-      <option value="Dataset">Dataset</option>
-      <option value="Speakable">Speakable</option>
-      <option value="FactCheck">FactCheck</option>
-    </optgroup>
-  </select>
-
-  <div id="manual-editor-container" class="mt-10"></div>
-
-  <div id="manual-preview-container" class="mt-10 hidden">
-    <h3 class="text-2xl font-bold mb-4 text-center">Live JSON-LD Preview</h3>
-    <pre id="manual-preview" class="bg-gray-900 text-green-300 p-6 rounded-xl overflow-auto text-sm max-h-96 font-mono leading-relaxed">// Select a type above to start building</pre>
-  </div>
-
-  <div id="manual-actions" class="mt-8 flex flex-col sm:flex-row gap-4 justify-center hidden">
-    <button id="manual-copy-btn" class="px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition">
-      Copy JSON-LD
-    </button>
-    <button id="manual-validate-btn" class="px-10 py-4 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-xl transition">
-      Validate with Google
-    </button>
-  </div>
-</div>
-
-  </div>
+    <!-- Manual Schema Creation Section (always visible, below results) -->
+    <div class="mt-16 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
+      <h2 class="text-3xl md:text-4xl font-black text-center mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+        Create Schema Manually
+      </h2>
+      <p class="text-center text-lg mb-10 max-w-3xl mx-auto opacity-80">
+        Select a schema type below to build it from scratch. Pre-filled values will appear when possible — review and complete before generating code.
+      </p>
+      <select id="manual-schema-type" class="w-full max-w-xl mx-auto block px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg">
+        <option value="">-- Select Schema Type --</option>
+        <optgroup label="Core / Foundational">
+          <option value="Organization">Organization</option>
+          <option value="Article">Article / BlogPosting</option>
+          <option value="LocalBusiness">LocalBusiness</option>
+          <option value="Person">Person</option>
+          <option value="BreadcrumbList">BreadcrumbList</option>
+        </optgroup>
+        <optgroup label="Content & Engagement">
+          <option value="FAQPage">FAQPage</option>
+          <option value="HowTo">HowTo</option>
+          <option value="VideoObject">VideoObject</option>
+          <option value="Recipe">Recipe</option>
+          <option value="Event">Event</option>
+          <option value="Review">Review / AggregateRating</option>
+        </optgroup>
+        <optgroup label="Advanced & Specialized">
+          <option value="JobPosting">JobPosting</option>
+          <option value="Course">Course</option>
+          <option value="SoftwareApplication">SoftwareApplication</option>
+          <option value="Book">Book</option>
+          <option value="Dataset">Dataset</option>
+          <option value="Speakable">Speakable</option>
+          <option value="FactCheck">FactCheck</option>
+        </optgroup>
+      </select>
+      <div id="manual-editor-container" class="mt-10"></div>
+      <div id="manual-preview-container" class="mt-10 hidden">
+        <h3 class="text-2xl font-bold mb-4 text-center">Live JSON-LD Preview</h3>
+        <pre id="manual-preview" class="bg-gray-900 text-green-300 p-6 rounded-xl overflow-auto text-sm max-h-96 font-mono leading-relaxed">// Select a type above to start building</pre>
+      </div>
+      <div id="manual-actions" class="mt-8 flex flex-col sm:flex-row gap-4 justify-center hidden">
+        <button id="manual-copy-btn" class="px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition">
+          Copy JSON-LD
+        </button>
+        <button id="manual-validate-btn" class="px-10 py-4 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-xl transition">
+          Validate with Google
+        </button>
+      </div>
+    </div>
+  </div> 
   
       <div class="center-btn-container">
   <button
