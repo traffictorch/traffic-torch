@@ -2,9 +2,17 @@
 // Traffic Torch Schema Markup Tool - Main Script
 // Focus: URL → detect existing schema → content analysis → recommend FAQPage (v1) → edit/generate JSON-LD
 
-import { FAQPage } from './modules/schema-faqpage.js';  // Add more later: import { Article, HowTo } from './modules/...';
-import { buildJsonLdSkeleton, cleanJsonLd, prettyJsonLd, validateRequiredFields } from './modules/schema-base.js';
-import { canRunTool } from '/main-v1.1.js';  // Keep usage limit
+// Schema modules – use barrel for future-proofing
+import { 
+  buildJsonLdSkeleton,
+  validateRequiredFields,
+  cleanJsonLd,
+  prettyJsonLd,
+  createEducationSnippet
+} from './modules/index.js';
+
+import { FAQPage } from './modules/index.js';
+import { canRunTool } from '/main-v1.1.js'; 
 import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
 
