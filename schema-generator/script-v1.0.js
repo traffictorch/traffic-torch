@@ -69,12 +69,19 @@ if (manualSelect && manualEditor && manualPreview && manualPreviewContainer && m
     renderSchemaEditor(schema, manualEditor, manualPreview);
 
     // Prefill title from page title (fallback)
-    const titleInput = manualEditor.querySelector('input[type="text"][placeholder*="Frequently Asked Questions"]');
-    if (titleInput) {
-      const pageTitle = document.title.trim() || 'Frequently Asked Questions';
-      titleInput.value = pageTitle;
-      titleInput.dispatchEvent(new Event('input', { bubbles: true }));
-    }
+const titleInput = manualEditor.querySelector('input[data-key="name"]');
+if (titleInput) {
+  let pageTitle = document.title.trim();
+  // Clean up common prefixes for better prefill
+  pageTitle = pageTitle.replace(/^(Frequently Asked Questions About|FAQ About|FAQs About)\s*/i, '').trim();
+  if (pageTitle) {
+    titleInput.value = `Frequently Asked Questions About ${pageTitle}`;
+  } else {
+    titleInput.value = 'Frequently Asked Questions About [Your Topic]';
+  }
+  titleInput.dispatchEvent(new Event('input', { bubbles: true }));
+  titleInput.dispatchEvent(new Event('change', { bubbles: true })); // extra trigger for safety
+}
 
     manualPreviewContainer.classList.remove('hidden');
     manualActions.classList.remove('hidden');

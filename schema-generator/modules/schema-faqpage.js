@@ -25,12 +25,11 @@ export const FAQPage = {
   formFields: [
 {
   key: 'name',
-  label: 'Schema Name / Title (recommended)',
+  label: 'FAQ Section Title',
   type: 'text',
-  placeholder: 'Frequently Asked Questions about [Topic]',
+  placeholder: 'Frequently Asked Questions About [Your Topic]',
   required: false,
-  help: 'This appears in search results as the title for the FAQ block. Prefilled from page title if scanned, or enter manually. Use a clear, descriptive title matching user intent.',
-  dataKey: 'name'  // ← this makes the value saved in data['name'] for generate()
+  help: 'This becomes the "name" property in the schema (e.g. "Frequently Asked Questions About Schema Markup"). It helps search engines label the FAQ block in results. Prefilled from page title if scanned; type your custom topic to update the preview live.'
 },
     {
       key: 'mainEntity',
