@@ -366,17 +366,23 @@ const initTool = (form, results, progressContainer) => {
       
 // Manual mode setup (using reusable schema-editor.js)
 const manualSelect = document.getElementById('manual-schema-type');
-const manualEditor = document.getElementById('manual-editor');
-const manualPreview = document.getElementById('manual-json-preview');
+const manualEditor = document.getElementById('manual-editor-container');  // ← fixed ID mismatch
+const manualPreview = document.getElementById('manual-preview');
 const manualPreviewContainer = document.getElementById('manual-preview-container');
 const manualActions = document.getElementById('manual-actions');
 
+if (!manualSelect) {
+  console.error('Manual select dropdown not found - check HTML id="manual-schema-type"');
+}
+
 manualSelect.addEventListener('change', (e) => {
+  console.log('Dropdown changed - selected value:', e.target.value); // debug
+
   const type = e.target.value;
   if (!type) {
     manualEditor.innerHTML = '';
-    if (manualPreviewContainer) manualPreviewContainer.classList.add('hidden');
-    if (manualActions) manualActions.classList.add('hidden');
+    manualPreviewContainer.classList.add('hidden');
+    manualActions.classList.add('hidden');
     return;
   }
 
@@ -391,43 +397,32 @@ manualSelect.addEventListener('change', (e) => {
 
   if (!schema) {
     manualEditor.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center py-6">Schema type not loaded yet – coming soon!</p>';
-    if (manualPreviewContainer) manualPreviewContainer.classList.add('hidden');
-    if (manualActions) manualActions.classList.add('hidden');
+    manualPreviewContainer.classList.add('hidden');
+    manualActions.classList.add('hidden');
     return;
   }
 
-  // Clear previous editor
-  manualEditor.innerHTML = '';
+  console.log('Rendering editor for schema:', schema.label); // debug
 
-  // Render reusable editor component
-console.log('Manual type selected:', type);
-console.log('Schema loaded:', schema ? schema.type : 'null - no schema');
-if (!schema) {
-  console.warn('No schema for type:', type);
-  manualEditor.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center py-6">Schema not available yet – try FAQPage</p>';
-  return;
-}
-console.log('Rendering editor for:', schema.label);
-manualEditor.innerHTML = ''; // clear
-renderSchemaEditor(schema, manualEditor, manualPreview);
-console.log('Editor render called');
+  manualEditor.innerHTML = ''; // clear previous
+  renderSchemaEditor(schema, manualEditor, manualPreview);
+  console.log('Editor render completed'); // debug
 
-  // Show preview and actions
-  if (manualPreviewContainer) manualPreviewContainer.classList.remove('hidden');
-  if (manualActions) manualActions.classList.remove('hidden');
+  manualPreviewContainer.classList.remove('hidden');
+  manualActions.classList.remove('hidden');
 });
 
 // Copy button for manual preview
 document.getElementById('manual-copy-btn')?.addEventListener('click', () => {
-  const previewText = document.getElementById('manual-json-preview')?.textContent || '';
+  const previewText = manualPreview?.textContent || '';
   if (previewText) {
     navigator.clipboard.writeText(previewText)
-      .then(() => alert('JSON-LD copied to clipboard! Paste into your <head> or GTM.'))
+      .then(() => alert('JSON-LD copied to clipboard!'))
       .catch(() => alert('Copy failed – select and copy manually.'));
   }
 });
 
-// Validate button for manual (opens Google's Rich Results Test with current page URL)
+// Validate button for manual
 document.getElementById('manual-validate-btn')?.addEventListener('click', () => {
   const currentUrl = document.getElementById('url-input')?.value.trim() || window.location.href;
   window.open(`https://search.google.com/test/rich-results?url=${encodeURIComponent(currentUrl)}`, '_blank');
