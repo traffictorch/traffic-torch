@@ -154,15 +154,3 @@ export function formatValidationErrors(errors) {
     </div>
   `;
 }
-
-// Export all utilities as named exports
-export {
-  buildJsonLdSkeleton,
-  validateRequiredFields,
-  cleanJsonLd,
-  prettyJsonLd,
-  nestSchema,
-  createEducationSnippet,
-  formatValidationErrors,
-  // getNestedValue is internal, not exported
-};
