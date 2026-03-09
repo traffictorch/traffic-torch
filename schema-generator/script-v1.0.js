@@ -238,6 +238,46 @@ const initTool = (form, results, progressContainer) => {
             <p class="text-lg opacity-80">Want more types? Coming soon: Article, HowTo, Product, Organization...</p>
           </div>
         </div>
+        <!-- Manual Schema Builder -->
+<div class="mt-16 bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+  <h3 class="text-2xl font-bold mb-6 text-center">Create Schema Manually</h3>
+  <select id="manual-schema-type" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <option value="">Select Schema Type</option>
+    <optgroup label="Core / Foundational">
+      <option value="Organization">Organization</option>
+      <option value="Article">Article / BlogPosting</option>
+      <option value="LocalBusiness">LocalBusiness</option>
+      <option value="Person">Person</option>
+      <option value="BreadcrumbList">BreadcrumbList</option>
+    </optgroup>
+    <optgroup label="Content & Engagement">
+      <option value="FAQPage">FAQPage</option>
+      <option value="HowTo">HowTo</option>
+      <option value="VideoObject">VideoObject</option>
+      <option value="Recipe">Recipe</option>
+      <option value="Event">Event</option>
+      <option value="Review">Review / AggregateRating</option>
+    </optgroup>
+    <optgroup label="Advanced & Specialized">
+      <option value="JobPosting">JobPosting</option>
+      <option value="Course">Course</option>
+      <option value="SoftwareApplication">SoftwareApplication</option>
+      <option value="Book">Book</option>
+      <option value="Dataset">Dataset</option>
+      <option value="Speakable">Speakable</option>
+      <option value="FactCheck">FactCheck</option>
+    </optgroup>
+  </select>
+  <div id="manual-editor" class="mt-6"></div>
+  <div id="manual-preview" class="mt-8 hidden">
+    <h4 class="text-xl font-semibold mb-3">Live JSON-LD Preview</h4>
+    <pre id="manual-json-preview" class="bg-gray-900 text-green-300 p-6 rounded-xl overflow-auto text-sm max-h-96 font-mono">// Select a type to generate preview</pre>
+  </div>
+  <div class="mt-6 flex flex-col sm:flex-row gap-4 justify-center hidden" id="manual-actions">
+    <button id="manual-copy-btn" class="px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition">Copy JSON-LD</button>
+    <button id="manual-validate-btn" class="px-10 py-4 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-xl transition">Validate with Google</button>
+  </div>
+</div>
       `;
 
       // ──────────────────────────────────────────────
@@ -322,6 +362,48 @@ const initTool = (form, results, progressContainer) => {
         const encoded = encodeURIComponent(previewEl.textContent);
         window.open(`https://search.google.com/test/rich-results?url=${encodeURIComponent(url)}`, '_blank');
       });
+      
+// Manual mode setup (using reusable schema-editor.js)
+const manualSelect = document.getElementById('manual-schema-type');
+const manualEditor = document.getElementById('manual-editor');
+const manualPreview = document.getElementById('manual-json-preview');
+const manualPreviewContainer = document.getElementById('manual-preview-container');
+const manualActions = document.getElementById('manual-actions');
+
+manualSelect.addEventListener('change', (e) => {
+  const type = e.target.value;
+  if (!type) {
+    manualEditor.innerHTML = '';
+    manualPreviewContainer.classList.add('hidden');
+    manualActions.classList.add('hidden');
+    return;
+  }
+
+  // v1: only FAQPage loaded; later replace with dynamic registry lookup
+  const selectedSchema = FAQPage; // When more types added: schemaRegistry[type]
+
+  // Clear previous editor
+  manualEditor.innerHTML = '';
+
+  // Render reusable editor component
+  renderSchemaEditor(selectedSchema, manualEditor, manualPreview);
+
+  // Show preview and actions
+  manualPreviewContainer.classList.remove('hidden');
+  manualActions.classList.remove('hidden');
+});
+
+// Copy button for manual preview
+document.getElementById('manual-copy-btn').addEventListener('click', () => {
+  navigator.clipboard.writeText(manualPreview.textContent)
+    .then(() => alert('JSON-LD copied to clipboard! Paste into your <head> or GTM.'))
+    .catch(() => alert('Copy failed – select and copy manually.'));
+});
+
+// Validate button for manual (opens Google's Rich Results Test with current page URL)
+document.getElementById('manual-validate-btn').addEventListener('click', () => {
+  window.open(`https://search.google.com/test/rich-results?url=${encodeURIComponent(url)}`, '_blank');
+});
 
       // Init shared features
       initShareReport(results);
