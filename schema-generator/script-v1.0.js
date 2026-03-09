@@ -32,103 +32,94 @@ const waitForElements = () => {
 const initTool = (form, results, progressContainer) => {
   const progressText = document.getElementById('progress-text');
 
-  // ──────────────────────────────────────────────
-  // Manual mode (always active, independent of scan)
-  // ──────────────────────────────────────────────
-  const manualSelect = document.getElementById('manual-schema-type');
-  const manualEditor = document.getElementById('manual-editor-container');
-  const manualPreview = document.getElementById('manual-preview');
-  const manualPreviewContainer = document.getElementById('manual-preview-container');
-  const manualActions = document.getElementById('manual-actions');
+// Manual mode setup (using reusable schema-editor.js)
+const manualSelect = document.getElementById('manual-schema-type');
+const manualEditor = document.getElementById('manual-editor-container');
+const manualPreview = document.getElementById('manual-preview');
+const manualPreviewContainer = document.getElementById('manual-preview-container');
+const manualActions = document.getElementById('manual-actions');
 
-  if (manualSelect && manualEditor && manualPreview) {
-    manualSelect.addEventListener('change', (e) => {
-      const type = e.target.value;
-      if (!type) {
-        manualEditor.innerHTML = '';
-        manualPreviewContainer.classList.add('hidden');
-        manualActions.classList.add('hidden');
-        return;
-      }
+if (manualSelect && manualEditor && manualPreview) {
+  manualSelect.addEventListener('change', (e) => {
+    const type = e.target.value;
+    if (!type) {
+      manualEditor.innerHTML = '';
+      manualPreviewContainer.classList.add('hidden');
+      manualActions.classList.add('hidden');
+      return;
+    }
 
-      let schema;
-      switch (type) {
-        case 'FAQPage':
-          schema = FAQPage;
-          break;
-        default:
-          schema = null;
-      }
+    let schema;
+    switch (type) {
+      case 'FAQPage':
+        schema = FAQPage;
+        break;
+      default:
+        schema = null;
+    }
 
-      if (!schema) {
-        manualEditor.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center py-6">Schema type not loaded yet – coming soon!</p>';
-        manualPreviewContainer.classList.add('hidden');
-        manualActions.classList.add('hidden');
-        return;
-      }
+    if (!schema) {
+      manualEditor.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center py-6">Schema type not loaded yet – coming soon!</p>';
+      manualPreviewContainer.classList.add('hidden');
+      manualActions.classList.add('hidden');
+      return;
+    }
 
-manualEditor.innerHTML = '';
-renderSchemaEditor(schema, manualEditor, manualPreview);
+    manualEditor.innerHTML = '';
+    renderSchemaEditor(schema, manualEditor, manualPreview);
+    manualPreviewContainer.classList.remove('hidden');
+    manualActions.classList.remove('hidden');
+  });
 
-// Prefill title from page title (or scanned URL via document.title fallback)
-const titleInput = manualEditor.querySelector('input[data-key="name"], input[placeholder*="Frequently Asked Questions"]');
-if (titleInput) {
-  const pageTitle = document.title.trim() || 'Frequently Asked Questions';
-  titleInput.value = pageTitle;
-  // Trigger both input and change events for full preview refresh
-  titleInput.dispatchEvent(new Event('input', { bubbles: true }));
-  titleInput.dispatchEvent(new Event('change', { bubbles: true }));
-}
-
-manualPreviewContainer.classList.remove('hidden');
-manualActions.classList.remove('hidden');
-    });
-
-// Copy button for manual preview (with optional script tag wrap)
-document.getElementById('manual-copy-btn')?.addEventListener('click', () => {
-  const previewText = manualPreview?.textContent || '';
-  if (!previewText) return;
-
+  // Checkbox listener: toggle wrap in preview + copy
   const wrapCheckbox = document.getElementById('wrap-script-tags');
-  let finalText = previewText;
-
-  if (wrapCheckbox?.checked) {
-    finalText = `<script type="application/ld+json">
-${previewText}
+  if (wrapCheckbox) {
+    wrapCheckbox.addEventListener('change', () => {
+      const currentText = manualPreview?.textContent || '';
+      if (wrapCheckbox.checked) {
+        manualPreview.textContent = `<script type="application/ld+json">
+${currentText}
 </script>`;
+      } else {
+        // Strip script tags if unchecked (simple regex remove)
+        manualPreview.textContent = currentText.replace(/<script type="application\/ld\+json">|<\/script>/g, '').trim();
+      }
+    });
   }
 
-  navigator.clipboard.writeText(finalText)
-    .then(() => {
-      alert(wrapCheckbox?.checked 
-        ? 'Wrapped JSON-LD copied! Paste into your HTML <head> or body.' 
-        : 'Raw JSON-LD copied! Paste into CMS/plugin or Google test.');
-    })
-    .catch(() => alert('Copy failed – select and copy manually.'));
-});
+  // Copy button for manual preview
+  document.getElementById('manual-copy-btn')?.addEventListener('click', () => {
+    const previewText = manualPreview?.textContent || '';
+    if (!previewText) return;
 
-// Validate button for manual (handles no URL case with instructions)
-document.getElementById('manual-validate-btn')?.addEventListener('click', () => {
-  const urlInput = document.getElementById('url-input');
-  const currentUrl = urlInput?.value.trim();
+    navigator.clipboard.writeText(previewText)
+      .then(() => alert('JSON-LD copied to clipboard!'))
+      .catch(() => alert('Copy failed – select and copy manually.'));
+  });
 
-  if (currentUrl) {
-    // Use entered URL if present
-    window.open(`https://search.google.com/test/rich-results?url=${encodeURIComponent(currentUrl)}`, '_blank');
-  } else {
-    // No URL: show instructions to paste code manually
-    alert(
-      'No URL entered.\n\n' +
-      'To validate:\n' +
-      '1. Copy the JSON-LD from the preview (use "Copy JSON-LD" button).\n' +
-      '2. Go to: https://search.google.com/test/rich-results\n' +
-      '3. Click the "CODE" tab (not URL).\n' +
-      '4. Paste the copied code and click "TEST".\n\n' +
-      'This validates the generated schema directly without a live page.'
-    );
-  }
-});
-  }
+  // Validate button with clickable link in instructions
+  document.getElementById('manual-validate-btn')?.addEventListener('click', () => {
+    const urlInput = document.getElementById('url-input');
+    const currentUrl = urlInput?.value.trim();
+
+    if (currentUrl) {
+      window.open(`https://search.google.com/test/rich-results?url=${encodeURIComponent(currentUrl)}`, '_blank');
+    } else {
+      const googleUrl = 'https://search.google.com/test/rich-results';
+      alert(
+        `No URL entered.\n\n` +
+        `To validate the generated schema:\n` +
+        `1. Copy the JSON-LD from the preview (use "Copy JSON-LD" button).\n` +
+        `2. Open Google's Rich Results Test: ${googleUrl}\n` +
+        `3. Click the "CODE" tab (not URL).\n` +
+        `4. Paste the copied code and click "TEST".\n\n` +
+        `This validates the schema directly without a live page.`
+      );
+      // Optional: open the tool automatically in new tab
+      window.open(googleUrl, '_blank');
+    }
+  });
+}
 
   // ──────────────────────────────────────────────
   // Scan form submit (URL analysis)

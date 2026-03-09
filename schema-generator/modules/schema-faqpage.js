@@ -23,7 +23,7 @@ export const FAQPage = {
   // Form configuration – used to build dynamic editor fields
   // ──────────────────────────────────────────────
   formFields: [
-    {
+{
   key: 'name',
   label: 'Schema Name / Title (recommended)',
   type: 'text',
