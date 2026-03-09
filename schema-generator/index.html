@@ -490,22 +490,24 @@
           <h3 class="text-2xl font-bold mb-4 text-center">Live JSON-LD Preview</h3>
           <pre id="manual-preview" class="bg-gray-900 text-green-300 p-6 rounded-xl overflow-auto text-sm max-h-96 font-mono leading-relaxed">// Select a type above to start building</pre>
         </div>
-<div id="manual-actions" class="mt-8 flex flex-col sm:flex-row gap-4 justify-center hidden">
-  <div class="flex items-center gap-3">
+<div id="manual-actions" class="mt-8 flex flex-col gap-6 justify-center hidden">
+  <div class="flex items-center justify-center gap-3">
     <input type="checkbox" id="wrap-script-tags" class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
     <label for="wrap-script-tags" class="text-sm font-medium text-gray-700 dark:text-gray-300">
       Wrap in &lt;script type="application/ld+json"&gt; tags
     </label>
   </div>
-  <button id="manual-copy-btn" class="px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition">
-    Copy JSON-LD
-  </button>
-  <button id="manual-validate-btn" class="px-10 py-4 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-xl transition">
-    Validate with Google
-  </button>
+  <div class="flex flex-col sm:flex-row gap-4 justify-center">
+    <button id="manual-copy-btn" class="px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition">
+      Copy JSON-LD
+    </button>
+    <button id="manual-validate-btn" class="px-10 py-4 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-xl transition">
+      Validate with Google
+    </button>
+  </div>
 </div>
       </div>
-    </div> <!-- end of inner px-6 py-8 div --> 
+    </div>
   
       <div class="center-btn-container">
   <button

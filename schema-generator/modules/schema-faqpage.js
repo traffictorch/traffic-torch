@@ -29,7 +29,8 @@ export const FAQPage = {
   type: 'text',
   placeholder: 'Frequently Asked Questions about [Topic]',
   required: false,
-  help: 'This appears in search results as the title for the FAQ block. Prefilled from page title if scanned, or enter manually. Use a clear, descriptive title matching user intent.'
+  help: 'This appears in search results as the title for the FAQ block. Prefilled from page title if scanned, or enter manually. Use a clear, descriptive title matching user intent.',
+  dataKey: 'name'  // ← this makes the value saved in data['name'] for generate()
 },
     {
       key: 'mainEntity',
