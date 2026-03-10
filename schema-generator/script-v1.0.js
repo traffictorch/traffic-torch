@@ -179,17 +179,50 @@ const initTool = (form, results, progressContainer) => {
       doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
         try {
           const json = JSON.parse(script.textContent);
-          const types = Array.isArray(json)
-            ? json.flatMap(o => o['@type'] || [])
-            : [json['@type'] || 'Unknown'];
-          existingSchemas.push({
-            raw: json,
-            types: types.filter(Boolean).join(', ') || 'Unknown type'
-          });
-        } catch (e) {
-          // silent fail on invalid JSON
+          let types = [];
+
+if (Array.isArray(json)) {
+  // Graph / combined array of objects
+  json.forEach(item => {
+    if (item && typeof item === 'object') {
+      if (item['@type']) {
+        types.push(item['@type']);
+      }
+      // Also check for deeply nested @type in common patterns (e.g. mainEntity)
+      if (item.mainEntity) {
+        if (Array.isArray(item.mainEntity)) {
+          item.mainEntity.forEach(sub => sub['@type'] && types.push(sub['@type']));
+        } else if (item.mainEntity['@type']) {
+          types.push(item.mainEntity['@type']);
         }
-      });
+      }
+    }
+  });
+} else if (json && typeof json === 'object') {
+  // Single object
+  if (json['@type']) {
+    types.push(json['@type']);
+  }
+  // Common nesting patterns
+  if (json.mainEntity) {
+    if (Array.isArray(json.mainEntity)) {
+      json.mainEntity.forEach(sub => sub['@type'] && types.push(sub['@type']));
+    } else if (json.mainEntity['@type']) {
+      types.push(json.mainEntity['@type']);
+    }
+  }
+  if (json['@graph']) {
+    json['@graph'].forEach(item => item['@type'] && types.push(item['@type']));
+  }
+}
+
+const uniqueTypes = [...new Set(types.filter(Boolean))];
+const displayTypes = uniqueTypes.length > 0 ? uniqueTypes.join(', ') : 'Unknown';
+
+existingSchemas.push({
+  raw: json,
+  types: displayTypes
+});
 
       clearInterval(interval);
       progressContainer.classList.add('hidden');
@@ -212,7 +245,7 @@ const initTool = (form, results, progressContainer) => {
                       <span class="text-green-500 text-xl mt-1">✅</span>
                       <div>
                         <strong>${s.types}</strong>
-                        <pre class="mt-2 text-xs bg-gray-900 text-green-300 p-3 rounded overflow-auto max-h-40">${prettyJsonLd(s.raw)}</pre>
+                        <pre class="mt-2 text-xs bg-gray-900 text-green-300 p-3 rounded overflow-auto max-h-40 break-words whitespace-pre-wrap">${prettyJsonLd(s.raw)}</pre>
                       </div>
                     </li>
                   `).join('')}
@@ -221,7 +254,7 @@ const initTool = (form, results, progressContainer) => {
           </div>
 
           <div class="text-center mt-10 opacity-80">
-            <p>Use the manual builder above to create or enhance schemas.</p>
+            <p>Use the manual builder below to create or enhance schemas.</p>
           </div>
         </div>
       `;

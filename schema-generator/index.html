@@ -423,7 +423,7 @@
           <input
             id="url-input"
             type="text"
-            placeholder="https://example.com/blog-post"
+            placeholder="example.com/blog-post"
             aria-label="Enter page URL to scan for schema"
             required
             class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
@@ -432,7 +432,7 @@
             type="submit"
             class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
           >
-            Scan & Generate
+            Analyze ⚙️ 
           </button>
         </div>
       </form>
@@ -583,26 +583,6 @@
         <p>The tool always outputs JSON-LD (Google's recommended format in 2026). It follows the latest Schema.org vocabulary, includes basic validation for required properties, and provides copy-paste code ready to add to your <head> or via Google Tag Manager.</p>
       </div>
     </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        Should I use nested schemas, and how does the tool support them?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p>Yes – nesting (e.g., Article with embedded Review or Person author) creates richer context and stronger entity connections. The tool lets you multi-select types, auto-nests where logical, and generates clean hierarchical JSON-LD with educational notes on @id and @type best practices.</p>
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        Is the Schema Generator free and fully mobile-friendly?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p>Completely free, hosted on GitHub + Cloudflare Pages. Built mobile-first with responsive forms, tables in accordions, touch-friendly editing, and day/night mode support (gray-800 light / gray-200 dark text). PWA-ready so you can add it to your home screen for quick access.</p>
-      </div>
-    </details>
   </div>
 </section>
 
@@ -646,7 +626,7 @@
           It lists every detected schema type (FAQPage, Article, Product, LocalBusiness, etc.) with clean, readable JSON-LD previews.
         </p>
         <p class="text-lg">
-          No recommendations or suggestions — just shows exactly what Google sees on the page right now.
+          It will show exactly what Google sees on the page right now.
         </p>
       </section>
 
@@ -659,13 +639,13 @@
           Choose any schema type from the dropdown (FAQPage, Article, LocalBusiness, HowTo, Product, Recipe, Event, etc.).
         </p>
         <p class="text-lg leading-relaxed">
-          Get a clean, mobile-friendly form tailored to that schema — with education snippets, required/recommended fields, and live JSON-LD preview.
+          Get a clean, mobile-friendly form tailored to that schema. With education snippets, required/recommended fields, and live JSON-LD preview.
         </p>
         <p class="text-lg">
           Type or paste values → preview updates instantly. Copy the code, wrap in &lt;script&gt; tags if needed, or validate directly in Google Rich Results Test.
         </p>
         <p class="text-lg font-medium">
-          All schemas are self-contained modules — easy to add new ones without touching core code.
+          All schemas are self-contained modules. So it's easy to add new ones without touching core code.
         </p>
       </section>
 
@@ -678,7 +658,7 @@
           After scanning, use the <strong>Share Report</strong> button to generate a short link anyone can view.
         </p>
         <p class="text-lg">
-          Found a bug or want a new schema type? Click <strong>Submit Feedback</strong> — your input helps improve the tool.
+          Found a bug or want a new schema type? Click <strong>Submit Feedback</strong>. Your input helps improve the tool.
         </p>
       </section>
     </div>
@@ -711,7 +691,7 @@
     <strong>Instant schema detection + powerful manual generator for modern SEO rich results.</strong>
   </p>
   <p class="text-xl leading-relaxed text-center mb-8 text-gray-500 dark:text-gray-300">
-    Add structured data (JSON-LD) to your pages so Google displays rich snippets, carousels, stars, FAQs, HowTos, videos and more — driving higher CTR and visibility in 2026 search.
+    Add structured data (JSON-LD) to your pages so Google displays rich snippets, carousels, stars, FAQs, HowTos, videos and more. Driving higher CTR and visibility in 2026 search.
   </p>
   <p class="text-xl leading-relaxed text-center mb-8 text-gray-500 dark:text-gray-300">
     Frustrated that your content ranks but gets no rich results? Many sites still skip schema or use outdated generators. Traffic Torch makes it fast, accurate, and educational.
@@ -720,7 +700,7 @@
 
 <section id="schema-tool-checklist" class="py-4 px-2 max-w-6xl mx-auto">
   <h2 class="text-2xl md:text-3xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
-    5 Ways Traffic Torch Helps You Win Rich Results
+    4 Ways Traffic Torch Helps You Win Rich Results
   </h2>
   <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-500 dark:text-gray-300 leading-relaxed">
     Built from real-world schema audits — these five features deliver the fastest wins for SEO teams and content creators.
@@ -748,15 +728,8 @@
           Each type (FAQPage, HowTo, Article, LocalBusiness, etc.) has its own optimized form — easy to expand without breaking anything.
         </div>
       </div>
-      <div class="flex items-start gap-6 bg-gradient-to-r from-teal-50 to-green-50 dark:from-teal-900/20 dark:to-green-900/20 p-6 rounded-2xl">
-        <span class="text-2xl">4️⃣</span>
-        <div>
-          <strong>Share & feedback built-in</strong><br>
-          Share scan results instantly or submit feedback to request new schemas — your input shapes the tool.
-        </div>
-      </div>
       <div class="flex items-start gap-6 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-6 rounded-2xl">
-        <span class="text-2xl">5️⃣</span>
+        <span class="text-2xl">4️⃣</span>
         <div>
           <strong>Mobile-first & educational</strong><br>
           Fully responsive forms with tooltips, dark mode, and clear guidance — built for creators who want to learn while building.
@@ -863,7 +836,7 @@
       <section class="space-y-5">
         <h2 class="text-3xl font-bold text-purple-600 dark:text-purple-400">The Future of Search Is Structured Data-Driven</h2>
         <p class="leading-relaxed">
-          Traditional rankings are no longer enough. <strong>Rich results, carousels, stars, FAQs, HowTos, videos, and local packs</strong> dominate SERPs — all powered by schema markup (JSON-LD).
+          Traditional rankings are no longer enough. <strong>Rich results, carousels, stars, FAQs, HowTos, videos, and local packs</strong> dominate SERPs. All powered by schema markup (JSON-LD).
         </p>
         <p class="leading-relaxed">
           Pages with correct schema get dramatically higher CTR, better voice/AI visibility, and stronger entity signals in Google Knowledge Graph.
@@ -877,14 +850,14 @@
             <div class="text-4xl">📈</div>
             <div>
               <strong>Higher CTR & Visibility</strong><br>
-              Rich results (stars, images, FAQs, videos) appear above organic links — users click them first.
+              Rich results (stars, images, FAQs, videos) appear above organic links, users click them first.
             </div>
           </div>
           <div class="flex gap-7">
             <div class="text-4xl">🔍</div>
             <div>
               <strong>Instant Detection</strong><br>
-              See exactly what schema Google finds on any page — spot missing or broken markup in seconds.
+              See exactly what schema Google finds on any page. Spot missing or broken markup in seconds.
             </div>
           </div>
           <div class="flex gap-7">
@@ -898,14 +871,7 @@
             <div class="text-4xl">📚</div>
             <div>
               <strong>Educational & Future-Proof</strong><br>
-              Built-in tooltips + best practices per schema type — learn while building for 2026 SEO.
-            </div>
-          </div>
-          <div class="flex gap-7">
-            <div class="text-4xl">🔗</div>
-            <div>
-              <strong>Share & Improve</strong><br>
-              Generate shareable reports or submit feedback — help shape new schema types and fixes.
+              Built-in tooltips + best practices per schema type. Learn while building for 2026 SEO.
             </div>
           </div>
         </div>
@@ -914,7 +880,7 @@
       <section class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/30 p-8 rounded-xl">
         <h3 class="text-2xl font-bold mb-4">The Bottom Line</h3>
         <p class="leading-relaxed">
-          Schema markup is no longer optional — it's essential for rich results, voice search, AI overviews, and long-term visibility.
+          Schema markup is no longer optional. It's essential for rich results, voice search, AI overviews, and long-term visibility.
         </p>
         <p class="leading-relaxed font-medium mt-4">
           Detect issues → build perfect schema → copy & implement → watch rich results appear.
