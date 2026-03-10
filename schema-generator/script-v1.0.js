@@ -176,20 +176,43 @@ const initTool = (form, results, progressContainer) => {
 
       // Detect all JSON-LD schemas
       const existingSchemas = [];
-      doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
-        try {
-          const json = JSON.parse(script.textContent);
-          const types = Array.isArray(json)
-            ? json.flatMap(o => o['@type'] || [])
-            : [json['@type'] || 'Unknown'];
-          existingSchemas.push({
-            raw: json,
-            types: types.filter(Boolean).join(', ') || 'Unknown type'
-          });
-        } catch (e) {
-          // silent fail on invalid JSON
+doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
+  try {
+    const json = JSON.parse(script.textContent);
+    const types = new Set();
+
+    function collectTypes(obj) {
+      if (!obj || typeof obj !== 'object') return;
+      if (obj['@type']) {
+        if (Array.isArray(obj['@type'])) {
+          obj['@type'].forEach(t => types.add(t));
+        } else {
+          types.add(obj['@type']);
         }
+      }
+      // Recurse common nesting patterns
+      Object.values(obj).forEach(val => {
+        if (Array.isArray(val)) val.forEach(collectTypes);
+        else collectTypes(val);
       });
+    }
+
+    if (Array.isArray(json)) {
+      json.forEach(collectTypes);
+    } else {
+      collectTypes(json);
+    }
+
+    const displayTypes = types.size > 0 ? [...types].join(', ') : 'Unknown';
+
+    existingSchemas.push({
+      raw: json,
+      types: displayTypes
+    });
+  } catch (e) {
+    // silent fail on invalid JSON
+  }
+});
 
       clearInterval(interval);
       progressContainer.classList.add('hidden');
