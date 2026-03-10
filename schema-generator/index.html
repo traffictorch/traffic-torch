@@ -520,7 +520,7 @@
 </div>
 
 <section id="faq" class="container mx-auto px-4 py-12 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-  <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
     Frequently Asked Questions about Schema Markup
   </h2>
   <div class="space-y-6 max-w-4xl mx-auto">
@@ -685,14 +685,19 @@
   </details>
 </div>
 
-<!-- Deep Dive into Schema and Generator -->
-<section class="py-20 bg-gray dark:bg-gray-900">
-  <div class="max-w-7xl mx-auto px-2">
-    <h2 class="text-4xl md:text-5xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-      Deep Dive into Schema Markup and Generator
+<!-- Deep Dive into Schema Markup and Generator -->
+<section class="py-16 md:py-24 bg-gray-50 dark:bg-gray-900">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-4xl md:text-5xl font-black text-center mb-12 md:mb-16 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 bg-clip-text text-transparent">
+      Deep Dive into Schema Markup Types
     </h2>
-    <div id="metric-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
-     <!-- 18 cards will be injected here by script.js -->
+
+    <div id="metric-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+      <!-- Cards injected here via JS -->
+      <!-- Fallback content if JS disabled or slow load -->
+      <div class="col-span-full text-center py-12 text-gray-600 dark:text-gray-400">
+        <p class="text-lg">Loading schema explanations... If nothing appears, please enable JavaScript or refresh the page.</p>
+      </div>
     </div>
   </div>
 </section>

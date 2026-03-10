@@ -170,54 +170,68 @@ const advancedSchemas = [
 ];
 
 
-// Example rendering with groups (replace or extend injectMetricCards if desired)
 function injectSchemaCards() {
   const container = document.getElementById('metric-cards-container');
-  if (!container) return;
+  if (!container) {
+    console.warn('metric-cards-container not found');
+    return;
+  }
+
+  // Clear previous content
+  container.innerHTML = '';
 
   const renderGroup = (title, schemas) => {
-    let html = `<h2 class="text-2xl md:text-3xl font-black text-center my-10 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${title}</h2>`;
-    html += '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">';
+    if (!schemas || schemas.length === 0) return '';
+
+    let html = `
+      <h2 class="text-3xl md:text-4xl font-black text-center mt-16 mb-10 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 bg-clip-text text-transparent">
+        ${title}
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    `;
+
     schemas.forEach(m => {
       html += `
-        <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow border-l-4 border-orange-500">
-          <div class="text-6xl mb-6 text-center">${m.emoji}</div>
-          <div class="text-2xl md:text-3xl font-black text-orange-600 dark:text-orange-400 mb-6 text-center">${m.name}</div>
-          <details class="group">
-            <summary class="cursor-pointer text-orange-700 dark:text-orange-300 font-bold hover:underline flex items-center justify-center gap-2">
-              Learn More <span class="text-2xl group-open:rotate-180 transition-transform">↓</span>
-            </summary>
-            <div class="mt-6 space-y-6 text-left text-gray-600 dark:text-gray-400 leading-relaxed">
-              <div>
-                <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">What is ${m.name}?</p>
-                <p>${m.what} <a href="${m.learnMore}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1" target="_blank">Learn more →</a></p>
+        <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+          <div class="p-8 text-center flex-grow">
+            <div class="text-7xl md:text-8xl mb-6">${m.emoji}</div>
+            <h3 class="text-2xl md:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-6">${m.name}</h3>
+            
+            <details class="group mt-4">
+              <summary class="cursor-pointer text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-3">
+                Learn More
+                <span class="text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+              </summary>
+              
+              <div class="mt-6 space-y-6 text-left text-gray-700 dark:text-gray-300 leading-relaxed px-2">
+                <div>
+                  <p class="font-bold text-orange-600 dark:text-orange-400 mb-2">What is it?</p>
+                  <p class="text-base">${m.what} <a href="${m.learnMore}" target="_blank" rel="noopener" class="text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1">Learn more →</a></p>
+                </div>
+                <div>
+                  <p class="font-bold text-orange-600 dark:text-orange-400 mb-2">When to use?</p>
+                  <p class="text-base">${m.when} <a href="${m.learnMore}" target="_blank" rel="noopener" class="text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1">Learn more →</a></p>
+                </div>
+                <div>
+                  <p class="font-bold text-orange-600 dark:text-orange-400 mb-2">Why it matters</p>
+                  <p class="text-base">${m.why} <a href="${m.learnMore}" target="_blank" rel="noopener" class="text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1">Learn more →</a></p>
+                </div>
               </div>
-              <div>
-                <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">When to use ${m.name}?</p>
-                <p>${m.when} <a href="${m.learnMore}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1" target="_blank">Learn more →</a></p>
-              </div>
-              <div>
-                <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">Why it matters</p>
-                <p>${m.why} <a href="${m.learnMore}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1" target="_blank">Learn more →</a></p>
-              </div>
-            </div>
-          </details>
+            </details>
+          </div>
         </div>`;
     });
+
     html += '</div>';
     return html;
   };
 
+  // Render all three groups
   container.innerHTML = `
     ${renderGroup('Core & Foundational Schemas', coreSchemas)}
     ${renderGroup('Content & Engagement Schemas', contentEngagementSchemas)}
     ${renderGroup('Advanced & Specialized Schemas', advancedSchemas)}
   `;
-}
 
-// Call it (replace existing injectMetricCards call)
-if (document.readyState !== 'loading') {
-  injectSchemaCards();
-} else {
-  document.addEventListener('DOMContentLoaded', injectSchemaCards);
+  console.log('Schema cards injected:', container.querySelectorAll('[id]').length);
 }

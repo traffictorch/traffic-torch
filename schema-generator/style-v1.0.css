@@ -189,3 +189,14 @@ html, body {
   scale: 1.5 !important;          /* keep enlarged on hover too */
   background-color: rgba(59, 130, 246, 0.2) !important; /* slightly stronger blue */
 }
+
+/* Metric Cards */
+#metric-cards-container > div {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#metric-cards-container details summary {
+  text-align: center;
+}
