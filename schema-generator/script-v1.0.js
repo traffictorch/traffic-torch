@@ -118,6 +118,8 @@ const initTool = (form, results, progressContainer) => {
       }
     });
   }
+  
+  };
 
   // ──────────────────────────────────────────────
   // URL SCAN & SCHEMA DETECTION (simplified – no recommendations, just detection + shared features)
