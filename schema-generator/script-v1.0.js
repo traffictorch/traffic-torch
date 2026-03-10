@@ -2,9 +2,10 @@
 // Simplified manual schema builder + basic URL scan
 // March 2026 – Vanilla JS, Tailwind dark mode (gray-800 light / gray-200 dark), mobile-first
 // Uses dynamic import per schema file → modules/xxx-schema.js
-
+import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
+import { prettyJsonLd } from './modules/schema-base.js';
 
 const API_PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/?url=';
 
