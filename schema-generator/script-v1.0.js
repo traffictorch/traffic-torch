@@ -232,7 +232,7 @@ doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
               : `<ul class="space-y-3">
                   ${existingSchemas.map(s => `
                     <li class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
-                      <span class="text-green-500 text-xl mt-1">✅</span>
+                      <span class="text-green-500 text-xl px-2 mt-1">✅</span>
                       <div>
                         <strong>${s.types}</strong>
                         <pre class="mt-2 text-xs bg-gray-900 text-green-300 p-3 rounded overflow-auto max-h-40 break-words whitespace-pre-wrap">${prettyJsonLd(s.raw)}</pre>
@@ -244,7 +244,7 @@ doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
           </div>
 
           <div class="text-center mt-10 opacity-80">
-            <p>Use the manual builder above to create or enhance schemas.</p>
+            <p>Use the manual builder below to create or enhance schemas.</p>
           </div>
         </div>
       `;
