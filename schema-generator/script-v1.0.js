@@ -122,160 +122,127 @@ const initTool = (form, results, progressContainer) => {
   // ──────────────────────────────────────────────
   // URL SCAN & SCHEMA DETECTION (simplified – no recommendations, just detection + shared features)
   // ──────────────────────────────────────────────
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-    // Rate limiting stub – uncomment when ready
-    // const canProceed = await canRunTool('limit-schema-scan');
-    // if (!canProceed) return;
+  // Rate limiting stub – uncomment when ready
+  // const canProceed = await canRunTool('limit-schema-scan');
+  // if (!canProceed) return;
 
-    let inputUrl = document.getElementById('url-input').value.trim();
-    if (!inputUrl) {
-      alert('Please enter a URL to scan.');
-      return;
-    }
-    if (!/^https?:\/\//i.test(inputUrl)) {
-      inputUrl = 'https://' + inputUrl;
-      document.getElementById('url-input').value = inputUrl;
-    }
-    try {
-      new URL(inputUrl);
-    } catch (_) {
-      alert('Please enter a valid URL (e.g., https://example.com/blog-post)');
-      return;
-    }
-    const url = inputUrl;
-
-    progressContainer.classList.remove('hidden');
-    results.classList.add('hidden');
-
-    const progressMessages = [
-      'Fetching page content...',
-      'Detecting existing schema markup...',
-      'Preparing report...'
-    ];
-    let step = 0;
-    progressText.textContent = progressMessages[step++];
-
-    const updateProgress = () => {
-      if (step < progressMessages.length) {
-        progressText.textContent = progressMessages[step++];
-      }
-    };
-
-    const interval = setInterval(updateProgress, 1800);
-
-    try {
-      const res = await fetch(API_PROXY + encodeURIComponent(url));
-      if (!res.ok) throw new Error('Could not fetch page – check URL or HTTPS');
-      const html = await res.text();
-      await new Promise(r => setTimeout(r, 800));
-      updateProgress();
-
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-
-      // Detect all JSON-LD schemas
-      const existingSchemas = [];
-      doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
-        try {
-          const json = JSON.parse(script.textContent);
-          let types = [];
-
-if (Array.isArray(json)) {
-  // Graph / combined array of objects
-  json.forEach(item => {
-    if (item && typeof item === 'object') {
-      if (item['@type']) {
-        types.push(item['@type']);
-      }
-      // Also check for deeply nested @type in common patterns (e.g. mainEntity)
-      if (item.mainEntity) {
-        if (Array.isArray(item.mainEntity)) {
-          item.mainEntity.forEach(sub => sub['@type'] && types.push(sub['@type']));
-        } else if (item.mainEntity['@type']) {
-          types.push(item.mainEntity['@type']);
-        }
-      }
-    }
-  });
-} else if (json && typeof json === 'object') {
-  // Single object
-  if (json['@type']) {
-    types.push(json['@type']);
+  let inputUrl = document.getElementById('url-input').value.trim();
+  if (!inputUrl) {
+    alert('Please enter a URL to scan.');
+    return;
   }
-  // Common nesting patterns
-  if (json.mainEntity) {
-    if (Array.isArray(json.mainEntity)) {
-      json.mainEntity.forEach(sub => sub['@type'] && types.push(sub['@type']));
-    } else if (json.mainEntity['@type']) {
-      types.push(json.mainEntity['@type']);
+  if (!/^https?:\/\//i.test(inputUrl)) {
+    inputUrl = 'https://' + inputUrl;
+    document.getElementById('url-input').value = inputUrl;
+  }
+  try {
+    new URL(inputUrl);
+  } catch (_) {
+    alert('Please enter a valid URL (e.g., https://example.com/blog-post)');
+    return;
+  }
+  const url = inputUrl;
+
+  progressContainer.classList.remove('hidden');
+  results.classList.add('hidden');
+
+  const progressMessages = [
+    'Fetching page content...',
+    'Detecting existing schema markup...',
+    'Preparing report...'
+  ];
+  let step = 0;
+  progressText.textContent = progressMessages[step++];
+
+  const updateProgress = () => {
+    if (step < progressMessages.length) {
+      progressText.textContent = progressMessages[step++];
     }
-  }
-  if (json['@graph']) {
-    json['@graph'].forEach(item => item['@type'] && types.push(item['@type']));
-  }
-}
+  };
 
-const uniqueTypes = [...new Set(types.filter(Boolean))];
-const displayTypes = uniqueTypes.length > 0 ? uniqueTypes.join(', ') : 'Unknown';
+  const interval = setInterval(updateProgress, 1800);
 
-existingSchemas.push({
-  raw: json,
-  types: displayTypes
+  try {
+    const res = await fetch(API_PROXY + encodeURIComponent(url));
+    if (!res.ok) throw new Error('Could not fetch page – check URL or HTTPS');
+    const html = await res.text();
+    await new Promise(r => setTimeout(r, 800));
+    updateProgress();
+
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    // Detect all JSON-LD schemas
+    const existingSchemas = [];
+    doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
+      try {
+        const json = JSON.parse(script.textContent);
+        const types = Array.isArray(json)
+          ? json.flatMap(o => o['@type'] || [])
+          : [json['@type'] || 'Unknown'];
+        existingSchemas.push({
+          raw: json,
+          types: types.filter(Boolean).join(', ') || 'Unknown type'
+        });
+      } catch (e) {
+        // silent fail on invalid JSON
+      }
+    });
+
+    clearInterval(interval);
+    progressContainer.classList.add('hidden');
+    results.classList.remove('hidden');
+
+    // Simplified report – only show detected schemas + shared buttons
+    results.innerHTML = `
+      <div class="my-10 px-4">
+        <h2 class="text-3xl font-black text-center mb-6 text-gray-800 dark:text-gray-200">
+          Schema Detection for ${new URL(url).hostname}
+        </h2>
+
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8 border border-gray-200 dark:border-gray-700">
+          <h3 class="text-2xl font-bold mb-4">Detected Schema Markup</h3>
+          ${existingSchemas.length === 0
+            ? '<p class="text-orange-600 dark:text-orange-400 text-center py-6">No JSON-LD schema found on this page.</p>'
+            : `<ul class="space-y-3">
+                ${existingSchemas.map(s => `
+                  <li class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                    <span class="text-green-500 text-xl mt-1">✅</span>
+                    <div>
+                      <strong>${s.types}</strong>
+                      <pre class="mt-2 text-xs bg-gray-900 text-green-300 p-3 rounded overflow-auto max-h-40 break-words whitespace-pre-wrap">${prettyJsonLd(s.raw)}</pre>
+                    </div>
+                  </li>
+                `).join('')}
+              </ul>`
+          }
+        </div>
+
+        <div class="text-center mt-10 opacity-80">
+          <p>Use the manual builder above to create or enhance schemas.</p>
+        </div>
+      </div>
+    `;
+
+    // Attach shared features
+    initShareReport(results);
+    initSubmitFeedback(results);
+
+    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (err) {
+    clearInterval(interval);
+    progressContainer.classList.add('hidden');
+    results.classList.remove('hidden');
+    results.innerHTML = `
+      <div class="text-red-600 dark:text-red-400 text-center text-xl p-10">
+        Error: ${err.message}<br>
+        Please check the URL and try again.
+      </div>
+    `;
+    console.error('Scan failed:', err);
+  }
 });
-
-      clearInterval(interval);
-      progressContainer.classList.add('hidden');
-      results.classList.remove('hidden');
-
-      // Simplified report – only show detected schemas + shared buttons
-      results.innerHTML = `
-        <div class="my-10 px-4">
-          <h2 class="text-3xl font-black text-center mb-6 text-gray-800 dark:text-gray-200">
-            Schema Detection for ${new URL(url).hostname}
-          </h2>
-
-          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8 border border-gray-200 dark:border-gray-700">
-            <h3 class="text-2xl font-bold mb-4">Detected Schema Markup</h3>
-            ${existingSchemas.length === 0
-              ? '<p class="text-orange-600 dark:text-orange-400 text-center py-6">No JSON-LD schema found on this page.</p>'
-              : `<ul class="space-y-3">
-                  ${existingSchemas.map(s => `
-                    <li class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
-                      <span class="text-green-500 text-xl mt-1">✅</span>
-                      <div>
-                        <strong>${s.types}</strong>
-                        <pre class="mt-2 text-xs bg-gray-900 text-green-300 p-3 rounded overflow-auto max-h-40 break-words whitespace-pre-wrap">${prettyJsonLd(s.raw)}</pre>
-                      </div>
-                    </li>
-                  `).join('')}
-                </ul>`
-            }
-          </div>
-
-          <div class="text-center mt-10 opacity-80">
-            <p>Use the manual builder below to create or enhance schemas.</p>
-          </div>
-        </div>
-      `;
-
-      // Attach shared features
-      initShareReport(results);
-      initSubmitFeedback(results);
-
-      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } catch (err) {
-      clearInterval(interval);
-      progressContainer.classList.add('hidden');
-      results.classList.remove('hidden');
-      results.innerHTML = `
-        <div class="text-red-600 dark:text-red-400 text-center text-xl p-10">
-          Error: ${err.message}<br>
-          Please check the URL and try again.
-        </div>
-      `;
-    }
-  });
-};
 
 document.addEventListener('DOMContentLoaded', waitForElements);
