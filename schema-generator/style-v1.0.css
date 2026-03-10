@@ -70,12 +70,6 @@ body { transition: background-color 0.3s ease; }
   .text-4xl {
     font-size: 2rem !important;
   }
-  .grid {
-    grid-template-columns: 1fr !important;
-  }
-  .md\\:grid-cols-3, .md\\:grid-cols-4 {
-    grid-template-columns: 1fr !important;
-  }
   table {
     font-size: 0.875rem !important;
   }
@@ -114,9 +108,6 @@ body { transition: background-color 0.3s ease; }
     text-align: left;
   }
 }
-
-
-
 
 /* Disable horizontal rubber-band bounce on iOS Safari (current pure-CSS solution – works with sticky headers) */
 html, body {
@@ -190,13 +181,7 @@ html, body {
   background-color: rgba(59, 130, 246, 0.2) !important; /* slightly stronger blue */
 }
 
-/* Metric Cards */
-#metric-cards-container > div {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
+/* Metric Cards – only keep safe rules */
 #metric-cards-container details summary {
   text-align: center;
 }
