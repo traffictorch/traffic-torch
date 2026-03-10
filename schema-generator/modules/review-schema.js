@@ -97,7 +97,7 @@ function render(editorContainer, previewEl) {
         <div class="space-y-5">
           <div>
             <label class="block mb-2 font-medium">Item Being Reviewed (name)</label>
-            <input type="text" data-field="itemReviewed.name" placeholder="Schema Pro Plugin" 
+            <input type="text" data-field="itemReviewed.name" placeholder="Schema Pro" 
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
           <div>

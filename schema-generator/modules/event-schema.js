@@ -108,7 +108,7 @@ function render(editorContainer, previewEl) {
           </div>
           <div>
             <label class="block mb-2 font-medium">Performer / Speaker Name (optional)</label>
-            <input type="text" data-field="performer.name" placeholder="Ylia Cai – SEO Expert"
+            <input type="text" data-field="performer.name" placeholder="John Smith – SEO Expert"
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
         </div>

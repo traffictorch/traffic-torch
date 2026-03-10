@@ -52,25 +52,25 @@ function render(editorContainer, previewEl) {
     const index = itemCount++;
     const position = index + 1;
 
-    breadcrumbList.insertAdjacentHTML('beforeend', `
-      <div id="bc-item-${index}" class="border border-gray-300 dark:border-gray-600 rounded-xl p-6 bg-gray-50 dark:bg-gray-900 relative">
-        <div class="absolute top-4 right-4 text-sm font-medium text-gray-500 dark:text-gray-400">
-          Position: ${position}
-        </div>
+breadcrumbList.insertAdjacentHTML('beforeend', `
+  <div id="bc-item-${index}" class="border border-gray-300 dark:border-gray-600 rounded-xl p-6 bg-gray-50 dark:bg-gray-900 relative">
+    <div class="absolute top-3 right-3 px-2.5 py-1 text-xs font-medium bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full shadow-sm">
+      Position ${position}
+    </div>
 
-        <label class="block mb-2 font-medium">Name (visible text)</label>
-        <input type="text" data-field="itemListElement.${index}.name" placeholder="Home" required
-               class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+    <label class="block mb-2 font-medium">Name (visible text)</label>
+    <input type="text" data-field="itemListElement.${index}.name" placeholder="Home" required
+           class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
 
-        <label class="block mt-4 mb-2 font-medium">URL (full absolute link)</label>
-        <input type="url" data-field="itemListElement.${index}.item" placeholder="https://example.com/" required
-               class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+    <label class="block mt-4 mb-2 font-medium">URL (full absolute link)</label>
+    <input type="url" data-field="itemListElement.${index}.item" placeholder="https://example.com/" required
+           class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
 
-        <button type="button" class="remove-bc mt-5 text-red-600 hover:text-red-800 text-sm font-medium block">
-          × Remove this Item
-        </button>
-      </div>
-    `);
+    <button type="button" class="remove-bc mt-5 text-red-600 hover:text-red-800 text-sm font-medium block">
+      × Remove this Item
+    </button>
+  </div>
+`);
 
     breadcrumbList.lastElementChild.querySelector('.remove-bc').onclick = () => {
       breadcrumbList.querySelector(`#bc-item-${index}`).remove();

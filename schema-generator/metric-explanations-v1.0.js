@@ -1,174 +1,223 @@
-// ai-search-optimization-tool/metric-explanations.js
-// Global object – no export needed for GitHub Pages classic script loading
-window.metricExplanations = {
-  'Bold/strong formatting in opening': {
-    definition: 'This metric evaluates whether key statements in the opening section are highlighted using bold or strong formatting. It focuses on the first ~1200 characters of main content to identify emphasis tags.',
-    detection: 'The tool scans for the presence of <strong>, <b>, or <em> tags in the extracted opening content after removing navigation and sidebars.',
-    impact: 'Bold text signals the most important quotable insights to AI engines. Pages with bold key answers are far more likely to be directly cited in featured summaries and generative responses. This simple formatting dramatically improves visibility in AI-powered search results.'
+const coreSchemas = [
+  {
+    id: 'organization',
+    emoji: '🏢',
+    name: 'Organization',
+    what: 'Organization schema defines your company or brand as a formal entity with name, logo, URL, social profiles (sameAs), and contact info. It establishes your business identity for search engines.',
+    when: 'Use on homepage, About page, or footer — especially for brands, multi-location businesses, or any site wanting Knowledge Graph recognition.',
+    why: 'Builds brand authority, enables logo/sitelinks in SERPs, strengthens E-E-A-T, and serves as foundation for LocalBusiness and other entity-linked schemas.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#organization'
   },
-  'Clear definition pattern in opening': {
-    definition: 'This metric checks if the page immediately provides a clear definition or explanation of the main topic. It looks for natural definitional language in the opening section.',
-    detection: 'The tool searches the first ~1200 characters for patterns like “is”, “means”, “refers to”, “defined as”, or similar definitional phrasing.',
-    impact: 'Direct definitions satisfy the most common user intent for informational queries. AI systems heavily favor pages that answer “what is” questions right away. This increases chances of being selected as the authoritative source in AI overviews.'
+  {
+    id: 'article',
+    emoji: '✍️',
+    name: 'Article / BlogPosting',
+    what: 'Article or BlogPosting schema marks up news articles, blog posts, or long-form content with headline, date, author, image, publisher, and mainEntityOfPage.',
+    when: 'Apply to every individual blog post, news article, guide, or dated editorial content — prefer BlogPosting subtype for most blogs.',
+    why: 'Unlocks rich article thumbnails, author bylines, date display, and carousel eligibility; boosts E-E-A-T and CTR for informational content.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#article'
   },
-  'FAQPage schema detected': {
-    definition: 'This metric verifies whether the page includes proper structured data marking it as a FAQ page. It specifically looks for FAQPage schema in JSON-LD format.',
-    detection: 'The tool parses all JSON-LD scripts and checks for @type "FAQPage" with valid question/answer pairs.',
-    impact: 'FAQ schema enables rich FAQ results in traditional search and provides clean, structured Q&A for AI extraction. Pages with this markup are significantly more likely to appear in direct answers. It improves both click-through rates and AI citation potential.'
+  {
+    id: 'localbusiness',
+    emoji: '📍',
+    name: 'LocalBusiness',
+    what: 'LocalBusiness schema describes physical or service-area businesses with address, geo coordinates, opening hours, phone, price range, and area served.',
+    when: 'Use on homepage, contact/location pages, or branch pages — ideal for stores, restaurants, service pros with local intent.',
+    why: 'Powers rich local results (map pin, hours, directions), boosts Google Maps/local pack visibility, and is a top local SEO signal.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#localbusiness'
   },
-  'Question-style H2 headings': {
-    definition: 'This metric assesses whether subheadings are written as actual user questions. It rewards content structure that mirrors real search behavior.',
-    detection: 'The tool examines all H2 headings for ending punctuation that indicates a question (question mark or sometimes exclamation).',
-    impact: 'Question headings match voice and text search queries exactly. They improve topical relevance signals and make content easier for AI to map to user intent. This formatting boosts both traditional rankings and AI source selection.'
+  {
+    id: 'person',
+    emoji: '👤',
+    name: 'Person',
+    what: 'Person schema identifies individual authors, experts, or team members with name, jobTitle, image, sameAs social links, and worksFor Organization.',
+    when: 'Apply in author bylines of articles, About pages, team bios, or contributor profiles — especially multi-author blogs.',
+    why: 'Enables author knowledge panels, richer bylines, stronger E-E-A-T signals, and builds individual topical authority over time.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#person'
   },
-  'Step-by-step language in opening': {
-    definition: 'This metric identifies early signals of procedural or instructional content. It looks for language that indicates a guide or tutorial format.',
-    detection: 'The tool searches opening content for keywords like “step”, “guide”, “how to”, “instructions”, “follow these”, or similar instructional phrases.',
-    impact: 'AI systems prioritize extractable step-by-step content for how-to queries. Early instructional signals increase chances of rich result features. This formatting makes content highly valuable for direct answer generation.'
-  },
-  'Strong opening section (>600 chars)': {
-    definition: 'This metric measures the depth and substance of the introductory content. It evaluates whether the opening provides meaningful value before deeper sections.',
-    detection: 'The tool extracts and measures character count of main content opening after cleaning navigation/footer elements.',
-    impact: 'A substantial opening gives AI engines rich, high-quality text to summarize and cite. Thin introductions reduce perceived value and citation likelihood. Strong openings improve both user engagement and AI source trustworthiness.'
-  },
-  'JSON-LD structured data present': {
-    definition: 'This metric checks for any machine-readable structured data on the page. It rewards explicit markup that helps search engines understand content.',
-    detection: 'The tool counts valid <script type="application/ld+json"> blocks regardless of specific schema type.',
-    impact: 'Structured data improves content understanding and trust signals for both traditional and AI search. Even basic JSON-LD increases processing accuracy. Pages with markup are more likely to be selected as authoritative sources.'
-  },
-  'Article/BlogPosting schema type': {
-    definition: 'This metric confirms the page is properly marked as editorial content using standard article schemas.',
-    detection: 'The tool parses JSON-LD for @type values of "Article" or "BlogPosting" with required properties.',
-    impact: 'Proper article schema establishes topical authority and editorial intent. It helps AI systems categorize content correctly. This markup is essential for competitive visibility in information-heavy topics.'
-  },
-  'FAQPage/HowTo schema type': {
-    definition: 'This metric identifies content specifically structured as FAQs or step-by-step guides using appropriate schemas.',
-    detection: 'The tool checks JSON-LD for @type "FAQPage" or "HowTo" with valid structure.',
-    impact: 'These schemas trigger rich results and make content highly extractable for direct answers. They significantly boost visibility in procedural and question-based searches. Proper markup dramatically improves AI citation rates.'
-  },
-  'Person schema for author': {
-    definition: 'This metric verifies structured authorship information linked to a real person entity.',
-    detection: 'The tool looks for "Person" entity properly connected via the "author" property in article schema.',
-    impact: 'Linked Person schema proves real human authorship and expertise. It directly supports E-E-A-T evaluation in AI systems. This markup is critical for trust in competitive topics.'
-  },
-  'Author byline visible': {
-    definition: 'This metric checks for clear, visible attribution of authorship on the rendered page.',
-    detection: 'The tool scans for common author patterns in HTML including meta tags and visible bylines.',
-    impact: 'Visible authorship builds immediate trust with users and AI evaluators. It demonstrates expertise and accountability. Clear bylines significantly improve E-E-A-T perception and citation likelihood.'
-  },
-  'Publish/update date shown': {
-    definition: 'This metric evaluates whether content freshness is clearly communicated through visible dates.',
-    detection: 'The tool detects publish and update dates in common HTML locations and meta tags.',
-    impact: 'Visible dates signal active maintenance and current relevance. Freshness is a key ranking factor in many topics. Clear dating improves trust and selection in time-sensitive AI results.'
-  },
-  'Trusted outbound links': {
-    definition: 'This metric measures research depth through links to authoritative external sources.',
-    detection: 'The tool finds external HTTPS links excluding social media domains.',
-    impact: 'Links to trusted sites demonstrate thorough research and credibility. They boost topical authority signals. Outbound linking improves both traditional rankings and AI trust evaluation.'
-  },
-  'Secure HTTPS connection': {
-    definition: 'This metric confirms the page is served over a secure encrypted connection.',
-    detection: 'The tool simply checks if the analyzed URL uses https:// protocol.',
-    impact: 'HTTPS is a fundamental security and trust requirement for modern web content. Insecure sites are deprioritized in search. Secure connections are essential for user trust and AI source selection.'
-  },
-  'Sufficient headings (H1-H4)': {
-    definition: 'This metric assesses content structure through proper heading hierarchy usage. It ensures the page is logically organized for both users and crawlers.',
-    detection: 'The tool counts total H1 through H4 elements in main content.',
-    impact: 'Good heading structure improves readability and content organization. It helps both users and AI parse information quickly. Proper hierarchy enhances scannability and extraction accuracy.'
-  },
-  'Bullet/numbered lists used': {
-    definition: 'This metric evaluates use of structured lists for presenting information. It rewards clear, scannable formatting of key points.',
-    detection: 'The tool counts <ul> and <ol> elements in cleaned main content.',
-    impact: 'Lists are the most AI-friendly format for extracting key facts. They improve scannability for users. Structured lists significantly increase citation likelihood in summary answers.'
-  },
-  'Data tables present': {
-    definition: 'This metric checks for tabular data presentation using proper HTML tables. It looks for structured comparison or statistical content.',
-    detection: 'The tool detects any <table> elements in main content area.',
-    impact: 'Tables provide highly structured, extractable data for AI systems. They improve comprehension of comparisons and stats. Well-marked tables dramatically boost reuse in answers.'
-  },
-  'Short paragraphs (<35 words)': {
-    definition: 'This metric measures paragraph length for optimal readability. It promotes concise, digestible writing style.',
-    detection: 'The tool counts paragraphs with fewer than 35 words after cleaning.',
-    impact: 'Short paragraphs improve reading speed and comprehension on all devices. They make content more scannable for both users and AI. Better readability reduces bounce rates and improves processing accuracy.'
-  },
-  'Excellent heading density': {
-    definition: 'This metric evaluates frequency of headings for optimal content flow. It ensures regular structural breaks in long-form content.',
-    detection: 'The tool checks for more than 8 total headings across the content.',
-    impact: 'Regular headings guide readers through long content effectively. They help AI understand content structure and hierarchy. Optimal density improves both engagement and parsing accuracy.'
-  },
-  'Direct "you" address (>5)': {
-    definition: 'This metric measures conversational tone through direct reader address. It rewards personal, engaging writing style.',
-    detection: 'The tool counts occurrences of “you”, “your”, and “yours” in main content.',
-    impact: 'Direct address creates personal connection and matches natural search language. It improves engagement and time on page. Conversational tone aligns closely with voice search patterns.'
-  },
-  'Personal "I/we" sharing': {
-    definition: 'This metric assesses personal voice and experience sharing in content. It looks for first-person perspective indicators.',
-    detection: 'The tool counts personal pronouns indicating first-person perspective.',
-    impact: 'Personal voice adds authenticity and human connection. It demonstrates real experience rather than generic information. This tone significantly improves trust and E-E-A-T perception.'
-  },
-  'Engaging questions asked': {
-    definition: 'This metric evaluates use of rhetorical questions to engage readers. It rewards content that mirrors reader curiosity.',
-    detection: 'The tool counts sentences ending with question marks.',
-    impact: 'Questions mirror reader thoughts and increase engagement. They improve dwell time and interaction signals. Rhetorical questions align content with natural user curiosity.'
-  },
-  'Reader pain points acknowledged': {
-    definition: 'This metric checks for empathy through recognition of reader challenges. It looks for acknowledgment of common problems or frustrations.',
-    detection: 'The tool scans for keywords indicating problems, struggles, or frustrations.',
-    impact: 'Acknowledging pain points builds immediate rapport and trust. It keeps readers engaged with relevant solutions. Empathy improves conversion rates and perceived helpfulness.'
-  },
-  'Good Flesch score (>60)': {
-    definition: 'This metric measures overall reading ease using the Flesch formula. It evaluates sentence length and word complexity.',
-    detection: 'The tool calculates score based on sentence length and syllable count.',
-    impact: 'Clear writing improves comprehension for all audiences including AI processing. Higher readability reduces misinterpretation in summaries. Easy-to-read content performs better across all devices and demographics.'
-  },
-  'Natural sentence variation': {
-    definition: 'This metric evaluates rhythm through varying sentence lengths. It rewards natural, human-like flow in writing.',
-    detection: 'The tool measures statistical variance in sentence word counts.',
-    impact: 'Natural rhythm makes writing feel human and engaging. It avoids robotic patterns common in low-quality content. Variation improves readability and authenticity signals.'
-  },
-  'Low passive voice': {
-    definition: 'This metric assesses preference for active over passive constructions. It promotes direct, authoritative language.',
-    detection: 'The tool detects common passive voice patterns in content.',
-    impact: 'Active voice is clearer, more direct, and authoritative. It improves readability and impact. Clear voice enhances both user experience and AI processing accuracy.'
-  },
-  'Low complex words (<15%)': {
-    definition: 'This metric measures vocabulary complexity through syllable counting. It encourages accessible language.',
-    detection: 'The tool calculates percentage of words with 3+ syllables.',
-    impact: 'Simple language improves accessibility and comprehension. It reduces cognitive load for readers. Clear vocabulary enhances both user experience and AI summarization quality.'
-  },
-  'First-hand experience markers': {
-    definition: 'This metric identifies language indicating personal testing or observation. It looks for authentic experience signals.',
-    detection: 'The tool scans for phrases like “I tested”, “in my experience”, “we found”.',
-    impact: 'First-hand markers prove real expertise and original insight. They significantly boost E-E-A-T evaluation. Personal experience differentiates content from generic sources.'
-  },
-  'Dated/timely results mentioned': {
-    definition: 'This metric checks for references to recent testing or observations. It rewards content showing current relevance.',
-    detection: 'The tool looks for time-bound phrases indicating current relevance.',
-    impact: 'Timely references demonstrate freshness and real-world application. They improve trust in fast-moving topics. Current results increase perceived authority and relevance.'
-  },
-  'Interviews/quotes included': {
-    definition: 'This metric evaluates inclusion of third-party perspectives and expert quotes. It rewards external validation.',
-    detection: 'The tool detects quote patterns and interview-related language.',
-    impact: 'Expert quotes add external authority and exclusive value. They improve credibility and depth perception. Third-party validation strengthens E-E-A-T signals significantly.'
-  },
-  'Deep content (1500+ words)': {
-    definition: 'This metric measures overall content depth and comprehensiveness. It evaluates thoroughness of topic coverage.',
-    detection: 'The tool counts words in cleaned main content area.',
-    impact: 'In-depth content signals thorough expertise and coverage. It improves topical authority in competitive areas. Comprehensive pages are favored as primary sources by AI systems.'
-  },
-  'High sentence burstiness': {
-    definition: 'This metric assesses dramatic variation in sentence length patterns. It looks for natural human writing rhythm.',
-    detection: 'The tool evaluates statistical burstiness in sentence structure.',
-    impact: 'High burstiness is a strong indicator of natural human writing. It helps avoid AI-generation flags. Dramatic variation improves authenticity and engagement.'
-  },
-  'Low word repetition': {
-    definition: 'This metric measures vocabulary diversity and phrasing variety. It rewards sophisticated, non-repetitive writing.',
-    detection: 'The tool checks if any word exceeds 10 repetitions.',
-    impact: 'Varied vocabulary prevents robotic feel and improves readability. It signals sophisticated writing. Low repetition enhances both user experience and quality perception.'
-  },
-  'No predictable sentence starts': {
-    definition: 'This metric evaluates variety in sentence opening structure. It rewards diverse, natural flow.',
-    detection: 'The tool analyzes frequency of identical sentence starting words/phrases.',
-    impact: 'Varied starts break predictable patterns common in generated text. They create natural flow and rhythm. This variation strengthens human authenticity signals.'
+  {
+    id: 'breadcrumblist',
+    emoji: '🔗',
+    name: 'BreadcrumbList',
+    what: 'BreadcrumbList schema represents site navigation hierarchy (Home → Category → Post) with ordered ListItem entries (position, name, item URL).',
+    when: 'Use on any page deeper than homepage — blog posts, categories, products, docs — wherever visible breadcrumbs exist.',
+    why: 'Replaces plain URL path in SERPs with clickable breadcrumbs, improves CTR, helps Google understand site structure, and boosts internal linking signals.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#breadcrumbList'
   }
-};
+];
+
+const contentEngagementSchemas = [
+  {
+    id: 'faqpage',
+    emoji: '❓',
+    name: 'FAQPage',
+    what: 'FAQPage schema marks up question-and-answer lists with Question name and acceptedAnswer text — ideal for support, product Q&A, or informational FAQs.',
+    when: 'Use on dedicated FAQ pages, help articles, or product pages with expanded Q&A sections (3–8 high-quality pairs recommended).',
+    why: 'Triggers expandable FAQ accordions in SERPs, captures zero-click traffic, improves voice search answers, and boosts CTR for question-based queries.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#faqpage'
+  },
+  {
+    id: 'howto',
+    emoji: '🔧',
+    name: 'HowTo',
+    what: 'HowTo schema outlines step-by-step instructions with name, description, supply/tool lists, estimated times, and ordered HowToStep blocks (with images).',
+    when: 'Apply to tutorials, DIY guides, repair instructions, setup processes, or any page whose primary purpose is teaching a task.',
+    why: 'Unlocks step-by-step carousels or expanded steps in SERPs, dominates how-to searches, increases dwell time, and provides instant value.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#howto'
+  },
+  {
+    id: 'videoobject',
+    emoji: '🎥',
+    name: 'VideoObject',
+    what: 'VideoObject schema describes embedded or hosted videos with name, thumbnailUrl, duration, uploadDate, contentUrl/embedUrl, and optional transcript/Clip objects.',
+    when: 'Use on pages where video is central — tutorials, product demos, interviews, recipes, or explainer content (nest inside HowTo/Article if applicable).',
+    why: 'Triggers video thumbnails, play icons, key moments, and carousel placements; boosts visibility in video tab, Discover, and voice search.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#videoobject'
+  },
+  {
+    id: 'recipe',
+    emoji: '🍳',
+    name: 'Recipe',
+    what: 'Recipe schema details food/drink recipes with ingredients, instructions, prep/cook times, servings, nutrition, images, and optional AggregateRating.',
+    when: 'Apply to full recipe posts or pages with complete ingredient lists, step-by-step directions, and high-quality photos of the dish.',
+    why: 'Powers rich recipe cards with stars, cook time, calories, and step carousels; dominates food-related searches and increases visual CTR.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#recipe'
+  },
+  {
+    id: 'event',
+    emoji: '🎟️',
+    name: 'Event',
+    what: 'Event schema marks up real-world or virtual events with name, start/end dates, location (or VirtualLocation), performer, organizer, offers, and attendance mode.',
+    when: 'Use on event landing pages, ticket pages, or announcements for conferences, concerts, workshops, webinars, or local meetups.',
+    why: 'Triggers event cards with date/time/location/tickets in SERPs and Maps; boosts visibility for "events near me" and time-sensitive queries.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#event'
+  },
+  {
+    id: 'review-aggregaterating',
+    emoji: '⭐',
+    name: 'Review / AggregateRating',
+    what: 'Review and AggregateRating schemas show individual reviews and average star ratings/count for products, businesses, recipes, events, etc.',
+    when: 'Apply wherever visible ratings/reviews appear — product pages, local listings, recipes, events — with at least 3–5 genuine reviews.',
+    why: 'Displays stars and review count in SERPs, boosts trust/CTR, strengthens E-E-A-T, and improves local/product visibility dramatically.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#review-aggregaterating'
+  }
+];
+
+const advancedSchemas = [
+  {
+    id: 'jobposting',
+    emoji: '💼',
+    name: 'JobPosting',
+    what: 'JobPosting schema describes open positions with title, description, hiringOrganization, jobLocation, salary, employmentType, datePosted, and apply link.',
+    when: 'Use on individual job detail pages on career sites, company sites, or job boards — especially for roles with clear salary/location info.',
+    why: 'Powers Google for Jobs carousel, rich job cards, and "jobs near me" results; significantly increases application rates and visibility.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#jobposting'
+  },
+  {
+    id: 'course',
+    emoji: '📚',
+    name: 'Course',
+    what: 'Course schema outlines educational programs with name, provider, description, offers, hasCourseInstance (mode, workload), instructor, and ratings.',
+    when: 'Apply to online course landing pages, university programs, bootcamps, certifications, or training workshops with enrollment info.',
+    why: 'Triggers course cards/carousels in SERPs with provider, price, duration; boosts visibility for "best online [skill] course" searches.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#course'
+  },
+  {
+    id: 'softwareapplication',
+    emoji: '🖥️',
+    name: 'SoftwareApplication',
+    what: 'SoftwareApplication schema describes apps/software with name, description, operatingSystem, applicationCategory, offers, screenshots, and download URLs.',
+    when: 'Use on SaaS landing pages, mobile/desktop app pages, browser extensions, or tool download sites with screenshots and pricing.',
+    why: 'Powers app rich results with icons, screenshots, ratings, price; increases installs/clicks in software comparison and tool searches.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#softwareapplication'
+  },
+  {
+    id: 'book',
+    emoji: '📖',
+    name: 'Book',
+    what: 'Book schema details published books with title, author, ISBN, publisher, datePublished, bookFormat, numberOfPages, offers, and cover image.',
+    when: 'Apply to author sites, publisher pages, book review posts, or dedicated book landing pages with buy links and ISBN.',
+    why: 'Triggers book cards with cover, author, price, buy links; improves discoverability in Google Books and title/author searches.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#book'
+  },
+  {
+    id: 'dataset',
+    emoji: '📊',
+    name: 'Dataset',
+    what: 'Dataset schema describes downloadable public datasets with name, description, creator, license, distribution (download URL + format), and coverage info.',
+    when: 'Use on open data portals, research papers, ML dataset pages, or government/company data releases with direct download links.',
+    why: 'Powers inclusion in Google Dataset Search and rich snippets; drives downloads/citations for research, AI, and data journalism queries.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#dataset'
+  },
+  {
+    id: 'speakable',
+    emoji: '🗣️',
+    name: 'Speakable',
+    what: 'Speakable schema marks up text sections ideal for voice readout using cssSelector or xpath — enhances content for Google Assistant/smart speakers.',
+    when: 'Apply to news articles, FAQs, how-to intros, or recipe overviews with concise, natural-language text (30–90 seconds spoken).',
+    why: 'Enables voice read-aloud in Assistant and voice search results; improves accessibility and reach on voice devices.',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#speakable'
+  },
+  {
+    id: 'factcheck',
+    emoji: '✅',
+    name: 'FactCheck (ClaimReview)',
+    what: 'FactCheck / ClaimReview schema evaluates a specific claim’s accuracy with claimReviewed text, reviewRating, author (fact-check org), and sources.',
+    when: 'Use only on formal fact-check articles by verified organizations following IFCN standards — not for opinions or personal blogs.',
+    why: 'Triggers "Fact Check" labels/verdict boxes in SERPs; boosts credibility and visibility during misinformation events (strictly moderated by Google).',
+    learnMore: 'https://traffictorch.net/blog/posts/schema-markup-help-guide.html#factcheck'
+  }
+];
+
+
+// Example rendering with groups (replace or extend injectMetricCards if desired)
+function injectSchemaCards() {
+  const container = document.getElementById('metric-cards-container');
+  if (!container) return;
+
+  const renderGroup = (title, schemas) => {
+    let html = `<h2 class="text-2xl md:text-3xl font-black text-center my-10 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${title}</h2>`;
+    html += '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">';
+    schemas.forEach(m => {
+      html += `
+        <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow border-l-4 border-orange-500">
+          <div class="text-6xl mb-6 text-center">${m.emoji}</div>
+          <div class="text-2xl md:text-3xl font-black text-orange-600 dark:text-orange-400 mb-6 text-center">${m.name}</div>
+          <details class="group">
+            <summary class="cursor-pointer text-orange-700 dark:text-orange-300 font-bold hover:underline flex items-center justify-center gap-2">
+              Learn More <span class="text-2xl group-open:rotate-180 transition-transform">↓</span>
+            </summary>
+            <div class="mt-6 space-y-6 text-left text-gray-600 dark:text-gray-400 leading-relaxed">
+              <div>
+                <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">What is ${m.name}?</p>
+                <p>${m.what} <a href="${m.learnMore}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1" target="_blank">Learn more →</a></p>
+              </div>
+              <div>
+                <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">When to use ${m.name}?</p>
+                <p>${m.when} <a href="${m.learnMore}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1" target="_blank">Learn more →</a></p>
+              </div>
+              <div>
+                <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">Why it matters</p>
+                <p>${m.why} <a href="${m.learnMore}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1" target="_blank">Learn more →</a></p>
+              </div>
+            </div>
+          </details>
+        </div>`;
+    });
+    html += '</div>';
+    return html;
+  };
+
+  container.innerHTML = `
+    ${renderGroup('Core & Foundational Schemas', coreSchemas)}
+    ${renderGroup('Content & Engagement Schemas', contentEngagementSchemas)}
+    ${renderGroup('Advanced & Specialized Schemas', advancedSchemas)}
+  `;
+}
+
+// Call it (replace existing injectMetricCards call)
+if (document.readyState !== 'loading') {
+  injectSchemaCards();
+} else {
+  document.addEventListener('DOMContentLoaded', injectSchemaCards);
+}

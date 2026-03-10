@@ -94,9 +94,9 @@ export function initSubmitFeedback(resultsContainer) {
       const formData = new FormData();
       formData.append('name', name || 'Anonymous');
       formData.append('email', email || 'no-reply@traffictorch.net');
-      formData.append('message', `Feedback for AI Search Optimizer Tool on ${document.body.getAttribute('data-url') || 'unknown'}\nRating: ${rating || 'None'}\n\n${feedbackText}`);
+      formData.append('message', `Feedback for Schema Markup Generator & Detector Tool on ${document.body.getAttribute('data-url') || 'unknown'}\nRating: ${rating || 'None'}\n\n${feedbackText}`);
 
-      const res = await fetch('/api/contact', {  // or /api/share-report if preferred
+      const res = await fetch('/api/contact', {  
         method: 'POST',
         body: formData
       });

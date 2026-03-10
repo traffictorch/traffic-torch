@@ -3,6 +3,9 @@
 // March 2026 – Vanilla JS, Tailwind dark mode (gray-800 light / gray-200 dark), mobile-first
 // Uses dynamic import per schema file → modules/xxx-schema.js
 
+import { initShareReport } from './share-report-v1.js';
+import { initSubmitFeedback } from './submit-feedback-v1.js';
+
 const API_PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/?url=';
 
 const waitForElements = () => {
@@ -115,168 +118,129 @@ const initTool = (form, results, progressContainer) => {
     });
   }
 
-  // ──────────────────────────────────────────────
-  // URL SCAN & SCHEMA DETECTION (unchanged for now)
-  // ──────────────────────────────────────────────
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    let inputUrl = document.getElementById('url-input').value.trim();
-    if (!inputUrl) {
-      alert('Please enter a URL to scan.');
-      return;
-    }
-    if (!/^https?:\/\//i.test(inputUrl)) {
-      inputUrl = 'https://' + inputUrl;
-      document.getElementById('url-input').value = inputUrl;
-    }
-    try {
-      new URL(inputUrl);
-    } catch (_) {
-      alert('Please enter a valid URL (e.g., https://example.com/blog-post)');
-      return;
-    }
-    const url = inputUrl;
+// ──────────────────────────────────────────────
+// URL SCAN & SCHEMA DETECTION (simplified – no recommendations, just detection + shared features)
+// ──────────────────────────────────────────────
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-    progressContainer.classList.remove('hidden');
-    results.classList.add('hidden');
+  // Rate limiting stub – uncomment when ready
+  // const canProceed = await canRunTool('limit-schema-scan');
+  // if (!canProceed) return;
 
-    const progressMessages = [
-      'Fetching page content...',
-      'Detecting existing schema markup...',
-      'Analyzing content for FAQ opportunities...',
-      'Generating recommendations...',
-      'Preparing report...'
-    ];
-    let step = 0;
-    progressText.textContent = progressMessages[step++];
+  let inputUrl = document.getElementById('url-input').value.trim();
+  if (!inputUrl) {
+    alert('Please enter a URL to scan.');
+    return;
+  }
+  if (!/^https?:\/\//i.test(inputUrl)) {
+    inputUrl = 'https://' + inputUrl;
+    document.getElementById('url-input').value = inputUrl;
+  }
+  try {
+    new URL(inputUrl);
+  } catch (_) {
+    alert('Please enter a valid URL (e.g., https://example.com/blog-post)');
+    return;
+  }
+  const url = inputUrl;
 
-    const updateProgress = () => {
-      if (step < progressMessages.length) {
-        progressText.textContent = progressMessages[step++];
+  progressContainer.classList.remove('hidden');
+  results.classList.add('hidden');
+
+  const progressMessages = [
+    'Fetching page content...',
+    'Detecting existing schema markup...',
+    'Preparing report...'
+  ];
+  let step = 0;
+  progressText.textContent = progressMessages[step++];
+
+  const updateProgress = () => {
+    if (step < progressMessages.length) {
+      progressText.textContent = progressMessages[step++];
+    }
+  };
+
+  const interval = setInterval(updateProgress, 1800);
+
+  try {
+    const res = await fetch(API_PROXY + encodeURIComponent(url));
+    if (!res.ok) throw new Error('Could not fetch page – check URL or HTTPS');
+    const html = await res.text();
+    await new Promise(r => setTimeout(r, 800));
+    updateProgress();
+
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    // Detect all JSON-LD schemas
+    const existingSchemas = [];
+    doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
+      try {
+        const json = JSON.parse(script.textContent);
+        const types = Array.isArray(json)
+          ? json.flatMap(o => o['@type'] || [])
+          : [json['@type'] || 'Unknown'];
+        existingSchemas.push({
+          raw: json,
+          types: types.filter(Boolean).join(', ') || 'Unknown type'
+        });
+      } catch (e) {
+        // silent fail on invalid JSON
       }
-    };
+    });
 
-    const interval = setInterval(updateProgress, 1800);
+    clearInterval(interval);
+    progressContainer.classList.add('hidden');
+    results.classList.remove('hidden');
 
-    try {
-      const res = await fetch(API_PROXY + encodeURIComponent(url));
-      if (!res.ok) throw new Error('Could not fetch page – check URL or HTTPS');
-      const html = await res.text();
-      await new Promise(r => setTimeout(r, 800));
-      updateProgress();
+    // Simplified report – only show detected schemas + shared buttons
+    results.innerHTML = `
+      <div class="my-10 px-4">
+        <h2 class="text-3xl font-black text-center mb-6 text-gray-800 dark:text-gray-200">
+          Schema Detection for ${new URL(url).hostname}
+        </h2>
 
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-
-      // Detect existing schemas
-      const existingSchemas = [];
-      doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
-        try {
-          const json = JSON.parse(script.textContent);
-          const types = Array.isArray(json) ? json.map(o => o['@type']) : [json['@type']];
-          existingSchemas.push({ raw: json, types: types.filter(Boolean) });
-        } catch (e) {}
-      });
-
-      const hasFaqSchema = existingSchemas.some(s => s.types.includes('FAQPage'));
-      updateProgress();
-
-      // Simple FAQ pattern detection
-      const qaCandidates = [];
-      doc.querySelectorAll('h2, h3, h4').forEach(heading => {
-        const text = heading.textContent.trim();
-        if ((text.match(/^(what|how|why|when|where|who|is|does|can|should|will|are|could|would)\b/i) ||
-             text.endsWith('?')) && text.length > 15) {
-          let answerEl = heading.nextElementSibling;
-          while (answerEl && !['H1','H2','H3','H4'].includes(answerEl.tagName)) {
-            if (answerEl.tagName === 'P' && answerEl.textContent.trim().length > 40) {
-              qaCandidates.push({
-                question: text,
-                answer: answerEl.textContent.trim().slice(0, 300) + (answerEl.textContent.length > 300 ? '...' : '')
-              });
-              break;
-            }
-            answerEl = answerEl.nextElementSibling;
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8 border border-gray-200 dark:border-gray-700">
+          <h3 class="text-2xl font-bold mb-4">Detected Schema Markup</h3>
+          ${existingSchemas.length === 0
+            ? '<p class="text-orange-600 dark:text-orange-400 text-center py-6">No JSON-LD schema found on this page.</p>'
+            : `<ul class="space-y-3">
+                ${existingSchemas.map(s => `
+                  <li class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                    <span class="text-green-500 text-xl mt-1">✅</span>
+                    <div>
+                      <strong>${s.types}</strong>
+                      <pre class="mt-2 text-xs bg-gray-900 text-green-300 p-3 rounded overflow-auto max-h-40">${prettyJsonLd(s.raw)}</pre>
+                    </div>
+                  </li>
+                `).join('')}
+              </ul>`
           }
-        }
-      });
-      const detectedQAs = qaCandidates.slice(0, 8);
-      updateProgress();
-
-      // Basic recommendations (expand later)
-      const recommendations = [];
-      if (detectedQAs.length > 0 && !hasFaqSchema) {
-        recommendations.push({
-          type: 'FAQPage',
-          reason: `Found ${detectedQAs.length} potential Q&A patterns but no FAQPage schema.`,
-          prefill: { questions: detectedQAs.map(qa => ({ question: qa.question, answer: qa.answer })) }
-        });
-      } else if (hasFaqSchema) {
-        recommendations.push({
-          type: 'FAQPage',
-          reason: 'FAQPage schema already exists – consider enhancing it.',
-          prefill: {}
-        });
-      }
-      updateProgress();
-
-      clearInterval(interval);
-      progressContainer.classList.add('hidden');
-      results.classList.remove('hidden');
-
-      // Render report
-      results.innerHTML = `
-        <div class="my-10 px-4">
-          <h2 class="text-3xl font-black text-center mb-6 text-gray-800 dark:text-gray-200">
-            Schema Analysis – ${new URL(url).hostname}
-          </h2>
-
-          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8 border border-gray-200 dark:border-gray-700">
-            <h3 class="text-2xl font-bold mb-4">Detected Schema</h3>
-            ${existingSchemas.length === 0
-              ? '<p class="text-orange-600 dark:text-orange-400">No JSON-LD schema found on this page.</p>'
-              : `<ul class="space-y-2">
-                  ${existingSchemas.map(s => `<li class="flex items-center gap-2"><span class="text-green-500">✅</span> ${s.types.join(', ') || 'Unknown'}</li>`).join('')}
-                </ul>`
-            }
-            ${hasFaqSchema ? '<p class="mt-4 text-green-600 dark:text-green-400 font-medium">FAQPage already implemented – great job!</p>' : ''}
-          </div>
-
-          <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl p-6 mb-8">
-            <h3 class="text-2xl font-bold mb-4">Recommended Enhancements</h3>
-            ${recommendations.length === 0
-              ? '<p class="text-gray-600 dark:text-gray-300">No clear opportunities detected yet. Try another page.</p>'
-              : recommendations.map(rec => `
-                  <div class="bg-white dark:bg-gray-800 rounded-xl p-5 mb-4 shadow">
-                    <h4 class="text-xl font-semibold text-blue-600 dark:text-blue-400">${rec.type}</h4>
-                    <p class="text-gray-700 dark:text-gray-300 mt-2">${rec.reason}</p>
-                  </div>
-                `).join('')
-            }
-          </div>
-
-          <div class="text-center mt-10 opacity-80">
-            <p>Use the manual builder above to create or improve schemas.</p>
-          </div>
         </div>
-      `;
 
-      // Optional shared features (keep if you still use them)
-      initShareReport?.(results);
-      initSubmitFeedback?.(results);
-
-      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } catch (err) {
-      clearInterval(interval);
-      progressContainer.classList.add('hidden');
-      results.classList.remove('hidden');
-      results.innerHTML = `
-        <div class="text-red-600 dark:text-red-400 text-center text-xl p-10">
-          Error: ${err.message}<br>
-          Please check the URL and try again.
+        <div class="text-center mt-10 opacity-80">
+          <p>Use the manual builder above to create or enhance schemas.</p>
         </div>
-      `;
-    }
-  });
-};
+      </div>
+    `;
+
+    // Attach shared features (share link + feedback) – now guaranteed to exist
+    initShareReport(results);
+    initSubmitFeedback(results);
+
+    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (err) {
+    clearInterval(interval);
+    progressContainer.classList.add('hidden');
+    results.classList.remove('hidden');
+    results.innerHTML = `
+      <div class="text-red-600 dark:text-red-400 text-center text-xl p-10">
+        Error: ${err.message}<br>
+        Please check the URL and try again.
+      </div>
+    `;
+  }
+});
 
 document.addEventListener('DOMContentLoaded', waitForElements);

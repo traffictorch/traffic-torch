@@ -35,7 +35,7 @@ function render(editorContainer, previewEl) {
         <div class="space-y-5">
           <div>
             <label class="block mb-2 font-medium">Dataset Name / Title</label>
-            <input type="text" data-field="name" placeholder="Sydney Traffic Patterns 2020–2025" required
+            <input type="text" data-field="name" placeholder="Sydney Traffic Patterns 2026" required
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
@@ -62,12 +62,12 @@ function render(editorContainer, previewEl) {
         <div class="space-y-5">
           <div>
             <label class="block mb-2 font-medium">Creator / Author Name</label>
-            <input type="text" data-field="creator.name" placeholder="Ylia Cai" required
+            <input type="text" data-field="creator.name" placeholder="John Doe" required
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
             <label class="block mb-2 font-medium">Creator URL (optional)</label>
-            <input type="url" data-field="creator.url" placeholder="https://ylia.ai"
+            <input type="url" data-field="creator.url" placeholder="https://johndoe.com"
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
@@ -100,7 +100,7 @@ function render(editorContainer, previewEl) {
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block mb-2 font-medium">Temporal Coverage (start–end)</label>
-              <input type="text" data-field="temporalCoverage" placeholder="2020-01-01/2025-12-31"
+              <input type="text" data-field="temporalCoverage" placeholder="2020-01-01/2026-12-31"
                      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
             </div>
             <div>
@@ -125,7 +125,7 @@ function render(editorContainer, previewEl) {
     distributionList.insertAdjacentHTML('beforeend', `
       <div id="dist-${index}" class="border border-gray-300 dark:border-gray-600 rounded-xl p-6 bg-gray-50 dark:bg-gray-900">
         <label class="block mb-2 font-medium">Download URL / Access Link</label>
-        <input type="url" data-field="distribution.${index}.contentUrl" placeholder="https://data.traffictorch.net/sydney-traffic-2025.csv" required
+        <input type="url" data-field="distribution.${index}.contentUrl" placeholder="https://data.traffictorch.net/sydney-traffic-2026.csv" required
                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
 
         <label class="block mt-4 mb-2 font-medium">File Format (MIME or extension)</label>

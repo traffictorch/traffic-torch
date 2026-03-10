@@ -124,7 +124,7 @@ function render(editorContainer, previewEl) {
     const index = authorCount++;
     authorsList.insertAdjacentHTML('beforeend', `
       <div class="flex items-center gap-3">
-        <input type="text" data-field="author.${index}.name" placeholder="Ylia Cai" required
+        <input type="text" data-field="author.${index}.name" placeholder="Jane Smith" required
                class="flex-1 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
         <button type="button" class="remove-author text-red-600 hover:text-red-800 text-sm font-medium">
           × Remove
