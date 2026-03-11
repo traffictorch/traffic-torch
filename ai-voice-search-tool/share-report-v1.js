@@ -23,9 +23,9 @@ export function initShareReport(resultsContainer) {
     }
 
     // Remove any leftover tool name if needed
-    pageTitle = pageTitle.replace(/AI Content Detector Tool – Perplex & Burst Checker | Traffic Torch/gi, '').trim() || 'this page';
+    pageTitle = pageTitle.replace(/AI Voice Search Optimization Audit Tool | Traffic Torch/gi, '').trim() || 'this page';
 
-    const shareText = `Check out ${pageTitle} on Traffic Torch AI Audit Tool ${shareUrl}`;
+    const shareText = `Check out ${pageTitle} on Traffic Torch AI Voice Search Tool ${shareUrl}`;
 
     try {
       if (navigator.share) {
