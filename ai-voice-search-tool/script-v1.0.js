@@ -72,7 +72,7 @@ function analyzeVoiceContent(text, doc) { // pass doc for schema/snippet parsing
   const sentimentQuality = computeSentimentQuality(text);
   const traditionalKeywords = computeTraditionalKeywords(text);
   const moduleScores = [
-    aiVisibility.score, // /100
+    aiVisibility.score,        // /100
     contentQuality.score,
     snippetVisibility.score,
     sentimentQuality.score,
@@ -131,11 +131,11 @@ function getModuleGrade(score) {
     const messages = [
       "Fetching page...",
       "Extracting main content",
-      "Analyzing predictability",
-      "Measuring variation & rhythm",
-      "Checking repetition patterns",
-      "Evaluating structure & depth",
-      "Assessing vocabulary richness",
+      "Analyzing AI Visibility",
+      "Measuring Content Quality",
+      "Checking Snippet Visibility",
+      "Evaluating Sentiment Quality",
+      "Assessing Traditional Keywords",
       "Calculating final score..."
     ];
     let delay = 800;

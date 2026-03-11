@@ -36,7 +36,8 @@ export function computeSentimentQuality(text) {
     let inconsistencies = 0;
     sentences.forEach(s => {
       const sEntities = nlp(s).people().concat(nlp(s).places()).concat(nlp(s).organizations()).unique().out('array');
-      if (sEntities.length > 0 && s.match(/may|might|possible/gi).length > 0) inconsistencies++; // Heuristic: Speculative = risk
+      const speculative = (s.match(/may|might|possible/gi) || []).length;
+      if (sEntities.length > 0 && speculative > 0) inconsistencies++;
     });
     const hallucinationRiskRaw = inconsistencies / sentences.length * 100;
     const hallucinationRisk = Math.min(100, Math.round(100 - hallucinationRiskRaw)); // Invert: High consistency = high score
