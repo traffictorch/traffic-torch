@@ -76,11 +76,11 @@ function analyzeVoiceContent(text, doc) {  // pass doc for schema/snippet parsin
   }
   text = text.replace(/\s+/g, ' ').trim();
   // ... keep word/sentence prep
-  const aiVisibility = computeAIVisibility(text);          // mock SOV/citations via regex/entity
-  const contentQuality = computeContentQuality(text);      // readability, entities, conciseness
-  const snippetVisibility = computeSnippetVisibility(doc); // check formats/schema
-  const sentimentQuality = computeSentimentQuality(text);  // pos/neg, hallucination risk
-  const traditionalKeywords = computeTraditionalKeywords(text); // long-tail density, questions
+const aiVisibility = computeAIVisibility(text, doc);
+const contentQuality = computeContentQuality(text);
+const snippetVisibility = computeSnippetVisibility(doc);
+const sentimentQuality = computeSentimentQuality(text);
+const traditionalKeywords = computeTraditionalKeywords(text);
 
   const moduleScores = [
     aiVisibility.score,        // /100
@@ -194,7 +194,7 @@ const modules = [
   { name: 'Content Quality', score: analysis.moduleScores[1], id: 'content-quality', info: 'Evaluates readability, entity richness, conciseness for AI synthesis & voice readout.', /* ... */ },
   { name: 'Snippet & Visibility', score: analysis.moduleScores[2], id: 'snippet-visibility', info: 'Checks formats eligible for featured snippets/AI Overviews used in voice.', /* ... */ },
   { name: 'Sentiment & Quality', score: analysis.moduleScores[3], id: 'sentiment-quality', info: 'Assesses positive tone & hallucination risk for trustworthy AI voice outputs.', /* ... */ },
-  { name: 'Traditional Keyword Performance', score: analysis.moduleScores[4], id: 'traditional-keywords', info: 'Measures conversational long-tail density & question coverage.', /* ... */ }
+  { name: 'Keyword Performance', score: analysis.moduleScores[4], id: 'traditional-keywords', info: 'Measures conversational long-tail density & question coverage.', /* ... */ }
 ];
 
       const scores = modules.map(m => m.score); // for radar chart
