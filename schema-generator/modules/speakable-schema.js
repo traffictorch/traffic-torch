@@ -22,6 +22,12 @@ function render(editorContainer, previewEl) {
         <li>Combine with Article/FAQPage/NewsArticle schema on the same page</li>
         <li>Max ~3–5 selectors per page to avoid long reading</li>
         <li>Validate with Google Rich Results Test (shows in Speakable section)</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#speakable" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about Speakable Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;

@@ -22,6 +22,12 @@ function render(editorContainer, previewEl) {
         <li>2026 best practice: include multiple distributions, use SPDX license identifiers, add keywords, version info</li>
         <li>Place on dataset landing page or data catalog entry</li>
         <li>Validate with Google Rich Results Test + Structured Data Testing Tool</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#dataset" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about Dataset Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;

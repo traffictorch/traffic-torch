@@ -22,6 +22,12 @@ function render(editorContainer, previewEl) {
         <li>2026 best practice: use hasCourseInstance for specific sessions, add courseCode if applicable, multiple images</li>
         <li>Place on course landing/enrollment page</li>
         <li>Validate with Google Rich Results Test</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#course" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about Course Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;

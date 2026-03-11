@@ -22,6 +22,12 @@ function render(editorContainer, previewEl) {
         <li>2026 best practice: multiple images, aggregateRating/review, video if available</li>
         <li>Place above or near the recipe content on the page</li>
         <li>Validate with Google Rich Results Test</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#recipe" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about Recipe Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;

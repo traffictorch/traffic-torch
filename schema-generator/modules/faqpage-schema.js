@@ -19,6 +19,12 @@ function render(editorContainer, previewEl) {
         <li>Answers must be fully visible on the page (no hidden content)</li>
         <li>3–10 high-quality Q&As recommended (max ~12 for best display)</li>
         <li>Use only JSON-LD format (preferred by Google in 2026)</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#faqpage" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about FAQPage Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;

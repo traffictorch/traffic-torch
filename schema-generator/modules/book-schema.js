@@ -22,6 +22,12 @@ function render(editorContainer, previewEl) {
         <li>2026 best practice: use ISBN-13, add aggregateRating/review, multiple formats/editions if applicable</li>
         <li>Place on book landing page, author bio, or product detail page</li>
         <li>Validate with Google Rich Results Test + Structured Data Testing Tool</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#book" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about Book Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;

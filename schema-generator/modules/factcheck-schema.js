@@ -22,6 +22,12 @@ function render(editorContainer, previewEl) {
         <li>2026 best practice: use ClaimReviewed for short claim summary, add multiple appearances if claim spread across sources, JSON-LD only</li>
         <li>Place on fact-check article page</li>
         <li>Validate with Google Rich Results Test + Fact Check Explorer</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#factcheck" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about FactCheck Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;

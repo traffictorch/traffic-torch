@@ -22,6 +22,12 @@ function render(editorContainer, previewEl) {
         <li>2026 best practice: use ISO 8601 dates, add offers for tickets, multiple images, live stream URLs</li>
         <li>Place on event landing page or dedicated events section</li>
         <li>Validate with Google Rich Results Test</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#event" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about Event Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;

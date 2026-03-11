@@ -21,6 +21,12 @@ function render(editorContainer, previewEl) {
         <li>Recommended: logo, address, contactPoint, sameAs for social profiles</li>
         <li>Subtype as LocalBusiness if applicable (add in @type)</li>
         <li>Validate with Google Rich Results Test</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#organization" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about Organization Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;

@@ -22,6 +22,12 @@ function render(editorContainer, previewEl) {
         <li>2026 priority: high-quality photo (face clearly visible), verified social links, consistent NAP</li>
         <li>Place on author bio pages, about us, or article author sections</li>
         <li>Validate with Google Rich Results Test + Structured Data Testing Tool</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#person" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about Person Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;

@@ -22,6 +22,12 @@ function render(editorContainer, previewEl) {
         <li>2026 best practice: combine with main entity (Product, LocalBusiness, Recipe), use JSON-LD, avoid fake/manipulated ratings</li>
         <li>Place near reviews section or product summary</li>
         <li>Validate with Google Rich Results Test</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#review-aggregaterating" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about Review Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;

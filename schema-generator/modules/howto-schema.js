@@ -22,6 +22,12 @@ function render(editorContainer, previewEl) {
         <li>Google shows carousel if: clear steps, visuals, real content match</li>
         <li>2026 best practice: 4–12 steps, high-quality images (1200px+), JSON-LD only</li>
         <li>Validate with Google Rich Results Test</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#howto" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about HowTo Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;

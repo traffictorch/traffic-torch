@@ -22,6 +22,12 @@ function render(editorContainer, previewEl) {
         <li>2026 best practice: multiple thumbnails (different sizes), add interactionCount if available</li>
         <li>Place near or inside the video player area on the page</li>
         <li>Validate with Google Rich Results Test + Video Index Status in Search Console</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#videoobject" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about VideoObject Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;

@@ -22,6 +22,12 @@ function render(editorContainer, previewEl) {
         <li>Place on homepage, contact/about, or location pages</li>
         <li>Validate with Google Rich Results Test + Merchant Center</li>
         <li>2026 priority: accurate NAP (Name, Address, Phone), photos, hours consistency</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#localbusiness" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about LocalBusiness Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;

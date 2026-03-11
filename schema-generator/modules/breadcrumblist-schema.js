@@ -22,6 +22,12 @@ function render(editorContainer, previewEl) {
         <li>Best practice 2026: Use full absolute URLs, last item = current page, 3–7 levels ideal</li>
         <li>Place near top of page (usually in header or under hero)</li>
         <li>Validate with Google Rich Results Test</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#breadcrumblist" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about BreadcrumbList Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;

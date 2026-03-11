@@ -21,6 +21,12 @@ function render(editorContainer, previewEl) {
         <li>Recommended: dateModified (for freshness), publisher (Organization with logo), wordCount</li>
         <li>Best practices 2026: JSON-LD only, validate with Google Rich Results Test, avoid duplicates on page</li>
         <li>SEO benefits: Better visibility in Google News, Discover, and AI overviews</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#article" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about Article Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;

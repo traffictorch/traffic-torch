@@ -22,6 +22,12 @@ function render(editorContainer, previewEl) {
         <li>2026 best practice: use specific subtypes (WebApplication, MobileApplication, DesktopApplication), multiple screenshots, add video if demo available</li>
         <li>Place on app landing/pricing/download page</li>
         <li>Validate with Google Rich Results Test</li>
+        <li>
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#softwareapplication" 
+        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Learn more about SoftwareApplication Schema Markup →
+        </a>
+       </li>
       </ul>
     </div>
   `;
