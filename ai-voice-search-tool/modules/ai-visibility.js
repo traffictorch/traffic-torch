@@ -1,6 +1,5 @@
 // ai-voice-search-tool/modules/ai-visibility.js
 // Requires compromise.js CDN in index.html for NLP
-
 export function computeAIVisibility(text, doc) {
   if (!text || text.length < 300) {
     // Reliability: Fallback for short/sparse content (e.g., landing pages)
@@ -10,27 +9,28 @@ export function computeAIVisibility(text, doc) {
         sov: 20,
         citationFreq: 20,
         presenceRate: 20,
-        note: 'Insufficient text for reliable simulation. Add more content (300+ words) for accurate AI visibility estimate.'
+        note: 'Insufficient text for reliable simulation. Add more content (300+ words) for accurate AI visibility estimate.',
+        subMetrics: [
+          { name: 'Share of Voice %', score: 20 },
+          { name: 'Citation Frequency', score: 20 },
+          { name: 'Presence Rate', score: 20 }
+        ]
       }
     };
   }
-
   try {
     const nlp = window.nlp; // compromise.js
     const parsedText = nlp(text);
-
     // Sub-metric 1: Share of Voice % (authority sim: entities + schema presence)
     const entities = parsedText.people().concat(parsedText.places()).concat(parsedText.organizations()).unique().out('array');
     const entityDensity = (entities.length / text.split(/\s+/).length) * 100; // % entities
     const schemaPresence = detectSchema(doc); // 0-100 based on types
     const sov = Math.min(100, Math.round((entityDensity * 2 + schemaPresence) / 3)); // Weighted; cap 100
-
     // Sub-metric 2: Citation Frequency (# potential citable elements: stats, quotes, internal citations)
     const statsCount = (text.match(/\d+(\.\d+)?(%|k|m|b)?/g) || []).length; // Numbers/percentages
     const quotesCount = (text.match(/"[^"]*"/g) || []).length; // Quoted text
     const internalCites = (text.match(/(source|cite|reference|according to)/gi) || []).length; // Heuristic phrases
     const citationFreq = Math.min(100, Math.round((statsCount + quotesCount + internalCites) / (text.length / 1000) * 10)); // Normalized per 1k chars
-
     // Sub-metric 3: Presence Rate (% paragraphs with direct, concise answers: 40-60 words, factual)
     const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 50);
     let directAnswers = 0;
@@ -40,20 +40,23 @@ export function computeAIVisibility(text, doc) {
       if (wordCount >= 40 && wordCount <= 60 && isFactual) directAnswers++;
     });
     const presenceRate = paragraphs.length > 0 ? Math.round((directAnswers / paragraphs.length) * 100) : 0;
-
     // Overall score: Average, with boosts/fallbacks
     let score = Math.round((sov + citationFreq + presenceRate) / 3);
     // Site-type reliability: Boost for voice-friendly (e.g., FAQ schema + questions)
     if (schemaPresence > 50 && parsedText.questions().out('array').length > 0) score = Math.min(100, score + 10); // Voice AI favors Q&A
     // Ecom/news boost: If product/article schema, +5 (from research: structured data 2x citations)
     if (detectSiteType(doc) === 'ecom' || detectSiteType(doc) === 'news') score = Math.min(100, score + 5);
-
     return {
       score,
       details: {
         sov,
         citationFreq,
-        presenceRate
+        presenceRate,
+        subMetrics: [
+          { name: 'Share of Voice %', score: sov },
+          { name: 'Citation Frequency', score: citationFreq },
+          { name: 'Presence Rate', score: presenceRate }
+        ]
       }
     };
   } catch (error) {
@@ -65,12 +68,16 @@ export function computeAIVisibility(text, doc) {
         sov: 0,
         citationFreq: 0,
         presenceRate: 0,
-        note: 'Error in simulation. Ensure compromise.js loaded and content parseable.'
+        note: 'Error in simulation. Ensure compromise.js loaded and content parseable.',
+        subMetrics: [
+          { name: 'Share of Voice %', score: 0 },
+          { name: 'Citation Frequency', score: 0 },
+          { name: 'Presence Rate', score: 0 }
+        ]
       }
     };
   }
 }
-
 // Helper: Detect schema (regex on doc for JSON-LD; focus speakable/FAQ for voice)
 function detectSchema(doc) {
   const schemaScripts = doc.querySelectorAll('script[type="application/ld+json"]');
@@ -85,7 +92,6 @@ function detectSchema(doc) {
   });
   return Math.min(100, score);
 }
-
 // Helper: Detect site type (heuristic for reliability across types)
 function detectSiteType(doc) {
   if (doc.querySelector('[itemtype*="Product"]')) return 'ecom';

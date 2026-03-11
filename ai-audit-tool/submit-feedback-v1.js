@@ -96,7 +96,7 @@ export function initSubmitFeedback(resultsContainer) {
       formData.append('email', email || 'no-reply@traffictorch.net');
       formData.append('message', `Feedback for AI Audit Tool on ${document.body.getAttribute('data-url') || 'unknown'}\nRating: ${rating || 'None'}\n\n${feedbackText}`);
 
-      const res = await fetch('/api/contact', { 
+      const res = await fetch('/api/contact', {  // or /api/share-report if preferred
         method: 'POST',
         body: formData
       });

@@ -1,5 +1,4 @@
 // ai-voice-search-tool/script-v1.0.js
-
 // New client-side metric computers (create these files in /modules/ or inline simple functions)
 import { computeAIVisibility } from './modules/ai-visibility.js';
 import { computeContentQuality } from './modules/content-quality.js';
@@ -9,16 +8,13 @@ import { computeTraditionalKeywords } from './modules/traditional-keywords.js';
 import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
-
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
-
-
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
-  
+ 
   // Quick debug: check if compromise loaded (runs on page load)
   setTimeout(() => {
     if (typeof window.nlp === 'function') {
@@ -27,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('compromise.js failed to load – check CDN in index.html');
     }
   }, 2000);
-  
+ 
      // Auto-fill input from shared report deep link (?url=...)
      const urlParams = new URLSearchParams(window.location.search);
      const sharedUrl = urlParams.get('url');
@@ -41,15 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/?url=';
   let analyzedText = '';
   let wordCount = 0;
-
   function getMainContent(doc) {
     const main = doc.querySelector('main, [role="main"], article, .main-content, .site-content, .content-area');
     if (main && main.textContent.trim().length > 600) return main;
-
     const candidates = doc.querySelectorAll('div, section, article');
     let best = null;
     let bestScore = 0;
-
     candidates.forEach(el => {
       if (el.closest('header, nav, footer, aside, .menu, .sidebar')) return;
       const paragraphs = el.querySelectorAll('p');
@@ -61,36 +54,31 @@ document.addEventListener('DOMContentLoaded', () => {
         best = el;
       }
     });
-
     if (best) return best;
-
     const body = doc.body.cloneNode(true);
     const removeSelectors = 'header, nav, footer, aside, .menu, .navbar, .sidebar, .cookie-banner, .popup, .social-links, .breadcrumbs';
     body.querySelectorAll(removeSelectors).forEach(e => e.remove());
     return body;
   }
-
-function analyzeVoiceContent(text, doc) {  // pass doc for schema/snippet parsing
+function analyzeVoiceContent(text, doc) { // pass doc for schema/snippet parsing
   if (!text || text.length < 300) {
     return { moduleScores: [20,20,20,20,20], totalScore: 50, details: {} };
   }
   text = text.replace(/\s+/g, ' ').trim();
   // ... keep word/sentence prep
-const aiVisibility = computeAIVisibility(text, doc);
-const contentQuality = computeContentQuality(text);
-const snippetVisibility = computeSnippetVisibility(doc);
-const sentimentQuality = computeSentimentQuality(text);
-const traditionalKeywords = computeTraditionalKeywords(text);
-
+  const aiVisibility = computeAIVisibility(text, doc);
+  const contentQuality = computeContentQuality(text);
+  const snippetVisibility = computeSnippetVisibility(doc);
+  const sentimentQuality = computeSentimentQuality(text);
+  const traditionalKeywords = computeTraditionalKeywords(text);
   const moduleScores = [
-    aiVisibility.score,        // /100
+    aiVisibility.score, // /100
     contentQuality.score,
     snippetVisibility.score,
     sentimentQuality.score,
     traditionalKeywords.score
   ];
   const totalScore = moduleScores.reduce((a,b)=>a+b,0) / 5;
-
   return {
     moduleScores,
     totalScore: Math.round(totalScore),
@@ -101,7 +89,6 @@ const traditionalKeywords = computeTraditionalKeywords(text);
     }
   };
 }
-
 function getGradeColor(score) {
   if (score >= 80) return '#10b981';
   if (score >= 60) return '#f97316';
@@ -117,13 +104,10 @@ function getModuleGrade(score) {
   if (score >= 60) return { emoji: '⚠️', text: 'Good – Improve', color: '#f97316' };
   return { emoji: '❌', text: 'Needs Work', color: '#ef4444' };
 }
-
   form.addEventListener('submit', async (e) => {
   e.preventDefault();
-
   //const canProceed = await canRunTool('limit-audit-id');
   //if (!canProceed) return;
-
   const url = input.value.trim();
     let normalizedUrl = url;
     if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
@@ -131,8 +115,6 @@ function getModuleGrade(score) {
     }
     const urlToFetch = normalizedUrl;
     if (!url) return;
-
-
     results.innerHTML = `
       <div class="py-0 text-center">
         <div class="inline-block w-16 h-16 mb-8">
@@ -145,7 +127,6 @@ function getModuleGrade(score) {
       </div>
     `;
     results.classList.remove('hidden');
-
     const progressText = document.getElementById('progressText');
     const messages = [
       "Fetching page...",
@@ -164,10 +145,8 @@ function getModuleGrade(score) {
       }, delay);
       delay += 800;
     });
-
     const minLoadTime = 5500;
     const startTime = Date.now();
-
     try {
       const res = await fetch(PROXY + encodeURIComponent(urlToFetch));
       if (!res.ok) throw new Error('Page not reachable');
@@ -180,14 +159,12 @@ function getModuleGrade(score) {
       text = text.replace(/\s+/g, ' ').replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu, ' ').trim();
       wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
       analyzedText = text;
-
       const analysis = analyzeVoiceContent(text, doc);
       const yourScore = analysis.totalScore;
       const mainGrade = getOverallEmojiGrade(yourScore);
       const mainGradeColor = mainGrade.color;
       const verdict = mainGrade.text;
       const verdictEmoji = mainGrade.emoji;
-
       // Define the 5 core AI Voice Search modules with correct scores
 const modules = [
   { name: 'AI Visibility', score: analysis.moduleScores[0], id: 'ai-visibility', info: 'Simulates citation/share of voice in AI assistants like Gemini/ChatGPT voice. High score = frequent brand mentions in spoken answers.', /* details, fixes */ },
@@ -196,15 +173,12 @@ const modules = [
   { name: 'Sentiment & Quality', score: analysis.moduleScores[3], id: 'sentiment-quality', info: 'Assesses positive tone & hallucination risk for trustworthy AI voice outputs.', /* ... */ },
   { name: 'Keyword Performance', score: analysis.moduleScores[4], id: 'traditional-keywords', info: 'Measures conversational long-tail density & question coverage.', /* ... */ }
 ];
-
       const scores = modules.map(m => m.score); // for radar chart
       const failingModules = modules.filter(m => m.score < 20).length;
       const boost = failingModules * 15;
       const optimizedScore = Math.min(100, yourScore + boost);
-
       const elapsed = Date.now() - startTime;
       const remaining = Math.max(0, minLoadTime - elapsed);
-
       setTimeout(() => {
         // Scroll to results
         const offset = 240;
@@ -213,7 +187,6 @@ const modules = [
           top: targetY,
           behavior: 'smooth'
         });
-
 results.innerHTML = `
 <!-- Overall Score Card -->
 <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
@@ -255,7 +228,6 @@ results.innerHTML = `
     })()}
   </div>
 </div>
-
 <!-- Radar Chart -->
 <div class="max-w-5xl mx-auto my-16 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
@@ -271,7 +243,6 @@ results.innerHTML = `
     </p>
   </div>
 </div>
-
 <!-- Metrics Layout – 5 AI Voice Search Modules -->
 <div class="space-y-8 max-w-5xl mx-auto px-4">
   ${modules.map((m, index) => {
@@ -297,7 +268,6 @@ results.innerHTML = `
       </div>
       <p class="mt-6 text-2xl font-bold" style="color: ${gradeColor}">${m.name}</p>
       <p class="mt-2 text-xl flex items-center justify-center gap-2" style="color: ${gradeColor}">${grade.text} ${grade.emoji}</p>
-
       <!-- Sub-metrics (will show real values once details are structured) -->
       <div class="mt-4 space-y-3 text-base">
         ${subMetrics.length > 0 ? subMetrics.map(s => `
@@ -306,7 +276,6 @@ results.innerHTML = `
           </p>
         `).join('') : '<p class="text-gray-500 dark:text-gray-400">Sub-metrics loading...</p>'}
       </div>
-
       <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
         More Details
       </button>
@@ -315,7 +284,6 @@ results.innerHTML = `
         <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve:</span> Implement suggested fixes below to boost this module.</p>
         <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters:</span> Impacts AI voice visibility, synthesis quality, and rankings.</p>
       </div>
-
       <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
         Show Fixes (${failedCount})
       </button>
@@ -334,7 +302,6 @@ results.innerHTML = `
     </div>`;
   }).join('')}
 </div>
-
 <!-- Keep existing buttons and forms unchanged -->
 <div class="text-center my-16 px-4">
   <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
@@ -360,7 +327,6 @@ results.innerHTML = `
   </div>
 </div>
 `;
-
         // RADAR CHART
         setTimeout(() => {
           const canvas = document.getElementById('health-radar');
@@ -371,9 +337,7 @@ results.innerHTML = `
             const gridColor = 'rgba(156, 163, 175, 0.3)';
             const borderColor = '#fb923c';
             const fillColor = 'rgba(251, 146, 60, 0.15)';
-
             const normalizedScores = modules.map(m => m.score);
-
             window.myChart = new Chart(ctx, {
               type: 'radar',
               data: {
@@ -411,7 +375,7 @@ results.innerHTML = `
                     callbacks: {
                       label: function(context) {
                         const rawScore = modules[context.dataIndex].score;
-                        return `${context.dataset.label}: ${rawScore}/20 (${context.parsed.r}/100)`;
+                        return `${context.dataset.label}: ${rawScore}/100`;
                       }
                     }
                   }
@@ -422,10 +386,9 @@ results.innerHTML = `
             console.error('Radar chart failed', e);
           }
         }, 150);
-        
+       
         initShareReport(results);
         initSubmitFeedback(results);
-
         // Clean URL for PDF/print
         let fullUrl = document.getElementById('url-input').value.trim();
         let displayUrl = 'traffictorch.net';
@@ -441,7 +404,6 @@ results.innerHTML = `
           }
         }
         document.body.setAttribute('data-url', displayUrl);
-
       }, remaining);
     } catch (err) {
       const elapsed = Date.now() - startTime;
