@@ -18,6 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
+  
+  // Quick debug: check if compromise loaded (runs on page load)
+  setTimeout(() => {
+    if (typeof window.nlp === 'function') {
+      console.log('compromise.js loaded successfully');
+    } else {
+      console.error('compromise.js failed to load – check CDN in index.html');
+    }
+  }, 2000);
+  
      // Auto-fill input from shared report deep link (?url=...)
      const urlParams = new URLSearchParams(window.location.search);
      const sharedUrl = urlParams.get('url');
@@ -121,6 +131,7 @@ function getModuleGrade(score) {
     }
     const urlToFetch = normalizedUrl;
     if (!url) return;
+
 
     results.innerHTML = `
       <div class="py-0 text-center">
