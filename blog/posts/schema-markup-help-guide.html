@@ -210,6 +210,27 @@
   <!-- Tailwind output – comes last so utilities can override -->
   <link rel="stylesheet" href="/tailwind-local-v1.0.css">
 
+<style>  
+  .prose ul {
+  list-style-type: disc;
+  padding-left: 1.5rem; /* pl-6 */
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.prose ul li {
+  margin-bottom: 0.5rem;
+}
+
+.prose ul li::marker {
+  color: theme('colors.orange.500');
+}
+
+.dark .prose ul li::marker {
+  color: theme('colors.orange.400');
+}
+</style> 
+
   <script>
     // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
     (function() {
