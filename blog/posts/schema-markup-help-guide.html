@@ -96,8 +96,8 @@
   "headline": "Schema Markup Help Guide – What, When & Why for Every Type",
   "description": "Educational deep-dive into schema.org markup types: Core (Organization, Article/BlogPosting, LocalBusiness, Person, BreadcrumbList), Content (FAQPage, HowTo, VideoObject, Recipe, Event, Review/AggregateRating), Advanced (JobPosting, Course, SoftwareApplication, Book, Dataset, Speakable, FactCheck). Explains what each is, ideal use cases, and SEO/rich results benefits.",
   "image": "https://traffictorch.net/blog/images/schema-markup-help-guide/schema-markup-hero-1200w.webp",
-  "datePublished": "2026-03-10",
-  "dateModified": "2026-03-10",
+  "datePublished": "2026-03-10T09:22:00+11:00",
+  "dateModified": "2026-03-11T14:24:00+11:00"
   "author": {
     "@type": "Person",
     "name": "Traffic Torch Team",
@@ -130,7 +130,7 @@
     "Course schema",
     "SEO best practices"
   ],
-  "wordCount": 3200,
+  "wordCount": 8273,
   "inLanguage": "en",
   "articleSection": "SEO Guides & Tutorials",
   "isPartOf": {
@@ -182,6 +182,160 @@
   ]
 }
 </script>
+
+ <!-- FAQPage JSON-LD Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the difference between Organization and LocalBusiness schema?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Organization schema describes any kind of company, brand, or entity (online store, NGO, corporation, etc.). LocalBusiness is a more specific subtype that inherits from Organization and adds location-specific properties like address, geo coordinates, openingHours, priceRange, and telephone. Use Organization alone for non-local or multi-location brands; use LocalBusiness when you have a physical storefront or service area."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I put Article or BlogPosting schema on every blog post?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes - BlogPosting (a subtype of Article) is the recommended type for most individual blog posts and news articles in 2026. It supports headline, datePublished, author (Person or Organization), image, publisher, and articleBody. Use the more general Article type only for evergreen long-form content that isn’t time-sensitive (guides, ultimate lists). Always include mainEntityOfPage pointing to the canonical URL."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does BreadcrumbList schema improve click-through rate?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, indirectly. BreadcrumbList displays breadcrumb navigation in Google search results (instead of just the URL path), making the result more clickable and trustworthy. It also helps Google understand site structure better, which can improve internal linking signals and crawl efficiency. It’s low-effort, high-reward structured data for almost every site with more than one level of hierarchy."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use Person schema for authors on my blog?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes - and you should. Person schema in the author property of Article/BlogPosting helps Google build author knowledge panels, show bylines more prominently, and strengthen E-E-A-T signals. Include name, url (author archive), sameAs (social profiles, LinkedIn, ORCID), jobTitle, and worksFor (Organization). Consistent author markup across posts builds topical authority faster."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is Organization schema required for local businesses?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No, but it’s strongly recommended. LocalBusiness already inherits most Organization properties, so you can nest Organization inside LocalBusiness or use LocalBusiness directly. However, many experts recommend a separate Organization block on the homepage (with sameAs and logo) to establish the brand entity clearly, then use LocalBusiness on location pages. This dual approach maximizes Knowledge Graph presence and local pack visibility."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does FAQPage schema still show expanded answers in Google search results?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes - as of 2026, FAQPage schema can trigger expandable FAQ rich results (accordion-style questions in SERPs), especially for how-to or support-style content. Google is selective: it favors concise, unique answers that match user intent and avoids over-optimization (e.g., repeating the same FAQ across many pages). Best results come from 3–8 high-quality Q&As per page."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can HowTo schema appear as a step-by-step carousel in search results?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes - HowTo schema is one of the most visual rich results types. When implemented correctly (with step images, duration, supply/tool lists), Google often displays it as a numbered step carousel or expanded steps directly in SERPs. This format significantly boosts click-through rates for instructional content like recipes, DIY guides, tutorials, and software how-tos."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What’s the best way to mark up embedded videos with VideoObject schema?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use VideoObject inside the main entity (e.g., Article or HowTo) or as a standalone on video pages. Key properties: thumbnailUrl, uploadDate, duration (ISO 8601), contentUrl or embedUrl, description, and transcript if available. Google prefers videos hosted on the same domain or with clear ownership signals. This can trigger video thumbnails, key moments, and carousel placements in search and Discover."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Recipe schema require high-quality photos to show rich results?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes - Google almost always requires at least one high-resolution image (min 1200px wide recommended) for Recipe rich results (ingredients list, cook time, ratings, step carousel). Multiple images (ingredient close-ups, final dish, steps) increase chances of visual rich snippets or video-style carousels. Also include calories, cuisineType, keywords, and AggregateRating for stronger eligibility."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does AggregateRating work with Event or Review schema for better visibility?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "AggregateRating can be nested inside Event, Recipe, Product, LocalBusiness, or even Review. It shows star ratings and review count in SERPs (e.g., 4.7 ★★★★★ from 312 reviews). For events, it’s powerful for ticketed or recurring events; for reviews, use it on pages with multiple user reviews. Google requires at least 3–5 reviews for stars to appear reliably, and ratings should reflect genuine user feedback to avoid manual actions."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I combine multiple content schemas like HowTo + VideoObject on one page?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes - and it’s encouraged. For example, a tutorial page can have HowTo as the main entity, with VideoObject nested in steps or as a separate block. Google can display combined rich results (step carousel + video thumbnail). Just ensure the markup is valid, non-duplicate, and accurately represents the page content to avoid suppression."
+        }
+      },
+    {
+        "@type": "Question",
+        "name": "Does JobPosting schema help appear in Google for Jobs?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes - JobPosting schema is the primary structured data type Google uses to populate the Google for Jobs carousel and job search results. Key requirements include title, description, hiringOrganization, jobLocation (with address or geo), datePosted, validThrough, employmentType, baseSalary (with currency and value), and directApply or application link. Accurate markup significantly increases visibility for job listings."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can Course schema appear in Google search results as a course carousel?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes - Course schema can trigger rich course cards or carousels in SERPs, especially for educational queries. Required properties: name, description, provider (Organization), hasCourseInstance (with courseMode, courseWorkload, location if applicable), and offers (for paid courses). Google favors courses with clear provider branding, duration, and syllabus details. It works best for online courses, university programs, or certification training."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What properties make SoftwareApplication schema eligible for app rich results?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SoftwareApplication (or subtypes like WebApplication, MobileApplication) needs name, description, operatingSystem, applicationCategory, offers (price or free), aggregateRating, review, screenshot (multiple URLs), and download/install URLs. Google can display app icons, ratings, screenshots, and price in SERPs or app carousels. Consistent use across app pages boosts visibility in software-related searches."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Book schema help books appear in Google Books or rich snippets?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes - Book schema (with name, author (Person), isbn, bookFormat, numberOfPages, publisher, datePublished, bookEdition, offers, and aggregateRating) can trigger rich book cards with cover image, author, price, and buy links. It’s most effective on book landing pages or author sites. Google may also connect it to Google Books listings for better discoverability."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "When should I use Dataset schema instead of just describing data in text?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Dataset schema is ideal for publicly available, downloadable datasets (CSV, JSON, Excel, etc.). Key properties: name, description, creator, publisher, datePublished, distribution (DownloadAction with encodingFormat and contentUrl), license, and variableMeasured. It helps datasets appear in Google Dataset Search and rich snippets for data-related queries. Use it on data repository pages, research papers, or open data portals."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is Speakable schema and when does it trigger voice results?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Speakable schema marks up text on a page that is suitable for voice readout (Google Assistant, smart speakers). Use speakable with cssSelector or xpath to point to key sections (e.g., headline, intro paragraph). It triggers in voice search results and Assistant read-aloud features. Best for news articles, how-to guides, or FAQ pages where concise, natural-language text exists."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How strict is Google on FactCheck schema for claim reviews?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "FactCheck (ClaimReview) schema is tightly moderated. It requires claimReviewed, itemReviewed (CreativeWork), author (Organization with fact-checking credentials), datePublished, reviewRating (true/false/mostly-true scale), and url to sources. Google only shows FactCheck rich results for verified fact-checking organizations. Misuse can lead to suppression or penalties, it’s not for general opinion pieces."
+        }
+      }
+    ]
+  }
+  </script>
  
   <meta name="color-scheme" content="dark light">
   <link rel="icon" href="/favicon.ico" />
@@ -406,8 +560,8 @@
       </thead>
       <tbody class="text-gray-800 dark:text-gray-200 divide-y divide-gray-200 dark:divide-gray-700">
         <!-- Core & Foundational -->
-        <tr class="bg-gray-50 dark:bg-gray-800/30 font-semibold">
-          <td colspan="4" class="p-4 text-lg text-orange-600 dark:text-orange-400">Core & Foundational Schemas</td>
+        <tr class="bg-gray dark:bg-gray-800 font-semibold">
+          <td colspan="4" class="p-4 text-lg text-red-600 dark:text-red-400">Core & Foundational Schemas</td>
         </tr>
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
           <td class="p-4 font-medium"><a href="#organization" class="text-orange-600 dark:text-orange-400 hover:underline">Organization</a></td>
@@ -441,8 +595,8 @@
         </tr>
 
         <!-- Content & Engagement -->
-        <tr class="bg-gray-50 dark:bg-gray-800/30 font-semibold mt-4">
-          <td colspan="4" class="p-4 text-lg text-orange-600 dark:text-orange-400">Content & Engagement Schemas</td>
+        <tr class="bg-gray dark:bg-gray-800 font-semibold mt-4">
+          <td colspan="4" class="p-4 text-lg text-red-600 dark:text-red-400">Content & Engagement Schemas</td>
         </tr>
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
           <td class="p-4 font-medium"><a href="#faqpage" class="text-orange-600 dark:text-orange-400 hover:underline">FAQPage</a></td>
@@ -482,8 +636,8 @@
         </tr>
 
         <!-- Advanced & Specialized -->
-        <tr class="bg-gray-50 dark:bg-gray-800/30 font-semibold mt-4">
-          <td colspan="4" class="p-4 text-lg text-orange-600 dark:text-orange-400">Advanced & Specialized Schemas</td>
+        <tr class="bg-gray dark:bg-gray-800 font-semibold mt-4">
+          <td colspan="4" class="p-4 text-lg text-red-600 dark:text-red-400">Advanced & Specialized Schemas</td>
         </tr>
         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
           <td class="p-4 font-medium"><a href="#jobposting" class="text-orange-600 dark:text-orange-400 hover:underline">JobPosting</a></td>
@@ -616,56 +770,6 @@
       </div>
     </details>
   </div>
-
-  <!-- FAQPage JSON-LD Schema (for rich FAQ results) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What is the difference between Organization and LocalBusiness schema?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Organization schema describes any kind of company, brand, or entity (online store, NGO, corporation, etc.). LocalBusiness is a more specific subtype that inherits from Organization and adds location-specific properties like address, geo coordinates, openingHours, priceRange, and telephone. Use Organization alone for non-local or multi-location brands; use LocalBusiness when you have a physical storefront or service area."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Should I put Article or BlogPosting schema on every blog post?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes - BlogPosting (a subtype of Article) is the recommended type for most individual blog posts and news articles in 2026. It supports headline, datePublished, author (Person or Organization), image, publisher, and articleBody. Use the more general Article type only for evergreen long-form content that isn’t time-sensitive (guides, ultimate lists). Always include mainEntityOfPage pointing to the canonical URL."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does BreadcrumbList schema improve click-through rate?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes, indirectly. BreadcrumbList displays breadcrumb navigation in Google search results (instead of just the URL path), making the result more clickable and trustworthy. It also helps Google understand site structure better, which can improve internal linking signals and crawl efficiency. It’s low-effort, high-reward structured data for almost every site with more than one level of hierarchy."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I use Person schema for authors on my blog?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes - and you should. Person schema in the author property of Article/BlogPosting helps Google build author knowledge panels, show bylines more prominently, and strengthen E-E-A-T signals. Include name, url (author archive), sameAs (social profiles, LinkedIn, ORCID), jobTitle, and worksFor (Organization). Consistent author markup across posts builds topical authority faster."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is Organization schema required for local businesses?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No, but it’s strongly recommended. LocalBusiness already inherits most Organization properties, so you can nest Organization inside LocalBusiness or use LocalBusiness directly. However, many experts recommend a separate Organization block on the homepage (with sameAs and logo) to establish the brand entity clearly, then use LocalBusiness on location pages. This dual approach maximizes Knowledge Graph presence and local pack visibility."
-        }
-      }
-    ]
-  }
-  </script>
 </section>
 
 
@@ -1220,64 +1324,6 @@
       </div>
     </details>
   </div>
-
-  <!-- FAQPage JSON-LD Schema (for rich FAQ results) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Does FAQPage schema still show expanded answers in Google search results?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes - as of 2026, FAQPage schema can trigger expandable FAQ rich results (accordion-style questions in SERPs), especially for how-to or support-style content. Google is selective: it favors concise, unique answers that match user intent and avoids over-optimization (e.g., repeating the same FAQ across many pages). Best results come from 3–8 high-quality Q&As per page."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can HowTo schema appear as a step-by-step carousel in search results?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes - HowTo schema is one of the most visual rich results types. When implemented correctly (with step images, duration, supply/tool lists), Google often displays it as a numbered step carousel or expanded steps directly in SERPs. This format significantly boosts click-through rates for instructional content like recipes, DIY guides, tutorials, and software how-tos."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What’s the best way to mark up embedded videos with VideoObject schema?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Use VideoObject inside the main entity (e.g., Article or HowTo) or as a standalone on video pages. Key properties: thumbnailUrl, uploadDate, duration (ISO 8601), contentUrl or embedUrl, description, and transcript if available. Google prefers videos hosted on the same domain or with clear ownership signals. This can trigger video thumbnails, key moments, and carousel placements in search and Discover."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does Recipe schema require high-quality photos to show rich results?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes - Google almost always requires at least one high-resolution image (min 1200px wide recommended) for Recipe rich results (ingredients list, cook time, ratings, step carousel). Multiple images (ingredient close-ups, final dish, steps) increase chances of visual rich snippets or video-style carousels. Also include calories, cuisineType, keywords, and AggregateRating for stronger eligibility."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How does AggregateRating work with Event or Review schema for better visibility?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "AggregateRating can be nested inside Event, Recipe, Product, LocalBusiness, or even Review. It shows star ratings and review count in SERPs (e.g., 4.7 ★★★★★ from 312 reviews). For events, it’s powerful for ticketed or recurring events; for reviews, use it on pages with multiple user reviews. Google requires at least 3–5 reviews for stars to appear reliably, and ratings should reflect genuine user feedback to avoid manual actions."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I combine multiple content schemas like HowTo + VideoObject on one page?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes - and it’s encouraged. For example, a tutorial page can have HowTo as the main entity, with VideoObject nested in steps or as a separate block. Google can display combined rich results (step carousel + video thumbnail). Just ensure the markup is valid, non-duplicate, and accurately represents the page content to avoid suppression."
-        }
-      }
-    ]
-  }
-  </script>
 </section>
 
 <!-- FAQPage Schema Section -->
@@ -1969,72 +2015,6 @@
       </div>
     </details>
   </div>
-
-  <!-- FAQPage JSON-LD Schema (for rich FAQ results) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Does JobPosting schema help appear in Google for Jobs?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes - JobPosting schema is the primary structured data type Google uses to populate the Google for Jobs carousel and job search results. Key requirements include title, description, hiringOrganization, jobLocation (with address or geo), datePosted, validThrough, employmentType, baseSalary (with currency and value), and directApply or application link. Accurate markup significantly increases visibility for job listings."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can Course schema appear in Google search results as a course carousel?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes - Course schema can trigger rich course cards or carousels in SERPs, especially for educational queries. Required properties: name, description, provider (Organization), hasCourseInstance (with courseMode, courseWorkload, location if applicable), and offers (for paid courses). Google favors courses with clear provider branding, duration, and syllabus details. It works best for online courses, university programs, or certification training."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What properties make SoftwareApplication schema eligible for app rich results?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "SoftwareApplication (or subtypes like WebApplication, MobileApplication) needs name, description, operatingSystem, applicationCategory, offers (price or free), aggregateRating, review, screenshot (multiple URLs), and download/install URLs. Google can display app icons, ratings, screenshots, and price in SERPs or app carousels. Consistent use across app pages boosts visibility in software-related searches."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does Book schema help books appear in Google Books or rich snippets?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes - Book schema (with name, author (Person), isbn, bookFormat, numberOfPages, publisher, datePublished, bookEdition, offers, and aggregateRating) can trigger rich book cards with cover image, author, price, and buy links. It’s most effective on book landing pages or author sites. Google may also connect it to Google Books listings for better discoverability."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "When should I use Dataset schema instead of just describing data in text?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Dataset schema is ideal for publicly available, downloadable datasets (CSV, JSON, Excel, etc.). Key properties: name, description, creator, publisher, datePublished, distribution (DownloadAction with encodingFormat and contentUrl), license, and variableMeasured. It helps datasets appear in Google Dataset Search and rich snippets for data-related queries. Use it on data repository pages, research papers, or open data portals."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What is Speakable schema and when does it trigger voice results?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Speakable schema marks up text on a page that is suitable for voice readout (Google Assistant, smart speakers). Use speakable with cssSelector or xpath to point to key sections (e.g., headline, intro paragraph). It triggers in voice search results and Assistant read-aloud features. Best for news articles, how-to guides, or FAQ pages where concise, natural-language text exists."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How strict is Google on FactCheck schema for claim reviews?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "FactCheck (ClaimReview) schema is tightly moderated. It requires claimReviewed, itemReviewed (CreativeWork), author (Organization with fact-checking credentials), datePublished, reviewRating (true/false/mostly-true scale), and url to sources. Google only shows FactCheck rich results for verified fact-checking organizations. Misuse can lead to suppression or penalties, it’s not for general opinion pieces."
-        }
-      }
-    ]
-  }
-  </script>
 </section>
 
 <!-- JobPosting Schema Section -->
@@ -2981,7 +2961,7 @@
 
         <div class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-8">
           <p>Published: 2026-03-10</p>
-          <p>Last updated: 2026-03-10</p>
+          <p>Last updated: 2026-03-11</p>
         </div>
       </div>
 

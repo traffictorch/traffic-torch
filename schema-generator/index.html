@@ -50,8 +50,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
 <!-- Optimized SEO Title & Description -->
-<title>Schema Markup Generator & Detector Tool</title>
-<meta name="description" content="Free schema generator tool: Scan URLs for existing markup, detect opportunities like FAQ or HowTo, recommend enhancements, and generate JSON-LD for better SEO and rich results." />
+<title>Schema Markup Generator & Detector – Free JSON-LD Tool | Traffic Torch</title>
+<meta name="description" content="Instantly detect structured data on any URL and generate SEO-optimized JSON-LD schema (FAQPage, Article, HowTo, LocalBusiness & more). Mobile-friendly, educational tool for rich results.">
 <!-- Robots & Canonical -->
 <meta name="robots" content="index, follow" />
 <link rel="canonical" href="https://traffictorch.net/schema-generator/" />
@@ -68,7 +68,7 @@
 <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/schema-generator/">
 <!-- Open Graph Tags -->
 <meta property="og:title" content="Schema Generator Tool: Detect, Enhance & Generate Markup for SEO Rich Results" />
-<meta property="og:description" content="All-in-one schema tool: Input URL to scan content, get recommendations for FAQ, HowTo, Article schemas, edit/confirm, and generate optimized JSON-LD." />
+<meta property="og:description" content="All-in-one schema tool: Input URL to scan content, Generate Schema for FAQ, HowTo, Article, edit/confirm, and generate optimized JSON-LD." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://traffictorch.net/schema-generator/" />
 <meta property="og:image" content="https://traffictorch.net/schema-generator/images/schema-generator-1200w.webp" />
@@ -78,7 +78,7 @@
 <!-- Twitter Cards -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Best Schema Markup Generator: Free Tool for Detection & Optimization" />
-<meta name="twitter:description" content="Mobile-friendly schema generator: Analyzes URLs for existing markup, suggests enhancements based on content, and outputs clean JSON-LD for improved UX and SEO." />
+<meta name="twitter:description" content="Mobile-friendly schema generator: Analyzes URLs for existing markup,  Generate Schema for FAQ, HowTo, Article, edit/confirm, and generate optimized JSON-LD." />
 <meta name="twitter:image" content="https://traffictorch.net/schema-generator/images/schema-generator-1200w.webp" />
 <meta name="twitter:site" content="@Guitaralize" />
 <!-- Structured Data (JSON-LD) - Merged Single Block -->
@@ -89,7 +89,7 @@
     {
       "@type": "WebPage",
       "name": "Schema Markup Generator & Detector Tool",
-      "description": "Free tool to generate, detect, and enhance schema markup. Scan URLs for opportunities, recommend types like FAQ or HowTo, and output optimized JSON-LD for better rich results.",
+      "description": "Free tool to generate, detect, and enhance schema markup. Scan URLs for opportunities, generate schema types like FAQ or HowTo, and output optimized JSON-LD for better rich results.",
       "url": "https://traffictorch.net/schema-generator/",
       "publisher": {
         "@type": "Organization",
@@ -106,7 +106,7 @@
         "price": "0",
         "priceCurrency": "USD"
       },
-      "description": "All-in-one schema generator: Detects existing markup, analyzes content for recommendations, allows editing, and generates JSON-LD for enhanced SEO and UX.",
+      "description": "All-in-one schema generator: Detects existing markup, analyzes content and generate 18 schema types, allows editing, and generates JSON-LD for enhanced SEO and UX.",
       "url": "https://traffictorch.net/schema-generator/",
       "image": "https://traffictorch.net/schema-generator/images/schema-generator-1200w.webp"
     },
@@ -117,7 +117,7 @@
         "@id": "https://traffictorch.net/schema-generator/"
       },
       "headline": "Schema Generator Tool: Detect & Generate Markup for Rich Results",
-      "description": "Free schema markup tool to scan pages, detect opportunities, recommend enhancements, and generate JSON-LD. Improves SEO visibility and user experience.",
+      "description": "Free schema markup tool to scan pages, and generate 18 schema types in JSON-LD. Improves SEO visibility and user experience.",
       "url": "https://traffictorch.net/schema-generator/",
       "image": [
         {
@@ -126,7 +126,7 @@
           "contentUrl": "https://traffictorch.net/schema-generator/images/schema-generator-1200w.webp",
           "width": 1200,
           "height": 630,
-          "caption": "Traffic Torch Schema Generator Tool dashboard: Instant URL scan for existing markup, content analysis for recommendations like FAQ or HowTo, user editing, and JSON-LD output – mobile-friendly reports with educational tips"
+          "caption": "Traffic Torch Schema Generator Tool dashboard: Instant URL scan for existing markup, content analysis for like FAQ or HowTo and 18 schema types, user editing, and JSON-LD output – mobile-friendly reports with educational tips"
         }
       ],
       "author": {
@@ -143,7 +143,7 @@
         }
       },
       "datePublished": "2026-03-09T10:40:00+11:00",
-      "dateModified": "2026-03-09T10:40:00+11:00"
+      "dateModified": "2026-03-11T14:24:00+11:00"
     },
     {
       "@type": "Person",
@@ -193,7 +193,7 @@
           "name": "What is schema markup and why is it important for SEO?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Schema markup is structured data that helps search engines understand your content better, leading to rich results like FAQs or carousels in SERPs. It can boost CTR by 20-30% and improves UX by clarifying entities. Traffic Torch detects existing schema and recommends additions based on your page elements."
+            "text": "Schema markup is structured data (usually JSON-LD) added to your HTML that helps search engines understand your content better. It enables rich results like star ratings, FAQs in SERPs, carousels, or enhanced snippets, which can improve click-through rates and make your pages more informative for users and voice search."
           }
         },
         {
@@ -424,66 +424,89 @@
 
       <div id="results" class="hidden mt-10"></div>
 
-      <!-- Manual Schema Creation Section – always visible, independent of scan -->
-      <div class="mt-16 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
-        <h2 class="text-3xl md:text-4xl font-black text-center mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-          Create Schema Manually
-        </h2>
-        <p class="text-center text-lg mb-10 max-w-3xl mx-auto opacity-80">
-          Select a schema type below to build it from scratch. Pre-filled values will appear when possible — review and complete before generating code.
-        </p>
-        <select id="manual-schema-type" class="w-full max-w-xl mx-auto block px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg">
-          <option value="">-- Select Schema Type --</option>
-          <optgroup label="Core / Foundational">
-            <option value="Organization">Organization</option>
-            <option value="Article">Article / BlogPosting</option>
-            <option value="LocalBusiness">LocalBusiness</option>
-            <option value="Person">Person</option>
-            <option value="BreadcrumbList">BreadcrumbList</option>
-          </optgroup>
-          <optgroup label="Content & Engagement">
-            <option value="FAQPage">FAQPage</option>
-            <option value="HowTo">HowTo</option>
-            <option value="VideoObject">VideoObject</option>
-            <option value="Recipe">Recipe</option>
-            <option value="Event">Event</option>
-            <option value="Review">Review / AggregateRating</option>
-          </optgroup>
-          <optgroup label="Advanced & Specialized">
-            <option value="JobPosting">JobPosting</option>
-            <option value="Course">Course</option>
-            <option value="SoftwareApplication">SoftwareApplication</option>
-            <option value="Book">Book</option>
-            <option value="Dataset">Dataset</option>
-            <option value="Speakable">Speakable</option>
-            <option value="FactCheck">FactCheck</option>
-          </optgroup>
-        </select>
-        <div id="manual-editor-container" class="mt-10"></div>
-        <div id="manual-preview-container" class="mt-10 hidden">
-          <h3 class="text-2xl font-bold mb-4 text-center">Live JSON-LD Preview</h3>
-          <pre id="manual-preview" class="bg-gray-900 text-green-300 p-6 rounded-xl overflow-auto max-h-96 font-mono leading-relaxed break-words whitespace-pre-wrap">// Select a type above to start building</pre>
-        </div>
-<div id="manual-actions" class="mt-8 flex flex-col gap-6 justify-center hidden">
-  <div class="flex items-center justify-center gap-3">
-    <input type="checkbox" id="wrap-script-tags" class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-    <label for="wrap-script-tags" class="text-sm font-medium text-gray-700 dark:text-gray-300">
-      Wrap in &lt;script type="application/ld+json"&gt; tags
+<!-- Manual Schema Creation Section – always visible, independent of scan -->
+<div class="mt-16 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 md:p-10 border border-gray-200 dark:border-gray-700">
+  <h2 class="text-3xl md:text-4xl font-black text-center mb-6 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+    Create Schema Manually
+  </h2>
+  
+  <p class="text-center text-lg mb-8 max-w-3xl mx-auto opacity-80">
+    Select a schema type below to build it from scratch. Pre-filled values will appear when possible — review and complete before generating code.
+  </p>
+
+  <!-- Accessible Label + Select -->
+  <div class="max-w-xl mx-auto mb-10">
+    <label 
+      for="manual-schema-type" 
+      class="block text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3 text-center md:text-left"
+    >
+      Choose Schema Type
     </label>
+    
+    <select 
+      id="manual-schema-type" 
+      class="w-full px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg shadow-sm"
+      aria-describedby="schema-type-desc"
+    >
+      <option value="">-- Select Schema Type --</option>
+      <optgroup label="Core / Foundational">
+        <option value="Organization">Organization</option>
+        <option value="Article">Article / BlogPosting</option>
+        <option value="LocalBusiness">LocalBusiness</option>
+        <option value="Person">Person</option>
+        <option value="BreadcrumbList">BreadcrumbList</option>
+      </optgroup>
+      <optgroup label="Content & Engagement">
+        <option value="FAQPage">FAQPage</option>
+        <option value="HowTo">HowTo</option>
+        <option value="VideoObject">VideoObject</option>
+        <option value="Recipe">Recipe</option>
+        <option value="Event">Event</option>
+        <option value="Review">Review / AggregateRating</option>
+      </optgroup>
+      <optgroup label="Advanced & Specialized">
+        <option value="JobPosting">JobPosting</option>
+        <option value="Course">Course</option>
+        <option value="SoftwareApplication">SoftwareApplication</option>
+        <option value="Book">Book</option>
+        <option value="Dataset">Dataset</option>
+        <option value="Speakable">Speakable</option>
+        <option value="FactCheck">FactCheck</option>
+      </optgroup>
+    </select>
+
+    <!-- Optional help text for screen readers -->
+    <p id="schema-type-desc" class="mt-2 text-sm text-gray-600 dark:text-gray-400 text-center md:text-left">
+      Select a schema to generate ready-to-use JSON-LD code.
+    </p>
   </div>
-  <div class="flex flex-col sm:flex-row gap-4 justify-center">
-    <button id="manual-copy-btn" class="px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition">
-      Copy JSON-LD
-    </button>
-    <button id="manual-validate-btn" class="px-10 py-4 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-xl transition">
-      Validate with Google
-    </button>
+
+  <div id="manual-editor-container" class="mt-10"></div>
+
+  <div id="manual-preview-container" class="mt-10 hidden">
+    <h3 class="text-2xl font-bold mb-4 text-center">Live JSON-LD Preview</h3>
+    <pre id="manual-preview" class="bg-gray-900 text-green-300 p-6 rounded-xl overflow-auto max-h-96 font-mono leading-relaxed break-words whitespace-pre-wrap">// Select a type above to start building</pre>
+  </div>
+
+  <div id="manual-actions" class="mt-8 flex flex-col gap-6 justify-center hidden">
+    <div class="flex items-center justify-center gap-3">
+      <input type="checkbox" id="wrap-script-tags" class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+      <label for="wrap-script-tags" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+        Wrap in &lt;script type="application/ld+json"&gt; tags
+      </label>
+    </div>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <button id="manual-copy-btn" class="px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition">
+        Copy JSON-LD
+      </button>
+      <button id="manual-validate-btn" class="px-10 py-4 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-xl transition">
+        Validate with Google
+      </button>
+    </div>
   </div>
 </div>
-      </div>
-    </div>
-  
-      <div class="center-btn-container">
+
+<div class="center-btn-container">
   <button
     class="copy-link-btn"
     onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
@@ -1417,7 +1440,7 @@
         </p>
         <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2026-03-09</p>
-          <p>Last updated: 2026-03-10</p>
+          <p>Last updated: 2026-03-11</p>
         </div>
       </div>
     </div>
