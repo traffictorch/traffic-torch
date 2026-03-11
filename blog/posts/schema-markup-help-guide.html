@@ -3020,18 +3020,23 @@
 </script>
 
 <!-- Bottom Banner – Schema Generator focused -->
-<section class="bottom-banner mt-8 mb-12 sm:mt-12 sm:mb-16 px-4 sm:px-6 lg:px-8" aria-label="Schema Markup Visual Summary">
-  <div class="max-w-5xl mx-auto">
-    <img
-      src="/schema-generator/images/schema-markup-banner-800x290.webp"
-      alt="Schema Markup Generator – Unlock rich results with JSON-LD: FAQ, HowTo, Review, LocalBusiness, JobPosting, Course & more – Traffic Torch"
+<section class="bottom-banner mt-12 mb-16 px-4 sm:px-6 lg:px-8" aria-label="Traffic Torch Schema Generator">
+  <picture style="--banner-ratio: 36.25%;"> <!-- 290 / 800 = 36.25% aspect ratio -->
+    <source 
+      media="(max-width: 640px)" 
+      srcset="/schema-generator/images/schema-markup-banner-480x174.webp">
+    <img 
+      src="/schema-generator/images/schema-markup-banner-800x290.webp" 
+      srcset="/schema-generator/images/schema-markup-banner-480x174.webp 480w,
+              /schema-generator/images/schema-markup-banner-800x290.webp 800w" 
+      sizes="(max-width: 640px) 100vw, 800px"
+      alt="Traffic Torch Schema Markup Help Guide for JSON-LD rich results: FAQPage, HowTo, Article, LocalBusiness, Product, Review, Event, Course, JobPosting & more"
       class="w-full rounded-2xl shadow-xl object-cover mx-auto"
       width="800"
       height="290"
       loading="lazy"
-      decoding="async"
-    >
-  </div>
+      decoding="async">
+  </picture>
 </section>
 
 </main>

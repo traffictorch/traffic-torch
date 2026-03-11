@@ -249,9 +249,11 @@ doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
         </div>
       `;
 
-      // Attach shared features
-      initShareReport(results);
-      initSubmitFeedback(results);
+// Attach shared features AFTER DOM update
+setTimeout(() => {
+  initShareReport(results);
+  initSubmitFeedback(results);
+}, 0);
 
       results.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
