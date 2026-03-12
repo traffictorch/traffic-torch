@@ -321,8 +321,45 @@ results.innerHTML = `
   <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <!-- ... your existing share form code ... -->
   </div>
+  <!-- Feedback Form (unchanged) -->
   <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
-    <!-- ... your existing feedback form code ... -->
+    <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
+      <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
+        Feedback for AI Audit Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
+      </p>
+      <form id="feedback-form" class="space-y-6">
+        <div>
+          <label for="feedback-rating" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
+          <div class="flex gap-3 text-3xl justify-center sm:justify-start">
+            <button type="button" data-rating="1" class="hover:scale-125 transition">😞</button>
+            <button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button>
+            <button type="button" data-rating="3" class="hover:scale-125 transition">😐</button>
+            <button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button>
+            <button type="button" data-rating="5" class="hover:scale-125 transition">😍</button>
+          </div>
+          <input type="hidden" id="feedback-rating" name="rating">
+        </div>
+        <div>
+          <label class="flex items-center gap-2 justify-center sm:justify-start">
+            <input type="checkbox" id="reply-requested" class="w-5 h-5">
+            <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span>
+          </label>
+        </div>
+        <div id="email-group" class="hidden">
+          <label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label>
+          <input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label>
+          <textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center sm:text-left">
+            <span id="char-count">0</span>/1000 characters
+          </p>
+        </div>
+        <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
+      </form>
+      <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
+    </div>
   </div>
 </div>
 `;
