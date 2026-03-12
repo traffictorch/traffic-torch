@@ -1,67 +1,55 @@
 const metricExplanations = [
   {
-    id: "perplexity",
-    emoji: "🧠",
-    name: "Perplexity",
-    what: "The degree to which your text uses unpredictable and varied word sequences rather than common, formulaic patterns. Human writers naturally create surprise and diversity in phrasing, while AI often relies on statistically probable combinations that feel repetitive and robotic.",
-    how: "Calculates bigram and trigram entropy to measure how surprising word pairings are. Higher entropy indicates more creative, human-like flow; low entropy reveals predictable patterns typical of AI generation.",
-    why: "Search engines and AI detectors increasingly penalize predictable text. High perplexity signals authentic human creativity, boosts engagement, and reduces the risk of being flagged as AI-generated content."
+    id: "ai-visibility",
+    emoji: "🌐",
+    name: "AI Visibility",
+    what: "Measures how discoverable, understandable, trustworthy, and citable your content is to large language models and voice-first assistants (Gemini, Perplexity, Grok, ChatGPT Search, etc.). Includes entity salience, citation probability, parseability, freshness signals, and training data inclusion likelihood. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html#ai-visibility-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Client-side computation using compromise.js NLP: extracts named entities for Share of Voice %, counts citable elements (stats, quotes, references) for Citation Frequency, and evaluates direct-answer paragraphs (40–60 words with facts) for Presence Rate. Adds boosts for question sentences and relevant schema. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html#ai-visibility-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    why: "Voice and AI assistants now dominate queries. Low AI Visibility means missing Position Zero voice answers, AI summaries, brand mentions, and indirect SEO lift. High visibility makes content the go-to source for Gemini, Perplexity, Grok and ChatGPT voice responses. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html#ai-visibility-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
-    id: "burstiness",
-    emoji: "📏",
-    name: "Burstiness",
-    what: "The natural variation in sentence and word lengths that creates rhythm and emphasis in writing. Human text has bursts of short, punchy sentences mixed with longer, flowing ones, while AI often produces uniform lengths for consistency.",
-    how: "Measures statistical variance in both sentence length (words) and word length (characters). Significant deviation from the average indicates natural human rhythm rather than mechanical uniformity.",
-    why: "Readers engage more with text that has natural flow and emphasis. Search engines favor content that mirrors human writing patterns, improving dwell time, trust signals, and overall ranking potential."
+    id: "content-quality",
+    emoji: "✍️",
+    name: "Content Quality",
+    what: "Evaluates how natural, human-like, engaging, and voice-friendly your writing sounds when read aloud. Covers natural language patterns, burstiness/perplexity, repetition avoidance, emotional resonance, confidence markers, and ideal spoken-answer conciseness (40–90 seconds). <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html#content-quality-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Uses compromise.js for Flesch-Kincaid readability approximation, average sentence length (peaks at ~50 words), pronoun ratio (rewards conversational tone), and entity coverage (authority signals). Boosts for question sentences; penalises low readability. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html#content-quality-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    why: "AI assistants prefer content that mimics trusted human speech. Poor quality (robotic, repetitive, flat tone) reduces selection for voice answers and summaries. High quality improves dwell time, trust signals, and ranking in voice-first and generative results. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html#content-quality-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
-    id: "repetition",
-    emoji: "🔁",
-    name: "Repetition",
-    what: "The frequency with which exact phrases (bigrams and trigrams) repeat throughout the text. Humans instinctively vary expression, while AI models often reuse high-probability phrases to stay safe and coherent.",
-    how: "Tracks the maximum occurrences of any two-word or three-word sequence. Low repetition of exact phrases indicates diverse, natural expression rather than pattern reliance.",
-    why: "Excessive phrase repetition makes content feel robotic and reduces perceived originality. Varied expression improves readability, authority, and helps avoid AI detection flags in modern search algorithms."
+    id: "snippet-visibility",
+    emoji: "🔍",
+    name: "Snippet Visibility",
+    what: "Measures likelihood of appearing as a featured snippet, rich result or direct voice answer (Position Zero). Checks direct-answer formatting, question alignment, structured data support (FAQPage, HowTo, Speakable), zero-click readiness, and multi-engine compatibility. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html#snippet-visibility-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "DOM + NLP scan: counts question headings followed by lists/tables for Snippet Ownership %, evaluates 40–60 word factual paragraphs for Zero-Click Share, and combines schema (FAQ/HowTo/Speakable) with structure score for AI Overview Appearances. Boosts for question-heavy or blog/news sites. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html#snippet-visibility-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    why: "Most voice queries end in zero-click answers. Winning snippet/Position Zero captures voice traffic, brand exposure, and indirect ranking lift. Without strong snippet signals, content is bypassed even if technically excellent. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html#snippet-visibility-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
-    id: "sentence-length",
-    emoji: "📝",
-    name: "Sentence Length",
-    what: "The balance between average sentence length and structural complexity that creates readable, sophisticated prose. Human writers mix concise statements with layered ideas, while AI often defaults to either overly simple or convoluted structures.",
-    how: "Combines average sentence word count (ideal 15–23) with comma usage as a proxy for clauses and complexity. Balanced length and moderate complexity reflect natural human thought patterns.",
-    why: "Optimal sentence variety enhances readability and comprehension. Search engines prioritize content that feels natural and authoritative, improving user satisfaction signals and ranking performance."
+    id: "sentiment-quality",
+    emoji: "❤️",
+    name: "Sentiment Quality",
+    what: "Assesses emotional tone, trust signals, positivity, confidence, and human resonance as perceived by AI assistants. Includes positive valence, confidence markers, empathy/relatability, trust/authority signals, and voice-friendly emotional delivery. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html#sentiment-quality-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Uses word-list sentiment (positive/negative counts), hallucination risk (entity + speculative language mismatches), and mention sentiment (brand/product context tone). Boosts for e-commerce positive tone; penalises dominant negativity. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html#sentiment-quality-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    why: "AI prioritises confident, positive, empathetic content for voice answers and recommendations. Poor sentiment increases hallucination risk and deprioritisation — especially in trust-sensitive verticals — while high quality boosts citation and likability. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html#sentiment-quality-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
-    id: "vocabulary",
-    emoji: "📚",
-    name: "Vocabulary",
-    what: "The richness and diversity of word choice, including unique terms and rare words that demonstrate depth of knowledge. Human experts naturally use specialized, context-specific vocabulary, while AI tends toward safe, common words.",
-    how: "Measures unique word ratio and frequency of hapax legomena (words appearing only once). High diversity and rare word usage indicate genuine expertise rather than generic output.",
-    why: "Rich vocabulary signals authority and depth to both readers and search engines. It creates authentic expert tone, improves topical authority signals, and helps content stand out as genuinely human-written."
+    id: "traditional-keywords",
+    emoji: "🔑",
+    name: "Traditional Keywords",
+    what: "Evaluates effective placement and density of exact-match, semantic, and long-tail keywords that anchor intent matching in 2026. Covers title/H1 placement, long-tail/question keyword integration, semantic/LSI coverage, density/distribution, and voice-query alignment. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html#traditional-keywords-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Compromise.js detects question sentences for Conversational Rankings Sim, counts 4+ word clauses for Long-Tail Density, and combines average phrase length with commonality (rare words = higher score) for Query Volume/Difficulty. Boosts question-heavy or blog/news content. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html#traditional-keywords-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    why: "Keywords remain the entry ticket for relevance, retrieval, and disambiguation across all engines and assistants. Weak keyword signals create a visibility floor — even perfect AI/voice scores cannot compensate for poor intent matching in 2026. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html#traditional-keywords-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
-    id: "ai-content-overview",
-    emoji: "🤖",
-    name: "AI Detection",
-    what: "",
+    id: "ai-voice-overview",
+    emoji: "🔥",
+    name: "AI Voice Search Help Guide",
+    what: "Your 360° Voice Search Readiness Score combines AI Visibility, Content Quality, Snippet Visibility, Sentiment Quality, and Traditional Keywords into one instant health metric. See gaps, get fixes, and compare against competitors. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Read the full guide →</a>",
     how: "",
     why: ""
   }
 ];
 
-function openDetailsFromHash() {
-  if (window.location.hash) {
-    const hash = window.location.hash.substring(1);
-    const target = document.getElementById(hash);
-    if (target) {
-      const details = target.querySelector('details');
-      if (details) {
-        details.open = true;
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }
-  }
-}
+// Keep your existing openDetailsFromHash() function unchanged
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOMContentLoaded fired – starting card render');
@@ -75,8 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
   container.innerHTML = metricExplanations.map((m, index) => {
     console.log(`Rendering card ${index + 1}/${metricExplanations.length}: ${m.id} (${m.name})`);
 
-    if (m.id === "ai-content-overview") {
-      console.log('Rendering special overview card');
+    // Special overview card (last one)
+    if (m.id === "ai-voice-overview") {
       return `
         <div id="${m.id}" class="bg-gradient-to-br from-pink-50 to-orange-50 dark:from-pink-950/30 dark:to-orange-950/20 rounded-3xl shadow-xl p-8 md:p-12 text-center border-2 border-pink-400 dark:border-pink-600">
           <div class="text-6xl mb-6">${m.emoji}</div>
@@ -84,48 +72,43 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto mb-8">
             ${m.what}
           </p>
-          <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide" 
-             class="inline-flex items-center px-10 py-5 bg-gradient-to-r from-pink-500 to-orange-600 text-white text-xl font-bold rounded-2xl shadow-lg hover:scale-105 hover:shadow-pink-500/40 transition duration-300">
-            Full Guide →
-          </a>
         </div>
       `;
     }
 
-    // Normal metric card
+    // Normal metric card with inline Learn more links in each section
     return `
-      <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center">
-        <div class="text-6xl mb-6">${m.emoji}</div>
-        <div class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-6">${m.name}</div>
-        <details class="group">
-          <summary class="cursor-pointer text-orange-700 dark:text-orange-300 font-bold hover:underline inline-flex items-center justify-center gap-2">
-            Quick explanation <span class="text-2xl group-open:rotate-180 transition-transform">↓</span>
+      <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8 hover:shadow-xl transition-shadow border-l-4 border-orange-500">
+        <div class="text-5xl md:text-6xl mb-5 text-center">${m.emoji}</div>
+        <h3 class="text-2xl md:text-3xl font-black text-orange-600 dark:text-orange-400 mb-5 text-center">${m.name}</h3>
+        
+        <details class="group mt-4">
+          <summary class="cursor-pointer text-orange-700 dark:text-orange-300 font-bold hover:underline flex items-center justify-between text-lg">
+            What is ${m.name}?
+            <span class="text-xl group-open:rotate-180 transition-transform">▼</span>
           </summary>
-          <div class="mt-6 space-y-8 text-left max-w-lg mx-auto text-gray-600 dark:text-gray-400 leading-relaxed">
-            <div>
-              <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">What is ${m.name}?</p>
-              <p>${m.what}</p>
-              <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#${m.id}-what" 
-                 class="mt-2 block text-sm font-medium text-orange-600 dark:text-orange-400 hover:underline">
-                Learn more →
-              </a>
-            </div>
-            <div>
-              <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">How is ${m.name} tested?</p>
-              <p>${m.how}</p>
-              <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#${m.id}-how" 
-                 class="mt-2 block text-sm font-medium text-orange-600 dark:text-orange-400 hover:underline">
-                Learn more →
-              </a>
-            </div>
-            <div>
-              <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">Why does ${m.name} matter?</p>
-              <p>${m.why}</p>
-              <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide#${m.id}-why" 
-                 class="mt-2 block text-sm font-medium text-orange-600 dark:text-orange-400 hover:underline">
-                Learn more →
-              </a>
-            </div>
+          <div class="mt-4 px-2 text-gray-700 dark:text-gray-300 leading-relaxed">
+            ${m.what}
+          </div>
+        </details>
+
+        <details class="group mt-4">
+          <summary class="cursor-pointer text-orange-700 dark:text-orange-300 font-bold hover:underline flex items-center justify-between text-lg">
+            How is ${m.name} tested?
+            <span class="text-xl group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <div class="mt-4 px-2 text-gray-700 dark:text-gray-300 leading-relaxed">
+            ${m.how}
+          </div>
+        </details>
+
+        <details class="group mt-4">
+          <summary class="cursor-pointer text-orange-700 dark:text-orange-300 font-bold hover:underline flex items-center justify-between text-lg">
+            Why does ${m.name} matter?
+            <span class="text-xl group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <div class="mt-4 px-2 text-gray-700 dark:text-gray-300 leading-relaxed">
+            ${m.why}
           </div>
         </details>
       </div>
@@ -135,5 +118,3 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('Cards rendered – final HTML length:', container.innerHTML.length);
   openDetailsFromHash();
 });
-
-window.addEventListener('hashchange', openDetailsFromHash);

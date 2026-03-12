@@ -138,8 +138,8 @@
       "headline": "AI Voice Search Help Guide 2026",
       "description": "Complete 2026 guide to optimizing for voice search: conversational keywords, featured snippets, schema markup, local intent, speed optimizations, and AI assistant ranking strategies – from Traffic Torch.",
       "image": "https://traffictorch.net/blog/images/ai-voice-search-help-guide/ai-voice-search-help-guide-1200w.webp",
-      "datePublished": "2026-03-12T16:22:00+11:00",
-      "dateModified": "2026-03-12T18:24:00+11:00",   
+      "datePublished": "2026-03-13T16:22:00+11:00",
+      "dateModified": "2026-03-13T18:24:00+11:00",   
       "author": {
         "@type": "Person",
         "name": "Traffic Torch Team",
@@ -665,17 +665,18 @@
 </section>
 
 
-<!-- Module 1: AI Visibility – What is it? subsection only -->
+<!-- Module 1: AI Visibility – full module rewritten without prose classes -->
 <section id="ai-visibility" class="mb-20 scroll-mt-24">
   <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">
     AI Visibility
   </h2>
 
+  <!-- What is it? -->
   <div class="mb-16">
     <h3 id="ai-visibility-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
       What is it?
     </h3>
-    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none leading-relaxed text-gray-800 dark:text-gray-200">
+    <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
       <p><strong>AI Visibility measures how discoverable, understandable, trustworthy, and citable your content is to large language models, generative AI systems, and modern voice-first assistants.</strong></p>
 
       <p>In the traditional Google search era (roughly 2010–2018), this concept did not really exist under that name. Rankings were driven primarily by PageRank, keyword density, backlinks, on-page optimisation, and basic crawlability. Voice search started to change the equation around 2016–2019 when Google Assistant, Alexa, Siri, and Cortana became mainstream. Suddenly the engine had to choose <em>one single authoritative answer</em> to speak aloud instead of displaying ten blue links. This made featured snippets (Position Zero) extremely valuable, but the visibility game was still mostly controlled by traditional ranking signals.</p>
@@ -683,7 +684,7 @@
       <p>The real shift began in 2022–2023 with the public release of ChatGPT, followed by Perplexity, Grok, Gemini, and Claude. These systems do not just rank — they read, summarise, synthesise, attribute, and sometimes generate answers without ever sending the user to your site. By 2026 this behaviour dominates many query types, especially on mobile and smart devices where voice is the primary input method.</p>
 
       <p>Today AI Visibility includes several layers:</p>
-      <ul class="list-disc pl-8 mt-4 space-y-3">
+      <ul class="list-disc pl-8 mt-4 space-y-3 text-lg">
         <li>Entity salience — how clearly and authoritatively your brand, topic, or page is recognised as a source.</li>
         <li>Citation probability — likelihood that an LLM will reference or quote your content instead of hallucinating or using a competitor.</li>
         <li>Parseability — how well structured data, clean HTML, and semantic markup allow AI to extract facts accurately.</li>
@@ -695,66 +696,170 @@
     </div>
   </div>
 
-<!-- How it's Tested? – matches computeAIVisibility() logic exactly -->
+  <!-- How it's Tested? -->
+  <div class="mb-16">
+    <h3 id="ai-visibility-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
+      How it's Tested?
+    </h3>
+    <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+      <p><strong>Traffic Torch computes AI Visibility client-side using a three-sub-metric model powered by compromise.js (NLP library) and direct DOM inspection.</strong> The function requires at least 300 characters of readable text. Shorter content receives a flat low score of 20 with a clear warning to add more depth.</p>
+
+      <p>The overall score (0–100) is the simple average of three weighted sub-metrics, with small conditional boosts applied afterward. Here is exactly how each part is calculated:</p>
+
+      <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
+        <li>
+          <strong>Share of Voice % (SOV)</strong><br />
+          Extracts named entities (people, places, organizations) using compromise.js NLP. Calculates entity density as a percentage of total words. Combines this with schema detection (looking for SpeakableSpecification, FAQPage, Article, Product types in JSON-LD scripts). Final SOV is the weighted average (entity density × 2 + schema score) / 3, capped at 100.
+        </li>
+        <li>
+          <strong>Citation Frequency</strong><br />
+          Counts verifiable elements that make content citable: numbers/percentages (e.g. 42%, 1.5m), quoted phrases, and source-reference phrases ("according to", "source", "cite"). Normalizes the total count per 1,000 characters and scales to 0–100.
+        </li>
+        <li>
+          <strong>Presence Rate</strong><br />
+          Splits content into paragraphs (>50 chars). Counts how many fall in the ideal voice-answer sweet spot: 40–60 words, contain at least one fact/number, and form complete sentences. Percentage of qualifying paragraphs becomes the score (0–100).
+        </li>
+      </ol>
+
+      <p class="mt-6">Additional boosts:</p>
+      <ul class="list-disc pl-8 mt-4 space-y-3 text-lg">
+        <li>+10 points if schema score >50 <strong>and</strong> the page contains question sentences (voice AI strongly favors Q&A formats).</li>
+        <li>+5 points for e-commerce (Product schema detected) or news/article sites (time[datetime] elements present).</li>
+      </ul>
+
+      <p class="mt-6">Error handling is graceful — if compromise.js fails or parsing crashes, the module returns score 0 with an error note. All computation happens in the browser with no server calls, preserving privacy and speed.</p>
+
+      <p class="mt-8 italic text-base text-gray-600 dark:text-gray-400">
+        This client-side simulation approximates how modern AI assistants (Gemini, Grok, Perplexity, ChatGPT Search) evaluate content for inclusion in voice responses and summaries.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it Matters? -->
+  <div class="mb-16">
+    <h3 id="ai-visibility-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
+      Why it Matters?
+    </h3>
+    <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+      <p>In 2026 voice search and AI-generated answers dominate mobile and smart-device queries. Traditional blue-link clicks continue to decline while zero-click responses from Google Gemini, Perplexity voice mode, Grok, ChatGPT Search, and Apple Intelligence rise sharply. Pages with poor AI Visibility are effectively invisible in these formats.</p>
+
+      <p>Low AI Visibility means missing out on direct voice traffic, which now accounts for 50–70 % of mobile searches in many verticals. It also reduces brand mentions and attribution when AI assistants summarise or quote sources aloud. Being cited by Perplexity or Grok frequently creates indirect SEO lift in traditional rankings through increased perceived authority and referral signals.</p>
+
+      <p>Search engines and AI apps increasingly treat citation likelihood and entity salience as core relevance signals. Content that scores well on AI Visibility is more likely to appear in Position Zero voice answers, rich results, and generative overviews. Pages ignored by LLMs risk being deprioritised across the entire ecosystem as training data and real-time retrieval favour citable, trustworthy sources.</p>
+
+      <p class="mt-8 font-semibold text-xl">AI Visibility is no longer a bonus layer. It is rapidly becoming the primary gatekeeper for visibility in both traditional SERPs and the voice/AI-first future.</p>
+
+      <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
+        <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">
+          Ready to discover your current AI Visibility score?
+        </p>
+        <a href="https://traffictorch.net/ai-voice-search-tool/#ai-visibility"
+           class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">
+          Check AI Visibility on Traffic Torch →
+        </a>
+        <p class="mt-6 text-base">
+          <a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to Table of Contents</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Module 2: Content Quality – What is it? subsection only -->
+<section id="content-quality" class="mb-20 scroll-mt-24">
+  <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">
+    Content Quality
+  </h2>
+
+  <div class="mb-16">
+    <h3 id="content-quality-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
+      What is it?
+    </h3>
+    <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+      <p><strong>Content Quality evaluates how natural, human-like, engaging, and voice-friendly your writing sounds when read aloud by AI assistants or voice search engines.</strong></p>
+
+      <p>In traditional search up to around 2018, content quality was mostly judged by keyword relevance, length, freshness, and basic readability metrics (Flesch-Kincaid score, sentence variety). Google’s Helpful Content Update in 2022 and the rise of E-E-A-T signals started shifting focus toward genuine expertise, experience, authoritativeness, and trustworthiness. Voice search added another layer: content needed to be spoken naturally without sounding robotic, repetitive, or overly formal.</p>
+
+      <p>By 2023–2024 generative AI models (ChatGPT, Grok, Gemini, Claude, Perplexity) changed the game completely. These systems prefer content that mimics high-quality human conversation — varied sentence lengths, natural transitions, emotional nuance, burstiness (mix of short and long sentences), low repetition, and conversational flow. They penalise or deprioritise text that exhibits classic AI-generated patterns: uniform sentence structure, excessive hedging language, predictable phrasing, or lack of personality.</p>
+
+      <p>In 2026 Content Quality for voice and AI search includes these core dimensions:</p>
+      <ul class="list-disc pl-8 mt-4 space-y-3 text-lg">
+        <li>Natural language patterns — varied rhythm, contractions, transitional phrases, and spoken-style wording that flows well aloud.</li>
+        <li>Burstiness & perplexity — healthy mix of simple and complex sentences plus unexpected but logical phrasing that reduces predictability.</li>
+        <li>Repetition avoidance — low overuse of the same words, phrases, or structures that make content sound formulaic or robotic.</li>
+        <li>Emotional & trust resonance — subtle sentiment signals (confidence, empathy, authority) that make AI assistants more likely to recommend or quote the content.</li>
+        <li>Conciseness for voice — key explanations kept digestible (ideal spoken answer length 40–90 seconds) without losing depth or accuracy.</li>
+      </ul>
+
+      <p class="mt-6">Content Quality is now the bridge between traditional SEO and AI-first visibility. A page can rank well in classic search results but still be ignored by voice assistants if the writing feels stiff, repetitive, or machine-generated. High-quality content sounds like a trusted expert speaking directly to the listener.</p>
+    </div>
+  </div>
+
+<!-- How it's Tested? – matches computeContentQuality() logic exactly -->
 <div class="mb-16">
-  <h3 id="ai-visibility-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
+  <h3 id="content-quality-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
     How it's Tested?
   </h3>
-  <div class="prose prose-lg prose-orange dark:prose-invert max-w-none leading-relaxed text-gray-800 dark:text-gray-200">
-    <p><strong>Traffic Torch computes AI Visibility client-side using a three-sub-metric model powered by compromise.js (NLP library) and direct DOM inspection.</strong> The function requires at least 300 characters of readable text; shorter content receives a flat low score of 20 with a clear warning to add more depth.</p>
+  <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+    <p><strong>Traffic Torch computes Content Quality client-side using a four-sub-metric model powered by compromise.js (NLP library).</strong> The function requires at least 300 characters of readable text. Shorter content receives a flat low score of 20 with a clear warning to add more descriptive depth.</p>
 
-    <p>The overall score (0–100) is the simple average of three weighted sub-metrics, with small conditional boosts applied afterward. Here is exactly how each part is calculated:</p>
+    <p>The overall score (0–100) is the simple average of four sub-metrics, with conditional boosts and penalties applied afterward. Here is exactly how each part is calculated:</p>
 
-    <ol class="list-decimal pl-6 mt-6 space-y-4">
+    <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
       <li>
-        <strong>Share of Voice % (SOV)</strong><br />
-        Extracts named entities (people, places, organizations) using compromise.js NLP. Calculates entity density as a percentage of total words. Combines this with schema detection (looking for SpeakableSpecification, FAQPage, Article, Product types in JSON-LD scripts). Final SOV is the weighted average (entity density × 2 + schema score) / 3, capped at 100.
+        <strong>Readability Score</strong><br />
+        Approximates Flesch-Kincaid readability using sentence count, word count, and syllable estimation. Formula: 206.835 – 1.015 × (words/sentences) – 84.6 × (syllables/words). Normalized to 0–100, with higher values (easier to read, ideal grade 6–8) scoring better.
       </li>
       <li>
-        <strong>Citation Frequency</strong><br />
-        Counts verifiable elements that make content citable: numbers/percentages (e.g. 42%, 1.5m), quoted phrases, and source-reference phrases ("according to", "source", "cite"). Normalizes the total count per 1,000 characters and scales to 0–100.
+        <strong>Answer Conciseness</strong><br />
+        Calculates average sentence length across all sentences. Scores peak around 50 words per sentence (ideal for voice answers), with linear drop-off on either side. Formula clamps between 0–100.
       </li>
       <li>
-        <strong>Presence Rate</strong><br />
-        Splits content into paragraphs (>50 chars). Counts how many fall in the ideal voice-answer sweet spot: 40–60 words, contain at least one fact/number, and form complete sentences. Percentage of qualifying paragraphs becomes the score (0–100).
+        <strong>Pronoun Ratio</strong><br />
+        Counts first/second/third-person pronouns via compromise.js. Calculates raw percentage of pronouns vs total words, then scales aggressively (×20) so >5 % pronoun usage reaches near-full points. This rewards conversational tone.
+      </li>
+      <li>
+        <strong>Entity Coverage</strong><br />
+        Extracts named entities (people, places, organizations) using compromise.js. Calculates raw percentage of entities vs total words, then scales (×33.3) so >3 % entity density reaches near-full points. This rewards authority and E-E-A-T signals.
       </li>
     </ol>
 
-    <p class="mt-6">Additional boosts:</p>
-    <ul class="list-disc pl-8 mt-4 space-y-2">
-      <li>+10 points if schema score >50 <strong>and</strong> the page contains question sentences (voice AI strongly favors Q&A formats).</li>
-      <li>+5 points for e-commerce (Product schema detected) or news/article sites (time[datetime] elements present).</li>
+    <p class="mt-6">Additional adjustments:</p>
+    <ul class="list-disc pl-8 mt-4 space-y-3 text-lg">
+      <li>+10 points if more than 5 question sentences are detected (voice AI strongly favours Q&A and FAQ-style content).</li>
+      <li>–10 points if readability falls below 50 (penalises jargon-heavy or overly complex text that is hard for voice synthesis).</li>
     </ul>
 
     <p class="mt-6">Error handling is graceful — if compromise.js fails or parsing crashes, the module returns score 0 with an error note. All computation happens in the browser with no server calls, preserving privacy and speed.</p>
 
-    <p class="mt-8 italic text-sm text-gray-600 dark:text-gray-400">
-      This client-side simulation approximates how modern AI assistants (Gemini, Grok, Perplexity, ChatGPT Search) evaluate content for inclusion in voice responses and summaries.
+    <p class="mt-8 italic text-base text-gray-600 dark:text-gray-400">
+      This client-side simulation closely approximates how AI assistants evaluate content for naturalness, speakability, and citation likelihood in voice responses.
     </p>
   </div>
 </div>
 
-<!-- Why it Matters? -->
+<!-- Why it Matters? – final version with CTA and TOC return -->
 <div class="mb-16">
-  <h3 id="ai-visibility-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
+  <h3 id="content-quality-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
     Why it Matters?
   </h3>
-  <div class="prose prose-lg prose-orange dark:prose-invert max-w-none leading-relaxed text-gray-800 dark:text-gray-200">
-    <p>In 2026 voice search and AI-generated answers dominate mobile and smart-device queries. Traditional blue-link clicks continue to decline while zero-click responses from Google Gemini, Perplexity voice mode, Grok, ChatGPT Search, and Apple Intelligence rise sharply. Pages with poor AI Visibility are effectively invisible in these formats.</p>
+  <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+    <p>In 2026 voice search and AI-generated answers dominate how most people get information on mobile devices and smart speakers. Traditional search results are frequently skipped in favour of spoken summaries or direct voice replies from Google Gemini, Perplexity voice mode, Grok, ChatGPT Search, and Apple Intelligence. Content that sounds robotic, repetitive, or unnatural is almost always ignored by these systems.</p>
 
-    <p>Low AI Visibility means missing out on direct voice traffic, which now accounts for 50–70 % of mobile searches in many verticals. It also reduces brand mentions and attribution when AI assistants summarise or quote sources aloud. Being cited by Perplexity or Grok frequently creates indirect SEO lift in traditional rankings through increased perceived authority and referral signals.</p>
+    <p>Poor Content Quality directly reduces the chance of being selected for Position Zero voice answers and featured snippets. It also lowers the probability that AI assistants will quote, summarise, or recommend your page. When content lacks natural flow, conversational pronouns, varied sentence rhythm, or human-like tone, models often choose more engaging, trustworthy alternatives — even if your page technically ranks higher in classic SERPs.</p>
 
-    <p>Search engines and AI apps increasingly treat citation likelihood and entity salience as core relevance signals. Content that scores well on AI Visibility is more likely to appear in Position Zero voice answers, rich results, and generative overviews. Pages ignored by LLMs risk being deprioritised across the entire ecosystem as training data and real-time retrieval favour citable, trustworthy sources.</p>
+    <p>Modern AI engines heavily penalise or deprioritise text that exhibits clear machine-generated patterns: uniform sentence length, high repetition, low burstiness, excessive hedging, or missing emotional/trust signals. High Content Quality scores signal to both traditional search algorithms and generative AI that the material is helpful, expert-authored, and ready to be spoken aloud without awkward phrasing or listener fatigue.</p>
 
-    <p class="mt-8 font-semibold text-xl">AI Visibility is no longer a bonus layer. It is rapidly becoming the primary gatekeeper for visibility in both traditional SERPs and the voice/AI-first future.</p>
+    <p class="mt-8 font-semibold text-xl">Content Quality is now the deciding factor for whether your page gets read aloud, cited, or recommended in the voice-first and AI-summarised web of 2026. It bridges classic SEO performance with real-world usability in spoken interfaces.</p>
 
     <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
       <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">
-        Ready to discover your current AI Visibility score?
+        Ready to see how natural and voice-ready your content really is?
       </p>
-      <a href="https://traffictorch.net/ai-voice-search-tool/#ai-visibility" 
+      <a href="https://traffictorch.net/ai-voice-search-tool/#content-quality"
          class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">
-        Check AI Visibility on Traffic Torch →
+        Test Content Quality on Traffic Torch →
       </a>
       <p class="mt-6 text-base">
         <a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to Table of Contents</a>
@@ -764,12 +869,345 @@
 </div>
 </section>
 
+<!-- Module 3: Snippet Visibility – What is it? subsection only -->
+<section id="snippet-visibility" class="mb-20 scroll-mt-24">
+  <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">
+    Snippet Visibility
+  </h2>
+
+  <div class="mb-16">
+    <h3 id="snippet-visibility-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
+      What is it?
+    </h3>
+    <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+      <p><strong>Snippet Visibility measures how likely your content is to appear as a featured snippet, rich result, or direct voice answer (Position Zero) in Google search and across AI assistants.</strong></p>
+
+      <p>In traditional Google search from 2014–2019, featured snippets were an optional enhancement that pulled concise answers from top-ranking pages into position zero above the organic results. Voice search made them essential: Google Assistant, Siri, and Alexa began reading these snippets aloud as the primary answer, turning them into the dominant visibility channel for many queries. Winning Position Zero became more valuable than ranking #1 because it captured nearly all the traffic for question-based searches.</p>
+
+      <p>By 2023–2024 generative AI overviews (Google SGE, Perplexity summaries, Grok answers, Gemini responses) expanded the concept further. AI assistants no longer just read one snippet — they synthesise multiple sources into spoken or displayed summaries, often citing the best-structured, most direct-answer content. In 2026 Snippet Visibility is critical across all major platforms: Google Voice / Gemini Live, Perplexity voice mode, ChatGPT Search voice, Grok voice replies, and Apple Intelligence spoken results.</p>
+
+      <p>Today Snippet Visibility includes these core dimensions:</p>
+      <ul class="list-disc pl-8 mt-4 space-y-3 text-lg">
+        <li>Direct-answer formatting — concise paragraphs, lists, tables, or definitions that match the ideal voice-response length (40–90 words / 8–15 seconds spoken).</li>
+        <li>Question alignment — how precisely the content answers common spoken queries without requiring additional scrolling or clicks.</li>
+        <li>Structured data support — presence of FAQPage, HowTo, QAPage, Speakable, or Answer schema that makes extraction trivial for search engines and AI.</li>
+        <li>Zero-click readiness — content that stands alone as a complete, authoritative response without needing context from surrounding page elements.</li>
+        <li>Multi-engine compatibility — optimisation signals (clean HTML, semantic headings, schema) that work consistently across Google, Perplexity, Grok, Gemini, and ChatGPT Search.</li>
+      </ul>
+
+      <p class="mt-6">Snippet Visibility is the make-or-break factor for capturing voice traffic and AI-generated answers. A page can have excellent AI Visibility and Content Quality, but if it fails to deliver a clear, structured, ready-to-speak snippet it will be bypassed in favour of competitors that do. High Snippet Visibility turns your content into the default spoken answer in 2026.</p>
+    </div>
+  </div>
+
+<!-- How it's Tested? – matches computeSnippetVisibility() logic exactly -->
+<div class="mb-16">
+  <h3 id="snippet-visibility-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
+    How it's Tested?
+  </h3>
+  <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+    <p><strong>Traffic Torch computes Snippet Visibility client-side using a three-sub-metric model powered by compromise.js (NLP library) and direct DOM inspection of headings, paragraphs, and schema scripts.</strong> The function requires at least 300 characters of readable text. Shorter content receives a flat low score of 20 with a clear warning to add structured sections such as lists or tables under headings.</p>
+
+    <p>The overall score (0–100) is the simple average of three sub-metrics, with conditional boosts and penalties applied afterward. Here is exactly how each part is calculated:</p>
+
+    <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
+      <li>
+        <strong>Snippet Ownership %</strong><br />
+        Scans all headings (h1–h4) in the DOM. Counts how many are question-based using compromise.js NLP. Also checks if the immediate next sibling after each heading is a list (ul/ol) or table. Calculates percentage of headings that qualify as question + structured content. Score = (questionHeadings + structuredUnder) / total headings × 100.
+      </li>
+      <li>
+        <strong>Zero-Click Share</strong><br />
+        Scans all paragraph elements (p tags) in the DOM. Counts how many meet the ideal voice/snippet criteria: 40–60 words, contain at least one fact/number or question, and are concise/direct. Score = (qualifying paragraphs / total paragraphs) × 100.
+      </li>
+      <li>
+        <strong>AI Overview Appearances</strong><br />
+        Combines schema detection (FAQPage, HowTo, SpeakableSpecification types in JSON-LD scripts, +33 points each) with structure score (structuredUnder × 10 + questionHeadings × 5, capped at 100). Final score = average of schemaScore and structureScore.
+      </li>
+    </ol>
+
+    <p class="mt-6">Additional adjustments:</p>
+    <ul class="list-disc pl-8 mt-4 space-y-3 text-lg">
+      <li>+10 points if more than 5 question sentences are detected or the site type is detected as 'news' or 'blog' (informational pages perform better in snippets per research).</li>
+      <li>–10 points if no structured content (lists/tables) follows any heading (penalises unstructured pages, especially e-commerce without HowTo schema).</li>
+    </ul>
+
+    <p class="mt-6">Error handling is graceful — if compromise.js fails or DOM parsing crashes, the module returns score 0 with an error note. All computation happens in the browser with no server calls, preserving privacy and speed.</p>
+
+    <p class="mt-8 italic text-base text-gray-600 dark:text-gray-400">
+      This client-side simulation closely approximates how Google, Gemini, Perplexity, Grok, and ChatGPT Search evaluate content for featured snippets, voice answers, and AI overview inclusion.
+    </p>
+  </div>
+</div>
+
+<!-- Why it Matters? – final version with CTA and TOC return -->
+<div class="mb-16">
+  <h3 id="snippet-visibility-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
+    Why it Matters?
+  </h3>
+  <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+    <p>In 2026 the majority of mobile and voice queries result in zero-click experiences where users receive an immediate spoken or summarised answer without visiting any website. Featured snippets, rich results, and AI-generated overviews now capture most of the visibility and traffic for question-based searches across Google, Perplexity, Grok, Gemini, and ChatGPT Search. Pages that do not appear in these formats are effectively invisible to a huge portion of search intent.</p>
+
+    <p>Winning Snippet Visibility directly translates to being the voice that users hear from their assistant or the summary they read in an AI overview. This drives brand exposure, authority signals, and indirect referral traffic even when no click occurs. Being selected as the source for Position Zero or cited in generative answers frequently boosts traditional organic rankings because search engines interpret high snippet usage as strong relevance and user satisfaction signals.</p>
+
+    <p>Modern engines and AI apps prioritise content that is pre-formatted for instant extraction: question-aligned headings, concise direct answers, lists/tables under structure, and compatible schema types (FAQPage, HowTo, Speakable). Without strong Snippet Visibility your content — no matter how authoritative or well-written — will be bypassed in favour of pages that are easier for machines to parse and speak aloud. This gap becomes especially punishing in competitive informational and local queries where voice dominates.</p>
+
+    <p class="mt-8 font-semibold text-xl">Snippet Visibility is the single biggest lever for capturing voice traffic and AI-synthesised answers in 2026. It determines whether your page becomes the default spoken result or remains hidden behind the curtain of generative summaries.</p>
+
+    <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
+      <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">
+        Ready to see how snippet-ready your content really is?
+      </p>
+      <a href="https://traffictorch.net/ai-voice-search-tool/#snippet-visibility"
+         class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">
+        Check Snippet Visibility on Traffic Torch →
+      </a>
+      <p class="mt-6 text-base">
+        <a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to Table of Contents</a>
+      </p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Module 4: Sentiment Quality – What is it? subsection only -->
+<section id="sentiment-quality" class="mb-20 scroll-mt-24">
+  <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">
+    Sentiment Quality
+  </h2>
+
+  <div class="mb-16">
+    <h3 id="sentiment-quality-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
+      What is it?
+    </h3>
+    <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+      <p><strong>Sentiment Quality evaluates the emotional tone, trust signals, positivity, confidence, and human resonance in your content as perceived by AI assistants and voice search engines.</strong></p>
+
+      <p>In traditional search up to around 2020, sentiment was rarely a direct ranking factor. Google focused on relevance, authority, and technical signals while basic sentiment analysis was used mostly for spam detection or review aggregation. Early voice assistants (2016–2020) started paying attention to tone indirectly — content that sounded overly salesy, negative, or robotic was less likely to be selected for spoken answers because it created poor user experience when read aloud.</p>
+
+      <p>The major shift occurred with generative AI models from 2022 onward (ChatGPT, Grok, Gemini, Claude, Perplexity). These systems are highly sensitive to emotional valence and trust cues because they aim to deliver helpful, safe, and engaging responses. Negative, hedging, sarcastic, or low-confidence language is frequently filtered or rephrased by AI. Positive, confident, empathetic, and authoritative tone increases the chance of being quoted, recommended, or used as the primary source in voice summaries and answers.</p>
+
+      <p>In 2026 Sentiment Quality for voice and AI search includes these core dimensions:</p>
+      <ul class="list-disc pl-8 mt-4 space-y-3 text-lg">
+        <li>Positive valence — overall optimistic, solution-oriented, helpful tone that builds user trust and satisfaction.</li>
+        <li>Confidence markers — clear assertions, minimal hedging ("might", "possibly", excessive disclaimers) that signal expertise and reliability.</li>
+        <li>Empathy & relatability — subtle human elements (acknowledging pain points, using inclusive language) that make content feel conversational and caring.</li>
+        <li>Trust & authority signals — balanced use of social proof, credentials, sources, and unbiased language that reduces perceived bias or manipulation.</li>
+        <li>Emotional resonance for voice — tone that sounds natural and pleasant when synthesised (no aggressive, monotonous, or overly formal delivery).</li>
+      </ul>
+
+      <p class="mt-6">Sentiment Quality is the hidden emotional filter that determines whether AI assistants feel comfortable citing or recommending your content in spoken form. A page can excel in technical SEO, AI Visibility, and Snippet Visibility, but if the sentiment feels cold, defensive, negative, or untrustworthy it will be deprioritised or rewritten by models in 2026. High Sentiment Quality makes your content not just findable, but likable and shareable by machines.</p>
+    </div>
+  </div>
+
+<!-- How it's Tested? – matches computeSentimentQuality() logic exactly -->
+<div class="mb-16">
+  <h3 id="sentiment-quality-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
+    How it's Tested?
+  </h3>
+  <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+    <p><strong>Traffic Torch computes Sentiment Quality client-side using a three-sub-metric model powered by compromise.js (NLP library) and predefined positive/negative word lists.</strong> The function requires at least 300 characters of readable text. Shorter content receives a flat low score of 20 with a clear warning to add more factual, neutral content.</p>
+
+    <p>The overall score (0–100) is the simple average of three sub-metrics, with conditional boosts and penalties applied afterward. Here is exactly how each part is calculated:</p>
+
+    <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
+      <li>
+        <strong>Sentiment Score</strong><br />
+        Converts text to lowercase and splits into words. Counts matches against predefined positive words (excellent, great, positive, best, reliable, trustworthy, helpful, accurate, recommended) and negative words (bad, poor, negative, worst, unreliable, inaccurate, confusing, misleading). Computes net positive percentage: (positive count – negative count) / total words × 100. Normalizes to 0–100 with a bias toward neutral/high scores (base 50 + raw value).
+      </li>
+      <li>
+        <strong>Hallucination Risk</strong><br />
+        Extracts named entities (people, places, organizations) across the full text using compromise.js. Then checks each sentence for entity presence combined with speculative language ("may", "might", "possible"). Calculates inconsistency percentage (sentences with both entities and speculation / total sentences × 100). Inverts to score: higher consistency = higher score (100 – risk %).
+      </li>
+      <li>
+        <strong>Mention Sentiment</strong><br />
+        Detects potential brand mentions (capitalised nouns via compromise.js). For each mention extracts ~50 characters of surrounding context. Counts positive vs negative words in that context. Averages tone across all mentions and scales to 0–100 (neutral default 50 if no mentions found).
+      </li>
+    </ol>
+
+    <p class="mt-6">Additional adjustments:</p>
+    <ul class="list-disc pl-8 mt-4 space-y-3 text-lg">
+      <li>+10 points if site type is detected as e-commerce (via keywords like "product", "buy", "price") and sentiment score >70 (positive tone boosts citations in review-heavy verticals).</li>
+      <li>–10 points if negative word count exceeds positive count (penalises controversial or overly critical tone unsuitable for voice trust).</li>
+    </ul>
+
+    <p class="mt-6">Error handling is graceful — if compromise.js fails or parsing crashes, the module returns score 0 with an error note. All computation happens in the browser with no server calls, preserving privacy and speed.</p>
+
+    <p class="mt-8 italic text-base text-gray-600 dark:text-gray-400">
+      This client-side simulation approximates how AI assistants evaluate emotional tone, trust, and hallucination risk when deciding whether to quote or recommend content in voice responses.
+    </p>
+  </div>
+</div>
+
+<!-- Why it Matters? – final version with CTA and TOC return -->
+<div class="mb-16">
+  <h3 id="sentiment-quality-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
+    Why it Matters?
+  </h3>
+  <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+    <p>In 2026 voice search and AI-generated answers are the dominant way users consume information on phones, smart speakers, and wearables. Traditional search results are often bypassed entirely in favour of spoken summaries or direct voice replies from Google Gemini, Perplexity voice mode, Grok, ChatGPT Search, and Apple Intelligence. Content with poor sentiment is frequently skipped, rephrased, or replaced by AI because it fails to inspire trust or sound pleasant when read aloud.</p>
+
+    <p>Negative, defensive, overly speculative, or emotionally flat tone dramatically reduces the chance of being selected as the primary source for voice answers or AI overviews. AI assistants are trained to prioritise helpful, confident, positive, and empathetic content — mirroring human preferences for trustworthy speakers. Low Sentiment Quality increases hallucination risk (AI inventing facts to compensate) and lowers citation likelihood, even if the page ranks well in classic SERPs.</p>
+
+    <p>Modern engines and generative models treat sentiment as a core trust and engagement signal. Positive, authoritative, relatable tone correlates strongly with being quoted, recommended, or used as the basis for voice summaries. Negative or uncertain language triggers safety filters or deprioritisation, especially in health, finance, local, and advice-related queries where trust is paramount. High Sentiment Quality makes your content not only discoverable but also preferable and shareable by machines.</p>
+
+    <p class="mt-8 font-semibold text-xl">Sentiment Quality is the emotional gatekeeper in the voice-first and AI-synthesised web of 2026. It determines whether your page is embraced as a credible, likable voice or quietly ignored in favour of warmer, more confident alternatives.</p>
+
+    <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
+      <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">
+        Ready to check how trustworthy and voice-friendly your tone really is?
+      </p>
+      <a href="https://traffictorch.net/ai-voice-search-tool/#sentiment-quality"
+         class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">
+        Check Sentiment Quality on Traffic Torch →
+      </a>
+      <p class="mt-6 text-base">
+        <a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to Table of Contents</a>
+      </p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Module 5: Traditional Keywords – What is it? subsection only -->
+<section id="traditional-keywords" class="mb-20 scroll-mt-24">
+  <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">
+    Traditional Keywords
+  </h2>
+
+  <div class="mb-16">
+    <h3 id="traditional-keywords-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
+      What is it?
+    </h3>
+    <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+      <p><strong>Traditional Keywords evaluates how effectively your page targets and places exact-match, semantic, and long-tail keywords that users still type or speak into search engines and voice assistants in 2026.</strong></p>
+
+      <p>In the classic Google era (2000–2015), keyword optimisation was the dominant ranking factor. Exact-match keywords in titles, headings, meta descriptions, URL slugs, alt text, and body content drove most visibility. Density, proximity, and placement were heavily weighted. Voice search (2016–2020) began shifting the focus toward natural-language questions and conversational phrases, but traditional keyword signals remained foundational — especially for local, product, and branded queries.</p>
+
+      <p>Even with the rise of generative AI and semantic understanding from 2020 onward, traditional keyword placement has not disappeared. Google, Gemini, Perplexity, Grok, ChatGPT Search, and other assistants still rely on clear keyword anchors to match user intent, disambiguate queries, and rank pages in retrieval-augmented generation pipelines. In 2026 many voice queries remain hybrid: users speak full questions but the underlying engine still matches against indexed keyword signals, entity-topic clusters, and exact phrases.</p>
+
+      <p>Today Traditional Keywords for voice and AI search includes these core dimensions:</p>
+      <ul class="list-disc pl-8 mt-4 space-y-3 text-lg">
+        <li>Exact-match & partial-match placement — strategic use of primary keywords in title, H1, early paragraphs, and meta tags without stuffing.</li>
+        <li>Semantic & LSI coverage — related terms, synonyms, and topic clusters that reinforce main keywords and improve entity understanding.</li>
+        <li>Long-tail & question keywords — natural incorporation of full spoken queries ("best wireless earbuds under $100 2026") in headings and body text.</li>
+        <li>Keyword density & distribution — balanced presence across content sections without unnatural repetition or keyword cannibalisation.</li>
+        <li>Voice-query alignment — ensuring keywords match real spoken phrasing rather than just typed short-tail versions.</li>
+      </ul>
+
+      <p class="mt-6">Traditional Keywords remain the anchor layer that ties everything together. Even the most advanced AI assistants need clear keyword signals to retrieve, rank, and cite pages accurately. A page can have perfect sentiment, structure, and AI visibility, but without strong traditional keyword optimisation it will struggle to match user intent and appear in relevant voice or AI results in 2026.</p>
+    </div>
+  </div>
+
+<!-- How it's Tested? – matches computeTraditionalKeywords() logic exactly -->
+<div class="mb-16">
+  <h3 id="traditional-keywords-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
+    How it's Tested?
+  </h3>
+  <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+    <p><strong>Traffic Torch computes Traditional Keywords client-side using a three-sub-metric model powered by compromise.js (NLP library) and simple text heuristics.</strong> The function requires at least 300 characters of readable text. Shorter content receives a flat low score of 20 with a clear warning to add more conversational phrases.</p>
+
+    <p>The overall score (0–100) is the simple average of three sub-metrics, with conditional boosts and penalties applied afterward. Here is exactly how each part is calculated:</p>
+
+    <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
+      <li>
+        <strong>Conversational Rankings Sim</strong><br />
+        Uses compromise.js to extract all question sentences from the text. Calculates the percentage of sentences that are questions. Scales aggressively (×10) so >10 % question-based content reaches near-full points. This simulates how well the page aligns with natural voice query phrasing.
+      </li>
+      <li>
+        <strong>Long-Tail Density</strong><br />
+        Extracts clauses/phrases via compromise.js. Counts how many have 4+ words (approximating long-tail expressions). Calculates raw percentage and scales (×20) so >5 % long-tail density reaches near-full points. This rewards natural, specific phrasing over short keywords.
+      </li>
+      <li>
+        <strong>Query Volume/Difficulty</strong><br />
+        Calculates average phrase/clause length across the text. Combines with an estimated commonality score (percentage of very common words like "the", "a", "and", etc.). Longer phrases + lower commonality (more unique terms) = higher score, simulating higher volume potential and lower difficulty for specific voice queries.
+      </li>
+    </ol>
+
+    <p class="mt-6">Additional adjustments:</p>
+    <ul class="list-disc pl-8 mt-4 space-y-3 text-lg">
+      <li>+10 points if more than 10 question sentences are detected or site type is 'blog' or 'news' (informational/question-heavy content performs better in voice rankings per research).</li>
+      <li>–10 points if average phrase length falls below 4 words (penalises short, list-heavy content like basic e-commerce pages that miss voice intent).</li>
+    </ul>
+
+    <p class="mt-6">Error handling is graceful — if compromise.js fails or parsing crashes, the module returns score 0 with an error note. All computation happens in the browser with no server calls, preserving privacy and speed.</p>
+
+    <p class="mt-8 italic text-base text-gray-600 dark:text-gray-400">
+      This client-side simulation approximates how search engines and voice assistants still match traditional keyword signals against spoken and typed queries in 2026.
+    </p>
+  </div>
+</div>
+
+<!-- Why it Matters? – final version with CTA and TOC return -->
+<div class="mb-16">
+  <h3 id="traditional-keywords-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">
+    Why it Matters?
+  </h3>
+  <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+    <p>In 2026 voice search dominates mobile queries and many informational lookups on smart devices. Traditional keyword signals have not been replaced — they remain the foundational layer that search engines and AI assistants use to match user intent, retrieve candidates, and rank pages before any semantic or generative processing occurs. Without strong keyword alignment your content will not even enter the consideration set for most queries.</p>
+
+    <p>Even advanced models like Google Gemini, Perplexity, Grok, ChatGPT Search, and Apple Intelligence rely on exact-match and long-tail keyword anchors to disambiguate ambiguous voice inputs, prioritise relevance, and decide which pages to pull into retrieval-augmented generation. Pages lacking clear keyword placement (in titles, headings, early content, and natural phrasing) are frequently outranked or ignored in favour of competitors that match the spoken query more directly.</p>
+
+    <p>Traditional Keywords bridge the gap between typed short-tail searches and spoken conversational queries. They ensure your page is indexed correctly, appears in autocomplete suggestions, powers local pack results, and serves as the initial hook for AI summarisation. Weak keyword optimisation creates a visibility floor — no matter how high your AI Visibility, Content Quality, Snippet Visibility, or Sentiment Quality scores are, poor keyword signals will limit reach across every engine and assistant.</p>
+
+    <p class="mt-8 font-semibold text-xl">Traditional Keywords are still the entry ticket to relevance in 2026. They anchor intent matching, retrieval, and ranking in both classic SERPs and the voice/AI-first world that now defines most user journeys.</p>
+
+    <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
+      <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">
+        Ready to see how well your page still matches real voice and typed queries?
+      </p>
+      <a href="https://traffictorch.net/ai-voice-search-tool/#traditional-keywords"
+         class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">
+        Check Traditional Keywords on Traffic Torch →
+      </a>
+      <p class="mt-6 text-base">
+        <a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to Table of Contents</a>
+      </p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Conclusion & Next Steps -->
+<section id="conclusion" class="mb-24 scroll-mt-24">
+  <h2 class="text-4xl md:text-5xl font-black mb-10 text-center bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">
+    Conclusion & Next Steps – Master Voice Search in 2026
+  </h2>
+
+  <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-8 max-w-4xl mx-auto">
+    <p>The five modules covered in this guide — AI Visibility, Content Quality, Snippet Visibility, Sentiment Quality, and Traditional Keywords — form the complete 360° framework that Traffic Torch uses to evaluate and optimise any page for voice search and AI assistants in 2026.</p>
+
+    <p>Voice is no longer a side channel. It is the primary way billions of queries are expressed every day on mobile devices, smart speakers, wearables, and in-car systems. Google Gemini Live, Perplexity voice mode, Grok responses, ChatGPT Search voice, and Apple Intelligence are reshaping how users discover, trust, and act on information. Pages that score poorly across these five pillars are effectively invisible in this new reality.</p>
+
+    <p>The good news is that the fixes are actionable and often low-effort once diagnosed. Add Speakable and FAQPage schema to boost parseability. Rewrite key paragraphs for natural 40–60 word answers. Inject confident, positive tone with first-person pronouns. Place long-tail questions under clear headings. Strengthen entity salience and citation signals. Each small improvement compounds — and Traffic Torch shows you exactly where to start based on real-time client-side analysis.</p>
+
+    <p class="font-semibold text-xl mt-10">The future of organic visibility belongs to sites that are not just optimised for algorithms, but built to be spoken, summarised, trusted, and recommended by AI assistants. The tools and insights in this guide give you the roadmap. Now it is time to put them into action.</p>
+
+    <div class="mt-12 p-8 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-3xl border border-orange-500/30 text-center shadow-xl">
+      <p class="text-2xl md:text-3xl font-black mb-6 text-gray-800 dark:text-gray-200">
+        Ready to run your full Voice Search audit?
+      </p>
+      <p class="text-lg mb-8 text-gray-700 dark:text-gray-300">
+        Get your instant 360° health score across all five modules + competitive gap analysis + AI-generated fixes. No login. No tracking. 100 % client-side.
+      </p>
+      <a href="https://traffictorch.net/ai-voice-search-tool/"
+         class="inline-block px-10 py-6 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-xl rounded-2xl hover:brightness-110 hover:scale-[1.04] transition-all duration-300 shadow-2xl shadow-orange-500/40">
+        Start Free AI Voice Search Audit Now →
+      </a>
+      <p class="mt-8 text-base">
+        <a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Back to Table of Contents</a>
+      </p>
+    </div>
+
+    <p class="mt-12 text-center text-base text-gray-600 dark:text-gray-400 italic">
+      Updated March 2026 – based on ongoing correlation research, voice query trends, and real-time testing across major AI assistants.
+    </p>
+  </div>
+</section>
 
   
 </div>
 </article>
   
-<!-- Tools Grid (Creative) -->
+<!-- Tools Grid  -->
       <h2 class="text-3xl md:text-3xl font-black text-center mt-10 mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
       SEO - UX - AI Tools
       </h2>
@@ -905,31 +1343,33 @@
   </div>
 </div>
   
-  <!-- Author Bio -->
-  <section class="max-w-5xl mx-auto my-24 px-2">
-  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
-    <div class="bg-gradient-to-br from-purple-600 to-cyan-600 py-12 px-8 text-center">
-      <img src="/logo.webp" alt="Traffic Torch SEO • UX • AI Optimization Toolkit" class="w-40 h-40 rounded-full mx-auto mb-6 object-cover border-8 border-white shadow-xl">
-      <h3 class="text-4xl font-black text-white mb-4">Traffic Torch</h3>
-      <p class="text-xl text-white/90 max-w-3xl mx-auto">
-        SEO • UX • AI Optimization Audit Toolkit
+<!-- Author Bio – refactored for voice/AI focus & freshness -->
+<section class="max-w-5xl mx-auto my-24 px-4 sm:px-6 lg:px-8">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden border border-gray-200/50 dark:border-gray-700/50">
+    <div class="bg-gradient-to-br from-purple-600 to-cyan-600 py-12 px-6 sm:px-10 text-center">
+      <img src="/logo.webp" alt="Traffic Torch – Instant 360° SEO, UX & AI Voice Optimization" class="w-32 h-32 sm:w-40 sm:h-40 rounded-full mx-auto mb-6 object-cover border-8 border-white/90 shadow-xl">
+      <h3 class="text-3xl sm:text-4xl font-black text-white mb-3 tracking-tight">
+        Traffic Torch
+      </h3>
+      <p class="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto font-medium">
+        Instant 360° SEO • UX • Voice & AI Audit Toolkit
       </p>
     </div>
-    <div class="p-2 md:p-4 text-center space-y-8">
-      <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
-        Traffic Torch distills ongoing correlation research, algorithm update analysis and practical testing into 360° SEO + UX diagnostics, AI-powered fixes, and educational tools. Empowering creators, agencies, and businesses with transparent, evidence-based insights for better organic performance and user satisfaction.
+    <div class="p-6 sm:p-8 lg:p-10 text-center space-y-8">
+      <p class="text-lg sm:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+        Traffic Torch turns real-time correlation research, algorithm update tracking, and practical page testing into transparent 360° diagnostics, AI-powered fixes, and educational insights. We empower creators, agencies, and businesses to win in traditional search, voice assistants, and generative AI ecosystems — with privacy-first, client-side tools that never track or store your data.
       </p>
-      <div class="pt-8 space-y-3">
-        <p class="text-base text-gray-800 dark:text-gray-200">
-          Expertise: SEO Correlation Studies • UX Optimization • Privacy-First Web Tools • AI-Assisted Analysis.
+      <div class="pt-6 space-y-4">
+        <p class="text-base sm:text-lg text-gray-800 dark:text-gray-200 font-medium">
+          Core Expertise: Voice Search Optimization • AI Visibility & Citation • Snippet & Position Zero • Sentiment & Tone Analysis • Traditional & Conversational Keywords • Privacy-First Web Auditing.
         </p>
-        <p class="text-base text-gray-800 dark:text-gray-200 italic mt-4">
-          Updated based on the latest search engine guidelines, ranking factor research, and real-page performance data.
+        <p class="text-base text-gray-800 dark:text-gray-200 italic">
+          Continuously updated with the latest Google guidelines, AI assistant behaviours (Gemini, Perplexity, Grok, ChatGPT Search), ranking factor studies, and real-world voice performance data — as of March 2026.
         </p>
-              <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
-        <p>Published: 2026-02-17</p>
-        <p>Last updated: 2026-02-17</p>
-      </div>
+        <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6 space-y-1">
+          <p>Guide originally published: 2026-03-13</p>
+          <p>Last updated: 2026-03-13</p>
+        </div>
       </div>
     </div>
   </div>
@@ -973,6 +1413,28 @@
     .replace(' Tool', '')
     .trim();
 </script>
+
+<section class="bottom-banner" aria-label="Traffic Torch AI Voice Search Tool Overview">
+  <picture style="--banner-ratio: 22.66%;"> <!-- 290 / 1280 original aspect ratio -->
+    <source 
+      media="(max-width: 640px)" 
+      srcset="/ai-voice-search-tool/images/voice-search-banner-480x174.webp" 
+      type="image/webp">
+    <source 
+      media="(min-width: 641px)" 
+      srcset="/ai-voice-search-tool/images/voice-search-banner-800x290.webp" 
+      type="image/webp">
+    <img 
+      src="/ai-voice-search-tool/images/voice-search-banner-800x290.webp" 
+      srcset="/ai-voice-search-tool/images/voice-search-banner-480x174.webp 480w, /ai-voice-search-tool/images/voice-search-banner-800x290.webp 800w" 
+      sizes="(max-width: 640px) 100vw, 800px" 
+      alt="Traffic Torch AI Voice Search Tool – Instant 360° Voice SEO Audit, Health Score, Module Deep-Dives & Optimization Fixes" 
+      width="800" 
+      height="290" 
+      loading="lazy" 
+      decoding="async">
+  </picture>
+</section>
 
 </main>
  
