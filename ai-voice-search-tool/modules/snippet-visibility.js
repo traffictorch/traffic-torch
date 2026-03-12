@@ -97,19 +97,50 @@ export function computeSnippetVisibility(text, doc) {
     };
   }
 }
-// Helper: Detect schema (regex/JSON parse for FAQ/HowTo/Speakable)
+// Updated detectSchema – now checks both top-level @type AND nested speakable on WebPage/Article/Product
 function detectSchema(doc) {
   const schemaScripts = doc.querySelectorAll('script[type="application/ld+json"]');
   let score = 0;
+
   schemaScripts.forEach(script => {
     try {
       const json = JSON.parse(script.textContent);
-      if (json['@type'] === 'FAQPage' || json['@type'] === 'HowTo' || json['@type'] === 'SpeakableSpecification') {
-        score += 33; // Boost per type; max ~100
+
+      // Top-level types (existing logic)
+      if (json['@type'] === 'SpeakableSpecification' || 
+          json['@type'] === 'FAQPage' || 
+          json['@type'] === 'HowTo' || 
+          json['@type'] === 'Article' || 
+          json['@type'] === 'Product') {
+        score += 25;
       }
-    } catch {}
+
+      // NEW: Check nested speakable inside WebPage, Article, Product, etc.
+      if (json['@type'] === 'WebPage' || json['@type'] === 'Article' || json['@type'] === 'Product') {
+        if (json.speakable && json.speakable['@type'] === 'SpeakableSpecification') {
+          score += 33; // Higher weight since it's explicitly voice-targeted
+        }
+      }
+
+      // Bonus: If @graph array exists, check each item for SpeakableSpecification
+      if (json['@graph'] && Array.isArray(json['@graph'])) {
+        json['@graph'].forEach(item => {
+          if (item['@type'] === 'SpeakableSpecification') {
+            score += 33;
+          }
+          // Also check nested in graph items
+          if (item.speakable && item.speakable['@type'] === 'SpeakableSpecification') {
+            score += 33;
+          }
+        });
+      }
+
+    } catch (e) {
+      // Silent fail on invalid JSON
+    }
   });
-  return Math.min(100, score);
+
+  return Math.min(100, score); // Cap at 100
 }
 // Helper: Detect site type (heuristic for reliability)
 function detectSiteType(doc) {
