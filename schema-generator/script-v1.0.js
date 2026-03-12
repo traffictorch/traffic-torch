@@ -148,23 +148,32 @@ manualPreview.textContent = prettyJsonLd({
       }
     });
     
-    // Add second Submit Feedback button below manual actions
+// Add second Submit Feedback button below manual actions
+const existingBtn = document.getElementById('feedback-btn-manual');
+if (existingBtn) existingBtn.remove();
+
 const feedbackBtnManual = document.createElement('button');
 feedbackBtnManual.id = 'feedback-btn-manual';
-feedbackBtnManual.innerHTML = `
-  Submit Feedback on Schema Builder
-`;
+feedbackBtnManual.textContent = 'Submit Feedback on Schema Builder';
 feedbackBtnManual.className = 'mt-6 px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1 mx-auto block';
 
-// Insert after manual-actions
 manualActions.insertAdjacentElement('afterend', feedbackBtnManual);
 
-// Show feedback form when clicked (reuse existing form logic)
 feedbackBtnManual.addEventListener('click', () => {
-  const feedbackContainer = document.getElementById('feedback-form-container');
-  if (feedbackContainer) {
-    feedbackContainer.classList.toggle('hidden');
-    feedbackContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const formContainer = document.getElementById('feedback-form-container');
+  if (formContainer) {
+    const isHidden = formContainer.classList.contains('hidden');
+    formContainer.classList.toggle('hidden');
+    feedbackBtnManual.textContent = isHidden ? 'Cancel Feedback ✕' : 'Submit Feedback 💬';
+    feedbackBtnManual.classList.toggle('bg-gray-500', isHidden);
+    feedbackBtnManual.classList.toggle('hover:bg-gray-600', isHidden);
+    feedbackBtnManual.classList.toggle('from-blue-500', !isHidden);
+    feedbackBtnManual.classList.toggle('to-indigo-600', !isHidden);
+    feedbackBtnManual.classList.toggle('hover:from-blue-600', !isHidden);
+    feedbackBtnManual.classList.toggle('hover:to-indigo-700', !isHidden);
+    if (!isHidden) {
+      formContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   }
 });
 
