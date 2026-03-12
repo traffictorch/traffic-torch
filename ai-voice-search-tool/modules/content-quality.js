@@ -31,7 +31,7 @@ export function computeContentQuality(text) {
     const readability = Math.min(100, Math.max(0, Math.round((flesch / 100) * 100))); // Normalize 0-100 (ideal 60-70 → high score)
     // Sub-metric 2: Answer Conciseness (avg sentence words; ideal 40-60 for voice)
     const avgLength = sentences.reduce((sum, s) => sum + s.split(/\s+/).length, 0) / sentences.length;
-    const conciseness = Math.min(100, Math.round(100 - Math.abs(avgLength - 50) * 2)); // Peak at 50, drop off
+    const conciseness = Math.min(100, Math.max(0, Math.round(100 - Math.abs(avgLength - 50) * 2))); // Peak at 50, drop off, min 0
     // Sub-metric 3: Pronoun Ratio (% for conversational tone)
     const pronouns = parsedText.pronouns().out('array').length;
     const pronounRatioRaw = (pronouns / words.length) * 100;
@@ -55,11 +55,27 @@ export function computeContentQuality(text) {
         pronounRatio,
         entityCoverage,
         subMetrics: [
-          { name: 'Readability Score', score: readability },
-          { name: 'Answer Conciseness', score: conciseness },
-          { name: 'Pronoun Ratio', score: pronounRatio },
-          { name: 'Entity Coverage', score: entityCoverage }
-        ]
+  { 
+    name: 'Readability Score', 
+    score: readability,
+    fix: 'Aim for Flesch-Kincaid grade 6-8 by shortening sentences, using simpler words, and breaking up complex ideas to make content easier for AI voice synthesis and natural readout.'
+  },
+  { 
+    name: 'Answer Conciseness', 
+    score: conciseness,
+    fix: 'Keep direct-answer paragraphs between 40-60 words; split long sentences and remove unnecessary details to match the ideal length for featured snippets and voice responses.'
+  },
+  { 
+    name: 'Pronoun Ratio', 
+    score: pronounRatio,
+    fix: 'Increase first/second-person pronouns ("I", "you", "we") to create a more conversational tone that aligns with how people speak in voice queries.'
+  },
+  { 
+    name: 'Entity Coverage', 
+    score: entityCoverage,
+    fix: 'Add more named entities (people, places, brands, organizations) related to your topic to boost E-E-A-T signals and improve AI recognition/citation in voice results.'
+  }
+]
       }
     };
   } catch (error) {

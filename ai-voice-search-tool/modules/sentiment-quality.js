@@ -64,10 +64,22 @@ export function computeSentimentQuality(text) {
         hallucinationRisk,
         mentionSentiment,
         subMetrics: [
-          { name: 'Sentiment Score', score: sentimentScore },
-          { name: 'Hallucination Risk', score: hallucinationRisk },
-          { name: 'Mention Sentiment', score: mentionSentiment }
-        ]
+  { 
+    name: 'Sentiment Score', 
+    score: sentimentScore,
+    fix: 'Replace negative words with neutral or positive alternatives to maintain a trustworthy tone suitable for AI voice assistants.'
+  },
+  { 
+    name: 'Hallucination Risk', 
+    score: hallucinationRisk,
+    fix: 'Add verifiable facts, sources, and reduce speculative language ("may", "might") to lower hallucination risk in AI-generated voice responses.'
+  },
+  { 
+    name: 'Mention Sentiment', 
+    score: mentionSentiment,
+    fix: 'Ensure brand/product mentions are framed positively with supporting context to improve perception in AI voice summaries.'
+  }
+]
       }
     };
   } catch (error) {

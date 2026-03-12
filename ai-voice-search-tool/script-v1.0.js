@@ -171,7 +171,7 @@ const modules = [
   { name: 'Content Quality', score: analysis.moduleScores[1], id: 'content-quality', info: 'Evaluates readability, entity richness, conciseness for AI synthesis & voice readout.', /* ... */ },
   { name: 'Snippet & Visibility', score: analysis.moduleScores[2], id: 'snippet-visibility', info: 'Checks formats eligible for featured snippets/AI Overviews used in voice.', /* ... */ },
   { name: 'Sentiment & Quality', score: analysis.moduleScores[3], id: 'sentiment-quality', info: 'Assesses positive tone & hallucination risk for trustworthy AI voice outputs.', /* ... */ },
-  { name: 'Keyword Performance', score: analysis.moduleScores[4], id: 'traditional-keywords', info: 'Measures conversational long-tail density & question coverage.', /* ... */ }
+  { name: 'Keywords', score: analysis.moduleScores[4], id: 'traditional-keywords', info: 'Measures conversational long-tail density & question coverage.', /* ... */ }
 ];
       const scores = modules.map(m => m.score); // for radar chart
       const failingModules = modules.filter(m => m.score < 20).length;
@@ -258,7 +258,7 @@ results.innerHTML = `
         <svg viewBox="0 0 160 160" class="-rotate-90">
           <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="16" fill="none"/>
           <circle cx="80" cy="80" r="70" stroke="${gradeColor}" stroke-width="16" fill="none"
-                  stroke-dasharray="${m.score * 2.2} 440" stroke-linecap="round"/>
+                  stroke-dasharray="${m.score * 4.4} 440" stroke-linecap="round"/>
         </svg>
         <div class="absolute inset-0 flex flex-col items-center justify-center">
           <div class="text-5xl font-bold" style="color: ${gradeColor}">${m.score}</div>
@@ -286,8 +286,8 @@ results.innerHTML = `
         Show Fixes (${failedCount})
       </button>
       <div class="hidden mt-6 space-y-8">
-        ${m.score >= 60 && failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">All sub-metrics passed! ✅</p>` : ''}
-        ${m.score < 60 ? `<p class="text-center text-red-600 dark:text-red-400 font-bold text-lg">Low score – see fixes</p>` : ''}
+			${m.score >= 60 && failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">All sub-metrics strong! ✅ Optimize further for top voice rankings.</p>` : ''}
+			${m.score < 60 ? `<p class="text-center text-red-600 dark:text-red-400 font-bold text-lg">Low score – apply fixes below to boost voice performance.</p>` : ''}
         ${subMetrics.filter(s => s.score < 60).map(s => `
           <div class="text-center">
             <div class="text-5xl mb-3" style="color: #ef4444">❌</div>

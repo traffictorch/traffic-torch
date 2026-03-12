@@ -53,10 +53,22 @@ export function computeAIVisibility(text, doc) {
         citationFreq,
         presenceRate,
         subMetrics: [
-          { name: 'Share of Voice %', score: sov },
-          { name: 'Citation Frequency', score: citationFreq },
-          { name: 'Presence Rate', score: presenceRate }
-        ]
+  { 
+    name: 'Share of Voice %', 
+    score: sov,
+    fix: 'Add more named entities (people, places, organizations) and implement relevant schema markup (FAQPage, Article, SpeakableSpecification) to increase authority signals for AI citations in voice responses.'
+  },
+  { 
+    name: 'Citation Frequency', 
+    score: citationFreq,
+    fix: 'Incorporate more verifiable stats, quotes, and source references throughout the content to make sections more citable by AI assistants like Gemini and ChatGPT voice modes.'
+  },
+  { 
+    name: 'Presence Rate', 
+    score: presenceRate,
+    fix: 'Rewrite key paragraphs to be concise (40-60 words), factual, and directly answer common questions to improve direct inclusion in zero-click voice answers.'
+  }
+]
       }
     };
   } catch (error) {

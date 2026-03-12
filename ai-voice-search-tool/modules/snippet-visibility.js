@@ -60,10 +60,22 @@ export function computeSnippetVisibility(text, doc) {
         zeroClickShare,
         aiOverviewAppearances,
         subMetrics: [
-          { name: 'Snippet Ownership %', score: snippetOwnership },
-          { name: 'Zero-Click Share', score: zeroClickShare },
-          { name: 'AI Overview Appearances', score: aiOverviewAppearances }
-        ]
+  { 
+    name: 'Snippet Ownership %', 
+    score: snippetOwnership,
+    fix: 'Add question-based H2/H3 headings followed by ordered/unordered lists or tables to increase eligibility for featured snippets and voice readout.'
+  },
+  { 
+    name: 'Zero-Click Share', 
+    score: zeroClickShare,
+    fix: 'Write concise, factual paragraphs (40-60 words) that directly answer user questions to improve chances of zero-click voice answers.'
+  },
+  { 
+    name: 'AI Overview Appearances', 
+    score: aiOverviewAppearances,
+    fix: 'Implement FAQPage, HowTo, or SpeakableSpecification schema to make content more extractable for AI Overviews and voice summaries.'
+  }
+]
       }
     };
   } catch (error) {

@@ -48,10 +48,22 @@ export function computeTraditionalKeywords(text) {
         longTailDensity,
         queryVolDiff,
         subMetrics: [
-          { name: 'Conversational Rankings Sim', score: convRankings },
-          { name: 'Long-Tail Density', score: longTailDensity },
-          { name: 'Query Volume/Difficulty', score: queryVolDiff }
-        ]
+  { 
+    name: 'Conversational Rankings Sim', 
+    score: convRankings,
+    fix: 'Add more question-based sentences and phrases ("how to", "what is", "best way to") to match natural voice search queries.'
+  },
+  { 
+    name: 'Long-Tail Density', 
+    score: longTailDensity,
+    fix: 'Increase use of 4+ word phrases and natural long-tail expressions throughout the content to improve voice ranking potential.'
+  },
+  { 
+    name: 'Query Volume/Difficulty', 
+    score: queryVolDiff,
+    fix: 'Focus on longer, specific phrases with lower competition to target high-intent voice searches more effectively.'
+  }
+]
       }
     };
   } catch (error) {
