@@ -24,10 +24,9 @@ export function initSubmitFeedback(resultsContainer) {
     feedbackBtn.classList.toggle('hover:to-indigo-700', !isHidden);
   });
 
-  // Rating buttons - persistent selection feedback (ring stays after click)
+  // Rating buttons - persistent selection feedback
   ratingButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      // Reset all to default (no ring, no bg, hover enabled)
       ratingButtons.forEach(b => {
         b.classList.remove(
           'scale-150',
@@ -36,12 +35,10 @@ export function initSubmitFeedback(resultsContainer) {
           'ring-opacity-80',
           'bg-blue-100',
           'dark:bg-blue-900/30',
-          'selected-rating'  // custom class for persistence
+          'selected-rating'
         );
         b.classList.add('hover:scale-125', 'transition-all', 'duration-200');
       });
-
-      // Apply persistent selected state to clicked emoji
       btn.classList.remove('hover:scale-125');
       btn.classList.add(
         'scale-150',
@@ -52,16 +49,20 @@ export function initSubmitFeedback(resultsContainer) {
         'dark:bg-blue-900/30',
         'selected-rating'
       );
-
-      // Store the rating value
       document.getElementById('feedback-rating').value = btn.dataset.rating;
     });
   });
 
-  // Show/hide email field
-  replyCheckbox.addEventListener('change', () => {
-    emailGroup.classList.toggle('hidden', !replyCheckbox.checked);
-  });
+  // Show/hide email field – null check
+  if (replyCheckbox) {
+    replyCheckbox.addEventListener('change', () => {
+      if (emailGroup) {
+        emailGroup.classList.toggle('hidden', !replyCheckbox.checked);
+      }
+    });
+  } else {
+    console.warn('reply-requested checkbox not found – skipping email toggle');
+  }
 
   // Character counter
   if (textarea && charCount) {
@@ -72,46 +73,37 @@ export function initSubmitFeedback(resultsContainer) {
 
   feedbackForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const submitBtn = feedbackForm.querySelector('button');
     const originalText = submitBtn.textContent;
     submitBtn.disabled = true;
     submitBtn.textContent = 'Sending...';
     messageDiv.classList.add('hidden');
-
     const rating = document.getElementById('feedback-rating').value;
-    const replyRequested = replyCheckbox.checked;
+    const replyRequested = replyCheckbox ? replyCheckbox.checked : false;
     const email = replyRequested ? document.getElementById('feedback-email').value.trim() : '';
     const feedbackText = textarea.value.trim();
-
     if (!feedbackText) {
       showMessage('Please enter your feedback', 'error');
       resetButton();
       return;
     }
-
     try {
       const formData = new FormData();
-      formData.append('name', name || 'Anonymous');
+      formData.append('name', 'Anonymous'); // or pull from input if added
       formData.append('email', email || 'no-reply@traffictorch.net');
       formData.append('message', `Feedback for AI Voice Search Tool on ${document.body.getAttribute('data-url') || 'unknown'}\nRating: ${rating || 'None'}\n\n${feedbackText}`);
-
-      const res = await fetch('/api/contact', { 
+      const res = await fetch('/api/contact', {
         method: 'POST',
         body: formData
       });
-
       if (!res.ok) {
         const errText = await res.text();
         throw new Error(`Server error ${res.status}: ${errText}`);
       }
-
       const data = await res.json();
-
       if (data.success) {
         showMessage('Thank you! Feedback sent. We\'ll review it soon.', 'success');
         feedbackForm.reset();
-        // Keep form open
         submitBtn.textContent = 'Send More Feedback →';
         setTimeout(() => {
           submitBtn.textContent = 'Send Feedback';
@@ -125,7 +117,6 @@ export function initSubmitFeedback(resultsContainer) {
     } finally {
       resetButton();
     }
-
     function showMessage(text, type) {
       messageDiv.innerHTML = type === 'success' ? `✅ ${text}` : `❌ ${text}`;
       messageDiv.classList.remove('hidden', 'text-green-400', 'bg-green-900/20', 'text-red-400', 'bg-red-900/20');
@@ -135,7 +126,6 @@ export function initSubmitFeedback(resultsContainer) {
       );
       messageDiv.classList.add('dark:text-gray-200');
     }
-
     function resetButton() {
       submitBtn.disabled = false;
       submitBtn.textContent = originalText;
