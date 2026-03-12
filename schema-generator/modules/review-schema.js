@@ -1,7 +1,7 @@
 // modules/review-schema.js
 // Self-contained Review + AggregateRating schema editor & generator for Traffic Torch
-// Fixed: no empty strings in required numeric fields, proper number output, skips unset fields
-// Supports both single Review and AggregateRating (for product/service/page ratings)
+// Fixed: AggregateRating nested under Product so Rich Results Test validates parent entity
+// No empty strings in required fields, real numbers output, skips unset fields
 
 import {
   buildJsonLdSkeleton,
@@ -10,7 +10,7 @@ import {
 } from './schema-base.js';
 
 function render(editorContainer, previewEl) {
-  // Education block – current Google Review/AggregateRating guidelines (2025–2026)
+  // Education block – current Google guidelines (2025–2026)
   editorContainer.innerHTML = `
     <div class="mb-8 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl text-sm border border-blue-200 dark:border-blue-800">
       <h5 class="font-bold text-lg mb-3 text-blue-700 dark:text-blue-300">About Review & AggregateRating Schema</h5>
@@ -139,19 +139,29 @@ function render(editorContainer, previewEl) {
   function updatePreview() {
     const mode = modeSelect.value;
 
-    let data = {
-      "@type": mode === 'aggregate' ? "AggregateRating" : "Review",
-      itemReviewed: {
-        "@type": "Product", // default – can be changed later in full implementation
-      }
-    };
+    let data;
 
     if (mode === 'aggregate') {
-      data.bestRating = 5;
-      data.worstRating = 1;
+      // Output Product with aggregateRating nested → fixes parent validation error
+      data = {
+        "@type": "Product",
+        name: "",
+        url: "",
+        aggregateRating: {
+          "@type": "AggregateRating",
+          bestRating: 5,
+          worstRating: 1
+        }
+      };
     } else {
-      data.author = { "@type": "Person" };
-      data.reviewRating = { "@type": "Rating" };
+      data = {
+        "@type": "Review",
+        author: { "@type": "Person" },
+        reviewRating: { "@type": "Rating" },
+        itemReviewed: {
+          "@type": "Product"
+        }
+      };
     }
 
     // Collect all field values
@@ -159,12 +169,7 @@ function render(editorContainer, previewEl) {
       const field = el.dataset.field;
       let value = el.value.trim();
 
-      if (!value && el.required) {
-        // Required fields left empty → we will skip later if still missing
-        return;
-      }
-
-      if (!value) return; // skip empty optional fields
+      if (!value) return; // skip empty (required handled by browser + later check)
 
       // Convert numeric fields to real numbers
       const numericFields = ['ratingValue', 'reviewCount', 'bestRating', 'worstRating', 'reviewRating.ratingValue'];
@@ -173,42 +178,53 @@ function render(editorContainer, previewEl) {
         value = isNaN(num) ? value : num;
       }
 
-      // Nested field assignment
+      // Assign to correct nested object
       if (field.startsWith('itemReviewed.')) {
         const key = field.split('.')[1];
-        data.itemReviewed[key] = value;
+        if (mode === 'aggregate') {
+          // For aggregate: put name/url directly on Product
+          data[key] = value;
+        } else {
+          // For single: nest under itemReviewed
+          data.itemReviewed[key] = value;
+        }
       } else if (field.startsWith('author.')) {
         data.author[field.split('.')[1]] = value;
       } else if (field.startsWith('reviewRating.')) {
         data.reviewRating[field.split('.')[1]] = value;
+      } else if (field === 'ratingValue' || field === 'reviewCount' || field === 'bestRating' || field === 'worstRating') {
+        // Aggregate fields go under aggregateRating
+        data.aggregateRating[field] = value;
       } else {
         data[field] = value;
       }
     });
 
-    // Clean up empty / invalid nested objects
-    if (data.itemReviewed && Object.keys(data.itemReviewed).length <= 1) { // only @type left
-      delete data.itemReviewed;
-    } else if (data.itemReviewed) {
-      data.itemReviewed = cleanJsonLd(data.itemReviewed);
-    }
-
-    if (mode === 'single') {
+    // Clean up invalid / empty required parts
+    if (mode === 'aggregate') {
+      const agg = data.aggregateRating;
+      if (!agg.ratingValue || !agg.reviewCount) {
+        delete data.aggregateRating;
+      } else {
+        // Clean aggregateRating
+        if (agg.bestRating === 5) delete agg.bestRating;
+        if (agg.worstRating === 1) delete agg.worstRating;
+        if (Object.keys(agg).length === 1) delete data.aggregateRating; // only @type left
+      }
+    } else {
       if (!data.author?.name) delete data.author;
       if (!data.reviewRating?.ratingValue) delete data.reviewRating;
-    }
-
-    if (mode === 'aggregate') {
-      // Critical: remove completely if required fields are missing
-      if (!data.ratingValue || !data.reviewCount) {
-        delete data.ratingValue;
-        delete data.reviewCount;
-        delete data.bestRating;
-        delete data.worstRating;
+      if (data.itemReviewed && Object.keys(data.itemReviewed).length <= 1) {
+        delete data.itemReviewed;
       }
     }
 
-    const jsonLd = buildJsonLdSkeleton(mode === 'aggregate' ? 'AggregateRating' : 'Review', data);
+    // Remove empty Product/Review if nothing useful
+    if (mode === 'aggregate' && !data.aggregateRating && (!data.name && !data.url)) {
+      data = {}; // nothing valid
+    }
+
+    const jsonLd = buildJsonLdSkeleton(mode === 'aggregate' ? 'Product' : 'Review', data);
     const cleaned = cleanJsonLd(jsonLd);
 
     previewEl.textContent = prettyJsonLd(cleaned);
