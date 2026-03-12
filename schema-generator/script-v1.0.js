@@ -40,9 +40,10 @@ const initTool = (form, results, progressContainer) => {
   // ──────────────────────────────────────────────
   const manualSelect = document.getElementById('manual-schema-type');
   const manualEditor = document.getElementById('manual-editor-container');
-  const manualPreview = document.getElementById('manual-preview');
   const manualPreviewContainer = document.getElementById('manual-preview-container');
   const manualActions = document.getElementById('manual-actions');
+  let manualPreview = document.getElementById('manual-preview'); // let so we can re-assign when cloning
+
 
   if (manualSelect && manualEditor && manualPreview && manualPreviewContainer && manualActions) {
     manualSelect.addEventListener('change', async (e) => {
@@ -57,26 +58,54 @@ const initTool = (form, results, progressContainer) => {
 
       manualEditor.innerHTML = '<div class="text-center py-12 text-gray-500 dark:text-gray-400 animate-pulse">Loading editor...</div>';
 
-      try {
-        const modulePath = `./modules/${type.toLowerCase()}-schema.js`;
-        const { default: schema } = await import(modulePath);
+        try {
+          // Clear old preview content and any lingering listeners
+          manualPreview.textContent = '// Loading new schema type...';
+          
+          // Remove any existing input/change listeners from previous render
+          // (simple way: clone and replace the preview element to detach old listeners)
+          const oldPreview = manualPreview;
+          const newPreview = oldPreview.cloneNode(true);
+          oldPreview.parentNode.replaceChild(newPreview, oldPreview);
+          manualPreview = document.getElementById('manual-preview'); // re-query
 
-        manualEditor.innerHTML = '';
-        schema.render(manualEditor, manualPreview);
+          const modulePath = `./modules/${type.toLowerCase()}-schema.js`;
+          const { default: schema } = await import(modulePath);
 
-        manualPreviewContainer.classList.remove('hidden');
-        manualActions.classList.remove('hidden');
-      } catch (err) {
-        console.error(`Failed to load ${type} schema:`, err);
-        manualEditor.innerHTML = `
-          <p class="text-red-600 dark:text-red-400 text-center py-10 text-lg font-medium">
-            Cannot load ${type} editor.<br>
-            File <code>modules/${type.toLowerCase()}-schema.js</code> is missing or has an error.
-          </p>
-        `;
-        manualPreviewContainer.classList.add('hidden');
-        manualActions.classList.add('hidden');
-      }
+          manualEditor.innerHTML = '';
+          schema.render(manualEditor, manualPreview);
+
+          // Force re-attach preview container visibility
+          manualPreviewContainer.classList.remove('hidden');
+          manualActions.classList.remove('hidden');
+
+          // Give DOM a moment to settle (inputs exist), then force first update
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              // Trigger updatePreview manually if the module exposes it or via input event
+              const anyInput = manualEditor.querySelector('input, textarea, select');
+              if (anyInput) {
+                anyInput.dispatchEvent(new Event('input', { bubbles: true }));
+              } else {
+                // Fallback: just set initial empty state
+manualPreview.textContent = prettyJsonLd({
+  "@context": "https://schema.org",
+  "@type": type
+});              }
+            });
+          });
+        } catch (err) {
+          console.error(`Failed to load ${type} schema:`, err);
+          manualEditor.innerHTML = `
+            <p class="text-red-600 dark:text-red-400 text-center py-10 text-lg font-medium">
+              Cannot load ${type} editor.<br>
+              File <code>modules/${type.toLowerCase()}-schema.js</code> is missing or has an error.
+            </p>
+          `;
+          manualPreview.textContent = '// Failed to load editor';
+          manualPreviewContainer.classList.add('hidden');
+          manualActions.classList.add('hidden');
+        }
     });
 
     // Wrap in <script> tags checkbox
