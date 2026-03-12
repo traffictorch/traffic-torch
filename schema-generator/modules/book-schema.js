@@ -1,7 +1,7 @@
 // modules/book-schema.js
 // Self-contained Book schema editor & generator for Traffic Torch
 // No auto-prefill, starts empty, clean output, mobile-friendly
-// Fixed: bookFormat now uses array for multiple formats (Google/schema.org compliant)
+// Fixed: bookFormat uses checkboxes + only official schema.org values + full URI mapping
 
 import {
   buildJsonLdSkeleton,
@@ -112,16 +112,35 @@ function render(editorContainer, previewEl) {
           </div>
           <div>
             <label class="block mb-2 font-medium">Book Format(s)</label>
-            <select multiple data-field="bookFormat"
-                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 h-32">
-              <option value="EBook">EBook</option>
-              <option value="Hardcover">Hardcover</option>
-              <option value="Paperback">Paperback</option>
-              <option value="AudiobookFormat">Audiobook</option>
-              <option value="GraphicNovel">Graphic Novel</option>
-              <option value="MassMarketPaperback">Mass Market Paperback</option>
-            </select>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Hold Ctrl (Windows) or Cmd (Mac) to select multiple formats</p>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" value="EBook" data-field="bookFormat" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                <span class="text-gray-800 dark:text-gray-200">EBook</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" value="Hardcover" data-field="bookFormat" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                <span class="text-gray-800 dark:text-gray-200">Hardcover</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" value="Paperback" data-field="bookFormat" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                <span class="text-gray-800 dark:text-gray-200">Paperback</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" value="AudiobookFormat" data-field="bookFormat" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                <span class="text-gray-800 dark:text-gray-200">Audiobook</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" value="GraphicNovel" data-field="bookFormat" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                <span class="text-gray-800 dark:text-gray-200">Graphic Novel</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" value="Pamphlet" data-field="bookFormat" class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                <span class="text-gray-800 dark:text-gray-200">Pamphlet</span>
+              </label>
+            </div>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">
+              Check all formats this book is available in. Only official schema.org values are used for Google compatibility.
+            </p>
           </div>
         </div>
       </div>
@@ -174,6 +193,7 @@ function render(editorContainer, previewEl) {
       author: []
     };
 
+    // Collect all fields
     editorContainer.querySelectorAll('[data-field]').forEach(el => {
       const field = el.dataset.field;
       const value = el.value.trim();
@@ -187,31 +207,27 @@ function render(editorContainer, previewEl) {
       } else if (field.startsWith('publisher.')) {
         const key = field.split('.')[1];
         data.publisher[key] = value;
-      } else if (field === 'bookFormat') {
-        let formats = [];
-        if (el.tagName === 'SELECT' && el.multiple) {
-          formats = Array.from(el.selectedOptions).map(opt => opt.value).filter(v => v);
-        } else {
-          // Fallback if you ever revert to text input
-          formats = value.split(',').map(f => f.trim()).filter(f => f);
-        }
+      } else if (field === 'bookFormat' && el.type === 'checkbox') {
+        // Checkboxes: collect all checked values
+        const checked = editorContainer.querySelectorAll('input[data-field="bookFormat"]:checked');
+        const formats = Array.from(checked).map(cb => cb.value);
 
         if (formats.length > 0) {
-          // Optional: map to full schema.org URIs (uncomment if preferred)
-          /*
+          // Map to full schema.org URIs (fixes invalid value error)
           const formatMap = {
             'ebook': 'https://schema.org/EBook',
             'hardcover': 'https://schema.org/Hardcover',
             'paperback': 'https://schema.org/Paperback',
-            'audiobook': 'https://schema.org/AudiobookFormat',
             'audiobookformat': 'https://schema.org/AudiobookFormat',
             'graphicnovel': 'https://schema.org/GraphicNovel',
-            'massmarketpaperback': 'https://schema.org/MassMarketPaperback'
+            'pamphlet': 'https://schema.org/Pamphlet'
           };
-          formats = formats.map(f => formatMap[f.toLowerCase()] || f);
-          */
 
-          data.bookFormat = formats.length === 1 ? formats[0] : formats;
+          data.bookFormat = formats.map(f => formatMap[f.toLowerCase()] || `https://schema.org/${f}`);
+          // Single value as string, multiple as array
+          if (data.bookFormat.length === 1) {
+            data.bookFormat = data.bookFormat[0];
+          }
         }
       } else {
         data[field] = value;
