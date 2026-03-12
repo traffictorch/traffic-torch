@@ -289,6 +289,10 @@ doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
         </button>
       </div>
 
+      <!-- Feedback Form Container (hidden by default) -->
+      <div id="feedback-form-container" class="hidden mt-8 p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700">
+        <form id="feedback-form" class="space-y-6">
+          <!-- Rating -->
           <div class="flex justify-center gap-4">
             <button type="button" data-rating="5" class="text-4xl hover:scale-125 transition">😍</button>
             <button type="button" data-rating="4" class="text-4xl hover:scale-125 transition">😊</button>
