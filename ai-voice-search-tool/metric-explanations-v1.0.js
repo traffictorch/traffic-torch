@@ -43,7 +43,7 @@ const metricExplanations = [
     id: "ai-voice-overview",
     emoji: "🔥",
     name: "AI Voice Search Help Guide",
-    what: "Your 360° Voice Search Readiness Score combines AI Visibility, Content Quality, Snippet Visibility, Sentiment Quality, and Traditional Keywords into one instant health metric. See gaps, get fixes, and compare against competitors. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Read the full guide →</a>",
+    what: "<a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide.html' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Read the full guide →</a>",
     how: "",
     why: ""
   }
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Special overview card (last one)
     if (m.id === "ai-voice-overview") {
       return `
-        <div id="${m.id}" class="bg-gradient-to-br from-pink-50 to-orange-50 dark:from-pink-950/30 dark:to-orange-950/20 rounded-3xl shadow-xl p-8 md:p-12 text-center border-2 border-pink-400 dark:border-pink-600">
+        <div id="${m.id}" class="bg-gradient-to-br from-white-50 to-orange-50 dark:from-pink-950/30 dark:to-orange-950/20 rounded-3xl shadow-xl p-8 md:p-12 text-center border-2 border-pink-400 dark:border-pink-600">
           <div class="text-6xl mb-6">${m.emoji}</div>
           <h3 class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-6">${m.name}</h3>
           <p class="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto mb-8">
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Normal metric card with inline Learn more links in each section
     return `
-      <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8 hover:shadow-xl transition-shadow border-l-4 border-orange-500">
+      <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 md:p-4 hover:shadow-xl transition-shadow border-l-4 border-orange-500">
         <div class="text-5xl md:text-6xl mb-5 text-center">${m.emoji}</div>
         <h3 class="text-2xl md:text-3xl font-black text-orange-600 dark:text-orange-400 mb-5 text-center">${m.name}</h3>
         
