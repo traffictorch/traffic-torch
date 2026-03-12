@@ -1,5 +1,5 @@
 // ai-voice-search-tool/script-v1.0.js
-// New client-side metric computers
+// New client-side metric computers (create these files in /modules/ or inline simple functions)
 import { computeAIVisibility } from './modules/ai-visibility.js';
 import { computeContentQuality } from './modules/content-quality.js';
 import { computeSnippetVisibility } from './modules/snippet-visibility.js';
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
-  // Quick debug: check compromise load
+  // Quick debug: check if compromise loaded (runs on page load)
   setTimeout(() => {
     if (typeof window.nlp === 'function') {
       console.log('compromise.js loaded successfully');
@@ -22,15 +22,16 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('compromise.js failed to load – check CDN in index.html');
     }
   }, 2000);
-  // Auto-fill from shared link
-  const urlParams = new URLSearchParams(window.location.search);
-  const sharedUrl = urlParams.get('url');
-  if (sharedUrl && input) {
-    input.value = decodeURIComponent(sharedUrl);
-    setTimeout(() => {
-      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    }, 300);
-  }
+     // Auto-fill input from shared report deep link (?url=...)
+     const urlParams = new URLSearchParams(window.location.search);
+     const sharedUrl = urlParams.get('url');
+     if (sharedUrl && input) {
+       input.value = decodeURIComponent(sharedUrl);
+       // Auto-submit form to run analysis immediately on shared link load
+       setTimeout(() => {
+         form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+       }, 300);
+     }
   const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/?url=';
   let analyzedText = '';
   let wordCount = 0;
@@ -57,54 +58,57 @@ document.addEventListener('DOMContentLoaded', () => {
     body.querySelectorAll(removeSelectors).forEach(e => e.remove());
     return body;
   }
-  function analyzeVoiceContent(text, doc) { // pass doc for schema/snippet parsing
-    if (!text || text.length < 300) {
-      return { moduleScores: [20,20,20,20,20], totalScore: 50, details: {} };
+function analyzeVoiceContent(text, doc) { // pass doc for schema/snippet parsing
+  if (!text || text.length < 300) {
+    return { moduleScores: [20,20,20,20,20], totalScore: 50, details: {} };
+  }
+  text = text.replace(/\s+/g, ' ').trim();
+  // ... keep word/sentence prep
+const aiVisibility = computeAIVisibility(text, doc);
+const contentQuality = computeContentQuality(text);
+const snippetVisibility = computeSnippetVisibility(text, doc);
+const sentimentQuality = computeSentimentQuality(text);
+const traditionalKeywords = computeTraditionalKeywords(text);
+  const moduleScores = [
+    aiVisibility.score, // /100
+    contentQuality.score,
+    snippetVisibility.score,
+    sentimentQuality.score,
+    traditionalKeywords.score
+  ];
+  const totalScore = moduleScores.reduce((a,b)=>a+b,0) / 5;
+  return {
+    moduleScores,
+    totalScore: Math.round(totalScore),
+    details: {
+      aiVisibility: aiVisibility.details,
+      contentQuality: contentQuality.details,
+      snippetVisibility: snippetVisibility.details,
+      sentimentQuality: sentimentQuality.details,
+      traditionalKeywords: traditionalKeywords.details
     }
-    text = text.replace(/\s+/g, ' ').trim();
-    const aiVisibility = computeAIVisibility(text, doc);
-    const contentQuality = computeContentQuality(text);
-    const snippetVisibility = computeSnippetVisibility(doc);
-    const sentimentQuality = computeSentimentQuality(text);
-    const traditionalKeywords = computeTraditionalKeywords(text);
-    const moduleScores = [
-      aiVisibility.score,
-      contentQuality.score,
-      snippetVisibility.score,
-      sentimentQuality.score,
-      traditionalKeywords.score
-    ];
-    const totalScore = moduleScores.reduce((a,b)=>a+b,0) / 5;
-    return {
-      moduleScores,
-      totalScore: Math.round(totalScore),
-      details: {
-        aiVisibility: aiVisibility.details,
-        contentQuality: contentQuality.details,
-        snippetVisibility: snippetVisibility.details,
-        sentimentQuality: sentimentQuality.details,
-        traditionalKeywords: traditionalKeywords.details
-      }
-    };
-  }
-  function getGradeColor(score) {
-    if (score >= 80) return '#10b981';
-    if (score >= 60) return '#f97316';
-    return '#ef4444';
-  }
-  function getOverallEmojiGrade(score) {
-    if (score >= 80) return { emoji: '✅', text: 'Strong AI Voice Optimization', color: '#10b981' };
-    if (score >= 60) return { emoji: '⚠️', text: 'Moderate – Needs Tuning', color: '#f97316' };
-    return { emoji: '❌', text: 'Needs Significant Work', color: '#ef4444' };
-  }
-  function getModuleGrade(score) {
-    if (score >= 80) return { emoji: '✅', text: 'Excellent', color: '#10b981' };
-    if (score >= 60) return { emoji: '⚠️', text: 'Good – Improve', color: '#f97316' };
-    return { emoji: '❌', text: 'Needs Work', color: '#ef4444' };
-  }
+  };
+}
+function getGradeColor(score) {
+  if (score >= 80) return '#10b981';
+  if (score >= 60) return '#f97316';
+  return '#ef4444';
+}
+function getOverallEmojiGrade(score) {
+  if (score >= 80) return { emoji: '✅', text: 'Strong AI Voice Optimization', color: '#10b981' };
+  if (score >= 60) return { emoji: '⚠️', text: 'Moderate – Needs Tuning', color: '#f97316' };
+  return { emoji: '❌', text: 'Needs Significant Work', color: '#ef4444' };
+}
+function getModuleGrade(score) {
+  if (score >= 80) return { emoji: '✅', text: 'Excellent', color: '#10b981' };
+  if (score >= 60) return { emoji: '⚠️', text: 'Good – Improve', color: '#f97316' };
+  return { emoji: '❌', text: 'Needs Work', color: '#ef4444' };
+}
   form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const url = input.value.trim();
+  e.preventDefault();
+  //const canProceed = await canRunTool('limit-audit-id');
+  //if (!canProceed) return;
+  const url = input.value.trim();
     let normalizedUrl = url;
     if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
       normalizedUrl = 'https://' + normalizedUrl;
@@ -119,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </svg>
         </div>
         <p id="progressText" class="text-2xl font-bold text-orange-600 dark:text-orange-400">Fetching page...</p>
-        <p class="mt-4 text-sm text-gray-500 dark:text-gray-500">Analyzing content for AI voice search – please wait</p>
+        <p class="mt-4 text-sm text-gray-500 dark:text-gray-500">Analyzing content for AI patterns – please wait</p>
       </div>
     `;
     results.classList.remove('hidden');
@@ -161,27 +165,29 @@ document.addEventListener('DOMContentLoaded', () => {
       const mainGradeColor = mainGrade.color;
       const verdict = mainGrade.text;
       const verdictEmoji = mainGrade.emoji;
-      const modules = [
-        { name: 'AI Visibility', score: analysis.moduleScores[0], id: 'ai-visibility', info: 'Simulates citation/share of voice in AI assistants like Gemini/ChatGPT voice. High score = frequent brand mentions in spoken answers.' },
-        { name: 'Content Quality', score: analysis.moduleScores[1], id: 'content-quality', info: 'Evaluates readability, entity richness, conciseness for AI synthesis & voice readout.' },
-        { name: 'Snippet & Visibility', score: analysis.moduleScores[2], id: 'snippet-visibility', info: 'Checks formats eligible for featured snippets/AI Overviews used in voice.' },
-        { name: 'Sentiment & Quality', score: analysis.moduleScores[3], id: 'sentiment-quality', info: 'Assesses positive tone & hallucination risk for trustworthy AI voice outputs.' },
-        { name: 'Keywords', score: analysis.moduleScores[4], id: 'traditional-keywords', info: 'Measures conversational long-tail density & question coverage.' }
-      ];
-      const scores = modules.map(m => m.score);
+      // Define the 5 core AI Voice Search modules with correct scores
+const modules = [
+  { name: 'AI Visibility', score: analysis.moduleScores[0], id: 'ai-visibility', info: 'Simulates citation/share of voice in AI assistants like Gemini/ChatGPT voice. High score = frequent brand mentions in spoken answers.', /* details, fixes */ },
+  { name: 'Content Quality', score: analysis.moduleScores[1], id: 'content-quality', info: 'Evaluates readability, entity richness, conciseness for AI synthesis & voice readout.', /* ... */ },
+  { name: 'Snippet & Visibility', score: analysis.moduleScores[2], id: 'snippet-visibility', info: 'Checks formats eligible for featured snippets/AI Overviews used in voice.', /* ... */ },
+  { name: 'Sentiment & Quality', score: analysis.moduleScores[3], id: 'sentiment-quality', info: 'Assesses positive tone & hallucination risk for trustworthy AI voice outputs.', /* ... */ },
+  { name: 'Keyword Performance', score: analysis.moduleScores[4], id: 'traditional-keywords', info: 'Measures conversational long-tail density & question coverage.', /* ... */ }
+];
+      const scores = modules.map(m => m.score); // for radar chart
       const failingModules = modules.filter(m => m.score < 20).length;
       const boost = failingModules * 15;
       const optimizedScore = Math.min(100, yourScore + boost);
       const elapsed = Date.now() - startTime;
       const remaining = Math.max(0, minLoadTime - elapsed);
       setTimeout(() => {
+        // Scroll to results
         const offset = 240;
         const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({
           top: targetY,
           behavior: 'smooth'
         });
-        results.innerHTML = `
+results.innerHTML = `
 <!-- Overall Score Card -->
 <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
@@ -242,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ${modules.map((m, index) => {
     const grade = getModuleGrade(m.score);
     const gradeColor = grade.color;
-    const detailsKey = m.id.replace(/-/g, ''); // ai-visibility → aivisibility
+    const detailsKey = m.id.split('-').map((w,i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');
     const details = analysis.details?.[detailsKey] || {};
     const subMetrics = details.subMetrics || [];
     const failedCount = subMetrics.filter(s => s.score < 60).length;
@@ -281,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </button>
       <div class="hidden mt-6 space-y-8">
         ${m.score >= 60 && failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">All sub-metrics passed! ✅</p>` : ''}
-        ${m.score < 60 ? `<p class="text-center text-red-600 dark:text-red-400 font-bold text-lg">Low overall score – prioritize fixes below</p>` : ''}
+        ${m.score < 60 ? `<p class="text-center text-red-600 dark:text-red-400 font-bold text-lg">Low score – see fixes</p>` : ''}
         ${subMetrics.filter(s => s.score < 60).map(s => `
           <div class="text-center">
             <div class="text-5xl mb-3" style="color: #ef4444">❌</div>
