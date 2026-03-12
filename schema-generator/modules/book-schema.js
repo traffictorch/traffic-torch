@@ -1,7 +1,7 @@
 // modules/book-schema.js
 // Self-contained Book schema editor & generator for Traffic Torch
 // No auto-prefill, starts empty, clean output, mobile-friendly
-// Focus on fields required/recommended for Google Book rich results / entity signals (2026)
+// Fixed: bookFormat now uses array for multiple formats (Google/schema.org compliant)
 
 import {
   buildJsonLdSkeleton,
@@ -23,11 +23,11 @@ function render(editorContainer, previewEl) {
         <li>Place on book landing page, author bio, or product detail page</li>
         <li>Validate with Google Rich Results Test + Structured Data Testing Tool</li>
         <li>
-        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#book" 
-        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
-        Learn more about Book Schema Markup →
-        </a>
-       </li>
+          <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#book"
+             class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+            Learn more about Book Schema Markup →
+          </a>
+        </li>
       </ul>
     </div>
   `;
@@ -40,7 +40,7 @@ function render(editorContainer, previewEl) {
         <h4 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Core Book Information</h4>
         <div class="space-y-5">
           <div>
-            <label class="block mb-2 font-medium">Book Title</label>
+            <label class="block mb-2 font-medium">Book Title <span class="text-red-600 dark:text-red-400">*</span></label>
             <input type="text" data-field="name" placeholder="The Art of Structured Data: SEO in 2026" required
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
@@ -50,7 +50,7 @@ function render(editorContainer, previewEl) {
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
-            <label class="block mb-2 font-medium">Cover Image URL</label>
+            <label class="block mb-2 font-medium">Cover Image URL <span class="text-red-600 dark:text-red-400">*</span></label>
             <input type="url" data-field="image" placeholder="https://example.com/book-cover-2026.jpg" required
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
@@ -82,7 +82,7 @@ function render(editorContainer, previewEl) {
         <h4 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Publisher</h4>
         <div class="space-y-5">
           <div>
-            <label class="block mb-2 font-medium">Publisher Name</label>
+            <label class="block mb-2 font-medium">Publisher Name <span class="text-red-600 dark:text-red-400">*</span></label>
             <input type="text" data-field="publisher.name" placeholder="Traffic Torch Press" required
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
@@ -100,7 +100,7 @@ function render(editorContainer, previewEl) {
         <div class="space-y-5">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block mb-2 font-medium">Date Published (ISO 8601)</label>
+              <label class="block mb-2 font-medium">Date Published (ISO 8601) <span class="text-red-600 dark:text-red-400">*</span></label>
               <input type="date" data-field="datePublished" required
                      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
             </div>
@@ -111,9 +111,17 @@ function render(editorContainer, previewEl) {
             </div>
           </div>
           <div>
-            <label class="block mb-2 font-medium">Book Format</label>
-            <input type="text" data-field="bookFormat" placeholder="Paperback, Hardcover, eBook, Audiobook"
-                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+            <label class="block mb-2 font-medium">Book Format(s)</label>
+            <select multiple data-field="bookFormat"
+                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 h-32">
+              <option value="EBook">EBook</option>
+              <option value="Hardcover">Hardcover</option>
+              <option value="Paperback">Paperback</option>
+              <option value="AudiobookFormat">Audiobook</option>
+              <option value="GraphicNovel">Graphic Novel</option>
+              <option value="MassMarketPaperback">Mass Market Paperback</option>
+            </select>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Hold Ctrl (Windows) or Cmd (Mac) to select multiple formats</p>
           </div>
         </div>
       </div>
@@ -123,7 +131,6 @@ function render(editorContainer, previewEl) {
   // Dynamic authors list
   const authorsList = editorContainer.querySelector('#authors-list');
   const addAuthorBtn = editorContainer.querySelector('#add-author-btn');
-
   let authorCount = 0;
 
   function addAuthor() {
@@ -137,12 +144,10 @@ function render(editorContainer, previewEl) {
         </button>
       </div>
     `);
-
     authorsList.lastElementChild.querySelector('.remove-author').onclick = () => {
       authorsList.lastElementChild.remove();
       updatePreview();
     };
-
     updatePreview();
   }
 
@@ -152,6 +157,7 @@ function render(editorContainer, previewEl) {
   // Live preview
   function updatePreview() {
     const data = {
+      "@type": "Book",
       name: '',
       description: '',
       image: '',
@@ -171,21 +177,48 @@ function render(editorContainer, previewEl) {
     editorContainer.querySelectorAll('[data-field]').forEach(el => {
       const field = el.dataset.field;
       const value = el.value.trim();
-      if (value) {
-        if (field.startsWith('author.')) {
-          const idx = parseInt(field.split('.')[1]);
-          if (!data.author[idx]) data.author[idx] = { "@type": "Person" };
-          data.author[idx].name = value;
-        } else if (field.startsWith('publisher.')) {
-          const key = field.split('.')[1];
-          data.publisher[key] = value;
+
+      if (!value) return;
+
+      if (field.startsWith('author.')) {
+        const idx = parseInt(field.split('.')[1]);
+        if (!data.author[idx]) data.author[idx] = { "@type": "Person" };
+        data.author[idx].name = value;
+      } else if (field.startsWith('publisher.')) {
+        const key = field.split('.')[1];
+        data.publisher[key] = value;
+      } else if (field === 'bookFormat') {
+        let formats = [];
+        if (el.tagName === 'SELECT' && el.multiple) {
+          formats = Array.from(el.selectedOptions).map(opt => opt.value).filter(v => v);
         } else {
-          data[field] = value;
+          // Fallback if you ever revert to text input
+          formats = value.split(',').map(f => f.trim()).filter(f => f);
         }
+
+        if (formats.length > 0) {
+          // Optional: map to full schema.org URIs (uncomment if preferred)
+          /*
+          const formatMap = {
+            'ebook': 'https://schema.org/EBook',
+            'hardcover': 'https://schema.org/Hardcover',
+            'paperback': 'https://schema.org/Paperback',
+            'audiobook': 'https://schema.org/AudiobookFormat',
+            'audiobookformat': 'https://schema.org/AudiobookFormat',
+            'graphicnovel': 'https://schema.org/GraphicNovel',
+            'massmarketpaperback': 'https://schema.org/MassMarketPaperback'
+          };
+          formats = formats.map(f => formatMap[f.toLowerCase()] || f);
+          */
+
+          data.bookFormat = formats.length === 1 ? formats[0] : formats;
+        }
+      } else {
+        data[field] = value;
       }
     });
 
-    data.author = data.author.filter(a => a.name);
+    data.author = data.author.filter(a => a && a.name);
 
     // Clean empty publisher
     if (!data.publisher.name && !data.publisher.url) {
