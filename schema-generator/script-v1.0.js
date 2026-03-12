@@ -91,7 +91,8 @@ const initTool = (form, results, progressContainer) => {
 manualPreview.textContent = prettyJsonLd({
   "@context": "https://schema.org",
   "@type": type
-});              }
+});
+              }
             });
           });
         } catch (err) {
@@ -146,6 +147,27 @@ manualPreview.textContent = prettyJsonLd({
         window.open('https://search.google.com/test/rich-results', '_blank');
       }
     });
+    
+    // Add second Submit Feedback button below manual actions
+const feedbackBtnManual = document.createElement('button');
+feedbackBtnManual.id = 'feedback-btn-manual';
+feedbackBtnManual.innerHTML = `
+  Submit Feedback on Schema Builder
+`;
+feedbackBtnManual.className = 'mt-6 px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1 mx-auto block';
+
+// Insert after manual-actions
+manualActions.insertAdjacentElement('afterend', feedbackBtnManual);
+
+// Show feedback form when clicked (reuse existing form logic)
+feedbackBtnManual.addEventListener('click', () => {
+  const feedbackContainer = document.getElementById('feedback-form-container');
+  if (feedbackContainer) {
+    feedbackContainer.classList.toggle('hidden');
+    feedbackContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+});
+
   } // closes the if (manualSelect && ...) block
 
   // ──────────────────────────────────────────────
