@@ -653,48 +653,65 @@
     </svg>
     </h2>
 
-<!-- Expanding AI Intro Section -->
-<details class="max-w-3xl mx-auto text-center mb-12">
-  <summary class="text-xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent cursor-pointer hover:text-orange-400 transition flex items-center justify-center gap-2">
-    Show AI Intro
-    <svg class="chevron ml-2 transition-transform duration-300" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<!-- Expanding AI Intro Section – now includes AI Voice Search Tool -->
+<details class="max-w-3xl mx-auto text-center mb-12 bg-white/5 dark:bg-black/10 backdrop-blur-sm rounded-2xl border border-white/10 dark:border-white/5">
+  <summary class="text-xl md:text-2xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent cursor-pointer hover:text-orange-400 transition flex items-center justify-center gap-3 px-6 py-4">
+    Show AI Intro & Tools Overview
+    <svg class="chevron w-6 h-6 transition-transform duration-300 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M6 9l6 6 6-6"/>
     </svg>
   </summary>
-  <div class="mt-6 text-lg text-gray-800 dark:text-gray-100 leading-relaxed space-y-6">
+  <div class="mt-6 px-6 pb-8 text-lg text-gray-800 dark:text-gray-200 leading-relaxed space-y-6 text-left">
     <p>
-      In addition to traditional SEO, Traffic Torch includes dedicated AI-powered tools to help your content perform in the new generation of AI-driven search engines and answer engines like Perplexity, Grok, Gemini, and ChatGPT Search.
+      Traffic Torch is built for the full spectrum of modern search: traditional Google rankings, local pack visibility, and the fast-growing world of AI-driven answer engines and voice assistants (Perplexity, Grok, Gemini Live, ChatGPT Search, Apple Intelligence).
     </p>
+
     <p>
-      The <strong>AI Search Optimization Tool</strong> analyzes your page against the signals that AI models prioritize: clear structure, authoritative sourcing, comprehensive topic coverage, natural language patterns, and E-E-A-T alignment. It delivers an AI readiness score, highlights gaps that cause your content to be overlooked by large language models, and provides targeted recommendations to increase visibility in AI-generated answers and summaries.
+      Our dedicated <strong>AI Search Optimization Tool</strong> analyzes pages against the signals that large language models prioritize: entity salience, citation likelihood, structured data parseability, topical depth, natural language patterns, and E-E-A-T alignment. It delivers an AI readiness score, highlights gaps causing content to be overlooked or hallucinated around, and provides targeted fixes to increase visibility in AI-generated answers, summaries, and voice responses.
     </p>
+
     <p>
-      The <strong>AI Content Tool</strong> goes further by detecting subtle AI-generated patterns that can trigger quality filters in both search engines and AI systems. It scores content for authenticity and helps you maintain trust signals while preserving SEO performance.
+      The <strong>AI Voice Search Tool</strong> goes deeper into voice-specific readiness. It scores your page across five core pillars — AI Visibility, Content Quality, Snippet Visibility, Sentiment Quality, and Traditional Keywords — with a full 360° health report, competitive gap analysis, priority fixes, and predictive insights for voice assistant performance. Use it to optimize for spoken answers, Position Zero, and AI assistant citations.
     </p>
+
     <p>
-      These tools work together to future-proof your content strategy—ensuring your pages rank well in traditional results while becoming preferred sources for AI-powered discovery and citation. Click the AI tool cards below to analyze your URL and start optimizing for the AI search era.
+      The <strong>AI Content Audit Tool</strong> complements this by detecting subtle AI-generated patterns (perplexity, burstiness, repetition, sentence uniformity) that can trigger quality filters in both search engines and AI systems. It scores authenticity, suggests humanization edits, and helps preserve trust signals while maintaining strong SEO performance.
+    </p>
+
+    <p class="font-medium text-center mt-8">
+      These tools work together to future-proof your content strategy — ensuring pages rank well in traditional results while becoming preferred, citable sources for AI-powered discovery, voice answers, and generative summaries.
     </p>
   </div>
 </details>
-<div class="flex justify-center">
-  <div class="grid md:grid-cols-2 gap-8 max-w-5xl w-full">
-    <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all">
-        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
-        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">Ai Search Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Optimize for AI-powered search engines</p>
+<div class="flex justify-center w-full">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8">
+    <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col items-center text-center">
+        <div class="text-orange-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+        <h3 class="text-green-500 dark:text-green-300 text-xl md:text-2xl font-bold mb-3">Ai Search Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100 text-base md:text-lg">Optimize for AI-powered search engines</p>
       </div>
     </a>
-    <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all">
-        <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
-        <h3 class="text-orange-500 dark:text-orange-300 text-2xl font-bold mb-3">AI Content Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Detect AI patterns</p>
+
+    <a href="/ai-voice-search-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col items-center text-center">
+        <div class="text-pink-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🎙️</div>
+        <h3 class="text-orange-500 dark:text-orange-300 text-xl md:text-2xl font-bold mb-3">Ai Voice Search Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100 text-base md:text-lg">360° audit for voice SEO</p>
+      </div>
+    </a>
+
+    <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col items-center text-center">
+        <div class="text-pink-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+        <h3 class="text-orange-500 dark:text-orange-300 text-xl md:text-2xl font-bold mb-3">AI Content Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100 text-base md:text-lg">Detect AI patterns</p>
       </div>
     </a>
   </div>
 </div>
   </section>
+  
 
 <!-- Share Buttons -->
 <div class="py-8 text-center">
