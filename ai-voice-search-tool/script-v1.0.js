@@ -274,6 +274,7 @@ results.innerHTML = `
           </p>
         `).join('') : '<p class="text-gray-500 dark:text-gray-400">Sub-metrics loading...</p>'}
       </div>
+
       <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
         More Details
       </button>
@@ -281,13 +282,18 @@ results.innerHTML = `
         <p><span class="font-bold text-blue-600 dark:text-blue-400">What it is:</span> ${m.info || 'Analyzing module...'}</p>
         <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve:</span> Implement suggested fixes below to boost this module.</p>
         <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters:</span> Impacts AI voice visibility, synthesis quality, and rankings.</p>
+        <a href="#${m.id}" 
+           class="block text-center mt-4 text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300 font-medium transition">
+          Learn more about ${m.name} →
+        </a>
       </div>
+
       <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
         Show Fixes (${failedCount})
       </button>
       <div class="hidden mt-6 space-y-8">
-			${m.score >= 60 && failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">All sub-metrics strong! ✅ Optimize further for top voice rankings.</p>` : ''}
-			${m.score < 60 ? `<p class="text-center text-red-600 dark:text-red-400 font-bold text-lg">Low score – apply fixes below to boost voice performance.</p>` : ''}
+        ${m.score >= 60 && failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">All sub-metrics strong! ✅ Optimize further for top voice rankings.</p>` : ''}
+        ${m.score < 60 ? `<p class="text-center text-red-600 dark:text-red-400 font-bold text-lg">Low score – apply fixes below to boost voice performance.</p>` : ''}
         ${subMetrics.filter(s => s.score < 60).map(s => `
           <div class="text-center">
             <div class="text-5xl mb-3" style="color: #ef4444">❌</div>
@@ -297,9 +303,13 @@ results.innerHTML = `
             </p>
           </div>
         `).join('')}
+        <a href="#${m.id}-how" 
+           class="block text-center mt-6 text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300 font-medium transition">
+          How ${m.name} is tested? →
+        </a>
       </div>
     </div>`;
-  }).join('')}
+}).join('')}
 </div>
 
 <!-- Top Priority Fixes – only show if there are failed sub-metrics -->
