@@ -301,6 +301,73 @@ results.innerHTML = `
     </div>`;
   }).join('')}
 </div>
+
+<!-- Top Priority Fixes – only show if there are failed sub-metrics -->
+${(() => {
+  // Flatten all failed sub-metrics from the 5 modules
+  const allFailed = [];
+  modules.forEach(m => {
+    const detailsKey = m.id.split('-').map((w,i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');
+    const subMetrics = analysis.details?.[detailsKey]?.subMetrics || [];
+    subMetrics.forEach(s => {
+      if (s.score < 60) {
+        allFailed.push({
+          moduleName: m.name,
+          subName: s.name,
+          score: s.score,
+          fix: s.fix || 'Improve this metric for better voice SEO performance.',
+          impact: s.name.includes('Visibility') || s.name.includes('Snippet') ? 25 :  // higher for visibility/snippet
+                  s.name.includes('Content') || s.name.includes('Quality') ? 20 :
+                  s.name.includes('Keywords') ? 15 : 10
+        });
+      }
+    });
+  });
+
+  // Sort by estimated impact (descending) and take top 3
+  const topFailed = allFailed
+    .sort((a, b) => b.impact - a.impact || b.score - a.score) // higher impact first, then lower score
+    .slice(0, 3);
+
+  if (topFailed.length === 0) {
+    return `
+      <div class="mt-12 text-center">
+        <p class="text-2xl font-bold text-green-600 dark:text-green-400">All sub-metrics strong! ✅</p>
+        <p class="mt-4 text-lg text-gray-700 dark:text-gray-300">Your page is well-optimized for AI voice search. Keep monitoring with regular scans.</p>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="mt-16 px-4 max-w-5xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-black text-center mb-10 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Top Priority Fixes
+      </h2>
+      <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+        ${topFailed.map((f, idx) => `
+          <div class="bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl p-6 md:p-8 border border-orange-500/30 shadow-lg hover:shadow-xl transition-all">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center text-white text-2xl font-bold">
+                ${idx + 1}
+              </div>
+              <h3 class="text-xl md:text-2xl font-bold text-orange-600 dark:text-orange-400">${f.subName}</h3>
+            </div>
+            <p class="text-gray-800 dark:text-gray-200 mb-4">
+              <span class="font-semibold">${f.moduleName}</span> – Score ${f.score}/100
+            </p>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+              ${f.fix}
+            </p>
+            <div class="mt-4 inline-block px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold rounded-full">
+              +${f.impact}–${f.impact + 10} points
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+})()}
+
 <!-- Keep existing buttons and forms unchanged -->
 <div class="text-center my-16 px-4">
   <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">

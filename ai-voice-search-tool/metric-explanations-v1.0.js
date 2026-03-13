@@ -95,30 +95,30 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="text-5xl md:text-6xl mb-5 text-center">${m.emoji}</div>
         <h3 class="text-2xl md:text-3xl font-black text-orange-600 dark:text-orange-400 mb-5 text-center">${m.name}</h3>
         
-        <details class="group p-2 mt-4">
+        <details class="group mt-4">
           <summary class="cursor-pointer text-orange-700 dark:text-orange-300 font-bold hover:underline flex items-center justify-between text-lg">
             What is ${m.name}?
-            <span class="text-xl group-open:rotate-180 transition-transform">▼</span>
+            <span class="text-xl p-2 group-open:rotate-180 transition-transform">▼</span>
           </summary>
           <div class="mt-4 px-2 text-gray-700 dark:text-gray-300 leading-relaxed">
             ${m.what}
           </div>
         </details>
 
-        <details class="group p-2 mt-4">
+        <details class="group mt-4">
           <summary class="cursor-pointer text-orange-700 dark:text-orange-300 font-bold hover:underline flex items-center justify-between text-lg">
             How is ${m.name} tested?
-            <span class="text-xl group-open:rotate-180 transition-transform">▼</span>
+            <span class="text-xl p-2 group-open:rotate-180 transition-transform">▼</span>
           </summary>
           <div class="mt-4 px-2 text-gray-700 dark:text-gray-300 leading-relaxed">
             ${m.how}
           </div>
         </details>
 
-        <details class="group p-2 mt-4">
+        <details class="group mt-4">
           <summary class="cursor-pointer text-orange-700 dark:text-orange-300 font-bold hover:underline flex items-center justify-between text-lg">
             Why does ${m.name} matter?
-            <span class="text-xl group-open:rotate-180 transition-transform">▼</span>
+            <span class="text-xl p-2 group-open:rotate-180 transition-transform">▼</span>
           </summary>
           <div class="mt-4 px-2 text-gray-700 dark:text-gray-300 leading-relaxed">
             ${m.why}

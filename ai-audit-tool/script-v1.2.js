@@ -413,9 +413,9 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-<!-- Top 3 Priority Fixes -->
+<!-- Top Priority Fixes -->
 <div class="mt-20 space-y-8">
-  <h2 class="text-4xl md:text-5xl font-black text-center text-gray-500 dark:text-gray-100">Top 3 Priority Fixes</h2>
+  <h2 class="text-4xl md:text-5xl font-black text-center text-gray-500 dark:text-gray-100">Top Priority Fixes</h2>
   ${(() => {
     const priorityModules = [
       {
