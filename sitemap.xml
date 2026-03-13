@@ -8,7 +8,7 @@
   <!-- Core pages -->
   <url>
     <loc>https://traffictorch.net/</loc>
-    <lastmod>2026-06-02</lastmod>
+    <lastmod>2026-03-14</lastmod>
   </url>
 
   <url>
@@ -55,11 +55,16 @@
     <loc>https://traffictorch.net/schema-generator/</loc>
     <lastmod>2026-03-11</lastmod>
   </url>
+  
+  <url>
+    <loc>https://traffictorch.net/ai-voice-search-tool/</loc>
+    <lastmod>2026-03-13</lastmod>
+  </url>
 
   <!-- Static & info pages -->
   <url>
     <loc>https://traffictorch.net/ai-seo-ux-tools/</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-03-14</lastmod>
   </url>
 
   <url>
@@ -103,6 +108,12 @@
   </url>
 
   <!-- Blog posts -->
+  
+  
+    <url>
+    <loc>https://traffictorch.net/blog/posts//ai-voice-search-help-guide/</loc>
+    <lastmod>2026-03-14</lastmod>
+    </url>  
   
     <url>
     <loc>https://traffictorch.net/blog/posts/schema-markup-help-guide/</loc>
