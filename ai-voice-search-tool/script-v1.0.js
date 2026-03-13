@@ -243,17 +243,21 @@ results.innerHTML = `
     </p>
   </div>
 </div>
-<!-- Metrics Layout – 5 AI Voice Search Modules -->
+
+<!-- Metrics Layout – AI Visibility full-width + remaining 4 in 2-column grid on md+ -->
 <div class="space-y-8 max-w-5xl mx-auto px-4">
-  ${modules.map((m, index) => {
+  <!-- AI Visibility – always full-width single column -->
+  ${(() => {
+    const m = modules[0]; // First module is AI Visibility
     const grade = getModuleGrade(m.score);
     const gradeColor = grade.color;
     const detailsKey = m.id.split('-').map((w,i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');
     const details = analysis.details?.[detailsKey] || {};
     const subMetrics = details.subMetrics || [];
     const failedCount = subMetrics.filter(s => s.score < 60).length;
+
     return `
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 md:p-8 text-center border-l-4" style="border-left-color: ${gradeColor}">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 md:p-8 text-center border-l-4 w-full" style="border-left-color: ${gradeColor}">
       <div class="relative w-40 h-40 mx-auto">
         <svg viewBox="0 0 160 160" class="-rotate-90">
           <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="16" fill="none"/>
@@ -303,13 +307,83 @@ results.innerHTML = `
             </p>
           </div>
         `).join('')}
-        <a href="#${m.id}-how" 
+        <a href="#${m.id}" 
            class="block text-center mt-6 text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300 font-medium transition">
           How ${m.name} is tested? →
         </a>
       </div>
     </div>`;
-}).join('')}
+  })()}
+
+  <!-- Remaining 4 modules in 2-column grid on md+ -->
+  <div class="grid md:grid-cols-2 gap-6 lg:gap-8">
+    ${modules.slice(1).map((m, index) => {  // slice(1) skips the first (AI Visibility)
+      const grade = getModuleGrade(m.score);
+      const gradeColor = grade.color;
+      const detailsKey = m.id.split('-').map((w,i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');
+      const details = analysis.details?.[detailsKey] || {};
+      const subMetrics = details.subMetrics || [];
+      const failedCount = subMetrics.filter(s => s.score < 60).length;
+
+      return `
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 md:p-8 text-center border-l-4" style="border-left-color: ${gradeColor}">
+        <div class="relative w-40 h-40 mx-auto">
+          <svg viewBox="0 0 160 160" class="-rotate-90">
+            <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="16" fill="none"/>
+            <circle cx="80" cy="80" r="70" stroke="${gradeColor}" stroke-width="16" fill="none"
+                    stroke-dasharray="${m.score * 4.4} 440" stroke-linecap="round"/>
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <div class="text-5xl font-bold" style="color: ${gradeColor}">${m.score}</div>
+            <div class="text-lg text-gray-500 dark:text-gray-400">/100</div>
+          </div>
+        </div>
+        <p class="mt-6 text-2xl font-bold" style="color: ${gradeColor}">${m.name}</p>
+        <p class="mt-2 text-xl flex items-center justify-center gap-2" style="color: ${gradeColor}">${grade.text} ${grade.emoji}</p>
+        <div class="mt-4 space-y-3 text-base">
+          ${subMetrics.length > 0 ? subMetrics.map(s => `
+            <p class="font-medium" style="color: ${s.score >= 60 ? '#10b981' : '#ef4444'}">
+              ${s.score >= 60 ? '✅' : '❌'} ${s.name} (${s.score})
+            </p>
+          `).join('') : '<p class="text-gray-500 dark:text-gray-400">Sub-metrics loading...</p>'}
+        </div>
+
+        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
+          More Details
+        </button>
+        <div class="hidden mt-6 space-y-6 text-base text-gray-700 dark:text-gray-300 leading-relaxed">
+          <p><span class="font-bold text-blue-600 dark:text-blue-400">What it is:</span> ${m.info || 'Analyzing module...'}</p>
+          <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve:</span> Implement suggested fixes below to boost this module.</p>
+          <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters:</span> Impacts AI voice visibility, synthesis quality, and rankings.</p>
+          <a href="#${m.id}" 
+             class="block text-center mt-4 text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300 font-medium transition">
+            Learn more about ${m.name} →
+          </a>
+        </div>
+
+        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
+          Show Fixes (${failedCount})
+        </button>
+        <div class="hidden mt-6 space-y-8">
+          ${m.score >= 60 && failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">All sub-metrics strong! ✅ Optimize further for top voice rankings.</p>` : ''}
+          ${m.score < 60 ? `<p class="text-center text-red-600 dark:text-red-400 font-bold text-lg">Low score – apply fixes below to boost voice performance.</p>` : ''}
+          ${subMetrics.filter(s => s.score < 60).map(s => `
+            <div class="text-center">
+              <div class="text-5xl mb-3" style="color: #ef4444">❌</div>
+              <p class="font-bold text-xl mb-3" style="color: #ef4444">${s.name}</p>
+              <p class="text-gray-700 dark:text-gray-300 max-w-lg mx-auto">
+                Fix suggestion: ${s.fix || 'Improve this metric for better voice SEO performance.'}
+              </p>
+            </div>
+          `).join('')}
+          <a href="#${m.id}" 
+             class="block text-center mt-6 text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300 font-medium transition">
+            How ${m.name} is tested? →
+          </a>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>
 </div>
 
 <!-- Top Priority Fixes – only show if there are failed sub-metrics -->
