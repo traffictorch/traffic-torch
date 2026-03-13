@@ -86,165 +86,176 @@
 <meta name="twitter:image" content="https://traffictorch.net/blog/images/product-seo/product-seo-help-guide-1200w.webp" />
 <meta name="twitter:site" content="@Guitaralize" />
 
-<!-- Structured Data (JSON-LD) – BlogPosting with multiple ImageObjects (featured hero + infographics) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Product SEO Help Guide: Optimize Your Ecommerce Pages for Higher Rankings and Conversions",
-  "description": "In-depth 2026 guide explaining Traffic Torch's product SEO modules: on-page, technical, content & media, and ecommerce signals. Covers exact testing logic from the tool's JS, why each metric drives SEO + UX results, and prioritized fixes for real gains.",
-  "url": "https://traffictorch.net/blog/posts/product-seo-help-guide",
-  "image": [
+  "@graph": [
     {
-      "@type": "ImageObject",
-      "url": "https://traffictorch.net/blog/images/product-seo/product-seo-help-guide-1200w.webp",
-      "contentUrl": "https://traffictorch.net/blog/images/product-seo/product-seo-help-guide-1200w.webp",
-      "width": 1200,
-      "height": 630,
-      "caption": "Product SEO Help Guide hero: Complete optimization for ecommerce pages, rankings, and conversions with Traffic Torch"
+      "@type": "Organization",
+      "@id": "https://traffictorch.net/#organization",
+      "name": "Traffic Torch",
+      "url": "https://traffictorch.net/",
+      "logo": "https://traffictorch.net/logo-512.webp",
+      "sameAs": [
+        "https://twitter.com/guitaralize"
+      ]
     },
     {
-      "@type": "ImageObject",
-      "url": "https://traffictorch.net/product-seo-tool/images/product-seo-pillars-infographic-800w.webp",
-      "contentUrl": "https://traffictorch.net/product-seo-tool/images/product-seo-pillars-infographic-800w.webp",
-      "width": 800,
-      "height": 1200,
-      "caption": "On-Page Product SEO + Technical SEO: The foundational pillars and key metrics Traffic Torch audits for ecommerce success."
-    },
-    {
-      "@type": "ImageObject",
-      "url": "https://traffictorch.net/product-seo-tool/images/content-ecommerce-signals-infographic-800w.webp",
-      "contentUrl": "https://traffictorch.net/product-seo-tool/images/content-ecommerce-signals-infographic-800w.webp",
-      "width": 800,
-      "height": 1200,
-      "caption": "Content & Media + E-Commerce Signals: Driving user engagement, trust, and rich snippet eligibility for product pages."
-    }
-  ],
-  "datePublished": "2026-02-19T12:45:00+11:00",
-  "dateModified": "2026-02-19T14:43:00+11:00",
-  "author": {
-    "@type": "Organization",
-    "name": "Traffic Torch Team",
-    "url": "https://traffictorch.net"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Traffic Torch",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://traffictorch.net/logo-512.webp",
-      "width": 512,
-      "height": 512
-    }
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://traffictorch.net/blog/posts/product-seo-help-guide"
-  },
-  "keywords": [
-    "product SEO guide",
-    "ecommerce SEO optimization",
-    "product page SEO",
-    "SEO health score",
-    "structured data for products",
-    "on-page SEO metrics",
-    "technical SEO for ecommerce",
-    "Traffic Torch tool"
-  ],
-  "wordCount": 3054,
-  "inLanguage": "en",
-  "articleSection": "SEO Guides",
-  "isPartOf": {
-    "@type": "Blog",
-    "name": "Traffic Torch Blog",
-    "url": "https://traffictorch.net/news/"
-  }
-}
-</script>
-
-<!-- Organization Schema (site-wide, keep if not duplicated elsewhere) -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Traffic Torch",
-  "url": "https://traffictorch.net/",
-  "logo": "https://traffictorch.net/logo-512.webp",
-  "sameAs": [
-    "https://twitter.com/guitaralize"
-  ]
-}
-</script>
-
-<!-- BreadcrumbList -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://traffictorch.net/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "News & Blog",
-      "item": "https://traffictorch.net/news/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "Product SEO Help Guide: Optimize Your Ecommerce Pages",
-      "item": "https://traffictorch.net/blog/posts/product-seo-help-guide/"
-    }
-  ]
-}
-</script>
-
-  <!-- FAQPage Structured Data (Google loves this for rich results & AI Overviews) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What is a good Product Page Health Score on Traffic Torch?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Aim for 85+ for “Excellent” status - you’ll usually see strong rankings and CTR in competitive niches. 70–84 = “Very Good” (solid but room to grow). 50–69 = “Needs Improvement” (fix technical + schema first). Below 50 = urgent red flags (noindex, no HTTPS, missing viewport, etc.)."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How much does adding Product schema really help rankings?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Directly? Not always a huge ranking boost. Indirectly? Massive. Rich snippets (stars, price, availability) increase CTR by 20–35% in most ecommerce SERP studies (2026 data). Higher CTR → more clicks → better engagement signals → improved rankings over time. It’s one of the fastest “win-win” fixes."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Why is mobile-friendliness still so important in 2026?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Google has used mobile-first indexing since 2019–2021. In 2026, 55–70% of ecommerce traffic is mobile (depending on niche). Poor mobile UX = higher bounce, worse Core Web Vitals, lower rankings. A missing viewport meta or fixed-width layout can drop your entire page’s visibility on mobile SERPs."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How often should I re-audit my product pages?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Best practice: audit after any major template change, CMS update, or migration. For live stores: re-scan top 20–50 revenue pages every 1–2 months, and spot-check new or low-performing pages weekly. Traffic Torch is free and instant - there’s no reason not to check regularly."
-        }
+      "@type": "WebSite",
+      "@id": "https://traffictorch.net/#website",
+      "url": "https://traffictorch.net/",
+      "name": "Traffic Torch",
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
       }
-    ]
-  }
-  </script>
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://traffictorch.net/blog/posts/product-seo-help-guide/#webpage",
+      "url": "https://traffictorch.net/blog/posts/product-seo-help-guide",
+      "name": "Product SEO Help Guide 2026",
+      "description": "In-depth 2026 guide explaining Traffic Torch's product SEO modules: on-page, technical, content & media, and ecommerce signals. Covers exact testing logic from the tool's JS, why each metric drives SEO + UX results, and prioritized fixes for real gains.",
+      "isPartOf": {
+        "@id": "https://traffictorch.net/#website"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://traffictorch.net/blog/images/product-seo/product-seo-help-guide-1200w.webp",
+        "width": 1200,
+        "height": 630
+      },
+      "image": [
+        "https://traffictorch.net/blog/images/product-seo/product-seo-help-guide-1200w.webp"
+      ],
+      "datePublished": "2026-02-19T12:45:00+11:00",
+      "dateModified": "2026-02-19T14:43:00+11:00",
+      "author": {
+        "@type": "Person",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net",
+        "sameAs": [
+          "https://twitter.com/guitaralize"
+        ]
+      },
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      },
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": [
+          "#faq",
+          "p.text-xl.sm\\:text-2xl.md\\:text-3xl.font-semibold.text-gray-800.dark\\:text-gray-200.mb-8.md\\:mb-10.leading-relaxed.max-w-4xl.mx-auto",
+          "div.prose.prose-lg.prose-orange.dark\\:prose-invert.max-w-none.mb-12 p:first-child",
+          "div.prose.prose-lg.prose-orange.dark\\:prose-invert.max-w-none.mb-12 p:nth-child(2)",
+          "nav#table-of-contents h2"
+        ]
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://traffictorch.net/blog/posts/product-seo-help-guide/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://traffictorch.net/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://traffictorch.net/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Product SEO Help Guide 2026",
+          "item": "https://traffictorch.net/blog/posts/product-seo-help-guide"
+        }
+      ]
+    },
+    {
+      "@type": "BlogPosting",
+      "headline": "Product SEO Help Guide: Optimize Your Ecommerce Pages for Higher Rankings and Conversions",
+      "description": "In-depth 2026 guide explaining Traffic Torch's product SEO modules: on-page, technical, content & media, and ecommerce signals. Covers exact testing logic from the tool's JS, why each metric drives SEO + UX results, and prioritized fixes for real gains.",
+      "image": "https://traffictorch.net/blog/images/product-seo/product-seo-help-guide-1200w.webp",
+      "datePublished": "2026-02-19T12:45:00+11:00",
+      "dateModified": "2026-02-19T14:43:00+11:00",
+      "author": {
+        "@type": "Person",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net",
+        "sameAs": [
+          "https://twitter.com/guitaralize"
+        ]
+      },
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://traffictorch.net/blog/posts/product-seo-help-guide/#webpage"
+      },
+      "keywords": [
+        "product SEO guide",
+        "ecommerce SEO optimization",
+        "product page SEO",
+        "SEO health score",
+        "structured data for products",
+        "on-page SEO metrics",
+        "technical SEO for ecommerce",
+        "Traffic Torch tool"
+      ],
+      "wordCount": 3054,
+      "inLanguage": "en",
+      "articleSection": "SEO Guides",
+      "isPartOf": {
+        "@type": "Blog",
+        "name": "Traffic Torch Blog",
+        "url": "https://traffictorch.net/blog/"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://traffictorch.net/blog/posts/product-seo-help-guide/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is a good Product Page Health Score on Traffic Torch?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Aim for 85+ for “Excellent” status - you’ll usually see strong rankings and CTR in competitive niches. 70–84 = “Very Good” (solid but room to grow). 50–69 = “Needs Improvement” (fix technical + schema first). Below 50 = urgent red flags (noindex, no HTTPS, missing viewport, etc.)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much does adding Product schema really help rankings?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Directly? Not always a huge ranking boost. Indirectly? Massive. Rich snippets (stars, price, availability) increase CTR by 20–35% in most ecommerce SERP studies (2026 data). Higher CTR → more clicks → better engagement signals → improved rankings over time. It’s one of the fastest “win-win” fixes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is mobile-friendliness still so important in 2026?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Google has used mobile-first indexing since 2019–2021. In 2026, 55–70% of ecommerce traffic is mobile (depending on niche). Poor mobile UX = higher bounce, worse Core Web Vitals, lower rankings. A missing viewport meta or fixed-width layout can drop your entire page’s visibility on mobile SERPs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How often should I re-audit my product pages?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Best practice: audit after any major template change, CMS update, or migration. For live stores: re-scan top 20–50 revenue pages every 1–2 months, and spot-check new or low-performing pages weekly. Traffic Torch is free and instant - there’s no reason not to check regularly."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
  
   <meta name="color-scheme" content="dark light">
   <link rel="icon" href="/favicon.ico" />

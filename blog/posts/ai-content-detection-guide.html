@@ -83,181 +83,194 @@
 <meta name="twitter:image" content="https://traffictorch.net/blog/images/ai-content-detection-guide/ai-content-detection-1200w.webp" />
 <meta name="twitter:site" content="@Guitaralize" />
  
-<!-- Structured Data (JSON-LD) – BlogPosting with multiple ImageObjects (featured hero + infographics) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "How to Detect AI-Generated Content: 5 Metrics + Free AI Audit Tool Help Guide",
-  "description": "Learn the exact science behind Traffic Torch’s AI Audit Tool – the 5 human-likeness metrics, transparent formulas, SEO impact and practical fixes.",
-  "url": "https://traffictorch.net/blog/posts/ai-content-detection-guide",
-  "image": [
+  "@graph": [
     {
-      "@type": "ImageObject",
-      "url": "https://traffictorch.net/blog/images/ai-content-detection-guide/ai-content-detection-1200w.webp",
-      "contentUrl": "https://traffictorch.net/blog/images/ai-content-detection-guide/ai-content-detection-1200w.webp",
-      "width": 1200,
-      "height": 630,
-      "caption": "2026 AI Content Detection Guide hero – Human vs AI Writing Patterns: Perplexity, Burstiness, Repetition, Sentence Length, Vocabulary – Traffic Torch"
+      "@type": "Organization",
+      "@id": "https://traffictorch.net/#organization",
+      "name": "Traffic Torch",
+      "url": "https://traffictorch.net/",
+      "logo": "https://traffictorch.net/logo-512.webp",
+      "sameAs": [
+        "https://twitter.com/guitaralize"
+      ]
     },
     {
-      "@type": "ImageObject",
-      "url": "https://traffictorch.net/ai-audit-tool/images/ai-vs-human-infographic-800w.webp",
-      "contentUrl": "https://traffictorch.net/ai-audit-tool/images/ai-vs-human-infographic-800w.webp",
-      "width": 800,
-      "height": 1200,
-      "caption": "AI vs Human writing patterns: Perplexity, Burstiness, Repetition – what Traffic Torch’s AI Audit Tool reveals about generated vs authentic content."
-    },
-    {
-      "@type": "ImageObject",
-      "url": "https://traffictorch.net/ai-audit-tool/images/sentence-vocab-infographic-800w.webp",
-      "contentUrl": "https://traffictorch.net/ai-audit-tool/images/sentence-vocab-infographic-800w.webp",
-      "width": 800,
-      "height": 1200,
-      "caption": "Sentence Length & Vocabulary Exposed: Human natural flow vs AI grid-like patterns – Traffic Torch AI Audit Tool insights."
-    }
-  ],
-  "datePublished": "2026-02-17T09:00:00+11:00",
-  "dateModified": "2026-02-17T14:32:00+11:00",
-  "author": {
-    "@type": "Organization",
-    "name": "Traffic Torch Team",
-    "url": "https://traffictorch.net"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Traffic Torch",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://traffictorch.net/logo-512.webp",
-      "width": 512,
-      "height": 512
-    }
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://traffictorch.net/blog/posts/ai-content-detection-guide"
-  },
-  "keywords": [
-    "detect AI content",
-    "AI content detector",
-    "humanize AI text",
-    "perplexity burstiness",
-    "AI writing detection 2026",
-    "Traffic Torch AI audit"
-  ],
-  "wordCount": 3330,
-  "inLanguage": "en",
-  "articleSection": "AI & Content Quality",
-  "isPartOf": {
-    "@type": "Blog",
-    "name": "Traffic Torch Blog",
-    "url": "https://traffictorch.net/news/"
-  }
-}
-</script>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Traffic Torch",
-  "url": "https://traffictorch.net/",
-  "logo": "https://traffictorch.net/logo-512.webp",
-  "sameAs": [
-    "https://twitter.com/guitaralize"
-  ]
-}
-</script>
-
-<!-- BreadcrumbList for full blog post hierarchy -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://traffictorch.net/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "News & Blog",
-      "item": "https://traffictorch.net/news/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "How to Detect AI-Generated Content: 5 Metrics + Free AI Audit Tool Help Guide",
-      "item": "https://traffictorch.net/blog/posts/ai-content-detection-guide.html"
-    }
-  ]
-}
-</script>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "What is a good Human Score in Traffic Torch?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "80+ is excellent (likely human / well-humanized). 60–79 is moderate (some AI patterns - usually fixable). Below 60 indicates strong AI characteristics. Top-ranking pages in competitive niches typically score 85–95+ after edits."
+      "@type": "WebSite",
+      "@id": "https://traffictorch.net/#website",
+      "url": "https://traffictorch.net/",
+      "name": "Traffic Torch",
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
       }
     },
     {
-      "@type": "Question",
-      "name": "Can I improve an AI-generated article to pass as human?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes - in most cases. Focus first on the failing modules (shown in orange/red). Add personal anecdotes, vary sentence rhythm, swap repetitive phrases, introduce 2–4 rare/topic-specific words, and break up uniform lengths. Re-run the audit after each round of edits."
+      "@type": "WebPage",
+      "@id": "https://traffictorch.net/blog/posts/how-to-detect-ai-content/#webpage",
+      "url": "https://traffictorch.net/blog/posts/how-to-detect-ai-content",
+      "name": "How to Detect AI-Generated Content with 5 Metrics",
+      "description": "Learn the exact science behind Traffic Torch’s AI Audit Tool – the 5 human-likeness metrics, transparent formulas, SEO impact and practical fixes.",
+      "isPartOf": {
+        "@id": "https://traffictorch.net/#website"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://traffictorch.net/blog/images/ai-content-detection-guide/ai-content-detection-1200w.webp",
+        "width": 1200,
+        "height": 630
+      },
+      "image": [
+        "https://traffictorch.net/blog/images/ai-content-detection-guide/ai-content-detection-1200w.webp"
+      ],
+      "datePublished": "2026-02-17T09:00:00+11:00",
+      "dateModified": "2026-02-17T14:32:00+11:00",
+      "author": {
+        "@type": "Person",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net",
+        "sameAs": [
+          "https://twitter.com/guitaralize"
+        ]
+      },
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      },
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": [
+          "#faq",
+          "p.text-xl.md\\:text-2xl.font-medium.text-gray-800.dark\\:text-gray-200.mb-10.leading-relaxed.max-w-3xl",
+          "div.prose.prose-lg.prose-orange.dark\\:prose-invert.max-w-none.mb-12 p:first-child",
+          "div.prose.prose-lg.prose-orange.dark\\:prose-invert.max-w-none.mb-12 p:nth-child(2)",
+          "nav#table-of-contents h2"
+        ]
       }
     },
     {
-      "@type": "Question",
-      "name": "Why does Traffic Torch use entropy instead of a full language model for perplexity?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Privacy + speed. Full LMs require huge downloads or server calls. Bigram/trigram entropy is lightweight, runs 100% in-browser, and correlates very strongly with professional detectors for blog/article-length content."
+      "@type": "BreadcrumbList",
+      "@id": "https://traffictorch.net/blog/posts/how-to-detect-ai-content/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://traffictorch.net/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://traffictorch.net/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "How to Detect AI-Generated Content with 5 Metrics",
+          "item": "https://traffictorch.net/blog/posts/how-to-detect-ai-content"
+        }
+      ]
+    },
+    {
+      "@type": "BlogPosting",
+      "headline": "How to Detect AI-Generated Content: 5 Metrics + Free AI Audit Tool Help Guide",
+      "description": "Learn the exact science behind Traffic Torch’s AI Audit Tool – the 5 human-likeness metrics, transparent formulas, SEO impact and practical fixes.",
+      "image": "https://traffictorch.net/blog/images/ai-content-detection-guide/ai-content-detection-1200w.webp",
+      "datePublished": "2026-02-17T09:00:00+11:00",
+      "dateModified": "2026-02-17T14:32:00+11:00",
+      "author": {
+        "@type": "Person",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net",
+        "sameAs": [
+          "https://twitter.com/guitaralize"
+        ]
+      },
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://traffictorch.net/blog/posts/how-to-detect-ai-content/#webpage"
+      },
+      "keywords": [
+        "detect AI content",
+        "AI content detector",
+        "humanize AI text",
+        "perplexity burstiness",
+        "AI writing detection 2026",
+        "Traffic Torch AI audit"
+      ],
+      "wordCount": 3330,
+      "inLanguage": "en",
+      "articleSection": "AI & Content Quality",
+      "isPartOf": {
+        "@type": "Blog",
+        "name": "Traffic Torch Blog",
+        "url": "https://traffictorch.net/blog/"
       }
     },
     {
-      "@type": "Question",
-      "name": "Does a perfect 100/100 mean the content is definitely human-written?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "No - it means the text shows excellent human-like statistical patterns across all five axes. Highly edited AI content or cleverly prompted models can reach high scores. The tool detects patterns, not authorship."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How often should I re-run the audit after editing?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "After every major round (e.g. fixing repetition → burstiness → vocabulary). The tool is instant and free - use it iteratively until you’re in the green across all modules."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Will fixing these metrics improve my Google rankings?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Indirectly yes - better human-like patterns usually improve dwell time, reduce bounce rate, and lower pogo-sticking, which are strong 2026 behavioral ranking factors. Combine with solid E-E-A-T, backlinks, and technical SEO for best results."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Is the tool accurate for non-English content?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "It works best on English. Entropy and burstiness are language-agnostic to some degree, but vocabulary and repetition thresholds are tuned on English corpora. Results in other languages are indicative but less precise."
-      }
+      "@type": "FAQPage",
+      "@id": "https://traffictorch.net/blog/posts/how-to-detect-ai-content/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is a good Human Score in Traffic Torch?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "80+ is excellent (likely human / well-humanized). 60–79 is moderate (some AI patterns - usually fixable). Below 60 indicates strong AI characteristics. Top-ranking pages in competitive niches typically score 85–95+ after edits."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I improve an AI-generated article to pass as human?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes - in most cases. Focus first on the failing modules (shown in orange/red). Add personal anecdotes, vary sentence rhythm, swap repetitive phrases, introduce 2–4 rare/topic-specific words, and break up uniform lengths. Re-run the audit after each round of edits."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does Traffic Torch use entropy instead of a full language model for perplexity?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Privacy + speed. Full LMs require huge downloads or server calls. Bigram/trigram entropy is lightweight, runs 100% in-browser, and correlates very strongly with professional detectors for blog/article-length content."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does a perfect 100/100 mean the content is definitely human-written?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No - it means the text shows excellent human-like statistical patterns across all five axes. Highly edited AI content or cleverly prompted models can reach high scores. The tool detects patterns, not authorship."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How often should I re-run the audit after editing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "After every major round (e.g. fixing repetition → burstiness → vocabulary). The tool is instant and free - use it iteratively until you’re in the green across all modules."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will fixing these metrics improve my Google rankings?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Indirectly yes - better human-like patterns usually improve dwell time, reduce bounce rate, and lower pogo-sticking, which are strong 2026 behavioral ranking factors. Combine with solid E-E-A-T, backlinks, and technical SEO for best results."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the tool accurate for non-English content?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It works best on English. Entropy and burstiness are language-agnostic to some degree, but vocabulary and repetition thresholds are tuned on English corpora. Results in other languages are indicative but less precise."
+          }
+        }
+      ]
     }
   ]
 }

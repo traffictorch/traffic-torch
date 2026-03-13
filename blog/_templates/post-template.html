@@ -88,92 +88,133 @@
   <meta name="twitter:image" content="https://traffictorch.net/images/featured/how-traffic-torch.jpg" /> <!-- REPLACE -->
   <meta name="twitter:site" content="@Guitaralize" /> 
  
-<!-- Structured Data (JSON-LD) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Behind the Scenes: Developing Traffic Torch's AI SEO and UX Tools",
-  "description": "In-depth look at the architecture, design decisions, tech stack, privacy-first approach, client-side processing, AI integration, mobile-first UX, and educational philosophy behind Traffic Torch's instant 360° SEO & UX analysis tools.",
-  "image": "https://traffictorch.net/images/tool-banners/homepage-infographic.webp",
-  "datePublished": "2026-01-03",
-  "dateModified": "2026-01-03",
-  "author": {
-    "@type": "Person",
-    "name": "Traffic Torch Team",
-    "url": "https://traffictorch.net",
-    "sameAs": [
-      "https://twitter.com/guitaralize"
-    ]
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Traffic Torch",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://traffictorch.net/logo-512.webp"
-    }
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://traffictorch.net/blog/posts/developing-traffic-torch-tools.html"
-  },
-  "keywords": [
-    "SEO tool development",
-    "client-side analysis tool",
-    "privacy-first SEO",
-    "AI-powered UX audit",
-    "instant SEO checker",
-    "PWA SEO tool",
-    "mobile-first web development"
-  ],
-  "wordCount": 2800,  <!-- update with actual word count after final edit -->
-  "inLanguage": "en",
-  "articleSection": "Development Behind the Scenes",
-  "isPartOf": {
-    "@type": "Blog",
-    "name": "Traffic Torch Blog",
-    "url": "https://traffictorch.net/news/"
-  }
-}
-</script>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Traffic Torch",
-  "url": "https://traffictorch.net/",
-  "logo": "https://traffictorch.net/logo-512.webp",
-  "sameAs": [
-    "https://twitter.com/guitaralize"
-  ]
-}
-</script>
-
-<!-- BreadcrumbList for full blog post hierarchy -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
+  "@graph": [
     {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://traffictorch.net/"
+      "@type": "Organization",
+      "@id": "https://traffictorch.net/#organization",
+      "name": "Traffic Torch",
+      "url": "https://traffictorch.net/",
+      "logo": "https://traffictorch.net/logo-512.webp",
+      "sameAs": [
+        "https://twitter.com/guitaralize"
+      ]
     },
     {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "News & Blog",
-      "item": "https://traffictorch.net/news/"
+      "@type": "WebSite",
+      "@id": "https://traffictorch.net/#website",
+      "url": "https://traffictorch.net/",
+      "name": "Traffic Torch",
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      }
     },
     {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "Behind the Scenes: Developing Traffic Torch's Tools",
-      "item": "https://traffictorch.net/blog/posts/developing-traffic-torch-tools.html"
+      "@type": "WebPage",
+      "@id": "https://traffictorch.net/blog/posts/developing-traffic-torch-tools/#webpage",
+      "url": "https://traffictorch.net/blog/posts/developing-traffic-torch-tools",
+      "name": "Behind the Scenes: Developing Traffic Torch's AI SEO and UX Tools",
+      "description": "In-depth look at the architecture, design decisions, tech stack, privacy-first approach, client-side processing, AI integration, mobile-first UX, and educational philosophy behind Traffic Torch's instant 360° SEO & UX analysis tools.",
+      "isPartOf": {
+        "@id": "https://traffictorch.net/#website"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://traffictorch.net/images/tool-banners/homepage-infographic.webp",
+        "width": 1200,
+        "height": 675
+      },
+      "image": [
+        "https://traffictorch.net/images/tool-banners/homepage-infographic.webp"
+      ],
+      "datePublished": "2026-01-03T00:00:00+11:00",
+      "dateModified": "2026-01-03T00:00:00+11:00",
+      "author": {
+        "@type": "Person",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net",
+        "sameAs": [
+          "https://twitter.com/guitaralize"
+        ]
+      },
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      },
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": [
+          "#faq",
+          "p.text-xl.md\\:text-2xl.font-medium.text-gray-800.dark\\:text-gray-200.mb-10.leading-relaxed.max-w-3xl",
+          "div.prose.prose-lg.prose-orange.dark\\:prose-invert.max-w-none.mb-12 p:first-child",
+          "div.prose.prose-lg.prose-orange.dark\\:prose-invert.max-w-none.mb-12 p:nth-child(2)",
+          "nav#table-of-contents h2"
+        ]
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://traffictorch.net/blog/posts/developing-traffic-torch-tools/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://traffictorch.net/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://traffictorch.net/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Behind the Scenes: Developing Traffic Torch's Tools",
+          "item": "https://traffictorch.net/blog/posts/developing-traffic-torch-tools"
+        }
+      ]
+    },
+    {
+      "@type": "BlogPosting",
+      "headline": "Behind the Scenes: Developing Traffic Torch's AI SEO and UX Tools",
+      "description": "In-depth look at the architecture, design decisions, tech stack, privacy-first approach, client-side processing, AI integration, mobile-first UX, and educational philosophy behind Traffic Torch's instant 360° SEO & UX analysis tools.",
+      "image": "https://traffictorch.net/images/tool-banners/homepage-infographic.webp",
+      "datePublished": "2026-01-03T00:00:00+11:00",
+      "dateModified": "2026-01-03T00:00:00+11:00",
+      "author": {
+        "@type": "Person",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net",
+        "sameAs": [
+          "https://twitter.com/guitaralize"
+        ]
+      },
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://traffictorch.net/blog/posts/developing-traffic-torch-tools/#webpage"
+      },
+      "keywords": [
+        "SEO tool development",
+        "client-side analysis tool",
+        "privacy-first SEO",
+        "AI-powered UX audit",
+        "instant SEO checker",
+        "PWA SEO tool",
+        "mobile-first web development"
+      ],
+      "wordCount": 2800,
+      "inLanguage": "en",
+      "articleSection": "Development Behind the Scenes",
+      "isPartOf": {
+        "@type": "Blog",
+        "name": "Traffic Torch Blog",
+        "url": "https://traffictorch.net/blog/"
+      }
     }
   ]
 }
