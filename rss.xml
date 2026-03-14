@@ -6,6 +6,22 @@
     <atom:link href="https://traffictorch.net/rss.xml" rel="self" type="application/rss+xml" />
     <description>Instant SEO &amp; UX health analysis deep-dives, fixes, and trends</description>
     <language>en</language>
+    
+    <item>
+      <title>AI Voice Search Help Guide</title>
+      <link>https://traffictorch.net/blog/posts/ai-voice-search-help-guide/</link>
+      <guid isPermaLink="true">https://traffictorch.net/blog/posts/ai-voice-search-help-guide/</guid>
+      <pubDate>fri, 13 Mar 2026 00:00:00 GMT</pubDate>
+      <description>Complete 2026 guide to optimizing for voice search: conversational keywords, featured snippets, schema markup and AI assistant ranking strategies. Plus the 5 critical modules Traffic Torch uses to evaluate voice search readiness, and the highest-ROI optimizations you can implement right now.</description>
+    </item>
+    
+    <item>
+      <title>Schema Markup Help Guide</title>
+      <link>https://traffictorch.net/blog/posts/schema-markup-help-guide/</link>
+      <guid isPermaLink="true">https://traffictorch.net/blog/posts/schema-markup-help-guide/</guid>
+      <pubDate>Tue, 10 Mar 2026 00:00:00 GMT</pubDate>
+      <description>What each schema type is, when to use it, and why it matters for rich results, higher CTR, and better traffic in 2026. From core types like Organization & Article to advanced ones like JobPosting, Course, FactCheck & more.</description>
+    </item>
 
     <item>
       <title>State of SEO &amp; GEO in 2026: In-Depth Data from Latest Reports</title>

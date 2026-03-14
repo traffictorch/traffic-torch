@@ -245,7 +245,7 @@ results.innerHTML = `
 </div>
 
 <!-- Metrics Layout – AI Visibility full-width + remaining 4 in 2-column grid on md+ -->
-<div class="space-y-8 max-w-5xl mx-auto px-4">
+<div class="space-y-8 max-w-3xl mx-auto px-4">
   <!-- AI Visibility – always full-width single column -->
   ${(() => {
     const m = modules[0]; // First module is AI Visibility
