@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="relative w-20 h-20">
           <svg class="animate-spin" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8" stroke-opacity="0.3"/>
-            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8"
+                    stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
           </svg>
         </div>
         <p id="progress-text" class="mt-4 text-xl font-medium text-orange-500">Analyzing entities...</p>
@@ -71,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `).join('') || '<p class="text-gray-600 dark:text-gray-400">No entities detected.</p>';
 
-      const audit = data.audit || { overall: 30, suggestions: ['No audit data – check Worker'] };
+      const audit = data.audit || { overall: 30, suggestions: ['No audit data – check Worker response'] };
       const grade = getGrade(audit.overall);
 
       results.innerHTML = `
