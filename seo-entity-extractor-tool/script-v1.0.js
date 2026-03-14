@@ -170,7 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
           <!-- Radar Chart -->
           <div class="mb-16">
             <h3 class="text-2xl font-semibold text-center text-gray-800 dark:text-gray-200 mb-6">Semantic Health Radar</h3>
-            <canvas id="health-radar" class="w-full h-80 md:h-96 mx-auto"></canvas>
+            <div class="w-full max-w-2xl mx-auto aspect-square">
+		  <canvas id="health-radar"></canvas>
+			</div>
           </div>
 
           <!-- Module Score Cards -->
@@ -208,42 +210,57 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
 
       // Initialize Chart.js radar
-      setTimeout(() => {
-        const canvas = document.getElementById('health-radar');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        new Chart(ctx, {
-          type: 'radar',
-          data: {
-            labels: modules.map(m => m.name),
-            datasets: [{
-              label: 'Score',
-              data: modules.map(m => m.result.score),
-              backgroundColor: 'rgba(251, 146, 60, 0.2)',
-              borderColor: '#fb923c',
-              borderWidth: 3,
-              pointBackgroundColor: '#fff',
-              pointBorderColor: '#fb923c',
-              pointRadius: 5
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              r: {
-                beginAtZero: true,
-                max: 100,
-                ticks: { stepSize: 20, color: '#9ca3af' },
-                grid: { color: 'rgba(156,163,175,0.3)' },
-                angleLines: { color: 'rgba(156,163,175,0.3)' },
-                pointLabels: { color: '#9ca3af', font: { size: 14 } }
-              }
-            },
-            plugins: { legend: { display: false } }
-          }
-        });
-      }, 300);
+setTimeout(() => {
+  const canvas = document.getElementById('health-radar');
+  if (!canvas) {
+    console.warn('Radar canvas not found');
+    return;
+  }
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  // Destroy any existing chart instance first (prevents duplicate canvas errors on re-runs)
+  if (window.myRadarChart) {
+    window.myRadarChart.destroy();
+  }
+
+  window.myRadarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: modules.map(m => m.name),
+      datasets: [{
+        label: 'Semantic Health',
+        data: modules.map(m => m.result.score),
+        backgroundColor: 'rgba(251, 146, 60, 0.18)',
+        borderColor: '#fb923c',
+        borderWidth: 3,
+        pointBackgroundColor: '#ffffff',
+        pointBorderColor: '#fb923c',
+        pointRadius: 5,
+        pointHoverRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,           // ← important for square aspect
+      aspectRatio: 1,                       // enforces square shape
+      scales: {
+        r: {
+          beginAtZero: true,
+          max: 100,
+          ticks: { stepSize: 20, color: '#9ca3af', backdropColor: 'transparent' },
+          grid: { color: 'rgba(156,163,175,0.4)' },
+          angleLines: { color: 'rgba(156,163,175,0.4)' },
+          pointLabels: { color: '#9ca3af', font: { size: 14, weight: '600' } }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: { backgroundColor: 'rgba(30,41,59,0.9)', titleFont: { size: 14 } }
+      }
+    }
+  });
+}, 500);  // increased delay slightly to ensure DOM is fully rendered
 
       // Initialize share & feedback
       initShareReport(results);
