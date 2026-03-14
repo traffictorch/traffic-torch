@@ -47,8 +47,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || `Server error ${res.status}`);
+        let errMsg = `Server error ${res.status}`;
+        try {
+          const errData = await res.json();
+          errMsg = errData.error || errMsg;
+        } catch {}
+        throw new Error(errMsg);
       }
 
       const data = await res.json();
