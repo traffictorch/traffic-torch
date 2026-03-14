@@ -1,121 +1,134 @@
-export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
-    const pathname = url.pathname;
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('entity-form');
+  const results = document.getElementById('results');
 
-    // CORS preflight
-    if (request.method === 'OPTIONS') {
-      const headers = new Headers();
-      headers.set('Access-Control-Allow-Origin', '*');
-      headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-      headers.set('Access-Control-Allow-Headers', 'Content-Type');
-      headers.set('Access-Control-Max-Age', '86400');
-      return new Response(null, { status: 204, headers });
-    }
-
-    // Entity Analyzer Endpoint
-    if (pathname === '/entity-analyze' && request.method === 'POST') {
-      try {
-        const body = await request.json();
-        const targetUrl = body.url;
-        if (!targetUrl || typeof targetUrl !== 'string') {
-          return new Response(JSON.stringify({ error: 'Missing or invalid "url"' }), {
-            status: 400,
-            headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-          });
-        }
-
-        const res = await fetch(targetUrl, {
-          redirect: 'follow',
-          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TrafficTorch/1.0)' }
-        });
-        if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
-        let content = await res.text();
-        content = content
-          .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-          .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-          .replace(/<[^>]+>/g, ' ')
-          .replace(/\s+/g, ' ')
-          .trim()
-          .substring(0, 3000);
-
-        const ai = env.AI;
-        if (!ai) throw new Error('AI binding not available');
-
-        const extractPrompt = `
-Extract named entities from this page content relevant to SEO, search engines, marketing, or the main topic. Include people, organizations, locations, products, technologies, concepts.
-
-Rules:
-- Return ONLY a valid JSON array of objects. No other text, no markdown, no code blocks.
-- If no entities found, return empty array [].
-- Format exactly:
-[{"text": "Entity Name", "type": "PERSON|ORGANIZATION|LOCATION|PRODUCT|CONCEPT|OTHER", "salience": 0.0-1.0}]
-
-Example:
-[{"text": "Google", "type": "ORGANIZATION", "salience": 0.95}, {"text": "SEO", "type": "CONCEPT", "salience": 0.90}]
-
-Page content:
-${content}
-        `;
-
-        const extractOutput = await ai.run('@cf/meta/llama-3.3-70b-instruct-fp8-fast', { prompt: extractPrompt });
-
-        let extracted = [];
-        try {
-          let raw = (extractOutput.response || extractOutput || '').trim();
-          raw = raw.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').replace(/^`+/, '').replace(/`+$/, '');
-          extracted = JSON.parse(raw);
-          extracted = Array.isArray(extracted) ? extracted : [];
-          extracted = extracted
-            .filter(e => e && e.text && e.type && typeof e.salience === 'number')
-            .sort((a, b) => b.salience - a.salience);
-        } catch (e) {
-          console.error('Extraction parse failed:', e.message, 'Raw output:', (extractOutput.response || extractOutput || '').substring(0, 300));
-          extracted = [];
-        }
-
-        let audit = {
-          overall: extracted.length > 0 ? 50 + Math.min(50, extracted.length * 4) : 30,
-          coverage: extracted.length > 5 ? 70 : extracted.length * 10,
-          salience: extracted.length > 0 ? 60 : 30,
-          relationships: 50,
-          practices: 50,
-          readiness: extracted.length > 0 ? "Fair" : "Poor",
-          suggestions: extracted.length === 0
-            ? ["No entities detected – page may be thin or JS-heavy. Try a text-rich URL like Wikipedia."]
-            : ["Add more descriptive context and relationships for main entities.", "Use headings and early mentions to increase salience.", "Implement schema markup for key entities to boost practices score."]
-        };
-
-        return new Response(JSON.stringify({ extracted, audit }), {
-          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-        });
-      } catch (err) {
-        console.error('Entity analysis error:', err.message);
-        return new Response(JSON.stringify({ error: err.message }), {
-          status: 500,
-          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-        });
-      }
-    }
-
-    // Simple proxy (?url=)
-    const targetUrl = url.searchParams.get('url') || url.searchParams.get('_url');
-    if (!targetUrl) {
-      return new Response('Missing ?url=', { status: 400 });
-    }
-    try {
-      const res = await fetch(targetUrl, {
-        redirect: 'follow',
-        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TrafficTorch/1.0)' }
-      });
-      const headers = new Headers(res.headers);
-      headers.set('Content-Type', res.headers.get('content-type') || 'text/html;charset=utf-8');
-      return new Response(res.body, {
-        status: res.status,
-        headers: { ...Object.fromEntries(headers), 'Access-Control-Allow-Origin': '*' }
-      });
-    } catch (err) {
-      return new Response(`Proxy error: ${err.message}`, { status: 503 });
-    }
+  if (!form) {
+    console.error('Form #entity-form not found');
+    return;
   }
-};
+
+  if (!results) {
+    console.error('Results #results not found');
+    return;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();  // Prevents page reload
+
+    const urlInput = document.getElementById('url-input');
+    if (!urlInput) {
+      console.error('URL input #url-input not found');
+      alert('URL input field missing – check HTML');
+      return;
+    }
+
+    const inputValue = urlInput.value.trim();
+    const url = cleanUrl(inputValue);
+    if (!url) {
+      alert('Please enter a valid URL');
+      return;
+    }
+
+    results.innerHTML = `
+      <div id="analysis-progress" class="flex flex-col items-center justify-center py-8">
+        <div class="relative w-20 h-20">
+          <svg class="animate-spin" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8" stroke-opacity="0.3"/>
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8"
+                    stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
+          </svg>
+        </div>
+        <p id="progress-text" class="mt-4 text-xl font-medium text-orange-500">Analyzing entities...</p>
+      </div>
+    `;
+    results.classList.remove('hidden');
+
+    const progressText = document.getElementById('progress-text');
+
+    try {
+      progressText.textContent = "Fetching page content...";
+
+      const res = await fetch("https://traffic-torch-entity-proxy.traffictorch.workers.dev/entity-analyze", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+
+      if (!res.ok) {
+        let errMsg = `Server error ${res.status}`;
+        try {
+          const errData = await res.json();
+          errMsg = errData.error || errMsg;
+        } catch {}
+        throw new Error(errMsg);
+      }
+
+      const data = await res.json();
+
+      progressText.textContent = "Rendering report...";
+
+      const entitiesHTML = (data.extracted || []).map(entity => `
+        <div class="p-4 bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
+          <p class="font-bold text-gray-800 dark:text-gray-200">${entity.text || 'Unknown'}</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">${entity.type || 'Unknown'}</p>
+          <div class="mt-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div class="bg-blue-600 h-2 rounded-full" style="width: ${Math.round((entity.salience || 0) * 100)}%"></div>
+          </div>
+          <p class="text-xs mt-1 text-gray-500 dark:text-gray-400">
+            Salience: ${(entity.salience || 0).toFixed(2)}
+          </p>
+        </div>
+      `).join('') || '<p class="text-gray-600 dark:text-gray-400">No entities detected.</p>';
+
+      const audit = data.audit || { overall: 30, suggestions: ['No audit data – check Worker response'] };
+      const grade = getGrade(audit.overall);
+
+      results.innerHTML = `
+        <div class="max-w-4xl mx-auto px-4 py-8">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Entity Analysis Report</h2>
+            <p class="mt-2 text-lg text-gray-600 dark:text-gray-400">
+              Overall Semantic Health: <span class="$$   {grade.color} font-bold">   $${audit.overall}/100 ${grade.emoji} ${grade.text}</span>
+            </p>
+          </div>
+
+          <div class="mb-12">
+            <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6">Extracted Entities</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[600px] overflow-y-auto pr-2">
+              ${entitiesHTML}
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+            <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Audit & Recommendations</h3>
+            <ul class="list-disc pl-6 space-y-3 text-gray-700 dark:text-gray-300">
+              ${audit.suggestions?.map(s => `<li>${s}</li>`).join('') || '<li>No suggestions available.</li>'}
+            </ul>
+          </div>
+        </div>
+      `;
+
+    } catch (err) {
+      console.error('Analysis error:', err);
+      results.innerHTML = `
+        <div class="text-center py-12 text-red-600 dark:text-red-400">
+          <p class="text-xl font-bold">Error during analysis</p>
+          <p class="mt-4">${err.message || 'Unknown error – check console'}</p>
+        </div>
+      `;
+    }
+  });
+
+  function cleanUrl(u) {
+    const trimmed = u.trim();
+    if (!trimmed) return '';
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    return 'https://' + trimmed;
+  }
+
+  function getGrade(score) {
+    if (score >= 80) return { text: 'Excellent', emoji: '✅', color: 'text-green-600 dark:text-green-400' };
+    if (score >= 60) return { text: 'Good', emoji: '⚠️', color: 'text-orange-500 dark:text-orange-400' };
+    return { text: 'Needs Work', emoji: '❌', color: 'text-red-600 dark:text-red-400' };
+  }
+});
