@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       progressText.textContent = "Fetching page content...";
 
-      const res = await fetch("https://rendered-proxy-basic.traffictorch.workers.dev/entity-analyze", {
+      const res = await fetch("https://traffic-torch-entity-proxy.traffictorch.workers.dev/entity-analyze", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url })  // No topEntities – extract all
