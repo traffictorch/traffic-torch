@@ -131,4 +131,4 @@ document.addEventListener('DOMContentLoaded', () => {
     if (score >= 60) return { text: 'Good', emoji: '⚠️', color: 'text-orange-500 dark:text-orange-400' };
     return { text: 'Needs Work', emoji: '❌', color: 'text-red-600 dark:text-red-400' };
   }
-});
+}); 
