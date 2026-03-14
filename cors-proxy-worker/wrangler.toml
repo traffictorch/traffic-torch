@@ -1,0 +1,7 @@
+name = "cors-proxy-traffictorch"
+main = "src/index.js"
+compatibility_date = "2025-12-13"  # Safe recent date – enables latest features/nodejs_compat
+
+compatibility_flags = ["nodejs_compat"]
+
+browser = { binding = "BROWSER" }  # Standard binding – real Cloudflare browsers in production

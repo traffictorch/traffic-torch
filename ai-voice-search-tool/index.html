@@ -1,0 +1,977 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ 
+  <!-- Optimized SEO Title & Description -->
+  <title>AI Voice Search Optimization Tool – Instant Voice SEO Audit | Traffic Torch</title>
+  <meta name="description" content="Free instant AI voice search optimization tool. Audit conversational keywords, content quality, snippets, sentiment & visibility. Get fixes and forecasts." />
+  <!-- Robots & Canonical -->
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://traffictorch.net/ai-voice-search-tool/" />
+ 
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <!-- Referrer Policy (security + privacy best practice) -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/ai-voice-search-tool/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/ai-voice-search-tool/">
+  <!-- Open Graph Tags (Facebook, LinkedIn, etc.) -->
+  <meta property="og:title" content="Free AI Voice Search Optimization Audit Tool | Traffic Torch" />
+  <meta property="og:description" content="Instant free tool to audit and optimize for AI voice search with scores on visibility, content quality, snippets, sentiment & keywords. Includes AI fixes and ranking forecasts." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://traffictorch.net/ai-voice-search-tool/" />
+  <meta property="og:image" content="https://traffictorch.net/ai-voice-search-tool/images/voice-search-1200w.webp" />
+  <meta property="og:image:alt" content="Traffic Torch AI Voice Search Tool interface showing voice SEO health scores and optimization suggestions" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="Traffic Torch" />
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free AI Voice Search Optimization Audit Tool | Traffic Torch" />
+  <meta name="twitter:description" content="Instant free tool to audit and optimize for AI voice search with scores on visibility, content quality, snippets, sentiment & keywords. Includes AI fixes and ranking forecasts." />
+  <meta name="twitter:image" content="https://traffictorch.net/ai-voice-search-tool/images/voice-search-1200w.webp" />
+  <meta name="twitter:image:alt" content="Traffic Torch AI Voice Search Tool interface showing voice SEO health scores and optimization suggestions" />
+  <meta name="twitter:site" content="@Guitaralize" />
+
+<!-- Structured Data (JSON-LD) - Voice Search Optimization Tool + FAQ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "AI Voice Search Optimization Tool",
+      "description": "Instant 360° audit and optimization for AI voice search. Get health scores, deep-dive modules (visibility, content, snippets, sentiment, keywords), AI-generated fixes, and predictive ranking forecasts.",
+      "url": "https://traffictorch.net/ai-voice-search-tool/",
+      "speakable": {
+	  "@type": "SpeakableSpecification",
+	  "cssSelector": [
+	    "#faq",
+	    "p.text-lg.md\\:text-xl.lg\\:text-2xl.text-gray-700.dark\\:text-gray-300.max-w-4xl.mx-auto.leading-relaxed.mb-8.md\\:mb-10",
+	    ".max-w-4xl.mx-auto.my-16 details div.mt-8",
+	    "section.max-w-4xl.mx-auto.mt-12.mb-12 p.text-2xl.md\\:text-3xl.font-bold.text-center.mb-10.leading-tight",
+	    "div.max-w-2xl.mx-auto.my-10 details div.mt-6"
+	  ]
+	},
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch"
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://traffictorch.net/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "AI Voice Search Tool",
+            "item": "https://traffictorch.net/ai-voice-search-tool/"
+          }
+        ]
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Traffic Torch AI Voice Search Optimizer",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      },
+      "description": "Free real-time voice SEO audit tool. Instant scoring across AI visibility, content quality, snippet eligibility, sentiment & keyword performance. Delivers 0–100 health score, module breakdowns, prioritized fixes, competitive gap analysis, and predictive rank lift forecasts.",
+      "url": "https://traffictorch.net/ai-voice-search-tool/",
+      "image": "https://traffictorch.net/ai-voice-search-tool/images/voice-search-1200w.webp",
+      "author": {
+        "@type": "Person",
+        "name": "Ylia Callan",
+        "url": "https://yliacallan.github.io/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/logo-512.webp",
+          "width": 512,
+          "height": 512
+        }
+      },
+      "datePublished": "2026-03-13T18:12:00+11:00",
+      "dateModified": "2026-03-13T15:01:00+11:00"
+    },
+    {
+      "@type": "Article",
+      "headline": "Free AI Voice Search Optimization & Audit Tool",
+      "description": "Optimize your site for voice assistants (Google, Siri, Gemini, Alexa) with instant voice SEO audit. Get visibility, content, snippet, sentiment & keyword scores, plus AI fixes and ranking predictions.",
+      "url": "https://traffictorch.net/ai-voice-search-tool/",
+      "image": [
+        "https://traffictorch.net/ai-voice-search-tool/images/voice-search-1200w.webp",
+        "https://traffictorch.net/ai-voice-search-tool/images/voice-search-banner-800x290.webp"
+      ],
+      "author": {
+        "@type": "Person",
+        "name": "Ylia Callan",
+        "url": "https://yliacallan.github.io/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch"
+      },
+      "datePublished": "2026-03-13T18:12:00+11:00",
+      "dateModified": "2026-03-13T15:01:00+11:00"
+    },
+    {
+      "@type": "Person",
+      "name": "Ylia Callan",
+      "url": "https://yliacallan.github.io/",
+      "sameAs": [
+        "https://www.linkedin.com/in/ylia-callan-8b889976/",
+        "https://x.com/guitaralize",
+        "https://traffictorch.net/"
+      ],
+      "image": "https://traffictorch.net/ai-voice-search-tool/images/ylia-callan-320w.webp",
+      "jobTitle": "Founder & Builder",
+      "description": "Creator of privacy-first AI SEO/UX tools including Traffic Torch AI Voice Search Optimizer",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Traffic Torch",
+        "url": "https://traffictorch.net/"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://traffictorch.net/ai-voice-search-tool/#faq",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/ai-voice-search-tool/"
+      },
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I optimize my website for voice search like Google Assistant or Siri?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Focus on conversational long-tail keywords, question-based headings, concise answers (40-60 words), and structured data (FAQ/HowTo schema). The Traffic Torch AI Voice Search Tool audits visibility, content quality, snippets, sentiment & keywords to give you exact fixes and predicted ranking lift."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does my site rank low in voice search results?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Voice assistants prioritize position-zero snippets, natural language answers, entity-rich content, and strong schema markup. Low scores in AI visibility, snippet eligibility, or content conciseness often cause poor performance. Use Traffic Torch to get a full 360° voice SEO health score and targeted fixes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What makes content voice-search friendly?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use natural, conversational tone (pronouns like 'you' and 'we'), short direct answers (40-60 words), question formats, and high entity coverage. Avoid jargon and ensure positive/neutral sentiment. The Traffic Torch tool scores content quality, sentiment, and snippet readiness to help you optimize for voice assistants."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How long does it take to see improvements in voice search rankings?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Most on-page fixes (schema, content tweaks, keywords) show impact within 1-4 weeks after Google re-crawls. The Traffic Torch tool provides predictive rank lift estimates based on your current scores to help prioritize high-ROI changes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need schema markup for voice search success?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes – FAQPage, HowTo, SpeakableSpecification, and Article/Product schema significantly boost snippet and AI Overview eligibility, which voice assistants read aloud. The Traffic Torch tool checks your schema coverage and suggests additions for better voice results."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+ 
+  <!-- Additional Meta for UX/PWA -->
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+ 
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json" />
+
+    <!-- Main Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/ai-voice-search-tool/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/ai-voice-search-tool/style-v1.0.css">
+  </noscript>
+
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+
+  <link rel="stylesheet" media="print" href="/ai-voice-search-tool/print-v1.0.css">
+  
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
+        </a>
+        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
+        </a>
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⛔</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🗝️</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+        <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📋</span> <span class="sidebar-text hidden">Help Guides</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
+              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⛔ Quit Risk</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">🗝️ Keywords</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+              <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition">📋 Help Guides</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+<main class="container mx-auto px-4 py-4 max-w-5xl">
+    <div class="text-center mb-16">
+<h1 class="text-3xl md:text-4xl lg:text-5xl font-black bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 bg-clip-text text-transparent mb-6 md:mb-8 leading-tight">
+  AI Voice Search Optimization Tool
+</h1>
+<p class="text-lg md:text-xl lg:text-2xl text-gray-700 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed mb-8 md:mb-10">
+  Instant 360° audit for voice SEO: conversational keywords, content quality, snippets, sentiment & visibility scores.
+</p>
+
+<form id="audit-form" class="max-w-2xl mx-auto space-y-4">
+  <div class="flex flex-col sm:flex-row gap-4">
+    <label for="url-input" class="sr-only">Enter website URL to analyze for voice SEO</label>
+    <input
+      id="url-input"
+      type="text"
+      placeholder="example.com/article"
+      aria-label="Enter website URL to analyze for voice SEO"
+      required
+      class="flex-1 px-4 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+    />
+    <button
+      type="submit"
+      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+    >
+      Analyze Voice SEO
+    </button>
+  </div>
+</form>
+
+    </div>
+
+    <!-- Results container (JS will populate this) -->
+    <div id="results" class="hidden space-y-16 mt-16">
+      <!-- Your existing report sections go here – keep them exactly as in your script.js output -->
+    </div>
+    
+        <div class="center-btn-container">
+  <button
+    class="copy-link-btn"
+    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
+    data-text="https://traffictorch.net/ai-voice-search-tool/"
+  >
+    Copy Link? 🔗
+  </button>
+</div>
+
+<section id="faq" class="container mx-auto px-4 py-12 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    Frequently Asked Questions about AI Voice Search Optimization
+  </h2>
+  <div class="space-y-6 max-w-3xl mx-auto">
+   
+    <!-- Common query 1 -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How do I optimize my website for voice search like Google Assistant or Siri?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-4 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Focus on conversational long-tail keywords, question-based headings, concise answers (40-60 words), and structured data (FAQ/HowTo schema). The Traffic Torch AI Voice Search Tool audits visibility, content quality, snippets, sentiment & keywords to give you exact fixes and predicted ranking lift.
+      </div>
+    </details>
+    
+    <!-- Common query 2 -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Why does my site rank low in voice search results?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-4 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Voice assistants prioritize position-zero snippets, natural language answers, entity-rich content, and strong schema markup. Low scores in AI visibility, snippet eligibility, or content conciseness often cause poor performance. Use Traffic Torch to get a full 360° voice SEO health score and targeted fixes.
+      </div>
+    </details>
+    
+    <!-- Common query 3 -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What makes content voice-search friendly?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-4 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Use natural, conversational tone (pronouns like "you" and "we"), short direct answers (40-60 words), question formats, and high entity coverage. Avoid jargon and ensure positive/neutral sentiment. The Traffic Torch tool scores content quality, sentiment, and snippet readiness to help you optimize for voice assistants.
+      </div>
+    </details>
+    
+    <!-- Common query 4 -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How long does it take to see improvements in voice search rankings?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-4 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Most on-page fixes (schema, content tweaks, keywords) show impact within 1-4 weeks after Google re-crawls. The Traffic Torch tool provides predictive rank lift estimates based on your current scores to help prioritize high-ROI changes.
+      </div>
+    </details>
+    
+    <!-- Common query 5 -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Do I need schema markup for voice search success?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-4 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Yes – FAQPage, HowTo, SpeakableSpecification, and Article/Product schema significantly boost snippet and AI Overview eligibility, which voice assistants read aloud. The Traffic Torch tool checks your schema coverage and suggests additions for better voice results.
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+    
+<!-- How the AI Voice Search Optimization Tool Works Accordion -->
+<div class="max-w-4xl mx-auto my-16 px-4">
+  <details class="group">
+    <summary class="px-4 py-5 text-xl md:text-2xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
+      How AI Voice Search Optimization Works?
+      <span class="text-3xl transition-transform duration-300 group-open:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-4 py-10 bg-white dark:bg-gray-800 rounded-2xl shadow-inner space-y-10 text-gray-800 dark:text-gray-100">
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">Instant, Private Client-Side Voice SEO Audit</h2>
+        <p class="leading-relaxed text-lg">
+          Enter any URL directly into this free tool for real-time voice search analysis. Everything runs 100% in your browser via secure proxy. No servers, no data storage, no privacy risks.
+        </p>
+        <p class="leading-relaxed text-lg">
+          Get immediate 360° voice SEO health score plus deep-dive module breakdowns (visibility, content, snippets, sentiment, keywords). Faster and safer than server-based tools.
+        </p>
+      </section>
+      <section class="space-y-6">
+        <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">The 5 Core Voice SEO Modules</h3>
+        <ul class="space-y-5 text-lg list-disc list-inside">
+          <li><strong>AI Visibility:</strong> Simulates citation/share of voice in assistants like Gemini/ChatGPT. Higher score = more brand mentions in spoken answers.</li>
+          <li><strong>Content Quality:</strong> Evaluates readability, conciseness, pronoun usage & entity coverage. Ideal for natural voice readout and AI synthesis.</li>
+          <li><strong>Snippet & Visibility:</strong> Checks eligibility for position-zero snippets and AI Overviews used in voice results.</li>
+          <li><strong>Sentiment & Quality:</strong> Assesses positive/neutral tone & hallucination risk for trustworthy voice outputs.</li>
+          <li><strong>Keyword Performance:</strong> Measures conversational long-tail density & question coverage for voice query matching.</li>
+        </ul>
+      </section>
+      <section class="space-y-5">
+        <p class="leading-relaxed text-lg">
+          Each module gets a 0–100 health score with color grading: <strong class="text-green-600 dark:text-green-400">green</strong> = excellent (voice-ready), <strong class="text-orange-600 dark:text-orange-400">orange</strong> = needs improvement, <strong class="text-red-600 dark:text-red-400">red</strong> = high risk for voice rankings.
+        </p>
+        <p class="leading-relaxed text-lg font-medium">
+          Receive an overall Voice SEO Health Gauge, detailed insights, prioritized AI-generated fixes, competitive gap analysis, and predictive rank lift forecasts.
+        </p>
+      </section>
+      <section class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 p-8 rounded-xl">
+        <h3 class="text-2xl font-bold mb-4 text-indigo-600 dark:text-indigo-400">Key Insight</h3>
+        <p class="leading-relaxed text-lg">
+          Voice assistants prioritize helpful, natural, authoritative content. Strong scores in these modules reduce zero-click losses, boost direct voice mentions, and improve rankings across Google, Siri, Gemini & Alexa.
+        </p>
+      </section>
+    </div>
+  </details>
+</div>
+    
+	
+	<!-- Metric explanations -->
+	<section class="py-10 bg-gray dark:bg-gray-900">
+  <div class="max-w-7xl mx-auto px-2">
+    <h2 class="text-4xl md:text-4xl font-black text-center text-gray-900 dark:text-gray-100 mb-4">
+      Deep dive into AI Voice Search Optimization
+    </h2>
+    <p class="text-xl text-center text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-16">
+      Our AI Voice Search Tool analyzes five key modules proven to enhance exposure to AI engines.
+    </p>
+    <div id="metric-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Cards injected by metric-explanations.js -->
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IS AI VOICE SEARCH AUDIT -->
+<section class="max-w-4xl mx-auto mt-12 mb-12 px-4 sm:px-4 lg:px-8">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-12 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    What is an AI Voice Search Audit?
+  </h2>
+  <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-900 dark:text-gray-100">
+    <strong>The AI Voice Search Audit instantly analyzes how ready your site is for voice assistants like Google, Siri, Gemini, and Alexa. It scores visibility, content quality, snippets, sentiment, and keywords to help you rank higher in spoken results.</strong>
+  </p>
+  <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
+    <p>Voice searches now dominate mobile and assistant queries. Assistants read concise, natural, authoritative answers aloud. Often from position-zero snippets or AI Overviews ignoring slow, unstructured, or robotic content.</p>
+    <p>Low voice SEO readiness means missed traffic, zero-click losses, and poor brand mentions in spoken results.</p>
+    <p class="font-semibold text-purple-700 dark:text-purple-300">
+      A strong voice audit checks these 5 key signals:
+    </p>
+    <ul class="list-none space-y-3 font-medium text-gray-500 dark:text-gray-400 max-w-lg mx-auto">
+      <li>→ AI Visibility: Citation potential in voice answers.</li>
+      <li>→ Content Quality: Readability, conciseness & entity richness.</li>
+      <li>→ Snippet & Visibility: Position-zero eligibility.</li>
+      <li>→ Sentiment & Quality: Positive tone & low hallucination risk.</li>
+      <li>→ Keyword Performance: Conversational long-tails & question coverage.</li>
+    </ul>
+    <p class="pt-4">
+      Traffic Torch AI Voice Search Tool delivers an instant 0–100 health score, module breakdowns, prioritized fixes, competitive gaps, and predictive rank lift forecasts—all client-side and private.
+    </p>
+  </div>
+</section>
+
+<!-- 6 HIGH-IMPACT MOVES TO BOOST VOICE SEARCH RANKINGS -->
+<div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-4 sm:px-4 lg:px-8 pb-12">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    6 High-Impact Moves to Boost Voice Search Rankings
+  </h2>
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+    <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
+      <span class="text-4xl flex-shrink-0">1</span>
+      <div>
+        <strong>Target conversational long-tail keywords</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Use natural question phrases ("how to", "what is the best", "near me") in headings and content to match how people speak to voice assistants.</span>
+      </div>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 p-7 rounded-2xl border border-pink-100 dark:border-pink-800/40">
+      <span class="text-4xl flex-shrink-0">2</span>
+      <div>
+        <strong>Write concise, direct answers (40-60 words)</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Structure key paragraphs to answer questions immediately and clearly—voice assistants read short, factual responses aloud as top results.</span>
+      </div>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/30 dark:to-red-900/30 p-7 rounded-2xl border border-rose-100 dark:border-rose-800/40">
+      <span class="text-4xl flex-shrink-0">3</span>
+      <div>
+        <strong>Add question-based headings & FAQ schema</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Use H2/H3 with natural questions and implement FAQPage/HowTo schema to increase position-zero snippet and AI Overview eligibility.</span>
+      </div>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 p-7 rounded-2xl border border-indigo-100 dark:border-indigo-800/40">
+      <span class="text-4xl flex-shrink-0">4</span>
+      <div>
+        <strong>Boost entity coverage & authority signals</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Include named entities (brands, locations, people) and cite sources to improve AI recognition and citation in voice results.</span>
+      </div>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
+      <span class="text-4xl flex-shrink-0">5</span>
+      <div>
+        <strong>Maintain positive/neutral sentiment & accuracy</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Avoid negative tone and speculative language to reduce hallucination risk and ensure trustworthy voice assistant mentions.</span>
+      </div>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/30 dark:to-teal-900/30 p-7 rounded-2xl border border-cyan-100 dark:border-cyan-800/40">
+      <span class="text-4xl flex-shrink-0">6</span>
+      <div>
+        <strong>Make site fast, mobile-first & schema-ready</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Optimize Core Web Vitals, mobile usability, and speakable schema so voice assistants can quickly read and cite your content.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPARISON TABLE – TRADITIONAL SEO vs AI VOICE SEARCH OPTIMIZED -->
+<section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-4 lg:px-8 py-16">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    Traditional SEO vs AI Voice Search Optimized
+  </h2>
+  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+    <table class="w-full text-left min-w-[640px]">
+      <thead class="bg-gradient-to-r from-purple-600 to-cyan-600 text-white">
+        <tr>
+          <th class="px-4 py-5 text-lg font-semibold">Factor</th>
+          <th class="px-4 py-5 text-lg font-semibold">Traditional SEO Focus</th>
+          <th class="px-4 py-5 text-lg font-semibold">AI Voice Search Optimized Focus</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <tr>
+          <td class="px-4 py-5 font-medium">Keyword Strategy:</td>
+          <td class="px-4 py-5 text-gray-700 dark:text-gray-300">Short-tail & exact match.</td>
+          <td class="px-4 py-5 text-gray-700 dark:text-gray-300">Conversational long-tails & questions.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-4 py-5 font-medium">Content Style:</td>
+          <td class="px-4 py-5 text-gray-700 dark:text-gray-300">Keyword-stuffed, formal.</td>
+          <td class="px-4 py-5 text-gray-700 dark:text-gray-300">Natural, spoken, concise (40-60 words).</td>
+        </tr>
+        <tr>
+          <td class="px-4 py-5 font-medium">Structure:</td>
+          <td class="px-4 py-5 text-gray-700 dark:text-gray-300">Dense paragraphs, minimal schema.</td>
+          <td class="px-4 py-5 text-gray-700 dark:text-gray-300">Question headings, lists, FAQ/HowTo schema.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-4 py-5 font-medium">Sentiment & Tone:</td>
+          <td class="px-4 py-5 text-gray-700 dark:text-gray-300">Neutral or salesy.</td>
+          <td class="px-4 py-5 text-gray-700 dark:text-gray-300">Positive/neutral, trustworthy, low hallucination risk.</td>
+        </tr>
+        <tr>
+          <td class="px-4 py-5 font-medium">Visibility:</td>
+          <td class="px-4 py-5 text-gray-700 dark:text-gray-300">Click-based rankings.</td>
+          <td class="px-4 py-5 text-gray-700 dark:text-gray-300">Position-zero snippets & AI voice citations.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-4 py-5 font-medium">SEO Impact:</td>
+          <td class="px-4 py-5 text-gray-700 dark:text-gray-300">Text-only traffic.</td>
+          <td class="px-4 py-5 text-gray-700 dark:text-gray-300">Voice traffic, zero-click wins, higher trust & engagement.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-center mt-10 text-lg text-gray-500 dark:text-gray-400">
+    Voice search now drives 50%+ of mobile queries. Optimize for assistants with Traffic Torch to capture spoken results, direct answers, and future-proof rankings.
+  </p>
+</section>
+
+  
+ <!-- Ai Tools Section -->
+ <div class="my-16"></div>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+      <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      Ai Tools
+      </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+    <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">Ai Search Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Optimize for AI-powered search engines</p>
+      </div>
+    </a>
+    <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+        <h3 class="text-orange-500 dark:text-orange-300 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+      </div>
+    </a>
+    <a href="https://traffictorch.net/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-red-500 dark:text-red-300 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools powered by AI</p>
+      </div>
+    </a>
+  </div>
+</div>
+	
+
+<!-- Why AI Voice Search Optimization Matters Accordion -->
+<div class="max-w-2xl mx-auto my-10">
+  <details>
+    <summary class="px-4 py-4 text-xl text-center font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+      Why AI Voice Search Optimization Matters?
+      <span class="text-2xl transition-transform duration-300 [&[open]>*]:rotate-180">↓</span>
+    </summary>
+    <div class="mt-6 px-2 py-8 bg-white dark:bg-gray-800 rounded-2xl shadow-inner space-y-8 text-gray-700 dark:text-gray-300">
+      <section class="text-left space-y-6">
+        <h2 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Voice Search is Exploding</h2>
+       
+        <p class="leading-relaxed !text-gray-800 dark:!text-gray-200">
+          Over 50% of mobile queries are now voice-activated. Assistants like Google, Siri, Gemini, and Alexa read concise, natural answers aloud from position-zero snippets or AI Overviews, ignoring slow, unstructured, or low-quality content.
+        </p>
+        <p class="leading-relaxed !text-gray-800 dark:!text-gray-200">
+          Poor voice readiness means missed traffic, zero-click losses, and weak brand presence in spoken results.
+        </p>
+      </section>
+      <section class="space-y-6">
+        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Real Benefits of Voice-Optimized Content</h3>
+        <div class="space-y-5 text-sm">
+          <div class="flex gap-6">
+            <div class="text-2xl">🎤</div>
+            <div>
+              <strong>Direct Voice Visibility</strong><br>
+              Strong snippets and schema get your content read aloud as top answers.
+            </div>
+          </div>
+          <div class="flex gap-6">
+            <div class="text-2xl">📈</div>
+            <div>
+              <strong>Higher Mobile Traffic</strong><br>
+              Voice dominates mobile optimized sites capture more queries and conversions.
+            </div>
+          </div>
+          <div class="flex gap-6">
+            <div class="text-2xl">🤝</div>
+            <div>
+              <strong>Stronger User Trust</strong><br>
+              Natural tone and accurate content build credibility in spoken interactions.
+            </div>
+          </div>
+          <div class="flex gap-6">
+            <div class="text-2xl">🛡️</div>
+            <div>
+              <strong>Future-Proof Ranking</strong><br>
+              Voice first optimization aligns with AI search evolution and assistant priorities.
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/30 p-6 rounded-xl">
+        <h3 class="text-xl font-bold mb-3">The Bottom Line</h3>
+        <p class="text-sm leading-relaxed">
+          Voice search isn’t about avoiding AI, it’s about <strong>delivering fast, natural, authoritative answers</strong>.
+        </p>
+        <p class="text-sm font-medium mt-4">
+          Use Traffic Torch AI Voice Search Tool to audit readiness, apply targeted fixes, and predict ranking gains across assistants.
+        </p>
+      </section>
+      <p class="text-center text-sm italic opacity-70 mt-6">
+        Voice optimized content wins spoken results, traffic, and trust.
+      </p>
+    </div>
+  </details>
+</div>
+   
+<!-- Author & Tool Bio -->
+<section id="author-bio" class="max-w-5xl mx-auto my-12 px-4 author-bio author-box" id="about-ylia-and-traffic-torch">
+  <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+    <!-- Hero Gradient Header -->
+    <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
+      <div class="flex flex-col items-center gap-6 mb-6">
+        <!-- Traffic Torch Logo -->
+        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch: Instant 360° AI Voice Search Audit, Health Scores, Deep-Dive Modules, Competitive Gaps & Fixes" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
+      </div>
+      <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
+      <p class="text-lg md:text-2xl text-gray-800 dark:text-gray-200 max-w-4xl mx-auto font-medium">
+        AI Voice Search Optimization & Audit Tool
+      </p>
+    </div>
+    <!-- Main Content Area -->
+    <div class="p-2 md:p-12 space-y-10 text-center md:text-left">
+      <!-- Tool Mission Description -->
+      <div class="space-y-6">
+        <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          Traffic Torch specializes in real-time voice SEO auditing. It analyzes your site for AI visibility, content quality, snippet eligibility, sentiment, and keyword performance to help you rank higher in voice assistants like Google, Siri, Gemini, and Alexa.
+        </p>
+      </div>
+      <!-- Founder Bio with Smaller Photo -->
+      <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-2 md:p-8 rounded-2xl backdrop-blur-sm">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+          <!-- Photo wrapper -->
+          <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
+            <img
+              src="/images/ylia-callan-320w.webp"
+              srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
+              sizes="(max-width: 768px) 96px, 128px"
+              alt="Ylia Callan: Musician, Author, Researcher, Web Designer, Founder of Traffic Torch – Privacy-First AI Voice Search & SEO Tools"
+              class="w-full h-full object-cover object-center"
+              loading="lazy">
+          </div>
+          <div class="space-y-4 text-center md:text-left">
+            <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Lead Developer</h3>
+            <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
+              Musician • Author • Researcher • Web Designer • Creator of privacy-first AI-powered voice SEO tools. Bridging creativity, consciousness, and modern technology to deliver fast, meaningful, and user-centric web experiences.
+            </p>
+            <p class="text-base text-gray-800 dark:text-gray-200 italic">
+              Explore my work on physics, philosophy, music, and more at <a href="https://yliacallan.github.io/" target="_blank" rel="noopener" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">yliacallan.github.io</a>.
+            </p>
+          </div>
+        </div>
+        <!-- Social Links -->
+        <ul class="flex flex-wrap justify-center md:justify-start gap-6 mt-6">
+          <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">LinkedIn</a></li>
+          <li><a href="https://x.com/guitaralize" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">X (Twitter)</a></li>
+        </ul>
+      </div>
+      <!-- Tech Stack -->
+      <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
+        <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Modern Stack Setup</h3>
+        <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          Traffic Torch runs on scalable infrastructure: Hosted via <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub Pages</a> for lightning-fast static delivery and seamless updates. Accelerated and secured globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance.
+        </p>
+        <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-4 max-w-3xl mx-auto">
+          Backed by real-world expertise in voice SEO, content strategy, and AI signal analysis.
+        </p>
+        <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+          <p>Published: 2026-03-13</p>
+          <p>Last updated: 2026-03-13</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+	
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-4 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+
+<section class="bottom-banner" aria-label="Traffic Torch AI Voice Search Tool Overview">
+  <picture style="--banner-ratio: 22.66%;"> <!-- 290 / 1280 original aspect ratio -->
+    <source 
+      media="(max-width: 640px)" 
+      srcset="/ai-voice-search-tool/images/voice-search-banner-480x174.webp" 
+      type="image/webp">
+    <source 
+      media="(min-width: 641px)" 
+      srcset="/ai-voice-search-tool/images/voice-search-banner-800x290.webp" 
+      type="image/webp">
+    <img 
+      src="/ai-voice-search-tool/images/voice-search-banner-800x290.webp" 
+      srcset="/ai-voice-search-tool/images/voice-search-banner-480x174.webp 480w, /ai-voice-search-tool/images/voice-search-banner-800x290.webp 800w" 
+      sizes="(max-width: 640px) 100vw, 800px" 
+      alt="Traffic Torch AI Voice Search Tool – Instant 360° Voice SEO Audit, Health Score, Module Deep-Dives & Optimization Fixes" 
+      width="800" 
+      height="290" 
+      loading="lazy" 
+      decoding="async">
+  </picture>
+</section>
+
+     
+</main>
+
+<!-- Footer -->
+<div id="footer-placeholder"></div>
+</div>
+</div>
+
+<!-- compromise.js NLP library – switched to jsDelivr for reliable MIME/CORS in AU -->
+<script src="https://cdn.jsdelivr.net/npm/compromise@14.14.0/builds/compromise.min.js"
+        crossorigin="anonymous"
+        defer></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="/main-v1.1.js" type="module"></script>
+  <script src="/ai-voice-search-tool/metric-explanations-v1.0.js" type="module" defer></script>
+  <script src="/ai-voice-search-tool/script-v1.0.js" type="module" defer></script>
+
+
+</body>
+</html>

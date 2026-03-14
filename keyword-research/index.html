@@ -1,0 +1,744 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Optimized SEO Title & Description -->
+  <title>Free Keyword Research Tool – Ideas, Volume, Difficulty &amp; Topic Clusters | Traffic Torch</title>
+  <meta name="description" content="Free instant keyword research tool: Generate hundreds of keyword ideas with estimated search volume, difficulty scores, question keywords, AI topic clusters, trend indicators." />
+  
+  <!-- Robots & Canonical -->
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://traffictorch.net/keyword-research/" />
+  
+    <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <!-- Referrer Policy (security + privacy best practice) -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/keyword-research/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/keyword-research/">
+  
+  <!-- Open Graph Tags (Facebook, LinkedIn, etc.) -->
+  <meta property="og:title" content="Free Keyword Research Tool – Volume, Difficulty &amp; Topic Clusters | Traffic Torch" />
+  <meta property="og:description" content="Instant free keyword generator: Hundreds of ideas with search volume estimates, difficulty scoring, question keywords, AI-powered clusters &amp; opportunity prioritization – fully private." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://traffictorch.net/keyword-research/" />
+  <meta property="og:image" content="https://traffictorch.net/keyword-research/images/keyword-research-tool.webp" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="Traffic Torch" />
+  
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free Keyword Research Tool – Volume, Difficulty &amp; Topic Clusters | Traffic Torch" />
+  <meta name="twitter:description" content="Instant free keyword generator: Hundreds of ideas with search volume estimates, difficulty scoring, question keywords, AI-powered clusters &amp; opportunity prioritization – fully private." />
+  <meta name="twitter:image" content="https://traffictorch.net/keyword-research/images/keyword-research-tool.webp" />
+  <meta name="twitter:site" content="@Guitaralize" />
+  
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Free Keyword Research Tool",
+  "description": "Instant keyword research tool: Generate seed ideas, related keywords, question formats, estimated search volume, difficulty scores, trend insights, AI-powered topic clusters, and opportunity scoring.",
+  "url": "https://traffictorch.net/keyword-research/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Traffic Torch Keyword Research Tool",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "description": "Free instant keyword research tool. Input seed keyword to get ideas, long-tail variations, questions, estimated volume & difficulty, trends, AI-generated topic clusters, SERP analysis, and prioritized opportunity scoring with AI content suggestions.",
+  "url": "https://traffictorch.net/keyword-research/",
+  "image": "https://traffictorch.net/keyword-research/images/keyword-research-tool.webp"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I use this keyword research tool?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Enter a seed keyword or topic. The tool instantly generates related keywords, questions, estimated volume/difficulty, trends, topic clusters, and opportunity scores. Use the insights to plan content that targets high-potential terms."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What makes this keyword tool different?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It combines traditional metrics (volume, difficulty) with AI-powered topic clustering, question extraction, trend signals, and opportunity scoring — all instantly, with educational explanations and content ideas."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is keyword research still important for SEO?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — understanding search volume, competition, user intent, and topic clusters remains essential for creating relevant, high-ranking content in both traditional and AI-powered search environments."
+      }
+    }
+  ]
+}
+</script>
+
+<!-- Article Schema for the main page content -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://traffictorch.net/keyword-research/"
+  },
+  "headline": "Free Keyword Research Tool: Find High-Opportunity Keywords Fast",
+  "description": "Instant keyword ideas, volume estimates, difficulty scores, questions, AI topic clusters, and opportunity scoring. Build better content strategies with free research insights.",
+  "image": "https://traffictorch.net/keyword-research/images/keyword-research-tool.webp",
+  "author": {
+    "@type": "Person",
+    "name": "Traffic Torch Team",
+    "url": "https://traffictorch.net"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://traffictorch.net/logo-512.webp"
+    }
+  },
+  "datePublished": "2024-01-01",
+  "dateModified": "2026-01-19"
+}
+</script>
+
+<!-- Person Schema for author (linked from Article) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Traffic Torch Team",
+  "jobTitle": "Keyword Research & Content Strategy Specialists",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Traffic Torch"
+  },
+  "url": "https://traffictorch.net",
+  "image": "https://traffictorch.net/images/ylia-callan.webp",
+  "sameAs": [
+    "https://twitter.com/guitaralize"
+  ],
+  "description": "Experts in keyword discovery, topic clustering, search intent analysis, and modern keyword strategies that drive organic visibility and traffic."
+}
+</script>
+
+<!-- BreadcrumbList for site hierarchy -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://traffictorch.net/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Keyword Research Tool",
+      "item": "https://traffictorch.net/keyword-research/"
+    }
+  ]
+}
+</script>
+  
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json">
+
+
+    <!-- Main Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/keyword-research/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/keyword-research/style-v1.0.css">
+  </noscript>
+
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+
+  <link rel="stylesheet" media="print" href="/keyword-research/print-v1.0.css">
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+
+
+
+
+  <script src="/main-v1.1.js" type="module"></script>
+  <script src="/keyword-research/script-v1.0.js" type="module" defer></script>
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
+        </a>
+        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
+        </a>
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⛔</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🗝️</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+        <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📋</span> <span class="sidebar-text hidden">Help Guides</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
+              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⛔ Quit Risk</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">🗝️ Keywords</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+              <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition">📋 Help Guides</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-4 md:py-16">
+    <div class="text-center mb-12">
+      <h1 class="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">
+        Keyword Research Tool
+      </h1>
+      <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+        Enter any keywords and or URL — we’ll scan the page, detect its search intent, and suggest up to 8 targeted keyword phrases you can naturally sprinkle to improve discoverability, SEO, and UX find-ability.
+      </p>
+    </div>
+    
+<div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">
+  <div class="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-md w-full text-center text-gray-800 dark:text-gray-200 shadow-xl">
+    <h2 class="text-xl font-bold mb-4">Daily Limit Reached</h2>
+    <p class="mb-6">You've used all your audits today. Upgrade to Pro USD $48 per year for 25 daily AI UX & SEO analysis runs. Secure Stripe Checkout</p>
+    <a href="/pro/" 
+       class="inline-block bg-orange-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition">
+      Upgrade to Pro
+    </a>
+    <button onclick="document.getElementById('upgradeModal').classList.add('hidden')" 
+            class="mt-4 text-gray-600 dark:text-gray-400 underline hover:text-gray-800 dark:hover:text-gray-200">
+      Close
+    </button>
+  </div>
+</div> 
+
+<!-- Flexible Input Form -->
+<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8">
+  <form id="keywordForm" class="space-y-6">
+    <div>
+      <label for="seed" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        Main keyword or topic (optional)
+      </label>
+      <input
+        type="text"
+        id="seed"
+        placeholder="Enter Keywords"
+        class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition"
+      >
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Enter a keyword for direct research (recommended for best results).</p>
+    </div>
+    <div>
+      <label for="url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        Website URL (optional)
+      </label>
+      <input
+        type="url"
+        id="url"
+        placeholder="https://example.com/page"
+        class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition"
+      >
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Add a URL to auto-detect intent and refine suggestions from page content.</p>
+    </div>
+    <button
+      type="submit"
+      class="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:from-blue-700 hover:to-purple-700 transition shadow-lg"
+    >
+      Generate Keyword Suggestions
+    </button>
+  </form>
+</div>
+
+<!-- In-place Epic Laser Spinner (hidden until submit) -->
+<div id="loader" class="hidden mt-10 flex flex-col items-center py-8">
+	<div class="relative">
+  <!-- Responsive spinning circle only (no text inside) -->
+  <div class="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
+  <div class="absolute inset-0 w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 rounded-full border-8 border-transparent border-t-orange-500 border-r-pink-500 border-b-purple-500 animate-spin"></div>
+</div>
+
+<!-- Progress text now BELOW the circle -->
+<h3 class="mt-8 text-2xl md:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-center" id="progress-text">
+  Analyzing...
+</h3>
+
+<!-- Educational tip below the progress text -->
+<p class="mt-6 text-lg md:text-xl text-center text-gray-600 dark:text-gray-500 max-w-md" id="progress-tip">
+  Fetching page content securely via our CORS proxy...
+</p>
+</div>
+
+    <!-- Results Section (hidden until complete) -->
+    <div id="results" class="mt-12 hidden">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8">
+        <div class="text-center mb-8">
+          <span class="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold text-lg">
+            Detected Intent: <span id="detectedIntent">—</span>
+          </span>
+        </div>
+
+        <h2 class="text-3xl font-black text-center mb-8 text-gray-900 dark:text-white">
+          Suggested Keyword Phrases
+        </h2>
+
+        <div class="grid gap-6 md:grid-cols-2" id="suggestionsGrid">
+          <!-- Suggestions injected here by JS -->
+        </div>
+
+        <div class="mt-10 text-center">
+          <p class="text-gray-600 dark:text-gray-500">
+            These phrases are chosen to match the page intent. Sprinkle them naturally in headings, intro text, alt attributes, and body content for maximum SEO and findability impact.
+          </p>
+        </div>
+      </div>
+    </div>
+
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script> 
+	
+<section id="keyword-research-features-checklist" class="py-16 px-4 max-w-6xl mx-auto">
+  <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-amber-600 to-orange-600">
+    What This Keyword Tool Instantly Delivers
+  </h2>
+  <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-800 dark:text-gray-200">
+    Free tool showing authentic Google autocomplete suggestions – real searches people type, localized to your region and grouped by intent for smarter SEO decisions.
+  </p>
+  <div class="grid md:grid-cols-2 gap-10">
+    <!-- Real Autocomplete -->
+    <div class="challenge-card bg-gradient-to-br from-amber-900/20 to-orange-900/20 dark:from-amber-900/30 dark:to-orange-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-center gap-6 mb-6">
+        <span class="text-5xl">🔍</span>
+        <p class="text-xl font-semibold text-gray-800 dark:text-gray-200">Guessing popular search terms?</p>
+      </div>
+      <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">Brainstorming without knowing what users actually type in Google.</p>
+      <div class="mt-6 flex items-center gap-6">
+        <span class="text-5xl">✅</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">Pure Google Autocomplete</p>
+          <p class="text-lg text-gray-700 dark:text-gray-300">Exact, unmodified suggestions straight from Google – reflecting real search behavior.</p>
+        </div>
+      </div>
+    </div>
+    <!-- Localization -->
+    <div class="challenge-card bg-gradient-to-br from-orange-900/20 to-red-900/20 dark:from-orange-900/30 dark:to-red-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-center gap-6 mb-6">
+        <span class="text-5xl">🌎</span>
+        <p class="text-xl font-semibold text-gray-800 dark:text-gray-200">Generic results ignoring location?</p>
+      </div>
+      <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">Suggestions not matching search trends in your country or region.</p>
+      <div class="mt-6 flex items-center gap-6">
+        <span class="text-5xl">🎯</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">Localized to Your Region</p>
+          <p class="text-lg text-gray-700 dark:text-gray-300">Automatically tailored using your browser's country and language for relevant local results.</p>
+        </div>
+      </div>
+    </div>
+    <!-- Intent Grouping -->
+    <div class="challenge-card bg-gradient-to-br from-red-900/20 to-pink-900/20 dark:from-red-900/30 dark:to-pink-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-center gap-6 mb-6">
+        <span class="text-5xl">🧠</span>
+        <p class="text-xl font-semibold text-gray-800 dark:text-gray-200">Flat lists without context?</p>
+      </div>
+      <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">Hard to understand how keywords align with different user goals.</p>
+      <div class="mt-6 flex items-center gap-6">
+        <span class="text-5xl">📈</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">Grouped by Search Intent</p>
+          <p class="text-lg text-gray-700 dark:text-gray-300">Organized into Commercial, Informational, Transactional, Navigational – helps target the right user needs.</p>
+        </div>
+      </div>
+    </div>
+    <!-- Flexible Input -->
+    <div class="challenge-card bg-gradient-to-br from-pink-900/20 to-rose-900/20 dark:from-pink-900/30 dark:to-rose-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-center gap-6 mb-6">
+        <span class="text-5xl">⚙️</span>
+        <p class="text-xl font-semibold text-gray-800 dark:text-gray-200">Restricted input options?</p>
+      </div>
+      <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">Can't easily research any topic or specific page.</p>
+      <div class="mt-6 flex items-center gap-6">
+        <span class="text-5xl">🔓</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">Keyword or URL Input</p>
+          <p class="text-lg text-gray-700 dark:text-gray-300">Works with keyword alone, URL alone, or both – maximum flexibility for any research scenario.</p>
+        </div>
+      </div>
+    </div>
+</section>
+
+
+
+
+<section id="keyword-research-seo-checklist" class="py-16 px-4 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
+  <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-amber-600 to-orange-600">
+    Ultimate Keyword Research Checklist
+  </h2>
+  <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-800 dark:text-gray-200">
+    Free instant tool revealing real Google autocomplete suggestions – authentic popular searches, localized to your region, grouped by intent to guide smarter content and SEO decisions.
+  </p>
+  <div class="grid md:grid-cols-2 gap-10">
+    <!-- Keyword Discovery -->
+    <div class="checklist-card bg-gradient-to-br from-amber-900/20 to-orange-900/20 dark:from-amber-900/30 dark:to-orange-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+      <h3 class="text-2xl font-bold mb-8 text-amber-700 dark:text-amber-400 flex items-center gap-4">
+        <span class="text-4xl">💡</span> Real Keyword Discovery
+      </h3>
+      <div class="space-y-8 text-lg">
+        <div class="flex items-center gap-5">
+          <span class="text-5xl">🧠</span>
+          <div class="text-gray-800 dark:text-gray-200">Guessing what users search for</div>
+        </div>
+        <div class="flex items-center gap-5">
+          <span class="text-5xl">✅</span>
+          <div class="text-gray-800 dark:text-gray-200"><strong>Pure Google Autocomplete</strong>: Exact real-user queries – no inventions</div>
+        </div>
+        <div class="flex items-center gap-5">
+          <span class="text-5xl">🌎</span>
+          <div class="text-gray-800 dark:text-gray-200">Generic global suggestions</div>
+        </div>
+        <div class="flex items-center gap-5">
+          <span class="text-5xl">🎯</span>
+          <div class="text-gray-800 dark:text-gray-200"><strong>Localized Results</strong>: Tailored to your country/region for relevance</div>
+        </div>
+      </div>
+    </div>
+    <!-- Intent & Strategy -->
+    <div class="checklist-card bg-gradient-to-br from-orange-900/20 to-red-900/20 dark:from-orange-900/30 dark:to-red-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+      <h3 class="text-2xl font-bold mb-8 text-orange-700 dark:text-orange-400 flex items-center gap-4">
+        <span class="text-4xl">🧭</span> Intent & Content Strategy
+      </h3>
+      <div class="space-y-8 text-lg">
+        <div class="flex items-center gap-5">
+          <span class="text-5xl">📉</span>
+          <div class="text-gray-800 dark:text-gray-200">Flat keyword lists without context</div>
+        </div>
+        <div class="flex items-center gap-5">
+          <span class="text-5xl">📊</span>
+          <div class="text-gray-800 dark:text-gray-200"><strong>Grouped by Intent</strong>: Commercial, Informational, Transactional, Navigational</div>
+        </div>
+        <div class="flex items-center gap-5">
+          <span class="text-5xl">🤔</span>
+          <div class="text-gray-800 dark:text-gray-200">Unclear how to target user goals</div>
+        </div>
+        <div class="flex items-center gap-5">
+          <span class="text-5xl">🌟</span>
+          <div class="text-gray-800 dark:text-gray-200"><strong>Educational Tooltips</strong>: Learn why each suggestion matters for SEO</div>
+        </div>
+      </div>
+    </div>
+    <!-- Flexibility & Privacy -->
+    <div class="checklist-card bg-gradient-to-br from-red-900/20 to-pink-900/20 dark:from-red-900/30 dark:to-pink-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+      <h3 class="text-2xl font-bold mb-8 text-red-700 dark:text-red-400 flex items-center gap-4">
+        <span class="text-4xl">⚙️</span> Flexibility & Use Cases
+      </h3>
+      <div class="space-y-8 text-lg">
+        <div class="flex items-center gap-5">
+          <span class="text-5xl">⌨️</span>
+          <div class="text-gray-800 dark:text-gray-200">Restricted to page-only analysis</div>
+        </div>
+        <div class="flex items-center gap-5">
+          <span class="text-5xl">🔓</span>
+          <div class="text-gray-800 dark:text-gray-200"><strong>Keyword or URL Input</strong>: Works with either, or both – universal research</div>
+        </div>
+        <div class="flex items-center gap-5">
+          <span class="text-5xl">📱</span>
+          <div class="text-gray-800 dark:text-gray-200">Desktop-only experience</div>
+        </div>
+        <div class="flex items-center gap-5">
+          <span class="text-5xl">🌓</span>
+          <div class="text-gray-800 dark:text-gray-200"><strong>Mobile-Friendly Dark Mode</strong>: Clean, responsive reports anywhere</div>
+        </div>
+      </div>
+    </div>
+    <!-- Delivery & Privacy -->
+    <div class="checklist-card bg-gradient-to-br from-pink-900/20 to-amber-900/20 dark:from-pink-900/30 dark:to-amber-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+      <h3 class="text-2xl font-bold mb-8 text-amber-700 dark:text-amber-400 text-center flex items-center justify-center gap-4">
+        <span class="text-4xl">🛠️</span> Delivery & Privacy
+      </h3>
+      <div class="space-y-8 text-lg max-w-4xl mx-auto">
+        <div class="flex items-center gap-5">
+          <span class="text-5xl">🔒</span>
+          <div class="text-gray-800 dark:text-gray-200">Server tools with limits or tracking</div>
+        </div>
+        <div class="flex items-center gap-5">
+          <span class="text-5xl">⚡</span>
+          <div class="text-gray-800 dark:text-gray-200"><strong>Instant Unlimited Use</strong>: No rate limits or sign-up required</div>
+        </div>
+        <div class="flex items-center gap-5">
+          <span class="text-5xl">🔒</span>
+          <div class="text-gray-800 dark:text-gray-200">Privacy risks with data transmission</div>
+        </div>
+        <div class="flex items-center gap-5">
+          <span class="text-5xl">🛡️</span>
+          <div class="text-gray-800 dark:text-gray-200"><strong>100% Client-Side & Private</strong>: All processing in your browser – nothing sent to servers</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="text-center mt-16">
+    <p class="text-2xl font-semibold max-w-3xl mx-auto text-gray-800 dark:text-gray-200">
+      Run this free keyword research tool to discover authentic search ideas in seconds.
+    </p>
+  </div>
+</section>
+
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+	<!-- Breadcrumbs -->
+<div class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+    <a href="/">Traffic Torch</a>
+  </p>
+  <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+    <span id="page-name"></span>
+  </p>
+</div>
+
+<script>
+  // Set page name
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+<!-- Last Update Date -->
+<div class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <p class="text-sm text-gray-500 dark:text-gray-400">
+    Last updated: <span>January 4, 2026</span>
+  </p>
+</div>
+
+  </main>
+
+<!-- Footer -->
+<div id="footer-placeholder"></div>
+</div>
+</div>
+
+
+</body>
+</html>

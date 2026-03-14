@@ -1,0 +1,1062 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ 
+  <!-- Optimized SEO Title & Description -->
+  <title>Keyword Gap Analysis – SEO Audit Tool | Traffic Torch</title>
+  <meta name="description" content="Free keyword gap analysis tool: Compare your page vs top-ranking competitors. Uncover missing keywords, topical gaps – get priority fixes." />
+  
+  <!-- Added Keywords Meta Tag (Best Practices: 10-20 targeted phrases) -->
+  <meta name="keywords" content="keyword gap analysis tool, competitive keyword gap analysis, keyword gap analysis free, on-page keyword comparison, content gap analysis tool, missing keyword discovery, topical gap analysis, competitor keyword analysis, free keyword gap tool, on-page relevance comparison, beat competitors SEO, AI SEO fixes, predictive ranking forecast, instant browser SEO tool, SERP competitor comparison" />
+ 
+  <!-- Robots & Canonical -->
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://traffictorch.net/keyword-vs-tool/" />
+  
+    <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <!-- Referrer Policy (security + privacy best practice) -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/keyword-vs-tool/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/keyword-vs-tool/">
+ 
+  <!-- Open Graph Tags (Facebook, LinkedIn, etc.) -->
+  <meta property="og:title" content="Keyword Gap Analysis Tool – Outrank Competitors with On-Page Insights | Traffic Torch" />
+  <meta property="og:description" content="Free keyword gap analysis: Instant side-by-side comparison vs top SERP pages. Discover missing keywords, topical gaps &amp; get AI fixes for better rankings." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://traffictorch.net/keyword-vs-tool/" />
+  <meta property="og:image" content="https://traffictorch.net/keyword-vs-tool/images/keyword-competition-tool.webp" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="Traffic Torch" />
+ 
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Keyword Gap Analysis Tool – Outrank Competitors with On-Page Insights | Traffic Torch" />
+  <meta name="twitter:description" content="Free keyword gap analysis: Instant side-by-side comparison vs top SERP pages. Discover missing keywords, topical gaps &amp; get AI fixes for better rankings." />
+  <meta name="twitter:image" content="https://traffictorch.net/keyword-vs-tool/images/keyword-competition-tool.webp" />
+  <meta name="twitter:site" content="@Guitaralize" /> 
+ 
+<!-- Structured Data (JSON-LD) - Merged Single Block -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "Keyword Gap Analysis Tool – Competitive Comparison",
+      "description": "Free instant keyword gap analysis tool: Compare your page against top-ranking competitors, discover missing keywords & topical gaps, get priority optimization strategies and predictive ranking impact.",
+      "url": "https://traffictorch.net/keyword-vs-tool/",
+      "speakable": {
+  "@type": "SpeakableSpecification",
+  "cssSelector": [
+    "#faq",
+    "p.text-xl.md\\:text-2xl.text-gray-600.dark\\:text-gray-400.max-w-3xl.mx-auto",
+    ".max-w-4xl.mx-auto.my-16 details div.mt-6",
+    "section.max-w-4xl.mx-auto.mt-12.mb-12 p.text-2xl.md\\:text-3xl.font-bold.text-center.mb-10.leading-tight",
+    "div.max-w-4xl.mx-auto.my-16 details div.mt-6 section.space-y-5:first-child"
+  ]
+},
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Traffic Torch Keyword VS – Competitive Gap Analyzer",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Free browser-based competitive keyword gap analysis tool. Instant side-by-side on-page comparison vs top SERP competitors, identifies missing keywords, content gaps, and opportunities. Delivers 0–100 gap score, deep-dive modules, prioritized fixes, and predictive ranking improvement forecasts.",
+      "url": "https://traffictorch.net/keyword-vs-tool/",
+      "image": "https://traffictorch.net/keyword-vs-tool/images/keyword-competition-tool.webp"
+    },
+    {
+      "@type": "Article",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/keyword-vs-tool/"
+      },
+      "headline": "Keyword Gap Analysis Tool: Beat Competitors with Missing Keywords",
+      "description": "Free instant competitive keyword comparison tool. Side-by-side analysis vs top SERP results, discover gaps, get AI fixes, 0–100 score, and predictive ranking forecasts.",
+      "url": "https://traffictorch.net/keyword-vs-tool/",
+      "image": [
+        {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/keyword-vs-tool/images/keyword-competition-tool.webp",
+          "contentUrl": "https://traffictorch.net/keyword-vs-tool/images/keyword-competition-tool.webp",
+          "width": 1200,
+          "height": 630,
+          "caption": "Traffic Torch Keyword VS Tool dashboard: Instant competitive keyword gap analysis vs top SERP results, shared vs unique terms, difficulty comparison, AI-powered fixes, 0–100 score, and ranking forecasts"
+        },
+        {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/images/tool-banners/keyword-vs-tool-infographic-1200w.webp",
+          "contentUrl": "https://traffictorch.net/images/tool-banners/keyword-vs-tool-infographic-1200w.webp",
+          "width": 1200,
+          "height": 375,
+          "caption": "Traffic Torch Keyword VS Tool overview: AI-powered competitive keyword gap analysis, shared vs unique terms detection, difficulty comparison, and on-page optimization strategies to outrank competitors"
+        },
+        {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/keyword-vs-tool/images/keyword-competition-infographic-800w.webp",
+          "contentUrl": "https://traffictorch.net/keyword-vs-tool/images/keyword-competition-infographic-800w.webp",
+          "width": 800,
+          "height": 1200,
+          "caption": "Keyword Competition Ladder Infographic: The Top 3 Levers (Meta, H1, Content) + additional channels (Image Alts, Anchor Text, URL & Schema) to climb past competitors"
+        },
+        {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/keyword-vs-tool/images/keyword-placement-infographic-800w.webp",
+          "contentUrl": "https://traffictorch.net/keyword-vs-tool/images/keyword-placement-infographic-800w.webp",
+          "width": 800,
+          "height": 1200,
+          "caption": "Keyword Placement Channels Infographic: Image Alts, Anchor Text, URL & Schema optimization levers for maximum competitive advantage and on-page impact"
+        }
+      ],
+      "author": {
+        "@type": "Person",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/logo-512.webp"
+        }
+      },
+      "datePublished": "2025-11-16T11:26:00+11:00",
+      "dateModified": "2026-03-06T15:02:00+11:00"
+    },
+    {
+      "@type": "Person",
+      "name": "Ylia Callan",
+      "url": "https://yliacallan.github.io/",
+      "sameAs": [
+        "https://www.linkedin.com/in/ylia-callan-8b889976/",
+        "https://x.com/guitaralize",
+        "https://traffictorch.net/"
+      ],
+      "image": "/images/ylia-callan-320w.webp",
+      "jobTitle": "Founder & Builder",
+      "description": "Musician, Author, Web Designer, and Creator of Privacy-First AI SEO/UX Tools like Traffic Torch",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Traffic Torch",
+        "url": "https://traffictorch.net/"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://traffictorch.net/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Traffic Torch Keyword VS – Competitive Audit Tool",
+          "item": "https://traffictorch.net/keyword-vs-tool/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+ 
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json" />
+  
+  <!-- Main Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/keyword-vs-tool/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/keyword-vs-tool/style-v1.0.css">
+  </noscript>
+
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+
+  <link rel="stylesheet" media="print" href="/keyword-vs-tool/print-v1.0.css">
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
+        </a>
+        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
+        </a>
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⛔</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🗝️</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+        <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📋</span> <span class="sidebar-text hidden">Help Guides</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
+              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⛔ Quit Risk</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">🗝️ Keywords</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+              <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition">📋 Help Guides</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+<main class="container mx-auto px-4 py-4 max-w-5xl">
+  <div class="text-center mb-16">
+    <h1 class="text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-3">
+      Keyword Gap Analysis Tool
+    </h1>
+    <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+      Competitive keyword analysis – compare your page vs top-ranking SERPs. 
+    </p>
+          
+<form id="audit-form" class="max-w-4xl mx-auto space-y-4">
+  <div class="flex flex-col md:flex-row gap-4">
+    <div class="flex-1">
+      <label for="your-url" class="sr-only">Enter your website URL to analyze</label>
+      <input 
+        type="text" 
+        id="your-url" 
+        placeholder="Your URL – yoursite.com/page" 
+        aria-label="Enter your website URL to analyze" 
+        required
+        class="w-full px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+      />
+    </div>
+    <div class="flex-1">
+      <label for="competitor-url" class="sr-only">Enter competitor URL to compare</label>
+      <input 
+        type="text" 
+        id="competitor-url" 
+        placeholder="Competitor URL – competitor.com/page" 
+        aria-label="Enter competitor URL to compare" 
+        required
+        class="w-full px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+      />
+    </div>
+  </div>
+  <div class="flex flex-col md:flex-row gap-4">
+    <div class="flex-1">
+      <label for="target-phrase" class="sr-only">Enter target keyword phrase</label>
+      <input 
+        type="text" 
+        id="target-phrase" 
+        placeholder="Enter keywords..." 
+        aria-label="Enter target keyword phrase" 
+        required
+        class="w-full px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+      />
+    </div>
+    <div class="flex justify-center md:justify-start w-full md:w-auto">
+      <button 
+        type="submit"
+        class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+      >
+        Analyze 🆚
+      </button>
+    </div>
+  </div>
+</form>
+
+    </div>
+    
+    <!-- Results container (JS will populate this) -->
+    <div id="results" class="hidden space-y-16 mt-16">
+      <!-- Your existing score grids, modules, etc. go here -->
+    </div>
+    
+    <div class="center-btn-container">
+  <button
+    class="copy-link-btn"
+    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
+    data-text="https://traffictorch.net/keyword-vs-tool/"
+  >
+    Copy Link? 🔗
+  </button>
+</div>
+	
+  <!-- How Keyword VS Works Accordion -->
+  <div class="max-w-4xl mx-auto my-16">
+    <details class="group">
+      <summary class="px-3 py-5 text-1xl text-center font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+        How The Keyword Gap Analysis Tool Works?
+        <span class="text-3xl transition-transform duration-300 group-open:rotate-180">↓</span>
+      </summary>
+      <div class="mt-6 px-2 py-10 bg-white dark:bg-gray-800 rounded-2xl shadow-inner space-y-10 text-gray-800 dark:text-gray-100">
+        <section class="space-y-5">
+<p class="text-lg leading-relaxed text-gray-700 dark:text-gray-200">
+  This free <strong>competitive keyword gap analysis tool</strong> provides an instant side-by-side <strong>on-page relevance comparison</strong> between your page and a top-ranking competitor. Works for any exact target keyword phrase.
+</p>
+<p class="text-lg leading-relaxed text-gray-700 dark:text-gray-200">
+  All processing runs securely in your browser via a privacy-safe CORS proxy. No data is stored, logged, or transmitted.
+</p>
+        </section>
+
+        <section class="space-y-6">
+          <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Key On-Page Factors Analyzed</h3>
+          <ul class="grid md:grid-cols-2 gap-6 text-base">
+            <li class="flex items-start gap-3"><span class="mt-1">✓</span> Title, Meta Description & URL relevance.</li>
+            <li class="flex items-start gap-3"><span class="mt-1">✓</span> Heading hierarchy & keyword placement.</li>
+            <li class="flex items-start gap-3"><span class="mt-1">✓</span> Content density, prominence & semantic support.</li>
+            <li class="flex items-start gap-3"><span class="mt-1">✓</span> Image alt texts & anchor text signals.</li>
+            <li class="flex items-start gap-3"><span class="mt-1">✓</span> Structured data (JSON-LD schema) presence.</li>
+            <li class="flex items-start gap-3"><span class="mt-1">✓</span> Overall topical & entity coverage.</li>
+          </ul>
+        </section>
+
+        <section class="space-y-5">
+          <p class="text-lg leading-relaxed">
+            Each page receives a proprietary <strong>Phrase Power Score</strong> calculated from 8 proven relevance signals.
+          </p>
+          <p class="text-lg leading-relaxed font-medium">
+            You’ll get a clear winner verdict, prioritized missing keywords/topics, Priority optimization fixes, and predictive ranking uplift estimates.
+          </p>
+        </section>
+
+        <section class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 p-8 rounded-xl">
+          <h3 class="text-xl font-bold mb-4">Pro Tip for Maximum Impact</h3>
+          <p class="leading-relaxed">
+            This is pure <strong>on-page keyword gap analysis</strong> with no backlink or authority metrics. It reveals exactly what you can fix today to close ranking gaps and outrank competitors.
+          </p>
+        </section>
+      </div>
+    </details>
+  </div>
+  
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+	
+		      <!-- Deep Dive into Key Modules -->
+      <section class="py-20 bg-gray dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-2">
+          <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+            Deep Dive into Key Modules
+          </h2>
+          <div id="metric-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center lg:justify-start">
+            <!-- Cards generated dynamically -->
+          </div>
+        </div>
+      </section>
+
+<!-- WHAT IS WEBSITE VS COMPARISON                -->
+<section class="max-w-4xl mx-auto mt-12 mb-12 px-4 sm:px-6 lg:px-8">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    What is Website Keyword Comparison?
+  </h2>
+
+  <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-900 dark:text-gray-100">
+    <strong>Website comparison means analyzing two sites side-by-side to uncover hidden gaps in SEO, UX and content depth. So you can outrank, outconvert, and outperform your competitors.</strong>
+  </p>
+
+  <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
+    <p>Most tools give isolated scores. Real growth comes from understanding why one site wins over another.</p>
+    <p>Direct head-to-head reveals actionable differences that single-site audits miss.</p>
+    <p class="font-semibold text-purple-700 dark:text-purple-300">
+      Winning comparisons focus on these core dimensions:
+    </p>
+    <ul class="list-none space-y-3 font-medium text-gray-500 max-w-lg mx-auto">
+      <li>→ SEO signals: Intent match, E-E-A-T, freshness.</li>
+      <li>→ UX factors: Quit risk, vitals, mobile flow.</li>
+      <li>→ Content quality: Depth, keywords, structure.</li>
+      <li>→ AI visibility: Citation potential, extractability.</li>
+    </ul>
+    <p class="pt-4">
+      Traffic Torch Website VS Tool instantly compares any two pages. Scores every dimension, highlights gaps, generates fixes, and predicts ranking potential if you close them.
+    </p>
+  </div>
+</section>
+
+<!-- Two-column infographic grid for Keyword Competition / Keyword VS Tool – stacks on mobile, side-by-side on md+ -->
+<div class="grid md:grid-cols-2 gap-4 my-4 max-w-6xl mx-auto px-4">
+  <!-- Full Competition Ladder -->
+  <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
+    <img
+      src="/keyword-vs-tool/images/keyword-competition-infographic-800w.webp"
+      alt="Keyword Placement Channels Infographic – Image Alts, Anchor Text, URL & Schema Optimization for Competition"
+      class="w-full h-auto object-cover"
+      width="800"
+      height="1200"
+      loading="lazy"
+      decoding="async"
+      sizes="(max-width: 767px) 100vw, 50vw">
+    <figcaption class="p-5 text-center text-sm text-gray-800 dark:text-gray-200">
+   The Top 3 Levers Ladder: Meta, H1 and Content.    
+   </figcaption>
+  </figure>
+
+  <!-- Keyword Placement Channels (Image Alts, Anchor Text, URL & Schema focus) -->
+  <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
+    <img
+      src="/keyword-vs-tool/images/keyword-placement-infographic-800w.webp"
+      alt="Keyword Competition Ladder Infographic – Climb past competitors with 6 on-page levers"
+      class="w-full h-auto object-cover"
+      width="800"
+      height="1200"
+      loading="lazy"
+      decoding="async"
+      sizes="(max-width: 767px) 100vw, 50vw">
+    <figcaption class="p-5 text-center text-sm text-gray-800 dark:text-gray-200">
+      The 3 Levers Ladder: Image Alts, Anchors, URL/Schema.
+    </figcaption>
+  </figure>
+</div>
+
+<!-- 6 HIGH-IMPACT MOVES FOR WEBSITE COMPARISON   -->
+<div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 pb-12">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    6 High-Impact Moves to Win Website Comparisons
+  </h2>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
+      <span class="text-4xl flex-shrink-0">1</span>
+      <div>
+        <strong>Choose strategic competitors wisely</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Pick pages ranking above you for your target keyword or direct business rivals with similar traffic.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 p-7 rounded-2xl border border-pink-100 dark:border-pink-800/40">
+      <span class="text-4xl flex-shrink-0">2</span>
+      <div>
+        <strong>Deep-dive SEO signal gaps</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Compare intent alignment, E-E-A-T, schema, freshness - fix where they're stronger.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/30 dark:to-red-900/30 p-7 rounded-2xl border border-rose-100 dark:border-rose-800/40">
+      <span class="text-4xl flex-shrink-0">3</span>
+      <div>
+        <strong>Uncover UX & quit-risk differences</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Analyze vitals, mobile flow, first-screen value, eliminate frustrations they avoid.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 p-7 rounded-2xl border border-indigo-100 dark:border-indigo-800/40">
+      <span class="text-4xl flex-shrink-0">4</span>
+      <div>
+        <strong>Map content depth & keyword gaps</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">See missing sections, weaker coverage, untapped terms — expand where it matters most.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
+      <span class="text-4xl flex-shrink-0">5</span>
+      <div>
+        <strong>Evaluate AI citation readiness</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Check extractability, trust signals, originality, optimize to get quoted over them.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/30 dark:to-teal-900/30 p-7 rounded-2xl border border-cyan-100 dark:border-cyan-800/40">
+      <span class="text-4xl flex-shrink-0">6</span>
+      <div>
+        <strong>Prioritize fixes by impact forecast</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Use predictive scoring to focus on gaps that could boost rankings or traffic the most.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- COMPARISON TABLE – OLD vs MODERN WEBSITE COMP -->
+<section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-16">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    Old-School Site Audits vs Modern Website Comparison
+  </h2>
+
+  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+    <table class="w-full text-left min-w-[640px]">
+      <thead class="bg-gradient-to-r from-purple-600 to-cyan-600 text-white">
+        <tr>
+          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
+          <th class="px-6 py-5 text-lg font-semibold">Old-School Site Audits</th>
+          <th class="px-6 py-5 text-lg font-semibold">Modern Website VS Mastery Focus</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <tr>
+          <td class="px-6 py-5 font-medium">Primary Goal:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Fix isolated issues.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Uncover competitive edges & gaps.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Scope:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Single site only.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Head-to-head multi-site comparison.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium">SEO Focus:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Basic keywords & tech.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Intent, E-E-A-T, freshness gaps.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">UX Analysis:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Vague speed checks.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Quit risk, vitals, flow differences.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium">Content Insights:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Word count alone.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Depth, structure, keyword harmony gaps.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">AI Readiness:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Ignored.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Citation potential & extractability edges.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+      
+      <!-- SEO Tools Section -->
+<div class="my-16"></div>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+      <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      SEO Tools
+      </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+    <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+      </div>
+    </a>
+    <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🗝️</div>
+        <h3 class="text-orange-500 dark:text-orange-300 text-2xl font-bold mb-3">Keywords Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">On-page keyword placement</p>
+      </div>
+    </a>
+    <a href="https://traffictorch.net/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-red-500 dark:text-red-300 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools powered by AI</p>
+      </div>
+    </a>
+  </div>
+</div>
+
+
+<!-- Competitive Keyword Gap Checklist – New Separate Section -->
+<section id="keyword-gap-checklist" class="py-16 px-1 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray dark:to-gray-900"">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+    Ultimate Competitive Keyword Gap Checklist
+  </h2>
+  <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-700 dark:text-gray-300">
+    Discover missing keywords, topical gaps, and on-page weaknesses vs top-ranking competitors. With AI-generated fixes and predictive ranking forecasts.
+  </p>
+  <!-- Full Checklist Inside Single Expandable Box -->
+  <details class="mb-12 max-w-5xl mx-auto">
+    <summary class="px-6 py-5 text-1xl text-center font-black bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+      Competitive Keyword Checklist 🗝️
+      <span class="text-3xl transition-transform duration-300 group-open:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 p-2 bg-white/80 dark:bg-gray-800/90 rounded-2xl shadow-inner space-y-10">
+      <!-- Best Practices & Common Mistakes -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div class="bg-gradient-to-br from-green-900/20 to-emerald-900/20 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl p-2 shadow-lg">
+          <h4 class="text-xl font-bold mb-6 text-green-400 flex items-center gap-3">
+            <span class="text-2xl">✅</span> Best Practices to Do?
+          </h4>
+          <ul class="space-y-5 text-lg text-gray-700 dark:text-gray-300">
+            <li><strong>✅ Use the exact target keyword naturally</strong> in title, H1, and first paragraph.</li>
+            <li><strong>✅ Cover all related subtopics and user questions</strong> competitors address.</li>
+            <li><strong>✅ Include supporting entities and semantically related terms.</strong></li>
+            <li><strong>✅ Optimize image alt texts and internal anchors</strong> with relevant phrases.</li>
+            <li><strong>✅ Add structured data</strong> (FAQ, HowTo, Article schema) when applicable.</li>
+          </ul>
+        </div>
+        <div class="bg-gradient-to-br from-red-900/20 to-orange-900/20 dark:from-red-900/30 dark:to-orange-900/30 rounded-2xl p-2 shadow-lg">
+          <h4 class="text-xl font-bold mb-6 text-red-400 flex items-center gap-3">
+            <span class="text-2xl">⚠️</span> Common Mistakes to Avoid?
+          </h4>
+          <ul class="space-y-5 text-lg text-gray-700 dark:text-gray-300">
+            <li><strong>❌ Keyword stuffing or unnatural repetition.</strong></li>
+            <li><strong>❌ Thin content that skips important subtopics.</strong></li>
+            <li><strong>❌ Ignoring headings — no H2/H3 structure.</strong></li>
+            <li><strong>❌ Generic or missing image alt text.</strong></li>
+            <li><strong>❌ No schema markup on content-rich pages.</strong></li>
+          </ul>
+        </div>
+      </div>
+      <!-- Detailed Themed Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <!-- Keyword & Term Discovery -->
+        <div class="checklist-card bg-gradient-to-br from-blue-900/20 to-indigo-900/20 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl p-2 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+          <h3 class="text-2xl font-bold mb-8 text-green-400 flex items-center gap-4">
+            <span class="text-4xl">🔍</span> Keyword &amp; Term Discovery
+          </h3>
+          <div class="space-y-8 text-lg text-gray-700 dark:text-gray-300">
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">❌</span>
+              <div>Blind to high-value keywords your competitors rank for.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">🔑</span>
+              <div><strong>Missing Keyword Identification</strong>: Exact terms used by top 10 SERP pages but absent from yours.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">👀</span>
+              <div>No insight into keyword frequency &amp; prominence.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">📊</span>
+              <div><strong>Keyword Usage Comparison</strong>: Side-by-side frequency, placement, and prominence scoring.</div>
+            </div>
+          </div>
+        </div>
+        <!-- Topical Coverage & Content Depth -->
+        <div class="checklist-card bg-gradient-to-br from-indigo-900/20 to-purple-900/20 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-2xl p-2 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+          <h3 class="text-2xl font-bold mb-8 text-orange-400 flex items-center gap-4">
+            <span class="text-2xl">🌐</span> Topical Coverage &amp; Content Depth
+          </h3>
+          <div class="space-y-8 text-lg text-gray-700 dark:text-gray-300">
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">🕳️</span>
+              <div>Incomplete topical coverage missing subtopics &amp; entities.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">✅</span>
+              <div><strong>Topical &amp; Entity Gap Audit</strong>: Missing questions, subtopics, entities, and supporting concepts.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">📏</span>
+              <div>Content too short or shallow compared to winners.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">📈</span>
+              <div><strong>Content Depth Benchmarking</strong>: Word count, heading structure, media usage vs top competitors.</div>
+            </div>
+          </div>
+        </div>
+        <!-- Beat Strategies & Predictive Results – Full Width on Mobile -->
+        <div class="checklist-card bg-gradient-to-br from-purple-900/20 to-pink-900/20 dark:from-purple-900/30 dark:to-pink-900/30 rounded-2xl p-2 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300 md:col-span-2">
+          <h3 class="text-2xl font-bold mb-8 text-red-400 flex items-center justify-center gap-4">
+            <span class="text-2xl">⚔️</span> Beat Strategies &amp; Predictive Results
+          </h3>
+          <div class="space-y-8 text-lg text-gray-700 dark:text-gray-300">
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">❌</span>
+              <div>No clear roadmap to outrank competitors?</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">🎯</span>
+              <div><strong>Prioritized Beat Strategies</strong>: Ranked list of keywords/topics to add by impact &amp; ease.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">❓</span>
+              <div>Uncertain potential gains from closing gaps.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">📈</span>
+              <div><strong>Predictive Ranking &amp; Traffic Forecast</strong>: Estimated position uplift and traffic increase.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">🔒</span>
+              <div>Manual or privacy-risking competitor tools.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">🛡️</span>
+              <div><strong>Instant Online Report</strong>: AI-generated fixes, mobile-friendly dark mode, PDF export.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Closing Text -->
+      <div class="text-center mt-12">
+        <p class="text-2xl font-semibold text-gray-700 dark:text-gray-300">
+          Close the competitive keyword gap. Outrank your rivals with data-driven on-page optimization.
+        </p>
+      </div>
+    </div>
+  </details>
+</section>
+
+  <!-- Why On-Page Relevance Matters Accordion -->
+  <div class="max-w-4xl mx-auto my-16">
+    <details class="group">
+      <summary class="px-2 py-5 text-1xl text-center font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+        Why On-Page Relevance Matters?
+        <span class="text-3xl transition-transform duration-300 group-open:rotate-180">↓</span>
+      </summary>
+      <div class="mt-6 px-2 py-10 bg-white dark:bg-gray-800 rounded-2xl shadow-inner space-y-10 text-gray-800 dark:text-gray-100">
+        <section class="space-y-5">
+          <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Relevance Is the #1 Ranking Signal</h3>
+          <p class="leading-relaxed">
+            Search engines prioritize pages that best match user intent. Superior <strong>on-page keyword and topical relevance</strong> is what separates top-ranking pages from the rest.
+          </p>
+        </section>
+
+        <section class="space-y-8">
+          <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Real-World Benefits</h3>
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="flex gap-5">
+              <div class="text-2xl">🚀</div>
+              <div>
+                <strong>Faster Ranking Improvements</strong><br>
+                On-page optimizations often boost positions in days to weeks.
+              </div>
+            </div>
+            <div class="flex gap-5">
+              <div class="text-2xl">📈</div>
+              <div>
+                <strong>Higher CTR from SERPs</strong><br>
+                Compelling titles and metas drive more clicks.
+              </div>
+            </div>
+            <div class="flex gap-5">
+              <div class="text-2xl">😊</div>
+              <div>
+                <strong>Lower Bounce Rates</strong><br>
+                Relevant, well-structured content keeps visitors engaged.
+              </div>
+            </div>
+            <div class="flex gap-5">
+              <div class="text-2xl">🔮</div>
+              <div>
+                <strong>Future-Proof SEO</strong><br>
+                Strong topical authority thrives in AI-driven search.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/30 p-8 rounded-xl">
+          <h3 class="text-xl font-bold mb-4">The Bottom Line</h3>
+          <p class="leading-relaxed">
+            You can’t control competitors’ backlinks, but you <strong>can perfect your on-page relevance</strong>. This tool shows exactly where to improve.
+          </p>
+          <p class="font-medium mt-4">
+            Use it before publishing, after updates, or whenever rankings plateau.
+          </p>
+        </section>
+      </div>
+    </details>
+  </div>
+  
+     <!-- Author Bio -->
+<section id="author-bio" class="max-w-5xl mx-auto my-12 px-4 author-bio author-box" id="about-ylia-and-traffic-torch">
+  <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+    <!-- Hero Gradient Header: Gradient only, no solid bg -->
+    <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
+      <div class="flex flex-col items-center gap-6 mb-6">
+        <!-- Traffic Torch Logo Only in Hero -->
+        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch: Instant 360° SEO + UX Health Analysis, Deep-Dive Reports, Competitive Gaps, AI Fixes – Privacy-First Optimization Toolkit" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
+      </div>
+      <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
+      <p class="text-lg md:text-2xl text-gray-800 dark:text-gray-200 max-w-4xl mx-auto font-medium">
+          Competitive On-Page Keyword Gap Detection Tool.
+      </p>
+    </div>
+    <!-- Main Content Area: Transparent, inherits page bg -->
+    <div class="p-2 md:p-12 space-y-10 text-center md:text-left">
+      <!-- Tool Mission Description -->
+      <div class="space-y-6">
+        <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          This Keyword Vs Tool transforms complex competitive research into clear, side-by-side diagnostics that instantly spotlight where your page falls short. And exactly how top-ranking competitors outperform you.
+        </p>
+      </div>
+      <!-- Founder Bio with Smaller Photo -->
+      <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-2 md:p-8 rounded-2xl backdrop-blur-sm">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+          <!-- Perfect circle wrapper for photo -->
+          <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
+            <img
+              src="/images/ylia-callan-320w.webp"
+              srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
+              sizes="(max-width: 768px) 96px, 128px"
+              alt="Ylia Callan: Musician, Author, Researcher, Web Designer, Founder of Traffic Torch – Bridging Creativity, Consciousness, and Cutting-Edge Web Tools"
+              class="w-full h-full object-cover object-center"
+              loading="lazy">
+          </div>
+          <div class="space-y-4 text-center md:text-left">
+            <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Lead Developer</h3>
+            <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
+              Musician • Author • Researcher • Web Designer • TAFE NSW • Creator of privacy-first AI-powered web tools. Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.
+            </p>
+            <p class="text-base text-gray-800 dark:text-gray-200 italic">
+              Explore my work - books on physics, philosophy, consciousness, music, and more – at <a href="https://yliacallan.github.io/" target="_blank" rel="noopener" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">yliacallan.github.io</a>.
+            </p>
+          </div>
+        </div>
+        <!-- Social Links -->
+        <ul class="flex flex-wrap justify-center md:justify-start gap-6 mt-6">
+          <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">LinkedIn</a></li>
+          <li><a href="https://x.com/guitaralize" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">X (Twitter)</a></li>
+        </ul>
+      </div>
+      <!-- Tech Stack for E-E-A-T -->
+      <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
+        <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Modern Stack Setup</h3>
+        <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          Traffic Torch runs on epic, scalable infrastructure: Hosted via <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub Pages</a> for blazing-fast static delivery and effortless updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance optimizations. 
+        </p>
+        <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-4 max-w-3xl mx-auto">
+            Powered by monitoring of SERP fluctuations, on-page correlation data, and direct comparison of ranking pages.
+        </p>
+          <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+          <p>Published: 2025-11-16</p>
+          <p>Last updated: 2026-03-06</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+
+<section class="bottom-banner" aria-label="Traffic Torch visual summary">
+  <picture style="--banner-ratio: 31.25%;"> <!-- 400 / 1280 -->
+<img src="/images/tool-banners/keyword-vs-tool-infographic-1200w.webp" srcset="/images/tool-banners/keyword-vs-tool-infographic-480w.webp 480w, /images/tool-banners/keyword-vs-tool-infographic-800w.webp 800w, /images/tool-banners/keyword-vs-tool-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch Keyword VS Tool – AI-powered competitive keyword gap analysis, shared vs unique terms, difficulty comparison and optimization strategies" width="1200" height="375" loading="lazy" decoding="async">
+  </picture>
+</section>
+
+  </main>
+
+
+<!-- Footer -->
+<div id="footer-placeholder"></div>
+</div>
+</div>
+
+  <script src="/main-v1.1.js" type="module"></script>
+  <script src="/keyword-vs-tool/metric-explanations-v1.0.js" type="module" defer></script>
+  <script src="/keyword-vs-tool/script-v1.0.js" type="module" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,1539 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+<!-- Optimized SEO Title & Description -->
+<title>Schema Markup Generator & Detector – Free JSON-LD Tool | Traffic Torch</title>
+<meta name="description" content="Instantly detect structured data on any URL and generate SEO-optimized JSON-LD schema (FAQPage, Article, HowTo, LocalBusiness & more). Mobile-friendly, educational tool for rich results.">
+<!-- Robots & Canonical -->
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://traffictorch.net/schema-generator/" />
+ 
+<!-- Theme Color -->
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+<!-- Referrer Policy (security + privacy best practice) -->
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<!-- security headers -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<!-- hreflang -->
+<link rel="alternate" hreflang="en" href="https://traffictorch.net/schema-generator/">
+<link rel="alternate" hreflang="x-default" href="https://traffictorch.net/schema-generator/">
+<!-- Open Graph Tags -->
+<meta property="og:title" content="Schema Generator Tool: Detect, Enhance & Generate Markup for SEO Rich Results" />
+<meta property="og:description" content="All-in-one schema tool: Input URL to scan content, Generate Schema for FAQ, HowTo, Article, edit/confirm, and generate optimized JSON-LD." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://traffictorch.net/schema-generator/" />
+<meta property="og:image" content="https://traffictorch.net/schema-generator/images/schema-generator-1200w.webp" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="Traffic Torch" />
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Best Schema Markup Generator: Free Tool for Detection & Optimization" />
+<meta name="twitter:description" content="Mobile-friendly schema generator: Analyzes URLs for existing markup,  Generate Schema for FAQ, HowTo, Article, edit/confirm, and generate optimized JSON-LD." />
+<meta name="twitter:image" content="https://traffictorch.net/schema-generator/images/schema-generator-1200w.webp" />
+<meta name="twitter:site" content="@Guitaralize" />
+<!-- Structured Data (JSON-LD) - Merged Single Block -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "Schema Markup Generator & Detector Tool",
+      "description": "Free tool to generate, detect, and enhance schema markup. Scan URLs for opportunities, generate schema types like FAQ or HowTo, and output optimized JSON-LD for better rich results.",
+      "url": "https://traffictorch.net/schema-generator/",
+      "speakable": {
+  "@type": "SpeakableSpecification",
+  "cssSelector": [
+    "#faq",
+    "p.text-center.text-lg.mb-10.max-w-3xl.mx-auto.opacity-80",
+    ".max-w-4xl.mx-auto.my-16 details div.mt-8",
+    "section.max-w-4xl.mx-auto.mt-12.mb-8 p.text-xl.leading-relaxed.text-center.mb-8.text-gray-500.dark\\:text-gray-300",
+    "div.max-w-4xl.mx-auto.my-16 details div.mt-8 section.space-y-5:first-child"
+  ]
+},
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Traffic Torch Schema Generator Tool",
+      "applicationCategory": "SEO Tool",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "All-in-one schema generator: Detects existing markup, analyzes content and generate 18 schema types, allows editing, and generates JSON-LD for enhanced SEO and UX.",
+      "url": "https://traffictorch.net/schema-generator/",
+      "image": "https://traffictorch.net/schema-generator/images/schema-generator-1200w.webp"
+    },
+    {
+      "@type": "Article",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/schema-generator/"
+      },
+      "headline": "Schema Generator Tool: Detect & Generate Markup for Rich Results",
+      "description": "Free schema markup tool to scan pages, and generate 18 schema types in JSON-LD. Improves SEO visibility and user experience.",
+      "url": "https://traffictorch.net/schema-generator/",
+      "image": [
+        {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/schema-generator/images/schema-generator-1200w.webp",
+          "contentUrl": "https://traffictorch.net/schema-generator/images/schema-generator-1200w.webp",
+          "width": 1200,
+          "height": 630,
+          "caption": "Traffic Torch Schema Generator Tool dashboard: Instant URL scan for existing markup, content analysis for like FAQ or HowTo and 18 schema types, user editing, and JSON-LD output – mobile-friendly reports with educational tips"
+        }
+      ],
+      "author": {
+        "@type": "Person",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/logo-512.webp"
+        }
+      },
+      "datePublished": "2026-03-09T10:40:00+11:00",
+      "dateModified": "2026-03-11T14:24:00+11:00"
+    },
+    {
+      "@type": "Person",
+      "name": "Ylia Callan",
+      "url": "https://yliacallan.github.io/",
+      "sameAs": [
+        "https://www.linkedin.com/in/ylia-callan-8b889976/",
+        "https://x.com/guitaralize",
+        "https://traffictorch.net/"
+      ],
+      "image": "/images/ylia-callan-320w.webp",
+      "jobTitle": "Founder & Builder",
+      "description": "Musician, Author, Web Designer, and Creator of Privacy-First AI SEO/UX Tools like Traffic Torch",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Traffic Torch",
+        "url": "https://traffictorch.net/"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://traffictorch.net/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Schema Generator",
+          "item": "https://traffictorch.net/schema-generator/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://traffictorch.net/schema-generator/#faq",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/schema-generator/"
+      },
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is schema markup and why is it important for SEO?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Schema markup is structured data (usually JSON-LD) added to your HTML that helps search engines understand your content better. It enables rich results like star ratings, FAQs in SERPs, carousels, or enhanced snippets, which can improve click-through rates and make your pages more informative for users and voice search."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which schema types should I prioritize for my website?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Start with Article for blogs, FAQPage for Q&A sections, HowTo for guides, and Product for e-commerce. These enable rich snippets and better visibility. The tool recommends based on your content and allows manual selection for custom needs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I edit recommended schemas before generating?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, after recommendations, confirm and edit pre-filled forms (e.g., add nested properties). This user-controlled flow ensures accuracy, with real-time previews and tips on best practices like using @id for entity linking."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does schema markup improve user experience (UX)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It structures content for better accessibility (e.g., voice search) and faster answers in SERPs, reducing bounce rates. Traffic Torch educates on UX ties, like how FAQ schema creates expandable sections for mobile users."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What format does the tool output, and is it Google-friendly?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Always JSON-LD, Google's preferred format per 2026 guidelines. It includes validation checks for required fields, helping avoid penalties and ensuring compatibility with mobile-first indexing."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+ 
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json" />
+  
+    <!-- Main Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+  
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/schema-generator/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/schema-generator/style-v1.0.css">
+  </noscript>
+
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+  
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
+        </a>
+        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
+        </a>
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⛔</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🗝️</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+        <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📋</span> <span class="sidebar-text hidden">Help Guides</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
+              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⛔ Quit Risk</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">🗝️ Keywords</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+              <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition">📋 Help Guides</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+      
+<main class="container mx-auto px-4 py-0 max-w-5xl flex-1">
+    <div class="max-w-5xl mx-auto px-6 py-8">
+      <h1 class="text-3xl md:text-4xl font-black text-center mb-6 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+        Schema Markup Generator & Detector
+      </h1>
+      <p class="text-center text-lg mb-10 max-w-3xl mx-auto opacity-80">
+        Scan any URL to detect existing schema, and generate clean JSON-LD for better SEO rich results and UX.
+      </p>
+    
+      <form id="audit-form" class="max-w-2xl mx-auto space-y-4">
+        <div class="flex flex-col sm:flex-row gap-4">
+          <label for="url-input" class="sr-only">Enter page URL to scan for schema</label>
+          <input
+            id="url-input"
+            type="text"
+            placeholder="example.com/blog-post"
+            aria-label="Enter page URL to scan for schema"
+            required
+            class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+          />
+          <button
+            type="submit"
+            class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+          >
+            Analyze ⚙️ 
+          </button>
+        </div>
+      </form>
+
+      <div id="analysis-progress" class="hidden mt-10 flex flex-col items-center justify-center py-8">
+        <div class="relative w-20 h-20">
+          <!-- Lazer spinner: thin orange partial ring -->
+          <div class="absolute inset-0 rounded-full border-4 border-gray-200"></div>
+          <div class="absolute inset-0 rounded-full border-4 border-orange-500 border-t-transparent animate-spin"></div>
+        </div>
+        <p id="progress-text" class="text-2xl font-medium text-center text-orange-600 dark:text-orange-400 mt-6">
+          Scanning schema & content...
+        </p>
+      </div>
+
+      <div id="results" class="hidden mt-10"></div>
+
+<!-- Manual Schema Creation Section – always visible, independent of scan -->
+<div class="mt-16 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-10 md:p-10 border border-gray-200 dark:border-gray-700">
+  <h2 class="text-3xl md:text-4xl font-black text-center mb-6 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+    Create Schema Manually
+  </h2>
+  
+  <p class="text-center text-lg mb-8 max-w-3xl mx-auto opacity-80">
+    Select a schema type below to build it from scratch. Pre-filled values will appear when possible — review and complete before generating code.
+  </p>
+
+  <!-- Accessible Label + Select -->
+  <div class="max-w-xl mx-auto mb-10">
+    <label 
+      for="manual-schema-type" 
+      class="block text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3 text-center md:text-left"
+    >
+      Choose Schema Type
+    </label>
+    
+    <select 
+      id="manual-schema-type" 
+      class="w-full px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg shadow-sm"
+      aria-describedby="schema-type-desc"
+    >
+      <option value="">-- Select Schema Type --</option>
+      <optgroup label="Core / Foundational">
+        <option value="Organization">Organization</option>
+        <option value="Article">Article / BlogPosting</option>
+        <option value="LocalBusiness">LocalBusiness</option>
+        <option value="Person">Person</option>
+        <option value="BreadcrumbList">BreadcrumbList</option>
+      </optgroup>
+      <optgroup label="Content & Engagement">
+        <option value="FAQPage">FAQPage</option>
+        <option value="HowTo">HowTo</option>
+        <option value="VideoObject">VideoObject</option>
+        <option value="Recipe">Recipe</option>
+        <option value="Event">Event</option>
+        <option value="Review">Review / AggregateRating</option>
+      </optgroup>
+      <optgroup label="Advanced & Specialized">
+        <option value="JobPosting">JobPosting</option>
+        <option value="Course">Course</option>
+        <option value="SoftwareApplication">SoftwareApplication</option>
+        <option value="Book">Book</option>
+        <option value="Dataset">Dataset</option>
+        <option value="Speakable">Speakable</option>
+        <option value="FactCheck">FactCheck</option>
+      </optgroup>
+    </select>
+
+    <!-- Optional help text for screen readers -->
+    <p id="schema-type-desc" class="mt-2 text-sm text-gray-600 dark:text-gray-400 text-center md:text-left">
+      Select a schema to generate ready-to-use JSON-LD code.
+    </p>
+  </div>
+
+  <div id="manual-editor-container" class="mt-10"></div>
+
+  <div id="manual-preview-container" class="mt-10 hidden">
+    <h3 class="text-2xl font-bold mb-4 text-center">Live JSON-LD Preview</h3>
+    <pre id="manual-preview" class="bg-gray-900 text-green-300 p-6 rounded-xl overflow-auto max-h-96 font-mono leading-relaxed break-words whitespace-pre-wrap">// Select a type above to start building</pre>
+  </div>
+
+  <div id="manual-actions" class="mt-8 flex flex-col gap-6 justify-center hidden">
+    <div class="flex items-center justify-center gap-3">
+      <input type="checkbox" id="wrap-script-tags" class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+      <label for="wrap-script-tags" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+        Wrap in &lt;script type="application/ld+json"&gt; tags
+      </label>
+    </div>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <button id="manual-copy-btn" class="px-10 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition">
+        Copy JSON-LD
+      </button>
+      <button id="manual-validate-btn" class="px-10 py-4 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-xl transition">
+        Validate Rich Results
+      </button>
+    </div>
+    <p class="mt-4 text-sm text-gray-600 dark:text-gray-400 text-center">
+    For Person, Book, Speakable, and some other schema types (Not Google Rich Results):<br>
+    Validate here → 
+    <a href="https://validator.schema.org/" target="_blank" rel="noopener noreferrer"
+       class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+      https://validator.schema.org/
+    </a>
+  </p>
+  </div>
+</div>
+
+<div class="center-btn-container">
+  <button
+    class="copy-link-btn"
+    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
+    data-text="https://traffictorch.net/schema-generator/"
+  >
+    Copy Link? 🔗
+  </button>
+</div>
+
+<section id="faq" class="container mx-auto px-4 py-12 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    Frequently Asked Questions about Schema Markup
+  </h2>
+  <div class="space-y-6 max-w-2xl mx-auto">
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is schema markup and why should I use it?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Schema markup is structured data (usually JSON-LD) added to your HTML that helps search engines understand your content better. It enables rich results like star ratings, FAQs in SERPs, carousels, or enhanced snippets, which can improve click-through rates and make your pages more informative for users and voice search.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Which schema types give the biggest impact for most websites?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Start with Organization (for brand trust), Article/BlogPosting (for content pages), FAQPage (for Q&A), HowTo (for guides), and Product/Review (for e-commerce). These are the most commonly supported for rich results by Google and improve entity recognition across search engines.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Can I customize or edit the recommended schema before generating?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Yes – after seeing recommendations, select the ones you want, then edit pre-filled forms (add/remove properties, nest schemas like Article + FAQPage). Real-time JSON-LD preview updates as you type, with tooltips explaining required vs optional fields per Schema.org guidelines.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How does adding schema improve user experience (UX)?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Schema makes content clearer for screen readers, voice assistants, and featured snippets, helping users find answers faster without leaving search results. For example, FAQ schema creates expandable answers directly in SERPs, and HowTo schema shows steps in a structured, scannable way – both enhance mobile UX.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What format does the tool generate, and is it search-engine friendly?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>The tool always outputs JSON-LD (Google's recommended format in 2026). It follows the latest Schema.org vocabulary, includes basic validation for required properties, and provides copy-paste code ready to add to your <head> or via Google Tag Manager.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+  
+<!-- How It Works Expander -->
+<div class="max-w-4xl mx-auto my-16">
+  <details class="group">
+    <summary class="px-3 py-5 text-xl sm:text-2xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
+      <span class="flex items-center gap-4">
+        <span class="text-4xl">🛠️</span> How Traffic Torch Schema Tool & Generator Works
+      </span>
+      <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-2 sm:px-8 py-8 sm:py-12 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-indigo-200 dark:border-indigo-800 space-y-12 text-gray-700 dark:text-gray-300 overflow-hidden">
+      <!-- Instant Detection -->
+      <section class="space-y-5">
+        <h2 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-4">
+          <span class="text-3xl">🔍</span> Instant Schema Detection
+        </h2>
+        <p class="text-lg leading-relaxed">
+          Enter any URL → Traffic Torch fetches the page and scans all <code>&lt;script type="application/ld+json"&gt;</code> blocks.
+        </p>
+        <p class="text-lg leading-relaxed">
+          It lists every detected schema type (FAQPage, Article, Product, LocalBusiness, etc.) with clean, readable JSON-LD previews.
+        </p>
+        <p class="text-lg">
+          It will show exactly what Google sees on the page right now.
+        </p>
+      </section>
+
+      <!-- Manual Generator -->
+      <section class="space-y-5">
+        <h2 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-4">
+          <span class="text-3xl">🧱</span> Powerful Manual Schema Generator
+        </h2>
+        <p class="text-lg leading-relaxed">
+          Choose any schema type from the dropdown (FAQPage, Article, LocalBusiness, HowTo, Product, Recipe, Event, etc.).
+        </p>
+        <p class="text-lg leading-relaxed">
+          Get a clean, mobile-friendly form tailored to that schema. With education snippets, required/recommended fields, and live JSON-LD preview.
+        </p>
+        <p class="text-lg">
+          Type or paste values → preview updates instantly. Copy the code, wrap in &lt;script&gt; tags if needed, or validate directly in Google Rich Results Test.
+        </p>
+        <p class="text-lg font-medium">
+          All schemas are self-contained modules. So it's easy to add new ones without touching core code.
+        </p>
+      </section>
+
+      <!-- Features & Sharing -->
+      <section class="space-y-5">
+        <h2 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-4">
+          <span class="text-3xl">🔗</span> Share & Feedback
+        </h2>
+        <p class="text-lg leading-relaxed">
+          After scanning, use the <strong>Share Report</strong> button to generate a short link anyone can view.
+        </p>
+        <p class="text-lg">
+          Found a bug or want a new schema type? Click <strong>Submit Feedback</strong>. Your input helps improve the tool.
+        </p>
+      </section>
+    </div>
+  </details>
+</div>
+
+<!-- Main title and intro text - full-width above the cards -->
+<div class="text-center mb-12 md:mb-16">
+  <h2 class="text-4xl md:text-4xl lg:text-4xl font-black bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 bg-clip-text text-transparent">
+    What, When and Why to Use Schema Markups?
+  </h2>
+  <p class="mt-4 md:mt-6 text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+    Quick-reference cards explaining each major schema type. Click "Learn More" to jump to the detailed What/When/Why section in the full help guide.
+  </p>
+</div>
+
+<!-- Unified 3-column grid for all 18 schema cards (no title inside) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+
+  <!-- Card 1 - Organization -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">🏢</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">Organization</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>Organization schema defines your company or brand as a formal entity with name, logo, URL, social profiles (sameAs), and contact info. It establishes your business identity for search engines. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#organization-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Use on homepage, About page, or footer — especially for brands, multi-location businesses, or any site wanting Knowledge Graph recognition. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#organization-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Builds brand authority, enables logo/sitelinks in SERPs, strengthens E-E-A-T, and serves as foundation for LocalBusiness and other entity-linked schemas. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#organization-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 2 - Article / BlogPosting -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">✍️</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">Article / BlogPosting</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>Article or BlogPosting schema marks up news articles, blog posts, or long-form content with headline, date, author, image, publisher, and mainEntityOfPage. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#article-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Apply to every individual blog post, news article, guide, or dated editorial content — prefer BlogPosting subtype for most blogs. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#article-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Unlocks rich article thumbnails, author bylines, date display, and carousel eligibility; boosts E-E-A-T and CTR for informational content. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#article-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 3 - LocalBusiness -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">📍</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">LocalBusiness</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>LocalBusiness schema describes physical or service-area businesses with address, geo coordinates, opening hours, phone, price range, and area served. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#localbusiness-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Use on homepage, contact/location pages, or branch pages — ideal for stores, restaurants, service pros with local intent. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#localbusiness-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Powers rich local results (map pin, hours, directions), boosts Google Maps/local pack visibility, and is a top local SEO signal. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#localbusiness-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 4 - Person -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">👤</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">Person</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>Person schema identifies individual authors, experts, or team members with name, jobTitle, image, sameAs social links, and worksFor Organization. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#person-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Apply in author bylines of articles, About pages, team bios, or contributor profiles — especially multi-author blogs. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#person-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Enables author knowledge panels, richer bylines, stronger E-E-A-T signals, and builds individual topical authority over time. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#person-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 5 - BreadcrumbList -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">🔗</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">BreadcrumbList</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>BreadcrumbList schema represents site navigation hierarchy (Home → Category → Post) with ordered ListItem entries (position, name, item URL). <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#breadcrumbList-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Use on any page deeper than homepage — blog posts, categories, products, docs — wherever visible breadcrumbs exist. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#breadcrumbList-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Replaces plain URL path in SERPs with clickable breadcrumbs, improves CTR, helps Google understand site structure, and boosts internal linking signals. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#breadcrumbList-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 6 - FAQPage -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">❓</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">FAQPage</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>FAQPage schema marks up question-and-answer lists with Question name and acceptedAnswer text — ideal for support, product Q&A, or informational FAQs. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#faqpage-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Use on dedicated FAQ pages, help articles, or product pages with expanded Q&A sections (3–8 high-quality pairs recommended). <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#faqpage-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Triggers expandable FAQ accordions in SERPs, captures zero-click traffic, improves voice search answers, and boosts CTR for question-based queries. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#faqpage-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 7 - HowTo -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">🔧</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">HowTo</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>HowTo schema outlines step-by-step instructions with name, description, supply/tool lists, estimated times, and ordered HowToStep blocks (with images). <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#howto-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Apply to tutorials, DIY guides, repair instructions, setup processes, or any page whose primary purpose is teaching a task. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#howto-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Unlocks step-by-step carousels or expanded steps in SERPs, dominates how-to searches, increases dwell time, and provides instant value. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#howto-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 8 - VideoObject -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">🎥</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">VideoObject</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>VideoObject schema describes embedded or hosted videos with name, thumbnailUrl, duration, uploadDate, contentUrl/embedUrl, and optional transcript/Clip objects. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#videoobject-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Use on pages where video is central — tutorials, product demos, interviews, recipes, or explainer content (nest inside HowTo/Article if applicable). <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#videoobject-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Triggers video thumbnails, play icons, key moments, and carousel placements; boosts visibility in video tab, Discover, and voice search. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#videoobject-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 9 - Recipe -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">🍳</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">Recipe</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>Recipe schema details food/drink recipes with ingredients, instructions, prep/cook times, servings, nutrition, images, and optional AggregateRating. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#recipe-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Apply to full recipe posts or pages with complete ingredient lists, step-by-step directions, and high-quality photos of the dish. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#recipe-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Powers rich recipe cards with stars, cook time, calories, and step carousels; dominates food-related searches and increases visual CTR. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#recipe-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 10 - Event -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">🎟️</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">Event</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>Event schema marks up real-world or virtual events with name, start/end dates, location (or VirtualLocation), performer, organizer, offers, and attendance mode. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#event-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Use on event landing pages, ticket pages, or announcements for conferences, concerts, workshops, webinars, or local meetups. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#event-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Triggers event cards with date/time/location/tickets in SERPs and Maps; boosts visibility for "events near me" and time-sensitive queries. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#event-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 11 - Review / AggregateRating -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">⭐</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">Review / AggregateRating</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>Review and AggregateRating schemas show individual reviews and average star ratings/count for products, businesses, recipes, events, etc. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#review-aggregaterating-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Apply wherever visible ratings/reviews appear — product pages, local listings, recipes, events — with at least 3–5 genuine reviews. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#review-aggregaterating-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Displays stars and review count in SERPs, boosts trust/CTR, strengthens E-E-A-T, and improves local/product visibility dramatically. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#review-aggregaterating-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 12 - JobPosting -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">💼</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">JobPosting</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>JobPosting schema describes open positions with title, description, hiringOrganization, jobLocation, salary, employmentType, datePosted, and apply link. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#jobposting-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Use on individual job detail pages on career sites, company sites, or job boards — especially for roles with clear salary/location info. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#jobposting-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Powers Google for Jobs carousel, rich job cards, and "jobs near me" results; significantly increases application rates and visibility. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#jobposting-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 13 - Course -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">📚</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">Course</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>Course schema outlines educational programs with name, provider, description, offers, hasCourseInstance (mode, workload), instructor, and ratings. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#course-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Apply to online course landing pages, university programs, bootcamps, certifications, or training workshops with enrollment info. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#course-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Triggers course cards/carousels in SERPs with provider, price, duration; boosts visibility for "best online [skill] course" searches. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#course-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 14 - SoftwareApplication -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">🖥️</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">SoftwareApplication</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>SoftwareApplication schema describes apps/software with name, description, operatingSystem, applicationCategory, offers, screenshots, and download URLs. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#softwareapplication-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Use on SaaS landing pages, mobile/desktop app pages, browser extensions, or tool download sites with screenshots and pricing. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#softwareapplication-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Powers app rich results with icons, screenshots, ratings, price; increases installs/clicks in software comparison and tool searches. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#softwareapplication-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 15 - Book -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">📖</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">Book</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>Book schema details published books with title, author, ISBN, publisher, datePublished, bookFormat, numberOfPages, offers, and cover image. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#book-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Apply to author sites, publisher pages, book review posts, or dedicated book landing pages with buy links and ISBN. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#book-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Triggers book cards with cover, author, price, buy links; improves discoverability in Google Books and title/author searches. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#book-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 16 - Dataset -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">📊</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">Dataset</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>Dataset schema describes downloadable public datasets with name, description, creator, license, distribution (download URL + format), and coverage info. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#dataset-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Use on open data portals, research papers, ML dataset pages, or government/company data releases with direct download links. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#dataset-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Powers inclusion in Google Dataset Search and rich snippets; drives downloads/citations for research, AI, and data journalism queries. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#dataset-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 17 - Speakable -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">🗣️</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">Speakable</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>Speakable schema marks up text sections ideal for voice readout using cssSelector or xpath — enhances content for Google Assistant/smart speakers. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#speakable-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Apply to news articles, FAQs, how-to intros, or recipe overviews with concise, natural-language text (30–90 seconds spoken). <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#speakable-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Enables voice read-aloud in Assistant and voice search results; improves accessibility and reach on voice devices. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#speakable-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Card 18 - FactCheck (ClaimReview) -->
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
+    <div class="p-4 md:p-4 text-center flex-grow">
+      <div class="text-6xl md:text-7xl lg:text-8xl mb-6">✅</div>
+      <h3 class="text-xl md:text-2xl lg:text-3xl font-extrabold text-orange-600 dark:text-orange-400 mb-5">FactCheck (ClaimReview)</h3>
+      <details class="group mt-3">
+        <summary class="cursor-pointer text-base md:text-lg font-semibold text-orange-700 dark:text-orange-300 hover:text-orange-500 dark:hover:text-orange-200 transition flex items-center justify-center gap-2">
+          Learn More
+          <span class="text-xl md:text-2xl group-open:rotate-180 transition-transform duration-300">↓</span>
+        </summary>
+        <div class="mt-5 space-y-5 text-left text-gray-800 dark:text-gray-200 leading-relaxed text-sm md:text-base px-1">
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">What is it?</p>
+            <p>FactCheck / ClaimReview schema evaluates a specific claim’s accuracy with claimReviewed text, reviewRating, author (fact-check org), and sources. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#factcheck-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">When to use?</p>
+            <p>Use only on formal fact-check articles by verified organizations following IFCN standards — not for opinions or personal blogs. <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#factcheck-when" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+          <div>
+            <p class="font-bold text-orange-600 dark:text-orange-400 mb-1.5">Why it matters</p>
+            <p>Triggers "Fact Check" labels/verdict boxes in SERPs; boosts credibility and visibility during misinformation events (strictly moderated by Google). <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html#factcheck-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+</div>
+    
+<!-- Strong Opening Schema Tool Explanation -->
+<section class="max-w-4xl mx-auto mt-12 mb-8">
+  <h2 class="text-3xl md:text-4xl pt-8 font-bold font-black text-orange-700 dark:text-orange-400 text-center mb-8">
+    What is the Traffic Torch Schema Tool?
+  </h2>
+  <p class="text-2xl md:text-3xl font-bold text-gray-500 text-center mb-8">
+    <strong>Instant schema detection + powerful manual generator for modern SEO rich results.</strong>
+  </p>
+  <p class="text-xl leading-relaxed text-center mb-8 text-gray-500 dark:text-gray-300">
+    Add structured data (JSON-LD) to your pages so Google displays rich snippets, carousels, stars, FAQs, HowTos, videos and more. Driving higher CTR and visibility in 2026 search.
+  </p>
+  <p class="text-xl leading-relaxed text-center mb-8 text-gray-500 dark:text-gray-300">
+    Frustrated that your content ranks but gets no rich results? Many sites still skip schema or use outdated generators. Traffic Torch makes it fast, accurate, and educational.
+  </p>
+</section>
+
+<section id="schema-tool-checklist" class="py-4 px-2 max-w-6xl mx-auto">
+  <h2 class="text-2xl md:text-3xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+    4 Ways Traffic Torch Helps You Win Rich Results
+  </h2>
+  <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-500 dark:text-gray-300 leading-relaxed">
+    Built from real-world schema audits. These five features deliver the fastest wins for SEO teams and content creators.
+  </p>
+  <div class="max-w-4xl mx-auto">
+    <div class="space-y-8 text-lg">
+      <div class="flex items-start gap-6 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 p-6 rounded-2xl">
+        <span class="text-2xl">1️⃣</span>
+        <div>
+          <strong>Instant schema detection</strong><br>
+          Paste any URL → see exactly what JSON-LD Google finds on the page, with pretty-printed code previews.
+        </div>
+      </div>
+      <div class="flex items-start gap-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-6 rounded-2xl">
+        <span class="text-2xl">2️⃣</span>
+        <div>
+          <strong>Professional manual generator</strong><br>
+          Pick any schema type → get a clean form with education, required fields, live preview, copy & Google validation buttons.
+        </div>
+      </div>
+      <div class="flex items-start gap-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-2xl">
+        <span class="text-2xl">3️⃣</span>
+        <div>
+          <strong>Self-contained schema modules</strong><br>
+          Each type (FAQPage, HowTo, Article, LocalBusiness, etc.) has its own optimized form.
+        </div>
+      </div>
+      <div class="flex items-start gap-6 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-6 rounded-2xl">
+        <span class="text-2xl">4️⃣</span>
+        <div>
+          <strong>Mobile-first & educational</strong><br>
+          Fully responsive forms with tooltips, dark mode, and clear guidance. Built for creators who want to learn while building.
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="text-center mt-16">
+    <p class="text-xl font-semibold max-w-3xl mx-auto text-green-800 dark:text-green-100">
+      Use Traffic Torch to detect issues fast and build perfect schema. No guesswork, no outdated tools.
+    </p>
+  </div>
+</section>
+
+<div id="promo-old-vs-modern-schema" class="max-w-5xl mx-auto mt-12">
+  <h3 class="text-3xl font-bold text-center mb-10 font-black text-orange-700 dark:text-orange-400">
+    Old Schema Tools vs Traffic Torch
+  </h3>
+  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+    <table class="w-full text-left">
+      <thead class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+        <tr>
+          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
+          <th class="px-6 py-5 text-lg font-semibold">Old Schema Tools</th>
+          <th class="px-6 py-5 text-lg font-semibold">Traffic Torch</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <tr>
+          <td class="px-6 py-5 font-medium">Primary Goal:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Generate basic JSON-LD.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Detect + build perfect schema for rich results.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Detection:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">None or very basic.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Full JSON-LD scan with pretty previews.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium">Generator:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Static forms, no live preview.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Live updating preview + copy/validate buttons.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Education:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Minimal or none.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Built-in tooltips + best practices per schema.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
+    Modern SEO needs modern schema tools.
+  </p>
+</div>
+  
+  
+<!-- SEO Tools Section -->
+<div class="my-16"></div>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+      <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      SEO Tools
+      </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+    <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+      </div>
+    </a>
+    <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🗝️</div>
+        <h3 class="text-orange-500 dark:text-orange-300 text-2xl font-bold mb-3">Keywords Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">On-page keyword placement</p>
+      </div>
+    </a>
+    <a href="https://traffictorch.net/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-red-500 dark:text-red-300 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools powered by AI</p>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- Why Schema Markup Matters Expander -->
+<div class="max-w-4xl mx-auto my-16">
+  <details>
+    <summary class="px-3 py-5 text-xl sm:text-2xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
+      <span class="flex items-center gap-4">
+        <span class="text-4xl">🛠️</span> Why Schema Markup Matters in 2026
+      </span>
+      <span class="text-3xl transition-transform duration-300 group-open:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-2 sm:px-8 py-8 sm:py-12 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-indigo-200 dark:border-indigo-800 space-y-12 text-gray-700 dark:text-gray-300 overflow-hidden">
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold text-purple-600 dark:text-purple-400">The Future of Search Is Structured Data-Driven</h2>
+        <p class="leading-relaxed">
+          Traditional rankings are no longer enough. <strong>Rich results, carousels, stars, FAQs, HowTos, videos, and local packs</strong> dominate SERPs. All powered by schema markup (JSON-LD).
+        </p>
+        <p class="leading-relaxed">
+          Pages with correct schema get dramatically higher CTR, better voice/AI visibility, and stronger entity signals in Google Knowledge Graph.
+        </p>
+      </section>
+
+      <section class="space-y-8">
+        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Key Benefits of Using Traffic Torch Schema Tool</h3>
+        <div class="grid md:grid-cols-2 gap-8 text-lg">
+          <div class="flex gap-7">
+            <div class="text-4xl">📈</div>
+            <div>
+              <strong>Higher CTR & Visibility</strong><br>
+              Rich results (stars, images, FAQs, videos) appear above organic links, users click them first.
+            </div>
+          </div>
+          <div class="flex gap-7">
+            <div class="text-4xl">🔍</div>
+            <div>
+              <strong>Instant Detection</strong><br>
+              See exactly what schema Google finds on any page. Spot missing or broken markup in seconds.
+            </div>
+          </div>
+          <div class="flex gap-7">
+            <div class="text-4xl">🧱</div>
+            <div>
+              <strong>Fast & Accurate Generator</strong><br>
+              Choose any type → fill clean forms → get valid JSON-LD with live preview, copy, and direct Google validation.
+            </div>
+          </div>
+          <div class="flex gap-7">
+            <div class="text-4xl">📚</div>
+            <div>
+              <strong>Educational & Future-Proof</strong><br>
+              Built-in tooltips + best practices per schema type. Learn while building for 2026 SEO.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/30 p-8 rounded-xl">
+        <h3 class="text-2xl font-bold mb-4">The Bottom Line</h3>
+        <p class="leading-relaxed">
+          Schema markup is no longer optional. It's essential for rich results, voice search, AI overviews, and long-term visibility.
+        </p>
+        <p class="leading-relaxed font-medium mt-4">
+          Detect issues → build perfect schema → copy & implement → watch rich results appear.
+        </p>
+      </section>
+
+      <p class="text-center text-lg italic opacity-80 mt-8">
+        Sites using proper schema today dominate tomorrow’s SERPs.
+      </p>
+    </div>
+  </details>
+</div>
+  
+<!-- Author Bio – Refactored to Schema Focus -->
+<section id="author-bio" class="max-w-5xl mx-auto my-12 px-4 author-bio author-box" id="about-ylia-and-traffic-torch">
+  <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+    <!-- Hero Gradient Header -->
+    <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
+      <div class="flex flex-col items-center gap-6 mb-6">
+        <!-- Traffic Torch Logo -->
+        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch: Schema Markup Generator & Detector – Instant Detection, Manual Builder, Live Preview, Rich Results Ready" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
+      </div>
+      <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
+      <p class="text-lg md:text-2xl text-gray-800 dark:text-gray-200 max-w-4xl mx-auto font-medium">
+        Schema Markup Generator & Detector Tool
+      </p>
+    </div>
+    <!-- Main Content Area -->
+    <div class="p-6 md:p-12 space-y-10 text-center md:text-left">
+      <!-- Tool Mission Description -->
+      <div class="space-y-6">
+        <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          Traffic Torch instantly detects JSON-LD schema on any page and provides a powerful manual generator to create perfect, valid markup for rich results (stars, FAQs, HowTos, videos, local packs, products, and more). Built for modern SEO with live previews, education, and easy copy/validate.
+        </p>
+      </div>
+      <!-- Founder Bio with Smaller Photo -->
+      <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-4 md:p-4 rounded-2xl backdrop-blur-sm">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+          <!-- Photo wrapper -->
+          <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
+            <img
+              src="/images/ylia-callan-320w.webp"
+              srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
+              sizes="(max-width: 768px) 96px, 128px"
+              alt="Ylia Callan: Musician, Author, Researcher, Web Designer, Founder of Traffic Torch – Building Privacy-First Schema & SEO Tools"
+              class="w-full h-full object-cover object-center"
+              loading="lazy">
+          </div>
+          <div class="space-y-4 text-center md:text-left">
+            <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Lead Developer</h3>
+            <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
+              Musician • Author • Researcher • Web Designer • TAFE NSW • Creator of privacy-first schema tools. Bridging creativity, structured data, and modern SEO to help sites win rich results, voice search, and AI visibility.
+            </p>
+            <p class="text-base text-gray-800 dark:text-gray-200 italic">
+              Explore my work — books on physics, philosophy, consciousness, music, and more — at <a href="https://yliacallan.github.io/" target="_blank" rel="noopener" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">yliacallan.github.io</a>.
+            </p>
+          </div>
+        </div>
+        <!-- Social Links -->
+        <ul class="flex flex-wrap justify-center md:justify-start gap-6 mt-6">
+          <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">LinkedIn</a></li>
+          <li><a href="https://x.com/guitaralize" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">X (Twitter)</a></li>
+        </ul>
+      </div>
+      <!-- Tech Stack -->
+      <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
+        <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Modern Stack Setup</h3>
+        <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          Traffic Torch runs on clean, scalable infrastructure: Hosted via <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub Pages</a> for instant static delivery and effortless updates. Accelerated and secured globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance.
+        </p>
+        <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-4 max-w-3xl mx-auto">
+          We help creators, publishers, and marketers add perfect schema markup for rich results, voice search, and AI visibility. Built from real-world testing of thousands of pages across Google SERPs and structured data patterns.
+        </p>
+        <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+          <p>Published: 2026-03-09</p>
+          <p>Last updated: 2026-03-11</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+	
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+	
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+<!-- Bottom Banner – Schema Generator focused -->
+<section class="bottom-banner mt-12 mb-16 px-4 sm:px-6 lg:px-8" aria-label="Traffic Torch Schema Generator">
+  <picture style="--banner-ratio: 36.25%;"> <!-- 290 / 800 = 36.25% aspect ratio -->
+    <source 
+      media="(max-width: 640px)" 
+      srcset="/schema-generator/images/schema-markup-banner-480x174.webp">
+    <img 
+      src="/schema-generator/images/schema-markup-banner-800x290.webp" 
+      srcset="/schema-generator/images/schema-markup-banner-480x174.webp 480w,
+              /schema-generator/images/schema-markup-banner-800x290.webp 800w" 
+      sizes="(max-width: 640px) 100vw, 800px"
+      alt="Traffic Torch Schema Generator – Instant detection + manual builder for JSON-LD rich results: FAQPage, HowTo, Article, LocalBusiness, Product, Review, Event, Course, JobPosting & more"
+      class="w-full rounded-2xl shadow-xl object-cover mx-auto"
+      width="800"
+      height="290"
+      loading="lazy"
+      decoding="async">
+  </picture>
+</section>
+  
+  </main>
+    
+    
+<!-- Footer -->
+<div id="footer-placeholder"></div>
+</div>
+</div>
+
+  <script src="/main-v1.1.js" type="module"></script>
+  <script src="/schema-generator/script-v1.0.js" type="module" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,803 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/community/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/community/">
+
+<!-- Optimized SEO Title & Description (community-specific) -->
+<title>Traffic Torch Community – SEO • UX • AI Tools & Discussions</title>
+<meta name="description" content="Join the Traffic Torch community on GitHub Discussions for real-time SEO audits, UX deep-dives, AI-generated fixes, competitive gap analysis, plugin recommendations, and predictive rank forecasting. Free, open conversations with marketers and developers." />
+
+<!-- Robots & Canonical -->
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://traffictorch.net/community/" />
+
+<!-- Theme Color (matches your day/night mode) -->
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+
+<!-- Security & Privacy best practices -->
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+<!-- Hreflang (English primary) -->
+<link rel="alternate" hreflang="en" href="https://traffictorch.net/community/" />
+<link rel="alternate" hreflang="x-default" href="https://traffictorch.net/community/" />
+
+<!-- Open Graph Tags (optimized for community page shares) -->
+<meta property="og:title" content="Traffic Torch Community | SEO • UX • AI Tools & Discussions" />
+<meta property="og:description" content="Real-time discussions on instant SEO audits, UX feedback, AI-powered fixes, competitive gap breakdowns, plugin recommendations & rank forecasting. Join free on GitHub Discussions – marketers & developers welcome." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://traffictorch.net/community/" />
+<meta property="og:image" content="https://traffictorch.net/community/traffic-torch-seo-community-1200w.webp" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Traffic Torch Community – glowing torch over SEO & UX dashboard visuals" />
+<meta property="og:site_name" content="Traffic Torch" />
+
+<!-- Twitter / X Cards (large image preview) -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Traffic Torch Community | SEO • UX • AI Tools & Discussions" />
+<meta name="twitter:description" content="Real-time discussions on instant SEO audits, UX feedback, AI-powered fixes, competitive gap breakdowns, plugin recommendations & rank forecasting. Join free on GitHub Discussions." />
+<meta name="twitter:image" content="https://traffictorch.net/community/traffic-torch-seo-community-1200w.webp" />
+<meta name="twitter:image:alt" content="Traffic Torch Community – glowing torch over SEO & UX dashboard visuals" />
+<meta name="twitter:site" content="@Guitaralize" />
+
+<!-- Structured Data (JSON-LD) – Community / DiscussionForum focused -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": "https://traffictorch.net/community/#webpage",
+  "url": "https://traffictorch.net/community/",
+  "name": "Traffic Torch Community – SEO • UX • AI Tools & Discussions",
+  "description": "Join real-time discussions on instant SEO audits, UX improvements, AI-generated fixes, competitive gap analysis, plugin recommendations, and predictive rank forecasting in the Traffic Torch GitHub Discussions community.",
+  "isPartOf": {
+    "@id": "https://traffictorch.net/#website"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "@id": "https://traffictorch.net/community/#breadcrumb",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://traffictorch.net/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Community",
+        "item": "https://traffictorch.net/community/"
+      }
+    ]
+  },
+  "inLanguage": "en",
+  "potentialAction": {
+    "@type": "JoinAction",
+    "target": "https://github.com/traffictorch/traffic-torch-discussions/discussions"
+  },
+  "datePublished": "2026-02-20T10:30:00+11:00",  
+  "dateModified": "2026-02-26T16:24:00+11:00",   
+  "author": {                               
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "url": "https://traffictorch.net/"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://traffictorch.net/#website",
+  "url": "https://traffictorch.net/",
+  "name": "Traffic Torch",
+  "description": "Instant 360° SEO and UX health score analysis, reports, education, deep-dive modules, competitive gap analysis, AI-generated fixes, and predictive rank forecasting.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "url": "https://traffictorch.net/",
+    "logo": "https://traffictorch.net/logo-512.webp"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Traffic Torch",
+  "url": "https://traffictorch.net/",
+  "logo": "https://traffictorch.net/logo-512.webp",
+  "description": "Creators of free instant 360° AI-powered SEO and UX analysis tools – instant scores, deep audits, competitive insights, AI fixes, and predictive forecasting.",
+  "sameAs": [
+    "https://twitter.com/guitaralize"
+  ]
+}
+</script>
+
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json" />
+  
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/local-seo-tool/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/local-seo-tool/style-v1.0.css">
+  </noscript>
+
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+  <link rel="stylesheet" media="print" href="/local-seo-tool/print-v1.0.css">
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  
+
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
+        </a>
+        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
+        </a>
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⛔</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🗝️</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+        <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📋</span> <span class="sidebar-text hidden">Help Guides</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
+              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⛔ Quit Risk</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">🗝️ Keywords</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+              <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition">📋 Help Guides</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+      
+<main class="container mx-auto px-4 py-4 max-w-5xl">
+         <!-- Hero -->
+        <section class="text-center py-2">
+          <h1 class="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            Join the Traffic Torch Community
+          </h1>
+          <p class="text-xl max-w-3xl mx-auto mb-10 text-gray-700 dark:text-gray-300">
+            Real-time discussions on instant SEO audits, UX improvements, AI-generated fixes, competitive gap analysis, plugin recommendations, and predictive rank forecasting.  
+            Powered by GitHub Discussions – free, open, and educational.
+          </p> 
+        </section>
+        
+        <!-- Expandable Discussion Instructions Box -->
+    <div class="max-w-4xl mx-auto mb-12">
+      <details class="group bg-white dark:bg-gray-950 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+        <summary class="flex justify-between items-center text-center cursor-pointer px-8 py-6 text-2xl md:text-2xl font-bold text-gray-800 dark:text-gray-200 hover:text-orange-600 dark:hover:text-orange-400 transition">
+          <span>Discussion Instructions – How to Get the Most Out of This Community</span>
+          <span class="group-open:rotate-180 transition-transform duration-300 text-3xl">▼</span>
+        </summary>
+        <div class="px-8 pb-10 pt-6 text-gray-700 dark:text-gray-300 text-base leading-relaxed space-y-8">
+          <p class="text-lg font-medium text-orange-600 dark:text-orange-400">
+            Welcome! This is the official community space for <strong>Traffic Torch</strong> users. Share audits, ask questions, get feedback, and discuss real-world SEO, UX, AI fixes, competitive gaps, plugins, rank forecasting, mobile/PWA tips, Core Web Vitals, and AI search readiness.
+          </p>
+
+          <div>
+            <h4 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">How to Participate</h4>
+            <ul class="list-disc pl-6 space-y-2">
+              <li><strong>Read-only:</strong> No account needed — scroll and read everything</li>
+              <li><strong>Post, reply, react:</strong> Free GitHub account required (sign up at <a href="https://github.com/signup" class="text-blue-600 dark:text-blue-400 hover:underline">github.com/signup</a> — takes ~30 seconds)</li>
+              <li>Click <strong>"Sign in with GitHub"</strong> or <strong>"Comment"</strong> inside the box below</li>
+              <li>After login, the comment box opens — write your message and click <strong>Comment</strong> or <strong>Start discussion</strong></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">Posting with Rich Formatting (GitHub Flavored Markdown)</h4>
+            <p>Everything supports full GitHub Markdown — no plain text only:</p>
+            <ul class="list-disc pl-6 space-y-2">
+              <li><strong>Links:</strong> <code>[Traffic Torch](https://traffictorch.net)</code> or raw URL auto-links</li>
+              <li><strong>Images:</strong> <code>![Audit screenshot](https://example.com/screenshot.webp)</code> — drag-drop or paste URL</li>
+              <li><strong>Code snippets:</strong> Triple backticks with language <code>```html ... ```</code> for syntax highlighting</li>
+              <li><strong>Tables:</strong> <code>| Tool | Score | Fix |</code> for neat audit comparisons</li>
+              <li><strong>Bold/italic/lists:</strong> **bold**, *italic*, - bullets, 1. numbered</li>
+              <li><strong>Emojis:</strong> :rocket: :fire: :bulb: (type : + word)</li>
+              <li><strong>Task lists:</strong> - [x] Done - [ ] Todo</li>
+              <li><strong>Quotes:</strong> &gt; Important tip</li>
+            </ul>
+            <p class="mt-4 text-sm italic text-gray-500 dark:text-gray-400">
+              Full guide: <a href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">GitHub Markdown Basics</a>
+            </p>
+          </div>
+
+          <div>
+            <h4 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">What Kind of Discussions Work Best Here</h4>
+            <ul class="list-disc pl-6 space-y-2">
+              <li>Share your latest Traffic Torch audit screenshots (blur sensitive info)</li>
+              <li>Ask specific questions: "My LCP is 4.2s on mobile – what should I try first?"</li>
+              <li>Discuss AI fixes/plugins: "How to implement this AI suggestion in WordPress?"</li>
+              <li>Competitive analysis: "How would you close this gap against competitor X?"</li>
+              <li>Rank forecasting & trends: "What Core Web Vitals changes are coming in 2026?"</li>
+              <li>Mobile/PWA wins: "Best ways to get 100 Lighthouse mobile score"</li>
+              <li>AI search prep: "Optimizing for Perplexity / Grok / Gemini"</li>
+            </ul>
+            <p class="mt-4 italic text-sm text-gray-500 dark:text-gray-400">
+              Keep it constructive & on-topic — we want helpful, actionable conversations.
+            </p>
+          </div>
+
+          <div>
+            <h4 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">Quick Tips for Best Experience</h4>
+            <ul class="list-disc pl-6 space-y-2">
+              <li>Search existing threads before posting (top search bar)</li>
+              <li>Use threads/replies for long discussions</li>
+              <li>React (thumbs up, heart, etc.) to helpful replies</li>
+              <li>Report spam/abuse via three dots menu</li>
+              <li>Pin important threads (admins do this for high-value content)</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+    </div>
+        
+<!-- Giscus Discussions Embed – Enhanced with inline CSS -->
+<section class="my-20">
+    <h2 class="text-3xl md:text-3xl font-black text-center mb-10 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+      Community Discussions
+    </h2>
+
+    <div class="max-w-5xl mx-auto bg-white dark:bg-gray-950 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden min-h-[600px] relative">
+      <!-- Inline CSS overrides for Giscus (beefed-up look: better spacing, colors, buttons, avatars) -->
+      <style>
+        .giscus-frame {
+          width: 100% !important;
+          min-height: 600px !important;
+          border: none !important;
+        }
+        .giscus .giscus-comment-box,
+        .giscus .giscus-comment-box textarea {
+          background: transparent !important;
+          border-color: #e5e7eb !important;
+          color: #111827 !important;
+          border-radius: 12px !important;
+          padding: 16px !important;
+          font-family: inherit !important;
+        }
+        .dark .giscus .giscus-comment-box,
+        .dark .giscus .giscus-comment-box textarea {
+          background: transparent !important;
+          border-color: #4b5563 !important;
+          color: #e5e7eb !important;
+        }
+        .giscus .giscus-button,
+        .giscus .giscus-reaction-button,
+        .giscus .giscus-login-button {
+          background: linear-gradient(to right, #f97316, #ec4899) !important;
+          color: white !important;
+          border-radius: 9999px !important;
+          padding: 10px 20px !important;
+          font-weight: 600 !important;
+          transition: all 0.3s ease !important;
+          box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.2) !important;
+        }
+        .giscus .giscus-button:hover,
+        .giscus .giscus-reaction-button:hover,
+        .giscus .giscus-login-button:hover {
+          transform: translateY(-2px) !important;
+          box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.3) !important;
+        }
+        .giscus .giscus-avatar {
+          border-radius: 9999px !important;
+          border: 2px solid #f97316 !important;
+        }
+        .giscus .giscus-comment {
+          border-bottom: 1px solid #e5e7eb !important;
+          padding: 20px 0 !important;
+        }
+        .dark .giscus .giscus-comment {
+          border-bottom: 1px solid #4b5563 !important;
+        }
+        .giscus .giscus-reaction-count {
+          color: #f97316 !important;
+          font-weight: bold !important;
+        }
+      </style>
+
+      <script src="https://giscus.app/client.js"
+              data-repo="traffictorch/traffic-torch-discussions"
+              data-repo-id="R_kgDORTnzMQ"
+              data-category="General"
+              data-category-id="DIC_kwDORTnzMc4C2wjd"
+              data-mapping="pathname"
+              data-strict="0"
+              data-reactions-enabled="1"
+              data-emit-metadata="1"
+              data-input-position="top"
+              data-theme="preferred_color_scheme"
+              data-lang="en"
+              data-loading="lazy"
+              crossorigin="anonymous"
+              async>
+      </script>
+    </div>
+
+    <p class="text-center text-sm mt-6 text-gray-500 dark:text-gray-400">
+      Sign in with GitHub to post • Read-only without login • Mobile-friendly
+    </p>
+</section>
+        
+         <!-- Benefits (educational + SEO content) -->
+        <section class="grid md:grid-cols-3 gap-8 my-20">
+          <div class="bg-gray-50 dark:bg-gray-900 p-8 rounded-3xl shadow-lg border border-gray-200 dark:border-gray-800">
+            <h3 class="text-2xl font-semibold mb-4 text-orange-600 dark:text-orange-400">Live SEO & UX Audits</h3>
+            <p class="text-gray-600 dark:text-gray-400">Share your Traffic Torch report screenshots and get instant community feedback + AI-generated fixes from members who run the same tool daily.</p>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-900 p-8 rounded-3xl shadow-lg border border-gray-200 dark:border-gray-800">
+            <h3 class="text-2xl font-semibold mb-4 text-orange-600 dark:text-orange-400">Competitive Gap Analysis</h3>
+            <p class="text-gray-600 dark:text-gray-400">Dedicated threads for side-by-side competitor breakdowns and predictive rank forecasting discussions.</p>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-900 p-8 rounded-3xl shadow-lg border border-gray-200 dark:border-gray-800">
+            <h3 class="text-2xl font-semibold mb-4 text-orange-600 dark:text-orange-400">Mobile-First & PWA Tips</h3>
+            <p class="text-gray-600 dark:text-gray-400">Weekly discussions, voice threads, and best practices focused on the exact metrics Traffic Torch audits for.</p>
+          </div>
+        </section>
+
+
+        <!-- FAQ (educational, mobile-friendly accordion) -->
+        <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 my-20">
+          <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            Frequently Asked Questions
+          </h2>
+          <div class="space-y-4">
+            <details class="group bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+              <summary class="flex justify-between items-center cursor-pointer px-6 py-5 text-lg font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-600 dark:hover:text-orange-400 transition">
+                What is the Traffic Torch Community?
+                <span class="group-open:rotate-180 transition-transform duration-300 text-2xl">▼</span>
+              </summary>
+              <div class="px-6 pb-6 text-gray-600 dark:text-gray-400">
+                <p>This is a free, open discussion space on GitHub Discussions focused on Traffic Torch tools: instant SEO + UX audits, competitive gap analysis, AI-generated fixes, predictive rank forecasting, plugin recommendations, and modern web best practices. It's built for marketers, developers, and anyone working to improve site performance and rankings in 2026.</p>
+              </div>
+            </details>
+            <details class="group bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+              <summary class="flex justify-between items-center cursor-pointer px-6 py-5 text-lg font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-600 dark:hover:text-orange-400 transition">
+                How do I participate?
+                <span class="group-open:rotate-180 transition-transform duration-300 text-2xl">▼</span>
+              </summary>
+              <div class="px-6 pb-6 text-gray-600 dark:text-gray-400">
+                <p>No extra account needed to read. To post, reply, or react you need a free GitHub account. Click "Comment" or "Sign in to comment" on the embedded section below → GitHub login → start a new discussion or reply to existing ones. All conversations are public and indexed by search engines.</p>
+              </div>
+            </details>
+            <details class="group bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+              <summary class="flex justify-between items-center cursor-pointer px-6 py-5 text-lg font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-600 dark:hover:text-orange-400 transition">
+                Is it really free? Any limits?
+                <span class="group-open:rotate-180 transition-transform duration-300 text-2xl">▼</span>
+              </summary>
+              <div class="px-6 pb-6 text-gray-600 dark:text-gray-400">
+                <p>100% free forever. GitHub Discussions has generous limits (unlimited public repos for individuals). No ads, no premium tiers, no paywalls. Just real conversations about SEO, UX, AI tools, and web performance.</p>
+              </div>
+            </details>
+            <details class="group bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+              <summary class="flex justify-between items-center cursor-pointer px-6 py-5 text-lg font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-600 dark:hover:text-orange-400 transition">
+                What can I talk about here?
+                <span class="group-open:rotate-180 transition-transform duration-300 text-2xl">▼</span>
+              </summary>
+              <div class="px-6 pb-6 text-gray-600 dark:text-gray-400">
+                <p>Anything related to Traffic Torch tools and modern web optimization: share audit screenshots, ask for feedback on fixes, discuss AI search readiness (Perplexity, Grok, Gemini, ChatGPT Search), mobile/PWA tips, Core Web Vitals improvements, plugin recommendations, competitive analysis strategies, and more. Keep it constructive and on-topic.</p>
+              </div>
+            </details>
+            <details class="group bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+              <summary class="flex justify-between items-center cursor-pointer px-6 py-5 text-lg font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-600 dark:hover:text-orange-400 transition">
+                How do I get the most out of the community?
+                <span class="group-open:rotate-180 transition-transform duration-300 text-2xl">▼</span>
+              </summary>
+              <div class="px-6 pb-6 text-gray-600 dark:text-gray-400">
+                <p>1. Share real Traffic Torch audit screenshots (blur sensitive data). 2. Ask specific questions ("My LCP is 4s – what fixes would you try?"). 3. Use threads for long replies. 4. React to helpful posts. 5. Search existing discussions before posting. The more you contribute, the more valuable it becomes for everyone.</p>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <!-- Tools Grid (Creative) -->
+        <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+          SEO - UX - AI Tools
+        </h2>
+        <div class="tools-grid max-w-7xl mx-auto px-2">
+          <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+            <!-- New First Card: Local SEO -->
+            <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-green-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-green-500/30 group-hover:border-green-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
+                  <h3 class="text-green-400 text-2xl font-bold mb-3">Local SEO Tool</h3>
+                  <p class="text-gray-800 dark:text-gray-100">On-page local audit + NAP, schema, map signals + fixes</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+            <!-- SEO Intent -->
+            <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+                  <h3 class="text-cyan-400 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+                  <p class="text-gray-800 dark:text-gray-100">Intent matching + E-E-A-T audit + fixes</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+            <!-- Product SEO Tool -->
+            <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🛒</div>
+                  <h3 class="text-orange-400 text-2xl font-bold mb-3">Product SEO Tool</h3>
+                  <p class="text-gray-800 dark:text-gray-100">Product page audit + eCommerce signals</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+            <!-- Quit Risk -->
+            <a href="/quit-risk-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-emerald-400 text-7xl mb-6 group-hover:animate-bounce">⚡</div>
+                  <h3 class="text-emerald-400 text-2xl font-bold mb-3">Quit Risk Tool</h3>
+                  <p class="text-gray-800 dark:text-gray-100">UX friction audit + bounce prediction + optimizations</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+            <!-- Keywords -->
+            <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-purple-400 text-7xl mb-6 group-hover:animate-bounce">🗝️</div>
+                  <h3 class="text-purple-400 text-2xl font-bold mb-3">Keyword Tool</h3>
+                  <p class="text-gray-800 dark:text-gray-100">On-page keyword placement score + density fixes</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+            <!-- VS -->
+            <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+                  <h3 class="text-red-400 text-2xl font-bold mb-3">VS Tool</h3>
+                  <p class="text-gray-800 dark:text-gray-100">Competitive keyword gap analysis + beat strategies</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+   
+        <!-- Ai Search -->
+    <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+          <h3 class="text-orange-400 text-2xl font-bold mb-3">Ai Search Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Optimize for Perplexity, Grok, Gemini, ChatGPT Search</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+    <!-- AI Content -->
+    <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+          <h3 class="text-pink-400 text-2xl font-bold mb-3">AI Content Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Detect AI patterns + humanize content + forecasts</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+    <!-- New Last Card: All Tools -->
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-indigo-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-indigo-500/30 group-hover:border-indigo-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-indigo-400 text-7xl mb-6 group-hover:animate-bounce">🧰</div>
+          <h3 class="text-indigo-400 text-2xl font-bold mb-3">All Tools</h3>
+          <p class="text-gray-800 dark:text-gray-100">Complete suite — instant audits, gaps, fixes & forecasts</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Explore All →
+        </span>
+      </div>
+    </a>
+  </div>
+</div>
+<!-- Author Bio -->
+<section class="max-w-5xl mx-auto my-12 px-4 author-bio author-box" id="about-ylia-and-traffic-torch">
+  <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+    <!-- Hero Gradient Header: Gradient only, no solid bg -->
+    <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
+      <div class="flex flex-col items-center gap-6 mb-6">
+        <!-- Traffic Torch Logo Only in Hero -->
+        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch: Instant 360° SEO + UX Health Analysis, Deep-Dive Reports, Competitive Gaps, AI Fixes – Privacy-First Optimization Toolkit" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
+      </div>
+      <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
+      <p class="text-lg md:text-2xl text-gray-800 dark:text-gray-200 max-w-4xl mx-auto font-medium">
+        360° SEO • UX • AI Optimization Toolkit. Deep Diagnostics, Gap Analysis, AI-Powered Fixes & Educational Insights.
+      </p>
+    </div>
+    <!-- Main Content Area: Transparent, inherits page bg -->
+    <div class="p-2 md:p-12 space-y-10 text-center md:text-left">
+      <!-- Tool Mission Description -->
+      <div class="space-y-6">
+        <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          Traffic Torch delivers transparent, client-side, privacy-first SEO and UX analysis powered by real correlation research, algorithm insights, and performance testing. From instant health scores to competitive gap breakdowns, AI-suggested optimizations, and educational guidance. Empowering creators, agencies, and businesses to achieve better rankings and superior user experiences.
+        </p>
+      </div>
+      <!-- Founder Bio with Smaller Photo -->
+      <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-2 md:p-8 rounded-2xl backdrop-blur-sm">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+          <!-- Perfect circle wrapper for photo -->
+          <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
+            <img
+              src="/images/ylia-callan-320w.webp"
+              srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
+              sizes="(max-width: 768px) 96px, 128px"
+              alt="Ylia Callan: Musician, Author, Researcher, Web Designer, Founder of Traffic Torch – Bridging Creativity, Consciousness, and Cutting-Edge Web Tools"
+              class="w-full h-full object-cover object-center"
+              loading="lazy">
+          </div>
+          <div class="space-y-4 text-center md:text-left">
+            <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Lead Developer</h3>
+            <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
+              Musician • Author • Researcher • Web Designer • TAFE NSW • Creator of privacy-first AI-powered web tools. Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.
+            </p>
+            <p class="text-base text-gray-800 dark:text-gray-200 italic">
+              Explore my work - books on physics, philosophy, consciousness, music, and more – at <a href="https://yliacallan.github.io/" target="_blank" rel="noopener" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">yliacallan.github.io</a>.
+            </p>
+          </div>
+        </div>
+        <!-- Social Links -->
+        <ul class="flex flex-wrap justify-center md:justify-start gap-6 mt-6">
+          <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">LinkedIn</a></li>
+          <li><a href="https://x.com/guitaralize" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">X (Twitter)</a></li>
+        </ul>
+      </div>
+      <!-- Tech Stack for E-E-A-T -->
+      <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
+        <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Modern Stack Setup</h3>
+        <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          Traffic Torch runs on epic, scalable infrastructure: Hosted via <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub Pages</a> for blazing-fast static delivery and effortless updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance optimizations. 
+        <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-4 max-w-3xl mx-auto">
+          Core Expertise: SEO Correlation Research • UX Optimization • Privacy-First Development • AI-Assisted Diagnostics. Continuously aligned with the latest guidelines, best practices, and real-world data.
+        </p>
+          <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+          <p>Published: 2025-12-12</p>
+          <p>Last updated: 2026-01-30</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+  
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+
+  </main>
+
+<!-- Footer -->
+<div id="footer-placeholder"></div>
+</div>
+</div>
+
+  <!-- Load JS last -->
+  <script src="/main-v1.1.js" type="module"></script>
+</body> 
+</html>

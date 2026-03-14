@@ -1,0 +1,1089 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ 
+<!-- Optimized SEO Title & Description -->
+<title>Upgrade to Traffic Torch Pro – Unlock 25 Daily Analysis Audits</title>
+<meta name="description" content="Upgrade to Traffic Torch Pro for 25 daily SEO UX & AI analysis audits. Secure login and Stripe payment. Privacy-first." />
+<!-- Robots & Canonical -->
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://traffictorch.net/pro/" />
+
+<!-- Theme Color -->
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+
+<!-- Referrer Policy (security + privacy best practice) -->
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
+<!-- Security headers -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+<!-- hreflang -->
+<link rel="alternate" hreflang="en" href="https://traffictorch.net/pro/">
+<link rel="alternate" hreflang="x-default" href="https://traffictorch.net/pro/">
+
+<!-- Open Graph Tags -->
+<meta property="og:title" content="Upgrade to Traffic Torch Pro – AI SEO & UX Tools" />
+<meta property="og:description" content="Upgrade to Traffic Torch Pro for 25 daily SEO UX & AI analysis audits. Secure login and Stripe payment. Privacy-first." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://traffictorch.net/pro/" />
+<meta property="og:image" content="https://traffictorch.net/images/traffic-torch.webp" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="Traffic Torch" />
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Upgrade to Traffic Torch Pro – AI SEO & UX Tools" />
+<meta name="twitter:description" content="Upgrade to Traffic Torch Pro for 25 daily SEO UX & AI analysis audits. Secure login and Stripe payment. Privacy-first." />
+<meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch.webp" />
+<meta name="twitter:site" content="@Guitaralize" />
+
+<!-- Structured Data (JSON-LD) – changed from ContactPage to WebPage -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Upgrade to Traffic Torch Pro",
+  "description": "Upgrade to Traffic Torch Pro for 25 daily SEO UX & AI analysis audits. Secure login and Stripe payment. Privacy-first.",
+  "url": "https://traffictorch.net/pro/"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Traffic Torch",
+  "url": "https://traffictorch.net/",
+  "logo": "https://traffictorch.net/logo-512.webp",
+  "description": "Creators of free & pro privacy-first AI-powered SEO and UX analysis tools. Client-side processing – no tracking.",
+  "sameAs": [
+    "https://twitter.com/guitaralize"
+  ]
+}
+</script>
+
+<!-- BreadcrumbList -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://traffictorch.net/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Pro Upgrade",
+      "item": "https://traffictorch.net/pro/"
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What exactly do I get with Traffic Torch Pro?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "25 daily full AI-powered SEO & UX audit runs across all modules (SEO + UX, Local SEO, SEO Intent, Product SEO, Quit Risk, Keywords, Keyword Competition, AI Search Optimiser, AI Content Detector), deep-dive reports, competitive gaps, AI fixes/code suggestions, predictive forecasting, educational guides, priority support, and more."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does billing work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Annual payment of $48 via Stripe. You'll be charged immediately upon upgrade. Your Pro access renews automatically each year unless canceled. Manage/cancel anytime directly in your Stripe portal – no lock-in."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a refund policy?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes – full refund within 14 days of purchase if you're not satisfied. Just contact support via the feedback form or contact page (link in footer). After that, no prorated refunds as it's an annual plan."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens after I use my 25 daily audits?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You'll see a friendly message and must wait until the next day (resets at midnight UTC). Free users get far fewer daily runs – Pro gives serious volume for regular site owners/agencies."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do audits run on your servers or mine?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "All analysis is 100% client-side in your browser using secure CORS proxy for HTML fetch. No data is stored, logged, or sent to our servers – maximum privacy."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use Pro on multiple devices?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes – log in with your account on any device/browser. Your subscription is tied to your login, not hardware."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will new tools/modules be added for free to Pro users?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes – priority updates and new features (like expanded AI tools or forecasting) roll out first to Pro subscribers at no extra cost."
+      }
+    }
+  ]
+}
+</script>
+ 
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json" />
+ 
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/pro/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/pro/style-v1.0.css">
+  </noscript>
+
+<link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+
+<script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  <meta http-equiv="Content-Encoding" content="br"> 
+
+  
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/pro/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition pro-menu-link">
+		  <span class="text-2xl">🪪</span> 
+		  <span class="sidebar-text hidden">Pro Traffic</span>
+		</a>
+        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
+        </a>
+        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
+        </a>
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⛔</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🗝️</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+        <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📋</span> <span class="sidebar-text hidden">Help Guides</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+          <a href="/pro/" class="text-gray-100 hover:text-orange-400 transition pro-menu-link">🪪 Pro Traffic</a>
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">🚦 Tools</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
+              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⛔ Quit Risk</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">🗝️ Keywords</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+              <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition">📋 Help Guides</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+<main id="main-content" class="container mx-auto px-4 py-4"> 
+  <div class="container mx-auto px-0 py-4 max-w-4xl">
+    <header class="text-center mb-16">
+<section class="py-1 px-1 max-w-4xl mx-auto">
+  <h1 class="text-3xl md:text-3xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+    Upgrade to Traffic Torch Pro
+  </h1>
+<p class="text-gray-800 dark:text-gray-200 mb-12 text-center max-w-3xl mx-auto leading-relaxed">
+  Unlock 25 daily AI UX & SEO audit tool runs. Secure login required. Powered by Stripe – privacy-first, no data collection.
+</p>
+
+<style>
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 5xl;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) {
+    .form-container {
+      flex-direction: row;
+    }
+    .form-container > div {
+      flex: 1;
+      max-width: none;
+    }
+  }
+  .math-error {
+    border-color: #ef4444 !important;
+  }
+  /* Extra padding for eye icon inside input */
+  .password-with-eye input {
+    padding-right: 3.5rem !important;
+  }
+  .password-with-eye button {
+    transition: all 0.15s ease;
+  }
+  .password-with-eye button:hover {
+    transform: scale(1.1);
+  }
+</style>
+
+<div class="form-container px-0">
+  <!-- Logged-in card -->
+  <div id="logged-in-section" class="hidden bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl p-8">
+    <h2 class="text-2xl font-bold text-center mb-6">You're Logged In</h2>
+    <p class="text-center text-lg mb-8 opacity-90">
+      Ready to unlock Pro Traffic.
+    </p>
+    <button id="logout-btn" class="w-full py-4 bg-white text-orange-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition">
+      Logout
+    </button>
+  </div>
+
+  <!-- Login form -->
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6">
+    <h2 class="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-gray-200">Login</h2>
+    <form id="login-form" class="space-y-4">
+      <input type="text" placeholder="Username or Email" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+
+      <!-- Password with eye -->
+      <div class="relative password-with-eye">
+        <input type="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+        <button type="button" class="absolute inset-y-0 right-3 flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 toggle-password">
+          👁
+        </button>
+      </div>
+
+      <!-- Forgot password? centered below button -->
+      <a href="#" id="forgot-password-link" class="text-sm text-orange-500 hover:text-orange-600 block text-center mt-10">Forgot password?</a>
+
+      <div id="login-status" class="text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]"></div>
+      <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">Login</button>
+    </form> 
+
+    <!-- Forgot password form -->
+    <div id="forgot-password-form" class="hidden mt-6">
+      <h3 class="text-xl font-bold text-center mb-4 text-gray-800 dark:text-gray-200">Reset Password</h3>
+      <form id="reset-request-form" class="space-y-4">
+        <input type="email" id="reset-email" placeholder="Your email" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+        <div id="reset-status" class="text-center text-sm min-h-[1.25rem] text-red-600 dark:text-red-400"></div>
+        <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">Send Reset Link</button>
+      </form>
+      <button id="back-to-login" class="mt-4 text-sm text-orange-500 hover:text-orange-600 block mx-auto">Back to Login</button>
+    </div>
+  </div>
+
+  <!-- Reset Password Form -->
+  <div id="reset-password-form" class="hidden mt-6">
+    <h4 class="text-xl font-bold text-center mb-4 text-gray-800 dark:text-gray-200">Set New Password</h4>
+    <form id="reset-password-submit" class="space-y-4">
+      <!-- New Password -->
+      <div class="relative password-with-eye">
+        <input type="password" id="new-password" placeholder="New Password" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+        <button type="button" class="absolute inset-y-0 right-3 flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 toggle-password">
+          👁
+        </button>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="relative password-with-eye">
+        <input type="password" id="confirm-password" placeholder="Confirm New Password" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+        <button type="button" class="absolute inset-y-0 right-3 flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 toggle-password">
+          👁
+        </button>
+      </div>
+
+      <div id="reset-password-status" class="text-center text-sm min-h-[1.25rem] text-red-600 dark:text-red-400"></div>
+      <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">Update Password</button>
+    </form>
+    <button id="cancel-reset" class="mt-4 text-sm text-orange-500 hover:text-orange-600 block mx-auto">Cancel</button>
+  </div>
+
+  <!-- Unified Account Creation & Upgrade Section -->
+  <div class="bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl p-8">
+    <h5 id="section-title" class="text-2xl font-bold text-center mb-6">Create Account & Upgrade to Pro</h5>
+    <!-- Signup form -->
+    <form id="signup-form" class="space-y-6">
+      <input type="text" id="name" placeholder="Full Name" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
+      <input type="email" id="email" placeholder="Email" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
+
+      <!-- Password with eye INSIDE -->
+      <div class="relative password-with-eye">
+        <input type="password" id="password" placeholder="Password" required class="w-full p-3 rounded-lg border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:border-white">
+        <button type="button" class="absolute inset-y-0 right-3 flex items-center text-white/90 hover:text-white toggle-password bg-transparent hover:bg-white/10 rounded-r-lg">
+          👁
+        </button>
+      </div>
+
+      <!-- Math verification -->
+      <div class="flex items-center gap-4">
+        <label for="math-answer" class="text-sm font-medium text-white/90">What is 7 + 5? (anti-spam)</label>
+        <input type="number" id="math-answer" required placeholder="?" class="w-20 p-2 rounded-lg border border-white/30 bg-white/10 text-white focus:outline-none focus:border-white">
+      </div>
+
+      <button type="submit" id="submit-btn" class="w-full py-4 bg-white text-blue-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
+        Create Account & Pay USD $48/year
+      </button>
+    </form>
+
+    <!-- Logged-in upgrade button -->
+    <div id="pro-upgrade-section" class="hidden mt-8">
+      <button type="button" id="upgrade-btn" class="w-full py-4 bg-white text-blue-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
+        Upgrade to Pro – USD $48/year
+      </button>
+    </div>
+
+    <!-- Payment & error display -->
+    <div id="checkout-container" class="mt-6 min-h-[400px] rounded-lg border border-white/30 bg-white/10 hidden"></div>
+    <div id="checkout-errors" class="text-center text-sm text-red-300 min-h-[1.25rem]" role="alert"></div>
+    <p class="mt-4 text-center text-sm opacity-90">Secure payment via Stripe • Cancel anytime</p>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('Script running – checking for reset_token');
+    console.log('DOM loaded – initializing Stripe & auth');
+
+    // Safety reset
+    document.getElementById('signup-form')?.classList.remove('hidden');
+    document.getElementById('pro-upgrade-section')?.classList.add('hidden');
+    document.getElementById('logged-in-section')?.classList.add('hidden');
+
+    const stripe = Stripe('pk_live_51SyjNi35Al6CUgc4jAcWAszElUF4iMpBZOj5UGM9gk7KZKxBSlDGP06S9S0kv7mlkUfZa7yTgFtP6PBEl39b5dKt00hzl1NEgr');
+
+    // Forgot password link handler
+    document.getElementById('forgot-password-link')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.querySelector('#login-form').classList.add('hidden');
+      document.getElementById('forgot-password-form').classList.remove('hidden');
+      document.getElementById('reset-status').textContent = '';
+    });
+
+    // Back to login (only toggles forgot password form)
+    document.getElementById('back-to-login')?.addEventListener('click', () => {
+      document.getElementById('forgot-password-form').classList.add('hidden');
+      document.querySelector('#login-form').classList.remove('hidden');
+      document.getElementById('login-status').textContent = '';
+    });
+
+    // Reset password flow: detect ?reset_token in URL on page load
+    let resetToken = null; // Declare outside so submit handler can use it
+
+    try {
+      console.log('Attempting reset_token detection');
+      const urlParams = new URLSearchParams(window.location.search);
+      resetToken = urlParams.get('reset_token'); // Assign here
+      console.log('resetToken found:', resetToken ? 'yes' : 'no');
+
+      if (resetToken) {
+        console.log('Showing reset password form');
+        // Hide other sections
+        document.querySelector('#login-form')?.classList.add('hidden');
+        document.getElementById('forgot-password-form')?.classList.add('hidden');
+        document.getElementById('signup-form')?.classList.add('hidden');
+        document.getElementById('pro-upgrade-section')?.classList.add('hidden');
+        document.getElementById('logged-in-section')?.classList.add('hidden');
+        // Show reset form
+        const resetForm = document.getElementById('reset-password-form');
+        if (resetForm) {
+          resetForm.classList.remove('hidden');
+        } else {
+          console.error('reset-password-form element not found');
+        }
+        // Update title
+        const title = document.getElementById('section-title');
+        if (title) {
+          title.textContent = 'Set New Password';
+        }
+      }
+    } catch (err) {
+      console.error('Error in reset token detection:', err);
+    }
+
+    // Reset password form submit handler
+    document.getElementById('reset-password-submit')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const status = document.getElementById('reset-password-status');
+      const password = document.getElementById('new-password')?.value;
+      const confirm = document.getElementById('confirm-password')?.value;
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+
+      if (!password || password.length < 8) {
+        status.textContent = 'Password must be at least 8 characters';
+        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+        return;
+      }
+      if (password !== confirm) {
+        status.textContent = 'Passwords do not match';
+        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+        return;
+      }
+
+      status.textContent = 'Updating password...';
+      status.className = 'text-center text-sm text-gray-600 dark:text-gray-400 min-h-[1.25rem]';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Updating...';
+
+      try {
+        const res = await fetch(API_BASE + '/api/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: resetToken, password })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          status.textContent = 'Password updated! Redirecting to login...';
+          status.className = 'text-center text-sm text-green-600 dark:text-green-400 min-h-[1.25rem]';
+          setTimeout(() => {
+            window.location.href = 'https://traffictorch.net/pro/';
+          }, 2500);
+        } else {
+          status.textContent = data.error || 'Failed to reset password';
+          status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+        }
+      } catch (err) {
+        console.error('Reset password error:', err);
+        status.textContent = 'Network error – please try again';
+        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Update Password';
+      }
+    });
+
+    // Cancel button – back to login
+    document.getElementById('cancel-reset')?.addEventListener('click', () => {
+      window.location.href = 'https://traffictorch.net/pro/';
+    });
+
+    // Forgot password form submit – send reset email request
+    document.getElementById('reset-request-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const status = document.getElementById('reset-status');
+      const emailInput = document.getElementById('reset-email');
+      const email = emailInput?.value.trim();
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+
+      if (!email || !email.includes('@')) {
+        status.textContent = 'Please enter a valid email';
+        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+        return;
+      }
+
+      status.textContent = 'Sending reset link...';
+      status.className = 'text-center text-sm text-gray-600 dark:text-gray-400 min-h-[1.25rem]';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      try {
+        const res = await fetch(API_BASE + '/api/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          status.textContent = 'Reset link sent! Check your email (may be in spam).';
+          status.className = 'text-center text-sm text-green-600 dark:text-green-400 min-h-[1.25rem]';
+          emailInput.value = ''; // clear field
+        } else {
+          status.textContent = data.error || 'Failed to send reset link – try again later';
+          status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+        }
+      } catch (err) {
+        console.error('Reset request error:', err);
+        status.textContent = 'Network error – please check connection';
+        status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Reset Link';
+      }
+    });
+
+    const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+
+    // Signup handler with math check
+    document.getElementById('signup-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name')?.value.trim();
+      const email = document.getElementById('email')?.value.trim();
+      const password = document.querySelector('#signup-form .password-with-eye input')?.value;
+      const mathAnswer = document.getElementById('math-answer')?.value.trim();
+      const errors = document.getElementById('checkout-errors');
+
+      if (!name || !email || !password) {
+        errors.textContent = 'Please fill name, email and password';
+        return;
+      }
+      if (mathAnswer !== '12') {
+        errors.textContent = 'Incorrect anti-spam answer.';
+        document.getElementById('math-answer').classList.add('math-error');
+        return;
+      } else {
+        document.getElementById('math-answer').classList.remove('math-error');
+      }
+
+      try {
+        const res = await fetch(API_BASE + '/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || 'Signup failed');
+        }
+        const { token } = await res.json();
+        localStorage.setItem('authToken', token);
+        errors.textContent = 'Account created! Click Upgrade to Pro';
+        document.getElementById('signup-form').classList.add('hidden');
+        document.getElementById('pro-upgrade-section').classList.remove('hidden');
+        document.getElementById('section-title').textContent = 'Upgrade to Pro';
+        updateUI();
+      } catch (err) {
+        console.error('Signup error:', err);
+        errors.textContent = err.message;
+      }
+    });
+
+    // Login handler with reload
+document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const status = document.getElementById('login-status');
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  const originalText = submitBtn?.textContent || 'Login';
+
+  // Reset status
+  status.textContent = 'Logging in...';
+  status.className = 'text-center text-sm text-gray-600 dark:text-gray-400 min-h-[1.25rem]';
+
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Logging in...';
+  }
+
+  // Use correct selectors based on your HTML (email is type="email", not "text")
+  const emailInput = e.target.querySelector('input[type="text"]') || document.getElementById('email');
+  const passwordInput = e.target.querySelector('.password-with-eye input');
+  
+  const email = emailInput?.value?.trim();
+  const password = passwordInput?.value;
+
+  if (!email || !password) {
+    status.textContent = 'Please fill in both fields';
+    status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
+    return;
+  }
+
+  try {
+    const response = await fetch(API_BASE + '/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.token) {
+      localStorage.setItem('authToken', data.token);
+      localStorage.removeItem('traffic_torch_jwt');
+      status.textContent = 'Logged in successfully!';
+      status.className = 'text-center text-sm text-green-600 dark:text-green-400 min-h-[1.25rem]';
+      setTimeout(() => window.location.reload(), 1500);
+    } else {
+      status.textContent = data.error || 'Invalid credentials – please try again';
+      status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+    }
+  } catch (err) {
+    console.error('Login fetch error:', err);
+    status.textContent = 'Login failed – check connection or credentials';
+    status.className = 'text-center text-sm text-red-600 dark:text-red-400 min-h-[1.25rem]';
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
+  }
+});
+
+    // Upgrade button handler
+    const upgradeBtn = document.getElementById('upgrade-btn');
+    if (upgradeBtn) {
+      upgradeBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        const btn = e.target;
+        btn.disabled = true;
+        btn.textContent = 'Loading...';
+        const token = localStorage.getItem('authToken');
+
+        if (!token) {
+          document.getElementById('checkout-errors').textContent = 'Login required';
+          btn.disabled = false;
+          btn.textContent = 'Upgrade to Pro – USD $48/year';
+          return;
+        }
+
+        try {
+          document.getElementById('checkout-container').classList.remove('hidden');
+          const fetchClientSecret = async () => {
+            const res = await fetch(API_BASE + '/api/upgrade', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            });
+            if (!res.ok) throw new Error(await res.text());
+            const data = await res.json();
+            if (!data.clientSecret) throw new Error('No clientSecret');
+            return data.clientSecret;
+          };
+          const embeddedCheckout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
+          embeddedCheckout.mount('#checkout-container');
+        } catch (err) {
+          console.error('Upgrade error:', err);
+          document.getElementById('checkout-errors').textContent = err.message;
+          btn.disabled = false;
+          btn.textContent = 'Upgrade to Pro – USD $48/year';
+          document.getElementById('checkout-container').classList.add('hidden');
+        }
+      });
+    }
+
+    // Logout handler
+    document.getElementById('logout-btn')?.addEventListener('click', () => {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('traffic_torch_jwt');
+      alert('Logged out successfully!');
+      window.location.reload();
+    });
+
+    // updateUI - hides forms when logged in, shows logout
+    async function updateUI() {
+      const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+      const signupForm = document.getElementById('signup-form');
+      const loginContainer = document.querySelector('.bg-white.dark\\:bg-gray-800.rounded-3xl');
+      const upgradeSection = document.getElementById('pro-upgrade-section');
+      const loggedInSection = document.getElementById('logged-in-section');
+      const sectionTitle = document.getElementById('section-title');
+      const errors = document.getElementById('checkout-errors');
+
+      signupForm?.classList.remove('hidden');
+      loginContainer?.classList.remove('hidden');
+      upgradeSection?.classList.add('hidden');
+      loggedInSection?.classList.add('hidden');
+      sectionTitle.textContent = 'Create Account & Upgrade to Pro';
+
+      if (!token) return;
+
+      try {
+        const res = await fetch(API_BASE + '/api/user-status', {
+          headers: { 'Authorization': `Bearer ${token}` },
+          cache: 'no-store'
+        });
+        if (!res.ok) {
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('traffic_torch_jwt');
+          errors.textContent = 'Session expired – please log in';
+          return;
+        }
+        const { isPro } = await res.json();
+        signupForm?.classList.add('hidden');
+        loginContainer?.classList.add('hidden');
+        loggedInSection?.classList.remove('hidden');
+        if (isPro) {
+          sectionTitle.textContent = 'You are Pro Traffic!';
+        } else {
+          sectionTitle.textContent = 'Upgrade to Pro';
+          upgradeSection?.classList.remove('hidden');
+        }
+      } catch (err) {
+        console.error('updateUI error:', err);
+      }
+    }
+
+    updateUI();
+
+    // Show/hide password toggle – reliable Unicode eye icons + smooth transition
+    function togglePassword(button) {
+      console.log('Eye toggle clicked on button:', button);
+      const input = button.previousElementSibling;
+      if (!input || input.tagName !== 'INPUT') return;
+
+      const isHidden = input.type === 'password';
+
+      input.type = isHidden ? 'text' : 'password';
+      button.innerHTML = isHidden ? '🙈' : '👁️';
+      button.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+
+      // Optional smooth fade for password text
+      input.style.transition = 'opacity 0.15s';
+      input.style.opacity = '0';
+      setTimeout(() => {
+        input.style.opacity = '1';
+      }, 50);
+    }
+
+    // Delegate clicks (captures button or children)
+    document.addEventListener('click', (e) => {
+      const button = e.target.closest('.toggle-password');
+      if (button) {
+        e.preventDefault(); // prevent form submit
+        togglePassword(button);
+      }
+    }, { capture: true });
+  });
+</script>
+
+<!-- Key Benefits / Features Grid -->
+<section class="py-16">
+  <div class="max-w-6xl mx-auto px-6">
+    <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800 dark:text-gray-200">Pro Features Unlocked – Go Beyond the Basics</h2>
+    <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-8">
+      
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition text-center">
+        <div class="text-5xl mb-4">⚡</div>
+        <h3 class="text-xl font-bold mb-3 text-gray-800 dark:text-gray-200">25 Daily AI SEO & UX Audit Runs</h3>
+        <p class="text-gray-600 dark:text-gray-300">Run up to 25 full 360° analyses per day – no more waiting 24 hours after hitting free limits. Ideal for agencies, freelancers, or site owners auditing multiple pages/competitors daily.</p>
+      </div>
+      
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition text-center">
+        <div class="text-5xl mb-4">🔍</div>
+        <h3 class="text-xl font-bold mb-3 text-gray-800 dark:text-gray-200">Full Deep-Dive Modules</h3>
+        <p class="text-gray-600 dark:text-gray-300">Access all core modules: On-Page SEO, Mobile & PWA, Performance, Accessibility, Content Quality, UX Design, Security, Indexability – with detailed 0–100 scores, color-coded gauges, and prioritized insights.</p>
+      </div>
+      
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition text-center">
+        <div class="text-5xl mb-4">🏆</div>
+        <h3 class="text-xl font-bold mb-3 text-gray-800 dark:text-gray-200">Competitive Gap Analysis</h3>
+        <p class="text-gray-600 dark:text-gray-300">Keyword VS tool delivers side-by-side comparisons vs top-ranking pages, gap identification, and beat strategies – plus Local SEO, Product SEO, and Keyword Competition audits for precise outranking plans.</p>
+      </div>
+      
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition text-center">
+        <div class="text-5xl mb-4">🛠️</div>
+        <h3 class="text-xl font-bold mb-3 text-gray-800 dark:text-gray-200">AI-Generated Fixes & Code Suggestions</h3>
+        <p class="text-gray-600 dark:text-gray-300">Get prioritized, actionable recommendations with code snippets (HTML, CSS, schema), plugin suggestions, and high-impact fixes for every module – from meta tags to UX CTAs and AI content humanizing.</p>
+      </div>
+      
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition text-center">
+        <div class="text-5xl mb-4">📈</div>
+        <h3 class="text-xl font-bold mb-3 text-gray-800 dark:text-gray-200">Predictive Rank Forecasting</h3>
+        <p class="text-gray-600 dark:text-gray-300">Where data allows, see estimated ranking health improvements, bounce rate predictors, and traffic potential based on current signals – helping prioritize fixes that move the needle most.</p>
+      </div>
+      
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition text-center">
+        <div class="text-5xl mb-4">📚</div>
+        <h3 class="text-xl font-bold mb-3 text-gray-800 dark:text-gray-200">Educational Breakdowns for Every Score</h3>
+        <p class="text-gray-600 dark:text-gray-300">In-depth explanations, "Why it matters", "How to improve", best practices, common mistakes, and linked help guides for each metric – turning audits into learning opportunities for long-term growth.</p>
+      </div>
+      
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition text-center">
+        <div class="text-5xl mb-4">🗺️</div>
+        <h3 class="text-xl font-bold mb-3 text-gray-800 dark:text-gray-200">Specialized Tools: Local, Intent, Product, Quit Risk & More</h3>
+        <p class="text-gray-600 dark:text-gray-300">Full access to Local SEO (location-targeted), SEO Intent (E-E-A-T + match), Product SEO (eCommerce signals), Quit Risk (bounce predictors), Keywords (placement/density), Keyword Competition, AI Search Optimiser (AI citation potential), and AI Content Detector.</p>
+      </div>
+      
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition text-center">
+        <div class="text-5xl mb-4">⭐</div>
+        <h3 class="text-xl font-bold mb-3 text-gray-800 dark:text-gray-200">Priority Support & Ongoing Updates</h3>
+        <p class="text-gray-600 dark:text-gray-300">Get faster responses to feedback, early access to new modules (e.g., expanding AI tools), and continuous improvements based on 2026+ algorithm insights – all included.</p>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-16 bg-gray-50 dark:bg-gray-800">
+  <div class="max-w-4xl mx-auto px-6">
+    <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800 dark:text-gray-200">Frequently Asked Questions</h2>
+    <div class="space-y-4">
+      
+      <details class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
+        <summary class="font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200">What exactly do I get with Traffic Torch Pro?</summary>
+        <div class="mt-4 text-gray-600 dark:text-gray-300">
+          <p>25 daily full AI-powered SEO & UX audit runs across all modules (SEO + UX, Local SEO, SEO Intent, Product SEO, Quit Risk, Keywords, Keyword Competition, AI Search Optimiser, AI Content Detector), deep-dive reports, competitive gaps, AI fixes/code suggestions, predictive forecasting, educational guides, priority support, and more.</p>
+        </div>
+      </details>
+      
+      <details class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
+        <summary class="font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200">How does billing work?</summary>
+        <div class="mt-4 text-gray-600 dark:text-gray-300">
+          <p>Annual payment of $48 via Stripe. You'll be charged immediately upon upgrade. Your Pro access renews automatically each year unless canceled. Manage/cancel anytime directly in your Stripe portal – no lock-in.</p>
+        </div>
+      </details>
+      
+      <details class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
+        <summary class="font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200">Is there a refund policy?</summary>
+        <div class="mt-4 text-gray-600 dark:text-gray-300">
+          <p>Yes – full refund within 14 days of purchase if you're not satisfied. Just contact support via the feedback form or contact page (link in footer). After that, no prorated refunds as it's an annual plan.</p>
+        </div>
+      </details>
+      
+      <details class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
+        <summary class="font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200">What happens after I use my 25 daily audits?</summary>
+        <div class="mt-4 text-gray-600 dark:text-gray-300">
+          <p>You'll see a friendly message and must wait until the next day (resets at midnight UTC). Free users get far fewer daily runs – Pro gives serious volume for regular site owners/agencies.</p>
+        </div>
+      </details>
+      
+      <details class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
+        <summary class="font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200">Do audits run on your servers or mine?</summary>
+        <div class="mt-4 text-gray-600 dark:text-gray-300">
+          <p>All analysis is 100% client-side in your browser using secure CORS proxy for HTML fetch. No data is stored, logged, or sent to our servers – maximum privacy.</p>
+        </div>
+      </details>
+      
+      <details class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
+        <summary class="font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200">Can I use Pro on multiple devices?</summary>
+        <div class="mt-4 text-gray-600 dark:text-gray-300">
+          <p>Yes – log in with your account on any device/browser. Your subscription is tied to your login, not hardware.</p>
+        </div>
+      </details>
+      
+      <details class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
+        <summary class="font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200">Will new tools/modules be added for free to Pro users?</summary>
+        <div class="mt-4 text-gray-600 dark:text-gray-300">
+          <p>Yes – priority updates and new features (like expanded AI tools or forecasting) roll out first to Pro subscribers at no extra cost.</p>
+        </div>
+      </details>
+      
+    </div>
+  </div>
+</section>
+     
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+<!-- Last Update Date -->
+<div class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <p class="text-sm text-gray-500 dark:text-gray-400">
+    Last updated: <span>2026-03-02</span>
+  </p>
+</div>
+    </div>
+    
+    </main>
+   
+<!-- Footer -->
+<div id="footer-placeholder"></div>
+</div>
+</div>
+  
+
+  <!-- Load JS last for speed -->
+  <script src="/main-v1.1.js" type="module"></script>
+  <script src="https://js.stripe.com/v3/"></script> 
+
+  
+</body>
+</html>

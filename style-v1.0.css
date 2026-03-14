@@ -1,0 +1,497 @@
+/* Traffic Torch Global CSS – Cleaned & Fixed 2026 */
+
+/* Prevent FOUC / plain text flash on gradient titles – earliest possible */
+/* Light mode (default) */
+#sidebarTitle,
+p.text-1\.25rem.font-black.bg-gradient-to-r,
+span.bg-gradient-to-r.text-transparent,
+.gradient-text {
+  color: transparent !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+}
+
+/* Dark mode — only if you change gradient colors; otherwise remove this block */
+.dark #sidebarTitle,
+.dark p.text-1\.25rem.font-black.bg-gradient-to-r,
+.dark span.bg-gradient-to-r.text-transparent,
+.dark .gradient-text {
+  color: transparent !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+}
+
+/* Theme variables */
+:root {
+  --bg-gradient: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #cbd5e1);
+  --accent: #ea580c;
+  --track: rgba(0,0,0,0.15);
+}
+
+.dark {
+  --bg-gradient: linear-gradient(to bottom right, #0f172a, #020617, #000000);
+  --accent: #f97316;
+  --track: rgba(255,255,255,0.15);
+}
+
+/* Global resets & base */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg-gradient);
+  min-height: 100vh;
+  margin: 0;
+  color: #1f2937; /* gray-800 light */
+}
+
+.dark body {
+  color: #e5e7eb; /* gray-200 dark */
+}
+
+/* Preserve gradient on logo/title (desktop + mobile variants) */
+#sidebarTitle,
+p.text-\[1\.25rem\].font-black.bg-gradient-to-r,
+span.bg-gradient-to-r.text-transparent,
+[class*="Traffic Torch"] {
+  color: transparent !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+.dark #sidebarTitle,
+.dark p.text-\[1\.25rem\].font-black.bg-gradient-to-r,
+.dark span.bg-gradient-to-r.text-transparent,
+.dark [class*="Traffic Torch"] {
+  color: transparent !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+
+
+
+
+
+/* Mobile menu – full-height right-side drawer, scrollable content, modern mobile standard */
+#mobileMenu {
+  position: fixed;
+  inset: 0 0 0 auto;                  /* top/right/bottom/left = full height, right-anchored */
+  height: 100dvh;                     /* 100% dynamic viewport height – best for mobile (addresses address bar issues) */
+  width: 85vw;                        /* wide enough to show most links without too much scroll */
+  max-width: 380px;                   /* comfortable max on larger phones */
+  z-index: 999;
+  background-color: #f8fafc;
+  color: #1f2937;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); /* smoother slide feel */
+  padding: 2rem 0.25rem 2rem;         /* more top padding = safe space for close button + status bar */
+}
+
+/* When open (remove .hidden or add .open class – but since you use .hidden, override */
+#mobileMenu:not(.hidden) {
+  transform: translateX(0);       /* slide in from right */
+}
+
+/* Dark mode */
+.dark #mobileMenu {
+  background-color: #0f172a;
+  color: #e5e7eb;                 /* gray-200 base text dark mode */
+}
+
+/* Close button – visible, touch-friendly */
+#close-mobile-menu {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  color: #111827;                 /* gray-900 light mode */
+  font-size: 2.5rem;
+  font-weight: 300;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0.75rem;
+  line-height: 1;
+  border-radius: 9999px;
+}
+
+.dark #close-mobile-menu {
+  color: #f3f4f6;                 /* gray-100 dark mode */
+}
+
+#close-mobile-menu:hover,
+#close-mobile-menu:focus {
+  background: rgba(0,0,0,0.1);
+  opacity: 0.9;
+}
+
+html.overflow-hidden,
+body.overflow-hidden {
+  overflow: hidden;
+  height: 100%;
+  position: fixed;                /* extra iOS fix if needed */
+  width: 100%;
+}
+
+/* Mobile menu nav & links – force visible colors overriding Tailwind text-gray-100 */
+#mobileMenu nav.flex.flex-col,
+#mobileMenu a,
+#mobileMenu .sidebar-link {
+  color: #1f2937 !important;      /* gray-800 light – visible on light bg */
+}
+
+.dark #mobileMenu nav.flex.flex-col,
+.dark #mobileMenu a,
+.dark #mobileMenu .sidebar-link {
+  color: #e5e7eb !important;      /* gray-200 dark – visible on dark bg */
+}
+
+#mobileMenu a:hover,
+#mobileMenu .sidebar-link:hover {
+  color: #fb923c !important;      /* orange hover */
+}
+
+
+
+
+
+
+/* Targeted dark mode text overrides */
+.dark .sidebar-link,
+.dark .tool-card p,
+.dark .author-bio p,
+.dark footer p,
+.dark footer a,
+.dark .text-center p {
+  color: #e5e7eb !important;
+}
+
+/* Sidebar links - base + stronger hover (both modes) */
+.sidebar-link {
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.dark .sidebar-link {
+  color: #e5e7eb !important;
+}
+
+/* Stronger sidebar hover override to beat Tailwind utilities */
+nav a.sidebar-link:hover,
+nav a.sidebar-link:focus,
+.sidebar-link:hover,
+.sidebar-link:focus {
+  color: #fb923c !important;
+  transition: color 0.2s ease !important;
+}
+
+.dark nav a.sidebar-link:hover,
+.dark nav a.sidebar-link:focus,
+.dark .sidebar-link:hover,
+.dark .sidebar-link:focus {
+  color: #fb923c !important;
+}
+
+/* Footer links hover (both modes) */
+footer a:hover {
+  color: #fb923c !important;
+}
+
+/* Header & footer glass */
+header, footer {
+  backdrop-filter: blur(12px);
+}
+
+/* Desktop Sidebar */
+#desktopSidebar {
+  width: 16rem !important;
+  transition: width 0.3s ease-in-out;
+}
+
+#desktopSidebar.collapsed {
+  width: 5rem !important;
+}
+
+#desktopSidebar .sidebar-text,
+#desktopSidebar #sidebarTitle {
+  display: none;
+}
+
+#desktopSidebar:not(.collapsed) .sidebar-text,
+#desktopSidebar:not(.collapsed) #sidebarTitle {
+  display: block;
+}
+
+#desktopSidebar.collapsed .sidebar-link {
+  justify-content: center !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  gap: 0 !important;
+}
+
+#desktopSidebar.collapsed .logo-container-or-img {
+  justify-content: center !important;
+}
+
+/* Mobile typography */
+@media (max-width: 640px) {
+  .text-5xl { font-size: 2.25rem; }
+  .text-6xl { font-size: 2.5rem; }
+}
+
+/* Word break */
+#priority-fixes p,
+.details p,
+.details li {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Narrow screen header */
+@media (max-width: 420px) {
+  header .flex.items-center.gap-4 p {
+    font-size: 1rem !important;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  header .flex.items-center.gap-4 {
+    gap: 0.5rem;
+  }
+}
+
+/* Reflow prevention */
+.grid > *,
+.flex > *,
+.checklist-card,
+[class*="grid-cols-"] > * {
+  min-width: 0;
+}
+
+details > div,
+.grid,
+.flex,
+.container {
+  contain: layout paint;
+}
+
+/* Bottom Banner */
+.bottom-banner {
+  width: 100%;
+  margin: 2rem auto;
+  padding: 0;
+  text-align: center;
+  overflow: hidden;
+  max-width: 1200px;
+}
+
+.bottom-banner picture {
+  display: block;
+  width: 100%;
+  position: relative;
+  margin: 0 auto;
+}
+
+.bottom-banner img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 12px;
+}
+
+@media (max-width: 767px) {
+  .bottom-banner picture {
+    padding-top: var(--banner-ratio, 31.25%);
+  }
+  .bottom-banner img {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .bottom-banner picture {
+    padding-top: 0;
+  }
+  .bottom-banner img {
+    position: static;
+  }
+}
+
+/* PWA Install Button – Glassmorphism */
+#pwa-install-btn {
+  position: fixed;
+  inset: auto 1.5rem 1.5rem auto;
+  z-index: 9999;
+  background: rgba(42, 236, 15, 0.18);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(241, 29, 29, 0.35);
+  border-radius: 9999px;
+  color: #2568ef !important; 
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.85rem 2rem;
+  letter-spacing: 0.02em;
+  box-shadow: 0 8px 32px -8px rgba(249, 115, 22, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.18);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translate3d(0,0,0);
+  will-change: transform, box-shadow, background;
+  pointer-events: auto;
+  user-select: none;
+  isolation: isolate;
+}
+
+.dark #pwa-install-btn {
+  color: #e5e7eb; /* gray-200 – light in dark mode */
+  background: rgba(30, 41, 59, 0.45);
+  border-color: rgba(234, 28, 28, 0.3);
+  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+#pwa-install-btn:hover {
+  transform: translateY(-4px) scale(1.04) translate3d(0,0,0);
+  box-shadow: 0 20px 40px -12px rgba(249, 115, 22, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.28);
+  background: rgba(249, 115, 22, 0.26);
+}
+
+#pwa-install-btn:active {
+  transform: translateY(-1px) scale(0.97) translate3d(0,0,0);
+  transition-duration: 0.15s;
+  box-shadow: 0 6px 20px -6px rgba(249, 115, 22, 0.45), inset 0 2px 4px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 640px) {
+  #pwa-install-btn {
+    inset: auto 1rem 1rem auto;
+    padding: 0.75rem 1.8rem;
+    font-size: 0.96rem;
+  }
+}
+
+@media (max-width: 360px) {
+  #pwa-install-btn {
+    padding: 0.65rem 1.5rem;
+    font-size: 0.92rem;
+  }
+}
+
+/* Copy Link Button – no flash, gentle entrance */
+.center-btn-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 3.5rem;          /* exactly matches button natural height → prevents vertical jump */
+  height: 3.5rem;              /* fixed height locks layout from first paint */
+  padding: 0;
+}
+
+.copy-link-btn {
+  padding: 0.8rem 1.8rem;
+  font-size: 1.05rem;
+  font-weight: 501;
+  color: #297ce7;
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(49, 140, 237, 0.35);
+  border-radius: 0.75rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: 
+    transform 0.18s ease,
+    opacity 0.5s ease;         /* soft fade-in on load */
+  opacity: 0;                  /* hidden at first */
+  animation: appear 0.6s ease forwards; /* very light entrance */
+}
+
+.copy-link-btn:hover {
+  transform: translateY(-2px);
+}
+
+.dark .copy-link-btn {
+  background: rgba(30, 41, 59, 0.45);
+  border-color: rgba(234, 28, 28, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Minimal fade-in to cover any micro-paint delay */
+@keyframes appear {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Enforce day/night text – targeted (exclude sidebar-link & gradient elements) */
+body, p:not([class*="bg-gradient"]), li, span:not([class*="bg-gradient"]), a:not(.sidebar-link):not(footer a), small, strong, em, blockquote {
+  color: #1f2937; /* gray-800 light */
+}
+
+.dark body,
+.dark p:not([class*="bg-gradient"]),
+.dark li,
+.dark span:not([class*="bg-gradient"]),
+.dark a:not(.sidebar-link):not(footer a),
+.dark small,
+.dark strong,
+.dark em,
+.dark blockquote {
+  color: #e5e7eb !important; /* gray-200 dark */
+}
+
+/*  Paragraph spacing – readable + accessible */
+div.prose p:not([class*="bg-gradient"]):not(:last-child) {
+  margin-top: 0 !important;
+  margin-bottom: 1.25rem !important;
+}
+
+/* No trailing margin after final paragraph */
+div.prose p:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Comfortable line-height (WCAG-friendly for long reads) */
+div.prose p {
+  line-height: 1.625 !important;
+}
+
+/* Mobile: slightly tighter to save vertical space without crowding */
+@media (max-width: 640px) {
+  div.prose p:not([class*="bg-gradient"]):not(:last-child) {
+    margin-bottom: 1rem !important;  /* 16px */
+  }
+}
+
+/* Pro Logged in badge */
+.pro-badge {
+  display: inline-block !important;
+  width: 0.625rem !important;          /* 10px */
+  height: 0.625rem !important;
+  background-color: #22c55e !important; /* green-500 */
+  border-radius: 9999px !important;
+  margin-left: 0.5rem !important;       /* ml-2 */
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;            /* prevent squishing */
+}
+
+/* Brighter in dark mode for better contrast */
+.dark .pro-badge {
+  background-color: #34d399 !important; /* emerald-400, more visible on dark bg */
+}
+
+/* Force visibility if parent has overflow-hidden or low opacity */
+.sidebar-link:has(.pro-badge),
+.pro-menu-link:has(.pro-badge) {
+  overflow: visible !important;
+}
+

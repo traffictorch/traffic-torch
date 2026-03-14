@@ -1,0 +1,9 @@
+name = "traffic-torch-api"
+main = "index.js"
+compatibility_date = "2026-02-09"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "traffic-torch-db"
+database_id = "d5c9fa6f-178f-4a5b-ae07-eebd161c6371"

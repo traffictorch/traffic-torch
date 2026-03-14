@@ -1,0 +1,3089 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <!-- Referrer Policy (security + privacy best practice) -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+
+ 
+<!-- SEO Title & Description -->
+<title>Schema Markup Help Guide – What, When & Why 18 Types | Traffic Torch</title>
+<meta name="description" content="Complete help guide to schema markup: Organization, Article/BlogPosting, LocalBusiness, FAQPage, HowTo, Review, JobPosting, Course & more. Learn what each type is, when to use it, and why it boosts rich results, CTR & traffic." />
+
+<!-- hreflang (assuming English-only for now; add more if multilingual later) -->
+<link rel="alternate" hreflang="en" href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html">
+<link rel="alternate" hreflang="x-default" href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html">
+
+<!-- Robots & Canonical -->
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://traffictorch.net/blog/posts/schema-markup-help-guide.html" />
+
+<!-- Open Graph Tags -->
+<meta property="og:title" content="Schema Markup Help Guide – Unlock Rich Results & More Traffic | Traffic Torch" />
+<meta property="og:description" content="Deep-dive into schema types: Core (Organization, Article, FAQ, HowTo), Content (Recipe, Event, Review), Advanced (JobPosting, Course, FactCheck). What it is, when to use, why it matters for SEO & rich snippets." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://traffictorch.net/blog/posts/schema-markup-help-guide.html" />
+<meta property="og:image" content="https://traffictorch.net/blog/images/schema-markup-help-guide/schema-markup-hero-1200w.webp" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="Traffic Torch" />
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Schema Markup Help Guide – Unlock Rich Results & More Traffic | Traffic Torch" />
+<meta name="twitter:description" content="Master schema markup: explanations, use cases & SEO impact for BlogPosting, FAQPage, HowTo, AggregateRating, JobPosting, Course & more. Educational guide from Traffic Torch." />
+<meta name="twitter:image" content="https://traffictorch.net/blog/images/schema-markup-help-guide/schema-markup-hero-1200w.webp" />
+<meta name="twitter:site" content="@Guitaralize" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://traffictorch.net/#organization",
+      "name": "Traffic Torch",
+      "url": "https://traffictorch.net/",
+      "logo": "https://traffictorch.net/logo-512.webp",
+      "sameAs": [
+        "https://twitter.com/guitaralize"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://traffictorch.net/#website",
+      "url": "https://traffictorch.net/",
+      "name": "Traffic Torch",
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://traffictorch.net/blog/posts/schema-markup-help-guide/#webpage",
+      "url": "https://traffictorch.net/blog/posts/schema-markup-help-guide",
+      "name": "Schema Markup Help Guide – What, When & Why for Every Type",
+      "description": "Educational deep-dive into schema.org markup types: Core (Organization, Article/BlogPosting, LocalBusiness, Person, BreadcrumbList), Content (FAQPage, HowTo, VideoObject, Recipe, Event, Review/AggregateRating), Advanced (JobPosting, Course, SoftwareApplication, Book, Dataset, Speakable, FactCheck). Explains what each is, ideal use cases, and SEO/rich results benefits.",
+      "isPartOf": {
+        "@id": "https://traffictorch.net/#website"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://traffictorch.net/blog/images/schema-markup-help-guide/schema-markup-hero-1200w.webp",
+        "width": 1200,
+        "height": 675
+      },
+      "image": [
+        "https://traffictorch.net/blog/images/schema-markup-help-guide/schema-markup-hero-1200w.webp"
+      ],
+      "datePublished": "2026-03-10T09:22:00+11:00",
+      "dateModified": "2026-03-11T14:24:00+11:00",
+      "author": {
+        "@type": "Person",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net",
+        "sameAs": [
+          "https://twitter.com/guitaralize"
+        ]
+      },
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      },
+	  "speakable": {
+ 	  "@type": "SpeakableSpecification",
+ 	  "cssSelector": [
+      "#faq",
+      "h1",
+      "p:first-of-type",
+      "nav#table-of-contents h2",
+	  ]
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://traffictorch.net/blog/posts/schema-markup-help-guide/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://traffictorch.net/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "News & Blog",
+          "item": "https://traffictorch.net/news/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Schema Markup Help Guide",
+          "item": "https://traffictorch.net/blog/posts/schema-markup-help-guide"
+        }
+      ]
+    },
+    {
+      "@type": "BlogPosting",
+      "headline": "Schema Markup Help Guide – What, When & Why for Every Type",
+      "description": "Educational deep-dive into schema.org markup types: Core (Organization, Article/BlogPosting, LocalBusiness, Person, BreadcrumbList), Content (FAQPage, HowTo, VideoObject, Recipe, Event, Review/AggregateRating), Advanced (JobPosting, Course, SoftwareApplication, Book, Dataset, Speakable, FactCheck). Explains what each is, ideal use cases, and SEO/rich results benefits.",
+      "image": "https://traffictorch.net/blog/images/schema-markup-help-guide/schema-markup-hero-1200w.webp",
+      "datePublished": "2026-03-10T09:22:00+11:00",
+      "dateModified": "2026-03-11T14:24:00+11:00",
+      "author": {
+        "@type": "Person",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net",
+        "sameAs": [
+          "https://twitter.com/guitaralize"
+        ]
+      },
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://traffictorch.net/blog/posts/schema-markup-help-guide/#webpage"
+      },
+      "keywords": [
+        "schema markup guide",
+        "schema.org types",
+        "JSON-LD for SEO",
+        "rich snippets",
+        "FAQ schema",
+        "HowTo schema",
+        "AggregateRating",
+        "JobPosting schema",
+        "Course schema",
+        "SEO best practices"
+      ],
+      "wordCount": 8273,
+      "inLanguage": "en",
+      "articleSection": "SEO Guides & Tutorials",
+      "isPartOf": {
+        "@type": "Blog",
+        "name": "Traffic Torch Blog",
+        "url": "https://traffictorch.net/news/"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://traffictorch.net/blog/posts/schema-markup-help-guide/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between Organization and LocalBusiness schema?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Organization schema describes any kind of company, brand, or entity (online store, NGO, corporation, etc.). LocalBusiness is a more specific subtype that inherits from Organization and adds location-specific properties like address, geo coordinates, openingHours, priceRange, and telephone. Use Organization alone for non-local or multi-location brands; use LocalBusiness when you have a physical storefront or service area."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I put Article or BlogPosting schema on every blog post?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes - BlogPosting (a subtype of Article) is the recommended type for most individual blog posts and news articles in 2026. It supports headline, datePublished, author (Person or Organization), image, publisher, and articleBody. Use the more general Article type only for evergreen long-form content that isn’t time-sensitive (guides, ultimate lists). Always include mainEntityOfPage pointing to the canonical URL."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does BreadcrumbList schema improve click-through rate?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, indirectly. BreadcrumbList displays breadcrumb navigation in Google search results (instead of just the URL path), making the result more clickable and trustworthy. It also helps Google understand site structure better, which can improve internal linking signals and crawl efficiency. It’s low-effort, high-reward structured data for almost every site with more than one level of hierarchy."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use Person schema for authors on my blog?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes - and you should. Person schema in the author property of Article/BlogPosting helps Google build author knowledge panels, show bylines more prominently, and strengthen E-E-A-T signals. Include name, url (author archive), sameAs (social profiles, LinkedIn, ORCID), jobTitle, and worksFor (Organization). Consistent author markup across posts builds topical authority faster."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Organization schema required for local businesses?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, but it’s strongly recommended. LocalBusiness already inherits most Organization properties, so you can nest Organization inside LocalBusiness or use LocalBusiness directly. However, many experts recommend a separate Organization block on the homepage (with sameAs and logo) to establish the brand entity clearly, then use LocalBusiness on location pages. This dual approach maximizes Knowledge Graph presence and local pack visibility."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does FAQPage schema still show expanded answers in Google search results?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes - as of 2026, FAQPage schema can trigger expandable FAQ rich results (accordion-style questions in SERPs), especially for how-to or support-style content. Google is selective: it favors concise, unique answers that match user intent and avoids over-optimization (e.g., repeating the same FAQ across many pages). Best results come from 3–8 high-quality Q&As per page."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can HowTo schema appear as a step-by-step carousel in search results?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes - HowTo schema is one of the most visual rich results types. When implemented correctly (with step images, duration, supply/tool lists), Google often displays it as a numbered step carousel or expanded steps directly in SERPs. This format significantly boosts click-through rates for instructional content like recipes, DIY guides, tutorials, and software how-tos."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What’s the best way to mark up embedded videos with VideoObject schema?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use VideoObject inside the main entity (e.g., Article or HowTo) or as a standalone on video pages. Key properties: thumbnailUrl, uploadDate, duration (ISO 8601), contentUrl or embedUrl, description, and transcript if available. Google prefers videos hosted on the same domain or with clear ownership signals. This can trigger video thumbnails, key moments, and carousel placements in search and Discover."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Recipe schema require high-quality photos to show rich results?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes - Google almost always requires at least one high-resolution image (min 1200px wide recommended) for Recipe rich results (ingredients list, cook time, ratings, step carousel). Multiple images (ingredient close-ups, final dish, steps) increase chances of visual rich snippets or video-style carousels. Also include calories, cuisineType, keywords, and AggregateRating for stronger eligibility."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does AggregateRating work with Event or Review schema for better visibility?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "AggregateRating can be nested inside Event, Recipe, Product, LocalBusiness, or even Review. It shows star ratings and review count in SERPs (e.g., 4.7 ★★★★★ from 312 reviews). For events, it’s powerful for ticketed or recurring events; for reviews, use it on pages with multiple user reviews. Google requires at least 3–5 reviews for stars to appear reliably, and ratings should reflect genuine user feedback to avoid manual actions."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I combine multiple content schemas like HowTo + VideoObject on one page?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes - and it’s encouraged. For example, a tutorial page can have HowTo as the main entity, with VideoObject nested in steps or as a separate block. Google can display combined rich results (step carousel + video thumbnail). Just ensure the markup is valid, non-duplicate, and accurately represents the page content to avoid suppression."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does JobPosting schema help appear in Google for Jobs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes - JobPosting schema is the primary structured data type Google uses to populate the Google for Jobs carousel and job search results. Key requirements include title, description, hiringOrganization, jobLocation (with address or geo), datePosted, validThrough, employmentType, baseSalary (with currency and value), and directApply or application link. Accurate markup significantly increases visibility for job listings."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Course schema appear in Google search results as a course carousel?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes - Course schema can trigger rich course cards or carousels in SERPs, especially for educational queries. Required properties: name, description, provider (Organization), hasCourseInstance (with courseMode, courseWorkload, location if applicable), and offers (for paid courses). Google favors courses with clear provider branding, duration, and syllabus details. It works best for online courses, university programs, or certification training."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What properties make SoftwareApplication schema eligible for app rich results?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "SoftwareApplication (or subtypes like WebApplication, MobileApplication) needs name, description, operatingSystem, applicationCategory, offers (price or free), aggregateRating, review, screenshot (multiple URLs), and download/install URLs. Google can display app icons, ratings, screenshots, and price in SERPs or app carousels. Consistent use across app pages boosts visibility in software-related searches."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Book schema help books appear in Google Books or rich snippets?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes - Book schema (with name, author (Person), isbn, bookFormat, numberOfPages, publisher, datePublished, bookEdition, offers, and aggregateRating) can trigger rich book cards with cover image, author, price, and buy links. It’s most effective on book landing pages or author sites. Google may also connect it to Google Books listings for better discoverability."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I use Dataset schema instead of just describing data in text?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Dataset schema is ideal for publicly available, downloadable datasets (CSV, JSON, Excel, etc.). Key properties: name, description, creator, publisher, datePublished, distribution (DownloadAction with encodingFormat and contentUrl), license, and variableMeasured. It helps datasets appear in Google Dataset Search and rich snippets for data-related queries. Use it on data repository pages, research papers, or open data portals."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is Speakable schema and when does it trigger voice results?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Speakable schema marks up text on a page that is suitable for voice readout (Google Assistant, smart speakers). Use speakable with cssSelector or xpath to point to key sections (e.g., headline, intro paragraph). It triggers in voice search results and Assistant read-aloud features. Best for news articles, how-to guides, or FAQ pages where concise, natural-language text exists."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How strict is Google on FactCheck schema for claim reviews?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "FactCheck (ClaimReview) schema is tightly moderated. It requires claimReviewed, itemReviewed (CreativeWork), author (Organization with fact-checking credentials), datePublished, reviewRating (true/false/mostly-true scale), and url to sources. Google only shows FactCheck rich results for verified fact-checking organizations. Misuse can lead to suppression or penalties, it’s not for general opinion pieces."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+ 
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Main Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/blog/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/blog/style-v1.0.css">
+  </noscript>
+
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+
+<style>  
+  .prose ul {
+  list-style-type: disc;
+  padding-left: 1.5rem; /* pl-6 */
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.prose ul li {
+  margin-bottom: 0.5rem;
+}
+
+.prose ul li::marker {
+  color: theme('colors.orange.500');
+}
+
+.dark .prose ul li::marker {
+  color: theme('colors.orange.400');
+}
+</style> 
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  <meta http-equiv="Content-Encoding" content="br">  
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
+        </a>
+        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
+        </a>
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⛔</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🗝️</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+        <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📋</span> <span class="sidebar-text hidden">Help Guides</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
+              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⛔ Quit Risk</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">🗝️ Keywords</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+              <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition">📋 Help Guides</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+<!-- Updated Blog Post Content Area (glassmorphism card matching site style) -->
+<main class="py-16 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-sm">
+  <article class="max-w-4xl mx-auto px-2">
+    <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl p-2 md:p-4 prose prose-lg dark:prose-invert max-w-none border border-white/10 dark:border-white/5">
+      
+<!-- Featured Image / Hero -->
+<picture class="mb-10 md:mb-12 block">
+  <source
+    media="(max-width: 640px)"
+    srcset="/blog/images/schema-markup-help-guide/schema-markup-hero-640w.webp">
+  <source
+    media="(min-width: 641px)"
+    srcset="/blog/images/schema-markup-help-guide/schema-markup-hero-1200w.webp">
+  <img
+    src="/blog/images/schema-markup-help-guide/schema-markup-hero-1200w.webp"
+    alt="Schema Markup Help Guide 2026 – Unlock Rich Results with JSON-LD: FAQ, HowTo, Review, JobPosting, Course & More – Traffic Torch"
+    class="w-full rounded-2xl shadow-2xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[55vh] md:max-h-[60vh] mx-auto"
+    loading="eager"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+</picture>
+
+<!-- Post Title -->
+<h1 class="text-3xl sm:text-4xl md:text-5xl font-black mb-4 md:mb-6 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">
+  Schema Markup Help Guide
+</h1>
+
+<!-- Subtitle / Lead Paragraph -->
+<p class="text-xl md:text-2xl font-semibold text-gray-700 dark:text-gray-300 mb-8 md:mb-10 leading-relaxed max-w-3xl">
+  What each schema type is, when to use it, and why it matters for rich results, higher CTR, and better traffic in 2026. From core types like Organization & Article to advanced ones like JobPosting, Course, FactCheck & more.
+</p>
+
+<!-- Optional: Quick stats / hook line (educational touch) -->
+<p class="text-base md:text-lg text-gray-600 dark:text-gray-400 mb-10 md:mb-12 italic max-w-3xl">
+  Implementing the right schema can boost click-through rates by 20–30% and unlock eye-catching rich snippets = start mastering it today.
+</p>
+
+<!-- Table of Contents - 4-column schema-focused table (sticky-friendly, mobile-scrollable) -->
+<nav id="table-of-contents" class="bg-white dark:bg-gray-900 p-4 md:p-6 mt-10 rounded-2xl shadow-lg mb-12 border border-gray-200 dark:border-gray-700 sticky top-4 z-10">
+  <h2 class="text-2xl md:text-3xl font-black text-center text-gray-800 dark:text-gray-100 mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Schema Markup Table of Contents
+  </h2>
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse min-w-[800px]">
+      <thead>
+        <tr class="bg-gray-100 dark:bg-gray-800">
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Schema Type</th>
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 text-center">What is it?</th>
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 text-center">When to use?</th>
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 text-center">Why it matters?</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-800 dark:text-gray-200 divide-y divide-gray-200 dark:divide-gray-700">
+        <!-- Core & Foundational -->
+        <tr class="bg-gray dark:bg-gray-800 font-semibold">
+          <td colspan="4" class="p-4 text-lg text-red-600 dark:text-red-400">Core & Foundational Schemas</td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#organization" class="text-orange-600 dark:text-orange-400 hover:underline">Organization</a></td>
+          <td class="p-4 text-center"><a href="#organization-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#organization-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#organization-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#article" class="text-orange-600 dark:text-orange-400 hover:underline">Article / BlogPosting</a></td>
+          <td class="p-4 text-center"><a href="#article-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#article-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#article-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#localbusiness" class="text-orange-600 dark:text-orange-400 hover:underline">LocalBusiness</a></td>
+          <td class="p-4 text-center"><a href="#localbusiness-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#localbusiness-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#localbusiness-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#person" class="text-orange-600 dark:text-orange-400 hover:underline">Person</a></td>
+          <td class="p-4 text-center"><a href="#person-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#person-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#person-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#breadcrumbList" class="text-orange-600 dark:text-orange-400 hover:underline">BreadcrumbList</a></td>
+          <td class="p-4 text-center"><a href="#breadcrumbList-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#breadcrumbList-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#breadcrumbList-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+
+        <!-- Content & Engagement -->
+        <tr class="bg-gray dark:bg-gray-800 font-semibold mt-4">
+          <td colspan="4" class="p-4 text-lg text-red-600 dark:text-red-400">Content & Engagement Schemas</td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#faqpage" class="text-orange-600 dark:text-orange-400 hover:underline">FAQPage</a></td>
+          <td class="p-4 text-center"><a href="#faqpage-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#faqpage-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#faqpage-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#howto" class="text-orange-600 dark:text-orange-400 hover:underline">HowTo</a></td>
+          <td class="p-4 text-center"><a href="#howto-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#howto-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#howto-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#videoobject" class="text-orange-600 dark:text-orange-400 hover:underline">VideoObject</a></td>
+          <td class="p-4 text-center"><a href="#videoobject-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#videoobject-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#videoobject-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#recipe" class="text-orange-600 dark:text-orange-400 hover:underline">Recipe</a></td>
+          <td class="p-4 text-center"><a href="#recipe-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#recipe-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#recipe-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#event" class="text-orange-600 dark:text-orange-400 hover:underline">Event</a></td>
+          <td class="p-4 text-center"><a href="#event-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#event-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#event-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#review-aggregaterating" class="text-orange-600 dark:text-orange-400 hover:underline">Review / AggregateRating</a></td>
+          <td class="p-4 text-center"><a href="#review-aggregaterating-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#review-aggregaterating-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#review-aggregaterating-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+
+        <!-- Advanced & Specialized -->
+        <tr class="bg-gray dark:bg-gray-800 font-semibold mt-4">
+          <td colspan="4" class="p-4 text-lg text-red-600 dark:text-red-400">Advanced & Specialized Schemas</td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#jobposting" class="text-orange-600 dark:text-orange-400 hover:underline">JobPosting</a></td>
+          <td class="p-4 text-center"><a href="#jobposting-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#jobposting-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#jobposting-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#course" class="text-orange-600 dark:text-orange-400 hover:underline">Course</a></td>
+          <td class="p-4 text-center"><a href="#course-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#course-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#course-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#softwareapplication" class="text-orange-600 dark:text-orange-400 hover:underline">SoftwareApplication</a></td>
+          <td class="p-4 text-center"><a href="#softwareapplication-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#softwareapplication-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#softwareapplication-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#book" class="text-orange-600 dark:text-orange-400 hover:underline">Book</a></td>
+          <td class="p-4 text-center"><a href="#book-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#book-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#book-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#dataset" class="text-orange-600 dark:text-orange-400 hover:underline">Dataset</a></td>
+          <td class="p-4 text-center"><a href="#dataset-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#dataset-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#dataset-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#speakable" class="text-orange-600 dark:text-orange-400 hover:underline">Speakable</a></td>
+          <td class="p-4 text-center"><a href="#speakable-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#speakable-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#speakable-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium"><a href="#factcheck" class="text-orange-600 dark:text-orange-400 hover:underline">FactCheck</a></td>
+          <td class="p-4 text-center"><a href="#factcheck-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+          <td class="p-4 text-center"><a href="#factcheck-when" class="text-blue-600 dark:text-blue-400 hover:underline">When</a></td>
+          <td class="p-4 text-center"><a href="#factcheck-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+    <a href="#conclusion" class="text-orange-600 dark:text-orange-400 hover:underline">Conclusion & Implementation Tips</a> •
+  </div>
+</nav>
+
+<!-- CTA Box - Schema Generator -->
+<div class="mt-12 p-6 md:p-8 rounded-2xl border border-orange-200 dark:border-orange-800 bg-gradient-to-b from-orange-50/50 to-transparent dark:from-orange-950/30 dark:to-transparent text-center">
+  <h3 class="text-xl md:text-2xl font-black mb-4 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+    Ready to Add Schema Markup?
+  </h3>
+  <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-4">
+    Generate clean JSON-LD code instantly – no coding required.
+  </p>
+  <p class="text-base md:text-lg mb-6 text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
+    Use Traffic Torch's free Schema Generator to create valid Organization, Article, FAQPage, HowTo, LocalBusiness, JobPosting, Review, and more. Copy-paste ready, fully client-side, privacy-first.
+  </p>
+  <a 
+    href="https://traffictorch.net/schema-generator/" 
+    class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 hover:scale-105 transition-all duration-200 text-lg shadow-xl focus:outline-none focus:ring-4 focus:ring-orange-400/50"
+  >
+    Launch Schema Generator →
+  </a>
+</div>
+
+<!-- FAQ Section - Core & Foundational Schemas -->
+<section id="faq" class="mb-20 scroll-mt-24">
+  <h2 class="text-3xl md:text-4xl font-black mt-16 mb-12 text-center bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Frequently Asked Questions About Core & Foundational Schema Markup
+  </h2>
+
+  <div class="prose prose-lg prose-orange dark:prose-invert max-w-4xl mx-auto space-y-6">
+    <!-- 1 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        What is the difference between Organization and LocalBusiness schema?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Organization schema describes any kind of company, brand, or entity (online store, NGO, corporation, etc.). LocalBusiness is a more specific subtype that inherits from Organization and adds location-specific properties like address, geo coordinates, openingHours, priceRange, and telephone. Use Organization alone for non-local or multi-location brands; use LocalBusiness when you have a physical storefront or service area.</p>
+      </div>
+    </details>
+
+    <!-- 2 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Should I put Article or BlogPosting schema on every blog post?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Yes - BlogPosting (a subtype of Article) is the recommended type for most individual blog posts and news articles in 2026. It supports headline, datePublished, author (Person or Organization), image, publisher, and articleBody. Use the more general Article type only for evergreen long-form content that isn’t time-sensitive (guides, ultimate lists). Always include mainEntityOfPage pointing to the canonical URL.</p>
+      </div>
+    </details>
+
+    <!-- 3 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Does BreadcrumbList schema improve click-through rate?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Yes, indirectly. BreadcrumbList displays breadcrumb navigation in Google search results (instead of just the URL path), making the result more clickable and trustworthy. It also helps Google understand site structure better, which can improve internal linking signals and crawl efficiency. It’s low-effort, high-reward structured data for almost every site with more than one level of hierarchy.</p>
+      </div>
+    </details>
+
+    <!-- 4 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Can I use Person schema for authors on my blog?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Yes - and you should. Person schema in the author property of Article/BlogPosting helps Google build author knowledge panels, show bylines more prominently, and strengthen E-E-A-T signals. Include name, url (author archive), sameAs (social profiles, LinkedIn, ORCID), jobTitle, and worksFor (Organization). Consistent author markup across posts builds topical authority faster.</p>
+      </div>
+    </details>
+
+    <!-- 5 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Is Organization schema required for local businesses?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>No, but it’s strongly recommended. LocalBusiness already inherits most Organization properties, so you can nest Organization inside LocalBusiness or use LocalBusiness directly. However, many experts recommend a separate Organization block on the homepage (with sameAs and logo) to establish the brand entity clearly, then use LocalBusiness on location pages. This dual approach maximizes Knowledge Graph presence and local pack visibility.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+
+<!-- Organization Schema Section -->
+<section id="organization" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Organization Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="organization-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is Organization Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Organization schema is a structured data type from schema.org that describes your company, business, brand, or organization as an entity. It uses JSON-LD (recommended), Microdata, or RDFa format and includes key properties like:
+      </p>
+      <ul>
+        <li><code>@type</code>: "Organization" (or more specific like "OnlineBusiness", "NGO", "Corporation").</li>
+        <li>Name, url, logo, description.</li>
+        <li>SameAs (social profiles, Wikipedia, etc).</li>
+        <li>ContactPoint (phone, email, areaServed).</li>
+        <li>Address (street, locality, postalCode, addressCountry).</li>
+        <li>FoundingDate, legalName, taxID (for advanced use).</li>
+      </ul>
+      <p>
+        This is typically placed in the <code>&lt;head&gt;</code> or <code>&lt;body&gt;</code> of your homepage (or every page for brand consistency).
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="organization-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use Organization Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use Organization schema on:</p>
+      <ul>
+        <li>Your homepage (primary placement).</li>
+        <li>About Us / Company page.</li>
+        <li>Contact or footer sections (if consistent across site).</li>
+        <li>Any page where you want to strongly signal brand identity to search engines.</li>
+      </ul>
+      <p>
+        It is especially valuable for:
+      </p>
+      <ul>
+        <li>Brands with multiple locations or online-only businesses.</li>
+        <li>Companies wanting Knowledge Graph / entity recognition.</li>
+        <li>Sites aiming for brand panels, logo in SERPs, or enhanced sitelinks.</li>
+      </ul>
+      <p>
+        <strong>Do not</strong> use it on product pages, blog posts, or category pages unless the organization is the main entity of that page.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="organization-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why Organization Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Adding Organization schema helps search engines understand who you are as a business entity. Benefits include:
+      </p>
+      <ul>
+        <li>Stronger brand recognition in Google’s Knowledge Graph.</li>
+        <li>Potential for richer brand panels, logo display, and sitelinks in SERPs.</li>
+        <li>Improved entity authority signals (especially with sameAs links to verified profiles).</li>
+        <li>Better local/business visibility when combined with LocalBusiness.</li>
+        <li>Foundation for other schemas (Article author links back to Organization, LocalBusiness inherits from it, etc).</li>
+      </ul>
+      <p>
+        In 2026, with Google’s increasing focus on E-E-A-T and brand signals, a well-implemented Organization schema is one of the highest-ROI structured data additions for most websites.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=Organization" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate Organization Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Article / BlogPosting Schema Section -->
+<section id="article" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Article / BlogPosting Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="article-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is Article / BlogPosting Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Article schema (and its more specific subtype <strong>BlogPosting</strong>) is structured data that describes news articles, blog posts, how-to guides, opinion pieces, or any time-sensitive or evergreen written content. It uses JSON-LD (preferred) and includes essential properties like:
+      </p>
+      <ul>
+        <li><code>@type</code>: "Article" or "BlogPosting".</li>
+        <li>Headline (title of the post).</li>
+        <li>DatePublished and dateModified (ISO 8601 format).</li>
+        <li>Author (Person or Organization entity).</li>
+        <li>Publisher (Organization with logo).</li>
+        <li>Image (featured/hero image URL).</li>
+        <li>Description or articleBody excerpt.</li>
+        <li>MainEntityOfPage (canonical URL with @id).</li>
+        <li>Keywords (array of relevant terms).</li>
+        <li>WordCount (optional but useful).</li>
+      </ul>
+      <p>
+        Place this markup on the individual blog post page, ideally in the <code>&lt;head&gt;</code> or at the top of <code>&lt;body&gt;</code>.
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="article-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use Article / BlogPosting Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use Article/BlogPosting schema on:</p>
+      <ul>
+        <li>Every individual blog post or news article page.</li>
+        <li>Long-form guides, tutorials, listicles, or opinion pieces.</li>
+        <li>Any content published on a date with author attribution.</li>
+      </ul>
+      <p>
+        <strong>Choose BlogPosting</strong> over plain Article for most blog-style content (it signals recency and editorial nature better).
+      </p>
+      <p>
+        Use the general <strong>Article</strong> type for:
+      </p>
+      <ul>
+        <li>Evergreen content without strong publication dates (e.g., ultimate guides).</li>
+        <li>Scholarly articles or reports.</li>
+      </ul>
+      <p>
+        <strong>Avoid</strong> on product pages, category listings, homepages, or non-article content. Use other types like Product, WebPage, or Organization instead.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="article-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why Article / BlogPosting Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Proper Article/BlogPosting markup unlocks several SEO and visibility benefits in 2026:
+      </p>
+      <ul>
+        <li>Eligible for rich results like larger thumbnails, author bylines, date display, and carousel features in Google Discover/News.</li>
+        <li>Stronger E-E-A-T signals (author + publisher markup builds topical authority).</li>
+        <li>Better content understanding for Google’s algorithms (helps with featured snippets, People Also Ask, and related searches).</li>
+        <li>Improved click-through rates from enhanced SERP appearance (image + date + author).</li>
+        <li>Foundation for combining with other schemas (e.g., HowTo inside Article, Speakable for voice, VideoObject embeds).</li>
+      </ul>
+      <p>
+        Google increasingly prioritizes well-structured, author-backed content, consistent BlogPosting implementation across your blog can significantly boost organic visibility and traffic for informational queries.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=Article" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate Article / BlogPosting Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- LocalBusiness Schema Section -->
+<section id="localbusiness" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    LocalBusiness Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="localbusiness-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is LocalBusiness Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        LocalBusiness is a subtype of Organization schema that describes brick-and-mortar businesses, service-area businesses, or any entity with a physical presence or defined service region. It uses JSON-LD (strongly recommended) and includes core Organization properties plus location-specific ones such as:
+      </p>
+      <ul>
+        <li><code>@type</code>: "LocalBusiness" (or more specific like "Restaurant", "Dentist", "Plumber", "HairSalon", "AutoRepair").</li>
+        <li>Address (PostalAddress with streetAddress, addressLocality, addressRegion, postalCode, addressCountry).</li>
+        <li>Geo (GeoCoordinates with latitude and longitude).</li>
+        <li>OpeningHoursSpecification (array of days/hours).</li>
+        <li>Telephone, faxNumber, email.</li>
+        <li>PriceRange ($, $$, $$$, or text description).</li>
+        <li>AreaServed (GeoCircle, AdministrativeArea, or text).</li>
+        <li>PaymentAccepted, currenciesAccepted.</li>
+      </ul>
+      <p>
+        Place this on your homepage, contact/location page, or every page footer for maximum consistency. For multi-location businesses, use one per location page.
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="localbusiness-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use LocalBusiness Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use LocalBusiness schema when your business has:</p>
+      <ul>
+        <li>A physical storefront, office, or service location.</li>
+        <li>A defined service area (e.g., plumbers, electricians, delivery services).</li>
+        <li>Opening hours, phone number, or pricing info to display.</li>
+      </ul>
+      <p>
+        Ideal placement includes:
+      </p>
+      <ul>
+        <li>Contact / Locations page.</li>
+        <li>Homepage (especially for single-location businesses).</li>
+        <li>Individual branch pages for chains.</li>
+      </ul>
+      <p>
+        <strong>Do not</strong> use it for purely online businesses without any local intent, use Organization schema instead. For restaurants, hotels, or stores, pair it with Review/AggregateRating for star ratings in local pack and map results.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="localbusiness-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why LocalBusiness Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        LocalBusiness markup is one of the highest-impact schema types for local SEO in 2026:
+      </p>
+      <ul>
+        <li>Direct eligibility for rich local results: map pins, knowledge panels, business info cards, and enhanced Google Business Profile integration.</li>
+        <li>Improved visibility in Google Maps, local pack, and "near me" searches.</li>
+        <li>Better accuracy of business details (hours, address, phone) across SERPs and Google Assistant/voice search.</li>
+        <li>Stronger local E-E-A-T and trust signals when combined with reviews (AggregateRating) and photos.</li>
+        <li>Higher click-through rates from prominent rich snippets (phone click-to-call, directions link, hours display).</li>
+      </ul>
+      <p>
+        Google relies heavily on structured data + Google Business Profile consistency for local rankings. Accurate LocalBusiness schema can significantly boost local visibility, foot traffic, and calls. Especially for service-area businesses competing in competitive niches.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=LocalBusiness" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate LocalBusiness Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Person Schema Section -->
+<section id="person" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Person Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="person-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is Person Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Person schema is a structured data type that describes an individual human. Typically used for authors, experts, team members, founders, or public figures. It uses JSON-LD and includes key properties such as:
+      </p>
+      <ul>
+        <li><code>@type</code>: "Person".</li>
+        <li>Name (full name).</li>
+        <li>GivenName, familyName (optional breakdown).</li>
+        <li>JobTitle, worksFor (Organization).</li>
+        <li>Url (personal website or author archive).</li>
+        <li>SameAs (array of social profiles, LinkedIn, Wikipedia, ORCID, etc).</li>
+        <li>Image (profile photo or avatar URL).</li>
+        <li>Description or knowsAbout (expertise topics).</li>
+        <li>AlumniOf, birthDate, nationality (for richer profiles).</li>
+      </ul>
+      <p>
+        Place this markup in the author section of blog posts (inside Article/BlogPosting), on About pages, team bios, or contributor profiles. It is most powerful when linked consistently across content.
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="person-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use Person Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use Person schema whenever content has a human author or subject, especially:</p>
+      <ul>
+        <li>Blog posts, articles, or guides (as the author property of Article/BlogPosting).</li>
+        <li>Author bio / About the Author sections.</li>
+        <li>Team / Contributors pages on company sites.</li>
+        <li>Expert profiles, speaker bios, or personal brand sites.</li>
+      </ul>
+      <p>
+        It is particularly valuable for:
+      </p>
+      <ul>
+        <li>Sites publishing thought leadership or in-depth content.</li>
+        <li>Multi-author blogs where building individual authority matters.</li>
+        <li>Any content aiming to demonstrate E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness).</li>
+      </ul>
+      <p>
+        <strong>Avoid</strong> using it for fictional characters, brands, or anonymous content. Use Organization or no markup instead.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="person-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why Person Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Person schema significantly strengthens content authority and visibility in 2026:
+      </p>
+      <ul>
+        <li>Enables author knowledge panels, byline photos, and richer snippets in SERPs.</li>
+        <li>Directly boosts E-E-A-T signals: Google prioritizes content from identifiable, credentialed humans.</li>
+        <li>Improves topical authority when sameAs links connect to verified profiles (LinkedIn, Google Scholar, Twitter/X).</li>
+        <li>Increases click-through rates from more trustworthy-looking results (face + credentials).</li>
+        <li>Supports future features like author carousels, voice search attribution, and AI Overviews credibility scoring.</li>
+      </ul>
+      <p>
+        Consistent Person markup across a blog or site builds long-term author reputation, which compounds with Article schema to drive more organic traffic from informational and expertise-based queries.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=Person" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate Person Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- BreadcrumbList Schema Section -->
+<section id="breadcrumbList" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    BreadcrumbList Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="breadcrumbList-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is BreadcrumbList Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        BreadcrumbList schema is structured data that represents the hierarchical navigation path from the homepage to the current page. It uses JSON-LD (preferred) and consists of an ordered list of ListItem elements, each with:
+      </p>
+      <ul>
+        <li><code>@type</code>: "BreadcrumbList".</li>
+        <li>itemListElement (array of ListItem objects).</li>
+        <li>Each ListItem has:
+          <ul>
+            <li><code>@type</code>: "ListItem".</li>
+            <li>Position (integer: 1, 2, 3...)</li>
+            <li>Name (display text, e.g., "Home", "Blog", "Category").</li>
+            <li>Item (full URL of that page, or just name for the last item).</li>
+          </ul>
+        </li>
+      </ul>
+      <p>
+        Place this markup on every page that has a breadcrumb trail (blog posts, category pages, product pages, etc.), usually near the top of the <code>&lt;body&gt;</code> or in <code>&lt;head&gt;</code>.
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="breadcrumbList-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use BreadcrumbList Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use BreadcrumbList schema on any page deeper than the homepage, especially:</p>
+      <ul>
+        <li>Blog posts and articles (Home → Blog → Category → Post).</li>
+        <li>Category, subcategory, and product pages in e-commerce.</li>
+        <li>Documentation sites, guides, or multi-level content hierarchies.</li>
+        <li>Any site with clear URL/folder structure (e.g., /blog/2026/schema-guide).</li>
+      </ul>
+      <p>
+        It is most valuable for sites with:
+      </p>
+      <ul>
+        <li>More than two levels of navigation.</li>
+        <li>Internal linking that follows a logical hierarchy.</li>
+        <li>Pages that benefit from clearer SERP context.</li>
+      </ul>
+      <p>
+        <strong>Avoid</strong> on single-page sites, homepages without hierarchy, or pages with no visible breadcrumbs in the UI. Google may ignore or penalize mismatched markup.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="breadcrumbList-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why BreadcrumbList Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        BreadcrumbList is one of the simplest, highest-ROI schema types in 2026:
+      </p>
+      <ul>
+        <li>Replaces plain URL path in SERPs with clickable, styled breadcrumb trails (improves CTR by 5–15% on average).</li>
+        <li>Helps Google better understand site structure and hierarchy → stronger internal linking signals.</li>
+        <li>Enhances mobile SERP appearance (breadcrumbs often appear above the title on phones).</li>
+        <li>Supports better crawl efficiency and topical clustering.</li>
+        <li>Low implementation effort with high visual and usability payoff. Especially for content-heavy or e-commerce sites.</li>
+      </ul>
+      <p>
+        Google displays breadcrumbs prominently when markup matches the visible navigation trail on the page. Accurate BreadcrumbList markup builds user trust, reduces bounce from misleading paths, and contributes to overall site authority signals.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=BreadcrumbList" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate BreadcrumbList Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section - Content & Engagement Schemas -->
+<section id="content-engagement-faq" class="mb-20 scroll-mt-24">
+  <h2 class="text-3xl md:text-4xl font-black mt-16 mb-12 text-center bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Frequently Asked Questions About Content & Engagement Schema Markup
+  </h2>
+
+  <div class="prose prose-lg prose-orange dark:prose-invert max-w-4xl mx-auto space-y-6">
+    <!-- 1 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Does FAQPage schema still show expanded answers in Google search results?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Yes - as of 2026, FAQPage schema can trigger expandable FAQ rich results (accordion-style questions in SERPs), especially for how-to or support-style content. Google is selective: it favors concise, unique answers that match user intent and avoids over-optimization (e.g., repeating the same FAQ across many pages). Best results come from 3–8 high-quality Q&As per page.</p>
+      </div>
+    </details>
+
+    <!-- 2 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Can HowTo schema appear as a step-by-step carousel in search results?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Yes - HowTo schema is one of the most visual rich results types. When implemented correctly (with step images, duration, supply/tool lists), Google often displays it as a numbered step carousel or expanded steps directly in SERPs. This format significantly boosts click-through rates for instructional content like recipes, DIY guides, tutorials, and software how-tos.</p>
+      </div>
+    </details>
+
+    <!-- 3 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        What’s the best way to mark up embedded videos with VideoObject schema?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Use VideoObject inside the main entity (e.g., Article or HowTo) or as a standalone on video pages. Key properties: thumbnailUrl, uploadDate, duration (ISO 8601), contentUrl or embedUrl, description, and transcript if available. Google prefers videos hosted on the same domain or with clear ownership signals. This can trigger video thumbnails, key moments, and carousel placements in search and Discover.</p>
+      </div>
+    </details>
+
+    <!-- 4 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Does Recipe schema require high-quality photos to show rich results?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Yes - Google almost always requires at least one high-resolution image (min 1200px wide recommended) for Recipe rich results (ingredients list, cook time, ratings, step carousel). Multiple images (ingredient close-ups, final dish, steps) increase chances of visual rich snippets or video-style carousels. Also include calories, cuisineType, keywords, and AggregateRating for stronger eligibility.</p>
+      </div>
+    </details>
+
+    <!-- 5 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        How does AggregateRating work with Event or Review schema for better visibility?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>AggregateRating can be nested inside Event, Recipe, Product, LocalBusiness, or even Review. It shows star ratings and review count in SERPs (e.g., 4.7 ★★★★★ from 312 reviews). For events, it’s powerful for ticketed or recurring events; for reviews, use it on pages with multiple user reviews. Google requires at least 3–5 reviews for stars to appear reliably, and ratings should reflect genuine user feedback to avoid manual actions.</p>
+      </div>
+    </details>
+
+    <!-- 6 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Can I combine multiple content schemas like HowTo + VideoObject on one page?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Yes - and it’s encouraged. For example, a tutorial page can have HowTo as the main entity, with VideoObject nested in steps or as a separate block. Google can display combined rich results (step carousel + video thumbnail). Just ensure the markup is valid, non-duplicate, and accurately represents the page content to avoid suppression.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- FAQPage Schema Section -->
+<section id="faqpage" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    FAQPage Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="faqpage-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is FAQPage Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        FAQPage schema is structured data that marks up a page containing a list of questions and answers. Typically customer support FAQs, product Q&A, or informational how-to content. It uses JSON-LD (the only supported format for rich results) and consists of:
+      </p>
+      <ul>
+        <li><code>@type</code>: "FAQPage".</li>
+        <li>mainEntity (array of Question objects).</li>
+        <li>Each Question has:
+          <ul>
+            <li><code>@type</code>: "Question".</li>
+            <li>Name (the question text).</li>
+            <li>AcceptedAnswer (Answer object with text property).</li>
+          </ul>
+        </li>
+      </ul>
+      <p>
+        Place this markup on any page whose primary purpose is to answer multiple questions (e.g., /faq, /help-center/article, product page with Q&A section). Google requires at least one Question/Answer pair; most sites use 3–10.
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="faqpage-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use FAQPage Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use FAQPage schema on pages where:</p>
+      <ul>
+        <li>The main content is a list of questions followed by detailed answers.</li>
+        <li>You have customer support FAQs, troubleshooting guides, product Q&A, or service FAQs.</li>
+        <li>Content directly answers common user queries (e.g., "How do I…?", "What is…?", "Why does…?").</li>
+      </ul>
+      <p>
+        Ideal examples include:
+      </p>
+      <ul>
+        <li>Dedicated FAQ pages</li>
+        <li>Help articles or knowledge base entries.</li>
+        <li>Product/service pages with an expanded Q&A section.</li>
+        <li>Post-purchase support or returns policy pages.</li>
+      </ul>
+      <p>
+        <strong>Do not</strong> use FAQPage schema to mark up incidental questions (e.g., one Q&A in a blog post). Use Question schema inside Article/HowTo instead. Avoid duplicating the same FAQ across many pages, as Google may suppress rich results.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="faqpage-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why FAQPage Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        FAQPage schema remains one of the most visible and high-CTR rich result types in 2026:
+      </p>
+      <ul>
+        <li>Triggers expandable accordion-style answers directly in Google search results (users see answers without clicking).</li>
+        <li>Often appears at position zero or as featured snippets/People Also Ask expansions.</li>
+        <li>Can increase click-through rates by 20–40% for question-based searches.</li>
+        <li>Improves voice search and mobile SERP visibility (Google Assistant frequently reads FAQ answers).</li>
+        <li>Signals helpful, user-intent-focused content, aligns perfectly with Google’s helpful content system.</li>
+      </ul>
+      <p>
+        When implemented on high-traffic support or informational pages, FAQPage markup captures zero-click and low-friction traffic while driving qualified visitors who already have intent.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=FAQPage" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate FAQPage Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- HowTo Schema Section -->
+<section id="howto" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    HowTo Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="howto-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is HowTo Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        HowTo schema is structured data that describes step-by-step instructions for completing a task or process. It uses JSON-LD and includes:
+      </p>
+      <ul>
+        <li><code>@type</code>: "HowTo".</li>
+        <li>Name (title of the guide).</li>
+        <li>Description (short overview).</li>
+        <li>Image (featured image or step visuals).</li>
+        <li>EstimatedCost (optional, with currency and value).</li>
+        <li>Supply (array of required items).</li>
+        <li>Tool (array of required tools).</li>
+        <li>Step (ordered array of HowToStep objects).</li>
+        <li>Each HowToStep has:
+          <ul>
+            <li><code>@type</code>: "HowToStep".</li>
+            <li>Position (number).</li>
+            <li>Name (short step title).</li>
+            <li>Text (detailed instructions).</li>
+            <li>Image (step-specific photo).</li>
+            <li>Url (optional deep link to step).</li>
+          </ul>
+        </li>
+        <li>totalTime or performTime (ISO 8601 duration, e.g., PT30M)</li>
+      </ul>
+      <p>
+        Place this markup on tutorial, recipe (as alternative to Recipe schema), DIY, installation, repair, or assembly pages where the primary content is numbered/ordered steps.
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="howto-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use HowTo Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use HowTo schema on pages whose main purpose is to teach a process through clear, sequential steps, such as:</p>
+      <ul>
+        <li>DIY home improvement guides.</li>
+        <li>Software setup or configuration tutorials.</li>
+        <li>Craft, cooking (non-recipe), or hobby instructions.</li>
+        <li>Repair/maintenance guides (e.g., "How to change a car battery").</li>
+        <li>Step-by-step assembly instructions.</li>
+      </ul>
+      <p>
+        It works best when:
+      </p>
+      <ul>
+        <li>There are 3+ distinct steps.</li>
+        <li>Steps include images or visuals.</li>
+        <li>The page is focused on one specific task (not a broad overview).</li>
+      </ul>
+      <p>
+        <strong>Avoid</strong> using HowTo for non-instructional content, vague lists, or pages without ordered steps. Use Article or FAQPage instead. Do not misuse it for marketing or promotional "how-to" lists without genuine instructional value.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="howto-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why HowTo Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        HowTo schema delivers some of the most engaging and visual rich results available in 2026:
+      </p>
+      <ul>
+        <li>Triggers step-by-step carousels or expanded numbered steps directly in Google search results.</li>
+        <li>Often appears in position zero, featured snippets, or image carousels for instructional queries.</li>
+        <li>Can increase CTR by 30–50% for how-to searches due to immediate value in SERP.</li>
+        <li>Improves mobile and voice search experience (Google Assistant reads steps aloud).</li>
+        <li>Signals high-quality, user-helpful content, aligns with helpful content and E-E-A-T priorities.</li>
+      </ul>
+      <p>
+        When paired with good step images and VideoObject embeds, HowTo markup can dominate SERPs for practical queries, drive long dwell time, and reduce bounce rates by providing instant guidance.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=HowTo" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate HowTo Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- VideoObject Schema Section -->
+<section id="videoobject" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    VideoObject Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="videoobject-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is VideoObject Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        VideoObject schema is structured data that describes a video on your page. Whether it's embedded, hosted directly, or linked externally. It uses JSON-LD and includes core properties such as:
+      </p>
+      <ul>
+        <li><code>@type</code>: "VideoObject".</li>
+        <li>Name (video title).</li>
+        <li>Description.</li>
+        <li>ThumbnailUrl (array of high-res thumbnail URLs, min 1200px wide recommended).</li>
+        <li>UploadDate (ISO 8601).</li>
+        <li>Duration (ISO 8601, e.g., PT5M30S).</li>
+        <li>ContentUrl (direct video file URL) or embedUrl (iframe/embed source).</li>
+        <li>InteractionStatistic (optional: viewCount).</li>
+        <li>Transcript (text or URL to full transcript – highly recommended in 2026).</li>
+        <li>HasPart (Clip objects for key moments/timestamps).</li>
+      </ul>
+      <p>
+        Place this markup on any page where video is the primary or significant content (e.g., tutorial pages, product demos, explainer videos). It can be nested inside HowTo, Article, or Recipe as a child entity, or used standalone on dedicated video landing pages.
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="videoobject-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use VideoObject Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use VideoObject schema whenever a page contains or embeds a video that adds meaningful value, especially:</p>
+      <ul>
+        <li>Instructional/tutorial videos (pair with HowTo schema).</li>
+        <li>Product demos, unboxings, or explainer videos.</li>
+        <li>Interviews, webinars, or event recordings.</li>
+        <li>Recipe cooking videos.</li>
+        <li>Any content where video is central (not just decorative background).</li>
+      </ul>
+      <p>
+        Best scenarios include:
+      </p>
+      <ul>
+        <li>Pages with self-hosted or YouTube/Vimeo embeds.</li>
+        <li>Content targeting voice search or mobile users.</li>
+        <li>Videos longer than ~30 seconds with clear educational intent.</li>
+      </ul>
+      <p>
+        <strong>Avoid</strong> using it for very short clips (<15s), auto-playing ads, or videos without meaningful audio/visual content. Do not mark up videos that are not the main focus of the page unless nested properly.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="videoobject-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why VideoObject Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        VideoObject schema unlocks powerful visual and multimedia rich results in 2026:
+      </p>
+      <ul>
+        <li>Triggers video thumbnails, play buttons, and duration badges in SERPs.</li>
+        <li>Enables key moments/timestamps (chapter-like carousel) when Clip objects or transcripts are included.</li>
+        <li>Improves visibility in Google Video tab, Discover, and mobile image/video carousels.</li>
+        <li>Boosts CTR significantly (videos with rich snippets often get 2–3× more clicks for relevant queries).</li>
+        <li>Enhances accessibility (transcripts help voice search and screen readers) and E-E-A-T (clear ownership + upload date signals).</li>
+      </ul>
+      <p>
+        With Google's continued push toward multimedia content, well-marked VideoObject (especially with transcripts and thumbnails) can dominate SERPs for how-to, review, and explainer queries, driving longer engagement and better topical authority.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=VideoObject" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate VideoObject Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Recipe Schema Section -->
+<section id="recipe" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Recipe Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="recipe-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is Recipe Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Recipe schema is structured data that describes a food or drink recipe, including ingredients, instructions, cooking times, nutrition, and more. It uses JSON-LD and includes key properties such as:
+      </p>
+      <ul>
+        <li><code>@type</code>: "Recipe".</li>
+        <li>Name (recipe title).</li>
+        <li>Description (short intro).</li>
+        <li>Image (high-resolution photos of the final dish, ingredients, steps – min 1200px wide recommended).</li>
+        <li>Author (Person or Organization).</li>
+        <li>DatePublished (ISO 8601).</li>
+        <li>PrepTime, cookTime, totalTime (ISO 8601 durations, e.g., PT15M, PT45M).</li>
+        <li>RecipeYield (servings, e.g., "4 servings").</li>
+        <li>RecipeIngredient (array of ingredient strings).</li>
+        <li>RecipeInstructions (array of HowToStep objects or text).</li>
+        <li>RecipeCategory, recipeCuisine, keywords (for filtering).</li>
+        <li>Nutrition (NutritionInformation object with calories, fat, etc).</li>
+        <li>AggregateRating and review (for star ratings).</li>
+      </ul>
+      <p>
+        Place this markup on dedicated recipe pages or blog posts where the primary content is a complete recipe. Google strongly prefers multiple high-quality images and clear step-by-step instructions.
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="recipe-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use Recipe Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use Recipe schema on any page that provides a complete, original recipe, such as:</p>
+      <ul>
+        <li>Food blog posts with full ingredient lists and step-by-step directions.</li>
+        <li>Cooking tutorials, meal prep guides, or cocktail recipes.</li>
+        <li>Recipe collections or individual recipe landing pages.</li>
+      </ul>
+      <p>
+        It is especially effective when:
+      </p>
+      <ul>
+        <li>The page includes photos of ingredients, steps, and the finished dish.</li>
+        <li>You have cooking/prep times, servings, and nutrition info.</li>
+        <li>Content targets "how to make [dish]" or "best [cuisine] recipe" searches.</li>
+      </ul>
+      <p>
+        <strong>Avoid</strong> using Recipe schema for non-recipe content (e.g., restaurant menus, ingredient lists without instructions) or very short/simple recipes without visuals. Google may suppress rich results if images are low-quality or missing.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="recipe-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why Recipe Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Recipe schema delivers some of the richest, most visual results in Google search in 2026:
+      </p>
+      <ul>
+        <li>Triggers rich recipe cards with star ratings, cook time, calories, ingredient previews, and step images/carousels.</li>
+        <li>Often appears in Google Discover, image search, and recipe carousels for food-related queries.</li>
+        <li>Can increase CTR by 40–70% for recipe searches due to immediate visual appeal and usefulness.</li>
+        <li>Supports voice search (Google Assistant reads ingredients/steps) and mobile SERPs (prominent photos).</li>
+        <li>Combines powerfully with AggregateRating, HowTo (for steps), and VideoObject (cooking video) for multimedia dominance.</li>
+      </ul>
+      <p>
+        High-quality Recipe markup + good photography is one of the strongest ways food bloggers and recipe sites capture traffic from high-intent searches. Google prioritizes recipes with visuals, ratings, and clear structure. Making this schema essential for competing in the food niche.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=Recipe" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate Recipe Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Event Schema Section -->
+<section id="event" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Event Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="event-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is Event Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Event schema is structured data that describes an event occurring at a specific time and place (or online). It uses JSON-LD and includes core properties such as:
+      </p>
+      <ul>
+        <li><code>@type</code>: "Event" (or subtypes like "BusinessEvent", "ChildrensEvent", "ComedyEvent", "Concert", "Festival", "LectureEvent", "MusicEvent", "PublicationEvent", "ScreeningEvent", "SocialEvent", "SportsEvent", "TheaterEvent", "VirtualLocation")</li>
+        <li>Name (event title).</li>
+        <li>Description.</li>
+        <li>StartDate and endDate (ISO 8601 with timezone, e.g., "2026-04-15T19:00:00+10:00").</li>
+        <li>Location (Place object with name, address, geo coordinates; or VirtualLocation for online events).</li>
+        <li>Image (event poster, venue photo, or promotional images).</li>
+        <li>Performer (Person or Organization array).</li>
+        <li>Organizer (Person or Organization).</li>
+        <li>Offers (price, availability, ticket URLs).</li>
+        <li>EventStatus (EventScheduled, EventPostponed, EventRescheduled, EventCancelled).</li>
+        <li>EventAttendanceMode (OfflineEventAttendanceMode, OnlineEventAttendanceMode, MixedEventAttendanceMode).</li>
+      </ul>
+      <p>
+        Place this markup on dedicated event pages, ticket pages, or blog posts announcing the event. For recurring events, use startDate/endDate ranges or multiple instances.
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="event-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use Event Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use Event schema for any real-world or virtual event with a defined date/time, such as:</p>
+      <ul>
+        <li>Conferences, workshops, webinars, or seminars.</li>
+        <li>Concerts, festivals, theater performances, or sports matches.</li>
+        <li>Local meetups, classes, product launches, or community events.</li>
+        <li>Online live streams or virtual summits.</li>
+      </ul>
+      <p>
+        Ideal placement includes:
+      </p>
+      <ul>
+        <li>Dedicated event landing pages.</li>
+        <li>Event calendar listings.</li>
+        <li>Blog posts or announcements promoting the event.</li>
+        <li>Ticket sales pages (pair with offers property).</li>
+      </ul>
+      <p>
+        <strong>Avoid</strong> using it for past events (unless historical context), vague "coming soon" teasers without dates, or non-time-bound content. Google suppresses rich results for events without upcoming dates or clear location.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="event-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why Event Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Event schema provides highly visible, time-sensitive rich results in 2026:
+      </p>
+      <ul>
+        <li>Triggers event cards in SERPs with date, time, location, ticket links, and map integration.</li>
+        <li>Appears in Google Events tab, Discover, and local search results for "events near me".</li>
+        <li>Can boost CTR significantly for time-bound queries (users see dates/tickets without clicking).</li>
+        <li>Improves visibility in Google Maps and voice search (e.g., "what events are on this weekend").</li>
+        <li>Supports ticketing platforms and online event platforms with offers and attendanceMode.</li>
+      </ul>
+      <p>
+        Accurate Event markup (especially with performer, location, and ticket info) helps events rank in competitive local/event searches, drives ticket sales or attendance, and signals timely, authoritative content to Google.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=Event" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate Event Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Review / AggregateRating Schema Section -->
+<section id="review-aggregaterating" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Review / AggregateRating Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="review-aggregaterating-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is Review / AggregateRating Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Review and AggregateRating schema describe individual user reviews and summarized rating statistics for products, services, businesses, events, recipes, local businesses, software, and more. It uses JSON-LD and includes:
+      </p>
+      <ul>
+        <li><code>@type</code>: "Review" (for single reviews) or "AggregateRating" (summary stats)</li>
+        <li>For AggregateRating:
+          <ul>
+            <li>RatingValue (average score, e.g., 4.7).</li>
+            <li>BestRating (usually 5).</li>
+            <li>WorstRating (usually 1).</li>
+            <li>RatingCount or reviewCount (total number of ratings/reviews).</li>
+          </ul>
+        </li>
+        <li>For Review:
+          <ul>
+            <li>Author (Person or Organization).</li>
+            <li>DatePublished.</li>
+            <li>ReviewBody (full text).</li>
+            <li>ReviewRating (Rating object with value).</li>
+          </ul>
+        </li>
+        <li>ItemReviewed (the entity being reviewed: Product, LocalBusiness, Event, Recipe, etc).</li>
+      </ul>
+      <p>
+        Place AggregateRating on product pages, business listings, recipe posts, event pages, etc. Place individual Review markup when displaying full user reviews on the same page.
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="review-aggregaterating-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use Review / AggregateRating Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use Review / AggregateRating schema whenever you display ratings or reviews for:</p>
+      <ul>
+        <li>Products or services (e-commerce, SaaS).</li>
+        <li>Local businesses (restaurants, hotels, contractors).</li>
+        <li>Recipes (user-submitted or site ratings).</li>
+        <li>Events (ticketed shows, conferences).</li>
+        <li>Software applications, courses, books, movies, etc.</li>
+      </ul>
+      <p>
+        Best scenarios include:
+      </p>
+      <ul>
+        <li>Pages with star ratings visible in the UI.</li>
+        <li>Sites collecting genuine user reviews (at least 3–5 for stars to appear reliably).</li>
+        <li>Combining with other schemas (e.g., AggregateRating inside Recipe, LocalBusiness, Product).</li>
+      </ul>
+      <p>
+        <strong>Avoid</strong> faking reviews, using on pages without visible ratings, or displaying stars without corresponding markup. Google may ignore or penalize mismatched or manipulative implementations. AggregateRating requires real review data; do not use placeholder values.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="review-aggregaterating-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why Review / AggregateRating Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Review / AggregateRating schema is one of the most trusted and conversion-driving rich result types in 2026:
+      </p>
+      <ul>
+        <li>Displays prominent star ratings, average score, and review count directly in SERPs (e.g., 4.8 ★★★★★ from 1,245 reviews).</li>
+        <li>Appears in local pack, product carousels, recipe cards, event listings, and knowledge panels.</li>
+        <li>Can increase CTR by 20–50%: Users trust and click results with visible ratings more.</li>
+        <li>Strengthens E-E-A-T and trust signals (especially when combined with author markup and genuine reviews).</li>
+        <li>Boosts local SEO (stars in map results) and conversion (higher perceived quality for e-commerce, services, events).</li>
+      </ul>
+      <p>
+        Google requires authentic, user-generated reviews and suppresses stars if manipulation is detected. Accurate AggregateRating markup. Especially on high-review-volume pages, significantly improves visibility, click-through, and perceived credibility across many verticals.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=AggregateRating" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate Review / AggregateRating Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section - Advanced & Specialized Schemas -->
+<section id="advanced-specialized-faq" class="mb-20 scroll-mt-24">
+  <h2 class="text-3xl md:text-4xl font-black mt-16 mb-12 text-center bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Frequently Asked Questions About Advanced & Specialized Schema Markup
+  </h2>
+
+  <div class="prose prose-lg prose-orange dark:prose-invert max-w-4xl mx-auto space-y-6">
+    <!-- 1 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Does JobPosting schema help appear in Google for Jobs?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Yes - JobPosting schema is the primary structured data type Google uses to populate the Google for Jobs carousel and job search results. Key requirements include title, description, hiringOrganization, jobLocation (with address or geo), datePosted, validThrough, employmentType, baseSalary (with currency and value), and directApply or application link. Accurate markup significantly increases visibility for job listings.</p>
+      </div>
+    </details>
+
+    <!-- 2 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Can Course schema appear in Google search results as a course carousel?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Yes - Course schema can trigger rich course cards or carousels in SERPs, especially for educational queries. Required properties: name, description, provider (Organization), hasCourseInstance (with courseMode, courseWorkload, location if applicable), and offers (for paid courses). Google favors courses with clear provider branding, duration, and syllabus details. It works best for online courses, university programs, or certification training.</p>
+      </div>
+    </details>
+
+    <!-- 3 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        What properties make SoftwareApplication schema eligible for app rich results?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>SoftwareApplication (or subtypes like WebApplication, MobileApplication) needs name, description, operatingSystem, applicationCategory, offers (price or free), aggregateRating, review, screenshot (multiple URLs), and download/install URLs. Google can display app icons, ratings, screenshots, and price in SERPs or app carousels. Consistent use across app pages boosts visibility in software-related searches.</p>
+      </div>
+    </details>
+
+    <!-- 4 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Does Book schema help books appear in Google Books or rich snippets?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Yes - Book schema (with name, author (Person), isbn, bookFormat, numberOfPages, publisher, datePublished, bookEdition, offers, and aggregateRating) can trigger rich book cards with cover image, author, price, and buy links. It’s most effective on book landing pages or author sites. Google may also connect it to Google Books listings for better discoverability.</p>
+      </div>
+    </details>
+
+    <!-- 5 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        When should I use Dataset schema instead of just describing data in text?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Dataset schema is ideal for publicly available, downloadable datasets (CSV, JSON, Excel, etc.). Key properties: name, description, creator, publisher, datePublished, distribution (DownloadAction with encodingFormat and contentUrl), license, and variableMeasured. It helps datasets appear in Google Dataset Search and rich snippets for data-related queries. Use it on data repository pages, research papers, or open data portals.</p>
+      </div>
+    </details>
+
+    <!-- 6 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        What is Speakable schema and when does it trigger voice results?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>Speakable schema marks up text on a page that is suitable for voice readout (Google Assistant, smart speakers). Use speakable with cssSelector or xpath to point to key sections (e.g., headline, intro paragraph). It triggers in voice search results and Assistant read-aloud features. Best for news articles, how-to guides, or FAQ pages where concise, natural-language text exists.</p>
+      </div>
+    </details>
+
+    <!-- 7 -->
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-sm">
+      <summary class="flex justify-between items-center cursor-pointer p-5 md:p-6 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        How strict is Google on FactCheck schema for claim reviews?
+        <span class="text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-8 text-gray-700 dark:text-gray-300 leading-relaxed">
+        <p>FactCheck (ClaimReview) schema is tightly moderated. It requires claimReviewed, itemReviewed (CreativeWork), author (Organization with fact-checking credentials), datePublished, reviewRating (true/false/mostly-true scale), and url to sources. Google only shows FactCheck rich results for verified fact-checking organizations. Misuse can lead to suppression or penalties, it’s not for general opinion pieces.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- JobPosting Schema Section -->
+<section id="jobposting" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    JobPosting Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="jobposting-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is JobPosting Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        JobPosting schema is structured data that describes a job opening or position being advertised. It uses JSON-LD (required for Google for Jobs) and includes essential properties such as:
+      </p>
+      <ul>
+        <li><code>@type</code>: "JobPosting"</li>
+        <li>Title (job title, e.g., "Senior Frontend Developer").</li>
+        <li>Description (full job description HTML or plain text).</li>
+        <li>HiringOrganization (Organization with name, sameAs, logo).</li>
+        <li>JobLocation (Place with address or geo coordinates; use "Remote" for remote roles).</li>
+        <li>DatePosted (ISO 8601).</li>
+        <li>ValidThrough (expiration date).</li>
+        <li>EmploymentType (FULL_TIME, PART_TIME, CONTRACTOR, TEMPORARY, INTERN, VOLUNTEER, PER_DIEM, OTHER).</li>
+        <li>BaseSalary (MonetaryAmount with currency, value, unitText: HOUR, DAY, WEEK, MONTH, YEAR).</li>
+        <li>ApplicantLocationRequirements (for remote: Country or AdministrativeArea).</li>
+        <li>DirectApply (true/false – preferred true for ATS integration).</li>
+        <li>Application (URL or PostalAddress for apply link).</li>
+      </ul>
+      <p>
+        Place this markup on individual job listing pages (not category/job board homepages). For multi-location roles, use one JobPosting per location or use jobLocationType.
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="jobposting-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use JobPosting Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use JobPosting schema on any page that advertises an open position, including:</p>
+      <ul>
+        <li>Company career pages with individual job detail views.</li>
+        <li>Job board listings (if you control the page).</li>
+        <li>Recruitment landing pages for specific roles.</li>
+      </ul>
+      <p>
+        It is required for:
+      </p>
+      <ul>
+        <li>Eligibility in Google for Jobs carousel and dedicated job search results.</li>
+        <li>Jobs targeting "jobs near me" or specific title/location queries.</li>
+        <li>Remote or hybrid roles (use applicantLocationRequirements).</li>
+      </ul>
+      <p>
+        <strong>Avoid</strong> using it for closed positions, general career overviews, or pages without a clear apply link. Google suppresses outdated or invalid postings (e.g., expired validThrough or missing salary info).
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="jobposting-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why JobPosting Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        JobPosting schema is the gateway to Google's dedicated job ecosystem in 2026:
+      </p>
+      <ul>
+        <li>Triggers rich job cards in Google Search and the Google for Jobs tab with title, company, location, salary range, posting date, and apply button.</li>
+        <li>Appears in job carousels, "jobs near me" results, and mobile search.</li>
+        <li>Can increase application rates by 30–60% through direct visibility and one-click apply paths.</li>
+        <li>Improves local and remote job discoverability (especially with geo + remote flags).</li>
+        <li>Builds trust (salary transparency, organization branding) and reduces unqualified applicants.</li>
+      </ul>
+      <p>
+        Accurate, complete JobPosting markup (especially with salary and directApply) is essential for recruiters, companies, and job boards competing in high-volume searches. Google prioritizes fresh, detailed postings, making this one of the most impactful schema types for career-related content.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=JobPosting" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate JobPosting Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Course Schema Section -->
+<section id="course" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Course Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="course-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is Course Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Course schema is structured data that describes an educational course or training program (online or in-person). It uses JSON-LD and includes core properties such as:
+      </p>
+      <ul>
+        <li><code>@type</code>: "Course"</li>
+        <li>Name (course title).</li>
+        <li>Description (overview or syllabus summary).</li>
+        <li>Provider (Organization or Person offering the course).</li>
+        <li>HasCourseInstance (array of instances with courseMode: "online", "inPerson", "hybrid", "blended"; courseWorkload: ISO 8601 duration; location if in-person).</li>
+        <li>Offers (price, priceCurrency, availability; use "Free" or 0 for free courses).</li>
+        <li>AggregateRating and review (for course ratings).</li>
+        <li>Image (course thumbnail or promotional image).</li>
+        <li>CoursePrerequisites, courseCode, educationalCredentialAwarded (optional but powerful).</li>
+        <li>Instructor (Person array).</li>
+      </ul>
+      <p>
+        Place this markup on individual course landing pages, catalog detail views, or enrollment pages. For multi-session courses, use hasCourseInstance to describe each offering.
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="course-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use Course Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use Course schema on pages that promote or sell educational courses, including:</p>
+      <ul>
+        <li>Online course platforms (Udemy-style, internal LMS, bootcamps).</li>
+        <li>University or college program pages.</li>
+        <li>Professional certification or training courses.</li>
+        <li>Workshop, webinar series, or skill-building programs.</li>
+      </ul>
+      <p>
+        It is most valuable when:
+      </p>
+      <ul>
+        <li>The page has a clear course title, provider, price (or free), and mode (online/in-person).</li>
+        <li>You want to appear in educational search results or course carousels.</li>
+        <li>Content targets "best [skill] course", "online [topic] certification", or "learn [subject]" queries.</li>
+      </ul>
+      <p>
+        <strong>Avoid</strong> using it for general blog posts about learning topics, non-structured tutorials, or pages without a defined course offering. Google suppresses rich results if provider branding, duration, or offers are missing or inconsistent.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="course-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why Course Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Course schema unlocks targeted, high-intent rich results in 2026:
+      </p>
+      <ul>
+        <li>Triggers course cards or carousels in SERPs with title, provider logo, price, rating, duration, and enrollment link.</li>
+        <li>Appears in Google Search educational features, Discover, and "learn" vertical results.</li>
+        <li>Can increase enrollment/click-through rates by 25–50% for education-related searches.</li>
+        <li>Improves visibility in voice search ("best online Python course") and mobile SERPs.</li>
+        <li>Strengthens authority signals when paired with AggregateRating, instructor Person markup, and offers.</li>
+      </ul>
+      <p>
+        With the rise of lifelong learning and online education, accurate Course markup (especially with provider reputation and pricing transparency) helps courses rank prominently for competitive keywords and drives direct conversions from motivated learners.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=Course" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate Course Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- SoftwareApplication Schema Section -->
+<section id="softwareapplication" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    SoftwareApplication Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="softwareapplication-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is SoftwareApplication Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        SoftwareApplication schema describes desktop, mobile, web, or console software/apps. It uses JSON-LD and supports subtypes like WebApplication, MobileApplication, VideoGame, BrowserExtension. Core properties include:
+      </p>
+      <ul>
+        <li><code>@type</code>: "SoftwareApplication" (or subtype).</li>
+        <li>Name (app/software name).</li>
+        <li>Description (overview, features).</li>
+        <li>ApplicationCategory (e.g., "BusinessApplication", "GameApplication", "UtilitiesApplication").</li>
+        <li>OperatingSystem (e.g., "Windows 10+, macOS 11+, iOS 15+, Android 10+").</li>
+        <li>Offers (price, priceCurrency, offers URL; use "0" or "Free" for free apps).</li>
+        <li>AggregateRating and review (star ratings and count).</li>
+        <li>DownloadUrl or installUrl (direct download or store link).</li>
+        <li>Screenshot (array of image URLs showing UI).</li>
+        <li>FeatureList (bullet points of key features).</li>
+        <li>SoftwareVersion, softwareHelp (support URL).</li>
+        <li>FileSize, fileFormat (for downloadable software).</li>
+      </ul>
+      <p>
+        Place this markup on dedicated app/software landing pages, download pages, or product detail views. For mobile apps, include store links (Google Play, App Store) in offers.
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="softwareapplication-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use SoftwareApplication Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use SoftwareApplication schema on pages that promote or distribute software/apps, such as:</p>
+      <ul>
+        <li>SaaS product pages or web app homepages.</li>
+        <li>Mobile/desktop app landing pages.</li>
+        <li>Browser extension galleries or download sites.</li>
+        <li>Game pages (use VideoGame subtype).</li>
+        <li>Tool/utility pages (e.g., PDF converter, image editor).</li>
+      </ul>
+      <p>
+        It is especially powerful when:
+      </p>
+      <ul>
+        <li>You have screenshots, ratings, pricing info, and download/install links.</li>
+        <li>Content targets "best [software type] app", "[app name] download", or "[tool] review" searches.</li>
+        <li>The software is publicly available (free or paid).</li>
+      </ul>
+      <p>
+        <strong>Avoid</strong> using it for internal tools, beta/private apps without public access, or generic software mentions without a dedicated page. Google may ignore markup without screenshots, offers, or ratings.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="softwareapplication-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why SoftwareApplication Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        SoftwareApplication schema provides rich, app-focused visibility in 2026:
+      </p>
+      <ul>
+        <li>Triggers app rich results with icons, screenshots carousel, price, ratings, OS compatibility, and install/download buttons.</li>
+        <li>Appears in software comparison carousels, app search verticals, and related searches.</li>
+        <li>Can increase click-through and installation rates by 30–60% for tool/utility queries.</li>
+        <li>Improves discoverability in mobile SERPs and voice search ("best photo editor app 2026").</li>
+        <li>Builds trust with visible ratings, screenshots, and clear pricing, especially when combined with AggregateRating and review markup.</li>
+      </ul>
+      <p>
+        Accurate markup (with screenshots and store links) helps SaaS, mobile apps, and tools stand out in competitive software searches. Google favors complete, visual, and user-reviewed applications, making this schema essential for driving downloads, sign-ups, and conversions in the software niche.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=SoftwareApplication" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate SoftwareApplication Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Book Schema Section -->
+<section id="book" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Book Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="book-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is Book Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Book schema is structured data that describes a published book (print, ebook, audiobook, etc.). It uses JSON-LD and includes key properties such as:
+      </p>
+      <ul>
+        <li><code>@type</code>: "Book".</li>
+        <li>name (book title).</li>
+        <li>author (Person or Organization array).</li>
+        <li>isbn (International Standard Book Number – 10 or 13 digits).</li>
+        <li>bookFormat (Hardcover, Paperback, EBook, Audiobook, etc).</li>
+        <li>numberOfPages.</li>
+        <li>publisher (Organization).</li>
+        <li>datePublished (ISO 8601).</li>
+        <li>bookEdition (e.g., "2nd Edition").</li>
+        <li>image (cover art URL – high-resolution recommended).</li>
+        <li>description (book summary or blurb).</li>
+        <li>offers (price, priceCurrency, availability, url to buy).</li>
+        <li>aggregateRating and review (for reader ratings).</li>
+        <li>sameAs (links to Goodreads, Amazon, Wikipedia, etc).</li>
+      </ul>
+      <p>
+        Place this markup on dedicated book landing pages, author sites, publisher product pages, or blog posts announcing a book release. For series, you can nest multiple Books under a parent CreativeWork.
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="book-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use Book Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use Book schema on pages that promote, sell, or review a specific book, including:</p>
+      <ul>
+        <li>Author websites with book detail pages.</li>
+        <li>Publisher product/catalog pages.</li>
+        <li>Book review or announcement blog posts.</li>
+        <li>Online bookstore listings (if you control the page).</li>
+        <li>Goodreads-style or personal library pages.</li>
+      </ul>
+      <p>
+        It is particularly valuable when:
+      </p>
+      <ul>
+        <li>You have ISBN, cover image, price/buy links, and author info.</li>
+        <li>Content targets "buy [book title]", "[author] latest book", or "[genre] best books 2026" searches.</li>
+        <li>The page includes ratings or reviews.</li>
+      </ul>
+      <p>
+        <strong>Avoid</strong> using it for general book lists, reading recommendations without a single focus, or unpublished manuscripts. Google may ignore markup without ISBN, publisher, or valid offers.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="book-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why Book Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Book schema delivers rich, commerce-oriented visibility in 2026:
+      </p>
+      <ul>
+        <li>Triggers book rich cards with cover image, author, publisher, price, buy links, ratings, and format details.</li>
+        <li>Can appear in Google Books integration, knowledge panels, and book-related carousels.</li>
+        <li>Increases click-through and purchase rates for title/author-specific searches.</li>
+        <li>Improves discoverability in voice search ("latest book by [author]") and mobile SERPs.</li>
+        <li>Strengthens author/publisher authority when combined with Person/Organization markup, AggregateRating, and sameAs links.</li>
+      </ul>
+      <p>
+        Accurate Book markup (especially with ISBN, high-res cover, and buy options) helps authors, publishers, and reviewers capture direct traffic from book buyers and researchers. Google connects it to Google Books data for even richer presentation, making this schema critical in the publishing and literary niche.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=Book" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate Book Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Dataset Schema Section -->
+<section id="dataset" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Dataset Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="dataset-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is Dataset Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Dataset schema is structured data that describes a collection of structured or tabular data made available for public use (research, machine learning, government data, open data portals, etc.). It uses JSON-LD and includes key properties such as:
+      </p>
+      <ul>
+        <li><code>@type</code>: "Dataset".</li>
+        <li>Name (dataset title).</li>
+        <li>Description (summary of what the dataset contains).</li>
+        <li>Creator, publisher, provider (Person or Organization).</li>
+        <li>DatePublished, dateModified (ISO 8601).</li>
+        <li>Distribution (array of DataDownload objects with:
+          <ul>
+            <li>ContentUrl (direct download link).</li>
+            <li>EncodingFormat (CSV, JSON, XML, Parquet, etc. – use MIME types like "text/csv").</li>
+            <li>Size (file size in bytes or human-readable).</li>
+          </ul>
+        </li>
+        <li>License (URL to license, e.g., Creative Commons, MIT, or "https://creativecommons.org/publicdomain/zero/1.0/").</li>
+        <li>Keywords (array of terms).</li>
+        <li>VariableMeasured (array describing columns/variables).</li>
+        <li>SpatialCoverage, temporalCoverage (geographic/time range).</li>
+        <li>SameAs (links to data portal, GitHub repo, Zenodo, etc).</li>
+      </ul>
+      <p>
+        Place this markup on dedicated dataset landing pages, research papers, open data portals, or repository item pages where the dataset is downloadable or accessible.
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="dataset-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use Dataset Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use Dataset schema whenever you publish or host a publicly accessible dataset, such as:</p>
+      <ul>
+        <li>Open government data portals.</li>
+        <li>Research repositories (Zenodo, Figshare, Dryad).</li>
+        <li>Machine learning dataset pages (Kaggle-style).</li>
+        <li>Scientific publications with supplementary data.</li>
+        <li>Company-released public datasets (e.g., traffic, weather, economic data).</li>
+      </ul>
+      <p>
+        It is especially valuable when:
+      </p>
+      <ul>
+        <li>There is a direct download link (CSV, JSON, etc).</li>
+        <li>The page includes metadata (license, creator, coverage, format).</li>
+        <li>Content targets "open dataset [topic]", "[subject] data download", or "machine learning dataset [category]" searches.</li>
+      </ul>
+      <p>
+        <strong>Avoid</strong> using it for private/internal datasets, small tables embedded in articles, or pages without downloadable files. Google prioritizes datasets with clear distribution links and open licenses.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="dataset-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why Dataset Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Dataset schema drives discoverability in specialized search ecosystems in 2026:
+      </p>
+      <ul>
+        <li>Triggers rich dataset snippets and direct inclusion in Google Dataset Search.</li>
+        <li>Appears in research-oriented results, AI/ML training data queries, and open data portals.</li>
+        <li>Increases downloads and citations by improving visibility for data scientists, researchers, and developers.</li>
+        <li>Supports voice/search intent ("open dataset climate change CSV") and programmatic access.</li>
+        <li>Builds authority for research institutions, governments, and companies releasing public data.</li>
+      </ul>
+      <p>
+        With the explosion of open data and AI training needs, complete Dataset markup (especially with license, distribution links, and variable descriptions) helps datasets rank in Google Dataset Search and related academic/industry queries, often driving significant traffic to research or open-data initiatives.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=Dataset" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate Dataset Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Speakable Schema Section -->
+<section id="speakable" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Speakable Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="speakable-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is Speakable Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Speakable schema marks up specific portions of a webpage that are particularly well-suited to be read aloud by voice assistants (Google Assistant, smart speakers, etc.). It uses JSON-LD and points to content using either CSS selectors or XPath expressions. Key properties include:
+      </p>
+      <ul>
+        <li><code>@type</code>: "SpeakableSpecification".</li>
+        <li>Speakable (array of objects).</li>
+        <li>Each speakable object has:
+          <ul>
+            <li><code>@type</code>: "SpeakableSpecification".</li>
+            <li>CssSelector (array of CSS selectors, e.g., ["h1", ".lead-paragraph", "#intro"]).</li>
+            <li>Or xpath (array of XPath expressions, e.g., ["/html/body/main/h1", "//div[@class='content']/p[1]"]).</li>
+            <li>Repeat (optional boolean: whether to allow repeating the section).</li>
+          </ul>
+        </li>
+      </ul>
+      <p>
+        Place this markup in the <code>&lt;head&gt;</code> or <code>&lt;body&gt;</code> of pages with clean, concise, natural-language text ideal for voice readout (headlines, intros, summaries, FAQs, how-to steps). Google prefers short, self-contained sections (30–90 seconds when spoken).
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="speakable-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use Speakable Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use Speakable schema on pages where voice-first or hands-free consumption makes sense, especially:</p>
+      <ul>
+        <li>News articles and blog posts (headline + lead paragraph).</li>
+        <li>FAQ or Q&A pages (individual questions/answers).</li>
+        <li>HowTo guides (key steps or summary).</li>
+        <li>Recipe pages (ingredients list or quick overview).</li>
+        <li>Product/service explainer pages with concise benefits.</li>
+      </ul>
+      <p>
+        It is most effective when:
+      </p>
+      <ul>
+        <li>The selected text is written in natural, conversational language.</li>
+        <li>Content answers common voice queries ("read me the top tips for…", "what is…").</li>
+        <li>You already have structured data (Article, FAQPage, HowTo, Recipe), Speakable enhances them for voice.</li>
+      </ul>
+      <p>
+        <strong>Avoid</strong> using it for very long sections, technical jargon-heavy text, or content that doesn’t sound good when spoken aloud. Do not overuse on every page. Google may ignore or deprioritize spammy implementations.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="speakable-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why Speakable Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        Speakable schema bridges written content to voice-first experiences in 2026:
+      </p>
+      <ul>
+        <li>Enables Google Assistant and smart speakers to read aloud selected sections naturally.</li>
+        <li>Triggers in voice search results and Assistant responses for supported queries.</li>
+        <li>Improves accessibility (screen readers, hands-free users) and reach on voice devices.</li>
+        <li>Enhances existing rich results (Article, FAQPage, HowTo) by adding voice-read capability.</li>
+        <li>Future-proofs content for increasing voice search share (especially mobile and smart home).</li>
+      </ul>
+      <p>
+        When combined with clean selectors and conversational text, Speakable markup helps high-quality content surface in voice results, increases dwell time signals, and provides a better multi-modal user experience. All while aligning with Google's helpful content and accessibility priorities.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=Speakable" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate Speakable Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FactCheck Schema Section -->
+<section id="factcheck" class="mb-16 scroll-mt-20">
+  <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    FactCheck Schema
+  </h2>
+
+  <!-- What is it? -->
+  <div id="factcheck-what" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">What is FactCheck Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        FactCheck schema (implemented as <strong>ClaimReview</strong>) is structured data that describes a fact-checking article evaluating the accuracy of a specific claim. It uses JSON-LD and includes strict, required properties such as:
+      </p>
+      <ul>
+        <li><code>@type</code>: "ClaimReview".</li>
+        <li>ClaimReviewed (the exact claim being evaluated, in plain text).</li>
+        <li>ItemReviewed (CreativeWork, Claim, or MediaObject being checked).</li>
+        <li>Author (Organization, must be a recognized fact-checking entity with credentials).</li>
+        <li>DatePublished (ISO 8601).</li>
+        <li>ReviewRating (Rating object with:
+          <ul>
+            <li>RatingValue (e.g., 1 = false, 5 = true; or textual scale).</li>
+            <li>BestRating, worstRating.</li>
+            <li>AlternateName (e.g., "False", "Mostly True", "Misleading").</li>
+          </ul>
+        </li>
+        <li>url (link to the full fact-check article)</li>
+        <li>appearance (array of URLs or CreativeWorks where the claim originally appeared)</li>
+      </ul>
+      <p>
+        Place this markup on dedicated fact-check articles or claim-review pages. Google only accepts FactCheck rich results from verified, independent fact-checking organizations (e.g., members of IFCN - International Fact-Checking Network).
+      </p>
+    </div>
+  </div>
+
+  <!-- When to use? -->
+  <div id="factcheck-when" class="scroll-mt-20 mb-10">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">When to use FactCheck Schema?</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>Use FactCheck / ClaimReview schema only when:</p>
+      <ul>
+        <li>You are a qualified, independent fact-checking organization.</li>
+        <li>The page is a formal fact-check article evaluating a specific, verifiable claim.</li>
+        <li>You follow strict journalistic standards (source links, methodology, corrections policy).</li>
+      </ul>
+      <p>
+        Typical use cases include:
+      </p>
+      <ul>
+        <li>Debunking viral misinformation, political statements, health claims, or science topics.</li>
+        <li>Fact-checking articles published by recognized outlets (Snopes, FactCheck.org, PolitiFact, AFP Fact Check, etc).</li>
+      </ul>
+      <p>
+        <strong>Do not</strong> use it for opinion pieces, personal blogs, general commentary, or unverified claims. Google will ignore or suppress the rich result and may penalize misuse. It is one of the most strictly moderated schema types.
+      </p>
+    </div>
+  </div>
+
+  <!-- Why it matters? -->
+  <div id="factcheck-why" class="scroll-mt-20 mb-12">
+    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Why FactCheck Schema matters</h3>
+    <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+      <p>
+        FactCheck schema is highly trusted but tightly controlled in 2026:
+      </p>
+      <ul>
+        <li>Triggers prominent "Fact Check" labels and verdict boxes in SERPs (e.g., "False" with explanation snippet).</li>
+        <li>Appears in Google Fact Check Explorer, knowledge panels, and top-of-page highlights for controversial queries.</li>
+        <li>Drives credibility and traffic for verified fact-checking organizations during high-visibility misinformation events.</li>
+        <li>Helps combat misinformation and improves search quality for users seeking truth on viral claims.</li>
+        <li>Requires rigorous standards, only eligible sites see rich results, which reinforces trust signals.</li>
+      </ul>
+      <p>
+        For legitimate fact-checkers, accurate ClaimReview markup significantly increases visibility and impact during breaking news or viral misinformation waves. For everyone else, it remains off-limits, misuse can lead to manual actions or de-indexing of the page.
+      </p>
+
+      <!-- CTA link at end of Why -->
+      <p class="mt-8 text-center text-lg">
+        <a 
+          href="https://traffictorch.net/schema-generator/?type=ClaimReview" 
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-lg hover:brightness-110 hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          Generate FactCheck / ClaimReview Schema Here →
+        </a>
+      </p>
+    </div>
+
+    <!-- Centered Return to TOC -->
+    <div class="mt-10 text-center">
+      <a 
+        href="#table-of-contents" 
+        class="inline-flex items-center text-orange-600 dark:text-orange-400 hover:underline font-medium text-lg"
+      >
+        ← Return to TOC
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Conclusion & Final CTA -->
+<section id="conclusion" class="mt-20 mb-24 scroll-mt-24">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+      Master Schema Markup – Start Implementing Today
+    </h2>
+
+    <div class="prose prose-lg prose-orange dark:prose-invert mx-auto mb-12 text-gray-800 dark:text-gray-200 leading-relaxed">
+      <p>
+        You've now explored every major schema type, from foundational (Organization, Article, LocalBusiness, Person, BreadcrumbList) to content boosters (FAQPage, HowTo, VideoObject, Recipe, Event, Review/AggregateRating) and advanced/specialized (JobPosting, Course, SoftwareApplication, Book, Dataset, Speakable, FactCheck).
+      </p>
+      <p>
+        Adding the right schema markup in 2026 remains one of the highest-ROI SEO actions: it unlocks rich results, improves CTR, strengthens E-E-A-T signals, boosts voice/visual search visibility, and helps search engines better understand your content and brand.
+      </p>
+      <p>
+        The key takeaways:
+      </p>
+      <ul class="text-left max-w-3xl mx-auto">
+        <li>Use JSON-LD format, it's the most reliable and future-proof</li>
+        <li>Always validate with Google's Rich Results Test and Structured Data Testing Tool</li>
+        <li>Combine types where it makes sense (e.g., HowTo + VideoObject + AggregateRating)</li>
+        <li>Keep markup accurate and user-visible, avoid stuffing or faking data</li>
+        <li>Update regularly: dates, salaries, availability, reviews</li>
+      </ul>
+      <p class="mt-8">
+        Schema isn't just code, it's a direct way to make your content more discoverable, trustworthy, and clickable in an increasingly rich-SERP world.
+      </p>
+    </div>
+
+    <!-- CTA -->
+    <div class="bg-gradient-to-br from-orange-50 via-white to-pink-50 dark:from-orange-950/30 dark:via-gray-900 dark:to-pink-950/30 p-8 md:p-12 rounded-3xl border border-orange-200 dark:border-orange-800 shadow-2xl">
+      <h3 class="text-2xl md:text-3xl font-black mb-6 text-orange-700 dark:text-orange-300">
+        Ready to Add Schema to Your Site?
+      </h3>
+      <p class="text-lg md:text-xl mb-8 text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
+        Use Traffic Torch's free Schema Generator, instant JSON-LD code, copy-paste ready, no signup, no tracking, fully client-side and privacy-first.
+      </p>
+      <a 
+        href="https://traffictorch.net/schema-generator/" 
+        class="inline-block px-10 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-xl rounded-xl hover:brightness-110 hover:scale-105 transition-all duration-300 shadow-xl focus:outline-none focus:ring-4 focus:ring-orange-400/50"
+      >
+        Free Online Schema Generator →
+      </a>
+      <p class="mt-6 text-sm md:text-base text-gray-600 dark:text-gray-400">
+        Works on any device • PWA-ready • Zero data leaves your browser
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+  
+</div>
+</article>
+  
+<!-- Tools Grid (Creative) -->
+      <h2 class="text-3xl md:text-3xl font-black text-center mt-10 mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      SEO - UX - AI Tools
+      </h2>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+  <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+
+    <!-- New First Card: Local SEO -->
+    <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-green-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-green-500/30 group-hover:border-green-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
+          <h3 class="text-green-400 text-2xl font-bold mb-3">Local SEO Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">On-page local audit + NAP, schema, map signals + fixes</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- SEO Intent -->
+    <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+          <h3 class="text-cyan-400 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Intent matching + E-E-A-T audit + fixes</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- Product SEO Tool -->
+    <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🛒</div>
+          <h3 class="text-orange-400 text-2xl font-bold mb-3">Product SEO Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Product page audit + eCommerce signals</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- Quit Risk -->
+    <a href="/quit-risk-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-emerald-400 text-7xl mb-6 group-hover:animate-bounce">⚡</div>
+          <h3 class="text-emerald-400 text-2xl font-bold mb-3">Quit Risk Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">UX friction audit + bounce prediction + optimizations</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- Keywords -->
+    <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-purple-400 text-7xl mb-6 group-hover:animate-bounce">🗝️</div>
+          <h3 class="text-purple-400 text-2xl font-bold mb-3">Keyword Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">On-page keyword placement score + density fixes</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- VS -->
+    <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+          <h3 class="text-red-400 text-2xl font-bold mb-3">VS Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Competitive keyword gap analysis + beat strategies</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+    
+        <!-- Ai Search -->
+    <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+          <h3 class="text-orange-400 text-2xl font-bold mb-3">Ai Search Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Optimize for Perplexity, Grok, Gemini, ChatGPT Search</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- AI Content -->
+    <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+          <h3 class="text-pink-400 text-2xl font-bold mb-3">AI Content Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Detect AI patterns + humanize content + forecasts</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- New Last Card: All Tools -->
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-indigo-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-indigo-500/30 group-hover:border-indigo-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-indigo-400 text-7xl mb-6 group-hover:animate-bounce">🧰</div>
+          <h3 class="text-indigo-400 text-2xl font-bold mb-3">All Tools</h3>
+          <p class="text-gray-800 dark:text-gray-100">Complete suite - instant audits, gaps, fixes & forecasts</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Explore All →
+        </span>
+      </div>
+    </a>
+
+  </div>
+</div>
+  
+<!-- Author Bio -->
+<section class="max-w-5xl mx-auto my-24 px-4 sm:px-6 lg:px-8">
+  <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+    <div class="bg-gradient-to-br from-orange-500 to-pink-600 py-12 px-8 text-center">
+      <img 
+        src="/logo-512.webp" 
+        alt="Traffic Torch – Schema & SEO Education" 
+        class="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto mb-6 object-cover border-8 border-white/80 shadow-xl"
+        loading="lazy"
+      >
+      <h3 class="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
+        Traffic Torch Team
+      </h3>
+      <p class="text-xl md:text-2xl text-white/95 max-w-3xl mx-auto font-medium">
+        Structured Data • Schema Markup • SEO Education
+      </p>
+    </div>
+
+    <div class="p-6 md:p-10 text-center space-y-8">
+      <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+        The Traffic Torch team creates in-depth, up-to-date guides on schema markup and structured data to help site owners, developers, content creators, and SEOs unlock rich results, improve click-through rates, and build stronger entity authority in search engines.
+      </p>
+
+      <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+        This complete schema help guide distills the latest schema.org specifications (2026), Google Search Central documentation, and real-world implementation best practices into clear What / When / Why explanations - so you can confidently apply JSON-LD to your site.
+      </p>
+
+      <div class="pt-6 space-y-4">
+        <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 font-medium">
+          Core Focus: Schema.org Types • JSON-LD Implementation • Rich Results Optimization • E-E-A-T Signals • Voice & Visual Search Readiness
+        </p>
+
+        <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 italic">
+          Always based on current Google guidelines, structured data testing tools, and ongoing rich result observation.
+        </p>
+
+        <div class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-8">
+          <p>Published: 2026-03-10</p>
+          <p>Last updated: 2026-03-11</p>
+        </div>
+      </div>
+
+      <!-- Final CTA in bio area (reinforces the generator tool) -->
+      <div class="mt-12">
+        <a 
+          href="https://traffictorch.net/schema-generator/" 
+          class="inline-block px-10 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-xl rounded-xl hover:brightness-110 hover:scale-105 transition-all duration-300 shadow-xl focus:outline-none focus:ring-4 focus:ring-orange-400/50"
+        >
+          Generate Schema JSON-LD Online →
+        </a>
+        <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+          Instant • No signup • Privacy-first • Client-side only
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+<!-- Bottom Banner – Schema Generator focused -->
+<section class="bottom-banner mt-12 mb-16 px-4 sm:px-6 lg:px-8" aria-label="Traffic Torch Schema Generator">
+  <picture style="--banner-ratio: 36.25%;"> <!-- 290 / 800 = 36.25% aspect ratio -->
+    <source 
+      media="(max-width: 640px)" 
+      srcset="/schema-generator/images/schema-markup-banner-480x174.webp">
+    <img 
+      src="/schema-generator/images/schema-markup-banner-800x290.webp" 
+      srcset="/schema-generator/images/schema-markup-banner-480x174.webp 480w,
+              /schema-generator/images/schema-markup-banner-800x290.webp 800w" 
+      sizes="(max-width: 640px) 100vw, 800px"
+      alt="Traffic Torch Schema Markup Help Guide for JSON-LD rich results: FAQPage, HowTo, Article, LocalBusiness, Product, Review, Event, Course, JobPosting & more"
+      class="w-full rounded-2xl shadow-xl object-cover mx-auto"
+      width="800"
+      height="290"
+      loading="lazy"
+      decoding="async">
+  </picture>
+</section>
+
+</main>
+ 
+<!-- Footer -->
+<div id="footer-placeholder"></div>
+</div>
+</div>
+
+
+  <!-- Load JS last for speed -->
+  <script src="/main-v1.1.js" type="module"></script>
+</body>
+</html>

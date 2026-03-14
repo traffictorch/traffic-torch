@@ -1,0 +1,1185 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+    <!-- SEO Title -->
+    <title>SEO Entity Extractor and Audit Tool | Traffic Torch</title>
+   
+    <!-- Meta Description -->
+    <meta name="description" content="SEO intent analyzer and keyword intent tool for on-page analysis. Evaluate user search intent, E-E-A-T signals, and get priority fixes for faster ranking improvements.">
+   
+    <!-- Robots Meta -->
+    <meta name="robots" content="index, follow">
+   
+    <!-- Canonical Link -->
+    <link rel="canonical" href="https://traffictorch.net/seo-entity-extractor-tool/">
+   
+    <!-- Color Scheme Support -->
+    <meta name="color-scheme" content="dark light">
+    
+      <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <!-- Referrer Policy (security + privacy best practice) -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/seo-entity-extractor-tool/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/seo-entity-extractor-tool/">
+   
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Search Intent Tool: AI-Powered SEO Intent Analyzer">
+    <meta property="og:description" content="Analyze keyword search intent, align content with user intent, and boost SEO with our free intent analysis tool.">
+    <meta property="og:image" content="https://traffictorch.net/seo-entity-extractor-tool/images/seo-intent-audit-tool.webp">
+    <meta property="og:url" content="https://traffictorch.net/seo-entity-extractor-tool/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Traffic Torch">
+   
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Keyword Intent Checker & E-E-A-T Auditor | Traffic Torch">
+    <meta name="twitter:description" content="Real-time search intent evaluator for content quality and ranking factors. Get actionable insights now.">
+    <meta name="twitter:image" content="https://traffictorch.net/seo-entity-extractor-tool/images/seo-intent-audit-tool.webp">
+    <meta name="twitter:site" content="@Guitaralize">
+   
+    <!-- Manifest for PWA -->
+    <link rel="manifest" href="/manifest.json">
+   
+    <!-- Icon -->
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+    <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+    <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+   
+<!-- Structured Data (JSON-LD) - Merged Single Block -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "Free SEO Intent Analyzer Tool",
+      "description": "Instant search intent analysis tool: Classify keyword intent (informational, navigational, commercial, transactional), audit on-page alignment and evaluates E-E-A-T signals.",
+      "url": "https://traffictorch.net/seo-entity-extractor-tool/",
+      "speakable": {
+  "@type": "SpeakableSpecification",
+  "cssSelector": [
+    "#eeat-faq",
+    "p.text-xl.text-gray-500.dark\\:text-gray-300.mt-6",
+    ".max-w-4xl.mx-auto.my-16 details div.mt-8",
+    "section.max-w-4xl.mx-auto.mt-12.mb-12 p.text-2xl.md\\:text-3xl.font-bold.text-center.mb-10.leading-tight",
+    "div.max-w-4xl.mx-auto.my-16 details div.mt-8 section.space-y-5:first-child"
+  ]
+},
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Traffic Torch SEO Intent Analyzer",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Free SEO intent analysis tool. Classifies keyword search intent, checks on-page content alignment, audits E-E-A-T signals, provides 0–100 intent match score, prioritized AI fixes, competitive gap insights, and ranking improvement forecasts.",
+      "url": "https://traffictorch.net/seo-entity-extractor-tool/",
+      "image": "https://traffictorch.net/seo-entity-extractor-tool/images/seo-intent-tool.webp"
+    },
+    {
+      "@type": "Article",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/seo-entity-extractor-tool/"
+      },
+      "headline": "Free SEO Intent Analyzer: Match Content to User Search Intent",
+      "description": "Instant tool to classify keyword intent, audit on-page alignment, evaluate E-E-A-T, and get prioritized AI fixes. Improve rankings by perfectly matching searcher needs.",
+      "url": "https://traffictorch.net/seo-entity-extractor-tool/",
+      "image": [
+        {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/seo-entity-extractor-tool/images/seo-intent-tool.webp",
+          "contentUrl": "https://traffictorch.net/seo-entity-extractor-tool/images/seo-intent-tool.webp",
+          "width": 1200,
+          "height": 630,
+          "caption": "Traffic Torch SEO Intent Tool dashboard: AI-powered search intent classification, on-page alignment audit, E-E-A-T evaluation, content gap detection, and prioritized optimization fixes"
+        },
+        {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/images/tool-banners/seo-intent-tool-infographic-1200w.webp",
+          "contentUrl": "https://traffictorch.net/images/tool-banners/seo-intent-tool-infographic-1200w.webp",
+          "width": 1200,
+          "height": 263,
+          "caption": "Traffic Torch SEO Intent Tool overview: AI-powered search intent analysis, content gap detection, user query alignment, and E-E-A-T optimization recommendations for 2026 rankings"
+        },
+        {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/seo-intent-tool/images/seo-eeat-infographic-800w.webp",
+          "contentUrl": "https://traffictorch.net/seo-intent-tool/images/seo-eeat-infographic-800w.webp",
+          "width": 800,
+          "height": 1200,
+          "caption": "E-E-A-T at a Glance: The 4 pillars (Experience, Expertise, Authoritativeness, Trustworthiness) powering modern SEO rankings in neon cyber grid style"
+        },
+        {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/seo-intent-tool/images/seo-intent-infographic-800w.webp",
+          "contentUrl": "https://traffictorch.net/seo-intent-tool/images/seo-intent-infographic-800w.webp",
+          "width": 800,
+          "height": 1200,
+          "caption": "The SEO Intent Journey: Build content depth → readability → schema markup step-by-step for better rankings and user satisfaction in 2026"
+        }
+      ],
+      "author": {
+        "@type": "Person",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/logo-512.webp"
+        }
+      },
+      "datePublished": "2025-11-27T14:56:00+11:00",
+      "dateModified": "2026-03-06T13:06:00+11:00"
+    },
+    {
+      "@type": "Person",
+      "name": "Ylia Callan",
+      "url": "https://yliacallan.github.io/",
+      "sameAs": [
+        "https://www.linkedin.com/in/ylia-callan-8b889976/",
+        "https://x.com/guitaralize",
+        "https://traffictorch.net/"
+      ],
+      "image": "/images/ylia-callan-320w.webp",
+      "jobTitle": "Founder & Builder",
+      "description": "Musician, Author, Web Designer, and Creator of Privacy-First AI SEO/UX Tools like Traffic Torch",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Traffic Torch",
+        "url": "https://traffictorch.net/"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://traffictorch.net/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Traffic Torch SEO Intent Analyzer",
+          "item": "https://traffictorch.net/seo-entity-extractor-tool/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://traffictorch.net/seo-entity-extractor-tool/#faq",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/seo-entity-extractor-tool/"
+      },
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why is real experience so important for SEO in 2026?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Google now heavily weighs first-hand, real-world experience to differentiate helpful content from generic or AI-only output. Especially for reviews, tutorials, and \"worth it\" queries. Pages showing personal involvement (e.g., photos, case studies, dated insights) gain priority in rankings and AI Overviews. Traffic Torch detects missing experience signals in seconds (like lack of original examples or author context) and suggests targeted priority fixes, such as embedding user stories or timestamps, often recovering 20-40% of lost visibility in experiential niches."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How can I demonstrate true expertise to Google?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Expertise shines through author credentials, in-depth accurate knowledge, citations, and consistent quality> Critical for YMYL topics (health, finance, legal) where unqualified advice gets demoted. Traffic Torch audits author markup, content accuracy signals, and topical depth gaps, then generates precise recommendations like adding expert bios, peer citations, or credential schema to prove mastery and improve rankings in trust-sensitive searches."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What's the fastest way to build topical authority?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Topical authority comes from comprehensive, interconnected coverage of a subject cluster. Recognized via internal linking, content breadth, and external mentions. In 2026, fragmented sites lose to holistic ones in both SERPs and AI citations. Traffic Torch maps your topical clusters vs. competitors, identifies coverage gaps, and provides priority fix outlines + internal link fixes to accelerate authority building and capture more in-depth query traffic."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are the strongest trust signals Google looks for today?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Top trust signals include HTTPS, transparent about/contact pages, privacy policy, accurate info, no deceptive tactics, positive reputation (reviews, citations), and secure UX. Trust is the foundation of E-E-A-T, without it, other signals weaken. Traffic Torch scans for missing trust elements (e.g., outdated policies, low domain age signals) and delivers prioritized, actionable fixes to boost credibility, reduce bounce rates, and strengthen performance in transactional + informational intents."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much depth does content really need to rank well?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Depth should fully satisfy search intent. Longer isn't always better; comprehensive yet concise wins (often 1,500–3,000+ words for competitive topics, with visuals, subheadings, data). Shallow pages get outranked or ignored in AI summaries. Traffic Torch analyzes competitor depth + your page completeness and flags thin spots."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What's the best readability target for SEO content in 2026?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Aim for Flesch Reading Ease 60–70 (roughly Grade 6–8 level) for broad audiences. Short sentences, active voice, subheadings, lists, and scannable structure boost engagement and reduce bounce rates. Overly complex text hurts UX signals. Traffic Torch scores your readability in real-time, highlights problem areas (long sentences, passive voice), and provides formatting tips to make content more accessible and mobile-friendly while preserving expertise."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+   
+  <!-- Main Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/seo-entity-extractor-tool/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/seo-entity-extractor-tool/style-v1.0.css">
+  </noscript>
+
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+
+  <link rel="stylesheet" media="print" href="/seo-entity-extractor-tool/print-v1.0.css">
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
+        </a>
+        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
+        </a>
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⛔</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🗝️</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+        <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📋</span> <span class="sidebar-text hidden">Help Guides</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
+              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⛔ Quit Risk</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">🗝️ Keywords</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+              <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition">📋 Help Guides</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+		<main class="container mx-auto px-4 py-4 max-w-5xl">
+        <div class="text-center mb-16">
+          <h1 class="text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight">
+            SEO Entity Extractor and Audit Tool
+          </h1>
+          <p class="text-xl text-gray-500 dark:text-gray-300 mt-6">
+            Does Google trust your E-E-A-T signals? Use our keyword intent tool for deep analysis.<br class="hidden md:block">
+          </p>
+        </div>
+      
+<form id="entity-form" class="max-w-2xl mx-auto mb-20 space-y-4">
+  <div class="flex flex-col md:flex-row gap-4">
+    <input
+      type="text"
+      id="url-input"
+      placeholder="example.com/your-page"
+      aria-label="Enter website URL to analyze"
+      required
+      class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+    />
+    <button
+      type="submit"
+      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+    >
+      Analyze 🧬
+    </button>
+  </div>
+</form>
+
+<!-- Loading indicator - tight spacing, centered, modern spinner -->
+<section id="loading" class="hidden text-center mt-0">
+  <div class="inline-flex flex-col items-center gap-4">
+    <div class="w-20 h-20 border-8 border-gray-200 dark:border-gray-700 border-t-orange-500 dark:border-t-orange-400 rounded-full animate-spin"></div>
+    <p class="text-2xl font-medium text-orange-600 dark:text-orange-400">
+      Analyzing Entities...
+    </p>
+  </div>
+</section>
+
+<!-- Empty results container - JavaScript will fill this dynamically -->
+<section id="results" class="hidden space-y-16">
+  <!-- All report content (score, modules, gaps, forecast, fixes) goes here via JS -->
+</section>
+
+    <div class="center-btn-container mt-12">
+  <button
+    class="copy-link-btn"
+    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
+    data-text="https://traffictorch.net/seo-entity-extractor-tool/"
+  >
+    Copy Link? 🔗
+  </button>
+</div>
+
+<section id="eeat-faq" class="container mx-auto px-4 py-12 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    E-E-A-T Essentials: Most Common Questions Answered
+  </h2>
+  <p class="text-center text-lg mb-8 max-w-3xl mx-auto text-gray-700 dark:text-gray-300">
+    Traffic Torch instantly scans your site's Experience, Expertise, Authority, Trust, Content Depth & Readability. Then delivers AI-powered fixes and education to align with Google's 2026 quality standards.
+  </p>
+  <div class="space-y-6 max-w-3xl mx-auto">
+    <!-- Experience -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Why is real experience so important for SEO in 2026?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Google now heavily weighs first-hand, real-world experience to differentiate helpful content from generic or AI-only output. Especially for reviews, tutorials, and "worth it" queries. Pages showing personal involvement (e.g., photos, case studies, dated insights) gain priority in rankings and AI Overviews. Traffic Torch detects missing experience signals in seconds (like lack of original examples or author context) and suggests targeted priority fixes, such as embedding user stories or timestamps, often recovering 20-40% of lost visibility in experiential niches.
+      </div>
+    </details>
+
+    <!-- Expertise -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How can I demonstrate true expertise to Google?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Expertise shines through author credentials, in-depth accurate knowledge, citations, and consistent quality> Critical for YMYL topics (health, finance, legal) where unqualified advice gets demoted. Traffic Torch audits author markup, content accuracy signals, and topical depth gaps, then generates precise recommendations like adding expert bios, peer citations, or credential schema to prove mastery and improve rankings in trust-sensitive searches.
+      </div>
+    </details>
+
+    <!-- Authority -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What's the fastest way to build topical authority?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Topical authority comes from comprehensive, interconnected coverage of a subject cluster. Recognized via internal linking, content breadth, and external mentions. In 2026, fragmented sites lose to holistic ones in both SERPs and AI citations. Traffic Torch maps your topical clusters vs. competitors, identifies coverage gaps, and provides priority fix outlines + internal link fixes to accelerate authority building and capture more in-depth query traffic.
+      </div>
+    </details>
+
+    <!-- Trust -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What are the strongest trust signals Google looks for today?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Top trust signals include HTTPS, transparent about/contact pages, privacy policy, accurate info, no deceptive tactics, positive reputation (reviews, citations), and secure UX. Trust is the foundation of E-E-A-T, without it, other signals weaken. Traffic Torch scans for missing trust elements (e.g., outdated policies, low domain age signals) and delivers prioritized, actionable fixes to boost credibility, reduce bounce rates, and strengthen performance in transactional + informational intents.
+      </div>
+    </details>
+
+    <!-- Content Depth -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How much depth does content really need to rank well?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Depth should fully satisfy search intent. Longer isn't always better; comprehensive yet concise wins (often 1,500–3,000+ words for competitive topics, with visuals, subheadings, data). Shallow pages get outranked or ignored in AI summaries. Traffic Torch analyzes competitor depth + your page completeness and flags thin spots.
+      </div>
+    </details>
+
+    <!-- Readability -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What's the best readability target for SEO content in 2026?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Aim for Flesch Reading Ease 60–70 (roughly Grade 6–8 level) for broad audiences. Short sentences, active voice, subheadings, lists, and scannable structure boost engagement and reduce bounce rates. Overly complex text hurts UX signals. Traffic Torch scores your readability in real-time, highlights problem areas (long sentences, passive voice), and provides formatting tips to make content more accessible and mobile-friendly while preserving expertise.
+      </div>
+    </details>
+  </div>
+</section>
+	
+<!-- Enhanced How the SEO Intent Tool Works Accordion -->
+<div class="max-w-4xl mx-auto my-16">
+  <details class="group">
+    <summary class="px-3 py-4 text-1xl text-center font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+      <span>How SEO Intent Analyzer Works?</span>
+      <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-2 py-10 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 space-y-10 text-gray-700 dark:text-gray-300 leading-relaxed">
+     
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold text-orange-600 dark:text-orange-400">Instant On-Page Intent & Quality Analysis</h2>
+        <p class="text-lg">
+          This advanced SEO intent analyzer performs a deep, real-time analysis of your webpage to evaluate how well it satisfies <strong>user search intent</strong> while demonstrating strong <strong>E-E-A-T signals</strong> (Experience, Expertise, Authoritativeness, Trustworthiness).
+        </p>
+        <p class="text-lg">
+          It examines content depth, readability, author signals, schema markup, first-person experience indicators, and title/content alignment with dominant intent patterns. All critical factors search engines use to rank pages.
+        </p>
+        <p class="text-lg">
+          Special emphasis is placed on first-hand experience signals (such as "I" statements, original photos, or case studies), as search engines increasingly reward demonstrated real-world experience.
+        </p>
+        <p class="text-base italic bg-gray-100 dark:bg-gray-800 p-4 rounded-xl">
+          All processing is 100% client-side via a secure CORS proxy. Your URL and content are never stored or shared. Complete privacy guaranteed.
+        </p>
+      </section>
+      <section class="space-y-6">
+        <h3 class="text-2xl font-bold text-orange-600 dark:text-orange-400">The Four Primary Search Intent Types Evaluated</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl border-l-4 border-blue-500">
+            <h4 class="font-bold text-blue-600 dark:text-blue-400">Informational Intent</h4>
+            <p class="mt-2 text-sm">Users want to learn or understand something - "how to", "what is", guides, tutorials, explanations.</p>
+          </div>
+          <div class="p-6 bg-green-50 dark:bg-green-900/20 rounded-xl border-l-4 border-green-500">
+            <h4 class="font-bold text-green-600 dark:text-green-400">Commercial Investigation</h4>
+            <p class="mt-2 text-sm">Users researching before purchase - "best", "vs", "review", "comparison", "top 10".</p>
+          </div>
+          <div class="p-6 bg-purple-50 dark:bg-purple-900/20 rounded-xl border-l-4 border-purple-500">
+            <h4 class="font-bold text-purple-600 dark:text-purple-400">Transactional Intent</h4>
+            <p class="mt-2 text-sm">Users ready to buy or convert — product pages, pricing, checkout, sign-up forms.</p>
+          </div>
+          <div class="p-6 bg-orange-50 dark:bg-orange-900/20 rounded-xl border-l-4 border-orange-500">
+            <h4 class="font-bold text-orange-600 dark:text-orange-400">Local Intent</h4>
+            <p class="mt-2 text-sm">Users seeking nearby services or locations — "near me", store hours, addresses, maps.</p>
+          </div>
+        </div>
+      </section>
+      <section class="space-y-5">
+        <h3 class="text-2xl font-bold text-orange-600 dark:text-orange-400">How Search Engines Evaluate Your Page</h3>
+        <p class="text-lg">
+          Modern search engines go far beyond keywords. They analyze hundreds of signals to determine if your content truly satisfies what users are searching for.
+        </p>
+        <ul class="space-y-3 text-base list-disc list-inside ml-4">
+          <li>Does the title and H1 directly mirror the user's query and need?</li>
+          <li>Is there clear proof of first-hand experience ("I" statements, case studies, photos)?</li>
+          <li>Is the content comprehensive enough to be the "best answer"?</li>
+          <li>Is it easy to read with short sentences, subheadings, and scannable formatting?</li>
+          <li>Are there author credentials and schema markup building trust?</li>
+          <li>Does the page deliver excellent Core Web Vitals and mobile experience?</li>
+        </ul>
+        <p class="text-lg font-medium">
+          This SEO intent analyzer replicates that evaluation process and gives you an objective score out of 100, plus prioritized, actionable fixes.
+        </p>
+      </section>
+      <section class="bg-gradient-to-r from-orange-100 to-pink-100 dark:from-orange-900/30 dark:to-pink-900/30 p-8 rounded-2xl border border-orange-300 dark:border-orange-700">
+        <h3 class="text-2xl font-bold mb-4 text-orange-700 dark:text-orange-300">Key Insight: Intent + Quality = Rankings</h3>
+        <p class="text-base leading-relaxed">
+          The primary reason pages fail to rank, even with strong backlinks, is poor intent alignment or weak E-E-A-T signals, especially missing first-hand experience. Search engines reward content that is helpful, trustworthy, and directly satisfies searcher needs. Perfect intent match + demonstrated expertise = sustained rankings.
+        </p>
+      </section>
+    </div>
+  </details>
+</div>
+
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+	
+<!-- Deep Dive into SEO Intent Modules -->
+<section class="py-20 bg-gray dark:bg-gray-900">
+  <div class="max-w-7xl mx-auto px-2">
+    <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      Deep Dive into SEO Intent Modules
+    </h2>
+    <div id="metric-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
+     <!-- 7 cards will be injected here by script.js -->
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IS MODERN SEARCH INTENT OPTIMIZATION     -->
+<section class="max-w-4xl mx-auto mt-12 mb-12 px-4 sm:px-6 lg:px-8">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    What is Modern Search Intent Optimization?
+  </h2>
+
+  <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-500 dark:text-gray-200">
+    <strong>Modern search intent optimization means creating content that perfectly matches what the searcher actually wants. So Google ranks it higher, users stay longer, and AI engines quote it confidently.</strong>
+  </p>
+
+  <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
+    <p>Most sites still chase keywords: stuff exact phrases, chase volume, write long generic content. That approach now gets ignored by search engines and punished by users who bounce instantly.</p>
+    <p class="font-semibold text-purple-700 dark:text-purple-300">
+      Today’s winning pages nail the true user goal behind every query. Across these four core intent types:
+    </p>
+    <ul class="list-none space-y-3 font-medium text-gray-500 max-w-lg mx-auto">
+      <li>→ Informational: "learn / understand / how to".</li>
+      <li>→ Commercial investigation: "compare / best / review".</li>
+      <li>→ Transactional: "buy / sign up / get quote".</li>
+      <li>→ Navigational + local: "brand / near me / specific place".</li>
+    </ul>
+    <p class="pt-4">
+      Traffic Torch SEO Intent Analyzer instantly scores how well your page satisfies intent + shows strong E-E-A-T signals.
+    </p>
+  </div>
+</section>
+
+<!-- Two-column infographic grid – stacks on mobile, side-by-side on md+ -->
+<div class="grid md:grid-cols-2 gap-4 my-4 max-w-6xl mx-auto px-4 lg:px-0">
+  <!-- Cyber-Futuristic E-E-A-T variant -->
+  <figure class="overflow-hidden p-4 rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10 transition-all hover:shadow-orange-500/30">
+    <img
+      src="/seo-intent-tool/images/seo-eeat-infographic-800w.webp"
+      alt="SEO E-E-A-T Infographic – Neon Cyber Grid showing Experience, Expertise, Authoritativeness, Trustworthiness pillars"
+      class="w-full h-auto object-cover"
+      width="800"
+      height="1200"
+      loading="lazy"
+      decoding="async"
+      sizes="(max-width: 767px) 100vw, 50vw">
+    <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
+      E-E-A-T at a Glance: The 4 pillars powering modern SEO rankings.
+    </figcaption>
+  </figure>
+  
+  <!-- Journey Style SEO Intent variant -->
+  <figure class="overflow-hidden p-4 rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10 transition-all hover:shadow-orange-500/30">
+    <img
+      src="/seo-intent-tool/images/seo-intent-infographic-800w.webp"
+      alt="SEO Intent Journey Infographic – Vertical flow from Content Depth → Readability → Schema Markup for better rankings and user satisfaction"
+      class="w-full h-auto object-cover"
+      width="800"
+      height="1200"
+      loading="lazy"
+      decoding="async"
+      sizes="(max-width: 767px) 100vw, 50vw">
+    <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
+      The SEO Intent Journey: Build depth, readability, and schema step-by-step for 2026 success.
+    </figcaption>
+  </figure>
+</div>
+
+<!-- 5 HIGH-IMPACT MOVES TO MASTER SEARCH INTENT   -->
+<div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    5 High-Impact Moves to Win on Search Intent
+  </h2>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
+      <span class="text-4xl flex-shrink-0 text-gray-500">1</span>
+      <div>
+        <strong class="text-gray-500">Identify the dominant intent type</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Analyze top SERP results — does the query want info, comparison, purchase, or navigation? Build exactly that format.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 p-7 rounded-2xl border border-pink-100 dark:border-pink-800/40">
+      <span class="text-4xl flex-shrink-0 text-gray-500">2</span>
+      <div>
+        <strong class="text-gray-500">Lead with the complete answer</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Give the core solution in the first 150–250 words. Bold, clear, scannable. Satisfy intent instantly.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/30 dark:to-red-900/30 p-7 rounded-2xl border border-rose-100 dark:border-rose-800/40">
+      <span class="text-4xl flex-shrink-0 text-gray-500">3</span>
+      <div>
+        <strong class="text-gray-500">Match SERP content format</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Lists, tables, videos, calculators, comparisons. Mirror what already ranks to signal perfect relevance.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 p-7 rounded-2xl border border-indigo-100 dark:border-indigo-800/40">
+      <span class="text-4xl flex-shrink-0 text-gray-500">4</span>
+      <div>
+        <strong class="text-gray-500">Show strong E-E-A-T signals</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Visible author bio, first-hand experience, real data, credentials, dates. Equals Google & AI trust booster.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
+      <span class="text-4xl flex-shrink-0 text-gray-500">5</span>
+      <div>
+        <strong class="text-gray-500">Use intent-aligned schema & structure</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">FAQ, HowTo, Product, Review schema. Makes answers extractable for rich results & AI citations.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- COMPARISON TABLE – OLD vs MODERN INTENT       -->
+<section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-16">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    Old Keyword SEO vs Modern Intent-First
+  </h2>
+
+  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+    <table class="w-full text-left min-w-[640px]">
+      <thead class="bg-gradient-to-r from-purple-600 to-cyan-600 text-white">
+        <tr>
+          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
+          <th class="px-6 py-5 text-lg font-semibold">Old-School Keyword SEO Focus</th>
+          <th class="px-6 py-5 text-lg font-semibold">Modern Intent-First Mastery Focus</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <tr>
+          <td class="px-6 py-5 font-medium text-gray-500">Primary Goal:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rank for high-volume keywords</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Fully satisfy user goal → higher engagement & rankings</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium text-gray-500">Content Strategy:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Keyword density + long articles.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Match exact intent type + SERP format + depth.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium text-gray-500">Optimization Focus:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Exact-match phrases everywhere.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Lead with answer + E-E-A-T + conversational flow.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium text-gray-500">Trust & Quality:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Mostly backlinks & domain age.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Experience, expertise, real data, author signals.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium text-gray-500">SERP Alignment:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Ignored.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Mirror top results (lists, tables, videos, etc).</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium text-gray-500">Future-Proofing:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Vulnerable to updates.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">AI citation ready + high user satisfaction.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="text-center mt-10 text-lg text-gray-500 dark:text-gray-400">
+    When content perfectly matches intent, search engines reward it, and users actually stay, engage, and convert.
+  </p>
+</section>
+
+
+<!-- SEO Tools Section -->
+<div class="my-16"></div>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+      <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      SEO Tools
+      </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+    <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🗝️</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Keyword Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">On-page keyword placement</p>
+      </div>
+    </a>
+    <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Local SEO</h3>
+        <p class="text-gray-800 dark:text-gray-100">On-page Local SEO Audit</p>
+      </div>
+    </a>
+    <a href="https://traffictorch.net/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools powered by AI</p>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- Tool SEO Intent Checklist -->
+<section id="seo-ux-checklist" class="py-16 px-1 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray dark:to-gray-900"">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+        On-Page SEO Intent Ranking Potential Checklist
+  </h2>
+  <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-400 dark:text-gray-300">
+        Master these proven on-page SEO best practices to boost search visibility, click-through rates, user experience and rankings.
+  </p>
+
+  <!-- Intent-Focused Checklist Inside Single Expandable Box -->
+  <details class="mb-12 max-w-5xl mx-auto">
+    <summary class="px-6 py-5 text-2xl text-center font-black bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+      SEO Intent Checklist 🗝️
+    </summary>
+    <div class="mt-8 p-2 bg-white/80 dark:bg-gray-800/90 rounded-2xl shadow-inner">
+      <!-- Do / Avoid Summary Cards - Intent Focused -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <!-- Best Practices to Do -->
+        <div class="bg-gradient-to-br from-green-900/20 to-emerald-900/20 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl p-6 shadow-lg">
+          <h3 class="text-xl font-bold mb-6 text-green-400 flex items-center gap-3">
+            <span class="text-3xl">✅</span> Best Practices to Do
+          </h4>
+          <ul class="space-y-5 text-lg text-gray-700 dark:text-gray-300">
+            <li><strong>✅ Determine intent type</strong>: Informational (learn), Navigational (find), Commercial Investigation (compare), or Transactional (buy).</li>
+            <li><strong>✅ Analyze SERP layout</strong>: Match dominant format (snippets, PAA, videos, shopping) to capture top positions.</li>
+            <li><strong>✅ Address underlying needs</strong>: Solve real problems and answer follow-up questions comprehensively.</li>
+            <li><strong>✅ Format for snippets</strong>: Use lists, tables, or concise paragraphs for featured snippet eligibility.</li>
+            <li><strong>✅ Strengthen E-E-A-T</strong>: Prove expertise with credentials, citations, and original insights.</li>
+            <li><strong>✅ Map to buyer journey</strong>: Awareness = education, consideration = comparisons, decision = clear CTAs.</li>
+            <li><strong>✅ Optimize for AI citations</strong>: Write authoritative summaries for Google AI Overviews and other engines.</li>
+            <li><strong>✅ Include entities & semantics</strong>: Reference related concepts to build topical depth.</li>
+            <li><strong>✅ Deliver the most helpful answer</strong>: Exceed competitors in depth, freshness, and value.</li>
+            <li><strong>✅ Test alignment</strong>: Use free SEO intent tools for instant classification and fixes.</li>
+          </ul>
+        </div>
+
+        <!-- Common Mistakes to Avoid -->
+        <div class="bg-gradient-to-br from-red-900/20 to-orange-900/20 dark:from-red-900/30 dark:to-orange-900/30 rounded-2xl p-6 shadow-lg">
+          <h4 class="text-xl font-bold mb-6 text-red-400 flex items-center gap-3">
+            <span class="text-3xl">⚠️</span> Common Mistakes to Avoid
+          </h4>
+          <ul class="space-y-5 text-lg text-gray-700 dark:text-gray-300">
+            <li><strong>❌ Intent mismatch</strong>: Selling on informational queries or shallow content on transactional ones.</li>
+            <li><strong>❌ Ignoring SERP features</strong>: Missing opportunities for snippets, PAA, or zero-click visibility.</li>
+            <li><strong>❌ Surface-level answers</strong>: Failing to cover sub-intents or follow-up questions.</li>
+            <li><strong>❌ Weak E-E-A-T signals</strong>: No author proof, citations, or original experience.</li>
+            <li><strong>❌ Wrong content format</strong>: Long paragraphs for snippet queries or lists for in-depth guides.</li>
+            <li><strong>❌ Outdated information</strong>: Not refreshing content for evolving intent and freshness signals.</li>
+            <li><strong>❌ No entity optimization</strong>: Missing related concepts that strengthen topical authority.</li>
+            <li><strong>❌ Over-optimization</strong>: Forcing keywords instead of natural, helpful language.</li>
+            <li><strong>❌ Skipping mobile UX</strong>: Poor readability or navigation on intent-heavy mobile searches.</li>
+            <li><strong>❌ Ignoring AI search</strong>: Content not concise or authoritative enough for citation.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Left Column -->
+        <div class="space-y-8">
+          <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">🗝️</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Optimized Title Tag</p>
+              <p class="text-gray-700 dark:text-gray-300">Primary keyword near front, under 60 characters, compelling to drive clicks.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">📜</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Compelling Meta Description</p>
+              <p class="text-gray-700 dark:text-gray-300">150–160 characters with target keyword and strong call-to-action for higher CTR.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">🏗️</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Proper Heading Hierarchy (H1–H6)</p>
+              <p class="text-gray-700 dark:text-gray-300">One unique H1 with main keyword, logical structure for crawlability and readability.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">⚠️</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Avoid Keyword Stuffing</p>
+              <p class="text-gray-700 dark:text-gray-300">Natural placement — forced repetition risks penalties and hurts user trust.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="space-y-8">
+          <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">🖼️</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Image Optimization & Alt Text</p>
+              <p class="text-gray-700 dark:text-gray-300">Descriptive, keyword-rich alt attributes + compressed files for speed and accessibility.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">🔗</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Strategic Internal & External Linking</p>
+              <p class="text-gray-700 dark:text-gray-300">Relevant internal links for depth, authoritative outbound links to build topical trust.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+		  <span class="text-4xl">⚡</span>
+		  <div>
+ 		   <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Mobile-Friendly & Lightning Fast</p>
+ 		   <p class="text-gray-700 dark:text-gray-300">Core Web Vitals optimized (LCP under 2.5s), fully responsive design essential for modern ranking.</p>
+		  </div>
+			</div>
+
+          <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">✅</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Implement Schema Markup</p>
+              <p class="text-gray-700 dark:text-gray-300">Add relevant structured data (Article, FAQ, Product) for rich snippets and enhanced SERP visibility.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-center mt-12 text-xl font-semibold text-gray-800 dark:text-gray-200 max-w-4xl mx-auto">
+        These on-page SEO best practices form the foundation of high-ranking pages. Run the<strong>SEO Intent Tool</strong> for an instant audit with prioritized fixes tailored to your content.
+      </p>
+    </div>
+</section>
+
+<!-- Enhanced Why Matching Search Intent + E-E-A-T Matters Accordion -->
+<div class="max-w-4xl mx-auto my-16">
+  <details class="group">
+    <summary class="px-3 py-4 text-1xl text-center font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+      <span>Why Search Intent Matters?</span>
+      <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-2 py-10 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 space-y-10 text-gray-700 dark:text-gray-300 leading-relaxed">
+     
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold text-purple-600 dark:text-purple-400">Intent + Quality Is the Foundation of Modern Rankings</h2>
+        <p class="text-lg">
+          Today’s search engines go far beyond keyword density. They evaluate whether your page truly satisfies the <strong>underlying user need</strong> behind a search query while demonstrating strong <strong>E-E-A-T</strong> (Experience, Expertise, Authoritativeness, Trustworthiness).
+        </p>
+        <p class="text-lg">
+          A perfect keyword-optimized page with weak intent alignment or missing quality signals, especially first-hand experience — will consistently underperform against competitors who better serve searcher goals.
+        </p>
+        <p class="text-lg font-medium">
+          Intent mismatch and low E-E-A-T are the leading causes of poor engagement, high bounce rates, and ranking instability during algorithm updates.
+        </p>
+      </section>
+      <section class="space-y-6">
+        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Proven Benefits of Strong Intent & Quality Alignment</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-xl border-l-4 border-blue-500">
+            <div class="text-4xl mb-3">🎯</div>
+            <h4 class="font-bold text-blue-600 dark:text-blue-400">Higher & More Stable Rankings</h4>
+            <p class="mt-2 text-sm">Search engines reward pages that fully resolve user queries with comprehensive, trustworthy answers. Leading to sustained top positions.</p>
+          </div>
+          <div class="p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-xl border-l-4 border-green-500">
+            <div class="text-4xl mb-3">⏱️</div>
+            <h4 class="font-bold text-green-600 dark:text-green-400">Superior User Engagement</h4>
+            <p class="mt-2 text-sm">Visitors stay longer, scroll deeper, and interact more when content matches exactly what they came for. Sending powerful positive signals.</p>
+          </div>
+          <div class="p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl border-l-4 border-purple-500">
+            <div class="text-4xl mb-3">💰</div>
+            <h4 class="font-bold text-purple-600 dark:text-purple-400">Higher Conversion Rates</h4>
+            <p class="mt-2 text-sm">Properly aligned content naturally guides users toward desired actions — inquiries, purchases, sign-ups, or shares. Maximizing ROI from organic traffic.</p>
+          </div>
+          <div class="p-6 bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/30 dark:to-red-900/30 rounded-xl border-l-4 border-orange-500">
+            <div class="text-4xl mb-3">🛡️</div>
+            <h4 class="font-bold text-orange-600 dark:text-orange-400">Future-Proof Against Updates</h4>
+            <p class="mt-2 text-sm">Content built on strong intent satisfaction and proven E-E-A-T consistently survives and often gains during core algorithm improvements.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </details>
+</div>
+
+ <!-- Author Bio -->
+<section id="author-bio" class="max-w-5xl mx-auto my-12 px-4 author-bio author-box" id="about-ylia-and-traffic-torch">
+  <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+    <!-- Hero Gradient Header: Gradient only, no solid bg -->
+    <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
+      <div class="flex flex-col items-center gap-6 mb-6">
+        <!-- Traffic Torch Logo Only in Hero -->
+        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch: Instant 360° SEO + UX Health Analysis, Deep-Dive Reports, Competitive Gaps, AI Fixes – Privacy-First Optimization Toolkit" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
+      </div>
+      <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
+      <p class="text-lg md:text-2xl text-gray-800 dark:text-gray-200 max-w-4xl mx-auto font-medium">
+        Search Intent & On-Page E-E-A-T Alignment Audit Tool.
+      </p>
+    </div>
+    <!-- Main Content Area: Transparent, inherits page bg -->
+    <div class="p-2 md:p-12 space-y-10 text-center md:text-left">
+      <!-- Tool Mission Description -->
+      <div class="space-y-6">
+        <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+        The SEO Intent Analyzer delivers evidence-based diagnostics that reveal whether your page truly matches user intent. And provides clear, prioritized fixes to improve relevance, engagement, and ranking performance. Built for SEOs, content strategists, and marketers who want to create content that search engines and users actually reward.
+        </p>
+      </div>
+      <!-- Founder Bio with Smaller Photo -->
+      <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-2 md:p-8 rounded-2xl backdrop-blur-sm">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+          <!-- Perfect circle wrapper for photo -->
+          <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
+            <img
+              src="/images/ylia-callan-320w.webp"
+              srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
+              sizes="(max-width: 768px) 96px, 128px"
+              alt="Ylia Callan: Musician, Author, Researcher, Web Designer, Founder of Traffic Torch – Bridging Creativity, Consciousness, and Cutting-Edge Web Tools"
+              class="w-full h-full object-cover object-center"
+              loading="lazy">
+          </div>
+          <div class="space-y-4 text-center md:text-left">
+            <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Lead Developer</h3>
+            <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
+              Musician • Author • Researcher • Web Designer • TAFE NSW • Creator of privacy-first AI-powered web tools. Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.
+            </p>
+            <p class="text-base text-gray-800 dark:text-gray-200 italic">
+              Explore my work - books on physics, philosophy, consciousness, music, and more – at <a href="https://yliacallan.github.io/" target="_blank" rel="noopener" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">yliacallan.github.io</a>.
+            </p>
+          </div>
+        </div>
+        <!-- Social Links -->
+        <ul class="flex flex-wrap justify-center md:justify-start gap-6 mt-6">
+          <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">LinkedIn</a></li>
+          <li><a href="https://x.com/guitaralize" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">X (Twitter)</a></li>
+        </ul>
+      </div>
+      <!-- Tech Stack for E-E-A-T -->
+      <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
+        <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Modern Stack Setup</h3>
+        <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          Traffic Torch runs on epic, scalable infrastructure: Hosted via <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub Pages</a> for blazing-fast static delivery and effortless updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance optimizations.
+        </p>
+        <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-4 max-w-3xl mx-auto">
+          Refined using live SERP data, user behavior signals, and correlation studies from high-ranking pages across competitive niches.
+        </p>
+          <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+          <p>Published: 2025-11-27</p>
+          <p>Last updated: 2026-03-06</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> 
+
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+	
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+<section class="bottom-banner" aria-label="Traffic Torch visual summary">
+  <picture> 
+<img src="/images/tool-banners/seo-intent-tool-infographic-1200w.webp" srcset="/images/tool-banners/seo-intent-tool-infographic-480w.webp 480w, /images/tool-banners/seo-intent-tool-infographic-800w.webp 800w, /images/tool-banners/seo-intent-tool-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch SEO Intent Tool – AI-powered search intent analysis, content gap detection, user query alignment and E-E-A-T optimization recommendations" width="1200" height="263" loading="lazy" decoding="async">
+  </picture>
+</section>
+
+  </main>
+
+<!-- Footer -->
+<div id="footer-placeholder"></div>
+</div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+<script src="/main-v1.1.js" type="module"></script>
+<script src="/seo-entity-extractor-tool/metric-explanations-v1.0.js" type="module" defer></script>
+<script src="/seo-entity-extractor-tool/script-v1.0.js" type="module" defer></script>
+  
+
+</body>
+</html>

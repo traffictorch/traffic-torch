@@ -1,0 +1,726 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ 
+  <!-- Post-specific SEO Title & Description -->
+  <title>Behind the Scenes: Developing Traffic Torch's AI SEO and UX Tools</title>
+  <meta name="description" content="Explore the development journey of Traffic Torch's AI-powered SEO and UX tools, including instant health scores and competitive analysis." />
+ 
+  <!-- Robots & Canonical -->
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://traffictorch.net/blog/posts/developing-traffic-torch-tools.html" />
+ 
+    <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <!-- Referrer Policy (security + privacy best practice) -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/blog/posts/developing-traffic-torch-tools.html">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/blog/posts/developing-traffic-torch-tools.html">
+  
+  <!-- Open Graph Tags -->
+  <meta property="og:title" content="Behind the Scenes: Developing Traffic Torch's AI SEO and UX Tools" />
+  <meta property="og:description" content="Explore the development journey of Traffic Torch's AI-powered SEO and UX tools, including instant health scores and competitive analysis." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://traffictorch.net/blog/posts/developing-traffic-torch-tools.html" />
+  <meta property="og:image" content="https://traffictorch.net/blog/images/developing-traffic-torch-tools/traffic-torch-illuminating-seo-dashboard-1200w.webp" />
+  <meta property="og:image:width" content="1280" />
+  <meta property="og:image:height" content="720" />
+  <meta property="og:image:alt" content="Traffic Torch illuminating SEO dashboard with AI-powered insights, health scores, and UX metrics" />
+  <meta property="og:site_name" content="Traffic Torch" />
+ 
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Behind the Scenes: Developing Traffic Torch's AI SEO and UX Tools" />
+  <meta name="twitter:description" content="Explore the development journey of Traffic Torch's AI-powered SEO and UX tools, including instant health scores and competitive analysis." />
+  <meta name="twitter:image" content="https://traffictorch.net/blog/images/developing-traffic-torch-tools/traffic-torch-illuminating-seo-dashboard-1200w.webp" />
+  <meta name="twitter:image:alt" content="Traffic Torch illuminating SEO dashboard with AI-powered insights, health scores, and UX metrics" />
+  <meta name="twitter:site" content="@Guitaralize" />
+ 
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Behind the Scenes: Developing Traffic Torch's AI SEO and UX Tools",
+  "description": "In-depth look at the architecture, design decisions, tech stack, privacy-first approach, client-side processing, AI integration, mobile-first UX, and educational philosophy behind Traffic Torch's instant 360° SEO & UX analysis tools.",
+  "image": "https://traffictorch.net/blog/images/developing-traffic-torch-tools/traffic-torch-illuminating-seo-dashboard-1200w.webp",
+  "datePublished": "2025-12-12",
+  "dateModified": "2026-01-30",
+  "author": {
+    "@type": "Person",
+    "name": "Traffic Torch Team",
+    "url": "https://traffictorch.net",
+    "sameAs": [
+      "https://twitter.com/guitaralize"
+    ]
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://traffictorch.net/logo-512.webp"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://traffictorch.net/blog/posts/developing-traffic-torch-tools.html"
+  },
+  "keywords": [
+    "SEO tool development",
+    "client-side analysis tool",
+    "privacy-first SEO",
+    "AI-powered UX audit",
+    "instant SEO checker",
+    "PWA SEO tool",
+    "mobile-first web development"
+  ],
+  "wordCount": 1952,
+  "inLanguage": "en",
+  "articleSection": "Development Behind the Scenes",
+  "isPartOf": {
+    "@type": "Blog",
+    "name": "Traffic Torch News",
+    "url": "https://traffictorch.net/news/"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Traffic Torch",
+  "url": "https://traffictorch.net/",
+  "logo": "https://traffictorch.net/logo-512.webp",
+  "sameAs": [
+    "https://twitter.com/guitaralize"
+  ]
+}
+</script>
+
+<!-- BreadcrumbList for full blog post hierarchy -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://traffictorch.net/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "News & Blog",
+      "item": "https://traffictorch.net/news/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Behind the Scenes: Developing Traffic Torch's Tools",
+      "item": "https://traffictorch.net/blog/posts/developing-traffic-torch-tools.html"
+    }
+  ]
+}
+</script>
+ 
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json" />
+  <!-- Main Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/blog/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/blog/style-v1.0.css">
+  </noscript>
+
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
+        </a>
+        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
+        </a>
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⛔</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🗝️</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+        <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📋</span> <span class="sidebar-text hidden">Help Guides</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
+              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⛔ Quit Risk</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">🗝️ Keywords</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+              <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition">📋 Help Guides</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+      
+              <!-- Blog Post Hero Image -->
+  <picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/blog/images/developing-traffic-torch-tools/traffic-torch-illuminating-seo-dashboard-640w.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/blog/images/developing-traffic-torch-tools/traffic-torch-illuminating-seo-dashboard-1200w.webp">
+  <img 
+    src="/blog/images/developing-traffic-torch-tools/traffic-torch-illuminating-seo-dashboard-1200w.webp" 
+    alt="Traffic Torch illuminating SEO dashboard – Instant AI-powered 360° SEO and UX health score analysis with competitive gaps and predictive insights" 
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="eager"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+</picture>
+
+      <!-- Main Content -->
+      <main class="flex-1">
+        <article class="max-w-5xl mx-auto px-2 py-1">
+         <div class="prose prose-invert prose-headings:text-gray-900 dark:prose-headings:text-gray-100 prose-a:text-orange-500 prose-code:text-pink-500 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-900 prose-pre:text-gray-900 dark:prose-pre:text-gray-100 max-w-none">
+  <h1 class="text-4xl md:text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Behind the Scenes: Developing Traffic Torch's AI SEO and UX Tools
+  </h1>
+  <p class="text-center text-gray-500 dark:text-gray-400 mb-16">
+    Dive into the ongoing enhancements at Traffic Torch, where we educate users on AI-powered SEO tools, UX health analysis, competitive gap identification, and optimization strategies.
+  </p>
+
+  <!-- Introduction Section -->
+  <section>
+    <h2 class="text-3xl font-bold mb-6">Introduction to Recent Developments</h2>
+    <p class="mb-6">At Traffic Torch, we're dedicated to delivering instant 360° SEO and UX health score analysis, complete with priority insights, competitive gap evaluations, and actionable fixes to empower website owners in optimizing their online presence. Built on modern web standards and hosted on GitHub Pages for reliability, these updates ensure full mobile-friendliness, PWA-readiness (without offline caching), and adherence to the latest best practices in web development. This blog post explores each component, demonstrating how these tools provide deep-dive modules, plugin solutions where relevant, and educational resources to help users achieve superior SEO and UX outcomes.</p>
+  </section>
+
+    
+    <a href="/" class="block">
+      <div class="bottom-banner" aria-label="SEO + UX Tool infographic">
+        <picture>
+          <img src="/images/tool-banners/seo-ux-tool-infographic-1200w.webp" srcset="/images/tool-banners/seo-ux-tool-infographic-480w.webp 480w, /images/tool-banners/seo-ux-tool-infographic-800w.webp 800w, /images/tool-banners/seo-ux-tool-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch SEO + UX Tool - AI-powered combined SEO and UX health score analysis with mobile optimization insights" width="1200" height="268" loading="lazy" decoding="async">
+        </picture>
+      </div>
+  </section>
+  
+
+  <!-- Homepage Section -->
+  <section class="mt-4">
+    <h2 class="text-3xl font-bold mb-6">Homepage: Your Gateway to AI-Powered SEO and UX Insights</h2>
+    <p class="mb-6">The Traffic Torch homepage acts as the primary entry point for users seeking comprehensive, instant SEO health scores and UX analysis, leveraging advanced AI algorithms to deliver a 360° overview of website performance. This central hub aggregates data from various modules, identifying competitive gaps, potential UX friction points, and opportunities for optimization, all while providing predictive insights into how changes could impact search rankings and user retention. By focusing on core elements such as mobile responsiveness, content relevance, and technical SEO factors, the homepage empowers digital marketers, web developers, and site owners to quickly diagnose issues and implement fixes without needing extensive expertise.</p>
+    
+  <!-- SEO + UX Tool Section -->
+  <section class="mt-12">
+    <h2 class="text-3xl font-bold mb-6">SEO + UX Tool: Integrated Health Scoring</h2>
+    <p class="mb-6">Traffic Torch's SEO + UX Tool combines search engine optimization and user experience audits into a unified platform, delivering integrated health scores with priority insights tailored for mobile optimization and overall site performance enhancement. This module assesses intertwined factors like core web vitals, accessibility compliance, and content usability alongside SEO elements such as meta tags and internal linking, providing a holistic view that predicts impacts on bounce rates and conversion funnels. Webmasters and UX designers can utilize its recommendations to address issues like slow-loading elements or confusing layouts, fostering environments that prioritize both search visibility and user satisfaction. Adhering to the latest best practices in web development, it ensures seamless functionality across devices.</p>
+    
+    <a href="/" class="block">
+      <div class="bottom-banner" aria-label="Homepage infographic">
+        <picture>
+          <img src="/images/tool-banners/homepage-infographic-1200w.webp" srcset="/images/tool-banners/homepage-infographic-480w.webp 480w, /images/tool-banners/homepage-infographic-800w.webp 800w, /images/tool-banners/homepage-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch Homepage - AI-powered instant 360° SEO and UX health score analysis with competitive gaps and optimization insights" width="1200" height="375" loading="lazy" decoding="async">
+        </picture>
+      </div>
+    </a>
+    
+    <p class="text-center mt-6">
+      <a href="/" class="text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-semibold text-lg">
+        Explore the Traffic Torch Homepage – Instant AI SEO and UX Analysis
+      </a>
+    </p>
+  </section>
+  
+    <!-- Local SEO Tool Section -->
+<section class="mt-12">
+  <h2 class="text-3xl font-bold mb-6">Local SEO Tool: Google Business Profile & Local Pack Audit</h2>
+  <p class="mb-6">The Local SEO Tool from Traffic Torch is a powerful, focused audit designed to optimize Google Business Profile (GBP) performance and dominate local search visibility. It analyzes citation consistency (Name, Address, Phone – NAP), review velocity and sentiment, local structured data (LocalBusiness schema), proximity/relevance signals, GBP completeness (photos, posts, Q&A, services), and local pack ranking factors. Delivers a complete local health score, identifies missing or inconsistent citations, highlights review optimization opportunities, and provides prioritized fixes to improve rankings in Google Maps, local pack, and AI-powered local summaries. Mobile-friendly, PWA-ready, with day/night modes and educational breakdowns — built with the latest web standards to help businesses win more local traffic and clicks.</p>
+  
+  <a href="/local-seo-tool/" class="block">
+    <div class="bottom-banner" aria-label="Local SEO Tool infographic">
+      <picture>
+        <source 
+          srcset="/images/tool-banners/local-seo-tool-infographic-480w.webp 480w, /images/tool-banners/local-seo-tool-infographic-800w.webp 800w, /images/tool-banners/local-seo-tool-infographic-1200w.webp 1200w"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px"
+          type="image/webp">
+        <img 
+          src="/images/tool-banners/local-seo-tool-infographic-1200w.webp" 
+          srcset="/images/tool-banners/local-seo-tool-infographic-480w.jpg 480w, /images/tool-banners/local-seo-tool-infographic-800w.jpg 800w, /images/tool-banners/local-seo-tool-infographic-1200w.webp 1200w"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px"
+          alt="Traffic Torch Local SEO Tool – GBP audit, citation consistency, review sentiment, local pack optimization, proximity signals and prioritized local fixes" 
+          width="1200" 
+          height="263" 
+          loading="lazy" 
+          decoding="async">
+      </picture>
+    </div>
+  </a>
+  
+  <p class="text-center mt-6">
+    <a href="/local-seo-tool/" class="text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-semibold text-lg">
+      Explore the Local SEO Tool – GBP Audit, Citations & Local Pack Optimization
+    </a>
+  </p>
+</section>
+
+  <!-- SEO Intent Tool Section -->
+  <section class="mt-12">
+    <h2 class="text-3xl font-bold mb-6">SEO Intent Tool: Aligning Content with Search Intent</h2>
+    <p class="mb-6">The SEO Intent Tool from Traffic Torch is a sophisticated AI-driven solution for analyzing search intent clusters, enabling precise content alignment with user queries to ensure compliance with E-E-A-T standards and drive higher search rankings. By categorizing intents - such as informational, navigational, transactional, or commercial - it identifies mismatches and suggests optimizations like restructuring content hierarchies or incorporating relevant multimedia to better satisfy searcher needs. This tool is essential for content strategists, offering predictive insights into how intent-focused adjustments can influence organic traffic and engagement metrics over time. Fully optimized for mobile use and built on up-to-date web standards, it provides educational resources to demystify intent dynamics. Guiding users to create more relevant, authoritative content that resonates with both audiences and algorithms for long-term SEO success.</p>
+    
+    <a href="/seo-intent-tool/" class="block">
+      <div class="bottom-banner" aria-label="SEO Intent Tool infographic">
+        <picture>
+<img src="/images/tool-banners/seo-intent-tool-infographic-1200w.webp" srcset="/images/tool-banners/seo-intent-tool-infographic-480w.webp 480w, /images/tool-banners/seo-intent-tool-infographic-800w.webp 800w, /images/tool-banners/seo-intent-tool-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch SEO Intent Tool – AI-powered search intent analysis, content gap detection, user query alignment and E-E-A-T optimization recommendations" width="1200" height="263" loading="lazy" decoding="async">
+        </picture>
+      </div>
+    </a>
+    
+    <p class="text-center mt-6">
+      <a href="/seo-intent-tool/" class="text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-semibold text-lg">
+        Explore the SEO Intent Tool – Search Intent Clustering and Content Optimization
+      </a>
+    </p>
+  </section>
+  
+  <!-- Product SEO Tool Section -->
+<section class="mt-12">
+  <h2 class="text-3xl font-bold mb-6">Product SEO Tool: 360° eCommerce & Product Page Audit</h2>
+  <p class="mb-6">The Product SEO Tool from Traffic Torch provides an instant, comprehensive health score and deep-dive audit tailored specifically for product pages and eCommerce sites. It evaluates on-page elements (title, meta, headings, keywords), technical factors (mobile, HTTPS, canonicals), content & media richness (description length, images, videos, UGC, internal links, breadcrumbs), and critical eCommerce signals (Product schema, price/availability markup, reviews, variant handling, social sharing). Delivers priority fix recommendations, competitive gap insights, and predictive ranking/CTR/conversion forecasts to help product pages rank higher, win rich snippets, reduce bounce rates, and boost sales. PWA-ready and with educational breakdowns, it built with the latest web standards for maximum usability and SEO impact.</p>
+  
+  <a href="/product-seo-tool/" class="block">
+    <div class="bottom-banner" aria-label="Product SEO Tool infographic">
+      <picture>
+        <source 
+          srcset="/images/tool-banners/product-seo-tool-infographic-480w.webp 480w, /images/tool-banners/product-seo-tool-infographic-800w.webp 800w, /images/tool-banners/product-seo-tool-infographic-1200w.webp 1200w"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px"
+          type="image/webp">
+        <img 
+          src="/images/tool-banners/product-seo-tool-infographic-1200w.webp" 
+          srcset="/images/tool-banners/product-seo-tool-infographic-480w.jpg 480w, /images/tool-banners/product-seo-tool-infographic-800w.jpg 800w, /images/tool-banners/product-seo-tool-infographic-1200w.webp 1200w"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px"
+          alt="Traffic Torch Product SEO Tool – 360° product page audit, eCommerce signals, schema markup, rich snippet optimization, priority fixes and predictive ranking gains" 
+          width="1200" 
+          height="263" 
+          loading="lazy" 
+          decoding="async">
+      </picture>
+    </div>
+  </a>
+  
+  <p class="text-center mt-6">
+    <a href="/product-seo-tool/" class="text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-semibold text-lg">
+      Explore the Product SEO Tool – Full eCommerce Page Audit & Optimization
+    </a>
+  </p>
+</section>
+
+  <!-- Quit Risk Tool Section -->
+  <section class="mt-12">
+    <h2 class="text-3xl font-bold mb-6">Quit Risk Tool: Reducing Bounce Rates with UX Friction Audits</h2>
+    <p class="mb-6">The Quit Risk Tool within Traffic Torch is engineered to meticulously analyze user quit signals and bounce risks, employing sophisticated AI-driven insights to pinpoint areas of UX friction that could lead to visitor drop-offs. By evaluating factors such as page load times, navigation intuitiveness, content readability, and interactive element responsiveness, this tool generates a detailed health score that highlights potential issues and offers predictive forecasting on how unresolved problems might affect long-term engagement metrics. Professionals in web design and digital marketing can leverage these recommendations to implement targeted optimizations, such as streamlining user flows or enhancing mobile compatibility, ultimately fostering a more seamless experience that encourages prolonged interaction and higher conversion rates. The educational focus ensures that even non-technical stakeholders can grasp the importance of proactive UX health analysis in maintaining competitive edge in search engine rankings.</p>
+    
+    <a href="/quit-risk-tool/" class="block">
+      <div class="bottom-banner" aria-label="Quit Risk Tool infographic">
+        <picture>
+<img src="/images/tool-banners/quit-risk-tool-infographic-1200w.webp" srcset="/images/tool-banners/quit-risk-tool-infographic-480w.webp 480w, /images/tool-banners/quit-risk-tool-infographic-800w.webp 800w, /images/tool-banners/quit-risk-tool-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch Quit Risk Tool – AI-powered bounce rate risk analysis with user quit signals and UX optimization recommendations" width="1200" height="400" loading="lazy" decoding="async">
+        </picture>
+      </div>
+    </a>
+    
+    <p class="text-center mt-6">
+      <a href="/quit-risk-tool/" class="text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-semibold text-lg">
+       Quit Risk Tool – AI-Powered UX Friction and Bounce Prediction
+      </a>
+    </p>
+  </section>
+
+  <!-- AI Audit Tool Section -->
+  <section class="mt-12">
+    <h2 class="text-3xl font-bold mb-6">AI Audit Tool: Comprehensive Content and SEO Audits</h2>
+    <p class="mb-6">Traffic Torch's AI Audit Tool provides an in-depth, comprehensive audit of content and SEO elements, utilizing cutting-edge AI to assess health scores, detect patterns in AI-generated text, and suggest humanization strategies to align with search engine preferences for authentic, high-quality material. This module delves into aspects like keyword density, structural integrity, and compliance with E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) guidelines, offering predictive insights into potential ranking improvements post-optimization. Ideal for content creators and SEO specialists, it enables swift identification of weaknesses - such as over-optimized anchor text or thin content and delivers tailored fixes to enhance visibility in organic search results. This professional-grade tool ensures websites remain resilient against algorithm updates, promoting long-term traffic stability and user trust.</p>
+    
+    <a href="/ai-audit-tool/" class="block">
+      <div class="bottom-banner" aria-label="AI Audit Tool infographic">
+        <picture>
+<img src="/images/tool-banners/ai-audit-tool-infographic-1200w.webp" srcset="/images/tool-banners/ai-audit-tool-infographic-480w.webp 480w, /images/tool-banners/ai-audit-tool-infographic-800w.webp 800w, /images/tool-banners/ai-audit-tool-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch AI Audit Tool – Comprehensive AI-powered SEO content audit with health scores, issues detection and optimization suggestions" width="1200" height="347" loading="lazy" decoding="async">
+        </picture>
+      </div>
+    </a>
+    
+    <p class="text-center mt-6">
+      <a href="/ai-audit-tool/" class="text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-semibold text-lg">
+        AI Content Audit Tool – Detect Patterns and Improve E-E-A-T
+      </a>
+    </p>
+  </section>
+
+  <!-- Keyword Tool Section -->
+  <section class="mt-12">
+    <h2 class="text-3xl font-bold mb-6">Keyword Tool: High-Impact Keyword Discovery</h2>
+    <p class="mb-6">The Keyword Tool in Traffic Torch facilitates high-impact keyword discovery by integrating AI to evaluate search volume, competition difficulty, and user intent, enabling precise on-page optimization strategies that elevate content relevance and search engine performance. Users can explore clusters of related terms, assess density scoring for balanced integration, and receive recommendations for placement in headings, meta tags, and body text to avoid penalties while maximizing visibility. This tool is particularly valuable for SEO professionals aiming to uncover untapped opportunities, with predictive forecasting on potential traffic gains from targeted adjustments. By adhering to latest web development standards, it ensures seamless integration across mobile devices, providing educational breakdowns on keyword best practices.</p>
+    
+    <a href="/keyword-tool/" class="block">
+      <div class="bottom-banner" aria-label="Keyword Tool infographic">
+        <picture>
+<img src="/images/tool-banners/keyword-tool-infographic-1200w.webp" srcset="/images/tool-banners/keyword-tool-infographic-480w.webp 480w, /images/tool-banners/keyword-tool-infographic-800w.webp 800w, /images/tool-banners/keyword-tool-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch Keyword Tool – AI-powered keyword discovery with search volume, difficulty scores, competition analysis and SEO optimization insights" width="1200" height="375" loading="lazy" decoding="async">
+        </picture>
+      </div>
+    </a>
+    
+    <p class="text-center mt-6">
+      <a href="/keyword-tool/" class="text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-semibold text-lg">
+        Keyword Research Tool – On-Page Optimization and Density Scoring
+      </a>
+    </p>
+  </section>
+
+  <!-- Keyword VS Tool Section -->
+  <section class="mt-12">
+    <h2 class="text-3xl font-bold mb-6">Keyword VS Tool: Competitive Gap Analysis</h2>
+    <p class="mb-6">Traffic Torch's Keyword VS Tool excels in conducting head-to-head keyword comparisons, revealing competitive gaps through AI-powered analysis that benchmarks your content against top performers in search results. This module evaluates metrics like ranking positions, content depth, and providing actionable beat strategies such as content expansion ideas to outperform rivals. SEO experts and marketers benefit from its predictive elements, which forecast potential shifts in rankings based on implemented changes, ensuring data-driven decisions for sustained growth. Designed with mobile-friendliness in mind and compliant with current best practices, it offers an intuitive interface for deep-dive explorations.</p>
+    
+    <a href="/keyword-vs-tool/" class="block">
+      <div class="bottom-banner" aria-label="Keyword VS Tool infographic">
+        <picture>
+<img src="/images/tool-banners/keyword-vs-tool-infographic-1200w.webp" srcset="/images/tool-banners/keyword-vs-tool-infographic-480w.webp 480w, /images/tool-banners/keyword-vs-tool-infographic-800w.webp 800w, /images/tool-banners/keyword-vs-tool-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch Keyword VS Tool – AI-powered competitive keyword gap analysis, shared vs unique terms, difficulty comparison and optimization strategies" width="1200" height="375" loading="lazy" decoding="async">
+        </picture>
+      </div>
+    </a>
+    
+    <p class="text-center mt-6">
+      <a href="/keyword-vs-tool/" class="text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-semibold text-lg">
+        Keyword VS Tool – Competitive SEO Gap Analysis and Ranking Strategies
+      </a>
+    </p>
+  </section>
+
+  <!-- AI Search Optimization Tool Section -->
+  <section class="mt-12">
+    <h2 class="text-3xl font-bold mb-6">AI Search Optimization Tool: Future-Proofing for AI Engines</h2>
+    <p class="mb-6">The AI Search Optimization Tool prepares content for the evolving landscape of AI-driven search engines, including platforms like Perplexity, Grok, Gemini, and generative result systems. By analyzing how content performs in these environments, it offers targeted recommendations to improve visibility and relevance in non-traditional search results. This forward-looking analyzer helps content creators adapt to algorithmic shifts, ensuring sustained traffic from emerging sources. With a focus on structured data, semantic richness, and entity-based optimization, it provides predictive insights into future performance.</p>
+    
+    <a href="/ai-search-optimization-tool/" class="block">
+      <div class="bottom-banner" aria-label="AI Search Optimization Tool infographic">
+        <picture>
+<img src="/images/tool-banners/ai-search-optimization-infographic-1200w.webp" srcset="/images/tool-banners/ai-search-optimization-infographic-480w.webp 480w, /images/tool-banners/ai-search-optimization-infographic-800w.webp 800w, /images/tool-banners/ai-search-optimization-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch AI Search Optimization Tool – AI-powered optimization for generative search engines, answer engine visibility, structured content and zero-click SERP strategies" width="1200" height="338" loading="lazy" decoding="async">
+        </picture>
+      </div>
+    </a>
+    
+    <p class="text-center mt-6">
+      <a href="/ai-search-optimization-tool/" class="text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-semibold text-lg">
+        AI Search Optimization Tool – Prepare for Generative Engine Traffic
+      </a>
+    </p>
+  </section>
+
+  <!-- Conclusion Section -->
+  <section class="mt-12">
+    <h2 class="text-3xl font-bold mb-6">Conclusion: Empowering Users with Visual Education</h2>
+    <p class="mb-6">These ongoing enhancements, particularly the integration of detailed infographic banners, position Traffic Torch as an educational leader in AI-powered SEO and UX analysis. By combining deep technical insights with clear, mobile-friendly visuals, we enable website owners, marketers, and developers to make informed decisions that improve rankings, reduce bounce rates, and enhance overall user satisfaction. Each tool contributes to a comprehensive ecosystem designed for real-world impact, with predictive forecasting and priority fixes that keep users ahead of search trends. We invite you to explore these tools directly and experience how Traffic Torch can transform your digital strategy.</p>
+  </section>
+          </div>
+        </article>
+  
+        <!-- Tools Grid (kept on every post for education & navigation) -->
+        <div class="tools-grid max-w-7xl mx-auto px-6 py-16">
+          <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+            <!-- SEO Intent -->
+            <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+                <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+                <h3 class="text-2xl font-bold mb-3">SEO Intent Tool</h3>
+                <p class="text-gray-500">Instant intent matching + E-E-A-T audit + fixes</p>
+              </div>
+            </a>
+            <!-- Ai Search -->
+            <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all">
+                <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+                <h3 class="text-2xl font-bold mb-3">Ai Search Tool</h3>
+                <p class="text-gray-500">Optimize for Perplexity, Grok, Gemini, ChatGPT Search</p>
+              </div>
+            </a>
+            <!-- AI Content -->
+            <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all">
+                <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+                <h3 class="text-2xl font-bold mb-3">AI Content Tool</h3>
+                <p class="text-gray-500">Detect AI patterns + humanize content + forecasts</p>
+              </div>
+            </a>
+            <!-- Quit Risk -->
+            <a href="/quit-risk-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all">
+                <div class="text-emerald-400 text-7xl mb-6 group-hover:animate-bounce">⚡</div>
+                <h3 class="text-2xl font-bold mb-3">Quit Risk Tool</h3>
+                <p class="text-gray-500">UX friction audit + bounce prediction + optimizations</p>
+              </div>
+            </a>
+            <!-- Keywords -->
+            <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+                <div class="text-purple-400 text-7xl mb-6 group-hover:animate-bounce">🗝️</div>
+                <h3 class="text-2xl font-bold mb-3">Keyword Tool</h3>
+                <p class="text-gray-500">On-page keyword placement score + density fixes</p>
+              </div>
+            </a>
+            <!-- VS -->
+            <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+                <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+                <h3 class="text-2xl font-bold mb-3">VS Tool</h3>
+                <p class="text-gray-500">Competitive keyword gap analysis + beat strategies</p>
+              </div>
+            </a>
+          </div>
+        </div>
+        
+        
+  <!-- Author Bio -->
+  <section class="max-w-5xl mx-auto my-24 px-2">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+    <div class="bg-gradient-to-br from-purple-600 to-cyan-600 py-12 px-8 text-center">
+      <img src="/logo.webp" alt="Traffic Torch SEO • UX • AI Optimization Toolkit" class="w-40 h-40 rounded-full mx-auto mb-6 object-cover border-8 border-white shadow-xl">
+      <h3 class="text-4xl font-black text-white mb-4">Traffic Torch</h3>
+      <p class="text-xl text-white/90 max-w-3xl mx-auto">
+        SEO • UX • AI Optimization Audit Toolkit
+      </p>
+    </div>
+    <div class="p-2 md:p-4 text-center space-y-8">
+      <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+        Traffic Torch distills ongoing correlation research, algorithm update analysis and practical testing into 360° SEO + UX diagnostics, AI-powered fixes, and educational tools. Empowering creators, agencies, and businesses with transparent, evidence-based insights for better organic performance and user satisfaction.
+      </p>
+      <div class="pt-8 space-y-3">
+        <p class="text-base text-gray-800 dark:text-gray-200">
+          Expertise: SEO Correlation Studies • UX Optimization • Privacy-First Web Tools • AI-Assisted Analysis.
+        </p>
+        <p class="text-base text-gray-800 dark:text-gray-200 italic mt-4">
+          Updated based on the latest search engine guidelines, ranking factor research, and real-page performance data.
+        </p>
+              <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+        <p>Published: 2025-01-12</p>
+        <p>Last updated: 2026-01-30</p>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+        
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+        
+        
+      </main>
+
+<!-- Footer -->
+<div id="footer-placeholder"></div>
+</div>
+</div>
+
+
+      <!-- Load JS last for speed -->
+      <script src="/main-v1.1.js" type="module"></script>
+</body>
+</html>

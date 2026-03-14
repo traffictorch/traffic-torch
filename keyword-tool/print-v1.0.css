@@ -1,0 +1,258 @@
+@media print {
+  /* ──────────────────────────────────────────────────────────────
+     Proven cover page – unchanged & stable
+  ─────────────────────────────────────────────────────────────── */
+  body::before {
+    content: "TrafficTorch.net ⚖️\A\A Keyword Audit Tool 📝\A\A Report:\A " attr(data-url);
+    display: block;
+    height: 100vh;
+    min-height: 100vh;
+    page-break-after: always;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #4b5563;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 900;
+    text-align: center;
+    padding-top: 20vh;
+    line-height: 1.4;
+    white-space: pre;
+    font-size: 2rem;
+    text-shadow:
+      -2px -2px 0 #fb923c,
+      2px -2px 0 #fb923c,
+      -2px 2px 0 #fb923c,
+      2px 2px 0 #fb923c,
+      -2px 0 0 #fb923c,
+      2px 0 0 #fb923c,
+      0 -2px 0 #fb923c,
+      0 2px 0 #fb923c,
+      0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  /* Report starts cleanly on next page */
+  #results-wrapper {
+    page-break-before: always;
+    margin-top: 0 !important;
+  }
+
+  /* Full-width content inside results */
+  #results-wrapper,
+  #results-wrapper .container,
+  #results-wrapper .max-w-*,
+  #results-wrapper .mx-auto {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 1cm 1.2cm !important;
+    box-sizing: border-box;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 1.5cm;
+  }
+
+  /* Print safety basics */
+  body {
+    background: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 10.5pt !important;
+    line-height: 1.38 !important;
+  }
+
+  /* Clean print – no shadows */
+  .shadow-lg,
+  .shadow-xl,
+  [class*="shadow"] {
+    box-shadow: none !important;
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     TARGETED HIDING – safe & specific (no :not breakage)
+  ─────────────────────────────────────────────────────────────── */
+  .max-w-4xl.mx-auto.my-16 details,
+  section.py-20.bg-gray-50.dark\:bg-gray-900,
+  section.py-16.px-3.max-w-6xl.mx-auto,
+  .tools-grid,
+  section.max-w-5xl.mx-auto.my-24,
+  div[style*="display: flex; justify-content: center; margin: 30px 0;"],
+  .a2a_kit,
+  div.max-w-5xl.mx-auto.px-6.py-4.text-center,
+  section.bottom-banner,
+  .checklist-card,
+  .max-w-7xl.mx-auto,
+  .max-w-6xl.mx-auto {
+    display: none !important;
+  }
+
+  #upgradeModal,
+  .py-8.text-center,
+  .a2a_kit,
+  .a2a_default_style,
+  .a2a_kit_size_32,
+  [class*="a2a_"] {
+    display: none !important;
+  }
+
+  #upgradeModal[style*="display: block"],
+  #upgradeModal:not(.hidden) {
+    display: none !important;
+  }
+
+  details:not(.fixes-panel details, .full-details details) {
+    display: none !important;
+  }
+
+/* ──────────────────────────────────────────────────────────────
+   Always show important report content + FORCE expand all panels
+─────────────────────────────────────────────────────────────── */
+.fixes-panel,
+.full-details,
+.expand-content,
+.hidden.mt-4,
+.hidden.mt-6,
+.hidden.mt-8,
+button[onclick*="Show Fixes"] + .hidden,
+button[onclick*="More Details"] + .hidden,
+.fixes-panel.hidden,
+.mt-6.space-y-6.hidden,
+.mt-4.space-y-6.hidden,
+.mt-6.space-y-8.hidden,
+.mt-4.space-y-8.hidden {
+  display: block !important;
+  visibility: visible !important;
+  height: auto !important;
+  max-height: none !important;
+  opacity: 1 !important;
+}
+
+/* Hide the actual toggle buttons in print (clean look) */
+button[onclick*="Show Fixes"],
+button[onclick*="More Details"],
+button[onclick*="classList.toggle"] {
+  display: none !important;
+}
+
+/* Prevent expanded panels from breaking awkwardly across pages */
+.fixes-panel,
+.mt-6.space-y-6,
+.mt-4.space-y-6,
+.mt-6.space-y-8,
+.mt-4.space-y-8 {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+  margin-top: 0.5cm !important;
+  margin-bottom: 1cm !important;
+}
+
+  #keyword-form,
+  #analysis-progress,
+  header,
+  footer,
+  nav,
+  aside,
+  .no-print,
+  button,
+  details > summary {
+    display: none !important;
+  }
+
+  #author-bio,
+  #promo-high-impact-cards,
+  #promo-old-vs-modern-seo,
+  #share-form-container,
+  #feedback-form-container,
+  #share-message,
+  #feedback-message,
+  #share-report-btn ~ div[id*="form"],
+  #feedback-btn ~ div[id*="form"],
+  .max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8,
+  .max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 h2,
+  .max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 p,
+  .max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 div.text-xl.leading-relaxed.text-center {
+    display: none !important;
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     PAGE BREAK FIX – grid disabled + modern + legacy breaks
+     (this is the part that was causing overlap in Firefox/Chrome)
+  ─────────────────────────────────────────────────────────────── */
+
+  /* Big score card + radar stay together or get clean separation */
+  .flex.justify-center.my-8.sm\:my-12,
+  .max-w-5xl.mx-auto.my-16 {
+    page-break-inside: avoid !important;
+    break-inside: avoid-page !important;
+  }
+
+  /* Radar gets its own clean page */
+  .max-w-5xl.mx-auto.my-16 {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  /* CRITICAL: Disable CSS Grid for print (grid children ignore page breaks in Firefox/Chrome) */
+  .grid.md\:grid-cols-3.gap-8.my-16 {
+    display: block !important;           /* forces normal block flow */
+    grid-template-columns: none !important;
+    gap: 0 !important;
+    page-break-before: always !important; /* whole metrics section starts new page */
+    break-before: page !important;
+  }
+
+  /* Each of the 6 metric cards – new page + never split */
+  .grid.md\:grid-cols-3.gap-8.my-16 > div {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    margin-top: 1cm !important;
+    margin-bottom: 1.5cm !important;
+    width: 100% !important;
+  }
+
+  /* Force new page on every metric card AFTER the first one */
+  .grid.md\:grid-cols-3.gap-8.my-16 > div:nth-child(n+2) {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  /* Top Priority Fixes section */
+  .my-16 h3.text-4xl.font-bold.text-center.text-orange-600 {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  .my-16 > h3 + .space-y-8 > div {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Ranking Potential + Expected Gains */
+  .max-w-6xl.mx-auto.my-20.grid.md\:grid-cols-2.gap-8 {
+    page-break-before: always !important;
+    break-before: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid-page !important;
+  }
+
+  /* Extra safety for all cards/panels */
+  [class*="rounded-2xl"],
+  [class*="rounded-3xl"],
+  .bg-white.dark\:bg-gray-800,
+  .bg-gray-900,
+  .shadow-xl,
+  .border-4,
+  .fixes-panel,
+  .p-8.bg-white,
+  .p-4.bg-white {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Better text flow */
+  p, li, div {
+    orphans: 4;
+    widows: 4;
+  }
+}
