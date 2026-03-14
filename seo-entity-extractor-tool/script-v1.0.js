@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const urlInput = document.getElementById('url-input');
     if (!urlInput) {
-      console.error('URL input not found');
+      console.error('URL input #url-input not found');
       alert('URL input field missing – check HTML');
       return;
     }
@@ -26,8 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="relative w-20 h-20">
           <svg class="animate-spin" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8" stroke-opacity="0.3"/>
-            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8"
-                    stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
           </svg>
         </div>
         <p id="progress-text" class="mt-4 text-xl font-medium text-orange-500">Analyzing entities...</p>
@@ -55,15 +54,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
       progressText.textContent = "Rendering report...";
 
-      const entitiesHTML = data.extracted?.map(entity => `
+      const entitiesHTML = (data.extracted || []).map(entity => `
         <div class="p-4 bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
           <p class="font-bold text-gray-800 dark:text-gray-200">${entity.text}</p>
           <p class="text-sm text-gray-600 dark:text-gray-400">${entity.type}</p>
           <div class="mt-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-            <div class="bg-blue-600 h-2 rounded-full" style="width: ${Math.round(entity.salience * 100)}%"></div>
+            <div class="bg-blue-600 h-2 rounded-full" style="width: ${Math.round((entity.salience || 0) * 100)}%"></div>
           </div>
           <p class="text-xs mt-1 text-gray-500 dark:text-gray-400">
-            Salience: ${entity.salience.toFixed(2)}
+            Salience: ${(entity.salience || 0).toFixed(2)}
           </p>
         </div>
       `).join('') || '<p class="text-gray-600 dark:text-gray-400">No entities detected.</p>';
@@ -76,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="text-center mb-12">
             <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Entity Analysis Report</h2>
             <p class="mt-2 text-lg text-gray-600 dark:text-gray-400">
-              Overall Semantic Health: <span class="${grade.color} font-bold">${audit.overall}/100 ${grade.emoji} ${grade.text}</span>
+              Overall Semantic Health: <span class="$$   {grade.color} font-bold">   $${audit.overall}/100 ${grade.emoji} ${grade.text}</span>
             </p>
           </div>
 
@@ -106,17 +105,17 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
   });
-
-  function cleanUrl(u) {
-    const trimmed = u.trim();
-    if (!trimmed) return '';
-    if (/^https?:\/\//i.test(trimmed)) return trimmed;
-    return 'https://' + trimmed;
-  }
-
-  function getGrade(score) {
-    if (score >= 80) return { text: 'Excellent', emoji: '✅', color: 'text-green-600 dark:text-green-400' };
-    if (score >= 60) return { text: 'Good', emoji: '⚠️', color: 'text-orange-500 dark:text-orange-400' };
-    return { text: 'Needs Work', emoji: '❌', color: 'text-red-600 dark:text-red-400' };
-  }
 });
+
+function cleanUrl(u) {
+  const trimmed = u.trim();
+  if (!trimmed) return '';
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return 'https://' + trimmed;
+}
+
+function getGrade(score) {
+  if (score >= 80) return { text: 'Excellent', emoji: '✅', color: 'text-green-600 dark:text-green-400' };
+  if (score >= 60) return { text: 'Good', emoji: '⚠️', color: 'text-orange-500 dark:text-orange-400' };
+  return { text: 'Needs Work', emoji: '❌', color: 'text-red-600 dark:text-red-400' };
+}
