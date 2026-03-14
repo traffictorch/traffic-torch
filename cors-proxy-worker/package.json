@@ -13,5 +13,8 @@
   "dependencies": {
     "@cloudflare/puppeteer": "^1.0.4",
     "basic-ftp": "5.2.0"
-  }
+  },
+  "overrides": {
+  "yauzl": "^3.2.1"
+}
 }
