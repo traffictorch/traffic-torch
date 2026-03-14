@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       progressText.textContent = "Fetching page...";
       // Send to Worker instead of local parsing
-      const res = await fetch("https://your-worker-domain.workers.dev/entity-analyze", {
+      const res = await fetch("https://rendered-proxy-basic.traffictorch.workers.dev/entity-analyze", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url, topEntities })
