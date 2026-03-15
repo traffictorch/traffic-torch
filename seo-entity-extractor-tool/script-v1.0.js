@@ -400,45 +400,58 @@ document.addEventListener('DOMContentLoaded', () => {
 ${modules.map(mod => {
   const { score, metrics = [], failed = [] } = mod.result;
   const cardGrade = getGrade(score);
-  const borderColor = score >= 85 ? 'border-green-500' :
-                      score >= 70 ? 'border-emerald-500' :
-                      score >= 50 ? 'border-orange-500' : 'border-red-500';
+
+  // Match exact visual style from SEO Intent screenshot
+  const circleColor = score >= 85 ? '#22c55e' :    // green
+                      score >= 70 ? '#10b981' :    // emerald
+                      score >= 50 ? '#f59e0b' :    // amber/orange
+                      '#ef4444';                   // red for Needs Work
+
+  const arcColor = score >= 50 ? circleColor : '#ef4444'; // force red arc on low scores
 
   return `
-    <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColor} hover:shadow-xl transition-shadow">
-      <div class="flex flex-col items-center mb-5">
+    <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow">
+      <div class="flex flex-col items-center mb-6">
         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">${mod.name}</h3>
         <p class="text-base text-gray-600 dark:text-gray-400 mt-1 text-center">${mod.desc}</p>
       </div>
-      <div class="flex items-center justify-center mb-6 relative">
-        <div class="w-24 h-24 rounded-full flex items-center justify-center text-white font-bold text-3xl shadow-inner"
-             style="background: conic-gradient(${mod.color} ${score}%, #e5e7eb ${score}%)">
+
+      <!-- Score circle + emoji + grade text – exact match to SEO Intent style -->
+      <div class="relative mx-auto mb-6">
+        <div class="w-28 h-28 rounded-full flex items-center justify-center text-4xl font-bold text-white relative shadow-lg"
+             style="background: conic-gradient(${arcColor} ${score}%, #e5e7eb ${score}%, #e5e7eb 100%);">
           ${score}
+          <span class="absolute -top-3 -right-3 text-5xl drop-shadow-lg z-10">${cardGrade.emoji}</span>
         </div>
-        <span class="absolute -top-2 -right-2 text-4xl drop-shadow-md">${cardGrade.emoji}</span>
-      </div>
-      <div class="text-center mb-6">
-        <span class="${cardGrade.color} font-semibold text-xl">${cardGrade.text}</span>
       </div>
 
-      <ul class="text-base space-y-3 mb-7">
+      <div class="text-center mb-8">
+        <span class="text-2xl font-bold ${cardGrade.color}">
+          ${cardGrade.emoji} ${cardGrade.text}
+        </span>
+      </div>
+
+      <!-- All sub-metrics always visible with grade emoji -->
+      <ul class="text-base space-y-3 mb-8">
         ${metrics.map(m => {
-          let emoji = '❌', colorClass = 'text-red-600 dark:text-red-400';
-          if (m.grade === 'good') { emoji = '✅'; colorClass = 'text-green-600 dark:text-green-400'; }
-          else if (m.grade === 'warning') { emoji = '⚠️'; colorClass = 'text-orange-600 dark:text-orange-400'; }
+          let emoji = '❌', color = 'text-red-600 dark:text-red-400';
+          if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
+          else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-500 dark:text-orange-400'; }
           return `
-            <li class="${colorClass} flex items-start gap-3">
+            <li class="${color} flex items-start gap-3 leading-relaxed">
               ${emoji} <span>${m.text}</span>
             </li>
           `;
         }).join('')}
       </ul>
 
-      <button class="fixes-toggle w-full text-left text-orange-500 hover:text-orange-600 font-medium flex justify-between items-center py-3 px-4 bg-orange-50 dark:bg-orange-950/30 rounded-xl transition-all">
+      <!-- Orange Show Fixes button – matches SEO Intent -->
+      <button class="fixes-toggle w-full py-4 px-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-lg rounded-xl shadow-md transition-all flex justify-between items-center">
         <span>Show Fixes ${failed.length > 0 ? `(${failed.length})` : ''}</span>
-        <span class="arrow text-lg transition-transform duration-200">▼</span>
+        <span class="arrow text-xl transition-transform duration-200">▼</span>
       </button>
 
+      <!-- Fixes panel content -->
       <div class="fixes-panel hidden mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
         ${failed.length > 0 ? `
           <ul class="space-y-4 text-sm text-red-700 dark:text-red-300">
@@ -449,7 +462,7 @@ ${modules.map(mod => {
             `).join('')}
           </ul>
         ` : `
-          <p class="text-center text-green-600 dark:text-green-400 font-medium py-4">
+          <p class="text-center text-green-600 dark:text-green-400 font-medium py-4 text-base">
             All signals strong – excellent!
           </p>
         `}
