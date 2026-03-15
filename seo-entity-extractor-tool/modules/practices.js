@@ -35,7 +35,16 @@ export function analyzePractices(extracted) {
   const consistencyLabel = consistencyPercent >= 95 ? 'High' : consistencyPercent >= 80 ? 'Good' : 'Needs improvement';
 
   // Scoring (0–100) – balanced for all page types
-  let score = 0;
+let score = 0;
+if (extracted.length < 8) {
+  score = Math.min(25, schemaPotential * 0.5 + headingScore * 0.5);
+} else {
+  score += Math.min(50, schemaPotential);
+  score += headingScore;
+  score += Math.round(consistencyPercent * 0.15);
+  if (likelyHeadingEntities >= 4) score += 10;
+}
+score = Math.max(0, Math.min(100, Math.round(score)));
 
   // Schema readiness (max 50)
   let schemaPotential = 0;

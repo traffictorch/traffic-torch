@@ -191,12 +191,12 @@ results.innerHTML = `
               <span class="${cardGrade.color} font-medium text-lg">${cardGrade.text}</span>
             </div>
             <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-2 mb-4">
-              ${metrics.map(m => {
-                const isGood = !m.includes('Low') && !m.includes('Few') && !m.includes('Limited');
-                return `<li class="${isGood ? 'text-green-600 dark:text-green-400' : 'text-orange-600 dark:text-orange-400'}">
-                  ${isGood ? '✅' : '⚠️'} ${m}
-                </li>`;
-              }).join('')}
+${metrics.map(m => {
+  const isPositive = m.includes('High') || m.includes('Strong') || m.includes('Excellent') || m.includes('hierarchical') || !m.toLowerCase().includes('low') && !m.toLowerCase().includes('few') && !m.toLowerCase().includes('limited') && !m.toLowerCase().includes('weak');
+  return `<li class="${isPositive ? 'text-green-600 dark:text-green-400' : 'text-orange-600 dark:text-orange-400'} flex items-start gap-2">
+    ${isPositive ? '✅' : '⚠️'} <span>${m}</span>
+  </li>`;
+}).join('')}
             </ul>
             <button class="fixes-toggle w-full text-left text-orange-500 hover:text-orange-600 font-medium flex justify-between items-center py-2 px-3 bg-orange-50 dark:bg-orange-950/30 rounded-lg">
               <span>Show Fixes ${failed.length > 0 ? `(${failed.length})` : ''}</span>
@@ -298,12 +298,13 @@ results.innerHTML = `
 
       // Toggle handlers for fixes panels
 results.addEventListener('click', (e) => {
-  if (e.target.matches('.fixes-toggle')) {
-    const panel = e.target.nextElementSibling;
-    const arrow = e.target.querySelector('.arrow');
-    panel?.classList.toggle('hidden');
-    if (arrow) {
-      arrow.textContent = panel?.classList.contains('hidden') ? '▼' : '▲';
+  if (e.target.closest('.fixes-toggle')) {
+    const button = e.target.closest('.fixes-toggle');
+    const panel = button.nextElementSibling;
+    const arrow = button.querySelector('.arrow');
+    if (panel && arrow) {
+      panel.classList.toggle('hidden');
+      arrow.textContent = panel.classList.contains('hidden') ? '▼' : '▲';
     }
   }
 });

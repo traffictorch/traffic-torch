@@ -48,8 +48,13 @@ export function analyzeRelationships(extracted) {
   const coMentionScore = Math.min(60, Math.round(Math.log1p(coMentionPairs) * 12));
   // Synergy & diversity (max 40)
   const diversityBonus = Math.min(25, typePresence.size * 6);
-  let score = coMentionScore + synergyScore + diversityBonus;
-  score = Math.max(0, Math.min(100, Math.round(score)));
+let score = 0;
+if (topEntities.length < 5) {
+  score = Math.min(30, coMentionPairs * 6);
+} else {
+  score = coMentionScore + synergyScore + diversityBonus;
+}
+score = Math.max(0, Math.min(100, Math.round(score)));
 
   // Educational metrics
   const metrics = [

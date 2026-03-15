@@ -27,23 +27,23 @@ export function analyzeSalience(extracted) {
   // Scoring (0–100) – balanced across page types
   let score = Math.round(avgSalience * 80); // base from average
 
-  // Top entity strength tiers
+// Top entity strength tiers – stricter for low count
+if (entityCount < 6) {
+  score = Math.min(40, Math.round(avgSalience * 120)); // cap low-entity pages
+} else {
   if (topSalience >= 0.90) score += 20;
   else if (topSalience >= 0.70) score += 15;
   else if (topSalience >= 0.50) score += 8;
 
-  // Multiple strong entities bonus
-  if (strongCount >= 5) score += 15;
-  else if (strongCount >= 3) score += 10;
+  if (strongCount >= 5 && entityCount >= 10) score += 15;
+  else if (strongCount >= 3 && entityCount >= 8) score += 10;
   else if (strongCount >= 1) score += 5;
 
-  // Very strong primary entity extra credit
-  if (veryStrongCount >= 1) score += 8;
+  if (veryStrongCount >= 1 && entityCount >= 6) score += 8;
 
-  // Penalty for flat distribution (weak hierarchy)
-  if (isFlat) score -= 10;
-
-  score = Math.max(0, Math.min(100, Math.round(score)));
+  if (isFlat && entityCount >= 8) score -= 12;
+}
+score = Math.max(0, Math.min(100, Math.round(score)));
 
   // Educational metrics
   const topEntitiesDisplay = sorted

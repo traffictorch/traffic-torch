@@ -26,28 +26,32 @@ export function analyzeCoverage(extracted, cleanedText = '') {
     (typeCounts.OTHER || 0) * 0.5;
 
   // Scoring logic (0-100) – balanced for all page types
-  let score = 0;
+let score = 0;
 
-  // Entity count tiered scoring (most important factor)
+// Hard minimum: very low entity count caps score severely
+if (entityCount < 6) {
+  score = Math.min(30, entityCount * 5);
+} else {
+  // Entity count tiered scoring
   if (entityCount >= 30) score += 45;
   else if (entityCount >= 20) score += 40;
   else if (entityCount >= 12) score += 30;
   else if (entityCount >= 6) score += 20;
-  else if (entityCount >= 3) score += 10;
 
-  // Density bonus – capped to avoid rewarding tiny pages
-  const densityBonus = Math.min(20, Math.log1p(density * 10) * 8);
+  // Density bonus – only if count is reasonable
+  const densityBonus = entityCount >= 6 ? Math.min(20, Math.log1p(density * 10) * 8) : 0;
   score += densityBonus;
 
-  // Diversity bonus – weighted for SEO value
-  score += Math.min(25, weightedDiversity * 3.5);
+  // Diversity bonus – only meaningful if count >=6
+  score += entityCount >= 6 ? Math.min(25, weightedDiversity * 3.5) : 0;
 
-  // Small penalty if extremely low diversity
-  if (diversity <= 2 && entityCount > 5) {
-    score -= 10;
+  // Small penalty if extremely low diversity with some entities
+  if (diversity <= 2 && entityCount >= 6) {
+    score -= 15;
   }
+}
 
-  score = Math.max(0, Math.min(100, Math.round(score)));
+score = Math.max(0, Math.min(100, Math.round(score)));
 
   // Metrics for display (educational & concise)
   const metrics = [
