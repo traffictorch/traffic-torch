@@ -406,55 +406,51 @@ ${modules.map(mod => {
 
   return `
     <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColor} hover:shadow-xl transition-shadow">
-      <div class="flex flex-col items-center mb-4">
-        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">${mod.name}</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">${mod.desc}</p>
+      <div class="flex flex-col items-center mb-5">
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">${mod.name}</h3>
+        <p class="text-base text-gray-600 dark:text-gray-400 mt-1 text-center">${mod.desc}</p>
       </div>
-      <div class="flex items-center justify-center mb-4 relative">
-        <div class="w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-2xl"
+      <div class="flex items-center justify-center mb-6 relative">
+        <div class="w-24 h-24 rounded-full flex items-center justify-center text-white font-bold text-3xl shadow-inner"
              style="background: conic-gradient(${mod.color} ${score}%, #e5e7eb ${score}%)">
           ${score}
         </div>
-        <span class="absolute -top-2 -right-2 text-3xl drop-shadow-md">${cardGrade.emoji}</span>
+        <span class="absolute -top-2 -right-2 text-4xl drop-shadow-md">${cardGrade.emoji}</span>
       </div>
-      <div class="text-center mb-5">
-        <span class="${cardGrade.color} font-medium text-lg">${cardGrade.text}</span>
+      <div class="text-center mb-6">
+        <span class="${cardGrade.color} font-semibold text-xl">${cardGrade.text}</span>
       </div>
 
-      <!-- All sub-metrics shown here with grade emoji -->
-      <ul class="text-sm space-y-2.5 mb-6">
+      <ul class="text-base space-y-3 mb-7">
         ${metrics.map(m => {
-          let emoji = '❌', color = 'text-red-600 dark:text-red-400';
-          if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
-          else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-600 dark:text-orange-400'; }
+          let emoji = '❌', colorClass = 'text-red-600 dark:text-red-400';
+          if (m.grade === 'good') { emoji = '✅'; colorClass = 'text-green-600 dark:text-green-400'; }
+          else if (m.grade === 'warning') { emoji = '⚠️'; colorClass = 'text-orange-600 dark:text-orange-400'; }
           return `
-            <li class="${color} flex items-start gap-2.5">
+            <li class="${colorClass} flex items-start gap-3">
               ${emoji} <span>${m.text}</span>
             </li>
           `;
         }).join('')}
-        ${metrics.length === 0 ? '<li class="text-gray-500 dark:text-gray-400 italic text-center">No metrics available</li>' : ''}
       </ul>
 
-      <!-- Fixes panel – only actual fix suggestions -->
-      <button class="fixes-toggle w-full text-left text-orange-500 hover:text-orange-600 font-medium flex justify-between items-center py-2.5 px-4 bg-orange-50 dark:bg-orange-950/30 rounded-xl transition">
-        <span class="font-semibold">Show Fixes ${failed.length > 0 ? `(${failed.length})` : ''}</span>
-        <span class="arrow text-sm transform transition-transform">${failed.length > 0 ? '▼' : ''}</span>
+      <button class="fixes-toggle w-full text-left text-orange-500 hover:text-orange-600 font-medium flex justify-between items-center py-3 px-4 bg-orange-50 dark:bg-orange-950/30 rounded-xl transition-all">
+        <span>Show Fixes ${failed.length > 0 ? `(${failed.length})` : ''}</span>
+        <span class="arrow text-lg transition-transform duration-200">▼</span>
       </button>
 
-      <div class="fixes-panel hidden mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
+      <div class="fixes-panel hidden mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
         ${failed.length > 0 ? `
-          <ul class="space-y-3 text-sm text-red-700 dark:text-red-300">
+          <ul class="space-y-4 text-sm text-red-700 dark:text-red-300">
             ${failed.map(f => `
-              <li class="flex items-start gap-2.5 leading-relaxed">
-                <span class="text-red-500 text-lg mt-0.5">→</span>
-                <span>${f.text}</span>
+              <li class="flex items-start gap-3 leading-relaxed">
+                ❌ <span>${f.text}</span>
               </li>
             `).join('')}
           </ul>
         ` : `
           <p class="text-center text-green-600 dark:text-green-400 font-medium py-4">
-            No major issues detected – great job!
+            All signals strong – excellent!
           </p>
         `}
       </div>
@@ -530,16 +526,17 @@ ${modules.map(mod => {
       initSubmitFeedback(results);
 
       // Toggle handler
-      results.addEventListener('click', e => {
-        const toggle = e.target.closest('.fixes-toggle');
-        if (!toggle) return;
-        const panel = toggle.nextElementSibling;
-        const arrow = toggle.querySelector('.arrow');
-        if (panel && arrow) {
-          panel.classList.toggle('hidden');
-          arrow.textContent = panel.classList.contains('hidden') ? '▼' : '▲';
-        }
-      });
+results.addEventListener('click', e => {
+  const toggle = e.target.closest('.fixes-toggle');
+  if (!toggle) return;
+  const panel = toggle.nextElementSibling;
+  const arrow = toggle.querySelector('.arrow');
+  if (panel && arrow) {
+    panel.classList.toggle('hidden');
+    arrow.classList.toggle('rotate-180');
+    arrow.textContent = panel.classList.contains('hidden') ? '▼' : '▲';
+  }
+});
 
     } catch (err) {
       console.error('Analysis error:', err);
