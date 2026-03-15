@@ -9,14 +9,15 @@ export function analyzeSalience(extracted) {
     };
   }
 
-  // Sort descending by salience (ensure valid numbers)
+  // Sort descending by salience (ensure valid numbers 0–1)
   const sorted = [...extracted]
     .map(e => ({ ...e, salience: Math.max(0, Math.min(1, e.salience || 0.4)) }))
     .sort((a, b) => b.salience - a.salience);
 
-  const avgSalience = extracted.reduce((sum, e) => sum + (e.salience || 0.4), 0) / extracted.length;
+  const entityCount = extracted.length; // Defined once here from input array
+
+  const avgSalience = extracted.reduce((sum, e) => sum + (e.salience || 0.4), 0) / entityCount;
   const topSalience = sorted[0]?.salience || 0;
-  const secondSalience = sorted[1]?.salience || 0;
   const strongCount = sorted.filter(e => e.salience > 0.6).length;
   const veryStrongCount = sorted.filter(e => e.salience > 0.8).length;
 
@@ -27,23 +28,24 @@ export function analyzeSalience(extracted) {
   // Scoring (0–100) – balanced across page types
   let score = Math.round(avgSalience * 80); // base from average
 
-// Top entity strength tiers – stricter for low count
-if (entityCount < 6) {
-  score = Math.min(40, Math.round(avgSalience * 120)); // cap low-entity pages
-} else {
-  if (topSalience >= 0.90) score += 20;
-  else if (topSalience >= 0.70) score += 15;
-  else if (topSalience >= 0.50) score += 8;
+  // Top entity strength tiers – stricter for low count
+  if (entityCount < 6) {
+    score = Math.min(40, Math.round(avgSalience * 120)); // cap low-entity pages
+  } else {
+    if (topSalience >= 0.90) score += 20;
+    else if (topSalience >= 0.70) score += 15;
+    else if (topSalience >= 0.50) score += 8;
 
-  if (strongCount >= 5 && entityCount >= 10) score += 15;
-  else if (strongCount >= 3 && entityCount >= 8) score += 10;
-  else if (strongCount >= 1) score += 5;
+    if (strongCount >= 5 && entityCount >= 10) score += 15;
+    else if (strongCount >= 3 && entityCount >= 8) score += 10;
+    else if (strongCount >= 1) score += 5;
 
-  if (veryStrongCount >= 1 && entityCount >= 6) score += 8;
+    if (veryStrongCount >= 1 && entityCount >= 6) score += 8;
 
-  if (isFlat && entityCount >= 8) score -= 12;
-}
-score = Math.max(0, Math.min(100, Math.round(score)));
+    if (isFlat && entityCount >= 8) score -= 12;
+  }
+
+  score = Math.max(0, Math.min(100, Math.round(score)));
 
   // Educational metrics
   const topEntitiesDisplay = sorted
