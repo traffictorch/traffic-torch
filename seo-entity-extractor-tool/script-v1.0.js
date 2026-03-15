@@ -468,33 +468,6 @@ ${modules.map(mod => {
     </div>
   `;
 }).join('')}
-      </ul>
-
-      <!-- Orange Show Fixes button -->
-      <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium text-base rounded-lg shadow transition flex justify-between items-center">
-        <span>Show Fixes ${failed.length > 0 ? `(${failed.length})` : ''}</span>
-        <span class="arrow text-lg transition-transform duration-200">▼</span>
-      </button>
-
-      <!-- Fixes panel -->
-      <div class="fixes-panel hidden mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
-        ${failed.length > 0 ? `
-          <ul class="space-y-3 text-sm text-red-700 dark:text-red-300">
-            ${failed.map(f => `
-              <li class="flex items-start gap-2.5 leading-relaxed">
-                ❌ <span>${f.text}</span>
-              </li>
-            `).join('')}
-          </ul>
-        ` : `
-          <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">
-            All signals strong – excellent!
-          </p>
-        `}
-      </div>
-    </div>
-  `;
-}).join('')}
   </div>
 
   <!-- Share / Save / Feedback Buttons -->
