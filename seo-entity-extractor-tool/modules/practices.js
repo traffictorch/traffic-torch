@@ -9,65 +9,60 @@ export function analyzePractices(extracted) {
     };
   }
 
-  // Sort by salience for prominence checks
+  // ── All declarations first ──
   const sorted = [...extracted].sort((a, b) => b.salience - a.salience);
 
-  // Type presence for schema readiness
   const typeCounts = extracted.reduce((acc, e) => {
     const t = e.type || 'OTHER';
     acc[t] = (acc[t] || 0) + 1;
     return acc;
   }, {});
 
-  const hasPerson = typeCounts.PERSON > 0;
-  const hasOrg = typeCounts.ORGANIZATION > 0;
-  const hasProduct = typeCounts.PRODUCT > 0;
-  const hasConcept = typeCounts.CONCEPT > 0;
+  const hasPerson   = typeCounts.PERSON > 0;
+  const hasOrg      = typeCounts.ORGANIZATION > 0;
+  const hasProduct  = typeCounts.PRODUCT > 0;
+  const hasConcept  = typeCounts.CONCEPT > 0;
   const hasLocation = typeCounts.LOCATION > 0;
 
-  // Estimate heading usage: assume top 30% most salient entities are likely in headings
+  // Estimate heading usage: top 30% most salient entities assumed likely in headings
   const topThirdCount = Math.ceil(extracted.length * 0.3);
   const likelyHeadingEntities = sorted.slice(0, topThirdCount).length;
 
-  // Naming consistency: check for near-duplicates (case, minor variation)
-  const normalizedNames = new Set(extracted.map(e => e.text.trim().toLowerCase().replace(/\s+/g, ' ')));
+  // Naming consistency check
+  const normalizedNames = new Set(
+    extracted.map(e => e.text.trim().toLowerCase().replace(/\s+/g, ' '))
+  );
   const consistencyPercent = (normalizedNames.size / extracted.length) * 100;
-  const consistencyLabel = consistencyPercent >= 95 ? 'High' : consistencyPercent >= 80 ? 'Good' : 'Needs improvement';
+  const consistencyLabel = consistencyPercent >= 95 ? 'High' :
+                           consistencyPercent >= 80 ? 'Good' : 'Needs improvement';
 
-  // Scoring (0–100) – balanced for all page types
-let score = 0;
-if (extracted.length < 8) {
-  score = Math.min(25, schemaPotential * 0.5 + headingScore * 0.5);
-} else {
-  score += Math.min(50, schemaPotential);
-  score += headingScore;
-  score += Math.round(consistencyPercent * 0.15);
-  if (likelyHeadingEntities >= 4) score += 10;
-}
-score = Math.max(0, Math.min(100, Math.round(score)));
-
-  // Schema readiness (max 50)
+  // ── Now calculate schema potential (after all deps are ready) ──
   let schemaPotential = 0;
-  if (hasPerson) schemaPotential += 20;           // Person schema
-  if (hasOrg) schemaPotential += 20;              // Organization
-  if (hasProduct && hasPerson) schemaPotential += 15; // Product/Book with author
-  if (hasConcept && extracted.length > 10) schemaPotential += 15; // Article/WebPage
+  if (hasPerson) schemaPotential += 20;
+  if (hasOrg) schemaPotential += 20;
+  if (hasProduct && hasPerson) schemaPotential += 15;
+  if (hasConcept && extracted.length > 10) schemaPotential += 15;
   if (hasLocation) schemaPotential += 8;
-  score += Math.min(50, schemaPotential);
 
-  // Heading prominence (max 25)
+  // ── Heading prominence estimate (max 25) ──
   const headingScore = Math.min(25, likelyHeadingEntities * 3);
-  score += headingScore;
 
-  // Consistency (max 15)
-  score += Math.round(consistencyPercent * 0.15);
+  // ── Final scoring (now safe) ──
+  let score = 0;
 
-  // Bonus for balanced practices
-  if (likelyHeadingEntities >= 4) score += 10;
+  // Low-entity cap first
+  if (extracted.length < 8) {
+    score = Math.min(25, schemaPotential * 0.5 + headingScore * 0.5);
+  } else {
+    score += Math.min(50, schemaPotential);
+    score += headingScore;
+    score += Math.round(consistencyPercent * 0.15);
+    if (likelyHeadingEntities >= 4) score += 10;
+  }
 
   score = Math.max(0, Math.min(100, Math.round(score)));
 
-  // Educational metrics
+  // ── Metrics ──
   const metrics = [
     `Schema readiness: ${schemaPotential}/50 (${hasPerson ? 'Person' : ''}${hasOrg ? ', Organization' : ''}${hasProduct ? ', Product/Book' : ''}${hasConcept ? ', Article potential' : ''})`,
     `Likely heading entities: ~${likelyHeadingEntities} (top ${Math.round((topThirdCount / extracted.length) * 100)}% by salience)`,
@@ -75,7 +70,7 @@ score = Math.max(0, Math.min(100, Math.round(score)));
     `Recommended schema types: ${getSchemaSuggestions(typeCounts)}`
   ];
 
-  // Actionable failed items
+  // ── Failed items ──
   const failed = [];
 
   if (schemaPotential < 30) {
@@ -97,7 +92,7 @@ score = Math.max(0, Math.min(100, Math.round(score)));
 
   if (consistencyPercent < 85) {
     failed.push(
-      "Inconsistent entity naming detected. Standardize names (e.g. always 'John Doe' not mixed casing/variations) across the page for better recognition by search engines."
+      "Inconsistent entity naming detected. Standardize names (e.g. always 'Ylia Callan' not mixed casing/variations) across the page for better recognition by search engines."
     );
   }
 
@@ -110,7 +105,7 @@ score = Math.max(0, Math.min(100, Math.round(score)));
   return { score, metrics, failed };
 }
 
-// Helper for schema suggestions (used in metrics)
+// Helper (unchanged)
 function getSchemaSuggestions(typeCounts) {
   const suggestions = [];
   if (typeCounts.PERSON) suggestions.push("Person");
