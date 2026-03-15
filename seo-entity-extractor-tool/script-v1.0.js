@@ -7,7 +7,6 @@ function analyzeCoverage(extracted, cleanedText = '') {
     ? cleanedText.split(/\s+/).filter(w => w.length > 0).length
     : entityCount * 20;
   const density = wordCount > 0 ? (entityCount / wordCount) * 100 : 0;
-
   const typeCounts = extracted.reduce((acc, e) => {
     const t = e.type || 'OTHER';
     acc[t] = (acc[t] || 0) + 1;
@@ -22,7 +21,6 @@ function analyzeCoverage(extracted, cleanedText = '') {
     (typeCounts.LOCATION || 0) * 0.8 +
     (typeCounts.TECHNOLOGY || 0) * 0.8 +
     (typeCounts.OTHER || 0) * 0.5;
-
   let score = 0;
   if (entityCount < 6) {
     score = Math.min(30, entityCount * 5);
@@ -31,15 +29,12 @@ function analyzeCoverage(extracted, cleanedText = '') {
     else if (entityCount >= 20) score += 40;
     else if (entityCount >= 12) score += 30;
     else if (entityCount >= 6) score += 20;
-
     const densityBonus = entityCount >= 6 ? Math.min(20, Math.log1p(density * 10) * 8) : 0;
     score += densityBonus;
     score += entityCount >= 6 ? Math.min(25, weightedDiversity * 3.5) : 0;
-
     if (diversity <= 2 && entityCount >= 6) score -= 15;
   }
   score = Math.max(0, Math.min(100, Math.round(score)));
-
   const metrics = [
     { text: `Total entities: ${entityCount}`, grade: entityCount >= 12 ? 'good' : entityCount >= 6 ? 'warning' : 'bad' },
     { text: `Approx. word count: ${wordCount.toLocaleString()}`, grade: wordCount >= 800 ? 'good' : wordCount >= 400 ? 'warning' : 'bad' },
@@ -47,12 +42,10 @@ function analyzeCoverage(extracted, cleanedText = '') {
     { text: `Type diversity: ${diversity} types (${Object.entries(typeCounts).map(([t,c]) => `${c} ${t}`).join(', ')})`, grade: diversity >= 5 ? 'good' : diversity >= 3 ? 'warning' : 'bad' },
     { text: `Weighted diversity score: ${weightedDiversity.toFixed(1)} (higher = better topical signals)`, grade: weightedDiversity >= 12 ? 'good' : weightedDiversity >= 6 ? 'warning' : 'bad' }
   ];
-
   const failed = [];
   if (entityCount < 12) failed.push({ text: "Entity count is low. Add more named entities (people, brands, concepts, products) naturally throughout the content to build stronger topical authority.", grade: 'bad' });
   if (density < 0.6 && entityCount > 0) failed.push({ text: "Entity density is below optimal. Entities are too sparse – try weaving more related terms and names into paragraphs, headings, and lists.", grade: 'bad' });
   if (diversity < 4) failed.push({ text: "Limited type diversity. Most pages benefit from at least 4–5 types (e.g. CONCEPT + ORGANIZATION + PERSON + LOCATION). Include a broader range to signal expertise.", grade: 'bad' });
-
   return { score, metrics, failed };
 }
 
@@ -64,11 +57,9 @@ function analyzeSalience(extracted) {
       failed: [{ text: "No named entities found. Add prominent people, brands, concepts, or products early in content to establish clear topical focus.", grade: 'bad' }]
     };
   }
-
   const sorted = [...extracted]
     .map(e => ({ ...e, salience: Math.max(0, Math.min(1, e.salience || 0.4)) }))
     .sort((a, b) => b.salience - a.salience);
-
   const entityCount = extracted.length;
   const avgSalience = extracted.reduce((sum, e) => sum + (e.salience || 0.4), 0) / entityCount;
   const topSalience = sorted[0]?.salience || 0;
@@ -76,7 +67,6 @@ function analyzeSalience(extracted) {
   const veryStrongCount = sorted.filter(e => e.salience > 0.8).length;
   const salienceDrop = topSalience - (sorted[Math.min(4, sorted.length - 1)]?.salience || 0);
   const isFlat = salienceDrop < 0.25 && strongCount > 5;
-
   let score = Math.round(avgSalience * 80);
   if (entityCount < 6) {
     score = Math.min(40, Math.round(avgSalience * 120));
@@ -91,9 +81,7 @@ function analyzeSalience(extracted) {
     if (isFlat && entityCount >= 8) score -= 12;
   }
   score = Math.max(0, Math.min(100, Math.round(score)));
-
   const topEntitiesDisplay = sorted.slice(0, 3).map(e => `${e.text} (${(e.salience * 100).toFixed(0)}%)`).join(' • ');
-
   const metrics = [
     { text: `Average salience: ${avgSalience.toFixed(2)} (higher = more prominent entities)`, grade: avgSalience >= 0.70 ? 'good' : avgSalience >= 0.50 ? 'warning' : 'bad' },
     { text: `Top entity: ${sorted[0]?.text || 'N/A'} – ${(topSalience * 100).toFixed(0)}%`, grade: topSalience >= 0.80 ? 'good' : topSalience >= 0.60 ? 'warning' : 'bad' },
@@ -101,12 +89,10 @@ function analyzeSalience(extracted) {
     { text: `Top 3 entities: ${topEntitiesDisplay || 'None'}`, grade: topSalience >= 0.75 ? 'good' : 'warning' },
     { text: `Distribution: ${isFlat ? 'Flat (needs clearer focus)' : 'Hierarchical (good topical emphasis)'}`, grade: !isFlat ? 'good' : 'warning' }
   ];
-
   const failed = [];
   if (topSalience < 0.70) failed.push({ text: "Primary entity salience is weak (<70%). Place your main topic/brand/person in the page title, H1, first paragraph, and repeat naturally to boost prominence.", grade: 'bad' });
   if (strongCount < 3 && entityCount > 10) failed.push({ text: "Few strongly salient entities. Most entities have low prominence – move key terms to headings (H2/H3), bold/italic, or early sections to create stronger authority signals.", grade: 'bad' });
   if (isFlat && strongCount > 4) failed.push({ text: "Flat salience distribution detected (entities have similar importance). Create clearer hierarchy: make one primary entity dominant in title/headings, then support with secondary ones.", grade: 'bad' });
-
   return { score, metrics, failed };
 }
 
@@ -118,12 +104,10 @@ function analyzeRelationships(extracted) {
       failed: [{ text: "Too few entities detected. Add more related named entities to enable meaningful topical connections and clusters.", grade: 'bad' }]
     };
   }
-
   const topEntities = [...extracted]
     .sort((a, b) => b.salience - a.salience)
     .slice(0, 15)
     .map(e => ({ text: e.text.toLowerCase(), type: e.type || 'OTHER', salience: e.salience || 0.4 }));
-
   let coMentionPairs = 0;
   const pairExamples = [];
   for (let i = 0; i < topEntities.length - 1; i++) {
@@ -134,22 +118,18 @@ function analyzeRelationships(extracted) {
       }
     }
   }
-
   let synergyScore = 0;
   const typePresence = new Set(topEntities.map(e => e.type));
   if (typePresence.has('CONCEPT') && (typePresence.has('ORGANIZATION') || typePresence.has('PERSON'))) synergyScore += 15;
   if (typePresence.has('PRODUCT') && typePresence.has('PERSON')) synergyScore += 12;
   if (typePresence.has('TECHNOLOGY') && typePresence.has('CONCEPT')) synergyScore += 10;
   if (typePresence.has('LOCATION') && typePresence.size > 3) synergyScore += 8;
-
   const coMentionScore = Math.min(60, Math.round(Math.log1p(coMentionPairs) * 12));
   const diversityBonus = Math.min(25, typePresence.size * 6);
-
   let score = topEntities.length < 5
     ? Math.min(30, coMentionPairs * 6)
     : coMentionScore + synergyScore + diversityBonus;
   score = Math.max(0, Math.min(100, Math.round(score)));
-
   const metrics = [
     { text: `Top entities analyzed: ${topEntities.length}`, grade: topEntities.length >= 10 ? 'good' : topEntities.length >= 6 ? 'warning' : 'bad' },
     { text: `Potential relationship pairs: ${coMentionPairs}`, grade: coMentionPairs >= 35 ? 'good' : coMentionPairs >= 15 ? 'warning' : 'bad' },
@@ -157,12 +137,10 @@ function analyzeRelationships(extracted) {
     { text: `Example clusters: ${pairExamples.length > 0 ? pairExamples.join(' • ') : 'None prominent'}`, grade: pairExamples.length >= 2 ? 'good' : pairExamples.length === 1 ? 'warning' : 'bad' },
     { text: `Relationship strength: ${coMentionScore > 40 ? 'Strong' : coMentionScore > 20 ? 'Moderate' : 'Needs building'}`, grade: coMentionScore > 40 ? 'good' : coMentionScore > 20 ? 'warning' : 'bad' }
   ];
-
   const failed = [];
   if (coMentionPairs < 20 && topEntities.length > 5) failed.push({ text: "Limited entity relationships detected. Group related terms in the same sections/paragraphs to build stronger semantic clusters.", grade: 'bad' });
   if (typePresence.size < 4) failed.push({ text: "Narrow type relationships. Broaden connections by including complementary entity types (e.g. add PEOPLE or ORGANIZATIONS to CONCEPT-heavy pages).", grade: 'bad' });
   if (coMentionScore < 30) failed.push({ text: "Weak topical clustering. Create internal links between related entities and use schema markup (mainEntity, mentions, about).", grade: 'bad' });
-
   return { score, metrics, failed };
 }
 
@@ -174,37 +152,30 @@ function analyzePractices(extracted) {
       failed: [{ text: "No named entities detected. Add people, brands, concepts, products, or organizations to enable schema markup and on-page optimization opportunities.", grade: 'bad' }]
     };
   }
-
   const sorted = [...extracted].sort((a, b) => b.salience - a.salience);
   const typeCounts = extracted.reduce((acc, e) => {
     const t = e.type || 'OTHER';
     acc[t] = (acc[t] || 0) + 1;
     return acc;
   }, {});
-
-  const hasPerson   = !!typeCounts.PERSON;
-  const hasOrg      = !!typeCounts.ORGANIZATION;
-  const hasProduct  = !!typeCounts.PRODUCT;
-  const hasConcept  = !!typeCounts.CONCEPT;
+  const hasPerson = !!typeCounts.PERSON;
+  const hasOrg = !!typeCounts.ORGANIZATION;
+  const hasProduct = !!typeCounts.PRODUCT;
+  const hasConcept = !!typeCounts.CONCEPT;
   const hasLocation = !!typeCounts.LOCATION;
-
   const topThirdCount = Math.ceil(extracted.length * 0.3);
   const likelyHeadingEntities = sorted.slice(0, topThirdCount).length;
-
   const normalizedNames = new Set(
     extracted.map(e => e.text.trim().toLowerCase().replace(/\s+/g, ' '))
   );
   const consistencyPercent = (normalizedNames.size / extracted.length) * 100;
-
   let schemaPotential = 0;
-  if (hasPerson)   schemaPotential += 20;
-  if (hasOrg)      schemaPotential += 20;
+  if (hasPerson) schemaPotential += 20;
+  if (hasOrg) schemaPotential += 20;
   if (hasProduct && hasPerson) schemaPotential += 15;
   if (hasConcept && extracted.length > 10) schemaPotential += 15;
   if (hasLocation) schemaPotential += 8;
-
   const headingScore = Math.min(25, likelyHeadingEntities * 3);
-
   let score = 0;
   if (extracted.length < 8) {
     score = Math.min(25, schemaPotential * 0.5 + headingScore * 0.5);
@@ -215,25 +186,22 @@ function analyzePractices(extracted) {
     if (likelyHeadingEntities >= 4) score += 10;
   }
   score = Math.max(0, Math.min(100, Math.round(score)));
-
   const metrics = [
     { text: `Schema readiness: ${schemaPotential}/50`, grade: schemaPotential >= 40 ? 'good' : schemaPotential >= 25 ? 'warning' : 'bad' },
     { text: `Likely heading entities: ~${likelyHeadingEntities} (top ${Math.round((topThirdCount / extracted.length) * 100)}% by salience)`, grade: likelyHeadingEntities >= 5 ? 'good' : likelyHeadingEntities >= 3 ? 'warning' : 'bad' },
     { text: `Name consistency: ${consistencyPercent >= 95 ? 'High' : consistencyPercent >= 80 ? 'Good' : 'Needs improvement'} (${normalizedNames.size} unique normalized names)`, grade: consistencyPercent >= 90 ? 'good' : consistencyPercent >= 75 ? 'warning' : 'bad' }
   ];
-
   const failed = [];
   if (schemaPotential < 30) {
     const suggestions = [];
     if (hasPerson) suggestions.push("Person");
-    if (hasOrg)    suggestions.push("Organization");
+    if (hasOrg) suggestions.push("Organization");
     if (hasProduct) suggestions.push("Product");
     if (hasConcept && extracted.length > 8) suggestions.push("Article");
     failed.push({ text: `Low schema potential (${schemaPotential}/50). Add JSON-LD markup for: ${suggestions.join(', ') || 'relevant types based on content'}.`, grade: 'bad' });
   }
   if (likelyHeadingEntities < 3 && extracted.length > 8) failed.push({ text: `Few entities likely in headings. Place top entities (e.g. ${sorted[0]?.text || 'main topic'}) in H1/H2 tags and supporting ones in H3.`, grade: 'bad' });
   if (consistencyPercent < 85) failed.push({ text: "Inconsistent entity naming detected. Standardize names across the page for better recognition by search engines.", grade: 'bad' });
-
   return { score, metrics, failed };
 }
 
@@ -243,10 +211,8 @@ function analyzeReadiness(coverageScore, salienceScore, relationshipsScore, prac
   const s = safe(salienceScore);
   const r = safe(relationshipsScore);
   const p = safe(practicesScore);
-
   const weights = { coverage: 0.35, salience: 0.35, relationships: 0.15, practices: 0.15 };
   const score = Math.round(c * weights.coverage + s * weights.salience + r * weights.relationships + p * weights.practices);
-
   let level = score >= 85 ? 'Excellent' :
               score >= 70 ? 'Good' :
               score >= 50 ? 'Fair' : 'Needs Work';
@@ -254,7 +220,6 @@ function analyzeReadiness(coverageScore, salienceScore, relationshipsScore, prac
                     score >= 70 ? 'Solid base – minor refinements will push toward top-tier performance.' :
                     score >= 50 ? 'Average readiness – focus on weakest areas to avoid being outranked.' :
                     'Significant gaps – prioritize core entity signals before advanced optimizations.';
-
   const totalWeight = c + s + r + p || 1;
   const metrics = [
     { text: `Overall Readiness: ${level} – ${levelDesc}`, grade: score >= 85 ? 'good' : score >= 70 ? 'warning' : 'bad' },
@@ -263,13 +228,11 @@ function analyzeReadiness(coverageScore, salienceScore, relationshipsScore, prac
     { text: `Relationships contribution: ${Math.round((r / totalWeight) * 100)}% (${r})`, grade: r >= 60 ? 'good' : r >= 30 ? 'warning' : 'bad' },
     { text: `Practices contribution: ${Math.round((p / totalWeight) * 100)}% (${p})`, grade: p >= 60 ? 'good' : p >= 30 ? 'warning' : 'bad' }
   ];
-
   const failed = [];
   if (c < 50 || s < 50) failed.push({ text: "Core signals (coverage + salience) are weak – these are the foundation for entity SEO. Strengthen entity count, diversity, and prominence first.", grade: 'bad' });
   if (r < 40) failed.push({ text: "Weak entity relationships – build topical clusters by grouping related entities in content and adding internal links with descriptive anchors.", grade: 'bad' });
   if (p < 40) failed.push({ text: "On-page practices need improvement – implement JSON-LD schema for detected entity types and use top entities in headings for better crawlability.", grade: 'bad' });
   if (score < 60) failed.push({ text: "Overall semantic readiness is low. Follow the priority order: 1) Boost coverage & salience, 2) Improve relationships, 3) Add schema & practices.", grade: 'bad' });
-
   return { score, metrics, failed };
 }
 
@@ -298,24 +261,79 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
 
+    // Enhanced loading screen with progress steps
     results.innerHTML = `
-      <div id="analysis-progress" class="flex flex-col items-center justify-center py-8">
-        <div class="relative w-20 h-20">
+      <div id="analysis-progress" class="flex flex-col items-center justify-center py-12 min-h-[400px]">
+        <div class="relative w-24 h-24 mb-8">
           <svg class="animate-spin" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8" stroke-opacity="0.3"/>
-            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" stroke-opacity="0.25"/>
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" 
+                    stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
           </svg>
         </div>
-        <p id="progress-text" class="mt-4 text-xl font-medium text-orange-500">Analyzing entities...</p>
+        <p id="progress-text" class="text-2xl font-semibold text-orange-500 dark:text-orange-400 text-center max-w-md">
+          Preparing analysis...
+        </p>
+        <p class="mt-4 text-base text-gray-600 dark:text-gray-400 text-center max-w-md">
+          For very large or heavy pages this can take up to 60 seconds.<br>Please keep this tab open.
+        </p>
+        <div id="progress-steps" class="mt-10 w-full max-w-md space-y-4 text-left">
+          <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3"><span class="text-orange-500">•</span> Fetching page content...</p>
+          <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Extracting named entities...</p>
+          <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Analyzing coverage & density...</p>
+          <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Evaluating salience & prominence...</p>
+          <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Checking relationships & clusters...</p>
+          <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Reviewing on-page practices...</p>
+          <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Calculating overall readiness...</p>
+          <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Finalizing semantic health report...</p>
+        </div>
       </div>
     `;
     results.classList.remove('hidden');
 
     const progressText = document.getElementById('progress-text');
+    const progressSteps = document.getElementById('progress-steps');
+
+    // Sequential progress animation
+    const updateProgress = async () => {
+      const steps = progressSteps.querySelectorAll('p');
+      let current = 0;
+
+      const messages = [
+        "Fetching page content...",
+        "Extracting named entities...",
+        "Analyzing coverage & density...",
+        "Evaluating salience & prominence...",
+        "Checking relationships & clusters...",
+        "Reviewing on-page practices...",
+        "Calculating overall readiness...",
+        "Finalizing semantic health report..."
+      ];
+
+      const interval = setInterval(() => {
+        if (current > 0) {
+          steps[current - 1].classList.add('opacity-50');
+        }
+        if (current < steps.length) {
+          steps[current].classList.remove('opacity-50');
+          progressText.textContent = messages[current] || "Almost there...";
+          current++;
+        } else {
+          clearInterval(interval);
+          progressText.textContent = "Finalizing your report...";
+        }
+      }, 4500); // ≈4.5s per step
+
+      setTimeout(() => {
+        if (current < messages.length) {
+          progressText.textContent = "Still processing – heavy page detected. Please wait a moment longer...";
+        }
+      }, 75000);
+    };
+
+    updateProgress();
 
     try {
-      progressText.textContent = "Fetching & analyzing page...";
-
       const res = await fetch("https://traffic-torch-entity-proxy.traffictorch.workers.dev/entity-analyze", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -329,19 +347,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const data = await res.json();
       const extracted = data.extracted || [];
-
-      const coverage     = analyzeCoverage(extracted);
-      const salience     = analyzeSalience(extracted);
+      const coverage = analyzeCoverage(extracted);
+      const salience = analyzeSalience(extracted);
       const relationships = analyzeRelationships(extracted);
-      const practices    = analyzePractices(extracted);
-      const readiness    = analyzeReadiness(coverage.score, salience.score, relationships.score, practices.score);
+      const practices = analyzePractices(extracted);
+      const readiness = analyzeReadiness(coverage.score, salience.score, relationships.score, practices.score);
 
       const modules = [
-        { name: 'Coverage',     result: coverage,     color: '#10b981', desc: 'How many & diverse entities are recognized (topical breadth)' },
-        { name: 'Salience',     result: salience,     color: '#f59e0b', desc: 'How prominent/important the entities are (authority strength)' },
+        { name: 'Coverage', result: coverage, color: '#10b981', desc: 'How many & diverse entities are recognized (topical breadth)' },
+        { name: 'Salience', result: salience, color: '#f59e0b', desc: 'How prominent/important the entities are (authority strength)' },
         { name: 'Relationships', result: relationships, color: '#8b5cf6', desc: 'How well entities connect & form clusters' },
-        { name: 'Practices',    result: practices,    color: '#ec4899', desc: 'On-page SEO & semantic best practices compliance' },
-        { name: 'Readiness',    result: readiness,    color: '#3b82f6', desc: 'Overall preparedness for semantic search & ranking' }
+        { name: 'Practices', result: practices, color: '#ec4899', desc: 'On-page SEO & semantic best practices compliance' },
+        { name: 'Readiness', result: readiness, color: '#3b82f6', desc: 'Overall preparedness for semantic search & ranking' }
       ];
 
       const overallScore = readiness.score;
@@ -352,6 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
         acc[t] = (acc[t] || 0) + 1;
         return acc;
       }, {});
+
       const diversitySummary = `${extracted.length} entities detected (${Object.entries(typeCounts).map(([t,c]) => `${c} ${t}`).join(', ')})`;
 
       const entitiesHTML = extracted.length > 0
@@ -371,12 +389,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
       results.innerHTML = `
 <div class="max-w-5xl mx-auto px-4 py-8">
-  <div class="text-center mb-10">
-    <h2 class="text-4xl font-bold text-gray-800 dark:text-gray-200">Entity Analysis Report</h2>
-    <p class="mt-3 text-xl text-gray-600 dark:text-gray-400">
-      Overall Semantic Health: <span class="${grade.color} font-bold">${overallScore}/100 ${grade.emoji} ${grade.text}</span>
-    </p>
-    <p class="mt-2 text-lg text-gray-500 dark:text-gray-400">${diversitySummary}</p>
+  <!-- Big Overall Readiness Score Card -->
+  <div class="flex justify-center my-10 px-4">
+    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 md:p-12 w-full max-w-lg border-4 ${readiness.score >= 85 ? 'border-green-500' : readiness.score >= 70 ? 'border-emerald-400' : readiness.score >= 50 ? 'border-orange-500' : 'border-red-500'}">
+      <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall Semantic Readiness</p>
+      <div class="relative aspect-square w-full max-w-[280px] mx-auto">
+        <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+          <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none" class="dark:stroke-gray-700"/>
+          <circle cx="100" cy="100" r="90"
+                  stroke="${readiness.score >= 85 ? '#22c55e' : readiness.score >= 70 ? '#10b981' : readiness.score >= 50 ? '#f59e0b' : '#ef4444'}"
+                  stroke-width="16" fill="none"
+                  stroke-dasharray="${(readiness.score / 100) * 565} 565"
+                  stroke-linecap="round"/>
+        </svg>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="text-center">
+            <div class="text-6xl md:text-7xl font-black drop-shadow-lg"
+                 style="color: ${readiness.score >= 85 ? '#22c55e' : readiness.score >= 70 ? '#10b981' : readiness.score >= 50 ? '#f59e0b' : '#ef4444'};">
+              ${readiness.score}
+            </div>
+            <div class="text-xl md:text-2xl opacity-90 -mt-2"
+                 style="color: ${readiness.score >= 85 ? '#22c55e' : readiness.score >= 70 ? '#10b981' : readiness.score >= 50 ? '#f59e0b' : '#ef4444'};">
+              /100
+            </div>
+          </div>
+        </div>
+      </div>
+      ${(() => {
+        const g = getGrade(readiness.score);
+        return `<p class="mt-8 text-4xl md:text-5xl font-bold text-center ${g.color} drop-shadow-lg">${g.emoji} ${g.text}</p>`;
+      })()}
+      <p class="mt-6 text-center text-lg text-gray-600 dark:text-gray-300 px-4 leading-relaxed">
+        ${readiness.metrics[0].text.split(' – ')[1] || 'Semantic foundation analysis complete'}
+      </p>
+    </div>
   </div>
 
   <!-- Extracted Entities -->
@@ -395,91 +441,132 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 
-  <!-- Module Score Cards -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-${modules.map(mod => {
-  const { score, metrics = [], failed = [] } = mod.result;
-  const cardGrade = getGrade(score);
+  <!-- First row: Coverage + Salience -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+    ${modules.slice(0, 2).map(mod => {
+      const { score, metrics = [], failed = [] } = mod.result;
+      const cardGrade = getGrade(score);
+      let borderColorClass = '';
+      if (cardGrade.text === 'Excellent') borderColorClass = 'border-green-500 dark:border-green-400';
+      else if (cardGrade.text === 'Good') borderColorClass = 'border-emerald-500 dark:border-emerald-400';
+      else if (cardGrade.text === 'Fair') borderColorClass = 'border-orange-500 dark:border-orange-400';
+      else borderColorClass = 'border-red-600 dark:border-red-500';
 
-  // Thin short red arc for low scores – exact match to your reference
-  const arcColor = score >= 80 ? '#22c55e' :
-                   score >= 60 ? '#fb923c' :
-                   '#ef4444';
+      const arcColor = score >= 85 ? '#22c55e' :
+                       score >= 70 ? '#10b981' :
+                       score >= 50 ? '#f59e0b' : '#ef4444';
 
-  return `
-    <div class="score-card bg-white dark:bg-gray-900 rounded-xl shadow-sm p-5 border border-gray-200 dark:border-gray-700 hover:shadow transition-shadow">
-      <div class="flex flex-col items-center mb-4">
-        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200">${mod.name}</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 text-center leading-tight">${mod.desc}</p>
-      </div>
-
-      <!-- Small circles -->
-<div class="flex justify-center mb-6">
-  <div class="relative w-32 h-32 mx-auto">
-    <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-      <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
-      <circle cx="64" cy="64" r="56"
-              stroke="${arcColor}"
-              stroke-width="12" fill="none"
-              stroke-dasharray="${(score / 100) * 352} 352"
-              stroke-linecap="round"/>
-    </svg>
-    <div class="absolute inset-0 flex items-center justify-center">
-      <div class="text-center">
-        <div class="text-4xl sm:text-5xl font-black drop-shadow-md" 
-             style="color: ${arcColor};">
-          ${score}
+      return `
+      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass}">
+        <div class="flex justify-center mb-6">
+          <div class="relative w-32 h-32 mx-auto">
+            <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+              <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
+              <circle cx="64" cy="64" r="56"
+                      stroke="${arcColor}"
+                      stroke-width="12" fill="none"
+                      stroke-dasharray="${(score / 100) * 352} 352"
+                      stroke-linecap="round"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="text-4xl font-black" style="color: ${arcColor};">${score}</div>
+            </div>
+          </div>
+        </div>
+        <p class="text-center text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">${mod.name}</p>
+        ${(() => {
+          const g = getGrade(score);
+          return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
+        })()}
+        <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
+        <ul class="text-sm space-y-3 mb-6">
+          ${metrics.map(m => {
+            let emoji = '❌', color = 'text-red-600 dark:text-red-400';
+            if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
+            else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-500 dark:text-orange-400'; }
+            return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
+          }).join('')}
+        </ul>
+        <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center">
+          <span>Show Fixes ${failed.length > 0 ? `(${failed.length})` : ''}</span>
+          <span class="arrow transition-transform duration-200">▼</span>
+        </button>
+        <div class="fixes-panel hidden mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
+          ${failed.length > 0 ? `
+            <ul class="space-y-4 text-sm text-red-700 dark:text-red-300">
+              ${failed.map(f => `<li class="flex items-start gap-3">❌ <span>${f.text}</span></li>`).join('')}
+            </ul>
+          ` : `
+            <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">All signals strong!</p>
+          `}
         </div>
       </div>
-    </div>
+      `;
+    }).join('')}
   </div>
-</div>
 
-      <!-- Grade text centered below circle – plain text like in your reference -->
-      <div class="text-center mb-5">
-        <span class="text-base font-semibold ${cardGrade.color}">
-          ${cardGrade.text}
-        </span>
+  <!-- Second row: Relationships + Practices + Readiness -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    ${modules.slice(2).map(mod => {
+      const { score, metrics = [], failed = [] } = mod.result;
+      const cardGrade = getGrade(score);
+      let borderColorClass = '';
+      if (cardGrade.text === 'Excellent') borderColorClass = 'border-green-500 dark:border-green-400';
+      else if (cardGrade.text === 'Good') borderColorClass = 'border-emerald-500 dark:border-emerald-400';
+      else if (cardGrade.text === 'Fair') borderColorClass = 'border-orange-500 dark:border-orange-400';
+      else borderColorClass = 'border-red-600 dark:border-red-500';
+
+      const arcColor = score >= 85 ? '#22c55e' :
+                       score >= 70 ? '#10b981' :
+                       score >= 50 ? '#f59e0b' : '#ef4444';
+
+      return `
+      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass}">
+        <div class="flex justify-center mb-6">
+          <div class="relative w-32 h-32 mx-auto">
+            <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+              <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
+              <circle cx="64" cy="64" r="56"
+                      stroke="${arcColor}"
+                      stroke-width="12" fill="none"
+                      stroke-dasharray="${(score / 100) * 352} 352"
+                      stroke-linecap="round"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="text-4xl font-black" style="color: ${arcColor};">${score}</div>
+            </div>
+          </div>
+        </div>
+        <p class="text-center text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">${mod.name}</p>
+        ${(() => {
+          const g = getGrade(score);
+          return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
+        })()}
+        <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
+        <ul class="text-sm space-y-3 mb-6">
+          ${metrics.map(m => {
+            let emoji = '❌', color = 'text-red-600 dark:text-red-400';
+            if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
+            else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-500 dark:text-orange-400'; }
+            return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
+          }).join('')}
+        </ul>
+        <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center">
+          <span>Show Fixes ${failed.length > 0 ? `(${failed.length})` : ''}</span>
+          <span class="arrow transition-transform duration-200">▼</span>
+        </button>
+        <div class="fixes-panel hidden mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
+          ${failed.length > 0 ? `
+            <ul class="space-y-4 text-sm text-red-700 dark:text-red-300">
+              ${failed.map(f => `<li class="flex items-start gap-3">❌ <span>${f.text}</span></li>`).join('')}
+            </ul>
+          ` : `
+            <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">All signals strong!</p>
+          `}
+        </div>
       </div>
-
-      <!-- Sub-metrics list -->
-      <ul class="text-sm space-y-2 mb-5">
-        ${metrics.map(m => {
-          let emoji = '❌', color = 'text-red-600 dark:text-red-400';
-          if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
-          else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-600 dark:text-orange-400'; }
-          return `
-            <li class="${color} flex items-start gap-2">
-              ${emoji} <span>${m.text}</span>
-            </li>
-          `;
-        }).join('')}
-      </ul>
-
-      <!-- Show Fixes button -->
-      <button class="fixes-toggle w-full py-2.5 px-4 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow-sm transition flex justify-between items-center">
-        <span>Show Fixes ${failed.length > 0 ? `(${failed.length})` : ''}</span>
-        <span class="arrow transition-transform duration-200">▼</span>
-      </button>
-
-      <div class="fixes-panel hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-        ${failed.length > 0 ? `
-          <ul class="space-y-3 text-sm text-red-700 dark:text-red-300">
-            ${failed.map(f => `
-              <li class="flex items-start gap-2">
-                ❌ <span>${f.text}</span>
-              </li>
-            `).join('')}
-          </ul>
-        ` : `
-          <p class="text-center text-green-600 dark:text-green-400 font-medium py-2 text-sm">
-            All signals strong!
-          </p>
-        `}
-      </div>
-    </div>
-  `;
-}).join('')}
+      `;
+    }).join('')}
   </div>
 
   <!-- Share / Save / Feedback Buttons -->
@@ -510,7 +597,6 @@ ${modules.map(mod => {
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
         if (window.myRadarChart) window.myRadarChart.destroy();
-
         window.myRadarChart = new Chart(ctx, {
           type: 'radar',
           data: {
@@ -548,25 +634,32 @@ ${modules.map(mod => {
       initShareReport(results);
       initSubmitFeedback(results);
 
-      // Toggle handler
-results.addEventListener('click', e => {
-  const toggle = e.target.closest('.fixes-toggle');
-  if (!toggle) return;
-  const panel = toggle.nextElementSibling;
-  const arrow = toggle.querySelector('.arrow');
-  if (panel && arrow) {
-    panel.classList.toggle('hidden');
-    arrow.classList.toggle('rotate-180');
-    arrow.textContent = panel.classList.contains('hidden') ? '▼' : '▲';
-  }
-});
+      // Toggle handler for fixes panels
+      results.addEventListener('click', e => {
+        const toggle = e.target.closest('.fixes-toggle');
+        if (!toggle) return;
+        const panel = toggle.nextElementSibling;
+        const arrow = toggle.querySelector('.arrow');
+        if (panel && arrow) {
+          panel.classList.toggle('hidden');
+          arrow.classList.toggle('rotate-180');
+          arrow.textContent = panel.classList.contains('hidden') ? '▼' : '▲';
+        }
+      });
 
     } catch (err) {
       console.error('Analysis error:', err);
       results.innerHTML = `
-        <div class="text-center py-12 text-red-600 dark:text-red-400">
-          <p class="text-xl font-bold">Error during analysis</p>
-          <p class="mt-4">${err.message || 'Unknown error – check console'}</p>
+        <div class="text-center py-12 px-6">
+          <p class="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis could not complete</p>
+          <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
+            ${err.message.includes('timeout') || err.message.includes('fetch') 
+              ? 'The page is very large or took too long to load. Try a smaller page or check your internet connection.' 
+              : err.message || 'An unexpected error occurred. Please try again or check the console for details.'}
+          </p>
+          <button onclick="location.reload()" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl">
+            Try Again
+          </button>
         </div>
       `;
     }
