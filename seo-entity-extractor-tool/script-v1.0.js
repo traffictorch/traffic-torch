@@ -142,65 +142,106 @@ document.addEventListener('DOMContentLoaded', () => {
         ...practices.failed || [], ...readiness.failed || []
       ].slice(0, 4);
 
-      results.innerHTML = `
-        <div class="max-w-5xl mx-auto px-4 py-8">
-          <div class="text-center mb-10">
-            <h2 class="text-4xl font-bold text-gray-800 dark:text-gray-200">Entity Analysis Report</h2>
-            <p class="mt-3 text-xl text-gray-600 dark:text-gray-400">
-              Overall Semantic Health: <span class="${grade.color} font-bold">${overallScore}/100 ${grade.emoji} ${grade.text}</span>
-            </p>
-            <p class="mt-2 text-lg text-gray-500 dark:text-gray-400">${diversitySummary}</p>
-          </div>
+results.innerHTML = `
+  <div class="max-w-5xl mx-auto px-4 py-8">
+    <div class="text-center mb-10">
+      <h2 class="text-4xl font-bold text-gray-800 dark:text-gray-200">Entity Analysis Report</h2>
+      <p class="mt-3 text-xl text-gray-600 dark:text-gray-400">
+        Overall Semantic Health: <span class="${grade.color} font-bold">${overallScore}/100 ${grade.emoji} ${grade.text}</span>
+      </p>
+      <p class="mt-2 text-lg text-gray-500 dark:text-gray-400">${diversitySummary}</p>
+    </div>
 
-          <!-- Extracted Entities -->
-          <div class="mb-16">
-            <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6">Extracted Entities</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[600px] overflow-y-auto pr-2">
-              ${entitiesHTML}
+    <!-- Extracted Entities -->
+    <div class="mb-16">
+      <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6">Extracted Entities</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[600px] overflow-y-auto pr-2">
+        ${entitiesHTML}
+      </div>
+    </div>
+
+    <!-- Radar Chart -->
+    <div class="mb-16">
+      <h3 class="text-2xl font-semibold text-center text-gray-800 dark:text-gray-200 mb-6">Semantic Health Radar</h3>
+      <div class="w-full max-w-2xl mx-auto aspect-square">
+        <canvas id="health-radar"></canvas>
+      </div>
+    </div>
+
+    <!-- Module Score Cards (now styled like SEO Intent) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+      ${modules.map(mod => {
+        const { score, metrics = [], failed = [] } = mod.result;
+        const cardGrade = getGrade(score);
+        const borderColor = score >= 85 ? 'border-green-500' : score >= 70 ? 'border-emerald-500' : score >= 50 ? 'border-orange-500' : 'border-red-500';
+        return `
+          <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColor} hover:shadow-xl transition-shadow">
+            <div class="flex flex-col items-center mb-4">
+              <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">${mod.name}</h3>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">${mod.desc}</p>
+            </div>
+            <div class="flex items-center justify-center mb-4">
+              <div class="w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-2xl relative"
+                   style="background: conic-gradient(${mod.color} ${score}%, #e5e7eb ${score}%)">
+                ${score}
+                <span class="absolute -top-2 -right-2 text-2xl">${cardGrade.emoji}</span>
+              </div>
+            </div>
+            <div class="text-center mb-4">
+              <span class="${cardGrade.color} font-medium text-lg">${cardGrade.text}</span>
+            </div>
+            <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-2 mb-4">
+              ${metrics.map(m => {
+                const isGood = !m.includes('Low') && !m.includes('Few') && !m.includes('Limited');
+                return `<li class="${isGood ? 'text-green-600 dark:text-green-400' : 'text-orange-600 dark:text-orange-400'}">
+                  ${isGood ? '✅' : '⚠️'} ${m}
+                </li>`;
+              }).join('')}
+            </ul>
+            <button class="fixes-toggle w-full text-left text-orange-500 hover:text-orange-600 font-medium flex justify-between items-center py-2 px-3 bg-orange-50 dark:bg-orange-950/30 rounded-lg">
+              <span>Show Fixes ${failed.length > 0 ? `(${failed.length})` : ''}</span>
+              <span class="arrow text-xs">▼</span>
+            </button>
+            <div class="fixes-panel hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+              ${failed.length > 0
+                ? `<ul class="list-disc pl-5 space-y-2 text-sm text-red-700 dark:text-red-300">
+                     ${failed.map(f => `<li>${f}</li>`).join('')}
+                   </ul>`
+                : '<p class="text-center text-green-600 dark:text-green-400 font-medium">All signals strong – excellent!</p>'}
             </div>
           </div>
+        `;
+      }).join('')}
+    </div>
 
-          <!-- Radar Chart -->
-          <div class="mb-16">
-            <h3 class="text-2xl font-semibold text-center text-gray-800 dark:text-gray-200 mb-6">Semantic Health Radar</h3>
-            <div class="w-full max-w-2xl mx-auto aspect-square">
-              <canvas id="health-radar"></canvas>
-            </div>
-          </div>
+    <!-- Top Priority Fixes -->
+    <div class="bg-gradient-to-r from-orange-50 to-pink-50 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-lg p-8 border border-orange-200 dark:border-orange-700/50">
+      <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">Top Priority Fixes</h3>
+      ${allFailed.length > 0
+        ? `<ul class="list-decimal pl-6 space-y-4 text-gray-700 dark:text-gray-300">
+             ${allFailed.map((fix, i) => `<li class="text-lg">${fix}</li>`).join('')}
+           </ul>`
+        : '<p class="text-center text-green-600 dark:text-green-400 text-lg">Strong semantic foundation – minimal fixes needed!</p>'}
+    </div>
 
-          <!-- Module Score Cards -->
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-            ${moduleCardsHTML}
-          </div>
-
-          <!-- Top Priority Fixes -->
-          <div class="bg-gradient-to-r from-orange-50 to-pink-50 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-lg p-8 border border-orange-200 dark:border-orange-700/50">
-            <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">Top Priority Fixes</h3>
-            ${allFailed.length > 0
-              ? `<ul class="list-decimal pl-6 space-y-4 text-gray-700 dark:text-gray-300">
-                   ${allFailed.map((fix, i) => `<li class="text-lg">${fix}</li>`).join('')}
-                 </ul>`
-              : '<p class="text-center text-green-600 dark:text-green-400 text-lg">Strong semantic foundation – minimal fixes needed!</p>'}
-          </div>
-
-          <!-- Share / Save / Feedback Buttons -->
-          <div class="text-center my-16 px-4">
-            <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
-              <button id="share-report-btn" class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-                Share Report ↗️
-              </button>
-              <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
-                      class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-                Save Report 📥
-              </button>
-              <button id="feedback-btn" class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-                Submit Feedback 💬
-              </button>
-            </div>
-            <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-          </div>
-        </div>
-      `;
+    <!-- Share / Save / Feedback Buttons -->
+    <div class="text-center my-16 px-4">
+      <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
+        <button id="share-report-btn" class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+          Share Report ↗️
+        </button>
+        <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
+                class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+          Save Report 📥
+        </button>
+        <button id="feedback-btn" class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+          Submit Feedback 💬
+        </button>
+      </div>
+      <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
+    </div>
+  </div>
+`;
 
       // Initialize Chart.js radar (unchanged)
       setTimeout(() => {
@@ -256,15 +297,16 @@ document.addEventListener('DOMContentLoaded', () => {
       initSubmitFeedback(results);
 
       // Toggle handlers for fixes panels
-      results.addEventListener('click', (e) => {
-        if (e.target.matches('.fixes-toggle')) {
-          const panel = e.target.nextElementSibling;
-          panel?.classList.toggle('hidden');
-          // Rotate arrow
-          const arrow = e.target.querySelector('span:last-child');
-          if (arrow) arrow.textContent = panel?.classList.contains('hidden') ? '▼' : '▲';
-        }
-      });
+results.addEventListener('click', (e) => {
+  if (e.target.matches('.fixes-toggle')) {
+    const panel = e.target.nextElementSibling;
+    const arrow = e.target.querySelector('.arrow');
+    panel?.classList.toggle('hidden');
+    if (arrow) {
+      arrow.textContent = panel?.classList.contains('hidden') ? '▼' : '▲';
+    }
+  }
+});
 
     } catch (err) {
       console.error('Analysis error:', err);
