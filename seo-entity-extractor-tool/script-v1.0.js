@@ -397,68 +397,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
   <!-- Module Score Cards -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-    ${modules.map(mod => {
-      const { score, metrics = [], failed = [] } = mod.result;
-      const cardGrade = getGrade(score);
-      const borderColor = score >= 85 ? 'border-green-500' :
-                          score >= 70 ? 'border-emerald-500' :
-                          score >= 50 ? 'border-orange-500' : 'border-red-500';
+${modules.map(mod => {
+  const { score, metrics = [], failed = [] } = mod.result;
+  const cardGrade = getGrade(score);
+  const borderColor = score >= 85 ? 'border-green-500' :
+                      score >= 70 ? 'border-emerald-500' :
+                      score >= 50 ? 'border-orange-500' : 'border-red-500';
 
-      const goodMetrics     = metrics.filter(m => m.grade === 'good');
-      const attentionMetrics = metrics.filter(m => m.grade !== 'good');
+  return `
+    <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColor} hover:shadow-xl transition-shadow">
+      <div class="flex flex-col items-center mb-4">
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">${mod.name}</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">${mod.desc}</p>
+      </div>
+      <div class="flex items-center justify-center mb-4 relative">
+        <div class="w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-2xl"
+             style="background: conic-gradient(${mod.color} ${score}%, #e5e7eb ${score}%)">
+          ${score}
+        </div>
+        <span class="absolute -top-2 -right-2 text-3xl drop-shadow-md">${cardGrade.emoji}</span>
+      </div>
+      <div class="text-center mb-5">
+        <span class="${cardGrade.color} font-medium text-lg">${cardGrade.text}</span>
+      </div>
 
-      return `
-        <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColor} hover:shadow-xl transition-shadow">
-          <div class="flex flex-col items-center mb-4">
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">${mod.name}</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">${mod.desc}</p>
-          </div>
-          <div class="flex items-center justify-center mb-4 relative">
-            <div class="w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-2xl"
-                 style="background: conic-gradient(${mod.color} ${score}%, #e5e7eb ${score}%)">
-              ${score}
-            </div>
-            <span class="absolute -top-2 -right-2 text-3xl drop-shadow-md">${cardGrade.emoji}</span>
-          </div>
-          <div class="text-center mb-4">
-            <span class="${cardGrade.color} font-medium text-lg">${cardGrade.text}</span>
-          </div>
+      <!-- All sub-metrics shown here with grade emoji -->
+      <ul class="text-sm space-y-2.5 mb-6">
+        ${metrics.map(m => {
+          let emoji = '❌', color = 'text-red-600 dark:text-red-400';
+          if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
+          else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-600 dark:text-orange-400'; }
+          return `
+            <li class="${color} flex items-start gap-2.5">
+              ${emoji} <span>${m.text}</span>
+            </li>
+          `;
+        }).join('')}
+        ${metrics.length === 0 ? '<li class="text-gray-500 dark:text-gray-400 italic text-center">No metrics available</li>' : ''}
+      </ul>
 
-          <ul class="text-sm space-y-2 mb-5">
-            ${goodMetrics.map(m => `
-              <li class="flex items-start gap-2 text-green-600 dark:text-green-400">
-                ✅ <span>${m.text}</span>
+      <!-- Fixes panel – only actual fix suggestions -->
+      <button class="fixes-toggle w-full text-left text-orange-500 hover:text-orange-600 font-medium flex justify-between items-center py-2.5 px-4 bg-orange-50 dark:bg-orange-950/30 rounded-xl transition">
+        <span class="font-semibold">Show Fixes ${failed.length > 0 ? `(${failed.length})` : ''}</span>
+        <span class="arrow text-sm transform transition-transform">${failed.length > 0 ? '▼' : ''}</span>
+      </button>
+
+      <div class="fixes-panel hidden mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
+        ${failed.length > 0 ? `
+          <ul class="space-y-3 text-sm text-red-700 dark:text-red-300">
+            ${failed.map(f => `
+              <li class="flex items-start gap-2.5 leading-relaxed">
+                <span class="text-red-500 text-lg mt-0.5">→</span>
+                <span>${f.text}</span>
               </li>
             `).join('')}
-            ${goodMetrics.length === 0 ? '<li class="text-gray-500 dark:text-gray-400 italic text-center py-2">No strong signals detected in this area</li>' : ''}
           </ul>
-
-          <button class="fixes-toggle w-full text-left text-orange-500 hover:text-orange-600 font-medium flex justify-between items-center py-2 px-3 bg-orange-50 dark:bg-orange-950/30 rounded-lg transition">
-            <span>Show Fixes ${attentionMetrics.length + failed.length > 0 ? `(${attentionMetrics.length + failed.length})` : ''}</span>
-            <span class="arrow text-xs">▼</span>
-          </button>
-
-          <div class="fixes-panel hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 text-sm space-y-3">
-            ${[...attentionMetrics, ...failed].length > 0 ? `
-              <ul class="list-disc pl-5 space-y-2">
-                ${attentionMetrics.map(m => `
-                  <li class="${m.grade === 'warning' ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'} flex items-start gap-2">
-                    ${m.grade === 'warning' ? '⚠️' : '❌'} <span>${m.text}</span>
-                  </li>
-                `).join('')}
-                ${failed.map(f => `
-                  <li class="text-red-600 dark:text-red-400 flex items-start gap-2">
-                    ❌ <span>${f.text}</span>
-                  </li>
-                `).join('')}
-              </ul>
-            ` : `
-              <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">All sub-metrics strong – excellent!</p>
-            `}
-          </div>
-        </div>
-      `;
-    }).join('')}
+        ` : `
+          <p class="text-center text-green-600 dark:text-green-400 font-medium py-4">
+            No major issues detected – great job!
+          </p>
+        `}
+      </div>
+    </div>
+  `;
+}).join('')}
   </div>
 
   <!-- Share / Save / Feedback Buttons -->
