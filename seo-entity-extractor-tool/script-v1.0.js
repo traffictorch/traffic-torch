@@ -413,15 +413,27 @@ ${modules.map(mod => {
         <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 text-center leading-tight">${mod.desc}</p>
       </div>
 
-      <!-- Small circle: thin short red arc + big centered red × ONLY – NO number 20 anywhere -->
-      <div class="flex justify-center mb-3">
-        <div class="relative w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-600">
-          <div class="absolute inset-0 flex items-center justify-center"
-               style="background: conic-gradient(${arcColor} ${score}%, transparent ${score}% 100%);">
-            <span class="text-5xl font-black text-red-600 dark:text-red-500 drop-shadow-md">×</span>
-          </div>
+      <!-- Small circles -->
+<div class="flex justify-center mb-6">
+  <div class="relative w-32 h-32 mx-auto">
+    <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+      <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
+      <circle cx="64" cy="64" r="56"
+              stroke="${arcColor}"
+              stroke-width="12" fill="none"
+              stroke-dasharray="${(score / 100) * 352} 352"
+              stroke-linecap="round"/>
+    </svg>
+    <div class="absolute inset-0 flex items-center justify-center">
+      <div class="text-center">
+        <div class="text-4xl sm:text-5xl font-black drop-shadow-md" 
+             style="color: ${arcColor};">
+          ${score}
         </div>
       </div>
+    </div>
+  </div>
+</div>
 
       <!-- Grade text centered below circle – plain text like in your reference -->
       <div class="text-center mb-5">
