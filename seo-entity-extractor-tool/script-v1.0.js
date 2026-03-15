@@ -401,48 +401,73 @@ ${modules.map(mod => {
   const { score, metrics = [], failed = [] } = mod.result;
   const cardGrade = getGrade(score);
 
-  // Exact visual match: thin gray border, small circle, red arc + big red X inside for low scores
-  const arcColor = score >= 85 ? '#22c55e' :    // green Excellent
-                    score >= 70 ? '#10b981' :    // emerald Good
-                    score >= 50 ? '#f59e0b' :    // amber Fair
-                    '#ef4444';                   // red Needs Work
+  // Exact color logic copied from your main script radar (pointBackgroundColor logic)
+  const arcColor = score >= 80 ? '#22c55e' :      // green Excellent
+                    score >= 60 ? '#fb923c' :      // orange Fair/Needs Work border
+                    '#ef4444';                     // red Needs Work
 
   return `
-    <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-md p-6 border border-gray-300 dark:border-gray-700 hover:shadow-lg transition-shadow">
-      <div class="flex flex-col items-center mb-5">
+    <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-md p-5 border border-gray-300 dark:border-gray-700 hover:shadow-lg transition-shadow">
+      <div class="flex flex-col items-center mb-4">
         <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200">${mod.name}</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 text-center leading-snug">${mod.desc}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 text-center leading-tight">${mod.desc}</p>
       </div>
 
-      <!-- Score circle: small, centered, red arc + big red X inside, no external emoji -->
+      <!-- Small centered circle: thin arc + big red × inside, NO score number -->
       <div class="flex justify-center mb-4">
-        <div class="relative w-20 h-20">
-          <div class="absolute inset-0 rounded-full flex items-center justify-center text-3xl font-bold text-red-600 dark:text-red-400"
-               style="background: conic-gradient(${arcColor} ${score}%, transparent ${score}%);">
-            <span class="text-4xl font-black">×</span>
+        <div class="relative w-16 h-16 rounded-full overflow-hidden">
+          <div class="absolute inset-0 flex items-center justify-center"
+               style="background: conic-gradient(${arcColor} ${score}%, #e5e7eb ${score}% 100%);">
+            <span class="text-5xl font-black text-red-600 dark:text-red-400 drop-shadow">×</span>
           </div>
         </div>
       </div>
 
-      <!-- Grade text centered below circle -->
-      <div class="text-center mb-6">
+      <!-- Grade text centered below -->
+      <div class="text-center mb-5">
         <span class="text-lg font-semibold ${cardGrade.color}">
           ${cardGrade.text}
         </span>
       </div>
 
-      <!-- Sub-metrics list (always visible with correct emojis) -->
-      <ul class="text-sm space-y-2.5 mb-6">
+      <!-- Sub-metrics list -->
+      <ul class="text-sm space-y-2 mb-5">
         ${metrics.map(m => {
           let emoji = '❌', color = 'text-red-600 dark:text-red-400';
           if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
           else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-600 dark:text-orange-400'; }
           return `
-            <li class="${color} flex items-start gap-2.5">
+            <li class="${color} flex items-start gap-2">
               ${emoji} <span>${m.text}</span>
             </li>
           `;
         }).join('')}
+      </ul>
+
+      <!-- Show Fixes button -->
+      <button class="fixes-toggle w-full py-3 px-4 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow transition flex justify-between items-center">
+        <span>Show Fixes ${failed.length > 0 ? `(${failed.length})` : ''}</span>
+        <span class="arrow transition-transform duration-200">▼</span>
+      </button>
+
+      <div class="fixes-panel hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        ${failed.length > 0 ? `
+          <ul class="space-y-3 text-sm text-red-700 dark:text-red-300">
+            ${failed.map(f => `
+              <li class="flex items-start gap-2">
+                ❌ <span>${f.text}</span>
+              </li>
+            `).join('')}
+          </ul>
+        ` : `
+          <p class="text-center text-green-600 dark:text-green-400 font-medium py-2">
+            All good – no fixes needed!
+          </p>
+        `}
+      </div>
+    </div>
+  `;
+}).join('')}
       </ul>
 
       <!-- Orange Show Fixes button -->
