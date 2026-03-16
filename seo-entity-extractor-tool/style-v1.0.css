@@ -133,9 +133,21 @@ html, body {
   background-color: rgba(59, 130, 246, 0.2) !important; /* slightly stronger blue */
 }
 
-/* Results - More Details buttons */
-.details-toggle { cursor: pointer; }
-.details-arrow.rotate-180 { transform: rotate(180deg); }
-.details-panel p strong { font-weight: 600; color: #374151; } /* gray-700 light */
-.dark .details-panel p strong { color: #e5e7eb; } /* gray-200 dark */
+/* Results - More Details + Show Fixes buttons */
+.fixes-panel, .details-panel {
+  transition: all 0.3s ease-in-out;
+  overflow: hidden; /* Prevents content flash during expand/collapse */
+}
+
+.fixes-panel.hidden, .details-panel.hidden {
+  height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  border-top: none !important;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
 

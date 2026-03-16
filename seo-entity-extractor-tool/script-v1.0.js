@@ -113,35 +113,56 @@ function analyzeSalience(extracted) {
   const veryStrongCount = sorted.filter(e => e.salience > 0.8).length;
   const salienceDrop = topSalience - (sorted[Math.min(4, sorted.length - 1)]?.salience || 0);
   const isFlat = salienceDrop < 0.25 && strongCount > 5;
-let score = Math.round(avgSalience * 100); // Raise base multiplier to 100 so strong avg gets closer to 80-90
+let score = Math.round(avgSalience * 70); // Lower base to ~70 max for perfect avg salience (prevents instant 100)
 
-const isShortPage = entityCount < 8; // Treat very low entity count as "short/focused" page
+const isMinimalPage = entityCount <= 3;    // Very few entities → limited evidence of prominence
+const isLowEntityPage = entityCount <= 8;  // Broader short/focused category for tiered caps
 
-if (isShortPage) {
-  // For pages with few entities, reward high quality over quantity
-  score = Math.min(100, Math.round(avgSalience * 130)); // Boost to reward near-perfect salience
-  if (topSalience >= 0.90) score += 25;
-  if (strongCount === entityCount && entityCount >= 2) score += 20; // All entities strong → big bonus
-  if (veryStrongCount >= 1) score += 15;
-  if (isFlat && entityCount >= 4) score -= 8; // Only penalize flat if more than minimal entities
+if (isMinimalPage) {
+  // Tiny entity sets (1–3) → very conservative scoring
+  score = Math.min(75, Math.round(avgSalience * 90 + entityCount * 5));
+  if (topSalience >= 0.92) score += 10;
+  if (entityCount <= 2) score -= 15;           // Strong penalty for almost no supporting entities
+} else if (isLowEntityPage) {
+  // 4–8 entities → focused pages, allow higher but still cap
+  score = Math.round(avgSalience * 105);       // Slightly lower multiplier than before
+  if (topSalience >= 0.90) score += 18;
+  if (strongCount === entityCount && entityCount >= 4) score += 15;
+  if (veryStrongCount >= 1) score += 10;
+  if (isFlat && entityCount >= 6) score -= 10;
 } else {
-  // Normal pages keep original logic but with higher bonuses
-  if (topSalience >= 0.90) score += 25;
-  else if (topSalience >= 0.75) score += 18;
-  else if (topSalience >= 0.60) score += 10;
+  // Normal pages (9+ entities) → full scoring potential
+  if (topSalience >= 0.92) score += 22;
+  else if (topSalience >= 0.80) score += 15;
+  else if (topSalience >= 0.65) score += 8;
 
-  if (strongCount >= 5 && entityCount >= 10) score += 20;
-  else if (strongCount >= 3 && entityCount >= 6) score += 15;
-  else if (strongCount >= entityCount * 0.7) score += 12; // Relative strength bonus
+  if (strongCount >= 6 && entityCount >= 12) score += 18;
+  else if (strongCount >= 4 && entityCount >= 8) score += 12;
+  else if (strongCount >= entityCount * 0.6) score += 8;
 
-  if (veryStrongCount >= 2) score += 12;
-  else if (veryStrongCount >= 1) score += 8;
+  if (veryStrongCount >= 2) score += 10;
+  else if (veryStrongCount >= 1) score += 6;
 
-  if (isFlat && entityCount >= 10) score -= 15;
-  else if (isFlat && entityCount >= 6) score -= 8;
+  if (isFlat && entityCount >= 12) score -= 18;
+  else if (isFlat && entityCount >= 8) score -= 10;
+}
+
+// Final realism cap
+if (entityCount <= 4) {
+  score = Math.min(80, score);
+} else if (entityCount <= 8) {
+  score = Math.min(92, score);
 }
 
 score = Math.max(0, Math.min(100, Math.round(score)));
+
+// Final realism cap: even perfect salience can't reach 100 without enough entities
+if (entityCount <= 4) {
+  score = Math.min(80, score);
+} else if (entityCount <= 8) {
+  score = Math.min(92, score);
+}
+
   const topEntitiesDisplay = sorted.slice(0, 3).map(e => `${e.text} (${(e.salience * 100).toFixed(0)}%)`).join(' • ');
   const metrics = [
     { text: `Average salience: ${avgSalience.toFixed(2)} (higher = more prominent entities)`, grade: avgSalience >= 0.70 ? 'good' : avgSalience >= 0.50 ? 'warning' : 'bad' },
@@ -477,7 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
       results.innerHTML = `
 <div class="max-w-5xl mx-auto px-4 py-8">
   <p class="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">
-    Scores are adaptive for short landing pages / homepages (~100–400 words).
+    Scores are adaptive.
   </p>
   <!-- Big Overall Readiness Score Card -->
   <div class="flex justify-center my-10 px-4">
@@ -758,38 +779,26 @@ ${failed.length > 0 ? `
       initSubmitFeedback(results);
 
 results.addEventListener('click', e => {
-  const toggleBtn = e.target.closest('.fixes-toggle');
-  if (!toggleBtn) return;
+  // Handle both fixes-toggle and details-toggle in one listener for better performance
+  const button = e.target.closest('.fixes-toggle, .details-toggle');
+  if (!button) return;
 
-  // Prevent bubbling if clicked on child elements
-  e.stopPropagation();
+  e.preventDefault(); // Prevent any default behavior
+  e.stopPropagation(); // Stop bubbling to avoid double triggers
 
-  const panel = toggleBtn.nextElementSibling;
-  const arrow = toggleBtn.querySelector('.arrow');
-
-  if (panel && arrow) {
-    console.log('Fixes toggle clicked for module – panel exists:', !!panel);
-    panel.classList.toggle('hidden');
-    const nowHidden = panel.classList.contains('hidden');
-    arrow.classList.toggle('rotate-180', !nowHidden);
-    arrow.textContent = nowHidden ? '▼' : '▲';
-  }
-});
-
-results.addEventListener('click', e => {
-  const detailsBtn = e.target.closest('.details-toggle');
-  if (!detailsBtn) return;
-
-  e.stopPropagation();
-
-  const panel = detailsBtn.nextElementSibling;
-  const arrow = detailsBtn.querySelector('.details-arrow');
+  const panel = button.nextElementSibling;
+  const arrow = button.querySelector('.arrow, .details-arrow');
 
   if (panel && arrow) {
-    panel.classList.toggle('hidden');
+    console.log(`Button clicked: ${button.className.includes('fixes') ? 'Fixes' : 'Details'}, Panel exists: ${!!panel}`);
+
+    // Toggle hidden class reliably
     const isHidden = panel.classList.contains('hidden');
+    panel.classList.toggle('hidden');
+
+    // Update arrow rotation and symbol
     arrow.classList.toggle('rotate-180', !isHidden);
-    arrow.textContent = isHidden ? '▼' : '▲';
+    arrow.textContent = isHidden ? '▲' : '▼'; // Flip symbol direction
   }
 });
 
