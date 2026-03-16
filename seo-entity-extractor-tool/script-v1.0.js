@@ -269,75 +269,76 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
 
-    results.innerHTML = `
-      <div id="analysis-progress" class="flex flex-col items-center justify-center py-12 min-h-[400px]">
-        <div class="relative w-24 h-24 mb-8">
-          <svg class="animate-spin" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" stroke-opacity="0.25"/>
-            <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" 
-                    stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
-          </svg>
-        </div>
-        <p id="progress-text" class="text-2xl font-semibold text-orange-500 dark:text-orange-400 text-center max-w-md">
-          Fetching page content...
-        </p>
-        <p class="mt-3 text-base text-gray-600 dark:text-gray-400 text-center max-w-md">
-          For very large or heavy pages this can take up to 60 seconds.<br>Please keep this tab open.
-        </p>
-        <div id="progress-steps" class="mt-10 w-full max-w-md space-y-4 text-left">
-          <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3"><span class="text-orange-500">•</span> Fetching page content...</p>
-          <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Extracting named entities...</p>
-          <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Analyzing coverage & density...</p>
-          <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Evaluating salience & prominence...</p>
-          <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Checking relationships & clusters...</p>
-          <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Reviewing on-page practices...</p>
-          <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Calculating overall readiness...</p>
-          <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Finalizing semantic health report...</p>
-        </div>
-      </div>
-    `;
-    results.classList.remove('hidden');
+results.innerHTML = `
+  <div id="analysis-progress" class="flex flex-col items-center justify-center py-12 min-h-[400px]">
+    <div class="relative w-24 h-24 mb-10">
+      <svg class="animate-spin" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" stroke-opacity="0.25"/>
+        <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" 
+                stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
+      </svg>
+    </div>
+    <p id="progress-text" class="text-2xl md:text-3xl font-semibold text-orange-500 dark:text-orange-400 text-center max-w-lg px-4">
+      Fetching page content...
+    </p>
+    <p class="mt-4 text-base text-gray-600 dark:text-gray-400 text-center max-w-lg px-4">
+      For very large or heavy pages this can take up to 60 seconds.<br>Please keep this tab open.
+    </p>
+    <div id="progress-steps" class="mt-12 w-full max-w-lg space-y-4 text-left px-4 md:px-0">
+      <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3"><span class="text-orange-500">•</span> Fetching page content...</p>
+      <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Extracting named entities...</p>
+      <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Analyzing coverage & density...</p>
+      <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Evaluating salience & prominence...</p>
+      <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Checking relationships & clusters...</p>
+      <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Reviewing on-page practices...</p>
+      <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Calculating overall readiness...</p>
+      <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Finalizing semantic health report...</p>
+    </div>
+  </div>
+`;
+results.classList.remove('hidden');
 
-    const progressText = document.getElementById('progress-text');
-    const progressSteps = document.getElementById('progress-steps');
+const progressText = document.getElementById('progress-text');
+const progressSteps = document.getElementById('progress-steps');
 
-    const updateProgress = () => {
-      const steps = progressSteps.querySelectorAll('p');
-      let current = 0;
+// Sequential progress animation (unchanged)
+const updateProgress = () => {
+  const steps = progressSteps.querySelectorAll('p');
+  let current = 0;
 
-      const messages = [
-        "Fetching page content...",
-        "Extracting named entities...",
-        "Analyzing coverage & density...",
-        "Evaluating salience & prominence...",
-        "Checking relationships & clusters...",
-        "Reviewing on-page practices...",
-        "Calculating overall readiness...",
-        "Finalizing semantic health report..."
-      ];
+  const messages = [
+    "Fetching page content...",
+    "Extracting named entities...",
+    "Analyzing coverage & density...",
+    "Evaluating salience & prominence...",
+    "Checking relationships & clusters...",
+    "Reviewing on-page practices...",
+    "Calculating overall readiness...",
+    "Finalizing semantic health report..."
+  ];
 
-      const interval = setInterval(() => {
-        if (current > 0) {
-          steps[current - 1].classList.add('opacity-50');
-        }
-        if (current < steps.length) {
-          steps[current].classList.remove('opacity-50');
-          progressText.textContent = messages[current];
-          current++;
-        } else {
-          clearInterval(interval);
-          progressText.textContent = "Finalizing your report...";
-        }
-      }, 4500);
+  const interval = setInterval(() => {
+    if (current > 0) {
+      steps[current - 1].classList.add('opacity-50');
+    }
+    if (current < steps.length) {
+      steps[current].classList.remove('opacity-50');
+      progressText.textContent = messages[current];
+      current++;
+    } else {
+      clearInterval(interval);
+      progressText.textContent = "Finalizing your report...";
+    }
+  }, 4500);
 
-      setTimeout(() => {
-        if (current < messages.length) {
-          progressText.textContent = "Still processing – heavy page detected. Please wait a moment longer...";
-        }
-      }, 75000);
-    };
+  setTimeout(() => {
+    if (current < messages.length) {
+      progressText.textContent = "Still processing – heavy page detected. Please wait a moment longer...";
+    }
+  }, 75000);
+};
 
-    updateProgress();
+updateProgress();
 
     try {
       const res = await fetch("https://traffic-torch-entity-proxy.traffictorch.workers.dev/entity-analyze", {
@@ -456,8 +457,8 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 
-  <!-- Coverage + Salience side by side -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 items-start">
+<!-- Coverage + Salience side by side – md breakpoint for tablet/desktop -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-12 items-start">
     ${modules.slice(0, 2).map(mod => {
       const { score, metrics = [], failed = [] } = mod.result;
       const cardGrade = getGrade(score);
@@ -472,7 +473,7 @@ document.addEventListener('DOMContentLoaded', () => {
                        score >= 50 ? '#f59e0b' : '#ef4444';
 
       return `
-      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[540px]">
+      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[520px] md:min-h-[580px]">
         <div class="flex justify-center mb-6">
           <div class="relative w-32 h-32 mx-auto">
             <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
