@@ -113,20 +113,35 @@ function analyzeSalience(extracted) {
   const veryStrongCount = sorted.filter(e => e.salience > 0.8).length;
   const salienceDrop = topSalience - (sorted[Math.min(4, sorted.length - 1)]?.salience || 0);
   const isFlat = salienceDrop < 0.25 && strongCount > 5;
-  let score = Math.round(avgSalience * 80);
-  if (entityCount < 6) {
-    score = Math.min(40, Math.round(avgSalience * 120));
-  } else {
-    if (topSalience >= 0.90) score += 20;
-    else if (topSalience >= 0.70) score += 15;
-    else if (topSalience >= 0.50) score += 8;
-    if (strongCount >= 5 && entityCount >= 10) score += 15;
-    else if (strongCount >= 3 && entityCount >= 8) score += 10;
-    else if (strongCount >= 1) score += 5;
-    if (veryStrongCount >= 1 && entityCount >= 6) score += 8;
-    if (isFlat && entityCount >= 8) score -= 12;
-  }
-  score = Math.max(0, Math.min(100, Math.round(score)));
+let score = Math.round(avgSalience * 100); // Raise base multiplier to 100 so strong avg gets closer to 80-90
+
+const isShortPage = entityCount < 8; // Treat very low entity count as "short/focused" page
+
+if (isShortPage) {
+  // For pages with few entities, reward high quality over quantity
+  score = Math.min(100, Math.round(avgSalience * 130)); // Boost to reward near-perfect salience
+  if (topSalience >= 0.90) score += 25;
+  if (strongCount === entityCount && entityCount >= 2) score += 20; // All entities strong → big bonus
+  if (veryStrongCount >= 1) score += 15;
+  if (isFlat && entityCount >= 4) score -= 8; // Only penalize flat if more than minimal entities
+} else {
+  // Normal pages keep original logic but with higher bonuses
+  if (topSalience >= 0.90) score += 25;
+  else if (topSalience >= 0.75) score += 18;
+  else if (topSalience >= 0.60) score += 10;
+
+  if (strongCount >= 5 && entityCount >= 10) score += 20;
+  else if (strongCount >= 3 && entityCount >= 6) score += 15;
+  else if (strongCount >= entityCount * 0.7) score += 12; // Relative strength bonus
+
+  if (veryStrongCount >= 2) score += 12;
+  else if (veryStrongCount >= 1) score += 8;
+
+  if (isFlat && entityCount >= 10) score -= 15;
+  else if (isFlat && entityCount >= 6) score -= 8;
+}
+
+score = Math.max(0, Math.min(100, Math.round(score)));
   const topEntitiesDisplay = sorted.slice(0, 3).map(e => `${e.text} (${(e.salience * 100).toFixed(0)}%)`).join(' • ');
   const metrics = [
     { text: `Average salience: ${avgSalience.toFixed(2)} (higher = more prominent entities)`, grade: avgSalience >= 0.70 ? 'good' : avgSalience >= 0.50 ? 'warning' : 'bad' },
@@ -135,10 +150,25 @@ function analyzeSalience(extracted) {
     { text: `Top 3 entities: ${topEntitiesDisplay || 'None'}`, grade: topSalience >= 0.75 ? 'good' : 'warning' },
     { text: `Distribution: ${isFlat ? 'Flat (needs clearer focus)' : 'Hierarchical (good topical emphasis)'}`, grade: !isFlat ? 'good' : 'warning' }
   ];
-  const failed = [];
-  if (topSalience < 0.70) failed.push({ text: "Primary entity salience is weak (<70%). Place your main topic/brand/person in the page title, H1, first paragraph, and repeat naturally to boost prominence.", grade: 'bad' });
-  if (strongCount < 3 && entityCount > 10) failed.push({ text: "Few strongly salient entities. Most entities have low prominence – move key terms to headings (H2/H3), bold/italic, or early sections to create stronger authority signals.", grade: 'bad' });
-  if (isFlat && strongCount > 4) failed.push({ text: "Flat salience distribution detected (entities have similar importance). Create clearer hierarchy: make one primary entity dominant in title/headings, then support with secondary ones.", grade: 'bad' });
+const failed = [];
+if (topSalience < 0.65 && entityCount >= 4) {
+  failed.push({ 
+    text: "Primary entity salience is weak. Place your main topic/brand in title, H1, first paragraph and repeat naturally.", 
+    grade: 'bad' 
+  });
+}
+if (strongCount < Math.max(1, Math.floor(entityCount * 0.5)) && entityCount > 6) {
+  failed.push({ 
+    text: "Too few strongly salient entities. Move key terms to headings, bold/italic, or early sections for stronger signals.", 
+    grade: 'bad' 
+  });
+}
+if (isFlat && strongCount > 4 && entityCount >= 10) {
+  failed.push({ 
+    text: "Flat salience distribution. Create clearer hierarchy: make one primary entity dominant in title/headings.", 
+    grade: 'bad' 
+  });
+}
   return { score, metrics, failed };
 }
 
@@ -556,7 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
   <p><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
 </div>
-        <ul class="text-sm space-y-3 mb-6 flex-grow">
+        <ul class="text-sm space-y-3 mt-4 mb-4 flex-grow">
           ${metrics.map(m => {
             let emoji = '❌', color = 'text-red-600 dark:text-red-400';
             if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
@@ -623,7 +653,15 @@ ${failed.length > 0 ? `
           return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
         })()}
         <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
-        <ul class="text-sm space-y-3 mb-6 flex-grow">
+        <button class="details-toggle w-full py-2 px-4 mt-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-lg transition flex justify-between items-center">
+  <span>More Details</span>
+  <span class="details-arrow transition-transform duration-200">▼</span>
+</button>
+<div class="details-panel hidden mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
+  <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
+  <p><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
+</div>
+        <ul class="text-sm space-y-3 mt-4 mb-4 flex-grow">
           ${metrics.map(m => {
             let emoji = '❌', color = 'text-red-600 dark:text-red-400';
             if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
