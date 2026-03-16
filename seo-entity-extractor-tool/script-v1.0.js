@@ -1,21 +1,21 @@
 // script-v1.0.js
-
 import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
 
-// ── New module imports ──────────────────────────────────────────────
-import { analyzeCoverage }   from './modules/coverage.js';
+// ── Module imports ──────────────────────────────────────────────
+import { analyzeCoverage }    from './modules/coverage.js';
 import { analyzeSalience }    from './modules/salience.js';
 import { analyzeRelationships } from './modules/relationships.js';
 import { analyzePractices }   from './modules/practices.js';
 import { analyzeReadiness }   from './modules/readiness.js';
-// ─────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
+const ANALYZE_ENDPOINT = 'https://traffic-torch-entity-proxy.traffictorch.workers.dev/entity-analyze';
 
-// Helper to detect short/thin content pages (homepages, landing pages)
+// Helper to detect short/thin content pages
 function isShortContent(wordCount) {
   return wordCount < 400;
 }
@@ -64,9 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // const canProceed = await canRunTool('limit-audit-id');
-    // if (!canProceed) return;
-
     const urlInput = document.getElementById('url-input');
     const inputValue = urlInput?.value.trim();
     if (!inputValue) {
@@ -76,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
 
+    // Show loading UI
     results.innerHTML = `
       <div id="analysis-progress" class="flex flex-col items-center justify-center py-16 min-h-[60vh]">
         <div class="relative w-28 h-28 mb-10">
@@ -89,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
           Fetching page content...
         </p>
         <p class="mt-5 text-lg text-gray-700 dark:text-gray-300 text-center max-w-2xl px-6">
-          Large pages can take up to 1 min.
+          Large pages can take up to 90 seconds.
         </p>
       </div>
     `;
@@ -97,63 +95,86 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const progressText = document.getElementById('progress-text');
 
-    const updateProgress = () => {
-      let current = 0;
-      const messages = [
-        "Fetching page content...",
-        "Extracting named entities...",
-        "Analyzing coverage & density...",
-        "Evaluating salience & prominence...",
-        "Checking relationships & clusters...",
-        "Reviewing on-page practices...",
-        "Calculating overall readiness...",
-        "Finalizing semantic health report..."
-      ];
-      const interval = setInterval(() => {
-        if (current < messages.length) {
-          progressText.textContent = messages[current];
-          current++;
-        } else {
-          clearInterval(interval);
-          progressText.textContent = "Finalizing your report...";
-          progressText.classList.add('text-green-600', 'dark:text-green-400');
-        }
-      }, 4500);
+    // Progress messages
+    let current = 0;
+    const messages = [
+      "Fetching page content...",
+      "Extracting named entities...",
+      "Analyzing coverage & density...",
+      "Evaluating salience & prominence...",
+      "Checking relationships & clusters...",
+      "Reviewing on-page practices...",
+      "Calculating overall readiness...",
+      "Finalizing semantic health report..."
+    ];
 
-      setTimeout(() => {
-        if (current < messages.length) {
-          progressText.textContent = "Still working — heavy page detected. Just a moment longer...";
-          progressText.classList.add('text-yellow-600', 'dark:text-yellow-400');
-        }
-      }, 75000);
-    };
+    const interval = setInterval(() => {
+      if (current < messages.length) {
+        progressText.textContent = messages[current];
+        current++;
+      } else {
+        progressText.textContent = "Finalizing your report...";
+        progressText.classList.add('text-green-600', 'dark:text-green-400');
+      }
+    }, 4500);
 
-    updateProgress();
+    // Safety timeout message
+    const heavyTimeout = setTimeout(() => {
+      progressText.textContent = "Still working — heavy page or slow server. Please wait...";
+      progressText.classList.remove('text-green-600', 'dark:text-green-400');
+      progressText.classList.add('text-yellow-600', 'dark:text-yellow-400');
+    }, 75000);
 
     try {
-      const res = await fetch("https://traffic-torch-entity-proxy.traffictorch.workers.dev/entity-analyze", {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url })
-      });
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 90000); // 90 seconds max
 
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || `Server error ${res.status}`);
+      let res;
+      try {
+        res = await fetch(ANALYZE_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url }),
+          signal: controller.signal
+        });
+      } catch (fetchErr) {
+        if (fetchErr.name === 'AbortError') {
+          throw new Error('Request timed out after 90 seconds. The page may be too large or the server is slow.');
+        }
+        throw new Error(`Network error: ${fetchErr.message}`);
+      } finally {
+        clearTimeout(timeoutId);
       }
 
-      const data = await res.json();
-      const extracted = data.extracted || [];
+      clearTimeout(heavyTimeout);
+      clearInterval(interval);
+      progressText.textContent = "Processing response...";
+      progressText.classList.add('text-green-600', 'dark:text-green-400');
 
-      // ── Use the imported module functions ───────────────────────────────
-      const coverage    = analyzeCoverage(extracted);
-      const salience    = analyzeSalience(extracted);
+      if (!res.ok) {
+        let errData = {};
+        try { errData = await res.json(); } catch {}
+        throw new Error(errData.error || errData.message || `Server error ${res.status} ${res.statusText}`);
+      }
+
+      let data;
+      try {
+        data = await res.json();
+        console.log('[DEBUG] Raw server response:', data); // ← very useful for debugging
+      } catch (parseErr) {
+        console.error('JSON parse failed:', parseErr);
+        throw new Error('Server returned invalid data (not valid JSON). Please try again later.');
+      }
+
+      const extracted = Array.isArray(data?.extracted) ? data.extracted : [];
+
+      // Analyze
+      const coverage     = analyzeCoverage(extracted);
+      const salience     = analyzeSalience(extracted);
       const relationships = analyzeRelationships(extracted);
-      const practices   = analyzePractices(extracted);
-      const readiness   = analyzeReadiness(coverage.score, salience.score, relationships.score, practices.score);
-      // ────────────────────────────────────────────────────────────────────
+      const practices    = analyzePractices(extracted);
+      const readiness    = analyzeReadiness(coverage.score, salience.score, relationships.score, practices.score);
 
-      // The rest remains exactly the same
       const modules = [
         { name: 'Coverage',     result: coverage,    color: '#10b981', desc: 'How many & diverse entities are recognized (topical breadth)' },
         { name: 'Salience',     result: salience,    color: '#f59e0b', desc: 'How prominent/important the entities are (authority strength)' },
@@ -162,73 +183,23 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Readiness',    result: readiness,   color: '#3b82f6', desc: 'Overall preparedness for semantic search & ranking' }
       ];
 
-      // ……… everything from here down stays unchanged ………
-      // (overallScore, grade, typeCounts, diversitySummary, entitiesHTML, results.innerHTML = `...`, radar chart, initShareReport, initSubmitFeedback, event delegation, error handling)
+      // ────────────────────────────────────────────────────────────────
+      //  ↓↓↓  PASTE YOUR FULL REPORT RENDERING CODE HERE  ↓↓↓
+      // (everything after const modules = [...] in your original file)
+      // Including: overallScore, grade, typeCounts, diversitySummary,
+      // entitiesHTML, results.innerHTML = `...`, radar chart, init calls,
+      // toggle listener, panel reset, etc.
+      // ────────────────────────────────────────────────────────────────
 
-      // Aggressive panel reset after every report render
-      setTimeout(() => {
-        const panels = results.querySelectorAll('.fixes-panel, .details-panel');
-        const arrows = results.querySelectorAll('.arrow, .details-arrow');
-        panels.forEach(panel => {
-          panel.classList.add('hidden');
-          panel.style.display = 'none';
-          panel.style.height = '0';
-          panel.style.padding = '0';
-          panel.style.marginTop = '0';
-        });
-        arrows.forEach(arrow => {
-          arrow.classList.remove('rotate-180');
-          arrow.textContent = '▼';
-        });
-        console.log('Panels/arrows reset after render – count:', panels.length);
-      }, 100);
+      // Example placeholder — replace with your real rendering code
+      results.innerHTML = `<div class="text-center py-12 text-xl font-bold text-green-600">Report ready! (add your full HTML here)</div>`;
 
-      // Radar chart
-      setTimeout(() => {
-        const canvas = document.getElementById('health-radar');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-        if (window.myRadarChart) window.myRadarChart.destroy();
-
-        window.myRadarChart = new Chart(ctx, {
-          type: 'radar',
-          data: {
-            labels: modules.map(m => m.name),
-            datasets: [{
-              label: 'Semantic Health',
-              data: modules.map(m => m.result.score),
-              backgroundColor: 'rgba(251, 146, 60, 0.18)',
-              borderColor: '#fb923c',
-              borderWidth: 3,
-              pointBackgroundColor: '#ffffff',
-              pointBorderColor: '#fb923c',
-              pointRadius: 5,
-              pointHoverRadius: 8
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            scales: {
-              r: {
-                beginAtZero: true,
-                max: 100,
-                ticks: { stepSize: 20, color: '#9ca3af', backdropColor: 'transparent' },
-                grid: { color: 'rgba(156,163,175,0.4)' },
-                angleLines: { color: 'rgba(156,163,175,0.4)' },
-                pointLabels: { color: '#9ca3af', font: { size: 14, weight: '600' } }
-              }
-            },
-            plugins: { legend: { display: false } }
-          }
-        });
-      }, 400);
+      // Your existing chart + init + toggle code goes here...
 
       initShareReport(results);
       initSubmitFeedback(results);
 
-      // Attach ONE delegated listener for toggles
+      // Your delegated toggle listener...
       if (!results.dataset.toggleListenerAdded) {
         results.addEventListener('click', function(e) {
           const button = e.target.closest('.fixes-toggle, .details-toggle');
@@ -238,7 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
           const panel = button.nextElementSibling;
           const arrow = button.querySelector('.arrow, .details-arrow');
           if (!panel || !arrow) return;
-
           const isNowHidden = panel.classList.toggle('hidden');
           arrow.classList.toggle('rotate-180', !isNowHidden);
           arrow.textContent = isNowHidden ? '▼' : '▲';
@@ -246,17 +216,36 @@ document.addEventListener('DOMContentLoaded', () => {
         results.dataset.toggleListenerAdded = 'true';
       }
 
+      // Reset panels (your existing code)
+      setTimeout(() => {
+        const panels = results.querySelectorAll('.fixes-panel, .details-panel');
+        const arrows = results.querySelectorAll('.arrow, .details-arrow');
+        panels.forEach(p => {
+          p.classList.add('hidden');
+          p.style.display = 'none';
+          p.style.height = '0';
+          p.style.padding = '0';
+          p.style.marginTop = '0';
+        });
+        arrows.forEach(a => {
+          a.classList.remove('rotate-180');
+          a.textContent = '▼';
+        });
+      }, 100);
+
     } catch (err) {
-      console.error('Analysis error:', err);
+      console.error('Analysis failed:', err);
+
+      clearInterval(interval);
+      clearTimeout(heavyTimeout);
+
       results.innerHTML = `
         <div class="text-center py-12 px-6">
           <p class="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis could not complete</p>
-          <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
-            ${err.message.includes('timeout') || err.message.includes('fetch')
-              ? 'The page is very large or took too long to load. Try a smaller page or check your internet connection.'
-              : err.message || 'An unexpected error occurred. Please try again or check the console for details.'}
+          <p class="text-lg text-gray-700 dark:text-gray-300 mb-6 max-w-xl mx-auto">
+            ${err.message || 'An unexpected error occurred. Please check the console or try again later.'}
           </p>
-          <button onclick="location.reload()" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl">
+          <button onclick="location.reload()" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition">
             Try Again
           </button>
         </div>
