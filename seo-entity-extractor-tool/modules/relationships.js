@@ -108,42 +108,55 @@ export function analyzeRelationships(extracted) {
   ];
 
   // ── Failed items + concrete fix suggestions ───────────────────────────
-  const failed = [];
+const failed = [];
 
-  if (coMentionPairs < 22 && entityCount >= 7) {
-    failed.push({
-      text: "Limited entity co-occurrences detected. Group related entities in the same sections, paragraphs or lists — this helps search engines see meaningful topical connections.",
-      grade: 'bad'
-    });
-  }
+// Low entity count (critical for relationships to even be possible)
+if (entityCount < 6) {
+  failed.push({
+    text: "Too few entities detected (only " + entityCount + "). Relationships/clustering can't be meaningfully evaluated with fewer than 5–6 entities. Add more related named entities (people, products, concepts, locations, brands) to enable topical connections.",
+    grade: 'bad'
+  });
+}
 
-  if (typeSet.size < (entityCount > 12 ? 5 : 4)) {
-    failed.push({
-      text: `Narrow range of entity types (${typeSet.size} unique types). Broaden topical coverage by naturally including complementary types (e.g. add CONCEPTS, PEOPLE or PRODUCTS if missing).`,
-      grade: 'bad'
-    });
-  }
+// Limited co-occurrences
+if (coMentionPairs < 22 && entityCount >= 5) {  // lowered threshold slightly for small sets
+  failed.push({
+    text: "Limited entity co-occurrences detected (" + coMentionPairs + " pairs). Group related entities in the same sections, paragraphs or lists — this helps search engines see meaningful topical connections and build clusters.",
+    grade: 'bad'
+  });
+}
 
-  if (synergyScore < 15 && entityCount >= 8) {
-    failed.push({
-      text: "Weak type synergy. Try connecting your main entities with supporting ones — for example: brand + product, person + concept, organization + location. This builds stronger entity clusters.",
-      grade: 'bad'
-    });
-  }
+// Narrow type diversity
+if (typeSet.size < (entityCount > 12 ? 5 : 4)) {
+  failed.push({
+    text: `Narrow range of entity types (${typeSet.size} unique types). Broaden topical coverage by naturally including complementary types (e.g. add CONCEPTS, PEOPLE or PRODUCTS if missing).`,
+    grade: 'bad'
+  });
+}
 
-  if (typeSet.has('LOCATION') && !typeSet.has('ORGANIZATION') && locationCount >= 3) {
-    failed.push({
-      text: "Locations are mentioned but no clear organization/brand entity. Adding your business name consistently (and ideally LocalBusiness schema) would greatly strengthen geographic + brand signals.",
-      grade: 'warning'
-    });
-  }
+// Weak type synergy
+if (synergyScore < 15 && entityCount >= 6) {
+  failed.push({
+    text: "Weak type synergy (" + synergyScore + " bonus). Try connecting your main entities with supporting ones — for example: brand + product, person + concept, organization + location. This builds stronger entity clusters.",
+    grade: 'bad'
+  });
+}
 
-  if (coMentionScore < 28 && entityCount >= 10) {
-    failed.push({
-      text: "Topical clustering appears weak. Consider using internal links with descriptive anchors, grouping related topics in dedicated sections, and/or implementing Entity / Mention schema markup.",
-      grade: 'bad'
-    });
-  }
+// Missing organization with locations
+if (typeSet.has('LOCATION') && !typeSet.has('ORGANIZATION') && locationCount >= 3) {
+  failed.push({
+    text: "Locations are mentioned but no clear organization/brand entity. Adding your business name consistently (and ideally LocalBusiness schema) would greatly strengthen geographic + brand signals.",
+    grade: 'warning'
+  });
+}
 
-  return { score, metrics, failed };
+// Weak overall clustering on larger sets
+if (coMentionScore < 28 && entityCount >= 8) {
+  failed.push({
+    text: "Topical clustering appears weak. Consider using internal links with descriptive anchors, grouping related topics in dedicated sections, and/or implementing Entity / Mention schema markup.",
+    grade: 'bad'
+  });
+}
+
+return { score, metrics, failed };
 }

@@ -92,51 +92,66 @@ export function analyzeSalience(extracted) {
     .map(e => `${e.text} (${(e.salience * 100).toFixed(0)}%)`)
     .join(' • ') || 'None prominent';
 
-  const metrics = [
-    { text: `Average salience: ${avgSalience.toFixed(2)}`, grade: avgSalience >= 0.72 ? 'good' : avgSalience >= 0.52 ? 'warning' : 'bad' },
-    { text: `Top entity salience: ${(topSalience * 100).toFixed(0)}%`, grade: topSalience >= 0.82 ? 'good' : topSalience >= 0.64 ? 'warning' : 'bad' },
-    { text: `Strong entities (>62%): ${strongCount} / ${entityCount}`, grade: strongCount >= entityCount * 0.48 ? 'good' : strongCount >= entityCount * 0.30 ? 'warning' : 'bad' },
-    { text: `Top 3 entities: ${top3Display}`, grade: topSalience >= 0.78 ? 'good' : topSalience >= 0.58 ? 'warning' : 'bad' },
-    { text: `Distribution: ${isFlat ? 'Flat / unclear focus' : 'Good hierarchy'}`, grade: !isFlat ? 'good' : 'warning' }
-  ];
+const metrics = [
+  { 
+    text: `Average salience: ${avgSalience.toFixed(2)}`, 
+    grade: avgSalience >= 0.75 ? 'good' : avgSalience >= 0.60 ? 'warning' : 'bad' 
+  },
+  { 
+    text: `Top entity salience: ${(topSalience * 100).toFixed(0)}%`, 
+    grade: topSalience >= 0.85 ? 'good' : topSalience >= 0.70 ? 'warning' : 'bad' 
+  },
+  { 
+    text: `Strong entities (>62%): ${strongCount} / ${entityCount}`, 
+    grade: strongCount >= entityCount * 0.70 ? 'good' : strongCount >= entityCount * 0.50 ? 'warning' : 'bad' 
+  },
+  { 
+    text: `Top 3 entities: ${top3Display}`, 
+    grade: topSalience >= 0.82 ? 'good' : topSalience >= 0.65 ? 'warning' : 'bad' 
+  },
+  { 
+    text: `Distribution: ${isFlat ? 'Flat / unclear focus' : 'Good hierarchy'}`, 
+    grade: !isFlat && entityCount >= 3 ? 'good' : entityCount >= 2 ? 'warning' : 'bad' 
+  }
+];
 
   // ── Failed items with concrete, polite fix suggestions ────────────────
-  const failed = [];
+const failed = [];
 
-  if (topSalience < 0.68 && entityCount >= 5) {
-    failed.push({
-      text: "Main topic / brand has weak prominence. Move your primary entity into: title tag, H1, first 100–150 words, and repeat 2–4 times naturally in prominent positions.",
-      grade: 'bad'
-    });
-  }
+if (entityCount < 4) {
+  failed.push({
+    text: "Very few entities detected. Salience/prominence cannot be meaningfully evaluated with fewer than 4 entities. Add your main topic/brand and supporting entities in prominent positions.",
+    grade: 'bad'
+  });
+}
 
-  if (strongCount < Math.max(2, Math.floor(entityCount * 0.38)) && entityCount >= 7) {
-    failed.push({
-      text: "Too few entities are strongly emphasized. Try placing 3–5 key terms in H2/H3 headings, bold/strong tags, or early in sections to create clearer topical hierarchy.",
-      grade: 'bad'
-    });
-  }
+if (topSalience < 0.75 && entityCount >= 2) {
+  failed.push({
+    text: "Main topic / brand has weak prominence. Move your primary entity into title tag, H1, first 100 words, and repeat naturally in visible areas.",
+    grade: 'bad'
+  });
+}
 
-  if (isFlat && strongCount >= 5 && entityCount >= 9) {
-    failed.push({
-      text: "Salience is too flat — the page doesn't clearly signal one primary topic. Strengthen focus by making one main entity dominant in title, H1, intro and at least 40% of headings.",
-      grade: 'bad'
-    });
-  }
+if (strongCount < Math.max(1, Math.floor(entityCount * 0.6)) && entityCount >= 3) {
+  failed.push({
+    text: "Too few strongly emphasized entities. Place key terms in headings, bold tags, or early sections to build clearer authority signals.",
+    grade: 'bad'
+  });
+}
 
-  if (veryStrongCount === 0 && entityCount >= 12 && topSalience < 0.88) {
-    failed.push({
-      text: "No entity reaches very high prominence. For better chance at featured snippets or AI overviews, push your most important entity to salience >85–90% by using it in early + structurally important positions.",
-      grade: 'warning'
-    });
-  }
+if (isFlat && entityCount >= 4) {
+  failed.push({
+    text: "Salience distribution is too flat. Create clearer hierarchy: make one primary entity dominant in title, H1, intro, and headings.",
+    grade: 'bad'
+  });
+}
 
-  if (entityCount >= 6 && avgSalience < 0.48) {
-    failed.push({
-      text: "Overall prominence is quite low. Entities appear buried or mentioned only in passing. Bring key topics closer to the top of the page and use them in visible, high-attention areas.",
-      grade: 'bad'
-    });
-  }
+if (avgSalience < 0.55 && entityCount >= 3) {
+  failed.push({
+    text: "Overall entity prominence is low. Bring key topics closer to the top of the page and use them in high-attention areas (headings, first paragraphs).",
+    grade: 'bad'
+  });
+}
 
-  return { score, metrics, failed };
+return { score, metrics, failed };
 }

@@ -122,49 +122,53 @@ export function analyzePractices(extracted) {
   ];
 
   // ── Failed / improvement suggestions ──────────────────────────────────
-  const failed = [];
+const failed = [];
 
-  if (schemaPotential < 38) {
-    const suggestions = [];
-    if (hasPerson)     suggestions.push("Person");
-    if (hasOrg)        suggestions.push("Organization");
-    if (hasProduct)    suggestions.push("Product");
-    if (hasConcept)    suggestions.push("Article / WebPage");
-    if (hasLocation && hasOrg) suggestions.push("LocalBusiness");
+// Low schema readiness (already good, but keep)
+if (schemaPotential < 38) {
+  const suggestions = [];
+  if (hasPerson) suggestions.push("Person");
+  if (hasOrg) suggestions.push("Organization");
+  if (hasProduct) suggestions.push("Product");
+  if (hasConcept) suggestions.push("Article / WebPage");
+  if (hasLocation && hasOrg) suggestions.push("LocalBusiness");
+  failed.push({
+    text: `Low schema readiness (${Math.round(schemaPotential)}/100). Add JSON-LD structured data for: ${suggestions.length ? suggestions.join(', ') : 'the most prominent entity types detected'}. Start with Organization or LocalBusiness if applicable.`,
+    grade: 'bad'
+  });
+}
 
-    failed.push({
-      text: `Low schema readiness (${Math.round(schemaPotential)}/100). Add JSON-LD structured data for: ${suggestions.length ? suggestions.join(', ') : 'the most prominent entity types detected'}. Start with Organization or LocalBusiness if applicable.`,
-      grade: 'bad'
-    });
-  }
+// Few entities in headings (missing fix – now added)
+if (likelyHeadingEntities < 4) {  // lowered threshold so it triggers on ~1 like your example
+  failed.push({
+    text: `Very few high-salience entities appear to be used in headings (~${likelyHeadingEntities}). Place your top entities (${sortedBySalience[0]?.text || 'main topic'}, ${sortedBySalience[1]?.text || ''}, etc.) into H1, H2 and some H3 tags to create stronger topical signals and improve crawlability.`,
+    grade: 'bad'
+  });
+}
 
-  if (likelyHeadingEntities < 4 && extracted.length >= 9) {
-    failed.push({
-      text: `Few high-salience entities appear to be used in headings. Place your top 3–5 most important entities (${sortedBySalience[0]?.text || 'main topic'}, ${sortedBySalience[1]?.text || ''}, etc.) into H1, H2 and some H3 tags for stronger topical signals.`,
-      grade: 'bad'
-    });
-  }
+// Inconsistent naming (not triggered in your example – keep)
+if (consistencyPercent < 84 && extracted.length >= 8) {
+  failed.push({
+    text: `Inconsistent entity naming detected (${consistencyPercent.toFixed(0)}%). Standardize spelling, capitalization and formatting of key names (especially brand/business name) across the entire page — including title, headings, body and alt text.`,
+    grade: 'bad'
+  });
+}
 
-  if (consistencyPercent < 84 && extracted.length >= 8) {
-    failed.push({
-      text: `Inconsistent entity naming detected (${consistencyPercent.toFixed(0)}%). Standardize spelling, capitalization and formatting of key names (especially brand/business name) across the entire page — including title, headings, body and alt text.`,
-      grade: 'bad'
-    });
-  }
+// Location without organization (warning – keep)
+if (!hasOrg && hasLocation && locationCount >= 3) {
+  failed.push({
+    text: "You mention multiple locations but no clear organization/brand. Adding a consistent Organization entity (business name) + LocalBusiness schema would dramatically improve local SEO strength.",
+    grade: 'warning'
+  });
+}
 
-  if (!hasOrg && hasLocation && locationCount >= 3) {
-    failed.push({
-      text: "You mention multiple locations but no clear organization/brand. Adding a consistent Organization entity (business name) + LocalBusiness schema would dramatically improve local SEO strength.",
-      grade: 'warning'
-    });
-  }
+// Decent volume but no strong schema candidates (warning – keep)
+if (extracted.length >= 12 && schemaPotential < 50 && !hasOrg && !hasProduct) {
+  failed.push({
+    text: "Page has decent entity volume but lacks strong schema candidates (no Organization or Product detected). Consider explicitly marking your brand/business or main offering as Organization/Product in content and schema.",
+    grade: 'warning'
+  });
+}
 
-  if (extracted.length >= 12 && schemaPotential < 50 && !hasOrg && !hasProduct) {
-    failed.push({
-      text: "Page has decent entity volume but lacks strong schema candidates (no Organization or Product detected). Consider explicitly marking your brand/business or main offering as Organization/Product in content and schema.",
-      grade: 'warning'
-    });
-  }
-
-  return { score, metrics, failed };
+return { score, metrics, failed };
 }

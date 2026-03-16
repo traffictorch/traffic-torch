@@ -104,50 +104,55 @@ export function analyzeCoverage(extracted, cleanedText = '') {
   ];
 
   // ── Failed items + realistic, actionable fix suggestions ──────
-  const failed = [];
+const failed = [];
 
-  if (entityCount < (isShortPage ? 6 : 11)) {
-    failed.push({
-      text: "Entity count is quite low. Add more relevant named entities (brands, people, products, locations, concepts) naturally — especially in headings, first paragraphs and image alt text.",
-      grade: 'bad'
-    });
-  }
+// Low entity count (already there)
+if (entityCount < (isShortPage ? 6 : 11)) {
+  failed.push({
+    text: "Entity count is quite low. Add more relevant named entities (brands, people, products, locations, concepts) naturally — especially in headings, first paragraphs and image alt text.",
+    grade: 'bad'
+  });
+}
 
-  if (density < 0.45 && !isShortPage && entityCount > 0) {
-    failed.push({
-      text: "Entity density is rather low for a normal-length page. Weave 4–8 more related entities into the body copy, subheadings and lists without forcing it.",
-      grade: 'bad'
-    });
-  }
+// Low density on normal pages
+if (density < 0.45 && !isShortPage && entityCount > 0) {
+  failed.push({
+    text: "Entity density is rather low for a normal-length page. Weave 4–8 more related entities into the body copy, subheadings and lists without forcing it.",
+    grade: 'bad'
+  });
+}
 
-  if (density > 7.5 && !isShortPage) {
-    failed.push({
-      text: "Entity density is unusually high — possible keyword stuffing signal. Reduce repetition of the same few entities and spread supporting entities more naturally.",
-      grade: 'warning'
-    });
-  }
+// High density warning (stuffed)
+if (density > 7.5 && !isShortPage) {
+  failed.push({
+    text: "Entity density is unusually high — possible keyword stuffing signal. Reduce repetition of the same few entities and spread supporting entities more naturally.",
+    grade: 'warning'
+  });
+}
 
-  if (diversity < (isShortPage ? 3 : 5)) {
-    failed.push({
-      text: `Low type diversity (${diversity} different types). Try to include at least one more type — for example add CONCEPTS if mostly ORGANIZATION/PERSON, or LOCATION/PRODUCT if missing.`,
-      grade: 'bad'
-    });
-  }
+// Low type diversity
+if (diversity < (isShortPage ? 3 : 5)) {
+  failed.push({
+    text: `Low type diversity (${diversity} different types). Try to include at least one more type — for example add CONCEPTS if mostly ORGANIZATION/PERSON, or LOCATION/PRODUCT if missing.`,
+    grade: 'bad'
+  });
+}
 
-  if (weightedDiversity < 8 && entityCount >= 8) {
-    failed.push({
-      text: "Weighted topical diversity is weak. Strengthen with more semantically rich entities (CONCEPT, ORGANIZATION, PRODUCT usually give highest weight).",
-      grade: 'bad'
-    });
-  }
+// Low weighted diversity
+if (weightedDiversity < 8 && entityCount >= 8) {
+  failed.push({
+    text: "Weighted topical diversity is weak. Strengthen with more semantically rich entities (CONCEPT, ORGANIZATION, PRODUCT usually give highest weight).",
+    grade: 'bad'
+  });
+}
 
-  // Local business pattern is very common → specific advice
-  if (typeCounts.LOCATION >= 1 && typeCounts.ORGANIZATION === 0 && entityCount >= 6) {
-    failed.push({
-      text: "You mention location(s) but no clear ORGANIZATION/brand. Adding your business name consistently (and preferably schema) would significantly improve local signals.",
-      grade: 'warning'
-    });
-  }
+// Local business pattern missing org
+if (typeCounts.LOCATION >= 1 && typeCounts.ORGANIZATION === 0 && entityCount >= 6) {
+  failed.push({
+    text: "You mention location(s) but no clear ORGANIZATION/brand. Adding your business name consistently (and preferably schema) would significantly improve local signals.",
+    grade: 'warning'
+  });
+}
 
-  return { score, metrics, failed };
+return { score, metrics, failed };
 }
