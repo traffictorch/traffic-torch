@@ -133,50 +133,41 @@ html, body {
   background-color: rgba(59, 130, 246, 0.2) !important; /* slightly stronger blue */
 }
 
-/* Results - More Details + Show Fixes buttons & panels – FIXED CSS ONLY */
+/* Results - More Details + Show Fixes – FIXED CSS (max-height + visibility) */
 .fixes-toggle,
 .details-toggle {
   cursor: pointer;
   user-select: none;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .fixes-panel,
 .details-panel {
-  transition: max-height 0.4s ease-out, opacity 0.3s ease-out;
+  transition: max-height 0.4s ease-out;
   overflow: hidden;
   max-height: 0;
-  opacity: 0;
-  padding: 0 1.25rem;
-  border-top: 1px solid #e5e7eb; /* visible separator when open */
+  visibility: hidden;
 }
 
 .fixes-panel:not(.hidden),
 .details-panel:not(.hidden) {
-  max-height: 3000px; /* generous safe value – prevents clipping on long content */
-  opacity: 1;
-  padding: 1.25rem 1.25rem;
+  max-height: 4000px; /* safe large value – prevents clipping */
+  visibility: visible;
+  padding: 1.25rem 1rem; /* your original padding */
 }
 
 .fixes-panel.hidden,
 .details-panel.hidden {
   max-height: 0 !important;
-  opacity: 0 !important;
+  visibility: hidden !important;
   padding: 0 !important;
 }
 
 .arrow,
 .details-arrow {
-  transition: transform 0.3s ease;
+  transition: transform 0.25s ease;
   display: inline-block;
-  transform-origin: center center;
 }
 
 .rotate-180 {
   transform: rotate(180deg);
-}
-
-.fixes-toggle:hover,
-.details-toggle:hover {
-  opacity: 0.92;
 }
