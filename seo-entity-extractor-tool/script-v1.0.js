@@ -270,40 +270,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
 
 results.innerHTML = `
-  <div id="analysis-progress" class="flex flex-col items-center justify-center py-12 min-h-[400px]">
-    <div class="relative w-24 h-24 mb-10">
+  <div id="analysis-progress" class="flex flex-col items-center justify-center py-16 min-h-[60vh]">
+    <div class="relative w-28 h-28 mb-10">
       <svg class="animate-spin" viewBox="0 0 100 100">
         <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" stroke-opacity="0.25"/>
         <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" 
                 stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
       </svg>
     </div>
-    <p id="progress-text" class="text-2xl md:text-3xl font-semibold text-orange-500 dark:text-orange-400 text-center max-w-lg px-4">
+    <p id="progress-text" class="text-2xl md:text-3xl font-bold text-orange-600 dark:text-orange-400 text-center max-w-2xl px-6 leading-tight">
       Fetching page content...
     </p>
-    <p class="mt-4 text-base text-gray-600 dark:text-gray-400 text-center max-w-lg px-4">
-      For very large or heavy pages this can take up to 60 seconds.<br>Please keep this tab open.
+    <p class="mt-5 text-lg text-gray-700 dark:text-gray-300 text-center max-w-2xl px-6">
+      For very large or heavy pages.<br>
+      Please wait up to 60 seconds.
     </p>
-    <div id="progress-steps" class="mt-12 w-full max-w-lg space-y-4 text-left px-4 md:px-0">
-      <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3"><span class="text-orange-500">•</span> Fetching page content...</p>
-      <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Extracting named entities...</p>
-      <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Analyzing coverage & density...</p>
-      <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Evaluating salience & prominence...</p>
-      <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Checking relationships & clusters...</p>
-      <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Reviewing on-page practices...</p>
-      <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Calculating overall readiness...</p>
-      <p class="text-gray-700 dark:text-gray-300 flex items-center gap-3 opacity-50"><span class="text-orange-500">•</span> Finalizing semantic health report...</p>
-    </div>
   </div>
 `;
 results.classList.remove('hidden');
 
 const progressText = document.getElementById('progress-text');
-const progressSteps = document.getElementById('progress-steps');
 
-// Sequential progress animation (unchanged)
+// Sequential progress animation (no steps list anymore)
 const updateProgress = () => {
-  const steps = progressSteps.querySelectorAll('p');
   let current = 0;
 
   const messages = [
@@ -318,22 +307,21 @@ const updateProgress = () => {
   ];
 
   const interval = setInterval(() => {
-    if (current > 0) {
-      steps[current - 1].classList.add('opacity-50');
-    }
-    if (current < steps.length) {
-      steps[current].classList.remove('opacity-50');
+    if (current < messages.length) {
       progressText.textContent = messages[current];
       current++;
     } else {
       clearInterval(interval);
       progressText.textContent = "Finalizing your report...";
+      progressText.classList.add('text-green-600', 'dark:text-green-400');
     }
-  }, 4500);
+  }, 4500); // ~4.5s per message
 
+  // Long-processing fallback message
   setTimeout(() => {
     if (current < messages.length) {
-      progressText.textContent = "Still processing – heavy page detected. Please wait a moment longer...";
+      progressText.textContent = "Still working — heavy page detected. Just a moment longer...";
+      progressText.classList.add('text-yellow-600', 'dark:text-yellow-400');
     }
   }, 75000);
 };
