@@ -1,7 +1,7 @@
 @media print {
 
   body::before {
-    content: "TrafficTorch.net ⚖️\A\A SEO Intent Audit Tool 🎯\A\A Report:\A " attr(data-url);
+    content: "TrafficTorch.net ⚖️\A\A SEO Entity Audit Tool 🎯\A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
     min-height: 100vh;

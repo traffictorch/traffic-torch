@@ -23,9 +23,9 @@ export function initShareReport(resultsContainer) {
     }
 
     // Remove any leftover tool name if needed
-    pageTitle = pageTitle.replace(/SEO Intent Tool & Search Intent Audit | Traffic Torch/gi, '').trim() || 'this page';
+    pageTitle = pageTitle.replace(/SEO Entity Extractor and Audit Tool | Traffic Torch/gi, '').trim() || 'this page';
 
-    const shareText = `Check out ${pageTitle} on Traffic Torch SEO Intent Tool ${shareUrl}`;
+    const shareText = `Check out ${pageTitle} on Traffic Torch SEO Entity Tool ${shareUrl}`;
 
     try {
       if (navigator.share) {

@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
 
     results.innerHTML = `
-      <div id="analysis-progress" class="flex flex-col items-center justify-center py-16 min-h-[60vh]">
+      <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 min-h-[60vh]">
         <div class="relative w-28 h-28 mb-10">
           <svg class="animate-spin" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" stroke-opacity="0.25"/>
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
           Fetching page content...
         </p>
         <p class="mt-5 text-lg text-gray-700 dark:text-gray-300 text-center max-w-2xl px-6">
-          Large pages can take up to 90 seconds.
+          Large pages can take up to 2 mins.
         </p>
       </div>
     `;
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 90000);
+      const timeoutId = setTimeout(() => controller.abort(), 120000);
 
       let res;
       try {
@@ -509,23 +509,51 @@ ${failed.length > 0 ? `
       initShareReport(results);
       initSubmitFeedback(results);
 
-      // Attach toggle listener ONCE, on body, after first report render
-      if (!document.body.dataset.toggleListenersAttached) {
-        document.body.addEventListener('click', function(e) {
-          const button = e.target.closest('.fixes-toggle, .details-toggle');
-          if (!button) return;
-          e.preventDefault();
-          e.stopPropagation();
-          const panel = button.nextElementSibling;
-          const arrow = button.querySelector('.arrow, .details-arrow');
-          if (!panel || !arrow) return;
-          const isNowHidden = panel.classList.toggle('hidden');
-          arrow.classList.toggle('rotate-180', !isNowHidden);
-          arrow.textContent = isNowHidden ? '▼' : '▲';
-        });
-        document.body.dataset.toggleListenersAttached = 'true';
-        console.log('Toggle listeners attached to body');
-      }
+// DEBUG VERSION - attach toggle listener once + log everything
+if (!document.body.dataset.toggleListenersAttached) {
+  console.log('[TOGGLE DEBUG] Attaching listener to body NOW');
+
+  document.body.addEventListener('click', function(e) {
+    console.log('[TOGGLE DEBUG] Click event captured on body');
+
+    const button = e.target.closest('.fixes-toggle, .details-toggle');
+    if (!button) {
+      console.log('[TOGGLE DEBUG] No toggle button in click target');
+      return;
+    }
+
+    console.log('[TOGGLE DEBUG] Toggle button found → text:', button.textContent.trim());
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const panel = button.nextElementSibling;
+    const arrow = button.querySelector('.arrow, .details-arrow');
+
+    if (!panel) {
+      console.warn('[TOGGLE DEBUG] NO PANEL found after button');
+      return;
+    }
+    if (!arrow) {
+      console.warn('[TOGGLE DEBUG] NO ARROW found inside button');
+      return;
+    }
+
+    console.log('[TOGGLE DEBUG] Panel & arrow found – toggling now');
+
+    const wasHidden = panel.classList.contains('hidden');
+    const isNowHidden = panel.classList.toggle('hidden');
+
+    arrow.classList.toggle('rotate-180', !isNowHidden);
+    arrow.textContent = isNowHidden ? '▼' : '▲';
+
+    console.log('[TOGGLE DEBUG] Panel toggled – was hidden:', wasHidden, '→ now hidden:', isNowHidden);
+    console.log('[TOGGLE DEBUG] Arrow text now:', arrow.textContent);
+  });
+
+  document.body.dataset.toggleListenersAttached = 'true';
+  console.log('[TOGGLE DEBUG] Listener successfully attached to body');
+}
 
     } catch (err) {
       console.error('Analysis error:', err);
