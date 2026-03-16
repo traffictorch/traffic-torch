@@ -142,24 +142,24 @@ html, body {
 
 .fixes-panel,
 .details-panel {
-  transition: max-height 0.4s ease-out;
+  transition: max-height 0.4s ease-out, padding 0.4s ease-out;
   overflow: hidden;
   max-height: 0;
-  visibility: hidden;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
-.fixes-panel:not(.hidden),
-.details-panel:not(.hidden) {
-  max-height: 4000px; /* safe large value – prevents clipping */
-  visibility: visible;
-  padding: 1.25rem 1rem; /* your original padding */
+.fixes-panel.expanded,
+.details-panel.expanded {
+  max-height: 4000px;     /* large enough for any realistic content */
+  padding: 1.25rem 1rem;  /* your original padding */
 }
 
-.fixes-panel.hidden,
-.details-panel.hidden {
-  max-height: 0 !important;
-  visibility: hidden !important;
-  padding: 0 !important;
+/* Optional: nicer open state padding transition */
+.fixes-panel,
+.details-panel {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .arrow,

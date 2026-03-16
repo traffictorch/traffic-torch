@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <span>More Details</span>
           <span class="details-arrow transition-transform duration-200">▼</span>
         </button>
-        <div class="details-panel hidden mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
+        <div class="details-panel mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
           <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
           <p><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
         </div>
@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
           <span class="arrow transition-transform duration-200">▼</span>
         </button>
-        <div class="fixes-panel hidden mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
+        <div class="fixes-panel mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
 ${failed.length > 0 ? `
   <ul class="space-y-4 text-sm">
     ${failed.map(f => {
@@ -390,7 +390,7 @@ ${failed.length > 0 ? `
           <span>More Details</span>
           <span class="details-arrow transition-transform duration-200">▼</span>
         </button>
-        <div class="details-panel hidden mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
+        <div class="details-panel mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
           <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
           <p><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
         </div>
@@ -406,7 +406,7 @@ ${failed.length > 0 ? `
           <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
           <span class="arrow transition-transform duration-200">▼</span>
         </button>
-        <div class="fixes-panel hidden mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
+        <div class="fixes-panel mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
 ${failed.length > 0 ? `
   <ul class="space-y-4 text-sm">
     ${failed.map(f => {
@@ -446,24 +446,6 @@ ${failed.length > 0 ? `
   </div>
 </div>
       `;
-
-      // Aggressive panel reset after render
-      setTimeout(() => {
-        const panels = results.querySelectorAll('.fixes-panel, .details-panel');
-        const arrows = results.querySelectorAll('.arrow, .details-arrow');
-        panels.forEach(panel => {
-          panel.classList.add('hidden');
-          panel.style.display = 'none';
-          panel.style.height = '0';
-          panel.style.padding = '0';
-          panel.style.marginTop = '0';
-        });
-        arrows.forEach(arrow => {
-          arrow.classList.remove('rotate-180');
-          arrow.textContent = '▼';
-        });
-        console.log('Panels/arrows reset after render – count:', panels.length);
-      }, 100);
 
       // Radar chart
       setTimeout(() => {
@@ -509,20 +491,10 @@ ${failed.length > 0 ? `
       initShareReport(results);
       initSubmitFeedback(results);
 
-// DEBUG VERSION - attach toggle listener once + log everything
 if (!document.body.dataset.toggleListenersAttached) {
-  console.log('[TOGGLE DEBUG] Attaching listener to body NOW');
-
   document.body.addEventListener('click', function(e) {
-    console.log('[TOGGLE DEBUG] Click event captured on body');
-
     const button = e.target.closest('.fixes-toggle, .details-toggle');
-    if (!button) {
-      console.log('[TOGGLE DEBUG] No toggle button in click target');
-      return;
-    }
-
-    console.log('[TOGGLE DEBUG] Toggle button found → text:', button.textContent.trim());
+    if (!button) return;
 
     e.preventDefault();
     e.stopPropagation();
@@ -530,29 +502,24 @@ if (!document.body.dataset.toggleListenersAttached) {
     const panel = button.nextElementSibling;
     const arrow = button.querySelector('.arrow, .details-arrow');
 
-    if (!panel) {
-      console.warn('[TOGGLE DEBUG] NO PANEL found after button');
-      return;
-    }
-    if (!arrow) {
-      console.warn('[TOGGLE DEBUG] NO ARROW found inside button');
-      return;
-    }
+    if (!panel || !arrow) return;
 
-    console.log('[TOGGLE DEBUG] Panel & arrow found – toggling now');
+const isExpanded = panel.classList.contains('expanded');
 
-    const wasHidden = panel.classList.contains('hidden');
-    const isNowHidden = panel.classList.toggle('hidden');
-
-    arrow.classList.toggle('rotate-180', !isNowHidden);
-    arrow.textContent = isNowHidden ? '▼' : '▲';
-
-    console.log('[TOGGLE DEBUG] Panel toggled – was hidden:', wasHidden, '→ now hidden:', isNowHidden);
-    console.log('[TOGGLE DEBUG] Arrow text now:', arrow.textContent);
+if (isExpanded) {
+  panel.classList.remove('expanded');
+  panel.style.maxHeight = '0px';
+  arrow.classList.remove('rotate-180');
+  arrow.textContent = '▼';
+} else {
+  panel.classList.add('expanded');
+  panel.style.maxHeight = panel.scrollHeight + 'px';
+  arrow.classList.add('rotate-180');
+  arrow.textContent = '▲';
+}
   });
 
   document.body.dataset.toggleListenersAttached = 'true';
-  console.log('[TOGGLE DEBUG] Listener successfully attached to body');
 }
 
     } catch (err) {
