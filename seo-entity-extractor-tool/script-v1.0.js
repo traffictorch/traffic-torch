@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Show loading
     results.innerHTML = `
-      <div id="analysis-progress" class="flex flex-col items-center justify-center py-16 min-h-[60vh]">
+      <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 min-h-[60vh]">
         <div class="relative w-28 h-28 mb-10">
           <svg class="animate-spin" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" stroke-opacity="0.25"/>
@@ -328,10 +328,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
           }).join('')}
         </ul>
-        <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
-          <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
-          <span class="arrow transition-transform duration-200">▼</span>
-        </button>
+<button class="fixes-toggle ...">
+  <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
+  <span class="arrow transition-transform duration-200">▼</span>
+</button>
         <div class="fixes-panel hidden mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
 ${failed.length > 0 ? `
   <ul class="space-y-4 text-sm">
@@ -404,10 +404,10 @@ ${failed.length > 0 ? `
             return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
           }).join('')}
         </ul>
-        <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
-          <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
-          <span class="arrow transition-transform duration-200">▼</span>
-        </button>
+<button class="details-toggle ...">
+  <span>More Details</span>
+  <span class="details-arrow transition-transform duration-200">▼</span>
+</button>
         <div class="fixes-panel hidden mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
 ${failed.length > 0 ? `
   <ul class="space-y-4 text-sm">
@@ -512,22 +512,26 @@ ${failed.length > 0 ? `
       initShareReport(results);
       initSubmitFeedback(results);
 
-      // Attach ONE delegated listener for toggles (prevents stacking)
-      if (!results.dataset.toggleListenerAdded) {
-        results.addEventListener('click', function(e) {
-          const button = e.target.closest('.fixes-toggle, .details-toggle');
-          if (!button) return;
-          e.preventDefault();
-          e.stopPropagation();
-          const panel = button.nextElementSibling;
-          const arrow = button.querySelector('.arrow, .details-arrow');
-          if (!panel || !arrow) return;
-          const isNowHidden = panel.classList.toggle('hidden');
-          arrow.classList.toggle('rotate-180', !isNowHidden);
-          arrow.textContent = isNowHidden ? '▼' : '▲';
-        });
-        results.dataset.toggleListenerAdded = 'true';
-      }
+// Attach toggle listener ONCE, on body, after first report render
+if (!document.body.dataset.toggleListenersAttached) {
+  document.body.addEventListener('click', function(e) {
+    const button = e.target.closest('.fixes-toggle, .details-toggle');
+    if (!button) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    const panel = button.nextElementSibling;
+    const arrow = button.querySelector('.arrow, .details-arrow');
+    if (!panel || !arrow) return;
+
+    const isNowHidden = panel.classList.toggle('hidden');
+    arrow.classList.toggle('rotate-180', !isNowHidden);
+    arrow.textContent = isNowHidden ? '▼' : '▲';
+  });
+
+  document.body.dataset.toggleListenersAttached = 'true';
+  console.log('Toggle listeners attached to body');
+}
 
     } catch (err) {
       console.error('Analysis error:', err);

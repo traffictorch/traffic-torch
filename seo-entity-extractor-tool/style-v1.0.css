@@ -133,17 +133,61 @@ html, body {
   background-color: rgba(59, 130, 246, 0.2) !important; /* slightly stronger blue */
 }
 
-/* Results - More Details + Show Fixes buttons */
-.fixes-panel, .details-panel {
-  transition: opacity 0.25s ease, height 0.3s ease;
+/* Results - More Details + Show Fixes buttons & panels */
+.fixes-toggle,
+.details-toggle {
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent; /* better mobile touch feedback */
+}
+
+.fixes-panel,
+.details-panel {
+  transition: all 0.3s ease-in-out;
   overflow: hidden;
+  opacity: 0;
+  height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
 }
 
-.fixes-panel.hidden, .details-panel.hidden {
-  display: none !important;
+.fixes-panel:not(.hidden),
+.details-panel:not(.hidden) {
+  opacity: 1;
+  height: auto;
+  padding-top: 1.25rem; /* matches your mt-5 */
+  padding-bottom: 1.25rem;
+  margin-top: 1.25rem;
 }
 
-.fixes-panel:not(.hidden), .details-panel:not(.hidden) {
-  display: block !important;
+.fixes-panel.hidden,
+.details-panel.hidden {
+  opacity: 0;
+  height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* Arrow rotation – use Tailwind-compatible class */
+.arrow,
+.details-arrow {
+  transition: transform 0.25s ease;
+  display: inline-block;
+  transform-origin: center;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+/* Visual feedback on hover/focus */
+.fixes-toggle:hover,
+.details-toggle:hover,
+.fixes-toggle:focus,
+.details-toggle:focus {
+  background-color: rgba(251, 146, 60, 0.1); /* subtle orange tint */
+  outline: none;
 }
 
