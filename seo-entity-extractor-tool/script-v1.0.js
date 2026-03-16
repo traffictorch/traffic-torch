@@ -1,5 +1,9 @@
+import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
+
+const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+const TOKEN_KEY = 'traffic_torch_jwt';
 
 function analyzeCoverage(extracted, cleanedText = '') {
   const entityCount = extracted.length;
@@ -253,6 +257,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+  //const canProceed = await canRunTool('limit-audit-id');
+  //if (!canProceed) return;
+    
     const urlInput = document.getElementById('url-input');
     const inputValue = urlInput?.value.trim();
     if (!inputValue) {
@@ -261,7 +269,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
 
-    // Enhanced loading screen with progress steps
     results.innerHTML = `
       <div id="analysis-progress" class="flex flex-col items-center justify-center py-12 min-h-[400px]">
         <div class="relative w-24 h-24 mb-8">
@@ -272,9 +279,9 @@ document.addEventListener('DOMContentLoaded', () => {
           </svg>
         </div>
         <p id="progress-text" class="text-2xl font-semibold text-orange-500 dark:text-orange-400 text-center max-w-md">
-          Preparing analysis...
+          Fetching page content...
         </p>
-        <p class="mt-4 text-base text-gray-600 dark:text-gray-400 text-center max-w-md">
+        <p class="mt-3 text-base text-gray-600 dark:text-gray-400 text-center max-w-md">
           For very large or heavy pages this can take up to 60 seconds.<br>Please keep this tab open.
         </p>
         <div id="progress-steps" class="mt-10 w-full max-w-md space-y-4 text-left">
@@ -294,8 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressText = document.getElementById('progress-text');
     const progressSteps = document.getElementById('progress-steps');
 
-    // Sequential progress animation
-    const updateProgress = async () => {
+    const updateProgress = () => {
       const steps = progressSteps.querySelectorAll('p');
       let current = 0;
 
@@ -316,13 +322,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (current < steps.length) {
           steps[current].classList.remove('opacity-50');
-          progressText.textContent = messages[current] || "Almost there...";
+          progressText.textContent = messages[current];
           current++;
         } else {
           clearInterval(interval);
           progressText.textContent = "Finalizing your report...";
         }
-      }, 4500); // ≈4.5s per step
+      }, 4500);
 
       setTimeout(() => {
         if (current < messages.length) {
@@ -419,6 +425,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const g = getGrade(readiness.score);
         return `<p class="mt-8 text-4xl md:text-5xl font-bold text-center ${g.color} drop-shadow-lg">${g.emoji} ${g.text}</p>`;
       })()}
+      ${(() => {
+        const pageTitle = data?.title || urlInput?.value.trim() || 'Analyzed Page';
+        const truncated = pageTitle.length > 80 ? pageTitle.substring(0, 77) + '...' : pageTitle;
+        return `
+          <p class="mt-6 text-center text-base md:text-lg text-gray-700 dark:text-gray-300 px-4 leading-relaxed break-words">
+            ${truncated}
+          </p>
+        `;
+      })()}
       <p class="mt-6 text-center text-lg text-gray-600 dark:text-gray-300 px-4 leading-relaxed">
         ${readiness.metrics[0].text.split(' – ')[1] || 'Semantic foundation analysis complete'}
       </p>
@@ -441,8 +456,8 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 
-  <!-- First row: Coverage + Salience -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+  <!-- Coverage + Salience side by side -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 items-start">
     ${modules.slice(0, 2).map(mod => {
       const { score, metrics = [], failed = [] } = mod.result;
       const cardGrade = getGrade(score);
@@ -457,7 +472,7 @@ document.addEventListener('DOMContentLoaded', () => {
                        score >= 50 ? '#f59e0b' : '#ef4444';
 
       return `
-      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass}">
+      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[540px]">
         <div class="flex justify-center mb-6">
           <div class="relative w-32 h-32 mx-auto">
             <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
@@ -479,7 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
         })()}
         <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
-        <ul class="text-sm space-y-3 mb-6">
+        <ul class="text-sm space-y-3 mb-6 flex-grow">
           ${metrics.map(m => {
             let emoji = '❌', color = 'text-red-600 dark:text-red-400';
             if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
@@ -487,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
           }).join('')}
         </ul>
-        <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center">
+        <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
           <span>Show Fixes ${failed.length > 0 ? `(${failed.length})` : ''}</span>
           <span class="arrow transition-transform duration-200">▼</span>
         </button>
@@ -505,7 +520,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('')}
   </div>
 
-  <!-- Second row: Relationships + Practices + Readiness -->
+  <!-- Relationships + Practices + Readiness -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
     ${modules.slice(2).map(mod => {
       const { score, metrics = [], failed = [] } = mod.result;
@@ -521,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
                        score >= 50 ? '#f59e0b' : '#ef4444';
 
       return `
-      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass}">
+      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[540px]">
         <div class="flex justify-center mb-6">
           <div class="relative w-32 h-32 mx-auto">
             <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
@@ -543,7 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
         })()}
         <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
-        <ul class="text-sm space-y-3 mb-6">
+        <ul class="text-sm space-y-3 mb-6 flex-grow">
           ${metrics.map(m => {
             let emoji = '❌', color = 'text-red-600 dark:text-red-400';
             if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
@@ -551,7 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
           }).join('')}
         </ul>
-        <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center">
+        <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
           <span>Show Fixes ${failed.length > 0 ? `(${failed.length})` : ''}</span>
           <span class="arrow transition-transform duration-200">▼</span>
         </button>
@@ -634,7 +649,6 @@ document.addEventListener('DOMContentLoaded', () => {
       initShareReport(results);
       initSubmitFeedback(results);
 
-      // Toggle handler for fixes panels
       results.addEventListener('click', e => {
         const toggle = e.target.closest('.fixes-toggle');
         if (!toggle) return;
