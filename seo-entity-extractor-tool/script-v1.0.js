@@ -5,11 +5,11 @@ import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
 
 // ── New module imports ──────────────────────────────────────────────
-import { analyzeCoverage }   from './coverage.js';
-import { analyzeSalience }    from './salience.js';
-import { analyzeRelationships } from './relationships.js';
-import { analyzePractices }   from './practices.js';
-import { analyzeReadiness }   from './readiness.js';
+import { analyzeCoverage }   from './modules/coverage.js';
+import { analyzeSalience }    from './modules/salience.js';
+import { analyzeRelationships } from './modules/relationships.js';
+import { analyzePractices }   from './modules/practices.js';
+import { analyzeReadiness }   from './modules/readiness.js';
 // ─────────────────────────────────────────────────────────────────────
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
