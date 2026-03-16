@@ -138,56 +138,41 @@ html, body {
 .details-toggle {
   cursor: pointer;
   user-select: none;
-  -webkit-tap-highlight-color: transparent; /* better mobile touch feedback */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .fixes-panel,
 .details-panel {
-  transition: all 0.3s ease-in-out;
+  transition: all 0.35s ease;
   overflow: hidden;
   opacity: 0;
   height: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-  margin-top: 0;
+  padding: 0 1rem;
 }
 
 .fixes-panel:not(.hidden),
 .details-panel:not(.hidden) {
   opacity: 1;
-  height: auto;
-  padding-top: 1.25rem; /* matches your mt-5 */
-  padding-bottom: 1.25rem;
-  margin-top: 1.25rem;
+  height: auto !important;
+  padding: 1.25rem 1rem;
 }
 
 .fixes-panel.hidden,
 .details-panel.hidden {
-  opacity: 0;
-  height: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  margin-top: 0 !important;
+  display: none !important;
 }
 
-/* Arrow rotation – use Tailwind-compatible class */
 .arrow,
 .details-arrow {
   transition: transform 0.25s ease;
   display: inline-block;
-  transform-origin: center;
 }
 
 .rotate-180 {
   transform: rotate(180deg);
 }
 
-/* Visual feedback on hover/focus */
 .fixes-toggle:hover,
-.details-toggle:hover,
-.fixes-toggle:focus,
-.details-toggle:focus {
-  background-color: rgba(251, 146, 60, 0.1); /* subtle orange tint */
-  outline: none;
+.details-toggle:hover {
+  opacity: 0.95;
 }
-
