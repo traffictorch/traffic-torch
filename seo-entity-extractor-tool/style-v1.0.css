@@ -134,20 +134,26 @@ html, body {
 }
 
 /* Results - More Details + Show Fixes buttons */
-.fixes-panel, .details-panel {
-  transition: all 0.3s ease-in-out;
-  overflow: hidden; /* Prevents content flash during expand/collapse */
+.fixes-panel:not(.hidden),
+.details-panel:not(.hidden) {
+  display: block !important;
+  height: auto !important;
+  padding: inherit;
+  margin-top: 12px;
 }
 
-.fixes-panel.hidden, .details-panel.hidden {
+.fixes-panel.hidden,
+.details-panel.hidden {
+  display: none !important;
   height: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  margin-top: 0 !important;
-  border-top: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden;
 }
 
-.rotate-180 {
-  transform: rotate(180deg);
+.arrow,
+.details-arrow {
+  transition: transform 0.2s ease;
+  display: inline-block;
 }
 

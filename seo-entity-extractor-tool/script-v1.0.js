@@ -733,6 +733,18 @@ ${failed.length > 0 ? `
   </div>
 </div>
       `;
+      
+      // Force-reset all panels to closed state after render (fixes stale open states)
+setTimeout(() => {
+  const allPanels = results.querySelectorAll('.fixes-panel, .details-panel');
+  const allArrows = results.querySelectorAll('.arrow, .details-arrow');
+  
+  allPanels.forEach(p => p.classList.add('hidden'));
+  allArrows.forEach(a => {
+    a.classList.remove('rotate-180');
+    a.textContent = '▼';
+  });
+}, 50); // Small delay to ensure DOM is painted
 
       // Radar chart
       setTimeout(() => {
@@ -778,28 +790,32 @@ ${failed.length > 0 ? `
       initShareReport(results);
       initSubmitFeedback(results);
 
-results.addEventListener('click', e => {
-  // Handle both fixes-toggle and details-toggle in one listener for better performance
-  const button = e.target.closest('.fixes-toggle, .details-toggle');
+results.addEventListener('click', function(e) {
+  // Use function(e) instead of arrow to preserve 'this' if needed later
+  let button = e.target.closest('.fixes-toggle, .details-toggle');
   if (!button) return;
 
-  e.preventDefault(); // Prevent any default behavior
-  e.stopPropagation(); // Stop bubbling to avoid double triggers
+  e.preventDefault();
+  e.stopPropagation(); // Crucial to prevent parent listeners from interfering
 
   const panel = button.nextElementSibling;
   const arrow = button.querySelector('.arrow, .details-arrow');
 
-  if (panel && arrow) {
-    console.log(`Button clicked: ${button.className.includes('fixes') ? 'Fixes' : 'Details'}, Panel exists: ${!!panel}`);
-
-    // Toggle hidden class reliably
-    const isHidden = panel.classList.contains('hidden');
-    panel.classList.toggle('hidden');
-
-    // Update arrow rotation and symbol
-    arrow.classList.toggle('rotate-180', !isHidden);
-    arrow.textContent = isHidden ? '▲' : '▼'; // Flip symbol direction
+  if (!panel || !arrow) {
+    console.warn('Toggle button clicked but panel or arrow missing:', button);
+    return;
   }
+
+  console.log(`Toggle activated: ${button.classList.contains('fixes-toggle') ? 'Fixes' : 'Details'}`);
+
+  const wasHidden = panel.classList.contains('hidden');
+  
+  // Toggle visibility
+  panel.classList.toggle('hidden');
+  
+  // Update arrow
+  arrow.classList.toggle('rotate-180', !wasHidden);
+  arrow.textContent = wasHidden ? '▲' : '▼';
 });
 
     } catch (err) {
