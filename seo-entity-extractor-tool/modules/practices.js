@@ -1,116 +1,170 @@
+// practices.js
+
+/**
+ * Evaluates on-page semantic & SEO best practices:
+ * - Schema / structured data potential
+ * - Entity usage in headings
+ * - Name consistency
+ * @param {Array} extracted - array of entity objects from NLP extraction
+ * @returns {{ score: number, metrics: Array, failed: Array }}
+ */
 export function analyzePractices(extracted) {
-  if (!extracted || extracted.length === 0) {
+  if (!Array.isArray(extracted) || extracted.length === 0) {
     return {
-      score: 10,
-      metrics: ["No entities to evaluate practices"],
+      score: 8,
+      metrics: [
+        { text: "No entities detected – practices cannot be evaluated", grade: 'bad' }
+      ],
       failed: [
-        "No named entities detected. Add people, brands, concepts, products, or organizations to enable schema markup and on-page optimization opportunities."
+        {
+          text: "No named entities found on the page. Add relevant brands, people, products, organizations, concepts or locations to unlock schema opportunities and better on-page signals.",
+          grade: 'bad'
+        }
       ]
     };
   }
 
-  // ── All declarations first ──
-  const sorted = [...extracted].sort((a, b) => b.salience - a.salience);
+  // ── Prepare data ──────────────────────────────────────────────────────
+  const sortedBySalience = [...extracted].sort((a, b) => (b.salience ?? 0.4) - (a.salience ?? 0.4));
 
   const typeCounts = extracted.reduce((acc, e) => {
-    const t = e.type || 'OTHER';
+    const t = (e?.type || 'OTHER').toUpperCase();
     acc[t] = (acc[t] || 0) + 1;
     return acc;
   }, {});
 
-  const hasPerson   = typeCounts.PERSON > 0;
-  const hasOrg      = typeCounts.ORGANIZATION > 0;
-  const hasProduct  = typeCounts.PRODUCT > 0;
-  const hasConcept  = typeCounts.CONCEPT > 0;
-  const hasLocation = typeCounts.LOCATION > 0;
+  const hasPerson     = !!typeCounts.PERSON;
+  const hasOrg        = !!typeCounts.ORGANIZATION;
+  const hasProduct    = !!typeCounts.PRODUCT;
+  const hasConcept    = !!typeCounts.CONCEPT;
+  const hasLocation   = !!typeCounts.LOCATION;
 
-  // Estimate heading usage: top 30% most salient entities assumed likely in headings
-  const topThirdCount = Math.ceil(extracted.length * 0.3);
-  const likelyHeadingEntities = sorted.slice(0, topThirdCount).length;
+  // Rough proxy: top ~30% most salient entities are good candidates for headings
+  const topThirdCount = Math.ceil(extracted.length * 0.32);
+  const likelyHeadingEntities = Math.min(topThirdCount, sortedBySalience.length);
 
-  // Naming consistency check
+  // Name consistency (normalized)
   const normalizedNames = new Set(
-    extracted.map(e => e.text.trim().toLowerCase().replace(/\s+/g, ' '))
+    extracted.map(e => 
+      (e.text || '')
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, ' ')
+        .replace(/[^a-z0-9 ]/g, '')   // remove punctuation for fair comparison
+    ).filter(Boolean)
   );
-  const consistencyPercent = (normalizedNames.size / extracted.length) * 100;
-  const consistencyLabel = consistencyPercent >= 95 ? 'High' :
-                           consistencyPercent >= 80 ? 'Good' : 'Needs improvement';
+  const consistencyPercent = extracted.length > 0 
+    ? (normalizedNames.size / extracted.length) * 100 
+    : 0;
 
-  // ── Now calculate schema potential (after all deps are ready) ──
+  // ── Schema readiness scoring ─────────────────────────────────────────
   let schemaPotential = 0;
-  if (hasPerson) schemaPotential += 20;
-  if (hasOrg) schemaPotential += 20;
-  if (hasProduct && hasPerson) schemaPotential += 15;
-  if (hasConcept && extracted.length > 10) schemaPotential += 15;
-  if (hasLocation) schemaPotential += 8;
 
-  // ── Heading prominence estimate (max 25) ──
-  const headingScore = Math.min(25, likelyHeadingEntities * 3);
+  if (hasPerson)     schemaPotential += 22;
+  if (hasOrg)        schemaPotential += 22;
+  if (hasProduct)    schemaPotential += 18;
+  if (hasConcept && extracted.length >= 12) schemaPotential += 16;
+  if (hasLocation)   schemaPotential += 10;
 
-  // ── Final scoring (now safe) ──
+  // LocalBusiness / Place / Organization + location synergy
+  const locationCount = typeCounts.LOCATION || 0;
+  if (hasOrg && locationCount >= 2) {
+    schemaPotential += 14;          // strong local signal
+  }
+  if (hasOrg && locationCount >= 4) {
+    schemaPotential += 8;
+  }
+
+  // Article / WebPage potential
+  if (hasConcept && hasOrg && extracted.length >= 15) {
+    schemaPotential += 10;
+  }
+
+  schemaPotential = Math.min(100, schemaPotential);
+
+  // ── Heading usage proxy score ────────────────────────────────────────
+  const headingScore = Math.min(32, likelyHeadingEntities * 4.2);
+
+  // ── Final score calculation ──────────────────────────────────────────
   let score = 0;
 
-  // Low-entity cap first
-  if (extracted.length < 8) {
-    score = Math.min(25, schemaPotential * 0.5 + headingScore * 0.5);
+  if (extracted.length < 7) {
+    // Very short entity set → limited opportunity
+    score = Math.round(schemaPotential * 0.55 + headingScore * 0.45);
+    score = Math.min(38, score);
   } else {
-    score += Math.min(50, schemaPotential);
+    score += Math.min(55, schemaPotential * 0.65);
     score += headingScore;
-    score += Math.round(consistencyPercent * 0.15);
-    if (likelyHeadingEntities >= 4) score += 10;
+    // Small bonus for high name consistency on decent-sized entity sets
+    if (extracted.length >= 10 && consistencyPercent >= 92) {
+      score += 12;
+    } else if (extracted.length >= 8 && consistencyPercent >= 84) {
+      score += 6;
+    }
   }
 
-  score = Math.max(0, Math.min(100, Math.round(score)));
+  score = Math.max(5, Math.min(100, Math.round(score)));
 
-  // ── Metrics ──
+  // ── Metrics for display ───────────────────────────────────────────────
   const metrics = [
-    `Schema readiness: ${schemaPotential}/50 (${hasPerson ? 'Person' : ''}${hasOrg ? ', Organization' : ''}${hasProduct ? ', Product/Book' : ''}${hasConcept ? ', Article potential' : ''})`,
-    `Likely heading entities: ~${likelyHeadingEntities} (top ${Math.round((topThirdCount / extracted.length) * 100)}% by salience)`,
-    `Name consistency: ${consistencyLabel} (${normalizedNames.size} unique normalized names)`,
-    `Recommended schema types: ${getSchemaSuggestions(typeCounts)}`
+    { 
+      text: `Schema potential: ${Math.round(schemaPotential)}/100`, 
+      grade: schemaPotential >= 65 ? 'good' : schemaPotential >= 38 ? 'warning' : 'bad' 
+    },
+    { 
+      text: `Likely in headings: ~${likelyHeadingEntities} entities (top ~${Math.round(100 * 0.32)}%)`, 
+      grade: likelyHeadingEntities >= 6 ? 'good' : likelyHeadingEntities >= 3 ? 'warning' : 'bad' 
+    },
+    { 
+      text: `Name consistency: ${consistencyPercent.toFixed(0)}% (${normalizedNames.size} unique normalized forms)`, 
+      grade: consistencyPercent >= 92 ? 'good' : consistencyPercent >= 82 ? 'warning' : 'bad' 
+    }
   ];
 
-  // ── Failed items ──
+  // ── Failed / improvement suggestions ──────────────────────────────────
   const failed = [];
 
-  if (schemaPotential < 30) {
+  if (schemaPotential < 38) {
     const suggestions = [];
-    if (hasPerson && !hasOrg) suggestions.push("Person");
-    if (hasOrg) suggestions.push("Organization");
-    if (hasProduct) suggestions.push("Product or Book");
-    if (hasConcept && extracted.length > 8) suggestions.push("Article or WebPage");
-    failed.push(
-      `Low schema potential (${schemaPotential}/50). Add JSON-LD markup for: ${suggestions.join(', ') || 'relevant types based on content'}. This boosts rich results and E-E-A-T.`
-    );
+    if (hasPerson)     suggestions.push("Person");
+    if (hasOrg)        suggestions.push("Organization");
+    if (hasProduct)    suggestions.push("Product");
+    if (hasConcept)    suggestions.push("Article / WebPage");
+    if (hasLocation && hasOrg) suggestions.push("LocalBusiness");
+
+    failed.push({
+      text: `Low schema readiness (${Math.round(schemaPotential)}/100). Add JSON-LD structured data for: ${suggestions.length ? suggestions.join(', ') : 'the most prominent entity types detected'}. Start with Organization or LocalBusiness if applicable.`,
+      grade: 'bad'
+    });
   }
 
-  if (likelyHeadingEntities < 3 && extracted.length > 8) {
-    failed.push(
-      `Few entities likely in headings. Place top entities (e.g. ${sorted[0]?.text || 'main topic'}) in H1/H2 tags and supporting ones in H3 to improve crawlability and prominence.`
-    );
+  if (likelyHeadingEntities < 4 && extracted.length >= 9) {
+    failed.push({
+      text: `Few high-salience entities appear to be used in headings. Place your top 3–5 most important entities (${sortedBySalience[0]?.text || 'main topic'}, ${sortedBySalience[1]?.text || ''}, etc.) into H1, H2 and some H3 tags for stronger topical signals.`,
+      grade: 'bad'
+    });
   }
 
-  if (consistencyPercent < 85) {
-    failed.push(
-      "Inconsistent entity naming detected. Standardize names (e.g. always 'Ylia Callan' not mixed casing/variations) across the page for better recognition by search engines."
-    );
+  if (consistencyPercent < 84 && extracted.length >= 8) {
+    failed.push({
+      text: `Inconsistent entity naming detected (${consistencyPercent.toFixed(0)}%). Standardize spelling, capitalization and formatting of key names (especially brand/business name) across the entire page — including title, headings, body and alt text.`,
+      grade: 'bad'
+    });
   }
 
-  if (!hasConcept && extracted.length > 5) {
-    failed.push(
-      "Missing abstract CONCEPT entities. Include key topics/ideas (e.g. 'search engine optimization', 'consciousness') to strengthen semantic depth and topical authority."
-    );
+  if (!hasOrg && hasLocation && locationCount >= 3) {
+    failed.push({
+      text: "You mention multiple locations but no clear organization/brand. Adding a consistent Organization entity (business name) + LocalBusiness schema would dramatically improve local SEO strength.",
+      grade: 'warning'
+    });
+  }
+
+  if (extracted.length >= 12 && schemaPotential < 50 && !hasOrg && !hasProduct) {
+    failed.push({
+      text: "Page has decent entity volume but lacks strong schema candidates (no Organization or Product detected). Consider explicitly marking your brand/business or main offering as Organization/Product in content and schema.",
+      grade: 'warning'
+    });
   }
 
   return { score, metrics, failed };
-}
-
-// Helper (unchanged)
-function getSchemaSuggestions(typeCounts) {
-  const suggestions = [];
-  if (typeCounts.PERSON) suggestions.push("Person");
-  if (typeCounts.ORGANIZATION) suggestions.push("Organization");
-  if (typeCounts.PRODUCT) suggestions.push("Product/Book");
-  if (typeCounts.CONCEPT && Object.keys(typeCounts).length > 3) suggestions.push("Article");
-  return suggestions.length > 0 ? suggestions.join(', ') : "Start with Article or Organization";
 }
