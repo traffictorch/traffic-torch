@@ -133,3 +133,9 @@ html, body {
   background-color: rgba(59, 130, 246, 0.2) !important; /* slightly stronger blue */
 }
 
+/* Results - More Details buttons */
+.details-toggle { cursor: pointer; }
+.details-arrow.rotate-180 { transform: rotate(180deg); }
+.details-panel p strong { font-weight: 600; color: #374151; } /* gray-700 light */
+.dark .details-panel p strong { color: #e5e7eb; } /* gray-200 dark */
+

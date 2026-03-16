@@ -298,6 +298,32 @@ function getGrade(score) {
   return { text: 'Needs Work', emoji: '❌', color: 'text-red-600 dark:text-red-400' };
 }
 
+function getModuleExplanation(moduleName) {
+  const explanations = {
+    'Coverage': {
+      what: 'Counts total recognized entities and evaluates their type diversity and density relative to content length.',
+      why: 'Strong coverage builds topical breadth and authority, helping search engines understand the page’s full subject scope and improving relevance in entity-driven rankings.'
+    },
+    'Salience': {
+      what: 'Measures how prominently and importantly each entity appears (based on position, repetition, and context weighting).',
+      why: 'High salience signals the main topics clearly, boosting the page’s ability to rank for core queries and appear in featured snippets or AI overviews.'
+    },
+    'Relationships': {
+      what: 'Analyzes co-occurrence, type synergy, and clustering among entities to detect meaningful topical connections.',
+      why: 'Strong relationships create semantic clusters, improving topical depth and helping search engines associate the page with related concepts, entities, and user intent.'
+    },
+    'Practices': {
+      what: 'Evaluates on-page semantic optimizations: schema readiness, heading usage of entities, and name consistency.',
+      why: 'Good practices make entities machine-readable, enhance crawlability, and increase chances of rich results, Knowledge Graph inclusion, and better UX signals.'
+    },
+    'Readiness': {
+      what: 'Combines weighted scores from all modules into an overall semantic health and ranking preparedness index.',
+      why: 'High readiness indicates the page is well-optimized for modern entity-based and semantic search, predicting stronger performance in competitive SERPs and AI features.'
+    }
+  };
+  return explanations[moduleName] || { what: 'No explanation available.', why: '' };
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('entity-form');
   const results = document.getElementById('results');
@@ -522,6 +548,14 @@ document.addEventListener('DOMContentLoaded', () => {
           return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
         })()}
         <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
+        <button class="details-toggle w-full py-2 px-4 mt-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-lg transition flex justify-between items-center">
+  <span>More Details</span>
+  <span class="details-arrow transition-transform duration-200">▼</span>
+</button>
+<div class="details-panel hidden mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
+  <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
+  <p><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
+</div>
         <ul class="text-sm space-y-3 mb-6 flex-grow">
           ${metrics.map(m => {
             let emoji = '❌', color = 'text-red-600 dark:text-red-400';
@@ -531,21 +565,23 @@ document.addEventListener('DOMContentLoaded', () => {
           }).join('')}
         </ul>
         <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
-          <span>Show Fixes ${failed.length > 0 ? `(${failed.length})` : ''}</span>
+          <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
           <span class="arrow transition-transform duration-200">▼</span>
         </button>
         <div class="fixes-panel hidden mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
-          ${failed.length > 0 ? `
-            <ul class="space-y-4 text-sm">
-              ${failed.map(f => {
-                let emoji = '❌', color = 'text-red-700 dark:text-red-300';
-                if (f.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-600 dark:text-orange-400'; }
-                return `<li class="${color} flex items-start gap-3">${emoji} <span>${f.text}</span></li>`;
-              }).join('')}
-            </ul>
-          ` : `
-            <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ Strong signals across the board!</p>
-          `}
+${failed.length > 0 ? `
+  <ul class="space-y-4 text-sm">
+    ${failed.map(f => {
+      let emoji = f.grade === 'bad' ? '❌' : '⚠️';
+      let color = f.grade === 'bad' 
+        ? 'text-red-700 dark:text-red-300' 
+        : 'text-orange-600 dark:text-orange-400';
+      return `<li class="${color} flex items-start gap-3">${emoji} <span>${f.text}</span></li>`;
+    }).join('')}
+  </ul>
+` : `
+  <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
+`}
         </div>
       </div>
       `;
@@ -596,21 +632,23 @@ document.addEventListener('DOMContentLoaded', () => {
           }).join('')}
         </ul>
         <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
-          <span>Show Fixes ${failed.length > 0 ? `(${failed.length})` : ''}</span>
+          <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
           <span class="arrow transition-transform duration-200">▼</span>
         </button>
         <div class="fixes-panel hidden mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
-          ${failed.length > 0 ? `
-            <ul class="space-y-4 text-sm">
-              ${failed.map(f => {
-                let emoji = '❌', color = 'text-red-700 dark:text-red-300';
-                if (f.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-600 dark:text-orange-400'; }
-                return `<li class="${color} flex items-start gap-3">${emoji} <span>${f.text}</span></li>`;
-              }).join('')}
-            </ul>
-          ` : `
-            <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ Strong signals across the board!</p>
-          `}
+${failed.length > 0 ? `
+  <ul class="space-y-4 text-sm">
+    ${failed.map(f => {
+      let emoji = f.grade === 'bad' ? '❌' : '⚠️';
+      let color = f.grade === 'bad' 
+        ? 'text-red-700 dark:text-red-300' 
+        : 'text-orange-600 dark:text-orange-400';
+      return `<li class="${color} flex items-start gap-3">${emoji} <span>${f.text}</span></li>`;
+    }).join('')}
+  </ul>
+` : `
+  <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
+`}
         </div>
       </div>
       `;
@@ -681,21 +719,41 @@ document.addEventListener('DOMContentLoaded', () => {
       initShareReport(results);
       initSubmitFeedback(results);
 
-      results.addEventListener('click', e => {
-        const toggle = e.target.closest('.fixes-toggle');
-        if (!toggle) return;
+results.addEventListener('click', e => {
+  const toggleBtn = e.target.closest('.fixes-toggle');
+  if (!toggleBtn) return;
 
-        const panel = toggle.nextElementSibling;
-        const arrow = toggle.querySelector('.arrow');
+  // Prevent bubbling if clicked on child elements
+  e.stopPropagation();
 
-        if (panel && arrow) {
-          console.log('Toggle clicked:', toggle.textContent.trim(), 'Panel found:', !!panel);
-          panel.classList.toggle('hidden');
-          const isHidden = panel.classList.contains('hidden');
-          arrow.classList.toggle('rotate-180', !isHidden);
-          arrow.textContent = isHidden ? '▼' : '▲';
-        }
-      });
+  const panel = toggleBtn.nextElementSibling;
+  const arrow = toggleBtn.querySelector('.arrow');
+
+  if (panel && arrow) {
+    console.log('Fixes toggle clicked for module – panel exists:', !!panel);
+    panel.classList.toggle('hidden');
+    const nowHidden = panel.classList.contains('hidden');
+    arrow.classList.toggle('rotate-180', !nowHidden);
+    arrow.textContent = nowHidden ? '▼' : '▲';
+  }
+});
+
+results.addEventListener('click', e => {
+  const detailsBtn = e.target.closest('.details-toggle');
+  if (!detailsBtn) return;
+
+  e.stopPropagation();
+
+  const panel = detailsBtn.nextElementSibling;
+  const arrow = detailsBtn.querySelector('.details-arrow');
+
+  if (panel && arrow) {
+    panel.classList.toggle('hidden');
+    const isHidden = panel.classList.contains('hidden');
+    arrow.classList.toggle('rotate-180', !isHidden);
+    arrow.textContent = isHidden ? '▼' : '▲';
+  }
+});
 
     } catch (err) {
       console.error('Analysis error:', err);
