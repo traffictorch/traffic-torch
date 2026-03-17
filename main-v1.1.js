@@ -582,7 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
-// Desktop Sidebar Collapsible Groups (separate for future file extraction)
+// Desktop Sidebar Collapsible Groups
 document.addEventListener('DOMContentLoaded', () => {
   const sidebar = document.getElementById('desktopSidebar');
   if (!sidebar) return;
@@ -593,13 +593,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const content = sidebar.querySelector(`[data-category-content="${cat}"]`);
       if (!content) return;
 
-      const willExpand = btn.getAttribute('aria-expanded') !== 'true';
-      btn.setAttribute('aria-expanded', willExpand);
-      content.classList.toggle('hidden', !willExpand);
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+      const newExpanded = !isExpanded;
 
-      // Reliable arrow rotation
+      btn.setAttribute('aria-expanded', newExpanded);
+      content.classList.toggle('hidden', !newExpanded);
+
+      // Rotate arrow
       const arrow = btn.querySelector('span.transition-transform');
-      if (arrow) arrow.classList.toggle('rotate-180', willExpand);
+      if (arrow) {
+        arrow.classList.toggle('rotate-180', newExpanded);
+      }
     });
   });
 });
