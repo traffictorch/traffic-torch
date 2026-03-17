@@ -111,6 +111,23 @@
   .no-print {
     display: none !important;
   }
+  
+  /* Hide promotional / educational blocks + share/feedback + AI Content Audit explanation section */
+#author-bio,
+#promo-high-impact-cards,
+#promo-old-vs-modern-seo,
+#share-form-container,
+#feedback-form-container,
+#share-message,
+#feedback-message,
+#share-report-btn ~ div[id*="form"],
+#feedback-btn ~ div[id*="form"],
+.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8,  /* the entire What is section */
+.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 h2,  /* title */
+.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 p,     /* paragraphs */
+.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 div.text-xl.leading-relaxed.text-center {
+  display: none !important;
+}
 
   /* ──────────────────────────────────────────────────────────────
      FORCE EXPAND “More Details” and “Show Fixes” panels

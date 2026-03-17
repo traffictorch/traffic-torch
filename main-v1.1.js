@@ -581,4 +581,29 @@ document.addEventListener('DOMContentLoaded', () => {
       if (existingBadge) existingBadge.remove();
     }
   });
+  
+  // Collapsible category toggles – desktop
+document.querySelectorAll('[data-category]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const cat = btn.dataset.category;
+    const content = document.querySelector(`[data-category-content="${cat}"]`);
+    const isOpen = btn.getAttribute('aria-expanded') === 'true';
+    
+    btn.setAttribute('aria-expanded', !isOpen);
+    content.classList.toggle('hidden', isOpen);
+  });
+});
+
+// Mobile version (slightly different data attributes)
+document.querySelectorAll('[data-category$="-mobile"]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const cat = btn.dataset.category.replace('-mobile','');
+    const content = document.querySelector(`[data-category-content="${cat}-mobile"]`);
+    const isOpen = btn.getAttribute('aria-expanded') === 'true';
+    
+    btn.setAttribute('aria-expanded', !isOpen);
+    content.classList.toggle('hidden', isOpen);
+  });
+});
+
 });
