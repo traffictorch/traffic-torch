@@ -11,19 +11,32 @@ export function initShareReport(resultsContainer) {
     const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}`;
 
     // Get the tested page title directly from the visible element in the score card
-    let pageTitle = 'this page';
-    const titleElement = document.getElementById('analyzed-page-title');
-    if (titleElement) {
-      pageTitle = titleElement.textContent.trim();
-    } else {
-      // Fallback if ID not found (e.g. old deploy)
-      pageTitle = document.querySelector('.bg-white.dark\\:bg-gray-800.rounded-3xl.shadow-2xl.p-6.sm\\:p-8.md\\:p-10 p.mt-6.text-base.sm\\:text-lg')?.textContent.trim() ||
-                  document.title.trim() ||
-                  'this page';
-    }
+let pageTitle = 'this page';
 
-    // Remove any leftover tool name if needed
-    pageTitle = pageTitle.replace(/SEO Entity Extractor and Audit Tool | Traffic Torch/gi, '').trim() || 'this page';
+// Primary: Use the exact <p> element inside the big readiness score card (most reliable selector)
+const scoreCardTitle = document.querySelector(
+  '.bg-white.dark\\:bg-gray-900.rounded-3xl.shadow-2xl.p-8.md\\:p-12.w-full.max-w-lg.border-4 p.mt-6.text-center.text-base.md\\:text-lg.text-gray-700.dark\\:text-gray-300.px-4.leading-relaxed.break-words'
+);
+if (scoreCardTitle) {
+  pageTitle = scoreCardTitle.textContent.trim();
+}
+
+// Fallback 1: Try any similar title paragraph inside #results
+if (pageTitle === 'this page') {
+  pageTitle = document.querySelector('#results p.mt-6.text-center.text-base.md\\:text-lg')?.textContent.trim() || 'this page';
+}
+
+// Fallback 2: Last resort — document title (but clean it)
+if (pageTitle === 'this page' || pageTitle.includes('Traffic Torch')) {
+  pageTitle = document.title.replace(/Semantic Entity Extractor and Audit Tool \| Traffic Torch/gi, '').trim() || 'this page';
+}
+
+// Final cleanup: remove any remaining tool branding or pipe symbols
+pageTitle = pageTitle
+  .replace(/Semantic Entity Extractor and Audit Tool \| Traffic Torch/gi, '')
+  .replace(/Traffic Torch/gi, '')
+  .replace(/[\|\-–_]+/g, '')
+  .trim() || 'this page';
 
     const shareText = `Check out ${pageTitle} on Traffic Torch SEO Entity Tool ${shareUrl}`;
 

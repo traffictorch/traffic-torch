@@ -64,27 +64,27 @@ document.addEventListener('DOMContentLoaded', () => {
       <details class="group">
         <summary class="cursor-pointer text-xl font-bold text-orange-700 dark:text-orange-300 hover:underline flex items-center justify-between">
           <span>What is ${m.name}?</span>
-          <span class="text-2xl group-open:rotate-180 transition-transform">↓</span>
+          <span class="text-2xl px-2 group-open:rotate-180 transition-transform">↓</span>
         </summary>
-        <div class="mt-6 text-left text-gray-600 dark:text-gray-400 leading-relaxed">
+        <div class="mt-6 text-left text-gray-700 dark:text-gray-300 leading-relaxed">
           ${m.what}
         </div>
       </details>
       <details class="group mt-4">
         <summary class="cursor-pointer text-xl font-bold text-orange-700 dark:text-orange-300 hover:underline flex items-center justify-between">
           <span>How is ${m.name} tested?</span>
-          <span class="text-2xl group-open:rotate-180 transition-transform">↓</span>
+          <span class="text-2xl px-2 group-open:rotate-180 transition-transform">↓</span>
         </summary>
-        <div class="mt-6 text-left text-gray-600 dark:text-gray-400 leading-relaxed">
+        <div class="mt-6 text-left text-gray-700 dark:text-gray-300 leading-relaxed">
           ${m.how}
         </div>
       </details>
       <details class="group mt-4">
         <summary class="cursor-pointer text-xl font-bold text-orange-700 dark:text-orange-300 hover:underline flex items-center justify-between">
           <span>Why does ${m.name} matter?</span>
-          <span class="text-2xl group-open:rotate-180 transition-transform">↓</span>
+          <span class="text-2xl px-2 group-open:rotate-180 transition-transform">↓</span>
         </summary>
-        <div class="mt-6 text-left text-gray-600 dark:text-gray-400 leading-relaxed">
+        <div class="mt-6 text-left text-gray-700 dark:text-gray-300 leading-relaxed">
           ${m.why}
         </div>
       </details>

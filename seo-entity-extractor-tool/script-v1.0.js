@@ -274,181 +274,181 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 
-  <!-- Coverage + Salience -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-12 items-start">
-    ${modules.slice(0, 2).map(mod => {
-      const { score, metrics = [], failed = [] } = mod.result;
-      const cardGrade = getGrade(score);
-      let borderColorClass = '';
-      if (cardGrade.text === 'Excellent') borderColorClass = 'border-green-500 dark:border-green-400';
-      else if (cardGrade.text === 'Good') borderColorClass = 'border-emerald-500 dark:border-emerald-400';
-      else if (cardGrade.text === 'Fair') borderColorClass = 'border-orange-500 dark:border-orange-400';
-      else borderColorClass = 'border-red-600 dark:border-red-500';
-      const arcColor = score >= 85 ? '#22c55e' :
-                       score >= 70 ? '#10b981' :
-                       score >= 50 ? '#f59e0b' : '#ef4444';
-      return `
-      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[520px] md:min-h-[580px]">
-        <div class="flex justify-center mb-6">
-          <div class="relative w-32 h-32 mx-auto">
-            <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-              <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
-              <circle cx="64" cy="64" r="56"
-                      stroke="${arcColor}"
-                      stroke-width="12" fill="none"
-                      stroke-dasharray="${(score / 100) * 352} 352"
-                      stroke-linecap="round"/>
-            </svg>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="text-4xl font-black" style="color: ${arcColor};">${score}</div>
-            </div>
+// Coverage + Salience
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-12 items-start">
+  ${modules.slice(0, 2).map(mod => {
+    const { score, metrics = [], failed = [] } = mod.result;
+    const cardGrade = getGrade(score);
+    let borderColorClass = '';
+    if (cardGrade.text === 'Excellent') borderColorClass = 'border-green-500 dark:border-green-400';
+    else if (cardGrade.text === 'Good') borderColorClass = 'border-emerald-500 dark:border-emerald-400';
+    else if (cardGrade.text === 'Fair') borderColorClass = 'border-orange-500 dark:border-orange-400';
+    else borderColorClass = 'border-red-600 dark:border-red-500';
+    const arcColor = score >= 85 ? '#22c55e' :
+                     score >= 70 ? '#10b981' :
+                     score >= 50 ? '#f59e0b' : '#ef4444';
+    return `
+    <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[520px] md:min-h-[580px]">
+      <div class="flex justify-center mb-6">
+        <div class="relative w-32 h-32 mx-auto">
+          <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+            <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
+            <circle cx="64" cy="64" r="56"
+                    stroke="${arcColor}"
+                    stroke-width="12" fill="none"
+                    stroke-dasharray="${(score / 100) * 352} 352"
+                    stroke-linecap="round"/>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-4xl font-black" style="color: ${arcColor};">${score}</div>
           </div>
         </div>
-        <p class="text-center text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">${mod.name}</p>
-        ${(() => {
-          const g = getGrade(score);
-          return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
-        })()}
-        <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
-        <button class="details-toggle w-full py-2 px-4 mt-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-lg transition flex justify-between items-center">
-          <span>More Details</span>
-          <span class="details-arrow transition-transform duration-200">▼</span>
-        </button>
-<div class="details-panel mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
-  <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
-  <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
-  <p class="text-center mt-4">
-    <a href="#${mod.name.toLowerCase()}"
-       class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
-      How ${mod.name} is tested? →
-    </a>
-  </p>
-</div>
-        <ul class="text-sm space-y-3 mt-4 mb-4 flex-grow">
-          ${metrics.map(m => {
-            let emoji = '❌', color = 'text-red-600 dark:text-red-400';
-            if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
-            else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-500 dark:text-orange-400'; }
-            return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
-          }).join('')}
-        </ul>
-        <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
-          <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
-          <span class="arrow transition-transform duration-200">▼</span>
-        </button>
-        <div class="fixes-panel mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
-${failed.length > 0 ? `
-  <ul class="space-y-4 text-sm">
-    ${failed.map(f => {
-      let emoji = f.grade === 'bad' ? '❌' : '⚠️';
-      let color = f.grade === 'bad'
-        ? 'text-red-700 dark:text-red-300'
-        : 'text-orange-600 dark:text-orange-400';
-      return `<li class="${color} flex items-start gap-3">${emoji} <span>${f.text}</span></li>`;
-    }).join('')}
-  </ul>
-` : `
-  <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
-`}
-  <p class="text-center mt-6">
-    <a href="#${mod.name.toLowerCase()}"
-       class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
-      Learn more about ${mod.name}? →
-    </a>
-  </p>
-</div>
       </div>
-      `;
-    }).join('')}
-  </div>
+      <p class="text-center text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">${mod.name}</p>
+      ${(() => {
+        const g = getGrade(score);
+        return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
+      })()}
+      <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
+      <button class="details-toggle w-full py-2 px-4 mt-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-lg transition flex justify-between items-center">
+        <span>More Details</span>
+        <span class="details-arrow transition-transform duration-200">▼</span>
+      </button>
+      <div class="details-panel mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
+        <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
+        <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
+        <p class="text-center mt-4">
+          <a href="#${mod.name.toLowerCase()}"
+             class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+            How ${mod.name} is tested? →
+          </a>
+        </p>
+      </div>
+      <ul class="text-sm space-y-3 mt-4 mb-4 flex-grow">
+        ${metrics.map(m => {
+          let emoji = '❌', color = 'text-red-600 dark:text-red-400';
+          if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
+          else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-500 dark:text-orange-400'; }
+          return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
+        }).join('')}
+      </ul>
+      <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
+        <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
+        <span class="arrow transition-transform duration-200">▼</span>
+      </button>
+      <div class="fixes-panel mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
+        ${failed.length > 0 ? `
+          <ul class="space-y-4 text-sm">
+            ${failed.map(f => {
+              let emoji = f.grade === 'bad' ? '❌' : '⚠️';
+              let color = f.grade === 'bad'
+                ? 'text-red-700 dark:text-red-300'
+                : 'text-orange-600 dark:text-orange-400';
+              return `<li class="${color} flex items-start gap-3">${emoji} <span>${f.text}</span></li>`;
+            }).join('')}
+          </ul>
+        ` : `
+          <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
+        `}
+        <p class="text-center mt-6">
+          <a href="#${mod.name.toLowerCase()}"
+             class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+            Learn more about ${mod.name}? →
+          </a>
+        </p>
+      </div>
+    </div>
+    `;
+  }).join('')}
+</div>
 
-  <!-- Relationships + Practices + Readiness -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-    ${modules.slice(2).map(mod => {
-      const { score, metrics = [], failed = [] } = mod.result;
-      const cardGrade = getGrade(score);
-      let borderColorClass = '';
-      if (cardGrade.text === 'Excellent') borderColorClass = 'border-green-500 dark:border-green-400';
-      else if (cardGrade.text === 'Good') borderColorClass = 'border-emerald-500 dark:border-emerald-400';
-      else if (cardGrade.text === 'Fair') borderColorClass = 'border-orange-500 dark:border-orange-400';
-      else borderColorClass = 'border-red-600 dark:border-red-500';
-      const arcColor = score >= 85 ? '#22c55e' :
-                       score >= 70 ? '#10b981' :
-                       score >= 50 ? '#f59e0b' : '#ef4444';
-      return `
-      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[540px]">
-        <div class="flex justify-center mb-6">
-          <div class="relative w-32 h-32 mx-auto">
-            <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-              <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
-              <circle cx="64" cy="64" r="56"
-                      stroke="${arcColor}"
-                      stroke-width="12" fill="none"
-                      stroke-dasharray="${(score / 100) * 352} 352"
-                      stroke-linecap="round"/>
-            </svg>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="text-4xl font-black" style="color: ${arcColor};">${score}</div>
-            </div>
+<!-- Relationships + Practices + Readiness -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+  ${modules.slice(2).map(mod => {
+    const { score, metrics = [], failed = [] } = mod.result;
+    const cardGrade = getGrade(score);
+    let borderColorClass = '';
+    if (cardGrade.text === 'Excellent') borderColorClass = 'border-green-500 dark:border-green-400';
+    else if (cardGrade.text === 'Good') borderColorClass = 'border-emerald-500 dark:border-emerald-400';
+    else if (cardGrade.text === 'Fair') borderColorClass = 'border-orange-500 dark:border-orange-400';
+    else borderColorClass = 'border-red-600 dark:border-red-500';
+    const arcColor = score >= 85 ? '#22c55e' :
+                     score >= 70 ? '#10b981' :
+                     score >= 50 ? '#f59e0b' : '#ef4444';
+    return `
+    <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[540px]">
+      <div class="flex justify-center mb-6">
+        <div class="relative w-32 h-32 mx-auto">
+          <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+            <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
+            <circle cx="64" cy="64" r="56"
+                    stroke="${arcColor}"
+                    stroke-width="12" fill="none"
+                    stroke-dasharray="${(score / 100) * 352} 352"
+                    stroke-linecap="round"/>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-4xl font-black" style="color: ${arcColor};">${score}</div>
           </div>
         </div>
-        <p class="text-center text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">${mod.name}</p>
-        ${(() => {
-          const g = getGrade(score);
-          return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
-        })()}
-        <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
-        <button class="details-toggle w-full py-2 px-4 mt-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-lg transition flex justify-between items-center">
-          <span>More Details</span>
-          <span class="details-arrow transition-transform duration-200">▼</span>
-        </button>
-<div class="details-panel mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
-  <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
-  <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
-  <p class="text-center mt-4">
-    <a href="#${mod.name.toLowerCase()}"
-       class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
-      How ${mod.name} is tested? →
-    </a>
-  </p>
-</div>
-        <ul class="text-sm space-y-3 mt-4 mb-4 flex-grow">
-          ${metrics.map(m => {
-            let emoji = '❌', color = 'text-red-600 dark:text-red-400';
-            if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
-            else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-500 dark:text-orange-400'; }
-            return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
-          }).join('')}
-        </ul>
-        <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
-          <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
-          <span class="arrow transition-transform duration-200">▼</span>
-        </button>
-        <div class="fixes-panel mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
-${failed.length > 0 ? `
-  <ul class="space-y-4 text-sm">
-    ${failed.map(f => {
-      let emoji = f.grade === 'bad' ? '❌' : '⚠️';
-      let color = f.grade === 'bad'
-        ? 'text-red-700 dark:text-red-300'
-        : 'text-orange-600 dark:text-orange-400';
-      return `<li class="${color} flex items-start gap-3">${emoji} <span>${f.text}</span></li>`;
-    }).join('')}
-  </ul>
-` : `
-  <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
-`}
-  <p class="text-center mt-6">
-    <a href="#${mod.name.toLowerCase()}"
-       class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
-      Learn more about ${mod.name}? →
-    </a>
-  </p>
-</div>
       </div>
-      `;
-    }).join('')}
-  </div>
+      <p class="text-center text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">${mod.name}</p>
+      ${(() => {
+        const g = getGrade(score);
+        return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
+      })()}
+      <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
+      <button class="details-toggle w-full py-2 px-4 mt-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-lg transition flex justify-between items-center">
+        <span>More Details</span>
+        <span class="details-arrow transition-transform duration-200">▼</span>
+      </button>
+      <div class="details-panel mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
+        <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
+        <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
+        <p class="text-center mt-4">
+          <a href="#${mod.name.toLowerCase()}"
+             class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+            How ${mod.name} is tested? →
+          </a>
+        </p>
+      </div>
+      <ul class="text-sm space-y-3 mt-4 mb-4 flex-grow">
+        ${metrics.map(m => {
+          let emoji = '❌', color = 'text-red-600 dark:text-red-400';
+          if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
+          else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-500 dark:text-orange-400'; }
+          return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
+        }).join('')}
+      </ul>
+      <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
+        <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
+        <span class="arrow transition-transform duration-200">▼</span>
+      </button>
+      <div class="fixes-panel mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
+        ${failed.length > 0 ? `
+          <ul class="space-y-4 text-sm">
+            ${failed.map(f => {
+              let emoji = f.grade === 'bad' ? '❌' : '⚠️';
+              let color = f.grade === 'bad'
+                ? 'text-red-700 dark:text-red-300'
+                : 'text-orange-600 dark:text-orange-400';
+              return `<li class="${color} flex items-start gap-3">${emoji} <span>${f.text}</span></li>`;
+            }).join('')}
+          </ul>
+        ` : `
+          <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
+        `}
+        <p class="text-center mt-6">
+          <a href="#${mod.name.toLowerCase()}"
+             class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
+            Learn more about ${mod.name}? →
+          </a>
+        </p>
+      </div>
+    </div>
+    `;
+  }).join('')}
+</div>
 
 <!-- PDF Share Feedback Buttons -->
 <div class="text-center my-16 px-4">
