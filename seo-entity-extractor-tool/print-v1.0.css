@@ -1,7 +1,6 @@
 @media print {
-
   body::before {
-    content: "TrafficTorch.net ⚖️\A\A SEO Entity Audit Tool 🎯\A\A Report:\A " attr(data-url);
+    content: "TrafficTorch.net ⚖️\A\A Semantic Entity Audit Tool 🎯\A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
     min-height: 100vh;
@@ -27,13 +26,12 @@
       0 10px 30px rgba(0,0,0,0.5);
   }
 
-  /* Report starts cleanly on next page */
+  /* Force full-width content and clean page start */
   #results-wrapper {
     page-break-before: always;
     margin-top: 0 !important;
   }
 
-  /* Full-width content inside results (keeps previous full-page fix) */
   #results-wrapper,
   #results-wrapper .container,
   #results-wrapper .max-w-*,
@@ -45,24 +43,26 @@
     box-sizing: border-box;
   }
 
-  /* Prevent ugly page breaks */
+  /* Prevent page breaks inside important blocks */
   .score-card,
   .fixes-panel,
   .full-details,
   section > div,
   .grid,
-  .flex {
-    page-break-inside: avoid;
-    break-inside: avoid;
+  .flex,
+  .details-panel,
+  .fixes-panel {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
-  /* Better text breaking */
+  /* Better text flow control */
   p, li, div {
     orphans: 3;
     widows: 3;
   }
 
-  /* General print safety */
+  /* General print cleanup */
   body {
     background: white !important;
     color: black !important;
@@ -71,130 +71,90 @@
     font-size: 11pt;
   }
 
-  /* Remove shadows */
-  .shadow-lg,
-  .shadow-xl,
+  /* Remove shadows and decorative elements */
   [class*="shadow"] {
     box-shadow: none !important;
   }
 
   /* ──────────────────────────────────────────────────────────────
-     TARGETED HIDING – only the elements you requested to remove
+     TARGETED HIDING – promotional / non-report elements
   ─────────────────────────────────────────────────────────────── */
-  /* How the SEO Intent Tool Works accordion */
+  /* How It Works accordion */
   .max-w-4xl.mx-auto.my-16 details.group,
-  /* Why Search Intent Matters accordion */
+  /* Why Semantic Entity Optimization Matters accordion */
   .max-w-4xl.mx-auto.my-16 details.group:nth-of-type(2),
-  /* SEO Intent Checklist section */
+  /* Semantic Entity Checklist */
   #seo-ux-checklist,
-  /* Deep Dive into SEO Intent Modules section */
-  section.py-20.bg-gray-50.dark\:bg-gray-900,
-  /* Tools grid (Keyword/Local/More tools) */
+  /* Comparison table, high-impact moves, author bio, etc. */
+  #promo-high-impact-cards,
+  #promo-old-vs-modern-seo,
+  #author-bio,
   .tools-grid,
-  /* Author Bio & Credibility section */
-  section.max-w-5xl.mx-auto.my-24,
-  /* AddToAny share buttons (both instances) */
-  div[style*="display: flex; justify-content: center; margin: 30px 0;"],
-  .a2a_kit,
-  /* Breadcrumbs */
-  div.max-w-5xl.mx-auto.px-6.py-4.text-center,
-  /* Bottom banner infographic */
-  section.bottom-banner,
-  /* Any leftover large containers that might slip through */
-  .max-w-7xl.mx-auto {
-    display: none !important;
-  }
-  
-  /* Hide upgrade modal and share section in print */
+  .bottom-banner,
+  .max-w-7xl.mx-auto,
+  /* Share / Feedback / Upgrade modals and buttons */
+  #share-form-container,
+  #feedback-form-container,
+  #share-message,
+  #feedback-message,
+  #share-report-btn,
+  #feedback-btn,
   #upgradeModal,
-  .py-8.text-center,
   .a2a_kit,
-  .a2a_default_style,
-  .a2a_kit_size_32,
-  [class*="a2a_"] {
-    display: none !important;
-  }
-
-  /* Extra insurance for modal visibility tricks */
-  #upgradeModal[style*="display: block"],
-  #upgradeModal:not(.hidden) {
-    display: none !important;
-  }
-
-  /* ──────────────────────────────────────────────────────────────
-     Keep showing fixes & expanded content
-  ─────────────────────────────────────────────────────────────── */
-  .fixes-panel,
-  .full-details,
-  .expand-content,
-  .hidden.mt-4,
-  .hidden.mt-6,
-  .hidden.mt-8 {
-    display: block !important;
-  }
-
-  /* Hide form/progress/header/footer/etc (your original) */
-  #keyword-form,
-  #analysis-progress,
+  [class*="a2a_"],
+  button,
+  details > summary,
   header,
   footer,
   nav,
   aside,
-  .no-print,
-  button,
-  details > summary {
+  .no-print {
     display: none !important;
   }
 
-/* Hide promotional / educational blocks + share/feedback + AI Content Audit explanation section */
-#author-bio,
-#promo-high-impact-cards,
-#promo-old-vs-modern-seo,
-#share-form-container,
-#feedback-form-container,
-#share-message,
-#feedback-message,
-#share-report-btn ~ div[id*="form"],
-#feedback-btn ~ div[id*="form"],
-.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8,  /* the entire What is AI Content Audit section */
-.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 h2,  /* title */
-.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 p,     /* paragraphs */
-.max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 div.text-xl.leading-relaxed.text-center {
-  display: none !important;
-}
+  /* ──────────────────────────────────────────────────────────────
+     FORCE EXPAND “More Details” and “Show Fixes” panels
+  ─────────────────────────────────────────────────────────────── */
+  /* Target the exact panels generated by your JS */
+  .details-panel,
+  .fixes-panel,
+  .details-panel.expanded,
+  .fixes-panel.expanded,
+  [class*="details-panel"],
+  [class*="fixes-panel"],
+  .mt-3.pt-3.border-t,
+  .mt-5.pt-5.border-t,
+  .hidden.mt-3,
+  .hidden.mt-5,
+  .mt-3.pt-3,
+  .mt-5.pt-5 {
+    display: block !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
 
-/* EACH MODULE ON ITS OWN NEW PAGE (no more squashing) */
-.max-w-5xl.mx-auto.my-16,            /* Radar Chart */
-.space-y-8 > div,                    /* Perplexity + the 4-metric grid */
-  page-break-before: always !important;
-  break-before: page !important;
-}
+  /* Ensure toggle buttons are hidden but content stays visible */
+  .details-toggle,
+  .fixes-toggle,
+  button.details-toggle,
+  button.fixes-toggle {
+    display: none !important;
+  }
 
-/* Keep important content together but never split cards */
-.score-card,
-.metric-card,
-.bg-white.dark\:bg-gray-800.rounded-2xl,
-.bg-orange-50.dark\:bg-orange-900\/20 {
-  break-inside: avoid !important;
-  page-break-inside: avoid !important;
-}
+  /* Force any JS-hidden classes to show in print */
+  .hidden,
+  [class*="hidden"] {
+    display: block !important;
+  }
 
-/* ──────────────────────────────────────────────────────────────
-   FORCE “Show Fixes” expanded + “More Details”  */
-button[onclick*="More Details"] + .hidden,
-.hidden.mt-6.space-y-6,
-.hidden.mt-4.space-y-6 {
-  display: block !important;
-}
-
-button[onclick*="Show Fixes"] + .hidden,
-.hidden.mt-6.space-y-8,
-.hidden.mt-4.space-y-8 {
-  display: block !important;
-}
-
-/* Hide the toggle buttons themselves in print */
-button[onclick*="toggle('hidden')"] {
-  display: none !important;
-}
+  /* Extra safety for common hiding patterns in your HTML */
+  .hidden.space-y-4,
+  .hidden.space-y-6,
+  .hidden.space-y-8,
+  .mt-4.hidden,
+  .mt-6.hidden,
+  .mt-8.hidden {
+    display: block !important;
+  }
 }

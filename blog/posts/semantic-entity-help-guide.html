@@ -1,0 +1,1452 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <!-- Referrer Policy (security + privacy best practice) -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+<!-- SEO Title & Description -->
+<title>Semantic Entity Help Guide – Traffic Torch Entity Extractor Explained</title>
+<meta name="description" content="Complete guide to semantic entity optimization. Learn how Traffic Torch audits Coverage, Salience, Relationships, Practices & Readiness for better AI visibility, voice answers & rankings." />
+
+<!-- hreflang -->
+<link rel="alternate" hreflang="en" href="https://traffictorch.net/blog/posts/semantic-entity-help-guide/">
+<link rel="alternate" hreflang="x-default" href="https://traffictorch.net/blog/posts/semantic-entity-help-guide/">
+
+<!-- Robots & Canonical -->
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://traffictorch.net/blog/posts/semantic-entity-help-guide/" />
+
+<!-- Open Graph Tags -->
+<meta property="og:title" content="Semantic Entity Help Guide – Master Traffic Torch Entity Extractor" />
+<meta property="og:description" content="Deep dive into semantic entity optimization: Coverage, Salience, Relationships, Practices, Readiness. Get actionable insights to boost AI citations, voice search & entity-first rankings." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://traffictorch.net/blog/posts/semantic-entity-help-guide/" />
+<meta property="og:image" content="https://traffictorch.net/blog/images/semantic-entity-help-guide/semantic-entity-help-guide-1200w.webp" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="Traffic Torch" />
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Semantic Entity Help Guide – Traffic Torch Entity Extractor Explained" />
+<meta name="twitter:description" content="Learn how Traffic Torch audits semantic health across six layers. Get prioritized fixes to improve entity signals, topical authority & AI/voice visibility." />
+<meta name="twitter:image" content="https://traffictorch.net/blog/images/semantic-entity-help-guide/semantic-entity-help-guide-1200w.webp" />
+<meta name="twitter:site" content="@Guitaralize" />
+ 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://traffictorch.net/#organization",
+      "name": "Traffic Torch",
+      "url": "https://traffictorch.net/",
+      "logo": "https://traffictorch.net/logo-512.webp",
+      "sameAs": [
+        "https://twitter.com/guitaralize"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://traffictorch.net/#website",
+      "url": "https://traffictorch.net/",
+      "name": "Traffic Torch",
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://traffictorch.net/blog/posts/semantic-entity-help-guide/#webpage",
+      "url": "https://traffictorch.net/blog/posts/semantic-entity-help-guide/",
+      "name": "Semantic Entity Help Guide – Traffic Torch Entity Extractor Explained",
+      "description": "Complete guide to semantic entity optimization using Traffic Torch. Learn how Coverage, Salience, Relationships, Practices & Readiness audits improve AI visibility, voice answers & entity-first rankings.",
+      "isPartOf": {
+        "@id": "https://traffictorch.net/#website"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://traffictorch.net/blog/images/semantic-entity-help-guide/semantic-entity-help-guide-1200w.webp",
+        "width": 1200,
+        "height": 630
+      },
+      "image": [
+        "https://traffictorch.net/blog/images/semantic-entity-help-guide/semantic-entity-help-guide-1200w.webp",
+        "https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-800x257.webp"
+      ],
+      "datePublished": "2026-03-17T11:34:00+11:00",
+      "dateModified": "2026-03-17T13:54:00+11:00",
+      "author": {
+        "@type": "Person",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net",
+        "sameAs": [
+          "https://twitter.com/guitaralize"
+        ]
+      },
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      },
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": [
+          "h1",
+          "p:first-of-type",
+          "nav#table-of-contents h2",
+          "#faq h2",
+          "#faq details summary"
+        ]
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://traffictorch.net/blog/posts/semantic-entity-help-guide/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://traffictorch.net/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://traffictorch.net/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Semantic Entity Help Guide",
+          "item": "https://traffictorch.net/blog/posts/semantic-entity-help-guide/"
+        }
+      ]
+    },
+    {
+      "@type": "BlogPosting",
+      "headline": "Semantic Entity Help Guide – Traffic Torch Entity Extractor Explained",
+      "description": "In-depth guide explaining how Traffic Torch audits semantic health across six layers: SEO Entities, Coverage, Salience, Relationships, Practices & Readiness. Includes actionable optimizations for entity-first search, AI visibility and voice answers.",
+      "image": [
+        "https://traffictorch.net/blog/images/semantic-entity-help-guide/semantic-entity-help-guide-1200w.webp",
+        "https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-800x257.webp"
+      ],
+      "datePublished": "2026-03-17T11:34:00+11:00",
+      "dateModified": "2026-03-17T13:54:00+11:00",
+      "author": {
+        "@type": "Person",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net",
+        "sameAs": [
+          "https://twitter.com/guitaralize"
+        ]
+      },
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://traffictorch.net/blog/posts/semantic-entity-help-guide/#webpage"
+      },
+      "keywords": [
+        "semantic entity optimization",
+        "entity extractor tool",
+        "SEO entity audit",
+        "topical authority",
+        "AI overview optimization",
+        "voice search entities",
+        "semantic SEO guide"
+      ],
+      "wordCount": 3400,
+      "inLanguage": "en",
+      "articleSection": "SEO Guides",
+      "isPartOf": {
+        "@type": "Blog",
+        "name": "Traffic Torch Blog",
+        "url": "https://traffictorch.net/blog/"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I optimize a website for entity-based search?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Entity optimization focuses on clear named-entity recognition, strong salience for your primary topic, diverse topical coverage, meaningful entity relationships, schema + heading best practices, and high overall semantic readiness. Use Traffic Torch’s Entity Extractor to score and get prioritized fixes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is semantic readiness and why does it matter?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Semantic readiness is the weighted overall score combining entity coverage, salience, relationships, and practices. It predicts how well your page performs in entity-first search and AI citation. High readiness increases visibility in competitive results."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does schema markup help with entity recognition?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Schema makes entities explicitly machine-readable, enabling rich results, Knowledge Graph inclusion, and better citation in AI/voice responses. Prioritize Organization, LocalBusiness, Product, Article, and Person schema for detected types."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How important is entity salience vs keyword density?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Salience is far more important. Clear prominence of your primary entity (title, H1, intro, headings) signals focus. Flat distributions dilute intent. Optimize by placing key entities in structural positions."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why isn’t my page ranking well in AI or voice results?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Common issues: weak primary entity salience, low topical coverage, missing relationships, poor schema/heading usage, inconsistent naming, or low readiness. Use Traffic Torch to identify the weakest layer and apply fixes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the Traffic Torch Entity Extractor tool free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. It is 100% free, no login required, fully client-side, and delivers instant semantic health reports with scores, explanations, gap analysis, and optimizations across all six layers."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+ 
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Main Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/blog/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/blog/style-v1.0.css">
+  </noscript>
+
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  <meta http-equiv="Content-Encoding" content="br">  
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+      <nav class="p-6 space-y-4 flex-1">
+        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
+        </a>
+        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
+        </a>
+        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
+        </a>
+        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
+        </a>
+        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">⛔</span> <span class="sidebar-text hidden">Quit Risk</span>
+        </a>
+        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🗝️</span> <span class="sidebar-text hidden">Keywords</span>
+        </a>
+        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
+        </a>
+        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
+        </a>
+        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
+        </a>
+        <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
+          <span class="text-2xl">📋</span> <span class="sidebar-text hidden">Help Guides</span>
+        </a>
+      </nav>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
+            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
+              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
+              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
+              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⛔ Quit Risk</a>
+              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">🗝️ Keywords</a>
+              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
+              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+              <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition">📋 Help Guides</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+
+<!-- Updated Blog Post Content Area (glassmorphism card matching site style) -->
+<main class="py-16 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-sm">
+  <article class="max-w-4xl mx-auto px-2">
+    <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl p-2 md:p-4 prose prose-lg dark:prose-invert max-w-none border border-white/10 dark:border-white/5">
+      
+      <!-- Featured Image -->
+<picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/blog/images/semantic-entity-help-guide/semantic-entity-help-guide-banner-640x336.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/blog/images/semantic-entity-help-guide/semantic-entity-help-guide-1200w.webp">
+  <img 
+    src="/blog/images/semantic-entity-help-guide/semantic-entity-help-guide-1200w.webp" 
+	alt="Semantic Entity Optimization Guide – Traffic Torch Entity Extractor Audit: Coverage, Salience, Relationships, Practices, Readiness, SEO Entities Analysis"
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="eager"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+</picture>
+
+<!-- Post Hero Title -->
+<h1 class="text-3xl md:text-4xl lg:text-5xl font-black mb-5 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">
+  Semantic Entity Optimization Help Guide
+</h1>
+
+<!-- Subtitle / Hook -->
+<p class="text-xl md:text-2xl font-medium text-gray-700 dark:text-gray-300 mb-10 leading-relaxed max-w-3xl">
+  How to boost modern SEO, local/geo visibility, and answer engine results. Discover how Traffic Torch’s Entity Extractor audits your page across six key semantic layers and the highest-ROI optimizations you can apply today.
+</p>
+
+<!-- Introduction – Answer-first for featured snippets & answer engines -->
+<div class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12">
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg">
+    <strong>Modern search is entity-first.</strong> Google and answer engines rely heavily on named entities, topical coverage, entity salience, semantic relationships, on-page practices, and overall semantic readiness to understand content, match queries, and generate answers.
+  </p>
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg mt-6">
+    Traffic Torch’s Entity Extractor audits six core semantic layers to deliver an instant 360° health score for SEO, local/geo signals, and answer engine optimization:
+  </p>
+  <ul class="list-disc pl-6 mt-4 space-y-3 text-lg">
+    <li><strong>SEO Entities</strong>: The named entities (people, brands, products, concepts, locations) search engines recognize on your page</li>
+    <li><strong>Coverage</strong>: Breadth, density, and diversity of entities — building topical authority</li>
+    <li><strong>Salience</strong>: Prominence and hierarchy of your main entities — signaling clear topical focus</li>
+    <li><strong>Relationships</strong>: How entities connect and cluster — creating semantic depth</li>
+    <li><strong>Practices</strong>: Schema readiness, heading usage, name consistency — making entities machine-readable</li>
+    <li><strong>Readiness</strong>: Overall semantic preparedness score — predicting performance in rankings and answer engines</li>
+  </ul>
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg mt-8">
+    This guide explains exactly what each layer measures, how we score it, why it matters for SEO, local visibility, and answer engine results, and the fastest, highest-impact fixes. Whether you want stronger rankings, better geo/local signals, or more featured snippets and direct answers, you’ll leave with a clear, prioritized roadmap.
+  </p>
+</div>
+
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+<!-- Table of Contents - 4-column table (sticky-friendly, mobile-scrollable) -->
+<nav id="table-of-contents" class="bg-white dark:bg-gray-900 p-4 md:p-6 mt-10 rounded-2xl shadow-lg mb-12 border border-gray-200 dark:border-gray-700 sticky top-4 z-10">
+  <h2 class="text-2xl md:text-3xl font-black text-center text-gray-800 dark:text-gray-100 mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Table of Contents
+  </h2>
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse min-w-[800px]">
+      <thead>
+        <tr class="bg-gray-100 dark:bg-gray-800/80">
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-600 border-b border-gray-200 dark:border-gray-700">Module</th>
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-600 border-b border-gray-200 dark:border-gray-700 text-center">What is it?</th>
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-600 border-b border-gray-200 dark:border-gray-700 text-center">How it's Audited?</th>
+          <th class="p-4 font-semibold text-gray-700 dark:text-gray-600 border-b border-gray-200 dark:border-gray-700 text-center">Why it Matters?</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-800 dark:text-gray-200">
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#seo-entities" class="text-orange-600 dark:text-orange-400 hover:underline">SEO Entities</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#seo-entities-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#seo-entities-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#seo-entities-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#coverage" class="text-orange-600 dark:text-orange-400 hover:underline">Coverage</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#coverage-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#coverage-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#coverage-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#salience" class="text-orange-600 dark:text-orange-400 hover:underline">Salience</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#salience-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#salience-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#salience-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#relationships" class="text-orange-600 dark:text-orange-400 hover:underline">Relationships</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#relationships-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#relationships-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#relationships-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#practices" class="text-orange-600 dark:text-orange-400 hover:underline">Practices</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#practices-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#practices-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#practices-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">
+            <a href="#readiness" class="text-orange-600 dark:text-orange-400 hover:underline">Readiness</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#readiness-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#readiness-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a>
+          </td>
+          <td class="p-4 text-center">
+            <a href="#readiness-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-6 text-center text-sm md:text-base text-gray-600 dark:text-gray-400 flex flex-wrap justify-center gap-4 md:gap-6">
+    <a href="#conclusion" class="text-orange-600 dark:text-orange-400 hover:underline">Conclusion & Next Steps</a>
+    <a href="#faq" class="text-orange-600 dark:text-orange-400 hover:underline">Frequently Asked Questions</a>
+  </div>
+</nav>
+
+<!-- CTA Box – tailored to SEO Entity Extractor Guide -->
+<div class="mt-12 p-4 md:p-6 rounded-2xl border border-orange-200 dark:border-orange-800 bg-white/5 dark:bg-black/20 backdrop-blur-sm text-center">
+  <p class="text-xl md:text-2xl font-black mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Ready to audit your Semantic Entity Health?
+  </p>
+  <p class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-6 leading-relaxed max-w-2xl mx-auto">
+    Get your instant 360° entity coverage, salience, relationships, practices & readiness score + gap analysis + prioritized fixes.<br class="hidden sm:block">
+    <span class="text-orange-600 dark:text-orange-400 font-semibold">No login required • No tracking • 100% privacy first.</span>
+  </p>
+  <a href="https://traffictorch.net/seo-entity-extractor-tool/"
+     class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">
+    Run Entity Extractor Audit →
+  </a>
+  <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+    Powered by Traffic Torch – optimized for Google, Gemini, Grok, Perplexity & more.
+  </p>
+</div>
+
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+<!-- FAQ Section – Entity Optimization Focused with Accordion Style -->
+<section id="faq" class="mb-20 scroll-mt-24">
+  <h2 class="text-3xl md:text-4xl font-black mt-16 mb-12 text-center bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+    Frequently Asked Questions – Semantic Entity Optimization
+  </h2>
+  <div class="max-w-4xl mx-auto space-y-4">
+   
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+      <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        How do I optimize a website for entity-based search?
+        <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+        <p>Entity optimization focuses on clear named-entity recognition, strong salience for your primary topic, diverse topical coverage, meaningful entity relationships/clusters, schema + heading best practices, and high overall semantic readiness. This directly improves AI Overviews, voice answers, and entity-driven rankings.</p>
+        <p>Traffic Torch’s Entity Extractor scores your page across six layers (SEO Entities, Coverage, Salience, Relationships, Practices, Readiness) and provides prioritized, AI-generated fixes tailored to your content.</p>
+      </div>
+    </details>
+
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+      <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        What is semantic readiness and why does it matter for AI visibility?
+        <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+        <p>Semantic readiness is the weighted overall score combining entity coverage, salience, relationships, and on-page practices — predicting how well your page performs in entity-first search environments (Google AI Overviews, Gemini, Grok, Perplexity). High readiness = higher chance of being cited or used in AI-generated answers.</p>
+        <p class="mt-4">Run the Traffic Torch audit to see your exact Readiness score and which layer needs the most urgent attention.</p>
+      </div>
+    </details>
+
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+      <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Does schema markup still help with entity recognition and voice answers?
+        <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+        <p>Yes — schema remains one of the highest-ROI signals. It makes entities explicitly machine-readable, enabling rich results, Knowledge Graph inclusion, and better citation in AI/voice responses. Prioritize Organization, LocalBusiness, Product, Article, and Person schema for detected entity types.</p>
+        <p>The Practices layer in Traffic Torch scores your schema potential and suggests the most valuable types to implement first.</p>
+      </div>
+    </details>
+
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+      <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        How important is entity salience vs just mentioning lots of keywords?
+        <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+        <p>Salience is far more important. Raw keyword density is outdated — search engines and AI prioritize clear prominence of your primary entity (title, H1, intro, headings, repetition with context). A flat distribution dilutes focus; strong hierarchy wins featured snippets and voice answers.</p>
+        <p>Traffic Torch’s Salience module measures this hierarchy and gives fixes like moving your main entity to prominent positions.</p>
+      </div>
+    </details>
+
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+      <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Why isn’t my page ranking well in AI answers or voice results?
+        <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+        <p>Common issues: weak primary entity salience, low topical coverage/diversity, missing entity relationships/clusters, poor schema/heading usage, inconsistent naming, or low overall readiness. AI engines heavily favor semantically strong, authoritative pages.</p>
+        <p>Use Traffic Torch’s full audit to identify your weakest layer (look at the radar chart) and apply the suggested fixes — often boosting visibility quickly.</p>
+      </div>
+    </details>
+
+    <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+      <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+        Is the Traffic Torch Entity Extractor tool really free?
+        <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+        <p>Yes — the SEO Entity Extractor is 100% free, no login required, fully client-side (privacy-safe), and delivers an instant semantic health report with scores, explanations, gap analysis, and AI-suggested optimizations across all six layers.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- SEO Entities Section -->
+<section id="seo-entities" class="mb-20 scroll-mt-24">
+  <h2 class="text-4xl md:text-5xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+    SEO Entities
+  </h2>
+
+  <div id="seo-entities-what" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">What is it?</h3>
+    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+      SEO Entities are the named, identifiable things Google and modern search engines recognize on your page — people, organizations/brands, products, concepts/topics, locations, technologies, events, and more.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Unlike traditional keywords, entities are distinct, disambiguated objects with real-world meaning. Google’s Knowledge Graph, NLP APIs (like Google Cloud Natural Language), and AI models (Gemini, Grok, Perplexity) use entities to understand what your page is truly about — not just what words appear.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Examples: “Sydney Opera House” (LOCATION + LANDMARK), “John Doe” (PERSON), “Toyota Corolla” (PRODUCT), “electric vehicle battery technology” (CONCEPT).
+    </p>
+  </div>
+
+  <div id="seo-entities-how" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">How it's Audited</h3>
+    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+      Traffic Torch fetches your page content, sends it through a high-performance entity extraction endpoint (powered by advanced NLP), and returns every recognized named entity with:
+    </p>
+    <ul class="list-disc pl-6 mt-4 space-y-2 text-gray-800 dark:text-gray-200 leading-relaxed">
+      <li><strong>Text</strong>: the exact mention on page</li>
+      <li><strong>Type</strong>: PERSON, ORGANIZATION, LOCATION, PRODUCT, CONCEPT, TECHNOLOGY, EVENT, OTHER</li>
+      <li><strong>Salience</strong>: 0.0–1.0 importance score (how central/prominent the entity is)</li>
+      <li><strong>Count & positions</strong> (where applicable)</li>
+    </ul>
+    <p class="mt-6 text-gray-800 dark:text-gray-200 leading-relaxed">
+      We filter and sort by salience, count types, calculate diversity, and display everything in a clean, scrollable card grid so you instantly see what Google “sees” on your page.
+    </p>
+        <p class="mt-8 text-center md:text-left">
+      <a href="https://traffictorch.net/seo-entity-extractor-tool/" 
+         class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-700 text-white font-bold text-xl rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/40">
+        Run Free Entity Extractor Audit →
+      </a>
+    </p>
+  </div>
+
+  <div id="seo-entities-why" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Why it Matters</h3>
+    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+      Search is entity-first. Google, Gemini, Grok, Perplexity, and ChatGPT Search no longer rank pages just by keyword matches — they rank by how well a page demonstrates deep, accurate understanding of real-world entities and their relationships.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Strong entity signals:
+    </p>
+    <ul class="list-disc pl-6 mt-4 space-y-2 text-gray-800 dark:text-gray-200 leading-relaxed">
+      <li>Build topical authority faster than keywords alone</li>
+      <li>Increase chances of appearing in AI Overviews, voice answers, and knowledge panels.</li>
+      <li>Improve disambiguation (your brand vs others with similar names).</li>
+      <li>Unlock rich results, featured snippets, and direct citations.</li>
+      <li>Future-proof content for entity-driven ranking algorithms.</li>
+    </ul>
+    <p class="mt-6 text-center md:text-left text-sm">
+      <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        ← Return to TOC
+      </a>
+    </p>
+  </div>
+</section>
+
+<div id="coverage-what" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+  <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">What is it?</h3>
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+    Coverage evaluates how comprehensively your page addresses the entities relevant to its main topic. It counts the total number of distinct named entities detected and measures their density relative to the overall word count.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    The module also assesses type diversity by tracking how many different categories appear. Categories include PERSON, ORGANIZATION, LOCATION, PRODUCT, CONCEPT, TECHNOLOGY, and others.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Higher weight is given to semantically rich types such as CONCEPT and ORGANIZATION. These types contribute more strongly to topical authority signals.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Coverage adapts its expectations based on content length. Short pages receive more lenient thresholds while longer pages must demonstrate broader entity inclusion to score highly.
+  </p>
+</div>
+
+<div id="coverage-how" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+  <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">How it's Audited</h3>
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+    Traffic Torch starts by receiving the list of extracted entities from the backend NLP analysis. It also attempts to obtain an accurate word count from cleaned page text. If real cleaned text is unavailable, it uses a fallback estimate based on entity count.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Entity density is calculated as total entities divided by word count multiplied by 100 to give a percentage. Density grading uses specific ranges: 0.4% to 5.5% is considered good, slightly higher up to 9% is a warning, and very high density triggers a stuffing alert.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Type diversity is determined by counting unique entity types. Weighted diversity applies higher multipliers to CONCEPT (1.6), ORGANIZATION (1.3), PERSON (1.25), PRODUCT (1.15), and lower to LOCATION, TECHNOLOGY, and OTHER.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    The score uses tiered buckets for entity count that adjust for short pages (under 400 words) versus normal pages. Bonuses are added for good density ranges and strong weighted diversity. Small penalties apply for very low diversity on longer content with decent entity volume.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Metrics display total entities, approximate word count, density percentage, type diversity count, and weighted diversity score. Each metric receives a good, warning, or bad grade based on adaptive thresholds.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Failed items list specific issues such as low entity count, low density, high density (stuffing risk), low type diversity, low weighted diversity, or missing organization when locations are present. Each suggestion explains the problem and recommends natural improvements.
+  </p>
+    <p class="mt-8 text-center md:text-left">
+    <a href="https://traffictorch.net/seo-entity-extractor-tool/" 
+       class="inline-block px-8 py-5 bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-700 text-white font-bold text-xl rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-emerald-500/40">
+      Check Your Coverage Score →
+    </a>
+  </p>
+</div>
+
+<div id="coverage-why" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+  <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Why it Matters</h3>
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+    Strong entity coverage forms the foundation of topical authority. Search engines and AI models determine whether your page comprehensively addresses a subject by evaluating the number and diversity of relevant entities present.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Pages with solid coverage rank more effectively across related queries. They demonstrate greater authority and are more frequently selected for featured snippets, rich results, voice responses, and AI-generated summaries.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Low coverage makes content appear shallow even when the primary entity is strong. This reduces competitiveness against pages that build deeper topical clusters.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Balanced density and type diversity avoid penalties for over-optimization while rewarding natural expansion of ideas. Adaptive thresholds ensure fair scoring regardless of page length.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Improving coverage delivers one of the fastest lifts in overall semantic health. Adding relevant supporting entities naturally can significantly enhance visibility in entity-aware search environments.
+  </p>
+  <p class="mt-6 text-center md:text-left text-sm">
+    <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+      ← Return to TOC
+    </a>
+  </p>
+</div>
+
+<!-- Salience Section -->
+<section id="salience" class="mb-20 scroll-mt-24">
+  <h2 class="text-4xl md:text-5xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-amber-500 to-yellow-600 bg-clip-text text-transparent">
+    Salience
+  </h2>
+
+  <div id="salience-what" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">What is it?</h3>
+    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+      Salience measures how prominent and central each recognized entity is within the content of your page. It reflects the degree to which an entity dominates attention through position, repetition, contextual weighting, and structural placement.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      The score ranges from 0.0 to 1.0 for each entity. Higher values indicate that the entity is treated as a primary focus rather than a minor mention.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      The module evaluates average salience across all entities, the prominence of the top entity, the number of strongly salient entities, and the overall distribution to detect whether the page has a clear hierarchy or appears flat.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Strong salience for the main topic signals clear intent to search engines and AI models. Flat distributions dilute focus and weaken topical authority.
+    </p>
+  </div>
+  
+  <div id="salience-how" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+  <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">How it's Audited</h3>
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+    Traffic Torch normalizes all entity salience scores to the 0.0 to 1.0 range. It filters out any empty or invalid entities and sorts them descending by salience value.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    The module calculates average salience across all detected entities. It identifies the top entity's salience score and counts how many entities exceed strong (above 0.62) and very strong (above 0.82) thresholds.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Distribution is assessed by measuring the drop from the top entity to roughly the fifth strongest. A small drop combined with many strong entities flags a flat hierarchy.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Scoring adapts to entity count tiers. Very short pages use conservative formulas. Short-focus pages reward high top salience and strong entity ratios. Normal pages add bonuses for very high top salience, multiple strong entities, and hierarchy.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Penalties apply for flat distributions on medium or large entity sets. The final score is capped between 10 and 100.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Metrics include average salience, top entity salience, count of strong entities, top three entities with percentages, and distribution quality. Each metric receives a good, warning, or bad grade based on adaptive thresholds.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Failed items highlight issues such as too few entities, weak top entity prominence, insufficient strong entities, flat distribution, or low overall prominence. Suggestions focus on structural improvements like title, H1, intro placement, headings, and bold usage.
+  </p>
+    <p class="mt-8 text-center md:text-left">
+    <a href="https://traffictorch.net/seo-entity-extractor-tool/" 
+       class="inline-block px-8 py-5 bg-gradient-to-r from-amber-500 via-yellow-600 to-orange-700 text-white font-bold text-xl rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-amber-500/40">
+      Discover Your Salience Hierarchy →
+    </a>
+  </p>
+</div>
+
+<div id="salience-why" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+  <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Why it Matters</h3>
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+    Strong salience for your primary entity clearly communicates topical focus to search engines and AI models. This focus is essential for ranking well on core queries and winning featured snippets or direct answers.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    A good hierarchy with one dominant entity and supporting strong entities builds authority. It helps pages stand out in competitive results and increases the likelihood of being cited in AI summaries or voice responses.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Flat salience distributions weaken intent signals. When many entities share similar prominence, the page appears unfocused and loses priority against clearer, more hierarchical content.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    High top-entity salience in prominent positions such as title, H1, and opening paragraphs boosts perceived expertise. This directly influences how reliably AI assistants select and quote the content.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Improving salience is a high-leverage optimization. Simple structural changes often yield outsized gains in visibility and citation rates across entity-aware search environments.
+  </p>
+  <p class="mt-6 text-center md:text-left text-sm">
+    <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+      ← Return to TOC
+    </a>
+  </p>
+</div>
+
+<!-- Relationships Section -->
+<section id="relationships" class="mb-20 scroll-mt-24">
+  <h2 class="text-4xl md:text-5xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-purple-500 to-indigo-600 bg-clip-text text-transparent">
+    Relationships
+  </h2>
+
+  <div id="relationships-what" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">What is it?</h3>
+    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+      Relationships analyzes how well the entities on your page connect to form meaningful topical clusters. It evaluates co-occurrence patterns, type synergies, and signals of semantic depth.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      The module focuses on the most salient entities to avoid noise. It calculates possible co-mention pairs as a proxy for relatedness and awards bonuses when high-value entity types appear together.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Synergy bonuses reward common strong combinations. Examples include CONCEPT with ORGANIZATION or PERSON, PRODUCT with ORGANIZATION, TECHNOLOGY with CONCEPT, and ORGANIZATION with multiple LOCATION entities for local signals.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Diversity of entity types contributes to the score. The more complementary categories work together, the stronger the indication of robust topical connections.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Overall, the module measures how effectively your content builds a coherent entity graph. This graph helps search engines and AI models understand context and depth beyond isolated mentions.
+    </p>
+  </div>
+  
+  <div id="relationships-how" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+  <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">How it's Audited</h3>
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+    Traffic Torch begins by taking the full list of extracted entities. It sorts them by descending salience and limits analysis to the top 18 most prominent entities. This focuses computation on the most relevant signals.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    The module calculates all possible co-mention pairs among these top entities. This combinatorial count serves as a proxy for relatedness since the page-level co-occurrence indicates potential topical connections.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Type synergy bonuses are applied for high-value combinations. Bonuses are awarded when CONCEPT appears with ORGANIZATION or PERSON, PRODUCT with ORGANIZATION, TECHNOLOGY with CONCEPT, or ORGANIZATION with multiple LOCATION entities for strong local signals.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Diversity of entity types contributes through a scaled bonus. The more unique types are present among the top salient entities, the higher the diversity component.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Scoring uses a logarithmic scale for co-mention pairs to provide diminishing returns on very large sets. It adds the synergy bonus and diversity bonus directly. Small penalties apply for very low pair counts on larger entity sets.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Metrics display the number of entities considered, possible co-mention pairs, type synergy bonus amount, example related pairs, and an overall relationship strength label. Each metric receives a good, warning, or bad grade.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Failed items highlight specific weaknesses. These include too few entities, limited co-occurrences, narrow type diversity, weak synergy, missing organization with locations present, or poor clustering on larger sets.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Suggestions recommend grouping related entities in sections, using descriptive internal links, broadening complementary types, and implementing entity or mention schema where appropriate.
+  </p>
+    <p class="mt-8 text-center md:text-left">
+    <a href="https://traffictorch.net/seo-entity-extractor-tool/" 
+       class="inline-block px-8 py-5 bg-gradient-to-r from-purple-500 via-indigo-600 to-violet-700 text-white font-bold text-xl rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-purple-500/40">
+      Explore Your Entity Connections →
+    </a>
+  </p>
+</div>
+
+<div id="relationships-why" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+  <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Why it Matters</h3>
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+    Strong entity relationships create semantic depth and topical clusters. Search engines and AI models rely on these connections to understand context, relevance, and authority beyond isolated entity mentions.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Well-connected entities improve your page's ability to answer complex queries. They increase the likelihood of appearing in AI summaries, voice responses, and related topic carousels.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Synergies between high-value types such as ORGANIZATION with LOCATION or CONCEPT with PRODUCT signal specialized expertise. These patterns help establish stronger authority in competitive niches.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Weak or missing relationships make content appear fragmented. This reduces its usefulness to AI assistants and lowers priority compared to pages that demonstrate clear topical interconnections.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Building better entity relationships is a powerful optimization. Grouping related concepts naturally and adding schema markup can significantly enhance semantic signals and visibility.
+  </p>
+  <p class="mt-6 text-center md:text-left text-sm">
+    <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+      ← Return to TOC
+    </a>
+  </p>
+</div>
+
+<!-- Practices Section -->
+<section id="practices" class="mb-20 scroll-mt-24">
+  <h2 class="text-4xl md:text-5xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-pink-500 to-rose-600 bg-clip-text text-transparent">
+    Practices
+  </h2>
+
+  <div id="practices-what" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">What is it?</h3>
+    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+      Practices evaluates on-page optimizations that make entities more machine-readable and crawlable. It focuses on three key areas: schema readiness, likely entity usage in headings, and name consistency across mentions.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Schema readiness scores potential for structured data markup based on detected entity types. High-value types such as ORGANIZATION, PERSON, PRODUCT, and CONCEPT receive the strongest weighting.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Synergies boost the score. Examples include ORGANIZATION combined with multiple LOCATION entities for local signals or CONCEPT with ORGANIZATION for article potential.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Heading usage is proxied by estimating how many high-salience entities could reasonably appear in headings. The top third of salient entities are considered strong candidates.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Name consistency normalizes entity text by removing punctuation and extra spaces. It calculates the percentage of unique normalized forms to detect spelling, capitalization, or formatting variations.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      The module rewards pages that combine strong schema potential, probable heading placement of key entities, and high naming consistency.
+    </p>
+  </div>
+  
+  <div id="practices-how" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+  <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">How it's Audited</h3>
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+    Traffic Torch sorts the extracted entities by descending salience. It counts occurrences of each entity type and creates flags for the presence of PERSON, ORGANIZATION, PRODUCT, CONCEPT, and LOCATION.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Schema potential is scored by assigning points to detected types. ORGANIZATION and PERSON receive the highest weight. PRODUCT and CONCEPT follow, while LOCATION adds a smaller base value.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Synergy bonuses increase the schema score. ORGANIZATION with multiple LOCATION entities triggers local business boosts. CONCEPT combined with ORGANIZATION can add article potential on longer pages.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Heading usage is estimated by taking roughly the top 32 percent of salient entities. This count serves as a proxy for entities likely placed in H1, H2, or H3 tags due to their prominence.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Name consistency normalizes all entity text. It removes punctuation, collapses multiple spaces, and converts to lowercase. The percentage of unique normalized forms is calculated against total entities.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Scoring weights schema readiness most heavily at 65 percent on pages with sufficient entities. Heading proxy contributes the rest. High consistency adds a small bonus on pages with eight or more entities.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Metrics display schema potential out of 100, estimated heading entities with percentage, and name consistency percentage with unique normalized count. Each metric receives a good, warning, or bad grade.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Failed items flag low schema readiness with suggested types, few likely heading entities with placement advice, inconsistent naming with standardization tips, locations without organization, or decent volume lacking strong schema candidates.
+  </p>
+    <p class="mt-8 text-center md:text-left">
+    <a href="https://traffictorch.net/seo-entity-extractor-tool/" 
+       class="inline-block px-8 py-5 bg-gradient-to-r from-pink-500 via-rose-600 to-red-700 text-white font-bold text-xl rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-pink-500/40">
+      Unlock Your Schema & Heading Opportunities →
+    </a>
+  </p>
+</div>
+
+<div id="practices-why" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+  <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Why it Matters</h3>
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+    Strong on-page practices turn detected entities into machine-readable signals. This helps search engines and AI models understand your content more accurately and display it in rich results.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Proper schema markup makes entities eligible for knowledge panels, carousels, and enhanced snippets. It also improves the chances of being cited directly in AI-generated answers and voice responses.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Placing key entities in headings strengthens topical hierarchy. This boosts crawlability, user experience, and the perceived importance of your main topic to ranking algorithms.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Consistent entity naming reduces ambiguity. It prevents dilution of brand or topic identity and increases the likelihood of correct Knowledge Graph merging or disambiguation.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Pages that combine schema, heading placement, and naming consistency perform better in entity-aware environments. These optimizations provide high return on effort and future-proof content.
+  </p>
+  <p class="mt-6 text-center md:text-left text-sm">
+    <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+      ← Return to TOC
+    </a>
+  </p>
+</div>
+
+<!-- Readiness Section -->
+<section id="readiness" class="mb-20 scroll-mt-24">
+  <h2 class="text-4xl md:text-5xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-blue-500 to-indigo-600 bg-clip-text text-transparent">
+    Readiness
+  </h2>
+
+  <div id="readiness-what" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">What is it?</h3>
+    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+      Readiness combines the scores from the four core modules into a single weighted semantic health index. It represents your page's overall preparedness for modern entity-based and semantic search.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Coverage and Salience receive the highest weights as foundational signals. Relationships and Practices contribute as important amplifiers of depth and machine readability.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      The final score is a rounded weighted average clamped between 0 and 100. It includes descriptive levels such as Excellent, Good, Fair, Poor, or Needs Significant Work.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Contribution percentages show how much each module influences the total. These percentages normalize to sum near 100 percent even when individual scores vary widely.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Readiness serves as the ultimate summary metric. It predicts how effectively your page will perform in competitive, entity-aware ranking environments.
+    </p>
+  </div>
+  
+  <div id="readiness-how" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+  <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">How it's Audited</h3>
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+    Traffic Torch receives the four core module scores: Coverage, Salience, Relationships, and Practices. Each score is safely clamped between 0 and 100 to prevent invalid input.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Coverage and Salience receive the highest weight of 35 percent each. These foundational signals dominate the calculation because they most strongly predict topical authority and focus.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Relationships and Practices each receive 15 percent weight. They act as amplifiers that enhance depth and machine readability once the core signals are strong.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    The final score is computed as the weighted sum of the four inputs. The result is rounded to the nearest whole number.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    A descriptive level is assigned based on score thresholds. Excellent starts at 85, Good at 72, Fair at 55, Poor at 40, and anything below requires significant work.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Contribution percentages are calculated for display. They normalize each module's raw score against the sum of all four scores so the breakdown always approximates 100 percent.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Metrics show the overall readiness level with score, plus each module's contribution percentage and raw score. Each contribution receives a good, warning, or bad grade based on its strength.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Failed items prioritize core weaknesses first. Low Coverage or Salience triggers the highest-priority suggestion. Secondary issues in Relationships or Practices follow.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Very low overall scores receive an explicit improvement order. It recommends starting with Coverage and Salience, then Relationships, then Practices.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    When the score is already decent but one module lags, a nudge encourages lifting the weakest area. The radar chart helps users identify this quickly.
+  </p>
+    <p class="mt-8 text-center md:text-left">
+    <a href="https://traffictorch.net/seo-entity-extractor-tool/" 
+       class="inline-block px-8 py-5 bg-gradient-to-r from-blue-500 via-indigo-600 to-violet-700 text-white font-bold text-xl rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-blue-500/40">
+      Test Your Semantic Readiness Score →
+    </a>
+  </p>
+</div>
+
+<div id="readiness-why" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
+  <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Why it Matters</h3>
+  <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+    Readiness provides the single most important summary of your page's semantic health. It combines all four core signals into one actionable score that predicts performance in entity-aware search.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    High readiness indicates strong foundations and amplifiers working together. Pages with excellent scores are far more likely to rank competitively, appear in featured snippets, and be cited in AI-generated answers.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Low readiness highlights critical gaps. Weak coverage or salience usually drags the score down first because these foundational elements matter most to modern ranking systems.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    The weighted contribution breakdown reveals exactly which areas need attention. This helps prioritize fixes instead of guessing where effort will deliver the biggest visibility lift.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    The prioritized failed items guide users logically. They always start with core weaknesses before suggesting secondary improvements. This order maximizes return on optimization time.
+  </p>
+  <p class="mt-6 text-center md:text-left text-sm">
+    <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+      ← Return to TOC
+    </a>
+  </p>
+</div>
+
+<!-- Conclusion & Next Steps Section -->
+<section id="conclusion" class="mb-20 scroll-mt-24">
+  <h2 class="text-4xl md:text-5xl font-black text-center text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-700 bg-clip-text text-transparent">
+    Conclusion & Next Steps
+  </h2>
+
+  <div class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 text-center md:text-left">
+    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+      Semantic entity optimization is no longer optional. It forms the core of how modern search engines and AI systems understand, rank, and cite content.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Traffic Torch breaks this complex topic into six clear layers. SEO Entities identify what your page discusses. Coverage measures topical breadth. Salience evaluates focus strength. Relationships assess clustering depth. Practices check machine readability. Readiness delivers the final health index.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Each layer provides actionable insight. Together they reveal exactly where your content shines and where small changes can deliver outsized visibility gains.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      The radar chart and prioritized failed items make improvement straightforward. Start with your weakest module. Natural entity additions, structural tweaks, and schema implementation usually produce the fastest results.
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      Use this guide as your reference. Re-run the audit after each optimization round. Watch how scores rise and visibility improves over time.
+    </p>
+  </div>
+
+  <div class="text-center mt-12">
+    <a href="https://traffictorch.net/seo-entity-extractor-tool/" 
+       class="inline-block px-10 py-6 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-700 text-white font-bold text-2xl rounded-2xl hover:brightness-110 hover:scale-[1.05] transition-all duration-300 shadow-2xl shadow-orange-500/50">
+      Check Your Semantic Health Audit →
+    </a>
+  </div>
+</section>
+
+</div>
+</article>
+  
+<!-- Tools Grid -->
+      <h2 class="text-3xl md:text-3xl font-black text-center mt-10 mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      SEO - UX - AI Tools
+      </h2>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+  <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+
+    <!-- New First Card: Local SEO -->
+    <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-green-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-green-500/30 group-hover:border-green-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
+          <h3 class="text-green-400 text-2xl font-bold mb-3">Local SEO Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">On-page local audit + NAP, schema, map signals + fixes</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- SEO Intent -->
+    <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+          <h3 class="text-cyan-400 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Intent matching + E-E-A-T audit + fixes</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- Product SEO Tool -->
+    <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🛒</div>
+          <h3 class="text-orange-400 text-2xl font-bold mb-3">Product SEO Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Product page audit + eCommerce signals</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- Quit Risk -->
+    <a href="/quit-risk-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-emerald-400 text-7xl mb-6 group-hover:animate-bounce">⚡</div>
+          <h3 class="text-emerald-400 text-2xl font-bold mb-3">Quit Risk Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">UX friction audit + bounce prediction + optimizations</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- Keywords -->
+    <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-purple-400 text-7xl mb-6 group-hover:animate-bounce">🗝️</div>
+          <h3 class="text-purple-400 text-2xl font-bold mb-3">Keyword Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">On-page keyword placement score + density fixes</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- VS -->
+    <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+          <h3 class="text-red-400 text-2xl font-bold mb-3">VS Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Competitive keyword gap analysis + beat strategies</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+    
+        <!-- Ai Search -->
+    <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+          <h3 class="text-orange-400 text-2xl font-bold mb-3">Ai Search Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Optimize for Perplexity, Grok, Gemini, ChatGPT Search</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- AI Content -->
+    <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+          <h3 class="text-pink-400 text-2xl font-bold mb-3">AI Content Tool</h3>
+          <p class="text-gray-800 dark:text-gray-100">Detect AI patterns + humanize content + forecasts</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Try Now →
+        </span>
+      </div>
+    </a>
+
+    <!-- New Last Card: All Tools -->
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-indigo-500/50 transition-all duration-300">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-indigo-500/30 group-hover:border-indigo-400 transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-indigo-400 text-7xl mb-6 group-hover:animate-bounce">🧰</div>
+          <h3 class="text-indigo-400 text-2xl font-bold mb-3">All Tools</h3>
+          <p class="text-gray-800 dark:text-gray-100">Complete suite — instant audits, gaps, fixes & forecasts</p>
+        </div>
+        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+          Explore All →
+        </span>
+      </div>
+    </a>
+
+  </div>
+</div>
+  
+<!-- Author Bio -->
+<section class="max-w-5xl mx-auto my-24 px-2">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+    <div class="bg-gradient-to-br from-purple-600 to-cyan-600 py-12 px-8 text-center">
+      <img src="/logo.webp" alt="Traffic Torch Semantic Entity Optimization Toolkit" class="w-40 h-40 rounded-full mx-auto mb-6 object-cover border-8 border-white shadow-xl">
+      <h3 class="text-4xl font-black text-white mb-4">Traffic Torch</h3>
+      <p class="text-xl text-white/90 max-w-3xl mx-auto">
+        Semantic Entity Audit & Optimization Toolkit
+      </p>
+    </div>
+    <div class="p-6 md:p-8 text-center space-y-8">
+      <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+        Traffic Torch combines real-time entity extraction, semantic health scoring, and practical optimization insights into a privacy-first, client-side audit tool. It helps creators, SEOs, agencies, and businesses strengthen topical authority, local/geo signals, and answer engine performance through transparent, evidence-based recommendations.
+      </p>
+      <div class="pt-8 space-y-3">
+        <p class="text-base text-gray-800 dark:text-gray-200">
+          Expertise: Semantic Entity Analysis • Topical Authority Building • Geo/Local Entity Signals • AEO (Answer Engine Optimization) • Privacy-First Tools.
+        </p>
+        <p class="text-base text-gray-800 dark:text-gray-200 italic mt-4">
+          Continuously updated with the latest search engine entity guidelines, correlation studies, and real-page performance data.
+        </p>
+        <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+          <p>Published: 2026-03-17</p>
+          <p>Last updated: 2026-03-17</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+<section class="bottom-banner" aria-label="Traffic Torch semantic entity optimization summary">
+  <picture>
+    <source
+      media="(max-width: 640px)"
+      srcset="https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-480x154.webp">
+    <source
+      media="(min-width: 641px)"
+      srcset="https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-800x257.webp">
+    <img
+      src="https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-800x257.webp"
+      alt="Semantic Entity Optimization Guide – Traffic Torch Entity Extractor: Coverage, Salience, Relationships, Practices, Readiness audit with entity graph visualization"
+      width="800"
+      height="257"
+      loading="lazy"
+      decoding="async">
+  </picture>
+</section>
+
+</main>
+ 
+<!-- Footer -->
+<div id="footer-placeholder"></div>
+</div>
+</div>
+
+
+  <!-- Load JS last for speed -->
+  <script src="/main-v1.1.js" type="module"></script>
+</body>
+</html>

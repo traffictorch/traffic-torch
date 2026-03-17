@@ -127,7 +127,7 @@ if (coMentionPairs < 22 && entityCount >= 5) {  // lowered threshold slightly fo
 }
 
 // Narrow type diversity
-if (typeSet.size < (entityCount > 12 ? 5 : 4)) {
+if (typeSet.size < (entityCount > 12 ? 5 : 4) && score < 100) {
   failed.push({
     text: `Narrow range of entity types (${typeSet.size} unique types). Broaden topical coverage by naturally including complementary types (e.g. add CONCEPTS, PEOPLE or PRODUCTS if missing).`,
     grade: 'bad'
