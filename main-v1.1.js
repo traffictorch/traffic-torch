@@ -582,27 +582,47 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
-  // Collapsible category toggles – desktop
-document.querySelectorAll('[data-category]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const cat = btn.dataset.category;
-    const content = document.querySelector(`[data-category-content="${cat}"]`);
-    const isOpen = btn.getAttribute('aria-expanded') === 'true';
-    
-    btn.setAttribute('aria-expanded', !isOpen);
-    content.classList.toggle('hidden', isOpen);
-  });
-});
+// Collapsible sidebar/menu categories (desktop + mobile)
+document.addEventListener('DOMContentLoaded', () => {
+  // Handle all category toggle buttons (both desktop and mobile)
+  document.querySelectorAll('button[data-category], button[data-category$="-mobile"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault(); // safety
 
-// Mobile version (slightly different data attributes)
-document.querySelectorAll('[data-category$="-mobile"]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const cat = btn.dataset.category.replace('-mobile','');
-    const content = document.querySelector(`[data-category-content="${cat}-mobile"]`);
-    const isOpen = btn.getAttribute('aria-expanded') === 'true';
-    
-    btn.setAttribute('aria-expanded', !isOpen);
-    content.classList.toggle('hidden', isOpen);
+      // Get the matching content container
+      let contentSelector;
+      if (btn.dataset.category.endsWith('-mobile')) {
+        contentSelector = `[data-category-content="${btn.dataset.category}"]`;
+      } else {
+        contentSelector = `[data-category-content="${btn.dataset.category}"]`;
+      }
+
+      const content = document.querySelector(contentSelector);
+      if (!content) {
+        console.warn('Content not found for category:', btn.dataset.category);
+        return;
+      }
+
+      const isCurrentlyExpanded = btn.getAttribute('aria-expanded') === 'true';
+      const willBeExpanded = !isCurrentlyExpanded;
+
+      // Update aria state
+      btn.setAttribute('aria-expanded', willBeExpanded);
+
+      // Toggle hidden class
+      content.classList.toggle('hidden', !willBeExpanded);
+
+      // Force arrow rotation (robust fallback)
+      const arrow = btn.querySelector('span.transition-transform');
+      if (arrow) {
+        if (willBeExpanded) {
+          arrow.classList.add('rotate-180');
+        } else {
+          arrow.classList.remove('rotate-180');
+        }
+      }
+
+    });
   });
 });
 

@@ -293,46 +293,63 @@
           <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
 			  ×
 			</button>
-          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
-<a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
-<div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
+<nav class="flex flex-col gap-6 py-6 px-10 text-xl">
+  <!-- Main Tools header (kept for consistency) -->
+  <div class="text-gray-100 font-bold">Tools 🚦</div>
+
   <!-- SEO Tools group -->
-  <button type="button" class="flex items-center justify-between w-full text-gray-100 hover:text-orange-400 transition font-semibold" aria-expanded="false" data-category="seo-mobile">
+  <button 
+    type="button" 
+    class="group flex items-center justify-between w-full text-gray-100 hover:text-orange-400 transition font-semibold focus:outline-none" 
+    aria-expanded="false" 
+    data-category="seo-mobile"
+  >
     🎯 SEO Tools
-    <span class="text-sm transition-transform aria-expanded:rotate-180">▼</span>
+    <span class="text-sm transition-transform group-aria-expanded:rotate-180">▼</span>
   </button>
-  <div class="pl-6 flex flex-col gap-3 hidden" data-category-content="seo-mobile">
-    <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
-    <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
-    <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
-    <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">🗝️ Keywords</a>
-    <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
+  <div class="pl-8 flex flex-col gap-3 hidden" data-category-content="seo-mobile">
+    <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition block py-1">📍 Local SEO</a>
+    <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition block py-1">🎯 SEO Intent</a>
+    <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition block py-1">🛒 Product SEO</a>
+    <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition block py-1">🗝️ Keywords</a>
+    <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition block py-1">🆚 Competition</a>
   </div>
 
   <!-- AI Tools group -->
-  <button type="button" class="flex items-center justify-between w-full text-gray-100 hover:text-orange-400 transition font-semibold" aria-expanded="false" data-category="ai-mobile">
+  <button 
+    type="button" 
+    class="group flex items-center justify-between w-full text-gray-100 hover:text-orange-400 transition font-semibold focus:outline-none" 
+    aria-expanded="false" 
+    data-category="ai-mobile"
+  >
     🤖 AI Tools
-    <span class="text-sm transition-transform aria-expanded:rotate-180">▼</span>
+    <span class="text-sm transition-transform group-aria-expanded:rotate-180">▼</span>
   </button>
-  <div class="pl-6 flex flex-col gap-3 hidden" data-category-content="ai-mobile">
-    <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
-    <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
+  <div class="pl-8 flex flex-col gap-3 hidden" data-category-content="ai-mobile">
+    <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition block py-1">🔍 Ai Search</a>
+    <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition block py-1">🤖 Ai Content</a>
   </div>
 
   <!-- UX Tools group -->
-  <button type="button" class="flex items-center justify-between w-full text-gray-100 hover:text-orange-400 transition font-semibold" aria-expanded="false" data-category="ux-mobile">
+  <button 
+    type="button" 
+    class="group flex items-center justify-between w-full text-gray-100 hover:text-orange-400 transition font-semibold focus:outline-none" 
+    aria-expanded="false" 
+    data-category="ux-mobile"
+  >
     ⚖️ UX Tools
-    <span class="text-sm transition-transform aria-expanded:rotate-180">▼</span>
+    <span class="text-sm transition-transform group-aria-expanded:rotate-180">▼</span>
   </button>
-  <div class="pl-6 flex flex-col gap-3 hidden" data-category-content="ux-mobile">
-    <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⛔ Quit Risk</a>
-    <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
+  <div class="pl-8 flex flex-col gap-3 hidden" data-category-content="ux-mobile">
+    <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition block py-1">⛔ Quit Risk</a>
+    <a href="/" class="text-gray-100 hover:text-orange-400 transition block py-1">⚖️ SEO + UX</a>
   </div>
 
-  <!-- Help Guides (standalone) -->
-  <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition font-semibold">📋 Help Guides</a>
-</div>
-          </nav>
+  <!-- Standalone Help Guides -->
+  <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition font-semibold block py-1">
+    📋 Help Guides
+  </a>
+</nav>
         </div>
       </header>
       
