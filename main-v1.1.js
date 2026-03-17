@@ -581,53 +581,102 @@ document.addEventListener('DOMContentLoaded', () => {
       if (existingBadge) existingBadge.remove();
     }
   });
+  });
   
-// Desktop Sidebar Collapsible Groups
+// Desktop Sidebar Collapsible Groups – with debug logs
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('[Desktop Collapsible] Initializing...');
+  
   const sidebar = document.getElementById('desktopSidebar');
-  if (!sidebar) return;
-
-  sidebar.querySelectorAll('button[data-category]').forEach(btn => {
+  if (!sidebar) {
+    console.warn('[Desktop Collapsible] #desktopSidebar not found in DOM');
+    return;
+  }
+  
+  const buttons = sidebar.querySelectorAll('button[data-category]');
+  console.log(`[Desktop Collapsible] Found ${buttons.length} group buttons`);
+  
+  if (buttons.length === 0) {
+    console.warn('[Desktop Collapsible] No buttons with [data-category] found – check HTML');
+  }
+  
+  buttons.forEach(btn => {
+    const cat = btn.dataset.category;
+    console.log(`[Desktop Collapsible] Attaching click listener to category: ${cat}`);
+    
     btn.addEventListener('click', () => {
-      const cat = btn.dataset.category;
+      console.log(`[Desktop Collapsible] Clicked: ${cat} (was expanded: ${btn.getAttribute('aria-expanded')})`);
+      
       const content = sidebar.querySelector(`[data-category-content="${cat}"]`);
-      if (!content) return;
-
+      if (!content) {
+        console.error(`[Desktop Collapsible] Content div missing for ${cat}`);
+        return;
+      }
+      
       const isExpanded = btn.getAttribute('aria-expanded') === 'true';
       const newExpanded = !isExpanded;
-
+      
       btn.setAttribute('aria-expanded', newExpanded);
       content.classList.toggle('hidden', !newExpanded);
-
-      // Rotate arrow
+      
       const arrow = btn.querySelector('span.transition-transform');
       if (arrow) {
         arrow.classList.toggle('rotate-180', newExpanded);
+        console.log(`[Desktop Collapsible] ${cat} toggled → expanded: ${newExpanded}, arrow rotated`);
+      } else {
+        console.warn(`[Desktop Collapsible] No arrow span found in button ${cat}`);
       }
     });
   });
+  
+  console.log('[Desktop Collapsible] Setup complete');
 });
 
-// Mobile Menu Collapsible Groups (separate for future file extraction)
+// Mobile Menu Collapsible Groups – with debug logs
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('[Mobile Collapsible] Initializing...');
+  
   const mobileMenu = document.getElementById('mobileMenu');
-  if (!mobileMenu) return;
-
-  mobileMenu.querySelectorAll('button[data-category$="-mobile"]').forEach(btn => {
+  if (!mobileMenu) {
+    console.warn('[Mobile Collapsible] #mobileMenu not found in DOM');
+    return;
+  }
+  
+  const buttons = mobileMenu.querySelectorAll('button[data-category$="-mobile"]');
+  console.log(`[Mobile Collapsible] Found ${buttons.length} mobile group buttons`);
+  
+  if (buttons.length === 0) {
+    console.warn('[Mobile Collapsible] No mobile group buttons found – check HTML data-category*-mobile');
+  }
+  
+  buttons.forEach(btn => {
+    const cat = btn.dataset.category;
+    console.log(`[Mobile Collapsible] Attaching click listener to mobile category: ${cat}`);
+    
     btn.addEventListener('click', () => {
-      const cat = btn.dataset.category;
+      console.log(`[Mobile Collapsible] Clicked: ${cat} (was expanded: ${btn.getAttribute('aria-expanded')})`);
+      
       const content = mobileMenu.querySelector(`[data-category-content="${cat}"]`);
-      if (!content) return;
-
-      const willExpand = btn.getAttribute('aria-expanded') !== 'true';
-      btn.setAttribute('aria-expanded', willExpand);
-      content.classList.toggle('hidden', !willExpand);
-
-      // Reliable arrow rotation
+      if (!content) {
+        console.error(`[Mobile Collapsible] Content div missing for ${cat}`);
+        return;
+      }
+      
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+      const newExpanded = !isExpanded;
+      
+      btn.setAttribute('aria-expanded', newExpanded);
+      content.classList.toggle('hidden', !newExpanded);
+      
       const arrow = btn.querySelector('span.transition-transform');
-      if (arrow) arrow.classList.toggle('rotate-180', willExpand);
+      if (arrow) {
+        arrow.classList.toggle('rotate-180', newExpanded);
+        console.log(`[Mobile Collapsible] ${cat} toggled → expanded: ${newExpanded}, arrow rotated`);
+      } else {
+        console.warn(`[Mobile Collapsible] No arrow span found in mobile button ${cat}`);
+      }
     });
   });
-});
-
+  
+  console.log('[Mobile Collapsible] Setup complete');
 });
