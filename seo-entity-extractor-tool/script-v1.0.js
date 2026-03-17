@@ -323,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <span>More Details</span>
         <span class="details-arrow transition-transform duration-200">▼</span>
       </button>
-      <div class="details-panel mt-3 pt-3 pb-6 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
+		<div class="details-panel mt-3 pt-4 pb-10 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
         <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
         <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
         <p class="text-center mt-6">
@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
         <span class="arrow transition-transform duration-200">▼</span>
       </button>
-      <div class="fixes-panel mt-5 pt-5 pb-6 border-t border-gray-200 dark:border-gray-700">
+      <div class="fixes-panel mt-5 pt-5 pb-12 border-t border-gray-200 dark:border-gray-700 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
         ${failed.length > 0 ? `
           <ul class="space-y-4 text-sm">
             ${failed.map(f => {
@@ -420,7 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <span>More Details</span>
         <span class="details-arrow transition-transform duration-200">▼</span>
       </button>
-      <div class="details-panel mt-3 pt-3 pb-6 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
+		<div class="details-panel mt-3 pt-4 pb-10 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
         <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
         <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
         <p class="text-center mt-6">
@@ -442,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
         <span class="arrow transition-transform duration-200">▼</span>
       </button>
-      <div class="fixes-panel mt-5 pt-5 pb-6 border-t border-gray-200 dark:border-gray-700">
+      <div class="fixes-panel mt-5 pt-5 pb-12 border-t border-gray-200 dark:border-gray-700 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
         ${failed.length > 0 ? `
           <ul class="space-y-4 text-sm">
             ${failed.map(f => {
@@ -611,30 +611,47 @@ if (!document.body.dataset.toggleListenersAttached) {
   document.body.addEventListener('click', function(e) {
     const button = e.target.closest('.fixes-toggle, .details-toggle');
     if (!button) return;
-
     e.preventDefault();
     e.stopPropagation();
 
     const panel = button.nextElementSibling;
     const arrow = button.querySelector('.arrow, .details-arrow');
-
     if (!panel || !arrow) return;
 
-const isExpanded = panel.classList.contains('expanded');
+    const isExpanded = panel.classList.contains('expanded');
 
-if (isExpanded) {
-  panel.classList.remove('expanded');
-  panel.style.maxHeight = '0px';
-  arrow.classList.remove('rotate-180');
-  arrow.textContent = '▼';
-} else {
-  panel.classList.add('expanded');
-  panel.style.maxHeight = panel.scrollHeight + 'px';
-  arrow.classList.add('rotate-180');
-  arrow.textContent = '▲';
-}
+    if (isExpanded) {
+      // Collapse
+      panel.style.height = `${panel.scrollHeight}px`;
+      panel.offsetHeight; // force reflow
+      panel.classList.remove('expanded');
+      panel.style.height = '0px';
+      panel.style.opacity = '0';
+      arrow.classList.remove('rotate-180');
+      arrow.textContent = '▼';
+
+      // Clean up after collapse
+      setTimeout(() => {
+        if (!panel.classList.contains('expanded')) {
+          panel.style.height = '0px';
+        }
+      }, 350);
+    } else {
+      // Expand
+      panel.classList.add('expanded');
+      panel.style.height = `${panel.scrollHeight + 32}px`; // +32px buffer prevents clipping
+      panel.style.opacity = '1';
+      arrow.classList.add('rotate-180');
+      arrow.textContent = '▲';
+
+      // Switch to auto after animation to allow natural resize
+      setTimeout(() => {
+        if (panel.classList.contains('expanded')) {
+          panel.style.height = 'auto';
+        }
+      }, 350);
+    }
   });
-
   document.body.dataset.toggleListenersAttached = 'true';
 }
 
