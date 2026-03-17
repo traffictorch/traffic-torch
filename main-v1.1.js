@@ -582,46 +582,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
-// Collapsible sidebar/menu categories (desktop + mobile)
+// Desktop Sidebar Collapsible Groups (separate for future file extraction)
 document.addEventListener('DOMContentLoaded', () => {
-  // Handle all category toggle buttons (both desktop and mobile)
-  document.querySelectorAll('button[data-category], button[data-category$="-mobile"]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault(); // safety
+  const sidebar = document.getElementById('desktopSidebar');
+  if (!sidebar) return;
 
-      // Get the matching content container
-      let contentSelector;
-      if (btn.dataset.category.endsWith('-mobile')) {
-        contentSelector = `[data-category-content="${btn.dataset.category}"]`;
-      } else {
-        contentSelector = `[data-category-content="${btn.dataset.category}"]`;
-      }
+  sidebar.querySelectorAll('button[data-category]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.category;
+      const content = sidebar.querySelector(`[data-category-content="${cat}"]`);
+      if (!content) return;
 
-      const content = document.querySelector(contentSelector);
-      if (!content) {
-        console.warn('Content not found for category:', btn.dataset.category);
-        return;
-      }
+      const willExpand = btn.getAttribute('aria-expanded') !== 'true';
+      btn.setAttribute('aria-expanded', willExpand);
+      content.classList.toggle('hidden', !willExpand);
 
-      const isCurrentlyExpanded = btn.getAttribute('aria-expanded') === 'true';
-      const willBeExpanded = !isCurrentlyExpanded;
-
-      // Update aria state
-      btn.setAttribute('aria-expanded', willBeExpanded);
-
-      // Toggle hidden class
-      content.classList.toggle('hidden', !willBeExpanded);
-
-      // Force arrow rotation (robust fallback)
+      // Reliable arrow rotation
       const arrow = btn.querySelector('span.transition-transform');
-      if (arrow) {
-        if (willBeExpanded) {
-          arrow.classList.add('rotate-180');
-        } else {
-          arrow.classList.remove('rotate-180');
-        }
-      }
+      if (arrow) arrow.classList.toggle('rotate-180', willExpand);
+    });
+  });
+});
 
+// Mobile Menu Collapsible Groups (separate for future file extraction)
+document.addEventListener('DOMContentLoaded', () => {
+  const mobileMenu = document.getElementById('mobileMenu');
+  if (!mobileMenu) return;
+
+  mobileMenu.querySelectorAll('button[data-category$="-mobile"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.category;
+      const content = mobileMenu.querySelector(`[data-category-content="${cat}"]`);
+      if (!content) return;
+
+      const willExpand = btn.getAttribute('aria-expanded') !== 'true';
+      btn.setAttribute('aria-expanded', willExpand);
+      content.classList.toggle('hidden', !willExpand);
+
+      // Reliable arrow rotation
+      const arrow = btn.querySelector('span.transition-transform');
+      if (arrow) arrow.classList.toggle('rotate-180', willExpand);
     });
   });
 });
