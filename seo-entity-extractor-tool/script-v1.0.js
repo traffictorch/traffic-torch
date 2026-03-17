@@ -273,17 +273,26 @@ document.addEventListener('DOMContentLoaded', () => {
       <canvas id="health-radar"></canvas>
     </div>
   </div>
-
-// Coverage + Salience
+  
+<!-- Coverage + Salience -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-12 items-start">
   ${modules.slice(0, 2).map(mod => {
     const { score, metrics = [], failed = [] } = mod.result;
     const cardGrade = getGrade(score);
-    let borderColorClass = '';
-    if (cardGrade.text === 'Excellent') borderColorClass = 'border-green-500 dark:border-green-400';
-    else if (cardGrade.text === 'Good') borderColorClass = 'border-emerald-500 dark:border-emerald-400';
-    else if (cardGrade.text === 'Fair') borderColorClass = 'border-orange-500 dark:border-orange-400';
-    else borderColorClass = 'border-red-600 dark:border-red-500';
+    let borderColorClass = 'border-gray-400 dark:border-gray-600'; // safe fallback visible in dev
+    const grade = cardGrade.text.trim().toLowerCase();
+    if (grade.includes('excellent')) {
+      borderColorClass = 'border-green-500 dark:border-green-400';
+    } else if (grade.includes('good')) {
+      borderColorClass = 'border-emerald-500 dark:border-emerald-400';
+    } else if (grade.includes('fair')) {
+      borderColorClass = 'border-orange-500 dark:border-orange-400';
+    } else if (grade.includes('needs') || grade.includes('work') || grade === '') {
+      borderColorClass = 'border-red-600 dark:border-red-500';
+    } else {
+      console.warn(`Unexpected grade for ${mod.name}: "${cardGrade.text}" (using red fallback)`);
+      borderColorClass = 'border-red-600 dark:border-red-500';
+    }
     const arcColor = score >= 85 ? '#22c55e' :
                      score >= 70 ? '#10b981' :
                      score >= 50 ? '#f59e0b' : '#ef4444';
@@ -314,10 +323,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <span>More Details</span>
         <span class="details-arrow transition-transform duration-200">▼</span>
       </button>
-      <div class="details-panel mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
+      <div class="details-panel mt-3 pt-3 pb-6 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
         <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
         <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
-        <p class="text-center mt-4">
+        <p class="text-center mt-6">
           <a href="#${mod.name.toLowerCase()}"
              class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
             How ${mod.name} is tested? →
@@ -336,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
         <span class="arrow transition-transform duration-200">▼</span>
       </button>
-      <div class="fixes-panel mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
+      <div class="fixes-panel mt-5 pt-5 pb-6 border-t border-gray-200 dark:border-gray-700">
         ${failed.length > 0 ? `
           <ul class="space-y-4 text-sm">
             ${failed.map(f => {
@@ -367,11 +376,20 @@ document.addEventListener('DOMContentLoaded', () => {
   ${modules.slice(2).map(mod => {
     const { score, metrics = [], failed = [] } = mod.result;
     const cardGrade = getGrade(score);
-    let borderColorClass = '';
-    if (cardGrade.text === 'Excellent') borderColorClass = 'border-green-500 dark:border-green-400';
-    else if (cardGrade.text === 'Good') borderColorClass = 'border-emerald-500 dark:border-emerald-400';
-    else if (cardGrade.text === 'Fair') borderColorClass = 'border-orange-500 dark:border-orange-400';
-    else borderColorClass = 'border-red-600 dark:border-red-500';
+    let borderColorClass = 'border-gray-400 dark:border-gray-600'; // safe fallback visible in dev
+    const grade = cardGrade.text.trim().toLowerCase();
+    if (grade.includes('excellent')) {
+      borderColorClass = 'border-green-500 dark:border-green-400';
+    } else if (grade.includes('good')) {
+      borderColorClass = 'border-emerald-500 dark:border-emerald-400';
+    } else if (grade.includes('fair')) {
+      borderColorClass = 'border-orange-500 dark:border-orange-400';
+    } else if (grade.includes('needs') || grade.includes('work') || grade === '') {
+      borderColorClass = 'border-red-600 dark:border-red-500';
+    } else {
+      console.warn(`Unexpected grade for ${mod.name}: "${cardGrade.text}" (using red fallback)`);
+      borderColorClass = 'border-red-600 dark:border-red-500';
+    }
     const arcColor = score >= 85 ? '#22c55e' :
                      score >= 70 ? '#10b981' :
                      score >= 50 ? '#f59e0b' : '#ef4444';
@@ -402,10 +420,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <span>More Details</span>
         <span class="details-arrow transition-transform duration-200">▼</span>
       </button>
-      <div class="details-panel mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
+      <div class="details-panel mt-3 pt-3 pb-6 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
         <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
         <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
-        <p class="text-center mt-4">
+        <p class="text-center mt-6">
           <a href="#${mod.name.toLowerCase()}"
              class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
             How ${mod.name} is tested? →
@@ -424,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
         <span class="arrow transition-transform duration-200">▼</span>
       </button>
-      <div class="fixes-panel mt-5 pt-5 border-t border-gray-200 dark:border-gray-700">
+      <div class="fixes-panel mt-5 pt-5 pb-6 border-t border-gray-200 dark:border-gray-700">
         ${failed.length > 0 ? `
           <ul class="space-y-4 text-sm">
             ${failed.map(f => {
@@ -540,6 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
     </div>
   </div>
+</div>
 </div>
       `;
 
