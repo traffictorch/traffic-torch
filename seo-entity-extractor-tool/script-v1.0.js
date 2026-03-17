@@ -279,20 +279,11 @@ document.addEventListener('DOMContentLoaded', () => {
   ${modules.slice(0, 2).map(mod => {
     const { score, metrics = [], failed = [] } = mod.result;
     const cardGrade = getGrade(score);
-    let borderColorClass = 'border-gray-400 dark:border-gray-600'; // safe fallback visible in dev
-    const grade = cardGrade.text.trim().toLowerCase();
-    if (grade.includes('excellent')) {
-      borderColorClass = 'border-green-500 dark:border-green-400';
-    } else if (grade.includes('good')) {
-      borderColorClass = 'border-emerald-500 dark:border-emerald-400';
-    } else if (grade.includes('fair')) {
-      borderColorClass = 'border-orange-500 dark:border-orange-400';
-    } else if (grade.includes('needs') || grade.includes('work') || grade === '') {
-      borderColorClass = 'border-red-600 dark:border-red-500';
-    } else {
-      console.warn(`Unexpected grade for ${mod.name}: "${cardGrade.text}" (using red fallback)`);
-      borderColorClass = 'border-red-600 dark:border-red-500';
-    }
+const borderColorClass = 
+  score >= 85 ? 'border-green-500 dark:border-green-400' :
+  score >= 70 ? 'border-emerald-500 dark:border-emerald-400' :
+  score >= 50 ? 'border-orange-500 dark:border-orange-400' :
+  'border-red-600 dark:border-red-500';
     const arcColor = score >= 85 ? '#22c55e' :
                      score >= 70 ? '#10b981' :
                      score >= 50 ? '#f59e0b' : '#ef4444';
@@ -376,20 +367,11 @@ document.addEventListener('DOMContentLoaded', () => {
   ${modules.slice(2).map(mod => {
     const { score, metrics = [], failed = [] } = mod.result;
     const cardGrade = getGrade(score);
-    let borderColorClass = 'border-gray-400 dark:border-gray-600'; // safe fallback visible in dev
-    const grade = cardGrade.text.trim().toLowerCase();
-    if (grade.includes('excellent')) {
-      borderColorClass = 'border-green-500 dark:border-green-400';
-    } else if (grade.includes('good')) {
-      borderColorClass = 'border-emerald-500 dark:border-emerald-400';
-    } else if (grade.includes('fair')) {
-      borderColorClass = 'border-orange-500 dark:border-orange-400';
-    } else if (grade.includes('needs') || grade.includes('work') || grade === '') {
-      borderColorClass = 'border-red-600 dark:border-red-500';
-    } else {
-      console.warn(`Unexpected grade for ${mod.name}: "${cardGrade.text}" (using red fallback)`);
-      borderColorClass = 'border-red-600 dark:border-red-500';
-    }
+const borderColorClass = 
+  score >= 85 ? 'border-green-500 dark:border-green-400' :
+  score >= 70 ? 'border-emerald-500 dark:border-emerald-400' :
+  score >= 50 ? 'border-orange-500 dark:border-orange-400' :
+  'border-red-600 dark:border-red-500';
     const arcColor = score >= 85 ? '#22c55e' :
                      score >= 70 ? '#10b981' :
                      score >= 50 ? '#f59e0b' : '#ef4444';
