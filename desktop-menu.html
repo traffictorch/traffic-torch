@@ -1,4 +1,4 @@
-<!-- desktop-menu.html -->
+<!-- desktop-menu.html – with dual tooltips: title (native) + data-tooltip (CSS popup) -->
 <nav class="p-6 space-y-4 flex-1">
   <!-- Group 1: SEO Tools -->
   <button
@@ -6,37 +6,53 @@
     class="group w-full flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
     aria-expanded="false"
     data-category="seo"
+    title="Instant 360° SEO + UX audit – health score, AI fixes, competitive gaps & education"
+    data-tooltip="Instant 360° SEO + UX audit – health score, AI fixes, competitive gaps & education"
   >
     <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🧰</span>
     <span class="sidebar-text font-semibold flex-1">SEO Tools</span>
     <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
   </button>
   <div class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="seo">
-    <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition">
+    <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition"
+       title="Google Maps & local pack ranking analysis + optimization guide"
+       data-tooltip="Google Maps & local pack ranking analysis + optimization guide">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📍</span>
       <span class="sidebar-text hidden md:block">Local SEO</span>
     </a>
-    <a href="/seo-entity-extractor-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition">
+    <a href="/seo-entity-extractor-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition"
+       title="Extract entities from content – improve topical authority & semantic SEO"
+       data-tooltip="Extract entities from content – improve topical authority & semantic SEO">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🧬</span>
       <span class="sidebar-text hidden md:block">Entity Extractor</span>
     </a>
-    <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition">
+    <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition"
+       title="Analyze search intent behind keywords – match content to user needs"
+       data-tooltip="Analyze search intent behind keywords – match content to user needs">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🎯</span>
       <span class="sidebar-text hidden md:block">SEO Intent</span>
     </a>
-    <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition">
+    <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition"
+       title="E-commerce product page audit – optimize titles, descriptions, schema & UX"
+       data-tooltip="E-commerce product page audit – optimize titles, descriptions, schema & UX">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🛒</span>
       <span class="sidebar-text hidden md:block">Product SEO</span>
     </a>
-    <a href="/schema-generator/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition">
+    <a href="/schema-generator/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition"
+       title="Generate JSON-LD structured data – rich results, better for click-through"
+       data-tooltip="Generate JSON-LD structured data – rich results, better click-through">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚙️</span>
       <span class="sidebar-text hidden md:block">Schema Generator</span>
     </a>
-    <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition">
+    <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition"
+       title="Keyword placement tool – volume, difficulty, trends & clustering"
+       data-tooltip="Keyword placement tool – volume, difficulty, trends & clustering">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🗝️</span>
       <span class="sidebar-text hidden md:block">Keywords</span>
     </a>
-    <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition">
+    <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition"
+       title="Competitor keyword gap analysis – find opportunities they rank for"
+       data-tooltip="Competitor keyword gap analysis – find opportunities they rank for">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🆚</span>
       <span class="sidebar-text hidden md:block">Competition</span>
     </a>
@@ -48,21 +64,29 @@
     class="group w-full flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
     aria-expanded="false"
     data-category="ai"
+    title="GEO AEO & AIO tools for content, search optimization & automation"
+    data-tooltip="GEO AEO & AIO tools for content, search optimization & automation"
   >
     <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🛠</span>
     <span class="sidebar-text font-semibold flex-1">AI Tools</span>
     <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
   </button>
   <div class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="ai">
-    <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition">
+    <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition"
+       title="Optimize content for Google AI Overviews, SGE & generative search"
+       data-tooltip="Optimize content for Google AI Overviews, SGE & generative search">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔍</span>
       <span class="sidebar-text hidden md:block">Ai GEO</span>
     </a>
-    <a href="/ai-voice-search-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition">
+    <a href="/ai-voice-search-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition"
+       title="Voice search optimization – conversational keywords & featured snippets"
+       data-tooltip="Voice search optimization – conversational keywords & featured snippets">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🎙️</span>
       <span class="sidebar-text hidden md:block">Ai Voice Search</span>
     </a>
-    <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition">
+    <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition"
+       title="AI content audit – detect generated text and quality"
+       data-tooltip="AI content audit – detect generated text and quality">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🤖</span>
       <span class="sidebar-text hidden md:block">Ai Content</span>
     </a>
@@ -74,24 +98,32 @@
     class="group w-full flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
     aria-expanded="false"
     data-category="ux"
+    title="User experience analysis – quit risk, bounce rate & UX improvements"
+    data-tooltip="User experience analysis – quit risk, bounce rate & UX improvements"
   >
     <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🛡️</span>
     <span class="sidebar-text font-semibold flex-1">UX Tools</span>
     <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
   </button>
   <div class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="ux">
-    <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition">
+    <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition"
+       title="Predict user quit risk – identify friction points & retention fixes"
+       data-tooltip="Predict user quit risk – identify friction points & retention fixes">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⛔</span>
       <span class="sidebar-text hidden md:block">Quit Risk</span>
     </a>
-    <a href="/#seo-ux-tool" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition">
+    <a href="/#seo-ux-tool" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition"
+       title="Full SEO + UX audit tool – combined health score & actionable fixes"
+       data-tooltip="Full SEO + UX audit tool – combined health score & actionable fixes">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚖️</span>
       <span class="sidebar-text hidden md:block">SEO + UX</span>
     </a>
   </div>
 
   <!-- Help Guides -->
-  <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition">
+  <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 text-lg text-gray-500 dark:text-gray-200 hover:text-orange-400 transition"
+     title="Free guides & tutorials – master SEO, UX, AI content & optimization"
+     data-tooltip="Free guides & tutorials – master SEO, UX, AI content & optimization">
     <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📋</span>
     <span class="sidebar-text hidden md:block">Help Guides</span>
   </a>

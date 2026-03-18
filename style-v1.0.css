@@ -540,3 +540,43 @@ div.prose p {
 .menu-fade-in.loaded {
   opacity: 1;
 }
+
+/* Styled menu tooltips using data-tooltip – appears on hover */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]:hover:after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.6rem 1.2rem;
+  background: rgba(0,0,0,0.9);
+  color: white;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  z-index: 100;
+  pointer-events: none;
+  margin-bottom: 0.8rem;
+  opacity: 0;
+  animation: tooltip-in 0.2s forwards;
+}
+
+[data-tooltip]:hover:before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(0,0,0,0.9);
+  z-index: 100;
+  margin-bottom: 0.6rem;
+}
+
+@keyframes tooltip-in {
+  to { opacity: 1; }
+}
