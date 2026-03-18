@@ -621,12 +621,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!response.ok) throw new Error('Desktop menu fetch failed: ' + response.status);
       return response.text();
     })
-    .then(html => {
-      document.getElementById('desktop-menu-placeholder').innerHTML = html;
-      console.log('Desktop menu loaded');
-      attachMenuToggles('desktopSidebar'); // attach toggles after insert
-    })
-    .catch(err => console.error('Failed to load desktop-menu:', err));
+.then(html => {
+  const placeholder = document.getElementById('desktop-menu-placeholder');
+  placeholder.innerHTML = html;
+  
+  // Trigger fade-in after a tiny delay (helps perceived smoothness)
+  setTimeout(() => {
+    placeholder.classList.add('loaded');
+  }, 50); // 50ms micro-delay prevents flash if render is instant
+  
+  console.log('Desktop menu loaded + fade triggered');
+  attachMenuToggles('desktopSidebar');
+})
 
   // Mobile menu
   fetch('/mobile-menu.html')

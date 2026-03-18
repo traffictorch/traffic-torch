@@ -531,3 +531,12 @@ div.prose p {
   overflow: visible !important;
 }
 
+/* Smooth fade-in for loaded menu partials */
+.menu-fade-in {
+  opacity: 0;
+  transition: opacity 0.5s ease-in;
+}
+
+.menu-fade-in.loaded {
+  opacity: 1;
+}
