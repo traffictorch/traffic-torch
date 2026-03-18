@@ -583,86 +583,46 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   });
   
-// Desktop Sidebar Collapsible Groups – supports link + toggle
+// Desktop Sidebar Collapsible Groups
 document.addEventListener('DOMContentLoaded', () => {
   console.log('[Desktop Collapsible] Initializing...');
-  
   const sidebar = document.getElementById('desktopSidebar');
-  if (!sidebar) {
-    console.warn('[Desktop Collapsible] #desktopSidebar not found');
-    return;
-  }
-  
-  sidebar.querySelectorAll('button[data-toggle-for]').forEach(toggleBtn => {
-    toggleBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      const targetCat = toggleBtn.dataset.toggleFor;
-      const groupLink = toggleBtn.previousElementSibling; // the <a>
-      if (!groupLink) return;
-      
-      const content = sidebar.querySelector(`[data-category-content="${targetCat}"]`);
-      if (!content) {
-        console.error(`[Desktop Collapsible] No content for ${targetCat}`);
-        return;
-      }
-      
-      const isExpanded = groupLink.getAttribute('aria-expanded') === 'true';
+  if (!sidebar) return;
+  sidebar.querySelectorAll('button[data-category]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.category;
+      const content = sidebar.querySelector(`[data-category-content="${cat}"]`);
+      if (!content) return;
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
       const newExpanded = !isExpanded;
-      
-      groupLink.setAttribute('aria-expanded', newExpanded);
+      btn.setAttribute('aria-expanded', newExpanded);
       content.classList.toggle('hidden', !newExpanded);
-      
-      const arrow = groupLink.querySelector('span.transition-transform');
+      const arrow = btn.querySelector('span.transition-transform');
       if (arrow) {
         arrow.style.transform = newExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
-        console.log(`[Desktop Collapsible] ${targetCat} toggled → expanded: ${newExpanded}, arrow rotated`);
       }
     });
   });
-  
-  console.log('[Desktop Collapsible] Setup complete');
 });
 
-// Mobile Menu Collapsible Groups – supports both link + toggle
+// Mobile Menu Collapsible Groups
 document.addEventListener('DOMContentLoaded', () => {
   console.log('[Mobile Collapsible] Initializing...');
-  
   const mobileMenu = document.getElementById('mobileMenu');
-  if (!mobileMenu) {
-    console.warn('[Mobile Collapsible] #mobileMenu not found');
-    return;
-  }
-  
-  mobileMenu.querySelectorAll('button[data-toggle-for]').forEach(toggleBtn => {
-    toggleBtn.addEventListener('click', (e) => {
-      e.preventDefault(); // stop navigation from the invisible button
-      e.stopPropagation();
-      
-      const targetCat = toggleBtn.dataset.toggleFor;
-      const groupLink = toggleBtn.previousElementSibling; // the <a> tag
-      if (!groupLink) return;
-      
-      const content = mobileMenu.querySelector(`[data-category-content="${targetCat}"]`);
-      if (!content) {
-        console.error(`[Mobile Collapsible] No content for ${targetCat}`);
-        return;
-      }
-      
-      const isExpanded = groupLink.getAttribute('aria-expanded') === 'true';
+  if (!mobileMenu) return;
+  mobileMenu.querySelectorAll('button[data-category$="-mobile"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.category;
+      const content = mobileMenu.querySelector(`[data-category-content="${cat}"]`);
+      if (!content) return;
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
       const newExpanded = !isExpanded;
-      
-      groupLink.setAttribute('aria-expanded', newExpanded);
+      btn.setAttribute('aria-expanded', newExpanded);
       content.classList.toggle('hidden', !newExpanded);
-      
-      const arrow = groupLink.querySelector('span.transition-transform');
+      const arrow = btn.querySelector('span.transition-transform');
       if (arrow) {
         arrow.style.transform = newExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
-        console.log(`[Mobile Collapsible] ${targetCat} toggled → expanded: ${newExpanded}, arrow rotated`);
       }
     });
   });
-  
-  console.log('[Mobile Collapsible] Setup complete');
 });
