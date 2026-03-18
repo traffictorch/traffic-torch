@@ -220,25 +220,44 @@ header, footer {
   width: 5rem !important;
 }
 
-#desktopSidebar .sidebar-text,
-#desktopSidebar #sidebarTitle {
-  display: none;
+/* Hide text and arrow when collapsed */
+#desktopSidebar.collapsed .sidebar-text,
+#desktopSidebar.collapsed #sidebarTitle,
+#desktopSidebar.collapsed .sidebar-arrow {
+  display: none !important;
 }
 
+/* Show text and arrow when expanded */
 #desktopSidebar:not(.collapsed) .sidebar-text,
-#desktopSidebar:not(.collapsed) #sidebarTitle {
-  display: block;
+#desktopSidebar:not(.collapsed) #sidebarTitle,
+#desktopSidebar:not(.collapsed) .sidebar-arrow {
+  display: block !important;
 }
 
-#desktopSidebar.collapsed .sidebar-link {
+/* Collapsed mode: center icons/buttons perfectly */
+#desktopSidebar.collapsed .sidebar-link,
+#desktopSidebar.collapsed button[data-category] {
   justify-content: center !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
   gap: 0 !important;
 }
 
-#desktopSidebar.collapsed .logo-container-or-img {
+/* Logo/header centering in collapsed mode */
+#desktopSidebar.collapsed .logo-container-or-img,
+#desktopSidebar.collapsed .flex.items-center.justify-center {
   justify-content: center !important;
+}
+
+/* Prevent any overflow/clipping on icons or arrows */
+#desktopSidebar button,
+#desktopSidebar .sidebar-link {
+  overflow: hidden;
+}
+
+#desktopSidebar .text-2xl {
+  flex-shrink: 0;
+  margin: 0 auto; /* extra centering safety */
 }
 
 /* Mobile typography */
