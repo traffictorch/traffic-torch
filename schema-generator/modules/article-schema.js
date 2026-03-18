@@ -2,7 +2,6 @@
 // Self-contained Article / BlogPosting schema editor & generator for Traffic Torch
 // No auto-prefill, starts empty, clean output, mobile-friendly
 // Focus on SEO-essential fields: headline/author/publisher/dates/image/body/section
-
 import {
   buildJsonLdSkeleton,
   cleanJsonLd,
@@ -22,7 +21,7 @@ function render(editorContainer, previewEl) {
         <li>Best practices 2026: JSON-LD only, validate with Google Rich Results Test, avoid duplicates on page</li>
         <li>SEO benefits: Better visibility in Google News, Discover, and AI overviews</li>
         <li>
-        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#article" 
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#article"
         class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
         Learn more about Article Schema Markup →
         </a>
@@ -86,6 +85,11 @@ function render(editorContainer, previewEl) {
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
+            <label class="block mb-2 font-medium">Author URL (optional – personal site, social profile, etc.)</label>
+            <input type="url" data-field="author.url" placeholder="https://example.com/author/john-doe"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
             <label class="block mb-2 font-medium">Publisher Name (Organization)</label>
             <input type="text" data-field="publisher.name" placeholder="Your Company Name" required
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
@@ -93,6 +97,11 @@ function render(editorContainer, previewEl) {
           <div>
             <label class="block mb-2 font-medium">Publisher Logo URL</label>
             <input type="url" data-field="publisher.logo" placeholder="https://example.com/logo.png" required
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block mb-2 font-medium">Timezone for dates (optional – e.g. Z, +10:00, Australia/Sydney)</label>
+            <input type="text" data-field="timezone" placeholder="+10:00 or Z or Australia/Sydney"
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
         </div>
@@ -135,7 +144,8 @@ function render(editorContainer, previewEl) {
       publisher: { "@type": "Organization", name: '', logo: '' },
       articleBody: '',
       articleSection: '',
-      wordCount: ''
+      wordCount: '',
+      timezone: ''
     };
 
     editorContainer.querySelectorAll('[data-field]').forEach(el => {
@@ -146,11 +156,27 @@ function render(editorContainer, previewEl) {
           data.author[field.split('.')[1]] = value;
         } else if (field.startsWith('publisher.')) {
           data.publisher[field.split('.')[1]] = value;
+        } else if (field === 'timezone') {
+          data.timezone = value;
         } else {
           data[field] = value;
         }
       }
     });
+
+    // Append timezone to dates if provided and dates exist
+    if (data.timezone && data.datePublished) {
+      data.datePublished += data.timezone.startsWith('+') || data.timezone.startsWith('-') || data.timezone === 'Z'
+        ? data.timezone
+        : '';
+    }
+    if (data.timezone && data.dateModified) {
+      data.dateModified += data.timezone.startsWith('+') || data.timezone.startsWith('-') || data.timezone === 'Z'
+        ? data.timezone
+        : '';
+    }
+    // Remove timezone key – it's not part of schema
+    delete data.timezone;
 
     // Clean empty nested objects
     if (!data.author.name) delete data.author;

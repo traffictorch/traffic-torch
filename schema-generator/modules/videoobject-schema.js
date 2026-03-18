@@ -2,7 +2,6 @@
 // Self-contained VideoObject schema editor & generator for Traffic Torch
 // No auto-prefill, starts empty, clean output, mobile-friendly
 // Focus on fields required/recommended for Google Video rich results & thumbnails
-
 import {
   buildJsonLdSkeleton,
   cleanJsonLd,
@@ -23,7 +22,7 @@ function render(editorContainer, previewEl) {
         <li>Place near or inside the video player area on the page</li>
         <li>Validate with Google Rich Results Test + Video Index Status in Search Console</li>
         <li>
-        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#videoobject" 
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#videoobject"
         class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
         Learn more about VideoObject Schema Markup →
         </a>
@@ -60,6 +59,11 @@ function render(editorContainer, previewEl) {
               <input type="text" data-field="duration" placeholder="PT12M45S" required
                      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
             </div>
+          </div>
+          <div>
+            <label class="block mb-2 font-medium">Timezone for Upload Date (optional – e.g. Z, +10:00, Australia/Sydney)</label>
+            <input type="text" data-field="timezone" placeholder="+10:00 or Z or Australia/Sydney"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
         </div>
       </div>
@@ -113,7 +117,6 @@ function render(editorContainer, previewEl) {
   // Dynamic thumbnails
   const thumbnailList = editorContainer.querySelector('#thumbnail-list');
   const addThumbnailBtn = editorContainer.querySelector('#add-thumbnail-btn');
-
   let thumbCount = 0;
 
   function addThumbnail() {
@@ -127,12 +130,10 @@ function render(editorContainer, previewEl) {
         </button>
       </div>
     `);
-
     thumbnailList.lastElementChild.querySelector('.remove-thumb').onclick = () => {
       thumbnailList.lastElementChild.remove();
       updatePreview();
     };
-
     updatePreview();
   }
 
@@ -154,7 +155,8 @@ function render(editorContainer, previewEl) {
         "@type": "InteractionCounter",
         interactionType: "http://schema.org/WatchAction",
         userInteractionCount: ''
-      }
+      },
+      timezone: ''
     };
 
     editorContainer.querySelectorAll('[data-field]').forEach(el => {
@@ -166,6 +168,8 @@ function render(editorContainer, previewEl) {
           data.thumbnailUrl[idx] = value;
         } else if (field.startsWith('interactionStatistic.')) {
           data.interactionStatistic[field.split('.')[1]] = value;
+        } else if (field === 'timezone') {
+          data.timezone = value;
         } else {
           data[field] = value;
         }
@@ -173,6 +177,18 @@ function render(editorContainer, previewEl) {
     });
 
     data.thumbnailUrl = data.thumbnailUrl.filter(Boolean);
+
+    // Append timezone to uploadDate if provided and uploadDate exists
+    if (data.timezone && data.uploadDate) {
+      const tz = data.timezone.trim();
+      if (tz === 'Z' || tz.startsWith('+') || tz.startsWith('-')) {
+        data.uploadDate += tz;
+      }
+      // Note: we don't support named timezones like "Australia/Sydney" here
+      // as schema.org expects offset or Z only
+    }
+    // Remove helper field
+    delete data.timezone;
 
     if (!data.interactionStatistic.userInteractionCount) {
       delete data.interactionStatistic;

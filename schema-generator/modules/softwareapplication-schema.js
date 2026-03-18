@@ -2,7 +2,6 @@
 // Self-contained SoftwareApplication schema editor & generator for Traffic Torch
 // No auto-prefill, starts empty, clean output, mobile-friendly
 // Focus on fields required/recommended for Google Software App rich results (2026)
-
 import {
   buildJsonLdSkeleton,
   cleanJsonLd,
@@ -23,7 +22,7 @@ function render(editorContainer, previewEl) {
         <li>Place on app landing/pricing/download page</li>
         <li>Validate with Google Rich Results Test</li>
         <li>
-        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#softwareapplication" 
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#softwareapplication"
         class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
         Learn more about SoftwareApplication Schema Markup →
         </a>
@@ -105,7 +104,7 @@ function render(editorContainer, previewEl) {
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block mb-2 font-medium">Currency</label>
-              <input type="text" data-field="offers.priceCurrency" placeholder="USD" 
+              <input type="text" data-field="offers.priceCurrency" placeholder="USD"
                      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
             </div>
             <div>
@@ -113,6 +112,23 @@ function render(editorContainer, previewEl) {
               <input type="text" data-field="offers.price" placeholder="0 or 49.00" required
                      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ratings (optional – strongly recommended for rich stars) -->
+      <div>
+        <h4 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">User Ratings (optional – aggregateRating)</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block mb-2 font-medium">Average Rating (1-5 scale)</label>
+            <input type="number" step="0.1" min="1" max="5" data-field="aggregateRating.ratingValue" placeholder="4.7"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block mb-2 font-medium">Number of Ratings</label>
+            <input type="number" min="1" data-field="aggregateRating.ratingCount" placeholder="142"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
         </div>
       </div>
@@ -134,6 +150,11 @@ function render(editorContainer, previewEl) {
         "@type": "Offer",
         priceCurrency: '',
         price: ''
+      },
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: '',
+        ratingCount: ''
       }
     };
 
@@ -144,6 +165,9 @@ function render(editorContainer, previewEl) {
         if (field.startsWith('offers.')) {
           const key = field.split('.')[1];
           data.offers[key] = value;
+        } else if (field.startsWith('aggregateRating.')) {
+          const key = field.split('.')[1];
+          data.aggregateRating[key] = value;
         } else {
           data[field] = value;
         }
@@ -155,6 +179,13 @@ function render(editorContainer, previewEl) {
       delete data.offers;
     } else {
       data.offers = cleanJsonLd(data.offers);
+    }
+
+    // Clean aggregateRating – only include if both ratingValue and ratingCount are provided
+    if (!data.aggregateRating.ratingValue || !data.aggregateRating.ratingCount) {
+      delete data.aggregateRating;
+    } else {
+      data.aggregateRating = cleanJsonLd(data.aggregateRating);
     }
 
     const jsonLd = buildJsonLdSkeleton('SoftwareApplication', data);

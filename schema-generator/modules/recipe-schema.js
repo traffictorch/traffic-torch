@@ -2,7 +2,6 @@
 // Self-contained Recipe schema editor & generator for Traffic Torch
 // No auto-prefill, starts empty, clean output, mobile-friendly
 // Focus on fields required/recommended for Google Recipe rich results (2026)
-
 import {
   buildJsonLdSkeleton,
   cleanJsonLd,
@@ -19,11 +18,11 @@ function render(editorContainer, previewEl) {
         <li>Required: @type="Recipe", name, image, author, recipeIngredient (array), recipeInstructions (array or HowToStep)</li>
         <li>Strongly recommended: prepTime, cookTime, totalTime (ISO 8601), recipeYield, calories/nutrition</li>
         <li>Google shows carousel if: high-quality images, clear steps, real recipe content</li>
-        <li>2026 best practice: multiple images, aggregateRating/review, video if available</li>
+        <li>2026 best practice: multiple images, aggregateRating/review, video if available, keywords, cuisine/category</li>
         <li>Place above or near the recipe content on the page</li>
         <li>Validate with Google Rich Results Test</li>
         <li>
-        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#recipe" 
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#recipe"
         class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
         Learn more about Recipe Schema Markup →
         </a>
@@ -76,6 +75,21 @@ function render(editorContainer, previewEl) {
             <input type="text" data-field="recipeYield" placeholder="24 cookies" required
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
+          <div>
+            <label class="block mb-2 font-medium">Keywords (comma-separated, optional)</label>
+            <input type="text" data-field="keywords" placeholder="easy dessert, chocolate, quick bake"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block mb-2 font-medium">Recipe Category (e.g., Dessert, Appetizer)</label>
+            <input type="text" data-field="recipeCategory" placeholder="Dessert"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block mb-2 font-medium">Recipe Cuisine (e.g., American, Italian)</label>
+            <input type="text" data-field="recipeCuisine" placeholder="American"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+          </div>
         </div>
       </div>
 
@@ -91,6 +105,33 @@ function render(editorContainer, previewEl) {
           <div>
             <label class="block mb-2 font-medium">Author URL (optional)</label>
             <input type="url" data-field="author.url" placeholder="https://example.com/author/johnsmith"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+      </div>
+
+      <!-- Video (optional) -->
+      <div>
+        <h4 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Recipe Video (optional)</h4>
+        <div class="space-y-5">
+          <div>
+            <label class="block mb-2 font-medium">Video Name</label>
+            <input type="text" data-field="video.name" placeholder="How to Make Chocolate Chip Cookies"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block mb-2 font-medium">Video Description</label>
+            <textarea data-field="video.description" rows="2" placeholder="Quick tutorial for perfect cookies..."
+                      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 resize-y"></textarea>
+          </div>
+          <div>
+            <label class="block mb-2 font-medium">Video URL (contentUrl or embedUrl)</label>
+            <input type="url" data-field="video.contentUrl" placeholder="https://example.com/video.mp4 or YouTube embed"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block mb-2 font-medium">Thumbnail URL</label>
+            <input type="url" data-field="video.thumbnailUrl" placeholder="https://example.com/video-thumb.jpg"
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
         </div>
@@ -114,6 +155,23 @@ function render(editorContainer, previewEl) {
                 class="mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition w-full sm:w-auto">
           + Add Step
         </button>
+      </div>
+
+      <!-- Ratings (optional) -->
+      <div>
+        <h4 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Ratings (optional – aggregateRating)</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block mb-2 font-medium">Average Rating (1-5)</label>
+            <input type="number" step="0.1" min="1" max="5" data-field="aggregateRating.ratingValue" placeholder="4.7"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block mb-2 font-medium">Number of Ratings</label>
+            <input type="number" data-field="aggregateRating.reviewCount" placeholder="42"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
       </div>
 
       <!-- Nutrition (optional) -->
@@ -143,7 +201,6 @@ function render(editorContainer, previewEl) {
   // Dynamic lists: ingredients & instructions
   const ingredientsList = editorContainer.querySelector('#ingredients-list');
   const instructionsList = editorContainer.querySelector('#instructions-list');
-
   const addIngredientBtn = editorContainer.querySelector('#add-ingredient-btn');
   const addInstructionBtn = editorContainer.querySelector('#add-instruction-btn');
 
@@ -158,19 +215,16 @@ function render(editorContainer, previewEl) {
         </button>
       </div>
     `);
-
     container.lastElementChild.querySelector('.remove-item').onclick = () => {
       container.lastElementChild.remove();
       updatePreview();
     };
-
     updatePreview();
   }
 
   addIngredientBtn.onclick = () => addSimpleItem(ingredientsList, 'recipeIngredient', '2 cups all-purpose flour');
 
   let stepCount = 0;
-
   function addInstruction() {
     const index = stepCount++;
     instructionsList.insertAdjacentHTML('beforeend', `
@@ -181,17 +235,20 @@ function render(editorContainer, previewEl) {
         <label class="block mb-2 font-medium">Step Text / Instructions</label>
         <textarea data-field="recipeInstructions.${index}.text" rows="4" placeholder="Preheat oven to 180°C. Line baking tray with parchment..."
                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 resize-y"></textarea>
-
+        <label class="block mt-4 mb-2 font-medium">Step Name (short title, optional)</label>
+        <input type="text" data-field="recipeInstructions.${index}.name" placeholder="Preheat oven"
+               class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+        <label class="block mt-4 mb-2 font-medium">Step URL (anchor link, optional e.g. #step1)</label>
+        <input type="url" data-field="recipeInstructions.${index}.url" placeholder="https://example.com/recipe#step1"
+               class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
         <label class="block mt-4 mb-2 font-medium">Step Image URL (optional)</label>
         <input type="url" data-field="recipeInstructions.${index}.image" placeholder="https://example.com/mixing-dough.jpg"
                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
-
         <button type="button" class="remove-instr mt-5 text-red-600 hover:text-red-800 text-sm font-medium block">
           × Remove Step
         </button>
       </div>
     `);
-
     instructionsList.lastElementChild.querySelector('.remove-instr').onclick = () => {
       instructionsList.querySelector(`#instr-${index}`).remove();
       instructionsList.querySelectorAll('[id^="instr-"]').forEach((el, i) => {
@@ -199,7 +256,6 @@ function render(editorContainer, previewEl) {
       });
       updatePreview();
     };
-
     updatePreview();
   }
 
@@ -216,9 +272,14 @@ function render(editorContainer, previewEl) {
       cookTime: '',
       totalTime: '',
       recipeYield: '',
+      keywords: '',
+      recipeCategory: '',
+      recipeCuisine: '',
       author: { "@type": "Person", name: '' },
       recipeIngredient: [],
       recipeInstructions: [],
+      video: { "@type": "VideoObject", name: '', description: '', contentUrl: '', thumbnailUrl: '' },
+      aggregateRating: { "@type": "AggregateRating", ratingValue: '', reviewCount: '' },
       nutrition: {
         "@type": "NutritionInformation",
         calories: '',
@@ -239,12 +300,22 @@ function render(editorContainer, previewEl) {
           const idx = parseInt(parts[1]);
           if (!data.recipeInstructions[idx]) data.recipeInstructions[idx] = { "@type": "HowToStep" };
           if (parts[2] === 'text') data.recipeInstructions[idx].text = value;
+          else if (parts[2] === 'name') data.recipeInstructions[idx].name = value;
+          else if (parts[2] === 'url') data.recipeInstructions[idx].url = value;
           else if (parts[2] === 'image') data.recipeInstructions[idx].image = value;
         } else if (field.startsWith('nutrition.')) {
           const key = field.split('.')[1];
           data.nutrition[key] = value;
         } else if (field.startsWith('author.')) {
           data.author[field.split('.')[1]] = value;
+        } else if (field.startsWith('aggregateRating.')) {
+          const key = field.split('.')[1];
+          data.aggregateRating[key] = value;
+        } else if (field.startsWith('video.')) {
+          const key = field.split('.')[1];
+          data.video[key] = value;
+        } else if (field === 'keywords' || field === 'recipeCategory' || field === 'recipeCuisine') {
+          data[field] = value;
         } else {
           data[field] = value;
         }
@@ -252,10 +323,16 @@ function render(editorContainer, previewEl) {
     });
 
     data.recipeIngredient = data.recipeIngredient.filter(Boolean);
-    data.recipeInstructions = data.recipeInstructions.filter(s => s.text || s.image);
+    data.recipeInstructions = data.recipeInstructions.filter(s => s.text || s.name || s.url || s.image);
 
     if (!data.author.name) delete data.author;
     if (Object.values(data.nutrition).every(v => !v)) delete data.nutrition;
+
+    if (!data.aggregateRating.ratingValue || !data.aggregateRating.reviewCount) delete data.aggregateRating;
+    else data.aggregateRating = cleanJsonLd(data.aggregateRating);
+
+    if (!data.video.name || !data.video.contentUrl) delete data.video;
+    else data.video = cleanJsonLd(data.video);
 
     const jsonLd = buildJsonLdSkeleton('Recipe', data);
     previewEl.textContent = prettyJsonLd(cleanJsonLd(jsonLd));
