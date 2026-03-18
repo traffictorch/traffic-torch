@@ -210,54 +210,63 @@ header, footer {
   backdrop-filter: blur(12px);
 }
 
-/* Desktop Sidebar */
+/* Desktop Sidebar – Base styles */
 #desktopSidebar {
   width: 16rem !important;
   transition: width 0.3s ease-in-out;
+  overflow-x: hidden; /* prevent any horizontal scroll/clipping */
 }
 
+/* Collapsed state */
 #desktopSidebar.collapsed {
   width: 5rem !important;
 }
 
-/* Hide text and arrow when collapsed */
+/* Hide text, titles and arrows when collapsed */
 #desktopSidebar.collapsed .sidebar-text,
 #desktopSidebar.collapsed #sidebarTitle,
 #desktopSidebar.collapsed .sidebar-arrow {
   display: none !important;
 }
 
-/* Show text and arrow when expanded */
-#desktopSidebar:not(.collapsed) .sidebar-text,
-#desktopSidebar:not(.collapsed) #sidebarTitle,
-#desktopSidebar:not(.collapsed) .sidebar-arrow {
-  display: block !important;
-}
-
-/* Collapsed mode: center icons/buttons perfectly */
+/* Collapsed mode: perfect centering for all interactive elements */
+#desktopSidebar.collapsed button[data-category],
 #desktopSidebar.collapsed .sidebar-link,
-#desktopSidebar.collapsed button[data-category] {
+#desktopSidebar.collapsed .flex.items-center.justify-center,
+#desktopSidebar.collapsed .logo-container-or-img {
   justify-content: center !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
   gap: 0 !important;
+  text-align: center;
 }
 
-/* Logo/header centering in collapsed mode */
-#desktopSidebar.collapsed .logo-container-or-img,
-#desktopSidebar.collapsed .flex.items-center.justify-center {
-  justify-content: center !important;
+/* Icons: fixed width + perfect centering in both states */
+#desktopSidebar .text-2xl {
+  width: 2.5rem;               /* consistent column width for emojis */
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Prevent any overflow/clipping on icons or arrows */
+/* Prevent overflow and keep layout clean */
 #desktopSidebar button,
 #desktopSidebar .sidebar-link {
   overflow: hidden;
+  white-space: nowrap;         /* prevent text wrapping in expanded mode */
 }
 
-#desktopSidebar .text-2xl {
-  flex-shrink: 0;
-  margin: 0 auto; /* extra centering safety */
+/* Extra safety for expanded mode text */
+#desktopSidebar:not(.collapsed) .sidebar-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Optional: subtle hover background in collapsed mode for better UX */
+#desktopSidebar.collapsed button[data-category]:hover,
+#desktopSidebar.collapsed .sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* Mobile typography */
