@@ -626,3 +626,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+// Load shared menu partials
+document.addEventListener('DOMContentLoaded', () => {
+  // Desktop menu
+  fetch('/desktop-menu.html')
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('desktop-menu-placeholder').innerHTML = html;
+      console.log('Desktop menu loaded');
+    })
+    .catch(err => console.error('Failed to load desktop-menu:', err));
+
+  // Mobile menu
+  fetch('/mobile-menu.html')
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('mobile-menu-placeholder').innerHTML = html;
+      console.log('Mobile menu loaded');
+    })
+    .catch(err => console.error('Failed to load mobile-menu:', err));
+});

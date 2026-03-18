@@ -531,3 +531,13 @@ div.prose p {
   overflow: visible !important;
 }
 
+/* Force bright white text on mobile menu group buttons (fixes dim issue permanently) */
+#mobileMenu button {
+  color: #f3f4f6 !important;           /* gray-100 white */
+}
+.dark #mobileMenu button {
+  color: #f3f4f6 !important;
+}
+#mobileMenu button:hover {
+  color: #fb923c !important;           /* orange-400 */
+}
