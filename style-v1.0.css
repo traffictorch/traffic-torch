@@ -214,7 +214,7 @@ header, footer {
 #desktopSidebar {
   width: 16rem !important;
   transition: width 0.3s ease-in-out;
-  overflow-x: hidden; /* prevent any horizontal scroll/clipping */
+  overflow-x: hidden; /* prevent horizontal scroll/clipping */
 }
 
 /* Collapsed state */
@@ -222,11 +222,18 @@ header, footer {
   width: 5rem !important;
 }
 
-/* Hide text, titles and arrows when collapsed */
+/* Hide text, titles and arrows ONLY when collapsed */
 #desktopSidebar.collapsed .sidebar-text,
 #desktopSidebar.collapsed #sidebarTitle,
 #desktopSidebar.collapsed .sidebar-arrow {
   display: none !important;
+}
+
+/* Explicitly SHOW text, titles and arrows when expanded */
+#desktopSidebar:not(.collapsed) .sidebar-text,
+#desktopSidebar:not(.collapsed) #sidebarTitle,
+#desktopSidebar:not(.collapsed) .sidebar-arrow {
+  display: block !important;
 }
 
 /* Collapsed mode: perfect centering for all interactive elements */
@@ -257,13 +264,14 @@ header, footer {
   white-space: nowrap;         /* prevent text wrapping in expanded mode */
 }
 
-/* Extra safety for expanded mode text */
+/* Extra safety for expanded mode text (ellipsis if too long) */
 #desktopSidebar:not(.collapsed) .sidebar-text {
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;                     /* let text take remaining space */
 }
 
-/* Optional: subtle hover background in collapsed mode for better UX */
+/* Subtle hover background in collapsed mode for better UX */
 #desktopSidebar.collapsed button[data-category]:hover,
 #desktopSidebar.collapsed .sidebar-link:hover {
   background: rgba(255, 255, 255, 0.05);
