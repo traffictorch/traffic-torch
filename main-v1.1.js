@@ -583,67 +583,61 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   });
   
-// Desktop Sidebar Collapsible Groups
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('[Desktop Collapsible] Initializing...');
-  const sidebar = document.getElementById('desktopSidebar');
-  if (!sidebar) return;
-  sidebar.querySelectorAll('button[data-category]').forEach(btn => {
+// Toggle function – reusable for both desktop and mobile
+function attachMenuToggles(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) {
+    console.warn(`Container ${containerId} not found for toggles`);
+    return;
+  }
+
+  container.querySelectorAll('button[data-category]').forEach(btn => {
     btn.addEventListener('click', () => {
       const cat = btn.dataset.category;
-      const content = sidebar.querySelector(`[data-category-content="${cat}"]`);
+      const content = container.querySelector(`[data-category-content="${cat}"]`);
       if (!content) return;
+
       const isExpanded = btn.getAttribute('aria-expanded') === 'true';
       const newExpanded = !isExpanded;
+
       btn.setAttribute('aria-expanded', newExpanded);
       content.classList.toggle('hidden', !newExpanded);
+
       const arrow = btn.querySelector('span.transition-transform');
       if (arrow) {
         arrow.style.transform = newExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
       }
     });
   });
-});
 
-// Mobile Menu Collapsible Groups
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('[Mobile Collapsible] Initializing...');
-  const mobileMenu = document.getElementById('mobileMenu');
-  if (!mobileMenu) return;
-  mobileMenu.querySelectorAll('button[data-category$="-mobile"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const cat = btn.dataset.category;
-      const content = mobileMenu.querySelector(`[data-category-content="${cat}"]`);
-      if (!content) return;
-      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
-      const newExpanded = !isExpanded;
-      btn.setAttribute('aria-expanded', newExpanded);
-      content.classList.toggle('hidden', !newExpanded);
-      const arrow = btn.querySelector('span.transition-transform');
-      if (arrow) {
-        arrow.style.transform = newExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
-      }
-    });
-  });
-});
+  console.log(`Toggles attached to ${containerId}`);
+}
 
-// Load shared menu partials
+// Load shared menus + attach toggles after loading
 document.addEventListener('DOMContentLoaded', () => {
   // Desktop menu
   fetch('/desktop-menu.html')
-    .then(response => response.text())
+    .then(response => {
+      if (!response.ok) throw new Error('Desktop menu fetch failed: ' + response.status);
+      return response.text();
+    })
     .then(html => {
       document.getElementById('desktop-menu-placeholder').innerHTML = html;
       console.log('Desktop menu loaded');
+      attachMenuToggles('desktopSidebar'); // attach toggles after insert
     })
     .catch(err => console.error('Failed to load desktop-menu:', err));
 
   // Mobile menu
   fetch('/mobile-menu.html')
-    .then(response => response.text())
+    .then(response => {
+      if (!response.ok) throw new Error('Mobile menu fetch failed: ' + response.status);
+      return response.text();
+    })
     .then(html => {
       document.getElementById('mobile-menu-placeholder').innerHTML = html;
       console.log('Mobile menu loaded');
+      attachMenuToggles('mobileMenu'); // attach toggles after insert
     })
     .catch(err => console.error('Failed to load mobile-menu:', err));
 });
