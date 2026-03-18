@@ -13,24 +13,24 @@ const metricExplanations = [
     id: "coverage",
     emoji: "🌐",
     name: "Coverage",
-    what: "Breadth, density, and type diversity of recognized entities — the foundation of topical authority. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#coverage-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
-    how: "Counts total entities, calculates density vs word count, weights type diversity (CONCEPT/ORGANIZATION highest), adapts for page length, and applies bonuses/penalties. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#coverage-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    what: "Breadth, density, and type diversity of recognized entities are the foundation of topical authority. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#coverage-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Counts total entities, calculates density vs word count, weights type diversity (CONCEPT / ORGANIZATION highest), adapts for page length, and applies bonuses/penalties. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#coverage-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
     why: "Comprehensive coverage shows depth and expertise. It improves relevance across related queries and helps compete in entity-aware rankings. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#coverage-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
     id: "salience",
     emoji: "🔥",
     name: "Salience",
-    what: "How prominently and centrally each entity appears — measured by position, repetition, and context weighting (0.0–1.0 score). <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#salience-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
-    how: "Normalizes salience scores, sorts descending, calculates average/top/strong counts, detects flat vs hierarchical distribution, and adapts scoring by entity count tiers. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#salience-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    what: "How prominently and centrally each entity appears. Measured by position, repetition, and context weighting (0.0–1.0 score). <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#salience-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Normalizes salience scores, sorts descending, calculates average / top / strong counts, detects flat vs hierarchical distribution, and adapts scoring by entity count tiers. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#salience-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
     why: "Clear salience hierarchy signals strong topical focus. It boosts authority, featured snippets, and selection for direct answers over diluted content. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#salience-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
     id: "relationships",
     emoji: "🔗",
     name: "Relationships",
-    what: "How entities connect and form topical clusters — measured via co-occurrence proxy and type synergies. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#relationships-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
-    how: "Limits to top 18 salient entities, counts combinatorial pairs, awards bonuses for strong type combos (CONCEPT+ORGANIZATION, ORGANIZATION+LOCATION, etc.), scales diversity. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#relationships-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    what: "How entities connect and form topical clusters. Measured via co-occurrence proxy and type synergies. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#relationships-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Limits to top 18 salient entities, counts combinatorial pairs, awards bonuses for strong type combos (CONCEPT + ORGANIZATION, ORGANIZATION + LOCATION, etc.), scales diversity. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#relationships-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
     why: "Meaningful entity connections create semantic depth. They improve contextual relevance, AI understanding, and performance in complex or related-topic queries. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#relationships-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
@@ -45,7 +45,7 @@ const metricExplanations = [
     id: "readiness",
     emoji: "📊",
     name: "Readiness",
-    what: "Overall weighted semantic health index combining the four core modules — your page's preparedness score for entity-first search. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#readiness-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    what: "Overall weighted semantic health index combining the four core modules. Your page's preparedness score for entity-first search. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#readiness-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
     how: "Weights Coverage/Salience at 35% each, Relationships/Practices at 15% each, adds descriptive levels, contribution breakdown, and prioritized failed items. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#readiness-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
     why: "Readiness predicts real-world performance in rankings, snippets, and answer engines. It guides precise fixes and shows how balanced optimization drives visibility. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#readiness-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
   }
