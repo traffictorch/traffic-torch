@@ -18,7 +18,7 @@ function render(editorContainer, previewEl) {
         <li>Required: @type="JobPosting", title, description, hiringOrganization, jobLocation, datePosted</li>
         <li>Strongly recommended: employmentType, baseSalary (with currency & value), validThrough</li>
         <li>Google shows rich cards if: public job, clear salary/location, real posting</li>
-        <li>2026 best practice: use ISO 8601 dates, use "TELECOMMUTE" for remote jobs, include applicantLocationRequirements if remote-only</li>
+        <li>2026 best practice: use ISO 8601 dates, only use jobLocationType "TELECOMMUTE" for remote jobs (Google ignores other values)</li>
         <li>Place on individual job listing pages</li>
         <li>Validate with Google Rich Results Test + Job Posting Index in Search Console</li>
         <li>
@@ -90,13 +90,12 @@ function render(editorContainer, previewEl) {
         <h4 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Job Location</h4>
         <div class="space-y-5">
           <div>
-            <label class="block mb-2 font-medium">Location Type (use TELECOMMUTE for remote)</label>
+            <label class="block mb-2 font-medium">Remote / Telecommute? (optional – only use for remote jobs)</label>
             <select data-field="jobLocationType" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
-              <option value="">Select type (optional)</option>
-              <option value="OnSite">On-site</option>
-              <option value="Hybrid">Hybrid</option>
-              <option value="TELECOMMUTE">Remote / Telecommute</option>
+              <option value="">Not remote (On-site or Hybrid – leave blank)</option>
+              <option value="TELECOMMUTE">Yes – Telecommute / Remote</option>
             </select>
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Google only supports "TELECOMMUTE" for remote jobs. For on-site/hybrid, describe in job description or location fields.</p>
           </div>
           <div>
             <label class="block mb-2 font-medium">City / Remote</label>

@@ -100,7 +100,7 @@ function render(editorContainer, previewEl) {
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
-            <label class="block mb-2 font-medium">Timezone for dates (optional – e.g. Z, +10:00, Australia/Sydney)</label>
+            <label class="block mb-2 font-medium">Timezone for dates (optional – e.g. +10:00)</label>
             <input type="text" data-field="timezone" placeholder="+10:00 or Z or Australia/Sydney"
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>

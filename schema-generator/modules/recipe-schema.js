@@ -70,6 +70,7 @@ function render(editorContainer, previewEl) {
                      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
             </div>
           </div>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Use uppercase PT format: PT1H30M, PT45M, PT2H (Google is strict on duration format)</p>
           <div>
             <label class="block mb-2 font-medium">Servings / Yield</label>
             <input type="text" data-field="recipeYield" placeholder="24 cookies" required
@@ -132,6 +133,11 @@ function render(editorContainer, previewEl) {
           <div>
             <label class="block mb-2 font-medium">Thumbnail URL</label>
             <input type="url" data-field="video.thumbnailUrl" placeholder="https://example.com/video-thumb.jpg"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block mb-2 font-medium">Video Upload Date (required for valid VideoObject) <span class="text-xs text-red-600 dark:text-red-400">* Google requires this for video in Recipe</span></label>
+            <input type="date" data-field="video.uploadDate" placeholder="YYYY-MM-DD" required
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
         </div>
@@ -278,7 +284,7 @@ function render(editorContainer, previewEl) {
       author: { "@type": "Person", name: '' },
       recipeIngredient: [],
       recipeInstructions: [],
-      video: { "@type": "VideoObject", name: '', description: '', contentUrl: '', thumbnailUrl: '' },
+      video: { "@type": "VideoObject", name: '', description: '', contentUrl: '', thumbnailUrl: '', uploadDate: '' },
       aggregateRating: { "@type": "AggregateRating", ratingValue: '', reviewCount: '' },
       nutrition: {
         "@type": "NutritionInformation",
@@ -312,8 +318,11 @@ function render(editorContainer, previewEl) {
           const key = field.split('.')[1];
           data.aggregateRating[key] = value;
         } else if (field.startsWith('video.')) {
-          const key = field.split('.')[1];
-          data.video[key] = value;
+          const parts = field.split('.');
+          const key = parts[1];
+          if (parts.length === 2) {
+            data.video[key] = value;
+          }
         } else if (field === 'keywords' || field === 'recipeCategory' || field === 'recipeCuisine') {
           data[field] = value;
         } else {
@@ -331,8 +340,12 @@ function render(editorContainer, previewEl) {
     if (!data.aggregateRating.ratingValue || !data.aggregateRating.reviewCount) delete data.aggregateRating;
     else data.aggregateRating = cleanJsonLd(data.aggregateRating);
 
-    if (!data.video.name || !data.video.contentUrl) delete data.video;
-    else data.video = cleanJsonLd(data.video);
+    // Stricter video cleanup: require name + contentUrl + uploadDate
+    if (!data.video.name || !data.video.contentUrl || !data.video.uploadDate) {
+      delete data.video;
+    } else {
+      data.video = cleanJsonLd(data.video);
+    }
 
     const jsonLd = buildJsonLdSkeleton('Recipe', data);
     previewEl.textContent = prettyJsonLd(cleanJsonLd(jsonLd));
@@ -340,6 +353,18 @@ function render(editorContainer, previewEl) {
 
   editorContainer.addEventListener('input', updatePreview);
   editorContainer.addEventListener('change', updatePreview);
+
+  // Auto-uppercase PT prefix on duration fields for better UX
+  editorContainer.querySelectorAll('[data-field$="Time"]').forEach(input => {
+    input.addEventListener('input', () => {
+      let val = input.value.trim().toUpperCase();
+      if (val && !val.startsWith('PT')) {
+        val = 'PT' + val.replace(/^PT?/i, '');
+      }
+      if (val !== input.value) input.value = val;
+    });
+  });
+
   updatePreview();
 }
 
