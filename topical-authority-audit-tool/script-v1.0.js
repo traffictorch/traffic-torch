@@ -110,12 +110,12 @@ results.innerHTML = `
           </svg>
           <div class="absolute inset-0 flex items-center justify-center text-center">
             <div>
-              <div class="text-7xl font-black" style="color:   $$ {overallScore >= 85 ? '#22c55e' : '#ef4444'};"> $$  {overallScore}</div>
+              <div class="text-7xl font-black" style="color: $$   {overallScore >= 85 ? '#22c55e' : '#ef4444'};">   $${overallScore}</div>
               <div class="text-2xl opacity-90">/100</div>
             </div>
           </div>
         </div>
-        <p class="mt-8 text-5xl font-bold text-center   $$ {grade.color}"> $$  {grade.emoji} ${grade.text}</p>
+        <p class="mt-8 text-5xl font-bold text-center $$   {grade.color}">   $${grade.emoji} ${grade.text}</p>
         ${predictedRankLift ? `<p class="mt-4 text-center text-xl text-gray-700 dark:text-gray-300">Predicted lift: ${predictedRankLift}</p>` : ''}
       </div>
     </div>
@@ -133,21 +133,21 @@ results.innerHTML = `
           ? clusters.map((cluster, idx) => {
               const color = cluster.coverage >= 85 ? 'green' : cluster.coverage >= 70 ? 'emerald' : 'orange';
               return `
-                <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 border-2 border-${color}-500 hover:shadow-3xl transition-all duration-300">
-                  <div class="flex items-start gap-5 mb-6">
-                    <div class="flex-shrink-0 w-16 h-16 bg-  $$ {color}-100 dark:bg- $$  {color}-900 rounded-2xl flex items-center justify-center text-4xl shadow-md">
+                <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 border-2 border-${color}-500 hover:shadow-3xl transition-all duration-300">
+                  <div class="flex items-center gap-5 mb-6">
+                    <div class="flex-shrink-0 w-20 h-20 bg-$$   {color}-100 dark:bg-   $${color}-900 rounded-2xl flex items-center justify-center text-5xl shadow-md">
                       ${idx === 0 ? '🌌' : idx === 1 ? '🧠' : idx === 2 ? '❤️' : idx === 3 ? '📜' : '🔍'}
                     </div>
                     <div class="flex-grow">
-                      <h3 class="text-2xl md:text-3xl font-bold text-  $$ {color}-700 dark:text- $$  {color}-300 mb-2">${cluster.pillar || 'Topic ' + (idx+1)}</h3>
-                      <p class="text-xl font-semibold text-  $$ {color}-600 dark:text- $${color}-400">${Math.round(cluster.coverage || 0)}% coverage</p>
+                      <h3 class="text-2xl md:text-3xl font-bold text-$$   {color}-700 dark:text-   $${color}-300 mb-2">${cluster.pillar || 'Topic ' + (idx+1)}</h3>
+                      <p class="text-xl font-semibold text-$$   {color}-600 dark:text-   $${color}-400">${Math.round(cluster.coverage || 0)}% coverage</p>
                     </div>
                   </div>
                   <div class="text-sm uppercase tracking-wider font-medium text-gray-500 dark:text-gray-400 mb-4">Detected Subtopics</div>
                   <div class="flex flex-wrap gap-3">
                     ${cluster.subtopics && cluster.subtopics.length > 0 
                       ? cluster.subtopics.map(sub => 
-                          `<span class="px-4 py-2 bg-${color}-50 dark:bg-${color}-950 text-${color}-700 dark:text-${color}-300 rounded-2xl text-base font-medium border border-${color}-200 dark:border-${color}-700 shadow-sm">${sub}</span>`
+                          `<span class="px-5 py-2.5 bg-${color}-50 dark:bg-${color}-950 text-${color}-700 dark:text-${color}-300 rounded-2xl text-base font-medium border border-${color}-200 dark:border-${color}-700 shadow-sm">${sub}</span>`
                         ).join('')
                       : '<span class="text-gray-500 dark:text-gray-400 italic text-base">No detailed subtopics extracted yet</span>'
                     }
@@ -158,6 +158,32 @@ results.innerHTML = `
           : '<p class="text-center col-span-full text-xl text-gray-600 dark:text-gray-400 italic py-12">No topics detected yet – try a different content-rich URL</p>'
         }
       </div>
+      
+      <!-- Suggested Subtopics to Boost Main Topics -->
+<div class="mt-12">
+  <h3 class="text-2xl md:text-3xl font-bold text-center mb-8 text-gray-800 dark:text-gray-200">Suggested Subtopics to Strengthen Authority</h3>
+  <p class="text-center text-lg mb-10 text-gray-700 dark:text-gray-300">
+    These subtopics could be added to existing pages or new content to deepen coverage and boost topical authority.
+  </p>
+
+  <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 border border-orange-300 dark:border-orange-600">
+    <ul class="space-y-4 text-base text-gray-800 dark:text-gray-200">
+      ${suggestions && suggestions.length > 0 
+        ? suggestions.map(s => `
+            <li class="flex items-start gap-4 p-4 bg-orange-50 dark:bg-orange-950 rounded-2xl border border-orange-200 dark:border-orange-700">
+              <span class="flex-shrink-0 text-2xl">➕</span>
+              <div>
+                <p class="font-semibold text-lg">${s.topic || 'Suggested subtopic'}</p>
+                ${s.why ? `<p class="text-sm text-gray-600 dark:text-gray-400 mt-1">${s.why}</p>` : ''}
+                ${s.estimatedImpact ? `<p class="text-sm font-medium text-orange-600 dark:text-orange-400 mt-2">Potential impact: ${s.estimatedImpact}</p>` : ''}
+              </div>
+            </li>
+          `).join('')
+        : '<li class="text-center text-gray-600 dark:text-gray-400 italic py-6">No suggestions available yet – try a different page or deeper analysis</li>'
+      }
+    </ul>
+  </div>
+</div>
 
       <!-- Educational summary -->
       <div class="text-center mt-12 p-6 bg-orange-50 dark:bg-orange-950 rounded-3xl border border-orange-200 dark:border-orange-800">
