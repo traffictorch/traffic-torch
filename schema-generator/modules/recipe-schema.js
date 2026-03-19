@@ -136,9 +136,16 @@ function render(editorContainer, previewEl) {
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
-            <label class="block mb-2 font-medium">Video Upload Date <span class="text-xs text-red-600 dark:text-red-400 font-semibold">* REQUIRED by Google when video is included – missing = critical error</span></label>
-            <input type="date" data-field="video.uploadDate" placeholder="YYYY-MM-DD" required
+            <label class="block mb-2 font-medium">Video Upload Date & Time <span class="text-xs text-red-600 dark:text-red-400 font-semibold">* REQUIRED full datetime – Google rejects date-only</span></label>
+            <input type="datetime-local" data-field="video.uploadDate" required
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Pick date + time + add timezone below (defaults to +10:00 for Sydney)</p>
+          </div>
+          <div>
+            <label class="block mb-2 font-medium">Timezone offset <span class="text-xs text-amber-600 dark:text-amber-400">(strongly recommended)</span></label>
+            <input type="text" data-field="video.timezone" placeholder="+10:00 or Z" value="+10:00"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Sydney/AEDT = +11:00 (summer) or +10:00 (winter). Use Z for UTC.</p>
           </div>
         </div>
       </div>
@@ -284,7 +291,7 @@ function render(editorContainer, previewEl) {
       author: { "@type": "Person", name: '' },
       recipeIngredient: [],
       recipeInstructions: [],
-      video: { "@type": "VideoObject", name: '', description: '', contentUrl: '', embedUrl: '', thumbnailUrl: '', uploadDate: '' },
+      video: { "@type": "VideoObject", name: '', description: '', contentUrl: '', embedUrl: '', thumbnailUrl: '', uploadDate: '', timezone: '' },
       aggregateRating: { "@type": "AggregateRating", ratingValue: '', reviewCount: '' },
       nutrition: {
         "@type": "NutritionInformation",
@@ -318,8 +325,15 @@ function render(editorContainer, previewEl) {
           const key = field.split('.')[1];
           data.aggregateRating[key] = value;
         } else if (field.startsWith('video.')) {
-          const key = field.split('.')[1];
-          data.video[key] = value;
+          const parts = field.split('.');
+          const key = parts[1];
+          if (parts.length === 2) {
+            if (key === 'timezone') {
+              data.video.timezone = value;
+            } else {
+              data.video[key] = value;
+            }
+          }
         } else if (field === 'keywords' || field === 'recipeCategory' || field === 'recipeCuisine') {
           data[field] = value;
         } else {
@@ -337,8 +351,7 @@ function render(editorContainer, previewEl) {
     if (!data.aggregateRating.ratingValue || !data.aggregateRating.reviewCount) delete data.aggregateRating;
     else data.aggregateRating = cleanJsonLd(data.aggregateRating);
 
-    // Very strict video cleanup: require name + (contentUrl OR embedUrl) + uploadDate
-    // Otherwise Google flags as critical missing uploadDate
+    // Very strict video cleanup + timezone handling
     if (
       !data.video.name ||
       (!data.video.contentUrl && !data.video.embedUrl) ||
@@ -346,6 +359,27 @@ function render(editorContainer, previewEl) {
     ) {
       delete data.video;
     } else {
+      // Force full datetime: add T00:00 if no time
+      if (data.video.uploadDate && !data.video.uploadDate.includes('T')) {
+        data.video.uploadDate += 'T00:00';
+      }
+
+      // Append timezone (prefer user input, fallback to +10:00)
+      let tz = (data.video.timezone || '+10:00').trim().toUpperCase();
+      if (tz === 'Z' || tz === 'UTC') {
+        tz = 'Z';
+      } else if (tz.match(/^[+-]\d{2}:?\d{2}$/)) {
+        tz = tz.replace(/(\+|-)(\d{2})(\d{2})/, '$1$2:$3');
+      } else {
+        tz = '+10:00';
+      }
+
+      // Append only if no offset already present
+      if (!data.video.uploadDate.includes('Z') && !data.video.uploadDate.match(/[+-]\d{2}:\d{2}$/)) {
+        data.video.uploadDate += tz;
+      }
+
+      delete data.video.timezone;
       data.video = cleanJsonLd(data.video);
     }
 

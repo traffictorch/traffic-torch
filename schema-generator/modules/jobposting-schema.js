@@ -20,6 +20,7 @@ function render(editorContainer, previewEl) {
         <li>Google shows rich cards if: public job, clear salary/location, real posting</li>
         <li>2026 best practice: use ISO 8601 dates, only use jobLocationType "TELECOMMUTE" for remote jobs (Google ignores other values)</li>
         <li>For remote jobs add applicantLocationRequirements (countries) to avoid critical errors</li>
+        <li>For on-site/hybrid jobs add full address details to reduce warnings</li>
         <li>Place on individual job listing pages</li>
         <li>Validate with Google Rich Results Test + Job Posting Index in Search Console</li>
         <li>
@@ -109,8 +110,26 @@ function render(editorContainer, previewEl) {
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
+            <label class="block mb-2 font-medium">Street Address (optional)</label>
+            <input type="text" data-field="jobLocation.address.streetAddress" placeholder="123 Example St"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block mb-2 font-medium">State / Region (e.g. NSW)</label>
+              <input type="text" data-field="jobLocation.address.addressRegion" placeholder="NSW"
+                     class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block mb-2 font-medium">Postal Code / ZIP</label>
+              <input type="text" data-field="jobLocation.address.postalCode" placeholder="2000"
+                     class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+            </div>
+          </div>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Optional – fill for on-site/hybrid jobs to reduce warnings (Google ignores for remote).</p>
+          <div>
             <label class="block mb-2 font-medium">Applicant Location Requirements (countries allowed to apply)</label>
-            <input type="text" data-field="applicantLocationRequirements" placeholder="AU, US, CA (comma separated)" 
+            <input type="text" data-field="applicantLocationRequirements" placeholder="AU, US, CA (comma separated)"
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
             <p class="mt-1 text-xs text-amber-600 dark:text-amber-400">Required for remote jobs (TELECOMMUTE) – Google flags as critical if missing when remote.</p>
           </div>
@@ -184,7 +203,10 @@ function render(editorContainer, previewEl) {
         "@type": "Place",
         address: {
           "@type": "PostalAddress",
+          streetAddress: '',
           addressLocality: '',
+          addressRegion: '',
+          postalCode: '',
           addressCountry: ''
         }
       },
@@ -222,7 +244,6 @@ function render(editorContainer, previewEl) {
         } else if (field === 'jobLocationType') {
           data.jobLocationType = value;
         } else if (field === 'applicantLocationRequirements') {
-          // Split comma-separated countries into array of Country objects
           data.applicantLocationRequirements = value.split(',').map(c => ({
             "@type": "Country",
             "name": c.trim()
@@ -240,7 +261,15 @@ function render(editorContainer, previewEl) {
       data.hiringOrganization = cleanJsonLd(data.hiringOrganization);
     }
 
-    if (!data.jobLocation.address.addressLocality && !data.jobLocation.address.addressCountry) {
+    // Clean jobLocation – remove if completely empty
+    const addr = data.jobLocation.address;
+    if (
+      !addr.streetAddress &&
+      !addr.addressLocality &&
+      !addr.addressRegion &&
+      !addr.postalCode &&
+      !addr.addressCountry
+    ) {
       delete data.jobLocation;
     } else {
       data.jobLocation = cleanJsonLd(data.jobLocation);
@@ -259,7 +288,6 @@ function render(editorContainer, previewEl) {
         (!data.baseSalary.value.minValue && !data.baseSalary.value.maxValue)) {
       delete data.baseSalary;
     } else {
-      // Clean inner QuantitativeValue if partially empty
       if (!data.baseSalary.value.minValue && !data.baseSalary.value.maxValue) {
         delete data.baseSalary.value;
       } else {
