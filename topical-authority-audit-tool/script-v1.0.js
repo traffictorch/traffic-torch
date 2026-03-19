@@ -110,12 +110,12 @@ results.innerHTML = `
           </svg>
           <div class="absolute inset-0 flex items-center justify-center text-center">
             <div>
-              <div class="text-7xl font-black" style="color: $$   {overallScore >= 85 ? '#22c55e' : '#ef4444'};">   $${overallScore}</div>
+              <div class="text-7xl font-black" style="color: $$   {overallScore >= 85 ? '#22c55e' : '#ef4444'};">   ${overallScore}</div>
               <div class="text-2xl opacity-90">/100</div>
             </div>
           </div>
         </div>
-        <p class="mt-8 text-5xl font-bold text-center $$   {grade.color}">   $${grade.emoji} ${grade.text}</p>
+        <p class="mt-8 text-5xl font-bold text-center $$   {grade.color}">   ${grade.emoji} ${grade.text}</p>
         ${predictedRankLift ? `<p class="mt-4 text-center text-xl text-gray-700 dark:text-gray-300">Predicted lift: ${predictedRankLift}</p>` : ''}
       </div>
     </div>
@@ -128,7 +128,7 @@ results.innerHTML = `
         ${clusters.length > 0 ? `Found ${clusters.length} main topics with detailed subtopics extracted` : 'Analysis limited – only main page processed'}
       </p>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
         ${clusters.length > 0 
           ? clusters.map((cluster, idx) => {
               const color = cluster.coverage >= 85 ? 'green' : cluster.coverage >= 70 ? 'emerald' : 'orange';
