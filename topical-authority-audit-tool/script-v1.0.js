@@ -1,6 +1,5 @@
 // script.js — Topical Authority Audit Tool (refactored from entity extractor)
 // Single-file version — modules inlined/minimized; heavy logic in Worker AI
-
 import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
@@ -44,14 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
     const sitemap = sitemapInput?.value.trim() || '';
 
-    // Show loading, hide results
     loading.classList.remove('hidden');
     results.classList.add('hidden');
 
-    const progressText = loading.querySelector('p'); // the text element inside loading
-    if (progressText) {
-      progressText.textContent = 'Analyzing Topics...';
-    }
+    const progressText = loading.querySelector('p');
+    if (progressText) progressText.textContent = 'Analyzing Topics...';
 
     const heavyTimeout = setTimeout(() => {
       if (progressText) progressText.textContent = 'Still processing — may take longer for large sites...';
@@ -73,9 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!res.ok) {
         let errData = {};
-        try {
-          errData = await res.json();
-        } catch {}
+        try { errData = await res.json(); } catch {}
         throw new Error(errData.error || `Server returned ${res.status}`);
       }
 
@@ -86,12 +80,12 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(`Invalid response from server (not JSON): ${parseErr.message}`);
       }
 
-      // Hide loading, show results
       loading.classList.add('hidden');
       results.classList.remove('hidden');
 
       const {
         overallScore = 0,
+        mainTopic = 'Your Main Topic',  // ← FIX: was missing
         coveragePercent = 0,
         clusters = [],
         missingSubtopics = [],
@@ -101,10 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
       } = data || {};
 
       const grade = getGrade(overallScore);
-
-      const clusterSummary = clusters.length > 0
-        ? clusters.map(c => `${c.pillar || 'Core'} (${Math.round(c.coverage || 0)}% — ${c.subtopics?.length || 0} subtopics)`).join(' • ')
-        : 'No clusters detected yet';
 
       results.innerHTML = `
         <div class="max-w-5xl mx-auto px-4 py-8 text-gray-800 dark:text-gray-200">
@@ -132,12 +122,49 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
 
-          <!-- Coverage & Cluster Viz -->
+          <!-- Coverage & Cluster Viz - EPIC HIERARCHY -->
           <div class="mb-16">
             <h2 class="text-3xl font-bold text-center mb-6">Topic Cluster Coverage</h2>
-            <p class="text-center text-lg mb-6">Overall coverage: <strong>${coveragePercent}%</strong> • ${clusterSummary}</p>
-            <div class="w-full max-w-3xl mx-auto aspect-[4/3] bg-gray-50 dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
+            <p class="text-center text-lg mb-8">Overall coverage: <strong>${coveragePercent}%</strong></p>
+            
+            <!-- Central Pillar -->
+            <div class="text-center mb-8">
+              <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-100 dark:bg-orange-900 rounded-full mx-auto mb-3">
+                <span class="text-3xl">🏠</span>
+              </div>
+              <p class="font-semibold text-xl text-gray-800 dark:text-gray-200">Central Pillar Page</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">${mainTopic}</p>
+            </div>
+
+            <!-- PolarArea Chart -->
+            <div class="w-full max-w-3xl mx-auto aspect-square bg-gray-50 dark:bg-gray-800 rounded-3xl p-6 border border-gray-200 dark:border-gray-700 mb-10">
               <canvas id="cluster-viz"></canvas>
+            </div>
+
+            <!-- Graded Topic Cards with Subtopics -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              ${clusters.map((c, idx) => {
+                const color = c.coverage >= 85 ? 'green' : c.coverage >= 70 ? 'emerald' : 'orange';
+                return `
+                  <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-lg p-6 border-2 border-${color}-400">
+                    <div class="flex items-center gap-3 mb-4">
+                      <div class="w-8 h-8 bg-${color}-100 dark:bg-${color}-900 rounded-2xl flex items-center justify-center text-xl">
+                        ${idx === 0 ? '🌟' : idx === 1 ? '📖' : '🔬'}
+                      </div>
+                      <div>
+                        <p class="font-semibold text-lg">${c.pillar}</p>
+                        <p class="text-sm text-${color}-600 dark:text-${color}-400">${c.coverage}% coverage</p>
+                      </div>
+                    </div>
+                    <div class="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2">SUBTOPICS</div>
+                    <div class="flex flex-wrap gap-2">
+                      ${c.subtopics && c.subtopics.length ? c.subtopics.map(st => 
+                        `<span class="px-4 py-1 bg-${color}-100 dark:bg-${color}-900 text-${color}-700 dark:text-${color}-300 text-xs rounded-3xl">${st}</span>`
+                      ).join('') : '<span class="text-gray-400">No subtopics detected yet</span>'}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
             </div>
           </div>
 
@@ -180,38 +207,47 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
 
-   // Share & feedback initialization temporarily disabled (missing form elements in current report HTML)
-   // initShareReport(results);
-   // initSubmitFeedback(results);
+      // Share & feedback temporarily disabled
+      // initShareReport(results);
+      // initSubmitFeedback(results);
 
-   // Render placeholder chart
-   setTimeout(() => {
-     const canvas = document.getElementById('cluster-viz');
-     if (!canvas) return;
-     const ctx = canvas.getContext('2d');
-     if (!ctx) return;
-     new Chart(ctx, {
-       type: 'doughnut',
-       data: {
-         labels: clusters.map(c => c.pillar || 'Unknown'),
-         datasets: [{
-           data: clusters.map(c => c.coverage || 0),
-           backgroundColor: ['#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#3b82f6'],
-         }]
-       },
-       options: {
-         responsive: true,
-         plugins: { legend: { position: 'bottom' } }
-       }
-     });
-   }, 300);
+      // Render polarArea chart
+      setTimeout(() => {
+        const canvas = document.getElementById('cluster-viz');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        new Chart(ctx, {
+          type: 'polarArea',
+          data: {
+            labels: clusters.map(c => c.pillar),
+            datasets: [{
+              data: clusters.map(c => c.coverage),
+              backgroundColor: clusters.map(c => 
+                c.coverage >= 85 ? '#10b981' :
+                c.coverage >= 70 ? '#34d399' : '#f59e0b'
+              ),
+              borderColor: '#ffffff',
+              borderWidth: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { position: 'bottom', labels: { boxWidth: 12, padding: 20, usePointStyle: true } }
+            },
+            scales: {
+              r: { ticks: { display: false }, grid: { color: 'rgba(156,163,175,0.3)' } }
+            }
+          }
+        });
+      }, 300);
 
     } catch (err) {
       console.error('Audit error:', err);
       clearTimeout(heavyTimeout);
       loading.classList.add('hidden');
       results.classList.remove('hidden');
-
       results.innerHTML = `
         <div class="text-center py-12 px-6">
           <p class="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Audit could not complete</p>
