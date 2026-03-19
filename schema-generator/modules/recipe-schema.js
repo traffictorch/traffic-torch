@@ -136,7 +136,7 @@ function render(editorContainer, previewEl) {
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
-            <label class="block mb-2 font-medium">Video Upload Date (required for valid VideoObject) <span class="text-xs text-red-600 dark:text-red-400">* Google requires this for video in Recipe</span></label>
+            <label class="block mb-2 font-medium">Video Upload Date <span class="text-xs text-red-600 dark:text-red-400 font-semibold">* REQUIRED by Google when video is included – missing = critical error</span></label>
             <input type="date" data-field="video.uploadDate" placeholder="YYYY-MM-DD" required
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
@@ -284,7 +284,7 @@ function render(editorContainer, previewEl) {
       author: { "@type": "Person", name: '' },
       recipeIngredient: [],
       recipeInstructions: [],
-      video: { "@type": "VideoObject", name: '', description: '', contentUrl: '', thumbnailUrl: '', uploadDate: '' },
+      video: { "@type": "VideoObject", name: '', description: '', contentUrl: '', embedUrl: '', thumbnailUrl: '', uploadDate: '' },
       aggregateRating: { "@type": "AggregateRating", ratingValue: '', reviewCount: '' },
       nutrition: {
         "@type": "NutritionInformation",
@@ -318,11 +318,8 @@ function render(editorContainer, previewEl) {
           const key = field.split('.')[1];
           data.aggregateRating[key] = value;
         } else if (field.startsWith('video.')) {
-          const parts = field.split('.');
-          const key = parts[1];
-          if (parts.length === 2) {
-            data.video[key] = value;
-          }
+          const key = field.split('.')[1];
+          data.video[key] = value;
         } else if (field === 'keywords' || field === 'recipeCategory' || field === 'recipeCuisine') {
           data[field] = value;
         } else {
@@ -340,8 +337,13 @@ function render(editorContainer, previewEl) {
     if (!data.aggregateRating.ratingValue || !data.aggregateRating.reviewCount) delete data.aggregateRating;
     else data.aggregateRating = cleanJsonLd(data.aggregateRating);
 
-    // Stricter video cleanup: require name + contentUrl + uploadDate
-    if (!data.video.name || !data.video.contentUrl || !data.video.uploadDate) {
+    // Very strict video cleanup: require name + (contentUrl OR embedUrl) + uploadDate
+    // Otherwise Google flags as critical missing uploadDate
+    if (
+      !data.video.name ||
+      (!data.video.contentUrl && !data.video.embedUrl) ||
+      !data.video.uploadDate
+    ) {
       delete data.video;
     } else {
       data.video = cleanJsonLd(data.video);

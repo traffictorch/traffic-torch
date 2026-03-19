@@ -19,6 +19,7 @@ function render(editorContainer, previewEl) {
         <li>Strongly recommended: employmentType, baseSalary (with currency & value), validThrough</li>
         <li>Google shows rich cards if: public job, clear salary/location, real posting</li>
         <li>2026 best practice: use ISO 8601 dates, only use jobLocationType "TELECOMMUTE" for remote jobs (Google ignores other values)</li>
+        <li>For remote jobs add applicantLocationRequirements (countries) to avoid critical errors</li>
         <li>Place on individual job listing pages</li>
         <li>Validate with Google Rich Results Test + Job Posting Index in Search Console</li>
         <li>
@@ -107,6 +108,12 @@ function render(editorContainer, previewEl) {
             <input type="text" data-field="jobLocation.address.addressCountry" placeholder="AU" value="AU"
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
+          <div>
+            <label class="block mb-2 font-medium">Applicant Location Requirements (countries allowed to apply)</label>
+            <input type="text" data-field="applicantLocationRequirements" placeholder="AU, US, CA (comma separated)" 
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+            <p class="mt-1 text-xs text-amber-600 dark:text-amber-400">Required for remote jobs (TELECOMMUTE) – Google flags as critical if missing when remote.</p>
+          </div>
         </div>
       </div>
 
@@ -182,6 +189,7 @@ function render(editorContainer, previewEl) {
         }
       },
       jobLocationType: '',
+      applicantLocationRequirements: [],
       baseSalary: {
         "@type": "MonetaryAmount",
         currency: '',
@@ -213,6 +221,12 @@ function render(editorContainer, previewEl) {
           }
         } else if (field === 'jobLocationType') {
           data.jobLocationType = value;
+        } else if (field === 'applicantLocationRequirements') {
+          // Split comma-separated countries into array of Country objects
+          data.applicantLocationRequirements = value.split(',').map(c => ({
+            "@type": "Country",
+            "name": c.trim()
+          })).filter(c => c.name);
         } else {
           data[field] = value;
         }
@@ -230,6 +244,13 @@ function render(editorContainer, previewEl) {
       delete data.jobLocation;
     } else {
       data.jobLocation = cleanJsonLd(data.jobLocation);
+    }
+
+    // Clean applicantLocationRequirements
+    if (data.applicantLocationRequirements.length === 0) {
+      delete data.applicantLocationRequirements;
+    } else {
+      data.applicantLocationRequirements = cleanJsonLd(data.applicantLocationRequirements);
     }
 
     // Only include baseSalary if currency + period + at least one salary value
