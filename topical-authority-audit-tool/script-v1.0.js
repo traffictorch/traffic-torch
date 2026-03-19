@@ -180,30 +180,31 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
 
-      initShareReport(results);
-      initSubmitFeedback(results);
+   // Share & feedback initialization temporarily disabled (missing form elements in current report HTML)
+   // initShareReport(results);
+   // initSubmitFeedback(results);
 
-      // Render placeholder chart
-      setTimeout(() => {
-        const canvas = document.getElementById('cluster-viz');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-        new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-            labels: clusters.map(c => c.pillar || 'Unknown'),
-            datasets: [{
-              data: clusters.map(c => c.coverage || 0),
-              backgroundColor: ['#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#3b82f6'],
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom' } }
-          }
-        });
-      }, 300);
+   // Render placeholder chart
+   setTimeout(() => {
+     const canvas = document.getElementById('cluster-viz');
+     if (!canvas) return;
+     const ctx = canvas.getContext('2d');
+     if (!ctx) return;
+     new Chart(ctx, {
+       type: 'doughnut',
+       data: {
+         labels: clusters.map(c => c.pillar || 'Unknown'),
+         datasets: [{
+           data: clusters.map(c => c.coverage || 0),
+           backgroundColor: ['#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#3b82f6'],
+         }]
+       },
+       options: {
+         responsive: true,
+         plugins: { legend: { position: 'bottom' } }
+       }
+     });
+   }, 300);
 
     } catch (err) {
       console.error('Audit error:', err);
