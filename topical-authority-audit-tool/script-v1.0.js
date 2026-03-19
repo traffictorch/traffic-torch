@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const urlInput = document.getElementById('url-input');
-    const sitemapInput = document.getElementById('sitemap-input');
     const inputValue = urlInput?.value.trim();
 
     if (!inputValue) {
@@ -41,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
-    const sitemap = sitemapInput?.value.trim() || '';
 
     loading.classList.remove('hidden');
     results.classList.add('hidden');
@@ -60,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch(ANALYZE_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, sitemap }),
+        body: JSON.stringify({ url }),
         signal: controller.signal
       });
 
@@ -96,236 +94,100 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const grade = getGrade(overallScore);
 
-      results.innerHTML = `
-        <div class="max-w-5xl mx-auto px-4 py-8 text-gray-800 dark:text-gray-200">
-          <!-- Overall Score Card -->
-          <div class="flex justify-center my-12">
-            <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 w-full max-w-lg border-4 ${overallScore >= 85 ? 'border-green-500' : overallScore >= 70 ? 'border-emerald-500' : overallScore >= 50 ? 'border-orange-500' : 'border-red-500'}">
-              <p class="text-center text-2xl font-medium mb-6">Topical Authority Score</p>
-              <div class="relative aspect-square w-full max-w-[300px] mx-auto">
-                <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
-                  <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none" class="dark:stroke-gray-700"/>
-                  <circle cx="100" cy="100" r="90"
-                          stroke="${overallScore >= 85 ? '#22c55e' : overallScore >= 70 ? '#10b981' : overallScore >= 50 ? '#f59e0b' : '#ef4444'}"
-                          stroke-width="16" fill="none"
-                          stroke-dasharray="${(overallScore / 100) * 565} 565" stroke-linecap="round"/>
-                </svg>
-                <div class="absolute inset-0 flex items-center justify-center text-center">
-                  <div>
-                    <div class="text-7xl font-black" style="color: ${overallScore >= 85 ? '#22c55e' : '#ef4444'};">${overallScore}</div>
-                    <div class="text-2xl opacity-90">/100</div>
-                  </div>
-                </div>
-              </div>
-              <p class="mt-8 text-5xl font-bold text-center ${grade.color}">${grade.emoji} ${grade.text}</p>
-              ${predictedRankLift ? `<p class="mt-4 text-center text-xl text-gray-700 dark:text-gray-300">Predicted lift: ${predictedRankLift}</p>` : ''}
+results.innerHTML = `
+  <div class="max-w-5xl mx-auto px-4 py-8 text-gray-800 dark:text-gray-200">
+    <!-- Overall Score Card -->
+    <div class="flex justify-center my-12">
+      <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 w-full max-w-lg border-4 ${overallScore >= 85 ? 'border-green-500' : overallScore >= 70 ? 'border-emerald-500' : overallScore >= 50 ? 'border-orange-500' : 'border-red-500'}">
+        <p class="text-center text-2xl font-medium mb-6">Topical Authority Score</p>
+        <div class="relative aspect-square w-full max-w-[300px] mx-auto">
+          <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+            <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none" class="dark:stroke-gray-700"/>
+            <circle cx="100" cy="100" r="90"
+                    stroke="${overallScore >= 85 ? '#22c55e' : overallScore >= 70 ? '#10b981' : overallScore >= 50 ? '#f59e0b' : '#ef4444'}"
+                    stroke-width="16" fill="none"
+                    stroke-dasharray="${(overallScore / 100) * 565} 565" stroke-linecap="round"/>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center text-center">
+            <div>
+              <div class="text-7xl font-black" style="color:   $$ {overallScore >= 85 ? '#22c55e' : '#ef4444'};"> $$  {overallScore}</div>
+              <div class="text-2xl opacity-90">/100</div>
             </div>
-          </div>
-
-          <!-- Coverage & Cluster Viz - EPIC HIERARCHY -->
-          <div class="mb-16">
-            <h2 class="text-3xl font-bold text-center mb-6">Topic Cluster Coverage</h2>
-            <p class="text-center text-lg mb-8">Overall coverage: <strong>${coveragePercent}%</strong></p>
-            
-            <!-- Central Pillar -->
-            <div class="text-center mb-8">
-              <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-100 dark:bg-orange-900 rounded-full mx-auto mb-3">
-                <span class="text-3xl">🏠</span>
-              </div>
-              <p class="font-semibold text-xl text-gray-800 dark:text-gray-200">Central Pillar Page</p>
-              <p class="text-sm text-gray-600 dark:text-gray-400">${mainTopic}</p>
-            </div>
-
-            <!-- PolarArea Chart -->
-            <div id="cy" class="w-full max-w-3xl mx-auto aspect-square bg-gray-50 dark:bg-gray-800 rounded-3xl p-6 border border-gray-200 dark:border-gray-700 mb-10"></div>
-              <canvas id="cluster-viz"></canvas>
-            </div>
-
-            <!-- Graded Topic Cards with Subtopics -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              ${clusters.map((c, idx) => {
-                const color = c.coverage >= 85 ? 'green' : c.coverage >= 70 ? 'emerald' : 'orange';
-                return `
-                  <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-lg p-6 border-2 border-${color}-400">
-                    <div class="flex items-center gap-3 mb-4">
-                      <div class="w-8 h-8 bg-${color}-100 dark:bg-${color}-900 rounded-2xl flex items-center justify-center text-xl">
-                        ${idx === 0 ? '🌟' : idx === 1 ? '📖' : '🔬'}
-                      </div>
-                      <div>
-                        <p class="font-semibold text-lg">${c.pillar}</p>
-                        <p class="text-sm text-${color}-600 dark:text-${color}-400">${c.coverage}% coverage</p>
-                      </div>
-                    </div>
-                    <div class="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2">SUBTOPICS</div>
-                    <div class="flex flex-wrap gap-2">
-                      ${c.subtopics && c.subtopics.length ? c.subtopics.map(st => 
-                        `<span class="px-4 py-1 bg-${color}-100 dark:bg-${color}-900 text-${color}-700 dark:text-${color}-300 text-xs rounded-3xl">${st}</span>`
-                      ).join('') : '<span class="text-gray-400">No subtopics detected yet</span>'}
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-
-          <!-- Key Insights Grid -->
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-              <h3 class="text-2xl font-semibold mb-4">Missing Subtopics</h3>
-              ${missingSubtopics.length > 0 ? `<ul class="space-y-3 text-sm">${missingSubtopics.map(m => `<li class="flex items-start gap-2 text-orange-600 dark:text-orange-400">⚠️ ${m}</li>`).join('')}</ul>` : '<p class="text-green-600 dark:text-green-400">✅ Strong coverage — few gaps detected</p>'}
-            </div>
-
-            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-              <h3 class="text-2xl font-semibold mb-4">Weak Supporting Content</h3>
-              ${weakContent.length > 0 ? `<ul class="space-y-3 text-sm">${weakContent.map(w => `<li class="flex items-start gap-2 text-red-600 dark:text-red-400">❌ ${w.pageUrl || w.page || 'Page'} – ${w.reason || 'Low depth'}</li>`).join('')}</ul>` : '<p class="text-green-600 dark:text-green-400">✅ Solid supporting pages</p>'}
-            </div>
-
-            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-              <h3 class="text-2xl font-semibold mb-4">Build Authority: Suggested Topics</h3>
-              ${suggestions.length > 0 ? `<ul class="space-y-3 text-sm">${suggestions.map(s => `<li class="flex items-start gap-2 text-blue-600 dark:text-blue-400">➕ ${s.topic} (${s.estimatedImpact || s.impact || 'Medium'})</li>`).join('')}</ul>` : '<p class="text-gray-600 dark:text-gray-400">No suggestions available yet</p>'}
-            </div>
-          </div>
-
-          <!-- Action Buttons -->
-          <div class="text-center my-16 px-4">
-            <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
-              <button id="share-report-btn" class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-                Share Report ↗️
-              </button>
-              <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
-                      class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-                Save Report 📥
-              </button>
-              <button id="feedback-btn" class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-                Submit Feedback 💬
-              </button>
-            </div>
-            <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-            <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8"></div>
-            <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8"></div>
           </div>
         </div>
-      `;
+        <p class="mt-8 text-5xl font-bold text-center   $$ {grade.color}"> $$  {grade.emoji} ${grade.text}</p>
+        ${predictedRankLift ? `<p class="mt-4 text-center text-xl text-gray-700 dark:text-gray-300">Predicted lift: ${predictedRankLift}</p>` : ''}
+      </div>
+    </div>
 
-      // Share & feedback temporarily disabled
-      // initShareReport(results);
-      // initSubmitFeedback(results);
+    <!-- Focused Detected Topics & Subtopics Modules -->
+    <div class="space-y-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-800 dark:text-gray-200">Detected Topics & Subtopics</h2>
+      <p class="text-center text-lg mb-12 text-gray-700 dark:text-gray-300">
+        Overall Topical Coverage: <strong class="text-orange-600 dark:text-orange-400">${coveragePercent || 'N/A'}%</strong><br>
+        ${clusters.length > 0 ? `Found ${clusters.length} main topics with detailed subtopics extracted` : 'Analysis limited – only main page processed'}
+      </p>
 
-      // Render polarArea chart
-setTimeout(() => {
-  const container = document.getElementById('cy');
-  if (!container) {
-    // Fallback to polarArea if Cytoscape container missing
-    const canvas = document.getElementById('cluster-viz');
-    if (canvas) {
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        new Chart(ctx, {
-          type: 'polarArea',
-          data: {
-            labels: clusters.map(c => c.pillar),
-            datasets: [{
-              data: clusters.map(c => c.coverage),
-              backgroundColor: clusters.map(c => 
-                c.coverage >= 85 ? '#10b981' :
-                c.coverage >= 70 ? '#34d399' : '#f59e0b'
-              ),
-              borderColor: '#ffffff',
-              borderWidth: 4
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom' } },
-            scales: { r: { ticks: { display: false } } }
-          }
-        });
-      }
-    }
-    return;
-  }
-
-  // Cytoscape concentric static network
-  cytoscape({
-    container: container,
-
-    elements: [
-      // Central pillar
-      { data: { id: 'pillar', label: mainTopic || 'Central Pillar' } },
-
-      // Topics orbiting pillar
-      ...clusters.map((c, i) => ({
-        data: { 
-          id: `topic-${i}`, 
-          label: c.pillar, 
-          parent: 'pillar', 
-          coverage: c.coverage 
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        ${clusters.length > 0 
+          ? clusters.map((cluster, idx) => {
+              const color = cluster.coverage >= 85 ? 'green' : cluster.coverage >= 70 ? 'emerald' : 'orange';
+              return `
+                <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 border-2 border-${color}-500 hover:shadow-3xl transition-all duration-300">
+                  <div class="flex items-start gap-5 mb-6">
+                    <div class="flex-shrink-0 w-16 h-16 bg-  $$ {color}-100 dark:bg- $$  {color}-900 rounded-2xl flex items-center justify-center text-4xl shadow-md">
+                      ${idx === 0 ? '🌌' : idx === 1 ? '🧠' : idx === 2 ? '❤️' : idx === 3 ? '📜' : '🔍'}
+                    </div>
+                    <div class="flex-grow">
+                      <h3 class="text-2xl md:text-3xl font-bold text-  $$ {color}-700 dark:text- $$  {color}-300 mb-2">${cluster.pillar || 'Topic ' + (idx+1)}</h3>
+                      <p class="text-xl font-semibold text-  $$ {color}-600 dark:text- $${color}-400">${Math.round(cluster.coverage || 0)}% coverage</p>
+                    </div>
+                  </div>
+                  <div class="text-sm uppercase tracking-wider font-medium text-gray-500 dark:text-gray-400 mb-4">Detected Subtopics</div>
+                  <div class="flex flex-wrap gap-3">
+                    ${cluster.subtopics && cluster.subtopics.length > 0 
+                      ? cluster.subtopics.map(sub => 
+                          `<span class="px-4 py-2 bg-${color}-50 dark:bg-${color}-950 text-${color}-700 dark:text-${color}-300 rounded-2xl text-base font-medium border border-${color}-200 dark:border-${color}-700 shadow-sm">${sub}</span>`
+                        ).join('')
+                      : '<span class="text-gray-500 dark:text-gray-400 italic text-base">No detailed subtopics extracted yet</span>'
+                    }
+                  </div>
+                </div>
+              `;
+            }).join('')
+          : '<p class="text-center col-span-full text-xl text-gray-600 dark:text-gray-400 italic py-12">No topics detected yet – try a different content-rich URL</p>'
         }
-      })),
+      </div>
 
-      // Subtopics around each topic
-      ...clusters.flatMap((c, i) => 
-        (c.subtopics || []).map((st, j) => ({
-          data: { 
-            id: `sub-${i}-${j}`, 
-            label: st, 
-            parent: `topic-${i}` 
-          }
-        }))
-      ),
+      <!-- Educational summary -->
+      <div class="text-center mt-12 p-6 bg-orange-50 dark:bg-orange-950 rounded-3xl border border-orange-200 dark:border-orange-800">
+        <p class="text-lg text-gray-700 dark:text-gray-300">
+          These modules show how well your page covers key topics and subtopics.<br>
+          Higher coverage and more detailed subtopics = stronger topical authority in search.
+        </p>
+      </div>
+    </div>
 
-      // Edges: pillar → topics
-      ...clusters.map((c, i) => ({
-        data: { source: 'pillar', target: `topic-${i}` }
-      }))
-    ],
-
-    style: [
-      { selector: 'node', style: { 
-        'background-color': '#666', 
-        'label': 'data(label)', 
-        'text-valign': 'center',
-        'font-size': 12,
-        'color': '#fff'
-      }},
-      { selector: 'node#pillar', style: { 
-        'background-color': '#fb923c', 
-        'width': 80, 
-        'height': 80, 
-        'font-size': 16,
-        'font-weight': 'bold'
-      }},
-      { selector: 'node[parent]', style: { 
-        'background-color': ele => {
-          const cov = ele.data('coverage') || 70;
-          return cov >= 85 ? '#10b981' : cov >= 70 ? '#34d399' : '#f59e0b';
-        },
-        'width': 60,
-        'height': 60
-      }},
-      { selector: 'edge', style: { 
-        'width': 3,
-        'line-color': '#ccc',
-        'target-arrow-color': '#ccc',
-        'target-arrow-shape': 'triangle'
-      }}
-    ],
-
-    layout: {
-      name: 'concentric',
-      center: { x: 0, y: 0 },
-      fit: true,
-      padding: 30,
-      concentric: node => node.id() === 'pillar' ? 1000 : 1,
-      levelWidth: () => 200
-    },
-
-    // Static mode – no interaction
-    userZoomingEnabled: false,
-    userPanningEnabled: false,
-    boxSelectionEnabled: false
-  });
-}, 300);
+    <!-- Action Buttons -->
+    <div class="text-center my-16 px-4">
+      <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
+        <button id="share-report-btn" class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+          Share Report ↗️
+        </button>
+        <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
+                class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+          Save Report 📥
+        </button>
+        <button id="feedback-btn" class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+          Submit Feedback 💬
+        </button>
+      </div>
+      <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
+      <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8"></div>
+      <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8"></div>
+    </div>
+  </div>
+`;
 
     } catch (err) {
       console.error('Audit error:', err);
