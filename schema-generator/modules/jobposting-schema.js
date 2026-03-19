@@ -101,12 +101,12 @@ function render(editorContainer, previewEl) {
           </div>
           <div>
             <label class="block mb-2 font-medium">City / Remote</label>
-            <input type="text" data-field="jobLocation.address.addressLocality" placeholder="Sydney or Remote"
+            <input type="text" data-field="jobLocation.address.addressLocality" placeholder="Los Angeles or Remote"
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
             <label class="block mb-2 font-medium">Country</label>
-            <input type="text" data-field="jobLocation.address.addressCountry" placeholder="AU" value="AU"
+            <input type="text" data-field="jobLocation.address.addressCountry" placeholder="US" value="US"
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
@@ -116,20 +116,20 @@ function render(editorContainer, previewEl) {
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block mb-2 font-medium">State / Region (e.g. NSW)</label>
-              <input type="text" data-field="jobLocation.address.addressRegion" placeholder="NSW"
+              <label class="block mb-2 font-medium">State / Region (e.g. California)</label>
+              <input type="text" data-field="jobLocation.address.addressRegion" placeholder="California"
                      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
             </div>
             <div>
               <label class="block mb-2 font-medium">Postal Code / ZIP</label>
-              <input type="text" data-field="jobLocation.address.postalCode" placeholder="2000"
+              <input type="text" data-field="jobLocation.address.postalCode" placeholder="20000"
                      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
             </div>
           </div>
           <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Optional – fill for on-site/hybrid jobs to reduce warnings (Google ignores for remote).</p>
           <div>
             <label class="block mb-2 font-medium">Applicant Location Requirements (countries allowed to apply)</label>
-            <input type="text" data-field="applicantLocationRequirements" placeholder="AU, US, CA (comma separated)"
+            <input type="text" data-field="applicantLocationRequirements" placeholder="US, CA, AU, NZ (comma separated)"
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
             <p class="mt-1 text-xs text-amber-600 dark:text-amber-400">Required for remote jobs (TELECOMMUTE) – Google flags as critical if missing when remote.</p>
           </div>
@@ -155,7 +155,7 @@ function render(editorContainer, previewEl) {
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label class="block mb-2 font-medium">Salary Currency</label>
-              <input type="text" data-field="baseSalary.currency" placeholder="AUD" maxlength="3"
+              <input type="text" data-field="baseSalary.currency" placeholder="USD" maxlength="3"
                      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
             </div>
             <div>
