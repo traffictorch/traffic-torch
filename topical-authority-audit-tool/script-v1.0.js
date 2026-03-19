@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <!-- PolarArea Chart -->
-            <div class="w-full max-w-3xl mx-auto aspect-square bg-gray-50 dark:bg-gray-800 rounded-3xl p-6 border border-gray-200 dark:border-gray-700 mb-10">
+            <div id="cy" class="w-full max-w-3xl mx-auto aspect-square bg-gray-50 dark:bg-gray-800 rounded-3xl p-6 border border-gray-200 dark:border-gray-700 mb-10"></div>
               <canvas id="cluster-viz"></canvas>
             </div>
 
@@ -212,11 +212,14 @@ document.addEventListener('DOMContentLoaded', () => {
       // initSubmitFeedback(results);
 
       // Render polarArea chart
-      setTimeout(() => {
-        const canvas = document.getElementById('cluster-viz');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
+setTimeout(() => {
+  const container = document.getElementById('cy');
+  if (!container) {
+    // Fallback to polarArea if Cytoscape container missing
+    const canvas = document.getElementById('cluster-viz');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
         new Chart(ctx, {
           type: 'polarArea',
           data: {
@@ -233,15 +236,96 @@ document.addEventListener('DOMContentLoaded', () => {
           },
           options: {
             responsive: true,
-            plugins: {
-              legend: { position: 'bottom', labels: { boxWidth: 12, padding: 20, usePointStyle: true } }
-            },
-            scales: {
-              r: { ticks: { display: false }, grid: { color: 'rgba(156,163,175,0.3)' } }
-            }
+            plugins: { legend: { position: 'bottom' } },
+            scales: { r: { ticks: { display: false } } }
           }
         });
-      }, 300);
+      }
+    }
+    return;
+  }
+
+  // Cytoscape concentric static network
+  cytoscape({
+    container: container,
+
+    elements: [
+      // Central pillar
+      { data: { id: 'pillar', label: mainTopic || 'Central Pillar' } },
+
+      // Topics orbiting pillar
+      ...clusters.map((c, i) => ({
+        data: { 
+          id: `topic-${i}`, 
+          label: c.pillar, 
+          parent: 'pillar', 
+          coverage: c.coverage 
+        }
+      })),
+
+      // Subtopics around each topic
+      ...clusters.flatMap((c, i) => 
+        (c.subtopics || []).map((st, j) => ({
+          data: { 
+            id: `sub-${i}-${j}`, 
+            label: st, 
+            parent: `topic-${i}` 
+          }
+        }))
+      ),
+
+      // Edges: pillar → topics
+      ...clusters.map((c, i) => ({
+        data: { source: 'pillar', target: `topic-${i}` }
+      }))
+    ],
+
+    style: [
+      { selector: 'node', style: { 
+        'background-color': '#666', 
+        'label': 'data(label)', 
+        'text-valign': 'center',
+        'font-size': 12,
+        'color': '#fff'
+      }},
+      { selector: 'node#pillar', style: { 
+        'background-color': '#fb923c', 
+        'width': 80, 
+        'height': 80, 
+        'font-size': 16,
+        'font-weight': 'bold'
+      }},
+      { selector: 'node[parent]', style: { 
+        'background-color': ele => {
+          const cov = ele.data('coverage') || 70;
+          return cov >= 85 ? '#10b981' : cov >= 70 ? '#34d399' : '#f59e0b';
+        },
+        'width': 60,
+        'height': 60
+      }},
+      { selector: 'edge', style: { 
+        'width': 3,
+        'line-color': '#ccc',
+        'target-arrow-color': '#ccc',
+        'target-arrow-shape': 'triangle'
+      }}
+    ],
+
+    layout: {
+      name: 'concentric',
+      center: { x: 0, y: 0 },
+      fit: true,
+      padding: 30,
+      concentric: node => node.id() === 'pillar' ? 1000 : 1,
+      levelWidth: () => 200
+    },
+
+    // Static mode – no interaction
+    userZoomingEnabled: false,
+    userPanningEnabled: false,
+    boxSelectionEnabled: false
+  });
+}, 300);
 
     } catch (err) {
       console.error('Audit error:', err);
