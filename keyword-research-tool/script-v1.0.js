@@ -2,6 +2,8 @@ import { canRunTool } from '/main-v1.1.js';
 // import { initShareReport } from './share-report-v1.js';
 // import { initSubmitFeedback } from './submit-feedback-v1.js';
 
+const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+const TOKEN_KEY = 'traffic_torch_jwt';
 const API_URL = 'https://keyword-research.traffictorch.workers.dev';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tips = [
         'Analyzing your keyword and optional page...',
         'Extracting key topics if URL provided...',
-        'Generating high-impact keyword suggestions...'
+        'Generating high-impact AI keyword suggestions...'
     ];
     let tipIndex = 0;
 
@@ -25,6 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        //const canProceed = await canRunTool('limit-audit-id');
+        //if (!canProceed) return;
 
         const seedInput = document.getElementById('seed').value.trim();
         const urlInput = document.getElementById('url').value.trim();
@@ -36,12 +41,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!canRunTool('keyword-research')) {
-            results.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">Daily tool limit reached. Please try again tomorrow or upgrade.</p>';
+            results.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">Daily tool limit reached. Please try again tomorrow or upgrade to Pro.</p>';
             results.classList.remove('hidden');
             return;
         }
 
-        form.classList.add('hidden');
         loader.classList.remove('hidden');
         progressText.textContent = 'Generating AI suggestions...';
 
