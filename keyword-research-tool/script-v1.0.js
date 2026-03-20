@@ -1,7 +1,7 @@
 import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
-const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+
 const API_URL = 'https://keyword-research.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
