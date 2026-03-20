@@ -76,7 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const timeoutId = setTimeout(() => controller.abort(), 120000);
 
       // Get analyze mode (default to site-wide)
-      const isSiteWide = modeToggle?.checked ?? true;
+      const selectedMode = document.querySelector('input[name="analyze-mode"]:checked');
+	  const isSiteWide = selectedMode?.value === 'site-wide' ?? true;
 
       const res = await fetch(ANALYZE_ENDPOINT, {
         method: 'POST',

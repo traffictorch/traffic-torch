@@ -391,15 +391,37 @@
 		</p>
         </div>
         
-<div class="mb-6 flex items-center justify-center gap-4 px-4">
-  <label for="mode-toggle" class="text-lg font-medium text-gray-800 dark:text-gray-200">Analyze Mode:</label>
-  <div class="relative inline-flex items-center cursor-pointer">
-    <input type="checkbox" id="mode-toggle" class="sr-only peer" checked>
-    <div class="w-14 h-7 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-gradient-to-r peer-checked:from-orange-500 peer-checked:to-pink-600"></div>
+<div class="mb-8 flex flex-col items-center gap-3 px-4">
+  <label class="text-lg font-medium text-gray-800 dark:text-gray-200">Analyze Mode</label>
+  
+  <div class="inline-flex rounded-full bg-gray-200 dark:bg-gray-700 p-1 shadow-inner">
+    <label class="relative cursor-pointer">
+      <input 
+        type="radio" 
+        name="analyze-mode" 
+        value="site-wide" 
+        id="mode-sitewide" 
+        class="sr-only peer" 
+        checked 
+      />
+      <span class="px-6 py-3 text-base font-semibold rounded-full transition-all duration-300 peer-checked:bg-gradient-to-r peer-checked:from-orange-500 peer-checked:to-pink-600 peer-checked:text-white peer-checked:shadow-md text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600">
+        Site-Wide
+      </span>
+    </label>
+    
+    <label class="relative cursor-pointer">
+      <input 
+        type="radio" 
+        name="analyze-mode" 
+        value="single-page" 
+        id="mode-single" 
+        class="sr-only peer" 
+      />
+      <span class="px-6 py-3 text-base font-semibold rounded-full transition-all duration-300 peer-checked:bg-gradient-to-r peer-checked:from-orange-500 peer-checked:to-pink-600 peer-checked:text-white peer-checked:shadow-md text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600">
+        Single Page
+      </span>
+    </label>
   </div>
-  <span id="mode-label" class="text-lg font-semibold transition-colors duration-200 text-orange-600 dark:text-orange-400">
-    Site-Wide
-  </span>
 </div>
       
 <form id="authority-form" class="max-w-2xl mx-auto mb-20 space-y-4">
