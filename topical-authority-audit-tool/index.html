@@ -393,44 +393,47 @@
         
 <div class="mb-8 flex flex-col items-center gap-3 px-4">
   <label class="text-lg font-medium text-gray-800 dark:text-gray-200">Analyze Mode</label>
-  
-  <div class="inline-flex rounded-full bg-gray-200 dark:bg-gray-700 p-1 shadow-inner">
+
+  <div class="relative inline-flex rounded-full bg-gray-200 dark:bg-gray-700 p-1 shadow-inner">
     <!-- Site-Wide (default selected) -->
-    <label class="relative cursor-pointer">
-      <input 
-        type="radio" 
-        name="analyze-mode" 
-        value="site-wide" 
-        id="mode-sitewide" 
-        class="sr-only peer" 
-        checked 
-      />
-      <span class="px-6 py-3 text-base font-semibold rounded-full transition-all duration-300 
-                   peer-checked:bg-gradient-to-r peer-checked:from-orange-500 peer-checked:to-pink-600 
-                   peer-checked:text-white peer-checked:shadow-md 
-                   bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 
-                   hover:bg-gray-100 dark:hover:bg-gray-600">
-        Site-Wide
-      </span>
+    <input
+      type="radio"
+      name="analyze-mode"
+      value="site-wide"
+      id="mode-sitewide"
+      class="sr-only peer"
+      checked
+    />
+    <label
+      for="mode-sitewide"
+      class="px-7 py-3.5 text-base font-semibold rounded-full cursor-pointer transition-all duration-300 z-10
+             peer-checked:bg-gradient-to-r peer-checked:from-orange-500 peer-checked:to-pink-600
+             peer-checked:text-white peer-checked:shadow-md peer-checked:scale-105
+             bg-transparent text-gray-800 dark:text-gray-200 hover:text-orange-700 dark:hover:text-orange-300"
+    >
+      Site-Wide
     </label>
-    
+
     <!-- Single Page -->
-    <label class="relative cursor-pointer">
-      <input 
-        type="radio" 
-        name="analyze-mode" 
-        value="single-page" 
-        id="mode-single" 
-        class="sr-only peer" 
-      />
-      <span class="px-6 py-3 text-base font-semibold rounded-full transition-all duration-300 
-                   peer-checked:bg-gradient-to-r peer-checked:from-orange-500 peer-checked:to-pink-600 
-                   peer-checked:text-white peer-checked:shadow-md 
-                   bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 
-                   hover:bg-gray-100 dark:hover:bg-gray-600">
-        Single Page
-      </span>
+    <input
+      type="radio"
+      name="analyze-mode"
+      value="single-page"
+      id="mode-single"
+      class="sr-only peer"
+    />
+    <label
+      for="mode-single"
+      class="px-7 py-3.5 text-base font-semibold rounded-full cursor-pointer transition-all duration-300 z-10
+             peer-checked:bg-gradient-to-r peer-checked:from-orange-500 peer-checked:to-pink-600
+             peer-checked:text-white peer-checked:shadow-md peer-checked:scale-105
+             bg-transparent text-gray-800 dark:text-gray-200 hover:text-orange-700 dark:hover:text-orange-300"
+    >
+      Single Page
     </label>
+
+    <!-- Moving background pill (absolute positioned behind) -->
+    <div class="absolute inset-1 rounded-full bg-gradient-to-r from-orange-500 to-pink-600 shadow-md transition-all duration-300 ease-in-out peer-checked:translate-x-full peer-checked:opacity-0 opacity-100 scale-x-50 origin-left peer-checked:origin-right"></div>
   </div>
 </div>
       
