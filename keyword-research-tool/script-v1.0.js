@@ -1,9 +1,8 @@
 import { canRunTool } from '/main-v1.1.js';
-import { initShareReport } from './share-report-v1.js';
-import { initSubmitFeedback } from './submit-feedback-v1.js';
+// import { initShareReport } from './share-report-v1.js';
+// import { initSubmitFeedback } from './submit-feedback-v1.js';
 
 const API_URL = 'https://keyword-research.traffictorch.workers.dev';
-const TOKEN_KEY = 'traffic_torch_jwt';
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('keywordForm');
@@ -11,24 +10,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressText = document.getElementById('progress-text');
     const progressTip = document.getElementById('progress-tip');
     const results = document.getElementById('results');
-    const detectedIntent = document.getElementById('detectedIntent');
     const suggestionsGrid = document.getElementById('suggestionsGrid');
 
-    // Dynamic localization (kept for consistency, even if not used in AI)
-    const locale = navigator.languages?.[0] || navigator.language || 'en-US';
-    const country = locale.split('-')[1]?.toLowerCase() || 'us';
-    const lang = locale.split('-')[0];
-
     const tips = [
-        'Analyzing your keyword and page...',
-        'Extracting top topics if URL provided...',
-        'Generating high-impact Keyword suggestions...'
+        'Analyzing your keyword and optional page...',
+        'Extracting key topics if URL provided...',
+        'Generating high-impact keyword suggestions...'
     ];
     let tipIndex = 0;
 
-    // Initialize share & feedback once (assumes those modules exist and attach listeners)
-    initShareReport();
-    initSubmitFeedback();
+    // Temporarily disabled until DOM element checks are added in those modules
+    // initShareReport();
+    // initSubmitFeedback();
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -42,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Check tool run limit (your existing guard)
         if (!canRunTool('keyword-research')) {
             results.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">Daily tool limit reached. Please try again tomorrow or upgrade.</p>';
             results.classList.remove('hidden');
@@ -52,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         form.classList.add('hidden');
         loader.classList.remove('hidden');
         progressText.textContent = 'Generating AI suggestions...';
+
         const tipInterval = setInterval(() => {
             tipIndex = (tipIndex + 1) % tips.length;
             progressTip.textContent = tips[tipIndex];
@@ -68,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!response.ok) {
-                throw new Error(`Worker returned ${response.status}`);
+                throw new Error(`Worker error: ${response.status}`);
             }
 
             const data = await response.json();
@@ -79,19 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const suggestions = Array.isArray(data.suggestions) ? data.suggestions : [];
 
-            // Simple intent detection (client-side, from seed + url if present)
-            let pageText = seedInput;
-            if (urlInput) {
-                // Minimal fetch just for intent (no full text needed)
-                try {
-                    const res = await fetch(urlInput, { mode: 'no-cors' }); // best-effort
-                    if (res.ok) pageText += ' ' + (await res.text()).slice(0, 800).toLowerCase();
-                } catch {}
-            }
-            const intents = detectIntents(pageText);
-            detectedIntent.textContent = intents.join(', ') || 'Mixed';
-
-            // Render suggestions as copy buttons
             suggestionsGrid.innerHTML = '';
             suggestionsGrid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6';
 
@@ -128,15 +108,4 @@ document.addEventListener('DOMContentLoaded', () => {
             results.classList.remove('hidden');
         }
     });
-
-    // Keep your existing helper functions (unchanged)
-    function detectIntents(text) {
-        const lower = text.toLowerCase();
-        const intents = new Set();
-        if (lower.match(/book|stay|buy|price|accommodation|restaurant|menu|booking|cafe|hotel|shop|order/)) intents.add('Commercial');
-        if (lower.match(/how|guide|tips|tutorial|what is|why|activities|learn/)) intents.add('Informational');
-        if (lower.match(/best|review|vs|compare|top|rating|versus/)) intents.add('Transactional');
-        if (lower.match(/where|location|map|directions|near|address/)) intents.add('Navigational');
-        return Array.from(intents).slice(0, 4) || ['Mixed'];
-    }
 });
