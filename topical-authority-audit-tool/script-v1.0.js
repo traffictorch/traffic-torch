@@ -23,26 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // Analyze Mode Toggle Logic
-  const modeToggle = document.getElementById('mode-toggle');
-  const modeLabel = document.getElementById('mode-label');
-
-  if (modeToggle && modeLabel) {
-    const updateModeLabel = () => {
-      if (modeToggle.checked) {
-        modeLabel.textContent = 'Site-Wide';
-        modeLabel.classList.remove('text-emerald-600', 'dark:text-emerald-400');
-        modeLabel.classList.add('text-orange-600', 'dark:text-orange-400');
-      } else {
-        modeLabel.textContent = 'Single Page Only';
-        modeLabel.classList.remove('text-orange-600', 'dark:text-orange-400');
-        modeLabel.classList.add('text-emerald-600', 'dark:text-emerald-400');
-      }
-    };
-
-    modeToggle.addEventListener('change', updateModeLabel);
-    updateModeLabel(); // Initialize on load
-  }
+  // Removed old checkbox toggle logic — now using radio buttons via name="analyze-mode"
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -75,9 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 120000);
 
-      // Get analyze mode (default to site-wide)
+      // Get analyze mode from radio buttons (default to site-wide)
       const selectedMode = document.querySelector('input[name="analyze-mode"]:checked');
-	  const isSiteWide = selectedMode?.value === 'site-wide' ?? true;
+      const isSiteWide = selectedMode?.value === 'site-wide' ?? true;
 
       const res = await fetch(ANALYZE_ENDPOINT, {
         method: 'POST',
@@ -270,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Optional: Initialize share & feedback modules if they exist
-  //initShareReport?.();
-  //initSubmitFeedback?.();
+  // Initialize share & feedback modules if they exist (uncommented)
+  initShareReport?.();
+  initSubmitFeedback?.();
 });

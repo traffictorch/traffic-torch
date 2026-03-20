@@ -395,6 +395,7 @@
   <label class="text-lg font-medium text-gray-800 dark:text-gray-200">Analyze Mode</label>
   
   <div class="inline-flex rounded-full bg-gray-200 dark:bg-gray-700 p-1 shadow-inner">
+    <!-- Site-Wide (default selected) -->
     <label class="relative cursor-pointer">
       <input 
         type="radio" 
@@ -404,11 +405,16 @@
         class="sr-only peer" 
         checked 
       />
-      <span class="px-6 py-3 text-base font-semibold rounded-full transition-all duration-300 peer-checked:bg-gradient-to-r peer-checked:from-orange-500 peer-checked:to-pink-600 peer-checked:text-white peer-checked:shadow-md text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600">
+      <span class="px-6 py-3 text-base font-semibold rounded-full transition-all duration-300 
+                   peer-checked:bg-gradient-to-r peer-checked:from-orange-500 peer-checked:to-pink-600 
+                   peer-checked:text-white peer-checked:shadow-md 
+                   bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 
+                   hover:bg-gray-100 dark:hover:bg-gray-600">
         Site-Wide
       </span>
     </label>
     
+    <!-- Single Page -->
     <label class="relative cursor-pointer">
       <input 
         type="radio" 
@@ -417,7 +423,11 @@
         id="mode-single" 
         class="sr-only peer" 
       />
-      <span class="px-6 py-3 text-base font-semibold rounded-full transition-all duration-300 peer-checked:bg-gradient-to-r peer-checked:from-orange-500 peer-checked:to-pink-600 peer-checked:text-white peer-checked:shadow-md text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600">
+      <span class="px-6 py-3 text-base font-semibold rounded-full transition-all duration-300 
+                   peer-checked:bg-gradient-to-r peer-checked:from-orange-500 peer-checked:to-pink-600 
+                   peer-checked:text-white peer-checked:shadow-md 
+                   bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 
+                   hover:bg-gray-100 dark:hover:bg-gray-600">
         Single Page
       </span>
     </label>
