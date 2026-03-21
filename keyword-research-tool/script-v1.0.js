@@ -1,6 +1,6 @@
 import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from './share-report-v1.js';
-import { initSubmitFeedback } from './submit-feedback-v1.js';
+import { initSubmitFeedback } from './submit-feedback-v1.js'; 
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -47,43 +47,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
         loader.classList.remove('hidden');
         progressText.textContent = 'Generating AI suggestions...';
-
         const tipInterval = setInterval(() => {
             tipIndex = (tipIndex + 1) % tips.length;
             progressTip.textContent = tips[tipIndex];
         }, 2200);
 
+        // Clean and normalize URL input BEFORE fetch
+        let cleanUrl = urlInput ? urlInput.trim() : '';
+        let finalUrl = undefined;
+        let fallbackKeyword = 'topic research';
+
+        if (cleanUrl) {
+          // Auto-add https:// if no protocol
+          if (!cleanUrl.match(/^https?:\/\//i)) {
+            cleanUrl = 'https://' + cleanUrl;
+          }
+          try {
+            const urlObj = new URL(cleanUrl);
+            finalUrl = urlObj.href; // normalized full URL
+            // Smart fallback keyword if no seedInput
+            if (!seedInput) {
+              const pathParts = urlObj.pathname.split('/').filter(Boolean);
+              fallbackKeyword = pathParts.length > 0 
+                ? pathParts[pathParts.length - 1].replace(/-/g, ' ') 
+                : urlObj.hostname.replace('www.', '');
+            }
+          } catch (e) {
+            console.warn('Invalid URL format:', cleanUrl);
+            // finalUrl stays undefined → tool runs keyword-only mode
+          }
+        }
+
         try {
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-let cleanUrl = urlInput ? urlInput.trim() : '';
-let finalUrl = undefined;
-let fallbackKeyword = 'topic research';
-
-if (cleanUrl) {
-  // Auto-add https:// if no protocol present
-  if (!cleanUrl.match(/^https?:\/\//i)) {
-    cleanUrl = 'https://' + cleanUrl;
-  }
-  try {
-    const urlObj = new URL(cleanUrl);
-    finalUrl = urlObj.href; // full normalized URL
-    // Better keyword fallback: use last path segment or hostname
-    if (!seedInput) {
-      const pathParts = urlObj.pathname.split('/').filter(Boolean);
-      fallbackKeyword = pathParts.length > 0 ? pathParts[pathParts.length - 1].replace(/-/g, ' ') : urlObj.hostname.replace('www.', '');
-    }
-  } catch (e) {
-    console.warn('Invalid URL format:', cleanUrl);
-    // Keep finalUrl undefined if parse fails
-  }
-}
-
-body: JSON.stringify({
-    keyword: seedInput || fallbackKeyword,
-    url: finalUrl
-})
+                body: JSON.stringify({
+                    keyword: seedInput || fallbackKeyword,
+                    url: finalUrl
+                })
             });
 
             if (!response.ok) {
@@ -97,20 +99,20 @@ body: JSON.stringify({
             }
 
             const suggestions = Array.isArray(data.suggestions) ? data.suggestions : [];
-            
-// Set share-friendly page title for report
-const titleEl = document.getElementById('analyzed-page-title');
-if (titleEl) {
-  let titleText = seedInput ? `Keyword Research: ${seedInput}` : 'Keyword Research';
-  if (urlInput) {
-    try {
-      const urlObj = new URL(urlInput.startsWith('http') ? urlInput : 'https://' + urlInput);
-      titleText += ` for ${urlObj.hostname.replace('www.', '')}`;
-    } catch {}
-  }
-  titleEl.textContent = titleText;
-  titleEl.classList.remove('hidden');
-}
+
+            // Set share-friendly page title for report
+            const titleEl = document.getElementById('analyzed-page-title');
+            if (titleEl) {
+              let titleText = seedInput ? `Keyword Research: ${seedInput}` : 'Keyword Research';
+              if (urlInput) {
+                try {
+                  const urlObj = new URL(urlInput.startsWith('http') ? urlInput : 'https://' + urlInput);
+                  titleText += ` for ${urlObj.hostname.replace('www.', '')}`;
+                } catch {}
+              }
+              titleEl.textContent = titleText;
+              titleEl.classList.remove('hidden');
+            }
 
             suggestionsGrid.innerHTML = '';
             suggestionsGrid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6';
