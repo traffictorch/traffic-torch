@@ -6,6 +6,9 @@ import { initSubmitFeedback } from './submit-feedback-v1.js';
 
 const ANALYZE_ENDPOINT = 'https://topical-authority-ai-worker.traffictorch.workers.dev/';
 
+const TOKEN_KEY = 'traffic_torch_jwt';
+const API_URL = 'https://keyword-research.traffictorch.workers.dev';
+
 function getGrade(score) {
   if (score >= 85) return { text: 'Excellent', emoji: '✅', color: 'text-green-600 dark:text-green-400' };
   if (score >= 70) return { text: 'Good', emoji: '👍', color: 'text-emerald-600 dark:text-emerald-400' };
@@ -28,10 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    if (!(await canRunTool())) {
-      alert('Rate limit reached or authentication issue. Please try again later.');
-      return;
-    }
+  //const canProceed = await canRunTool('limit-audit-id');
+  //if (!canProceed) return;
 
     const urlInput = document.getElementById('url-input');
     const inputValue = urlInput?.value.trim();

@@ -109,16 +109,6 @@ body::before {
   details:not(.fixes-panel details, .full-details details) {
     display: none !important;
   }
-  
-  /* Hide FAQ title and content */
-  h2:text-contains("Frequently Asked Questions"),
-  h2:text-contains("Asked Questions"),
-  details,
-  summary,
-  #faq-accordion,
-  .space-y-4 > details {
-    display: none !important;
-  }
 
 /* ──────────────────────────────────────────────────────────────
    Always show important report content + FORCE expand all panels
@@ -188,38 +178,6 @@ button[onclick*="classList.toggle"] {
   .max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 p,
   .max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 div.text-xl.leading-relaxed.text-center {
     display: none !important;
-  }
-  
-  /* Show only input form + keyword output */
-  #keywordForm,
-  #results,
-  #suggestionsGrid {
-    display: block !important;
-  }
-
-  #keywordForm.hidden {
-    display: block !important;
-  }
-
-  #results {
-    page-break-before: always;
-  }
-
-  #suggestionsGrid {
-    column-count: 2;
-    column-gap: 2cm;
-    margin: 1cm 0;
-  }
-
-  #suggestionsGrid button {
-    break-inside: avoid;
-    margin-bottom: 1em;
-    padding: 0.8em 1em;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    background: #f9fafb;
-    color: black;
-    font-size: 11pt;
   }
 
   /* ──────────────────────────────────────────────────────────────
@@ -302,4 +260,51 @@ button[onclick*="classList.toggle"] {
     orphans: 4;
     widows: 4;
   }
+}
+
+/* Hide FAQ title and all accordion content – more aggressive targeting */
+h2:where(:contains("Frequently Asked Questions"), :contains("Asked Questions"), :contains("FAQ")) {
+  display: none !important;
+}
+
+details,
+summary,
+#faq-accordion,
+.space-y-4 > details,
+details.group.rounded-2xl,
+details.rounded-2xl {
+  display: none !important;
+}
+
+/* Force keywords visible + readable columns on every page */
+#results,
+#suggestionsGrid,
+#suggestionsGrid button {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  max-height: none !important;
+  page-break-inside: avoid !important;
+}
+
+#suggestionsGrid {
+  display: block !important;
+  column-count: 2 !important;
+  column-gap: 2cm !important;
+  margin: 1cm 0 !important;
+  break-inside: avoid-column !important;
+}
+
+#suggestionsGrid button {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+  margin-bottom: 1em !important;
+  padding: 0.8em 1em !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 0.5rem !important;
+  background: #f9fafb !important;
+  color: black !important;
+  font-size: 11pt !important;
+  box-shadow: none !important;
 }
