@@ -233,7 +233,7 @@
       "name": "How accurate are the keyword suggestions from this tool?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Very accurate for intent and relevance — the AI deeply understands your input keyword and page content (if provided). Suggestions are long-tail, conversational, and optimized for real user queries across search and AI engines. They’re not scraped from Google — they’re intelligently generated."
+        "text": "Very accurate for intent and relevance. The AI understands your input keyword and page content (if provided). Suggestions are long-tail, conversational, and optimized for real user queries across search and AI engines. They’re not scraped, they’re intelligently generated."
         }
       }
       ]
@@ -382,12 +382,12 @@
       <label for="url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
         Website URL (optional)
       </label>
-      <input
-        type="url"
-        id="url"
-        placeholder="example.com/page"
-        class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition"
-      >
+		<input
+		  type="text"
+		  id="url"
+		  placeholder="example.com/page"
+		  class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition"
+		>
       <p class="text-sm text-gray-800 dark:text-gray-200 mt-2">Add a URL to auto-detect intent and refine suggestions from page content.</p>
     </div>
     <button
@@ -400,10 +400,10 @@
 </div>
 
 <!-- In-place Epic Laser Spinner (hidden until submit) -->
-<div id="loader" class="hidden mt-10 flex flex-col items-center py-6">
+<div id="loader" class="hidden mt-10 flex flex-col items-center py-8">
 	<div class="relative">
   <!-- Responsive spinning circle only (no text inside) -->
-  <div class="w-12 h-12 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
+  <div class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
   <div class="absolute inset-0 w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full border-8 border-transparent border-t-orange-500 border-r-pink-500 border-b-purple-500 animate-spin"></div>
 </div>
 
@@ -426,16 +426,17 @@
             Intent Detected:
           </span>
         </div>
+        
+        <h2 class="text-3xl font-black text-center mb-8 text-gray-900 dark:text-white" id="analyzed-page-title" class="hidden"></h2>
 
-        <h2 class="text-3xl font-black text-center mb-8 text-gray-900 dark:text-white">
+        <h3 class="text-3xl font-black text-center mb-8 text-gray-900 dark:text-white">
           Suggested Keyword Phrases
-        </h2>
+        </h3>
+    
 
         <div class="grid gap-6 md:grid-cols-2" id="suggestionsGrid">
           <!-- Suggestions injected here by JS -->
         </div>
-        
-        <h3 id="analyzed-page-title" class="hidden"></h3>
 
         <div class="mt-10 text-center">
           <p class="text-gray-600 dark:text-gray-500">
@@ -455,6 +456,8 @@
             class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
       Save Report 📥
     </button>
+    
+    
     <!-- Submit Feedback - Blue - third -->
     <button id="feedback-btn"
             class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
@@ -493,7 +496,7 @@
   <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
       <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
-        Feedback for Keyword Research Tool on <strong id="feedback-page-title">${document.title || 'the analyzed page'}</strong>
+        Feedback for Keyword Research Tool
       </p>
       <form id="feedback-form" class="space-y-6">
         <div>
@@ -592,7 +595,7 @@
         <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
       </summary>
       <div class="px-6 pb-6 text-gray-800 dark:text-gray-200">
-        Very accurate for intent and relevance — the AI deeply understands your input keyword and page content (if provided). Suggestions are long-tail, conversational, and optimized for real user queries across search and AI engines. They’re not scraped from Google — they’re intelligently generated.
+        Very accurate for intent and relevance. The AI understands your input keyword and page content (if provided). Suggestions are long-tail, conversational, and optimized for real user queries across search and AI engines. They’re not scraped, they’re intelligently generated.
       </div>
     </details>
   </div>

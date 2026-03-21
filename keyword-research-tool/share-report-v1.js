@@ -18,56 +18,47 @@ export function initShareReport() {
     }
 
     const baseUrl = window.location.origin + window.location.pathname;
+
+    // Clean keyword for URL (encode spaces, commas, etc.)
+    const encodedKeyword = encodeURIComponent(keyword.trim());
+
+    // Clean URL param + readable domain for text
+    let encodedUrl = '';
+    let displayDomain = '';
+    if (url) {
+      try {
+        const urlObj = new URL(url.startsWith('http') ? url : 'https://' + url);
+        encodedUrl = encodeURIComponent(urlObj.href);
+        displayDomain = urlObj.hostname.replace(/^www\./i, '');
+      } catch {
+        encodedUrl = encodeURIComponent(url);
+        displayDomain = url;
+      }
+    }
+
+    // Build short share URL with params
     let shareParams = '';
-    if (keyword) shareParams += `&keyword=${encodeURIComponent(keyword)}`;
-    if (url) shareParams += `&url=${encodeURIComponent(url)}`;
-    const shareUrl = `${baseUrl}?${shareParams.slice(1)}`; // remove leading &
+    if (keyword) shareParams += `keyword=${encodedKeyword}`;
+    if (url) shareParams += (shareParams ? '&' : '') + `url=${encodedUrl}`;
+    const shareUrl = `${baseUrl}${shareParams ? '?' + shareParams : ''}`;
 
-    // Try to get the title of the analyzed/tested page first
-    let pageTitle = 'Keyword Research Report';
-    
-    // Option 1: Look for a dedicated element that shows the page title after analysis
-    const analyzedTitleEl = document.getElementById('analyzed-page-title');
-    if (analyzedTitleEl && analyzedTitleEl.textContent.trim()) {
-      pageTitle = analyzedTitleEl.textContent.trim();
-    }
-    // Option 2: Fallback to document.title (cleaned)
-    else if (document.title && document.title !== 'Keyword Research Tool | Traffic Torch') {
-      pageTitle = document.title
-        .replace(/ \| Traffic Torch$/, '')
-        .replace(/Keyword Research Tool – /, '')
-        .trim() || 'this page';
-    }
-    // Option 3: Build from inputs if no title found
-    else {
-      if (keyword) pageTitle = `Keyword Research: ${keyword}`;
-      if (url) pageTitle += ` for ${url}`;
-      pageTitle = pageTitle.trim() || 'Keyword Research';
-    }
-
-    // Build natural share text centered on the tested page title
-    let shareText = `Check out this AI keyword research report from Traffic Torch`;
-    if (pageTitle !== 'Keyword Research Report') {
-      shareText += ` for ${pageTitle}`;
-    } else if (keyword) {
-      shareText += ` on "${keyword}"`;
-    }
-    if (url && !pageTitle.includes(url)) {
-      shareText += ` (${url})`;
-    }
+    // Short, clean share text
+    let shareText = 'Check out Smarter Keyword Research';
+    if (keyword) shareText += `: ${keyword}`;
+    if (displayDomain) shareText += ` for ${displayDomain}`;
     shareText += `: ${shareUrl}`;
 
     try {
       if (navigator.share) {
         await navigator.share({
-          title: pageTitle,
+          title: 'Smarter Keyword Research Report',
           text: shareText,
           url: shareUrl
         });
         showMessage('Shared successfully!', 'success');
       } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(shareText);
-        showMessage('Report link & description copied!<br>Paste anywhere to share.', 'success');
+        showMessage('Short report link copied!<br>Paste anywhere to share.', 'success');
       } else {
         showMessage('Copy manually:<br>' + shareText, 'info');
       }

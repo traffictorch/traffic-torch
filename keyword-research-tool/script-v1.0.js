@@ -23,6 +23,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initShareReport();
     initSubmitFeedback();
+    
+    // Auto-fill from URL params (for shared reports)
+const params = new URLSearchParams(window.location.search);
+const sharedKeyword = params.get('keyword');
+const sharedUrl = params.get('url');
+
+if (sharedKeyword) {
+  document.getElementById('seed').value = decodeURIComponent(sharedKeyword);
+}
+if (sharedUrl) {
+  document.getElementById('url').value = decodeURIComponent(sharedUrl);
+}
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
