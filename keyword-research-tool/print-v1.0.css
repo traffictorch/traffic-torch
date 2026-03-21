@@ -1,0 +1,116 @@
+@media print {
+  /* ──────────────────────────────────────────────────────────────
+     Clean cover page – shows tool name + inputs + date
+  ──────────────────────────────────────────────────────────────── */
+  body::before {
+    content: "Traffic Torch\A\ASmart Keyword Research Report \A\AGenerated on " attr(data-print-date) "\A\AKeyword: " attr(data-keyword) "\AURL: " attr(data-url);
+    display: block;
+    height: 100vh;
+    min-height: 100vh;
+    page-break-after: always;
+    background: white;
+    color: #111827; /* gray-900 */
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 700;
+    text-align: center;
+    padding-top: 25vh;
+    line-height: 1.6;
+    white-space: pre;
+    font-size: 2.2rem;
+  }
+
+  /* Force body to white background, black text */
+  body {
+    background: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 11pt !important;
+    line-height: 1.45 !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 1.8cm 1.5cm;
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     Show ONLY the input form + results + keyword output
+  ──────────────────────────────────────────────────────────────── */
+  #keywordForm,
+  #results,
+  #suggestionsGrid,
+  #analyzed-page-title {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  /* Force form visible even if JS hid it */
+  #keywordForm.hidden {
+    display: block !important;
+  }
+
+  /* Results container – clean layout */
+  #results {
+    page-break-before: always;
+    margin-top: 0 !important;
+  }
+
+  /* Suggestions grid – full width, no fancy styles */
+  #suggestionsGrid {
+    display: block !important;
+    column-count: 2 !important;
+    column-gap: 2cm !important;
+    margin: 1cm 0 !important;
+  }
+
+  #suggestionsGrid button {
+    display: block !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    margin-bottom: 1em !important;
+    padding: 0.8em 1em !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 0.5rem !important;
+    background: #f9fafb !important;
+    color: black !important;
+    font-size: 11pt !important;
+    box-shadow: none !important;
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     Hide everything else – safe & targeted
+  ──────────────────────────────────────────────────────────────── */
+  header, footer, nav, aside, #loader, #progress-text, #progress-tip,
+  #faq-accordion, #author-bio, #promo-cards, #tools-grid,
+  #share-report-btn, #save-report-btn, #feedback-btn,
+  #share-form-container, #feedback-form-container,
+  #share-message, #feedback-message, .hidden, .no-print,
+  .my-16, .mt-12, .mb-12, .py-16, .max-w-5xl, .max-w-6xl,
+  .tools-grid, .checklist-card, .gradient-bg, .shadow-xl,
+  details, summary, button:not(#keywordForm button), a:not(#keywordForm a) {
+    display: none !important;
+  }
+
+  /* Remove shadows, gradients, borders in print */
+  [class*="shadow"], [class*="gradient"], .rounded-*, .border-* {
+    box-shadow: none !important;
+    background: white !important;
+    border: none !important;
+  }
+
+  /* Better text flow for long keyword lists */
+  p, li, div {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Prevent awkward breaks in keyword grid */
+  #suggestionsGrid button {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}

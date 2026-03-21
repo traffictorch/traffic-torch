@@ -1,6 +1,6 @@
 import { canRunTool } from '/main-v1.1.js';
-// import { initShareReport } from './share-report-v1.js';
-// import { initSubmitFeedback } from './submit-feedback-v1.js';
+import { initShareReport } from './share-report-v1.js';
+import { initSubmitFeedback } from './submit-feedback-v1.js';
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -21,9 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     let tipIndex = 0;
 
-    // Temporarily disabled until DOM element checks are added in those modules
-    // initShareReport();
-    // initSubmitFeedback();
+    initShareReport();
+    initSubmitFeedback();
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -58,10 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    keyword: seedInput || urlInput.split('/').pop() || 'topic research',
-                    url: urlInput || undefined
-                })
+				body: JSON.stringify({
+ 				   keyword: seedInput || (urlInput ? new URL('https://' + urlInput).hostname.replace('www.', '') : 'topic research'),
+				    url: urlInput ? (urlInput.startsWith('http://') || urlInput.startsWith('https://') ? urlInput : 'https://' + urlInput) : undefined
+				})
             });
 
             if (!response.ok) {
@@ -75,6 +74,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const suggestions = Array.isArray(data.suggestions) ? data.suggestions : [];
+            
+// Set share-friendly page title for report
+const titleEl = document.getElementById('analyzed-page-title');
+if (titleEl) {
+  let titleText = seedInput ? `Keyword Research: ${seedInput}` : 'Keyword Research';
+  if (urlInput) {
+    try {
+      const urlObj = new URL(urlInput.startsWith('http') ? urlInput : 'https://' + urlInput);
+      titleText += ` for ${urlObj.hostname.replace('www.', '')}`;
+    } catch {}
+  }
+  titleEl.textContent = titleText;
+  titleEl.classList.remove('hidden');
+}
 
             suggestionsGrid.innerHTML = '';
             suggestionsGrid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6';

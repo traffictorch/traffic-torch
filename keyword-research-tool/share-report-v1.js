@@ -1,4 +1,4 @@
-export function initShareReport(resultsContainer) {
+export function initShareReport() {
   const shareBtn = document.getElementById('share-report-btn');
   if (!shareBtn) {
     console.warn("Share button #share-report-btn not found");
@@ -6,49 +6,74 @@ export function initShareReport(resultsContainer) {
   }
 
   shareBtn.addEventListener('click', async () => {
-    const inputUrl = document.getElementById('page-url')?.value.trim();
-    if (!inputUrl) {
-      showMessage('No URL entered yet', 'error');
+    const keywordInput = document.getElementById('seed');
+    const urlInput = document.getElementById('url');
+
+    const keyword = keywordInput?.value.trim() || '';
+    const url = urlInput?.value.trim() || '';
+
+    if (!keyword && !url) {
+      showMessage('Please enter a keyword or URL to share a report', 'error');
       return;
     }
 
     const baseUrl = window.location.origin + window.location.pathname;
-    const inputKeyword = document.getElementById('target-keyword')?.value.trim();
-    const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}&keyword=${encodeURIComponent(inputKeyword || '')}`;
+    let shareParams = '';
+    if (keyword) shareParams += `&keyword=${encodeURIComponent(keyword)}`;
+    if (url) shareParams += `&url=${encodeURIComponent(url)}`;
+    const shareUrl = `${baseUrl}?${shareParams.slice(1)}`; // remove leading &
 
-    let pageTitle = 'this page';
-    const titleElement = document.getElementById('analyzed-page-title');
-    if (titleElement) {
-      pageTitle = titleElement.textContent.trim();
-    } else {
-      pageTitle = document.title.trim() || 'this page';
+    // Try to get the title of the analyzed/tested page first
+    let pageTitle = 'Keyword Research Report';
+    
+    // Option 1: Look for a dedicated element that shows the page title after analysis
+    const analyzedTitleEl = document.getElementById('analyzed-page-title');
+    if (analyzedTitleEl && analyzedTitleEl.textContent.trim()) {
+      pageTitle = analyzedTitleEl.textContent.trim();
+    }
+    // Option 2: Fallback to document.title (cleaned)
+    else if (document.title && document.title !== 'Keyword Research Tool | Traffic Torch') {
+      pageTitle = document.title
+        .replace(/ \| Traffic Torch$/, '')
+        .replace(/Keyword Research Tool – /, '')
+        .trim() || 'this page';
+    }
+    // Option 3: Build from inputs if no title found
+    else {
+      if (keyword) pageTitle = `Keyword Research: ${keyword}`;
+      if (url) pageTitle += ` for ${url}`;
+      pageTitle = pageTitle.trim() || 'Keyword Research';
     }
 
-    pageTitle = pageTitle
-      .replace(/Keyword Optimizer & SEO Checker – Audit Tool | Traffic Torch/gi, '')
-      .trim() || 'this page';
-
-    const shareText = `Check out ${pageTitle} on Traffic Torch Keyword Tool: ${shareUrl}`;
+    // Build natural share text centered on the tested page title
+    let shareText = `Check out this AI keyword research report from Traffic Torch`;
+    if (pageTitle !== 'Keyword Research Report') {
+      shareText += ` for ${pageTitle}`;
+    } else if (keyword) {
+      shareText += ` on "${keyword}"`;
+    }
+    if (url && !pageTitle.includes(url)) {
+      shareText += ` (${url})`;
+    }
+    shareText += `: ${shareUrl}`;
 
     try {
       if (navigator.share) {
-        // Native share – no clipboard involved unless user cancels
         await navigator.share({
-          text: shareText
+          title: pageTitle,
+          text: shareText,
+          url: shareUrl
         });
         showMessage('Shared successfully!', 'success');
       } else if (navigator.clipboard) {
-        // No share API available → fallback to clipboard (this may show prompt once)
         await navigator.clipboard.writeText(shareText);
         showMessage('Report link & description copied!<br>Paste anywhere to share.', 'success');
       } else {
-        // Very old browser – manual copy instruction
         showMessage('Copy manually:<br>' + shareText, 'info');
       }
     } catch (err) {
-      // User cancelled share sheet, permission denied, or other error → silent (no prompt, no message)
       console.error('Share action failed or cancelled:', err);
-      // Do NOT attempt clipboard.writeText() here to avoid permission popup on cancel
+      // Silent on cancel/close/error
     }
   });
 
