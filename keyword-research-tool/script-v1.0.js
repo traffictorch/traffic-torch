@@ -57,10 +57,33 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
- 				   keyword: seedInput || (urlInput ? new URL('https://' + urlInput).hostname.replace('www.', '') : 'topic research'),
-				    url: urlInput ? (urlInput.startsWith('http://') || urlInput.startsWith('https://') ? urlInput : 'https://' + urlInput) : undefined
-				})
+let cleanUrl = urlInput ? urlInput.trim() : '';
+let finalUrl = undefined;
+let fallbackKeyword = 'topic research';
+
+if (cleanUrl) {
+  // Auto-add https:// if no protocol present
+  if (!cleanUrl.match(/^https?:\/\//i)) {
+    cleanUrl = 'https://' + cleanUrl;
+  }
+  try {
+    const urlObj = new URL(cleanUrl);
+    finalUrl = urlObj.href; // full normalized URL
+    // Better keyword fallback: use last path segment or hostname
+    if (!seedInput) {
+      const pathParts = urlObj.pathname.split('/').filter(Boolean);
+      fallbackKeyword = pathParts.length > 0 ? pathParts[pathParts.length - 1].replace(/-/g, ' ') : urlObj.hostname.replace('www.', '');
+    }
+  } catch (e) {
+    console.warn('Invalid URL format:', cleanUrl);
+    // Keep finalUrl undefined if parse fails
+  }
+}
+
+body: JSON.stringify({
+    keyword: seedInput || fallbackKeyword,
+    url: finalUrl
+})
             });
 
             if (!response.ok) {
