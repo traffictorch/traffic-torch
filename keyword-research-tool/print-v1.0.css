@@ -1,9 +1,14 @@
 @media print {
   /* ──────────────────────────────────────────────────────────────
-     Proven cover page – unchanged & stable
-  ─────────────────────────────────────────────────────────────── */
+     Cover page: Tool name + keyword + URL + date
+  ──────────────────────────────────────────────────────────────── */
   body::before {
-    content: "TrafficTorch.net ⚖️\A\A Smart Keyword Research 📝\A\A Report:\A " attr(data-url);
+    content: 
+      "Traffic Torch\A\A" 
+      "Keyword Research Report\A\A" 
+      "Generated on " attr(data-print-date) "\A\A" 
+      "Keyword: " attr(data-keyword) "\A" 
+      "URL: " attr(data-url);
     display: block;
     height: 100vh;
     min-height: 100vh;
@@ -29,230 +34,98 @@
       0 10px 30px rgba(0,0,0,0.5);
   }
 
-  /* Report starts cleanly on next page */
-  #results-wrapper {
-    page-break-before: always;
-    margin-top: 0 !important;
-  }
-
-  /* Full-width content inside results */
-  #results-wrapper,
-  #results-wrapper .container,
-  #results-wrapper .max-w-*,
-  #results-wrapper .mx-auto {
-    max-width: none !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 1cm 1.2cm !important;
-    box-sizing: border-box;
-  }
-
-  @page {
-    size: A4 portrait;
-    margin: 1.5cm;
-  }
-
-  /* Print safety basics */
+  /* Force body to clean print styles */
   body {
     background: white !important;
     color: black !important;
     margin: 0 !important;
     padding: 0 !important;
-    font-size: 10.5pt !important;
-    line-height: 1.38 !important;
+    font-size: 11pt !important;
+    line-height: 1.45 !important;
   }
 
-  /* Clean print – no shadows */
-  .shadow-lg,
-  .shadow-xl,
-  [class*="shadow"] {
+  @page {
+    size: A4 portrait;
+    margin: 1.8cm 1.5cm;
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     Show ONLY: input form + keyword results
+  ──────────────────────────────────────────────────────────────── */
+  #keywordForm,
+  #results,
+  #suggestionsGrid,
+  #analyzed-page-title {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  /* Force form visible (even if JS added .hidden) */
+  #keywordForm.hidden {
+    display: block !important;
+  }
+
+  /* Results start on new page after cover */
+  #results {
+    page-break-before: always;
+    margin-top: 0 !important;
+  }
+
+  /* Suggestions grid – readable columns in print */
+  #suggestionsGrid {
+    display: block !important;
+    column-count: 2 !important;
+    column-gap: 2cm !important;
+    margin: 1cm 0 !important;
+  }
+
+  #suggestionsGrid button {
+    display: block !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    margin-bottom: 1em !important;
+    padding: 0.8em 1em !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 0.5rem !important;
+    background: #f9fafb !important;
+    color: black !important;
+    font-size: 11pt !important;
     box-shadow: none !important;
   }
 
   /* ──────────────────────────────────────────────────────────────
-     TARGETED HIDING – safe & specific (no :not breakage)
-  ─────────────────────────────────────────────────────────────── */
-  .max-w-4xl.mx-auto.my-16 details,
-  section.py-20.bg-gray-50.dark\:bg-gray-900,
-  section.py-16.px-3.max-w-6xl.mx-auto,
-  .tools-grid,
-  section.max-w-5xl.mx-auto.my-24,
-  div[style*="display: flex; justify-content: center; margin: 30px 0;"],
-  .a2a_kit,
-  div.max-w-5xl.mx-auto.px-6.py-4.text-center,
-  section.bottom-banner,
-  .checklist-card,
-  .max-w-7xl.mx-auto,
-  .max-w-6xl.mx-auto {
+     Hide EVERYTHING else – targeted & safe
+  ──────────────────────────────────────────────────────────────── */
+  header, footer, nav, aside, #loader, #progress-text, #progress-tip,
+  h2, h3, details, summary, #faq-accordion, #author-bio,
+  #share-report-btn, #save-report-btn, #feedback-btn,
+  #share-form-container, #feedback-form-container,
+  #share-message, #feedback-message,
+  .my-16, .mt-12, .mb-12, .py-16, .max-w-*, .tools-grid,
+  .checklist-card, .gradient-bg, .shadow-xl, .rounded-*, .border-*,
+  .no-print, button:not(#keywordForm button), a:not(#keywordForm a) {
     display: none !important;
   }
 
-  #upgradeModal,
-  .py-8.text-center,
-  .a2a_kit,
-  .a2a_default_style,
-  .a2a_kit_size_32,
-  [class*="a2a_"] {
-    display: none !important;
+  /* Remove all shadows/gradients/borders in print */
+  [class*="shadow"], [class*="gradient"], .rounded-*, .border-* {
+    box-shadow: none !important;
+    background: white !important;
+    border: none !important;
   }
 
-  #upgradeModal[style*="display: block"],
-  #upgradeModal:not(.hidden) {
-    display: none !important;
-  }
-
-  details:not(.fixes-panel details, .full-details details) {
-    display: none !important;
-  }
-
-/* ──────────────────────────────────────────────────────────────
-   Always show important report content + FORCE expand all panels
-─────────────────────────────────────────────────────────────── */
-.fixes-panel,
-.full-details,
-.expand-content,
-.hidden.mt-4,
-.hidden.mt-6,
-.hidden.mt-8,
-button[onclick*="Show Fixes"] + .hidden,
-button[onclick*="More Details"] + .hidden,
-.fixes-panel.hidden,
-.mt-6.space-y-6.hidden,
-.mt-4.space-y-6.hidden,
-.mt-6.space-y-8.hidden,
-.mt-4.space-y-8.hidden {
-  display: block !important;
-  visibility: visible !important;
-  height: auto !important;
-  max-height: none !important;
-  opacity: 1 !important;
-}
-
-/* Hide the actual toggle buttons in print (clean look) */
-button[onclick*="Show Fixes"],
-button[onclick*="More Details"],
-button[onclick*="classList.toggle"] {
-  display: none !important;
-}
-
-/* Prevent expanded panels from breaking awkwardly across pages */
-.fixes-panel,
-.mt-6.space-y-6,
-.mt-4.space-y-6,
-.mt-6.space-y-8,
-.mt-4.space-y-8 {
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
-  margin-top: 0.5cm !important;
-  margin-bottom: 1cm !important;
-}
-
-  #keyword-form,
-  #analysis-progress,
-  header,
-  footer,
-  nav,
-  aside,
-  .no-print,
-  button,
-  details > summary {
-    display: none !important;
-  }
-
-  #author-bio,
-  #promo-high-impact-cards,
-  #promo-old-vs-modern-seo,
-  #share-form-container,
-  #feedback-form-container,
-  #share-message,
-  #feedback-message,
-  #share-report-btn ~ div[id*="form"],
-  #feedback-btn ~ div[id*="form"],
-  .max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8,
-  .max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 h2,
-  .max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 p,
-  .max-w-4xl.mx-auto.mt-12.mb-12.px-4.sm\:px-6.lg\:px-8 div.text-xl.leading-relaxed.text-center {
-    display: none !important;
-  }
-
-  /* ──────────────────────────────────────────────────────────────
-     PAGE BREAK FIX – grid disabled + modern + legacy breaks
-     (this is the part that was causing overlap in Firefox/Chrome)
-  ─────────────────────────────────────────────────────────────── */
-
-  /* Big score card + radar stay together or get clean separation */
-  .flex.justify-center.my-8.sm\:my-12,
-  .max-w-5xl.mx-auto.my-16 {
-    page-break-inside: avoid !important;
-    break-inside: avoid-page !important;
-  }
-
-  /* Radar gets its own clean page */
-  .max-w-5xl.mx-auto.my-16 {
-    page-break-before: always !important;
-    break-before: page !important;
-  }
-
-  /* CRITICAL: Disable CSS Grid for print (grid children ignore page breaks in Firefox/Chrome) */
-  .grid.md\:grid-cols-3.gap-8.my-16 {
-    display: block !important;           /* forces normal block flow */
-    grid-template-columns: none !important;
-    gap: 0 !important;
-    page-break-before: always !important; /* whole metrics section starts new page */
-    break-before: page !important;
-  }
-
-  /* Each of the 6 metric cards – new page + never split */
-  .grid.md\:grid-cols-3.gap-8.my-16 > div {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-    margin-top: 1cm !important;
-    margin-bottom: 1.5cm !important;
-    width: 100% !important;
-  }
-
-  /* Force new page on every metric card AFTER the first one */
-  .grid.md\:grid-cols-3.gap-8.my-16 > div:nth-child(n+2) {
-    page-break-before: always !important;
-    break-before: page !important;
-  }
-
-  /* Top Priority Fixes section */
-  .my-16 h3.text-4xl.font-bold.text-center.text-orange-600 {
-    page-break-before: always !important;
-    break-before: page !important;
-  }
-
-  .my-16 > h3 + .space-y-8 > div {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-
-  /* Ranking Potential + Expected Gains */
-  .max-w-6xl.mx-auto.my-20.grid.md\:grid-cols-2.gap-8 {
-    page-break-before: always !important;
-    break-before: page !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid-page !important;
-  }
-
-  /* Extra safety for all cards/panels */
-  [class*="rounded-2xl"],
-  [class*="rounded-3xl"],
-  .bg-white.dark\:bg-gray-800,
-  .bg-gray-900,
-  .shadow-xl,
-  .border-4,
-  .fixes-panel,
-  .p-8.bg-white,
-  .p-4.bg-white {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-
-  /* Better text flow */
+  /* Better text flow for long keyword lists */
   p, li, div {
-    orphans: 4;
-    widows: 4;
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Prevent awkward breaks in keyword output */
+  #suggestionsGrid button {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 }

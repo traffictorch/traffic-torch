@@ -150,9 +150,15 @@ if (sharedUrl) {
                             alert('Copy failed – please select and copy manually');
                         });
                     });
-                    suggestionsGrid.appendChild(btn);
+                    suggestionsGrid.appendChild(btn);  
                 });
             }
+                      
+                    // Prepare print cover page data
+document.body.setAttribute('data-print-date', new Date().toLocaleString('en-AU', { dateStyle: 'medium', timeStyle: 'short' }));
+document.body.setAttribute('data-keyword', seedInput || '—');
+document.body.setAttribute('data-url', urlInput || '—');
+
         } catch (err) {
             console.error('Keyword tool error:', err);
             suggestionsGrid.innerHTML = `<p class="text-center text-red-600 dark:text-red-400">Error: ${err.message || 'Failed to generate suggestions'}. Please try again or check your input.</p>`;
