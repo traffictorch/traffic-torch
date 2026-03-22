@@ -85,42 +85,47 @@ document.addEventListener('DOMContentLoaded', () => {
       suggestions = [],
       predictedRankLift = ''
     } = data || {};
-    const displayTitle = pageTitle.trim()
-      ? pageTitle
-      : inputValue.replace(/^https?:\/\//, '').replace(/\/$/, '');
-    const grade = getGrade(overallScore);
-    results.innerHTML = `
-      <div class="max-w-5xl mx-auto px-4 py-8 text-gray-800 dark:text-gray-200">
-        <!-- Mode Indicator (educational) -->
-        <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6 italic">
-          Site-Wide Analysis: Main page + supporting internal pages scanned — full topical authority check
-        </p>
-        <!-- Overall Score Card -->
-        <div class="flex justify-center my-12">
-          <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 w-full max-w-lg border-4 ${overallScore >= 85 ? 'border-green-500' : overallScore >= 70 ? 'border-emerald-500' : overallScore >= 50 ? 'border-orange-500' : 'border-red-500'}">
-            <p class="text-center text-2xl font-medium mb-6">Topical Authority Score</p>
-            <div class="relative aspect-square w-full max-w-[300px] mx-auto">
-              <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
-                <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none" class="dark:stroke-gray-700"/>
-                <circle cx="100" cy="100" r="90"
-                        stroke="${overallScore >= 85 ? '#22c55e' : overallScore >= 70 ? '#10b981' : overallScore >= 50 ? '#f59e0b' : '#ef4444'}"
-                        stroke-width="16" fill="none"
-                        stroke-dasharray="${(overallScore / 100) * 565} 565" stroke-linecap="round"/>
-              </svg>
-              <div class="absolute inset-0 flex items-center justify-center text-center">
-                <div>
-                  <div class="text-7xl font-black" style="color: ${overallScore >= 85 ? '#22c55e' : '#ef4444'};">${overallScore}</div>
-                  <div class="text-2xl opacity-90">/100</div>
-                </div>
-              </div>
+const displayTitle = pageTitle.trim() 
+  ? pageTitle 
+  : inputValue.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+
+const displayTitleShort = displayTitle.length > 60 
+  ? displayTitle.substring(0, 57) + '...' 
+  : displayTitle;
+
+const grade = getGrade(overallScore);
+results.innerHTML = `
+  <div class="max-w-5xl mx-auto px-4 py-8 text-gray-800 dark:text-gray-200">
+    <!-- Mode Indicator (educational) -->
+    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6 italic">
+      Topical authority audit results are adaptive.
+    </p>
+    <!-- Overall Score Card -->
+    <div class="flex justify-center my-12">
+      <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 w-full max-w-lg border-4 ${overallScore >= 85 ? 'border-green-500' : overallScore >= 70 ? 'border-emerald-500' : overallScore >= 50 ? 'border-orange-500' : 'border-red-500'}">
+        <p class="text-center text-2xl font-medium mb-6">Topical Authority Score</p>
+        <div class="relative aspect-square w-full max-w-[300px] mx-auto">
+          <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+            <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none" class="dark:stroke-gray-700"/>
+            <circle cx="100" cy="100" r="90"
+                    stroke="${overallScore >= 85 ? '#22c55e' : overallScore >= 70 ? '#10b981' : overallScore >= 50 ? '#f59e0b' : '#ef4444'}"
+                    stroke-width="16" fill="none"
+                    stroke-dasharray="${(overallScore / 100) * 565} 565" stroke-linecap="round"/>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center text-center">
+            <div>
+              <div class="text-7xl font-black" style="color: ${overallScore >= 85 ? '#22c55e' : '#ef4444'};">${overallScore}</div>
+              <div class="text-2xl opacity-90">/100</div>
             </div>
-            <p class="mt-6 text-xl md:text-2xl font-semibold text-center text-gray-700 dark:text-gray-300 break-words line-clamp-2">
-              ${displayTitle || 'Analyzed Page'}
-            </p>
-            <p class="mt-4 text-5xl font-bold text-center ${grade.color}">${grade.emoji} ${grade.text}</p>
-            ${predictedRankLift ? `<p class="mt-4 text-center text-xl text-gray-700 dark:text-gray-300">Predicted lift: ${predictedRankLift}</p>` : ''}
           </div>
         </div>
+        <p class="mt-6 text-xl md:text-2xl font-semibold text-center text-gray-700 dark:text-gray-300 break-words line-clamp-2">
+          ${displayTitleShort || 'Analyzed Page'}
+        </p>
+        <p class="mt-4 text-5xl font-bold text-center ${grade.color}">${grade.emoji} ${grade.text}</p>
+        ${predictedRankLift ? `<p class="mt-4 text-center text-xl text-gray-700 dark:text-gray-300">Predicted lift: ${predictedRankLift}</p>` : ''}
+      </div>
+    </div>
         <!-- Detected Topics & Subtopics -->
         <div class="space-y-12">
           <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-800 dark:text-gray-200">Detected Topics & Subtopics</h2>
@@ -129,34 +134,41 @@ document.addEventListener('DOMContentLoaded', () => {
             ${clusters.length > 0 ? `Found ${clusters.length} main topics with detailed subtopics extracted` : 'Analysis limited – site content may be thin'}
           </p>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-            ${clusters.length > 0
-              ? clusters.map((cluster, idx) => {
-                  const color = cluster.coverage >= 85 ? 'green' : cluster.coverage >= 70 ? 'emerald' : 'orange';
-                  return `
-                    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 border-2 border-gray-300 dark:border-gray-700 border-${color}-500 hover:shadow-3xl transition-all duration-300">
-                      <div class="flex items-center gap-5 mb-6">
-                        <div class="flex-shrink-0 w-20 h-20 bg-${color}-100 dark:bg-${color}-900 rounded-2xl flex items-center justify-center text-5xl shadow-md">
-                          ${idx === 0 ? '🌌' : idx === 1 ? '🧠' : idx === 2 ? '❤️' : idx === 3 ? '📜' : '🔍'}
-                        </div>
-                        <div class="flex-grow">
-                          <h3 class="text-2xl md:text-3xl font-bold text-${color}-700 dark:text-${color}-300 mb-2">${cluster.pillar || 'Topic ' + (idx+1)}</h3>
-                          <p class="text-xl font-semibold text-${color}-600 dark:text-${color}-400">${Math.round(cluster.coverage || 0)}% coverage</p>
-                        </div>
-                      </div>
-                      <div class="text-sm uppercase tracking-wider font-medium text-gray-500 dark:text-gray-400 mb-4">Detected Subtopics</div>
-                      <div class="flex flex-wrap gap-3">
+${clusters.length > 0
+  ? clusters
+      .slice()
+      .sort((a, b) => (b.coverage || 0) - (a.coverage || 0))
+      .map((cluster, idx) => {
+        const grade = getGrade(cluster.coverage || 0);
+        const color = grade.color.includes('green') ? 'green' 
+                    : grade.color.includes('emerald') ? 'emerald' 
+                    : grade.color.includes('orange') ? 'orange' 
+                    : 'red';
+        return `
+          <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 border-2 border-gray-300 dark:border-gray-700 border-${color}-500 hover:shadow-3xl transition-all duration-300">
+            <div class="flex items-center gap-5 mb-6">
+              <div class="flex-shrink-0 w-20 h-20 bg-${color}-100 dark:bg-${color}-900 rounded-2xl flex items-center justify-center text-5xl shadow-md">
+                ${idx === 0 ? '🌌' : idx === 1 ? '🧠' : idx === 2 ? '❤️' : idx === 3 ? '📜' : '🔍'}
+              </div>
+              <div class="flex-grow">
+                <h3 class="text-2xl md:text-3xl font-bold text-${color}-700 dark:text-${color}-300 mb-2">${cluster.pillar || 'Topic ' + (idx+1)}</h3>
+                <p class="text-xl font-semibold ${grade.color}">${Math.round(cluster.coverage || 0)}% coverage ${grade.emoji}</p>
+              </div>
+            </div>
+            <div class="text-sm uppercase tracking-wider font-medium text-gray-500 dark:text-gray-400 mb-4">Detected Subtopics</div>
+            <div class="flex flex-wrap gap-3">
 ${cluster.subtopics && cluster.subtopics.length > 0
-  ? cluster.subtopics.slice(0, 40).map(sub => 
+  ? cluster.subtopics.slice(0, 40).map(sub =>
       `<span class="px-4 py-2 bg-${color}-50 dark:bg-${color}-950 text-${color}-700 dark:text-${color}-300 rounded-xl text-sm font-medium border border-${color}-200 dark:border-${color}-700 shadow-sm whitespace-normal break-words max-w-full inline-block mb-2 mr-2">${sub.trim()}</span>`
     ).join('')
   : '<span class="text-gray-500 dark:text-gray-400 italic text-base">Limited distinct subtopics – site content is focused or repetitive</span>'
 }
-                      </div>
-                    </div>
-                  `;
-                }).join('')
-              : '<p class="text-center col-span-full text-xl text-gray-600 dark:text-gray-400 italic py-12">Limited topics detected – site may be product-heavy or thin. Consider adding educational supporting pages.</p>'
-            }
+            </div>
+          </div>
+        `;
+      }).join('')
+  : '<p class="text-center col-span-full text-xl text-gray-600 dark:text-gray-400 italic py-12">Limited topics detected – site may be product-heavy or thin. Consider adding educational supporting pages.</p>'
+}
           </div>
           <!-- Suggested Subtopics -->
           <div class="mt-12">
