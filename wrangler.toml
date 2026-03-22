@@ -1,5 +1,0 @@
-name = "topical-authority-ai-worker"  # your Worker name
-
-[[vectorize]]
-binding = "TOPICAL_VECTORIZE"
-index_name = "topical-authority"
