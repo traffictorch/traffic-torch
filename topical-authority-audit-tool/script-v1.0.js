@@ -146,10 +146,10 @@ document.addEventListener('DOMContentLoaded', () => {
                       <div class="text-sm uppercase tracking-wider font-medium text-gray-500 dark:text-gray-400 mb-4">Detected Subtopics</div>
                       <div class="flex flex-wrap gap-3">
 ${cluster.subtopics && cluster.subtopics.length > 0
-  ? cluster.subtopics.slice(0, 20).map(sub => // show up to 20
-      `<span class="px-4 py-2 bg-${color}-50 dark:bg-${color}-950 text-${color}-700 dark:text-${color}-300 rounded-xl text-sm font-medium border border-${color}-200 dark:border-${color}-700 shadow-sm">${sub.trim()}</span>`
+  ? cluster.subtopics.slice(0, 40).map(sub => 
+      `<span class="px-4 py-2 bg-${color}-50 dark:bg-${color}-950 text-${color}-700 dark:text-${color}-300 rounded-xl text-sm font-medium border border-${color}-200 dark:border-${color}-700 shadow-sm whitespace-normal break-words max-w-full inline-block mb-2 mr-2">${sub.trim()}</span>`
     ).join('')
-  : '<span class="text-gray-500 dark:text-gray-400 italic text-base">Limited subtopics detected – site content is focused</span>'
+  : '<span class="text-gray-500 dark:text-gray-400 italic text-base">Limited distinct subtopics – site content is focused or repetitive</span>'
 }
                       </div>
                     </div>
