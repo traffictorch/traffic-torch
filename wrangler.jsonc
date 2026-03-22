@@ -10,5 +10,12 @@
 			"database_name": "traffic-torch-db",
 			"database_id": "d5c9fa6f-178f-4a5b-ae07-eebd161c6371"
 		}
+	],
+	"vectorize": [
+		{
+			"binding": "TOPICAL_VECTORIZE",
+			"index_name": "topical-authority",
+			"remote": true
+		}
 	]
 }

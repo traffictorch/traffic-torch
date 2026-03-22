@@ -1,0 +1,3 @@
+[[vectorize]]
+binding = "TOPICAL_VECTORIZE"
+index_name = "topical-authority"
