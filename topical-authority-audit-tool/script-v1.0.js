@@ -167,7 +167,7 @@ ${clusters.length > 0
             <div class="flex flex-wrap gap-3">
 ${cluster.subtopics && cluster.subtopics.length > 0
   ? cluster.subtopics.slice(0, 40).map(sub =>
-      `<span class="px-4 py-2 bg-${color}-50 dark:bg-${color}-950 text-${color}-800 dark:text-${color}-100 rounded-xl text-sm font-medium border border-${color}-200 dark:border-${color}-700 shadow-sm whitespace-normal break-words max-w-full inline-block mb-2 mr-2">${sub.trim()}</span>`
+      `<span class="px-4 py-2 bg-${color}-50 dark:bg-transparent text-${color}-800 dark:text-${color}-100 rounded-xl text-sm font-medium border border-${color}-200 dark:border-${color}-400 shadow-sm whitespace-normal break-words max-w-full inline-block mb-2 mr-2">${sub.trim()}</span>`
     ).join('')
   : '<span class="text-gray-600 dark:text-gray-300 italic text-base">Limited distinct subtopics – site content is focused or repetitive</span>'
 }
@@ -300,6 +300,10 @@ ${cluster.subtopics && cluster.subtopics.length > 0
           </div>
         </div>
       `;
+// Initialize share & feedback after results are rendered
+initShareReport();
+initSubmitFeedback();
+
     } catch (err) {
       console.error('Audit error:', err);
       clearTimeout(heavyTimeout);
@@ -319,6 +323,4 @@ ${cluster.subtopics && cluster.subtopics.length > 0
     }
   });
 
-  initShareReport?.();
-  initSubmitFeedback?.();
 });
