@@ -13,37 +13,37 @@ export function initShareReport() {
     const baseUrl = window.location.origin + window.location.pathname;
     const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}`;
 
-    // Get the tested page title directly from the visible element in the score card
-    let pageTitle = 'this page';
+// Get the tested page title
+let pageTitle = 'this page';
 
-    // Primary: Use the exact <p> element inside the big readiness score card
-    const scoreCardTitle = document.querySelector(
-      '.bg-white.dark\\:bg-gray-900.rounded-3xl.shadow-2xl.p-8.md\\:p-12.w-full.max-w-lg.border-4 p.mt-6.text-center.text-base.md\\:text-lg.text-gray-700.dark\\:text-gray-300.px-4.leading-relaxed.break-words'
-    );
-    if (scoreCardTitle) {
-      pageTitle = scoreCardTitle.textContent.trim();
-    }
+// Primary: Target the score card title paragraph (simple & reliable)
+const scoreCardTitle = document.querySelector('#results .mt-6.text-xl.md\\:text-2xl.font-semibold.text-center');
+// or even better if you add class: document.querySelector('.score-card-title');
 
-    // Fallback 1: Try any similar title paragraph inside #results
-    if (pageTitle === 'this page') {
-      pageTitle = document.querySelector('#results p.mt-6.text-center.text-base.md\\:text-lg')?.textContent.trim() || 'this page';
-    }
+if (scoreCardTitle) {
+  pageTitle = scoreCardTitle.textContent.trim();
+}
 
-    // Fallback 2: Last resort — document title (cleaned)
-    if (pageTitle === 'this page' || pageTitle.includes('Traffic Torch')) {
-      pageTitle = document.title
-        .replace(/Topical Authority Audit Tool – Instant Topical Depth & Gap Analysis | Traffic Torch/gi, '')
-        .trim() || 'this page';
-    }
+// Fallback 1: Same selector inside #results
+if (pageTitle === 'this page') {
+  pageTitle = document.querySelector('#results .mt-6.text-xl.md\\:text-2xl.font-semibold.text-center')?.textContent.trim() || 'this page';
+}
 
-    // Final cleanup
-    pageTitle = pageTitle
-      .replace(/Topical Authority Audit Tool \| Traffic Torch/gi, '')
-      .replace(/Traffic Torch/gi, '')
-      .replace(/[\|\-–_]+/g, '')
-      .trim() || 'this page';
+// Fallback 2: Clean document.title
+if (pageTitle === 'this page' || pageTitle.includes('Traffic Torch')) {
+  pageTitle = document.title
+    .replace(/Topical Authority Audit Tool.*Traffic Torch/gi, '')
+    .trim() || 'this page';
+}
 
-    const shareText = `Check out ${pageTitle} on Traffic Torch Topical Authority Audit Tool ${shareUrl}`;
+// Final cleanup
+pageTitle = pageTitle
+  .replace(/Topical Authority Audit Tool \| Traffic Torch/gi, '')
+  .replace(/Traffic Torch/gi, '')
+  .replace(/[\|\-–_]+/g, '')
+  .trim() || 'this page';
+
+const shareText = `Check out ${pageTitle} on Traffic Torch Topical Authority Audit Tool ${shareUrl}`;
 
     try {
       if (navigator.share) {

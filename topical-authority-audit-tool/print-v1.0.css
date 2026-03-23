@@ -1,6 +1,6 @@
 @media print {
   body::before {
-    content: "TrafficTorch.net ⚖️\A\A Topical Authority Audit Tool 🎯\A\A Report:\A " attr(data-url);
+    content: "TrafficTorch.net ⚖️\A\A Topical Authority Audit Tool 🎯\A\A Report for:\A " attr(data-print-title) "\A\A (URL: " attr(data-url) ")";
     display: block;
     height: 100vh;
     min-height: 100vh;
@@ -175,3 +175,35 @@
     display: block !important;
   }
 }
+
+  /* ──────────────────────────────────────────────────────────────
+     HIDE PROMOTIONAL & EDUCATIONAL SECTIONS IN PRINT
+  ─────────────────────────────────────────────────────────────── */
+  
+  /* 1. Dive deeper into building stronger topical authority box */
+  .bg-gradient-to-r.from-green-50.to-blue-50,
+  .bg-gradient-to-r.from-green-50.to-blue-50 * {
+    display: none !important;
+  }
+
+  /* 2. Entire FAQ section */
+  #entity-faq,
+  #entity-faq * {
+    display: none !important;
+  }
+
+  /* 3. "Share?" text and buttons below results */
+  .py-8.text-center > div.flex.flex-col.items-center.gap-4,
+  .py-8.text-center strong.text-xl.font-semibold,
+  strong.text-xl.font-semibold.text-gray-800.dark\:text-gray-200 {
+    display: none !important;
+  }
+
+  /* Extra safety selectors */
+  .mt-12.border.border-green-200,
+  section[id*="faq"],
+  section[id*="entity"],
+  .bg-gradient-to-r.from-green-50,
+  .bg-gradient-to-r.from-blue-50 {
+    display: none !important;
+  }

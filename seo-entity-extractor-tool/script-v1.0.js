@@ -63,6 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    //const canProceed = await canRunTool('limit-audit-id');
+    //if (!canProceed) return;
 
     const urlInput = document.getElementById('url-input');
     const inputValue = urlInput?.value.trim();
