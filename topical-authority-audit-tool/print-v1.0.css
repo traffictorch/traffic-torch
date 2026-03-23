@@ -1,6 +1,6 @@
 @media print {
   body::before {
-    content: "TrafficTorch.net ⚖️\A\A Topical Authority Audit Tool 🎯\A\A Report for:\A " attr(data-print-title) "\A\A (URL: " attr(data-url) ")";
+    content: "TrafficTorch.net ⚖️\A\A Topical Authority Audit Tool 🎯\A\A Report for:\A " attr(data-print-title);
     display: block;
     height: 100vh;
     min-height: 100vh;

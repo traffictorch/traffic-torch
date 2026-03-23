@@ -23,17 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // Auto-fill and auto-submit from shared link (?url=...)
+  // Auto-fill from shared link
   const urlParams = new URLSearchParams(window.location.search);
   const sharedUrl = urlParams.get('url');
+
+  let sharedDecodedUrl = '';
   if (sharedUrl) {
-    const decodedUrl = decodeURIComponent(sharedUrl);
-    const urlInput = document.getElementById('url-input');
-    if (urlInput) {
-      urlInput.value = decodedUrl;
-      // Auto-submit the form
-      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    }
+    sharedDecodedUrl = decodeURIComponent(sharedUrl);
   }
 
   form.addEventListener('submit', async (e) => {
@@ -43,7 +39,14 @@ document.addEventListener('DOMContentLoaded', () => {
     //if (!canProceed) return;
 
     const urlInput = document.getElementById('url-input');
-    const inputValue = urlInput?.value.trim();
+    let inputValue = urlInput?.value.trim();
+
+    // If we have a shared URL and input is empty, use the shared one
+    if (!inputValue && sharedDecodedUrl) {
+      inputValue = sharedDecodedUrl;
+      urlInput.value = sharedDecodedUrl;
+    }
+
     if (!inputValue) {
       alert('Please enter a URL');
       return;
@@ -331,6 +334,17 @@ ${cluster.subtopics && cluster.subtopics.length > 0
 
       document.body.setAttribute('data-print-title', printTitle);
       
+if (sharedDecodedUrl) {
+  const interval = setInterval(() => {
+    const urlInputAgain = document.getElementById('url-input');
+    if (urlInputAgain && urlInputAgain.value !== sharedDecodedUrl) {
+      urlInputAgain.value = sharedDecodedUrl;
+      clearInterval(interval);
+    }
+  }, 100);
+  setTimeout(() => clearInterval(interval), 5000); // safety timeout
+}
+      
 // Initialize share & feedback after results are rendered
 initShareReport();
 initSubmitFeedback();
@@ -353,5 +367,14 @@ initSubmitFeedback();
       `;
     }
   });
+  
+  // Initial auto-submit if we opened a shared link
+  if (sharedDecodedUrl) {
+    const urlInput = document.getElementById('url-input');
+    if (urlInput) {
+      urlInput.value = sharedDecodedUrl;
+      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    }
+  }
 
 });
