@@ -28,17 +28,17 @@ if (pageTitle === 'this page') {
 
 // Fallback 2: Last resort — document title (but clean it)
 if (pageTitle === 'this page' || pageTitle.includes('Traffic Torch')) {
-  pageTitle = document.title.replace(/Semantic Entity Extractor and Audit Tool \| Traffic Torch/gi, '').trim() || 'this page';
+  pageTitle = document.title.replace(/Topical Authority Audit Tool – Instant Topical Depth & Gap Analysis | Traffic Torch/gi, '').trim() || 'this page';
 }
 
 // Final cleanup: remove any remaining tool branding or pipe symbols
 pageTitle = pageTitle
-  .replace(/Semantic Entity Extractor and Audit Tool \| Traffic Torch/gi, '')
+  .replace(/Topical Authority Audit Tool \| Traffic Torch/gi, '')
   .replace(/Traffic Torch/gi, '')
   .replace(/[\|\-–_]+/g, '')
   .trim() || 'this page';
 
-    const shareText = `Check out ${pageTitle} on Traffic Torch SEO Entity Tool ${shareUrl}`;
+    const shareText = `Check out ${pageTitle} on Traffic Torch Topical Authority Audit Tool ${shareUrl}`;
 
     try {
       if (navigator.share) {
