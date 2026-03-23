@@ -189,7 +189,7 @@ ${cluster.subtopics && cluster.subtopics.length > 0
                 <ul class="space-y-4 text-base text-gray-900 dark:text-gray-100">
                   ${suggestions && suggestions.length > 0
                     ? suggestions.map(s => `
-                        <li class="flex items-start gap-4 p-4 bg-orange-50 dark:bg-orange-950 rounded-2xl border border-orange-200 dark:border-orange-700">
+                        <li class="flex items-start gap-4 p-4 bg-orange dark:bg-orange-950 rounded-2xl border border-orange-200 dark:border-orange-700">
                           <span class="flex-shrink-0 text-2xl">➕</span>
                           <div>
                             <p class="font-semibold text-lg text-gray-900 dark:text-white">${s.topic || 'Suggested subtopic'}</p>
@@ -205,7 +205,7 @@ ${cluster.subtopics && cluster.subtopics.length > 0
             </div>
 
             <!-- Educational summary -->
-            <div class="text-center mt-12 p-6 bg-orange-50 dark:bg-orange-950 rounded-3xl border border-orange-200 dark:border-orange-800">
+            <div class="text-center mt-12 p-6 bg-orange dark:bg-orange-950 rounded-3xl border border-orange-200 dark:border-orange-800">
               <p class="text-lg text-gray-800 dark:text-gray-200">
                 These modules show how well your content covers key topics and subtopics.<br>
                 Higher coverage and more detailed subtopics = stronger topical authority in search.

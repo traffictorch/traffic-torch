@@ -1,5 +1,7 @@
-// topical-authority-audit-tool/submit-feedback-v1.js
-export function initSubmitFeedback(resultsContainer) {
+export function initSubmitFeedback() {
+  const resultsContainer = document.getElementById('results');
+  if (!resultsContainer) return;
+
   const feedbackBtn = resultsContainer.querySelector('#feedback-btn');
   const formContainer = resultsContainer.querySelector('#feedback-form-container');
   const feedbackForm = resultsContainer.querySelector('#feedback-form');
@@ -36,11 +38,10 @@ export function initSubmitFeedback(resultsContainer) {
           'ring-opacity-80',
           'bg-blue-100',
           'dark:bg-blue-900/30',
-          'selected-rating'  // custom class for persistence
+          'selected-rating' // custom class for persistence
         );
         b.classList.add('hover:scale-125', 'transition-all', 'duration-200');
       });
-
       // Apply persistent selected state to clicked emoji
       btn.classList.remove('hover:scale-125');
       btn.classList.add(
@@ -52,7 +53,6 @@ export function initSubmitFeedback(resultsContainer) {
         'dark:bg-blue-900/30',
         'selected-rating'
       );
-
       // Store the rating value
       document.getElementById('feedback-rating').value = btn.dataset.rating;
     });
@@ -72,7 +72,6 @@ export function initSubmitFeedback(resultsContainer) {
 
   feedbackForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const submitBtn = feedbackForm.querySelector('button');
     const originalText = submitBtn.textContent;
     submitBtn.disabled = true;
@@ -92,11 +91,11 @@ export function initSubmitFeedback(resultsContainer) {
 
     try {
       const formData = new FormData();
-      formData.append('name', name || 'Anonymous');
+      formData.append('name', 'Anonymous'); // or pull from input if added later
       formData.append('email', email || 'no-reply@traffictorch.net');
       formData.append('message', `Feedback for Topical Authority Tool on ${document.body.getAttribute('data-url') || 'unknown'}\nRating: ${rating || 'None'}\n\n${feedbackText}`);
 
-      const res = await fetch('/api/contact', {  
+      const res = await fetch('/api/contact', {
         method: 'POST',
         body: formData
       });
@@ -107,7 +106,6 @@ export function initSubmitFeedback(resultsContainer) {
       }
 
       const data = await res.json();
-
       if (data.success) {
         showMessage('Thank you! Feedback sent. We\'ll review it soon.', 'success');
         feedbackForm.reset();
