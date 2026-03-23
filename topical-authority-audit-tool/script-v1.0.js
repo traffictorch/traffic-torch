@@ -119,19 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
       results.innerHTML = `
         <div class="max-w-5xl mx-auto px-4 py-2 text-gray-900 dark:text-gray-100">
         
-        // Set print-friendly title on body for cover page
-const printTitleEl = document.querySelector('#results .mt-6.text-xl.md\\:text-2xl.font-semibold.text-center');
-let printTitle = printTitleEl ? printTitleEl.textContent.trim() : displayTitleShort || 'Analyzed Page';
-
-// Clean it up (remove extra junk if any)
-printTitle = printTitle
-  .replace(/Topical Authority Audit Tool.*Traffic Torch/gi, '')
-  .replace(/Traffic Torch/gi, '')
-  .replace(/[\|\-–_]+/g, ' ')
-  .trim() || 'Analyzed Page';
-
-document.body.setAttribute('data-print-title', printTitle);
-        
           <!-- Mode Indicator (educational) -->
           <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6 italic">
             Topical authority audit results are adaptive.
@@ -329,6 +316,21 @@ ${cluster.subtopics && cluster.subtopics.length > 0
           </div>
         </div>
       `;
+      
+      // Set print-friendly title for cover page
+      const printTitleEl = document.querySelector('#results .mt-6.text-xl.md\\:text-2xl.font-semibold.text-center');
+      let printTitle = printTitleEl 
+        ? printTitleEl.textContent.trim() 
+        : (displayTitleShort || 'Analyzed Page');
+
+      printTitle = printTitle
+        .replace(/Topical Authority Audit Tool.*Traffic Torch/gi, '')
+        .replace(/Traffic Torch/gi, '')
+        .replace(/[\|\-–_]+/g, ' ')
+        .trim() || 'Analyzed Page';
+
+      document.body.setAttribute('data-print-title', printTitle);
+      
 // Initialize share & feedback after results are rendered
 initShareReport();
 initSubmitFeedback();
