@@ -168,11 +168,11 @@ if (sharedUrlParam) {
     const progressText = document.getElementById('progress-text');
 
     try {
-      progressText.textContent = "Fetching page...";
-      const res = await fetch("https://rendered-proxy-basic.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
-      if (!res.ok) throw new Error('Page not reachable – check URL');
-      const html = await res.text();
-      const doc = new DOMParser().parseFromString(html, 'text/html');
+    progressText.textContent = "Fetching page...";
+    const res = await fetch("https://seo-intent-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
+    if (!res.ok) throw new Error('Page not reachable – check URL');
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
 
       function getVisibleText(root) {
         let text = '';
@@ -240,7 +240,7 @@ if (sharedUrlParam) {
       const normalizeReadability = read.normalized;
 
       // Schema (already in authoritativeness, but keeping separate normalize for radar)
-      const sch = analyzeSchema(doc);
+      const sch = analyzeSchema(html, doc);
       const normalizeSchema = sch.normalized;
 
       // Intent Analysis
