@@ -169,7 +169,7 @@ if (sharedUrlParam) {
 
     try {
       progressText.textContent = "Fetching page...";
-      const res = await fetch("https://rendered-proxy-basic.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
+      const res = await fetch("https://rendered-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
       if (!res.ok) throw new Error('Page not reachable – check URL');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
