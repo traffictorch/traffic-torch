@@ -334,6 +334,9 @@ ${cluster.subtopics && cluster.subtopics.length > 0
 
       document.body.setAttribute('data-print-title', printTitle);
       
+      // Store the analyzed URL so feedback form shows correct page
+      document.body.setAttribute('data-url', url);
+      
 if (sharedDecodedUrl) {
   const interval = setInterval(() => {
     const urlInputAgain = document.getElementById('url-input');

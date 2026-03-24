@@ -93,7 +93,9 @@ export function initSubmitFeedback() {
       const formData = new FormData();
       formData.append('name', 'Anonymous'); // or pull from input if added later
       formData.append('email', email || 'no-reply@traffictorch.net');
-      formData.append('message', `Feedback for Topical Authority Tool on ${document.body.getAttribute('data-url') || 'unknown'}\nRating: ${rating || 'None'}\n\n${feedbackText}`);
+      
+      const analyzedUrl = document.body.getAttribute('data-url') || 'the analyzed page';
+      formData.append('message', `Feedback for Topical Authority Tool on ${analyzedUrl}\nRating: ${rating || 'None'}\n\n${feedbackText}`);
 
       const res = await fetch('/api/contact', {
         method: 'POST',
