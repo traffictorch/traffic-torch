@@ -169,24 +169,9 @@ if (sharedUrlParam) {
 
     try {
     progressText.textContent = "Fetching page...";
-    let html;
-    try {
-      const proxyRes = await fetch("https://seo-intent-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
-      if (proxyRes.ok) {
-        html = await proxyRes.text();
-      } else {
-        throw new Error('Proxy failed');
-      }
-    } catch (e) {
-      // Direct fallback to get real HTML + schema
-      const directRes = await fetch(url, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (compatible; TrafficTorch/1.0)'
-        }
-      });
-      if (!directRes.ok) throw new Error('Page not reachable – check URL');
-      html = await directRes.text();
-    }
+    const res = await fetch("https://seo-intent-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url) + "&render=full");
+    if (!res.ok) throw new Error('Page not reachable – check URL');
+    const html = await res.text();
     const doc = new DOMParser().parseFromString(html, 'text/html');
 
       function getVisibleText(root) {
