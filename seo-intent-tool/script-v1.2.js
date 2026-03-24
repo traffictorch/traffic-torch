@@ -240,7 +240,7 @@ if (sharedUrlParam) {
       const normalizeReadability = read.normalized;
 
       // Schema (already in authoritativeness, but keeping separate normalize for radar)
-      const sch = analyzeSchema(doc);
+      const sch = analyzeSchema(html, doc);
       const normalizeSchema = sch.normalized;
 
       // Intent Analysis
