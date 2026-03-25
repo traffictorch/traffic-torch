@@ -231,10 +231,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const readability = read.score;
       const normalizeReadability = read.normalized;
 
-      // Schema analysis - this is now the single source of truth for both Schema card AND radar
+      // Single source of truth for schema - this removes the leak that caused phantom 13 types
       const sch = analyzeSchema(html, doc);
       const normalizeSchema = sch.normalized;
-      const schemaTypes = [...new Set(sch.schemaTypes)]; // deduplicated
+      const schemaTypes = [...new Set(sch.schemaTypes || [])];
 
       progressText.textContent = "Analyzing Search Intent";
       await sleep(2000);
