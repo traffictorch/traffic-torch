@@ -52,7 +52,7 @@ export function analyzeSchema(rawHtml, doc = null) {
 
   const uniqueTypes = Array.from(schemaTypes);
   
-  // FIXED: Correct low score when no schema detected (this was the bug)
+  // CORRECTED: Always return 20 when zero schema types found
   const normalized = uniqueTypes.length >= 3 ? 100 : 
                      uniqueTypes.length >= 2 ? 95 : 
                      uniqueTypes.length === 1 ? 65 : 20;
