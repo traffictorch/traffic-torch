@@ -320,6 +320,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const offset = 240;
       const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: targetY, behavior: 'smooth' });
+      
+      // Force AI module to run and show fallback if it fails
+   let aiModuleHTML = '';
+   try {
+     aiModuleHTML = await analyzeAiIntent(cleanedText, url);
+     console.log('✅ AI Intent module executed successfully');
+   } catch (err) {
+     console.error('❌ AI Intent module failed:', err);
+     aiModuleHTML = `<div class="max-w-5xl mx-auto my-16 px-4"><div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 text-center"><p class="text-red-500">AI Intent module temporarily unavailable</p></div></div>`;
+   }
 
       results.innerHTML = `
 <!-- Overall Score Card (SEO Intent) -->
@@ -377,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <!-- AI Detected Search Intents - Full width module -->
-${await analyzeAiIntent(cleanedText, url)}
+${aiModuleHTML}
 
 <!-- Intent -->
 <div class="text-center mb-12">
