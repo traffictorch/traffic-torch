@@ -455,10 +455,6 @@ ${aiModuleHTML}
         how: 'Detects citation links and reference sections. Strong = references or source links found.',
         why: 'Citations show research depth and respect for original sources. They increase perceived reliability. Well-cited content performs better in competitive SERPs.' }
     ] : key === 'Authoritativeness' ? [
-      { name: 'Strong schema markup', value: metrics.schema,
-        fix: 'Implement relevant JSON-LD schema (Article, Person, Organization, FAQPage, HowTo) in the page head.',
-        how: 'Counts valid schema types in script tags. Strong = 2+ relevant types detected.',
-        why: 'Schema helps Google understand entities and content type. It enables rich results and strengthens entity authority. Proper markup is a clear authority signal.' },
       { name: 'Awards/endorsements mentioned', value: metrics.awards,
         fix: 'Mention any awards, media features, client testimonials, or industry recognition earned by you or your site.',
         how: 'Scans text for award-related keywords and phrases. Strong = mentions detected.',
