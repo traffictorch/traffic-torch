@@ -1,13 +1,8 @@
 export function analyzeAuthoritativeness(doc, cleanedText) {
   // === Schema Types ===
+  // Schema Types - now only used for Authoritativeness score, not for report
+  // We no longer rely on this for the main schemaTypes variable
   const schemaTypes = [];
-  doc.querySelectorAll('script[type="application/ld+json"]').forEach(s => {
-    try {
-      const json = JSON.parse(s.textContent);
-      const types = Array.isArray(json) ? json.map(i => i['@type']) : [json['@type']];
-      schemaTypes.push(...types.filter(Boolean));
-    } catch {}
-  });
 
   // === Awards / Endorsements ===
   const hasAwards = !!cleanedText.match(/\b(award|winner|awarded|featured in|as seen on|recognized by|endorsed by|endorsement|best|top|honored|accolade|prize|nominee|finalist|ranked|trusted by|partnered with|collaborated with|official|certified by|accredited by|recommended by|highly rated|testimonials?|client success|case study success|media mention|press coverage)\b/gi);

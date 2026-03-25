@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const readability = read.score;
       const normalizeReadability = read.normalized;
 
-      // Single source of truth for schema - this removes the leak that caused phantom 13 types
+      // Single source of truth for schema + clear any possible previous pollution
       const sch = analyzeSchema(html, doc);
       const normalizeSchema = sch.normalized;
       const schemaTypes = [...new Set(sch.schemaTypes || [])];
