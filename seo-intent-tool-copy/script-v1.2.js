@@ -82,26 +82,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let config = { ...defaultConfig };
   const urlParams = new URLSearchParams(window.location.search);
-  // ── Auto-fill URL from share link ?url= 
-const sharedUrlParam = urlParams.get('url');
-if (sharedUrlParam) {
-  try {
-    const decoded = decodeURIComponent(sharedUrlParam);
-    const input = document.getElementById('url-input');
-    if (input) {
-      input.value = decoded;
-      
-      // Optional trigger analysis automatically
-      setTimeout(() => {
-        if (input.value.trim()) {  // just check there's a URL – that's enough
-          form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-        }
-      }, 500);  // increased slightly to 500ms – gives DOM + any other init more time
+
+  // ── Auto-fill URL from share link ?url=
+  const sharedUrlParam = urlParams.get('url');
+  if (sharedUrlParam) {
+    try {
+      const decoded = decodeURIComponent(sharedUrlParam);
+      const input = document.getElementById('url-input');
+      if (input) {
+        input.value = decoded;
+        setTimeout(() => {
+          if (input.value.trim()) {
+            form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+          }
+        }, 500);
+      }
+    } catch (e) {
+      console.warn('Invalid shared URL parameter', e);
     }
-  } catch (e) {
-    console.warn('Invalid shared URL parameter', e);
   }
-}
+
   const configParam = urlParams.get('config');
   if (configParam) {
     try {
@@ -125,7 +125,6 @@ if (sharedUrlParam) {
   }
 
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
-
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -145,7 +144,7 @@ if (sharedUrlParam) {
     
   //const canProceed = await canRunTool('limit-audit-id');
   //if (!canProceed) return;
-  
+   
     const inputValue = document.getElementById('url-input').value;
     const url = cleanUrl(inputValue);
     console.log('Input:', inputValue);
@@ -165,15 +164,14 @@ if (sharedUrlParam) {
       </div>
     `;
     results.classList.remove('hidden');
-
     const progressText = document.getElementById('progress-text');
 
     try {
-    progressText.textContent = "Fetching page...";
-    const res = await fetch("https://seo-intent-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
-    if (!res.ok) throw new Error('Page not reachable – check URL');
-    const html = await res.text();
-    const doc = new DOMParser().parseFromString(html, 'text/html');
+      progressText.textContent = "Fetching page...";
+      const res = await fetch("https://seo-intent-proxy.traffictorch.workers.dev/?url=" + encodeURIComponent(url));
+      if (!res.ok) throw new Error('Page not reachable – check URL');
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
 
       function getVisibleText(root) {
         let text = '';
@@ -200,13 +198,11 @@ if (sharedUrlParam) {
       progressText.textContent = "Analyzing E-E-A-T Signals...";
       await sleep(2000);
 
-      // Experience
       const expResult = analyzeExperience(cleanedText, doc);
       const experienceScore = expResult.score;
       const experienceMetrics = expResult.metrics;
       const failedExperience = expResult.failed;
 
-      // Expertise
       const expertiseResult = analyzeExpertise(doc, cleanedText, config);
       const expertiseScore = expertiseResult.score;
       const expertiseMetrics = expertiseResult.metrics;
@@ -214,7 +210,6 @@ if (sharedUrlParam) {
       const hasAuthorByline = expertiseResult.hasAuthorByline;
       const hasAuthorBio = expertiseResult.hasAuthorBio;
 
-      // Authoritativeness
       const auth = analyzeAuthoritativeness(doc, cleanedText);
       const authoritativenessScore = auth.score;
       const authoritativenessMetrics = auth.metrics;
@@ -222,7 +217,6 @@ if (sharedUrlParam) {
       const schemaTypes = auth.schemaTypes;
       const hasAboutLinks = auth.hasAboutLinks;
 
-      // Trustworthiness
       const trust = analyzeTrustworthiness(url, doc, config, cleanedText);
       const trustworthinessScore = trust.score;
       const trustworthinessMetrics = trust.metrics;
@@ -231,7 +225,6 @@ if (sharedUrlParam) {
       const hasPolicies = trust.hasPolicies;
       const hasUpdateDate = trust.hasUpdateDate;
 
-      // Depth & Readability
       const depth = analyzeDepth(cleanedText);
       const words = depth.words;
       const normalizeDepth = depth.normalized;
@@ -240,13 +233,12 @@ if (sharedUrlParam) {
       const readability = read.score;
       const normalizeReadability = read.normalized;
 
-      // Schema (already in authoritativeness, but keeping separate normalize for radar)
       const sch = analyzeSchema(html, doc);
       const normalizeSchema = sch.normalized;
 
-      // Intent Analysis
       progressText.textContent = "Analyzing Search Intent";
       await sleep(2000);
+
       const titleLower = (doc.title || '').toLowerCase();
       let intent = 'Informational';
       let confidence = 60;
@@ -260,7 +252,6 @@ if (sharedUrlParam) {
       const readScore = readability > 70 ? 90 : readability > 50 ? 75 : 45;
       const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length * 8) / 5);
 
-      // === Score Improvement & Potential Gains Calculation ===
       const currentScore = overall;
       let projectedScore = currentScore;
       const totalFailed = failedExperience.length + failedExpertise.length + failedAuthoritativeness.length + failedTrustworthiness.length;
@@ -277,7 +268,6 @@ if (sharedUrlParam) {
       }
       const scoreDelta = Math.round(projectedScore - currentScore);
       const isOptimal = scoreDelta <= 5;
-
       const priorityFixes = [];
       if (!hasAuthorByline) priorityFixes.push({text: "Add visible author byline & bio", impact: "+15–25 points"});
       if (words < 1500) priorityFixes.push({text: "Expand content depth (>1,500 words)", impact: "+12–20 points"});
@@ -287,7 +277,6 @@ if (sharedUrlParam) {
         else if (failedExpertise.length > 0) priorityFixes.push({text: "Add credentials & citations", impact: "+10–18 points"});
       }
       const topFixes = priorityFixes.slice(0, 3);
-
       const trafficUplift = isOptimal ? 0 : Math.round(scoreDelta * 1.8);
       const ctrBoost = isOptimal ? 0 : Math.min(30, Math.round(scoreDelta * 0.8));
       const rankingLift = isOptimal ? "Already strong" : currentScore < 60 ? "Page 2+ → Page 1 potential" : "Top 20 → Top 10 possible";
@@ -295,7 +284,6 @@ if (sharedUrlParam) {
       progressText.textContent = "Generating Report";
       await sleep(600);
 
-      // === GRADE FUNCTION ===
       function getGrade(score, type = 'eeat') {
         let text, emoji, color;
         if (type === 'depth') {
@@ -318,19 +306,17 @@ if (sharedUrlParam) {
         return { text, emoji, color };
       }
 
-      // === RADAR CHART DATA ===
       const modules = [
-        { name: 'Experience',       score: experienceScore },
-        { name: 'Expertise',        score: expertiseScore },
+        { name: 'Experience', score: experienceScore },
+        { name: 'Expertise', score: expertiseScore },
         { name: 'Authoritativeness',score: authoritativenessScore },
-        { name: 'Trustworthiness',  score: trustworthinessScore },
-        { name: 'Content Depth',    score: normalizeDepth },
-        { name: 'Readability',      score: normalizeReadability },
-        { name: 'Schema',           score: normalizeSchema }
+        { name: 'Trustworthiness', score: trustworthinessScore },
+        { name: 'Content Depth', score: normalizeDepth },
+        { name: 'Readability', score: normalizeReadability },
+        { name: 'Schema', score: normalizeSchema }
       ];
       const scores = modules.map(m => m.score);
 
-      // Scroll to results
       const offset = 240;
       const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: targetY, behavior: 'smooth' });
@@ -374,7 +360,6 @@ if (sharedUrlParam) {
     })()}
   </div>
 </div>
-
 <!-- On-Page Health Radar Chart -->
 <div class="max-w-5xl mx-auto my-16 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
@@ -391,6 +376,7 @@ if (sharedUrlParam) {
   </div>
 </div>
 
+<!-- AI Detected Search Intents - Full width module -->
 ${await analyzeAiIntent(cleanedText, url)}
 
 <!-- Intent -->
@@ -414,7 +400,6 @@ ${await analyzeAiIntent(cleanedText, url)}
     </div>
   </div>
 </div>
-
 <!-- E-E-A-T Breakdown with ✅/❌ signals -->
 <div class="grid md:grid-cols-4 gap-6 my-16">
   ${[
@@ -579,7 +564,6 @@ ${await analyzeAiIntent(cleanedText, url)}
     </div>`;
   }).join('')}
 </div>
-
 <!-- Content Depth + Readability + Schema Detected -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
   <!-- Content Depth Card -->
@@ -618,7 +602,6 @@ ${await analyzeAiIntent(cleanedText, url)}
       })()}
     </div>
   </div>
-
   <!-- Readability Card -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${readability >= 60 && readability <= 70 ? 'border-green-500' : (readability >= 50 && readability <= 80) ? 'border-orange-400' : 'border-red-500'}">
     <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Readability</h3>
@@ -655,7 +638,6 @@ ${await analyzeAiIntent(cleanedText, url)}
       })()}
     </div>
   </div>
-
   <!-- Schema Detected Card -->
   <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${schemaTypes.length >= 2 ? 'border-green-500' : schemaTypes.length === 1 ? 'border-orange-400' : 'border-red-500'}">
     <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Schema Detected</h3>
@@ -697,7 +679,6 @@ ${await analyzeAiIntent(cleanedText, url)}
     </div>
   </div>
 </div>
-
 <!-- Priority Fixes -->
 <div class="mt-20 space-y-8">
   <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">Top Priority Fixes</h2>
@@ -738,89 +719,40 @@ ${await analyzeAiIntent(cleanedText, url)}
   })()}
 </div>
 
-<!-- Score Improvement & Potential Ranking Gains -->
-<div class="max-w-5xl mx-auto mt-20 grid md:grid-cols-2 gap-8">
-  <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
-    <h3 class="text-3xl font-bold text-center mb-8 text-orange-500">Overall Score Improvement</h3>
-    <div class="flex justify-center items-baseline gap-4 mb-8">
-      <div class="text-5xl font-black text-gray-800 dark:text-gray-200">${currentScore}</div>
-      <div class="text-4xl text-gray-400">→</div>
-      <div class="text-6xl font-black text-green-500">${Math.round(projectedScore)}</div>
-      <div class="text-2xl text-green-600 font-medium">(${scoreDelta > 0 ? '+' + scoreDelta : 'Optimal'})</div>
-    </div>
-    ${isOptimal ? `
-      <div class="text-center py-8">
-        <p class="text-4xl mb-4">🎉 Near-Optimal Score Achieved!</p>
-        <p class="text-lg text-gray-600 dark:text-gray-400">Your on-page signals are excellent. Focus on earning high-authority backlinks for the final push.</p>
-      </div>
-    ` : `
-      <div class="space-y-4">
-        <p class="font-medium text-gray-700 dark:text-gray-300 text-center mb-4">Top priority fixes & estimated impact:</p>
-        ${topFixes.map(fix => `
-          <div class="flex justify-between items-center p-4 bg-orange-50 dark:bg-orange-900/20 rounded-xl">
-            <span class="text-sm md:text-base">${fix.text}</span>
-            <span class="font-bold text-orange-600">${fix.impact}</span>
-          </div>
-        `).join('')}
-      </div>
-    `}
-    <details class="mt-8 text-sm text-gray-600 dark:text-gray-400">
-      <summary class="cursor-pointer font-medium text-orange-500 hover:underline">How We Calculated This</summary>
-      <div class="mt-4 space-y-2">
-        <p>• E-E-A-T signals: ~40% weight</p>
-        <p>• Content depth & readability: ~35% weight</p>
-        <p>• Intent match & schema: ~25% weight</p>
-        <p>• Top-ranking pages typically score 85+ on these on-page factors</p>
-        <p class="italic">Conservative estimates — actual gains may be higher</p>
-      </div>
-    </details>
-  </div>
-  <div class="p-8 bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
-    <h3 class="text-3xl font-bold text-center mb-8">Potential Ranking & Traffic Gains</h3>
-    ${isOptimal ? `
-      <div class="text-center py-12">
-        <p class="text-4xl mb-4">🌟 Elite On-Page Performance</p>
-        <p class="text-xl">Your page is highly optimized. Next step: build topical authority with quality backlinks and fresh content.</p>
-      </div>
-    ` : `
-      <div class="space-y-8">
-        <div class="flex items-center gap-4">
-          <div class="text-4xl">📈</div>
-          <div class="flex-1">
-            <p class="font-medium">Ranking Position Lift</p>
-            <p class="text-2xl font-bold">${rankingLift}</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-4">
-          <div class="text-4xl">🚀</div>
-          <div class="flex-1">
-            <p class="font-medium">Organic Traffic Increase</p>
-            <p class="text-2xl font-bold">+${trafficUplift}% potential</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-4">
-          <div class="text-4xl">👆</div>
-          <div class="flex-1">
-            <p class="font-medium">Click-Through Rate Boost</p>
-            <p class="text-2xl font-bold">+${ctrBoost}% from rich results & intent match</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-4">
-          <div class="text-4xl">🗝️</div>
-          <div class="flex-1">
-            <p class="font-medium">Intent Satisfaction</p>
-            <p class="text-2xl font-bold">${confidence}% → ${Math.min(100, confidence + Math.round(scoreDelta * 0.6))}%</p>
-          </div>
-        </div>
-      </div>
-    `}
-    <div class="mt-10 text-sm space-y-2 opacity-90">
-      <p>Conservative estimates based on on-page SEO & intent alignment benchmarks.</p>
-      <p>Improvements typically visible in Search Console within 1–4 weeks after indexing.</p>
-      <p>Actual results depend on competition, domain authority, and off-page factors.</p>
-    </div>
-  </div>
-</div>
+<!-- Plugin Solutions Section (moved here above share buttons) -->
+${(() => {
+  const pluginSection = document.createElement('div');
+  pluginSection.id = 'plugin-solutions-section';
+  pluginSection.className = 'mt-20';
+  // Collect failed metrics for plugins
+  const failedMetrics = [];
+  const schemaGrade = getGrade(schemaTypes.length, 'schema');
+  if (schemaGrade.text !== 'Excellent') {
+    failedMetrics.push({ name: "Schema Markup", grade: schemaGrade });
+  }
+  if (!hasAuthorByline) {
+    failedMetrics.push({ name: "Author Byline Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+  }
+  if (!hasAuthorBio) {
+    failedMetrics.push({ name: "Author Bio Section", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+  }
+  if (!hasUpdateDate) {
+    failedMetrics.push({ name: "Update Date Shown", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+  }
+  if (!hasContact) {
+    failedMetrics.push({ name: "Contact Info Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+  }
+  if (!hasPolicies) {
+    failedMetrics.push({ name: "Privacy & Terms Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+  }
+  if (!hasAboutLinks) {
+    failedMetrics.push({ name: "About/Team Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+  }
+  if (failedMetrics.length > 0) {
+    renderPluginSolutions(failedMetrics);
+  }
+  return '';
+})()}
 
 <!-- PDF Share Feedback Buttons -->
 <div class="text-center my-16 px-4">
@@ -841,10 +773,8 @@ ${await analyzeAiIntent(cleanedText, url)}
      Submit Feedback 💬
     </button>
   </div>
-
   <!-- Share message - placed directly below buttons, always visible when triggered -->
   <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-
   <!-- Share Report Form (still hidden/expandable) -->
   <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
@@ -871,7 +801,6 @@ ${await analyzeAiIntent(cleanedText, url)}
       <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
     </form>
   </div>
-
   <!-- Feedback Form (unchanged) -->
   <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
@@ -915,42 +844,7 @@ ${await analyzeAiIntent(cleanedText, url)}
 </div>
       `;
 
-      // Create placeholder for Plugin Solutions
-      const pluginSection = document.createElement('div');
-      pluginSection.id = 'plugin-solutions-section';
-      pluginSection.className = 'mt-20';
-      results.appendChild(pluginSection);
-
-      // Collect failed metrics for plugins
-      const failedMetrics = [];
-      const schemaGrade = getGrade(schemaTypes.length, 'schema');
-      if (schemaGrade.text !== 'Excellent') {
-        failedMetrics.push({ name: "Schema Markup", grade: schemaGrade });
-      }
-      if (!hasAuthorByline) {
-        failedMetrics.push({ name: "Author Byline Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-      }
-      if (!hasAuthorBio) {
-        failedMetrics.push({ name: "Author Bio Section", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-      }
-      if (!hasUpdateDate) {
-        failedMetrics.push({ name: "Update Date Shown", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-      }
-      if (!hasContact) {
-        failedMetrics.push({ name: "Contact Info Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-      }
-      if (!hasPolicies) {
-        failedMetrics.push({ name: "Privacy & Terms Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-      }
-      if (!hasAboutLinks) {
-        failedMetrics.push({ name: "About/Team Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-      }
-
-      if (failedMetrics.length > 0) {
-        renderPluginSolutions(failedMetrics);
-      }
-
-      // === RADAR CHART INITIALIZATION ===
+      // RADAR CHART INITIALIZATION
       setTimeout(() => {
         const canvas = document.getElementById('health-radar');
         if (!canvas) {
@@ -1001,9 +895,9 @@ ${await analyzeAiIntent(cleanedText, url)}
           console.error('Chart init failed', e);
         }
       }, 150);
-      
-        initShareReport(results);
-        initSubmitFeedback(results);       
+
+      initShareReport(results);
+      initSubmitFeedback(results);
 
       // Event delegation for fixes toggles
       results.addEventListener('click', (e) => {
@@ -1020,6 +914,7 @@ ${await analyzeAiIntent(cleanedText, url)}
           e.target.closest('.score-card').querySelector('.full-details').classList.toggle('hidden');
         }
       });
+
     } catch (err) {
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
       console.error(err);
