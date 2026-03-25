@@ -231,9 +231,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const readability = read.score;
       const normalizeReadability = read.normalized;
 
+      // Schema analysis - this is now the single source of truth for both Schema card AND radar
       const sch = analyzeSchema(html, doc);
       const normalizeSchema = sch.normalized;
-      const schemaTypes = sch.schemaTypes;
+      const schemaTypes = [...new Set(sch.schemaTypes)]; // deduplicated
 
       progressText.textContent = "Analyzing Search Intent";
       await sleep(2000);
