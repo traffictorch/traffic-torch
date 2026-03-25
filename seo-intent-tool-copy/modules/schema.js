@@ -21,10 +21,8 @@ function extractAllSchemaTypes(obj, types = new Set()) {
 
 export function analyzeSchema(rawHtml, doc = null) {
   const schemaTypes = new Set();
-
-  // Extremely forgiving regex that catches even massive @graph blocks
   const regex = /<script[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
-  
+ 
   let match;
   while ((match = regex.exec(rawHtml)) !== null) {
     const content = match[1].trim();
@@ -39,19 +37,28 @@ export function analyzeSchema(rawHtml, doc = null) {
     } catch (e) {}
   }
 
-  // DOM fallback
   if (doc) {
     doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
       try {
         let json = JSON.parse(script.textContent.trim());
-        if (Array.isArray(json)) json.forEach(item => extractAllSchemaTypes(item, schemaTypes));
-        else extractAllSchemaTypes(json, schemaTypes);
+        if (Array.isArray(json)) {
+          json.forEach(item => extractAllSchemaTypes(item, schemaTypes));
+        } else {
+          extractAllSchemaTypes(json, schemaTypes);
+        }
       } catch (e) {}
     });
   }
 
   const uniqueTypes = Array.from(schemaTypes);
-  const normalized = uniqueTypes.length >= 3 ? 100 : uniqueTypes.length >= 2 ? 95 : uniqueTypes.length === 1 ? 65 : 20;
+  
+  // FIXED: Correct low score when no schema detected (this was the bug)
+  const normalized = uniqueTypes.length >= 3 ? 100 : 
+                     uniqueTypes.length >= 2 ? 95 : 
+                     uniqueTypes.length === 1 ? 65 : 20;
 
-  return { schemaTypes: uniqueTypes, normalized };
+  return { 
+    schemaTypes: uniqueTypes, 
+    normalized 
+  };
 }

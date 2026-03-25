@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const normalizeReadability = read.normalized;
 
       const sch = analyzeSchema(html, doc);
-      const normalizeSchema = sch.normalized;
+      const normalizeSchema = sch.normalized || 20;
 
       progressText.textContent = "Analyzing Search Intent";
       await sleep(2000);
