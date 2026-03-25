@@ -214,8 +214,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const authoritativenessScore = auth.score;
       const authoritativenessMetrics = auth.metrics;
       const failedAuthoritativeness = auth.failed;
-      const schemaTypes = auth.schemaTypes;
       const hasAboutLinks = auth.hasAboutLinks;
+      const trust = analyzeTrustworthiness(url, doc, config, cleanedText);
+      const sch = analyzeSchema(html, doc);
+      const normalizeSchema = sch.normalized;
+      const schemaTypes = sch.schemaTypes;
 
       const trust = analyzeTrustworthiness(url, doc, config, cleanedText);
       const trustworthinessScore = trust.score;
@@ -232,9 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const read = analyzeReadability(cleanedText);
       const readability = read.score;
       const normalizeReadability = read.normalized;
-
-      const sch = analyzeSchema(html, doc);
-      const normalizeSchema = sch.normalized;
 
       progressText.textContent = "Analyzing Search Intent";
       await sleep(2000);

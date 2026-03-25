@@ -105,6 +105,14 @@
     display: none !important;
   }
   
+    /* Hide the two infographic images (E-E-A-T and SEO Intent Journey) */
+  img[src*="/seo-eeat-infographic"],
+  img[src*="/seo-intent-infographic"],
+  figure:has(img[src*="/seo-eeat-infographic"]),
+  figure:has(img[src*="/seo-intent-infographic"]) {
+    display: none !important;
+  }
+  
   /* Hide upgrade modal and share section in print */
   #upgradeModal,
   .py-8.text-center,
