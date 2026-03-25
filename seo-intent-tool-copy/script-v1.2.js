@@ -9,6 +9,7 @@ import { analyzeSchema } from './modules/schema.js';
 import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
+import { analyzeAiIntent } from './modules/ai-intent.js';
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -389,6 +390,8 @@ if (sharedUrlParam) {
     </p>
   </div>
 </div>
+
+${await analyzeAiIntent(cleanedText, url)}
 
 <!-- Intent -->
 <div class="text-center mb-12">
