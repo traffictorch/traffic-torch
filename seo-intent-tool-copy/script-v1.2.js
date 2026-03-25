@@ -214,7 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const authoritativenessScore = auth.score;
       const authoritativenessMetrics = auth.metrics;
       const failedAuthoritativeness = auth.failed;
-      const schemaTypes = [];
       const hasAboutLinks = auth.hasAboutLinks;
 
       const trust = analyzeTrustworthiness(url, doc, config, cleanedText);
@@ -234,8 +233,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const normalizeReadability = read.normalized;
 
       const sch = analyzeSchema(html, doc);
+      const schemaTypes = sch.schemaTypes;
       const normalizeSchema = typeof sch?.normalized === 'number' ? sch.normalized : 20;
-      console.log('=== RADAR DEBUG === normalizeSchema value passed to radar:', normalizeSchema);
 
       progressText.textContent = "Analyzing Search Intent";
       await sleep(2000);
