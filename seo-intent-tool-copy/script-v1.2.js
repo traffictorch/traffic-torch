@@ -234,7 +234,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const normalizeReadability = read.normalized;
 
       const sch = analyzeSchema(html, doc);
-      const normalizeSchema = typeof sch.normalized === 'number' ? sch.normalized : 20;
+      const normalizeSchema = typeof sch?.normalized === 'number' ? sch.normalized : 20;
+      console.log('=== RADAR DEBUG === normalizeSchema value passed to radar:', normalizeSchema);
 
       progressText.textContent = "Analyzing Search Intent";
       await sleep(2000);

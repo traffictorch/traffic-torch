@@ -51,11 +51,13 @@ export function analyzeSchema(rawHtml, doc = null) {
   }
 
   const uniqueTypes = Array.from(schemaTypes);
+    console.log('=== SCHEMA DEBUG === uniqueTypes found:', uniqueTypes, 'length:', uniqueTypes.length);
   
   // CORRECTED: Always return 20 when zero schema types found
   const normalized = uniqueTypes.length >= 3 ? 100 : 
                      uniqueTypes.length >= 2 ? 95 : 
                      uniqueTypes.length === 1 ? 65 : 20;
+  console.log('=== SCHEMA DEBUG === normalized score set to:', normalized);
 
   return { 
     schemaTypes: uniqueTypes, 
