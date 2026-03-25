@@ -729,40 +729,8 @@ ${aiModuleHTML}
   })()}
 </div>
 
-<!-- Plugin Solutions Section (moved here above share buttons) -->
-${(() => {
-  const pluginSection = document.createElement('div');
-  pluginSection.id = 'plugin-solutions-section';
-  pluginSection.className = 'mt-20';
-  // Collect failed metrics for plugins
-  const failedMetrics = [];
-  const schemaGrade = getGrade(schemaTypes.length, 'schema');
-  if (schemaGrade.text !== 'Excellent') {
-    failedMetrics.push({ name: "Schema Markup", grade: schemaGrade });
-  }
-  if (!hasAuthorByline) {
-    failedMetrics.push({ name: "Author Byline Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-  }
-  if (!hasAuthorBio) {
-    failedMetrics.push({ name: "Author Bio Section", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-  }
-  if (!hasUpdateDate) {
-    failedMetrics.push({ name: "Update Date Shown", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-  }
-  if (!hasContact) {
-    failedMetrics.push({ name: "Contact Info Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-  }
-  if (!hasPolicies) {
-    failedMetrics.push({ name: "Privacy & Terms Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-  }
-  if (!hasAboutLinks) {
-    failedMetrics.push({ name: "About/Team Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-  }
-  if (failedMetrics.length > 0) {
-    renderPluginSolutions(failedMetrics);
-  }
-  return '';
-})()}
+<!-- Plugin Solutions Section - placed above share buttons -->
+<div id="plugin-solutions-section" class="mt-20"></div>
 
 <!-- PDF Share Feedback Buttons -->
 <div class="text-center my-16 px-4">
@@ -853,6 +821,40 @@ ${(() => {
   </div>
 </div>
       `;
+      
+      // === PLUGIN SOLUTIONS - placed above share buttons ===
+      const pluginSection = document.createElement('div');
+      pluginSection.id = 'plugin-solutions-section';
+      pluginSection.className = 'mt-20';
+      results.appendChild(pluginSection);
+
+      // Collect failed metrics for plugins
+      const failedMetrics = [];
+      const schemaGrade = getGrade(schemaTypes.length, 'schema');
+      if (schemaGrade.text !== 'Excellent') {
+        failedMetrics.push({ name: "Schema Markup", grade: schemaGrade });
+      }
+      if (!hasAuthorByline) {
+        failedMetrics.push({ name: "Author Byline Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+      if (!hasAuthorBio) {
+        failedMetrics.push({ name: "Author Bio Section", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+      if (!hasUpdateDate) {
+        failedMetrics.push({ name: "Update Date Shown", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+      if (!hasContact) {
+        failedMetrics.push({ name: "Contact Info Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+      if (!hasPolicies) {
+        failedMetrics.push({ name: "Privacy & Terms Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+      if (!hasAboutLinks) {
+        failedMetrics.push({ name: "About/Team Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+      if (failedMetrics.length > 0) {
+        renderPluginSolutions(failedMetrics);
+      }
 
       // RADAR CHART INITIALIZATION
       setTimeout(() => {
