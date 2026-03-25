@@ -227,10 +227,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const depth = analyzeDepth(cleanedText);
       const words = depth.words;
       const normalizeDepth = depth.normalized;
-
       const read = analyzeReadability(cleanedText);
       const readability = read.score;
       const normalizeReadability = read.normalized;
+
+      const sch = analyzeSchema(html, doc);
+      const normalizeSchema = sch.normalized;
+      const schemaTypes = sch.schemaTypes;
 
       progressText.textContent = "Analyzing Search Intent";
       await sleep(2000);
