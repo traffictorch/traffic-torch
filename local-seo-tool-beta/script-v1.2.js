@@ -7,7 +7,7 @@ import { analyzeContentRelevance } from './modules/content-relevance.js';
 import { analyzeMapsVisuals } from './modules/maps-visuals.js';
 import { analyzeStructuredData } from './modules/structured-data.js';
 import { analyzeReviewsStructure } from './modules/reviews-structure.js';
-import { analyzeReviewsStructure } from './modules/ai-local-seo.js';
+import { analyzeLocalIntent } from './modules/ai-local-seo.js';
 import { canRunTool } from '/main-v1.1.js';
 // Use absolute path from root – very reliable on Cloudflare Pages
 import { initShareReport } from '/local-seo-tool/share-report-v1.js';
