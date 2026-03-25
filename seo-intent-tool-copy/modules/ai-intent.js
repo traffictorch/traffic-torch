@@ -30,12 +30,15 @@ export async function analyzeAiIntent(cleanedText, url) {
       <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
         <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">AI Detected Search Intents</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          ${intents.slice(0, 6).map((intent, i) => `
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+          ${intents.slice(0, 6).map((item, i) => `
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 flex flex-col">
               <div class="flex items-center gap-3 mb-4">
                 <span class="flex-shrink-0 w-8 h-8 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold text-lg">${i + 1}</span>
-                <span class="text-lg font-semibold text-gray-800 dark:text-gray-200">${intent}</span>
+                <span class="text-lg font-semibold text-gray-800 dark:text-gray-200">${item.searchIntent || 'Untitled Intent'}</span>
               </div>
+              <div class="text-sm text-orange-600 dark:text-orange-400 mb-3">${item.type || ''}</div>
+              <div class="text-xs text-gray-500 dark:text-gray-400 mb-4">${item.coverage || ''}</div>
+              <div class="text-sm text-gray-700 dark:text-gray-300 flex-1">${item.fixSuggestions || ''}</div>
             </div>
           `).join('')}
         </div>
