@@ -3,48 +3,45 @@ export async function analyzeLocalIntent(doc, city, fullUrl, cleanedContent) {
   const API_URL = 'https://local-seo.traffictorch.workers.dev/';
 
   let aiData = {
-    primary: "local_research_intent",
+    primary: "Local Business",
     secondary: null,
     confidence: "average",
-    geoScore: 0.65,
-    suggestions: []
+    geoScore: 0.6
   };
 
   try {
-    const htmlSnippet = doc.documentElement.outerHTML.substring(0, 12000);
+    const contentForAI = cleanedContent || doc.body?.textContent?.replace(/\s+/g, ' ').trim() || '';
+
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        html: htmlSnippet,
-        cleanedContent: cleanedContent || '',
-        city: city
+        cleanedText: contentForAI,
+        url: fullUrl
       })
     });
 
     if (response.ok) {
       const data = await response.json();
-      if (data && data.primary) aiData = data;
+      if (data && data.intents && Array.isArray(data.intents) && data.intents.length > 0) {
+        const top = data.intents[0];
+        aiData = {
+          primary: top.searchIntent || "Local Business",
+          secondary: data.intents[1] ? data.intents[1].searchIntent : null,
+          confidence: top.coverage && top.coverage.includes("Strong") ? "strong" : 
+                     (top.coverage && top.coverage.includes("Partial") ? "average" : "weak"),
+          geoScore: 0.7
+        };
+      }
     }
   } catch (error) {
     console.warn('[AI Local Intent] Worker call failed', error);
   }
 
-  const confidenceScore = aiData.confidence === 'strong' ? 88 : aiData.confidence === 'average' ? 65 : 42;
-  const score = Math.round(confidenceScore * (0.5 + (aiData.geoScore || 0.65) * 0.5));
-
-  const fixes = (aiData.suggestions || []).map(s => ({
-    module: 'AI Local Intent',
-    sub: s.title || 'Intent Optimization',
-    issue: s.title || 'Improve local intent signals',
-    how: s.how || '',
-    priority: 'high'
-  }));
-
   return {
     data: aiData,
-    score: Math.min(100, Math.max(0, score)),
+    score: 65,
     maxRaw: 100,
-    fixes: fixes
+    fixes: []
   };
 }
