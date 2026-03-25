@@ -26,6 +26,7 @@ export function analyzeAuthoritativeness(doc, cleanedText) {
     metrics,
     failed,
     normalized,
+    schemaTypes: [],        // explicitly empty - schema removed
     hasAboutLinks
   };
 }

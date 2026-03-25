@@ -214,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const authoritativenessScore = auth.score;
       const authoritativenessMetrics = auth.metrics;
       const failedAuthoritativeness = auth.failed;
+      const schemaTypes = [];
       const hasAboutLinks = auth.hasAboutLinks;
 
       const trust = analyzeTrustworthiness(url, doc, config, cleanedText);
