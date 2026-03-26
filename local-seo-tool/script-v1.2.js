@@ -323,8 +323,26 @@ if (sharedUrl && sharedLocation) {
     const yourScore = overallScore;
 
     // ── Potential improvement & fixes logic ───────────────────────────────────────
+    // Build topPriorityFixes first so we can sum gains ONLY from the 3 displayed fixes
+    const moduleOrder = [
+      'NAP & Contact', 'Local Keywords & Titles', 'Local Content & Relevance',
+      'Maps & Visuals', 'Structured Data', 'Reviews & Structure'
+    ];
+    const topPriorityFixes = [];
+    const moduleIssues = {};
+    allFixes.forEach(f => {
+      if (!moduleIssues[f.module]) moduleIssues[f.module] = [];
+      moduleIssues[f.module].push(f);
+    });
+    moduleOrder.forEach(mod => {
+      if (moduleIssues[mod] && moduleIssues[mod].length > 0) {
+        topPriorityFixes.push(moduleIssues[mod][0]);
+      }
+    });
+    topPriorityFixes.length = Math.min(3, topPriorityFixes.length);
+
     let totalPotentialGain = 0;
-    const fixGains = allFixes.map(fix => {
+    const fixGains = topPriorityFixes.map(fix => {
       let gain = 0;
       let trafficImpact = 'Low';
       switch (fix.sub) {
