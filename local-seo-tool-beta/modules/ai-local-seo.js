@@ -1,4 +1,36 @@
-  // Generate the HTML for the AI card
+// ai-local-seo.js
+export async function analyzeLocalIntent(doc, city, fullUrl, cleanedContent) {
+  const API_URL = 'https://local-seo.traffictorch.workers.dev/';
+
+  let aiData = {
+    localIntentType: "Local Store Intent",
+    localSearchIntent: ["local business near me"],
+    fixSuggestions: ["Add clearer local intent signals to improve detection."]
+  };
+
+  try {
+    const contentForAI = cleanedContent || doc.body?.textContent?.replace(/\s+/g, ' ').trim() || '';
+
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        cleanedText: contentForAI,
+        url: fullUrl
+      })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data && data.localIntentType) {
+        aiData = data;
+      }
+    }
+  } catch (error) {
+    console.warn('[AI Local Intent] Worker call failed', error);
+  }
+
+  // Generate HTML for the card
   const primary = aiData.localIntentType || "Local Store Intent";
   const searchIntentsHTML = (aiData.localSearchIntent || []).map(q => 
     `<div class="px-5 py-2 bg-gray-100 dark:bg-gray-800 rounded-2xl text-gray-700 dark:text-gray-300 text-sm">${q}</div>`
@@ -41,3 +73,4 @@
     maxRaw: 100,
     fixes: []
   };
+}
