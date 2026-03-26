@@ -895,8 +895,12 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
           </div>`;
         }
 
-        <!-- AI Detected Product Search Intents -->
-        ${aiModuleHTML}
+        // Insert Product Intent Card right after radar section
+        if (aiModuleHTML) {
+          const intentSection = document.createElement('div');
+          intentSection.innerHTML = aiModuleHTML;
+          wrapper.appendChild(intentSection);
+        }
 
         const modulesGrid = document.createElement('div');
         modulesGrid.className = 'grid gap-8 my-16 max-w-7xl mx-auto px-0';
