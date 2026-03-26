@@ -7,6 +7,7 @@ import { analyzeContentRelevance } from './modules/content-relevance.js';
 import { analyzeMapsVisuals } from './modules/maps-visuals.js';
 import { analyzeStructuredData } from './modules/structured-data.js';
 import { analyzeReviewsStructure } from './modules/reviews-structure.js';
+import { analyzeLocalIntent } from './modules/ai-local-seo.js';
 import { canRunTool } from '/main-v1.1.js';
 // Use absolute path from root – very reliable on Cloudflare Pages
 import { initShareReport } from '/local-seo-tool/share-report-v1.js';
@@ -266,6 +267,7 @@ if (sharedUrl && sharedLocation) {
     const mapsResult      = analyzeMapsVisuals(doc, city, hasLocalIntent);
     const schemaResult    = analyzeStructuredData(doc);
     const reviewsResult   = analyzeReviewsStructure(doc, fullUrl, city, schemaResult.data);
+	const aiResult = await analyzeLocalIntent(doc, city, fullUrl, getCleanContent(doc));
 
     // Collect all fixes from modules
     allFixes.push(
@@ -300,11 +302,20 @@ if (sharedUrl && sharedLocation) {
 
     Object.keys(moduleWeights).forEach(mod => {
       const result = moduleResults[mod];
-      const rawScore = result.score;
-      const maxRaw   = result.maxRaw;
-      const percentage = maxRaw > 0 ? (rawScore / maxRaw) * 100 : 0;
+      
+      // FIXED: Proper maxRaw per module + correct percentage for Keywords & Titles
+      let maxRaw = result.maxRaw || 100;
+      let rawScore = result.score || 0;
+
+      // Special handling for Local Keywords & Titles (max points = 16)
+      if (mod === 'Local Keywords & Titles') {
+        maxRaw = 16;
+      }
+
+      const percentage = maxRaw > 0 ? Math.round((rawScore / maxRaw) * 100) : 0;
       const weighted = (percentage / 100) * moduleWeights[mod];
-      normalizedModuleScores[mod] = Math.round(percentage);
+      
+      normalizedModuleScores[mod] = percentage;   // now correctly 0-100
       overallScore += weighted;
     });
 
@@ -491,6 +502,8 @@ if (sharedUrl && sharedLocation) {
           </p>
         </div>
       </div>
+      <!-- AI Detected Local Search Intents - Full width module -->
+      ${window.aiModuleHTML || ''}
       <!-- Modern Scoring Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 w-full max-w-none mx-auto">
         ${modules.map((m, index) => {
