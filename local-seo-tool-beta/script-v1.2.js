@@ -268,7 +268,6 @@ if (sharedUrl && sharedLocation) {
     const schemaResult    = analyzeStructuredData(doc);
     const reviewsResult   = analyzeReviewsStructure(doc, fullUrl, city, schemaResult.data);
 	const aiResult = await analyzeLocalIntent(doc, city, fullUrl, getCleanContent(doc));
-	window.aiModuleHTML = '';
 
     // Collect all fixes from modules
     allFixes.push(
