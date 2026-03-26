@@ -302,8 +302,8 @@ if (sharedUrl && sharedLocation) {
 
     Object.keys(moduleWeights).forEach(mod => {
       const result = moduleResults[mod];
-      const rawScore = result.score;
-      const maxRaw   = result.maxRaw;
+      const rawScore = result.score || 0;           // ← Fixed: ensure fallback
+      const maxRaw = result.maxRaw || 100;          // ← Fixed: default max if missing
       const percentage = maxRaw > 0 ? (rawScore / maxRaw) * 100 : 0;
       const weighted = (percentage / 100) * moduleWeights[mod];
       normalizedModuleScores[mod] = Math.round(percentage);
