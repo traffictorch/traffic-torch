@@ -321,7 +321,7 @@ if (sharedUrl && sharedLocation) {
 
     overallScore = Math.min(100, Math.round(overallScore));
     const yourScore = overallScore;
-
+    
     // ── Potential improvement & fixes logic ───────────────────────────────────────
     // Build topPriorityFixes first so we can sum gains ONLY from the 3 displayed fixes
     const moduleOrder = [
