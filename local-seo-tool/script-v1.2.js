@@ -607,7 +607,7 @@ if (sharedUrl && sharedLocation) {
             }).join('')}
           </div>
           <div class="max-w-5xl mx-auto mt-16 grid md:grid-cols-2 gap-8 px-4">
-            <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
+            <div class="p-8 bg-white dark:bg-gray-950 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
               <h3 class="text-3xl font-bold text-center mb-8 text-orange-500">Overall Score Improvement</h3>
               <div class="flex justify-center items-baseline gap-4 mb-8">
                 <div class="text-5xl font-black text-gray-800 dark:text-gray-200">${yourScore}</div>
@@ -617,7 +617,7 @@ if (sharedUrl && sharedLocation) {
               </div>
               <div class="text-center py-4">
                 <p class="text-lg text-gray-600 dark:text-gray-400">
-                  Fixing the top priorities above could boost your score by up to ${totalPotentialGain} points.
+                  Fixing the <strong>top ${topPriorityFixes.length} priority issues</strong> could boost your score by up to ${totalPotentialGain} points.
                 </p>
               </div>
               <details class="mt-8 text-sm text-gray-600 dark:text-gray-400">
@@ -627,9 +627,10 @@ if (sharedUrl && sharedLocation) {
                 <div class="mt-4 space-y-2 px-2">
                   <p>• Weighted scoring across 6 key local modules (NAP, Keywords, Content, Maps, Schema, Reviews)</p>
                   <p>• Each module contributes proportionally based on real-world local SEO impact</p>
-                  <p>• Projected score assumes full implementation of top priority fixes</p>
-                  <p>• Top-ranking pages in local pack typically score 80+ on these on-page factors</p>
-                  <p class="italic mt-4">Conservative estimate based on on-page optimization benchmarks from high-performing local sites</p>
+                  <p>• <strong>Projected score shows maximum possible gain from the listed top priority fixes only</strong></p>
+                  <p>• It does <strong>not</strong> assume you will reach 100 — only the improvement from these 3 (or fewer) fixes</p>
+                  <p>• Full 100 requires addressing every failed sub-metric across all modules</p>
+                  <p class="italic mt-4">Top-ranking local pages typically score 80+ on these on-page factors</p>
                 </div>
               </details>
             </div>
