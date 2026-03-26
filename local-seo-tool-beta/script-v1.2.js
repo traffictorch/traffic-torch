@@ -494,35 +494,7 @@ if (sharedUrl && sharedLocation) {
         </div>
       </div>
       <!-- AI Detected Local Search Intents - Full width module -->
-      <div class="max-w-5xl mx-auto my-12 px-4">
-        <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-2xl p-8 border border-orange-200 dark:border-orange-800">
-          <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-6">AI Detected Local Search Intent</h3>
-          
-          <div class="flex flex-wrap justify-center gap-4 mb-8">
-            <div class="px-6 py-3 bg-orange-100 dark:bg-orange-950 rounded-2xl font-semibold text-orange-700 dark:text-orange-300">
-              Primary: <span class="font-bold">${aiResult.data.primary || 'local_research_intent'}</span>
-            </div>
-            ${aiResult.data.secondary ? `<div class="px-6 py-3 bg-gray-100 dark:bg-gray-800 rounded-2xl font-semibold text-gray-700 dark:text-gray-300">Secondary: ${aiResult.data.secondary}</div>` : ''}
-          </div>
-
-          <div class="flex justify-center items-center gap-6 mb-10">
-            <span class="text-5xl">${aiResult.data.confidence === 'strong' ? '🟢' : aiResult.data.confidence === 'average' ? '🟠' : '🔴'}</span>
-            <div>
-              <div class="text-sm uppercase tracking-widest text-gray-500 dark:text-gray-400">Confidence</div>
-              <div class="text-4xl font-bold text-gray-800 dark:text-gray-200 capitalize">${aiResult.data.confidence || 'average'}</div>
-            </div>
-          </div>
-
-          <div class="space-y-6">
-            ${(aiResult.data.suggestions || []).map(s => `
-              <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700">
-                <div class="font-semibold text-orange-600 mb-2">${s.title || 'Improvement Suggestion'}</div>
-                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${s.how || s.why || ''}</p>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      </div>
+      ${aiModuleHTML}
       <!-- Modern Scoring Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 w-full max-w-none mx-auto">
         ${modules.map((m, index) => {

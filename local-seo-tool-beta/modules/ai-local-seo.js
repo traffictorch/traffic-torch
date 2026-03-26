@@ -3,10 +3,9 @@ export async function analyzeLocalIntent(doc, city, fullUrl, cleanedContent) {
   const API_URL = 'https://local-seo.traffictorch.workers.dev/';
 
   let aiData = {
-    primary: "Local Business",
-    secondary: null,
-    confidence: "average",
-    geoScore: 0.6
+    localIntentType: "Local Store Intent",
+    localSearchIntent: ["local business near me"],
+    fixSuggestions: ["Add clearer local intent signals to improve detection."]
   };
 
   try {
@@ -23,24 +22,17 @@ export async function analyzeLocalIntent(doc, city, fullUrl, cleanedContent) {
 
     if (response.ok) {
       const data = await response.json();
-      if (data && data.intents && Array.isArray(data.intents) && data.intents.length > 0) {
-        const top = data.intents[0];
-        aiData = {
-          primary: top.searchIntent || "Local Business",
-          secondary: data.intents[1] ? data.intents[1].searchIntent : null,
-          confidence: top.coverage && top.coverage.includes("Strong") ? "strong" : 
-                     (top.coverage && top.coverage.includes("Partial") ? "average" : "weak"),
-          geoScore: 0.7
-        };
+      if (data && data.localIntentType) {
+        aiData = data;
       }
     }
   } catch (error) {
     console.warn('[AI Local Intent] Worker call failed', error);
   }
 
-  return {
+return {
     data: aiData,
-    score: 65,
+    score: 0,      // kept only for compatibility with script-v1.2.js, has no effect
     maxRaw: 100,
     fixes: []
   };
