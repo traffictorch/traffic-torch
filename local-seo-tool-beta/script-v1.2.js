@@ -302,11 +302,20 @@ if (sharedUrl && sharedLocation) {
 
     Object.keys(moduleWeights).forEach(mod => {
       const result = moduleResults[mod];
-      const rawScore = result.score || 0;           // ← Fixed: ensure fallback
-      const maxRaw = result.maxRaw || 100;          // ← Fixed: default max if missing
-      const percentage = maxRaw > 0 ? (rawScore / maxRaw) * 100 : 0;
+      
+      // FIXED: Proper maxRaw per module + correct percentage for Keywords & Titles
+      let maxRaw = result.maxRaw || 100;
+      let rawScore = result.score || 0;
+
+      // Special handling for Local Keywords & Titles (max points = 16)
+      if (mod === 'Local Keywords & Titles') {
+        maxRaw = 16;
+      }
+
+      const percentage = maxRaw > 0 ? Math.round((rawScore / maxRaw) * 100) : 0;
       const weighted = (percentage / 100) * moduleWeights[mod];
-      normalizedModuleScores[mod] = Math.round(percentage);
+      
+      normalizedModuleScores[mod] = percentage;   // now correctly 0-100
       overallScore += weighted;
     });
 
