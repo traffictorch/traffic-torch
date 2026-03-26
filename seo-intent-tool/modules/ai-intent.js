@@ -39,6 +39,11 @@ export async function analyzeAiIntent(cleanedText, url) {
               <div class="text-sm text-orange-600 dark:text-orange-400 mb-3">${item.type || ''}</div>
               <div class="text-xs text-gray-500 dark:text-gray-400 mb-4">${item.coverage || ''}</div>
               <div class="text-sm text-gray-700 dark:text-gray-300 flex-1">${item.fixSuggestions || ''}</div>
+              <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
+              <p class="text-xs text-gray-500 dark:text-gray-400 italic">
+              Note: Suggestions are based on text analysis. For more accurate data please refer to the full report further down the page.
+            </p>
+          </div>
             </div>
           `).join('')}
         </div>

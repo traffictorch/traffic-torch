@@ -48,7 +48,7 @@ export async function analyzeLocalIntent(doc, city, fullUrl, cleanedContent) {
         <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-6">AI Detected Local Search Intent</h3>
         
         <div class="flex flex-wrap justify-center gap-4 mb-8">
-          <div class="px-6 py-3 bg-orange-100 dark:bg-orange-950 rounded-2xl font-semibold text-orange-700 dark:text-orange-300">
+          <div class="px-6 py-3 bg-orange dark:bg-orange-950 rounded-2xl font-semibold text-orange-700 dark:text-orange-300">
             Primary: <span class="font-bold">${primary}</span>
           </div>
         </div>
@@ -60,8 +60,14 @@ export async function analyzeLocalIntent(doc, city, fullUrl, cleanedContent) {
           </div>
         </div>
 
-        <div class="space-y-6">
-          ${suggestionsHTML || '<p class="text-gray-500 dark:text-gray-400 text-center">No suggestions available yet.</p>'}
+		<div class="space-y-6">
+          ${suggestionsHTML || '<p class="text-center text-gray-500 dark:text-gray-400">No suggestions available yet.</p>'}
+          
+          <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
+            <p class="text-xs text-gray-500 dark:text-gray-400 italic">
+              Note: Suggestions are based on text analysis. For more accurate data please refer to the full report below.
+            </p>
+          </div>
         </div>
       </div>
     </div>
