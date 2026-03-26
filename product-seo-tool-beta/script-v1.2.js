@@ -616,7 +616,7 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
         setTimeout(runStep, steps[currentStep - 1].delay);
       } else {
         progressText.textContent = "Generating SEO report";
-        setTimeout(performAnalysis, 2000);
+        setTimeout(performAnalysis, 1000);
       }
     };
     runStep();
@@ -658,7 +658,7 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
         });
 
         const health = getHealthLabel(seo.score);
-        document.getElementById('loading').classList.add('hidden');
+        //document.getElementById('loading').classList.add('hidden');
         const safeScore = isNaN(seo.score) ? 60 : seo.score;
         const overallGrade = getGradeInfo(safeScore);
         const ringColor = safeScore < 50 ? '#ef4444' : safeScore < 70 ? '#fb923c' : safeScore < 85 ? '#22c55e' : '#10b981';
@@ -929,6 +929,8 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
         const impactSection = document.createElement('div');
         impactSection.innerHTML = impactHTML;
         wrapper.appendChild(impactSection);
+        
+        document.getElementById('loading').classList.add('hidden');
 
         const pluginSection = document.createElement('div');
         pluginSection.id = 'plugin-solutions-section';
