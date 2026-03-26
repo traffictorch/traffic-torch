@@ -389,24 +389,6 @@ if (sharedUrl && sharedLocation) {
     });
 
     stopSpinnerLoader();
-    
-    const moduleOrder = [
-      'NAP & Contact', 'Local Keywords & Titles', 'Local Content & Relevance',
-      'Maps & Visuals', 'Structured Data', 'Reviews & Structure'
-    ];
-
-    const topPriorityFixes = [];
-    const moduleIssues = {};
-    allFixes.forEach(f => {
-      if (!moduleIssues[f.module]) moduleIssues[f.module] = [];
-      moduleIssues[f.module].push(f);
-    });
-    moduleOrder.forEach(mod => {
-      if (moduleIssues[mod] && moduleIssues[mod].length > 0) {
-        topPriorityFixes.push(moduleIssues[mod][0]);
-      }
-    });
-    topPriorityFixes.length = Math.min(3, topPriorityFixes.length);
 
     const bigGrade = getGrade(yourScore);
 
