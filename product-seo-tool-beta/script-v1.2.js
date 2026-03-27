@@ -12,7 +12,7 @@ import('./plugin-solutions-v1.0.js')
   import { canRunTool } from '/main-v1.1.js';
   import { initShareReport } from './share-report-v1.js';
   import { initSubmitFeedback } from './submit-feedback-v1.js';
-  import { analyzeProductIntent } from './modules/product-intent.js';
+  import { analyzeProductIntent } from './modules/product-ai.js';
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -658,7 +658,7 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
         });
 
         const health = getHealthLabel(seo.score);
-        //document.getElementById('loading').classList.add('hidden');
+        // Keep spinner visible - do not hide here
         const safeScore = isNaN(seo.score) ? 60 : seo.score;
         const overallGrade = getGradeInfo(safeScore);
         const ringColor = safeScore < 50 ? '#ef4444' : safeScore < 70 ? '#fb923c' : safeScore < 85 ? '#22c55e' : '#10b981';
@@ -791,9 +791,7 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
         const offset = 140;
         const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({ top: targetY, behavior: 'smooth' });
-
-        document.getElementById('loading').classList.add('hidden');
-
+        // Do not hide here - keep "Generating SEO report" visible until AI card finishes
         const wrapper = document.createElement('div');
         wrapper.className = 'container mx-auto px-4 py-8';
 
@@ -929,7 +927,8 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
         const impactSection = document.createElement('div');
         impactSection.innerHTML = impactHTML;
         wrapper.appendChild(impactSection);
-        
+
+        // Hide loading spinner + progress text ONLY when the FULL report (including AI intent card) is ready
         document.getElementById('loading').classList.add('hidden');
 
         const pluginSection = document.createElement('div');

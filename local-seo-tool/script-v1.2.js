@@ -7,7 +7,7 @@ import { analyzeContentRelevance } from './modules/content-relevance.js';
 import { analyzeMapsVisuals } from './modules/maps-visuals.js';
 import { analyzeStructuredData } from './modules/structured-data.js';
 import { analyzeReviewsStructure } from './modules/reviews-structure.js';
-import { analyzeLocalIntent } from './modules/ai-local-seo.js';
+//import { analyzeLocalIntent } from './modules/ai-local-seo.js';
 import { canRunTool } from '/main-v1.1.js';
 // Use absolute path from root – very reliable on Cloudflare Pages
 import { initShareReport } from '/local-seo-tool/share-report-v1.js';
@@ -503,7 +503,7 @@ if (sharedUrl && sharedLocation) {
         </div>
       </div>
       <!-- AI Detected Local Search Intents - Full width module -->
-      ${window.aiModuleHTML || ''}
+      //${window.aiModuleHTML || ''} 
       <!-- Modern Scoring Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 w-full max-w-none mx-auto">
         ${modules.map((m, index) => {

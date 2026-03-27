@@ -23,17 +23,11 @@ export async function analyzeProductIntent(cleanedText, url) {
     }
    return `<div class="max-w-5xl mx-auto my-16 px-4">
       <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
-        <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">Semantic Product Intent Suggestions</h3>
-
-        <!-- Improvement Advice -->
-        <div class="mt-8 bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
-          <h4 class="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-4">Advice to Improve Commercial Alignment</h4>
-          <div class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">${card.improvementAdvice || 'No advice available'}</div>
-        </div>
+        <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">Product Meta Title & Description Suggestions</h3>
 
         <!-- Suggested Elements -->
         <div class="mt-8 bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
-          <h4 class="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-4">Suggested Title & Meta Description for Converting Queries</h4>
+          <h4 class="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-4">Improve Search Query Conversions</h4>
           <div class="space-y-6">
             <div>
               <div class="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-1">Recommended Meta Title</div>
