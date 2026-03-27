@@ -123,11 +123,11 @@ document.addEventListener('DOMContentLoaded', () => {
       progressText.textContent = "Still working — heavy page or slow server detected...";
       progressText.classList.remove('text-green-600', 'dark:text-green-400');
       progressText.classList.add('text-yellow-600', 'dark:text-yellow-400');
-    }, 75000);
+    }, 120000);
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 120000);
+      const timeoutId = setTimeout(() => controller.abort(), 180000);
 
       let res;
       try {
