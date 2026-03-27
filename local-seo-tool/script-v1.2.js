@@ -267,7 +267,7 @@ if (sharedUrl && sharedLocation) {
     const mapsResult      = analyzeMapsVisuals(doc, city, hasLocalIntent);
     const schemaResult    = analyzeStructuredData(doc);
     const reviewsResult   = analyzeReviewsStructure(doc, fullUrl, city, schemaResult.data);
-	const aiResult = await analyzeLocalIntent(doc, city, fullUrl, getCleanContent(doc));
+	// const aiResult = await analyzeLocalIntent(doc, city, fullUrl, getCleanContent(doc));
 
     // Collect all fixes from modules
     allFixes.push(
@@ -502,8 +502,7 @@ if (sharedUrl && sharedLocation) {
           </p>
         </div>
       </div>
-      <!-- AI Detected Local Search Intents - Full width module -->
-      //${window.aiModuleHTML || ''} 
+      <!-- AI Detected Local Search Intents - Full width module (Disabled)--> 
       <!-- Modern Scoring Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 w-full max-w-none mx-auto">
         ${modules.map((m, index) => {
