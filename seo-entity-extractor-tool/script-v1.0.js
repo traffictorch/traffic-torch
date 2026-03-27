@@ -22,7 +22,7 @@ function isShortContent(wordCount) {
 
 function getGrade(score) {
   if (score >= 85) return { text: 'Excellent', emoji: '✅', color: 'text-green-600 dark:text-green-400' };
-  if (score >= 70) return { text: 'Good', emoji: '👍', color: 'text-emerald-600 dark:text-emerald-400' };
+  if (score >= 70) return { text: 'Good', emoji: '👍', color: 'text-green-400 dark:text-green-200' };
   if (score >= 50) return { text: 'Fair', emoji: '⚠️', color: 'text-orange-500 dark:text-orange-400' };
   return { text: 'Needs Work', emoji: '❌', color: 'text-red-600 dark:text-red-400' };
 }
@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
   </p>
   <!-- Big Overall Readiness Score Card -->
   <div class="flex justify-center my-10 px-4">
-    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 md:p-12 w-full max-w-lg border-4 ${readiness.score >= 85 ? 'border-green-500' : readiness.score >= 70 ? 'border-emerald-400' : readiness.score >= 50 ? 'border-orange-500' : 'border-red-500'}">
+    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 md:p-12 w-full max-w-lg border-4 ${readiness.score >= 85 ? 'border-green-600' : readiness.score >= 70 ? 'border-green-400' : readiness.score >= 50 ? 'border-orange-500' : 'border-red-500'}">
       <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall Semantic Readiness</p>
       <div class="relative aspect-square w-full max-w-[280px] mx-auto">
         <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
@@ -283,8 +283,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const { score, metrics = [], failed = [] } = mod.result;
     const cardGrade = getGrade(score);
 const borderColorClass = 
-  score >= 85 ? 'border-green-500 dark:border-green-400' :
-  score >= 70 ? 'border-emerald-500 dark:border-emerald-400' :
+  score >= 85 ? 'border-green-600 dark:border-green-400' :
+  score >= 70 ? 'border-green-400 dark:border-green-200' :
   score >= 50 ? 'border-orange-500 dark:border-orange-400' :
   'border-red-600 dark:border-red-500';
     const arcColor = score >= 85 ? '#22c55e' :
@@ -371,8 +371,8 @@ const borderColorClass =
     const { score, metrics = [], failed = [] } = mod.result;
     const cardGrade = getGrade(score);
 const borderColorClass = 
-  score >= 85 ? 'border-green-500 dark:border-green-400' :
-  score >= 70 ? 'border-emerald-500 dark:border-emerald-400' :
+  score >= 85 ? 'border-green-600 dark:border-green-400' :
+  score >= 70 ? 'border-green-400 dark:border-green-200' :
   score >= 50 ? 'border-orange-500 dark:border-orange-400' :
   'border-red-600 dark:border-red-500';
     const arcColor = score >= 85 ? '#22c55e' :
