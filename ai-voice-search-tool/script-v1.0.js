@@ -162,6 +162,10 @@ function getModuleGrade(score) {
       wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
       analyzedText = text;
       const analysis = analyzeVoiceContent(text, doc);
+      if (!analysis || !analysis.details) {
+  console.warn('Analysis details missing – modules may not have returned subMetrics');
+  analysis.details = {};
+}
       const yourScore = analysis.totalScore;
       const mainGrade = getOverallEmojiGrade(yourScore);
       const mainGradeColor = mainGrade.color;
@@ -255,8 +259,8 @@ results.innerHTML = `
     const gradeColor = grade.color;
     const detailsKey = m.id.split('-').map((w,i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');
     const details = analysis.details?.[detailsKey] || {};
-    const subMetrics = details.subMetrics || [];
-    const failedCount = subMetrics.filter(s => s.score < 60).length;
+	const subMetrics = details.subMetrics || [];
+	const failedCount = Array.isArray(subMetrics) ? subMetrics.filter(s => s.score < 60).length : 0;
 
     return `
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 md:p-8 text-center border-l-4 w-full" style="border-left-color: ${gradeColor}">
@@ -274,11 +278,11 @@ results.innerHTML = `
       <p class="mt-6 text-2xl font-bold" style="color: ${gradeColor}">${m.name}</p>
       <p class="mt-2 text-xl flex items-center justify-center gap-2" style="color: ${gradeColor}">${grade.text} ${grade.emoji}</p>
       <div class="mt-4 space-y-3 text-base">
-        ${subMetrics.length > 0 ? subMetrics.map(s => `
-          <p class="font-medium" style="color: ${s.score >= 60 ? '#10b981' : '#ef4444'}">
-            ${s.score >= 60 ? '✅' : '❌'} ${s.name} (${s.score})
-          </p>
-        `).join('') : '<p class="text-gray-500 dark:text-gray-400">Sub-metrics loading...</p>'}
+${Array.isArray(subMetrics) && subMetrics.length > 0 ? subMetrics.map(s => `
+  <p class="font-medium" style="color: ${s.score >= 60 ? '#10b981' : '#ef4444'}">
+    ${s.score >= 60 ? '✅' : '❌'} $$   {s.name} (   $${s.score})
+  </p>
+`).join('') : '<p class="text-gray-500 dark:text-gray-400">No sub-metrics available</p>'}
       </div>
 
       <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
@@ -324,8 +328,8 @@ results.innerHTML = `
       const gradeColor = grade.color;
       const detailsKey = m.id.split('-').map((w,i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');
       const details = analysis.details?.[detailsKey] || {};
-      const subMetrics = details.subMetrics || [];
-      const failedCount = subMetrics.filter(s => s.score < 60).length;
+const subMetrics = details.subMetrics || [];
+const failedCount = Array.isArray(subMetrics) ? subMetrics.filter(s => s.score < 60).length : 0;
 
       return `
       <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 md:p-8 text-center border-l-4" style="border-left-color: ${gradeColor}">
@@ -343,11 +347,11 @@ results.innerHTML = `
         <p class="mt-6 text-2xl font-bold" style="color: ${gradeColor}">${m.name}</p>
         <p class="mt-2 text-xl flex items-center justify-center gap-2" style="color: ${gradeColor}">${grade.text} ${grade.emoji}</p>
         <div class="mt-4 space-y-3 text-base">
-          ${subMetrics.length > 0 ? subMetrics.map(s => `
-            <p class="font-medium" style="color: ${s.score >= 60 ? '#10b981' : '#ef4444'}">
-              ${s.score >= 60 ? '✅' : '❌'} ${s.name} (${s.score})
-            </p>
-          `).join('') : '<p class="text-gray-500 dark:text-gray-400">Sub-metrics loading...</p>'}
+${Array.isArray(subMetrics) && subMetrics.length > 0 ? subMetrics.map(s => `
+  <p class="font-medium" style="color: ${s.score >= 60 ? '#10b981' : '#ef4444'}">
+    ${s.score >= 60 ? '✅' : '❌'} $$   {s.name} (   $${s.score})
+  </p>
+`).join('') : '<p class="text-gray-500 dark:text-gray-400">No sub-metrics available</p>'}
         </div>
 
         <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
@@ -419,7 +423,7 @@ ${(() => {
     return `
       <div class="mt-12 text-center">
         <p class="text-2xl font-bold text-green-600 dark:text-green-400">All sub-metrics strong! ✅</p>
-        <p class="mt-4 text-lg text-gray-700 dark:text-gray-300">Your page is well-optimized for AI voice search. Keep monitoring with regular scans.</p>
+        <p class="mt-4 text-lg text-gray-700 dark:text-gray-300">Your page is well-optimized for AI voice search.</p>
       </div>
     `;
   }
