@@ -558,18 +558,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const links = document.querySelectorAll('.pro-menu-link');
       
       links.forEach(link => {
-        const emojiSpan = link.querySelector('span.text-2xl') || link.firstChild;
+        const emojiSpan = link.querySelector('span.text-2xl') || link.querySelector('.text-2xl') || link.firstChild;
         const textSpan = link.querySelector('.sidebar-text') || link.lastChild;
-        
+       
         if (token) {
           // Logged in: Pro Portal + green dot
           if (textSpan) {
             textSpan.textContent = 'Pro Portal';
           } else {
+            // Mobile: preserve emoji + change text only
             link.innerHTML = '🪪 Pro Portal';
           }
           link.href = '/pro/account/';
-          
+         
           const badge = document.createElement('span');
           badge.className = 'inline-block w-2.5 h-2.5 bg-green-500 rounded-full ml-2 pro-badge';
           if (textSpan) {
@@ -582,10 +583,11 @@ document.addEventListener('DOMContentLoaded', () => {
           if (textSpan) {
             textSpan.textContent = 'Pro Traffic';
           } else {
+            // Mobile: preserve emoji + change text only
             link.innerHTML = '🪪 Pro Traffic';
           }
           link.href = '/pro/';
-          
+         
           const existingBadge = link.querySelector('.pro-badge');
           if (existingBadge) existingBadge.remove();
         }
