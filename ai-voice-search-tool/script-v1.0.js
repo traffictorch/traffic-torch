@@ -293,7 +293,7 @@ results.innerHTML = `
       <div class="mt-4 space-y-3 text-base">
 ${Array.isArray(subMetrics) && subMetrics.length > 0 ? subMetrics.map(s => `
   <p class="font-medium" style="color: ${s.score >= 60 ? '#10b981' : '#ef4444'}">
-    ${s.score >= 60 ? '✅' : '❌'} $$   {s.name} (   $${s.score})
+        ${s.score >= 60 ? '✅' : '❌'} ${s.name} (${s.score})
   </p>
 `).join('') : '<p class="text-gray-500 dark:text-gray-400">Sub-metrics loading...</p>'}
       </div>
@@ -362,7 +362,7 @@ const failedCount = Array.isArray(subMetrics) ? subMetrics.filter(s => s.score <
         <div class="mt-4 space-y-3 text-base">
 ${Array.isArray(subMetrics) && subMetrics.length > 0 ? subMetrics.map(s => `
   <p class="font-medium" style="color: ${s.score >= 60 ? '#10b981' : '#ef4444'}">
-    ${s.score >= 60 ? '✅' : '❌'} $$   {s.name} (   $${s.score})
+        ${s.score >= 60 ? '✅' : '❌'} ${s.name} (${s.score})
   </p>
 `).join('') : '<p class="text-gray-500 dark:text-gray-400">Sub-metrics loading...</p>'}
         </div>
