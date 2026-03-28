@@ -156,9 +156,8 @@ manualPreview.textContent = prettyJsonLd({
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Rate limiting stub – uncomment when ready
-    // const canProceed = await canRunTool('limit-schema-scan');
-    // if (!canProceed) return;
+    const canProceed = await canRunTool('limit-schema-scan');
+    if (!canProceed) return;
 
     let inputUrl = document.getElementById('url-input').value.trim();
     if (!inputUrl) {

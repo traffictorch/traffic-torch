@@ -47,8 +47,8 @@ const initTool = (form, results, progressContainer) => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-  //const canProceed = await canRunTool('limit-audit-id');
-  //if (!canProceed) return;
+  const canProceed = await canRunTool('limit-audit-id');
+  if (!canProceed) return;
 
     let inputUrl = document.getElementById('url-input').value.trim();
     if (!inputUrl) {

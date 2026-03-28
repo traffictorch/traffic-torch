@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    //const canProceed = await canRunTool('limit-audit-id');
-    //if (!canProceed) return;
+    const canProceed = await canRunTool('limit-audit-id');
+    if (!canProceed) return;
 
     const urlInput = document.getElementById('url-input');
     let inputValue = urlInput?.value.trim();
@@ -168,7 +168,7 @@ ${clusters.length > 0
         return `
           <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-2 border-4 border-${color}-500 dark:border-${color}-400 hover:border-${color}-600 dark:hover:border-${color}-300 hover:shadow-3xl transition-all duration-300">
             <div class="flex items-center gap-4 mb-6">
-              <div class="flex-shrink-0 w-10 h-10 bg-${color}-100 dark:bg-${color}-900 rounded-2xl flex items-center justify-center text-5xl shadow-md">
+              <div class="flex-shrink-0 w-10 h-10 bg-${color}-100 dark:bg-${color}-900 rounded-2xl flex items-center justify-center text-4xl shadow-md">
                 ${idx === 0 ? '🌌' : idx === 1 ? '🧠' : idx === 2 ? '❤️' : idx === 3 ? '📜' : '🔍'}
               </div>
               <div class="flex-grow">

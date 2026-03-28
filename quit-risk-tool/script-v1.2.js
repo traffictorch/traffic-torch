@@ -476,8 +476,8 @@ if (sharedUrl) {
   form.addEventListener('submit', async e => {
     e.preventDefault();
     
-  //const canProceed = await canRunTool('limit-audit-id');
-  //if (!canProceed) return;
+  const canProceed = await canRunTool('limit-audit-id');
+  if (!canProceed) return;
   
     let url = input.value.trim();
     if (!url) {

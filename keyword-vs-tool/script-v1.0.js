@@ -155,8 +155,8 @@ const countPhrase = (text = '', phrase = '', isUrl = false) => {
   form.addEventListener('submit', async e => {
     e.preventDefault();
     
-  //const canProceed = await canRunTool('limit-audit-id');
-  //if (!canProceed) return;
+  const canProceed = await canRunTool('limit-audit-id');
+  if (!canProceed) return;
   
     let yourUrl = yourInput.value.trim();
     let compUrl = compInput.value.trim();

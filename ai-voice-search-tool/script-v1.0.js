@@ -106,8 +106,10 @@ function getModuleGrade(score) {
 }
   form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  //const canProceed = await canRunTool('limit-audit-id');
-  //if (!canProceed) return;
+  
+  const canProceed = await canRunTool('limit-audit-id');
+  if (!canProceed) return;
+  
   const url = input.value.trim();
     let normalizedUrl = url;
     if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {

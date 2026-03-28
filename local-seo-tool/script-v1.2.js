@@ -209,8 +209,8 @@ if (sharedUrl && sharedLocation) {
   form.addEventListener('submit', async e => {
     e.preventDefault();
     
-  //const canProceed = await canRunTool('limit-audit-id');
-  //if (!canProceed) return;
+  const canProceed = await canRunTool('limit-audit-id');
+  if (!canProceed) return;
   
     const yourUrl = pageUrlInput.value.trim();
     const location = locationInput.value.trim();

@@ -581,8 +581,8 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
   form.addEventListener('submit', async e => {
     e.preventDefault();
     
-  //const canProceed = await canRunTool('limit-audit-id');
-  //if (!canProceed) return;
+  const canProceed = await canRunTool('limit-audit-id');
+  if (!canProceed) return;
   
     results.innerHTML = '';
     let url = input.value.trim();
