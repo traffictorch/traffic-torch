@@ -163,6 +163,9 @@ function getModuleGrade(score) {
       analyzedText = text;
       const analysis = analyzeVoiceContent(text, doc);
       
+      console.log("DEBUG: analysis.details keys:", Object.keys(analysis.details || {}));
+console.log("DEBUG: AI Visibility subMetrics length:", analysis.details?.aiVisibility?.subMetrics?.length || 0);
+      
    // FIX: Force subMetrics array on every module + debug log
    if (analysis && analysis.details) {
      Object.keys(analysis.details).forEach(key => {
