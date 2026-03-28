@@ -35,29 +35,30 @@ document.addEventListener('DOMContentLoaded', () => {
   const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/?url=';
   let analyzedText = '';
   let wordCount = 0;
-  function getMainContent(doc) {
-    const main = doc.querySelector('main, [role="main"], article, .main-content, .site-content, .content-area');
-    if (main && main.textContent.trim().length > 600) return main;
-    const candidates = doc.querySelectorAll('div, section, article');
-    let best = null;
-    let bestScore = 0;
-    candidates.forEach(el => {
-      if (el.closest('header, nav, footer, aside, .menu, .sidebar')) return;
-      const paragraphs = el.querySelectorAll('p');
-      const textLength = el.textContent.trim().length;
-      const pCount = paragraphs.length;
-      const score = pCount * 100 + textLength;
-      if (score > bestScore && textLength > 600 && textLength < 20000) {
-        bestScore = score;
-        best = el;
-      }
-    });
-    if (best) return best;
-    const body = doc.body.cloneNode(true);
-    const removeSelectors = 'header, nav, footer, aside, .menu, .navbar, .sidebar, .cookie-banner, .popup, .social-links, .breadcrumbs';
-    body.querySelectorAll(removeSelectors).forEach(e => e.remove());
-    return body;
-  }
+function getMainContent(doc) {
+  const main = doc.querySelector('main, [role="main"], article, .main-content, .site-content, .content-area');
+  if (main && main.textContent.trim().length > 100) return main; // lowered threshold for modern sites
+  const candidates = doc.querySelectorAll('div, section, article');
+  let best = null;
+  let bestScore = 0;
+  candidates.forEach(el => {
+    if (el.closest('header, nav, footer, aside, .menu, .navbar, .sidebar')) return;
+    const paragraphs = el.querySelectorAll('p');
+    const textLength = el.textContent.trim().length;
+    const pCount = paragraphs.length;
+    const score = pCount * 100 + textLength;
+    if (score > bestScore && textLength > 100 && textLength < 20000) {
+      bestScore = score;
+      best = el;
+    }
+  });
+  if (best) return best;
+  // Final aggressive fallback – for pages that have almost no text in main blocks
+  const body = doc.body.cloneNode(true);
+  const removeSelectors = 'header, nav, footer, aside, .menu, .navbar, .sidebar, .cookie-banner, .popup, .social-links, .breadcrumbs, script, style, noscript';
+  body.querySelectorAll(removeSelectors).forEach(e => e.remove());
+  return body;
+}
 function analyzeVoiceContent(text, doc) { // pass doc for schema/snippet parsing
   text = text.replace(/\s+/g, ' ').trim();
   // ... keep word/sentence prep
