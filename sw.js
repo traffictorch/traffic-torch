@@ -11,15 +11,13 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', event => {
   const url = event.request.url;
 
-  // Bypass Service Worker for:
-  // 1. Your API (traffic-torch-api.traffictorch.workers.dev)
-  // 2. Cloudflare Insights beacon
-  // 3. Stripe (m.stripe.network)
-  if (url.includes('traffic-torch-api.traffictorch.workers.dev') ||
+// Bypass Service Worker for ALL Traffic Torch Workers + external services
+  if (url.includes('traffictorch.workers.dev') ||           // catches ALL *.traffictorch.workers.dev
       url.includes('static.cloudflareinsights.com') ||
+      url.includes('static.addtoany.com') ||
       url.includes('stripe.network') ||
       url.includes('stripe.com')) {
-    return; // Let browser handle directly – no interception
+    return; // Let browser handle directly – prevents NetworkError + CORS issues
   }
 
   // Optional: simple cache-first for static assets only (keeps PWA benefits)
