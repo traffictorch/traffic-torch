@@ -208,9 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       results.innerHTML = `
 <div class="max-w-5xl mx-auto px-4 py-8">
-  <p class="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">
-    Scores are adaptive.
-  </p>
   <!-- Big Overall Readiness Score Card -->
   <div class="flex justify-center my-10 px-4">
     <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 md:p-12 w-full max-w-lg border-4 ${readiness.score >= 85 ? 'border-green-600' : readiness.score >= 70 ? 'border-green-500' : readiness.score >= 50 ? 'border-orange-500' : 'border-red-500'}">

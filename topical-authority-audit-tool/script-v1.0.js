@@ -121,15 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       results.innerHTML = `
         <div class="max-w-5xl mx-auto px-4 py-2 text-gray-900 dark:text-gray-100">
-        
-          <!-- Mode Indicator (educational) -->
-          <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6 italic">
-            Topical authority audit results are adaptive.
-          </p>
-
           <!-- Overall Score Card -->
           <div class="flex justify-center my-12">
-            <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 w-full max-w-lg border-4 border-transparent ${overallScore >= 70 ? 'border-green-500 dark:border-green-400' : overallScore >= 40 ? 'border-orange-500 dark:border-orange-400' : 'border-red-500 dark:border-red-400'} shadow-lg dark:shadow-gray-800/50">
+            <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-2 w-full max-w-lg border-4 border-transparent ${overallScore >= 70 ? 'border-green-500 dark:border-green-400' : overallScore >= 40 ? 'border-orange-500 dark:border-orange-400' : 'border-red-500 dark:border-red-400'} shadow-lg dark:shadow-gray-800/50">
               <p class="text-center text-2xl font-medium mb-6 text-gray-800 dark:text-gray-200">Topical Authority Score</p>
               <div class="relative aspect-square w-full max-w-[300px] mx-auto">
                 <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
@@ -172,9 +166,9 @@ ${clusters.length > 0
                     : grade.color.includes('orange') ? 'orange'
                     : 'red';
         return `
-          <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 border-4 border-${color}-500 dark:border-${color}-400 hover:border-${color}-600 dark:hover:border-${color}-300 hover:shadow-3xl transition-all duration-300">
-            <div class="flex items-center gap-5 mb-6">
-              <div class="flex-shrink-0 w-20 h-20 bg-${color}-100 dark:bg-${color}-900 rounded-2xl flex items-center justify-center text-5xl shadow-md">
+          <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-2 border-4 border-${color}-500 dark:border-${color}-400 hover:border-${color}-600 dark:hover:border-${color}-300 hover:shadow-3xl transition-all duration-300">
+            <div class="flex items-center gap-4 mb-6">
+              <div class="flex-shrink-0 w-10 h-10 bg-${color}-100 dark:bg-${color}-900 rounded-2xl flex items-center justify-center text-5xl shadow-md">
                 ${idx === 0 ? '🌌' : idx === 1 ? '🧠' : idx === 2 ? '❤️' : idx === 3 ? '📜' : '🔍'}
               </div>
               <div class="flex-grow">
