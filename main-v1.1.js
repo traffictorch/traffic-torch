@@ -541,46 +541,58 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(error => console.error('Error loading footer:', error));
 });
 
-// Conditional Pro menu link update
+// Conditional Pro menu link update – FIXED: run AFTER shared menus are inserted
 document.addEventListener('DOMContentLoaded', () => {
-  const token = localStorage.getItem('authToken');
-  const links = document.querySelectorAll('.pro-menu-link');
-
-  links.forEach(link => {
-    const emojiSpan = link.querySelector('span.text-2xl') || link.firstChild; // desktop emoji or mobile text node
-    const textSpan = link.querySelector('.sidebar-text') || link.lastChild;   // desktop hidden text or mobile full text
-
-    if (token) {
-      // Logged in: Pro Dashboard + green dot badge after text
-      if (textSpan) {
-        textSpan.textContent = 'Pro Dashboard';
-      } else {
-        // Mobile fallback: replace full text
-        link.innerHTML = '🪪 Pro Dashboard';
-      }
-      link.href = '/pro/account/';
-
-      // Add green dot badge after text
-      const badge = document.createElement('span');
-      badge.className = 'inline-block w-2.5 h-2.5 bg-green-500 rounded-full ml-2 pro-badge';
-      if (textSpan) {
-        textSpan.parentNode.insertBefore(badge, textSpan.nextSibling);
-      } else {
-        link.appendChild(badge);
-      }
-    } else {
-      // Logged out: reset to default
-      if (textSpan) {
-        textSpan.textContent = 'Pro Traffic';
-      } else {
-        link.innerHTML = '🪪 Pro Traffic';
-      }
-      link.href = '/pro/';
-      // Remove badge if exists
-      const existingBadge = link.querySelector('.pro-badge');
-      if (existingBadge) existingBadge.remove();
+  // Wait for both shared menus to finish loading
+  const checkMenusLoaded = setInterval(() => {
+    const desktopPlaceholder = document.getElementById('desktop-menu-placeholder');
+    const mobilePlaceholder = document.getElementById('mobile-menu-placeholder');
+    
+    if (desktopPlaceholder && mobilePlaceholder && 
+        desktopPlaceholder.innerHTML.trim() !== '' && 
+        mobilePlaceholder.innerHTML.trim() !== '') {
+      
+      clearInterval(checkMenusLoaded);
+      
+      const token = localStorage.getItem('authToken');
+      const links = document.querySelectorAll('.pro-menu-link');
+      
+      links.forEach(link => {
+        const emojiSpan = link.querySelector('span.text-2xl') || link.firstChild;
+        const textSpan = link.querySelector('.sidebar-text') || link.lastChild;
+        
+        if (token) {
+          // Logged in: Pro Dashboard + green dot
+          if (textSpan) {
+            textSpan.textContent = 'Pro Dashboard';
+          } else {
+            link.innerHTML = '🪪 Pro Dashboard';
+          }
+          link.href = '/pro/account/';
+          
+          const badge = document.createElement('span');
+          badge.className = 'inline-block w-2.5 h-2.5 bg-green-500 rounded-full ml-2 pro-badge';
+          if (textSpan) {
+            textSpan.parentNode.insertBefore(badge, textSpan.nextSibling);
+          } else {
+            link.appendChild(badge);
+          }
+        } else {
+          // Logged out: reset
+          if (textSpan) {
+            textSpan.textContent = 'Pro Traffic';
+          } else {
+            link.innerHTML = '🪪 Pro Traffic';
+          }
+          link.href = '/pro/';
+          
+          const existingBadge = link.querySelector('.pro-badge');
+          if (existingBadge) existingBadge.remove();
+        }
+      });
     }
-  });
+  }, 100); // check every 100ms
+});
   });
   
 // Toggle function – reusable for both desktop and mobile
