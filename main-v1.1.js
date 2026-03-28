@@ -559,10 +559,10 @@ document.addEventListener('DOMContentLoaded', () => {
       
       links.forEach(link => {
         const isDesktop = link.querySelector('.sidebar-text') !== null;
-        const token = localStorage.getItem('authToken'); // moved inside for safety
+        const token = localStorage.getItem('authToken');
 
         if (isDesktop) {
-          // Desktop: safe text-only update (emoji in separate span)
+          // Desktop: update only text span (emoji stays in its own span)
           const textSpan = link.querySelector('.sidebar-text');
           if (token) {
             textSpan.textContent = 'Pro Portal';
@@ -572,12 +572,18 @@ document.addEventListener('DOMContentLoaded', () => {
             link.href = '/pro/';
           }
         } else {
-          // Mobile: always reset full content with emoji to prevent loss
+          // Mobile: update text only, preserve emoji span
+          const emojiSpan = link.querySelector('span.text-2xl');
+          const textNode = link.lastChild; // the text after emoji span
           if (token) {
-            link.innerHTML = '🪪 Pro Portal';
+            if (textNode && textNode.nodeType === 3) {
+              textNode.textContent = ' Pro Portal';
+            }
             link.href = '/pro/account/';
           } else {
-            link.innerHTML = '🪪 Pro Traffic';
+            if (textNode && textNode.nodeType === 3) {
+              textNode.textContent = ' Pro Traffic';
+            }
             link.href = '/pro/';
           }
         }
