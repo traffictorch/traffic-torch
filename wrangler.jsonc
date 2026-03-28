@@ -1,21 +1,22 @@
 {
-	"name": "traffic-torch",
-	"compatibility_date": "2026-01-17",
-	"assets": {
-		"directory": "./dist",
-	},
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_name": "traffic-torch-db",
-			"database_id": "d5c9fa6f-178f-4a5b-ae07-eebd161c6371"
-		}
-	],
-	"vectorize": [
-		{
-			"binding": "TOPICAL_VECTORIZE",
-			"index_name": "topical-authority",
-			"remote": true
-		}
-	]
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "traffic-torch",
+  "compatibility_date": "2026-03-28",   // ← Update to today's date (or latest)
+  "assets": {
+    "directory": "./dist"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "traffic-torch-db",
+      "database_id": "d5c9fa6f-178f-4a5b-ae07-eebd161c6371"
+    }
+  ],
+  "vectorize": [
+    {
+      "binding": "TOPICAL_VECTORIZE",
+      "index_name": "topical-authority",
+      "remote": true
+    }
+  ]
 }
