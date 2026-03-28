@@ -59,9 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return body;
   }
 function analyzeVoiceContent(text, doc) { // pass doc for schema/snippet parsing
-  if (!text || text.length < 300) {
-    return { moduleScores: [20,20,20,20,20], totalScore: 50, details: {} };
-  }
   text = text.replace(/\s+/g, ' ').trim();
   // ... keep word/sentence prep
 const aiVisibility = computeAIVisibility(text, doc);
