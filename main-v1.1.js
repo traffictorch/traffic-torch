@@ -593,7 +593,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, 100); // check every 100ms
 });
-  });
   
 // Toggle function – reusable for both desktop and mobile
 function attachMenuToggles(containerId) {
