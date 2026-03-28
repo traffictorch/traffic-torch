@@ -562,11 +562,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const textSpan = link.querySelector('.sidebar-text') || link.lastChild;
         
         if (token) {
-          // Logged in: Pro Dashboard + green dot
+          // Logged in: Pro Portal + green dot
           if (textSpan) {
-            textSpan.textContent = 'Pro Dashboard';
+            textSpan.textContent = 'Pro Portal';
           } else {
-            link.innerHTML = '🪪 Pro Dashboard';
+            link.innerHTML = '🪪 Pro Portal';
           }
           link.href = '/pro/account/';
           
