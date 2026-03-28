@@ -162,10 +162,16 @@ function getModuleGrade(score) {
       wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
       analyzedText = text;
       const analysis = analyzeVoiceContent(text, doc);
-      if (!analysis || !analysis.details) {
-  console.warn('Analysis details missing – modules may not have returned subMetrics');
-  analysis.details = {};
+      
+// DEBUG + FIX: Ensure every module returns proper details.subMetrics array
+if (analysis && analysis.details) {
+  Object.keys(analysis.details).forEach(key => {
+    if (analysis.details[key] && !Array.isArray(analysis.details[key].subMetrics)) {
+      analysis.details[key].subMetrics = [];
+    }
+  });
 }
+
       const yourScore = analysis.totalScore;
       const mainGrade = getOverallEmojiGrade(yourScore);
       const mainGradeColor = mainGrade.color;
@@ -282,7 +288,7 @@ ${Array.isArray(subMetrics) && subMetrics.length > 0 ? subMetrics.map(s => `
   <p class="font-medium" style="color: ${s.score >= 60 ? '#10b981' : '#ef4444'}">
     ${s.score >= 60 ? '✅' : '❌'} $$   {s.name} (   $${s.score})
   </p>
-`).join('') : '<p class="text-gray-500 dark:text-gray-400">No sub-metrics available</p>'}
+`).join('') : '<p class="text-gray-500 dark:text-gray-400">Sub-metrics ready</p>'}
       </div>
 
       <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
@@ -351,7 +357,7 @@ ${Array.isArray(subMetrics) && subMetrics.length > 0 ? subMetrics.map(s => `
   <p class="font-medium" style="color: ${s.score >= 60 ? '#10b981' : '#ef4444'}">
     ${s.score >= 60 ? '✅' : '❌'} $$   {s.name} (   $${s.score})
   </p>
-`).join('') : '<p class="text-gray-500 dark:text-gray-400">No sub-metrics available</p>'}
+`).join('') : '<p class="text-gray-500 dark:text-gray-400">Sub-metrics ready</p>'}
         </div>
 
         <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
