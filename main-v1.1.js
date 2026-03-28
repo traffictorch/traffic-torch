@@ -558,38 +558,38 @@ document.addEventListener('DOMContentLoaded', () => {
       const links = document.querySelectorAll('.pro-menu-link');
       
       links.forEach(link => {
-        const emojiSpan = link.querySelector('span.text-2xl') || link.querySelector('.text-2xl') || link.firstChild;
-        const textSpan = link.querySelector('.sidebar-text') || link.lastChild;
-       
-        if (token) {
-          // Logged in: Pro Portal + green dot
-          if (textSpan) {
+        const isDesktop = link.querySelector('.sidebar-text') !== null;
+        const token = localStorage.getItem('authToken'); // moved inside for safety
+
+        if (isDesktop) {
+          // Desktop: safe text-only update (emoji in separate span)
+          const textSpan = link.querySelector('.sidebar-text');
+          if (token) {
             textSpan.textContent = 'Pro Portal';
+            link.href = '/pro/account/';
           } else {
-            // Mobile: preserve emoji + change text only
-            link.innerHTML = '🪪 Pro Portal';
-          }
-          link.href = '/pro/account/';
-         
-          const badge = document.createElement('span');
-          badge.className = 'inline-block w-2.5 h-2.5 bg-green-500 rounded-full ml-2 pro-badge';
-          if (textSpan) {
-            textSpan.parentNode.insertBefore(badge, textSpan.nextSibling);
-          } else {
-            link.appendChild(badge);
+            textSpan.textContent = 'Pro Traffic';
+            link.href = '/pro/';
           }
         } else {
-          // Logged out: reset
-          if (textSpan) {
-            textSpan.textContent = 'Pro Traffic';
+          // Mobile: always reset full content with emoji to prevent loss
+          if (token) {
+            link.innerHTML = '🪪 Pro Portal';
+            link.href = '/pro/account/';
           } else {
-            // Mobile: preserve emoji + change text only
             link.innerHTML = '🪪 Pro Traffic';
+            link.href = '/pro/';
           }
-          link.href = '/pro/';
-         
-          const existingBadge = link.querySelector('.pro-badge');
-          if (existingBadge) existingBadge.remove();
+        }
+
+        // Green dot badge (common for both)
+        const existingBadge = link.querySelector('.pro-badge');
+        if (existingBadge) existingBadge.remove();
+
+        if (token) {
+          const badge = document.createElement('span');
+          badge.className = 'inline-block w-2.5 h-2.5 bg-green-500 rounded-full ml-2 pro-badge';
+          link.appendChild(badge);
         }
       });
     }
