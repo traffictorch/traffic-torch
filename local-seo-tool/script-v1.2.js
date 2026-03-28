@@ -13,9 +13,6 @@ import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from '/local-seo-tool/share-report-v1.js';
 import { initSubmitFeedback } from '/local-seo-tool/submit-feedback-v1.js';
 
-// Temporary debug – add right after imports
-console.log("Main script-v1.2.js loaded – attempting to import share-report");
-
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
@@ -36,22 +33,21 @@ if (sharedUrl) {
       decodedUrl = 'https://' + decodedUrl;
     }
     pageUrlInput.value = decodedUrl;
-    console.log('[Auto-fill] Pre-filled shared URL:', decodedUrl);
   } catch (err) {
-    console.warn('[Auto-fill] Invalid shared URL param:', err);
+    // Silent fail in production
   }
 }
 
+// Auto-fill shared location from URL parameter (?location=...)
 const sharedLocation = urlParams.get('location');
 if (sharedLocation) {
   try {
     const decodedLocation = decodeURIComponent(sharedLocation).trim();
     if (decodedLocation) {
       locationInput.value = decodedLocation;
-      console.log('[Auto-fill] Pre-filled shared location:', decodedLocation);
     }
   } catch (err) {
-    console.warn('[Auto-fill] Invalid shared location param:', err);
+    // Silent fail in production - no console output
   }
 }
 
@@ -813,19 +809,11 @@ if (sharedUrl && sharedLocation) {
     
 // Give the browser one event loop cycle to apply the new innerHTML
 setTimeout(() => {
-  console.log("[TIMING FIX] Delayed init call after results.innerHTML update");
-
-  console.log("About to call initShareReport – is it defined?", typeof initShareReport);
   if (typeof initShareReport === 'function') {
     initShareReport(results);
-    console.log("initShareReport executed successfully");
-  } else {
-    console.error("initShareReport is NOT a function – import failed");
   }
-
   if (typeof initSubmitFeedback === 'function') {
     initSubmitFeedback(results);
-    console.log("initSubmitFeedback executed successfully");
   }
 }, 0);
     

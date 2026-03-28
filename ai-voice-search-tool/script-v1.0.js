@@ -14,14 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
-  // Quick debug: check if compromise loaded (runs on page load)
-  setTimeout(() => {
-    if (typeof window.nlp === 'function') {
-      console.log('compromise.js loaded successfully');
-    } else {
-      console.error('compromise.js failed to load – check CDN in index.html');
-    }
-  }, 2000);
+
      // Auto-fill input from shared report deep link (?url=...)
      const urlParams = new URLSearchParams(window.location.search);
      const sharedUrl = urlParams.get('url');
@@ -160,26 +153,6 @@ function getModuleGrade(score) {
       wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
       analyzedText = text;
       const analysis = analyzeVoiceContent(text, doc);
-      
-      console.log("DEBUG: analysis.details keys:", Object.keys(analysis.details || {}));
-console.log("DEBUG: AI Visibility subMetrics length:", analysis.details?.aiVisibility?.subMetrics?.length || 0);
-      
-   // FIX: Force subMetrics array on every module + debug log
-   if (analysis && analysis.details) {
-     Object.keys(analysis.details).forEach(key => {
-       if (analysis.details[key]) {
-         if (!Array.isArray(analysis.details[key].subMetrics)) {
-           console.warn(`Missing subMetrics for ${key} – forcing empty array`);
-           analysis.details[key].subMetrics = [];
-         } else {
-           console.log(`✅ ${key} subMetrics count:`, analysis.details[key].subMetrics.length);
-         }
-       }
-     });
-   } else {
-     console.error("❌ analysis.details is missing entirely after analyzeVoiceContent()");
-   }
-
       const yourScore = analysis.totalScore;
       const mainGrade = getOverallEmojiGrade(yourScore);
       const mainGradeColor = mainGrade.color;
