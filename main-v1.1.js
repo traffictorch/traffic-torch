@@ -453,7 +453,6 @@ async function getLiteFingerprint() {
     ctx.quadraticCurveTo(100, 45, 210, 50);
     ctx.stroke();
 
-    // Add more stable entropy
     const dataURL = canvas.toDataURL('image/png');
     const extra = navigator.platform + navigator.hardwareConcurrency + screen.width + screen.height;
     const encoder = new TextEncoder();
