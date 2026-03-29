@@ -421,28 +421,80 @@ function showUpgradeModal(message = "You've reached your daily limit. Upgrade to
   // Optional: scroll to top of modal on mobile
   modal.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-// Centralized rate limits
+// === UPDATED CANRUNTOOL WITH COMBINED LIMITING START (IP + localStorage + Lite Fingerprint) ===
+
+const DEVICE_KEY = 'tt_device_key';
+
+async function getLiteFingerprint() {
+  try {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    canvas.width = 220;
+    canvas.height = 50;
+
+    ctx.textBaseline = 'top';
+    ctx.font = '14px Arial';
+    ctx.fillStyle = '#4f46e5';
+    ctx.fillText('Traffic Torch Limit Check', 8, 8);
+
+    ctx.fillStyle = '#ec4899';
+    ctx.fillRect(10, 30, 180, 12);
+
+    ctx.strokeStyle = '#f97316';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(20, 40);
+    ctx.lineTo(200, 40);
+    ctx.stroke();
+
+    const dataURL = canvas.toDataURL('image/png');
+    const encoder = new TextEncoder();
+    const data = encoder.encode(dataURL);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+  } catch (e) {
+    return 'fallback-fp-' + Date.now();
+  }
+}
+
+function getDeviceKey() {
+  let key = localStorage.getItem(DEVICE_KEY);
+  if (!key) {
+    key = crypto.randomUUID();
+    localStorage.setItem(DEVICE_KEY, key);
+  }
+  return key;
+}
+
 export async function canRunTool(toolName = 'default') {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
-  const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+  const deviceKey = getDeviceKey();
+  const fingerprint = await getLiteFingerprint();
+
   try {
-    const res = await fetch(API_BASE + '/api/check-rate', {
+    const res = await fetch(`${API_BASE}/api/check-rate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'x-device-key': deviceKey,
+        'x-fingerprint': fingerprint,
         ...(token && { 'Authorization': `Bearer ${token}` })
       },
       body: JSON.stringify({ toolName })
     });
+
     if (!res.ok) {
-      showUpgradeModal('Could not check run limit – please log in or try again.');
+      showUpgradeModal('Could not check run limit – please try again.');
       return false;
     }
+
     const data = await res.json();
     if (data.allowed === true) {
       if (data.remaining !== undefined) updateRunsBadge?.(data.remaining);
       return true;
     }
+
     // Limit hit
     showUpgradeModal(data.message || 'Upgrade to Traffic Torch Pro - $48 USD per/year for 25 runs/day.');
     return false;
