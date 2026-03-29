@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       pageUrlInput.value = decodedUrl;
     } catch (e) {
-      console.warn('Invalid shared URL param:', e);
+      // no console in production
     }
   }
 
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         targetKeywordInput.value = decodedKeyword;
       }
     } catch (e) {
-      console.warn('Invalid shared keyword param:', e);
+      // no console in production
     }
   }
   
@@ -877,7 +877,7 @@ if (failedMetrics.length > 0) {
             }
           });
         } catch (e) {
-          console.error('Radar chart failed', e);
+          // no console in production
         }
       }, 150);
       

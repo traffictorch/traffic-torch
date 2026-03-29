@@ -165,15 +165,12 @@ const pluginData = {
 
 function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-section') {
   if (failedMetrics.length === 0) {
-    console.log('Plugin Solutions: No low/average metrics to show');
     return;
   }
 
-  console.log('Rendering Plugin Solutions for metrics:', failedMetrics.map(m => m.name));
 
   const container = document.getElementById(containerId);
   if (!container) {
-    console.warn(`Plugin Solutions container not found: #${containerId}`);
     return;
   }
 
@@ -238,7 +235,6 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
       const pluginsList = document.getElementById(`plugins-${metricId}`);
 
       if (!select || !pluginsList) {
-        console.warn(`Could not find select/plugins for metric: ${m.name} (id: ${metricId})`);
         return;
       }
 
@@ -248,7 +244,6 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
         pluginsList.classList.add('hidden');
 
         if (!selected || !pluginData[m.name]?.[selected]) {
-          console.log(`No plugins found for ${m.name} → ${selected}`);
           return;
         }
 

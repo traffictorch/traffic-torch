@@ -1,17 +1,18 @@
-// quit-risk-tool/script-v1.1.js - updated with modular imports
+// quit-risk-tool/script-v1.1.js - Production ready (v1.1-prod)
 
-// Dynamic import for plugin solutions (unchanged)
+// Dynamic import for plugin solutions
 let renderPluginSolutions;
 import('/quit-risk-tool/plugin-solutions-v1.0.js')
   .then(module => {
     renderPluginSolutions = module.renderPluginSolutions;
-    console.log('Plugin solutions module loaded successfully');
   })
-  .catch(err => console.error('Failed to load plugin-solutions-v1.0.js:', err));
-  
-  import { canRunTool } from '/main-v1.1.js';
-  import { initShareReport } from './share-report-v1.js';
-  import { initSubmitFeedback } from './submit-feedback-v1.js';
+  .catch(err => {
+    // Silent fail in production - plugin solutions will be skipped gracefully
+  });
+
+import { canRunTool } from '/main-v1.1.js';
+import { initShareReport } from './share-report-v1.js';
+import { initSubmitFeedback } from './submit-feedback-v1.js';
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -47,7 +48,6 @@ if (sharedUrl) {
     }, 500);
    
   } catch (err) {
-    console.warn('Invalid shared URL parameter:', err);
     // silent fail – user can still edit manually
   }
 }
@@ -939,20 +939,14 @@ ${impactHTML}
 </div>
         `;
 
-        console.log('Container AFTER HTML set:', !!document.getElementById('plugin-solutions-section'));
-
         if (typeof renderPluginSolutions === 'function') {
-          console.log('Calling renderPluginSolutions now');
           renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
         } else {
-          console.warn('renderPluginSolutions not loaded yet - delaying 500ms');
           setTimeout(() => {
             if (typeof renderPluginSolutions === 'function') {
-              console.log('Delayed call successful');
               renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
-            } else {
-              console.error('renderPluginSolutions still not available after delay');
             }
+            // Silent fail if still not available
           }, 500);
         }
 
@@ -1000,7 +994,7 @@ ${impactHTML}
               }
             });
           } catch (e) {
-            console.error('Radar chart failed', e);
+            // Radar chart failed silently in production
           }
         }, 150);
         
