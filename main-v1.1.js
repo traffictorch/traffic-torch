@@ -421,7 +421,13 @@ function showUpgradeModal(message = "You've reached your daily limit. Upgrade to
   // Optional: scroll to top of modal on mobile
   modal.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
+
+
+
+
 // === UPDATED CANRUNTOOL WITH COMBINED LIMITING START (IP + localStorage + Lite Fingerprint) ===
+// Fixed: More stable fingerprint + ensure headers are always sent
 
 const DEVICE_KEY = 'tt_device_key';
 
@@ -429,32 +435,34 @@ async function getLiteFingerprint() {
   try {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    canvas.width = 220;
-    canvas.height = 50;
+    canvas.width = 240;
+    canvas.height = 60;
 
+    // More stable drawing for consistent fingerprint
     ctx.textBaseline = 'top';
-    ctx.font = '14px Arial';
+    ctx.font = 'bold 16px Arial';
     ctx.fillStyle = '#4f46e5';
-    ctx.fillText('Traffic Torch Limit Check', 8, 8);
+    ctx.fillText('Traffic Torch 2026', 12, 12);
 
     ctx.fillStyle = '#ec4899';
-    ctx.fillRect(10, 30, 180, 12);
+    ctx.fillRect(15, 35, 200, 15);
 
     ctx.strokeStyle = '#f97316';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.moveTo(20, 40);
-    ctx.lineTo(200, 40);
+    ctx.moveTo(30, 50);
+    ctx.quadraticCurveTo(100, 45, 210, 50);
     ctx.stroke();
 
     const dataURL = canvas.toDataURL('image/png');
     const encoder = new TextEncoder();
-    const data = encoder.encode(dataURL);
+    const data = encoder.encode(dataURL + navigator.userAgent.slice(0, 100)); // extra stability
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
   } catch (e) {
-    return 'fallback-fp-' + Date.now();
+    console.warn('Fingerprint failed, using fallback');
+    return 'fallback-fp-2026';
   }
 }
 
@@ -495,14 +503,20 @@ export async function canRunTool(toolName = 'default') {
       return true;
     }
 
-    // Limit hit
     showUpgradeModal(data.message || 'Upgrade to Traffic Torch Pro - $48 USD per/year for 25 runs/day.');
     return false;
   } catch (err) {
+    console.error('canRunTool error:', err);
     showUpgradeModal('Connection error – please try again.');
     return false;
   }
 }
+// === UPDATED CANRUNTOOL WITH COMBINED LIMITING END ===
+
+
+
+
+
 // Poll for webhook completion & replace token automatically
 async function pollForProUpgrade(sessionId) {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
