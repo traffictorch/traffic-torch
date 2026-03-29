@@ -427,57 +427,54 @@ function showUpgradeModal(message = "You've reached your daily limit. Upgrade to
 
 
 // === UPDATED CANRUNTOOL WITH COMBINED LIMITING START (IP + localStorage + Lite Fingerprint) ===
+// Fingerprint stored in localStorage so it never changes until site data clear
+
 const DEVICE_KEY = 'tt_device_key';
+const FINGERPRINT_KEY = 'tt_fingerprint';
 
-// Create deviceKey once when script loads (never regenerates)
-let currentDeviceKey = localStorage.getItem(DEVICE_KEY);
-if (!currentDeviceKey) {
-  currentDeviceKey = crypto.randomUUID();
-  localStorage.setItem(DEVICE_KEY, currentDeviceKey);
-}
-
-async function getLiteFingerprint() {
-  try {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    canvas.width = 240;
-    canvas.height = 60;
-
-    ctx.textBaseline = 'top';
-    ctx.font = 'bold 16px Arial';
-    ctx.fillStyle = '#4f46e5';
-    ctx.fillText('Traffic Torch 2026', 12, 12);
-
-    ctx.fillStyle = '#ec4899';
-    ctx.fillRect(15, 35, 200, 15);
-
-    ctx.strokeStyle = '#f97316';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(30, 50);
-    ctx.quadraticCurveTo(100, 45, 210, 50);
-    ctx.stroke();
-
-    const dataURL = canvas.toDataURL('image/png');
-    const extra = navigator.platform + navigator.hardwareConcurrency + screen.width + screen.height;
-    const encoder = new TextEncoder();
-    const data = encoder.encode(dataURL + extra);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
-  } catch (e) {
-    return 'stable-fp-2026';
-  }
+// Create/load persistent fingerprint once
+let currentFingerprint = localStorage.getItem(FINGERPRINT_KEY);
+if (!currentFingerprint) {
+  // Generate once and store
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  canvas.width = 240;
+  canvas.height = 60;
+  ctx.textBaseline = 'top';
+  ctx.font = 'bold 16px Arial';
+  ctx.fillStyle = '#4f46e5';
+  ctx.fillText('Traffic Torch 2026', 12, 12);
+  ctx.fillStyle = '#ec4899';
+  ctx.fillRect(15, 35, 200, 15);
+  ctx.strokeStyle = '#f97316';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(30, 50);
+  ctx.quadraticCurveTo(100, 45, 210, 50);
+  ctx.stroke();
+  const dataURL = canvas.toDataURL('image/png');
+  const extra = navigator.platform + navigator.hardwareConcurrency + screen.width + screen.height;
+  const encoder = new TextEncoder();
+  const data = encoder.encode(dataURL + extra);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  currentFingerprint = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+  localStorage.setItem(FINGERPRINT_KEY, currentFingerprint);
 }
 
 function getDeviceKey() {
-  return currentDeviceKey;
+  let key = localStorage.getItem(DEVICE_KEY);
+  if (!key) {
+    key = crypto.randomUUID();
+    localStorage.setItem(DEVICE_KEY, key);
+  }
+  return key;
 }
 
 export async function canRunTool(toolName = 'default') {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
   const deviceKey = getDeviceKey();
-  const fingerprint = await getLiteFingerprint();
+  const fingerprint = currentFingerprint;
 
   try {
     const res = await fetch(`${API_BASE}/api/check-rate`, {
