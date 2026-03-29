@@ -282,15 +282,11 @@ const pluginData = {
 
 function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-section') {
   if (failedMetrics.length === 0) {
-    console.log('Plugin Solutions: No low/average metrics to show');
     return;
   }
 
-  console.log('Rendering Plugin Solutions for metrics:', failedMetrics.map(m => m.name));
-
   const container = document.getElementById(containerId);
   if (!container) {
-    console.warn(`Plugin Solutions container not found: #${containerId}`);
     return;
   }
 

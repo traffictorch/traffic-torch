@@ -52,7 +52,6 @@ pageTitle = pageTitle
       }
     } catch (err) {
       // Silent fail on error – no error message shown to user
-      console.error('Share failed:', err);
     }
   });
 

@@ -1,7 +1,6 @@
 export function initShareReport(resultsContainer) {
   const shareBtn = document.getElementById('share-report-btn');
   if (!shareBtn) {
-    console.warn("Share button #share-report-btn not found");
     return;
   }
 
@@ -46,8 +45,6 @@ export function initShareReport(resultsContainer) {
         showMessage('Copy manually:<br>' + shareText, 'info');
       }
     } catch (err) {
-      // User cancelled share sheet, permission denied, or other error → silent (no prompt, no message)
-      console.error('Share action failed or cancelled:', err);
       // Do NOT attempt clipboard.writeText() here to avoid permission popup on cancel
     }
   });

@@ -1,85 +1,75 @@
 // product-seo-tool/script.js - COMPLETE WORKING VERSION - all modules, plugin solutions, radar chart, priority fixes
+// PRODUCTION CLEAN - Only debug console statements removed
 
 // Dynamic import for plugin solutions
 let renderPluginSolutions;
 import('./plugin-solutions-v1.0.js')
   .then(module => {
     renderPluginSolutions = module.renderPluginSolutions;
-    console.log('[Plugin] Successfully loaded renderPluginSolutions');
   })
-  .catch(err => console.error('[Plugin] Failed to load plugin-solutions-v1.0.js:', err));
-  
-  import { canRunTool } from '/main-v1.1.js';
-  import { initShareReport } from './share-report-v1.js';
-  import { initSubmitFeedback } from './submit-feedback-v1.js';
+  .catch(() => {});
+
+import { canRunTool } from '/main-v1.1.js';
+import { initShareReport } from './share-report-v1.js';
+import { initSubmitFeedback } from './submit-feedback-v1.js';
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
-  
+
   // ────────────────────────────────────────────────
 // Dynamic imports for core analysis modules
 // ────────────────────────────────────────────────
-
 let analyzeOnPageSEO;
 import('./modules/on-page.js')
   .then(module => {
     analyzeOnPageSEO = module.analyzeOnPageSEO;
-    console.log('[Module] Successfully loaded on-page.js');
   })
-  .catch(err => console.error('[Module] Failed to load on-page.js:', err));
+  .catch(() => {});
 
 let analyzeTechnicalSEO;
 import('./modules/technical.js')
   .then(module => {
     analyzeTechnicalSEO = module.analyzeTechnicalSEO;
-    console.log('[Module] Successfully loaded technical.js');
   })
-  .catch(err => console.error('[Module] Failed to load technical.js:', err));
+  .catch(() => {});
 
 let analyzeContentMedia;
 import('./modules/content-media.js')
   .then(module => {
     analyzeContentMedia = module.analyzeContentMedia;
-    console.log('[Module] Successfully loaded content-media.js');
   })
-  .catch(err => console.error('[Module] Failed to load content-media.js:', err));
+  .catch(() => {});
 
 let analyzeEcommerceSEO;
 import('./modules/ecommerce.js')
   .then(module => {
     analyzeEcommerceSEO = module.analyzeEcommerceSEO;
-    console.log('[Module] Successfully loaded ecommerce.js');
   })
-  .catch(err => console.error('[Module] Failed to load ecommerce.js:', err));
+  .catch(() => {});
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
 
-const urlParams = new URLSearchParams(window.location.search);
+  const urlParams = new URLSearchParams(window.location.search);
   const sharedUrl = urlParams.get('url');
-
   if (sharedUrl && input) {
     const cleanUrl = sharedUrl.trim()
       .replace(/^https?:\/\//i, '')
       .replace(/\/$/, '');
-    
+   
     input.value = cleanUrl;
-    console.log('[Deep link] Filled input:', cleanUrl);
-
     // Only auto-analyze if we actually filled something meaningful
     if (cleanUrl && cleanUrl.length > 5) {
-      console.log('[Deep link] Auto-triggering analysis');
       // Give the submit listener a micro-delay to be fully registered
       setTimeout(() => {
         form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-      }, 0);  // 0ms is usually enough now that we're after variable declarations
+      }, 0);
     }
   }
-  
-  const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
 
+  const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
   const factorDefinitions = {
     onPage: {
       factors: [
@@ -144,13 +134,11 @@ const urlParams = new URLSearchParams(window.location.search);
     let decorative = 0;
     let filenameOnly = 0;
     let goodDescriptive = 0;
-
     imgs.forEach(img => {
       const alt = img.getAttribute('alt') || '';
       const altTrim = alt.trim();
       const src = img.getAttribute('src') || '';
       const srcFilename = src.split('/').pop().split('?')[0].toLowerCase();
-
       const isDecorative =
         altTrim === '' || altTrim === ' ' || alt === null ||
         img.getAttribute('role') === 'presentation' ||
@@ -166,14 +154,11 @@ const urlParams = new URLSearchParams(window.location.search);
         srcFilename.includes('icon') || srcFilename.includes('logo') ||
         srcFilename.includes('spacer') || srcFilename.includes('pixel') ||
         srcFilename.includes('blank') || srcFilename.includes('transparent');
-
       if (isDecorative) {
         decorative++;
         return;
       }
-
       meaningful++;
-
       if (altTrim === '' || altTrim === ' ' || alt === null) {
         missing++;
       } else if (
@@ -187,17 +172,6 @@ const urlParams = new URLSearchParams(window.location.search);
         goodDescriptive++;
       }
     });
-
-    console.log('[Image Alt Debug]', {
-      totalImages: imgs.length,
-      decorativeIgnored: decorative,
-      meaningfulImages: meaningful,
-      missingAlt: missing,
-      filenameOnlyAlts: filenameOnly,
-      goodDescriptiveAlts: goodDescriptive,
-      altQualityRatio: meaningful > 0 ? (goodDescriptive / meaningful) : 0
-    });
-
     return {
       missingCount: missing,
       filenameOnlyCount: filenameOnly,
@@ -217,7 +191,6 @@ const urlParams = new URLSearchParams(window.location.search);
     const scripts = doc.querySelectorAll('script[type="application/ld+json"]');
     const schemas = [];
     let debugInfo = { scriptCount: scripts.length, parsedCount: 0, productCount: 0, errors: [] };
-
     scripts.forEach((script, index) => {
       const text = script.textContent?.trim();
       if (!text) {
@@ -232,7 +205,6 @@ const urlParams = new URLSearchParams(window.location.search);
         debugInfo.errors.push(`Script ${index}: JSON parse failed - ${e.message}`);
         return;
       }
-
       function findProducts(obj, currentPath = 'root') {
         if (typeof obj !== 'object' || obj === null) return;
         if (obj['@type'] === 'Product') {
@@ -248,24 +220,11 @@ const urlParams = new URLSearchParams(window.location.search);
           }
         }
       }
-
       findProducts(data);
     });
-
     const uniqueSchemas = schemas.filter((schema, index, self) =>
       index === self.findIndex((t) => JSON.stringify(t) === JSON.stringify(schema))
     );
-
-    console.log('[Schema Extraction Debug]', {
-      ...debugInfo,
-      foundProducts: uniqueSchemas.map(s => ({
-        name: s.name || 'Unnamed Product',
-        offers: !!s.offers,
-        aggregateRating: !!s.aggregateRating,
-        debugPath: s._debugPath
-      }))
-    });
-
     uniqueSchemas.forEach(s => delete s._debugPath);
     return uniqueSchemas;
   }
@@ -283,9 +242,7 @@ const urlParams = new URLSearchParams(window.location.search);
       '.product-single__reviews', '.rating-stars', '.star-rating', '.product-reviews__container',
       '.review-summary', '.aggregate-rating', '.rating-summary'
     ];
-
     const hasVisibleWidget = selectors.some(sel => doc.querySelector(sel));
-
     const schemas = extractProductSchema(doc);
     let hasSchemaRating = false;
     schemas.forEach(schema => {
@@ -296,15 +253,6 @@ const urlParams = new URLSearchParams(window.location.search);
         hasSchemaRating = true;
       }
     });
-
-    console.log('[Review/UGC Detection Debug]', {
-      visibleWidgetMatched: hasVisibleWidget,
-      selectorsChecked: selectors.length,
-      matchedSelectors: selectors.filter(sel => !!doc.querySelector(sel)),
-      schemaHasRating: hasSchemaRating,
-      schemaCount: schemas.length
-    });
-
     return hasVisibleWidget || hasSchemaRating;
   }
 
@@ -320,24 +268,14 @@ const urlParams = new URLSearchParams(window.location.search);
         if (offer.priceCurrency) hasSchemaPrice = true;
       });
     }
-
     const pricePatterns = /(?:(?:\$|USD|AUD|EUR|GBP|CAD|JPY|CNY|INR|RUB|CHF|SEK|NOK|DKK|NZD|BRL|MXN|ZAR|TRY|KRW|SGD|HKD|THB|IDR|MYR|PHP|PKR|AED|SAR|ILS|QAR|KWD|BHD|OMR|JOD|LBP|SYP|EGP|LYD|TND|DZD|MAD|XAF|XOF|XCD|BSD|BBD|BMD|BZD|JMD|TTD|HTG|ANG|AWG|KYD|PAB|CRC|GTQ|HNL|NIO|SVC|UYU|ARS|BOB|CLP|COP|PEN|PYG|VES|KZT|UZS|AMD|AZN|BYN|GEL|MDL|UAH|MKD|BGN|RON|CZK|HUF|PLN|ISK|HRK|ALL|BAM|RSB|SEK|NOK|DKK|CHF|GBP|EUR) ?[0-9,.]+|[0-9,.]+ ?(?:\$|USD|AUD|EUR|GBP|CAD|JPY|CNY|INR|RUB|CHF|SEK|NOK|DKK|NZD|BRL|MXN|ZAR|TRY|KRW|SGD|HKD|THB|IDR|MYR|PHP|PKR|AED|SAR|ILS|QAR|KWD|BHD|OMR|JOD|LBP|SYP|EGP|LYD|TND|DZD|MAD|XAF|XOF|XCD|BSD|BBD|BMD|BZD|JMD|TTD|HTG|ANG|AWG|KYD|PAB|CRC|GTQ|HNL|NIO|SVC|UYU|ARS|BOB|CLP|COP|PEN|PYG|VES|KZT|UZS|AMD|AZN|BYN|GEL|MDL|UAH|MKD|BGN|RON|CZK|HUF|PLN|ISK|HRK|ALL|BAM|RSB|SEK|NOK|DKK|CHF|GBP|EUR))|(?:From|Now|Sale) ?(?:\$|[0-9,.]+)|In Stock|Out of Stock|Sold Out|Available|Low Stock|Limited Stock|Pre-Order|Coming Soon|Backorder|Add to Cart|Buy Now|Shop Now|Add to Bag|Purchase|Check Availability/i;
     const hasTextPrice = pricePatterns.test(doc.body.textContent);
-
     const priceSelectors = [
       '.price', '.product-price', '.money', '.woocommerce-Price-amount', '[data-price]',
       '.price-amount', '.current-price', '.sale-price', '.regular-price', '.final-price',
       '[itemprop="price"]', '.price-wrapper', '.variant-price', '.stock-status', '.availability'
     ];
     const hasVisiblePrice = priceSelectors.some(sel => doc.querySelector(sel));
-
-    console.log('[Price Markup Debug]', {
-      schemaHasPrice: hasSchemaPrice,
-      textHasPrice: hasTextPrice,
-      visibleHasPrice: hasVisiblePrice,
-      matchedSelectors: priceSelectors.filter(sel => doc.querySelector(sel))
-    });
-
     return hasSchemaPrice || hasTextPrice || hasVisiblePrice;
   }
 
@@ -372,17 +310,15 @@ const urlParams = new URLSearchParams(window.location.search);
   function analyzeProductSEO(doc, inputUrl) {
     const data = getProductPageContent(doc, inputUrl);
     let onPageResult, technicalResult, contentMediaResult, ecommerceResult;
-
-if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEcommerceSEO) {
-  onPageResult   = analyzeOnPageSEO(doc, data);
-  technicalResult = analyzeTechnicalSEO(doc, data);
-  contentMediaResult = analyzeContentMedia(doc, data);
-  ecommerceResult = analyzeEcommerceSEO(doc, data);
-} else {
-  console.warn('Some analysis modules not loaded yet — using neutral fallback');
-  const fallback = { score: 55, details: {} };
-  onPageResult = technicalResult = contentMediaResult = ecommerceResult = fallback;
-}
+    if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEcommerceSEO) {
+      onPageResult = analyzeOnPageSEO(doc, data);
+      technicalResult = analyzeTechnicalSEO(doc, data);
+      contentMediaResult = analyzeContentMedia(doc, data);
+      ecommerceResult = analyzeEcommerceSEO(doc, data);
+    } else {
+      const fallback = { score: 55, details: {} };
+      onPageResult = technicalResult = contentMediaResult = ecommerceResult = fallback;
+    }
     const weights = { onPage: 0.30, technical: 0.25, contentMedia: 0.25, ecommerce: 0.20 };
     const overallScore = Math.round(
       (onPageResult.score * weights.onPage) +
@@ -398,7 +334,6 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
       ecommerce: ecommerceResult
     };
   }
-
 
   function getHealthLabel(score) {
     if (score >= 85) return { text: "Excellent", color: "from-green-400 to-emerald-600" };
@@ -443,23 +378,19 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
       statusMessage = "Needs Work";
       statusEmoji = "❌";
     }
-
     let metricsHTML = '';
     let failedOnlyHTML = '';
     let failedCount = 0;
-
     moduleData.factors.forEach(f => {
       let individualScore = (factorScores && f.key && factorScores[f.key] && factorScores[f.key].score !== undefined)
         ? factorScores[f.key].score
         : value;
-
       let passed = individualScore >= f.threshold;
       let metricGrade = passed
         ? { color: "text-green-600 dark:text-green-400", emoji: "✅" }
         : (individualScore >= f.threshold - 20)
           ? { color: "text-orange-600 dark:text-orange-400", emoji: "⚠️" }
           : { color: "text-red-600 dark:text-red-400", emoji: "❌" };
-
       if (f.key === 'keywords') {
         const kDetails = factorScores?.keywords || {};
         metricsHTML += `
@@ -484,7 +415,6 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
             </p>
           </div>`;
       }
-
       if (!passed) {
         failedOnlyHTML += `
           <div class="mb-8 p-2 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
@@ -501,7 +431,6 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
         failedCount++;
       }
     });
-
     const moreDetailsHTML = `
       <div class="text-left px-4 py-6">
         <h4 class="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100 text-center">
@@ -524,7 +453,6 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
           </div>
         </div>
       </div>`;
-
     const fixesPanelHTML = failedCount > 0
       ? `
         <div class="space-y-6">
@@ -537,7 +465,6 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
         </p>
       `
       : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
-
     return `
       <div class="module-card text-center p-0 sm:p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
         <div class="relative mx-auto w-32 h-32">
@@ -580,10 +507,10 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
-    
-  const canProceed = await canRunTool('limit-audit-id');
-  if (!canProceed) return;
-  
+   
+    const canProceed = await canRunTool('limit-audit-id');
+    if (!canProceed) return;
+
     results.innerHTML = '';
     let url = input.value.trim();
     if (!url) {
@@ -627,7 +554,6 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
         const doc = new DOMParser().parseFromString(html, 'text/html');
         const seoData = getProductPageContent(doc, url);
         const seo = analyzeProductSEO(doc, url);
-
         const failedFactors = [];
         const modulesData = [
           { name: "On-Page SEO", result: seo.onPage, definitions: factorDefinitions.onPage },
@@ -635,7 +561,6 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
           { name: "Content & Media", result: seo.contentMedia, definitions: factorDefinitions.contentMedia },
           { name: "E-Commerce Signals", result: seo.ecommerce, definitions: factorDefinitions.ecommerce }
         ];
-
         modulesData.forEach(mod => {
           if (mod.result.details) {
             mod.definitions.factors.forEach(f => {
@@ -654,18 +579,15 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
             });
           }
         });
-
         const health = getHealthLabel(seo.score);
         document.getElementById('loading').classList.add('hidden');
         const safeScore = isNaN(seo.score) ? 60 : seo.score;
         const overallGrade = getGradeInfo(safeScore);
         const ringColor = safeScore < 50 ? '#ef4444' : safeScore < 70 ? '#fb923c' : safeScore < 85 ? '#22c55e' : '#10b981';
-
         const onPageHTML = buildModuleHTML('On-Page SEO', seo.onPage.score, factorDefinitions.onPage, seo.onPage.details);
         const technicalHTML = buildModuleHTML('Technical SEO', seo.technical.score, factorDefinitions.technical, seo.technical.details);
         const contentMediaHTML = buildModuleHTML('Content & Media', seo.contentMedia.score, factorDefinitions.contentMedia, seo.contentMedia.details);
         const ecommerceHTML = buildModuleHTML('E-Commerce Signals', seo.ecommerce.score, factorDefinitions.ecommerce, seo.ecommerce.details);
-
         const modulePriority = [
           { name: 'On-Page SEO', score: seo.onPage.score, threshold: 70, data: factorDefinitions.onPage },
           { name: 'Technical SEO', score: seo.technical.score, threshold: 80, data: factorDefinitions.technical },
@@ -673,11 +595,9 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
           { name: 'E-Commerce Signals', score: seo.ecommerce.score, threshold: 75, data: factorDefinitions.ecommerce }
         ];
         const failedModules = modulePriority.filter(m => m.score < m.threshold);
-
         const priorityFixes = failedFactors
           .sort((a, b) => a.score - b.score)
           .slice(0, 3);
-
         let priorityFixesHTML = '';
         if (priorityFixes.length > 0) {
           priorityFixesHTML = priorityFixes.map((fix, index) => `
@@ -700,7 +620,6 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
               <p class="text-2xl text-gray-800 dark:text-gray-200">No critical metric failures detected.</p>
             </div>`;
         }
-
         const failedCount = failedModules.length;
         let projectedHealth;
         let healthImprovement = '';
@@ -728,12 +647,10 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
             healthImprovement = 'Needs Work → Needs Improvement (first realistic step)';
           }
         }
-
         const projectedColor = projectedHealth === 'Excellent' ? 'from-green-400 to-emerald-600' :
                                projectedHealth === 'Very Good' ? 'from-green-200 to-green-400' :
                                projectedHealth === 'Needs Improvement' ? 'from-orange-400 to-orange-600' :
                                'from-red-400 to-red-600';
-
         let impactHTML = `
           <div class="max-w-5xl mx-auto my-20 px-4">
             <div class="p-2 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-3xl border border-cyan-400/30">
@@ -777,7 +694,6 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
               </p>
             </div>
           </div>`;
-
         const modules = [
           { name: 'On-Page SEO', score: seo.onPage.score },
           { name: 'Technical SEO', score: seo.technical.score },
@@ -785,16 +701,12 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
           { name: 'E-Commerce Signals', score: seo.ecommerce.score }
         ];
         const scores = modules.map(m => m.score);
-
         const offset = 140;
         const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({ top: targetY, behavior: 'smooth' });
-
         document.getElementById('loading').classList.add('hidden');
-
         const wrapper = document.createElement('div');
         wrapper.className = 'container mx-auto px-4 py-8';
-
         const scoreCard = document.createElement('div');
         scoreCard.innerHTML = `
           <div class="flex justify-center my-8 sm:my-12 px-0 sm:px-6">
@@ -858,7 +770,6 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
           </div>
         `;
         wrapper.appendChild(scoreCard);
-
         const radarSection = document.createElement('div');
         radarSection.innerHTML = `
           <div class="max-w-5xl mx-auto my-16 px-4">
@@ -877,7 +788,6 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
           </div>
         `;
         wrapper.appendChild(radarSection);
-
         const modulesGrid = document.createElement('div');
         modulesGrid.className = 'grid gap-8 my-16 max-w-7xl mx-auto px-0';
         modulesGrid.innerHTML = `
@@ -885,7 +795,6 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
           <div class="grid md:grid-cols-2 gap-8">${contentMediaHTML}${ecommerceHTML}</div>
         `;
         wrapper.appendChild(modulesGrid);
-
         const prioritySection = document.createElement('div');
         prioritySection.className = 'text-center my-20';
         prioritySection.innerHTML = `
@@ -901,16 +810,13 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
             </p>` : ''}
         `;
         wrapper.appendChild(prioritySection);
-
         const impactSection = document.createElement('div');
         impactSection.innerHTML = impactHTML;
         wrapper.appendChild(impactSection);
-
         const pluginSection = document.createElement('div');
         pluginSection.id = 'plugin-solutions-section';
         pluginSection.className = 'mt-16 px-1';
         wrapper.appendChild(pluginSection);
-
         const pdfSection = document.createElement('div');
         pdfSection.className = 'text-center my-16';
         pdfSection.innerHTML = `
@@ -933,10 +839,8 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
      Submit Feedback 💬
     </button>
   </div>
-
   <!-- Share message - placed directly below buttons, always visible when triggered -->
   <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-
   <!-- Share Report Form (still hidden/expandable) -->
   <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
@@ -963,7 +867,6 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
       <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
     </form>
   </div>
-
   <!-- Feedback Form (unchanged) -->
   <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
@@ -1007,20 +910,14 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
 </div>
     `;
         wrapper.appendChild(pdfSection);
-
         results.appendChild(wrapper);
 
         if (typeof renderPluginSolutions === 'function') {
-          console.log('Calling renderPluginSolutions immediately');
           renderPluginSolutions(failedFactors, 'plugin-solutions-section');
         } else {
-          console.warn('renderPluginSolutions not loaded yet - delaying 500ms');
           setTimeout(() => {
             if (typeof renderPluginSolutions === 'function') {
-              console.log('Delayed call successful');
               renderPluginSolutions(failedFactors, 'plugin-solutions-section');
-            } else {
-              console.error('renderPluginSolutions still not available');
             }
           }, 500);
         }
@@ -1069,12 +966,12 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
               }
             });
           } catch (e) {
-            console.error('Radar chart failed', e);
+            // Silent in production
           }
         }, 150);
-        
+
         initShareReport(results);
-        initSubmitFeedback(results);         
+        initSubmitFeedback(results);
 
         document.addEventListener('click', e => {
           const target = e.target.closest('.more-details, .show-fixes');
@@ -1090,7 +987,6 @@ if (analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEco
           }
         });
       } catch (err) {
-        console.error('[Analysis failed]', err);
         document.getElementById('loading').classList.add('hidden');
         results.innerHTML = `
           <div class="text-center py-16 px-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-red-400 dark:border-red-600 max-w-2xl mx-auto">

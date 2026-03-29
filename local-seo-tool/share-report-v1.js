@@ -47,7 +47,6 @@ export function initShareReport(resultsContainer) {
         showMessage('Copy manually:<br>' + shareText, 'info');
       }
     } catch (err) {
-      console.error('Share action failed or cancelled:', err);
       // Silent on cancel/close/error
     }
   });

@@ -65,16 +65,12 @@ const metricExplanations = [
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOMContentLoaded fired – starting card render');
   const container = document.getElementById('metric-cards-container');
   if (!container) {
-    console.error('ERROR: #metric-cards-container not found in DOM');
     return;
   }
-  console.log('Container found – length before render:', container.innerHTML.length);
 
   container.innerHTML = metricExplanations.map((m, index) => {
-    console.log(`Rendering card ${index + 1}/${metricExplanations.length}: ${m.id} (${m.name})`);
 
     // Special overview card (last one)
     if (m.id === "ai-voice-overview") {
@@ -128,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }).join('');
 
-  console.log('Cards rendered – final HTML length:', container.innerHTML.length);
   
   // Call AFTER cards are rendered
   openDetailsFromHash();

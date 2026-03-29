@@ -33,7 +33,6 @@ const shareText = `Check out ${pageTitle} on Traffic Torch SEO UX Audit Tool ${s
       }
     } catch (err) {
       // Silent fail on error – no error message shown to user
-      console.error('Share failed:', err);
     }
   });
 

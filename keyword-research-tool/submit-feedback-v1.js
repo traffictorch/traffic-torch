@@ -12,7 +12,6 @@ export function initSubmitFeedback() {
 
   // Early exit if core elements missing (prevents TypeError)
   if (!feedbackBtn || !formContainer || !feedbackForm) {
-    console.warn('Feedback form elements not found – skipping initSubmitFeedback');
     return;
   }
 
@@ -117,7 +116,6 @@ export function initSubmitFeedback() {
         throw new Error(data.error || 'Failed');
       }
     } catch (err) {
-      console.error('Feedback error:', err);
       showMessage(`Failed to send feedback: ${err.message}. Try again.`, 'error');
     } finally {
       resetButton();

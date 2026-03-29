@@ -44,7 +44,6 @@ export function initShareReport(resultsContainer) {
         showMessage('Link copied to clipboard!', 'success');
       }
     } catch (err) {
-      console.error('Share/clipboard failed:', err);
       // No user-visible error message – silent fail as requested
     }
   });

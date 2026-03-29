@@ -3,7 +3,6 @@
 export function initSubmitFeedback(resultsContainer) {
   // Early exit if container missing
   if (!resultsContainer) {
-    console.warn('initSubmitFeedback: resultsContainer not provided');
     return;
   }
 
@@ -19,7 +18,6 @@ export function initSubmitFeedback(resultsContainer) {
 
   // If core elements missing, log and exit gracefully
   if (!feedbackBtn || !formContainer) {
-    console.warn('Feedback button or form container not found in resultsContainer');
     return;
   }
 
@@ -64,7 +62,6 @@ export function initSubmitFeedback(resultsContainer) {
       emailGroup.classList.toggle('hidden', !replyCheckbox.checked);
     });
   } else {
-    console.warn('reply-requested checkbox or email-group not found – skipping email toggle');
   }
 
   // Char counter – safe check
@@ -126,14 +123,12 @@ export function initSubmitFeedback(resultsContainer) {
           throw new Error(data.error || 'Failed');
         }
       } catch (err) {
-        console.error('Feedback error:', err);
         if (messageDiv) showMessage(`Failed to send feedback: ${err.message}. Try again.`, 'error');
       } finally {
         resetButton(submitBtn, originalText);
       }
     });
   } else {
-    console.warn('feedback-form not found – submit listener not attached');
   }
 
   // Helper functions (unchanged)

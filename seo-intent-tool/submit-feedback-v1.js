@@ -120,7 +120,6 @@ export function initSubmitFeedback(resultsContainer) {
         throw new Error(data.error || 'Failed');
       }
     } catch (err) {
-      console.error('Feedback error:', err);
       showMessage(`Failed to send feedback: ${err.message}. Try again.`, 'error');
     } finally {
       resetButton();

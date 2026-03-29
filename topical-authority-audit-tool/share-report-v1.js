@@ -56,7 +56,6 @@ const shareText = `Check out ${pageTitle} on Traffic Torch Topical Authority Aud
         showMessage('Report link copied!<br>Paste anywhere to share.', 'success');
       }
     } catch (err) {
-      console.error('Share failed:', err);
     }
   });
 

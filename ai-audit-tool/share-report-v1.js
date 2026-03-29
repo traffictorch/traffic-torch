@@ -39,7 +39,6 @@ export function initShareReport(resultsContainer) {
       }
     } catch (err) {
       // Silent fail on error – no error message shown to user
-      console.error('Share failed:', err);
     }
   });
 

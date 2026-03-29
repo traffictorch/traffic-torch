@@ -173,7 +173,6 @@ const advancedSchemas = [
 function injectSchemaCards() {
   const container = document.getElementById('metric-cards-container');
   if (!container) {
-    console.warn('metric-cards-container not found');
     return;
   }
   container.innerHTML = '';
@@ -225,7 +224,6 @@ function injectSchemaCards() {
     ${renderGroup('Advanced & Specialized Schemas', advancedSchemas)}
   `;
   
-  console.log('Schema cards injected:', container.querySelectorAll('[id]').length);
 }
 
 // Run automatically (works with type=module + defer)
