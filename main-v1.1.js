@@ -427,7 +427,7 @@ function showUpgradeModal(message = "You've reached your daily limit. Upgrade to
 
 
 // === UPDATED CANRUNTOOL WITH COMBINED LIMITING START (IP + localStorage + Lite Fingerprint) ===
-// Fixed: More stable fingerprint + ensure headers are always sent
+// More stable fingerprint + debug logs
 
 const DEVICE_KEY = 'tt_device_key';
 
@@ -438,7 +438,6 @@ async function getLiteFingerprint() {
     canvas.width = 240;
     canvas.height = 60;
 
-    // More stable drawing for consistent fingerprint
     ctx.textBaseline = 'top';
     ctx.font = 'bold 16px Arial';
     ctx.fillStyle = '#4f46e5';
@@ -454,15 +453,17 @@ async function getLiteFingerprint() {
     ctx.quadraticCurveTo(100, 45, 210, 50);
     ctx.stroke();
 
+    // Add more stable entropy
     const dataURL = canvas.toDataURL('image/png');
+    const extra = navigator.platform + navigator.hardwareConcurrency + screen.width + screen.height;
     const encoder = new TextEncoder();
-    const data = encoder.encode(dataURL + navigator.userAgent.slice(0, 100)); // extra stability
+    const data = encoder.encode(dataURL + extra);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
   } catch (e) {
     console.warn('Fingerprint failed, using fallback');
-    return 'fallback-fp-2026';
+    return 'stable-fp-2026';
   }
 }
 
@@ -471,6 +472,9 @@ function getDeviceKey() {
   if (!key) {
     key = crypto.randomUUID();
     localStorage.setItem(DEVICE_KEY, key);
+    console.log('New deviceKey created and saved:', key);
+  } else {
+    console.log('Existing deviceKey loaded:', key);
   }
   return key;
 }
@@ -479,6 +483,8 @@ export async function canRunTool(toolName = 'default') {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
   const deviceKey = getDeviceKey();
   const fingerprint = await getLiteFingerprint();
+
+  console.log(`[frontend] Sending to check-rate - deviceKey: ${deviceKey}, fingerprint: ${fingerprint}`);
 
   try {
     const res = await fetch(`${API_BASE}/api/check-rate`, {
