@@ -66,7 +66,7 @@ const moduleInfo = {
   }
 };
 
-// Map short module IDs to deep-dive card IDs used in metric-explanations.js
+// Map short module IDs to deep-dive card IDs
 const deepDiveIdMap = {
   seo: 'on-page-seo',
   mobile: 'mobile-pwa',
@@ -174,9 +174,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
-    
-  const canProceed = await canRunTool('limit-audit-id');
-  if (!canProceed) return;
+
+    const canProceed = await canRunTool('limit-audit-id');
+    if (!canProceed) return;
 
     progressContainer.classList.remove('hidden');
     progressText.textContent = 'Fetching page...';
@@ -198,7 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
       const resultsWrapper = document.getElementById('results-wrapper');
-
       const modules = [
         { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
         { id: 'mobile', name: 'Mobile & PWA', fn: analyzeMobile },
@@ -217,8 +216,8 @@ document.addEventListener('DOMContentLoaded', () => {
         progressText.textContent = `Analyzing ${mod.name}...`;
         const analysisUrl = mod.id === 'security' ? originalInput : url;
         const result = mod.fn(html, doc, analysisUrl);
-
         const info = moduleInfo[mod.id];
+
         if (info) {
           const infoDiv = document.querySelector(`#${mod.id}-score .module-info`);
           if (infoDiv) {
@@ -268,6 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         populateIssues(`${mod.id}-issues`, result.issues);
+
         result.issues.forEach(iss => {
           allIssues.push({ ...iss, module: mod.name, impact: 100 - result.score });
         });
@@ -275,15 +275,16 @@ document.addEventListener('DOMContentLoaded', () => {
         await new Promise(r => setTimeout(r, 600));
       }
 
-      // Final report generation step after all modules
+      // Final report generation
       progressText.textContent = 'Generating report...';
-      await new Promise(r => setTimeout(r, 1400)); // 1.4s readable pause
+      await new Promise(r => setTimeout(r, 1400));
 
       const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
       updateScore('overall-score', overallScore);
 
       allIssues.sort((a, b) => b.impact - a.impact);
       const top3 = allIssues.slice(0, 3);
+
       const prioritisedFixes = top3.map(issue => ({
         title: issue.issue,
         how: issue.fix,
@@ -296,53 +297,55 @@ document.addEventListener('DOMContentLoaded', () => {
       const yourScore = Math.round(overallScore * 0.92);
 
       setTimeout(() => {
-        if (document.getElementById('priority-cards-container')) {
+        const priorityContainer = document.getElementById('priority-cards-container');
+        if (priorityContainer) {
           renderPriorityAndGains(prioritisedFixes, yourScore, overallScore);
-        } else {
-          console.warn('Priority container not found - HTML may not be loaded yet');
         }
       }, 500);
 
-// Display truncated analyzed page title using existing #page-title-display
-const titleElement = doc.querySelector('title');
-let pageTitle = titleElement ? titleElement.textContent.trim() : 'Analyzed Page';
-pageTitle = pageTitle.replace(/ \| Traffic Torch SEO UX Audit Tool|Traffic Torch/gi, '').trim();
-if (pageTitle.length > 65) {
-  pageTitle = pageTitle.substring(0, 62) + '...';
-}
-const titleDisplay = document.getElementById('page-title-display');
-if (titleDisplay) {
-  titleDisplay.textContent = pageTitle;
-} else {
-  console.warn('#page-title-display element not found');
-}
+      // Display truncated analyzed page title
+      const titleElement = doc.querySelector('title');
+      let pageTitle = titleElement ? titleElement.textContent.trim() : 'Analyzed Page';
+      pageTitle = pageTitle.replace(/ \| Traffic Torch SEO UX Audit Tool|Traffic Torch/gi, '').trim();
+      if (pageTitle.length > 65) {
+        pageTitle = pageTitle.substring(0, 62) + '...';
+      }
+      const titleDisplay = document.getElementById('page-title-display');
+      if (titleDisplay) {
+        titleDisplay.textContent = pageTitle;
+      }
 
-      // Calculate and display grade + emoji
+      // Overall grade
       let gradeText = '';
       let gradeEmoji = '';
+      const overallGradeEl = document.getElementById('overall-grade');
       if (overallScore < 60) {
         gradeText = 'Needs Work';
         gradeEmoji = '❌';
-        document.getElementById('overall-grade').className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-red-500';
+        overallGradeEl.className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-red-500';
       } else if (overallScore < 80) {
         gradeText = 'Needs Improvement';
         gradeEmoji = '⚠️';
-        document.getElementById('overall-grade').className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-orange-500';
+        overallGradeEl.className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-orange-500';
       } else {
         gradeText = 'Excellent';
         gradeEmoji = '🟢';
-        document.getElementById('overall-grade').className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-green-500';
+        overallGradeEl.className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-green-500';
       }
-      document.querySelector('#overall-grade .grade-text').textContent = gradeText;
-      document.querySelector('#overall-grade .grade-emoji').textContent = gradeEmoji;
+      overallGradeEl.querySelector('.grade-text').textContent = gradeText;
+      overallGradeEl.querySelector('.grade-emoji').textContent = gradeEmoji;
 
+      // Build detailed module cards with checklist + expand fixes
       modules.forEach(mod => {
         const card = document.getElementById(`${mod.id}-score`);
         if (!card) return;
+
         const expandBtn = card.querySelector('.expand');
         if (!expandBtn) return;
+
         const analysisUrl = mod.id === 'security' ? originalInput : url;
         const { issues: modIssues } = mod.fn(html, doc, analysisUrl);
+
         let checks = [];
         if (mod.id === 'seo') {
           checks = [
@@ -397,6 +400,7 @@ if (titleDisplay) {
             { text: 'Canonical tag present', passed: !modIssues.some(i => i.issue.includes('canonical')) }
           ];
         }
+
         let checklist = card.querySelector('.checklist');
         if (!checklist) {
           checklist = document.createElement('div');
@@ -408,6 +412,7 @@ if (titleDisplay) {
             ${c.passed ? '✅' : '❌'} ${c.text}
           </p>
         `).join('');
+
         let expand = card.querySelector('.expand-content');
         if (!expand) {
           expand = document.createElement('div');
@@ -445,10 +450,10 @@ if (titleDisplay) {
         };
       });
 
-      allIssues.sort((a, b) => b.impact - a.impact);
       resultsWrapper.classList.remove('hidden');
       document.getElementById('radar-title').classList.remove('hidden');
       document.getElementById('copy-badge').classList.remove('hidden');
+
       resultsWrapper.style.opacity = '0';
       resultsWrapper.style.transform = 'translateY(40px)';
       resultsWrapper.style.transition = 'opacity 1.2s ease, transform 1.2s ease';
@@ -457,68 +462,79 @@ if (titleDisplay) {
         resultsWrapper.style.transform = 'translateY(0)';
       });
 
+      // Plugin solutions section
       const pluginSection = document.getElementById('plugin-solutions-section');
-      if (!pluginSection) return;
-      pluginSection.innerHTML = '';
-      pluginSection.classList.remove('hidden');
-      const failedMetrics = [];
-      const supportedMetricNames = [
-        "Title optimized (30–65 chars, keyword early)",
-        "Meta description present & optimal",
-        "Structured data (schema) detected",
-        "Canonical tag present",
-        "All images have meaningful alt text",
-        "Web app manifest linked",
-        "Homescreen icons (192px+) provided",
-        "Service worker",
-        "Page weight reasonable (<300KB HTML)",
-        "Number of HTTP requests",
-        "Render-blocking resources",
-        "Web fonts optimized",
-        "Form fields properly labeled",
-        "Clear primary calls-to-action",
-        "Breadcrumb navigation (on deep pages)",
-        "Served over HTTPS / No mixed content"
-      ];
+      if (pluginSection) {
+        pluginSection.innerHTML = '';
+        pluginSection.classList.remove('hidden');
 
-      modules.forEach(mod => {
-        const card = document.getElementById(`${mod.id}-score`);
-        if (!card) return;
-        const checklistItems = card.querySelectorAll('.checklist p');
+        const failedMetrics = [];
+        const supportedMetricNames = [
+          "Title optimized (30–65 chars, keyword early)",
+          "Meta description present & optimal",
+          "Structured data (schema) detected",
+          "Canonical tag present",
+          "All images have meaningful alt text",
+          "Web app manifest linked",
+          "Homescreen icons (192px+) provided",
+          "Service worker",
+          "Page weight reasonable (<300KB HTML)",
+          "Number of HTTP requests",
+          "Render-blocking resources",
+          "Web fonts optimized",
+          "Form fields properly labeled",
+          "Clear primary calls-to-action",
+          "Breadcrumb navigation (on deep pages)",
+          "Served over HTTPS / No mixed content"
+        ];
 
-        checklistItems.forEach(item => {
-          const text = item.textContent.trim();
-          if (text.startsWith('❌')) {
-            let issueName = text.replace(/^❌\s*/, '').trim();
+        modules.forEach(mod => {
+          const card = document.getElementById(`${mod.id}-score`);
+          if (!card) return;
+          const checklistItems = card.querySelectorAll('.checklist p');
+          checklistItems.forEach(item => {
+            const text = item.textContent.trim();
+            if (text.startsWith('❌')) {
+              let issueName = text.replace(/^❌\s*/, '').trim();
+              if (issueName.includes('Title optimized')) issueName = supportedMetricNames[0];
+              if (issueName.includes('Meta description')) issueName = supportedMetricNames[1];
+              if (issueName.includes('Structured data')) issueName = supportedMetricNames[2];
+              if (issueName.includes('Canonical tag')) issueName = supportedMetricNames[3];
+              if (issueName.includes('alt text')) issueName = supportedMetricNames[4];
+              if (issueName.includes('manifest')) issueName = supportedMetricNames[5];
+              if (issueName.includes('homescreen') || issueName.includes('icon')) issueName = supportedMetricNames[6];
+              if (issueName.includes('service worker')) issueName = supportedMetricNames[7];
+              if (issueName.includes('Page weight')) issueName = supportedMetricNames[8];
+              if (issueName.includes('HTTP requests')) issueName = supportedMetricNames[9];
+              if (issueName.includes('Render-blocking')) issueName = supportedMetricNames[10];
+              if (issueName.includes('Web fonts')) issueName = supportedMetricNames[11];
+              if (issueName.includes('Form fields')) issueName = supportedMetricNames[12];
+              if (issueName.includes('calls-to-action')) issueName = supportedMetricNames[13];
+              if (issueName.includes('Breadcrumb')) issueName = supportedMetricNames[14];
+              if (issueName.includes('HTTPS') || issueName.includes('mixed content')) issueName = supportedMetricNames[15];
 
-            if (issueName.includes('Title optimized')) issueName = supportedMetricNames[0];
-            if (issueName.includes('Meta description')) issueName = supportedMetricNames[1];
-            if (issueName.includes('Structured data')) issueName = supportedMetricNames[2];
-            if (issueName.includes('Canonical tag')) issueName = supportedMetricNames[3];
-            if (issueName.includes('alt text')) issueName = supportedMetricNames[4];
-            if (issueName.includes('manifest')) issueName = supportedMetricNames[5];
-            if (issueName.includes('homescreen') || issueName.includes('icon')) issueName = supportedMetricNames[6];
-            if (issueName.includes('service worker')) issueName = supportedMetricNames[7];
-            if (issueName.includes('Page weight')) issueName = supportedMetricNames[8];
-            if (issueName.includes('HTTP requests')) issueName = supportedMetricNames[9];
-            if (issueName.includes('Render-blocking')) issueName = supportedMetricNames[10];
-            if (issueName.includes('Web fonts')) issueName = supportedMetricNames[11];
-            if (issueName.includes('Form fields')) issueName = supportedMetricNames[12];
-            if (issueName.includes('calls-to-action')) issueName = supportedMetricNames[13];
-            if (issueName.includes('Breadcrumb')) issueName = supportedMetricNames[14];
-            if (issueName.includes('HTTPS') || issueName.includes('mixed content')) issueName = supportedMetricNames[15];
-
-            if (supportedMetricNames.includes(issueName)) {
-              failedMetrics.push({
-                name: issueName,
-                grade: { emoji: '🔴', color: 'text-red-400' }
-              });
+              if (supportedMetricNames.includes(issueName)) {
+                failedMetrics.push({
+                  name: issueName,
+                  grade: { emoji: '🔴', color: 'text-red-400' }
+                });
+              }
             }
-          }
+          });
         });
-      });
 
-      // More Details toggle for all modules
+        if (failedMetrics.length > 0) {
+          renderPluginSolutions(failedMetrics);
+        } else {
+          pluginSection.innerHTML = `
+            <div class="mt-20 text-center">
+              <p class="text-xl text-gray-400">No issues found among the 16 supported areas that need plugin fixes.</p>
+            </div>
+          `;
+        }
+      }
+
+      // More Details toggle
       document.querySelectorAll('.more-details').forEach(btn => {
         btn.addEventListener('click', () => {
           const card = btn.closest('.score-card');
@@ -536,52 +552,43 @@ if (titleDisplay) {
         });
       });
 
-      if (failedMetrics.length > 0) {
-        renderPluginSolutions(failedMetrics);
-      } else {
-        pluginSection.innerHTML = `
-          <div class="mt-20 text-center">
-            <p class="text-xl text-gray-400">No issues found among the 16 supported areas that need plugin fixes.</p>
-          </div>
-        `;
-      }
-
       const offset = 240;
       const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset - offset;
-      window.scrollTo({
-        top: targetY,
-        behavior: 'smooth'
-      });
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
 
+      // === Improved Health Radar Chart ===
       try {
-        if (window.innerWidth >= 768) {
+        if (window.innerWidth >= 768 && document.getElementById('health-radar')) {
           const radarCtx = document.getElementById('health-radar').getContext('2d');
           const isDark = document.documentElement.classList.contains('dark');
           const gridColor = isDark ? 'rgba(156, 163, 175, 0.5)' : 'rgba(0, 0, 0, 0.2)';
           const labelColor = '#9ca3af';
           const lineColor = '#9ca3af';
           const fillColor = isDark ? 'rgba(156, 163, 175, 0.25)' : 'rgba(156, 163, 175, 0.1)';
+
           const radarLabels = modules.map(m => m.name);
-          const chart = new Chart(radarCtx, {
+          const radarScores = scores.map(s => Math.max(0, Math.min(100, Math.round(s))));
+
+          new Chart(radarCtx, {
             type: 'radar',
             data: {
               labels: radarLabels,
               datasets: [{
                 label: 'Health Score',
-                data: scores,
+                data: radarScores,
                 backgroundColor: fillColor,
                 borderColor: lineColor,
                 borderWidth: 4,
                 pointRadius: 9,
                 pointHoverRadius: 14,
                 pointBackgroundColor: (ctx) => {
-                  const v = ctx.parsed?.r ?? 0;
+                  const v = ctx.parsed?.r ?? ctx.raw ?? 0;
                   if (v < 60) return '#f87171';
                   if (v < 80) return '#fb923c';
                   return '#34d399';
                 },
                 pointHoverBackgroundColor: (ctx) => {
-                  const v = ctx.parsed?.r ?? 0;
+                  const v = ctx.parsed?.r ?? ctx.raw ?? 0;
                   if (v < 60) return '#ef4444';
                   if (v < 80) return '#f97316';
                   return '#10b981';
@@ -591,10 +598,7 @@ if (titleDisplay) {
             options: {
               responsive: true,
               maintainAspectRatio: false,
-              interaction: {
-                intersect: true,
-                mode: 'point'
-              },
+              interaction: { intersect: true, mode: 'point' },
               scales: {
                 r: {
                   beginAtZero: true,
@@ -606,8 +610,8 @@ if (titleDisplay) {
                     backdropColor: 'transparent',
                     callback: (value) => value
                   },
-                  grid: { color: 'rgb(156, 163, 175)' },
-                  angleLines: { color: 'rgb(156, 163, 175)' },
+                  grid: { color: gridColor },
+                  angleLines: { color: gridColor },
                   pointLabels: {
                     color: labelColor,
                     font: { size: 14, weight: 'bold' }
@@ -620,23 +624,15 @@ if (titleDisplay) {
                   callbacks: {
                     title: (ctx) => ctx[0].label,
                     label: (ctx) => {
-                      const value = Math.round(ctx.parsed.r);
-                      let grade = '';
-                      if (value < 20) grade = 'Very Poor';
-                      else if (value < 40) grade = 'Poor';
-                      else if (value < 60) grade = 'Fair (major issues)';
-                      else if (value < 80) grade = 'Good (room for improvement)';
-                      else grade = 'Excellent';
-                      const lines = [
-                        `Score: ${value}/100`,
-                        `Grade: ${grade}`,
-                        ''
-                      ];
+                      const value = Math.round(ctx.parsed.r || ctx.raw || 0);
+                      let grade = value >= 80 ? 'Excellent' :
+                                  value >= 60 ? 'Good (room for improvement)' :
+                                  value >= 40 ? 'Fair (major issues)' : 'Poor';
+                      const lines = [`Score: ${value}/100`, `Grade: ${grade}`];
                       if (value < 100) {
-                        lines.push('How to Improve:');
-                        lines.push('Click "Show Fixes" in the module below for detailed recommendations');
+                        lines.push('', 'How to Improve:', 'Click "Show Fixes" below for detailed recommendations');
                       } else {
-                        lines.push('Strong performance – keep it up!');
+                        lines.push('', 'Strong performance – keep it up!');
                       }
                       return lines;
                     }
@@ -647,47 +643,57 @@ if (titleDisplay) {
           });
         }
       } catch (chartErr) {
-        console.warn('Radar chart failed (non-critical)', chartErr);
+        // Radar chart is non-critical – silently skipped in production
       }
 
+      // Mobile preview setup
       try {
         const previewIframe = document.getElementById('preview-iframe');
         const phoneFrame = document.getElementById('phone-frame');
         const viewToggle = document.getElementById('view-toggle');
         const deviceToggle = document.getElementById('device-toggle');
-        const highlightOverlays = document.getElementById('highlight-overlays');
-        previewIframe.src = url;
-        let isMobile = true;
-        let isIphone = true;
-        viewToggle.addEventListener('click', () => {
-          isMobile = !isMobile;
-          phoneFrame.style.width = isMobile ? '375px' : 'min(100%, 1280px)';
-          phoneFrame.style.height = isMobile ? '812px' : 'min(90vh, 900px)';
-          phoneFrame.style.margin = isMobile ? '0 auto' : '0';
-          phoneFrame.style.transform = isMobile ? 'scale(1)' : 'scale(1)';
-          viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
-        });
-        deviceToggle.addEventListener('click', () => {
-          isIphone = !isIphone;
-          phoneFrame.classList.toggle('iphone-frame', isIphone);
-          phoneFrame.classList.toggle('android-frame', !isIphone);
-          deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
-        });
+
+        if (previewIframe && phoneFrame) {
+          previewIframe.src = url;
+          let isMobile = true;
+          let isIphone = true;
+
+          if (viewToggle) {
+            viewToggle.addEventListener('click', () => {
+              isMobile = !isMobile;
+              phoneFrame.style.width = isMobile ? '375px' : 'min(100%, 1280px)';
+              phoneFrame.style.height = isMobile ? '812px' : 'min(90vh, 900px)';
+              phoneFrame.style.margin = isMobile ? '0 auto' : '0';
+              viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
+            });
+          }
+
+          if (deviceToggle) {
+            deviceToggle.addEventListener('click', () => {
+              isIphone = !isIphone;
+              phoneFrame.classList.toggle('iphone-frame', isIphone);
+              phoneFrame.classList.toggle('android-frame', !isIphone);
+              deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
+            });
+          }
+        }
       } catch (previewErr) {
-        console.warn('Mobile preview failed (non-critical)', previewErr);
+        // Mobile preview is non-critical – silently skipped in production
       }
-   // Initialize share & feedback buttons once results are ready
-   const resultsContainer = document.getElementById('results-wrapper') || document.body;
-   initShareReport(resultsContainer);
-   initSubmitFeedback(resultsContainer);
+
+      // Initialize share & feedback
+      const resultsContainer = document.getElementById('results-wrapper') || document.body;
+      initShareReport(resultsContainer);
+      initSubmitFeedback(resultsContainer);
+
     } catch (err) {
       alert('Failed to analyze — try another site or check the URL');
-      console.error(err);
     } finally {
       progressContainer.classList.add('hidden');
 
+      // Set display URL for sharing
       let fullUrl = document.getElementById('url-input').value.trim();
-      let displayUrl = 'traffictorch.net'; // fallback
+      let displayUrl = 'traffictorch.net';
       if (fullUrl) {
         let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
         const firstSlash = cleaned.indexOf('/');
@@ -702,75 +708,57 @@ if (titleDisplay) {
       document.body.setAttribute('data-url', displayUrl);
     }
   });
-          // Auto-analyze from shared deep link (?url=...) – placed after form listener
-      const urlParams = new URLSearchParams(window.location.search);
-      const sharedUrl = urlParams.get('url');
-      if (sharedUrl && input && form) {
-        let cleanUrl = decodeURIComponent(sharedUrl.trim());
-        if (!/^https?:\/\//i.test(cleanUrl)) {
-          cleanUrl = 'https://' + cleanUrl;
-        }
-        input.value = cleanUrl;
 
-        const progressContainer = document.getElementById('progress-container');
-        if (progressContainer) {
-          progressContainer.classList.remove('hidden');
-          const progressText = document.getElementById('progress-text');
-          if (progressText) progressText.textContent = 'Loading shared report...';
-        }
-
-        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-      }
-
-
-  // ================== ANALYSIS FUNCTIONS (now import export to individual js files) ==================
-
-  });
+  // Auto-analyze from shared deep link
+  const urlParams = new URLSearchParams(window.location.search);
+  const sharedUrl = urlParams.get('url');
+  if (sharedUrl && input && form) {
+    let cleanUrl = decodeURIComponent(sharedUrl.trim());
+    if (!/^https?:\/\//i.test(cleanUrl)) {
+      cleanUrl = 'https://' + cleanUrl;
+    }
+    input.value = cleanUrl;
+    const progressContainer = document.getElementById('progress-container');
+    if (progressContainer) {
+      progressContainer.classList.remove('hidden');
+      const progressText = document.getElementById('progress-text');
+      if (progressText) progressText.textContent = 'Loading shared report...';
+    }
+    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  }
+});
 
 // Global smooth internal navigation + auto-expand for deep-dive cards
 function handleDeepDiveHash() {
   if (!window.location.hash) return;
-
   const targetId = window.location.hash.substring(1);
   const targetElement = document.getElementById(targetId);
-
   if (targetElement) {
-    // Auto-open the <details> element inside the deep-dive card
     const detailsElement = targetElement.querySelector('details');
-    if (detailsElement) {
-      detailsElement.open = true;
-    }
+    if (detailsElement) detailsElement.open = true;
 
-    // Smooth scroll with better centering
     setTimeout(() => {
       targetElement.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
         inline: 'nearest'
       });
-    }, 100); // small delay helps after details open
+    }, 100);
   }
 }
 
-// Trigger on page load
 document.addEventListener('DOMContentLoaded', () => {
   handleDeepDiveHash();
 });
 
-// Trigger on hash change (back/forward button, manual hash)
 window.addEventListener('hashchange', handleDeepDiveHash);
 
-// Intercept clicks on ALL internal # links (prevents default jump)
 document.addEventListener('click', function(event) {
   const clickedLink = event.target.closest('a[href^="#"]');
-
   if (clickedLink && clickedLink.getAttribute('href') !== '#') {
-    event.preventDefault(); // stop normal jump
-
+    event.preventDefault();
     const targetHash = clickedLink.getAttribute('href');
-    history.replaceState(null, null, targetHash); // update URL
-
-    // Trigger our custom handler
+    history.replaceState(null, null, targetHash);
     window.dispatchEvent(new HashChangeEvent('hashchange'));
   }
-}, { passive: false }); // passive:false needed for preventDefault to work in some browsers
+}, { passive: false });
