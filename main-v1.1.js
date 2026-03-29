@@ -1,16 +1,13 @@
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
-
 // main.js Day Night Mode
 document.addEventListener('DOMContentLoaded', () => {
   const html = document.documentElement;
   const toggle = document.getElementById('themeToggle');
-
   // Immediate + short aggressive token refresh on every page load
   const token = localStorage.getItem('authToken');
   if (token) {
     // Flag to know if we just came from Stripe checkout (set in upgradeToPro after payment)
     const justUpgraded = localStorage.getItem('just_upgraded') === 'true';
-
     // Show activating message if fresh from upgrade
     if (justUpgraded) {
       const activating = document.createElement('div');
@@ -27,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // Auto-remove after 20s max
       setTimeout(() => activating.remove(), 20000);
     }
-
     // Immediate refresh (aggressive – try right now after tiny render delay)
     setTimeout(async () => {
       try {
@@ -39,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
           const data = await res.json();
           if (data.token) {
             localStorage.setItem('authToken', data.token);
-            console.log('Pro token refreshed immediately on page load');
             localStorage.removeItem('just_upgraded');
             document.getElementById('activating-pro')?.remove();
             if (typeof updateRunsBadge === 'function') updateRunsBadge();
@@ -47,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } catch (err) {}
     }, 1500); // 1.5s delay – gives page time to render + webhook a head-start
-
     // Short fallback poll only if needed (max ~15s total)
     let attempts = 0;
     const poll = setInterval(async () => {
@@ -62,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
           const data = await res.json();
           if (data.token) {
             localStorage.setItem('authToken', data.token);
-            console.log('Pro activated during short poll');
             localStorage.removeItem('just_upgraded');
             document.getElementById('activating-pro')?.remove();
             if (typeof updateRunsBadge === 'function') updateRunsBadge();
@@ -77,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }, 3000); // every 3 seconds
   }
-
   // Apply saved theme (or default to light if none)
   const saved = localStorage.getItem('theme');
   if (saved === 'dark') {
@@ -85,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     html.classList.remove('dark');
   }
-
   if (toggle) {
     // Set icon
     toggle.textContent = html.classList.contains('dark') ? '☀️' : '🌙';
@@ -98,22 +89,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-
 // PWA Install
 let deferredPrompt = null;
 const isInStandaloneMode = () =>
   window.matchMedia('(display-mode: standalone)').matches ||
   window.navigator.standalone === true ||
   document.referrer.includes('ios-app://');
-
 function isIOS() {
   return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase()) ||
          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 }
-
 function createInstallButton() {
   if (isInStandaloneMode()) return;
-  console.log('createInstallButton() called');
   document.querySelectorAll('#pwa-install-btn').forEach(el => el.remove());
   const btn = document.createElement('button');
   btn.id = 'pwa-install-btn';
@@ -137,9 +124,6 @@ function createInstallButton() {
     } else if (deferredPrompt) {
       deferredPrompt.prompt();
       deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('PWA install accepted');
-        }
         deferredPrompt = null;
         btn.remove();
       });
@@ -149,7 +133,6 @@ function createInstallButton() {
   });
   document.documentElement.appendChild(btn);
 }
-
 function showIOSInstallInstructions() {
   if (document.getElementById('ios-install-modal')) return;
   const modal = document.createElement('div');
@@ -165,7 +148,7 @@ function showIOSInstallInstructions() {
   modal.style.backdropFilter = 'blur(8px)';
   modal.style.transition = 'opacity 300ms';
   modal.innerHTML = `
-    <div style="background: rgba(17,24,39,0.95); backdrop-filter: blur(16px); border-radius: 24px; padding: 32px; max-width: 420px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6); border: 1px solid rgba(165,180,252,0.2); animation: slide-up 0.3s ease-out;">
+    <div style="background: rgba(17,24,39,0.95); backdrop-filter: blur(16px); border-radius: 24px; padding: 32px; max-width: 420px; width: 90%; box-shadow: 0 25px_50px_-12px rgba(0,0,0,0.6); border: 1px solid rgba(165,180,252,0.2); animation: slide-up 0.3s ease-out;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
         <h3 style="font-size: 20px; font-weight: 700; color: #ffffff; margin: 0;">Install Traffic Torch</h3>
         <button style="font-size: 32px; line-height: 1; color: #9ca3af; background: none; border: none; cursor: pointer;" onclick="this.closest('#ios-install-modal').dispatchEvent(new Event('click'))">×</button>
@@ -220,39 +203,31 @@ function showIOSInstallInstructions() {
   };
   modal.addEventListener('click', closeModal);
 }
-
 // ── Event Listeners ─────────────────────────────────────────────────────
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  console.log('beforeinstallprompt fired (Chromium) → showing install button');
   createInstallButton();
 });
-
 window.addEventListener('load', () => {
   setTimeout(() => {
     if (!document.getElementById('pwa-install-btn')) {
-      console.log('Load fallback: creating PWA install button');
       createInstallButton();
     }
   }, 5000);
 });
-
 window.addEventListener('appinstalled', () => {
-  console.log('PWA was successfully installed');
   document.getElementById('pwa-install-btn')?.remove();
   deferredPrompt = null;
 });
-
 // Minimal service worker registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('Service Worker registered:', reg.scope))
-      .catch(err => console.log('Service Worker registration failed:', err));
+      .then(reg => {})
+      .catch(err => {});
   });
 }
-
 // Mobile menu – with close button + body scroll lock
 document.addEventListener('DOMContentLoaded', () => {
   const button = document.getElementById('menuToggle');
@@ -283,7 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
-
 // Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text)
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
@@ -305,7 +279,6 @@ if (sidebar && (collapseBtn || desktopMenuToggle)) {
   // Start expanded
   if (sidebar.classList.contains('collapsed')) toggleSidebar();
 }
-
 // Login/Register Modal (mobile-first, Tailwind, dark mode)
 function showLoginModal() {
   const modal = document.createElement('div');
@@ -325,23 +298,19 @@ function showLoginModal() {
     </div>`;
   document.body.appendChild(modal);
 }
-
 async function handleAuth(mode) {
-  const button = event.target; // Or document.querySelector('.login-btn');
+  const button = event.target;
   const originalText = button.textContent;
   button.textContent = 'Logging in...';
   button.disabled = true;
-
   const email = document.getElementById('email')?.value.trim();
   const password = document.getElementById('password')?.value;
-
   if (!email || !password) {
     alert('Please enter email and password');
     button.textContent = originalText;
     button.disabled = false;
     return;
   }
-
   try {
     const response = await fetch(`${API_BASE}/api/${mode}`, {
       method: 'POST',
@@ -349,7 +318,6 @@ async function handleAuth(mode) {
       body: JSON.stringify({ email, password })
     });
     const data = await response.json();
-
     if (response.ok && data.token) {
       localStorage.setItem('authToken', data.token);
       // Refresh token code...
@@ -360,7 +328,6 @@ async function handleAuth(mode) {
       document.querySelector('.fixed')?.remove();
     }
   } catch (err) {
-    console.error('Auth error:', err);
     alert('Connection error: ' + err.message);
     document.querySelector('.fixed')?.remove();
   } finally {
@@ -368,7 +335,6 @@ async function handleAuth(mode) {
     button.disabled = false;
   }
 }
-
 async function upgradeToPro() {
   const token = localStorage.getItem('authToken') || localStorage.getItem('torch_token');
   if (!token) return alert('Please login first');
@@ -393,14 +359,10 @@ async function upgradeToPro() {
       if (!data.clientSecret) throw new Error('No clientSecret returned from server');
       return data.clientSecret;
     };
-    console.log('Initializing Embedded Checkout...');
     const checkout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
-    console.log('Mounting checkout...');
     checkout.mount('#checkout-container');
-
     // Set flag so activating overlay shows on redirect/refresh
     localStorage.setItem('just_upgraded', 'true');
-
     // Auto-refresh token after payment (waits for webhook) – keep original as backup
     setTimeout(async () => {
       const currentToken = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
@@ -414,12 +376,10 @@ async function upgradeToPro() {
         const data = await res.json();
         if (data.token) {
           localStorage.setItem('authToken', data.token);
-          console.log('Pro token auto-refreshed – active now');
           document.querySelector('.upgrade-modal, .fixed')?.remove();
           alert('Pro activated! You now have 25 daily runs.');
         }
       } catch (err) {
-        console.warn('Auto-refresh failed:', err);
         setTimeout(() => {
           if (confirm('Upgrade complete! Please log in again to activate Pro.')) {
             localStorage.removeItem('authToken');
@@ -429,12 +389,10 @@ async function upgradeToPro() {
       }
     }, 12000); // 12 seconds delay – kept as fallback
   } catch (err) {
-    console.error('Upgrade error:', err);
     alert('Upgrade failed: ' + err.message);
     document.getElementById('checkout-container')?.classList.add('hidden');
   }
 }
-
 function updateRunsBadge(remaining) {
   const desktopBadge = document.getElementById('runs-left');
   const mobileBadge = document.getElementById('runs-left-mobile');
@@ -447,12 +405,10 @@ function updateRunsBadge(remaining) {
     mobileBadge.textContent = text;
   }
 }
-
 // Upgrade Modal – uses existing #upgradeModal in HTML
 function showUpgradeModal(message = "You've reached your daily limit. Upgrade to Pro for more runs.") {
   const modal = document.getElementById('upgradeModal');
   if (!modal) {
-    console.warn('#upgradeModal not found in DOM – check HTML');
     return;
   }
   // Update message (keep price/default text if needed)
@@ -465,12 +421,10 @@ function showUpgradeModal(message = "You've reached your daily limit. Upgrade to
   // Optional: scroll to top of modal on mobile
   modal.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-
 // Centralized rate limits
 export async function canRunTool(toolName = 'default') {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
   const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
-
   try {
     const res = await fetch(API_BASE + '/api/check-rate', {
       method: 'POST',
@@ -478,33 +432,25 @@ export async function canRunTool(toolName = 'default') {
         'Content-Type': 'application/json',
         ...(token && { 'Authorization': `Bearer ${token}` })
       },
-      body: JSON.stringify({ toolName }) // No anonId sent → server will use IP
+      body: JSON.stringify({ toolName })
     });
-
     if (!res.ok) {
-      console.error('Check-rate error:', res.status, await res.text());
       showUpgradeModal('Could not check run limit – please log in or try again.');
       return false;
     }
-
     const data = await res.json();
-    console.log('Check-rate response:', data);
-
     if (data.allowed === true) {
       if (data.remaining !== undefined) updateRunsBadge?.(data.remaining);
       return true;
     }
-
     // Limit hit
     showUpgradeModal(data.message || 'Upgrade to Traffic Torch Pro - $48 USD per/year for 25 runs/day.');
     return false;
   } catch (err) {
-    console.error('canRunTool failed:', err);
     showUpgradeModal('Connection error – please try again.');
     return false;
   }
 }
-
 // Poll for webhook completion & replace token automatically
 async function pollForProUpgrade(sessionId) {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
@@ -516,21 +462,17 @@ async function pollForProUpgrade(sessionId) {
       });
       const data = await res.json();
       if (data.status === 'complete') {
-        // Session complete → assume webhook ran, force refresh token via login or direct replace
         localStorage.removeItem('authToken');
         localStorage.removeItem('traffic_torch_jwt');
         alert('Upgrade successful! Logging you back in with Pro access...');
-        showLoginModal(); // or auto-re-auth if you store credentials (not recommended)
+        showLoginModal();
         clearInterval(interval);
       }
-    } catch (err) {
-      console.error('Session status poll error:', err);
-    }
-  }, 5000); // every 5s
+    } catch (err) {}
+  }, 5000);
   // Stop polling after 5 min max
   setTimeout(() => clearInterval(interval), 300000);
 }
-
 // Shared Footer File
 document.addEventListener('DOMContentLoaded', () => {
   fetch('/footer.html')
@@ -538,29 +480,27 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       document.getElementById('footer-placeholder').innerHTML = data;
     })
-    .catch(error => console.error('Error loading footer:', error));
+    .catch(error => {});
 });
-
 // Conditional Pro menu link update – FIXED: run AFTER shared menus are inserted
 document.addEventListener('DOMContentLoaded', () => {
   // Wait for both shared menus to finish loading
   const checkMenusLoaded = setInterval(() => {
     const desktopPlaceholder = document.getElementById('desktop-menu-placeholder');
     const mobilePlaceholder = document.getElementById('mobile-menu-placeholder');
-    
-    if (desktopPlaceholder && mobilePlaceholder && 
-        desktopPlaceholder.innerHTML.trim() !== '' && 
+   
+    if (desktopPlaceholder && mobilePlaceholder &&
+        desktopPlaceholder.innerHTML.trim() !== '' &&
         mobilePlaceholder.innerHTML.trim() !== '') {
-      
+     
       clearInterval(checkMenusLoaded);
-      
+     
       const token = localStorage.getItem('authToken');
       const links = document.querySelectorAll('.pro-menu-link');
-      
+     
       links.forEach(link => {
         const isDesktop = link.querySelector('.sidebar-text') !== null;
         const token = localStorage.getItem('authToken');
-
         if (isDesktop) {
           // Desktop: update only text span (emoji stays in its own span)
           const textSpan = link.querySelector('.sidebar-text');
@@ -574,7 +514,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           // Mobile: update text only, preserve emoji span
           const emojiSpan = link.querySelector('span.text-2xl');
-          const textNode = link.lastChild; // the text after emoji span
+          const textNode = link.lastChild;
           if (token) {
             if (textNode && textNode.nodeType === 3) {
               textNode.textContent = ' Pro Portal';
@@ -587,11 +527,9 @@ document.addEventListener('DOMContentLoaded', () => {
             link.href = '/pro/';
           }
         }
-
         // Green dot badge (common for both)
         const existingBadge = link.querySelector('.pro-badge');
         if (existingBadge) existingBadge.remove();
-
         if (token) {
           const badge = document.createElement('span');
           badge.className = 'inline-block w-2.5 h-2.5 bg-green-500 rounded-full ml-2 pro-badge';
@@ -599,39 +537,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     }
-  }, 100); // check every 100ms
+  }, 100);
 });
-  
+ 
 // Toggle function – reusable for both desktop and mobile
 function attachMenuToggles(containerId) {
   const container = document.getElementById(containerId);
   if (!container) {
-    console.warn(`Container ${containerId} not found for toggles`);
     return;
   }
-
   container.querySelectorAll('button[data-category]').forEach(btn => {
     btn.addEventListener('click', () => {
       const cat = btn.dataset.category;
       const content = container.querySelector(`[data-category-content="${cat}"]`);
       if (!content) return;
-
       const isExpanded = btn.getAttribute('aria-expanded') === 'true';
       const newExpanded = !isExpanded;
-
       btn.setAttribute('aria-expanded', newExpanded);
       content.classList.toggle('hidden', !newExpanded);
-
       const arrow = btn.querySelector('span.transition-transform');
       if (arrow) {
         arrow.style.transform = newExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
       }
     });
   });
-
-  console.log(`Toggles attached to ${containerId}`);
 }
-
 // Load shared menus + attach toggles after loading
 document.addEventListener('DOMContentLoaded', () => {
   // Desktop menu
@@ -643,16 +573,14 @@ document.addEventListener('DOMContentLoaded', () => {
 .then(html => {
   const placeholder = document.getElementById('desktop-menu-placeholder');
   placeholder.innerHTML = html;
-  
+ 
   // Trigger fade-in after a tiny delay (helps perceived smoothness)
   setTimeout(() => {
     placeholder.classList.add('loaded');
-  }, 50); // 50ms micro-delay prevents flash if render is instant
-  
-  console.log('Desktop menu loaded + fade triggered');
+  }, 50);
+ 
   attachMenuToggles('desktopSidebar');
 })
-
   // Mobile menu
   fetch('/mobile-menu.html')
     .then(response => {
@@ -661,8 +589,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .then(html => {
       document.getElementById('mobile-menu-placeholder').innerHTML = html;
-      console.log('Mobile menu loaded');
-      attachMenuToggles('mobileMenu'); // attach toggles after insert
+      attachMenuToggles('mobileMenu');
     })
-    .catch(err => console.error('Failed to load mobile-menu:', err));
+    .catch(err => {});
 });
