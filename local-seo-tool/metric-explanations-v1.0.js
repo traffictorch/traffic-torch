@@ -73,55 +73,45 @@ window.openModuleDetails = openModuleDetails;
 function injectMetricCards() {
   const container = document.getElementById('metric-cards-container');
   if (!container) {
-    console.warn('Container not found');
+    // Container not found - silently ignored in production
     return;
   }
-
   if (container.dataset.cardsInjected === 'true') {
-    console.log('Already injected');
     return;
   }
-
-  console.log('Injecting ' + metricExplanations.length + ' cards');
-
   let cardsHTML = '';
   for (let i = 0; i < metricExplanations.length; i++) {
     const m = metricExplanations[i];
     try {
-      console.log('Building card ' + (i + 1) + ': ' + m.id);
-
       cardsHTML += '<div id="' + m.id + '" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center w-full max-w-md">';
-      cardsHTML += '  <div class="text-6xl mb-6">' + m.emoji + '</div>';
-      cardsHTML += '  <div class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-8">' + m.name + '</div>';
-      cardsHTML += '  <details class="group">';
-      cardsHTML += '    <summary class="cursor-pointer text-orange-700 dark:text-orange-300 font-bold hover:underline inline-flex items-center justify-center gap-2 whitespace-nowrap">';
-      cardsHTML += '      Learn More <span class="text-2xl group-open:rotate-180 transition-transform">↓</span>';
-      cardsHTML += '    </summary>';
-      cardsHTML += '    <div class="mt-6 space-y-6 text-left max-w-lg mx-auto text-gray-600 dark:text-gray-400 leading-relaxed">';
-      cardsHTML += '      <div>';
-      cardsHTML += '        <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">What is ' + m.name + '?</p>';
-      cardsHTML += '        <p>' + m.what + '</p>';
-      cardsHTML += '      </div>';
-      cardsHTML += '      <div>';
-      cardsHTML += '        <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">How is ' + m.name + ' tested?</p>';
-      cardsHTML += '        <p>' + m.how + '</p>';
-      cardsHTML += '      </div>';
-      cardsHTML += '      <div>';
-      cardsHTML += '        <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">Why does ' + m.name + ' matter?</p>';
-      cardsHTML += '        <p>' + m.why + '</p>';
-      cardsHTML += '      </div>';
-      cardsHTML += '    </div>';
-      cardsHTML += '  </details>';
+      cardsHTML += ' <div class="text-6xl mb-6">' + m.emoji + '</div>';
+      cardsHTML += ' <div class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-8">' + m.name + '</div>';
+      cardsHTML += ' <details class="group">';
+      cardsHTML += ' <summary class="cursor-pointer text-orange-700 dark:text-orange-300 font-bold hover:underline inline-flex items-center justify-center gap-2 whitespace-nowrap">';
+      cardsHTML += ' Learn More <span class="text-2xl group-open:rotate-180 transition-transform">↓</span>';
+      cardsHTML += ' </summary>';
+      cardsHTML += ' <div class="mt-6 space-y-6 text-left max-w-lg mx-auto text-gray-600 dark:text-gray-400 leading-relaxed">';
+      cardsHTML += ' <div>';
+      cardsHTML += ' <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">What is ' + m.name + '?</p>';
+      cardsHTML += ' <p>' + m.what + '</p>';
+      cardsHTML += ' </div>';
+      cardsHTML += ' <div>';
+      cardsHTML += ' <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">How is ' + m.name + ' tested?</p>';
+      cardsHTML += ' <p>' + m.how + '</p>';
+      cardsHTML += ' </div>';
+      cardsHTML += ' <div>';
+      cardsHTML += ' <p class="font-bold text-orange-600 dark:text-orange-400 text-lg mb-2">Why does ' + m.name + ' matter?</p>';
+      cardsHTML += ' <p>' + m.why + '</p>';
+      cardsHTML += ' </div>';
+      cardsHTML += ' </div>';
+      cardsHTML += ' </details>';
       cardsHTML += '</div>';
     } catch (err) {
-      console.error('Failed card ' + (i + 1) + ' (' + (m ? m.id : 'unknown') + '): ', err);
+      // Failed to build card - silently ignored in production
     }
   }
-
   container.innerHTML = cardsHTML;
   container.dataset.cardsInjected = 'true';
-  console.log('Done - rendered: ' + container.querySelectorAll('[id]').length + ' cards');
-
   openDetailsFromHash();
 }
 

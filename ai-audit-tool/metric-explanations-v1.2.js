@@ -64,19 +64,13 @@ function openDetailsFromHash() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOMContentLoaded fired – starting card render');
   const container = document.getElementById('metric-cards-container');
   if (!container) {
-    console.error('ERROR: #metric-cards-container not found in DOM');
+    // #metric-cards-container not found in DOM - silently ignored in production
     return;
   }
-  console.log('Container found – length before render:', container.innerHTML.length);
-
   container.innerHTML = metricExplanations.map((m, index) => {
-    console.log(`Rendering card ${index + 1}/${metricExplanations.length}: ${m.id} (${m.name})`);
-
     if (m.id === "ai-content-overview") {
-      console.log('Rendering special overview card');
       return `
         <div id="${m.id}" class="bg-gradient-to-br from-pink-50 to-orange-50 dark:from-pink-950/30 dark:to-orange-950/20 rounded-3xl shadow-xl p-8 md:p-12 text-center border-2 border-pink-400 dark:border-pink-600">
           <div class="text-6xl mb-6">${m.emoji}</div>
@@ -84,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto mb-8">
             ${m.what}
           </p>
-          <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide" 
+          <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide"
              class="inline-flex items-center px-10 py-5 bg-gradient-to-r from-pink-500 to-orange-600 text-white text-xl font-bold rounded-2xl shadow-lg hover:scale-105 hover:shadow-pink-500/40 transition duration-300">
             Full Guide →
           </a>
@@ -132,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }).join('');
 
-  console.log('Cards rendered – final HTML length:', container.innerHTML.length);
   openDetailsFromHash();
 });
 

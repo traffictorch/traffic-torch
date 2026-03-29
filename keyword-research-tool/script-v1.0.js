@@ -85,7 +85,6 @@ if (sharedUrl) {
                 : urlObj.hostname.replace('www.', '');
             }
           } catch (e) {
-            console.warn('Invalid URL format:', cleanUrl);
             // finalUrl stays undefined → tool runs keyword-only mode
           }
         }
@@ -160,7 +159,6 @@ document.body.setAttribute('data-keyword', seedInput || '—');
 document.body.setAttribute('data-url', urlInput || '—');
 
         } catch (err) {
-            console.error('Keyword tool error:', err);
             suggestionsGrid.innerHTML = `<p class="text-center text-red-600 dark:text-red-400">Error: ${err.message || 'Failed to generate suggestions'}. Please try again or check your input.</p>`;
         } finally {
             clearInterval(tipInterval);

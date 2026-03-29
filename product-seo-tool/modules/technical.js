@@ -1,10 +1,10 @@
   import { hasViewportMeta } from './helpers.js';
-  
+ 
   function analyzeTechnicalSEO(doc, data) {
     let details = {};
     let mobileScore = data.hasViewport ? 60 : 10;
     if (data.viewportContent && /width\s*=\s*device-width/i.test(data.viewportContent)) mobileScore += 30;
-    if (data.viewportContent.includes('initial-scale=1')) mobileScore += 10;
+    if (data.viewportContent && data.viewportContent.includes('initial-scale=1')) mobileScore += 10;
     if (!data.viewportContent.includes('user-scalable=no') && !data.viewportContent.includes('maximum-scale=1')) {
       mobileScore += 10;
     } else {
@@ -12,10 +12,8 @@
     }
     mobileScore = Math.min(100, Math.max(0, mobileScore));
     details.mobile = { viewportPresent: data.hasViewport, score: mobileScore };
-
     const isHttps = data.url.startsWith('https');
     details.https = { isHttps, score: isHttps ? 95 : 0 };
-
     const canonical = doc.querySelector('link[rel="canonical"]');
     let canonicalScore = 20;
     let canonDetails = {
@@ -26,7 +24,6 @@
       requestedNormalized: '',
       matchType: 'none'
     };
-
     if (canonical && canonical.hasAttribute('href')) {
       const rawHref = canonical.getAttribute('href').trim();
       canonDetails.href = rawHref;
@@ -34,10 +31,9 @@
       try {
         absoluteCanon = new URL(rawHref, data.url).href;
       } catch (e) {
-        console.warn('[Canonical] Failed to resolve relative href:', rawHref, e);
+        // Failed to resolve relative canonical href - silently ignored in production
       }
       canonDetails.absoluteHref = absoluteCanon;
-
       const normalizeUrl = (urlStr) => {
         try {
           const url = new URL(urlStr);
@@ -56,12 +52,10 @@
             .replace(/\/$/, '');
         }
       };
-
       const requestedNorm = normalizeUrl(data.url);
       const canonNorm = normalizeUrl(absoluteCanon);
       canonDetails.normalized = canonNorm;
       canonDetails.requestedNormalized = requestedNorm;
-
       if (absoluteCanon === data.url || absoluteCanon === data.url + '/' || absoluteCanon === data.url.replace(/\/$/, '')) {
         canonicalScore = 95;
         canonDetails.matchType = 'exact';
@@ -84,7 +78,6 @@
       canonicalScore = 15;
       canonDetails.matchType = 'missing';
     }
-
     details.canonical = {
       present: canonDetails.present,
       href: canonDetails.href,
@@ -92,17 +85,6 @@
       normalizedMatch: canonDetails.normalized === canonDetails.requestedNormalized,
       score: canonicalScore
     };
-
-    console.log('[Canonical Debug]', {
-      requested: data.url,
-      rawHref: canonDetails.href,
-      absoluteHref: canonDetails.absoluteHref,
-      requestedNorm: canonDetails.requestedNormalized,
-      canonNorm: canonDetails.normalized,
-      matchType: canonDetails.matchType,
-      score: canonicalScore
-    });
-
     const robotsMeta = doc.querySelector('meta[name="robots"]');
     let robotsScore = 95;
     if (robotsMeta) {
@@ -112,10 +94,8 @@
       }
     }
     details.robots = { indexable: robotsScore === 95, score: robotsScore };
-
     let sitemapScore = /\/product[s]?\/|\/item\/|\/p\/|\/shop\/|\/collections\/[^/]+\/products\//i.test(data.url) ? 80 : 45;
     details.sitemapHint = { likelyIncluded: sitemapScore >= 70, score: sitemapScore };
-
     const score = Math.round(
       details.mobile.score * 0.30 +
       details.https.score * 0.30 +
@@ -125,5 +105,5 @@
     );
     return { score: Math.min(100, Math.max(0, score)), details };
   }
-  
+ 
   export { analyzeTechnicalSEO };

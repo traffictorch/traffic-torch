@@ -84,7 +84,6 @@ export function computeSentimentQuality(text) {
     };
   } catch (error) {
     // Reliability: Graceful error handling (e.g., NLP fail)
-    console.error('Sentiment Quality computation error:', error);
     return {
       score: 0,
       details: {

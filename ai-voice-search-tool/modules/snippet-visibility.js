@@ -80,7 +80,6 @@ export function computeSnippetVisibility(text, doc) {
     };
   } catch (error) {
     // Reliability: Graceful error handling (e.g., DOM/NLP fail)
-    console.error('Snippet Visibility computation error:', error);
     return {
       score: 0,
       details: {

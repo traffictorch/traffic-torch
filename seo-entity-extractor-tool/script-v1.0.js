@@ -57,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('entity-form');
   const results = document.getElementById('results');
   if (!form || !results) {
-    console.error('Form or results container missing');
     return;
   }
 
@@ -158,9 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let data;
       try {
         data = await res.json();
-        console.log('[DEBUG] Server response data:', data);
       } catch (parseErr) {
-        console.error('JSON parse failed:', parseErr);
         throw new Error('Invalid response format from server (not valid JSON)');
       }
 
@@ -638,7 +635,6 @@ if (!document.body.dataset.toggleListenersAttached) {
 }
 
     } catch (err) {
-      console.error('Analysis error:', err);
       clearInterval(interval);
       clearTimeout(heavyTimeout);
       results.innerHTML = `

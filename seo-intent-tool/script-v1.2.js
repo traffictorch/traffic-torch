@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500);
       }
     } catch (e) {
-      console.warn('Invalid shared URL parameter', e);
+      // Invalid shared URL parameter - silently ignored in production
     }
   }
 
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const override = JSON.parse(decodeURIComponent(configParam));
       config = deepMerge(config, override);
     } catch (e) {
-      console.warn('Invalid config URL parameter');
+      // Invalid config URL parameter - silently ignored in production
     }
   }
 
@@ -147,8 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
    
     const inputValue = document.getElementById('url-input').value;
     const url = cleanUrl(inputValue);
-    console.log('Input:', inputValue);
-    console.log('Cleaned URL sent to proxy:', url);
+
     if (!url) return;
 
     results.innerHTML = `
@@ -193,7 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const text = getVisibleText(doc.body) || '';
       const cleanedText = text.replace(/\s+/g, ' ').trim();
-      console.log('cleanedText created successfully, length:', cleanedText.length);
 
       progressText.textContent = "Analyzing E-E-A-T Signals...";
       await sleep(2000);
@@ -325,9 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
    let aiModuleHTML = '';
    try {
      aiModuleHTML = await analyzeAiIntent(cleanedText, url);
-     console.log('✅ AI Intent module executed successfully');
    } catch (err) {
-     console.error('❌ AI Intent module failed:', err);
      aiModuleHTML = `<div class="max-w-5xl mx-auto my-16 px-4"><div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 text-center"><p class="text-red-500">AI Intent module temporarily unavailable</p></div></div>`;
    }
 
@@ -835,7 +831,6 @@ ${aiModuleHTML}
       setTimeout(() => {
         const canvas = document.getElementById('health-radar');
         if (!canvas) {
-          console.warn('Canvas #health-radar not found');
           return;
         }
         try {
@@ -879,7 +874,7 @@ ${aiModuleHTML}
             }
           });
         } catch (e) {
-          console.error('Chart init failed', e);
+          // Chart init failed silently in production
         }
       }, 150);
 
@@ -904,7 +899,7 @@ ${aiModuleHTML}
 
     } catch (err) {
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
-      console.error(err);
+      // Error logged silently in production
     }
 
     // Clean URL for PDF cover

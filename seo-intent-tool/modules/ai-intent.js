@@ -1,23 +1,16 @@
 export async function analyzeAiIntent(cleanedText, url) {
   const AI_PROXY = 'https://seo-intent.traffictorch.workers.dev/';
-  console.log('AI Intent module called with text length:', cleanedText.length, 'URL:', url);
-
   try {
     const res = await fetch(AI_PROXY, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ cleanedText, url })
     });
-
-    console.log('AI proxy response status:', res.status);
-
     if (!res.ok) {
       throw new Error(`AI proxy failed with status ${res.status}`);
     }
-
     const data = await res.json();
     const intents = data.intents || [];
-
     if (intents.length === 0 || !Array.isArray(intents)) {
       return `<div class="max-w-5xl mx-auto my-16 px-4">
         <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 text-center">
@@ -25,7 +18,6 @@ export async function analyzeAiIntent(cleanedText, url) {
         </div>
       </div>`;
     }
-
    return `<div class="max-w-5xl mx-auto my-16 px-4">
       <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
         <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">Detected Search Intents</h3>
@@ -45,7 +37,7 @@ export async function analyzeAiIntent(cleanedText, url) {
       </div>
     </div>`;
   } catch (err) {
-    console.error('AI Intent module failed:', err.message);
+    // AI Intent module failed - gracefully show fallback UI in production
     return `<div class="max-w-5xl mx-auto my-16 px-4">
       <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 text-center border border-red-300 dark:border-red-800">
         <p class="text-red-600 dark:text-red-400">AI search intent detection temporarily unavailable.</p>

@@ -563,7 +563,7 @@ ${(() => {
               }
             });
           } catch (e) {
-            console.error('Radar chart failed', e);
+            // console error
           }
         }, 150);
         initShareReport(results);

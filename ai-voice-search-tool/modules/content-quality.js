@@ -80,7 +80,6 @@ export function computeContentQuality(text) {
     };
   } catch (error) {
     // Reliability: Graceful error handling (e.g., NLP fail)
-    console.error('Content Quality computation error:', error);
     return {
       score: 0,
       details: {

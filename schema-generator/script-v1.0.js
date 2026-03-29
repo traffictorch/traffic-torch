@@ -96,7 +96,6 @@ manualPreview.textContent = prettyJsonLd({
             });
           });
         } catch (err) {
-          console.error(`Failed to load ${type} schema:`, err);
           manualEditor.innerHTML = `
             <p class="text-red-600 dark:text-red-400 text-center py-10 text-lg font-medium">
               Cannot load ${type} editor.<br>
@@ -351,7 +350,6 @@ setTimeout(() => {
           Please check the URL and try again.
         </div>
       `;
-      console.error('Scan failed:', err);
     }
   });
 }; // ← This closes initTool

@@ -68,7 +68,6 @@ export function computeTraditionalKeywords(text) {
     };
   } catch (error) {
     // Reliability: Graceful error handling (e.g., NLP fail)
-    console.error('Traditional Keywords computation error:', error);
     return {
       score: 0,
       details: {

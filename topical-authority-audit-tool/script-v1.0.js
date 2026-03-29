@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const loading = document.getElementById('loading');
   const results = document.getElementById('results');
   if (!form || !loading || !results) {
-    console.error('Form, loading, or results container missing');
     return;
   }
 
@@ -347,7 +346,6 @@ initShareReport();
 initSubmitFeedback();
 
     } catch (err) {
-      console.error('Audit error:', err);
       clearTimeout(heavyTimeout);
       loading.classList.add('hidden');
       results.classList.remove('hidden');

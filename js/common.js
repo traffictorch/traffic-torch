@@ -127,7 +127,6 @@ export async function checkRateLimitAndRun(runFunction) {
       if (data.message) alert(data.message);
     }
   } catch (err) {
-    console.error('Rate limit check failed:', err);
     alert('Could not check run limit — please try again or login.');
   }
 }

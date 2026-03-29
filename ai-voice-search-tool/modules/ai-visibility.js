@@ -73,7 +73,6 @@ export function computeAIVisibility(text, doc) {
     };
   } catch (error) {
     // Reliability: Graceful error handling (e.g., NLP fail)
-    console.error('AI Visibility computation error:', error);
     return {
       score: 0,
       details: {

@@ -1,7 +1,6 @@
 export function initShareReport(resultsContainer) {
   const shareBtn = document.getElementById('share-report-btn');
   if (!shareBtn) {
-    console.warn("Share button #share-report-btn not found");
     return;
   }
 

@@ -1,5 +1,4 @@
 // product-seo-tool/modules/helpers.js
-// Shared utility functions used by multiple SEO analysis modules
 
 export function countWords(text) {
   return text.trim().split(/\s+/).filter(w => w.length > 0).length;
@@ -50,15 +49,7 @@ export function countMissingAlt(doc) {
       goodDescriptive++;
     }
   });
-  console.log('[Image Alt Debug]', {
-    totalImages: imgs.length,
-    decorativeIgnored: decorative,
-    meaningfulImages: meaningful,
-    missingAlt: missing,
-    filenameOnlyAlts: filenameOnly,
-    goodDescriptiveAlts: goodDescriptive,
-    altQualityRatio: meaningful > 0 ? (goodDescriptive / meaningful) : 0
-  });
+  // Image alt debug removed for production
   return {
     missingCount: missing,
     filenameOnlyCount: filenameOnly,
@@ -112,15 +103,7 @@ export function extractProductSchema(doc) {
   const uniqueSchemas = schemas.filter((schema, index, self) =>
     index === self.findIndex((t) => JSON.stringify(t) === JSON.stringify(schema))
   );
-  console.log('[Schema Extraction Debug]', {
-    ...debugInfo,
-    foundProducts: uniqueSchemas.map(s => ({
-      name: s.name || 'Unnamed Product',
-      offers: !!s.offers,
-      aggregateRating: !!s.aggregateRating,
-      debugPath: s._debugPath
-    }))
-  });
+  // Schema extraction debug removed for production
   uniqueSchemas.forEach(s => delete s._debugPath);
   return uniqueSchemas;
 }
@@ -149,13 +132,7 @@ export function hasReviewSection(doc) {
       hasSchemaRating = true;
     }
   });
-  console.log('[Review/UGC Detection Debug]', {
-    visibleWidgetMatched: hasVisibleWidget,
-    selectorsChecked: selectors.length,
-    matchedSelectors: selectors.filter(sel => !!doc.querySelector(sel)),
-    schemaHasRating: hasSchemaRating,
-    schemaCount: schemas.length
-  });
+  // Review/UGC detection debug removed for production
   return hasVisibleWidget || hasSchemaRating;
 }
 

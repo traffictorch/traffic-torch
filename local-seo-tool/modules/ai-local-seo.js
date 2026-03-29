@@ -27,7 +27,7 @@ export async function analyzeLocalIntent(doc, city, fullUrl, cleanedContent) {
       }
     }
   } catch (error) {
-    console.warn('[AI Local Intent] Worker call failed', error);
+    // no console error
   }
 
   // Generate HTML for the card
