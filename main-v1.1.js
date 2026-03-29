@@ -427,9 +427,14 @@ function showUpgradeModal(message = "You've reached your daily limit. Upgrade to
 
 
 // === UPDATED CANRUNTOOL WITH COMBINED LIMITING START (IP + localStorage + Lite Fingerprint) ===
-// More stable fingerprint + debug logs
-
 const DEVICE_KEY = 'tt_device_key';
+
+// Create deviceKey once when script loads (never regenerates)
+let currentDeviceKey = localStorage.getItem(DEVICE_KEY);
+if (!currentDeviceKey) {
+  currentDeviceKey = crypto.randomUUID();
+  localStorage.setItem(DEVICE_KEY, currentDeviceKey);
+}
 
 async function getLiteFingerprint() {
   try {
@@ -461,29 +466,18 @@ async function getLiteFingerprint() {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
   } catch (e) {
-    console.warn('Fingerprint failed, using fallback');
     return 'stable-fp-2026';
   }
 }
 
 function getDeviceKey() {
-  let key = localStorage.getItem(DEVICE_KEY);
-  if (!key) {
-    key = crypto.randomUUID();
-    localStorage.setItem(DEVICE_KEY, key);
-    console.log('New deviceKey created and saved:', key);
-  } else {
-    console.log('Existing deviceKey loaded:', key);
-  }
-  return key;
+  return currentDeviceKey;
 }
 
 export async function canRunTool(toolName = 'default') {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
   const deviceKey = getDeviceKey();
   const fingerprint = await getLiteFingerprint();
-
-  console.log(`[frontend] Sending to check-rate - deviceKey: ${deviceKey}, fingerprint: ${fingerprint}`);
 
   try {
     const res = await fetch(`${API_BASE}/api/check-rate`, {
@@ -511,7 +505,6 @@ export async function canRunTool(toolName = 'default') {
     showUpgradeModal(data.message || 'Upgrade to Traffic Torch Pro - $48 USD per/year for 25 runs/day.');
     return false;
   } catch (err) {
-    console.error('canRunTool error:', err);
     showUpgradeModal('Connection error – please try again.');
     return false;
   }
