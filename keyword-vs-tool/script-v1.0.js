@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       yourInput.value = decoded;
     } catch (e) {
-      console.warn('Invalid shared your-url:', e);
+      // no console in production
     }
   }
 
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       compInput.value = decoded;
     } catch (e) {
-      console.warn('Invalid shared comp-url:', e);
+      // no console in production
     }
   }
 
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         phraseInput.value = decoded;
       }
     } catch (e) {
-      console.warn('Invalid shared keyword:', e);
+      // no console in production
     }
   }
   

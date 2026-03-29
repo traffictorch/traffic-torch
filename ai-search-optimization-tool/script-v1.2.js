@@ -852,7 +852,7 @@ const initTool = (form, results, progressContainer) => {
             }
           });
         } catch (e) {
-          console.error('Radar chart failed', e);
+          // no console in production
         }
       }, 150);
       
