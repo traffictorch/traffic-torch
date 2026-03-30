@@ -427,7 +427,7 @@ function showUpgradeModal(message = "You've reached your daily limit. Upgrade to
 
 
 // === UPDATED CANRUNTOOL WITH COMBINED LIMITING START (IP + localStorage + Lite Fingerprint) ===
-// Fingerprint stored in localStorage (stable across IP changes)
+// Fingerprint stored in localStorage (stable across IP changes and page refreshes)
 
 const FINGERPRINT_KEY = 'tt_fingerprint';
 
