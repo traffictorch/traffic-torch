@@ -1,0 +1,24 @@
+# Traffic Torch - Combined 301 Redirects for all GSC warnings
+# Last updated: 30 March 2026
+# Purpose: Fix "Alternative page with proper canonical tag" + "Page with redirect"
+
+# 1. Domain variations (HTTP and www)
+http://traffictorch.net/                  https://traffictorch.net/                  301
+https://www.traffictorch.net/             https://traffictorch.net/                  301
+
+# 2. Blog posts without trailing slash (Alternative page warnings)
+ /blog/posts/seo-ux-audit-help-guide      https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/      301
+ /blog/posts/semantic-entity-help-guide   https://traffictorch.net/blog/posts/semantic-entity-help-guide/   301
+ /blog/posts/product-seo-help-guide        https://traffictorch.net/blog/posts/product-seo-help-guide/        301
+ /blog/posts/seo-intent-help-guide         https://traffictorch.net/blog/posts/seo-intent-help-guide/         301
+
+# 3. Other pages without trailing slash
+ /news                                     https://traffictorch.net/news/                                     301
+ /ai-ux-seo-help-guides                    https://traffictorch.net/ai-ux-seo-help-guides/                    301
+
+# 4. UTM parameter versions
+ /pro?utm_source=F6S&utm_medium=organic&utm_campaign=pricing_clicked   https://traffictorch.net/pro/   301
+ /?utm_source=F6S&utm_medium=organic&utm_campaign=domain_clicked      https://traffictorch.net/      301
+
+# 5. Query parameter version
+ /?q={search_term_string}                                             https://traffictorch.net/      301
