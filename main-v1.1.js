@@ -427,15 +427,13 @@ function showUpgradeModal(message = "You've reached your daily limit. Upgrade to
 
 
 // === UPDATED CANRUNTOOL WITH COMBINED LIMITING START (IP + localStorage + Lite Fingerprint) ===
-// Fingerprint stored in localStorage so it never changes until site data clear
+// Fingerprint stored in localStorage so it is 100% stable across IP changes
 
-const DEVICE_KEY = 'tt_device_key';
 const FINGERPRINT_KEY = 'tt_fingerprint';
 
-// Create/load persistent fingerprint once
+// Generate and store fingerprint once (persists until site data clear)
 let currentFingerprint = localStorage.getItem(FINGERPRINT_KEY);
 if (!currentFingerprint) {
-  // Generate once and store
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   canvas.width = 240;
@@ -463,10 +461,10 @@ if (!currentFingerprint) {
 }
 
 function getDeviceKey() {
-  let key = localStorage.getItem(DEVICE_KEY);
+  let key = localStorage.getItem('tt_device_key');
   if (!key) {
     key = crypto.randomUUID();
-    localStorage.setItem(DEVICE_KEY, key);
+    localStorage.setItem('tt_device_key', key);
   }
   return key;
 }
