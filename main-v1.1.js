@@ -422,12 +422,8 @@ function showUpgradeModal(message = "You've reached your daily limit. Upgrade to
   modal.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-
-
-
-
 // === UPDATED CANRUNTOOL WITH COMBINED LIMITING START (IP + localStorage + Lite Fingerprint) ===
-// Fingerprint stored in localStorage (stable across IP changes and page refreshes)
+// Fingerprint stored in localStorage (stable across IP changes)
 
 const FINGERPRINT_KEY = 'tt_fingerprint';
 
@@ -494,10 +490,6 @@ export async function canRunTool(toolName = 'default') {
   }
 }
 // === UPDATED CANRUNTOOL WITH COMBINED LIMITING END ===
-
-
-
-
 
 // Poll for webhook completion & replace token automatically
 async function pollForProUpgrade(sessionId) {
