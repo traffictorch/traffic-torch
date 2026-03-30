@@ -423,42 +423,33 @@ function showUpgradeModal(message = "You've reached your daily limit. Upgrade to
 }
 
 // === UPDATED CANRUNTOOL WITH COMBINED LIMITING START (IndexedDB fingerprint – survives localStorage clear) ===
-// Fingerprint stored in IndexedDB (harder to clear than localStorage)
 const FINGERPRINT_KEY = 'tt_fingerprint';
+let currentFingerprint = null;
 
-async function getFingerprintFromIDB() {
-  return new Promise((resolve) => {
+async function getOrCreateFingerprint() {
+  if (currentFingerprint) return currentFingerprint;
+
+  // Try IndexedDB first (persists even after localStorage/site data clear)
+  const fpFromDB = await new Promise(resolve => {
     const req = indexedDB.open('TrafficTorchDB', 1);
-    req.onupgradeneeded = (e) => {
-      e.target.result.createObjectStore('fingerprints');
-    };
-    req.onsuccess = (e) => {
+    req.onupgradeneeded = e => e.target.result.createObjectStore('fingerprints');
+    req.onsuccess = e => {
       const db = e.target.result;
       const tx = db.transaction('fingerprints', 'readonly');
       const store = tx.objectStore('fingerprints');
       const getReq = store.get(FINGERPRINT_KEY);
-      getReq.onsuccess = () => resolve(getReq.result || null);
+      getReq.onsuccess = () => resolve(getReq.result);
       getReq.onerror = () => resolve(null);
     };
     req.onerror = () => resolve(null);
   });
-}
 
-async function saveFingerprintToIDB(fp) {
-  return new Promise((resolve) => {
-    const req = indexedDB.open('TrafficTorchDB', 1);
-    req.onsuccess = (e) => {
-      const db = e.target.result;
-      const tx = db.transaction('fingerprints', 'readwrite');
-      const store = tx.objectStore('fingerprints');
-      store.put(fp, FINGERPRINT_KEY);
-      tx.oncomplete = () => resolve();
-    };
-  });
-}
+  if (fpFromDB) {
+    currentFingerprint = fpFromDB;
+    return currentFingerprint;
+  }
 
-let currentFingerprint = await getFingerprintFromIDB();
-if (!currentFingerprint) {
+  // Generate new fingerprint (same canvas + hardware hash as before)
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   canvas.width = 240;
@@ -475,6 +466,7 @@ if (!currentFingerprint) {
   ctx.moveTo(30, 50);
   ctx.quadraticCurveTo(100, 45, 210, 50);
   ctx.stroke();
+
   const dataURL = canvas.toDataURL('image/png');
   const extra = navigator.platform + navigator.hardwareConcurrency + screen.width + screen.height;
   const encoder = new TextEncoder();
@@ -482,12 +474,32 @@ if (!currentFingerprint) {
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   currentFingerprint = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
-  await saveFingerprintToIDB(currentFingerprint);
+
+  // Save to IndexedDB
+  await new Promise(resolve => {
+    const req = indexedDB.open('TrafficTorchDB', 1);
+    req.onsuccess = e => {
+      const db = e.target.result;
+      const tx = db.transaction('fingerprints', 'readwrite');
+      const store = tx.objectStore('fingerprints');
+      store.put(currentFingerprint, FINGERPRINT_KEY);
+      tx.oncomplete = () => resolve();
+    };
+  });
+
+  return currentFingerprint;
 }
 
 export async function canRunTool(toolName = 'default') {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+  
+  // Lazy load fingerprint (no top-level await – fixes site break)
+  if (!currentFingerprint) {
+    await getOrCreateFingerprint();
+  }
+  
   const fingerprint = currentFingerprint;
+
   try {
     const res = await fetch(`${API_BASE}/api/check-rate`, {
       method: 'POST',
