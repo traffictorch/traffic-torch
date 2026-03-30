@@ -1,5 +1,5 @@
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
-// main.js Day Night Mode
+// Day Night Mode
 document.addEventListener('DOMContentLoaded', () => {
   const html = document.documentElement;
   const toggle = document.getElementById('themeToggle');
@@ -422,13 +422,42 @@ function showUpgradeModal(message = "You've reached your daily limit. Upgrade to
   modal.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// === UPDATED CANRUNTOOL WITH COMBINED LIMITING START (IP + localStorage + Lite Fingerprint) ===
-// Fingerprint stored in localStorage (stable across IP changes)
-
+// === UPDATED CANRUNTOOL WITH COMBINED LIMITING START (IndexedDB fingerprint – survives localStorage clear) ===
+// Fingerprint stored in IndexedDB (harder to clear than localStorage)
 const FINGERPRINT_KEY = 'tt_fingerprint';
 
-// Generate and store fingerprint once (persists until site data clear)
-let currentFingerprint = localStorage.getItem(FINGERPRINT_KEY);
+async function getFingerprintFromIDB() {
+  return new Promise((resolve) => {
+    const req = indexedDB.open('TrafficTorchDB', 1);
+    req.onupgradeneeded = (e) => {
+      e.target.result.createObjectStore('fingerprints');
+    };
+    req.onsuccess = (e) => {
+      const db = e.target.result;
+      const tx = db.transaction('fingerprints', 'readonly');
+      const store = tx.objectStore('fingerprints');
+      const getReq = store.get(FINGERPRINT_KEY);
+      getReq.onsuccess = () => resolve(getReq.result || null);
+      getReq.onerror = () => resolve(null);
+    };
+    req.onerror = () => resolve(null);
+  });
+}
+
+async function saveFingerprintToIDB(fp) {
+  return new Promise((resolve) => {
+    const req = indexedDB.open('TrafficTorchDB', 1);
+    req.onsuccess = (e) => {
+      const db = e.target.result;
+      const tx = db.transaction('fingerprints', 'readwrite');
+      const store = tx.objectStore('fingerprints');
+      store.put(fp, FINGERPRINT_KEY);
+      tx.oncomplete = () => resolve();
+    };
+  });
+}
+
+let currentFingerprint = await getFingerprintFromIDB();
 if (!currentFingerprint) {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
@@ -453,13 +482,12 @@ if (!currentFingerprint) {
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   currentFingerprint = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
-  localStorage.setItem(FINGERPRINT_KEY, currentFingerprint);
+  await saveFingerprintToIDB(currentFingerprint);
 }
 
 export async function canRunTool(toolName = 'default') {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
   const fingerprint = currentFingerprint;
-
   try {
     const res = await fetch(`${API_BASE}/api/check-rate`, {
       method: 'POST',
@@ -470,18 +498,15 @@ export async function canRunTool(toolName = 'default') {
       },
       body: JSON.stringify({ toolName })
     });
-
     if (!res.ok) {
       showUpgradeModal('Could not check run limit – please try again.');
       return false;
     }
-
     const data = await res.json();
     if (data.allowed === true) {
       if (data.remaining !== undefined) updateRunsBadge?.(data.remaining);
       return true;
     }
-
     showUpgradeModal(data.message || 'Upgrade to Traffic Torch Pro - $48 USD per/year for 25 runs/day.');
     return false;
   } catch (err) {
