@@ -427,7 +427,7 @@ function showUpgradeModal(message = "You've reached your daily limit. Upgrade to
 
 
 // === UPDATED CANRUNTOOL WITH COMBINED LIMITING START (IP + localStorage + Lite Fingerprint) ===
-// Fingerprint stored in localStorage so it is 100% stable across IP changes
+// Fingerprint stored in localStorage (stable across IP changes)
 
 const FINGERPRINT_KEY = 'tt_fingerprint';
 
@@ -460,18 +460,8 @@ if (!currentFingerprint) {
   localStorage.setItem(FINGERPRINT_KEY, currentFingerprint);
 }
 
-function getDeviceKey() {
-  let key = localStorage.getItem('tt_device_key');
-  if (!key) {
-    key = crypto.randomUUID();
-    localStorage.setItem('tt_device_key', key);
-  }
-  return key;
-}
-
 export async function canRunTool(toolName = 'default') {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
-  const deviceKey = getDeviceKey();
   const fingerprint = currentFingerprint;
 
   try {
@@ -479,7 +469,6 @@ export async function canRunTool(toolName = 'default') {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-device-key': deviceKey,
         'x-fingerprint': fingerprint,
         ...(token && { 'Authorization': `Bearer ${token}` })
       },
