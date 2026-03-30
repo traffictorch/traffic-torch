@@ -1,0 +1,38 @@
+# Traffic Torch 360° SEO Health - _redirects
+# Fixes "Alternative page with proper canonical tag" for ALL listed URLs
+# Always prefer trailing slash on directory-style pages (/news/, /blog/posts/xxx/)
+
+# 1. HTTP → HTTPS + non-www → www (recommended for clean canonicals)
+http://traffictorch.net/* https://traffictorch.net/:splat 301
+http://www.traffictorch.net/* https://traffictorch.net/:splat 301
+https://www.traffictorch.net/* https://traffictorch.net/:splat 301
+
+# 2. Blog posts without trailing slash (GSC list)
+ /blog/posts/seo-ux-audit-help-guide https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/ 301
+ /blog/posts/semantic-entity-help-guide https://traffictorch.net/blog/posts/semantic-entity-help-guide/ 301
+ /blog/posts/product-seo-help-guide https://traffictorch.net/blog/posts/product-seo-help-guide/ 301
+ /blog/posts/seo-intent-help-guide https://traffictorch.net/blog/posts/seo-intent-help-guide/ 301
+
+# 3. Future-proof catch-all for any blog post without trailing slash
+ /blog/posts/* https://traffictorch.net/blog/posts/:splat/ 301
+
+# 4. /news without trailing slash
+ /news https://traffictorch.net/news/ 301
+
+# 5. /ai-ux-seo-help-guides without trailing slash (new one listed)
+ /ai-ux-seo-help-guides https://traffictorch.net/ai-ux-seo-help-guides/ 301
+
+# 6. UTM tracking parameters (your F6S + pro page)
+ /pro?utm_source=* https://traffictorch.net/pro/ 301
+ /pro?*utm_* https://traffictorch.net/pro/ 301
+ /?*utm_source=* https://traffictorch.net/ 301
+ /?*utm_medium=* https://traffictorch.net/ 301
+ /?*utm_campaign=* https://traffictorch.net/ 301
+ /?*utm_* https://traffictorch.net/ 301
+
+# 7. Query/search parameters
+ /?q=* https://traffictorch.net/ 301
+ /?*q=* https://traffictorch.net/ 301
+
+# 8. Any other junk query strings on homepage → clean homepage
+ /?* https://traffictorch.net/ 301
