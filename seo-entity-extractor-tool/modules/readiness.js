@@ -43,21 +43,17 @@ export function analyzeReadiness(
 
   const score = Math.round(total);
 
-  // Descriptive level + explanation
-  let level = 'Needs Significant Work';
+  // Descriptive level + explanation — updated to 3-grade system
+  let level = 'Needs Work';
   let levelDesc = 'Major foundational gaps exist. Focus first on increasing entity coverage and salience before investing in schema or advanced clustering.';
-
-  if (score >= 85) {
+  if (score >= 80) {
     level = 'Excellent';
     levelDesc = 'Very strong semantic foundation — well positioned for entity-first ranking, AI overviews, and competitive SERPs.';
-  } else if (score >= 72) {
-    level = 'Good';
-    levelDesc = 'Solid base with only minor to moderate gaps. Targeted improvements in the weakest 1–2 modules will likely yield noticeable ranking/visibility gains.';
-  } else if (score >= 55) {
-    level = 'Fair';
-    levelDesc = 'Average semantic health — page is visible but likely being outranked by better-optimized competitors in entity-aware search environments.';
   } else if (score >= 40) {
-    level = 'Poor';
+    level = 'Average';
+    levelDesc = 'Decent base with room for improvement. Targeted fixes in the weakest 1–2 modules will likely yield noticeable ranking/visibility gains.';
+  } else {
+    level = 'Needs Work';
     levelDesc = 'Below-average readiness. Core entity signals (coverage + salience) need urgent attention to avoid being deprioritized by modern ranking systems.';
   }
 
@@ -66,7 +62,7 @@ export function analyzeReadiness(
   const metrics = [
     {
       text: `Overall Readiness: ${level} (${score}/100)`,
-      grade: score >= 85 ? 'good' : score >= 72 ? 'good' : score >= 55 ? 'warning' : 'bad'
+      grade: score >= 80 ? 'good' : score >= 40 ? 'warning' : 'bad'
     },
     {
       text: `Coverage contribution: ${Math.round((c / sum) * 100)}% (${c})`,
@@ -86,41 +82,32 @@ export function analyzeReadiness(
     }
   ];
 
-  // ── Prioritized failed / improvement items ─────────────────────────────
+  // ── Prioritized failed / improvement items — unchanged ─────────────────
   const failed = [];
-
-  // Core foundation issues first (highest impact)
   if (c < 52 || s < 52) {
     failed.push({
       text: "Core entity signals are weak (Coverage and/or Salience below 52). This is usually the #1 reason pages underperform in entity-aware and AI-driven search. Prioritize: more relevant entities + stronger topical focus in prominent positions.",
       grade: 'bad'
     });
   }
-
-  // Secondary issues
   if (r < 38) {
     failed.push({
       text: "Weak topical clustering / relationships. Improve by grouping related entities in the same sections, using descriptive internal links, and (when appropriate) adding entity/mention schema.",
       grade: 'bad'
     });
   }
-
   if (p < 40) {
     failed.push({
       text: "On-page semantic practices need work. Highest ROI fixes usually are: 1) Add JSON-LD schema for the most prominent entity type(s), 2) Place top entities in H1/H2 headings, 3) Standardize brand/business name usage.",
       grade: 'bad'
     });
   }
-
-  // Overall low score — give clear priority order
   if (score < 58) {
     failed.push({
       text: "Overall semantic readiness is low. Recommended improvement order:\n1. Boost Coverage + Salience first (more & better-promoted entities)\n2. Strengthen Relationships (clusters & connections)\n3. Implement Practices (schema + headings)\nStart with the lowest-scoring module from the radar chart.",
       grade: 'bad'
     });
   }
-
-  // Nice-to-have / optimization nudge when already decent
   if (score >= 70 && Math.min(c, s, r, p) <= 65) {
     failed.push({
       text: "Already good foundation — now focus on the weakest module (look at the radar chart). Lifting the lowest score by 10–20 points often creates outsized ranking/visibility improvements.",

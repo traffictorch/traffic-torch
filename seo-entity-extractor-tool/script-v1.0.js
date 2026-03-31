@@ -21,9 +21,8 @@ function isShortContent(wordCount) {
 }
 
 function getGrade(score) {
-  if (score >= 85) return { text: 'Excellent', emoji: '✅', color: 'text-green-600 dark:text-green-400' };
-  if (score >= 70) return { text: 'Good', emoji: '👍', color: 'text-green-500 dark:text-green-400' };
-  if (score >= 50) return { text: 'Fair', emoji: '⚠️', color: 'text-orange-500 dark:text-orange-400' };
+  if (score >= 80) return { text: 'Excellent', emoji: '✅', color: 'text-green-600 dark:text-green-400' };
+  if (score >= 40) return { text: 'Average', emoji: '⚠️', color: 'text-orange-500 dark:text-orange-400' };
   return { text: 'Needs Work', emoji: '❌', color: 'text-red-600 dark:text-red-400' };
 }
 
@@ -77,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     results.innerHTML = `
       <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 min-h-[60vh]">
-        <div class="relative w-28 h-28 mb-10">
+        <div class="relative w-20 h-20 mb-10">
           <svg class="animate-spin" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" stroke-opacity="0.25"/>
             <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10"
@@ -207,13 +206,13 @@ document.addEventListener('DOMContentLoaded', () => {
 <div class="max-w-5xl mx-auto px-4 py-8">
   <!-- Big Overall Readiness Score Card -->
   <div class="flex justify-center my-10 px-4">
-    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 md:p-12 w-full max-w-lg border-4 ${readiness.score >= 85 ? 'border-green-600' : readiness.score >= 70 ? 'border-green-500' : readiness.score >= 50 ? 'border-orange-500' : 'border-red-500'}">
+    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 md:p-12 w-full max-w-lg border-4 ${readiness.score >= 80 ? 'border-green-600' : readiness.score >= 40 ? 'border-orange-500' : 'border-red-500'}">
       <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall Semantic Readiness</p>
       <div class="relative aspect-square w-full max-w-[280px] mx-auto">
         <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
           <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none" class="dark:stroke-gray-700"/>
           <circle cx="100" cy="100" r="90"
-                  stroke="${readiness.score >= 85 ? '#22c55e' : readiness.score >= 70 ? '#10b981' : readiness.score >= 50 ? '#f59e0b' : '#ef4444'}"
+                  stroke="${readiness.score >= 80 ? '#22c55e' : readiness.score >= 40 ? '#f59e0b' : '#ef4444'}"
                   stroke-width="16" fill="none"
                   stroke-dasharray="${(readiness.score / 100) * 565} 565"
                   stroke-linecap="round"/>
@@ -221,11 +220,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="absolute inset-0 flex items-center justify-center">
           <div class="text-center">
             <div class="text-6xl md:text-7xl font-black drop-shadow-lg"
-                 style="color: ${readiness.score >= 85 ? '#22c55e' : readiness.score >= 70 ? '#10b981' : readiness.score >= 50 ? '#f59e0b' : '#ef4444'};">
+                 style="color: ${readiness.score >= 80 ? '#22c55e' : readiness.score >= 40 ? '#f59e0b' : '#ef4444'};">
               ${readiness.score}
             </div>
             <div class="text-xl md:text-2xl opacity-90 -mt-2"
-                 style="color: ${readiness.score >= 85 ? '#22c55e' : readiness.score >= 70 ? '#10b981' : readiness.score >= 50 ? '#f59e0b' : '#ef4444'};">
+                 style="color: ${readiness.score >= 80 ? '#22c55e' : readiness.score >= 40 ? '#f59e0b' : '#ef4444'};">
               /100
             </div>
           </div>
@@ -236,11 +235,25 @@ document.addEventListener('DOMContentLoaded', () => {
         return `<p class="mt-8 text-4xl md:text-5xl font-bold text-center ${g.color} drop-shadow-lg">${g.emoji} ${g.text}</p>`;
       })()}
       ${(() => {
-        const pageTitle = data?.title || urlInput?.value.trim() || 'Analyzed Page';
-        const truncated = pageTitle.length > 80 ? pageTitle.substring(0, 77) + '...' : pageTitle;
+        // Fixed: properly calculate displayTitle and set data-page-title for PDF + share
+        let pageTitle = 'Analyzed Page';
+
+        if (data && data.title && typeof data.title === 'string' && data.title.trim() !== '') {
+          pageTitle = data.title.trim();                    // Real tested page <title>
+        } else if (urlInput && urlInput.value && urlInput.value.trim() !== '') {
+          pageTitle = urlInput.value.trim();                // fallback to entered URL
+        }
+
+        const displayTitle = pageTitle.length > 80 
+          ? pageTitle.substring(0, 77) + '...' 
+          : pageTitle;
+
+        // Set attribute for PDF print cover (used by print.css)
+        document.body.setAttribute('data-page-title', displayTitle);
+
         return `
           <p class="mt-6 text-center text-base md:text-lg text-gray-700 dark:text-gray-300 px-4 leading-relaxed break-words">
-            ${truncated}
+            ${displayTitle}
           </p>
         `;
       })()}
@@ -276,14 +289,13 @@ document.addEventListener('DOMContentLoaded', () => {
   ${modules.slice(0, 2).map(mod => {
     const { score, metrics = [], failed = [] } = mod.result;
     const cardGrade = getGrade(score);
-const borderColorClass = 
-  score >= 85 ? 'border-green-600 dark:border-green-400' :
-  score >= 70 ? 'border-green-500 dark:border-green-400' :
-  score >= 50 ? 'border-orange-500 dark:border-orange-400' :
+const borderColorClass =
+  score >= 80 ? 'border-green-600 dark:border-green-400' :
+  score >= 40 ? 'border-orange-500 dark:border-orange-400' :
   'border-red-600 dark:border-red-500';
-    const arcColor = score >= 85 ? '#22c55e' :
-                     score >= 70 ? '#10b981' :
-                     score >= 50 ? '#f59e0b' : '#ef4444';
+    const arcColor = score >= 80 ? '#22c55e' :
+                     score >= 40 ? '#f59e0b' :
+                     '#ef4444';
     return `
     <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[520px] md:min-h-[580px]">
       <div class="flex justify-center mb-6">
@@ -311,7 +323,7 @@ const borderColorClass =
         <span>More Details</span>
         <span class="details-arrow transition-transform duration-200">▼</span>
       </button>
-		<div class="details-panel mt-3 pt-4 pb-10 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
+<div class="details-panel mt-3 pt-4 pb-10 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
         <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
         <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
         <p class="text-center mt-6">
@@ -329,7 +341,7 @@ const borderColorClass =
           return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
         }).join('')}
       </ul>
-      <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
+       <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
         <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
         <span class="arrow transition-transform duration-200">▼</span>
       </button>
@@ -364,14 +376,13 @@ const borderColorClass =
   ${modules.slice(2).map(mod => {
     const { score, metrics = [], failed = [] } = mod.result;
     const cardGrade = getGrade(score);
-const borderColorClass = 
-  score >= 85 ? 'border-green-600 dark:border-green-400' :
-  score >= 70 ? 'border-green-500 dark:border-green-400' :
-  score >= 50 ? 'border-orange-500 dark:border-orange-400' :
+const borderColorClass =
+  score >= 80 ? 'border-green-600 dark:border-green-400' :
+  score >= 40 ? 'border-orange-500 dark:border-orange-400' :
   'border-red-600 dark:border-red-500';
-    const arcColor = score >= 85 ? '#22c55e' :
-                     score >= 70 ? '#10b981' :
-                     score >= 50 ? '#f59e0b' : '#ef4444';
+    const arcColor = score >= 80 ? '#22c55e' :
+                     score >= 40 ? '#f59e0b' :
+                     '#ef4444';
     return `
     <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[540px]">
       <div class="flex justify-center mb-6">
@@ -399,7 +410,7 @@ const borderColorClass =
         <span>More Details</span>
         <span class="details-arrow transition-transform duration-200">▼</span>
       </button>
-		<div class="details-panel mt-3 pt-4 pb-10 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
+<div class="details-panel mt-3 pt-4 pb-10 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
         <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
         <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
         <p class="text-center mt-6">
@@ -541,7 +552,6 @@ const borderColorClass =
 </div>
       `;
 
-
       // Radar chart
       setTimeout(() => {
         const canvas = document.getElementById('health-radar');
@@ -549,6 +559,16 @@ const borderColorClass =
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
         if (window.myRadarChart) window.myRadarChart.destroy();
+
+        // Dynamic color per module based on new 3-grade system
+        const getModuleColor = (score) => {
+          if (score >= 80) return '#22c55e';   // green Excellent
+          if (score >= 40) return '#f59e0b';   // orange Average
+          return '#ef4444';                    // red Needs Work
+        };
+
+        const radarColors = modules.map(m => getModuleColor(m.result.score));
+
         window.myRadarChart = new Chart(ctx, {
           type: 'radar',
           data: {
@@ -559,10 +579,10 @@ const borderColorClass =
               backgroundColor: 'rgba(251, 146, 60, 0.18)',
               borderColor: '#fb923c',
               borderWidth: 3,
-              pointBackgroundColor: '#ffffff',
-              pointBorderColor: '#fb923c',
-              pointRadius: 5,
-              pointHoverRadius: 8
+              pointBackgroundColor: radarColors,
+              pointBorderColor: '#ffffff',
+              pointRadius: 6,
+              pointHoverRadius: 9
             }]
           },
           options: {
@@ -572,7 +592,16 @@ const borderColorClass =
               r: {
                 beginAtZero: true,
                 max: 100,
-                ticks: { stepSize: 20, color: '#9ca3af', backdropColor: 'transparent' },
+                ticks: { 
+                  stepSize: 20, 
+                  color: '#9ca3af', 
+                  backdropColor: 'transparent',
+                  callback: function(value) {
+                    if (value >= 80) return value + ' Excellent';
+                    if (value >= 40) return value + ' Average';
+                    return value + ' Needs Work';
+                  }
+                },
                 grid: { color: 'rgba(156,163,175,0.4)' },
                 angleLines: { color: 'rgba(156,163,175,0.4)' },
                 pointLabels: { color: '#9ca3af', font: { size: 14, weight: '600' } }

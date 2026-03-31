@@ -10,33 +10,37 @@ export function initShareReport(resultsContainer) {
     const baseUrl = window.location.origin + window.location.pathname;
     const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}`;
 
-    // Get the tested page title directly from the visible element in the score card
-let pageTitle = 'this page';
+    // Get the tested page title — prioritised from the big readiness score card
+    let pageTitle = 'this page';
 
-// Primary: Use the exact <p> element inside the big readiness score card (most reliable selector)
-const scoreCardTitle = document.querySelector(
-  '.bg-white.dark\\:bg-gray-900.rounded-3xl.shadow-2xl.p-8.md\\:p-12.w-full.max-w-lg.border-4 p.mt-6.text-center.text-base.md\\:text-lg.text-gray-700.dark\\:text-gray-300.px-4.leading-relaxed.break-words'
-);
-if (scoreCardTitle) {
-  pageTitle = scoreCardTitle.textContent.trim();
-}
+    // Primary source: the exact title paragraph we just fixed in script-v1.0.js
+    const scoreCardTitle = document.querySelector(
+      '.bg-white.dark\\:bg-gray-900.rounded-3xl.shadow-2xl.p-8.md\\:p-12.w-full.max-w-lg.border-4 p.mt-6.text-center.text-base.md\\:text-lg.text-gray-700.dark\\:text-gray-300.px-4.leading-relaxed.break-words'
+    );
+    if (scoreCardTitle) {
+      pageTitle = scoreCardTitle.textContent.trim();
+    }
 
-// Fallback 1: Try any similar title paragraph inside #results
-if (pageTitle === 'this page') {
-  pageTitle = document.querySelector('#results p.mt-6.text-center.text-base.md\\:text-lg')?.textContent.trim() || 'this page';
-}
+    // Fallback 1: Any title paragraph inside results (safer than before)
+    if (pageTitle === 'this page' || pageTitle.length < 5) {
+      pageTitle = document.querySelector('#results p.mt-6.text-center.text-base.md\\:text-lg')?.textContent.trim() || 'this page';
+    }
 
-// Fallback 2: Last resort — document title (but clean it)
-if (pageTitle === 'this page' || pageTitle.includes('Traffic Torch')) {
-  pageTitle = document.title.replace(/Semantic Entity Extractor and Audit Tool \| Traffic Torch/gi, '').trim() || 'this page';
-}
+    // Fallback 2: Use the URL the user actually tested (cleaned)
+    if (pageTitle === 'this page' || pageTitle.includes('Traffic Torch') || pageTitle.length < 8) {
+      const inputUrl = document.getElementById('url-input')?.value.trim() || '';
+      if (inputUrl) {
+        // Extract domain or keep full URL if short
+        pageTitle = inputUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
+      }
+    }
 
-// Final cleanup: remove any remaining tool branding or pipe symbols
-pageTitle = pageTitle
-  .replace(/Semantic Entity Extractor and Audit Tool \| Traffic Torch/gi, '')
-  .replace(/Traffic Torch/gi, '')
-  .replace(/[\|\-–_]+/g, '')
-  .trim() || 'this page';
+    // Final cleanup — remove any possible tool branding
+    pageTitle = pageTitle
+      .replace(/Semantic Entity Extractor and Audit Tool \| Traffic Torch/gi, '')
+      .replace(/Traffic Torch/gi, '')
+      .replace(/[\|\-–_]+/g, ' ')
+      .trim() || 'this page';
 
     const shareText = `Check out ${pageTitle} on Traffic Torch SEO Entity Tool ${shareUrl}`;
 

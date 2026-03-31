@@ -1,4 +1,4 @@
-// seo-entity-extractor--tool/submit-feedback-v1.js
+// seo-entity-extractor-tool/submit-feedback-v1.js
 export function initSubmitFeedback(resultsContainer) {
   const feedbackBtn = resultsContainer.querySelector('#feedback-btn');
   const formContainer = resultsContainer.querySelector('#feedback-form-container');

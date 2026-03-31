@@ -58,19 +58,18 @@ export function analyzeCoverage(extracted, cleanedText = '') {
 
   // ── Scoring logic ─────────────────────────────────────────────
   let score = 0;
-
   if (entityCount === 0) {
     score = 5;
   } else if (entityCount < (isShortPage ? 5 : 10)) {
     score = Math.min(45, entityCount * (isShortPage ? 9 : 4.8));
   } else {
-    // Base score buckets
-    if (entityCount >= (isShortPage ? 14 : 35))      score += 48;
+    // Base score buckets — simplified for 3-grade alignment
+    if (entityCount >= (isShortPage ? 14 : 35)) score += 48;
     else if (entityCount >= (isShortPage ? 10 : 24)) score += 38;
-    else if (entityCount >= (isShortPage ? 6 : 15))  score += 28;
-    else                                             score += 16;
+    else if (entityCount >= (isShortPage ? 6 : 15)) score += 28;
+    else score += 16;
 
-    // Density component (stronger reward in good range)
+    // Density component
     const densityBonus = entityCount >= (isShortPage ? 4 : 7)
       ? Math.min(28, Math.log1p(density * 15) * 10)
       : Math.min(12, density * 8);
@@ -79,80 +78,67 @@ export function analyzeCoverage(extracted, cleanedText = '') {
     // Diversity component
     let diversityBonus = Math.min(32, weightedDiversity * 4.2);
     if (typeCounts.LOCATION >= 3 && typeCounts.ORGANIZATION >= 1) {
-      diversityBonus += 12; // local business boost
+      diversityBonus += 12;
     }
     if (typeCounts.CONCEPT >= 4 && diversity >= 5) {
       diversityBonus += 8;
     }
     score += diversityBonus;
 
-    // Small penalty for very low diversity on longer content
+    // Small penalty for very low diversity
     if (diversity <= (isShortPage ? 2 : 4) && entityCount >= (isShortPage ? 7 : 12)) {
       score -= 14;
     }
   }
-
   score = Math.max(5, Math.min(100, Math.round(score)));
 
-  // ── Metrics for display ───────────────────────────────────────
+  // ── Metrics for display — updated to 3-grade thresholds ───────
   const metrics = [
-    { text: `Total entities: ${entityCount}`,                              grade: entityCount >= (isShortPage ? 9 : 14) ? 'good' : entityCount >= (isShortPage ? 5 : 9) ? 'warning' : 'bad' },
-    { text: `Approx. word count: ${wordCount.toLocaleString()}`,          grade: wordCount >= 900 ? 'good' : wordCount >= 450 ? 'warning' : 'bad' },
-    { text: `Entity density: ${density.toFixed(2)}%`,                      grade: densityGrade },
-    { text: `Type diversity: ${diversity} types`,                          grade: diversity >= (isShortPage ? 4 : 6) ? 'good' : diversity >= (isShortPage ? 3 : 4) ? 'warning' : 'bad' },
-    { text: `Weighted diversity score: ${weightedDiversity.toFixed(1)}`,  grade: weightedDiversity >= 16 ? 'good' : weightedDiversity >= 9 ? 'warning' : 'bad' }
+    { text: `Total entities: ${entityCount}`, grade: entityCount >= (isShortPage ? 12 : 25) ? 'good' : entityCount >= (isShortPage ? 6 : 12) ? 'warning' : 'bad' },
+    { text: `Approx. word count: ${wordCount.toLocaleString()}`, grade: wordCount >= 900 ? 'good' : wordCount >= 450 ? 'warning' : 'bad' },
+    { text: `Entity density: ${density.toFixed(2)}%`, grade: densityGrade },
+    { text: `Type diversity: ${diversity} types`, grade: diversity >= (isShortPage ? 5 : 7) ? 'good' : diversity >= (isShortPage ? 3 : 5) ? 'warning' : 'bad' },
+    { text: `Weighted diversity score: ${weightedDiversity.toFixed(1)}`, grade: weightedDiversity >= 18 ? 'good' : weightedDiversity >= 10 ? 'warning' : 'bad' }
   ];
 
-  // ── Failed items + realistic, actionable fix suggestions ──────
-const failed = [];
+  // ── Failed items — kept realistic & actionable (no new items) ──
+  const failed = [];
+  if (entityCount < (isShortPage ? 6 : 11)) {
+    failed.push({
+      text: "Entity count is quite low. Add more relevant named entities (brands, people, products, locations, concepts) naturally — especially in headings, first paragraphs and image alt text.",
+      grade: 'bad'
+    });
+  }
+  if (density < 0.45 && !isShortPage && entityCount > 0) {
+    failed.push({
+      text: "Entity density is rather low for a normal-length page. Weave 4–8 more related entities into the body copy, subheadings and lists without forcing it.",
+      grade: 'bad'
+    });
+  }
+  if (density > 7.5 && !isShortPage) {
+    failed.push({
+      text: "Entity density is unusually high — possible keyword stuffing signal. Reduce repetition of the same few entities and spread supporting entities more naturally.",
+      grade: 'warning'
+    });
+  }
+  if (diversity < (isShortPage ? 3 : 5)) {
+    failed.push({
+      text: `Low type diversity (${diversity} different types). Try to include at least one more type — for example add CONCEPTS if mostly ORGANIZATION/PERSON, or LOCATION/PRODUCT if missing.`,
+      grade: 'bad'
+    });
+  }
+  if (weightedDiversity < 8 && entityCount >= 8) {
+    failed.push({
+      text: "Weighted topical diversity is weak. Strengthen with more semantically rich entities (CONCEPT, ORGANIZATION, PRODUCT usually give highest weight).",
+      grade: 'bad'
+    });
+  }
+  if (typeCounts.LOCATION >= 1 && typeCounts.ORGANIZATION === 0 && entityCount >= 6) {
+    failed.push({
+      text: "You mention location(s) but no clear ORGANIZATION/brand. Adding your business name consistently (and preferably schema) would significantly improve local signals.",
+      grade: 'warning'
+    });
+  }
 
-// Low entity count (already there)
-if (entityCount < (isShortPage ? 6 : 11)) {
-  failed.push({
-    text: "Entity count is quite low. Add more relevant named entities (brands, people, products, locations, concepts) naturally — especially in headings, first paragraphs and image alt text.",
-    grade: 'bad'
-  });
-}
-
-// Low density on normal pages
-if (density < 0.45 && !isShortPage && entityCount > 0) {
-  failed.push({
-    text: "Entity density is rather low for a normal-length page. Weave 4–8 more related entities into the body copy, subheadings and lists without forcing it.",
-    grade: 'bad'
-  });
-}
-
-// High density warning (stuffed)
-if (density > 7.5 && !isShortPage) {
-  failed.push({
-    text: "Entity density is unusually high — possible keyword stuffing signal. Reduce repetition of the same few entities and spread supporting entities more naturally.",
-    grade: 'warning'
-  });
-}
-
-// Low type diversity
-if (diversity < (isShortPage ? 3 : 5)) {
-  failed.push({
-    text: `Low type diversity (${diversity} different types). Try to include at least one more type — for example add CONCEPTS if mostly ORGANIZATION/PERSON, or LOCATION/PRODUCT if missing.`,
-    grade: 'bad'
-  });
-}
-
-// Low weighted diversity
-if (weightedDiversity < 8 && entityCount >= 8) {
-  failed.push({
-    text: "Weighted topical diversity is weak. Strengthen with more semantically rich entities (CONCEPT, ORGANIZATION, PRODUCT usually give highest weight).",
-    grade: 'bad'
-  });
-}
-
-// Local business pattern missing org
-if (typeCounts.LOCATION >= 1 && typeCounts.ORGANIZATION === 0 && entityCount >= 6) {
-  failed.push({
-    text: "You mention location(s) but no clear ORGANIZATION/brand. Adding your business name consistently (and preferably schema) would significantly improve local signals.",
-    grade: 'warning'
-  });
-}
-
-return { score, metrics, failed };
+  return { score, metrics, failed };
 }
