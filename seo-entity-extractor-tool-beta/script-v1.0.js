@@ -235,16 +235,28 @@ document.addEventListener('DOMContentLoaded', () => {
         return `<p class="mt-8 text-4xl md:text-5xl font-bold text-center ${g.color} drop-shadow-lg">${g.emoji} ${g.text}</p>`;
       })()}
       ${(() => {
-        const pageTitle = data?.title || urlInput?.value.trim() || 'Analyzed Page';
+        // Debugged version - prioritises backend data.title (the actual tested page <title>)
+        let pageTitle = 'Analyzed Page';
+
+        if (data && data.title && typeof data.title === 'string' && data.title.trim() !== '') {
+          pageTitle = data.title.trim();                    // ← This is the real tested page title
+        } else if (urlInput && urlInput.value && urlInput.value.trim() !== '') {
+          pageTitle = urlInput.value.trim();                // fallback to user-entered URL
+        }
+
+        // Clean and truncate
         const displayTitle = pageTitle.length > 80 
           ? pageTitle.substring(0, 77) + '...' 
           : pageTitle;
+
         return `
           <p class="mt-6 text-center text-base md:text-lg text-gray-700 dark:text-gray-300 px-4 leading-relaxed break-words">
             ${displayTitle}
           </p>
         `;
       })()}
+      // Set data attribute for PDF print cover
+      document.body.setAttribute('data-page-title', displayTitle);
       <p class="mt-6 text-center text-lg text-gray-600 dark:text-gray-300 px-4 leading-relaxed">
         ${readiness.metrics[0].text.split(' – ')[1] || 'Semantic foundation analysis complete'}
       </p>
