@@ -236,10 +236,12 @@ document.addEventListener('DOMContentLoaded', () => {
       })()}
       ${(() => {
         const pageTitle = data?.title || urlInput?.value.trim() || 'Analyzed Page';
-        const truncated = pageTitle.length > 80 ? pageTitle.substring(0, 77) + '...' : pageTitle;
+        const displayTitle = pageTitle.length > 80 
+          ? pageTitle.substring(0, 77) + '...' 
+          : pageTitle;
         return `
           <p class="mt-6 text-center text-base md:text-lg text-gray-700 dark:text-gray-300 px-4 leading-relaxed break-words">
-            ${truncated}
+            ${displayTitle}
           </p>
         `;
       })()}
