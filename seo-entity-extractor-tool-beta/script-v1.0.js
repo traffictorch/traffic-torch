@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     results.innerHTML = `
       <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 min-h-[60vh]">
-        <div class="relative w-28 h-28 mb-10">
+        <div class="relative w-20 h-20 mb-10">
           <svg class="animate-spin" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" stroke-opacity="0.25"/>
             <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10"
@@ -545,6 +545,16 @@ const borderColorClass =
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
         if (window.myRadarChart) window.myRadarChart.destroy();
+
+        // Dynamic color per module based on new 3-grade system
+        const getModuleColor = (score) => {
+          if (score >= 80) return '#22c55e';   // green Excellent
+          if (score >= 40) return '#f59e0b';   // orange Average
+          return '#ef4444';                    // red Needs Work
+        };
+
+        const radarColors = modules.map(m => getModuleColor(m.result.score));
+
         window.myRadarChart = new Chart(ctx, {
           type: 'radar',
           data: {
@@ -555,10 +565,10 @@ const borderColorClass =
               backgroundColor: 'rgba(251, 146, 60, 0.18)',
               borderColor: '#fb923c',
               borderWidth: 3,
-              pointBackgroundColor: '#ffffff',
-              pointBorderColor: '#fb923c',
-              pointRadius: 5,
-              pointHoverRadius: 8
+              pointBackgroundColor: radarColors,
+              pointBorderColor: '#ffffff',
+              pointRadius: 6,
+              pointHoverRadius: 9
             }]
           },
           options: {
