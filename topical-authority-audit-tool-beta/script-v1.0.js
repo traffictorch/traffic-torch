@@ -36,10 +36,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const urlInput = document.getElementById('url-input');
   const codeInput = document.getElementById('code-input');
 
+  // Single rate limit check per analysis - prevents double counting
+  let hasCheckedLimit = false;
+
   if (urlAnalyzeBtn) {
     urlAnalyzeBtn.addEventListener('click', async () => {
+      if (hasCheckedLimit) return;   // safety
+      hasCheckedLimit = true;
+
       const canProceed = await canRunTool('limit-audit-id');
-      if (!canProceed) return;
+      if (!canProceed) {
+        hasCheckedLimit = false;
+        return;
+      }
 
       let inputValue = urlInput?.value.trim();
       if (!inputValue && sharedDecodedUrl) {
@@ -48,26 +57,36 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (!inputValue) {
         alert('Please enter a URL');
+        hasCheckedLimit = false;
         return;
       }
 
       const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
       runAnalysis({ url, inputType: 'url', rawCode: null });
+      hasCheckedLimit = false;   // reset for next use
     });
   }
 
   if (codeAnalyzeBtn) {
     codeAnalyzeBtn.addEventListener('click', async () => {
+      if (hasCheckedLimit) return;
+      hasCheckedLimit = true;
+
       const canProceed = await canRunTool('limit-audit-id');
-      if (!canProceed) return;
+      if (!canProceed) {
+        hasCheckedLimit = false;
+        return;
+      }
 
       const rawCode = codeInput?.value.trim();
       if (!rawCode) {
         alert('Please paste HTML code');
+        hasCheckedLimit = false;
         return;
       }
 
       runAnalysis({ url: null, inputType: 'code', rawCode });
+      hasCheckedLimit = false;
     });
   }
 
