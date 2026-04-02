@@ -6,7 +6,7 @@ import { initSubmitFeedback } from './submit-feedback-v1.js';
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
-const ANALYZE_ENDPOINT = 'https://topical-authority-ai-worker.traffictorch.workers.dev/';
+const ANALYZE_ENDPOINT = 'https://topical-authority-ai-code-worker.traffictorch.workers.dev/';
 
 function getGrade(score) {
   if (score >= 70) return { text: 'Good', emoji: '✅', color: 'text-green-600 dark:text-green-400' };
