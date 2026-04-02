@@ -123,20 +123,23 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(`Invalid response from server (not JSON): ${parseErr.message}`);
       }
 
+      // IMPORTANT FIX: Use the real data from the server, never override with fallback
+      if (!data || typeof data !== 'object') {
+        throw new Error('Empty or invalid response from analysis server');
+      }
+
       loading.classList.add('hidden');
       results.classList.remove('hidden');
 
       const {
-        overallScore = 0,
+        overallScore = 20,
         pageTitle = '',
         mainTopic = 'Your Main Topic',
-        coveragePercent = 0,
+        coveragePercent = 25,
         clusters = [],
-        missingSubtopics = [],
-        weakContent = [],
         suggestions = [],
         predictedRankLift = ''
-      } = data || {};
+      } = data;
 
       const displayTitle = pageTitle?.trim()
         ? pageTitle.trim()
@@ -178,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ${predictedRankLift ? `<p class="mt-4 text-center text-xl text-gray-700 dark:text-gray-300">Predicted lift: ${predictedRankLift}</p>` : ''}
             </div>
           </div>
-          <!-- Detected Topics & Subtopics + Suggested Subtopics + Educational summary (unchanged from your original) -->
+          <!-- Detected Topics & Subtopics -->
           <div class="space-y-12">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-900 dark:text-gray-100">Detected Topics & Subtopics</h2>
             <p class="text-center text-lg mb-12 text-gray-800 dark:text-gray-200">
@@ -221,7 +224,7 @@ ${cluster.subtopics && cluster.subtopics.length > 0
   : '<p class="text-center col-span-full text-xl text-gray-700 dark:text-gray-300 italic py-12">Limited topics detected – site may be product-heavy or thin. Consider adding educational supporting pages.</p>'
 }
             </div>
-            <!-- Suggested Subtopics (same as original) -->
+            <!-- Suggested Subtopics -->
             <div class="mt-12">
               <h3 class="text-2xl md:text-3xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">Suggested Subtopics to Strengthen Authority</h3>
               <p class="text-center text-lg mb-10 text-gray-800 dark:text-gray-200">
@@ -253,7 +256,7 @@ ${cluster.subtopics && cluster.subtopics.length > 0
               </p>
             </div>
           </div>
-          <!-- PDF Share Feedback Buttons (unchanged) -->
+          <!-- PDF Share Feedback Buttons -->
           <div class="text-center my-16 px-4">
             <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
               <button id="share-report-btn"
