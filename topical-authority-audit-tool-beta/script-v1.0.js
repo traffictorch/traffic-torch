@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Shared analysis runner
+  // Shared analysis runner — hardened for beta worker debugging
   async function runAnalysis(params) {
     const { url, inputType, rawCode } = params;
     const loading = document.getElementById('loading');
@@ -83,8 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
     results.classList.add('hidden');
 
     const progressText = loading.querySelector('p');
-    if (progressText) progressText.textContent = inputType === 'code' 
-      ? 'Analyzing pasted HTML code...' 
+    if (progressText) progressText.textContent = inputType === 'code'
+      ? 'Analyzing pasted HTML code...'
       : 'Analyzing Topics...';
 
     const heavyTimeout = setTimeout(() => {
@@ -95,14 +95,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 120000);
 
+      console.log('🚀 Fetching from beta worker:', ANALYZE_ENDPOINT, { inputType, url: url ? url.substring(0, 60) + '...' : null });
+
       const res = await fetch(ANALYZE_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          url, 
-          code: rawCode, 
+        body: JSON.stringify({
+          url,
+          code: rawCode,
           deep: true,
-          inputType 
+          inputType
         }),
         signal: controller.signal
       });
@@ -110,9 +112,12 @@ document.addEventListener('DOMContentLoaded', () => {
       clearTimeout(timeoutId);
       clearTimeout(heavyTimeout);
 
+      console.log('✅ Response status:', res.status, res.statusText);
+
       if (!res.ok) {
         let errData = {};
         try { errData = await res.json(); } catch {}
+        console.error('❌ Non-OK response:', errData);
         throw new Error(errData.error || `Server returned ${res.status}`);
       }
 
@@ -120,10 +125,18 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         data = await res.json();
       } catch (parseErr) {
+        console.error('❌ JSON parse failed:', parseErr);
         throw new Error(`Invalid response from server (not JSON): ${parseErr.message}`);
       }
 
-      // IMPORTANT FIX: Use the real data from the server, never override with fallback
+      console.log('📦 Full worker response data:', JSON.stringify(data, null, 2));
+
+      // Handle explicit error from worker
+      if (data && data.error) {
+        console.error('❌ Worker returned error:', data.error);
+        throw new Error(data.error);
+      }
+
       if (!data || typeof data !== 'object') {
         throw new Error('Empty or invalid response from analysis server');
       }
@@ -143,10 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const displayTitle = pageTitle?.trim()
         ? pageTitle.trim()
-        : (url 
-            ? url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '') 
+        : (url
+            ? url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
             : 'Analyzed from Code');
-      
+     
       const displayTitleShort = displayTitle.length > 60
         ? displayTitle.substring(0, 57) + '...'
         : displayTitle;
@@ -352,21 +365,23 @@ ${cluster.subtopics && cluster.subtopics.length > 0
         .replace(/[\|\-–_]+/g, ' ')
         .trim() || 'Analyzed Page';
       document.body.setAttribute('data-print-title', printTitle);
-     
+    
       document.body.setAttribute('data-url', url || 'Code Analysis');
 
       // Initialize share & feedback
       initShareReport();
       initSubmitFeedback();
+
     } catch (err) {
       clearTimeout(heavyTimeout);
       loading.classList.add('hidden');
       results.classList.remove('hidden');
+      console.error('💥 Full error in runAnalysis:', err);
       results.innerHTML = `
         <div class="text-center py-12 px-6">
           <p class="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Audit could not complete</p>
           <p class="text-lg text-gray-700 dark:text-gray-300 mb-6 break-words">
-            ${err.message || 'Unexpected error — check browser console or try again'}
+            ${err.message || 'Unexpected error — check browser console (F12) for full details'}
           </p>
           <button onclick="location.reload()" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl">
             Try Again
@@ -375,7 +390,7 @@ ${cluster.subtopics && cluster.subtopics.length > 0
       `;
     }
   }
-
+  
   // Initial auto-submit if we opened a shared link (URL only)
   if (sharedDecodedUrl) {
     const urlInputEl = document.getElementById('url-input');
