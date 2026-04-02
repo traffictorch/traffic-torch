@@ -6,7 +6,7 @@ import { initSubmitFeedback } from './submit-feedback-v1.js';
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
-const ANALYZE_ENDPOINT = 'https://topical-authority-ai-worker.traffictorch.workers.dev/';
+const ANALYZE_ENDPOINT = 'https://topical-authority-ai-code-worker.traffictorch.workers.dev/';
 
 function getGrade(score) {
   if (score >= 70) return { text: 'Good', emoji: '✅', color: 'text-green-600 dark:text-green-400' };
@@ -31,33 +31,89 @@ document.addEventListener('DOMContentLoaded', () => {
     sharedDecodedUrl = decodeURIComponent(sharedUrl);
   }
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const canProceed = await canRunTool('limit-audit-id');
-    if (!canProceed) return;
+  const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
+  const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
+  const urlInput = document.getElementById('url-input');
+  const codeInput = document.getElementById('code-input');
 
-    const urlInput = document.getElementById('url-input');
-    let inputValue = urlInput?.value.trim();
+  // Single rate limit check per analysis - prevents double counting
+  let hasCheckedLimit = false;
 
-    // If we have a shared URL and input is empty, use the shared one
-    if (!inputValue && sharedDecodedUrl) {
-      inputValue = sharedDecodedUrl;
-      urlInput.value = sharedDecodedUrl;
-    }
+  if (urlAnalyzeBtn) {
+    urlAnalyzeBtn.addEventListener('click', async () => {
+      if (hasCheckedLimit) return;
+      hasCheckedLimit = true;
 
-    if (!inputValue) {
-      alert('Please enter a URL');
-      return;
-    }
+      const canProceed = await canRunTool('limit-audit-id');
+      if (!canProceed) {
+        hasCheckedLimit = false;
+        return;
+      }
 
-    const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
+      let inputValue = urlInput?.value.trim();
+      if (!inputValue && sharedDecodedUrl) {
+        inputValue = sharedDecodedUrl;
+        if (urlInput) urlInput.value = sharedDecodedUrl;
+      }
+      if (!inputValue) {
+        alert('Please enter a URL');
+        hasCheckedLimit = false;
+        return;
+      }
+
+      const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
+
+      // Show URL progress only
+      document.getElementById('url-loading').classList.remove('hidden');
+      document.getElementById('code-loading').classList.add('hidden');
+
+      runAnalysis({ url, inputType: 'url', rawCode: null });
+      hasCheckedLimit = false;
+    });
+  }
+
+  if (codeAnalyzeBtn) {
+    codeAnalyzeBtn.addEventListener('click', async () => {
+      if (hasCheckedLimit) return;
+      hasCheckedLimit = true;
+
+      const canProceed = await canRunTool('limit-audit-id');
+      if (!canProceed) {
+        hasCheckedLimit = false;
+        return;
+      }
+
+      const rawCode = codeInput?.value.trim();
+      if (!rawCode) {
+        alert('Please paste HTML code');
+        hasCheckedLimit = false;
+        return;
+      }
+
+      // Show Code progress only
+      document.getElementById('code-loading').classList.remove('hidden');
+      document.getElementById('url-loading').classList.add('hidden');
+
+      runAnalysis({ url: null, inputType: 'code', rawCode });
+      hasCheckedLimit = false;
+    });
+  }
+
+  // Shared analysis runner — hardened for beta worker debugging
+  async function runAnalysis(params) {
+    const { url, inputType, rawCode } = params;
+    const loading = document.getElementById('loading');
+    const results = document.getElementById('results');
+
+    if (!loading || !results) return;
 
     loading.classList.remove('hidden');
     results.classList.add('hidden');
 
     const progressText = loading.querySelector('p');
-    if (progressText) progressText.textContent = 'Analyzing Topics...';
+    if (progressText) progressText.textContent = inputType === 'code'
+      ? 'Analyzing pasted HTML code...'
+      : 'Analyzing Topics...';
 
     const heavyTimeout = setTimeout(() => {
       if (progressText) progressText.textContent = 'Still processing — may take longer for large sites...';
@@ -67,19 +123,29 @@ document.addEventListener('DOMContentLoaded', () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 120000);
 
+      console.log('🚀 Fetching from beta worker:', ANALYZE_ENDPOINT, { inputType, url: url ? url.substring(0, 60) + '...' : null });
+
       const res = await fetch(ANALYZE_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, deep: true }),
+        body: JSON.stringify({
+          url,
+          code: rawCode,
+          deep: true,
+          inputType
+        }),
         signal: controller.signal
       });
 
       clearTimeout(timeoutId);
       clearTimeout(heavyTimeout);
 
+      console.log('✅ Response status:', res.status, res.statusText);
+
       if (!res.ok) {
         let errData = {};
         try { errData = await res.json(); } catch {}
+        console.error('❌ Non-OK response:', errData);
         throw new Error(errData.error || `Server returned ${res.status}`);
       }
 
@@ -87,31 +153,67 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         data = await res.json();
       } catch (parseErr) {
+        console.error('❌ JSON parse failed:', parseErr);
         throw new Error(`Invalid response from server (not JSON): ${parseErr.message}`);
+      }
+
+      console.log('📦 Full worker response data:', JSON.stringify(data, null, 2));
+
+      // Handle explicit error from worker
+      if (data && data.error) {
+        console.error('❌ Worker returned error:', data.error);
+        throw new Error(data.error);
+      }
+
+      if (!data || typeof data !== 'object') {
+        throw new Error('Empty or invalid response from analysis server');
+      }
+
+      // Hide the correct spinner depending on which analysis was run
+      if (inputType === 'code') {
+        const codeLoading = document.getElementById('code-loading');
+        if (codeLoading) codeLoading.classList.add('hidden');
+      } else {
+        const urlLoading = document.getElementById('url-loading');
+        if (urlLoading) urlLoading.classList.add('hidden');
       }
 
       loading.classList.add('hidden');
       results.classList.remove('hidden');
 
+      // Improved auto-scroll to results (accounts for taller dual-input form)
+      setTimeout(() => {
+        results.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+
+        // Small extra push so results sit nicely below the form
+        const offset = 100;
+        setTimeout(() => {
+          window.scrollBy({
+            top: -offset,
+            behavior: 'smooth'
+          });
+        }, 300);
+      }, 150);
+
       const {
-        overallScore = 0,
+        overallScore = 20,
         pageTitle = '',
         mainTopic = 'Your Main Topic',
-        coveragePercent = 0,
+        coveragePercent = 25,
         clusters = [],
-        missingSubtopics = [],
-        weakContent = [],
         suggestions = [],
         predictedRankLift = ''
-      } = data || {};
+      } = data;
 
       const displayTitle = pageTitle?.trim()
         ? pageTitle.trim()
-        : (inputValue
-            .replace(/^https?:\/\/(www\.)?/, '')
-            .replace(/\/$/, '')
-            || 'Analyzed Page');
-
+        : (url
+            ? url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
+            : 'Analyzed from Code');
+     
       const displayTitleShort = displayTitle.length > 60
         ? displayTitle.substring(0, 57) + '...'
         : displayTitle;
@@ -139,14 +241,13 @@ document.addEventListener('DOMContentLoaded', () => {
                   </div>
                 </div>
               </div>
-				<p class="mt-6 text-xl md:text-2xl font-semibold text-center text-gray-700 dark:text-gray-300 break-words line-clamp-2 score-card-title">
-				  ${displayTitleShort || 'Analyzed Page'}
-				</p>
+              <p class="mt-6 text-xl md:text-2xl font-semibold text-center text-gray-700 dark:text-gray-300 break-words line-clamp-2 score-card-title">
+                ${displayTitleShort || 'Analyzed Page'}
+              </p>
               <p class="mt-4 text-5xl font-bold text-center ${grade.color}">${grade.emoji} ${grade.text}</p>
               ${predictedRankLift ? `<p class="mt-4 text-center text-xl text-gray-700 dark:text-gray-300">Predicted lift: ${predictedRankLift}</p>` : ''}
             </div>
           </div>
-
           <!-- Detected Topics & Subtopics -->
           <div class="space-y-12">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-900 dark:text-gray-100">Detected Topics & Subtopics</h2>
@@ -190,7 +291,6 @@ ${cluster.subtopics && cluster.subtopics.length > 0
   : '<p class="text-center col-span-full text-xl text-gray-700 dark:text-gray-300 italic py-12">Limited topics detected – site may be product-heavy or thin. Consider adding educational supporting pages.</p>'
 }
             </div>
-
             <!-- Suggested Subtopics -->
             <div class="mt-12">
               <h3 class="text-2xl md:text-3xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">Suggested Subtopics to Strengthen Authority</h3>
@@ -215,7 +315,6 @@ ${cluster.subtopics && cluster.subtopics.length > 0
                 </ul>
               </div>
             </div>
-
             <!-- Educational summary -->
             <div class="text-center mt-12 p-6 bg-orange dark:bg-orange-950 rounded-3xl border border-orange-200 dark:border-orange-800">
               <p class="text-lg text-gray-800 dark:text-gray-200">
@@ -224,7 +323,6 @@ ${cluster.subtopics && cluster.subtopics.length > 0
               </p>
             </div>
           </div>
-
           <!-- PDF Share Feedback Buttons -->
           <div class="text-center my-16 px-4">
             <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
@@ -241,9 +339,7 @@ ${cluster.subtopics && cluster.subtopics.length > 0
                Submit Feedback 💬
               </button>
             </div>
-
             <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-
             <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
               <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
                 <div>
@@ -269,7 +365,6 @@ ${cluster.subtopics && cluster.subtopics.length > 0
                 <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
               </form>
             </div>
-
             <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
               <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
                 <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
@@ -312,48 +407,35 @@ ${cluster.subtopics && cluster.subtopics.length > 0
           </div>
         </div>
       `;
-      
-      // Set print-friendly title for cover page
-      const printTitleEl = document.querySelector('#results .mt-6.text-xl.md\\:text-2xl.font-semibold.text-center');
-      let printTitle = printTitleEl 
-        ? printTitleEl.textContent.trim() 
-        : (displayTitleShort || 'Analyzed Page');
 
+      // Set print-friendly title and data-url
+      const printTitleEl = document.querySelector('#results .mt-6.text-xl.md\\:text-2xl.font-semibold.text-center');
+      let printTitle = printTitleEl
+        ? printTitleEl.textContent.trim()
+        : (displayTitleShort || 'Analyzed Page');
       printTitle = printTitle
         .replace(/Topical Authority Audit Tool.*Traffic Torch/gi, '')
         .replace(/Traffic Torch/gi, '')
         .replace(/[\|\-–_]+/g, ' ')
         .trim() || 'Analyzed Page';
-
       document.body.setAttribute('data-print-title', printTitle);
-      
-      // Store the analyzed URL so feedback form shows correct page
-      document.body.setAttribute('data-url', url);
-      
-if (sharedDecodedUrl) {
-  const interval = setInterval(() => {
-    const urlInputAgain = document.getElementById('url-input');
-    if (urlInputAgain && urlInputAgain.value !== sharedDecodedUrl) {
-      urlInputAgain.value = sharedDecodedUrl;
-      clearInterval(interval);
-    }
-  }, 100);
-  setTimeout(() => clearInterval(interval), 5000); // safety timeout
-}
-      
-// Initialize share & feedback after results are rendered
-initShareReport();
-initSubmitFeedback();
+    
+      document.body.setAttribute('data-url', url || 'Code Analysis');
+
+      // Initialize share & feedback
+      initShareReport();
+      initSubmitFeedback();
 
     } catch (err) {
       clearTimeout(heavyTimeout);
       loading.classList.add('hidden');
       results.classList.remove('hidden');
+      console.error('💥 Full error in runAnalysis:', err);
       results.innerHTML = `
         <div class="text-center py-12 px-6">
           <p class="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Audit could not complete</p>
           <p class="text-lg text-gray-700 dark:text-gray-300 mb-6 break-words">
-            ${err.message || 'Unexpected error — check browser console or try a different URL'}
+            ${err.message || 'Unexpected error — check browser console (F12) for full details'}
           </p>
           <button onclick="location.reload()" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl">
             Try Again
@@ -361,14 +443,17 @@ initSubmitFeedback();
         </div>
       `;
     }
-  });
+  }
   
-  // Initial auto-submit if we opened a shared link
+  // Initial auto-submit if we opened a shared link (URL only)
   if (sharedDecodedUrl) {
-    const urlInput = document.getElementById('url-input');
-    if (urlInput) {
-      urlInput.value = sharedDecodedUrl;
-      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    const urlInputEl = document.getElementById('url-input');
+    if (urlInputEl) {
+      urlInputEl.value = sharedDecodedUrl;
+      // Auto trigger URL analysis
+      setTimeout(() => {
+        if (urlAnalyzeBtn) urlAnalyzeBtn.click();
+      }, 300);
     }
   }
 

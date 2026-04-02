@@ -163,7 +163,7 @@
         }
       },
       "datePublished": "2026-03-23T12:45:00+11:00",
-      "dateModified": "2026-03-23T12:45:00+11:00"
+      "dateModified": "2026-04-02T13:48:00+11:00"
     },
     {
       "@type": "Article",
@@ -392,23 +392,69 @@
 		</p>
         </div>
 
-      
-<form id="authority-form" class="max-w-2xl mx-auto mb-20 space-y-4">
-  <div class="flex flex-col md:flex-row gap-4">
-    <input
-      type="text"
-      id="url-input"
-      placeholder="example.com/your-page"
-      aria-label="Enter website URL to analyze"
-      required
-      class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
-    />
-    <button
-      type="submit"
-      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
-    >
-      Analyze ⚜️
-    </button>
+<form id="authority-form" class="max-w-2xl mx-auto mb-20 space-y-8">
+
+  <!-- URL Section -->
+  <div>
+    <div class="flex flex-col md:flex-row gap-4">
+      <input
+        type="text"
+        id="url-input"
+        placeholder="example.com/your-page"
+        aria-label="Enter website URL to analyze"
+        class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+      />
+      <button
+        type="button"
+        id="url-analyze-btn"
+        class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap"
+      >
+        Analyze URL ⚜️
+      </button>
+    </div>
+
+    <!-- Progress for URL analysis -->
+    <div id="url-loading" class="hidden mt-6 flex flex-col items-center justify-center py-8">
+      <div class="w-12 h-12 border-4 border-orange-200 dark:border-gray-700 border-t-orange-500 rounded-full animate-spin mb-4"></div>
+      <p id="url-progress-text" class="text-lg text-gray-700 dark:text-gray-300 text-center">Analyzing Topics...</p>
+    </div>
+  </div>
+
+  <!-- Code Analysis Section -->
+  <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+    <!-- Centered gradient title -->
+    <h3 class="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight text-center mb-3">
+      Or use Code Analysis 📄
+    </h3>
+    
+    <!-- Centered description -->
+    <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center max-w-md mx-auto">
+      Paste HTML code of the page 
+    </p>
+
+    <textarea
+      id="code-input"
+      rows="6"
+      placeholder="Paste full HTML code here..."
+      class="w-full px-6 py-4 rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-base font-mono resize-y min-h-[140px]"
+    ></textarea>
+    
+    <!-- Progress for Code analysis -->
+    <div id="code-loading" class="hidden mt-6 flex flex-col items-center justify-center py-8">
+      <div class="w-12 h-12 border-4 border-orange-200 dark:border-gray-700 border-t-orange-500 rounded-full animate-spin mb-4"></div>
+      <p id="code-progress-text" class="text-lg text-gray-700 dark:text-gray-300 text-center">Analyzing pasted HTML code...</p>
+    </div>
+
+    <!-- Centered Analyze Code button -->
+    <div class="mt-6 flex justify-center">
+      <button
+        type="button"
+        id="code-analyze-btn"
+        class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+      >
+        Analyze Code ⚜️
+      </button>
+    </div>
   </div>
 </form>
 
@@ -426,16 +472,6 @@
     </button>
   </div>
 </div>
-
-<!-- Loading indicator - kept your modern clean spinner (dark-mode ready) -->
-<section id="loading" class="hidden text-center mt-0">
-  <div class="inline-flex flex-col items-center gap-4">
-    <div class="w-20 h-20 border-8 border-gray-200 dark:border-gray-700 border-t-orange-500 dark:border-t-orange-400 rounded-full animate-spin"></div>
-    <p class="text-2xl font-medium text-orange-600 dark:text-orange-400">
-      Analyzing Topics...
-    </p>
-  </div>
-</section>
 
 <!-- Empty results container - JavaScript will fill this dynamically (matches your script.js perfectly) -->
 <section id="results" class="hidden space-y-16">
@@ -1007,7 +1043,7 @@
         </p>
          <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2026-03-23</p>
-          <p>Last updated: 2026-03-23</p>
+          <p>Last updated: 2026-04-02</p>
         </div>
       </div>
     </div>
