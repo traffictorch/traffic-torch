@@ -169,24 +169,34 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Empty or invalid response from analysis server');
       }
 
+      // Hide the correct spinner depending on which analysis was run
+      if (inputType === 'code') {
+        const codeLoading = document.getElementById('code-loading');
+        if (codeLoading) codeLoading.classList.add('hidden');
+      } else {
+        const urlLoading = document.getElementById('url-loading');
+        if (urlLoading) urlLoading.classList.add('hidden');
+      }
+
       loading.classList.add('hidden');
       results.classList.remove('hidden');
 
-      // Adjusted scroll for taller form (URL + Code sections)
+      // Improved auto-scroll to results (accounts for taller dual-input form)
       setTimeout(() => {
         results.scrollIntoView({
           behavior: 'smooth',
-          block: 'start'   // changed from default to ensure results are clearly visible
+          block: 'start'
         });
 
-        // Extra offset to push it a bit further down (compensates for new form height)
-        const offset = 80;
-        const currentPosition = window.scrollY;
-        window.scrollTo({
-          top: currentPosition - offset,
-          behavior: 'smooth'
-        });
-      }, 100);
+        // Small extra push so results sit nicely below the form
+        const offset = 100;
+        setTimeout(() => {
+          window.scrollBy({
+            top: -offset,
+            behavior: 'smooth'
+          });
+        }, 300);
+      }, 150);
 
       const {
         overallScore = 20,
