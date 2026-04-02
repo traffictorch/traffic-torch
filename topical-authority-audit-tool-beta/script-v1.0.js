@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (urlAnalyzeBtn) {
     urlAnalyzeBtn.addEventListener('click', async () => {
-      if (hasCheckedLimit) return;   // safety
+      if (hasCheckedLimit) return;
       hasCheckedLimit = true;
 
       const canProceed = await canRunTool('limit-audit-id');
@@ -62,8 +62,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
+
+      // Show URL progress only
+      document.getElementById('url-loading').classList.remove('hidden');
+      document.getElementById('code-loading').classList.add('hidden');
+
       runAnalysis({ url, inputType: 'url', rawCode: null });
-      hasCheckedLimit = false;   // reset for next use
+      hasCheckedLimit = false;
     });
   }
 
@@ -84,6 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
         hasCheckedLimit = false;
         return;
       }
+
+      // Show Code progress only
+      document.getElementById('code-loading').classList.remove('hidden');
+      document.getElementById('url-loading').classList.add('hidden');
 
       runAnalysis({ url: null, inputType: 'code', rawCode });
       hasCheckedLimit = false;
@@ -162,6 +171,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
       loading.classList.add('hidden');
       results.classList.remove('hidden');
+
+      // Adjusted scroll for taller form (URL + Code sections)
+      setTimeout(() => {
+        results.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'   // changed from default to ensure results are clearly visible
+        });
+
+        // Extra offset to push it a bit further down (compensates for new form height)
+        const offset = 80;
+        const currentPosition = window.scrollY;
+        window.scrollTo({
+          top: currentPosition - offset,
+          behavior: 'smooth'
+        });
+      }, 100);
 
       const {
         overallScore = 20,
