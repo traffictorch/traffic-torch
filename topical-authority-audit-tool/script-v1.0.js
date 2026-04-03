@@ -19,17 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const loading = document.getElementById('loading');
   const results = document.getElementById('results');
 
-  // Get elements once - critical for button listeners
   const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
   const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
   const urlInput = document.getElementById('url-input');
   const codeInput = document.getElementById('code-input');
 
-  if (!form || !loading || !results) {
-    return;
-  }
-
-  if (!urlAnalyzeBtn || !codeAnalyzeBtn) {
+  if (!form || !loading || !results || !urlAnalyzeBtn || !codeAnalyzeBtn) {
     return;
   }
 
@@ -53,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const canProceed = await canRunTool('limit-audit-id');
       if (!canProceed) {
         hasCheckedLimit = false;
+        alert('Usage limit reached for today. Please log in or try again tomorrow.');
         return;
       }
 
@@ -87,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const canProceed = await canRunTool('limit-audit-id');
       if (!canProceed) {
         hasCheckedLimit = false;
+        alert('Usage limit reached for today. Please log in or try again tomorrow.');
         return;
       }
 
@@ -106,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Shared analysis runner
+  // Shared analysis runner — hardened for beta worker debugging
   async function runAnalysis(params) {
     const { url, inputType, rawCode } = params;
     const loading = document.getElementById('loading');
@@ -165,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Empty or invalid response from analysis server');
       }
 
-      // Hide the correct spinner
+      // Hide the correct spinner depending on which analysis was run
       if (inputType === 'code') {
         const codeLoading = document.getElementById('code-loading');
         if (codeLoading) codeLoading.classList.add('hidden');
@@ -177,12 +174,13 @@ document.addEventListener('DOMContentLoaded', () => {
       loading.classList.add('hidden');
       results.classList.remove('hidden');
 
-      // Auto-scroll to results
+      // Improved auto-scroll to results (accounts for taller dual-input form)
       setTimeout(() => {
         results.scrollIntoView({
           behavior: 'smooth',
           block: 'start'
         });
+        // Small extra push so results sit nicely below the form
         const offset = 100;
         setTimeout(() => {
           window.scrollBy({
@@ -207,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         : (url
             ? url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
             : 'Analyzed from Code');
-
+    
       const displayTitleShort = displayTitle.length > 60
         ? displayTitle.substring(0, 57) + '...'
         : displayTitle;
@@ -412,8 +410,8 @@ ${cluster.subtopics && cluster.subtopics.length > 0
         .replace(/Traffic Torch/gi, '')
         .replace(/[\|\-–_]+/g, ' ')
         .trim() || 'Analyzed Page';
-
       document.body.setAttribute('data-print-title', printTitle);
+   
       document.body.setAttribute('data-url', url || 'Code Analysis');
 
       // Initialize share & feedback
@@ -437,12 +435,13 @@ ${cluster.subtopics && cluster.subtopics.length > 0
       `;
     }
   }
-
+ 
   // Initial auto-submit if we opened a shared link (URL only)
   if (sharedDecodedUrl) {
     const urlInputEl = document.getElementById('url-input');
     if (urlInputEl) {
       urlInputEl.value = sharedDecodedUrl;
+      // Auto trigger URL analysis
       setTimeout(() => {
         if (urlAnalyzeBtn) urlAnalyzeBtn.click();
       }, 300);
