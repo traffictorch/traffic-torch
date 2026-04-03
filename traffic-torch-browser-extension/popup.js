@@ -1,7 +1,6 @@
 // Tool list - update URLs here if site changes
 const tools = [
   { name: "⚜️ Topical Authority Audit", url: "https://traffictorch.net/topical-authority-audit-tool/" },
-  { name: "📝 Keyword Research Tool", url: "https://traffictorch.net/keyword-research-tool/" },
   { name: "🧬 SEO Entity Extractor", url: "https://traffictorch.net/seo-entity-extractor-tool/" },
   { name: "🔍 AI Search Optimization", url: "https://traffictorch.net/ai-search-optimization-tool/" },
   { name: "🎙️ AI Voice Search Tool", url: "https://traffictorch.net/ai-voice-search-tool/" },
@@ -12,9 +11,10 @@ const tools = [
   { name: "⛔ Quit Risk Tool", url: "https://traffictorch.net/quit-risk-tool/" },
   { name: "⚖️ SEO & UX Tool", url: "https://traffictorch.net/#seo-ux-tool" },
   { name: "⚙️ Schema Generator", url: "https://traffictorch.net/schema-generator/" },
+  { name: "📝 Keyword Research Tool", url: "https://traffictorch.net/keyword-research-tool/" },
   { name: "🗝️ Keyword Tool", url: "https://traffictorch.net/keyword-tool/" },
   { name: "🆚 Keyword VS Tool", url: "https://traffictorch.net/keyword-vs-tool/" },
-  { name: "Help Guides", url: "https://traffictorch.net/ai-ux-seo-help-guides/" }
+  { name: "📋 Help Guides", url: "https://traffictorch.net/ai-ux-seo-help-guides/" }
 ];
 
 document.addEventListener('DOMContentLoaded', async () => {

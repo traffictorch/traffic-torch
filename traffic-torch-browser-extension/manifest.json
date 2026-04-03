@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Traffic Torch Tools",
   "version": "1.0.0",
-  "description": "Quick access to Traffic Torch SEO, GEO, AEO and UX tools. Opens selected tool with current page URL.",
+  "description": "Traffic Torch: Quick toolbar access to SEO, UX, AEO, GEO & AI tools with current page URL pre-filled.",
   "permissions": ["activeTab"],
   "action": {
     "default_popup": "popup.html",
@@ -12,5 +12,14 @@
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "traffictorch@traffictorch.net",
+      "strict_min_version": "109.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
   }
 }
