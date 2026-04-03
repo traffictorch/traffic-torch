@@ -15,10 +15,33 @@ function getGrade(score) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('🚀 Topical Authority script loaded');
+
   const form = document.getElementById('authority-form');
   const loading = document.getElementById('loading');
   const results = document.getElementById('results');
+  const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
+  const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
+  const urlInput = document.getElementById('url-input');
+  const codeInput = document.getElementById('code-input');
+
+  console.log('Elements found:', {
+    form: !!form,
+    loading: !!loading,
+    results: !!results,
+    urlAnalyzeBtn: !!urlAnalyzeBtn,
+    codeAnalyzeBtn: !!codeAnalyzeBtn,
+    urlInput: !!urlInput,
+    codeInput: !!codeInput
+  });
+
   if (!form || !loading || !results) {
+    console.error('❌ Critical elements missing - check HTML IDs');
+    return;
+  }
+
+  if (!urlAnalyzeBtn || !codeAnalyzeBtn) {
+    console.error('❌ Analyze buttons not found in DOM');
     return;
   }
 
