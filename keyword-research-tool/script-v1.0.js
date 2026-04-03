@@ -58,7 +58,7 @@ if (sharedUrl) {
         }
 
         loader.classList.remove('hidden');
-        progressText.textContent = 'Generating AI suggestions...';
+        progressText.textContent = 'Generating Keywords...';
         const tipInterval = setInterval(() => {
             tipIndex = (tipIndex + 1) % tips.length;
             progressTip.textContent = tips[tipIndex];
