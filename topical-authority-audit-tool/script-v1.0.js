@@ -15,51 +15,34 @@ function getGrade(score) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('🚀 Topical Authority script loaded');
-
   const form = document.getElementById('authority-form');
   const loading = document.getElementById('loading');
   const results = document.getElementById('results');
+
+  // Get elements once - critical for button listeners
   const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
   const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
   const urlInput = document.getElementById('url-input');
   const codeInput = document.getElementById('code-input');
 
-  console.log('Elements found:', {
-    form: !!form,
-    loading: !!loading,
-    results: !!results,
-    urlAnalyzeBtn: !!urlAnalyzeBtn,
-    codeAnalyzeBtn: !!codeAnalyzeBtn,
-    urlInput: !!urlInput,
-    codeInput: !!codeInput
-  });
-
   if (!form || !loading || !results) {
-    console.error('❌ Critical elements missing - check HTML IDs');
     return;
   }
 
   if (!urlAnalyzeBtn || !codeAnalyzeBtn) {
-    console.error('❌ Analyze buttons not found in DOM');
     return;
   }
 
   // Auto-fill from shared link
   const urlParams = new URLSearchParams(window.location.search);
   const sharedUrl = urlParams.get('url');
-
   let sharedDecodedUrl = '';
   if (sharedUrl) {
     sharedDecodedUrl = decodeURIComponent(sharedUrl);
   }
 
-  const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
-  const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
-  const urlInput = document.getElementById('url-input');
-  const codeInput = document.getElementById('code-input');
-
   // Single rate limit check per analysis - prevents double counting
+  // Respects anon vs logged-in Pro user limits via canRunTool
   let hasCheckedLimit = false;
 
   if (urlAnalyzeBtn) {
@@ -78,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         inputValue = sharedDecodedUrl;
         if (urlInput) urlInput.value = sharedDecodedUrl;
       }
+
       if (!inputValue) {
         alert('Please enter a URL');
         hasCheckedLimit = false;
@@ -122,12 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Shared analysis runner — hardened for beta worker debugging
+  // Shared analysis runner
   async function runAnalysis(params) {
     const { url, inputType, rawCode } = params;
     const loading = document.getElementById('loading');
     const results = document.getElementById('results');
-
     if (!loading || !results) return;
 
     loading.classList.remove('hidden');
@@ -146,8 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 120000);
 
-      console.log('🚀 Fetching from beta worker:', ANALYZE_ENDPOINT, { inputType, url: url ? url.substring(0, 60) + '...' : null });
-
       const res = await fetch(ANALYZE_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -163,12 +144,9 @@ document.addEventListener('DOMContentLoaded', () => {
       clearTimeout(timeoutId);
       clearTimeout(heavyTimeout);
 
-      console.log('✅ Response status:', res.status, res.statusText);
-
       if (!res.ok) {
         let errData = {};
         try { errData = await res.json(); } catch {}
-        console.error('❌ Non-OK response:', errData);
         throw new Error(errData.error || `Server returned ${res.status}`);
       }
 
@@ -176,15 +154,10 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         data = await res.json();
       } catch (parseErr) {
-        console.error('❌ JSON parse failed:', parseErr);
         throw new Error(`Invalid response from server (not JSON): ${parseErr.message}`);
       }
 
-      console.log('📦 Full worker response data:', JSON.stringify(data, null, 2));
-
-      // Handle explicit error from worker
       if (data && data.error) {
-        console.error('❌ Worker returned error:', data.error);
         throw new Error(data.error);
       }
 
@@ -192,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Empty or invalid response from analysis server');
       }
 
-      // Hide the correct spinner depending on which analysis was run
+      // Hide the correct spinner
       if (inputType === 'code') {
         const codeLoading = document.getElementById('code-loading');
         if (codeLoading) codeLoading.classList.add('hidden');
@@ -204,14 +177,12 @@ document.addEventListener('DOMContentLoaded', () => {
       loading.classList.add('hidden');
       results.classList.remove('hidden');
 
-      // Improved auto-scroll to results (accounts for taller dual-input form)
+      // Auto-scroll to results
       setTimeout(() => {
         results.scrollIntoView({
           behavior: 'smooth',
           block: 'start'
         });
-
-        // Small extra push so results sit nicely below the form
         const offset = 100;
         setTimeout(() => {
           window.scrollBy({
@@ -236,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
         : (url
             ? url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
             : 'Analyzed from Code');
-     
+
       const displayTitleShort = displayTitle.length > 60
         ? displayTitle.substring(0, 57) + '...'
         : displayTitle;
@@ -441,8 +412,8 @@ ${cluster.subtopics && cluster.subtopics.length > 0
         .replace(/Traffic Torch/gi, '')
         .replace(/[\|\-–_]+/g, ' ')
         .trim() || 'Analyzed Page';
+
       document.body.setAttribute('data-print-title', printTitle);
-    
       document.body.setAttribute('data-url', url || 'Code Analysis');
 
       // Initialize share & feedback
@@ -453,7 +424,6 @@ ${cluster.subtopics && cluster.subtopics.length > 0
       clearTimeout(heavyTimeout);
       loading.classList.add('hidden');
       results.classList.remove('hidden');
-      console.error('💥 Full error in runAnalysis:', err);
       results.innerHTML = `
         <div class="text-center py-12 px-6">
           <p class="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Audit could not complete</p>
@@ -467,17 +437,15 @@ ${cluster.subtopics && cluster.subtopics.length > 0
       `;
     }
   }
-  
+
   // Initial auto-submit if we opened a shared link (URL only)
   if (sharedDecodedUrl) {
     const urlInputEl = document.getElementById('url-input');
     if (urlInputEl) {
       urlInputEl.value = sharedDecodedUrl;
-      // Auto trigger URL analysis
       setTimeout(() => {
         if (urlAnalyzeBtn) urlAnalyzeBtn.click();
       }, 300);
     }
   }
-
 });
