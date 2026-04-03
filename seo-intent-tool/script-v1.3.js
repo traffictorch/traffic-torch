@@ -9,7 +9,6 @@ import { analyzeSchema } from './modules/schema.js';
 import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
-import { analyzeAiIntent } from './modules/ai-intent.js';
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -318,14 +317,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const offset = 240;
       const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: targetY, behavior: 'smooth' });
-      
-      // Force AI module to run and show fallback if it fails
-   let aiModuleHTML = '';
-   try {
-     aiModuleHTML = await analyzeAiIntent(cleanedText, url);
-   } catch (err) {
-     aiModuleHTML = `<div class="max-w-5xl mx-auto my-16 px-4"><div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 text-center"><p class="text-red-500">AI Intent module temporarily unavailable</p></div></div>`;
-   }
 
       results.innerHTML = `
 <!-- Overall Score Card (SEO Intent) -->
@@ -382,8 +373,27 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-<!-- AI Detected Search Intents - Full width module -->
-${aiModuleHTML}
+<!-- Intent -->
+<div class="text-center mb-12">
+  <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">
+    Intent: <span class="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">${intent}</span>
+    <span class="text-2xl text-gray-800 dark:text-gray-200">— ${confidence}% match</span>
+  </p>
+  <div class="max-w-3xl mx-auto grid md:grid-cols-3 gap-6 text-left">
+    <div class="p-6 bg-blue-500/10 border-l-4 border-blue-500 rounded-r-xl">
+      <p class="font-bold text-blue-500">What it is</p>
+      <p class="mt-2 text-sm text-gray-800 dark:text-gray-200 leading-relaxed">The core motivation driving a user's search query — whether they're seeking information, researching options, ready to purchase, or looking for a local service. Understanding this ensures your content delivers exactly what searchers expect.</p>
+    </div>
+    <div class="p-6 bg-green-500/10 border-l-4 border-green-500 rounded-r-xl">
+      <p class="font-bold text-green-500">How to satisfy it</p>
+      <p class="mt-2 text-sm text-gray-800 dark:text-gray-200 leading-relaxed">Craft your title, H1, meta description, and body content to directly address the user's specific need. Use matching language, structure (e.g., lists for comparisons, steps for how-tos), and calls-to-action — eliminate fluff, assumptions, or mismatched elements to create a seamless experience.</p>
+    </div>
+    <div class="p-6 bg-orange-500/10 border-l-4 border-orange-500 rounded-r-xl">
+      <p class="font-bold text-orange-500">Why it matters</p>
+      <p class="mt-2 text-sm text-gray-800 dark:text-gray-200 leading-relaxed">Search engines prioritize pages that best align with user intent, as it leads to higher satisfaction, longer engagement, and lower bounces. Mismatched intent results in quick exits, poor signals, and lost rankings — while strong alignment drives traffic and conversions.</p>
+    </div>
+  </div>
+</div>
 
 <!-- E-E-A-T Breakdown with ✅/❌ signals -->
 <div class="grid md:grid-cols-4 gap-6 my-16">
