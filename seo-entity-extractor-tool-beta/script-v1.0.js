@@ -49,7 +49,7 @@ function getModuleExplanation(moduleName) {
   return explanations[moduleName] || { what: 'No explanation available.', why: '' };
 }
 
-// Dual-input runAnalysis with blocked detection
+// Dual-input runAnalysis with blocked detection - complete fixed version
 async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
   const results = document.getElementById('results');
   const loading = document.getElementById('loading');
@@ -57,7 +57,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
   // Hide old spinner completely to prevent double spinner
   if (loading) loading.classList.add('hidden');
 
-  // Show initial heavy progress in results area (kept for consistency with original UX)
+  // Show initial heavy progress
   results.innerHTML = `
     <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 min-h-[60vh]">
       <div class="relative w-20 h-20 mb-10">
@@ -129,6 +129,42 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     progressText.textContent = "Processing response...";
 
     if (!res.ok) {
+      // Treat 404 and other server errors as blocked
+      if (res.status === 404 || res.status >= 400) {
+        if (inputType === 'code') {
+          const codeLoading = document.getElementById('code-loading');
+          if (codeLoading) codeLoading.classList.add('hidden');
+        } else {
+          const urlLoading = document.getElementById('url-loading');
+          if (urlLoading) urlLoading.classList.add('hidden');
+        }
+        loading.classList.add('hidden');
+        results.classList.remove('hidden');
+        results.innerHTML = `
+          <div class="max-w-2xl mx-auto px-6 py-12 text-center">
+            <div class="text-5xl mb-6">🔒</div>
+            <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked or Page Not Found</h2>
+            <p class="text-lg text-gray-700 dark:text-gray-300 mb-8">
+              This page returned 404 or could not be accessed (common with preview links).
+            </p>
+            <div class="bg-orange-50 dark:bg-orange-950 border border-orange-300 dark:border-orange-700 rounded-3xl p-8 text-left max-w-md mx-auto">
+              <p class="font-medium mb-4">Quick fix:</p>
+              <ol class="text-base space-y-3 text-gray-700 dark:text-gray-300 list-decimal list-inside">
+                <li>Right-click on the page → <strong>View Page Source</strong></li>
+                <li>Select all and copy code</li>
+                <li>Paste into the <strong>Code Analysis</strong> box</li>
+              </ol>
+            </div>
+          </div>
+        `;
+        setTimeout(() => {
+          results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const offset = 100;
+          setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
+        }, 150);
+        return;
+      }
+
       let errData = {};
       try { errData = await res.json(); } catch {}
       throw new Error(errData.error || errData.message || `Server error ${res.status} ${res.statusText}`);
@@ -141,10 +177,8 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       throw new Error('Invalid response format from server (not valid JSON)');
     }
 
-    // BLOCKED DETECTION + 404 handling
-    if (data && data.blocked === true || 
-        (res && (res.status === 404 || res.status >= 400))) {
-      // Hide the correct spinner
+    // BLOCKED DETECTION
+    if (data && data.blocked === true || (res && (res.status === 404 || res.status >= 400))) {
       if (inputType === 'code') {
         const codeLoading = document.getElementById('code-loading');
         if (codeLoading) codeLoading.classList.add('hidden');
@@ -172,22 +206,14 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
         </div>
       `;
       setTimeout(() => {
-        results.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
+        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
         const offset = 100;
-        setTimeout(() => {
-          window.scrollBy({
-            top: -offset,
-            behavior: 'smooth'
-          });
-        }, 300);
+        setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
       }, 150);
       return;
     }
 
-    // Hide the correct spinner depending on which analysis was run
+    // Hide the correct spinner
     if (inputType === 'code') {
       const codeLoading = document.getElementById('code-loading');
       if (codeLoading) codeLoading.classList.add('hidden');
@@ -212,33 +238,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       }, 300);
     }, 150);
 
-    // Hide the correct spinner depending on which analysis was run
-    if (inputType === 'code') {
-      const codeLoading = document.getElementById('code-loading');
-      if (codeLoading) codeLoading.classList.add('hidden');
-    } else {
-      const urlLoading = document.getElementById('url-loading');
-      if (urlLoading) urlLoading.classList.add('hidden');
-    }
-    loading.classList.add('hidden');
-
-    // Improved auto-scroll to results (accounts for taller dual-input form)
-    setTimeout(() => {
-      results.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-      // Small extra push so results sit nicely below the form
-      const offset = 100;
-      setTimeout(() => {
-        window.scrollBy({
-          top: -offset,
-          behavior: 'smooth'
-        });
-      }, 300);
-    }, 150);
-
-    // === Original results processing (100% unchanged, no stripping) ===
+    // === Original results processing (100% unchanged) ===
     const extracted = data.extracted || [];
     const coverage = analyzeCoverage(extracted);
     const salience = analyzeSalience(extracted);
@@ -254,8 +254,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       { name: 'Readiness', result: readiness, color: '#3b82f6', desc: 'Overall preparedness for semantic search & ranking' }
     ];
 
-    const overallScore = readiness.score;
-    const grade = getGrade(overallScore);
     const typeCounts = extracted.reduce((acc, e) => {
       const t = e.type || 'OTHER';
       acc[t] = (acc[t] || 0) + 1;
@@ -327,7 +325,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
         `;
       })()}
       <p class="mt-6 text-center text-lg text-gray-600 dark:text-gray-300 px-4 leading-relaxed">
-        ${readiness.metrics[0].text.split(' – ')[1] || 'Semantic foundation analysis complete'}
+        ${readiness.metrics && readiness.metrics[0] ? readiness.metrics[0].text.split(' – ')[1] || 'Semantic foundation analysis complete' : 'Semantic foundation analysis complete'}
       </p>
     </div>
   </div>
@@ -350,229 +348,228 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       <canvas id="health-radar"></canvas>
     </div>
   </div>
- 
-<!-- Coverage + Salience -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-12 items-start">
-  ${modules.slice(0, 2).map(mod => {
-    const { score, metrics = [], failed = [] } = mod.result;
-    const cardGrade = getGrade(score);
-    const borderColorClass = score >= 80 ? 'border-green-600 dark:border-green-400' : score >= 40 ? 'border-orange-500 dark:border-orange-400' : 'border-red-600 dark:border-red-500';
-    const arcColor = score >= 80 ? '#22c55e' : score >= 40 ? '#f59e0b' : '#ef4444';
-    return `
-    <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[520px] md:min-h-[580px]">
-      <div class="flex justify-center mb-6">
-        <div class="relative w-32 h-32 mx-auto">
-          <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-            <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
-            <circle cx="64" cy="64" r="56" stroke="${arcColor}" stroke-width="12" fill="none" stroke-dasharray="${(score / 100) * 352} 352" stroke-linecap="round"/>
-          </svg>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <div class="text-4xl font-black" style="color: ${arcColor};">${score}</div>
-          </div>
-        </div>
-      </div>
-      <p class="text-center text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">${mod.name}</p>
-      ${(() => {
-        const g = getGrade(score);
-        return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
-      })()}
-      <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
-      <button class="details-toggle w-full py-2 px-4 mt-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-lg transition flex justify-between items-center">
-        <span>More Details</span>
-        <span class="details-arrow transition-transform duration-200">▼</span>
-      </button>
-      <div class="details-panel mt-3 pt-4 pb-10 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
-        <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
-        <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
-        <p class="text-center mt-6">
-          <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">How ${mod.name} is tested? →</a>
-        </p>
-      </div>
-      <ul class="text-sm space-y-3 mt-4 mb-4 flex-grow">
-        ${metrics.map(m => {
-          let emoji = '❌', color = 'text-red-600 dark:text-red-400';
-          if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
-          else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-500 dark:text-orange-400'; }
-          return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
-        }).join('')}
-      </ul>
-      <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
-        <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
-        <span class="arrow transition-transform duration-200">▼</span>
-      </button>
-      <div class="fixes-panel mt-5 pt-5 pb-12 border-t border-gray-200 dark:border-gray-700 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
-        ${failed.length > 0 ? `
-          <ul class="space-y-4 text-sm">
-            ${failed.map(f => {
-              let emoji = f.grade === 'bad' ? '❌' : '⚠️';
-              let color = f.grade === 'bad' ? 'text-red-700 dark:text-red-300' : 'text-orange-600 dark:text-orange-400';
-              return `<li class="${color} flex items-start gap-3">${emoji} <span>${f.text}</span></li>`;
-            }).join('')}
-          </ul>
-        ` : `
-          <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
-        `}
-        <p class="text-center mt-6">
-          <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more about ${mod.name}? →</a>
-        </p>
-      </div>
-    </div>
-    `;
-  }).join('')}
-</div>
 
-<!-- Relationships + Practices + Readiness -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-  ${modules.slice(2).map(mod => {
-    const { score, metrics = [], failed = [] } = mod.result;
-    const borderColorClass = score >= 80 ? 'border-green-600 dark:border-green-400' : score >= 40 ? 'border-orange-500 dark:border-orange-400' : 'border-red-600 dark:border-red-500';
-    const arcColor = score >= 80 ? '#22c55e' : score >= 40 ? '#f59e0b' : '#ef4444';
-    return `
-    <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[540px]">
-      <div class="flex justify-center mb-6">
-        <div class="relative w-32 h-32 mx-auto">
-          <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-            <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
-            <circle cx="64" cy="64" r="56" stroke="${arcColor}" stroke-width="12" fill="none" stroke-dasharray="${(score / 100) * 352} 352" stroke-linecap="round"/>
-          </svg>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <div class="text-4xl font-black" style="color: ${arcColor};">${score}</div>
+  <!-- Coverage + Salience -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-12 items-start">
+    ${modules.slice(0, 2).map(mod => {
+      const { score, metrics = [], failed = [] } = mod.result;
+      const borderColorClass = score >= 80 ? 'border-green-600 dark:border-green-400' : score >= 40 ? 'border-orange-500 dark:border-orange-400' : 'border-red-600 dark:border-red-500';
+      const arcColor = score >= 80 ? '#22c55e' : score >= 40 ? '#f59e0b' : '#ef4444';
+      return `
+      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[520px] md:min-h-[580px]">
+        <div class="flex justify-center mb-6">
+          <div class="relative w-32 h-32 mx-auto">
+            <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+              <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
+              <circle cx="64" cy="64" r="56" stroke="${arcColor}" stroke-width="12" fill="none" stroke-dasharray="${(score / 100) * 352} 352" stroke-linecap="round"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="text-4xl font-black" style="color: ${arcColor};">${score}</div>
+            </div>
           </div>
         </div>
-      </div>
-      <p class="text-center text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">${mod.name}</p>
-      ${(() => {
-        const g = getGrade(score);
-        return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
-      })()}
-      <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
-      <button class="details-toggle w-full py-2 px-4 mt-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-lg transition flex justify-between items-center">
-        <span>More Details</span>
-        <span class="details-arrow transition-transform duration-200">▼</span>
-      </button>
-      <div class="details-panel mt-3 pt-4 pb-10 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
-        <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
-        <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
-        <p class="text-center mt-6">
-          <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">How ${mod.name} is tested? →</a>
-        </p>
-      </div>
-      <ul class="text-sm space-y-3 mt-4 mb-4 flex-grow">
-        ${metrics.map(m => {
-          let emoji = '❌', color = 'text-red-600 dark:text-red-400';
-          if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
-          else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-500 dark:text-orange-400'; }
-          return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
-        }).join('')}
-      </ul>
-      <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
-        <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
-        <span class="arrow transition-transform duration-200">▼</span>
-      </button>
-      <div class="fixes-panel mt-5 pt-5 pb-12 border-t border-gray-200 dark:border-gray-700 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
-        ${failed.length > 0 ? `
-          <ul class="space-y-4 text-sm">
-            ${failed.map(f => {
-              let emoji = f.grade === 'bad' ? '❌' : '⚠️';
-              let color = f.grade === 'bad' ? 'text-red-700 dark:text-red-300' : 'text-orange-600 dark:text-orange-400';
-              return `<li class="${color} flex items-start gap-3">${emoji} <span>${f.text}</span></li>`;
-            }).join('')}
-          </ul>
-        ` : `
-          <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
-        `}
-        <p class="text-center mt-6">
-          <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more about ${mod.name}? →</a>
-        </p>
-      </div>
-    </div>
-    `;
-  }).join('')}
-</div>
-
-<!-- PDF Share Feedback Buttons -->
-<div class="text-center my-16 px-4">
-  <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
-    <button id="share-report-btn" class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Share Report ↗️
-    </button>
-    <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);" class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Save Report 📥
-    </button>
-    <button id="feedback-btn" class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-     Submit Feedback 💬
-    </button>
-  </div>
-  <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-  <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
-    <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
-      <div>
-        <label for="share-name" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Name</label>
-        <input id="share-name" type="text" required placeholder="Your name" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-sender-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email (for replies)</label>
-        <input id="share-sender-email" type="email" required placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Recipient Email</label>
-        <input id="share-email" type="email" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-title" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Email Title</label>
-        <input id="share-title" type="text" required placeholder="Traffic Torch SEO Intent Report" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-body" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Message</label>
-        <textarea id="share-body" required rows="5" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-orange-500"></textarea>
-      </div>
-      <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
-    </form>
-  </div>
-  <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
-    <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
-      <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
-        Feedback for SEO Entity Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
-      </p>
-      <form id="feedback-form" class="space-y-6">
-        <div>
-          <label for="feedback-rating" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
-          <div class="flex gap-3 text-3xl justify-center sm:justify-start">
-            <button type="button" data-rating="1" class="hover:scale-125 transition">😞</button>
-            <button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button>
-            <button type="button" data-rating="3" class="hover:scale-125 transition">😐</button>
-            <button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button>
-            <button type="button" data-rating="5" class="hover:scale-125 transition">😍</button>
-          </div>
-          <input type="hidden" id="feedback-rating" name="rating">
-        </div>
-        <div>
-          <label class="flex items-center gap-2 justify-center sm:justify-start">
-            <input type="checkbox" id="reply-requested" class="w-5 h-5">
-            <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span>
-          </label>
-        </div>
-        <div id="email-group" class="hidden">
-          <label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label>
-          <input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500">
-        </div>
-        <div>
-          <label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label>
-          <textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center sm:text-left">
-            <span id="char-count">0</span>/1000 characters
+        <p class="text-center text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">${mod.name}</p>
+        ${(() => {
+          const g = getGrade(score);
+          return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
+        })()}
+        <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
+        <button class="details-toggle w-full py-2 px-4 mt-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-lg transition flex justify-between items-center">
+          <span>More Details</span>
+          <span class="details-arrow transition-transform duration-200">▼</span>
+        </button>
+        <div class="details-panel mt-3 pt-4 pb-10 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
+          <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
+          <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
+          <p class="text-center mt-6">
+            <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">How ${mod.name} is tested? →</a>
           </p>
         </div>
-        <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
+        <ul class="text-sm space-y-3 mt-4 mb-4 flex-grow">
+          ${metrics.map(m => {
+            let emoji = '❌', color = 'text-red-600 dark:text-red-400';
+            if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
+            else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-500 dark:text-orange-400'; }
+            return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
+          }).join('')}
+        </ul>
+        <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
+          <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
+          <span class="arrow transition-transform duration-200">▼</span>
+        </button>
+        <div class="fixes-panel mt-5 pt-5 pb-12 border-t border-gray-200 dark:border-gray-700 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
+          ${failed.length > 0 ? `
+            <ul class="space-y-4 text-sm">
+              ${failed.map(f => {
+                let emoji = f.grade === 'bad' ? '❌' : '⚠️';
+                let color = f.grade === 'bad' ? 'text-red-700 dark:text-red-300' : 'text-orange-600 dark:text-orange-400';
+                return `<li class="${color} flex items-start gap-3">${emoji} <span>${f.text}</span></li>`;
+              }).join('')}
+            </ul>
+          ` : `
+            <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
+          `}
+          <p class="text-center mt-6">
+            <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more about ${mod.name}? →</a>
+          </p>
+        </div>
+      </div>
+      `;
+    }).join('')}
+  </div>
+
+  <!-- Relationships + Practices + Readiness -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    ${modules.slice(2).map(mod => {
+      const { score, metrics = [], failed = [] } = mod.result;
+      const borderColorClass = score >= 80 ? 'border-green-600 dark:border-green-400' : score >= 40 ? 'border-orange-500 dark:border-orange-400' : 'border-red-600 dark:border-red-500';
+      const arcColor = score >= 80 ? '#22c55e' : score >= 40 ? '#f59e0b' : '#ef4444';
+      return `
+      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[540px]">
+        <div class="flex justify-center mb-6">
+          <div class="relative w-32 h-32 mx-auto">
+            <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+              <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
+              <circle cx="64" cy="64" r="56" stroke="${arcColor}" stroke-width="12" fill="none" stroke-dasharray="${(score / 100) * 352} 352" stroke-linecap="round"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="text-4xl font-black" style="color: ${arcColor};">${score}</div>
+            </div>
+          </div>
+        </div>
+        <p class="text-center text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">${mod.name}</p>
+        ${(() => {
+          const g = getGrade(score);
+          return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
+        })()}
+        <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
+        <button class="details-toggle w-full py-2 px-4 mt-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-lg transition flex justify-between items-center">
+          <span>More Details</span>
+          <span class="details-arrow transition-transform duration-200">▼</span>
+        </button>
+        <div class="details-panel mt-3 pt-4 pb-10 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
+          <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
+          <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
+          <p class="text-center mt-6">
+            <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">How ${mod.name} is tested? →</a>
+          </p>
+        </div>
+        <ul class="text-sm space-y-3 mt-4 mb-4 flex-grow">
+          ${metrics.map(m => {
+            let emoji = '❌', color = 'text-red-600 dark:text-red-400';
+            if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
+            else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-500 dark:text-orange-400'; }
+            return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
+          }).join('')}
+        </ul>
+        <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
+          <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
+          <span class="arrow transition-transform duration-200">▼</span>
+        </button>
+        <div class="fixes-panel mt-5 pt-5 pb-12 border-t border-gray-200 dark:border-gray-700 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
+          ${failed.length > 0 ? `
+            <ul class="space-y-4 text-sm">
+              ${failed.map(f => {
+                let emoji = f.grade === 'bad' ? '❌' : '⚠️';
+                let color = f.grade === 'bad' ? 'text-red-700 dark:text-red-300' : 'text-orange-600 dark:text-orange-400';
+                return `<li class="${color} flex items-start gap-3">${emoji} <span>${f.text}</span></li>`;
+              }).join('')}
+            </ul>
+          ` : `
+            <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
+          `}
+          <p class="text-center mt-6">
+            <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more about ${mod.name}? →</a>
+          </p>
+        </div>
+      </div>
+      `;
+    }).join('')}
+  </div>
+
+  <!-- PDF Share Feedback Buttons -->
+  <div class="text-center my-16 px-4">
+    <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
+      <button id="share-report-btn" class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+        Share Report ↗️
+      </button>
+      <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);" class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+        Save Report 📥
+      </button>
+      <button id="feedback-btn" class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+       Submit Feedback 💬
+      </button>
+    </div>
+    <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
+    <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
+      <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
+        <div>
+          <label for="share-name" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Name</label>
+          <input id="share-name" type="text" required placeholder="Your name" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+        </div>
+        <div>
+          <label for="share-sender-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email (for replies)</label>
+          <input id="share-sender-email" type="email" required placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+        </div>
+        <div>
+          <label for="share-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Recipient Email</label>
+          <input id="share-email" type="email" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+        </div>
+        <div>
+          <label for="share-title" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Email Title</label>
+          <input id="share-title" type="text" required placeholder="Traffic Torch SEO Intent Report" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+        </div>
+        <div>
+          <label for="share-body" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Message</label>
+          <textarea id="share-body" required rows="5" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-orange-500"></textarea>
+        </div>
+        <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
       </form>
-      <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
+    </div>
+    <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
+      <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
+        <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
+          Feedback for SEO Entity Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
+        </p>
+        <form id="feedback-form" class="space-y-6">
+          <div>
+            <label for="feedback-rating" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
+            <div class="flex gap-3 text-3xl justify-center sm:justify-start">
+              <button type="button" data-rating="1" class="hover:scale-125 transition">😞</button>
+              <button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button>
+              <button type="button" data-rating="3" class="hover:scale-125 transition">😐</button>
+              <button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button>
+              <button type="button" data-rating="5" class="hover:scale-125 transition">😍</button>
+            </div>
+            <input type="hidden" id="feedback-rating" name="rating">
+          </div>
+          <div>
+            <label class="flex items-center gap-2 justify-center sm:justify-start">
+              <input type="checkbox" id="reply-requested" class="w-5 h-5">
+              <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span>
+            </label>
+          </div>
+          <div id="email-group" class="hidden">
+            <label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label>
+            <input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500">
+          </div>
+          <div>
+            <label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label>
+            <textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center sm:text-left">
+              <span id="char-count">0</span>/1000 characters
+            </p>
+          </div>
+          <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
+        </form>
+        <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
+      </div>
     </div>
   </div>
 </div>
-</div>
     `;
 
-    // Radar chart (original code)
+    // Radar chart
     setTimeout(() => {
       const canvas = document.getElementById('health-radar');
       if (!canvas) return;
