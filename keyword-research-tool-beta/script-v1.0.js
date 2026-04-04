@@ -36,7 +36,7 @@ if (sharedUrl) {
   document.getElementById('url').value = decodeURIComponent(sharedUrl);
 }
 
-    // === NEW DUAL ANALYZE BUTTONS (URL + CODE) - uses single original loader ===
+     // === NEW DUAL ANALYZE BUTTONS (URL + CODE) ===
     const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
     const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
     const seedInput = document.getElementById('seed');
@@ -172,7 +172,7 @@ if (sharedUrl) {
           setTimeout(() => window.scrollBy({ top: -100, behavior: 'smooth' }), 300);
         }, 150);
 
-        // === YOUR ORIGINAL RESULTS CODE STARTS HERE (unchanged) ===
+        // === ORIGINAL RESULTS CODE STARTS HERE (unchanged) ===
         const suggestions = Array.isArray(data.suggestions) ? data.suggestions : [];
         
         const titleEl = document.getElementById('analyzed-page-title');
@@ -227,6 +227,5 @@ if (sharedUrl) {
         clearInterval(tipInterval);
       }
     }
-           
-    });
+  });
 });
