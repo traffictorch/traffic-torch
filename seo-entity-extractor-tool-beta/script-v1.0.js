@@ -212,9 +212,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       }, 300);
     }, 150);
 
-      return; // stop normal results rendering
-    }
-
     // Hide the correct spinner depending on which analysis was run
     if (inputType === 'code') {
       const codeLoading = document.getElementById('code-loading');
