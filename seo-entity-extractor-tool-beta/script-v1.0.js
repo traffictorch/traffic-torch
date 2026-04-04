@@ -54,10 +54,27 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
   const results = document.getElementById('results');
   const loading = document.getElementById('loading');
 
-  // Hide old spinner completely to prevent double spinner
+  // Hide old spinner
   if (loading) loading.classList.add('hidden');
 
-  // Show initial heavy progress
+  // Show the correct dedicated spinner with message
+  if (inputType === 'code') {
+    const codeLoading = document.getElementById('code-loading');
+    if (codeLoading) {
+      codeLoading.classList.remove('hidden');
+      const codeText = document.getElementById('code-progress-text');
+      if (codeText) codeText.textContent = "Analyzing pasted HTML code...";
+    }
+  } else {
+    const urlLoading = document.getElementById('url-loading');
+    if (urlLoading) {
+      urlLoading.classList.remove('hidden');
+      const urlText = document.getElementById('url-progress-text');
+      if (urlText) urlText.textContent = "Analyzing Entities...";
+    }
+  }
+
+  // Keep the heavy progress in results as backup
   results.innerHTML = `
     <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 min-h-[60vh]">
       <div class="relative w-20 h-20 mb-10">
@@ -191,9 +208,9 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       results.innerHTML = `
         <div class="max-w-2xl mx-auto px-6 py-12 text-center">
           <div class="text-5xl mb-6">🔒</div>
-          <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked or Page Not Found</h2>
+          <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked by Security</h2>
           <p class="text-lg text-gray-700 dark:text-gray-300 mb-8">
-            This page returned 404 or could not be accessed (common with preview links, login walls, or temporary pages).
+            Whitelist: entity-ai-proxy.traffictorch.workers.dev or use the Code Analysis.
           </p>
           <div class="bg-orange-50 dark:bg-orange-950 border border-orange-300 dark:border-orange-700 rounded-3xl p-8 text-left max-w-md mx-auto">
             <p class="font-medium mb-4">Quick fix:</p>
@@ -238,7 +255,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       }, 300);
     }, 150);
 
-    // === Original results processing (100% unchanged) ===
+    // === Original results processing ===
     const extracted = data.extracted || [];
     const coverage = analyzeCoverage(extracted);
     const salience = analyzeSalience(extracted);

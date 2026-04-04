@@ -411,22 +411,22 @@
       </button>
     </div>
     <!-- Progress for URL analysis -->
-    <div id="url-loading" class="hidden mt-6 flex flex-col items-center justify-center py-8">
+	<div id="url-loading" class="hidden mt-6 flex flex-col items-center justify-center py-8">
       <div class="w-12 h-12 border-4 border-orange-200 dark:border-gray-700 border-t-orange-500 rounded-full animate-spin mb-4"></div>
       <p id="url-progress-text" class="text-lg text-gray-700 dark:text-gray-300 text-center">Analyzing Entities...</p>
+      <p class="mt-3 text-sm text-gray-500 dark:text-gray-400 text-center">Large pages can take up to 2 mins.</p>
     </div>
-  </div>
 
   <!-- Code Analysis Section -->
   <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
     <!-- Centered gradient title -->
     <h3 class="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight text-center mb-3">
-      📄 Code Analysis
+      Or use Code Analysis
     </h3>
    
     <!-- Centered description -->
     <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center max-w-md mx-auto">
-      Paste HTML code of the page (for pre-published audits via VS Code / GitHub Actions)
+      Paste HTML code of the page 
     </p>
     <textarea
       id="code-input"
@@ -439,6 +439,7 @@
     <div id="code-loading" class="hidden mt-6 flex flex-col items-center justify-center py-8">
       <div class="w-12 h-12 border-4 border-orange-200 dark:border-gray-700 border-t-orange-500 rounded-full animate-spin mb-4"></div>
       <p id="code-progress-text" class="text-lg text-gray-700 dark:text-gray-300 text-center">Analyzing pasted HTML code...</p>
+      <p class="mt-3 text-sm text-gray-500 dark:text-gray-400 text-center">Large pages can take up to 2 mins.</p>
     </div>
     <!-- Centered Analyze Code button -->
     <div class="mt-6 flex justify-center">
@@ -452,16 +453,6 @@
     </div>
   </div>
 </form>
-
-<!-- Loading indicator - tight spacing, centered, modern spinner -->
-<section id="loading" class="hidden text-center mt-0">
-  <div class="inline-flex flex-col items-center gap-4">
-    <div class="w-20 h-20 border-8 border-gray-200 dark:border-gray-700 border-t-orange-500 dark:border-t-orange-400 rounded-full animate-spin"></div>
-    <p class="text-2xl font-medium text-orange-600 dark:text-orange-400">
-      Analyzing Entities...
-    </p>
-  </div>
-</section>
 
 <!-- Empty results container - JavaScript will fill this dynamically -->
 <section id="results" class="hidden space-y-16">
