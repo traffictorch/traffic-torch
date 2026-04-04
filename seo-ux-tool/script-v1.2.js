@@ -567,10 +567,10 @@ document.addEventListener('DOMContentLoaded', () => {
           const fillColor = isDark ? 'rgba(156, 163, 175, 0.25)' : 'rgba(156, 163, 175, 0.1)';
 
           const radarLabels = modules.map(m => m.name);
-          // Use actual displayed module scores from DOM (ensures perfect alignment with perf card and all others)
+          // Read live DOM scores AFTER all updateScore calls (fixes 100 vs 40 / 40 vs 100 desync)
           const radarScores = modules.map(mod => {
             const scoreEl = document.querySelector(`#${mod.id}-score .number`);
-            return scoreEl ? parseInt(scoreEl.textContent, 10) || 0 : 0;
+            return scoreEl ? parseInt(scoreEl.textContent.trim(), 10) || 0 : 0;
           });
 
           new Chart(radarCtx, {
