@@ -53,44 +53,45 @@ function getModuleExplanation(moduleName) {
 async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
   const results = document.getElementById('results');
 
-  // Hide old spinner if it still exists (safety check)
+  // Hide any old loading
   const loading = document.getElementById('loading');
   if (loading) loading.classList.add('hidden');
 
-  // Show the correct dedicated spinner with "Large pages..." message
+  // Show only the correct small dedicated spinner
   if (inputType === 'code') {
     const codeLoading = document.getElementById('code-loading');
-    if (codeLoading) {
-      codeLoading.classList.remove('hidden');
-    }
+    if (codeLoading) codeLoading.classList.remove('hidden');
   } else {
     const urlLoading = document.getElementById('url-loading');
-    if (urlLoading) {
-      urlLoading.classList.remove('hidden');
-    }
+    if (urlLoading) urlLoading.classList.remove('hidden');
   }
 
-  // Show heavy progress in results area as backup
+  // Clean results area with progress
   results.innerHTML = `
-    <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 min-h-[60vh]">
-      <div class="relative w-20 h-20 mb-10">
-        <svg class="animate-spin" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" stroke-opacity="0.25"/>
-          <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10"
-                  stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
-        </svg>
-      </div>
-      <p id="progress-text" class="text-2xl md:text-3xl font-bold text-orange-600 dark:text-orange-400 text-center max-w-2xl px-6 leading-tight">
-        Analyzing Entities...
-      </p>
-      <p class="mt-5 text-lg text-gray-700 dark:text-gray-300 text-center max-w-2xl px-6">
-        Large pages can take up to 2 mins.
-      </p>
+<div class="max-w-5xl mx-auto px-4 py-8">
+  <div id="analysis-progress" class="flex flex-col items-center justify-center py-12 min-h-[60vh]">
+    <div class="relative w-20 h-20 mb-10">
+      <svg class="animate-spin" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" stroke-opacity="0.25"/>
+        <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10"
+                stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
+      </svg>
     </div>
+    <p id="progress-text" class="text-2xl md:text-3xl font-bold text-orange-600 dark:text-orange-400 text-center max-w-2xl px-6 leading-tight">
+      Analyzing Entities...
+    </p>
+    <p class="mt-5 text-lg text-gray-700 dark:text-gray-300 text-center max-w-2xl px-6">
+      Large pages can take up to 2 mins.
+    </p>
+  </div>
+</div>
   `;
   results.classList.remove('hidden');
 
   const progressText = document.getElementById('progress-text');
+  const urlProgress = document.getElementById('url-progress-text');
+  const codeProgress = document.getElementById('code-progress-text');
+
   let current = 0;
   const messages = [
     "Analyzing Entities...",
@@ -102,44 +103,50 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     "Calculating overall readiness...",
     "Finalizing semantic health report..."
   ];
+
   const interval = setInterval(() => {
     if (current < messages.length) {
-      progressText.textContent = messages[current];
+      const msg = messages[current];
+      progressText.textContent = msg;
+      if (urlProgress) urlProgress.textContent = msg;
+      if (codeProgress) codeProgress.textContent = msg;
       current++;
     } else {
-      progressText.textContent = "Finalizing your report...";
+      const finalMsg = "Finalizing your report...";
+      progressText.textContent = finalMsg;
       progressText.classList.add('text-green-600', 'dark:text-green-400');
+      if (urlProgress) urlProgress.textContent = finalMsg;
+      if (codeProgress) codeProgress.textContent = finalMsg;
     }
   }, 4500);
 
   const heavyTimeout = setTimeout(() => {
-    progressText.textContent = "Still working — heavy page or slow server detected...";
+    const heavyMsg = "Still working — heavy page or slow server detected...";
+    progressText.textContent = heavyMsg;
     progressText.classList.remove('text-green-600', 'dark:text-green-400');
     progressText.classList.add('text-yellow-600', 'dark:text-yellow-400');
+    if (urlProgress) urlProgress.textContent = heavyMsg;
+    if (codeProgress) codeProgress.textContent = heavyMsg;
   }, 120000);
 
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 180000);
-    let res;
 
-    try {
-      res = await fetch(ANALYZE_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(inputType === 'code' ? { code: rawCode } : { url }),
-        signal: controller.signal
-      });
-    } catch (fetchErr) {
-      clearTimeout(timeoutId);
-      if (fetchErr.name === 'AbortError') throw new Error('Request timed out after 90 seconds. Page may be too large or server slow.');
-      throw new Error(`Network/fetch error: ${fetchErr.message}`);
-    }
+    let res = await fetch(ANALYZE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(inputType === 'code' ? { code: rawCode } : { url }),
+      signal: controller.signal
+    });
 
     clearTimeout(timeoutId);
     clearTimeout(heavyTimeout);
     clearInterval(interval);
+
     progressText.textContent = "Processing response...";
+    if (urlProgress) urlProgress.textContent = "Processing response...";
+    if (codeProgress) codeProgress.textContent = "Processing response...";
 
     if (!res.ok) {
       if (res.status === 404 || res.status >= 400) {
@@ -150,7 +157,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
           const urlLoading = document.getElementById('url-loading');
           if (urlLoading) urlLoading.classList.add('hidden');
         }
-        results.classList.remove('hidden');
         results.innerHTML = `
           <div class="max-w-2xl mx-auto px-6 py-12 text-center">
             <div class="text-5xl mb-6">🔒</div>
@@ -175,7 +181,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
         }, 150);
         return;
       }
-
       let errData = {};
       try { errData = await res.json(); } catch {}
       throw new Error(errData.error || errData.message || `Server error ${res.status} ${res.statusText}`);
@@ -188,8 +193,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       throw new Error('Invalid response format from server (not valid JSON)');
     }
 
-    // BLOCKED DETECTION
-    if (data && data.blocked === true || (res && (res.status === 404 || res.status >= 400))) {
+    if (data && data.blocked === true) {
       if (inputType === 'code') {
         const codeLoading = document.getElementById('code-loading');
         if (codeLoading) codeLoading.classList.add('hidden');
@@ -197,7 +201,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
         const urlLoading = document.getElementById('url-loading');
         if (urlLoading) urlLoading.classList.add('hidden');
       }
-      results.classList.remove('hidden');
       results.innerHTML = `
         <div class="max-w-2xl mx-auto px-6 py-12 text-center">
           <div class="text-5xl mb-6">🔒</div>
@@ -223,7 +226,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       return;
     }
 
-    // Hide correct spinner for success path
+    // Hide spinners on success
     if (inputType === 'code') {
       const codeLoading = document.getElementById('code-loading');
       if (codeLoading) codeLoading.classList.add('hidden');
@@ -247,7 +250,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       }, 300);
     }, 150);
 
-    // === Original results processing (full, no stripping) ===
+    // === Original full results processing (no stripping) ===
     const extracted = data.extracted || [];
     const coverage = analyzeCoverage(extracted);
     const salience = analyzeSalience(extracted);
@@ -334,10 +337,11 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
         `;
       })()}
       <p class="mt-6 text-center text-lg text-gray-600 dark:text-gray-300 px-4 leading-relaxed">
-        ${readiness.metrics && readiness.metrics[0] ? readiness.metrics[0].text.split(' – ')[1] || 'Semantic foundation analysis complete' : 'Semantic foundation analysis complete'}
+        Semantic foundation analysis complete
       </p>
     </div>
   </div>
+
   <!-- Extracted Entities -->
   <div class="mb-16">
     <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Extracted Entities</h3>
@@ -350,6 +354,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       ${entitiesHTML}
     </div>
   </div>
+
   <!-- Radar Chart -->
   <div class="mb-16">
     <h3 class="text-2xl font-semibold text-center text-gray-800 dark:text-gray-200 mb-6">Semantic Health Radar</h3>
@@ -358,7 +363,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     </div>
   </div>
 
-  <!-- Coverage + Salience -->
+  <!-- Modules grid (Coverage + Salience + Relationships + Practices + Readiness) - full original structure -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-12 items-start">
     ${modules.slice(0, 2).map(mod => {
       const { score, metrics = [], failed = [] } = mod.result;
@@ -578,7 +583,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
 </div>
     `;
 
-// Radar chart, initShareReport, initSubmitFeedback, toggle listeners (your original code)
+    // Radar chart setup
     setTimeout(() => {
       const canvas = document.getElementById('health-radar');
       if (!canvas) return;
@@ -692,63 +697,3 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     `;
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const results = document.getElementById('results');
-  if (!results) return;
-
-  const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
-  const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
-  const urlInput = document.getElementById('url-input');
-  const codeInput = document.getElementById('code-input');
-  let hasCheckedLimit = false;
-
-  if (urlAnalyzeBtn) {
-    urlAnalyzeBtn.addEventListener('click', async () => {
-      if (hasCheckedLimit) return;
-      hasCheckedLimit = true;
-      const canProceed = await canRunTool('limit-audit-id');
-      if (!canProceed) {
-        hasCheckedLimit = false;
-        return;
-      }
-      let inputValue = urlInput?.value.trim();
-      if (!inputValue && typeof sharedDecodedUrl !== 'undefined' && sharedDecodedUrl) {
-        inputValue = sharedDecodedUrl;
-        if (urlInput) urlInput.value = sharedDecodedUrl;
-      }
-      if (!inputValue) {
-        alert('Please enter a URL');
-        hasCheckedLimit = false;
-        return;
-      }
-      const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
-      document.getElementById('url-loading').classList.remove('hidden');
-      document.getElementById('code-loading').classList.add('hidden');
-      runAnalysis({ url, inputType: 'url', rawCode: null });
-      hasCheckedLimit = false;
-    });
-  }
-
-  if (codeAnalyzeBtn) {
-    codeAnalyzeBtn.addEventListener('click', async () => {
-      if (hasCheckedLimit) return;
-      hasCheckedLimit = true;
-      const canProceed = await canRunTool('limit-audit-id');
-      if (!canProceed) {
-        hasCheckedLimit = false;
-        return;
-      }
-      const rawCode = codeInput?.value.trim();
-      if (!rawCode) {
-        alert('Please paste HTML code');
-        hasCheckedLimit = false;
-        return;
-      }
-      document.getElementById('code-loading').classList.remove('hidden');
-      document.getElementById('url-loading').classList.add('hidden');
-      runAnalysis({ url: null, inputType: 'code', rawCode });
-      hasCheckedLimit = false;
-    });
-  }
-});
