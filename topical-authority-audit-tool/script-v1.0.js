@@ -15,16 +15,28 @@ function getGrade(score) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('🚀 Topical Authority script DOMContentLoaded fired');
+
   const form = document.getElementById('authority-form');
   const loading = document.getElementById('loading');
   const results = document.getElementById('results');
-
   const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
   const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
   const urlInput = document.getElementById('url-input');
   const codeInput = document.getElementById('code-input');
 
+  console.log('Elements check:', {
+    form: !!form,
+    loading: !!loading,
+    results: !!results,
+    urlAnalyzeBtn: !!urlAnalyzeBtn,
+    codeAnalyzeBtn: !!codeAnalyzeBtn,
+    urlInput: !!urlInput,
+    codeInput: !!codeInput
+  });
+
   if (!form || !loading || !results || !urlAnalyzeBtn || !codeAnalyzeBtn) {
+    console.error('❌ Missing critical elements - check HTML IDs');
     return;
   }
 
@@ -37,16 +49,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Single rate limit check per analysis - prevents double counting
-  // Respects anon vs logged-in Pro user limits via canRunTool
   let hasCheckedLimit = false;
 
   if (urlAnalyzeBtn) {
+    console.log('✅ URL Analyze button listener attached');
     urlAnalyzeBtn.addEventListener('click', async () => {
-      if (hasCheckedLimit) return;
+      console.log('🔥 URL Analyze button clicked');
+      if (hasCheckedLimit) {
+        console.log('Rate limit already checked this session');
+        return;
+      }
       hasCheckedLimit = true;
 
       const canProceed = await canRunTool('limit-audit-id');
       if (!canProceed) {
+        console.log('❌ Rate limit blocked');
         hasCheckedLimit = false;
         alert('Usage limit reached for today. Please log in or try again tomorrow.');
         return;
@@ -66,22 +83,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
 
-      // Show URL progress only
       document.getElementById('url-loading').classList.remove('hidden');
       document.getElementById('code-loading').classList.add('hidden');
 
+      console.log('🚀 Starting URL analysis for:', url);
       runAnalysis({ url, inputType: 'url', rawCode: null });
       hasCheckedLimit = false;
     });
   }
 
   if (codeAnalyzeBtn) {
+    console.log('✅ Code Analyze button listener attached');
     codeAnalyzeBtn.addEventListener('click', async () => {
+      console.log('🔥 Code Analyze button clicked');
       if (hasCheckedLimit) return;
       hasCheckedLimit = true;
 
       const canProceed = await canRunTool('limit-audit-id');
       if (!canProceed) {
+        console.log('❌ Rate limit blocked');
         hasCheckedLimit = false;
         alert('Usage limit reached for today. Please log in or try again tomorrow.');
         return;
@@ -94,18 +114,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Show Code progress only
       document.getElementById('code-loading').classList.remove('hidden');
       document.getElementById('url-loading').classList.add('hidden');
 
+      console.log('🚀 Starting code analysis');
       runAnalysis({ url: null, inputType: 'code', rawCode });
       hasCheckedLimit = false;
     });
   }
 
-  // Shared analysis runner — hardened for beta worker debugging
+  // Shared analysis runner
   async function runAnalysis(params) {
     const { url, inputType, rawCode } = params;
+    console.log('📡 runAnalysis started with inputType:', inputType);
+
     const loading = document.getElementById('loading');
     const results = document.getElementById('results');
     if (!loading || !results) return;
@@ -162,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Empty or invalid response from analysis server');
       }
 
-      // Hide the correct spinner depending on which analysis was run
+      // Hide correct spinner
       if (inputType === 'code') {
         const codeLoading = document.getElementById('code-loading');
         if (codeLoading) codeLoading.classList.add('hidden');
@@ -174,26 +196,15 @@ document.addEventListener('DOMContentLoaded', () => {
       loading.classList.add('hidden');
       results.classList.remove('hidden');
 
-      // Improved auto-scroll to results (accounts for taller dual-input form)
       setTimeout(() => {
-        results.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-        // Small extra push so results sit nicely below the form
+        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
         const offset = 100;
-        setTimeout(() => {
-          window.scrollBy({
-            top: -offset,
-            behavior: 'smooth'
-          });
-        }, 300);
+        setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
       }, 150);
 
       const {
         overallScore = 20,
         pageTitle = '',
-        mainTopic = 'Your Main Topic',
         coveragePercent = 25,
         clusters = [],
         suggestions = [],
@@ -202,14 +213,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const displayTitle = pageTitle?.trim()
         ? pageTitle.trim()
-        : (url
-            ? url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
-            : 'Analyzed from Code');
-    
-      const displayTitleShort = displayTitle.length > 60
-        ? displayTitle.substring(0, 57) + '...'
-        : displayTitle;
+        : (url ? url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '') : 'Analyzed from Code');
 
+      const displayTitleShort = displayTitle.length > 60 ? displayTitle.substring(0, 57) + '...' : displayTitle;
       const grade = getGrade(overallScore);
 
       results.innerHTML = `
@@ -412,9 +418,7 @@ ${cluster.subtopics && cluster.subtopics.length > 0
         .trim() || 'Analyzed Page';
       document.body.setAttribute('data-print-title', printTitle);
    
-      document.body.setAttribute('data-url', url || 'Code Analysis');
-
-      // Initialize share & feedback
+document.body.setAttribute('data-url', url || 'Code Analysis');
       initShareReport();
       initSubmitFeedback();
 
@@ -422,6 +426,7 @@ ${cluster.subtopics && cluster.subtopics.length > 0
       clearTimeout(heavyTimeout);
       loading.classList.add('hidden');
       results.classList.remove('hidden');
+      console.error('💥 Analysis error:', err);
       results.innerHTML = `
         <div class="text-center py-12 px-6">
           <p class="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Audit could not complete</p>
@@ -435,13 +440,12 @@ ${cluster.subtopics && cluster.subtopics.length > 0
       `;
     }
   }
- 
-  // Initial auto-submit if we opened a shared link (URL only)
+
+  // Initial auto-submit if shared link
   if (sharedDecodedUrl) {
     const urlInputEl = document.getElementById('url-input');
     if (urlInputEl) {
       urlInputEl.value = sharedDecodedUrl;
-      // Auto trigger URL analysis
       setTimeout(() => {
         if (urlAnalyzeBtn) urlAnalyzeBtn.click();
       }, 300);
