@@ -39,6 +39,6 @@ export function analyzePerf(html, doc) {
     });
   }
 
-  score = Math.max(35, score); // improved floor so 2-4 failing metrics never collapse to 0 or very low
+  score = Math.max(40, score); // raised floor for better alignment with radar when few issues
   return { score: Math.max(0, Math.round(score)), issues };
 }
