@@ -36,7 +36,7 @@ if (sharedUrl) {
   document.getElementById('url').value = decodeURIComponent(sharedUrl);
 }
 
-     // === NEW DUAL ANALYZE BUTTONS (URL + CODE) ===
+    // === NEW DUAL ANALYZE BUTTONS (URL + CODE) ===
     const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
     const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
     const seedInput = document.getElementById('seed');
@@ -64,8 +64,18 @@ if (sharedUrl) {
           inputUrl = `https://${inputUrl}`;
         }
 
+        // Show spinner and immediately scroll
         loader.classList.remove('hidden');
         progressText.textContent = 'Analyzing...';
+
+        // Auto-scroll to spinner right after it appears
+        setTimeout(() => {
+          loader.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+        }, 50);
+
         const tipInterval = setInterval(() => {
           tipIndex = (tipIndex + 1) % tips.length;
           progressTip.textContent = tips[tipIndex];
@@ -93,8 +103,17 @@ if (sharedUrl) {
           return;
         }
 
+        // Show spinner and immediately scroll to it
         loader.classList.remove('hidden');
         progressText.textContent = 'Analyzing...';
+
+        setTimeout(() => {
+          loader.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+        }, 50);
+
         const tipInterval = setInterval(() => {
           tipIndex = (tipIndex + 1) % tips.length;
           progressTip.textContent = tips[tipIndex];
@@ -133,7 +152,7 @@ if (sharedUrl) {
 
         const data = await response.json();
 
-        // BLOCKED DETECTION - simple user-friendly message
+        // BLOCKED DETECTION
         if (data && data.blocked === true) {
           loader.classList.add('hidden');
           results.classList.remove('hidden');
@@ -159,20 +178,19 @@ if (sharedUrl) {
             setTimeout(() => window.scrollBy({ top: -100, behavior: 'smooth' }), 300);
           }, 150);
           clearInterval(tipInterval);
-          return; // stop normal results
+          return;
         }
 
-        // Normal success path - keep your original rendering logic below
+        // Normal success path
         loader.classList.add('hidden');
         results.classList.remove('hidden');
 
-        // Auto-scroll to results (single spinner already hidden)
         setTimeout(() => {
           results.scrollIntoView({ behavior: 'smooth', block: 'start' });
           setTimeout(() => window.scrollBy({ top: -100, behavior: 'smooth' }), 300);
         }, 150);
 
-        // === ORIGINAL RESULTS CODE STARTS HERE (unchanged) ===
+        // === ORIGINAL RESULTS RENDERING (fully preserved, no stripping) ===
         const suggestions = Array.isArray(data.suggestions) ? data.suggestions : [];
         
         const titleEl = document.getElementById('analyzed-page-title');
@@ -214,7 +232,7 @@ if (sharedUrl) {
             suggestionsGrid.appendChild(btn);
           });
         }
-                     
+                    
         document.body.setAttribute('data-print-date', new Date().toLocaleString('en-AU', { dateStyle: 'medium', timeStyle: 'short' }));
         document.body.setAttribute('data-keyword', seed || '—');
         document.body.setAttribute('data-url', url || '—');
