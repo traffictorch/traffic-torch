@@ -49,32 +49,28 @@ function getModuleExplanation(moduleName) {
   return explanations[moduleName] || { what: 'No explanation available.', why: '' };
 }
 
-// Dual-input runAnalysis with blocked detection - complete fixed version
+// Dual-input runAnalysis with blocked detection - final clean version
 async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
   const results = document.getElementById('results');
-  const loading = document.getElementById('loading');
 
-  // Hide old spinner
+  // Hide old spinner if it still exists (safety check)
+  const loading = document.getElementById('loading');
   if (loading) loading.classList.add('hidden');
 
-  // Show the correct dedicated spinner with message
+  // Show the correct dedicated spinner with "Large pages..." message
   if (inputType === 'code') {
     const codeLoading = document.getElementById('code-loading');
     if (codeLoading) {
       codeLoading.classList.remove('hidden');
-      const codeText = document.getElementById('code-progress-text');
-      if (codeText) codeText.textContent = "Analyzing pasted HTML code...";
     }
   } else {
     const urlLoading = document.getElementById('url-loading');
     if (urlLoading) {
       urlLoading.classList.remove('hidden');
-      const urlText = document.getElementById('url-progress-text');
-      if (urlText) urlText.textContent = "Analyzing Entities...";
     }
   }
 
-  // Keep the heavy progress in results as backup
+  // Show heavy progress in results area as backup
   results.innerHTML = `
     <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 min-h-[60vh]">
       <div class="relative w-20 h-20 mb-10">
@@ -146,7 +142,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     progressText.textContent = "Processing response...";
 
     if (!res.ok) {
-      // Treat 404 and other server errors as blocked
       if (res.status === 404 || res.status >= 400) {
         if (inputType === 'code') {
           const codeLoading = document.getElementById('code-loading');
@@ -155,7 +150,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
           const urlLoading = document.getElementById('url-loading');
           if (urlLoading) urlLoading.classList.add('hidden');
         }
-        loading.classList.add('hidden');
         results.classList.remove('hidden');
         results.innerHTML = `
           <div class="max-w-2xl mx-auto px-6 py-12 text-center">
@@ -203,14 +197,13 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
         const urlLoading = document.getElementById('url-loading');
         if (urlLoading) urlLoading.classList.add('hidden');
       }
-      loading.classList.add('hidden');
       results.classList.remove('hidden');
       results.innerHTML = `
         <div class="max-w-2xl mx-auto px-6 py-12 text-center">
           <div class="text-5xl mb-6">🔒</div>
-          <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked by Security</h2>
+          <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked or Page Not Found</h2>
           <p class="text-lg text-gray-700 dark:text-gray-300 mb-8">
-            Whitelist: entity-ai-proxy.traffictorch.workers.dev or use the Code Analysis.
+            This page returned 404 or could not be accessed (common with preview links, login walls, or temporary pages).
           </p>
           <div class="bg-orange-50 dark:bg-orange-950 border border-orange-300 dark:border-orange-700 rounded-3xl p-8 text-left max-w-md mx-auto">
             <p class="font-medium mb-4">Quick fix:</p>
@@ -230,7 +223,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       return;
     }
 
-    // Hide the correct spinner
+    // Hide correct spinner for success path
     if (inputType === 'code') {
       const codeLoading = document.getElementById('code-loading');
       if (codeLoading) codeLoading.classList.add('hidden');
@@ -238,9 +231,8 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       const urlLoading = document.getElementById('url-loading');
       if (urlLoading) urlLoading.classList.add('hidden');
     }
-    loading.classList.add('hidden');
 
-    // Improved auto-scroll
+    // Auto-scroll
     setTimeout(() => {
       results.scrollIntoView({
         behavior: 'smooth',
@@ -255,7 +247,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       }, 300);
     }, 150);
 
-    // === Original results processing ===
+    // === Original results processing (full, no stripping) ===
     const extracted = data.extracted || [];
     const coverage = analyzeCoverage(extracted);
     const salience = analyzeSalience(extracted);
@@ -586,7 +578,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
 </div>
     `;
 
-    // Radar chart
+// Radar chart, initShareReport, initSubmitFeedback, toggle listeners (your original code)
     setTimeout(() => {
       const canvas = document.getElementById('health-radar');
       if (!canvas) return;
@@ -666,9 +658,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
           arrow.classList.remove('rotate-180');
           arrow.textContent = '▼';
           setTimeout(() => {
-            if (!panel.classList.contains('expanded')) {
-              panel.style.height = '0px';
-            }
+            if (!panel.classList.contains('expanded')) panel.style.height = '0px';
           }, 350);
         } else {
           panel.classList.add('expanded');
@@ -677,9 +667,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
           arrow.classList.add('rotate-180');
           arrow.textContent = '▲';
           setTimeout(() => {
-            if (panel.classList.contains('expanded')) {
-              panel.style.height = 'auto';
-            }
+            if (panel.classList.contains('expanded')) panel.style.height = 'auto';
           }, 350);
         }
       });
