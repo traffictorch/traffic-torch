@@ -410,12 +410,6 @@
         Analyze URL 🧬
       </button>
     </div>
-    <!-- Progress for URL analysis - small spinner with dynamic text -->
-    <div id="url-loading" class="hidden mt-6 flex flex-col items-center justify-center py-8">
-      <div class="w-12 h-12 border-4 border-orange-200 dark:border-gray-700 border-t-orange-500 rounded-full animate-spin mb-4"></div>
-      <p id="url-progress-text" class="text-lg text-gray-700 dark:text-gray-300 text-center">Analyzing Entities...</p>
-      <p class="mt-3 text-sm text-gray-500 dark:text-gray-400 text-center">Large pages can take up to 2 mins.</p>
-    </div>
   </div>
 
   <!-- Code Analysis Section -->
@@ -424,7 +418,7 @@
     <h3 class="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight text-center mb-3">
       Or use Code Analysis
     </h3>
-  
+ 
     <!-- Centered description -->
     <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center max-w-md mx-auto">
       Paste HTML code of the page
@@ -435,13 +429,6 @@
       placeholder="Paste full HTML code here..."
       class="w-full px-6 py-4 rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-base font-mono resize-y min-h-[140px]"
     ></textarea>
-  
-    <!-- Progress for Code analysis - small spinner with dynamic text -->
-    <div id="code-loading" class="hidden mt-6 flex flex-col items-center justify-center py-8">
-      <div class="w-12 h-12 border-4 border-orange-200 dark:border-gray-700 border-t-orange-500 rounded-full animate-spin mb-4"></div>
-      <p id="code-progress-text" class="text-lg text-gray-700 dark:text-gray-300 text-center">Analyzing pasted HTML code...</p>
-      <p class="mt-3 text-sm text-gray-500 dark:text-gray-400 text-center">Large pages can take up to 2 mins.</p>
-    </div>
 
     <!-- Centered Analyze Code button -->
     <div class="mt-6 flex justify-center">
@@ -455,6 +442,25 @@
     </div>
   </div>
 </form>
+
+<!-- Restored large spinner with progress text -->
+<section id="loading" class="hidden text-center mt-12">
+  <div class="inline-flex flex-col items-center gap-6">
+    <div class="relative w-24 h-24">
+      <svg class="animate-spin w-full h-full" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" stroke-opacity="0.25"/>
+        <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10"
+                stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
+      </svg>
+    </div>
+    <p id="progress-text" class="text-2xl md:text-3xl font-bold text-orange-600 dark:text-orange-400 text-center max-w-md">
+      Analyzing Entities...
+    </p>
+    <p class="text-lg text-gray-700 dark:text-gray-300 text-center max-w-md">
+      Large pages can take up to 2 mins.
+    </p>
+  </div>
+</section>
 
 <!-- Empty results container - JavaScript will fill this dynamically -->
 <section id="results" class="hidden space-y-16">

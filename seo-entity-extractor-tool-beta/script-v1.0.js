@@ -52,34 +52,20 @@ function getModuleExplanation(moduleName) {
 // Dual-input runAnalysis with blocked detection - final clean version
 async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
   const results = document.getElementById('results');
-
-  // Hide any old spinners (safety)
+  
+  // Show the restored large spinner + keep your progress messages
   const loading = document.getElementById('loading');
-  if (loading) loading.classList.add('hidden');
-
-  // Show the correct small spinner
-  if (inputType === 'code') {
-    const codeLoading = document.getElementById('code-loading');
-    if (codeLoading) codeLoading.classList.remove('hidden');
-  } else {
-    const urlLoading = document.getElementById('url-loading');
-    if (urlLoading) urlLoading.classList.remove('hidden');
+  if (loading) {
+    loading.classList.remove('hidden');
+    loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
-
-  // === ONLY show the small spinner under the form (no big spinner in results) ===
-  if (inputType === 'code') {
-    const codeLoading = document.getElementById('code-loading');
-    if (codeLoading) codeLoading.classList.remove('hidden');
-  } else {
-    const urlLoading = document.getElementById('url-loading');
-    if (urlLoading) urlLoading.classList.remove('hidden');
-  }
-
-  // Clear results area so old big spinner cannot appear
+  
+  // Clear results area
   results.innerHTML = '';
-  results.classList.add('hidden');   // keep hidden until results are ready
+  results.classList.add('hidden');
 
-  const progressText = document.getElementById('progress-text');
+  // Keep your original progress messages (now applied to the large spinner)
+  const progressText = document.getElementById('progress-text');  // this must exist in HTML
   let current = 0;
   const messages = [
     "Analyzing Entities...",
@@ -91,23 +77,26 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     "Calculating overall readiness...",
     "Finalizing semantic health report..."
   ];
-
   const interval = setInterval(() => {
     if (current < messages.length) {
-      progressText.textContent = messages[current];
+      if (progressText) progressText.textContent = messages[current];
       current++;
     } else {
-      progressText.textContent = "Finalizing your report...";
-      progressText.classList.add('text-green-600', 'dark:text-green-400');
+      if (progressText) {
+        progressText.textContent = "Finalizing your report...";
+        progressText.classList.add('text-green-600', 'dark:text-green-400');
+      }
     }
   }, 4500);
 
   const heavyTimeout = setTimeout(() => {
-    progressText.textContent = "Still working — heavy page or slow server detected...";
-    progressText.classList.remove('text-green-600', 'dark:text-green-400');
-    progressText.classList.add('text-yellow-600', 'dark:text-yellow-400');
+    if (progressText) {
+      progressText.textContent = "Still working — heavy page or slow server detected...";
+      progressText.classList.remove('text-green-600', 'dark:text-green-400');
+      progressText.classList.add('text-yellow-600', 'dark:text-yellow-400');
+    }
   }, 120000);
-
+  
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 180000);
@@ -131,13 +120,10 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
 
     if (!res.ok) {
       if (res.status === 404 || res.status >= 400) {
-        if (inputType === 'code') {
-          const codeLoading = document.getElementById('code-loading');
-          if (codeLoading) codeLoading.classList.add('hidden');
-        } else {
-          const urlLoading = document.getElementById('url-loading');
-          if (urlLoading) urlLoading.classList.add('hidden');
-        }
+        // Hide large spinner
+        const loading = document.getElementById('loading');
+        if (loading) loading.classList.add('hidden');
+
         results.classList.remove('hidden');
         results.innerHTML = `
           <div class="max-w-2xl mx-auto px-6 py-12 text-center">
@@ -177,13 +163,10 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
 
     // BLOCKED DETECTION
     if (data && data.blocked === true || (res && (res.status === 404 || res.status >= 400))) {
-      if (inputType === 'code') {
-        const codeLoading = document.getElementById('code-loading');
-        if (codeLoading) codeLoading.classList.add('hidden');
-      } else {
-        const urlLoading = document.getElementById('url-loading');
-        if (urlLoading) urlLoading.classList.add('hidden');
-      }
+      // Hide large spinner
+      const loading = document.getElementById('loading');
+      if (loading) loading.classList.add('hidden');
+
       results.classList.remove('hidden');
       results.innerHTML = `
         <div class="max-w-2xl mx-auto px-6 py-12 text-center">
@@ -210,14 +193,9 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       return;
     }
 
-    // Hide the correct small spinner on success
-    if (inputType === 'code') {
-      const codeLoading = document.getElementById('code-loading');
-      if (codeLoading) codeLoading.classList.add('hidden');
-    } else {
-      const urlLoading = document.getElementById('url-loading');
-      if (urlLoading) urlLoading.classList.add('hidden');
-    }
+    // Hide the large spinner on success
+    const loading = document.getElementById('loading');
+    if (loading) loading.classList.add('hidden');
 
     // Auto-scroll
     setTimeout(() => {
@@ -706,8 +684,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
-      document.getElementById('url-loading').classList.remove('hidden');
-      document.getElementById('code-loading').classList.add('hidden');
+
+      // Instantly show the large spinner and smooth scroll down to it
+      const loading = document.getElementById('loading');
+      if (loading) {
+        loading.classList.remove('hidden');
+        loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
       runAnalysis({ url, inputType: 'url', rawCode: null });
       hasCheckedLimit = false;
     });
@@ -728,8 +712,14 @@ document.addEventListener('DOMContentLoaded', () => {
         hasCheckedLimit = false;
         return;
       }
-      document.getElementById('code-loading').classList.remove('hidden');
-      document.getElementById('url-loading').classList.add('hidden');
+
+      // Instantly show the large spinner and smooth scroll down to it
+      const loading = document.getElementById('loading');
+      if (loading) {
+        loading.classList.remove('hidden');
+        loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
       runAnalysis({ url: null, inputType: 'code', rawCode });
       hasCheckedLimit = false;
     });
