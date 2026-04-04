@@ -49,12 +49,15 @@ function getModuleExplanation(moduleName) {
   return explanations[moduleName] || { what: 'No explanation available.', why: '' };
 }
 
-// Dual-input runAnalysis with blocked detection (exact block you provided)
+// Dual-input runAnalysis with blocked detection
 async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
   const results = document.getElementById('results');
   const loading = document.getElementById('loading');
 
-  // Show initial heavy progress
+  // Hide old spinner completely to prevent double spinner
+  if (loading) loading.classList.add('hidden');
+
+  // Show initial heavy progress in results area (kept for consistency with original UX)
   results.innerHTML = `
     <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 min-h-[60vh]">
       <div class="relative w-20 h-20 mb-10">
@@ -65,7 +68,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
         </svg>
       </div>
       <p id="progress-text" class="text-2xl md:text-3xl font-bold text-orange-600 dark:text-orange-400 text-center max-w-2xl px-6 leading-tight">
-        Fetching page content...
+        Analyzing Entities...
       </p>
       <p class="mt-5 text-lg text-gray-700 dark:text-gray-300 text-center max-w-2xl px-6">
         Large pages can take up to 2 mins.
@@ -77,7 +80,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
   const progressText = document.getElementById('progress-text');
   let current = 0;
   const messages = [
-    "Fetching page content...",
+    "Analyzing Entities...",
     "Extracting named entities...",
     "Analyzing coverage & density...",
     "Evaluating salience & prominence...",
@@ -138,8 +141,9 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       throw new Error('Invalid response format from server (not valid JSON)');
     }
 
-    // BLOCKED DETECTION - simple user-friendly message
-    if (data && data.blocked === true) {
+    // BLOCKED DETECTION + 404 handling
+    if (data && data.blocked === true || 
+        (res && (res.status === 404 || res.status >= 400))) {
       // Hide the correct spinner
       if (inputType === 'code') {
         const codeLoading = document.getElementById('code-loading');
@@ -153,9 +157,9 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       results.innerHTML = `
         <div class="max-w-2xl mx-auto px-6 py-12 text-center">
           <div class="text-5xl mb-6">🔒</div>
-          <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked by Security</h2>
+          <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked or Page Not Found</h2>
           <p class="text-lg text-gray-700 dark:text-gray-300 mb-8">
-            Whitelist: entity-ai-proxy.traffictorch.workers.dev or use Code Analysis.
+            This page returned 404 or could not be accessed (common with preview links, login walls, or temporary pages).
           </p>
           <div class="bg-orange-50 dark:bg-orange-950 border border-orange-300 dark:border-orange-700 rounded-3xl p-8 text-left max-w-md mx-auto">
             <p class="font-medium mb-4">Quick fix:</p>
@@ -167,7 +171,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
           </div>
         </div>
       `;
-      // Auto-scroll to the blocked message (same smooth behavior as normal results)
       setTimeout(() => {
         results.scrollIntoView({
           behavior: 'smooth',
@@ -181,6 +184,34 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
           });
         }, 300);
       }, 150);
+      return;
+    }
+
+    // Hide the correct spinner depending on which analysis was run
+    if (inputType === 'code') {
+      const codeLoading = document.getElementById('code-loading');
+      if (codeLoading) codeLoading.classList.add('hidden');
+    } else {
+      const urlLoading = document.getElementById('url-loading');
+      if (urlLoading) urlLoading.classList.add('hidden');
+    }
+    loading.classList.add('hidden');
+
+    // Improved auto-scroll
+    setTimeout(() => {
+      results.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+      const offset = 100;
+      setTimeout(() => {
+        window.scrollBy({
+          top: -offset,
+          behavior: 'smooth'
+        });
+      }, 300);
+    }, 150);
+
       return; // stop normal results rendering
     }
 
