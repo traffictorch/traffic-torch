@@ -197,12 +197,13 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     const loading = document.getElementById('loading');
     if (loading) loading.classList.add('hidden');
 
-    // Auto-scroll
+    // Show results and scroll to them
+    results.classList.remove('hidden');
     setTimeout(() => {
       results.scrollIntoView({ behavior: 'smooth', block: 'start' });
       const offset = 100;
       setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
-    }, 150);
+    }, 100);
 
     // === Original results processing (full, no stripping) ===
     const extracted = data.extracted || [];
@@ -685,7 +686,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
 
-      // Instantly show the large spinner and smooth scroll down to it
+      // Show spinner + smooth scroll
       const loading = document.getElementById('loading');
       if (loading) {
         loading.classList.remove('hidden');
@@ -713,7 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Instantly show the large spinner and smooth scroll down to it
+      // Show spinner + smooth scroll
       const loading = document.getElementById('loading');
       if (loading) {
         loading.classList.remove('hidden');
